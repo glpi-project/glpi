@@ -312,11 +312,11 @@ class RuleMailCollector extends Rule {
                      if ($res != null) {
                         switch ($action->fields["field"]) {
                            case "_affect_entity_by_domain" :
-                              $entity_found = Entity::getEntityIDByDomain($res);
+                              $entity_found = Entity::getEntityIDByDomain(addslashes($res));
                               break;
 
                            case "_affect_entity_by_tag" :
-                              $entity_found = Entity::getEntityIDByTag($res);
+                              $entity_found = Entity::getEntityIDByTag(addslashes($res));
                               break;
                         }
 
