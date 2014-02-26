@@ -1075,7 +1075,7 @@ class Reminder extends CommonDBTM {
       echo "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
 
       if (self::canCreate()) {
-         echo "<span class='reminder_right'>";
+         echo "<span class='floatright'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'
                 title=\"". __s('Add')."\"></a></span>";
@@ -1087,7 +1087,7 @@ class Reminder extends CommonDBTM {
          $rand = mt_rand();
 
          while ($data = $DB->fetch_assoc($result)) {
-            echo "<tr class='tab_bg_2'><td><div class='relative reminder_list'>";
+            echo "<tr class='tab_bg_2'><td>";
             $link = "<a id='content_reminder_".$data["id"].$rand."'
                       href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$data["id"]."'>".
                       $data["name"]."</a>";
@@ -1100,7 +1100,7 @@ class Reminder extends CommonDBTM {
             if ($data["is_planned"]) {
                $tab      = explode(" ",$data["begin"]);
                $date_url = $tab[0];
-               echo "<span class='reminder_right'>";
+               echo "<span class='floatright'>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
                      "&amp;type=day'>";
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"". __s('Planning').
@@ -1110,7 +1110,7 @@ class Reminder extends CommonDBTM {
                echo "</a></span>";
             }
 
-            echo "</div></td></tr>\n";
+            echo "</td></tr>\n";
          }
 
       }

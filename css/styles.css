@@ -176,23 +176,6 @@ hr {
 }
 
 
-/* Over link div */
-.over_link {
-   display: none;
-   position: absolute;
-   border: 1px solid  #CC9900;
-   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
-   -moz-border-radius: 5px;
-   -webkit-border-radius: 5px;
-   -o-border-radius: 5px;
-   padding: 5px;
-   max-width: 350px;
-   font-size: 11px;
-   text-align: left;
-   z-index:1000;
-}
-
-
 .pointer {
    cursor:pointer;
  }
@@ -713,31 +696,7 @@ td.rotate {
 
 
 /* ################--------------- Tracking  / Reminder ---------------#################### */
-.tracking {
-   width:100%;
-   height:100%;
-   cursor:pointer;
-}
 
-.tracking:hover {
-   background-color: #FFF4DF; 
-}
-
-.tracking_hour {
-   font-family: verdana;
-   font-size: 10px;
-}
-
-.tracking_bold {
-   font-weight: bold;
-}
-
-.ldap_right, .reminder_right {
-   position:absolute; 
-   right:0;
-   margin-right:5px;
-   font-size:10px;
-}
 
 .showplan {
    font-weight: bold;
@@ -745,16 +704,6 @@ td.rotate {
    color : #659900; 
    cursor:pointer;
 }
-
-.tracking_small {
-   font-size:10px;
-}
-
-.reminder_list {
-   text-align:left;
-   margin-left:8px;
-}
-
 
 
 /* ################--------------- User Picture ---------------#################### */
