@@ -83,7 +83,7 @@ class DeviceNetworkCard extends CommonDevice {
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'mac_default';
       $tab[11]['name']     = __('MAC address by default');
-      $tab[11]['datatype'] = 'string';
+      $tab[11]['datatype'] = 'mac';
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'bandwidth';

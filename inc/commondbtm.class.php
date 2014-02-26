@@ -1025,7 +1025,6 @@ class CommonDBTM extends CommonGLPI {
 
       // Plugin hook - $this->input can be altered
       Plugin::doHook("pre_item_update", $this);
-
       if ($this->input && is_array($this->input)) {
          $this->input = $this->prepareInputForUpdate($this->input);
 
@@ -1033,7 +1032,6 @@ class CommonDBTM extends CommonGLPI {
             $this->input['_update'] = $this->input['update'];
             unset($this->input['update']);
          }
-
          $this->filterValues(!isCommandLine());
       }
 
@@ -3267,10 +3265,10 @@ class CommonDBTM extends CommonGLPI {
     * @return input the data checked
    **/
    function filterValues($display=true) {
-
-      if (in_array('CommonDBRelation', class_parents($this))) {
-         return true;
-      }
+   // MoYo : comment it because do not understand why filtering is disable
+//       if (in_array('CommonDBRelation', class_parents($this))) {
+//          return true;
+//       }
       //Type mismatched fields
       $fails = array();
       if (isset($this->input) && is_array($this->input) && count($this->input)) {

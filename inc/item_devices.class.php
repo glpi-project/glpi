@@ -108,6 +108,10 @@ class Item_Devices extends CommonDBRelation {
                                         'field'         => $field,
                                         'name'          => $attributs['long name'],
                                         'massiveaction' => true);
+
+         if (isset($attributs['datatype'])) {
+            $tab[$attributs['id']]['datatype'] = $attributs['datatype'];
+         }
       }
 
       $tab[80]['table']          = 'glpi_entities';
