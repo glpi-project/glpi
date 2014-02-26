@@ -292,6 +292,20 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $canedit         = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
       $canshowcomputer = Computer::canView();
 
+      $refcolumns = array('vername'           => _n('Version', 'Versions',2),
+                        'compname'          => __('Name'),
+                        'entity'            => __('Entity'),
+                        'serial'            => __('Serial number'),
+                        'otherserial'       => __('Inventory number'),
+                        'location,compname' => __('Location'),
+                        'state,compname'    => __('Status'),
+                        'groupe,compname'   => __('Group'),
+                        'username,compname' => __('User'),
+                        'lname'             => _n('License', 'Licenses', 2));
+      if ($crit != "softwares_id") {
+         unset($refcolumns['vername']);
+      }
+
       if (isset($_GET["start"])) {
          $start = $_GET["start"];
       } else {
@@ -304,7 +318,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $order = "ASC";
       }
 
-      if (isset($_GET["sort"]) && !empty($_GET["sort"])) {
+      if (isset($_GET["sort"]) && !empty($_GET["sort"])
+         && isset($refcolumns[$_GET["sort"]])) {
          // manage several param like location,compname :  order first
          $tmp  = explode(",",$_GET["sort"]);
          $sort = "`".implode("` $order,`",$tmp)."`";
@@ -454,22 +469,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
             echo "<table class='tab_cadre_fixehov'>";
 
-            $columns = array('vername'           => _n('Version', 'Versions',2),
-                             'compname'          => __('Name'),
-                             'entity'            => __('Entity'),
-                             'serial'            => __('Serial number'),
-                             'otherserial'       => __('Inventory number'),
-                             'location,compname' => __('Location'),
-                             'state,compname'    => __('Status'),
-                             'groupe,compname'   => __('Group'),
-                             'username,compname' => __('User'),
-                             'lname'             => _n('License', 'Licenses', 2));
-            if ($crit != "softwares_id") {
-               unset($columns['vername']);
-            }
-            if (!$showEntity) {
-               unset($columns['entity']);
-            }
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                           (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
@@ -482,6 +481,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
                $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
                $header_end    .= "</th>";
+            }
+            $columns = $refcolumns;
+            if (!$showEntity) {
+               unset($columns['entity']);
             }
 
             foreach ($columns as $key => $val) {

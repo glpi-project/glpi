@@ -594,6 +594,20 @@ class SoftwareLicense extends CommonDBTM {
       if (!$software->can($softwares_id, READ)) {
          return false;
       }
+
+      $columns = array('name'      => __('Name'),
+                        'entity'    => __('Entity'),
+                        'serial'    => __('Serial number'),
+                        'number'    => _x('quantity', 'Number'),
+                        '_affected' => __('Affected computers'),
+                        'typename'  => __('Type'),
+                        'buyname'   => __('Purchase version'),
+                        'usename'   => __('Version in use'),
+                        'expire'    => __('Expiration'));
+      if (!$software->isRecursive()) {
+         unset($columns['entity']);
+      }
+
       if (isset($_GET["start"])) {
          $start = $_GET["start"];
       } else {
@@ -607,7 +621,8 @@ class SoftwareLicense extends CommonDBTM {
          $order = "ASC";
       }
 
-      if (isset($_GET["sort"]) && !empty($_GET["sort"])) {
+      if (isset($_GET["sort"]) && !empty($_GET["sort"])
+         && isset($columns[$_GET["sort"]])) {
          $sort = "`".$_GET["sort"]."`";
       } else {
          $sort = "`entity` $order, `name`";
@@ -679,18 +694,6 @@ class SoftwareLicense extends CommonDBTM {
                         (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
 
-            $columns = array('name'      => __('Name'),
-                             'entity'    => __('Entity'),
-                             'serial'    => __('Serial number'),
-                             'number'    => _x('quantity', 'Number'),
-                             '_affected' => __('Affected computers'),
-                             'typename'  => __('Type'),
-                             'buyname'   => __('Purchase version'),
-                             'usename'   => __('Version in use'),
-                             'expire'    => __('Expiration'));
-            if (!$software->isRecursive()) {
-               unset($columns['entity']);
-            }
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                           (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
