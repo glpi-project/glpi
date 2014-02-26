@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-12 08:10+0100\n"
-"PO-Revision-Date: 2014-02-24 21:10+0000\n"
+"PO-Revision-Date: 2014-02-26 09:42+0000\n"
 "Last-Translator: balucha <balucha@horizon.sk>\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/GLPI/language/sk_SK/)\n"
 "MIME-Version: 1.0\n"
@@ -1971,7 +1971,7 @@ msgstr "Operácia zlyhala"
 #: front/massiveaction.php:142 front/massiveaction.php:148
 #, php-format
 msgid "(%1$d authorizations problems, %2$d failures)"
-msgstr ""
+msgstr "(%1$d autorizačných problémov, %2$d zlyhaní)"
 
 #: front/massiveaction.php:147
 msgid "Operation performed partially successful"
@@ -7782,7 +7782,7 @@ msgstr "Ikona"
 
 #: inc/documenttype.class.php:47 inc/documenttype.class.php:91
 msgid "Authorized upload"
-msgstr ""
+msgstr "Autorizované odoslanie"
 
 #: inc/documenttype.class.php:50 inc/documenttype.class.php:75
 msgid "Extension"
@@ -9165,7 +9165,7 @@ msgstr "Doživotne"
 #: inc/infocom.class.php:1118
 #, php-format
 msgid "Valid to %s"
-msgstr ""
+msgstr "Platný do %s"
 
 #: inc/infocom.class.php:1384
 msgid "Comments on financial and administrative information"
@@ -9287,7 +9287,7 @@ msgstr "Pridať nový komponent"
 #: inc/item_devices.class.php:246
 #, php-format
 msgid "%1$s of %2$s: %3$s"
-msgstr ""
+msgstr "%1$s obsahujúce %2$s: %3$s"
 
 #: inc/itilcategory.class.php:76 inc/itilcategory.class.php:157
 msgid "Visible in the simplified interface"
@@ -11722,7 +11722,7 @@ msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "Autorizácie"
 
 #: inc/reminder.class.php:421
 msgid "Visibility start date"
@@ -11948,7 +11948,7 @@ msgstr "Zakázať rezervácie"
 
 #: inc/reservationitem.class.php:259
 msgid "Are you sure you want to return this non-reservable item?"
-msgstr ""
+msgstr "Naozaj chcete vrátiť túto nerezervovateľnú položku?"
 
 #: inc/reservationitem.class.php:260
 msgid "That will remove all the reservations in progress."
