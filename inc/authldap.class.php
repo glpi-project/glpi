@@ -326,7 +326,7 @@ class AuthLDAP extends CommonDBTM {
       if (Toolbox::canUseLdap()) {
          $this->showFormHeader($options);
          if (empty($ID)) {
-            $target = $_SERVER['PHP_SELF'];
+            $target = $this->getFormURL();
             echo "<tr class='tab_bg_2'><td>".__('Preconfiguration')."</td> ";
             echo "<td colspan='3'>";
             echo "<a href='$target?preconfig=AD'>".__('Active Directory')."</a>";
