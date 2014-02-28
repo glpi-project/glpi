@@ -4402,7 +4402,7 @@ class CommonDBTM extends CommonGLPI {
             case "date_delay" :
                if (isset($options['relative_dates']) && $options['relative_dates']) {
                   if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
-                     $options['maybefuture'] = true;
+                     $options['with_future'] = true;
                   }
                   return Html::showGenericDateTimeSearch($name, $value, $options);
                }
@@ -4418,7 +4418,7 @@ class CommonDBTM extends CommonGLPI {
             case "datetime" :
                if (isset($options['relative_dates']) && $options['relative_dates']) {
                   if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
-                     $options['maybefuture'] = true;
+                     $options['with_future'] = true;
                   }
                   $options['with_time'] = true;
                   return Html::showGenericDateTimeSearch($name, $value, $options);
