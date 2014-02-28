@@ -616,8 +616,8 @@ class SoftwareLicense extends CommonDBTM {
                                        => array('glpi_softwareversions.name'
                                                  => array('condition'
                                                            => "`glpi_softwareversions`.`softwares_id` = $softwares_id"),
-                                                          'glpi_softwarelicenses.name'
-                                                           => array('itemlink_as_string' => true))));
+                                                'glpi_softwarelicenses.name'
+                                                 => array('itemlink_as_string' => true))));
 
                Html::showMassiveActions(__CLASS__, $massiveactionparams);
             }
