@@ -255,7 +255,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                                                                   'with_days'          => 0,
                                                                   'with_specific_date' => 0,
                                                                   'itemlink_as_string' => 1,
-                                                                  'entity'             => $tt->getEntityID()));
+                                                                  'entity'             => $tt->getEntityID(),
+                                                                  'with_future'        => true));
 
             Ajax::updateItemOnSelectEvent("dropdown_num".$rand_dp, "show_massiveaction_field",
                                           $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
