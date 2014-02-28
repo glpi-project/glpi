@@ -1923,7 +1923,6 @@ class Ticket extends CommonITILObject {
       $tab[18]['datatype']          = 'datetime';
       $tab[18]['maybefuture']       = true;
       $tab[18]['massiveaction']     = false;
-      $tab[18]['with_future']       = true;
 
       $tab[151]['table']            = $this->getTable();
       $tab[151]['field']            = 'due_date';
