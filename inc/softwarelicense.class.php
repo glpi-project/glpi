@@ -103,7 +103,7 @@ class SoftwareLicense extends CommonDBTM {
       // Default return 1
       return 1;
    }
-   
+
    /**
     * Update validity indicator of a specific license
     * @param $ID ID of the licence
@@ -120,7 +120,7 @@ class SoftwareLicense extends CommonDBTM {
          }
       }
    }
-   
+
    /**
     * @since version 0.84
    **/
@@ -159,7 +159,7 @@ class SoftwareLicense extends CommonDBTM {
    function post_deleteFromDB() {
       Software::updateValidityIndicator($this->fields["softwares_id"]);
    }
-   
+
    /**
     * @since version 0.84
     *
@@ -350,7 +350,7 @@ class SoftwareLicense extends CommonDBTM {
       // Only use for History (not by search Engine)
       $tab                       = array();
       $tab['common']             = __('Characteristics');
-      
+
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'name';
       $tab[2]['name']            = __('Name');
@@ -402,7 +402,7 @@ class SoftwareLicense extends CommonDBTM {
       $tab[9]['field']           = 'is_valid';
       $tab[9]['name']            = __('Valid');
       $tab[9]['datatype']        = 'bool';
-      
+
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
@@ -681,12 +681,18 @@ class SoftwareLicense extends CommonDBTM {
             if ($showmassiveactions) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $massiveactionparams
-                  = array('num_displayed' => $num_displayed,
-                          'container'     => 'mass'.__CLASS__.$rand,
-                          'extraparams'   => array('options'
-                                                   => array('condition'
-                                                            => "`glpi_softwareversions`.`softwares_id`
-                                                                  = $softwares_id")));
+                  = array('num_displayed'
+                           => $num_displayed,
+                          'container'
+                           => 'mass'.__CLASS__.$rand,
+                          'extraparams'
+                           => array('options'
+                                     => array('glpi_softwareversions.name'
+                                               => array('condition'
+                                                         => "`glpi_softwareversions`.`softwares_id`
+                                                                  = $softwares_id"),
+                                              'glpi_softwarelicenses.name'
+                                               => array('itemlink_as_string' => true))));
 
                Html::showMassiveActions($massiveactionparams);
             }
@@ -749,7 +755,7 @@ class SoftwareLicense extends CommonDBTM {
                $nb_assoc   = Computer_SoftwareLicense::countForLicense($data['id']);
                $tot_assoc += $nb_assoc;
                $color = ($data['is_valid']?'green':'red');
-               
+
                echo "<td class='numeric $color'>".$nb_assoc."</td>";
                echo "<td>".$data['typename']."</td>";
                echo "<td>".$data['buyname']."</td>";

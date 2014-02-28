@@ -3979,6 +3979,11 @@ class CommonDBTM extends CommonGLPI {
             $unit = $searchoptions['unit'];
          }
 
+         if (isset($options[$searchoptions['table'].'.'.$searchoptions['field']])) {
+            $options = array_merge($options,
+                                   $options[$searchoptions['table'].'.'.$searchoptions['field']]);
+         }
+
          switch ($searchoptions['datatype']) {
             case "count" :
             case "number" :
