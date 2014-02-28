@@ -2545,7 +2545,7 @@ class CommonDBTM extends CommonGLPI {
       }
       return $nb;
    }
-   
+
    /**
     * Return a field Value if exists
     *
@@ -4364,6 +4364,11 @@ class CommonDBTM extends CommonGLPI {
          $unit               = '';
          if (isset($searchoptions['unit'])) {
             $unit = $searchoptions['unit'];
+         }
+
+         if (isset($options[$searchoptions['table'].'.'.$searchoptions['field']])) {
+            $options = array_merge($options,
+                                   $options[$searchoptions['table'].'.'.$searchoptions['field']]);
          }
 
          switch ($searchoptions['datatype']) {

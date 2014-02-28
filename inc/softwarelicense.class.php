@@ -294,7 +294,7 @@ class SoftwareLicense extends CommonDBTM {
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'name';
       $tab[2]['name']            = __('Name');
-      $tab[2]['datatype']        = 'itemlink_as_string';
+      $tab[2]['datatype']        = 'itemlink';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'serial';
@@ -608,12 +608,16 @@ class SoftwareLicense extends CommonDBTM {
          if ($num_displayed = $DB->numrows($result)) {
             if ($showmassiveactions) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $massiveactionparams = array('num_displayed'
-                                              => $num_displayed,
-                                            'extraparams'
-                                              => array('options'
-                                                        => array('condition'
-                                                                 => "`glpi_softwareversions`.`softwares_id` = $softwares_id")));
+               $massiveactionparams
+                  = array('num_displayed'
+                           => $num_displayed,
+                          'extraparams'
+                             => array('options'
+                                       => array('glpi_softwareversions.name'
+                                                 => array('condition'
+                                                           => "`glpi_softwareversions`.`softwares_id` = $softwares_id"),
+                                                          'glpi_softwarelicenses.name'
+                                                           => array('itemlink_as_string' => true))));
 
                Html::showMassiveActions(__CLASS__, $massiveactionparams);
             }
