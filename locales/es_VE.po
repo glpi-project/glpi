@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-12 08:10+0100\n"
-"PO-Revision-Date: 2014-02-12 07:11+0000\n"
+"PO-Revision-Date: 2014-02-12 14:50+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Spanish (Venezuela) (http://www.transifex.com/projects/p/GLPI/language/es_VE/)\n"
 "MIME-Version: 1.0\n"
@@ -13142,7 +13142,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:814
 msgid "MySQL Improved extension test"
-msgstr ""
+msgstr "Probar"
 
 #: inc/toolbox.class.php:817 inc/toolbox.class.php:818
 msgid "Ok - the MySQLi class exist - Perfect!"

@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-12 08:10+0100\n"
-"PO-Revision-Date: 2014-02-26 10:40+0000\n"
+"PO-Revision-Date: 2014-02-28 14:32+0000\n"
 "Last-Translator: Nelly Mahu-Lasson <nini.lasson@orange.fr>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -8793,7 +8793,7 @@ msgstr "samedi dernier"
 msgid "- %d week"
 msgid_plural "- %d weeks"
 msgstr[0] "%d semaine"
-msgstr[1] "%d semaine"
+msgstr[1] "- %d semaine"
 
 #: inc/html.class.php:3683
 msgid "Beginning of the month"
@@ -8804,7 +8804,7 @@ msgstr "Début du mois"
 msgid "- %d month"
 msgid_plural "- %d months"
 msgstr[0] "%d mois"
-msgstr[1] "%d mois"
+msgstr[1] "- %d mois"
 
 #: inc/html.class.php:3691
 msgid "Beginning of the year"
@@ -8850,7 +8850,7 @@ msgstr[1] "+ %d mois"
 msgid "+ %d year"
 msgid_plural "+ %d years"
 msgstr[0] "+%d an"
-msgstr[1] "+%d ans"
+msgstr[1] "+ %d ans"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: inc/html.class.php:4199 inc/html.class.php:4357

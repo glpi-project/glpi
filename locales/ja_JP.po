@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-12 08:10+0100\n"
-"PO-Revision-Date: 2014-02-25 15:50+0000\n"
+"PO-Revision-Date: 2014-02-28 12:25+0000\n"
 "Last-Translator: peachberry <gtucr7gpw.4g2@gmail.com>\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/GLPI/language/ja_JP/)\n"
 "MIME-Version: 1.0\n"
@@ -1550,7 +1550,7 @@ msgstr[0] "コンピュータタイプ"
 #: inc/monitortype.class.php:42
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] "モニタタイプ"
+msgstr[0] "モニタータイプ"
 
 #: front/dictionnary.php:97 inc/dropdown.class.php:684 inc/html.class.php:1693
 #: inc/printertype.class.php:42
@@ -1678,7 +1678,7 @@ msgstr "検索"
 #: inc/phone.class.php:489 inc/printer.class.php:339 inc/printer.class.php:616
 #: inc/search.class.php:5250
 msgid "Alternate username"
-msgstr "代替ユーザー名"
+msgstr "代替ユーザ名"
 
 #: front/find_num.php:92 inc/ticket.class.php:3395
 msgid "Hardware type"
@@ -1750,7 +1750,7 @@ msgstr "ID"
 #: inc/softwarelicense.class.php:640 inc/softwarelicense.class.php:766
 #: inc/supplier.class.php:425 inc/user.class.php:3094 inc/user.class.php:3169
 msgid "Serial number"
-msgstr "シリアル場号"
+msgstr "シリアル番号"
 
 #: front/find_num.php:96 inc/budget.class.php:292
 #: inc/change_item.class.php:159 inc/commondbtm.class.php:2602
@@ -1886,7 +1886,7 @@ msgstr[0] "受信設定"
 #: front/mailcollector.php:45 front/setup.auth.php:58
 #: inc/authmail.class.php:199
 msgid "Your PHP parser was compiled without the IMAP functions"
-msgstr "PHPでIMAP機能が有効にされていません"
+msgstr "PHPにIMAP拡張がインストールされていません"
 
 #: front/massiveaction.php:79
 msgid "Bulk modification"
@@ -3079,7 +3079,7 @@ msgstr "%s に警告を送信しました"
 #: inc/auth.class.php:107 inc/auth.class.php:202 inc/auth.class.php:247
 #: inc/auth.class.php:274
 msgid "Incorrect username or password"
-msgstr "ユーザー名またはパスワードが間違っています"
+msgstr "ユーザ名またはパスワードが間違っています"
 
 #: inc/auth.class.php:196 inc/auth.class.php:632 inc/auth.class.php:657
 msgid "User not authorized to connect in GLPI"
@@ -3091,7 +3091,7 @@ msgstr "パスワード欄が空白です"
 
 #: inc/auth.class.php:540 inc/auth.class.php:547
 msgid "Empty login or password"
-msgstr "ログイン名またはパスワードが空白です"
+msgstr "ユーザ名またはパスワードが空白です"
 
 #. TRANS: %1$s is the login of the user and %2$s its IP address
 #: inc/auth.class.php:674
@@ -3630,7 +3630,7 @@ msgstr "GLPIに定義されたLDAPディレクトリはありません"
 
 #: inc/authldap.class.php:2321
 msgid "User not found or several users found"
-msgstr "ユーザーが見つからないか、複数のユーザーが該当します。"
+msgstr "ユーザが見つからないか、複数のユーザが該当します。"
 
 #: inc/authldap.class.php:2324
 msgid "Unable to add. The user already exist."
@@ -3726,7 +3726,7 @@ msgstr "接続文字列"
 
 #: inc/authmail.class.php:175
 msgid "Email domain Name (users email will be login@domain)"
-msgstr "メールドメイン名 (ユーザのメールは ログイン名@ドメイン名 になります)"
+msgstr "メールドメイン名 (ユーザのメールは ユーザ名@ドメイン名 になります)"
 
 #. TRANS: %s is the datetime of update
 #. TRANS: %s is the datetime of insertion
@@ -5171,7 +5171,7 @@ msgstr "最低"
 #: inc/ruleticket.class.php:343 inc/ruleticket.class.php:445
 msgid "Watcher"
 msgid_plural "Watchers"
-msgstr[0] "ウオッチャー"
+msgstr[0] "オブザーバ"
 
 #: inc/commonitilobject.class.php:2306
 msgid "Resolution time"
@@ -5199,7 +5199,7 @@ msgstr[0] "発行者グループ"
 #: inc/ruleticket.class.php:349 inc/ruleticket.class.php:454
 msgid "Watcher group"
 msgid_plural "Watcher groups"
-msgstr[0] "ウオッチャーグループ"
+msgstr[0] "オブザーバグループ"
 
 #: inc/commonitilobject.class.php:2449
 #: inc/notificationtargetcommonitilobject.class.php:908
@@ -5222,7 +5222,7 @@ msgstr "依頼者ユーザ"
 
 #: inc/commonitilobject.class.php:2577
 msgid "Watcher user"
-msgstr "ウオッチャーユーザ"
+msgstr "オブザーバユーザ"
 
 #: inc/commonitilobject.class.php:2599
 #: inc/notificationtargetcommonitilobject.class.php:420
@@ -5741,7 +5741,7 @@ msgstr "未インストールのソフトウェアの影響するライセンス
 #: inc/computervirtualmachine.class.php:312
 msgctxt "quantity"
 msgid "Processors number"
-msgstr "CPU番号"
+msgstr "CPUの数"
 
 #: inc/computervirtualmachine.class.php:181
 #: inc/computervirtualmachine.class.php:314
@@ -5990,7 +5990,7 @@ msgstr "データベース"
 
 #: inc/config.class.php:533 install/install.php:204
 msgid "Mysql user"
-msgstr "MySQLユーザー名"
+msgstr "MySQLユーザ名"
 
 #: inc/config.class.php:535 install/install.php:206
 msgid "Mysql password"
@@ -6122,7 +6122,7 @@ msgstr "タブのカウンタ表示"
 
 #: inc/config.class.php:818
 msgid "Show GLPI ID"
-msgstr "GLPI　IDを表示"
+msgstr "GLPI IDを表示"
 
 #: inc/config.class.php:825
 msgid "CSV delimiter"
@@ -6138,7 +6138,7 @@ msgstr "ホームページに表示する結果の数"
 
 #: inc/config.class.php:849
 msgid "Private followups by default"
-msgstr "デフォルトは個人フォロー"
+msgstr "デフォルトは非公開フォロー"
 
 #: inc/config.class.php:851
 msgid "Show new tickets on the home page"
@@ -6146,7 +6146,7 @@ msgstr "ホーム画面に新しいチケットを表示"
 
 #: inc/config.class.php:855
 msgid "Private tasks by default"
-msgstr "デフォルトは個人タスク"
+msgstr "デフォルトは非公開タスク"
 
 #: inc/config.class.php:857
 msgid "Request sources by default"
@@ -6482,7 +6482,7 @@ msgstr "在庫"
 
 #: inc/consumable.class.php:673
 msgid "No consumable found"
-msgstr "消耗品が見付かりませんでした"
+msgstr "消耗品は見つかりませんでした"
 
 #: inc/consumableitem.class.php:50
 #: inc/notificationtargetconsumableitem.class.php:86
@@ -6636,7 +6636,7 @@ msgstr "初期契約期間"
 #: inc/contract.class.php:594 inc/contract.class.php:1346
 #: inc/notificationtargetcontract.class.php:45 inc/search.class.php:4233
 msgid "Notice"
-msgstr "予告"
+msgstr "通知"
 
 #: inc/contract.class.php:222 inc/contract.class.php:402
 #: inc/contract.class.php:631
@@ -6655,7 +6655,7 @@ msgstr "請求書の送付サイクル"
 #: inc/contract.class.php:248 inc/contract.class.php:458
 #: inc/contract.class.php:636
 msgid "Renewal"
-msgstr "更新"
+msgstr "契約の更新"
 
 #: inc/contract.class.php:251
 msgid "Max number of items"
@@ -6809,12 +6809,12 @@ msgstr "契約警告の送信に失敗しました"
 #: inc/contract.class.php:1255 inc/contract.class.php:1276
 #: inc/contract.class.php:1296
 msgid "Tacit"
-msgstr "暗黙の了解"
+msgstr "自動更新"
 
 #: inc/contract.class.php:1256 inc/contract.class.php:1279
 #: inc/contract.class.php:1299
 msgid "Express"
-msgstr "Express"
+msgstr "再契約"
 
 #: inc/contract.class.php:1347 inc/search.class.php:4236
 msgid "End + Notice"
@@ -8029,7 +8029,7 @@ msgstr "自動補完無し"
 #: inc/entity.class.php:2330
 #, php-format
 msgid "Fill when shifting to state %s"
-msgstr "ステート %s  に移動したら補完"
+msgstr "ステート %s に移動したら補完"
 
 #: inc/entity.class.php:1149 inc/entity.class.php:2201
 #: inc/entity.class.php:2332
@@ -8232,7 +8232,7 @@ msgstr "使用しているアイテム"
 
 #: inc/group.class.php:121 inc/group.class.php:634 inc/user.class.php:196
 msgid "Managed items"
-msgstr "管理されたアイテム"
+msgstr "管理しているアイテム"
 
 #: inc/group.class.php:219
 msgid "Visible in a ticket"
@@ -8384,7 +8384,7 @@ msgstr "この操作は許可されていません"
 
 #: inc/html.class.php:764
 msgid "Progress"
-msgstr "対応状況"
+msgstr "進捗状況"
 
 #: inc/html.class.php:897 inc/html.class.php:904
 msgid "Loading..."
@@ -9153,7 +9153,7 @@ msgstr "ロックされたアイテムはありません"
 
 #: inc/lock.class.php:393
 msgid "Unlock monitors"
-msgstr "モニタのロック解除"
+msgstr "モニターのロック解除"
 
 #: inc/lock.class.php:394
 msgid "Unlock peripherals"
@@ -10012,15 +10012,15 @@ msgstr "チケットを担当する技術者"
 #: inc/notificationtargetcommonitilobject.class.php:419
 #: inc/notificationtargetreservation.class.php:61
 msgid "Hardware user"
-msgstr "ハードウェアユーザー"
+msgstr "ハードウェアユーザ"
 
 #: inc/notificationtargetcommonitilobject.class.php:423
 msgid "Watcher group manager"
-msgstr "ウオッチャーグループの管理者"
+msgstr "オブザーバグループの管理者"
 
 #: inc/notificationtargetcommonitilobject.class.php:425
 msgid "Watcher group without manager"
-msgstr "管理者無しのウオッチャーグループ"
+msgstr "管理者無しのオブザーバグループ"
 
 #: inc/notificationtargetcommonitilobject.class.php:429
 #: inc/ticketvalidation.class.php:650 inc/ticketvalidation.class.php:751
@@ -10546,12 +10546,12 @@ msgstr "スピーカー"
 
 #: inc/phone.class.php:479
 msgid "Serial Number"
-msgstr "シリアル場号"
+msgstr "シリアル番号"
 
 #: inc/planning.class.php:118 inc/planning.class.php:140
 msgid "Information"
 msgid_plural "Information"
-msgstr[0] "通知"
+msgstr[0] "情報"
 
 #: inc/planning.class.php:121 inc/planning.class.php:141
 msgid "To do"
@@ -10839,7 +10839,7 @@ msgstr "担当者割り当て済み"
 #: inc/problem.class.php:1637 inc/ticket.class.php:5467
 #, php-format
 msgid "Closed on %s"
-msgstr "%s に解決"
+msgstr "%s に完了"
 
 #: inc/problem.class.php:1641 inc/ticket.class.php:5471
 #, php-format
@@ -11118,7 +11118,7 @@ msgstr "全てのチケットを表示"
 
 #: inc/profile.class.php:1002 inc/profile.class.php:1792
 msgid "See all followups and tasks (public and private)"
-msgstr "全てのフォローとタスクの表示 (公開と個人)"
+msgstr "全てのフォローとタスクの表示 (公開と非公開)"
 
 #: inc/profile.class.php:1010 inc/profile.class.php:1807
 msgid "See personnal planning"
@@ -11297,7 +11297,7 @@ msgstr "新しいメモ"
 #: inc/reminder.class.php:699
 msgctxt "reminder"
 msgid "Visibility"
-msgstr "表示設定"
+msgstr "表示期間"
 
 #: inc/reminder.class.php:751
 msgid "Add to schedule"
@@ -11337,11 +11337,11 @@ msgstr "他の財務・管理情報 (ライセンス、カートリッジ、消�
 
 #: inc/report.class.php:82 install/update_051_06.php:147
 msgid "Loan"
-msgstr "ローン"
+msgstr "貸し出し"
 
 #: inc/report.class.php:96
 msgid "Select the report you want to generate"
-msgstr "生成したいレポートを選択"
+msgstr "作成するレポートを選択"
 
 #: inc/report.class.php:346
 msgid "Device 1"
@@ -11365,7 +11365,7 @@ msgstr "メール受信者のデフォルトにする"
 
 #: inc/requesttype.class.php:112 inc/requesttype.class.php:125
 msgid "Be careful: there is no default value"
-msgstr "注意：デフォルト値ではありません"
+msgstr "注意：デフォルト値はありません"
 
 #: inc/reservation.class.php:278
 msgid "The required item is already reserved for this timeframe"
@@ -12004,7 +12004,7 @@ msgstr "既知のメールドメイン"
 
 #: inc/rulemailcollector.class.php:158
 msgid "User featuring the profile"
-msgstr "プロファイルを使用するユーザー"
+msgstr "プロファイルを使用するユーザ"
 
 #: inc/rulemailcollector.class.php:167
 msgid "User featuring a single profile"
@@ -12231,7 +12231,7 @@ msgstr "マージ"
 #. TRANS: a noun, (ex : this software is an upgrade of..)
 #: inc/software.class.php:285 install/install.php:134 install/update.php:854
 msgid "Upgrade"
-msgstr "アップグレード"
+msgstr "アップグレード版"
 
 #: inc/software.class.php:315
 msgid "Recalculate the category"
@@ -12433,7 +12433,7 @@ msgstr[0] "関連する契約"
 
 #: inc/ticket.class.php:407 inc/ticket.class.php:424
 msgid "Created tickets"
-msgstr "作成済みチケット"
+msgstr "作成したチケット"
 
 #: inc/ticket.class.php:512
 msgid "No generated survey"
@@ -12486,7 +12486,7 @@ msgstr "回答日"
 
 #: inc/ticket.class.php:2195
 msgid "Private followup"
-msgstr "個人フォロー"
+msgstr "非公開フォロー"
 
 #: inc/ticket.class.php:2223
 msgid "Take into account time"
@@ -12510,7 +12510,7 @@ msgstr "重複チケットの数"
 
 #: inc/ticket.class.php:2304
 msgid "Private task"
-msgstr "個人タスク"
+msgstr "非公開タスク"
 
 #: inc/ticket.class.php:2615
 msgctxt "ticket"
@@ -12539,7 +12539,7 @@ msgstr "解決済+完了"
 
 #: inc/ticket.class.php:2841
 msgid "Devices own by my groups"
-msgstr "自グループの自デバイス"
+msgstr "自グループ所有のデバイス"
 
 #: inc/ticket.class.php:2903
 msgid "Connected devices"
@@ -12628,7 +12628,7 @@ msgstr "処理中のチケット"
 
 #: inc/ticket.class.php:4890
 msgid "Your tickets to validate"
-msgstr "確認予定のチケット"
+msgstr "検証予定のチケット"
 
 #: inc/ticket.class.php:4907
 msgid "Your rejected tickets"
@@ -13302,7 +13302,7 @@ msgstr "転送した要素のリストを空にするため"
 
 #: inc/user.class.php:477
 msgid "Unable to add. The user already exists."
-msgstr "追加できません。そのユーザーはすでに存在します。"
+msgstr "追加できません。そのユーザはすでに存在します。"
 
 #: inc/user.class.php:496 inc/user.class.php:623
 msgid "Error: the two passwords do not match"
@@ -13461,11 +13461,11 @@ msgstr "アドホック"
 
 #: inc/wifinetwork.class.php:60
 msgid "Managed"
-msgstr "マネージド"
+msgstr "クライアント"
 
 #: inc/wifinetwork.class.php:61
 msgid "Master"
-msgstr "マスタ"
+msgstr "アクセスポイント"
 
 #: inc/wifinetwork.class.php:62
 msgid "Repeater"
@@ -13550,11 +13550,11 @@ msgstr "データベースに接続出来ませんでした"
 #: install/install.php:224 install/install.php:365 install/install.php:413
 #, php-format
 msgid "The server answered: %s"
-msgstr "サーバーから受信成功: %s"
+msgstr "サーバから受信成功: %s"
 
 #: install/install.php:227
 msgid "The server or/and user field is empty"
-msgstr "サーバー名もしくはユーザー名が空です。"
+msgstr "サーバ名もしくはユーザ名が空です。"
 
 #: install/install.php:241 install/update.php:880
 msgid "Database connection successful"
@@ -13602,11 +13602,11 @@ msgstr "データベースを選択していません!"
 
 #: install/install.php:442
 msgid "The installation is finished"
-msgstr "インストール完了しました"
+msgstr "インストールは完了しました"
 
 #: install/install.php:443
 msgid "Default logins / passwords are:"
-msgstr "デフォルトログイン名/パスワードは："
+msgstr "デフォルトのユーザ名/パスワードは："
 
 #: install/install.php:444
 msgid "glpi/glpi for the administrator account"
