@@ -1437,7 +1437,7 @@ class Search {
                if (isset($criteria['link'])) {
                   $titlecontain = " ".$criteria['link']." ";
                }
-               $gdname = '';
+               $gdname    = '';
                $valuename = '';
                switch ($criteria['field']) {
                   case "all" :
@@ -1445,23 +1445,20 @@ class Search {
                      break;
 
                   case "view" :
-                     $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
-                                             __('Items seen'));
+                     $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, __('Items seen'));
                      break;
 
                   default :
-                     $titlecontain
-                        = sprintf(__('%1$s %2$s'), $titlecontain,
-                                    $searchopt[$criteria['field']]["name"]);
-                     $itemtype = getItemTypeForTable($searchopt[$criteria['field']]
-                                                                        ["table"]);
-                     $valuename = '';
+                     $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
+                                             $searchopt[$criteria['field']]["name"]);
+                     $itemtype     = getItemTypeForTable($searchopt[$criteria['field']]["table"]);
+                     $valuename    = '';
                      if ($item = getItemForItemtype($itemtype)) {
-                        $valuename = $item->getValueToDisplay($searchopt[$criteria['field']], $criteria['value']);
+                        $valuename = $item->getValueToDisplay($searchopt[$criteria['field']],
+                                                              $criteria['value']);
                      }
 
-                     $gdname = Dropdown::getDropdownName($searchopt[$criteria['field']]
-                                                                     ["table"],
+                     $gdname = Dropdown::getDropdownName($searchopt[$criteria['field']]["table"],
                                                          $criteria['value']);
                }
 
@@ -1471,34 +1468,28 @@ class Search {
                switch ($criteria['searchtype']) {
                   case "equals" :
                      if (in_array($searchopt[$criteria['field']]["field"],
-                                    array('name', 'completename'))) {
-                        $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain,
-                                                $gdname);
+                                  array('name', 'completename'))) {
+                        $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain, $gdname);
                      } else {
-                        $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain,
-                                                $valuename);
+                        $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain, $valuename);
                      }
                      break;
 
                   case "notequals" :
                      if (in_array($searchopt[$criteria['field']]["field"],
                                     array('name', 'completename'))) {
-                        $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain,
-                                                $gdname);
+                        $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain, $gdname);
                      } else {
-                        $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain,
-                                                $valuename);
+                        $titlecontain = sprintf(__('%1$s <> %2$s'), $titlecontain, $valuename);
                      }
                      break;
 
                   case "lessthan" :
-                     $titlecontain = sprintf(__('%1$s < %2$s'), $titlecontain,
-                                             $valuename);
+                     $titlecontain = sprintf(__('%1$s < %2$s'), $titlecontain, $valuename);
                      break;
 
                   case "morethan" :
-                     $titlecontain = sprintf(__('%1$s > %2$s'), $titlecontain,
-                                             $valuename);
+                     $titlecontain = sprintf(__('%1$s > %2$s'), $titlecontain, $valuename);
                      break;
 
                   case "contains" :
@@ -1508,19 +1499,16 @@ class Search {
 
                   case "under" :
                      $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
-                                             sprintf(__('%1$s %2$s'), __('under'),
-                                                      $gdname));
+                                             sprintf(__('%1$s %2$s'), __('under'), $gdname));
                      break;
 
                   case "notunder" :
                      $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
-                                             sprintf(__('%1$s %2$s'), __('not under'),
-                                                      $gdname));
+                                             sprintf(__('%1$s %2$s'), __('not under'), $gdname));
                      break;
 
                   default :
-                     $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain,
-                                             $valuename);
+                     $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain, $valuename);
                      break;
                }
             }

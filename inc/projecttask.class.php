@@ -708,14 +708,14 @@ class ProjectTask extends CommonDBChild {
       }
 
       $columns = array('name'             => self::getTypeName(2),
-                        'tname'            => __('Type'),
-                        'sname'            => __('Status'),
-                        'percent_done'     => __('Percent done'),
-                        'plan_start_date'  => __('Planned start date'),
-                        'plan_end_date'    => __('Planned end date'),
-                        'planned_duration' => __('Planned duration'),
-                        '_effect_duration' => __('Effective duration'),
-                        'fname'            => __('Father'),);
+                       'tname'            => __('Type'),
+                       'sname'            => __('Status'),
+                       'percent_done'     => __('Percent done'),
+                       'plan_start_date'  => __('Planned start date'),
+                       'plan_end_date'    => __('Planned end date'),
+                       'planned_duration' => __('Planned duration'),
+                       '_effect_duration' => __('Effective duration'),
+                       'fname'            => __('Father'),);
 
       if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
          $order = "DESC";
@@ -726,9 +726,8 @@ class ProjectTask extends CommonDBChild {
       if (!isset($_GET["sort"]) || empty($_GET["sort"])) {
          $_GET["sort"] = "plan_start_date";
       }
-      
-      if (isset($_GET["sort"]) && !empty($_GET["sort"])
-         && isset($columns[$_GET["sort"]])) {
+
+      if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
          $sort = "`".$_GET["sort"]."`";
       } else {
          $sort = "`plan_start_date` $order, `name`";
@@ -786,7 +785,7 @@ class ProjectTask extends CommonDBChild {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             echo "<table class='tab_cadre_fixehov'>";
-                             
+
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                           (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 

@@ -3737,16 +3737,17 @@ class Html {
    static function initImagePasteSystem($name, $rand) {
       global $CFG_GLPI;
 
-      $params = array('name'     => $name,
-                      'root_doc' => $CFG_GLPI['root_doc'],
-                      'rand'     => $rand,
+      $params = array('name'         => $name,
+                      'root_doc'     => $CFG_GLPI['root_doc'],
+                      'rand'         => $rand,
                       'showfilesize' => 1,
 //                      'maxsize'  => 500,
-                      'lang'     => array('pasteimage'   => _sx('button', 'Drag and drop or paste image'),
-                                          'itemnotfound' => __('Item not found'),
-                                          'toolarge'     => __('Item is too large'),
-                                          'save'         => _sx('button', 'Save'),
-                                          'cancel'       => _sx('button', 'Cancel')));
+                      'lang'         => array('pasteimage'   => _sx('button',
+                                                                    'Drag and drop or paste image'),
+                                              'itemnotfound' => __('Item not found'),
+                                              'toolarge'     => __('Item is too large'),
+                                              'save'         => _sx('button', 'Save'),
+                                              'cancel'       => _sx('button', 'Cancel')));
 
       return "if (!tinyMCE.isIE) { // Chrome, Firefox plugin
                   tinyMCE.imagePaste = $(document).imagePaste(".json_encode($params).");

@@ -622,14 +622,14 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       $columns = array('name'      => __('Name'),
-                        'entity'    => __('Entity'),
-                        'serial'    => __('Serial number'),
-                        'number'    => _x('quantity', 'Number'),
-                        '_affected' => __('Affected computers'),
-                        'typename'  => __('Type'),
-                        'buyname'   => __('Purchase version'),
-                        'usename'   => __('Version in use'),
-                        'expire'    => __('Expiration'));
+                       'entity'    => __('Entity'),
+                       'serial'    => __('Serial number'),
+                       'number'    => _x('quantity', 'Number'),
+                       '_affected' => __('Affected computers'),
+                       'typename'  => __('Type'),
+                       'buyname'   => __('Purchase version'),
+                       'usename'   => __('Version in use'),
+                       'expire'    => __('Expiration'));
       if (!$software->isRecursive()) {
          unset($columns['entity']);
       }
@@ -647,8 +647,7 @@ class SoftwareLicense extends CommonDBTM {
          $order = "ASC";
       }
 
-      if (isset($_GET["sort"]) && !empty($_GET["sort"])
-         && isset($columns[$_GET["sort"]])) {
+      if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
          $sort = "`".$_GET["sort"]."`";
       } else {
          $sort = "`entity` $order, `name`";

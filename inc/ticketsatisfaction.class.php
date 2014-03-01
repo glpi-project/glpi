@@ -197,7 +197,8 @@ class TicketSatisfaction extends CommonDBTM {
          $value = 5;
       }
 
-      $out = "<div class='rateit' data-rateit-value='$value' data-rateit-ispreset='true' data-rateit-readonly='true'></div>";
+      $out = "<div class='rateit' data-rateit-value='$value' data-rateit-ispreset='true'
+               data-rateit-readonly='true'></div>";
 
       return $out;
    }
