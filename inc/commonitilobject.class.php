@@ -4954,25 +4954,28 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
          //tenth column
-         $tenth_column = '';
+         $tenth_column  = '';
          $planned_infos = '';
 
-         $tasktype = $item->getType()."Task";
-         $plan         = new $tasktype();
-         $items        = array();
+         $tasktype      = $item->getType()."Task";
+         $plan          = new $tasktype();
+         $items         = array();
 
          foreach ($DB->request($plan->getTable(),
                                array($item->getForeignKeyField() => $item->fields['id'])) as $plan) {
 
             if (isset($plan['begin']) && $plan['begin']) {
                $items[$plan['id']] = $plan['id'];
-               $planned_infos .= sprintf(__('From %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
-                                          Html::convDateTime($plan['begin']));
-               $planned_infos .= sprintf(__('To %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
-                                          Html::convDateTime($plan['end']));
+               $planned_infos .= sprintf(__('From %s').
+                                            ($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
+                                         Html::convDateTime($plan['begin']));
+               $planned_infos .= sprintf(__('To %s').
+                                            ($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
+                                         Html::convDateTime($plan['end']));
                if ($plan['users_id_tech']) {
-                  $planned_infos .= sprintf(__('By %s').($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
-                                             getUserName($plan['users_id_tech']));
+                  $planned_infos .= sprintf(__('By %s').
+                                               ($p['output_type'] == Search::HTML_OUTPUT?'<br>':''),
+                                            getUserName($plan['users_id_tech']));
                }
                $planned_infos .= "<br>";
             }
@@ -4983,11 +4986,13 @@ abstract class CommonITILObject extends CommonDBTM {
          $tenth_column = count($items);
          if ($tenth_column) {
             $tenth_column = "<span class='pointer'
-                              id='".$item->getType().$item->fields["id"]."planning$rand'>".$tenth_column.'</span>';
+                              id='".$item->getType().$item->fields["id"]."planning$rand'>".
+                              $tenth_column.'</span>';
             $tenth_column = sprintf(__('%1$s %2$s'), $tenth_column,
                                     Html::showToolTip($planned_infos,
                                                       array('display' => false,
-                                                            'applyto' => $item->getType().$item->fields["id"].
+                                                            'applyto' => $item->getType().
+                                                                           $item->fields["id"].
                                                                            "planning".$rand)));
          }
          echo Search::showItem($p['output_type'], $tenth_column, $item_num, $p['row_num'],

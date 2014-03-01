@@ -293,15 +293,15 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $canshowcomputer = Computer::canView();
 
       $refcolumns = array('vername'           => _n('Version', 'Versions',2),
-                        'compname'          => __('Name'),
-                        'entity'            => __('Entity'),
-                        'serial'            => __('Serial number'),
-                        'otherserial'       => __('Inventory number'),
-                        'location,compname' => __('Location'),
-                        'state,compname'    => __('Status'),
-                        'groupe,compname'   => __('Group'),
-                        'username,compname' => __('User'),
-                        'lname'             => _n('License', 'Licenses', 2));
+                          'compname'          => __('Name'),
+                          'entity'            => __('Entity'),
+                          'serial'            => __('Serial number'),
+                          'otherserial'       => __('Inventory number'),
+                          'location,compname' => __('Location'),
+                          'state,compname'    => __('Status'),
+                          'groupe,compname'   => __('Group'),
+                          'username,compname' => __('User'),
+                          'lname'             => _n('License', 'Licenses', 2));
       if ($crit != "softwares_id") {
          unset($refcolumns['vername']);
       }
@@ -318,8 +318,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $order = "ASC";
       }
 
-      if (isset($_GET["sort"]) && !empty($_GET["sort"])
-         && isset($refcolumns[$_GET["sort"]])) {
+      if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($refcolumns[$_GET["sort"]])) {
          // manage several param like location,compname :  order first
          $tmp  = explode(",",$_GET["sort"]);
          $sort = "`".implode("` $order,`",$tmp)."`";

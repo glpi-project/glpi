@@ -497,7 +497,7 @@ class Project extends CommonDBTM {
       $tab[86]['datatype']       = 'bool';
 
       $tab += Notepad::getSearchOptionsToAdd();
-      
+
       return $tab;
    }
 
@@ -1203,7 +1203,7 @@ class Project extends CommonDBTM {
          ksort($todisplay);
       }
 
-      $data = array();
+      $data    = array();
       $invalid = array();
       if (count($todisplay)) {
 
@@ -1221,12 +1221,12 @@ class Project extends CommonDBTM {
                switch ($val['type']) {
                   case 'project' :
                      $temp = array('name'   => $val['link'],
-                                 'desc'   => '',
-                                 'values' => array(array('from'
+                                   'desc'   => '',
+                                   'values' => array(array('from'
                                                             => "/Date(".strtotime($val['from'])."000)/",
-                                                         'to'
+                                                           'to'
                                                             => "/Date(".strtotime($val['to'])."000)/",
-                                                         'desc'
+                                                           'desc'
                                                             => $val['desc'],
                                                          'label'
                                                             => $val['link'],
@@ -1237,16 +1237,16 @@ class Project extends CommonDBTM {
 
                   case 'task' :
                      $temp = array('name'   => ' ',
-                                 'desc'   => $val['link'],
-                                 'values' => array(array('from'
+                                   'desc'   => $val['link'],
+                                   'values' => array(array('from'
                                                             => "/Date(".strtotime($val['from'])."000)/",
-                                                         'to'
+                                                           'to'
                                                             => "/Date(".strtotime($val['to'])."000)/",
-                                                         'desc'
+                                                           'desc'
                                                             => $val['desc'],
-                                                         'label'
+                                                           'label'
                                                             => $val['link'],
-                                                         'customClass'
+                                                           'customClass'
                                                             => $color))
                                  );
                      break;
@@ -1263,7 +1263,7 @@ class Project extends CommonDBTM {
          echo sprintf(__('Invalid items (no start or end date): %s'), implode(',',$invalid));
          echo "<br><br>";
       }
-      
+
       if (count($data)) {
 //       exit();
          $months = array(__('January'), __('February'), __('March'), __('April'), __('May'),
