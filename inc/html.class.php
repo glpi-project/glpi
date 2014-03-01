@@ -1988,7 +1988,8 @@ class Html {
 
          asort($list);
          echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\">";
-         echo "<a href='#' title=\""._sn('Plugin', 'Plugins', 2)."\" class='itemP'>". __('Plugins')."</a>";  // default none
+         echo "<a href='#' title=\""._sn('Plugin', 'Plugins', 2)."\" class='itemP'>".
+                __('Plugins')."</a>";  // default none
          echo "<ul class='ssmenu'>";
 
          // list menu item

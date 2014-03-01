@@ -1277,18 +1277,20 @@ class Document extends CommonDBTM {
                         'used'   => $p['used']);
 
       $out .= Ajax::updateItemOnSelectEvent($field_id,"show_".$p['name'].$rand,
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php", $params, false);
+                                            $CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php",
+                                            $params, false);
       $out .= "<span id='show_".$p['name']."$rand'>";
       $out .= "</span>\n";
 
       $params['rubdoc'] = 0;
-      $out .= Ajax::updateItem("show_".$p['name'].$rand, $CFG_GLPI["root_doc"]. "/ajax/dropdownRubDocument.php",  $params, false);
+      $out .= Ajax::updateItem("show_".$p['name'].$rand,
+                               $CFG_GLPI["root_doc"]. "/ajax/dropdownRubDocument.php",
+                               $params, false);
       if ($p['display']) {
          echo $out;
          return $rand;
-      } else {
-         return $out;
       }
+      return $out;
    }
 
 

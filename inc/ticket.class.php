@@ -3229,7 +3229,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (!$tt->isHiddenField('_users_id_observer')
-            || $tt->isPredefinedField('_users_id_observer')) {
+          || $tt->isPredefinedField('_users_id_observer')) {
          echo "<tr class='tab_bg_1'><td>".__('Watcher')."</td>";
          echo "<td>";
          $values['_right'] = "groups";
@@ -3242,7 +3242,7 @@ class Ticket extends CommonITILObject {
                echo self::getActorIcon('user', CommonITILActor::OBSERVER)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_users", $values["_users_id_observer"]);
                echo "<input type='hidden' name='_users_id_observer' value=\"".
-                     $values["_users_id_observer"]."\">";
+                      $values["_users_id_observer"]."\">";
                echo '<hr>';
            }
          }

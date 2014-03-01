@@ -750,12 +750,15 @@ class Profile_User extends CommonDBRelation {
       return $entities;
    }
 
+
    /**
     * retrieve the entities associated to a user
     *
     * @param $users_id     Integer  ID of the user
     * @param $child        Boolean  when true, include child entity when recursive right
     *                               (false by default)
+    *
+    * @since version 0.85
     *
     * @return Array of entity ID
    **/
@@ -778,7 +781,8 @@ class Profile_User extends CommonDBRelation {
          }
       }
       return $entities;
-   }   
+   }
+
 
    /**
     * Get entities for which a user have a right

@@ -44,13 +44,19 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    static public $itemtype_2 = 'SoftwareLicense';
    static public $items_id_2 = 'softwarelicenses_id';
 
+
+   /**
+    * @since version 0.85
+    * @see CommonDBRelation::post_addItem()
+   **/
    function post_addItem() {
 
       SoftwareLicense::updateValidityIndicator($this->fields['softwarelicenses_id']);
-      
+
       parent::post_addItem();
    }
-   
+
+
    function post_deleteFromDB() {
 
       SoftwareLicense::updateValidityIndicator($this->fields['softwarelicenses_id']);
@@ -58,7 +64,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       parent::post_deleteFromDB();
    }
 
-   
+
    /**
     * Get search function for the class
     *
@@ -217,7 +223,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                       AND `glpi_computers`.`is_deleted` = '0'
                       AND `glpi_computers`.`is_template` = '0'
                       AND `glpi_computers_softwarelicenses`.`is_deleted` = '0'";
-                      
+
       if ($entity != -1) {
          $query .= getEntitiesRestrictRequest('AND', 'glpi_computers', '', $entity);
       }
