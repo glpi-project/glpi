@@ -1647,7 +1647,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (($p['showtype'] == 'search')
           || $p['withmajor']) {
-         $values[6] = static::getPriorityName(5);
+         $values[6] = static::getPriorityName(6);
      }
       $values[5] = static::getPriorityName(5);
       $values[4] = static::getPriorityName(4);
@@ -1687,7 +1687,7 @@ abstract class CommonITILObject extends CommonDBTM {
          case 1 :
             return _x('priority', 'Very low');
 
-         // Non standard one :
+         // No standard one :
          case 0 :
             return _x('priority', 'All');
          case -1 :
@@ -1798,7 +1798,7 @@ abstract class CommonITILObject extends CommonDBTM {
          case 1 :
             return _x('urgency', 'Very low');
 
-         // Non standard one :
+         // No standard one :
          case 0 :
             return _x('urgency', 'All');
          case -1 :
@@ -1910,7 +1910,7 @@ abstract class CommonITILObject extends CommonDBTM {
          case 1 :
             return _x('impact', 'Very low');
 
-         // Non standard one :
+         // No standard one :
          case 0 :
             return _x('impact', 'All');
          case -1 :
