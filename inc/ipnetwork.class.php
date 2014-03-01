@@ -146,7 +146,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             $this->fields["network"] = sprintf(__('%1$s / %2$s'), $this->fields["address"],
                                             $this->fields["netmask"]);
          } else { // IPv6
-            $this->fields["network"] = sprintf(__('%1$s/%2$s'), $this->fields["address"],
+            $this->fields["network"] = sprintf(__('%1$s / %2$s'), $this->fields["address"],
                                             $this->fields["netmask"]);
          }
       }
