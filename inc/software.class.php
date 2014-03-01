@@ -653,7 +653,7 @@ class Software extends CommonDBTM {
       $tab[164]['table']         = 'glpi_softwarelicensetypes';
       $tab[164]['field']         = 'name';
       $tab[164]['datatype']      = 'dropdown';
-      $tab[164]['name']          = __('License types');
+      $tab[164]['name']          = _n('License type', 'License types', 2);
       $tab[164]['forcegroupby']  = true;
       $tab[164]['massiveaction'] = false;
       $tab[164]['joinparams']    = array('beforejoin'
