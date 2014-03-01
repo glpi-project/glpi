@@ -1726,7 +1726,7 @@ class Html {
 
       echo "<div id='footer' >";
       echo "<table width='100%'><tr><td class='left'><span class='copyright'>";
-      $timedebug = sprintf(_n('%1$s second', '%1$s seconds', $TIMER_DEBUG->getTime()),
+      $timedebug = sprintf(_n('%s second', '%s seconds', $TIMER_DEBUG->getTime()),
                            $TIMER_DEBUG->getTime());
 
       if (function_exists("memory_get_usage")) {
