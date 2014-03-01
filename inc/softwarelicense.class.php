@@ -78,6 +78,11 @@ class SoftwareLicense extends CommonDBTM {
       return $input;
    }
 
+
+   /**
+    * @since version 0.85
+    * @see CommonDBTM::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
 
       // Update number : compute validity indicator
@@ -88,29 +93,38 @@ class SoftwareLicense extends CommonDBTM {
       return $input;
    }
 
+
    /**
     * Compute licence validity indicator.
-    * @param $ID ID of the licence
-    * @param $number licence count to check
+    *
+    * @param $ID        ID of the licence
+    * @param $number    licence count to check (default -1)
+    *
     * @since version 0.85
+    *
     * @return validity indicator
    **/
-   static function computeValidityIndicator($ID, $number = -1) {
+   static function computeValidityIndicator($ID, $number=-1) {
+
       if (($number >= 0)
-         && ($number < Computer_SoftwareLicense::countForLicense($ID, -1))) {
+          && ($number < Computer_SoftwareLicense::countForLicense($ID, -1))) {
          return 0;
       }
       // Default return 1
       return 1;
    }
 
+
    /**
     * Update validity indicator of a specific license
     * @param $ID ID of the licence
+    *
     * @since version 0.85
+    *
     * @return nothing
    **/
    static function updateValidityIndicator($ID) {
+
       $lic = new self();
       if ($lic->getFromDB($ID)) {
          $valid = self::computeValidityIndicator($ID, $lic->fields['number']);
@@ -120,6 +134,7 @@ class SoftwareLicense extends CommonDBTM {
          }
       }
    }
+
 
    /**
     * @since version 0.84
@@ -150,15 +165,26 @@ class SoftwareLicense extends CommonDBTM {
       Software::updateValidityIndicator($this->fields["softwares_id"]);
    }
 
+   /**
+    * @since version 0.85
+    * @see CommonDBTM::post_updateItem()
+   **/
    function post_updateItem($history=1) {
+
       if (in_array("is_valid", $this->updates)) {
          Software::updateValidityIndicator($this->fields["softwares_id"]);
       }
    }
 
+
+   /**
+    * @since version 0.85
+    * @see CommonDBTM::post_deleteFromDB()
+   **/
    function post_deleteFromDB() {
       Software::updateValidityIndicator($this->fields["softwares_id"]);
    }
+
 
    /**
     * @since version 0.84

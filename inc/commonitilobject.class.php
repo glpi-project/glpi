@@ -1686,7 +1686,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          case 1 :
             return _x('priority', 'Very low');
-            
+
          // Non standard one :
          case 0 :
             return _x('priority', 'All');
@@ -1700,7 +1700,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return _x('priority', 'At least high');
          case -5 :
             return _x('priority', 'At least very high');
-            
+
          default :
             // Return $value if not define
             return $value;
@@ -1811,7 +1811,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return _x('urgency', 'At least high');
          case -5 :
             return _x('urgency', 'At least very high');
-         
+
          default :
             // Return $value if not define
             return $value;
@@ -1923,7 +1923,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return _x('impact', 'At least high');
          case -5 :
             return _x('impact', 'At least very high');
-            
+
          default :
             // Return $value if not define
             return $value;
@@ -3078,6 +3078,7 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function showActorAddFormOnCreate($type, array $options) {
       global $CFG_GLPI;
+
       switch ($type) {
          case CommonITILActor::REQUESTER :
             $typename = 'requester';
@@ -4982,7 +4983,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $tenth_column = count($items);
          if ($tenth_column) {
             $tenth_column = "<span class='pointer'
-                              id='".$item->getType().$item->fields["id"]."planning$rand'>".$tenth_column.'</span>';            
+                              id='".$item->getType().$item->fields["id"]."planning$rand'>".$tenth_column.'</span>';
             $tenth_column = sprintf(__('%1$s %2$s'), $tenth_column,
                                     Html::showToolTip($planned_infos,
                                                       array('display' => false,

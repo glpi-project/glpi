@@ -2638,13 +2638,13 @@ function update084to085() {
       }
       $savesession = $_SESSION['glpishowallentities'];
       $_SESSION['glpishowallentities'] = 1;
-      
+
       $queryl = "SELECT `id`, `number`
                  FROM `glpi_softwarelicenses`";
 
       foreach ($DB->request($queryl) AS $datal) {
          if (($datal['number'] >= 0)
-            && ($datal['number'] < Computer_SoftwareLicense::countForLicense($datal['id'], -1))) {
+             && ($datal['number'] < Computer_SoftwareLicense::countForLicense($datal['id'], -1))) {
 
             $queryl2 = "UPDATE `glpi_softwarelicenses`
                         SET `is_valid` = 0
@@ -2814,7 +2814,7 @@ function update084to085() {
              SET `num` = 200
              WHERE `num` = 90";
    $DB->query($query);
-   
+
    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
 
    // must always be at the end
