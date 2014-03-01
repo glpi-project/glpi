@@ -239,18 +239,19 @@ class CronTask extends CommonDBTM{
 
       if ($DB->affected_rows($result) > 0) {
          // No gettext for log but add gettext line to be parsed for pot generation
+         // order is important for insertion in english in the database
          if ($retcode < 0) {
             $content = __('Action completed, partially processed');
             $content = 'Action completed, partially processed';
-            
+
          } else if ($retcode > 0) {
             $content = __('Action completed, fully processed');
             $content = 'Action completed, fully processed';
          } else {
-            $content = 'Action completed, no processing required';
             $content = __('Action completed, no processing required');
+            $content = 'Action completed, no processing required';
          }
-         
+
          $log = new CronTaskLog();
          $log->add(array('crontasks_id'    => $this->fields['id'],
                          'date'            => $_SESSION['glpi_currenttime'],
@@ -1042,7 +1043,7 @@ class CronTask extends CommonDBTM{
             $header .= "<th>".__('Description')."</th>";
             $header .= "</tr>\n";
             echo $header;
-            
+
             do {
                echo "<tr class='tab_bg_2'>";
                echo "<td><a href='javascript:reloadTab(\"crontasklogs_id=".
@@ -1128,14 +1129,14 @@ class CronTask extends CommonDBTM{
                      // Pass content to gettext
                      $content = __($data['content']);
                }
-               
+
 
                echo "<td class='right'>".sprintf(_n('%s second', '%s seconds',
                                                     intval($data['elapsed'])),
                                                  number_format($data['elapsed'], 3)).
                     "&nbsp;&nbsp;</td>";
                echo "<td class='numeric'>".$data['volume']."</td>";
-               
+
                echo "<td>".$content."</td>";
                echo "</tr>\n";
                $first = false;
