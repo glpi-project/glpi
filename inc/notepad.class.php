@@ -158,11 +158,11 @@ class Notepad extends CommonDBChild {
 
       $tab                      = array();
 
-      $tab['notepad']             = __('Notes');
+      $tab['notepad']             = _n('Note', 'Notes',2);
 
       $tab[200]['table']          = 'glpi_notepads';
       $tab[200]['field']          = 'content';
-      $tab[200]['name']           = __('Notes');
+      $tab[200]['name']           = _n('Note', 'Notes',2);
       $tab[200]['datatype']       = 'text';
       $tab[200]['joinparams']     = array('jointype' => 'itemtype_item');
       $tab[200]['forcegroupby']   = true;
