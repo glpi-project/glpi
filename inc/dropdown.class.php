@@ -718,9 +718,8 @@ class Dropdown {
                                 ),
 
                     __('Assistance')
-                        => array('ITILCategory'     =>  _n('Category of ticket',
-                                                           'Categories of tickets',2),
-                                 'TaskCategory'     => _n('Tasks category','Tasks categories', 2),
+                        => array('ITILCategory'     => _n('Ticket category', 'Ticket categories',2),
+                                 'TaskCategory'     => _n('Task category','Task categories', 2),
                                  'SolutionType'     => _n('Solution type', 'Solution types', 2),
                                  'RequestType'      => _n('Request source', 'Request sources', 2),
                                  'SolutionTemplate' => _n('Solution template',
@@ -1024,7 +1023,7 @@ class Dropdown {
             $p[$key] = $val;
          }
       }
-      
+
       $begin = 0;
       $end   = 24;
       $step  = $CFG_GLPI["time_step"];
