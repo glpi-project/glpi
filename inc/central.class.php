@@ -35,7 +35,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// class Central
+/**
+ * Central class
+**/
 class Central extends CommonGLPI {
 
 
@@ -201,7 +203,7 @@ class Central extends CommonGLPI {
       echo "</td></tr>";
       echo "</table></td>";
       echo "<td class='top'  width='50%'><table class='central'>";
-      echo "<tr  class='noHover'><td>";
+      echo "<tr class='noHover'><td>";
       Planning::showCentral(Session::getLoginUserID());
       Reminder::showListForCentral();
       if (Session::haveRight("reminder_public", READ)) {
