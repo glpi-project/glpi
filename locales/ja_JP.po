@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-26 15:23+0100\n"
-"PO-Revision-Date: 2014-02-28 14:37+0000\n"
-"Last-Translator: peachberry <gtucr7gpw.4g2@gmail.com>\n"
+"POT-Creation-Date: 2014-03-05 08:50+0100\n"
+"PO-Revision-Date: 2014-03-05 07:51+0000\n"
+"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Japanese (Japan) (http://www.transifex.com/projects/p/GLPI/language/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -47,7 +47,7 @@ msgstr "パスワード"
 #: index.php:121 ajax/dropdownMassiveActionAuthMethods.php:66
 #: ajax/dropdownMassiveActionField.php:54 inc/authldap.class.php:1108
 #: inc/authldap.class.php:1978 inc/change_ticket.class.php:138
-#: inc/computer_softwarelicense.class.php:114
+#: inc/computer_softwarelicense.class.php:120
 #: inc/computer_softwareversion.class.php:110
 #: inc/computer_softwareversion.class.php:122
 #: inc/displaypreference.class.php:295 inc/group_user.class.php:741
@@ -110,10 +110,10 @@ msgstr "FAQへのアクセス"
 #: inc/commondbtm.class.php:3061 inc/commondbtm.class.php:3466
 #: inc/commondbtm.class.php:3472 inc/commonglpi.class.php:777
 #: inc/commonitilcost.class.php:193 inc/commonitilobject.class.php:1557
-#: inc/commonitilobject.class.php:4785 inc/commonitilobject.class.php:4932
+#: inc/commonitilobject.class.php:4786 inc/commonitilobject.class.php:4933
 #: inc/commonitiltask.class.php:1018
-#: inc/computer_softwarelicense.class.php:471
-#: inc/computer_softwareversion.class.php:432 inc/consumable.class.php:669
+#: inc/computer_softwarelicense.class.php:477
+#: inc/computer_softwareversion.class.php:431 inc/consumable.class.php:669
 #: inc/contract.class.php:381 inc/contract.class.php:389
 #: inc/contract.class.php:400 inc/contract.class.php:417
 #: inc/contract.class.php:425 inc/contract.class.php:433
@@ -122,7 +122,7 @@ msgstr "FAQへのアクセス"
 #: inc/contract.class.php:756 inc/contract.class.php:764
 #: inc/contract.class.php:772 inc/contract.class.php:780
 #: inc/contract.class.php:1261 inc/contract.class.php:1262
-#: inc/crontask.class.php:397 inc/dbmysql.class.php:550
+#: inc/crontask.class.php:398 inc/dbmysql.class.php:550
 #: inc/dbmysql.class.php:564 inc/dbmysql.class.php:576
 #: inc/document.class.php:215 inc/document_item.class.php:442
 #: inc/html.class.php:1733 inc/infocom.class.php:491 inc/infocom.class.php:954
@@ -138,7 +138,7 @@ msgstr "FAQへのアクセス"
 #: inc/reservationitem.class.php:510 inc/reservationitem.class.php:597
 #: inc/ruleticket.class.php:536 inc/ruleticket.class.php:542
 #: inc/ruleticket.class.php:548 inc/search.class.php:1272
-#: inc/search.class.php:3810 inc/search.class.php:3848
+#: inc/search.class.php:3798 inc/search.class.php:3836
 #: inc/softwareversion.class.php:234 inc/stat.class.php:1272
 #: inc/stat.class.php:1275 inc/stat.class.php:1278 inc/stat.class.php:1479
 #: inc/state.class.php:286 inc/state.class.php:291 inc/state.class.php:297
@@ -180,16 +180,16 @@ msgstr "%1$s - 情報コンセント %2$s"
 #: ajax/getDropdownValue.php:359 ajax/getDropdownValue.php:583
 #: inc/cartridge.class.php:732 inc/cartridgeitem.class.php:520
 #: inc/change_item.class.php:215 inc/commondbtm.class.php:3056
-#: inc/commondbtm.class.php:4185 inc/commonglpi.class.php:788
-#: inc/commonitilcost.class.php:504 inc/commonitilobject.class.php:4931
-#: inc/commonitilobject.class.php:4936 inc/computer.class.php:853
-#: inc/computer_item.class.php:453 inc/computer_softwarelicense.class.php:528
-#: inc/computer_softwareversion.class.php:521
-#: inc/computer_softwareversion.class.php:550
-#: inc/computer_softwareversion.class.php:936
-#: inc/computer_softwareversion.class.php:966
-#: inc/computer_softwareversion.class.php:1044
-#: inc/computer_softwareversion.class.php:1055
+#: inc/commondbtm.class.php:4190 inc/commonglpi.class.php:788
+#: inc/commonitilcost.class.php:504 inc/commonitilobject.class.php:4932
+#: inc/commonitilobject.class.php:4937 inc/computer.class.php:853
+#: inc/computer_item.class.php:453 inc/computer_softwarelicense.class.php:534
+#: inc/computer_softwareversion.class.php:520
+#: inc/computer_softwareversion.class.php:549
+#: inc/computer_softwareversion.class.php:935
+#: inc/computer_softwareversion.class.php:965
+#: inc/computer_softwareversion.class.php:1043
+#: inc/computer_softwareversion.class.php:1054
 #: inc/computervirtualmachine.class.php:209
 #: inc/computervirtualmachine.class.php:345 inc/config.class.php:354
 #: inc/config.class.php:355 inc/config.class.php:369
@@ -201,7 +201,7 @@ msgstr "%1$s - 情報コンセント %2$s"
 #: inc/document_item.class.php:452 inc/dropdown.class.php:382
 #: inc/glpipdf.class.php:103 inc/group_user.class.php:235
 #: inc/group_user.class.php:240 inc/group_user.class.php:457
-#: inc/group_user.class.php:541 inc/html.class.php:4077
+#: inc/group_user.class.php:541 inc/html.class.php:4079
 #: inc/ipnetwork_vlan.class.php:183 inc/item_devicegraphiccard.class.php:53
 #: inc/item_deviceharddrive.class.php:54 inc/item_devicememory.class.php:55
 #: inc/item_deviceprocessor.class.php:54 inc/item_problem.class.php:218
@@ -223,8 +223,8 @@ msgstr "%1$s - 情報コンセント %2$s"
 #: inc/profile_user.class.php:336 inc/profile_user.class.php:484
 #: inc/projectcost.class.php:374 inc/rule.class.php:2145
 #: inc/rulecollection.class.php:1194 inc/rulemailcollector.class.php:201
-#: inc/rulemailcollector.class.php:206 inc/search.class.php:4189
-#: inc/search.class.php:4290 inc/session.class.php:361
+#: inc/rulemailcollector.class.php:206 inc/search.class.php:4177
+#: inc/search.class.php:4278 inc/session.class.php:361
 #: inc/session.class.php:364 inc/softwareversion.class.php:231
 #: inc/supplier.class.php:485 inc/ticket.class.php:1562
 #: inc/ticket.class.php:2579 inc/ticket.class.php:2657
@@ -290,16 +290,16 @@ msgstr "メールでフォロー"
 #: inc/commonglpi.class.php:1240 inc/commonglpi.class.php:1243
 #: inc/commonglpi.class.php:1246 inc/commonglpi.class.php:1249
 #: inc/commonglpi.class.php:1252 inc/commonitilobject.class.php:2196
-#: inc/commonitilobject.class.php:2953 inc/commonitilobject.class.php:3192
-#: inc/commonitilobject.class.php:4779 inc/commonitilobject.class.php:4805
+#: inc/commonitilobject.class.php:2953 inc/commonitilobject.class.php:3193
+#: inc/commonitilobject.class.php:4780 inc/commonitilobject.class.php:4806
 #: inc/commonitiltask.class.php:949 inc/commonitiltask.class.php:958
 #: inc/config.class.php:1111 inc/config.class.php:1174
 #: inc/contract.class.php:1031 inc/contract.class.php:1107
 #: inc/contract.class.php:1142 inc/contract.class.php:1145
 #: inc/contract.class.php:1162 inc/contract_item.class.php:569
-#: inc/contract_item.class.php:671 inc/crontask.class.php:776
-#: inc/crontask.class.php:784 inc/crontask.class.php:798
-#: inc/crontask.class.php:808 inc/dbconnection.class.php:420
+#: inc/contract_item.class.php:671 inc/crontask.class.php:777
+#: inc/crontask.class.php:785 inc/crontask.class.php:799
+#: inc/crontask.class.php:809 inc/dbconnection.class.php:420
 #: inc/dbconnection.class.php:425 inc/dbconnection.class.php:428
 #: inc/db.function.php:553 inc/db.function.php:1300 inc/document.class.php:213
 #: inc/document_item.class.php:437 inc/dropdown.class.php:343
@@ -441,8 +441,8 @@ msgstr "メールでフォロー"
 #: inc/plugin.class.php:509 inc/plugin.class.php:522 inc/plugin.class.php:538
 #: inc/plugin.class.php:546 inc/plugin.class.php:568 inc/problem.class.php:900
 #: inc/problem.class.php:1061 inc/profile_user.class.php:356
-#: inc/profile_user.class.php:482 inc/profile_user.class.php:1003
-#: inc/profile_user.class.php:1005 inc/project.class.php:602
+#: inc/profile_user.class.php:482 inc/profile_user.class.php:1007
+#: inc/profile_user.class.php:1009 inc/project.class.php:602
 #: inc/projectcost.class.php:414 inc/projecttask.class.php:455
 #: inc/projecttask.class.php:458 inc/queuedmail.class.php:416
 #: inc/registeredid.class.php:113 inc/reminder.class.php:921
@@ -450,8 +450,8 @@ msgstr "メールでフォロー"
 #: inc/reminder.class.php:971 inc/reminder.class.php:976
 #: inc/reservationitem.class.php:613 inc/reservationitem.class.php:618
 #: inc/reservationitem.class.php:636 inc/rule.class.php:3074
-#: inc/rulemailcollector.class.php:133 inc/softwarelicense.class.php:487
-#: inc/softwarelicense.class.php:490 inc/softwarelicense.class.php:507
+#: inc/rulemailcollector.class.php:133 inc/softwarelicense.class.php:513
+#: inc/softwarelicense.class.php:516 inc/softwarelicense.class.php:533
 #: inc/supplier.class.php:463 inc/supplier.class.php:494
 #: inc/ticket.class.php:1564 inc/ticket.class.php:2763
 #: inc/ticket.class.php:3749 inc/ticket.class.php:3811
@@ -504,8 +504,8 @@ msgstr[0] "メール"
 #: inc/change_ticket.class.php:237 inc/change_ticket.class.php:337
 #: inc/commondbrelation.class.php:1105 inc/commondbtm.class.php:1997
 #: inc/commonitiltask.class.php:1383 inc/commontreedropdown.class.php:404
-#: inc/computer_softwarelicense.class.php:385
-#: inc/computer_softwareversion.class.php:817
+#: inc/computer_softwarelicense.class.php:391
+#: inc/computer_softwareversion.class.php:816
 #: inc/contact_supplier.class.php:194 inc/contact_supplier.class.php:331
 #: inc/contract_item.class.php:396 inc/contract_item.class.php:602
 #: inc/contract_supplier.class.php:190 inc/contract_supplier.class.php:333
@@ -515,10 +515,10 @@ msgstr[0] "メール"
 #: inc/item_problem.class.php:147 inc/item_project.class.php:143
 #: inc/link_itemtype.class.php:101 inc/netpoint.class.php:276
 #: inc/netpoint.class.php:299 inc/networkport.class.php:485
-#: inc/notepad.class.php:254 inc/problem_ticket.class.php:283
+#: inc/notepad.class.php:250 inc/problem_ticket.class.php:283
 #: inc/problem_ticket.class.php:391 inc/profile_user.class.php:146
 #: inc/profile_user.class.php:304 inc/project.class.php:1004
-#: inc/projecttask.class.php:926 inc/projecttask_ticket.class.php:181
+#: inc/projecttask.class.php:925 inc/projecttask_ticket.class.php:181
 #: inc/reservation.class.php:748 inc/reservationitem.class.php:528
 #: inc/rule.class.php:2700 inc/ruleright.class.php:89
 #: inc/slalevel.class.php:142 inc/ticket.class.php:4491
@@ -542,16 +542,16 @@ msgstr "追加"
 #: inc/commonitilcost.class.php:364 inc/commonitilvalidation.class.php:930
 #: inc/commonitilvalidation.class.php:944 inc/commontreedropdown.class.php:426
 #: inc/commontreedropdown.class.php:613 inc/computer.class.php:530
-#: inc/computer.class.php:744 inc/computer_softwareversion.class.php:976
-#: inc/computer_softwareversion.class.php:1063
+#: inc/computer.class.php:744 inc/computer_softwareversion.class.php:975
+#: inc/computer_softwareversion.class.php:1062
 #: inc/computervirtualmachine.class.php:167
 #: inc/computervirtualmachine.class.php:270
 #: inc/computervirtualmachine.class.php:384 inc/consumableitem.class.php:171
 #: inc/consumableitem.class.php:312 inc/contact.class.php:158
 #: inc/contact.class.php:370 inc/contract.class.php:279
 #: inc/contract.class.php:692 inc/contractcost.class.php:143
-#: inc/contractcost.class.php:282 inc/crontask.class.php:400
-#: inc/crontask.class.php:1308 inc/db.function.php:556
+#: inc/contractcost.class.php:282 inc/crontask.class.php:401
+#: inc/crontask.class.php:1309 inc/db.function.php:556
 #: inc/document.class.php:394 inc/entity.class.php:513
 #: inc/fieldunicity.class.php:357 inc/group.class.php:238
 #: inc/infocom.class.php:1067 inc/infocom.class.php:1538
@@ -586,10 +586,10 @@ msgstr "追加"
 #: inc/reservationitem.class.php:182 inc/reservationitem.class.php:317
 #: inc/rssfeed.class.php:435 inc/rssfeed.class.php:635 inc/rule.class.php:728
 #: inc/rule.class.php:857 inc/ruledictionnaryprinter.class.php:83
-#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:4853
-#: inc/sla.class.php:152 inc/sla.class.php:247 inc/software.class.php:274
-#: inc/software.class.php:470 inc/softwarelicense.class.php:268
-#: inc/softwarelicense.class.php:408 inc/softwareversion.class.php:122
+#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:4841
+#: inc/sla.class.php:152 inc/sla.class.php:247 inc/software.class.php:280
+#: inc/software.class.php:476 inc/softwarelicense.class.php:294
+#: inc/softwarelicense.class.php:434 inc/softwareversion.class.php:122
 #: inc/softwareversion.class.php:170 inc/softwareversion.class.php:290
 #: inc/supplier.class.php:144 inc/supplier.class.php:306
 #: inc/ticket.class.php:2118 inc/ticketfollowup.class.php:798
@@ -604,7 +604,7 @@ msgstr "備考"
 #: front/report.contract.php:53 front/report.contract.php:66
 #: front/report.year.php:54 front/report.year.php:67 inc/change.class.php:469
 #: inc/commonglpi.class.php:647 inc/commonitilvalidation.class.php:420
-#: inc/config.class.php:367 inc/dropdown.class.php:1791
+#: inc/config.class.php:367 inc/dropdown.class.php:1790
 #: inc/notificationtemplatetranslation.class.php:354
 #: inc/planning.class.php:512 inc/problem.class.php:499
 #: inc/profile_user.class.php:532 inc/search.class.php:1112
@@ -615,10 +615,10 @@ msgstr "全て"
 #: ajax/dropdownMassiveActionAddValidator.php:110
 #: ajax/dropdownValidator.php:108 inc/commonitiltask.class.php:1058
 #: inc/commonitiltask.class.php:1265 inc/dbconnection.class.php:428
-#: inc/dropdown.class.php:1792 inc/group_user.class.php:177
+#: inc/dropdown.class.php:1791 inc/group_user.class.php:177
 #: inc/group_user.class.php:264 inc/htmltablemain.class.php:240
 #: inc/item_devices.class.php:605 inc/planningrecall.class.php:248
-#: inc/profileright.class.php:304 inc/search.class.php:4135
+#: inc/profileright.class.php:304 inc/search.class.php:4123
 msgid "None"
 msgstr "なし"
 
@@ -657,7 +657,7 @@ msgstr "先頭文字を入力してください (ユーザ名、アイテム名�
 msgid "Show all"
 msgstr "全てを表示"
 
-#: ajax/massiveaction.php:70 inc/html.class.php:2637
+#: ajax/massiveaction.php:70 inc/html.class.php:2638
 #: inc/mailcollector.class.php:201 inc/ruleaction.class.php:88
 #: inc/ruleaction.class.php:653 inc/rule.class.php:1056
 #: inc/rule.class.php:2994
@@ -679,7 +679,7 @@ msgstr "使用可能"
 #: inc/budget.class.php:208 inc/contract.class.php:188
 #: inc/contract.class.php:417 inc/contract.class.php:595
 #: inc/contract_item.class.php:430 inc/contract_supplier.class.php:220
-#: inc/crontask.class.php:940
+#: inc/crontask.class.php:941
 #: inc/notificationtargetcommonitilobject.class.php:1070
 #: inc/notificationtargetplanningrecall.class.php:152
 #: inc/notificationtargetreservation.class.php:157
@@ -726,9 +726,9 @@ msgstr "公開"
 #: inc/document.class.php:793 inc/fieldunicity.class.php:352
 #: inc/infocom.class.php:1582 inc/knowbaseitem.class.php:1467
 #: inc/networkequipment.class.php:567 inc/notification.class.php:373
-#: inc/printer.class.php:709 inc/profile_user.class.php:877
+#: inc/printer.class.php:709 inc/profile_user.class.php:881
 #: inc/project.class.php:496 inc/projecttask.class.php:685
-#: inc/rule.class.php:739 inc/sla.class.php:258 inc/software.class.php:554
+#: inc/rule.class.php:739 inc/sla.class.php:258 inc/software.class.php:560
 #: inc/supplier.class.php:317
 msgid "Child entities"
 msgstr "子エンティティ"
@@ -804,7 +804,7 @@ msgid "Delete a search criterion"
 msgstr "検索条件の削除"
 
 #: ajax/searchrow.php:139 ajax/searchrow.php:156 inc/config.class.php:352
-#: inc/search.class.php:1449
+#: inc/search.class.php:1448
 msgid "Items seen"
 msgstr "アイテムの表示"
 
@@ -835,13 +835,13 @@ msgstr "制限無し"
 #: inc/cartridgeitem.class.php:367 inc/change_item.class.php:170
 #: inc/commondbtm.class.php:3408 inc/commondevice.class.php:171
 #: inc/commondropdown.class.php:423 inc/commonitilcost.class.php:152
-#: inc/commonitilobject.class.php:2537 inc/commonitilobject.class.php:5021
+#: inc/commonitilobject.class.php:2537 inc/commonitilobject.class.php:5027
 #: inc/commontreedropdown.class.php:419 inc/commontreedropdown.class.php:619
 #: inc/computer.class.php:806 inc/computer_item.class.php:443
-#: inc/computer_item.class.php:588 inc/computer_softwarelicense.class.php:284
-#: inc/computer_softwarelicense.class.php:480
+#: inc/computer_item.class.php:588 inc/computer_softwarelicense.class.php:290
+#: inc/computer_softwarelicense.class.php:486
 #: inc/computer_softwareversion.class.php:297
-#: inc/computer_softwareversion.class.php:601
+#: inc/computer_softwareversion.class.php:600
 #: inc/computervirtualmachine.class.php:254 inc/consumableitem.class.php:317
 #: inc/contact.class.php:375 inc/contact_supplier.class.php:221
 #: inc/contact_supplier.class.php:359 inc/contract.class.php:697
@@ -878,7 +878,7 @@ msgstr "制限無し"
 #: inc/peripheral.class.php:468 inc/phone.class.php:524
 #: inc/printer.class.php:697 inc/profile.class.php:1307
 #: inc/profile.class.php:1847 inc/profile_user.class.php:192
-#: inc/profile_user.class.php:871 inc/profile_user.class.php:1003
+#: inc/profile_user.class.php:875 inc/profile_user.class.php:1007
 #: inc/project.class.php:491 inc/project.class.php:523
 #: inc/projectcost.class.php:168 inc/projecttask.class.php:680
 #: inc/queuedmail.class.php:293 inc/reminder.class.php:1251
@@ -889,9 +889,9 @@ msgstr "制限無し"
 #: inc/ruleimportcomputer.class.php:434 inc/ruleimportentity.class.php:161
 #: inc/rulemailcollector.class.php:185 inc/ruleright.class.php:295
 #: inc/rulerightcollection.class.php:153 inc/ruleticket.class.php:419
-#: inc/search.class.php:4891 inc/sla.class.php:252 inc/software.class.php:528
-#: inc/software.class.php:959 inc/softwarelicense.class.php:599
-#: inc/softwarelicense.class.php:823 inc/stat.class.php:1458
+#: inc/search.class.php:4879 inc/sla.class.php:252 inc/software.class.php:534
+#: inc/software.class.php:965 inc/softwarelicense.class.php:625
+#: inc/softwarelicense.class.php:854 inc/stat.class.php:1458
 #: inc/supplier.class.php:311 inc/supplier.class.php:401
 #: inc/ticket.class.php:2044 inc/user.class.php:1980 inc/user.class.php:2604
 #: inc/user.class.php:2638 inc/user.class.php:3390 inc/user.class.php:3470
@@ -904,8 +904,8 @@ msgstr[0] "エンティティ"
 #: ajax/ticketassigninformation.php:63 ajax/ticketassigninformation.php:64
 #: ajax/ticketassigninformation.php:85 ajax/ticketassigninformation.php:86
 #: ajax/ticketassigninformation.php:109 ajax/ticketassigninformation.php:110
-#: inc/change.class.php:467 inc/commonitilobject.class.php:3191
-#: inc/commonitilobject.class.php:3192 inc/problem.class.php:497
+#: inc/change.class.php:467 inc/commonitilobject.class.php:3192
+#: inc/commonitilobject.class.php:3193 inc/problem.class.php:497
 #: inc/ticket.class.php:2469 install/update_084_085.php:2058
 msgid "Processing"
 msgstr "対応中"
@@ -920,8 +920,8 @@ msgstr[0] "このアイテムの %s チケットは作業中または最近解�
 msgid "Create survey after"
 msgstr "指定日後に調査を作成"
 
-#: ajax/ticketsatisfaction.php:66 inc/crontask.class.php:498
-#: inc/crontask.class.php:527
+#: ajax/ticketsatisfaction.php:66 inc/crontask.class.php:499
+#: inc/crontask.class.php:528
 msgid "As soon as possible"
 msgstr "できる限り早く"
 
@@ -929,8 +929,8 @@ msgstr "できる限り早く"
 msgid "Rate to trigger survey"
 msgstr "調査のトリガーとなるレート"
 
-#: ajax/ticketsatisfaction.php:77 inc/crontask.class.php:646
-#: inc/crontask.class.php:665 inc/entity.class.php:1901
+#: ajax/ticketsatisfaction.php:77 inc/crontask.class.php:647
+#: inc/crontask.class.php:666 inc/entity.class.php:1901
 msgid "Disabled"
 msgstr "無効"
 
@@ -1115,7 +1115,7 @@ msgid "XML Dump"
 msgstr "XML形式でバックアップ"
 
 #: front/backup.php:591 inc/document.class.php:417 inc/document.class.php:758
-#: inc/document_item.class.php:526 inc/html.class.php:5020
+#: inc/document_item.class.php:526 inc/html.class.php:5022
 #: inc/notificationtargetcommonitilobject.class.php:1137
 #: inc/notificationtargetproject.class.php:650
 #: inc/notificationtargetprojecttask.class.php:534 inc/ticket.class.php:3292
@@ -1129,10 +1129,10 @@ msgid "Size"
 msgstr "サイズ"
 
 #: front/backup.php:593 front/report.contract.php:63 front/report.year.php:64
-#: inc/commonitilobject.class.php:4079 inc/commonitilobject.class.php:5017
+#: inc/commonitilobject.class.php:4080 inc/commonitilobject.class.php:5023
 #: inc/commonitiltask.class.php:522 inc/commonitiltask.class.php:637
 #: inc/commonitiltask.class.php:1126 inc/commonitiltask.class.php:1349
-#: inc/crontask.class.php:1039 inc/crontask.class.php:1096
+#: inc/crontask.class.php:1040 inc/crontask.class.php:1097
 #: inc/document_item.class.php:533 inc/event.class.php:247
 #: inc/event.class.php:302 inc/knowbaseitem.class.php:1420
 #: inc/log.class.php:284 inc/notificationtargetchange.class.php:250
@@ -1168,13 +1168,13 @@ msgstr "ファイル %s を削除しますか?"
 #: inc/cartridge.class.php:656 inc/cartridge.class.php:927
 #: inc/change_ticket.class.php:250 inc/commondbrelation.class.php:1107
 #: inc/commondbtm.class.php:2032 inc/commondbtm.class.php:2041
-#: inc/commondbtm.class.php:4192 inc/commondbtm.class.php:4267
+#: inc/commondbtm.class.php:4197 inc/commondbtm.class.php:4272
 #: inc/commonitilobject.class.php:2146 inc/commonitilobject.class.php:2211
 #: inc/commonitilobject.class.php:2971
-#: inc/computer_softwarelicense.class.php:456
-#: inc/computer_softwareversion.class.php:458
-#: inc/computer_softwareversion.class.php:751
-#: inc/computer_softwareversion.class.php:860 inc/consumable.class.php:482
+#: inc/computer_softwarelicense.class.php:462
+#: inc/computer_softwareversion.class.php:457
+#: inc/computer_softwareversion.class.php:750
+#: inc/computer_softwareversion.class.php:859 inc/consumable.class.php:482
 #: inc/displaypreference.class.php:395 inc/displaypreference.class.php:397
 #: inc/displaypreference.class.php:398 inc/displaypreference.class.php:549
 #: inc/displaypreference.class.php:591 inc/infocom.class.php:1188
@@ -1563,13 +1563,13 @@ msgstr "タスク %s は実行されました"
 #: inc/authldap.class.php:918 inc/authldap.class.php:2741
 #: inc/authldap.class.php:2743 inc/authldap.class.php:2745
 #: inc/commonglpi.class.php:476 inc/commonitilcost.class.php:513
-#: inc/commonitilobject.class.php:4838 inc/commonitilobject.class.php:4858
-#: inc/commonitilobject.class.php:4944 inc/commonitilobject.class.php:4986
+#: inc/commonitilobject.class.php:4839 inc/commonitilobject.class.php:4859
+#: inc/commonitilobject.class.php:4945 inc/commonitilobject.class.php:4991
 #: inc/contact_supplier.class.php:387 inc/contractcost.class.php:377
 #: inc/contract_item.class.php:106 inc/contract_item.class.php:471
-#: inc/crontask.class.php:777 inc/crontask.class.php:785
-#: inc/crontask.class.php:799 inc/dropdown.class.php:341
-#: inc/dropdown.class.php:586 inc/dropdown.class.php:1382
+#: inc/crontask.class.php:778 inc/crontask.class.php:786
+#: inc/crontask.class.php:800 inc/dropdown.class.php:341
+#: inc/dropdown.class.php:586 inc/dropdown.class.php:1381
 #: inc/group.class.php:468 inc/group.class.php:473
 #: inc/knowbaseitem.class.php:1582 inc/knowbaseitem.class.php:1589
 #: inc/knowbaseitem.class.php:1613 inc/knowbaseitem.class.php:1616
@@ -1578,7 +1578,7 @@ msgstr "タスク %s は実行されました"
 #: inc/problem.class.php:942 inc/profile_user.class.php:231
 #: inc/profile_user.class.php:398 inc/profile_user.class.php:555
 #: inc/project.class.php:643 inc/project.class.php:673
-#: inc/projectcost.class.php:378 inc/projecttask.class.php:815
+#: inc/projectcost.class.php:378 inc/projecttask.class.php:814
 #: inc/reminder.class.php:1098 inc/reminder.class.php:1223
 #: inc/reminder.class.php:1231 inc/reminder.class.php:1254
 #: inc/reminder.class.php:1256 inc/reminder.class.php:1279
@@ -1587,15 +1587,15 @@ msgstr "タスク %s は実行されました"
 #: inc/rssfeed.class.php:1088 inc/rssfeed.class.php:1090
 #: inc/rssfeed.class.php:1113 inc/rssfeed.class.php:1119
 #: inc/rule.class.php:1829 inc/rule.class.php:1843 inc/search.class.php:1444
-#: inc/search.class.php:1448 inc/search.class.php:1454
-#: inc/search.class.php:1510 inc/search.class.php:1511
-#: inc/search.class.php:1516 inc/search.class.php:1517
-#: inc/search.class.php:1543 inc/search.class.php:1547
-#: inc/search.class.php:1594 inc/search.class.php:1595
-#: inc/search.class.php:1600 inc/search.class.php:1601
-#: inc/search.class.php:3760 inc/search.class.php:3797
-#: inc/search.class.php:3824 inc/search.class.php:3862
-#: inc/search.class.php:4194 inc/search.class.php:4324
+#: inc/search.class.php:1448 inc/search.class.php:1452
+#: inc/search.class.php:1501 inc/search.class.php:1502
+#: inc/search.class.php:1506 inc/search.class.php:1507
+#: inc/search.class.php:1531 inc/search.class.php:1535
+#: inc/search.class.php:1582 inc/search.class.php:1583
+#: inc/search.class.php:1588 inc/search.class.php:1589
+#: inc/search.class.php:3748 inc/search.class.php:3785
+#: inc/search.class.php:3812 inc/search.class.php:3850
+#: inc/search.class.php:4182 inc/search.class.php:4312
 #: inc/ticket.class.php:2329 inc/ticket.class.php:5351
 #: inc/ticket.class.php:5407 inc/ticket_ticket.class.php:181
 #: inc/ticket_ticket.class.php:183 inc/toolbox.class.php:1058
@@ -1606,12 +1606,12 @@ msgstr "タスク %s は実行されました"
 msgid "%1$s %2$s"
 msgstr "%1$s %2$s"
 
-#: front/crontask.php:45 inc/crontask.class.php:536
+#: front/crontask.php:45 inc/crontask.class.php:537
 #: inc/transfer.class.php:3075
 msgid "Execute"
 msgstr "実行"
 
-#: front/crontask.php:46 inc/crontask.class.php:487
+#: front/crontask.php:46 inc/crontask.class.php:488
 msgid "Next run"
 msgstr "実行予定"
 
@@ -1656,14 +1656,14 @@ msgid "Global dictionary"
 msgstr "グローバルリスト"
 
 #: front/dictionnary.php:50 front/find_num.php:147
-#: inc/computer_softwareversion.class.php:694 inc/dropdown.class.php:826
+#: inc/computer_softwareversion.class.php:693 inc/dropdown.class.php:825
 #: inc/entity.class.php:1252 inc/log.class.php:434 inc/log.class.php:441
 #: inc/notificationtargetsoftwarelicense.class.php:89
 #: inc/profile.class.php:784 inc/profile.class.php:1528 inc/rule.class.php:268
 #: inc/ruledictionnarysoftware.class.php:81
 #: inc/ruledictionnarysoftware.class.php:104
 #: inc/rulesoftwarecategory.class.php:74 inc/software.class.php:54
-#: inc/softwarelicense.class.php:824 inc/softwareversion.class.php:114
+#: inc/softwarelicense.class.php:855 inc/softwareversion.class.php:114
 #: install/update_0713_072.php:156 install/update_0713_072.php:508
 msgid "Software"
 msgid_plural "Software"
@@ -1690,7 +1690,7 @@ msgstr[0] "ソフトウェア"
 #: inc/ruledictionnaryprinter.class.php:79
 #: inc/ruledictionnaryprinter.class.php:103
 #: inc/ruledictionnaryprintermodel.class.php:61
-#: inc/ruleimportcomputer.class.php:110 inc/search.class.php:4882
+#: inc/ruleimportcomputer.class.php:110 inc/search.class.php:4870
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] "メーカー"
@@ -1706,7 +1706,7 @@ msgstr[0] "プリンタ"
 
 #: front/dictionnary.php:66 front/stat.location.php:84
 #: inc/cartridgeitem_printermodel.class.php:182 inc/computer.class.php:467
-#: inc/computer.class.php:688 inc/dropdown.class.php:760
+#: inc/computer.class.php:688 inc/dropdown.class.php:759
 #: inc/monitor.class.php:226 inc/monitor.class.php:415
 #: inc/networkequipment.class.php:306 inc/networkequipment.class.php:468
 #: inc/notificationtargetchange.class.php:211
@@ -1733,19 +1733,19 @@ msgid_plural "Models"
 msgstr[0] "モデル"
 
 #: front/dictionnary.php:68 inc/computermodel.class.php:45
-#: inc/dropdown.class.php:761 inc/rule.class.php:281
+#: inc/dropdown.class.php:760 inc/rule.class.php:281
 msgid "Computer model"
 msgid_plural "Computer models"
 msgstr[0] "コンピュータモデル"
 
-#: front/dictionnary.php:71 inc/dropdown.class.php:766
+#: front/dictionnary.php:71 inc/dropdown.class.php:765
 #: inc/monitormodel.class.php:45 inc/rule.class.php:294
 msgid "Monitor model"
 msgid_plural "Monitor models"
 msgstr[0] "モニターモデル"
 
 #: front/dictionnary.php:74 inc/cartridgeitem.class.php:374
-#: inc/dropdown.class.php:765 inc/printermodel.class.php:45
+#: inc/dropdown.class.php:764 inc/printermodel.class.php:45
 #: inc/rule.class.php:307
 msgid "Printer model"
 msgid_plural "Printer models"
@@ -1761,7 +1761,7 @@ msgid "Network equipment model"
 msgid_plural "Network equipment models"
 msgstr[0] "ネットワーク機器モデル"
 
-#: front/dictionnary.php:84 inc/dropdown.class.php:769
+#: front/dictionnary.php:84 inc/dropdown.class.php:768
 #: inc/phonemodel.class.php:45 inc/rule.class.php:346
 msgid "Phone model"
 msgid_plural "Phone models"
@@ -1784,7 +1784,7 @@ msgstr[0] "電話機モデル"
 #: inc/devicememory.class.php:139 inc/devicesoundcard.class.php:53
 #: inc/devicesoundcard.class.php:70 inc/devicesoundcard.class.php:95
 #: inc/displaypreference.class.php:603 inc/document_item.class.php:354
-#: inc/dropdown.class.php:734 inc/fieldblacklist.class.php:53
+#: inc/dropdown.class.php:733 inc/fieldblacklist.class.php:53
 #: inc/fieldblacklist.class.php:75 inc/fieldunicity.class.php:75
 #: inc/fieldunicity.class.php:335 inc/group.class.php:679
 #: inc/group.class.php:734 inc/infocom.class.php:1558
@@ -1813,7 +1813,7 @@ msgstr[0] "電話機モデル"
 #: inc/printer.class.php:538 inc/project.class.php:416
 #: inc/project.class.php:844 inc/project.class.php:1037
 #: inc/projecttask.class.php:389 inc/projecttask.class.php:602
-#: inc/projecttask.class.php:711 inc/projecttask.class.php:958
+#: inc/projecttask.class.php:711 inc/projecttask.class.php:957
 #: inc/queuedmail.class.php:275 inc/queuedmail.class.php:565
 #: inc/reminder.class.php:1189 inc/rssfeed.class.php:1022
 #: inc/rulecollection.class.php:1166
@@ -1829,8 +1829,8 @@ msgstr[0] "電話機モデル"
 #: inc/ruledictionnaryphonetype.class.php:70
 #: inc/ruledictionnaryprintertype.class.php:57
 #: inc/ruledictionnaryprintertype.class.php:70 inc/ruleticket.class.php:333
-#: inc/ruleticket.class.php:454 inc/softwarelicense.class.php:234
-#: inc/softwarelicense.class.php:379 inc/softwarelicense.class.php:603
+#: inc/ruleticket.class.php:454 inc/softwarelicense.class.php:260
+#: inc/softwarelicense.class.php:405 inc/softwarelicense.class.php:629
 #: inc/supplier.class.php:400 inc/ticket.class.php:2009
 #: inc/ticket.class.php:2088 inc/ticket.class.php:3147
 #: inc/ticket.class.php:3958 inc/ticketfollowup.class.php:714
@@ -1840,18 +1840,18 @@ msgid_plural "Types"
 msgstr[0] "タイプ"
 
 #: front/dictionnary.php:93 inc/computertype.class.php:44
-#: inc/dropdown.class.php:735 inc/rule.class.php:359
+#: inc/dropdown.class.php:734 inc/rule.class.php:359
 msgid "Computer type"
 msgid_plural "Computer types"
 msgstr[0] "コンピュータタイプ"
 
-#: front/dictionnary.php:96 inc/dropdown.class.php:739
+#: front/dictionnary.php:96 inc/dropdown.class.php:738
 #: inc/monitortype.class.php:44 inc/rule.class.php:372
 msgid "Monitor type"
 msgid_plural "Monitor types"
 msgstr[0] "モニタータイプ"
 
-#: front/dictionnary.php:99 inc/dropdown.class.php:738
+#: front/dictionnary.php:99 inc/dropdown.class.php:737
 #: inc/printertype.class.php:44 inc/rule.class.php:385
 msgid "Printer type"
 msgid_plural "Printer types"
@@ -1867,7 +1867,7 @@ msgid "Network equipment type"
 msgid_plural "Network equipment types"
 msgstr[0] "ネットワーク機器タイプ"
 
-#: front/dictionnary.php:109 inc/dropdown.class.php:741
+#: front/dictionnary.php:109 inc/dropdown.class.php:740
 #: inc/phonetype.class.php:44 inc/rule.class.php:424
 msgid "Phone type"
 msgid_plural "Phone types"
@@ -1875,11 +1875,11 @@ msgstr[0] "電話機タイプ"
 
 #: front/dictionnary.php:116 front/dictionnary.php:119
 #: front/stat.location.php:85 inc/computer.class.php:543
-#: inc/computer.class.php:699 inc/dropdown.class.php:797
-#: inc/dropdown.class.php:798 inc/operatingsystem.class.php:43
+#: inc/computer.class.php:699 inc/dropdown.class.php:796
+#: inc/dropdown.class.php:797 inc/operatingsystem.class.php:43
 #: inc/report.class.php:206 inc/rule.class.php:437
 #: inc/ruledictionnaryoperatingsystem.class.php:54
-#: inc/ruledictionnaryoperatingsystem.class.php:66 inc/software.class.php:589
+#: inc/ruledictionnaryoperatingsystem.class.php:66 inc/software.class.php:595
 #: inc/softwareversion.class.php:132 inc/softwareversion.class.php:165
 #: inc/softwareversion.class.php:288
 msgid "Operating system"
@@ -1887,7 +1887,7 @@ msgid_plural "Operating systems"
 msgstr[0] "OS"
 
 #: front/dictionnary.php:122 inc/computer.class.php:549
-#: inc/computer.class.php:709 inc/dropdown.class.php:804
+#: inc/computer.class.php:709 inc/dropdown.class.php:803
 #: inc/operatingsystemservicepack.class.php:43 inc/rule.class.php:450
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:57
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:70
@@ -1896,12 +1896,12 @@ msgid_plural "Service packs"
 msgstr[0] "サービスパック"
 
 #: front/dictionnary.php:124 inc/computer_softwareversion.class.php:295
-#: inc/computer_softwareversion.class.php:769
-#: inc/computer_softwareversion.class.php:882 inc/lock.class.php:484
+#: inc/computer_softwareversion.class.php:768
+#: inc/computer_softwareversion.class.php:881 inc/lock.class.php:484
 #: inc/plugin.class.php:352
 #: inc/ruledictionnaryoperatingsystemversion.class.php:57
 #: inc/ruledictionnaryoperatingsystemversion.class.php:70
-#: inc/ruledictionnarysoftware.class.php:110 inc/software.class.php:558
+#: inc/ruledictionnarysoftware.class.php:110 inc/software.class.php:564
 #: inc/softwareversion.class.php:52
 msgid "Version"
 msgid_plural "Versions"
@@ -1957,7 +1957,7 @@ msgstr "ハードウェアのIDを検索"
 
 #: front/find_num.php:83 inc/authldap.class.php:2795 inc/knowbase.class.php:66
 #: inc/knowbaseitem.class.php:800 inc/planning.class.php:523
-#: inc/reservationitem.class.php:379 inc/search.class.php:1748
+#: inc/reservationitem.class.php:379 inc/search.class.php:1736
 msgctxt "button"
 msgid "Search"
 msgstr "検索"
@@ -1973,7 +1973,7 @@ msgstr "検索"
 #: inc/notificationtargetticket.class.php:611 inc/peripheral.class.php:235
 #: inc/peripheral.class.php:411 inc/phone.class.php:235
 #: inc/phone.class.php:442 inc/printer.class.php:337 inc/printer.class.php:564
-#: inc/search.class.php:4862
+#: inc/search.class.php:4850
 msgid "Alternate username"
 msgstr "代替ユーザ名"
 
@@ -1981,7 +1981,7 @@ msgstr "代替ユーザ名"
 msgid "Hardware type"
 msgstr "ハードウェアタイプ"
 
-#: front/find_num.php:93 inc/commonitilobject.class.php:5028
+#: front/find_num.php:93 inc/commonitilobject.class.php:5034
 #: inc/notificationtargetticket.class.php:608 inc/ruleticket.class.php:527
 #: inc/stat.class.php:1456 inc/ticket.class.php:2015 inc/ticket.class.php:4166
 #: inc/ticket.class.php:4916
@@ -1993,12 +1993,12 @@ msgstr "関連するエレメント"
 #: inc/cartridge.class.php:957 inc/cartridgeitem.class.php:278
 #: inc/commondbrelation.class.php:280 inc/commondbtm.class.php:3406
 #: inc/commondropdown.class.php:411 inc/commonitilcost.class.php:106
-#: inc/commonitilobject.class.php:2442 inc/commonitilobject.class.php:4779
+#: inc/commonitilobject.class.php:2442 inc/commonitilobject.class.php:4780
 #: inc/commontreedropdown.class.php:594 inc/computer.class.php:675
-#: inc/computer_softwarelicense.class.php:76 inc/consumable.class.php:524
+#: inc/computer_softwarelicense.class.php:82 inc/consumable.class.php:524
 #: inc/consumableitem.class.php:239 inc/contact.class.php:295
 #: inc/contract.class.php:579 inc/contractcost.class.php:137
-#: inc/contract_item.class.php:152 inc/crontask.class.php:1262
+#: inc/contract_item.class.php:152 inc/crontask.class.php:1263
 #: inc/document.class.php:752 inc/entity.class.php:448 inc/event.class.php:301
 #: inc/fieldunicity.class.php:322 inc/group_user.class.php:609
 #: inc/infocom.class.php:1442 inc/infocom.class.php:1564
@@ -2020,12 +2020,12 @@ msgstr "関連するエレメント"
 #: inc/notificationtargetticket.class.php:766
 #: inc/notificationtargetticket.class.php:773 inc/peripheral.class.php:377
 #: inc/phone.class.php:408 inc/printer.class.php:530 inc/problem.class.php:900
-#: inc/profile_user.class.php:845 inc/project.class.php:384
+#: inc/profile_user.class.php:849 inc/project.class.php:384
 #: inc/project.class.php:602 inc/projectcost.class.php:137
 #: inc/projecttask.class.php:571 inc/queuedmail.class.php:183
-#: inc/reservationitem.class.php:155 inc/search.class.php:4813
-#: inc/search.class.php:4834 inc/sla.class.php:222 inc/software.class.php:462
-#: inc/softwarelicense.class.php:821 inc/supplier.class.php:231
+#: inc/reservationitem.class.php:155 inc/search.class.php:4801
+#: inc/search.class.php:4822 inc/sla.class.php:222 inc/software.class.php:468
+#: inc/softwarelicense.class.php:852 inc/supplier.class.php:231
 #: inc/ticket.class.php:3749 inc/ticket.class.php:4390
 #: inc/ticket.class.php:5341 inc/ticket_ticket.class.php:65
 #: inc/user.class.php:2499 inc/user.class.php:3922
@@ -2036,10 +2036,10 @@ msgstr "ID"
 #: inc/change_item.class.php:172 inc/commondbtm.class.php:2798
 #: inc/commondbtm.class.php:3407 inc/computer.class.php:478
 #: inc/computer.class.php:734 inc/computer_item.class.php:444
-#: inc/computer_item.class.php:589 inc/computer_softwarelicense.class.php:481
+#: inc/computer_item.class.php:589 inc/computer_softwarelicense.class.php:487
 #: inc/computer_softwareversion.class.php:298
-#: inc/computer_softwareversion.class.php:975
-#: inc/computer_softwareversion.class.php:1062
+#: inc/computer_softwareversion.class.php:974
+#: inc/computer_softwareversion.class.php:1061
 #: inc/computervirtualmachine.class.php:268
 #: inc/computervirtualmachine.class.php:382 inc/contract_item.class.php:631
 #: inc/document_item.class.php:357 inc/item_devices.class.php:141
@@ -2054,9 +2054,9 @@ msgstr "ID"
 #: inc/notificationtargetticket.class.php:605 inc/peripheral.class.php:229
 #: inc/peripheral.class.php:401 inc/phone.class.php:229
 #: inc/phone.class.php:432 inc/printer.class.php:331 inc/printer.class.php:554
-#: inc/ruleimportcomputer.class.php:104 inc/search.class.php:4845
-#: inc/softwarelicense.class.php:244 inc/softwarelicense.class.php:361
-#: inc/softwarelicense.class.php:600 inc/softwarelicense.class.php:822
+#: inc/ruleimportcomputer.class.php:104 inc/search.class.php:4833
+#: inc/softwarelicense.class.php:270 inc/softwarelicense.class.php:387
+#: inc/softwarelicense.class.php:626 inc/softwarelicense.class.php:853
 #: inc/supplier.class.php:403 inc/user.class.php:3392 inc/user.class.php:3472
 msgid "Serial number"
 msgstr "シリアル番号"
@@ -2065,7 +2065,7 @@ msgstr "シリアル番号"
 #: inc/change_item.class.php:173 inc/commondbtm.class.php:2803
 #: inc/computer.class.php:488 inc/computer.class.php:739
 #: inc/computer_item.class.php:445 inc/computer_item.class.php:590
-#: inc/computer_softwarelicense.class.php:482
+#: inc/computer_softwarelicense.class.php:488
 #: inc/computer_softwareversion.class.php:299 inc/contract_item.class.php:632
 #: inc/document_item.class.php:358 inc/item_problem.class.php:176
 #: inc/item_project.class.php:172 inc/location.class.php:274
@@ -2077,14 +2077,14 @@ msgstr "シリアル番号"
 #: inc/notificationtargetticket.class.php:606 inc/peripheral.class.php:239
 #: inc/peripheral.class.php:406 inc/phone.class.php:238
 #: inc/phone.class.php:437 inc/printer.class.php:341 inc/printer.class.php:559
-#: inc/reservationitem.class.php:177 inc/search.class.php:4849
-#: inc/softwarelicense.class.php:256 inc/softwarelicense.class.php:366
+#: inc/reservationitem.class.php:177 inc/search.class.php:4837
+#: inc/softwarelicense.class.php:282 inc/softwarelicense.class.php:392
 #: inc/supplier.class.php:404 inc/user.class.php:3393 inc/user.class.php:3473
 msgid "Inventory number"
 msgstr "棚卸資産番号"
 
 #: front/find_num.php:99 inc/computer.class.php:64
-#: inc/computerdisk.class.php:164 inc/computer_softwarelicense.class.php:88
+#: inc/computerdisk.class.php:164 inc/computer_softwarelicense.class.php:94
 #: inc/computervirtualmachine.class.php:146
 #: inc/computervirtualmachine.class.php:327 inc/profile.class.php:778
 #: inc/profile.class.php:1510
@@ -2133,7 +2133,7 @@ msgstr "新しいチケット"
 
 #: front/helpdesk.public.php:94 inc/html.class.php:1298
 #: inc/html.class.php:1455 inc/html.class.php:1456 inc/html.class.php:1825
-#: inc/html.class.php:1893 inc/html.class.php:1933 inc/html.class.php:2020
+#: inc/html.class.php:1893 inc/html.class.php:1933 inc/html.class.php:2021
 msgid "Home"
 msgstr "ホーム"
 
@@ -2370,12 +2370,12 @@ msgstr "契約中のハードウェア一覧"
 #: inc/commontreedropdown.class.php:600 inc/computer.class.php:418
 #: inc/computer.class.php:669 inc/computerdisk.class.php:181
 #: inc/computerdisk.class.php:266 inc/computer_item.class.php:439
-#: inc/computer_item.class.php:584 inc/computer_softwarelicense.class.php:479
+#: inc/computer_item.class.php:584 inc/computer_softwarelicense.class.php:485
 #: inc/computer_softwareversion.class.php:296
-#: inc/computer_softwareversion.class.php:768
-#: inc/computer_softwareversion.class.php:881
-#: inc/computer_softwareversion.class.php:974
-#: inc/computer_softwareversion.class.php:1061
+#: inc/computer_softwareversion.class.php:767
+#: inc/computer_softwareversion.class.php:880
+#: inc/computer_softwareversion.class.php:973
+#: inc/computer_softwareversion.class.php:1060
 #: inc/computervirtualmachine.class.php:164
 #: inc/computervirtualmachine.class.php:253
 #: inc/computervirtualmachine.class.php:266
@@ -2386,7 +2386,7 @@ msgstr "契約中のハードウェア一覧"
 #: inc/contract.class.php:772 inc/contractcost.class.php:266
 #: inc/contractcost.class.php:354 inc/contract_item.class.php:425
 #: inc/contract_item.class.php:630 inc/contract_supplier.class.php:216
-#: inc/crontask.class.php:393 inc/crontask.class.php:1256
+#: inc/crontask.class.php:394 inc/crontask.class.php:1257
 #: inc/db.function.php:1257 inc/document.class.php:360
 #: inc/document.class.php:746 inc/document_item.class.php:355
 #: inc/document_item.class.php:524 inc/entity.class.php:454
@@ -2439,12 +2439,12 @@ msgstr "契約中のハードウェア一覧"
 #: inc/rulecollection.class.php:509 inc/rulecollection.class.php:1167
 #: inc/rulecriteria.class.php:157 inc/ruledictionnaryprinter.class.php:75
 #: inc/ruledictionnaryprinter.class.php:97 inc/ruleright.class.php:76
-#: inc/search.class.php:4807 inc/search.class.php:4828 inc/sla.class.php:149
+#: inc/search.class.php:4795 inc/search.class.php:4816 inc/sla.class.php:149
 #: inc/sla.class.php:216 inc/slalevel.class.php:124 inc/slalevel.class.php:170
-#: inc/slalevel.class.php:284 inc/software.class.php:238
-#: inc/software.class.php:456 inc/software.class.php:958
-#: inc/softwarelicense.class.php:240 inc/softwarelicense.class.php:356
-#: inc/softwarelicense.class.php:598 inc/softwareversion.class.php:127
+#: inc/slalevel.class.php:284 inc/software.class.php:244
+#: inc/software.class.php:462 inc/software.class.php:964
+#: inc/softwarelicense.class.php:266 inc/softwarelicense.class.php:382
+#: inc/softwarelicense.class.php:624 inc/softwareversion.class.php:127
 #: inc/softwareversion.class.php:160 inc/supplier.class.php:130
 #: inc/supplier.class.php:225 inc/supplier.class.php:402
 #: inc/tickettemplatehiddenfield.class.php:246
@@ -2458,7 +2458,7 @@ msgstr "名前"
 #: front/report.contract.list.php:120 front/report.year.list.php:131
 #: front/stat.graph.php:140 front/stat.location.php:86
 #: front/stat.tracking.php:94 inc/commondbtm.class.php:2818
-#: inc/computer.class.php:435 inc/computer_softwarelicense.class.php:483
+#: inc/computer.class.php:435 inc/computer_softwarelicense.class.php:489
 #: inc/computer_softwareversion.class.php:300 inc/config.class.php:474
 #: inc/db.function.php:1280 inc/dropdown.class.php:712
 #: inc/location.class.php:80 inc/location.class.php:90
@@ -2471,7 +2471,7 @@ msgstr "名前"
 #: inc/notificationtargetticket.class.php:626 inc/peripheral.class.php:188
 #: inc/phone.class.php:188 inc/printer.class.php:290
 #: inc/profile.class.php:1412 inc/ruleimportentity.class.php:165
-#: inc/ruleticket.class.php:567 inc/software.class.php:247
+#: inc/ruleticket.class.php:567 inc/software.class.php:253
 #: inc/ticket.class.php:2039 inc/ticket.class.php:3225
 #: inc/ticket.class.php:4291 inc/user.class.php:1949 inc/user.class.php:2068
 #: inc/user.class.php:2261
@@ -2495,7 +2495,7 @@ msgstr "保証終了日"
 #: front/report.contract.list.php:123 front/report.year.list.php:134
 #: inc/contract.class.php:176 inc/contract_item.class.php:428
 #: inc/contract_supplier.class.php:219 inc/contracttype.class.php:44
-#: inc/dropdown.class.php:747
+#: inc/dropdown.class.php:746
 msgid "Contract type"
 msgid_plural "Contract types"
 msgstr[0] "契約タイプ"
@@ -2505,7 +2505,7 @@ msgid "Hardware under contract"
 msgstr "契約中のハードウェア"
 
 #: front/report.contract.php:51 front/report.year.php:52
-#: inc/crontask.class.php:1302 inc/notificationtargetinfocom.class.php:92
+#: inc/crontask.class.php:1303 inc/notificationtargetinfocom.class.php:92
 #: inc/notificationtargetplanningrecall.class.php:151
 #: inc/notificationtargetreservation.class.php:146
 #: inc/notificationtargetticket.class.php:603
@@ -2636,7 +2636,7 @@ msgid "Replay the rules dictionary"
 msgstr "ルールリストを再適用"
 
 #: front/rule.common.php:76 inc/migration.class.php:86
-#: inc/software.class.php:999 install/update.php:129
+#: inc/software.class.php:1005 install/update.php:129
 msgid "Work in progress..."
 msgstr "作業中…"
 
@@ -2665,7 +2665,7 @@ msgstr[0] "ブラックリスト"
 msgid "Search"
 msgstr "検索"
 
-#: front/setup.auth.php:41 inc/auth.class.php:876 inc/dropdown.class.php:845
+#: front/setup.auth.php:41 inc/auth.class.php:876 inc/dropdown.class.php:844
 msgid "External authentications"
 msgstr "外部認証"
 
@@ -2785,7 +2785,7 @@ msgstr "%1$s はバージョン %2$s を更新しました"
 #: front/stat.global.php:36 front/stat.graph.php:36 front/stat.item.php:36
 #: front/stat.location.php:36 front/stat.php:36 front/stat.tracking.php:36
 #: inc/change.class.php:180 inc/commonitilobject.class.php:2586
-#: inc/crontask.class.php:902 inc/crontasklog.class.php:78
+#: inc/crontask.class.php:903 inc/crontasklog.class.php:78
 #: inc/problem.class.php:177 inc/problem.class.php:188
 #: inc/profile.class.php:1066 inc/profile.class.php:1924 inc/stat.class.php:52
 #: inc/ticket.class.php:554
@@ -2818,12 +2818,12 @@ msgid "Number"
 msgstr "番号"
 
 #: front/stat.global.php:145 front/stat.graph.php:386
-#: inc/commonitilobject.class.php:4123 inc/stat.class.php:475
+#: inc/commonitilobject.class.php:4124 inc/stat.class.php:475
 msgid "Closure"
 msgstr "終了"
 
 #: front/stat.global.php:146 front/stat.graph.php:387
-#: inc/commonitilobject.class.php:4112 inc/stat.class.php:474
+#: inc/commonitilobject.class.php:4113 inc/stat.class.php:474
 msgid "Resolution"
 msgstr "解決"
 
@@ -2832,12 +2832,12 @@ msgid "Real duration"
 msgstr "実際の時間"
 
 #: front/stat.global.php:151 front/stat.graph.php:392
-#: inc/commonitilobject.class.php:4101 inc/stat.class.php:472
+#: inc/commonitilobject.class.php:4102 inc/stat.class.php:472
 msgid "Take into account"
 msgstr "考慮中"
 
 #: front/stat.global.php:185 front/stat.graph.php:425
-#: inc/crontask.class.php:953 inc/stat.class.php:419
+#: inc/crontask.class.php:954 inc/stat.class.php:419
 msgid "Average time"
 msgstr "平均時間"
 
@@ -2902,9 +2902,9 @@ msgstr[0] "サプライヤ管理"
 #: inc/commonitilobject.class.php:2856 inc/commonitilobject.class.php:3000
 #: inc/commonitilvalidation.class.php:613
 #: inc/commonitilvalidation.class.php:1216 inc/computer.class.php:499
-#: inc/computer.class.php:759 inc/computer_softwarelicense.class.php:486
+#: inc/computer.class.php:759 inc/computer_softwarelicense.class.php:492
 #: inc/computer_softwareversion.class.php:303 inc/config.class.php:472
-#: inc/dropdown.class.php:831 inc/group.class.php:289
+#: inc/dropdown.class.php:830 inc/group.class.php:289
 #: inc/group_user.class.php:627 inc/knowbaseitem.class.php:1454
 #: inc/knowbaseitem.class.php:1562 inc/log.class.php:285
 #: inc/monitor.class.php:257 inc/monitor.class.php:446
@@ -2922,13 +2922,13 @@ msgstr[0] "サプライヤ管理"
 #: inc/printer.class.php:352 inc/printer.class.php:574
 #: inc/profile.class.php:1303 inc/profile.class.php:1829
 #: inc/profile_user.class.php:296 inc/profile_user.class.php:336
-#: inc/profile_user.class.php:484 inc/profile_user.class.php:863
-#: inc/profile_user.class.php:925 inc/profile_user.class.php:941
+#: inc/profile_user.class.php:484 inc/profile_user.class.php:867
+#: inc/profile_user.class.php:929 inc/profile_user.class.php:945
 #: inc/project.class.php:857 inc/reminder.class.php:1204
 #: inc/reservationitem.class.php:188 inc/rssfeed.class.php:1037
 #: inc/rulecollection.class.php:807 inc/rulemailcollector.class.php:133
-#: inc/ruleticket.class.php:538 inc/search.class.php:4858
-#: inc/software.class.php:280 inc/software.class.php:505
+#: inc/ruleticket.class.php:538 inc/search.class.php:4846
+#: inc/software.class.php:286 inc/software.class.php:511
 #: inc/ticketfollowup.class.php:850 inc/user.class.php:59
 #: install/update_0713_072.php:553
 msgid "User"
@@ -2940,9 +2940,9 @@ msgstr[0] "ユーザ"
 #: inc/auth.class.php:1358 inc/authldap.class.php:739
 #: inc/authldap.class.php:889 inc/authldap.class.php:2753
 #: inc/change.class.php:698 inc/commonitilobject.class.php:2527
-#: inc/commonitilobject.class.php:5030 inc/commonitiltask.class.php:1138
+#: inc/commonitilobject.class.php:5036 inc/commonitiltask.class.php:1138
 #: inc/commonitiltask.class.php:1374
-#: inc/computer_softwareversion.class.php:724 inc/db.function.php:1292
+#: inc/computer_softwareversion.class.php:723 inc/db.function.php:1292
 #: inc/knowbaseitem.class.php:700 inc/knowbaseitem.class.php:846
 #: inc/knowbaseitem.class.php:1124 inc/knowbaseitem.class.php:1186
 #: inc/knowbaseitem.class.php:1415
@@ -2951,7 +2951,7 @@ msgstr[0] "ユーザ"
 #: inc/notificationtargetcommonitilobject.class.php:1067
 #: inc/problem.class.php:1106 inc/rulesoftwarecategory.class.php:92
 #: inc/ruleticket.class.php:327 inc/ruleticket.class.php:450
-#: inc/software.class.php:251 inc/software.class.php:475
+#: inc/software.class.php:257 inc/software.class.php:481
 #: inc/ticket.class.php:3154 inc/ticket.class.php:3983 inc/user.class.php:1928
 #: inc/user.class.php:2654
 msgid "Category"
@@ -2963,7 +2963,7 @@ msgstr "カテゴリ"
 #: inc/commondbtm.class.php:2835 inc/commonitilobject.class.php:2874
 #: inc/commonitilobject.class.php:3003 inc/commonitilvalidation.class.php:614
 #: inc/commonitilvalidation.class.php:1217 inc/computer.class.php:511
-#: inc/computer.class.php:765 inc/computer_softwarelicense.class.php:485
+#: inc/computer.class.php:765 inc/computer_softwarelicense.class.php:491
 #: inc/computer_softwareversion.class.php:302 inc/config.class.php:473
 #: inc/group.class.php:48 inc/group_user.class.php:621
 #: inc/itilcategory.class.php:119 inc/knowbaseitem.class.php:1579
@@ -2981,15 +2981,15 @@ msgstr "カテゴリ"
 #: inc/project.class.php:864 inc/reminder.class.php:1220
 #: inc/reservationitem.class.php:195 inc/rssfeed.class.php:1054
 #: inc/rulemailcollector.class.php:134 inc/ruleticket.class.php:544
-#: inc/search.class.php:4872 inc/software.class.php:288
-#: inc/software.class.php:511 inc/user.class.php:2545 inc/user.class.php:3513
+#: inc/search.class.php:4860 inc/software.class.php:294
+#: inc/software.class.php:517 inc/user.class.php:2545 inc/user.class.php:3513
 msgid "Group"
 msgid_plural "Groups"
 msgstr[0] "グループ"
 
 #: front/stat.graph.php:179 front/stat.tracking.php:88
 #: inc/change.class.php:713 inc/commonitilobject.class.php:2466
-#: inc/commonitilobject.class.php:5024 inc/commonitiltask.class.php:949
+#: inc/commonitilobject.class.php:5030 inc/commonitiltask.class.php:949
 #: inc/commonitiltask.class.php:958
 #: inc/notificationtargetcommonitilobject.class.php:1008
 #: inc/notificationtargetproject.class.php:568 inc/problem.class.php:1121
@@ -3029,8 +3029,8 @@ msgid "Title"
 msgstr "役職"
 
 #: front/stat.graph.php:208 front/stat.tracking.php:89
-#: inc/commonitilobject.class.php:2569 inc/commonitilobject.class.php:3799
-#: inc/commonitilobject.class.php:3875 inc/dropdown.class.php:724
+#: inc/commonitilobject.class.php:2569 inc/commonitilobject.class.php:3800
+#: inc/commonitilobject.class.php:3876 inc/dropdown.class.php:723
 #: inc/notificationtargetcommonitilobject.class.php:1032
 #: inc/solutiontemplate.class.php:57 inc/solutiontemplate.class.php:79
 #: inc/solutiontype.class.php:44
@@ -3039,7 +3039,7 @@ msgid_plural "Solution types"
 msgstr[0] "解決方法タイプ"
 
 #: front/stat.graph.php:224 front/stat.tracking.php:93
-#: inc/dropdown.class.php:725 inc/notificationtargetticket.class.php:602
+#: inc/dropdown.class.php:724 inc/notificationtargetticket.class.php:602
 #: inc/notificationtargetticket.class.php:620 inc/requesttype.class.php:44
 #: inc/ruleticket.class.php:407 inc/ticket.class.php:2033
 #: inc/ticket.class.php:2163 inc/ticket.class.php:4059
@@ -3052,8 +3052,8 @@ msgstr[0] "依頼元"
 #: inc/commonglpi.class.php:753 inc/commonglpi.class.php:754
 #: inc/commonglpi.class.php:757 inc/commonglpi.class.php:938
 #: inc/commonglpi.class.php:939 inc/commonglpi.class.php:942
-#: inc/html.class.php:3811 inc/html.class.php:3812 inc/html.class.php:3965
-#: inc/html.class.php:3966 inc/planning.class.php:324
+#: inc/html.class.php:3813 inc/html.class.php:3814 inc/html.class.php:3967
+#: inc/html.class.php:3968 inc/planning.class.php:324
 #: inc/planning.class.php:325 inc/reservation.class.php:470
 #: inc/reservation.class.php:471
 msgid "Previous"
@@ -3063,8 +3063,8 @@ msgstr "前"
 #: inc/commonglpi.class.php:799 inc/commonglpi.class.php:800
 #: inc/commonglpi.class.php:803 inc/commonglpi.class.php:951
 #: inc/commonglpi.class.php:952 inc/commonglpi.class.php:955
-#: inc/html.class.php:3832 inc/html.class.php:3833 inc/html.class.php:4016
-#: inc/html.class.php:4017 inc/planning.class.php:405
+#: inc/html.class.php:3834 inc/html.class.php:3835 inc/html.class.php:4018
+#: inc/html.class.php:4019 inc/planning.class.php:405
 #: inc/planning.class.php:406 inc/reservation.class.php:475
 #: inc/reservation.class.php:476
 msgid "Next"
@@ -3074,7 +3074,7 @@ msgstr "次"
 #: inc/notificationtargetchange.class.php:202
 #: inc/notificationtargetproblem.class.php:207
 #: inc/notificationtargetprojecttask.class.php:506 inc/problem.class.php:464
-#: inc/search.class.php:4908
+#: inc/search.class.php:4896
 msgctxt "quantity"
 msgid "Number of tickets"
 msgstr "チケット数"
@@ -3105,8 +3105,8 @@ msgstr "完了数"
 
 #: front/stat.tracking.php:77 front/stat.tracking.php:99
 #: inc/commonitilobject.class.php:2322 inc/commonitilobject.class.php:2617
-#: inc/commonitilobject.class.php:2623 inc/commonitilobject.class.php:3354
-#: inc/commonitilobject.class.php:5025 inc/commonitilvalidation.class.php:1099
+#: inc/commonitilobject.class.php:2623 inc/commonitilobject.class.php:3355
+#: inc/commonitilobject.class.php:5031 inc/commonitilvalidation.class.php:1099
 #: inc/group.class.php:256 inc/group.class.php:448
 #: inc/notificationtargetcommonitilobject.class.php:423
 #: inc/notificationtargetcommonitilobject.class.php:441
@@ -3127,7 +3127,7 @@ msgstr[0] "依頼者"
 #: front/stat.tracking.php:78 inc/commonitilobject.class.php:2668
 #: inc/commonitiltask.class.php:607 inc/commonitiltask.class.php:1351
 #: inc/knowbaseitem.class.php:585 inc/knowbaseitem.class.php:732
-#: inc/knowbaseitem.class.php:1184 inc/notepad.class.php:178
+#: inc/knowbaseitem.class.php:1184 inc/notepad.class.php:182
 #: inc/notificationtargetcommonitilobject.class.php:424
 #: inc/notificationtargetcommonitilobject.class.php:426
 #: inc/notificationtargetcommonitilobject.class.php:1024
@@ -3157,10 +3157,10 @@ msgstr "ロケーションツリー"
 #: inc/commondevice.class.php:151 inc/commondropdown.class.php:401
 #: inc/commonitilcost.class.php:95 inc/commonitilobject.class.php:2420
 #: inc/commonitiltask.class.php:507 inc/commontreedropdown.class.php:584
-#: inc/computer.class.php:665 inc/computer_softwarelicense.class.php:72
+#: inc/computer.class.php:665 inc/computer_softwarelicense.class.php:78
 #: inc/consumableitem.class.php:229 inc/contact.class.php:280
 #: inc/contract.class.php:569 inc/contractcost.class.php:126
-#: inc/crontask.class.php:1252 inc/document.class.php:742
+#: inc/crontask.class.php:1253 inc/document.class.php:742
 #: inc/entity.class.php:438 inc/group_user.class.php:605
 #: inc/infocom.class.php:1438 inc/knowbaseitem.class.php:1405
 #: inc/link.class.php:167 inc/mailcollector.class.php:341
@@ -3172,12 +3172,12 @@ msgstr "ロケーションツリー"
 #: inc/notificationtemplatetranslation.class.php:277
 #: inc/peripheral.class.php:367 inc/phone.class.php:398
 #: inc/printer.class.php:520 inc/profile.class.php:1469
-#: inc/profile_user.class.php:841 inc/project.class.php:374
+#: inc/profile_user.class.php:845 inc/project.class.php:374
 #: inc/projectcost.class.php:126 inc/projecttask.class.php:561
 #: inc/queuedmail.class.php:173 inc/reminder.class.php:373
 #: inc/reservationitem.class.php:144 inc/rssfeed.class.php:389
-#: inc/search.class.php:4803 inc/search.class.php:4824 inc/sla.class.php:212
-#: inc/software.class.php:452 inc/softwarelicense.class.php:352
+#: inc/search.class.php:4791 inc/search.class.php:4812 inc/sla.class.php:212
+#: inc/software.class.php:458 inc/softwarelicense.class.php:378
 #: inc/softwareversion.class.php:156 inc/supplier.class.php:221
 #: inc/ticketfollowup.class.php:825 inc/transfer.class.php:84
 #: inc/user.class.php:2488
@@ -3185,7 +3185,7 @@ msgid "Characteristics"
 msgstr "プロパティ"
 
 #: front/stat.tracking.php:101 inc/commonitilobject.class.php:2324
-#: inc/commonitilobject.class.php:2712 inc/commonitilobject.class.php:3408
+#: inc/commonitilobject.class.php:2712 inc/commonitilobject.class.php:3409
 #: inc/group.class.php:262 inc/group.class.php:453
 #: inc/notificationtargetcommonitilobject.class.php:1098
 msgid "Assigned to"
@@ -3317,7 +3317,7 @@ msgstr "親エンティティの継承"
 #: inc/config.class.php:331 inc/config.class.php:613 inc/config.class.php:911
 #: inc/config.class.php:1001 inc/consumableitem.class.php:199
 #: inc/consumableitem.class.php:308 inc/contract.class.php:1285
-#: inc/contract.class.php:1304 inc/crontask.class.php:468
+#: inc/contract.class.php:1304 inc/crontask.class.php:469
 #: inc/entity.class.php:707 inc/entity.class.php:1401
 #: inc/entity.class.php:1403 inc/entity.class.php:1441
 #: inc/entity.class.php:1443 inc/entity.class.php:1841
@@ -3325,21 +3325,21 @@ msgstr "親エンティティの継承"
 #: inc/entity.class.php:2239 inc/entity.class.php:2262
 #: inc/infocom.class.php:1657 inc/notificationtargetticket.class.php:288
 #: inc/profile.class.php:605 inc/sla.class.php:161
-#: inc/softwarelicense.class.php:307 inc/transfer.class.php:3093
+#: inc/softwarelicense.class.php:333 inc/transfer.class.php:3093
 msgid "Never"
 msgstr "無効"
 
-#: inc/alert.class.php:124 inc/crontask.class.php:1648
+#: inc/alert.class.php:124 inc/crontask.class.php:1649
 #: inc/entity.class.php:2242
 msgid "Each day"
 msgstr "毎日"
 
-#: inc/alert.class.php:125 inc/crontask.class.php:1653
+#: inc/alert.class.php:125 inc/crontask.class.php:1654
 #: inc/entity.class.php:2245
 msgid "Each week"
 msgstr "毎週"
 
-#: inc/alert.class.php:126 inc/crontask.class.php:1654
+#: inc/alert.class.php:126 inc/crontask.class.php:1655
 #: inc/entity.class.php:2248
 msgid "Each month"
 msgstr "毎月"
@@ -3352,7 +3352,7 @@ msgstr "毎月"
 #: inc/entity.class.php:1575 inc/entity.class.php:2142
 #: inc/entity.class.php:2227 inc/entity.class.php:2383
 #: inc/plugin.class.php:455 inc/ruleimportcomputer.class.php:164
-#: inc/search.class.php:3013
+#: inc/search.class.php:3001
 msgid "No"
 msgstr "いいえ"
 
@@ -3360,7 +3360,7 @@ msgstr "いいえ"
 #: inc/config.class.php:369 inc/config.class.php:908
 #: inc/dropdown.class.php:652 inc/dropdown.class.php:670
 #: inc/plugin.class.php:452 inc/rule.class.php:2125
-#: inc/ruleimportcomputer.class.php:190 inc/search.class.php:3015
+#: inc/ruleimportcomputer.class.php:190 inc/search.class.php:3003
 msgid "Yes"
 msgstr "はい"
 
@@ -3514,7 +3514,7 @@ msgstr "x509認証のための %s フィールドの限定 (セパレータは$)
 msgid "Other authentication sent in the HTTP request"
 msgstr "HTTPリクエストで送信される値を使用したその他の認証"
 
-#: inc/auth.class.php:1270 inc/dropdown.class.php:846
+#: inc/auth.class.php:1270 inc/dropdown.class.php:845
 #: inc/ssovariable.class.php:47
 msgid "Field storage of the login in the HTTP request"
 msgid_plural "Fields storage of the login in the HTTP request"
@@ -3618,11 +3618,11 @@ msgstr "デフォルト値"
 #: inc/authmail.class.php:128 inc/budget.class.php:150
 #: inc/budget.class.php:202 inc/change.class.php:649
 #: inc/commondropdown.class.php:438 inc/commonitilobject.class.php:2521
-#: inc/commonitilobject.class.php:5018 inc/commontreedropdown.class.php:634
+#: inc/commonitilobject.class.php:5024 inc/commontreedropdown.class.php:634
 #: inc/computer.class.php:771 inc/document.class.php:798
 #: inc/knowbaseitem.class.php:1448 inc/mailcollector.class.php:378
 #: inc/monitor.class.php:458 inc/networkequipment.class.php:511
-#: inc/notepad.class.php:188
+#: inc/notepad.class.php:192
 #: inc/notificationtargetplanningrecall.class.php:146
 #: inc/notificationtargetproject.class.php:563
 #: inc/notificationtargetproject.class.php:584
@@ -3635,8 +3635,8 @@ msgstr "デフォルト値"
 #: inc/project.class.php:796 inc/projecttask.class.php:373
 #: inc/projecttask.class.php:613 inc/reminder.class.php:431
 #: inc/reservationitem.class.php:201 inc/rssfeed.class.php:455
-#: inc/search.class.php:4876 inc/sla.class.php:159 inc/software.class.php:480
-#: inc/softwarelicense.class.php:305 inc/ticket.class.php:3915
+#: inc/search.class.php:4864 inc/sla.class.php:159 inc/software.class.php:486
+#: inc/softwarelicense.class.php:331 inc/ticket.class.php:3915
 #: inc/transfer.class.php:94 inc/transfer.class.php:3091
 #: inc/user.class.php:2597
 msgid "Last update"
@@ -3691,7 +3691,7 @@ msgid "Password (for non-anonymous binds)"
 msgstr "パスワード (非匿名認証用)"
 
 #: inc/authldap.class.php:380 inc/config.class.php:499
-#: inc/config.class.php:1349 inc/html.class.php:2823 inc/html.class.php:3032
+#: inc/config.class.php:1349 inc/html.class.php:2824 inc/html.class.php:3033
 #: inc/mailcollector.class.php:270 inc/notificationmailsetting.class.php:204
 msgid "Clear"
 msgstr "クリアする"
@@ -3730,9 +3730,9 @@ msgid "Maximum number of results"
 msgstr "結果表示の最大値"
 
 #: inc/authldap.class.php:465 inc/contract.class.php:262
-#: inc/search.class.php:4120 inc/softwarelicense.class.php:280
-#: inc/softwarelicense.class.php:375 inc/softwarelicense.class.php:748
-#: inc/softwarelicense.class.php:774
+#: inc/search.class.php:4108 inc/softwarelicense.class.php:306
+#: inc/softwarelicense.class.php:401 inc/softwarelicense.class.php:779
+#: inc/softwarelicense.class.php:805
 msgid "Unlimited"
 msgstr "無制限"
 
@@ -3921,7 +3921,7 @@ msgid "To change"
 msgstr "変更するには"
 
 #: inc/authldap.class.php:2711 inc/entity.class.php:824
-#: inc/html.class.php:3429 inc/rulecollection.class.php:1198
+#: inc/html.class.php:3430 inc/rulecollection.class.php:1198
 msgid "Select the desired entity"
 msgstr "要望のエンティティを選択"
 
@@ -3963,7 +3963,7 @@ msgid "View updated users"
 msgstr "更新したユーザの表示"
 
 #: inc/authldap.class.php:3019 inc/networkport.class.php:817
-#: inc/software.class.php:319
+#: inc/software.class.php:325
 msgid "from"
 msgstr "開始"
 
@@ -3998,7 +3998,7 @@ msgstr "メールドメイン名 (ユーザのメールは ユーザ名@ドメ�
 #: inc/mailcollector.class.php:310 inc/monitor.class.php:343
 #: inc/networkequipment.class.php:416 inc/peripheral.class.php:310
 #: inc/phone.class.php:349 inc/printer.class.php:471 inc/rule.class.php:864
-#: inc/software.class.php:310 inc/user.class.php:2007
+#: inc/software.class.php:316 inc/user.class.php:2007
 #, php-format
 msgid "Last update on %s"
 msgstr "最終更新日時 %s"
@@ -4017,13 +4017,13 @@ msgid "Update Source"
 msgid_plural "Update Sources"
 msgstr[0] "更新元"
 
-#: inc/backup.class.php:63 inc/commondbtm.class.php:4264 inc/log.class.php:632
+#: inc/backup.class.php:63 inc/commondbtm.class.php:4269 inc/log.class.php:632
 #: inc/profile.class.php:2208 inc/reminder.class.php:1319
 #: inc/report.class.php:439 inc/rssfeed.class.php:1154 inc/stat.class.php:1609
 msgid "Read"
 msgstr "参照"
 
-#: inc/backup.class.php:64 inc/commondbtm.class.php:4263
+#: inc/backup.class.php:64 inc/commondbtm.class.php:4268
 msgid "Create"
 msgstr "作成"
 
@@ -4077,8 +4077,8 @@ msgstr "前"
 
 #: inc/bookmark.class.php:102 inc/commontreedropdown.class.php:495
 #: inc/commontreedropdown.class.php:518
-#: inc/computer_softwarelicense.class.php:455
-#: inc/computer_softwareversion.class.php:457 inc/group.class.php:377
+#: inc/computer_softwarelicense.class.php:461
+#: inc/computer_softwareversion.class.php:456 inc/group.class.php:377
 #: inc/networkport.class.php:1113 inc/rule.class.php:623
 msgctxt "button"
 msgid "Move"
@@ -4113,8 +4113,9 @@ msgid "Partial load of the bookmark."
 msgstr "ブックマークの一部が読み込まれました。"
 
 #: inc/bookmark.class.php:668
-msgid "Bookmarks"
-msgstr "ブックマーク"
+msgid "Bookmark"
+msgid_plural "Bookmarks"
+msgstr[0] ""
 
 #: inc/bookmark.class.php:670
 msgid "Default view"
@@ -4122,7 +4123,7 @@ msgstr "デフォルト表示"
 
 #. TRANS: select action 'update' (before doing it)
 #: inc/bookmark.class.php:708 inc/cartridge.class.php:83
-#: inc/massiveaction.class.php:544 inc/notepad.class.php:315
+#: inc/massiveaction.class.php:544 inc/notepad.class.php:311
 #: inc/notificationtarget.class.php:338 inc/rule.class.php:2741
 msgctxt "button"
 msgid "Update"
@@ -4245,10 +4246,10 @@ msgstr[0] "関連アイテム"
 #: inc/change_ticket.class.php:268 inc/change_ticket.class.php:366
 #: inc/commondbtm.class.php:3577 inc/commonitilcost.class.php:496
 #: inc/commonitilvalidation.class.php:819 inc/computerdisk.class.php:282
-#: inc/computer_softwarelicense.class.php:470
-#: inc/computer_softwareversion.class.php:438
-#: inc/computer_softwareversion.class.php:712
-#: inc/computer_softwareversion.class.php:717
+#: inc/computer_softwarelicense.class.php:476
+#: inc/computer_softwareversion.class.php:437
+#: inc/computer_softwareversion.class.php:711
+#: inc/computer_softwareversion.class.php:716
 #: inc/computervirtualmachine.class.php:327 inc/contact_supplier.class.php:234
 #: inc/contact_supplier.class.php:373 inc/contractcost.class.php:364
 #: inc/contract_item.class.php:439 inc/document_item.class.php:761
@@ -4262,12 +4263,12 @@ msgstr[0] "関連アイテム"
 #: inc/problem.class.php:1368 inc/problem_ticket.class.php:314
 #: inc/problem_ticket.class.php:417 inc/profile_user.class.php:343
 #: inc/project.class.php:751 inc/projectcost.class.php:365
-#: inc/projecttask.class.php:783 inc/projecttask_ticket.class.php:205
-#: inc/rule.class.php:2767 inc/search.class.php:1475 inc/search.class.php:1478
-#: inc/search.class.php:1505 inc/search.class.php:1522
-#: inc/search.class.php:1559 inc/search.class.php:1562
-#: inc/search.class.php:1589 inc/search.class.php:1606
-#: inc/slalevel.class.php:176 inc/softwarelicense.class.php:645
+#: inc/projecttask.class.php:782 inc/projecttask_ticket.class.php:205
+#: inc/rule.class.php:2767 inc/search.class.php:1472 inc/search.class.php:1474
+#: inc/search.class.php:1496 inc/search.class.php:1511
+#: inc/search.class.php:1547 inc/search.class.php:1550
+#: inc/search.class.php:1577 inc/search.class.php:1594
+#: inc/slalevel.class.php:176 inc/softwarelicense.class.php:670
 #: inc/softwareversion.class.php:280 inc/supplier.class.php:514
 #: inc/ticket.class.php:5240 inc/user.class.php:3513
 #, php-format
@@ -4276,10 +4277,10 @@ msgstr "%1$s = %2$s"
 
 #: inc/budget.class.php:444 inc/budget.class.php:584 inc/budget.class.php:612
 #: inc/cartridge.class.php:357 inc/cartridge.class.php:411
-#: inc/commonitilcost.class.php:550 inc/computer_softwarelicense.class.php:305
-#: inc/computer_softwareversion.class.php:622 inc/consumable.class.php:646
+#: inc/commonitilcost.class.php:550 inc/computer_softwarelicense.class.php:311
+#: inc/computer_softwareversion.class.php:621 inc/consumable.class.php:646
 #: inc/consumable.class.php:684 inc/item_project.class.php:247
-#: inc/softwarelicense.class.php:773 inc/softwareversion.class.php:308
+#: inc/softwarelicense.class.php:804 inc/softwareversion.class.php:308
 #: inc/stat.class.php:488 inc/state.class.php:160 inc/state.class.php:214
 #: inc/supplier.class.php:514
 msgid "Total"
@@ -4293,8 +4294,8 @@ msgstr "予算消化計"
 msgid "Total remaining on the budget"
 msgstr "予算残高計"
 
-#: inc/calendar.class.php:62 inc/dropdown.class.php:792
-#: inc/dropdown.class.php:793 inc/entity.class.php:726
+#: inc/calendar.class.php:62 inc/dropdown.class.php:791
+#: inc/dropdown.class.php:792 inc/entity.class.php:726
 #: inc/entity.class.php:1773 inc/profile.class.php:1433
 #: inc/profile.class.php:1745 inc/reminder.class.php:710 inc/sla.class.php:165
 #: inc/sla.class.php:228 inc/ticketrecurrent.class.php:162
@@ -4316,9 +4317,9 @@ msgstr "時間外時間の追加"
 #: inc/calendar_holiday.class.php:133 inc/calendarsegment.class.php:347
 #: inc/calendarsegment.class.php:375 inc/contract.class.php:293
 #: inc/contract.class.php:308 inc/contract.class.php:324
-#: inc/crontask.class.php:1111 inc/dbmysql.class.php:550
-#: inc/holiday.class.php:54 inc/holiday.class.php:76 inc/html.class.php:3808
-#: inc/html.class.php:3809 inc/html.class.php:3960 inc/html.class.php:3961
+#: inc/crontask.class.php:1112 inc/dbmysql.class.php:550
+#: inc/holiday.class.php:54 inc/holiday.class.php:76 inc/html.class.php:3810
+#: inc/html.class.php:3811 inc/html.class.php:3962 inc/html.class.php:3963
 #: inc/planning.class.php:500
 msgid "Start"
 msgstr "開始"
@@ -4327,9 +4328,9 @@ msgstr "開始"
 #: inc/calendarsegment.class.php:376 inc/commonitiltask.class.php:1067
 #: inc/contract.class.php:297 inc/contract.class.php:312
 #: inc/contract.class.php:328 inc/contract.class.php:1376
-#: inc/crontask.class.php:1121 inc/dbmysql.class.php:576
-#: inc/holiday.class.php:57 inc/holiday.class.php:81 inc/html.class.php:3835
-#: inc/html.class.php:3836 inc/html.class.php:4022 inc/html.class.php:4023
+#: inc/crontask.class.php:1122 inc/dbmysql.class.php:576
+#: inc/holiday.class.php:57 inc/holiday.class.php:81 inc/html.class.php:3837
+#: inc/html.class.php:3838 inc/html.class.php:4024 inc/html.class.php:4025
 #: inc/planning.class.php:505 inc/reminder.class.php:692
 msgid "End"
 msgstr "終了"
@@ -4340,7 +4341,7 @@ msgid "Recurrent"
 msgstr "反復"
 
 #: inc/calendar_holiday.class.php:204 inc/calendar_holiday.class.php:209
-#: inc/dropdown.class.php:794 inc/holiday.class.php:47
+#: inc/dropdown.class.php:793 inc/holiday.class.php:47
 msgid "Close time"
 msgid_plural "Close times"
 msgstr[0] "時間外時間"
@@ -4521,8 +4522,8 @@ msgid "No cartridge available"
 msgstr "使用可能なカートリッジはありません"
 
 #: inc/cartridge.class.php:904 inc/computer.class.php:650
-#: inc/computer_softwareversion.class.php:698
-#: inc/computer_softwareversion.class.php:858 inc/plugin.class.php:493
+#: inc/computer_softwareversion.class.php:697
+#: inc/computer_softwareversion.class.php:857 inc/plugin.class.php:493
 #: install/install.php:126
 msgctxt "button"
 msgid "Install"
@@ -4565,7 +4566,7 @@ msgstr "印刷したページ"
 #: inc/contract.class.php:636 inc/contract.class.php:637
 #: inc/contract.class.php:649 inc/contract.class.php:650
 #: inc/contract.class.php:651 inc/contract.class.php:652
-#: inc/contract_supplier.class.php:251 inc/dropdown.class.php:1356
+#: inc/contract_supplier.class.php:251 inc/dropdown.class.php:1355
 #: inc/infocom.class.php:1142 inc/ticketrecurrent.class.php:187
 #: inc/ticketrecurrent.class.php:216
 #, php-format
@@ -4593,8 +4594,8 @@ msgstr "基準"
 #: inc/peripheral.class.php:199 inc/peripheral.class.php:455
 #: inc/phone.class.php:199 inc/phone.class.php:496 inc/printer.class.php:301
 #: inc/printer.class.php:684 inc/reservationitem.class.php:214
-#: inc/search.class.php:4887 inc/software.class.php:256
-#: inc/software.class.php:492
+#: inc/search.class.php:4875 inc/software.class.php:262
+#: inc/software.class.php:498
 msgid "Technician in charge of the hardware"
 msgstr "ハードウェア担当技術者"
 
@@ -4608,7 +4609,7 @@ msgstr "ハードウェア担当技術者"
 #: inc/notificationtargetreservation.class.php:63 inc/peripheral.class.php:212
 #: inc/peripheral.class.php:462 inc/phone.class.php:212
 #: inc/phone.class.php:503 inc/printer.class.php:314 inc/printer.class.php:691
-#: inc/software.class.php:267 inc/software.class.php:499
+#: inc/software.class.php:273 inc/software.class.php:505
 msgid "Group in charge of the hardware"
 msgstr "ハードウェア担当グループ"
 
@@ -4658,35 +4659,35 @@ msgstr "互換プリンタモデルの追加"
 
 #: inc/cartridgeitem_printermodel.class.php:204
 #: inc/commonitilcost.class.php:557 inc/commonitilvalidation.class.php:863
-#: inc/computerdisk.class.php:314 inc/computer_softwarelicense.class.php:308
-#: inc/computer_softwarelicense.class.php:394
-#: inc/computer_softwarelicense.class.php:559
-#: inc/computer_softwareversion.class.php:376
-#: inc/computer_softwareversion.class.php:574
-#: inc/computer_softwareversion.class.php:625
-#: inc/computer_softwareversion.class.php:803 inc/contractcost.class.php:404
-#: inc/crontask.class.php:1019 inc/crontask.class.php:1064
-#: inc/crontask.class.php:1147 inc/displaypreference.class.php:624
+#: inc/computerdisk.class.php:314 inc/computer_softwarelicense.class.php:314
+#: inc/computer_softwarelicense.class.php:400
+#: inc/computer_softwarelicense.class.php:565
+#: inc/computer_softwareversion.class.php:375
+#: inc/computer_softwareversion.class.php:573
+#: inc/computer_softwareversion.class.php:624
+#: inc/computer_softwareversion.class.php:802 inc/contractcost.class.php:404
+#: inc/crontask.class.php:1020 inc/crontask.class.php:1065
+#: inc/crontask.class.php:1148 inc/displaypreference.class.php:624
 #: inc/group.class.php:775 inc/group_user.class.php:547
 #: inc/itilcategory.class.php:332 inc/knowbaseitem.class.php:1299
 #: inc/location.class.php:293 inc/netpoint.class.php:312
 #: inc/networkalias.class.php:391 inc/notificationtarget.class.php:1235
 #: inc/profile_user.class.php:252 inc/projectcost.class.php:405
-#: inc/projecttask.class.php:838 inc/rule.class.php:2730
-#: inc/search.class.php:5319 inc/software.class.php:977
-#: inc/softwarelicense.class.php:789 inc/softwareversion.class.php:314
+#: inc/projecttask.class.php:837 inc/rule.class.php:2730
+#: inc/search.class.php:5307 inc/software.class.php:983
+#: inc/softwarelicense.class.php:820 inc/softwareversion.class.php:314
 #: inc/state.class.php:226 inc/tickettemplatehiddenfield.class.php:260
 #: inc/tickettemplatemandatoryfield.class.php:280
 #: inc/tickettemplatepredefinedfield.class.php:348 inc/transfer.class.php:3338
 msgid "No item found"
 msgstr "アイテムはありません"
 
-#: inc/cartridgeitemtype.class.php:42 inc/dropdown.class.php:743
+#: inc/cartridgeitemtype.class.php:42 inc/dropdown.class.php:742
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
 msgstr[0] "プリンタカートリッジタイプ"
 
-#: inc/central.class.php:45 inc/profile.class.php:2278
+#: inc/central.class.php:47 inc/profile.class.php:2278
 #: inc/tickettemplate.class.php:305
 #: inc/tickettemplatemandatoryfield.class.php:187
 #: inc/tickettemplatemandatoryfield.class.php:219
@@ -4694,36 +4695,36 @@ msgstr[0] "プリンタカートリッジタイプ"
 msgid "Standard interface"
 msgstr "標準インターフェイス"
 
-#: inc/central.class.php:61 inc/displaypreference.class.php:654
+#: inc/central.class.php:63 inc/displaypreference.class.php:654
 #: inc/displaypreference.class.php:662 inc/planning.class.php:97
 msgid "Personal View"
 msgstr "個人表示"
 
-#: inc/central.class.php:62 inc/planning.class.php:99
+#: inc/central.class.php:64 inc/planning.class.php:99
 msgid "Group View"
 msgstr "グループ表示"
 
-#: inc/central.class.php:63 inc/displaypreference.class.php:660
+#: inc/central.class.php:65 inc/displaypreference.class.php:660
 msgid "Global View"
 msgstr "全体表示"
 
-#: inc/central.class.php:64 inc/rssfeed.class.php:76
+#: inc/central.class.php:66 inc/rssfeed.class.php:76
 msgid "RSS feed"
 msgid_plural "RSS feeds"
 msgstr[0] "RSSフィード"
 
-#: inc/central.class.php:159
+#: inc/central.class.php:161
 #, php-format
 msgid ""
 "For security reasons, please change the password for the default users: %s"
 msgstr "セキュリティの観点から、デフォルトユーザ %s のパスワードを変更してください"
 
-#: inc/central.class.php:168
+#: inc/central.class.php:170
 #, php-format
 msgid "For security reasons, please remove file: %s"
 msgstr "セキュリティの観点から、次のファイルを削除してください: %s"
 
-#: inc/central.class.php:178 inc/central.class.php:179 inc/html.class.php:1682
+#: inc/central.class.php:180 inc/central.class.php:181 inc/html.class.php:1682
 msgid "MySQL replica: read only"
 msgstr "MySQL 複製: 読み取り専用"
 
@@ -4812,7 +4813,7 @@ msgctxt "change"
 msgid "Accepted"
 msgstr "受付済み"
 
-#: inc/change.class.php:456 inc/commonitilobject.class.php:4132
+#: inc/change.class.php:456 inc/commonitilobject.class.php:4133
 #: inc/problem.class.php:489 inc/ticket.class.php:2462
 msgid "Pending"
 msgstr "保留"
@@ -4855,7 +4856,7 @@ msgid "Solved + Closed"
 msgstr "解決済+完了"
 
 #: inc/change.class.php:614 inc/commonitilobject.class.php:2473
-#: inc/commonitilobject.class.php:4081
+#: inc/commonitilobject.class.php:4082
 #: inc/notificationtargetcommonitilobject.class.php:1010
 #: inc/notificationtargetcommonitilobject.class.php:1065
 #: inc/notificationtargetproject.class.php:579
@@ -4867,7 +4868,7 @@ msgid "Opening date"
 msgstr "開始日付"
 
 #: inc/change.class.php:631 inc/commonitilobject.class.php:2485
-#: inc/commonitilobject.class.php:4084 inc/commonitilobject.class.php:4805
+#: inc/commonitilobject.class.php:4085 inc/commonitilobject.class.php:4806
 #: inc/notificationtargetcommonitilobject.class.php:1013
 #: inc/problem.class.php:1040 inc/slalevel.class.php:201
 #: inc/slalevel.class.php:386 inc/ticket.class.php:3793
@@ -4894,23 +4895,23 @@ msgid "Date of solving"
 msgstr "解決日"
 
 #: inc/change.class.php:669 inc/commonitilobject.class.php:2479
-#: inc/commonitilobject.class.php:4094
+#: inc/commonitilobject.class.php:4095
 #: inc/notificationtargetcommonitilobject.class.php:1011
 #: inc/problem.class.php:1078
 msgid "Closing date"
 msgstr "終了日"
 
 #: inc/change.class.php:684 inc/commondbtm.class.php:2810
-#: inc/commonitilobject.class.php:2448 inc/commonitilobject.class.php:5016
+#: inc/commonitilobject.class.php:2448 inc/commonitilobject.class.php:5022
 #: inc/commonitiltask.class.php:547 inc/commonitiltask.class.php:645
 #: inc/commonitiltask.class.php:1145 inc/commonitilvalidation.class.php:1005
 #: inc/computer.class.php:427 inc/computer.class.php:693
-#: inc/computer_softwarelicense.class.php:484
+#: inc/computer_softwarelicense.class.php:490
 #: inc/computer_softwareversion.class.php:301
-#: inc/computer_softwareversion.class.php:768
-#: inc/computer_softwareversion.class.php:881 inc/config.class.php:475
-#: inc/contract_item.class.php:633 inc/crontask.class.php:414
-#: inc/crontask.class.php:1097 inc/crontask.class.php:1277
+#: inc/computer_softwareversion.class.php:767
+#: inc/computer_softwareversion.class.php:880 inc/config.class.php:475
+#: inc/contract_item.class.php:633 inc/crontask.class.php:415
+#: inc/crontask.class.php:1098 inc/crontask.class.php:1278
 #: inc/monitor.class.php:187 inc/monitor.class.php:420
 #: inc/networkequipment.class.php:267 inc/networkequipment.class.php:473
 #: inc/notificationtargetcommonitilobject.class.php:1005
@@ -4922,9 +4923,9 @@ msgstr "終了日"
 #: inc/problem.class.php:1094 inc/project.class.php:518
 #: inc/projecttask.class.php:712 inc/reminder.class.php:391
 #: inc/reminder.class.php:700 inc/report.class.php:103
-#: inc/ruleticket.class.php:524 inc/search.class.php:4818
-#: inc/search.class.php:4839 inc/slalevel.class.php:262
-#: inc/software.class.php:570 inc/softwareversion.class.php:136
+#: inc/ruleticket.class.php:524 inc/search.class.php:4806
+#: inc/search.class.php:4827 inc/slalevel.class.php:262
+#: inc/software.class.php:576 inc/softwareversion.class.php:136
 #: inc/softwareversion.class.php:175 inc/softwareversion.class.php:287
 #: inc/state.class.php:149 inc/ticket.class.php:4039 inc/user.class.php:3394
 #: inc/user.class.php:3474
@@ -4933,8 +4934,8 @@ msgid_plural "Statuses"
 msgstr[0] "ステータス"
 
 #: inc/change.class.php:711 inc/commonitilobject.class.php:2543
-#: inc/commonitiltask.class.php:541 inc/crontask.class.php:958
-#: inc/crontask.class.php:1040
+#: inc/commonitiltask.class.php:541 inc/crontask.class.php:959
+#: inc/crontask.class.php:1041
 #: inc/notificationtargetcommonitilobject.class.php:1009
 #: inc/notificationtargetcommonitilobject.class.php:1068
 #: inc/notificationtargetprojecttask.class.php:477 inc/problem.class.php:1119
@@ -4943,7 +4944,7 @@ msgid "Total duration"
 msgstr "経過時間"
 
 #: inc/change.class.php:734 inc/commonitilcost.class.php:99
-#: inc/commonitilobject.class.php:2424 inc/commonitilobject.class.php:5031
+#: inc/commonitilobject.class.php:2424 inc/commonitilobject.class.php:5037
 #: inc/contractcost.class.php:130 inc/notificationtargetchange.class.php:252
 #: inc/notificationtargetchange.class.php:257
 #: inc/notificationtargetcommonitilobject.class.php:999
@@ -4962,13 +4963,13 @@ msgid "Title"
 msgstr "題名"
 
 #: inc/change.class.php:742 inc/commonitilobject.class.php:2432
-#: inc/commonitilobject.class.php:3818 inc/commonitilobject.class.php:3881
+#: inc/commonitilobject.class.php:3819 inc/commonitilobject.class.php:3882
 #: inc/commonitiltask.class.php:511 inc/commonitiltask.class.php:567
 #: inc/commonitiltask.class.php:950 inc/commonitiltask.class.php:959
 #: inc/commonitiltask.class.php:1121 inc/commonitiltask.class.php:1350
-#: inc/commonitiltask.class.php:1377 inc/crontask.class.php:405
-#: inc/crontask.class.php:1042 inc/crontask.class.php:1100
-#: inc/crontask.class.php:1268 inc/notificationtargetchange.class.php:253
+#: inc/commonitiltask.class.php:1377 inc/crontask.class.php:406
+#: inc/crontask.class.php:1043 inc/crontask.class.php:1101
+#: inc/crontask.class.php:1269 inc/notificationtargetchange.class.php:253
 #: inc/notificationtargetchange.class.php:258
 #: inc/notificationtargetcommonitilobject.class.php:1002
 #: inc/notificationtargetcommonitilobject.class.php:1004
@@ -5065,7 +5066,7 @@ msgstr[0] "チケット/変更のリンク"
 msgid "Add a ticket"
 msgstr "チケットの追加"
 
-#: inc/change_ticket.class.php:252 inc/commonitilobject.class.php:3850
+#: inc/change_ticket.class.php:252 inc/commonitilobject.class.php:3851
 #: inc/problem_ticket.class.php:300
 msgid "Solve tickets"
 msgstr "解決したチケット"
@@ -5079,10 +5080,10 @@ msgid "Item not linked to an object"
 msgstr "アイテムはオブジェクトにリンクしていません"
 
 #: inc/commondbchild.class.php:729 inc/commondevice.class.php:277
-#: inc/commondevice.class.php:281 inc/commonitilobject.class.php:3364
-#: inc/commonitilobject.class.php:3384 inc/commonitilobject.class.php:3420
+#: inc/commondevice.class.php:281 inc/commonitilobject.class.php:3365
+#: inc/commonitilobject.class.php:3385 inc/commonitilobject.class.php:3421
 #: inc/dropdown.class.php:216 inc/html.class.php:1517 inc/html.class.php:1521
-#: inc/html.class.php:2052 inc/html.class.php:2053 inc/infocom.class.php:702
+#: inc/html.class.php:2053 inc/html.class.php:2054 inc/infocom.class.php:702
 #: inc/netpoint.class.php:145 inc/reminder.class.php:1080
 #: inc/reminder.class.php:1081 inc/rssfeed.class.php:911
 #: inc/rssfeed.class.php:912 inc/ruleaction.class.php:385
@@ -5160,7 +5161,7 @@ msgstr "アイテムをリストアしました"
 #: inc/config.class.php:795 inc/config.class.php:1092
 #: inc/config.class.php:1354 inc/entity.class.php:1067
 #: inc/entity.class.php:1154 inc/entity.class.php:1286
-#: inc/entity.class.php:1625 inc/entity.class.php:1937 inc/html.class.php:3747
+#: inc/entity.class.php:1625 inc/entity.class.php:1937 inc/html.class.php:3749
 #: inc/infocom.class.php:1183 inc/item_devices.class.php:443
 #: inc/planningrecall.class.php:318 inc/profile.class.php:747
 #: inc/profile.class.php:816 inc/profile.class.php:874
@@ -5187,7 +5188,7 @@ msgstr "このデバイスを削除する間、保持するデバイスを確認
 msgid "Confirm the final deletion?"
 msgstr "本当に削除しますか?"
 
-#: inc/commondbtm.class.php:2047 inc/commondbtm.class.php:4271
+#: inc/commondbtm.class.php:2047 inc/commondbtm.class.php:4276
 #: inc/massiveaction.class.php:556 inc/ticket.class.php:4481
 #: inc/transfer.class.php:3101
 msgctxt "button"
@@ -5198,7 +5199,7 @@ msgstr "ゴミ箱に移動"
 #: inc/commondbtm.class.php:2215 inc/computer.class.php:593
 #: inc/monitor.class.php:332 inc/networkequipment.class.php:405
 #: inc/peripheral.class.php:299 inc/phone.class.php:338
-#: inc/printer.class.php:460 inc/software.class.php:299
+#: inc/printer.class.php:460 inc/software.class.php:305
 #, php-format
 msgid "Created from the template %s"
 msgstr "テンプレート %s から作成"
@@ -5242,7 +5243,7 @@ msgstr "完全名"
 #: inc/notificationtargetticket.class.php:612 inc/peripheral.class.php:225
 #: inc/peripheral.class.php:416 inc/phone.class.php:225
 #: inc/phone.class.php:447 inc/printer.class.php:327 inc/printer.class.php:569
-#: inc/search.class.php:4867
+#: inc/search.class.php:4855
 msgid "Alternate username number"
 msgstr "代替ユーザ名番号"
 
@@ -5275,53 +5276,53 @@ msgid "%1$s trying to add an item that already exists: %2$s"
 msgstr "%1$s は既に存在するアイテムを追加しようとしました: %2$s"
 
 #: inc/commondbtm.class.php:3877 inc/entity.class.php:1479
-#: inc/entity.class.php:1524 inc/search.class.php:4478 inc/user.class.php:2593
+#: inc/entity.class.php:1524 inc/search.class.php:4466 inc/user.class.php:2593
 msgid "Default value"
 msgstr "デフォルト値"
 
-#: inc/commondbtm.class.php:4174
+#: inc/commondbtm.class.php:4179
 msgid "Choose a template"
 msgstr "テンプレートを選択"
 
-#: inc/commondbtm.class.php:4176
+#: inc/commondbtm.class.php:4181
 msgid "Blank Template"
 msgstr "空のテンプレート"
 
-#: inc/commondbtm.class.php:4179
+#: inc/commondbtm.class.php:4184
 msgid "Templates"
 msgstr "テンプレート"
 
-#: inc/commondbtm.class.php:4206
+#: inc/commondbtm.class.php:4211
 msgid "Add a template..."
 msgstr "テンプレートを追加..."
 
-#: inc/commondbtm.class.php:4265 inc/item_devices.class.php:617
+#: inc/commondbtm.class.php:4270 inc/item_devices.class.php:617
 #: inc/ruleticket.class.php:81 inc/ruleticket.class.php:83
 #: inc/supplier.class.php:361 inc/ticket.class.php:4168
 msgid "Update"
 msgstr "更新"
 
-#: inc/commondbtm.class.php:4266
+#: inc/commondbtm.class.php:4271
 msgid "Purge"
 msgstr "消去"
 
-#: inc/commondbtm.class.php:4270
+#: inc/commondbtm.class.php:4275
 msgid "Delete"
 msgstr "削除"
 
-#: inc/commondbtm.class.php:4274
+#: inc/commondbtm.class.php:4279
 msgid "Read note"
 msgstr "メモの参照"
 
-#: inc/commondbtm.class.php:4275
+#: inc/commondbtm.class.php:4280
 msgid "Read the item's note"
 msgstr "アイテムのメモの参照"
 
-#: inc/commondbtm.class.php:4276
+#: inc/commondbtm.class.php:4281
 msgid "Update note"
 msgstr "メモの更新"
 
-#: inc/commondbtm.class.php:4277
+#: inc/commondbtm.class.php:4282
 msgid "Update the item's note"
 msgstr "アイテムメモの更新"
 
@@ -5344,7 +5345,7 @@ msgid "Confirm"
 msgstr "確認"
 
 #: inc/commondropdown.class.php:528 inc/commondropdown.class.php:558
-#: inc/html.class.php:3748
+#: inc/html.class.php:3750
 msgctxt "button"
 msgid "Cancel"
 msgstr "中止"
@@ -5367,7 +5368,7 @@ msgctxt "button"
 msgid "Merge"
 msgstr "マージ"
 
-#: inc/commonglpi.class.php:67 inc/commonitilobject.class.php:4902
+#: inc/commonglpi.class.php:67 inc/commonitilobject.class.php:4903
 #: inc/rule.class.php:2161 inc/ticket.class.php:2544 inc/ticket.class.php:2833
 #: inc/ticket.class.php:4235 inc/ticket.class.php:5390
 msgid "General"
@@ -5470,7 +5471,7 @@ msgstr "開始日"
 #: inc/commonitilcost.class.php:347 inc/commonitilcost.class.php:486
 #: inc/commonitiltask.class.php:629 inc/commonitiltask.class.php:1160
 #: inc/commonitiltask.class.php:1350 inc/contract.class.php:389
-#: inc/contract.class.php:601 inc/crontask.class.php:1098
+#: inc/contract.class.php:601 inc/crontask.class.php:1099
 #: inc/notificationtargetcommonitilobject.class.php:1052
 #: inc/reservation.class.php:700 inc/reservationitem.class.php:382
 msgid "Duration"
@@ -5743,7 +5744,7 @@ msgid "At least very high"
 msgstr "最高"
 
 #: inc/commonitilobject.class.php:2323 inc/commonitilobject.class.php:2676
-#: inc/commonitilobject.class.php:2682 inc/commonitilobject.class.php:3373
+#: inc/commonitilobject.class.php:2682 inc/commonitilobject.class.php:3374
 #: inc/notificationtargetcommonitilobject.class.php:445
 #: inc/notificationtargetcommonitilobject.class.php:1034
 #: inc/ruleticket.class.php:395 inc/ruleticket.class.php:498
@@ -5756,7 +5757,7 @@ msgstr[0] "オブザーバ"
 msgid "Due date + Progress"
 msgstr "期日+進捗"
 
-#: inc/commonitilobject.class.php:2515 inc/commonitilobject.class.php:4089
+#: inc/commonitilobject.class.php:2515 inc/commonitilobject.class.php:4090
 #: inc/ticket.class.php:3931
 msgid "Resolution date"
 msgstr "解決日"
@@ -5821,80 +5822,80 @@ msgstr "オブザーバユーザ"
 msgid "Group in charge of the ticket"
 msgstr "チケットを担当しているグループ"
 
-#: inc/commonitilobject.class.php:3351
+#: inc/commonitilobject.class.php:3352
 msgid "Actor"
 msgstr "関係者"
 
-#: inc/commonitilobject.class.php:3397 inc/commonitilobject.class.php:3429
+#: inc/commonitilobject.class.php:3398 inc/commonitilobject.class.php:3430
 msgid "Associate myself"
 msgstr "自分自身に関連づける"
 
-#: inc/commonitilobject.class.php:3771 inc/commonitilobject.class.php:3856
-#: inc/dropdown.class.php:726 inc/profile.class.php:1430
+#: inc/commonitilobject.class.php:3772 inc/commonitilobject.class.php:3857
+#: inc/dropdown.class.php:725 inc/profile.class.php:1430
 #: inc/solutiontemplate.class.php:50
 msgid "Solution template"
 msgid_plural "Solution templates"
 msgstr[0] "解決方法のテンプレート"
 
-#: inc/commonitilobject.class.php:3790 inc/commonitilobject.class.php:3793
+#: inc/commonitilobject.class.php:3791 inc/commonitilobject.class.php:3794
 msgid "Search a solution"
 msgstr "解決方法の検索"
 
-#: inc/commonitilobject.class.php:3813
+#: inc/commonitilobject.class.php:3814
 msgid "Save and add to the knowledge base"
 msgstr "ナレッジベースへの追加"
 
-#: inc/commonitilobject.class.php:4098
+#: inc/commonitilobject.class.php:4099
 msgid "Time"
 msgid_plural "Times"
 msgstr[0] "時間"
 
-#: inc/commonitilobject.class.php:4793
+#: inc/commonitilobject.class.php:4794
 #, php-format
 msgid "Closed on %s"
 msgstr "完了日 %s"
 
-#: inc/commonitilobject.class.php:4797
+#: inc/commonitilobject.class.php:4798
 #, php-format
 msgid "Solved on %s"
 msgstr "解決済み %s"
 
-#: inc/commonitilobject.class.php:4801
+#: inc/commonitilobject.class.php:4802
 #, php-format
 msgid "Put on hold on %s"
 msgstr "%s を保留する"
 
-#: inc/commonitilobject.class.php:4809 inc/project.class.php:612
+#: inc/commonitilobject.class.php:4810 inc/project.class.php:612
 #, php-format
 msgid "Opened on %s"
 msgstr "発生日 %s"
 
-#: inc/commonitilobject.class.php:4968 inc/mailcollector.class.php:779
+#: inc/commonitilobject.class.php:4969 inc/mailcollector.class.php:779
 #: inc/reservation.class.php:998
 #, php-format
 msgid "From %s"
 msgstr "から %s"
 
-#: inc/commonitilobject.class.php:4970 inc/reservation.class.php:995
+#: inc/commonitilobject.class.php:4972 inc/reservation.class.php:995
 #, php-format
 msgid "To %s"
 msgstr "To %s"
 
 #. TRANS: %s is user name
-#: inc/commonitilobject.class.php:4973 inc/commonitiltask.class.php:925
+#: inc/commonitilobject.class.php:4976 inc/commonitiltask.class.php:925
 #, php-format
 msgid "By %s"
 msgstr "利用者 %s"
 
-#: inc/commonitilobject.class.php:4999 inc/project.class.php:690
+#: inc/commonitilobject.class.php:5005 inc/project.class.php:690
 msgid "No item in progress."
 msgstr "処理中のアイテムはありません"
 
-#: inc/commonitilobject.class.php:5026
+#: inc/commonitilobject.class.php:5032
 msgid "Assigned"
 msgstr "担当者割り当て"
 
-#: inc/commonitilobject.class.php:5032
+#: inc/commonitilobject.class.php:5038
 msgid "Planification"
 msgstr "計画"
 
@@ -5927,9 +5928,10 @@ msgstr "選択された時間枠の開始は勤務時間ではありません"
 msgid "End of the selected timeframe is not a working hour."
 msgstr "選択された時間枠の終わりは勤務時間ではありません"
 
-#: inc/commonitiltask.class.php:516 inc/commonitiltask.class.php:586
-msgid "Task category"
-msgstr "タスクカテゴリ"
+#: inc/commonitiltask.class.php:516
+msgid "Tasks category"
+msgid_plural "Tasks categories"
+msgstr[0] "タスクカテゴリ"
 
 #: inc/commonitiltask.class.php:528
 msgid "Public followup"
@@ -5942,6 +5944,12 @@ msgstr "公開フォロー"
 msgctxt "quantity"
 msgid "Number of tasks"
 msgstr "タスク数"
+
+#: inc/commonitiltask.class.php:586 inc/dropdown.class.php:722
+#: inc/profile.class.php:1424 inc/taskcategory.class.php:52
+msgid "Task category"
+msgid_plural "Task categories"
+msgstr[0] ""
 
 #: inc/commonitiltask.class.php:597
 msgid "Private task"
@@ -6237,8 +6245,8 @@ msgstr "ロケーションを更新しました。関連するアイテムもこ
 #: inc/profile_user.class.php:406 inc/profile_user.class.php:408
 #: inc/profile_user.class.php:557 inc/profile_user.class.php:560
 #: inc/profile_user.class.php:563 inc/profile_user.class.php:565
-#: inc/search.class.php:3817 inc/search.class.php:3821
-#: inc/search.class.php:3855 inc/search.class.php:3859
+#: inc/search.class.php:3805 inc/search.class.php:3809
+#: inc/search.class.php:3843 inc/search.class.php:3847
 #: inc/ticket.class.php:3147 inc/ticket.class.php:3154
 #: inc/ticket.class.php:3182 inc/ticket.class.php:3209
 #: inc/ticket.class.php:3225 inc/ticket.class.php:3255
@@ -6256,7 +6264,7 @@ msgid "%1$s%2$s"
 msgstr "%1$s%2$s"
 
 #: inc/computer.class.php:505 inc/computer.class.php:777
-#: inc/dropdown.class.php:815 inc/network.class.php:42
+#: inc/dropdown.class.php:814 inc/network.class.php:42
 #: inc/networkequipment.class.php:86 inc/networkequipment.class.php:343
 #: inc/networkequipment.class.php:532 inc/printer.class.php:378
 #: inc/printer.class.php:668 inc/profile.class.php:787
@@ -6266,7 +6274,7 @@ msgid_plural "Networks"
 msgstr[0] "ネットワーク"
 
 #: inc/computer.class.php:536 inc/computer.class.php:782
-#: inc/domain.class.php:48 inc/dropdown.class.php:814
+#: inc/domain.class.php:48 inc/dropdown.class.php:813
 #: inc/networkequipment.class.php:371 inc/networkequipment.class.php:537
 #: inc/printer.class.php:395 inc/printer.class.php:673
 #: inc/profile.class.php:1409 inc/ruleimportcomputer.class.php:89
@@ -6275,7 +6283,7 @@ msgid_plural "Domains"
 msgstr[0] "ドメイン"
 
 #: inc/computer.class.php:556 inc/computer.class.php:704
-#: inc/dropdown.class.php:801 inc/operatingsystemversion.class.php:43
+#: inc/dropdown.class.php:800 inc/operatingsystemversion.class.php:43
 #: inc/rule.class.php:463
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating system"
@@ -6293,7 +6301,7 @@ msgstr "OSのシリアル番号"
 
 #: inc/computer.class.php:574 inc/computerdisk.class.php:167
 #: inc/computerdisk.class.php:268 inc/computer_item.class.php:441
-#: inc/computer_item.class.php:586 inc/computer_softwareversion.class.php:771
+#: inc/computer_item.class.php:586 inc/computer_softwareversion.class.php:770
 #: inc/computervirtualmachine.class.php:149
 #: inc/computervirtualmachine.class.php:338 inc/ipaddress.class.php:998
 #: inc/item_devices.class.php:364 inc/networkequipment.class.php:387
@@ -6310,7 +6318,7 @@ msgstr "自動棚卸"
 #: inc/knowbaseitem.class.php:563 inc/knowbaseitem.class.php:739
 #: inc/monitor.class.php:340 inc/networkequipment.class.php:413
 #: inc/peripheral.class.php:307 inc/phone.class.php:346
-#: inc/printer.class.php:468 inc/software.class.php:307
+#: inc/printer.class.php:468 inc/software.class.php:313
 #, php-format
 msgid "Created on %s"
 msgstr "作成日時 %s"
@@ -6338,7 +6346,7 @@ msgid "MHz"
 msgstr "MHz"
 
 #: inc/computer.class.php:841 inc/devicememorytype.class.php:44
-#: inc/dropdown.class.php:749
+#: inc/dropdown.class.php:748
 msgid "Memory type"
 msgid_plural "Memory types"
 msgstr[0] "メモリタイプ"
@@ -6366,7 +6374,7 @@ msgid "Memory"
 msgid_plural "Memories"
 msgstr[0] "メモリ"
 
-#: inc/computer.class.php:866 inc/dropdown.class.php:809
+#: inc/computer.class.php:866 inc/dropdown.class.php:808
 #: inc/networkinterface.class.php:42 inc/networkportmigration.class.php:296
 #: inc/networkportmigration.class.php:444
 msgid "Network interface"
@@ -6434,35 +6442,35 @@ msgid "Partition"
 msgstr "パーティション"
 
 #: inc/computer.class.php:999 inc/computerdisk.class.php:193
-#: inc/computerdisk.class.php:272 inc/dropdown.class.php:757
+#: inc/computerdisk.class.php:272 inc/dropdown.class.php:756
 #: inc/filesystem.class.php:42
 msgid "File system"
 msgid_plural "File systems"
 msgstr[0] "ファイルシステム"
 
 #: inc/computer.class.php:1007 inc/computer.class.php:1011
-#: inc/computervirtualmachine.class.php:52 inc/dropdown.class.php:772
+#: inc/computervirtualmachine.class.php:52 inc/dropdown.class.php:771
 #: inc/lock.class.php:490
 msgid "Virtual machine"
 msgid_plural "Virtual machines"
 msgstr[0] "仮想マシン"
 
 #: inc/computer.class.php:1019 inc/computervirtualmachine.class.php:184
-#: inc/computervirtualmachine.class.php:342 inc/dropdown.class.php:777
+#: inc/computervirtualmachine.class.php:342 inc/dropdown.class.php:776
 #: inc/virtualmachinestate.class.php:42
 msgid "State of the virtual machine"
 msgid_plural "States of the virtual machine"
 msgstr[0] "仮想マシンのステータス"
 
 #: inc/computer.class.php:1029 inc/computervirtualmachine.class.php:179
-#: inc/computervirtualmachine.class.php:341 inc/dropdown.class.php:773
+#: inc/computervirtualmachine.class.php:341 inc/dropdown.class.php:772
 #: inc/virtualmachinesystem.class.php:42
 msgid "Virtualization model"
 msgid_plural "Virtualization models"
 msgstr[0] "仮想化モデル"
 
 #: inc/computer.class.php:1039 inc/computervirtualmachine.class.php:173
-#: inc/computervirtualmachine.class.php:340 inc/dropdown.class.php:775
+#: inc/computervirtualmachine.class.php:340 inc/dropdown.class.php:774
 #: inc/virtualmachinetype.class.php:42
 msgid "Virtualization system"
 msgid_plural "Virtualization systems"
@@ -6518,48 +6526,48 @@ msgid "Connection"
 msgid_plural "Connections"
 msgstr[0] "接続"
 
-#: inc/computer_softwarelicense.class.php:82
+#: inc/computer_softwarelicense.class.php:88
 #: inc/computer_softwareversion.class.php:304
-#: inc/computer_softwareversion.class.php:769
-#: inc/computer_softwareversion.class.php:813
-#: inc/computer_softwareversion.class.php:882 inc/entity.class.php:1555
-#: inc/plugin.class.php:353 inc/software.class.php:597
-#: inc/software.class.php:961 inc/softwarelicense.class.php:55
+#: inc/computer_softwareversion.class.php:768
+#: inc/computer_softwareversion.class.php:812
+#: inc/computer_softwareversion.class.php:881 inc/entity.class.php:1555
+#: inc/plugin.class.php:353 inc/software.class.php:603
+#: inc/software.class.php:967 inc/softwarelicense.class.php:55
 #: install/install.php:537
 msgid "License"
 msgid_plural "Licenses"
 msgstr[0] "ライセンス"
 
-#: inc/computer_softwarelicense.class.php:285
+#: inc/computer_softwarelicense.class.php:291
 msgid "Number of affected computers"
 msgstr "影響するコンピュータの数"
 
-#: inc/computer_softwarelicense.class.php:400
-#: inc/computer_softwarelicense.class.php:562
-#: inc/softwarelicense.class.php:602
+#: inc/computer_softwarelicense.class.php:406
+#: inc/computer_softwarelicense.class.php:568
+#: inc/softwarelicense.class.php:628
 msgid "Affected computers"
 msgstr "影響するコンピュータ"
 
-#: inc/computer_softwarelicense.class.php:657
-#: inc/computer_softwareversion.class.php:1136 inc/html.class.php:1564
+#: inc/computer_softwarelicense.class.php:663
+#: inc/computer_softwareversion.class.php:1135 inc/html.class.php:1564
 msgid "Summary"
 msgstr "一覧"
 
-#: inc/computer_softwareversion.class.php:55 inc/software.class.php:960
+#: inc/computer_softwareversion.class.php:55 inc/software.class.php:966
 #: inc/softwareversion.class.php:289
 msgid "Installation"
 msgid_plural "Installations"
 msgstr[0] "インストール"
 
-#: inc/computer_softwareversion.class.php:726
+#: inc/computer_softwareversion.class.php:725
 msgid "All categories"
 msgstr "全カテゴリ"
 
-#: inc/computer_softwareversion.class.php:727
+#: inc/computer_softwareversion.class.php:726
 msgid "Uncategorized software"
 msgstr "カテゴリ分類されないソフトウェア"
 
-#: inc/computer_softwareversion.class.php:774
+#: inc/computer_softwareversion.class.php:773
 msgid "Valid license"
 msgstr "有効なライセンス"
 
@@ -6746,9 +6754,9 @@ msgstr "自動転送はありません"
 msgid "Automatically update of the elements related to the computers"
 msgstr "コンピュータに関連するエレメントの自動更新"
 
-#: inc/config.class.php:468 inc/dropdown.class.php:1868
-#: inc/dropdown.class.php:1876 inc/dropdown.class.php:1878
-#: inc/dropdown.class.php:1937
+#: inc/config.class.php:468 inc/dropdown.class.php:1867
+#: inc/dropdown.class.php:1875 inc/dropdown.class.php:1877
+#: inc/dropdown.class.php:1936
 msgid "Unit management"
 msgstr "単品管理"
 
@@ -6844,7 +6852,7 @@ msgstr "常に"
 #: inc/entity.class.php:687 inc/event.class.php:129 inc/html.class.php:1140
 #: inc/profile.class.php:92 inc/profile.class.php:98 inc/profile.class.php:648
 #: inc/profile.class.php:971 inc/profile.class.php:1883
-#: inc/search.class.php:4903
+#: inc/search.class.php:4891
 msgid "Assistance"
 msgstr "ユーザサポート"
 
@@ -7360,7 +7368,7 @@ msgstr "消耗品のタイプに対する警告のしきい値に到達しまし
 msgid "%s: send consumable alert failed"
 msgstr "%s: 消耗品の警告の送信に失敗しました"
 
-#: inc/consumableitemtype.class.php:42 inc/dropdown.class.php:745
+#: inc/consumableitemtype.class.php:42 inc/dropdown.class.php:744
 msgid "Consumable type"
 msgid_plural "Consumable types"
 msgstr[0] "消耗品タイプ"
@@ -7438,7 +7446,7 @@ msgid "Add a supplier"
 msgstr "サプライヤの追加"
 
 #: inc/contact_supplier.class.php:222 inc/contract_supplier.class.php:360
-#: inc/dropdown.class.php:750 inc/supplier.class.php:134
+#: inc/dropdown.class.php:749 inc/supplier.class.php:134
 #: inc/supplier.class.php:282 inc/suppliertype.class.php:44
 msgid "Third party type"
 msgid_plural "Third party types"
@@ -7455,7 +7463,7 @@ msgstr "ウェブサイト"
 msgid "Add a contact"
 msgstr "連絡先を追加"
 
-#: inc/contacttype.class.php:44 inc/dropdown.class.php:748
+#: inc/contacttype.class.php:44 inc/dropdown.class.php:747
 msgid "Contact type"
 msgid_plural "Contact types"
 msgstr[0] "連絡先タイプ"
@@ -7550,19 +7558,19 @@ msgstr "契約番号"
 msgid "Periodicity"
 msgstr "周期"
 
-#: inc/contract.class.php:503 inc/document.class.php:1314
+#: inc/contract.class.php:503 inc/document.class.php:1316
 msgctxt "button"
 msgid "Add an item"
 msgstr "アイテムの追加"
 
-#: inc/contract.class.php:504 inc/document.class.php:1315
+#: inc/contract.class.php:504 inc/document.class.php:1317
 msgctxt "button"
 msgid "Remove an item"
 msgstr "アイテムの削除"
 
-#: inc/contract.class.php:669 inc/software.class.php:667
-#: inc/softwarelicense.class.php:292 inc/softwarelicense.class.php:398
-#: inc/softwarelicense.class.php:606
+#: inc/contract.class.php:669 inc/software.class.php:673
+#: inc/softwarelicense.class.php:318 inc/softwarelicense.class.php:424
+#: inc/softwarelicense.class.php:632
 msgid "Expiration"
 msgstr "終了日"
 
@@ -7673,7 +7681,7 @@ msgid "Check"
 msgid_plural "Checks"
 msgstr[0] "項目のチェック"
 
-#: inc/control.class.php:62 inc/dropdown.class.php:840
+#: inc/control.class.php:62 inc/dropdown.class.php:839
 #: inc/fieldunicity.class.php:52
 msgid "Fields unicity"
 msgstr "項目の重複チェック"
@@ -7684,11 +7692,11 @@ msgid "Automatic action"
 msgid_plural "Automatic actions"
 msgstr[0] "自動実行"
 
-#: inc/crontask.class.php:243
+#: inc/crontask.class.php:244
 msgid "Action completed, partially processed"
 msgstr "動作は完了しました。一部を処理しました"
 
-#: inc/crontask.class.php:247
+#: inc/crontask.class.php:248
 msgid "Action completed, fully processed"
 msgstr "動作は完了しました。全て処理しました"
 
@@ -7696,280 +7704,281 @@ msgstr "動作は完了しました。全て処理しました"
 msgid "Action completed, no processing required"
 msgstr "動作は完了しました。処理するものはありませんでした"
 
-#: inc/crontask.class.php:409 inc/crontask.class.php:1290
+#: inc/crontask.class.php:410 inc/crontask.class.php:1291
 msgid "Run frequency"
 msgstr "動作頻度"
 
-#: inc/crontask.class.php:417
+#: inc/crontask.class.php:418
 msgid "System lock"
 msgstr "システムロック"
 
-#: inc/crontask.class.php:424
+#: inc/crontask.class.php:425
 msgid "Disabled plugin"
 msgstr "無効なプラグイン"
 
-#: inc/crontask.class.php:436 inc/crontask.class.php:1284
+#: inc/crontask.class.php:437 inc/crontask.class.php:1285
 msgid "Run mode"
 msgstr "動作モード"
 
-#: inc/crontask.class.php:447
+#: inc/crontask.class.php:448
 msgid "Run period"
 msgstr "動作サイクル"
 
-#: inc/crontask.class.php:459 inc/crontask.class.php:1327
+#: inc/crontask.class.php:460 inc/crontask.class.php:1328
 msgid "Number of days this action logs are stored"
 msgstr "動作ログの保存日数"
 
-#: inc/crontask.class.php:464 inc/crontask.class.php:1332
+#: inc/crontask.class.php:465 inc/crontask.class.php:1333
 msgid "Infinite"
 msgstr "無制限"
 
-#: inc/crontask.class.php:465 inc/crontask.class.php:1296
+#: inc/crontask.class.php:466 inc/crontask.class.php:1297
 msgid "Last run"
 msgstr "前回動作"
 
-#: inc/crontask.class.php:472 inc/crontask.class.php:539
-#: inc/search.class.php:1752
+#: inc/crontask.class.php:473 inc/crontask.class.php:540
+#: inc/search.class.php:1740
 msgid "Blank"
 msgstr "クリア"
 
-#: inc/crontask.class.php:640 inc/crontask.class.php:1127
+#: inc/crontask.class.php:641 inc/crontask.class.php:1128
 msgid "Running"
 msgstr "動作"
 
-#: inc/crontask.class.php:643 inc/crontask.class.php:666
+#: inc/crontask.class.php:644 inc/crontask.class.php:667
 msgid "Scheduled"
 msgstr "スケジュール済"
 
-#: inc/crontask.class.php:683
+#: inc/crontask.class.php:684
 msgid "GLPI"
 msgstr "GLPI"
 
-#: inc/crontask.class.php:686
+#: inc/crontask.class.php:687
 msgid "CLI"
 msgstr "CLI"
 
-#: inc/crontask.class.php:749
+#: inc/crontask.class.php:750
 msgid "A minimum of 64 Mio is commonly required for GLPI."
 msgstr "GLPIは通常 64MB 以上のメモリが必要です"
 
-#: inc/crontask.class.php:754
+#: inc/crontask.class.php:755
 msgid "No task with Run mode = CLI, fix your tasks configuration"
 msgstr "実行モードがCLIのタスクはありません。タスク設定を調整してください"
 
-#: inc/crontask.class.php:760
+#: inc/crontask.class.php:761
 msgid "External"
 msgstr "外部"
 
-#: inc/crontask.class.php:761
+#: inc/crontask.class.php:762
 msgid "Internal"
 msgstr "内部"
 
 #. TRANS: %1$s is mode (external or internal), %2$s is an order number,
-#: inc/crontask.class.php:775 inc/crontask.class.php:783
-#: inc/crontask.class.php:797 inc/crontask.class.php:807
+#: inc/crontask.class.php:776 inc/crontask.class.php:784
+#: inc/crontask.class.php:798 inc/crontask.class.php:808
 #: inc/link.class.php:440 inc/link.class.php:464
 #, php-format
 msgid "%1$s #%2$s"
 msgstr "%1$s #%2$s"
 
-#: inc/crontask.class.php:778
+#: inc/crontask.class.php:779
 msgid "Launch"
 msgstr "起動"
 
-#: inc/crontask.class.php:786 inc/crontask.class.php:800
+#: inc/crontask.class.php:787 inc/crontask.class.php:801
 msgid "Can't start"
 msgstr "開始できません"
 
-#: inc/crontask.class.php:795 inc/crontask.class.php:802
+#: inc/crontask.class.php:796 inc/crontask.class.php:803
 #, php-format
 msgid "Undefined function %s (for cron)"
 msgstr "未定義の機能 %s (cron)"
 
-#: inc/crontask.class.php:808
+#: inc/crontask.class.php:809
 msgid "Nothing to launch"
 msgstr "起動するものはありません"
 
-#: inc/crontask.class.php:816
+#: inc/crontask.class.php:817
 msgid "Can't get DB lock"
 msgstr "DBロックが取得できません"
 
-#: inc/crontask.class.php:911
+#: inc/crontask.class.php:912
 msgid "Run count"
 msgstr "動作カウント"
 
 #. TRANS: %s is the number of starts
-#: inc/crontask.class.php:917
+#: inc/crontask.class.php:918
 #, php-format
 msgid "%s start"
 msgid_plural "%s starts"
 msgstr[0] "開始数 %s"
 
 #. TRANS: %s is the number of stops
-#: inc/crontask.class.php:920
+#: inc/crontask.class.php:921
 #, php-format
 msgid "%s stop"
 msgid_plural "%s stops"
 msgstr[0] "停止数 %s"
 
-#: inc/crontask.class.php:943
+#: inc/crontask.class.php:944
 msgid "Minimal time"
 msgstr "最小時間"
 
-#: inc/crontask.class.php:944 inc/crontask.class.php:949
-#: inc/crontask.class.php:954 inc/crontask.class.php:959
-#: inc/crontask.class.php:1051 inc/crontask.class.php:1133
+#: inc/crontask.class.php:945 inc/crontask.class.php:950
+#: inc/crontask.class.php:955 inc/crontask.class.php:960
+#: inc/crontask.class.php:1052 inc/crontask.class.php:1134
+#: inc/html.class.php:1729
 #, php-format
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] "%s秒"
 
-#: inc/crontask.class.php:948
+#: inc/crontask.class.php:949
 msgid "Maximal time"
 msgstr "最大時間"
 
-#: inc/crontask.class.php:966
+#: inc/crontask.class.php:967
 msgid "Minimal count"
 msgstr "最小カウント"
 
-#: inc/crontask.class.php:967 inc/crontask.class.php:971
-#: inc/crontask.class.php:975 inc/crontask.class.php:980
+#: inc/crontask.class.php:968 inc/crontask.class.php:972
+#: inc/crontask.class.php:976 inc/crontask.class.php:981
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
 msgstr[0] "%s 個のアイテム"
 
-#: inc/crontask.class.php:970
+#: inc/crontask.class.php:971
 msgid "Maximal count"
 msgstr "最大カウント"
 
-#: inc/crontask.class.php:974
+#: inc/crontask.class.php:975
 msgid "Average count"
 msgstr "平均カウント"
 
-#: inc/crontask.class.php:979
+#: inc/crontask.class.php:980
 msgid "Total count"
 msgstr "合計カウント"
 
-#: inc/crontask.class.php:983
+#: inc/crontask.class.php:984
 msgid "Average speed"
 msgstr "平均スピード"
 
-#: inc/crontask.class.php:984
+#: inc/crontask.class.php:985
 #, php-format
 msgid "%s items/sec"
 msgstr "%s アイテム/秒"
 
-#: inc/crontask.class.php:1026 inc/crontask.class.php:1067
-#: inc/crontask.class.php:1084
+#: inc/crontask.class.php:1027 inc/crontask.class.php:1068
+#: inc/crontask.class.php:1085
 msgid "Last run list"
 msgstr "前回動作リスト"
 
-#: inc/crontask.class.php:1041 inc/crontask.class.php:1099
+#: inc/crontask.class.php:1042 inc/crontask.class.php:1100
 #: inc/fieldunicity.class.php:562 inc/problem.class.php:858
-#: inc/softwarelicense.class.php:274 inc/softwarelicense.class.php:372
-#: inc/softwarelicense.class.php:601 inc/stat.class.php:413
+#: inc/softwarelicense.class.php:300 inc/softwarelicense.class.php:398
+#: inc/softwarelicense.class.php:627 inc/stat.class.php:413
 #: inc/ticket.class.php:5019
 msgctxt "quantity"
 msgid "Number"
 msgstr "番号"
 
-#: inc/crontask.class.php:1209
+#: inc/crontask.class.php:1210
 msgid "Reset last run"
 msgstr "前回動作をリセット"
 
-#: inc/crontask.class.php:1313
+#: inc/crontask.class.php:1314
 msgid "Begin hour of run period"
 msgstr "実行期間の開始時間"
 
-#: inc/crontask.class.php:1320
+#: inc/crontask.class.php:1321
 msgid "End hour of run period"
 msgstr "実行期間の終了時間"
 
 #. TRANS: % %1$d is a number, %2$s is a number of seconds
-#: inc/crontask.class.php:1360
+#: inc/crontask.class.php:1361
 #, php-format
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
 msgstr[0] "作成から %2$s 秒経過した %1$d 個のセッションファイルを消去します"
 
-#: inc/crontask.class.php:1398
+#: inc/crontask.class.php:1399
 #, php-format
 msgid "Deletion of archived log file: %s"
 msgstr "アーカイブされたログファイル %s の削除"
 
-#: inc/crontask.class.php:1401
+#: inc/crontask.class.php:1402
 #, php-format
 msgid "Unable to delete archived log file: %s"
 msgstr "アーカイブされたログファイル %s は削除できませんでした"
 
-#: inc/crontask.class.php:1419
+#: inc/crontask.class.php:1420
 #, php-format
 msgid "Archiving log file: %1$s to %2$s"
 msgstr "ログファイルを %1$s から %2$s にアーカイブします"
 
-#: inc/crontask.class.php:1422
+#: inc/crontask.class.php:1423
 #, php-format
 msgid ""
 "Unable to archive log file: %1$s. %2$s already exists. Wait till next day."
 msgstr "ログファイル %1$s はアーカイブできませんでした。%2$s は既に存在します。翌日までお待ちください"
 
-#: inc/crontask.class.php:1457
+#: inc/crontask.class.php:1458
 #, php-format
 msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
 msgstr[0] "作成から %2$s 秒経過した %1$d 個のグラフファイルを消去します"
 
-#: inc/crontask.class.php:1489
+#: inc/crontask.class.php:1490
 #, php-format
 msgid "Clean %1$d temporary file created since more than %2$s seconds"
 msgid_plural "Clean %1$d temporary files created since more than %2$s seconds"
 msgstr[0] "作成から %2$s 秒経過した %1$d 個のテンポラリファイルを消去します"
 
-#: inc/crontask.class.php:1596
+#: inc/crontask.class.php:1597
 msgid "Check for new updates"
 msgstr "新しい更新の確認"
 
-#: inc/crontask.class.php:1599
+#: inc/crontask.class.php:1600
 msgid "Clean old logs"
 msgstr "古いログの消去"
 
-#: inc/crontask.class.php:1601
+#: inc/crontask.class.php:1602
 msgid "System logs retention period (in days, 0 for infinite)"
 msgstr "システムログの保持期間 (日単位、0は無限)"
 
-#: inc/crontask.class.php:1604
+#: inc/crontask.class.php:1605
 msgid "Database optimization"
 msgstr "データベースの最適化"
 
-#: inc/crontask.class.php:1607
+#: inc/crontask.class.php:1608
 msgid "Clean expired sessions"
 msgstr "期限切れセッションの消去"
 
-#: inc/crontask.class.php:1610
+#: inc/crontask.class.php:1611
 msgid "Clean generated graphics"
 msgstr "生成された画像の消去"
 
-#: inc/crontask.class.php:1613
+#: inc/crontask.class.php:1614
 msgid "Clean temporary files"
 msgstr "テンポラリファイルのクリーニング"
 
-#: inc/crontask.class.php:1616 inc/notificationtargetcrontask.class.php:46
+#: inc/crontask.class.php:1617 inc/notificationtargetcrontask.class.php:46
 #: inc/notificationtargetcrontask.class.php:88
 msgid "Monitoring of automatic actions"
 msgstr "自動実行の監視"
 
-#: inc/crontask.class.php:1619
+#: inc/crontask.class.php:1620
 msgid "Archives log files and deletes aging ones"
 msgstr "ログファイルをアーカイブし、古いものを削除"
 
-#: inc/crontask.class.php:1620
+#: inc/crontask.class.php:1621
 msgid "Number of days to keep archived logs"
 msgstr "アーカイブされたログの保存日数"
 
 #. TRANS: %d is a number of minutes
-#: inc/crontask.class.php:1635 inc/crontask.class.php:1639
-#: inc/dropdown.class.php:1368 inc/planningrecall.class.php:252
+#: inc/crontask.class.php:1636 inc/crontask.class.php:1640
+#: inc/dropdown.class.php:1367 inc/planningrecall.class.php:252
 #: inc/sla.class.php:281
 #, php-format
 msgid "%d minute"
@@ -7977,7 +7986,7 @@ msgid_plural "%d minutes"
 msgstr[0] "%d分"
 
 #. TRANS: %d is a number of hours
-#: inc/crontask.class.php:1644 inc/dropdown.class.php:1364
+#: inc/crontask.class.php:1645 inc/dropdown.class.php:1363
 #: inc/entity.class.php:2206 inc/planningrecall.class.php:258
 #: inc/sla.class.php:284 inc/ticketrecurrent.class.php:180
 #, php-format
@@ -7986,8 +7995,8 @@ msgid_plural "%d hours"
 msgstr[0] "%d時間"
 
 #. TRANS: %d is a number of days
-#: inc/crontask.class.php:1650 inc/dropdown.class.php:1360
-#: inc/dropdown.class.php:1526 inc/entity.class.php:1862
+#: inc/crontask.class.php:1651 inc/dropdown.class.php:1359
+#: inc/dropdown.class.php:1525 inc/entity.class.php:1862
 #: inc/entity.class.php:1907 inc/entity.class.php:2229
 #: inc/entity.class.php:2264 inc/planningrecall.class.php:262
 #: inc/sla.class.php:287 inc/ticketrecurrent.class.php:183
@@ -8050,7 +8059,7 @@ msgid "Case"
 msgid_plural "Cases"
 msgstr[0] "ケース"
 
-#: inc/devicecasetype.class.php:44 inc/dropdown.class.php:754
+#: inc/devicecasetype.class.php:44 inc/dropdown.class.php:753
 msgid "Case type"
 msgid_plural "Case types"
 msgstr[0] "ケースタイプ"
@@ -8208,7 +8217,7 @@ msgstr "デフォルト表示"
 msgid "Search result default display"
 msgstr "検索画面表示設定"
 
-#: inc/documentcategory.class.php:44 inc/dropdown.class.php:782
+#: inc/documentcategory.class.php:44 inc/dropdown.class.php:781
 msgid "Document heading"
 msgid_plural "Document headings"
 msgstr[0] "ドキュメントの見出し"
@@ -8317,7 +8326,7 @@ msgid "Number of documents"
 msgstr "ドキュメント数"
 
 #: inc/document.class.php:775 inc/document_item.class.php:531
-#: inc/html.class.php:5020 inc/notificationtemplatetranslation.class.php:335
+#: inc/html.class.php:5022 inc/notificationtemplatetranslation.class.php:335
 msgid "Tag"
 msgstr "タグ"
 
@@ -8395,12 +8404,12 @@ msgstr "ディレクトリ %s の作成に失敗しました。ディレクト�
 msgid "No file available"
 msgstr "ファイルはありません"
 
-#: inc/document.class.php:1308
+#: inc/document.class.php:1310
 msgctxt "button"
 msgid "Add a document"
 msgstr "ドキュメントを追加"
 
-#: inc/document.class.php:1309
+#: inc/document.class.php:1311
 msgctxt "button"
 msgid "Remove a document"
 msgstr "ドキュメントの削除"
@@ -8439,7 +8448,7 @@ msgstr "拡張子"
 msgid "May be a regular expression"
 msgstr "正規表現と見なす"
 
-#: inc/documenttype.class.php:67 inc/dropdown.class.php:784
+#: inc/documenttype.class.php:67 inc/dropdown.class.php:783
 #: inc/profile.class.php:1436 inc/profile.class.php:1707
 msgid "Document type"
 msgid_plural "Document types"
@@ -8483,100 +8492,96 @@ msgid "Status of items"
 msgid_plural "Statuses of items"
 msgstr[0] "アイテムのステータス"
 
-#: inc/dropdown.class.php:721 inc/profile.class.php:1415
-msgid "Category of ticket"
-msgid_plural "Categories of tickets"
+#: inc/dropdown.class.php:721 inc/itilcategory.class.php:188
+#: inc/profile.class.php:1415
+msgid "Ticket category"
+msgid_plural "Ticket categories"
 msgstr[0] "チケットのカテゴリ"
 
-#: inc/dropdown.class.php:723 inc/profile.class.php:1424
-#: inc/taskcategory.class.php:52
-msgid "Tasks category"
-msgid_plural "Tasks categories"
-msgstr[0] "タスクカテゴリ"
-
-#: inc/dropdown.class.php:728 inc/projectstate.class.php:47
+#: inc/dropdown.class.php:727 inc/projectstate.class.php:47
 msgid "Project state"
 msgid_plural "Project states"
 msgstr[0] "プロジェクトステータス"
 
-#: inc/dropdown.class.php:729 inc/projecttype.class.php:47
+#: inc/dropdown.class.php:728 inc/projecttype.class.php:47
 msgid "Project type"
 msgid_plural "Project types"
 msgstr[0] "プロジェクトタイプ"
 
-#: inc/dropdown.class.php:730 inc/projecttasktype.class.php:46
+#: inc/dropdown.class.php:729 inc/projecttasktype.class.php:46
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
 msgstr[0] "プロジェクトタスクタイプ"
 
-#: inc/dropdown.class.php:736 inc/networkequipmenttype.class.php:44
+#: inc/dropdown.class.php:735 inc/networkequipmenttype.class.php:44
 #: inc/rule.class.php:411
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
 msgstr[0] "ネットワーク機器タイプ"
 
-#: inc/dropdown.class.php:740 inc/peripheraltype.class.php:44
+#: inc/dropdown.class.php:739 inc/peripheraltype.class.php:44
 msgid "Devices type"
 msgid_plural "Devices types"
 msgstr[0] "デバイスタイプ"
 
-#: inc/dropdown.class.php:742 inc/softwarelicensetype.class.php:44
+#: inc/dropdown.class.php:741 inc/software.class.php:656
+#: inc/softwarelicensetype.class.php:44
 msgid "License type"
 msgid_plural "License types"
 msgstr[0] "ライセンスタイプ"
 
-#: inc/dropdown.class.php:752 inc/interfacetype.class.php:42
+#: inc/dropdown.class.php:751 inc/interfacetype.class.php:42
 msgid "Interface type (Hard drive...)"
 msgid_plural "Interface types (Hard drive...)"
 msgstr[0] "インターフェースタイプ (HDD...)"
 
-#: inc/dropdown.class.php:755 inc/phonepowersupply.class.php:42
+#: inc/dropdown.class.php:754 inc/phonepowersupply.class.php:42
 msgid "Phone power supply type"
 msgid_plural "Phones power supply types"
 msgstr[0] "電話機の電源供給タイプ"
 
-#: inc/dropdown.class.php:763 inc/networkequipmentmodel.class.php:45
+#: inc/dropdown.class.php:762 inc/networkequipmentmodel.class.php:45
 #: inc/rule.class.php:333
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
 msgstr[0] "ネットワーク機器モデル"
 
-#: inc/dropdown.class.php:767 inc/peripheralmodel.class.php:45
+#: inc/dropdown.class.php:766 inc/peripheralmodel.class.php:45
 #: inc/rule.class.php:320
 msgid "Peripheral model"
 msgid_plural "Peripheral models"
 msgstr[0] "周辺機器モデル"
 
-#: inc/dropdown.class.php:781 inc/event.class.php:132 inc/html.class.php:1144
+#: inc/dropdown.class.php:780 inc/event.class.php:132 inc/html.class.php:1144
 #: inc/infocom.class.php:142 inc/infocom.class.php:149
 #: inc/profile.class.php:97 inc/profile.class.php:866
 #: inc/profile.class.php:1598 inc/transfer.class.php:3228
 msgid "Management"
 msgstr "運用管理"
 
-#: inc/dropdown.class.php:787 inc/event.class.php:131 inc/html.class.php:1148
+#: inc/dropdown.class.php:786 inc/event.class.php:131 inc/html.class.php:1148
 #: inc/profile.class.php:94 inc/profile.class.php:102
 #: inc/profile.class.php:741 inc/profile.class.php:925
 #: inc/profile.class.php:1645
 msgid "Tools"
 msgstr "ツール"
 
-#: inc/dropdown.class.php:788 inc/knowbaseitemcategory.class.php:50
+#: inc/dropdown.class.php:787 inc/knowbaseitemcategory.class.php:50
 #: inc/profile.class.php:1418
 msgid "Knowledge base category"
 msgid_plural "Knowledge base categories"
 msgstr[0] "ナレッジベースカテゴリ"
 
-#: inc/dropdown.class.php:805
+#: inc/dropdown.class.php:804
 msgid "Update source"
 msgid_plural "Update sources"
 msgstr[0] "更新元"
 
-#: inc/dropdown.class.php:808 inc/networkport.class.php:851
+#: inc/dropdown.class.php:807 inc/networkport.class.php:851
 msgid "Networking"
 msgstr "ネットワーク"
 
-#: inc/dropdown.class.php:811 inc/networkequipment.class.php:382
+#: inc/dropdown.class.php:810 inc/networkequipment.class.php:382
 #: inc/networkequipment.class.php:522
 #: inc/networkequipmentfirmware.class.php:42 inc/phone.class.php:300
 #: inc/phone.class.php:490
@@ -8584,7 +8589,7 @@ msgid "Firmware"
 msgid_plural "Firmwares"
 msgstr[0] "ファームウェア"
 
-#: inc/dropdown.class.php:812 inc/netpoint.class.php:58
+#: inc/dropdown.class.php:811 inc/netpoint.class.php:58
 #: inc/netpoint.class.php:271 inc/netpoint.class.php:285
 #: inc/netpoint.class.php:402 inc/networkport.class.php:963
 #: inc/networkportethernet.class.php:137 inc/networkportethernet.class.php:361
@@ -8593,71 +8598,71 @@ msgid "Network outlet"
 msgid_plural "Network outlets"
 msgstr[0] "情報コンセント"
 
-#: inc/dropdown.class.php:816 inc/networkport.class.php:899
+#: inc/dropdown.class.php:815 inc/networkport.class.php:899
 #: inc/networkportinstantiation.class.php:128 inc/vlan.class.php:49
 msgid "VLAN"
 msgstr "VLAN"
 
-#: inc/dropdown.class.php:819 inc/profile.class.php:805
+#: inc/dropdown.class.php:818 inc/profile.class.php:805
 #: inc/profile.class.php:1591
 msgid "Internet"
 msgstr "インターネット"
 
-#: inc/dropdown.class.php:820 inc/ipnetwork.class.php:56
+#: inc/dropdown.class.php:819 inc/ipnetwork.class.php:56
 msgid "IP network"
 msgid_plural "IP networks"
 msgstr[0] "IPネットワーク"
 
-#: inc/dropdown.class.php:821 inc/fqdn.class.php:49
+#: inc/dropdown.class.php:820 inc/fqdn.class.php:49
 #: inc/networkalias.class.php:306
 msgid "Internet domain"
 msgid_plural "Internet domains"
 msgstr[0] "ドメイン"
 
-#: inc/dropdown.class.php:822 inc/wifinetwork.class.php:126
+#: inc/dropdown.class.php:821 inc/wifinetwork.class.php:126
 msgid "Wifi network"
 msgid_plural "Wifi networks"
 msgstr[0] "無線ネットワーク"
 
-#: inc/dropdown.class.php:823 inc/lock.class.php:486
+#: inc/dropdown.class.php:822 inc/lock.class.php:486
 #: inc/networkname.class.php:68
 msgid "Network name"
 msgid_plural "Network names"
 msgstr[0] "ネットワーク名"
 
-#: inc/dropdown.class.php:827 inc/softwarecategory.class.php:44
+#: inc/dropdown.class.php:826 inc/softwarecategory.class.php:44
 msgid "Software category"
 msgid_plural "Software categories"
 msgstr[0] "ソフトウェアカテゴリ"
 
-#: inc/dropdown.class.php:832 inc/usertitle.class.php:44
+#: inc/dropdown.class.php:831 inc/usertitle.class.php:44
 msgid "User title"
 msgid_plural "Users titles"
 msgstr[0] "役職"
 
-#: inc/dropdown.class.php:833 inc/usercategory.class.php:44
+#: inc/dropdown.class.php:832 inc/usercategory.class.php:44
 msgid "User category"
 msgid_plural "User categories"
 msgstr[0] "職種"
 
-#: inc/dropdown.class.php:836 inc/profile.class.php:1331
+#: inc/dropdown.class.php:835 inc/profile.class.php:1331
 #: inc/profile.class.php:1784 inc/ruleright.class.php:73
 #: inc/rulerightcollection.class.php:57
 msgid "Authorizations assignment rules"
 msgstr "認証割り当てルール"
 
-#: inc/dropdown.class.php:837 inc/rulerightparameter.class.php:83
+#: inc/dropdown.class.php:836 inc/rulerightparameter.class.php:83
 msgid "LDAP criterion"
 msgid_plural "LDAP criteria"
 msgstr[0] "LDAP抽出条件"
 
-#: inc/dropdown.class.php:841 inc/fieldblacklist.class.php:47
+#: inc/dropdown.class.php:840 inc/fieldblacklist.class.php:47
 msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
 msgstr[0] "重複チェックで無視する値"
 
 #. TRANS: %d is a number of years
-#: inc/dropdown.class.php:1352 inc/infocom.class.php:1092
+#: inc/dropdown.class.php:1351 inc/infocom.class.php:1092
 #: inc/ticketrecurrent.class.php:191 inc/ticketrecurrent.class.php:219
 #, php-format
 msgid "%d year"
@@ -8665,97 +8670,97 @@ msgid_plural "%d years"
 msgstr[0] "%d年"
 
 #. TRANS: %d is a number of seconds
-#: inc/dropdown.class.php:1372
+#: inc/dropdown.class.php:1371
 #, php-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d秒"
 
 #. TRANS: %d is a number of milliseconds
-#: inc/dropdown.class.php:1376
+#: inc/dropdown.class.php:1375
 #, php-format
 msgid "%d millisecond"
 msgid_plural "%d milliseconds"
 msgstr[0] "%dミリ秒"
 
 #. TRANS: %d is the percentage. %% to display %
-#: inc/dropdown.class.php:1379 inc/entity.class.php:1910
+#: inc/dropdown.class.php:1378 inc/entity.class.php:1910
 #, php-format
 msgid "%d%%"
 msgstr "%d%%"
 
 #. TRANS: %1$d is the number of days, %2$d the number of hours,
 #. %3$s the number of minutes : display 1 day 3h15
-#: inc/dropdown.class.php:1523
+#: inc/dropdown.class.php:1522
 #, php-format
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
 msgstr[0] "%1$d日%2$d時間%3$s分"
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
-#: inc/dropdown.class.php:1535
+#: inc/dropdown.class.php:1534
 #, php-format
 msgid "%1$dh%2$s"
 msgstr "%1$d時間%2$s分"
 
-#: inc/dropdown.class.php:1771
+#: inc/dropdown.class.php:1770
 msgid "Other..."
 msgstr "その他..."
 
-#: inc/dropdown.class.php:1850 inc/dropdown.class.php:1869
-#: inc/dropdown.class.php:1876 inc/dropdown.class.php:1878
-#: inc/dropdown.class.php:1940 inc/monitor.class.php:540
+#: inc/dropdown.class.php:1849 inc/dropdown.class.php:1868
+#: inc/dropdown.class.php:1875 inc/dropdown.class.php:1877
+#: inc/dropdown.class.php:1939 inc/monitor.class.php:540
 #: inc/peripheral.class.php:474 inc/phone.class.php:530
 #: inc/printer.class.php:703
 msgid "Global management"
 msgstr "グローバル管理"
 
-#: inc/dropdown.class.php:1854
+#: inc/dropdown.class.php:1853
 msgid "Use unitary management"
 msgstr "単品管理を使用"
 
-#: inc/dropdown.class.php:1856
+#: inc/dropdown.class.php:1855
 msgid "Do you really want to use unitary management for this item?"
 msgstr "このアイテムは単品管理を使用しますか?"
 
-#: inc/dropdown.class.php:1857 inc/dropdown.class.php:1860
-#: inc/dropdown.class.php:1861
+#: inc/dropdown.class.php:1856 inc/dropdown.class.php:1859
+#: inc/dropdown.class.php:1860
 msgid "Duplicate the element as many times as there are connections"
 msgstr "接続の都度エレメントは複製されます"
 
-#: inc/dropdown.class.php:1956
+#: inc/dropdown.class.php:1955
 msgid "Current page in landscape PDF"
 msgstr "現在のページをPDF（横）で出力"
 
-#: inc/dropdown.class.php:1957
+#: inc/dropdown.class.php:1956
 msgid "Current page in portrait PDF"
 msgstr "現在のページをPDF（縦）で出力"
 
-#: inc/dropdown.class.php:1958
+#: inc/dropdown.class.php:1957
 msgid "Current page in SLK"
 msgstr "現在のページをSLKで出力"
 
-#: inc/dropdown.class.php:1959
+#: inc/dropdown.class.php:1958
 msgid "Current page in CSV"
 msgstr "現在のページをCSVで出力"
 
-#: inc/dropdown.class.php:1960
+#: inc/dropdown.class.php:1959
 msgid "All pages in landscape PDF"
 msgstr "全ページをPDF（横）で出力"
 
-#: inc/dropdown.class.php:1961
+#: inc/dropdown.class.php:1960
 msgid "All pages in portrait PDF"
 msgstr "全ページをPDF（縦）で出力"
 
-#: inc/dropdown.class.php:1962
+#: inc/dropdown.class.php:1961
 msgid "All pages in SLK"
 msgstr "全ページをSLKで出力"
 
-#: inc/dropdown.class.php:1963
+#: inc/dropdown.class.php:1962
 msgid "All pages in CSV"
 msgstr "全ページをCSVで出力"
 
-#: inc/dropdown.class.php:1967 inc/rule.class.php:567
+#: inc/dropdown.class.php:1966 inc/rule.class.php:567
 #: inc/rulecollection.class.php:804
 msgctxt "button"
 msgid "Export"
@@ -9089,13 +9094,13 @@ msgid "Configuring the satisfaction survey"
 msgstr "満足度調査の設定"
 
 #: inc/entity.class.php:1878 inc/entity.class.php:2440
-#: inc/ticketsatisfaction.class.php:215 inc/ticketsatisfaction.class.php:265
+#: inc/ticketsatisfaction.class.php:216 inc/ticketsatisfaction.class.php:266
 msgid "Internal survey"
 msgstr "内部調査"
 
 #: inc/entity.class.php:1879 inc/entity.class.php:2441
-#: inc/ticketsatisfaction.class.php:110 inc/ticketsatisfaction.class.php:218
-#: inc/ticketsatisfaction.class.php:266
+#: inc/ticketsatisfaction.class.php:110 inc/ticketsatisfaction.class.php:219
+#: inc/ticketsatisfaction.class.php:267
 msgid "External survey"
 msgstr "外部調査"
 
@@ -9134,7 +9139,7 @@ msgid "Security"
 msgstr "セキュリティ"
 
 #: inc/event.class.php:140 inc/html.class.php:1152 inc/plugin.class.php:60
-#: inc/search.class.php:4959
+#: inc/search.class.php:4947
 msgid "Plugin"
 msgid_plural "Plugins"
 msgstr[0] "プラグイン"
@@ -9301,12 +9306,13 @@ msgstr "受任者"
 
 #. TRANS: %1$s is address, %2$s is netmask
 #: inc/group.class.php:737 inc/ipnetwork.class.php:146
-#: inc/ipnetwork.class.php:969 inc/knowbaseitem.class.php:1585
-#: inc/knowbaseitem.class.php:1642 inc/notepad.class.php:297
-#: inc/notificationtargetcontract.class.php:163 inc/reminder.class.php:1226
-#: inc/reminder.class.php:1281 inc/rssfeed.class.php:1060
-#: inc/rssfeed.class.php:1115 inc/ruleticket.class.php:82
-#: inc/search.class.php:1548 inc/stat.class.php:1384
+#: inc/ipnetwork.class.php:149 inc/ipnetwork.class.php:969
+#: inc/knowbaseitem.class.php:1585 inc/knowbaseitem.class.php:1642
+#: inc/notepad.class.php:294 inc/notificationtargetcontract.class.php:163
+#: inc/reminder.class.php:1226 inc/reminder.class.php:1281
+#: inc/rssfeed.class.php:1060 inc/rssfeed.class.php:1115
+#: inc/ruleticket.class.php:82 inc/search.class.php:1536
+#: inc/stat.class.php:1384
 #, php-format
 msgid "%1$s / %2$s"
 msgstr "%1$s / %2$s"
@@ -9317,15 +9323,15 @@ msgstr "グループに関連付けます"
 
 #: inc/group_user.class.php:208 inc/group_user.class.php:246
 #: inc/group_user.class.php:492 inc/group_user.class.php:520
-#: inc/group_user.class.php:615 inc/profile_user.class.php:851
+#: inc/group_user.class.php:615 inc/profile_user.class.php:855
 msgid "Dynamic"
 msgstr "動的"
 
 #. TRANS: D for Dynamic
 #: inc/group_user.class.php:240 inc/profile_user.class.php:234
 #: inc/profile_user.class.php:400 inc/profile_user.class.php:557
-#: inc/profile_user.class.php:901 inc/search.class.php:3821
-#: inc/search.class.php:3859 inc/useremail.class.php:166
+#: inc/profile_user.class.php:905 inc/search.class.php:3809
+#: inc/search.class.php:3847 inc/useremail.class.php:166
 msgid "D"
 msgstr "D"
 
@@ -9403,7 +9409,7 @@ msgid "%1$s%2$s second"
 msgid_plural "%1$s%2$s seconds"
 msgstr[0] "%1$s%2$s秒"
 
-#: inc/html.class.php:514 inc/html.class.php:3745
+#: inc/html.class.php:514 inc/html.class.php:3747
 #: inc/profile_user.class.php:424
 msgid "Item not found"
 msgstr "アイテムが見つかりません"
@@ -9425,19 +9431,13 @@ msgid "Logout"
 msgstr "ログアウト"
 
 #: inc/html.class.php:1656 inc/html.class.php:1659 inc/html.class.php:1660
-#: inc/html.class.php:2062 inc/html.class.php:2065 inc/html.class.php:2066
+#: inc/html.class.php:2063 inc/html.class.php:2066 inc/html.class.php:2067
 msgid "Load a bookmark"
 msgstr "ブックマークのロード"
 
 #: inc/html.class.php:1690
 msgid "^Top^"
 msgstr "^Top^"
-
-#: inc/html.class.php:1729
-#, php-format
-msgid "%1$s second"
-msgid_plural "%1$s seconds"
-msgstr[0] "%1$s秒"
 
 #: inc/html.class.php:1741 inc/toolbox.class.php:1396
 #: inc/toolbox.class.php:1400
@@ -9460,197 +9460,197 @@ msgstr "チケットを作成"
 msgid "Ticket followup"
 msgstr "ヘルプデスク対応状況（インシデントチケット管理）"
 
-#: inc/html.class.php:1991
+#: inc/html.class.php:1992
 msgid "Plugins"
 msgstr "プラグイン"
 
-#: inc/html.class.php:2041 inc/html.class.php:2042 inc/ticket.class.php:180
+#: inc/html.class.php:2042 inc/html.class.php:2043 inc/ticket.class.php:180
 #: inc/ticket.class.php:181 inc/ticket.class.php:2943
 #: inc/ticket.class.php:2944
 msgid "Ticket waiting for your approval"
 msgstr "あなたの承認待ちのチケット"
 
-#: inc/html.class.php:2276
+#: inc/html.class.php:2277
 msgid "Check all"
 msgstr "全て選択"
 
-#: inc/html.class.php:2280
+#: inc/html.class.php:2281
 msgid "Uncheck all"
 msgstr "選択を全て解除"
 
-#: inc/html.class.php:2349
+#: inc/html.class.php:2350
 msgid "Check all as"
 msgstr "次を全て選択"
 
-#: inc/html.class.php:2693
+#: inc/html.class.php:2694
 msgid "Selection too large, massive action disabled."
 msgstr "選択したものは大きすぎます。バッチ動作は無効です"
 
-#: inc/html.class.php:2695
+#: inc/html.class.php:2696
 msgid ""
 "To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
 " configuration."
 msgstr "制限を拡大するためには、phpの設定でmax_input_varsまたはsuhosin.post.max_varsを変更してください"
 
-#: inc/html.class.php:3211
+#: inc/html.class.php:3212
 msgid "Now"
 msgstr "現在"
 
-#: inc/html.class.php:3213 inc/html.class.php:3216
+#: inc/html.class.php:3214 inc/html.class.php:3217
 msgid "Today"
 msgstr "今日"
 
-#: inc/html.class.php:3220
+#: inc/html.class.php:3221
 msgid "Specify a date"
 msgstr "日付の指定"
 
-#: inc/html.class.php:3225 inc/slalevel.class.php:369
+#: inc/html.class.php:3226 inc/slalevel.class.php:369
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
 msgstr[0] "- %d時"
 
-#: inc/html.class.php:3230 inc/slalevel.class.php:381
+#: inc/html.class.php:3231 inc/slalevel.class.php:381
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
 msgstr[0] "- %d日"
 
-#: inc/html.class.php:3234
+#: inc/html.class.php:3235
 msgid "last Sunday"
 msgstr "先週の日曜日"
 
-#: inc/html.class.php:3235
+#: inc/html.class.php:3236
 msgid "last Monday"
 msgstr "先週の月曜日"
 
-#: inc/html.class.php:3236
+#: inc/html.class.php:3237
 msgid "last Tuesday"
 msgstr "先週の火曜日"
 
-#: inc/html.class.php:3237
+#: inc/html.class.php:3238
 msgid "last Wednesday"
 msgstr "先週の水曜日"
 
-#: inc/html.class.php:3238
+#: inc/html.class.php:3239
 msgid "last Thursday"
 msgstr "先週の木曜日"
 
-#: inc/html.class.php:3239
+#: inc/html.class.php:3240
 msgid "last Friday"
 msgstr "先週の金曜日"
 
-#: inc/html.class.php:3240
+#: inc/html.class.php:3241
 msgid "last Saturday"
 msgstr "先週の土曜日"
 
-#: inc/html.class.php:3244
+#: inc/html.class.php:3245
 #, php-format
 msgid "- %d week"
 msgid_plural "- %d weeks"
 msgstr[0] "- %d週"
 
-#: inc/html.class.php:3248
+#: inc/html.class.php:3249
 msgid "Beginning of the month"
 msgstr "月初"
 
-#: inc/html.class.php:3252
+#: inc/html.class.php:3253
 #, php-format
 msgid "- %d month"
 msgid_plural "- %d months"
 msgstr[0] "- %d月"
 
-#: inc/html.class.php:3256
+#: inc/html.class.php:3257
 msgid "Beginning of the year"
 msgstr "年初"
 
-#: inc/html.class.php:3260
+#: inc/html.class.php:3261
 #, php-format
 msgid "- %d year"
 msgid_plural "- %d years"
 msgstr[0] "- %d年"
 
-#: inc/html.class.php:3266 inc/slalevel.class.php:365
+#: inc/html.class.php:3267 inc/slalevel.class.php:365
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
 msgstr[0] "+ %d時"
 
-#: inc/html.class.php:3271 inc/slalevel.class.php:377
+#: inc/html.class.php:3272 inc/slalevel.class.php:377
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
 msgstr[0] "+ %d日"
 
-#: inc/html.class.php:3275
+#: inc/html.class.php:3276
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
 msgstr[0] "+ %d週"
 
-#: inc/html.class.php:3279
+#: inc/html.class.php:3280
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
 msgstr[0] "+ %d月"
 
-#: inc/html.class.php:3283
+#: inc/html.class.php:3284
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
 msgstr[0] "+ %d年"
 
-#: inc/html.class.php:3744
+#: inc/html.class.php:3746
 msgctxt "button"
 msgid "Drag and drop or paste image"
 msgstr "ドラッグ＆ドロップまたはイメージの貼り付け"
 
-#: inc/html.class.php:3746
+#: inc/html.class.php:3748
 msgid "Item is too large"
 msgstr "アイテムは大きすぎます"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
-#: inc/html.class.php:3826 inc/html.class.php:4009
+#: inc/html.class.php:3828 inc/html.class.php:4011
 #, php-format
 msgid "From %1$d to %2$d on %3$d"
 msgstr "From %1$d to %2$d on %3$d"
 
-#: inc/html.class.php:3898
+#: inc/html.class.php:3900
 msgid "Empty array"
 msgstr "空の配列"
 
-#: inc/html.class.php:4044 inc/html.class.php:4049
+#: inc/html.class.php:4046 inc/html.class.php:4051
 msgid "Display (number of items)"
 msgstr "表示設定 (アイテム数)"
 
 #. TRANS %1$d %2$d are numbers (displayed, total)
-#: inc/html.class.php:4071
+#: inc/html.class.php:4073
 #, php-format
 msgid "%1$d on %2$d"
 msgstr "%1$d on %2$d"
 
-#: inc/html.class.php:4864
+#: inc/html.class.php:4866
 msgid "Drag and drop your file here, or"
 msgstr "ここにファイルをドラッグ＆ドロップするか、または"
 
-#: inc/html.class.php:5003
+#: inc/html.class.php:5005
 msgctxt "button"
 msgid "Paste image"
 msgstr "イメージの貼り付け"
 
-#: inc/html.class.php:5057
+#: inc/html.class.php:5059
 msgid "Upload successful"
 msgstr "アップロードしました"
 
-#: inc/html.class.php:5060
+#: inc/html.class.php:5062
 msgid "Upload error"
 msgstr "アップロードエラー"
 
-#: inc/html.class.php:5129
+#: inc/html.class.php:5131
 msgid "Check/uncheck all"
 msgstr "全チェック/全チェック解除"
 
-#: inc/html.class.php:5174 inc/html.class.php:5278 inc/profile.class.php:2646
+#: inc/html.class.php:5176 inc/html.class.php:5280 inc/profile.class.php:2646
 msgid "Select/unselect all"
 msgstr "全選択/全選択解除"
 
@@ -9819,11 +9819,6 @@ msgstr "ゲートウェイ"
 msgid "Addressable network"
 msgstr "アドレス指定可能なネットワーク"
 
-#: inc/ipnetwork.class.php:149
-#, php-format
-msgid "%1$s/%2$s"
-msgstr "%1$s/%2$s"
-
 #: inc/ipnetwork.class.php:163
 msgid "Set the network using notation address/mask"
 msgstr "IPアドレス/ネットマスクの形式でネットワークを設定してください"
@@ -9941,7 +9936,7 @@ msgid "Template for an incident"
 msgstr "インシデントテンプレート"
 
 #: inc/itilcategory.class.php:164 inc/notificationtargetchange.class.php:203
-#: inc/notificationtargetticket.class.php:623 inc/search.class.php:4920
+#: inc/notificationtargetticket.class.php:623 inc/search.class.php:4908
 #: inc/ticket.class.php:2263
 msgctxt "quantity"
 msgid "Number of problems"
@@ -9953,11 +9948,6 @@ msgstr "障害件数"
 msgctxt "quantity"
 msgid "Number of changes"
 msgstr "変更数"
-
-#: inc/itilcategory.class.php:188
-msgid "Ticket category"
-msgid_plural "Ticket categories"
-msgstr[0] "チケットのカテゴリ"
 
 #: inc/itilcategory.class.php:303 inc/ticket.class.php:2421
 #: inc/ticket.class.php:2437
@@ -10091,18 +10081,18 @@ msgstr[0] "受信"
 #: inc/knowbaseitem.class.php:1590 inc/knowbaseitem.class.php:1617
 #: inc/knowbaseitem.class.php:1647 inc/profile_user.class.php:241
 #: inc/profile_user.class.php:406 inc/profile_user.class.php:563
-#: inc/profile_user.class.php:906 inc/reminder.class.php:1232
+#: inc/profile_user.class.php:910 inc/reminder.class.php:1232
 #: inc/reminder.class.php:1257 inc/reminder.class.php:1286
 #: inc/rssfeed.class.php:1066 inc/rssfeed.class.php:1091
 #: inc/rssfeed.class.php:1120 inc/rule.class.php:1843
-#: inc/search.class.php:3815 inc/search.class.php:3853
+#: inc/search.class.php:3803 inc/search.class.php:3841
 msgid "R"
 msgstr "R"
 
 #: inc/knowbaseitem.class.php:1636 inc/notificationtarget.class.php:712
 #: inc/profile.class.php:71 inc/profile.class.php:1313
 #: inc/profile_user.class.php:356 inc/profile_user.class.php:482
-#: inc/profile_user.class.php:886 inc/reminder.class.php:1275
+#: inc/profile_user.class.php:890 inc/reminder.class.php:1275
 #: inc/rssfeed.class.php:1109 inc/ruleright.class.php:93
 #: inc/ruleright.class.php:320 inc/rulerightcollection.class.php:158
 #: inc/user.class.php:1976 inc/user.class.php:2603 inc/user.class.php:2639
@@ -10586,7 +10576,7 @@ msgstr "default_valueは数字でなければなりません"
 msgid "Change of the database layout - %s"
 msgstr "データベースレイアウトの変更 - %s"
 
-#: inc/migration.class.php:592 inc/software.class.php:1070
+#: inc/migration.class.php:592 inc/software.class.php:1076
 #: install/update.php:137
 msgid "Task completed."
 msgstr "作業完了"
@@ -11006,16 +10996,13 @@ msgid "ESSID"
 msgstr "ESSID"
 
 #. TRANS: Always plural
-#: inc/notepad.class.php:55
+#: inc/notepad.class.php:55 inc/notepad.class.php:161
+#: inc/notepad.class.php:165
 msgid "Note"
 msgid_plural "Notes"
 msgstr[0] "メモ"
 
-#: inc/notepad.class.php:157 inc/notepad.class.php:161
-msgid "Notes"
-msgstr "メモ"
-
-#: inc/notepad.class.php:170 inc/notificationtargetproject.class.php:562
+#: inc/notepad.class.php:174 inc/notificationtargetproject.class.php:562
 #: inc/notificationtargetproject.class.php:583
 #: inc/notificationtargetprojecttask.class.php:463
 #: inc/notificationtargetprojecttask.class.php:484 inc/project.class.php:426
@@ -11025,17 +11012,17 @@ msgstr "メモ"
 msgid "Creation date"
 msgstr "作成日"
 
-#: inc/notepad.class.php:197
+#: inc/notepad.class.php:201
 #: inc/notificationtargetcommonitilobject.class.php:1025
 msgid "Last updater"
 msgstr "前回更新者"
 
-#: inc/notepad.class.php:289
+#: inc/notepad.class.php:286
 #, php-format
 msgid "Last update by %1$s on %2$s"
 msgstr "%1$s による最終更新日時 %2$s"
 
-#: inc/notepad.class.php:295
+#: inc/notepad.class.php:292
 #, php-format
 msgid "Create by %1$s on %2$s"
 msgstr "%1$s の作成日時 %2$s"
@@ -12427,7 +12414,7 @@ msgid "Add an authorization to a user"
 msgstr "ユーザへの認証の追加"
 
 #: inc/profile_user.class.php:143 inc/profile_user.class.php:301
-#: inc/profile_user.class.php:1005 inc/ruleright.class.php:95
+#: inc/profile_user.class.php:1009 inc/ruleright.class.php:95
 #: inc/ruleright.class.php:324 inc/rulerightcollection.class.php:163
 #: inc/user.class.php:1972
 msgid "Recursive"
@@ -12442,13 +12429,13 @@ msgstr "D=動的, R=反復利用"
 msgid "No user found"
 msgstr "ユーザが見つかりません"
 
-#: inc/profile_user.class.php:895 inc/profile_user.class.php:902
-#: inc/profile_user.class.php:907
+#: inc/profile_user.class.php:899 inc/profile_user.class.php:906
+#: inc/profile_user.class.php:911
 #, php-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: inc/profile_user.class.php:950 inc/user.class.php:1971
+#: inc/profile_user.class.php:954 inc/user.class.php:1971
 msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] "認証"
@@ -12485,11 +12472,11 @@ msgstr "タスクの予定時間の合計"
 msgid "Sum of total effective durations of tasks"
 msgstr "タスクの総実時間の合計"
 
-#: inc/project.class.php:991 inc/projecttask.class.php:913
+#: inc/project.class.php:991 inc/projecttask.class.php:912
 msgid "Add a team member"
 msgstr "チームメンバーの追加"
 
-#: inc/project.class.php:1038 inc/projecttask.class.php:959
+#: inc/project.class.php:1038 inc/projecttask.class.php:958
 msgid "Member"
 msgid_plural "Members"
 msgstr[0] "メンバー"
@@ -12603,7 +12590,7 @@ msgstr "更新(関係者)"
 msgid "Creator"
 msgstr "作成者"
 
-#: inc/projecttask.class.php:761
+#: inc/projecttask.class.php:760
 msgctxt "button"
 msgid "Add a task"
 msgstr "タスクを追加"
@@ -12876,7 +12863,7 @@ msgstr "予約無し"
 
 #: inc/reservation.class.php:1089 inc/reservation.class.php:1137
 #: inc/reservation.class.php:1213 inc/reservation.class.php:1268
-#: inc/search.class.php:4235
+#: inc/search.class.php:4223
 msgid "See planning"
 msgstr "予約状況参照"
 
@@ -12914,8 +12901,8 @@ msgstr "実行中の予約はすべて削除されます"
 msgid "Authorize reservations"
 msgstr "予約を許可"
 
-#: inc/reservationitem.class.php:311 inc/search.class.php:4133
-#: inc/search.class.php:4137
+#: inc/reservationitem.class.php:311 inc/search.class.php:4121
+#: inc/search.class.php:4125
 msgid "Modify the comment"
 msgstr "コメントを編集"
 
@@ -13119,7 +13106,7 @@ msgstr "使用したルール"
 msgid "Test rules engine"
 msgstr "テストルールエンジン"
 
-#: inc/rulecollection.class.php:557 inc/software.class.php:353
+#: inc/rulecollection.class.php:557 inc/software.class.php:359
 msgid "Replay the dictionary rules"
 msgstr "リストのルールを再適用する"
 
@@ -13176,26 +13163,26 @@ msgstr "ローカルルール: %s"
 msgid "Rules applicable in the sub-entities"
 msgstr "子エンティティのルール"
 
-#: inc/rulecriteria.class.php:502 inc/search.class.php:5053
-#: inc/search.class.php:5089 inc/search.class.php:5101
-#: inc/search.class.php:5107 inc/search.class.php:5112
-#: inc/search.class.php:5119 inc/search.class.php:5137
-#: inc/search.class.php:5144
+#: inc/rulecriteria.class.php:502 inc/search.class.php:5041
+#: inc/search.class.php:5077 inc/search.class.php:5089
+#: inc/search.class.php:5095 inc/search.class.php:5100
+#: inc/search.class.php:5107 inc/search.class.php:5125
+#: inc/search.class.php:5132
 msgid "is"
 msgstr "一致する"
 
-#: inc/rulecriteria.class.php:503 inc/search.class.php:5057
-#: inc/search.class.php:5090 inc/search.class.php:5102
-#: inc/search.class.php:5108 inc/search.class.php:5113
-#: inc/search.class.php:5120 inc/search.class.php:5138
-#: inc/search.class.php:5145
+#: inc/rulecriteria.class.php:503 inc/search.class.php:5045
+#: inc/search.class.php:5078 inc/search.class.php:5090
+#: inc/search.class.php:5096 inc/search.class.php:5101
+#: inc/search.class.php:5108 inc/search.class.php:5126
+#: inc/search.class.php:5133
 msgid "is not"
 msgstr "一致しない"
 
-#: inc/rulecriteria.class.php:504 inc/search.class.php:5036
-#: inc/search.class.php:5061 inc/search.class.php:5088
-#: inc/search.class.php:5103 inc/search.class.php:5123
-#: inc/search.class.php:5143
+#: inc/rulecriteria.class.php:504 inc/search.class.php:5024
+#: inc/search.class.php:5049 inc/search.class.php:5076
+#: inc/search.class.php:5091 inc/search.class.php:5111
+#: inc/search.class.php:5131
 msgid "contains"
 msgstr "含む"
 
@@ -13227,15 +13214,15 @@ msgstr "存在する"
 msgid "does not exist"
 msgstr "存在しない"
 
-#: inc/rulecriteria.class.php:528 inc/search.class.php:1511
-#: inc/search.class.php:1595 inc/search.class.php:5065
-#: inc/search.class.php:5152
+#: inc/rulecriteria.class.php:528 inc/search.class.php:1502
+#: inc/search.class.php:1583 inc/search.class.php:5053
+#: inc/search.class.php:5140
 msgid "under"
 msgstr "以下"
 
-#: inc/rulecriteria.class.php:529 inc/search.class.php:1517
-#: inc/search.class.php:1601 inc/search.class.php:5069
-#: inc/search.class.php:5153
+#: inc/rulecriteria.class.php:529 inc/search.class.php:1507
+#: inc/search.class.php:1589 inc/search.class.php:5057
+#: inc/search.class.php:5141
 msgid "not under"
 msgstr "以上"
 
@@ -13360,13 +13347,13 @@ msgstr "ソフトウェアリスト"
 
 #: inc/ruledictionnarysoftware.class.php:85
 #: inc/ruledictionnarysoftware.class.php:114
-#: inc/rulesoftwarecategory.class.php:78 inc/software.class.php:242
-#: inc/software.class.php:486
+#: inc/rulesoftwarecategory.class.php:78 inc/software.class.php:248
+#: inc/software.class.php:492
 msgid "Publisher"
 msgstr "発行者/出版社"
 
-#: inc/ruledictionnarysoftware.class.php:118 inc/software.class.php:262
-#: inc/software.class.php:517
+#: inc/ruledictionnarysoftware.class.php:118 inc/software.class.php:268
+#: inc/software.class.php:523
 msgid "Associable to a ticket"
 msgstr "チケットに関連付ける"
 
@@ -13587,27 +13574,27 @@ msgstr "親のビジネス"
 msgid "Business rules for ticket (entity parent)"
 msgstr "チケットのビジネスルール (親エンティティ)"
 
-#: inc/search.class.php:1486 inc/search.class.php:1489
-#: inc/search.class.php:1570 inc/search.class.php:1573
+#: inc/search.class.php:1481 inc/search.class.php:1483
+#: inc/search.class.php:1558 inc/search.class.php:1561
 #, php-format
 msgid "%1$s <> %2$s"
 msgstr "%1$s <> %2$s"
 
-#: inc/search.class.php:1495 inc/search.class.php:1579
+#: inc/search.class.php:1488 inc/search.class.php:1567
 #, php-format
 msgid "%1$s < %2$s"
 msgstr "%1$s < %2$s"
 
-#: inc/search.class.php:1500 inc/search.class.php:1584
+#: inc/search.class.php:1492 inc/search.class.php:1572
 #, php-format
 msgid "%1$s > %2$s"
 msgstr "%1$s > %2$s"
 
-#: inc/search.class.php:5073 inc/search.class.php:5121
+#: inc/search.class.php:5061 inc/search.class.php:5109
 msgid "before"
 msgstr "前"
 
-#: inc/search.class.php:5077 inc/search.class.php:5122
+#: inc/search.class.php:5065 inc/search.class.php:5110
 msgid "after"
 msgstr "後"
 
@@ -13681,119 +13668,115 @@ msgstr[0] "- %d分"
 msgid "Automatic actions of SLA"
 msgstr "SLAの自動実行"
 
-#: inc/software.class.php:75 inc/software.class.php:997
+#: inc/software.class.php:75 inc/software.class.php:1003
 msgid "Merging"
 msgstr "マージ"
 
 #. TRANS: a noun, (ex : this software is an upgrade of..)
-#: inc/software.class.php:317 install/update.php:866
+#: inc/software.class.php:323 install/update.php:866
 msgid "Upgrade"
 msgstr "アップグレード版"
 
-#: inc/software.class.php:347
+#: inc/software.class.php:353
 msgid "Recalculate the category"
 msgstr "カテゴリの再計算"
 
 #. TRANS: Indicator to know is all licenses of the software are valids
-#: inc/software.class.php:523
+#: inc/software.class.php:529
 msgid "Valid licenses"
 msgstr "有効なライセンス"
 
-#: inc/software.class.php:534
+#: inc/software.class.php:540
 msgctxt "quantity"
 msgid "Number of installations"
 msgstr "インストール数"
 
-#: inc/software.class.php:562
+#: inc/software.class.php:568
 msgid "Version name"
 msgstr "バージョン名"
 
-#: inc/software.class.php:580
+#: inc/software.class.php:586
 msgid "Version comments"
 msgstr "バージョンのコメント"
 
-#: inc/software.class.php:616
+#: inc/software.class.php:622
 msgid "License name"
 msgstr "ライセンス名"
 
-#: inc/software.class.php:625
+#: inc/software.class.php:631
 msgid "License serial number"
 msgstr "ライセンスシリアル番号"
 
-#: inc/software.class.php:633
+#: inc/software.class.php:639
 msgid "License inventory number"
 msgstr "ライセンス棚卸番号"
 
-#: inc/software.class.php:640
+#: inc/software.class.php:646
 msgctxt "phone"
 msgid "Number of licenses"
 msgstr "ライセンス数"
 
-#: inc/software.class.php:650
-msgid "License types"
-msgstr "ライセンスタイプ"
-
-#: inc/software.class.php:659
+#: inc/software.class.php:665
 msgid "License comments"
 msgstr "ライセンスのコメント"
 
-#: inc/software.class.php:670 inc/softwarelicense.class.php:297
+#: inc/software.class.php:676 inc/softwarelicense.class.php:323
 msgid "Never expire"
 msgstr "無期限"
 
-#: inc/software.class.php:676 inc/softwarelicense.class.php:284
+#: inc/software.class.php:682 inc/softwarelicense.class.php:310
 msgctxt "adjective"
 msgid "Valid"
 msgstr "有効"
 
-#: inc/software.class.php:950
+#: inc/software.class.php:956
 msgid "Merge"
 msgstr "マージ"
 
-#: inc/software.class.php:1067
+#: inc/software.class.php:1073
 msgid "Software deleted after merging"
 msgstr "マージ後に削除されたソフトウェア"
 
-#: inc/softwarelicense.class.php:250 inc/softwarelicense.class.php:385
-#: inc/softwarelicense.class.php:604
+#: inc/softwarelicense.class.php:276 inc/softwarelicense.class.php:411
+#: inc/softwarelicense.class.php:630
 msgid "Purchase version"
 msgstr "購入版"
 
-#: inc/softwarelicense.class.php:262 inc/softwarelicense.class.php:392
-#: inc/softwarelicense.class.php:605
+#: inc/softwarelicense.class.php:288 inc/softwarelicense.class.php:418
+#: inc/softwarelicense.class.php:631
 msgid "Version in use"
 msgstr "使用バージョン"
 
-#: inc/softwarelicense.class.php:286
+#: inc/softwarelicense.class.php:312
 msgctxt "adjective"
 msgid "Invalid"
 msgstr "無効"
 
-#: inc/softwarelicense.class.php:298
+#: inc/softwarelicense.class.php:324
 msgid ""
 "On search engine, use \"Expiration contains NULL\" to search licenses with "
 "no expiration date"
 msgstr "検索エンジンで、失効日のないライセンスを検索するには「失効日にNULL」を指定してください"
 
-#: inc/softwarelicense.class.php:403
+#: inc/softwarelicense.class.php:429
 msgid "Valid"
 msgstr "有効"
 
-#: inc/softwarelicense.class.php:423
+#: inc/softwarelicense.class.php:449
 msgid "Send alarms on expired licenses"
 msgstr "失効ライセンス警告を送信"
 
 #. TRANS: %1$s the license name, %2$s is the expiration date
-#: inc/softwarelicense.class.php:473
+#: inc/softwarelicense.class.php:499
 #, php-format
 msgid "License %1$s expired on %2$s"
 msgstr "ライセンス %1$s は %2$s に期限が切れます"
 
-#: inc/softwarelicense.class.php:507
+#: inc/softwarelicense.class.php:533
 msgid "Send licenses alert failed"
 msgstr "ライセンス警告の送信に失敗しました"
 
-#: inc/softwarelicense.class.php:651
+#: inc/softwarelicense.class.php:676
 msgctxt "button"
 msgid "Add a license"
 msgstr "ライセンスを追加する"
@@ -14035,7 +14018,7 @@ msgstr "全てを検索"
 
 #: inc/ticket.class.php:2945
 msgid "Tickets awaiting approval"
-msgstr "承認待ちチケットがあります。"
+msgstr "承認待ちのチケット"
 
 #: inc/ticket.class.php:3014
 msgid "This ticket concerns me"
@@ -14047,7 +14030,7 @@ msgstr "個人設定を確認してください"
 
 #: inc/ticket.class.php:3140
 msgid "Describe the incident or request"
-msgstr "問題と対応を記述して下さい。"
+msgstr "インシデントまたは依頼を記述してください"
 
 #: inc/ticket.class.php:3193
 msgid "Inform me about the actions taken"
@@ -14055,12 +14038,12 @@ msgstr "動作を通知"
 
 #: inc/ticket.class.php:3331
 msgid "Submit message"
-msgstr "送信"
+msgstr "メッセージの送信"
 
 #: inc/ticket.class.php:3758
 #, php-format
 msgid "The ticket will be added in the entity %s"
-msgstr "チケットはエンティティで追加されます %s"
+msgstr "チケットはエンティティ %s に追加されます"
 
 #: inc/ticket.class.php:3818
 #, php-format
@@ -14100,7 +14083,7 @@ msgstr "デフォルトのドキュメント:"
 
 #: inc/ticket.class.php:4708 inc/ticket.class.php:4875
 msgid "Your tickets to close"
-msgstr "クローズ中のチケット"
+msgstr "完了予定のチケット"
 
 #: inc/ticket.class.php:4724 inc/ticket.class.php:4791
 msgid "Tickets on pending status"
@@ -14108,7 +14091,7 @@ msgstr "保留中のチケット"
 
 #: inc/ticket.class.php:4740 inc/ticket.class.php:4807
 msgid "Tickets to be processed"
-msgstr "処理すべきチケット"
+msgstr "処理予定のチケット"
 
 #: inc/ticket.class.php:4756 inc/ticket.class.php:4891
 msgid "Your observed tickets"
@@ -14120,7 +14103,7 @@ msgstr "処理中のチケット"
 
 #: inc/ticket.class.php:4829
 msgid "Your tickets to validate"
-msgstr "有効なチケット"
+msgstr "検証予定のチケット"
 
 #: inc/ticket.class.php:4846
 msgid "Your rejected tickets"
@@ -14136,7 +14119,7 @@ msgstr[0] "%d 個の新規チケット"
 #: inc/ticket.class.php:5084 inc/ticket.class.php:5254
 #: inc/ticket.class.php:5314
 msgid "No ticket found."
-msgstr "チケットが見付かりませんでした."
+msgstr "チケットはありません"
 
 #: inc/ticket.class.php:5154
 msgid "Last tickets"
@@ -14167,11 +14150,11 @@ msgstr "処理中のチケットはありません"
 
 #: inc/ticket.class.php:5471
 msgid "Assign equipment"
-msgstr "属性の割り当て"
+msgstr "機器の割り当て"
 
 #: inc/ticket.class.php:5497
 msgid "Automatic tickets closing"
-msgstr "チケット自動終了"
+msgstr "チケット自動完了"
 
 #: inc/ticket.class.php:5503
 msgid "Generation of satisfaction surveys"
@@ -14205,7 +14188,7 @@ msgstr "割り当て済みチケットの表示"
 
 #: inc/ticket.class.php:5724
 msgid "Assign a ticket"
-msgstr "チケットを割り当てる"
+msgstr "チケットの割り当て"
 
 #. TRANS: short for : Steal a ticket
 #: inc/ticket.class.php:5726
@@ -14214,7 +14197,7 @@ msgstr "横取り"
 
 #: inc/ticket.class.php:5727
 msgid "Steal a ticket"
-msgstr "チケットを盗用する"
+msgstr "チケットの横取り"
 
 #. TRANS: short for : To be in charge of a ticket
 #: inc/ticket.class.php:5729
@@ -14223,7 +14206,7 @@ msgstr "担当予定"
 
 #: inc/ticket.class.php:5730
 msgid "To be in charge of a ticket"
-msgstr "チケットを管理するため"
+msgstr "チケットを担当する"
 
 #: inc/ticket.class.php:5731
 msgid "Change the priority"
@@ -14245,7 +14228,7 @@ msgstr "ソリューションを却下する場合、理由を明記してくだ
 
 #: inc/ticketfollowup.class.php:474 inc/ticketfollowup.class.php:595
 msgid "Source of followup"
-msgstr "フォローアップ元"
+msgstr "フォロー元"
 
 #: inc/ticketfollowup.class.php:698
 msgid "Reopen the ticket"
@@ -14402,7 +14385,7 @@ msgstr "インシデントの検証"
 
 #: inc/toolbox.class.php:851
 msgid "Test done"
-msgstr "確認完了"
+msgstr "テスト完了"
 
 #: inc/toolbox.class.php:851
 msgid "Results"
@@ -14461,15 +14444,15 @@ msgstr "Session auto startの検証"
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
-msgstr "session.auto_startが有効になりました。詳細はGLPIルートの.htaccessファイルを参照して下さい。"
+msgstr "session.auto_startが有効になっています。詳細はGLPIのルートディレクトリにある.htaccessファイルを参照してください"
 
 #: inc/toolbox.class.php:928
 msgid "Test if Session_use_trans_sid is used"
-msgstr "Session_use_trans_idを確認"
+msgstr "Session_use_trans_sidの使用を検証"
 
 #: inc/toolbox.class.php:933
 msgid "You must desactivate the Session_use_trans_id option in your php.ini"
-msgstr "php.iniのSession_use_trans_idオプションが無効である事を確認して下さい"
+msgstr "php.iniのSession_use_trans_idオプションが無効である事を確認してください"
 
 #: inc/toolbox.class.php:938 inc/toolbox.class.php:939
 msgid "Ok - the sessions works (no problem with trans_id) - Perfect!"
@@ -14477,7 +14460,7 @@ msgstr "Ok - Sessionは動作しています (trans_idに関する問題はあ�
 
 #: inc/toolbox.class.php:946
 msgid "magic_quotes_sybase extension test"
-msgstr "magic_quotes_sybaseオプションを確認"
+msgstr "magic_quotes_sybase拡張の検証"
 
 #: inc/toolbox.class.php:951
 msgid ""
@@ -14503,11 +14486,11 @@ msgstr "GLPIはctype関数がなければ正常に動作しません"
 #: inc/toolbox.class.php:1020 inc/toolbox.class.php:1021
 #: inc/toolbox.class.php:1030 inc/toolbox.class.php:1031
 msgid "The functionality is found - Perfect!"
-msgstr "utf8_encodeとutf8_decodeに成功しました"
+msgstr "機能を検出しました。OK!"
 
 #: inc/toolbox.class.php:980
 msgid "Test json functions"
-msgstr "json関数をテストする。"
+msgstr "json関数の検証"
 
 #: inc/toolbox.class.php:984
 msgid ""
@@ -14516,7 +14499,7 @@ msgstr "GLPIはjson_encode及びjson_decode関数がなければ正常に動作�
 
 #: inc/toolbox.class.php:996
 msgid "Mbstring extension test"
-msgstr "mbstring拡張テスト"
+msgstr "mbstring拡張の検証"
 
 #: inc/toolbox.class.php:1000
 msgid "Mbstring extension of your parser PHP is not installed"
@@ -14540,7 +14523,7 @@ msgstr "暗号拡張にはPHPのバージョンは5.3.7以上が推奨されま�
 
 #: inc/toolbox.class.php:1042
 msgid "Allocated memory test"
-msgstr "割り当てメモリを確認"
+msgstr "割り当てメモリの検証"
 
 #: inc/toolbox.class.php:1050 inc/toolbox.class.php:1051
 msgid "Unlimited memory - Perfect!"
@@ -14556,7 +14539,7 @@ msgstr "GLPIは通常 64MB 以上のメモリが必要です"
 
 #: inc/toolbox.class.php:1061
 msgid "Try increasing the memory_limit parameter in the php.ini file."
-msgstr "php.iniのmemory_limit parameterを確認して下さい"
+msgstr "php.iniファイルのmemory_limitパラメータの値を増加してください"
 
 #: inc/toolbox.class.php:1068 inc/toolbox.class.php:1069
 msgid "Allocated memory > 64Mio - Perfect!"
@@ -14680,7 +14663,7 @@ msgstr "SECURE"
 #. open.php
 #: inc/toolbox.class.php:2144
 msgid "DEBUG"
-msgstr "Debug"
+msgstr "DEBUG"
 
 #: inc/toolbox.class.php:2156
 msgid "Incoming mail folder (optional, often INBOX)"
@@ -14689,7 +14672,7 @@ msgstr "受信メールフォルダ (任意、通常 INBOX)"
 #. TRANS: for mail connection system
 #: inc/toolbox.class.php:2161
 msgid "Port (optional)"
-msgstr "ポート（任意）"
+msgstr "ポート番号(任意)"
 
 #: inc/toolbox.class.php:2402
 msgid ""
@@ -14777,15 +14760,15 @@ msgstr "契約先が使われていない場合"
 msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now"
-msgstr "転送済みもしくは転送中の要素の追加を継続できます。"
+msgstr "転送するエレメントを追加、またはすぐに転送を実行することが可能です"
 
 #: inc/transfer.class.php:3286
 msgid "Think of making a backup before transferring items."
-msgstr "アイテムを移動する前にバックアップを取るよう検討して下さい。"
+msgstr "アイテムを転送する前にバックアップを取ることを検討してください"
 
 #: inc/transfer.class.php:3288
 msgid "Items to transfer"
-msgstr "移動するアイテム"
+msgstr "転送するアイテム"
 
 #: inc/transfer.class.php:3288
 msgid "Transfer mode"
@@ -14793,7 +14776,7 @@ msgstr "転送モード"
 
 #: inc/transfer.class.php:3347
 msgid "To empty the list of elements to be transferred"
-msgstr "移動した要素のリストを空にするため"
+msgstr "転送した要素のリストを空にするため"
 
 #: inc/user.class.php:503
 msgid "The login is not valid. Unable to add the user."
@@ -14885,7 +14868,7 @@ msgstr "認証方式の変更"
 
 #: inc/user.class.php:2555
 msgid "Last login"
-msgstr "最終ログイン"
+msgstr "前回ログイン"
 
 #: inc/user.class.php:2570
 msgid "LDAP directory for authentication"
@@ -14921,7 +14904,7 @@ msgstr "ユーザのインポート"
 
 #: inc/user.class.php:3239
 msgid "Automatically add a user of an external source"
-msgstr "外部元のユーザを自動追加"
+msgstr "外部ソースのユーザを自動追加"
 
 #: inc/user.class.php:3246
 msgid "Import from directories"
@@ -15052,29 +15035,29 @@ msgstr "無線ネットワークタイプ"
 
 #: install/install.php:100
 msgid "Unofficial translations are also available"
-msgstr "非公式の変換も有効とする"
+msgstr "ライセンスの非公式な翻訳を表示する"
 
 #: install/install.php:105
 msgid "I have read and ACCEPT the terms of the license written above."
-msgstr "ライセンス契約を読んで同意します"
+msgstr "ライセンスを読みました。これを受諾します"
 
 #: install/install.php:110
 msgid "I have read and DO NOT ACCEPT the terms of the license written above"
-msgstr "ライセンス契約を読んで同意しません"
+msgstr "ライセンスを読みましたが受諾しません"
 
 #: install/install.php:111 install/install.php:155 install/install.php:166
 #: install/install.php:208 install/install.php:263 install/install.php:279
 #: install/install.php:319 install/install.php:478 install/update.php:884
 msgid "Continue"
-msgstr "実行"
+msgstr "続行"
 
 #: install/install.php:120
 msgid "Installation or update of GLPI"
-msgstr "GLPIのインストールまたはアップデートを実行"
+msgstr "GLPIのインストールまたはアップグレードを行います"
 
 #: install/install.php:121
 msgid "Choose 'Install' for a completely new installation of GLPI."
-msgstr "GLPIのクリーンインストールを実行する場合は「インストール」を選択して下さい。"
+msgstr "GLPIをクリーンインストールする場合、「インストール」を選択してください"
 
 #: install/install.php:122
 msgid ""
@@ -15084,7 +15067,7 @@ msgstr "「アップグレード」は以前のバージョンのGLPIをアッ�
 #: install/install.php:142
 msgid ""
 "Checking of the compatibility of your environment with the execution of GLPI"
-msgstr "環境を確認しています"
+msgstr "GLPI実行環境の検証"
 
 #: install/install.php:161 install/install.php:180 install/install.php:474
 msgid "Do you want to continue?"
@@ -15092,19 +15075,19 @@ msgstr "処理を続けますか?"
 
 #: install/install.php:196
 msgid "Database connection setup"
-msgstr "データベース接続の設定"
+msgstr "データベース接続設定"
 
 #: install/install.php:199
 msgid "Database connection parameters"
-msgstr "データベース接続のパラメータ"
+msgstr "データベース接続パラメータ"
 
 #: install/install.php:217
 msgid "Test of the connection at the database"
-msgstr "データベースの接続を確認"
+msgstr "データベースへの接続を検証"
 
 #: install/install.php:223
 msgid "Can't connect to the database"
-msgstr "データベースへ接続出来ませんでした"
+msgstr "データベースに接続できません"
 
 #: install/install.php:224 install/install.php:353 install/install.php:402
 #, php-format
@@ -15121,27 +15104,27 @@ msgstr "データベース接続成功"
 
 #: install/install.php:245
 msgid "Please select a database:"
-msgstr "データベースを選択して下さい："
+msgstr "データベースを選択してください:"
 
 #: install/install.php:259
 msgid "Create a new database or use an existing one:"
-msgstr "新しいデータベースを作成するか、既存のデータベースを使ってください："
+msgstr "新しいデータベースを作成するか、既存のデータベースを使用してください:"
 
 #: install/install.php:268
 msgid "Please select the database to update:"
-msgstr "アップデートするデータベースを選択して下さい："
+msgstr "更新するデータベースを選択してください:"
 
 #: install/install.php:296
 msgid "Initialization of the database"
-msgstr "データベース初期化"
+msgstr "データベースの初期化"
 
 #: install/install.php:352
 msgid "Impossible to use the database:"
-msgstr "データベースを使用出来ません："
+msgstr "データベースを使用できません："
 
 #: install/install.php:359 install/install.php:376 install/install.php:392
 msgid "OK - database was initialized"
-msgstr "データベース起動に成功しました"
+msgstr "Ok - データベースは初期化されました"
 
 #: install/install.php:364 install/install.php:380 install/install.php:396
 msgid "Impossible to write the database setup file"
@@ -15256,11 +15239,11 @@ msgstr "直接"
 
 #: install/update_0723_078.php:3691
 msgid "Written"
-msgstr "書き込まれた"
+msgstr "文書"
 
 #: install/update_0781_0782.php:48
 msgid "Data migration"
-msgstr "データの統合"
+msgstr "データの移行"
 
 #: install/update_0831_084.php:276 install/update_0831_084.php:277
 msgid "Root entity"
@@ -15302,7 +15285,7 @@ msgstr "区切り文字"
 
 #: install/update.php:411
 msgid "Root location"
-msgstr "Rootのロケーション"
+msgstr "Rootロケーション"
 
 #: install/update.php:421
 msgid "Actual locations"
@@ -15314,7 +15297,7 @@ msgstr "新しい階層構造"
 
 #: install/update.php:425
 msgid "This is the new hierarchy. If it's complete approve it."
-msgstr "これは新しい階層です。OKなら有効にします。"
+msgstr "これは新しい階層です。よろしければ有効にします"
 
 #: install/update.php:874
 msgid "Impossible to accomplish an update by this way!"
