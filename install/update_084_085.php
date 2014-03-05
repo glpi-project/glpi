@@ -1891,7 +1891,14 @@ function update084to085() {
    $migration->addKey('glpi_documents', 'tag');
    Config::setConfigurationValues('core', array('use_rich_text' => 0));
    Config::setConfigurationValues('core', array('attach_ticket_documents_to_mail' => 0));
+   
+   $migration->migrationOneTable('glpi_documents');
+   $query = "UPDATE `glpi_documents`
+                   SET `tag` = `id`";
+   $DB->queryOrDie($query, "0.85 set tag to all documents");
 
+
+   
    // increase password length
    $migration->changeField('glpi_users', 'password', 'password', 'string');
 
@@ -2819,10 +2826,6 @@ function update084to085() {
 
    // must always be at the end
    $migration->executeMigration();
-
-   $query = "UPDATE `glpi_documents`
-                   SET `tag` = `id`";
-   $DB->queryOrDie($query, "0.85 set tag to all documents");
 
    return $updateresult;
 }
