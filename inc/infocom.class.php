@@ -1050,7 +1050,7 @@ class Infocom extends CommonDBChild {
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Value')."</td>";
+            echo "<td>"._x('price', 'Value')."</td>";
             echo "<td><input type='text' name='value' $option value='".
                    Html::formatNumber($ic->fields["value"], true)."' size='14'></td>";
             echo "<td>".__('Date of last physical inventory')."</td><td>";
@@ -1374,7 +1374,7 @@ class Infocom extends CommonDBChild {
 
       $tab[54]['table']                = 'glpi_infocoms';
       $tab[54]['field']                = 'value';
-      $tab[54]['name']                 = __('Value');
+      $tab[54]['name']                 = _x('price', 'Value');
       $tab[54]['datatype']             = 'decimal';
       $tab[54]['width']                = 100;
       $tab[54]['forcegroupby']         = true;
@@ -1517,7 +1517,7 @@ class Infocom extends CommonDBChild {
 
       $tab[13]['table']          = $this->getTable();
       $tab[13]['field']          = 'value';
-      $tab[13]['name']           = __('Value');
+      $tab[13]['name']           = _x('price', 'Value');
       $tab[13]['datatype']       = 'decimal';
 
       $tab[14]['table']          = $this->getTable();
