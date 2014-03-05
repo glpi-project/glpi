@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-12 08:10+0100\n"
-"PO-Revision-Date: 2014-02-12 14:40+0000\n"
+"POT-Creation-Date: 2014-03-05 08:50+0100\n"
+"PO-Revision-Date: 2014-03-05 07:51+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Spanish (Spain) (http://www.transifex.com/projects/p/GLPI/language/es_ES/)\n"
 "MIME-Version: 1.0\n"
@@ -31,22 +31,22 @@ msgstr "GLPI - Autenticación"
 
 #: index.php:109 front/helpdesk.faq.php:53 front/knowbaseitem.form.php:157
 #: inc/config.class.php:470 inc/html.class.php:1951 inc/user.class.php:1712
-#: inc/user.class.php:2399
+#: inc/user.class.php:2405
 msgid "Authentication"
 msgstr "Identificación"
 
 #: index.php:110 inc/authldap.class.php:2744 inc/authmail.class.php:216
 #: inc/config.class.php:1200 inc/db.function.php:1185
 #: inc/mailcollector.class.php:237 inc/mailcollector.class.php:337
-#: inc/notificationtargetuser.class.php:114 inc/ruleright.class.php:273
-#: inc/user.class.php:1636 inc/user.class.php:1928 inc/user.class.php:2330
-#: inc/user.class.php:2946
+#: inc/notificationtargetuser.class.php:114 inc/ruleright.class.php:271
+#: inc/user.class.php:1636 inc/user.class.php:1934 inc/user.class.php:2336
+#: inc/user.class.php:2952
 msgid "Login"
 msgstr "Usuario"
 
 #: index.php:114 inc/authmail.class.php:219 inc/config.class.php:1202
 #: inc/mailcollector.class.php:241 inc/user.class.php:1658
-#: inc/user.class.php:1948 inc/user.class.php:3388
+#: inc/user.class.php:1954 inc/user.class.php:3394
 msgid "Password"
 msgstr "Contraseña"
 
@@ -57,15 +57,15 @@ msgstr "Contraseña"
 #: inc/knowbaseitem.class.php:944 inc/knowbaseitem.class.php:993
 #: inc/problem_ticket.class.php:133
 #: inc/ruledictionnarysoftwarecollection.class.php:97
-#: inc/ticket.class.php:1755 inc/user.class.php:2200 install/update.php:413
+#: inc/ticket.class.php:1755 inc/user.class.php:2206 install/update.php:413
 #: install/update.php:429
 msgctxt "button"
 msgid "Post"
 msgstr "Aceptar"
 
 #: index.php:127 front/lostpassword.php:45
-#: inc/notificationtargetuser.class.php:43 inc/user.class.php:3379
-#: inc/user.class.php:3427
+#: inc/notificationtargetuser.class.php:43 inc/user.class.php:3385
+#: inc/user.class.php:3433
 msgid "Forgotten password?"
 msgstr "¿Has olvidado tu contraseña?"
 
@@ -109,7 +109,7 @@ msgstr "Volver a entrar"
 #: inc/commondbtm.class.php:2748 inc/commondbtm.class.php:2754
 #: inc/commondbtm.class.php:2826 inc/commondbtm.class.php:3798
 #: inc/commondbtm.class.php:3804 inc/commonitilobject.class.php:1468
-#: inc/commonitiltask.class.php:860 inc/computer_softwarelicense.class.php:464
+#: inc/commonitiltask.class.php:866 inc/computer_softwarelicense.class.php:464
 #: inc/computer_softwareversion.class.php:419 inc/consumable.class.php:647
 #: inc/contract.class.php:358 inc/contract.class.php:366
 #: inc/contract.class.php:377 inc/contract.class.php:394
@@ -127,14 +127,14 @@ msgstr "Volver a entrar"
 #: inc/networkport.class.php:549 inc/networkportinstantiation.class.php:479
 #: inc/networkportinstantiation.class.php:673
 #: inc/networkportinstantiation.class.php:707
-#: inc/notificationtargetcommonitilobject.class.php:595
+#: inc/notificationtargetcommonitilobject.class.php:615
 #: inc/notificationtargetcontract.class.php:63
 #: inc/notificationtargetcontract.class.php:110 inc/problem.class.php:1629
 #: inc/reservation.class.php:453 inc/reservation.class.php:678
 #: inc/reservation.class.php:946 inc/reservationitem.class.php:302
 #: inc/reservationitem.class.php:380 inc/reservationitem.class.php:462
-#: inc/search.class.php:1004 inc/search.class.php:4031
-#: inc/search.class.php:4072 inc/stat.class.php:1248 inc/stat.class.php:1251
+#: inc/search.class.php:1004 inc/search.class.php:4033
+#: inc/search.class.php:4074 inc/stat.class.php:1248 inc/stat.class.php:1251
 #: inc/stat.class.php:1254 inc/stat.class.php:1455 inc/ticket.class.php:2395
 #: inc/ticket.class.php:2736 inc/ticket.class.php:2739
 #: inc/ticket.class.php:2742 inc/ticket.class.php:2819
@@ -143,8 +143,8 @@ msgstr "Volver a entrar"
 #: inc/ticket.class.php:2934 inc/ticket.class.php:3852
 #: inc/ticket.class.php:4267 inc/ticket.class.php:4270
 #: inc/ticket.class.php:4307 inc/ticket.class.php:4310
-#: inc/ticket.class.php:5459 inc/ticket.class.php:5616
-#: inc/ticket.class.php:5723 inc/ticketfollowup.class.php:431
+#: inc/ticket.class.php:5472 inc/ticket.class.php:5629
+#: inc/ticket.class.php:5736 inc/ticketfollowup.class.php:431
 #: inc/ticketfollowup.class.php:432 inc/ticketfollowup.class.php:458
 #: inc/tickettemplate.class.php:427 inc/vlan.class.php:160
 #: install/update_0723_078.php:4849
@@ -175,8 +175,8 @@ msgstr "%1$s - Roseta %2$s"
 #: ajax/dropdownValue.php:368 ajax/dropdownValue.php:488
 #: ajax/dropdownValue.php:522 inc/cartridge.class.php:578
 #: inc/cartridgeitem.class.php:477 inc/change_item.class.php:200
-#: inc/commondbtm.class.php:2821 inc/commondbtm.class.php:4570
-#: inc/commonitiltask.class.php:466 inc/computer.class.php:911
+#: inc/commondbtm.class.php:2821 inc/commondbtm.class.php:4575
+#: inc/commonitiltask.class.php:472 inc/computer.class.php:911
 #: inc/computer_item.class.php:492 inc/computer_softwarelicense.class.php:517
 #: inc/computer_softwareversion.class.php:516
 #: inc/computer_softwareversion.class.php:545
@@ -206,26 +206,26 @@ msgstr "%1$s - Roseta %2$s"
 #: inc/networkalias.class.php:311 inc/networkequipment.class.php:357
 #: inc/networkequipment.class.php:496 inc/networkport.class.php:677
 #: inc/networkport_vlan.class.php:180 inc/notificationevent.class.php:172
-#: inc/notificationtargetcommonitilobject.class.php:956
-#: inc/notificationtargetcommonitilobject.class.php:958
+#: inc/notificationtargetcommonitilobject.class.php:978
+#: inc/notificationtargetcommonitilobject.class.php:980
 #: inc/problem.class.php:1753 inc/profile_user.class.php:182
 #: inc/profile_user.class.php:199 inc/profile_user.class.php:318
 #: inc/profile_user.class.php:465 inc/rule.class.php:1617
 #: inc/rulemailcollector.class.php:210 inc/rulemailcollector.class.php:215
-#: inc/search.class.php:1158 inc/search.class.php:4522
-#: inc/search.class.php:4540 inc/search.class.php:4621
-#: inc/search.class.php:4647 inc/session.class.php:351
+#: inc/search.class.php:1158 inc/search.class.php:4524
+#: inc/search.class.php:4542 inc/search.class.php:4623
+#: inc/search.class.php:4649 inc/session.class.php:351
 #: inc/session.class.php:354 inc/supplier.class.php:500
 #: inc/ticket.class.php:1464 inc/ticket.class.php:2734
 #: inc/ticket.class.php:2817 inc/ticket.class.php:2883
 #: inc/ticket.class.php:2935 inc/ticket.class.php:2939
 #: inc/ticket.class.php:3435 inc/ticket.class.php:3855
-#: inc/ticket.class.php:5330 inc/ticket.class.php:5615
-#: inc/ticket.class.php:5722 inc/ticketcost.class.php:402
+#: inc/ticket.class.php:5339 inc/ticket.class.php:5628
+#: inc/ticket.class.php:5735 inc/ticketcost.class.php:402
 #: inc/ticketfollowup.class.php:430
 #: inc/tickettemplatemandatoryfield.class.php:217
-#: inc/tickettemplatemandatoryfield.class.php:219 inc/user.class.php:2441
-#: inc/user.class.php:2470 inc/user.class.php:3126 inc/user.class.php:3202
+#: inc/tickettemplatemandatoryfield.class.php:219 inc/user.class.php:2447
+#: inc/user.class.php:2476 inc/user.class.php:3132 inc/user.class.php:3208
 #, php-format
 msgid "%1$s (%2$s)"
 msgstr "%1$s (%2$s)"
@@ -284,8 +284,8 @@ msgstr "Seguimiento por correo"
 #: inc/commondbtm.class.php:1376 inc/commondbtm.class.php:1473
 #: inc/commondbtm.class.php:2676 inc/commondbtm.class.php:3711
 #: inc/commondbtm.class.php:3794 inc/commonitilobject.class.php:2667
-#: inc/commonitilobject.class.php:2910 inc/commonitiltask.class.php:814
-#: inc/commonitiltask.class.php:823 inc/config.class.php:986
+#: inc/commonitilobject.class.php:2910 inc/commonitiltask.class.php:820
+#: inc/commonitiltask.class.php:829 inc/config.class.php:986
 #: inc/config.class.php:1050 inc/contract.class.php:984
 #: inc/contract.class.php:1060 inc/contract.class.php:1095
 #: inc/contract.class.php:1098 inc/contract.class.php:1115
@@ -317,19 +317,19 @@ msgstr "Seguimiento por correo"
 #: inc/notificationtarget.class.php:345 inc/notificationtarget.class.php:717
 #: inc/notificationtarget.class.php:739 inc/notificationtarget.class.php:742
 #: inc/notificationtarget.class.php:746
-#: inc/notificationtargetcommonitilobject.class.php:885
-#: inc/notificationtargetcommonitilobject.class.php:960
-#: inc/notificationtargetcommonitilobject.class.php:962
-#: inc/notificationtargetcommonitilobject.class.php:964
-#: inc/notificationtargetcommonitilobject.class.php:966
-#: inc/notificationtargetcommonitilobject.class.php:968
-#: inc/notificationtargetcommonitilobject.class.php:970
-#: inc/notificationtargetcommonitilobject.class.php:972
-#: inc/notificationtargetcommonitilobject.class.php:974
-#: inc/notificationtargetcommonitilobject.class.php:976
-#: inc/notificationtargetcommonitilobject.class.php:978
-#: inc/notificationtargetcommonitilobject.class.php:980
+#: inc/notificationtargetcommonitilobject.class.php:906
 #: inc/notificationtargetcommonitilobject.class.php:982
+#: inc/notificationtargetcommonitilobject.class.php:984
+#: inc/notificationtargetcommonitilobject.class.php:986
+#: inc/notificationtargetcommonitilobject.class.php:988
+#: inc/notificationtargetcommonitilobject.class.php:990
+#: inc/notificationtargetcommonitilobject.class.php:992
+#: inc/notificationtargetcommonitilobject.class.php:994
+#: inc/notificationtargetcommonitilobject.class.php:996
+#: inc/notificationtargetcommonitilobject.class.php:998
+#: inc/notificationtargetcommonitilobject.class.php:1000
+#: inc/notificationtargetcommonitilobject.class.php:1002
+#: inc/notificationtargetcommonitilobject.class.php:1004
 #: inc/notificationtargetcontract.class.php:173
 #: inc/notificationtargetproblem.class.php:256
 #: inc/notificationtargetproblem.class.php:257
@@ -382,12 +382,12 @@ msgstr "Seguimiento por correo"
 #: inc/ticket.class.php:2073 inc/ticket.class.php:2936
 #: inc/ticket.class.php:3853 inc/ticket.class.php:3913
 #: inc/ticket.class.php:3924 inc/ticket.class.php:4516
-#: inc/ticket.class.php:5453 inc/ticket.class.php:5479
-#: inc/ticket.class.php:5662 inc/ticket.class.php:5910
-#: inc/ticket.class.php:5996 inc/ticketvalidation.class.php:649
+#: inc/ticket.class.php:5466 inc/ticket.class.php:5492
+#: inc/ticket.class.php:5675 inc/ticket.class.php:5923
+#: inc/ticket.class.php:6009 inc/ticketvalidation.class.php:649
 #: inc/ticketvalidation.class.php:651 inc/ticketvalidation.class.php:654
-#: inc/toolbox.class.php:960 inc/user.class.php:1721 inc/user.class.php:1928
-#: inc/user.class.php:2992 inc/vlan.class.php:161 inc/vlan.class.php:163
+#: inc/toolbox.class.php:961 inc/user.class.php:1721 inc/user.class.php:1934
+#: inc/user.class.php:2998 inc/vlan.class.php:161 inc/vlan.class.php:163
 #: install/update_0681_07.php:538 install/update_0681_07.php:561
 #: install/update_0681_07.php:568 install/update_0681_07.php:575
 #: install/update_0681_07.php:582
@@ -410,10 +410,10 @@ msgstr "%1$s: %2$s"
 #: inc/dropdown.class.php:335 inc/dropdown.class.php:350
 #: inc/entity.class.php:467 inc/entity.class.php:985 inc/html.class.php:1938
 #: inc/notification.class.php:397 inc/notificationevent.class.php:217
-#: inc/notificationtargetcommonitilobject.class.php:902
-#: inc/ruleright.class.php:266 inc/supplier.class.php:149
-#: inc/supplier.class.php:305 inc/user.class.php:1702 inc/user.class.php:1975
-#: inc/user.class.php:2353 inc/user.class.php:3385 inc/useremail.class.php:53
+#: inc/notificationtargetcommonitilobject.class.php:924
+#: inc/ruleright.class.php:264 inc/supplier.class.php:149
+#: inc/supplier.class.php:305 inc/user.class.php:1702 inc/user.class.php:1981
+#: inc/user.class.php:2359 inc/user.class.php:3391 inc/useremail.class.php:53
 #: install/update_0681_07.php:582 install/update_0723_078.php:3685
 msgid "Email"
 msgid_plural "Emails"
@@ -428,7 +428,7 @@ msgstr[1] "Correos electrónicos"
 #: inc/change_ticket.class.php:121 inc/change_ticket.class.php:232
 #: inc/commondbtm.class.php:1854 inc/commondbtm.class.php:2878
 #: inc/commondbtm.class.php:2882 inc/commondbtm.class.php:2902
-#: inc/commonitiltask.class.php:1191 inc/commontreedropdown.class.php:398
+#: inc/commonitiltask.class.php:1197 inc/commontreedropdown.class.php:398
 #: inc/computer_softwarelicense.class.php:382
 #: inc/computer_softwareversion.class.php:750
 #: inc/contact_supplier.class.php:121 inc/contact_supplier.class.php:127
@@ -452,7 +452,7 @@ msgstr[1] "Correos electrónicos"
 #: inc/tickettemplatehiddenfield.class.php:214
 #: inc/tickettemplatemandatoryfield.class.php:224
 #: inc/tickettemplatepredefinedfield.class.php:252
-#: inc/ticketvalidation.class.php:591 inc/user.class.php:2215
+#: inc/ticketvalidation.class.php:591 inc/user.class.php:2221
 msgctxt "button"
 msgid "Add"
 msgstr "Añadir"
@@ -485,7 +485,7 @@ msgstr "Teclee las primeras letras (nombre, material, n° de serie o nº de inve
 #: inc/profile_user.class.php:513 inc/search.class.php:837
 #: inc/search.class.php:1230 inc/search.class.php:1666
 #: inc/ticket.class.php:2627 inc/ticketvalidation.class.php:411
-#: inc/user.class.php:2888
+#: inc/user.class.php:2894
 msgid "All"
 msgstr "Todos"
 
@@ -493,7 +493,7 @@ msgstr "Todos"
 #: ajax/entitytreesons.php:120 ajax/entitytreesons.php:123
 #: inc/entity.class.php:806 inc/html.class.php:2281
 #: inc/reservation.class.php:457 inc/ticket.class.php:5131
-#: inc/ticket.class.php:5329
+#: inc/ticket.class.php:5338
 msgid "Show all"
 msgstr "Ver todos"
 
@@ -510,7 +510,7 @@ msgid "Availability"
 msgstr "Disponibilidad"
 
 #: ajax/planning.php:69 inc/change.class.php:777
-#: inc/commonitiltask.class.php:911
+#: inc/commonitiltask.class.php:917
 #: inc/notificationtargetproblem.class.php:206
 #: inc/notificationtargetticket.class.php:625 inc/problem.class.php:1290
 #: inc/problem.class.php:1299 inc/reminder.class.php:690
@@ -548,8 +548,8 @@ msgstr "Periodo"
 msgid "Specify an end date"
 msgstr "Especificar una fecha de finalización"
 
-#: ajax/planning.php:128 inc/commonitiltask.class.php:914
-#: inc/commonitiltask.class.php:1085 inc/reminder.class.php:778
+#: ajax/planning.php:128 inc/commonitiltask.class.php:920
+#: inc/commonitiltask.class.php:1091 inc/reminder.class.php:778
 msgctxt "Planning"
 msgid "Reminder"
 msgstr "Recordatorio"
@@ -563,7 +563,7 @@ msgid "Set public"
 msgstr "Hacer Público"
 
 #: ajax/private_public.php:65 inc/bookmark.class.php:108
-#: inc/bookmark.class.php:253 inc/commonitiltask.class.php:464
+#: inc/bookmark.class.php:253 inc/commonitiltask.class.php:470
 #: inc/ticketfollowup.class.php:434
 msgid "Public"
 msgstr "Público"
@@ -577,7 +577,7 @@ msgstr "Público"
 #: inc/knowbaseitem.class.php:1493 inc/networkequipment.class.php:536
 #: inc/notification.class.php:308 inc/printer.class.php:737
 #: inc/profile_user.class.php:826 inc/rule.class.php:318 inc/sla.class.php:230
-#: inc/software.class.php:521 inc/supplier.class.php:342
+#: inc/software.class.php:522 inc/supplier.class.php:342
 msgid "Child entities"
 msgstr "Subentidades"
 
@@ -657,9 +657,9 @@ msgstr "No hay restricciones"
 #: inc/networkalias.class.php:295 inc/networkequipment.class.php:530
 #: inc/networkport_vlan.class.php:165 inc/notification.class.php:302
 #: inc/notificationtargetcartridgeitem.class.php:87
-#: inc/notificationtargetcommonitilobject.class.php:944
-#: inc/notificationtargetcommonitilobject.class.php:957
-#: inc/notificationtargetcommonitilobject.class.php:959
+#: inc/notificationtargetcommonitilobject.class.php:966
+#: inc/notificationtargetcommonitilobject.class.php:979
+#: inc/notificationtargetcommonitilobject.class.php:981
 #: inc/notificationtargetconsumableitem.class.php:60
 #: inc/notificationtargetconsumableitem.class.php:88
 #: inc/notificationtargetcontract.class.php:160
@@ -678,15 +678,15 @@ msgstr "No hay restricciones"
 #: inc/rulecollection.class.php:450 inc/ruledictionnarysoftware.class.php:89
 #: inc/ruledictionnarysoftware.class.php:122
 #: inc/ruleimportcomputer.class.php:447 inc/ruleimportentity.class.php:161
-#: inc/rulemailcollector.class.php:194 inc/ruleright.class.php:300
+#: inc/rulemailcollector.class.php:194 inc/ruleright.class.php:298
 #: inc/rulerightcollection.class.php:153 inc/ruleticket.class.php:367
-#: inc/search.class.php:5279 inc/sla.class.php:224 inc/software.class.php:496
-#: inc/software.class.php:899 inc/softwarelicense.class.php:635
-#: inc/softwarelicense.class.php:767 inc/stat.class.php:1434
+#: inc/search.class.php:5281 inc/sla.class.php:224 inc/software.class.php:496
+#: inc/software.class.php:900 inc/softwarelicense.class.php:639
+#: inc/softwarelicense.class.php:771 inc/stat.class.php:1434
 #: inc/supplier.class.php:336 inc/supplier.class.php:423
-#: inc/ticket.class.php:1991 inc/ticket.class.php:5172 inc/user.class.php:1793
-#: inc/user.class.php:2442 inc/user.class.php:2470 inc/user.class.php:3092
-#: inc/user.class.php:3167 inc/user.class.php:3596
+#: inc/ticket.class.php:1991 inc/ticket.class.php:5172 inc/user.class.php:1798
+#: inc/user.class.php:2448 inc/user.class.php:2476 inc/user.class.php:3098
+#: inc/user.class.php:3173 inc/user.class.php:3602
 msgid "Entity"
 msgid_plural "Entities"
 msgstr[0] "Entidad"
@@ -736,9 +736,9 @@ msgstr "Tags válidos"
 
 #: ajax/ticketsatisfaction.php:88 inc/entity.class.php:739
 #: inc/notificationtargetcartridgeitem.class.php:86
-#: inc/notificationtargetcommonitilobject.class.php:882
-#: inc/notificationtargetcommonitilobject.class.php:971
-#: inc/notificationtargetcommonitilobject.class.php:983
+#: inc/notificationtargetcommonitilobject.class.php:903
+#: inc/notificationtargetcommonitilobject.class.php:993
+#: inc/notificationtargetcommonitilobject.class.php:1005
 #: inc/notificationtargetcontract.class.php:173
 #: inc/notificationtargetcrontask.class.php:87
 #: inc/notificationtargetplanningrecall.class.php:145
@@ -892,7 +892,7 @@ msgstr "Copia de seguridad en XML"
 
 #: front/backup.php:588 inc/document.class.php:335 inc/document.class.php:828
 #: inc/document_item.class.php:673
-#: inc/notificationtargetcommonitilobject.class.php:977
+#: inc/notificationtargetcommonitilobject.class.php:999
 #: inc/ticket.class.php:3435
 msgid "File"
 msgstr "Fichero"
@@ -904,12 +904,12 @@ msgid "Size"
 msgstr "Tamaño"
 
 #: front/backup.php:590 front/report.contract.php:66 front/report.year.php:65
-#: inc/commonitilobject.class.php:3710 inc/commonitiltask.class.php:490
-#: inc/commonitiltask.class.php:969 inc/commonitiltask.class.php:1159
+#: inc/commonitilobject.class.php:3710 inc/commonitiltask.class.php:496
+#: inc/commonitiltask.class.php:975 inc/commonitiltask.class.php:1165
 #: inc/crontask.class.php:1013 inc/crontask.class.php:1068
 #: inc/document_item.class.php:677 inc/event.class.php:240
 #: inc/event.class.php:293 inc/knowbaseitem.class.php:1446
-#: inc/log.class.php:268 inc/notificationtargetcommonitilobject.class.php:963
+#: inc/log.class.php:268 inc/notificationtargetcommonitilobject.class.php:985
 #: inc/notificationtargetfieldunicity.class.php:86
 #: inc/notificationtargetproblem.class.php:257
 #: inc/notificationtargetticket.class.php:674
@@ -938,7 +938,7 @@ msgstr "¿Borrar el fichero  %s?"
 #: inc/commondbtm.class.php:1876 inc/commondbtm.class.php:1884
 #: inc/commondbtm.class.php:2891 inc/commondbtm.class.php:2895
 #: inc/commondbtm.class.php:2908 inc/commondbtm.class.php:3419
-#: inc/commondbtm.class.php:3443 inc/commondbtm.class.php:4577
+#: inc/commondbtm.class.php:3443 inc/commondbtm.class.php:4582
 #: inc/commonitilobject.class.php:2065 inc/commonitilobject.class.php:2109
 #: inc/commonitilobject.class.php:2685
 #: inc/computer_softwarelicense.class.php:449
@@ -1088,7 +1088,7 @@ msgstr "%s actualiza un elemento"
 #: front/networkalias.form.php:85 front/rule.common.php:101
 #: front/tracking.injector.php:94 front/transfer.action.php:50
 #: front/transfer.action.php:57 inc/html.class.php:608 inc/html.class.php:610
-#: inc/stat.class.php:382 inc/user.class.php:3486 inc/user.class.php:3529
+#: inc/stat.class.php:382 inc/user.class.php:3492 inc/user.class.php:3535
 #: install/install.php:234 install/install.php:317
 msgid "Back"
 msgstr "Volver"
@@ -1323,15 +1323,15 @@ msgstr "Tarea %s excluida"
 #: inc/search.class.php:1292 inc/search.class.php:1312
 #: inc/search.class.php:1315 inc/search.class.php:1361
 #: inc/search.class.php:1362 inc/search.class.php:1368
-#: inc/search.class.php:1369 inc/search.class.php:3968
-#: inc/search.class.php:4012 inc/search.class.php:4044
-#: inc/search.class.php:4085 inc/search.class.php:4544
-#: inc/search.class.php:4680 inc/ticket.class.php:2483
-#: inc/ticket.class.php:5514 inc/ticket.class.php:5540
-#: inc/ticket.class.php:5623 inc/ticket.class.php:5672
-#: inc/ticket.class.php:5725 inc/ticketcost.class.php:406
+#: inc/search.class.php:1369 inc/search.class.php:3970
+#: inc/search.class.php:4014 inc/search.class.php:4046
+#: inc/search.class.php:4087 inc/search.class.php:4546
+#: inc/search.class.php:4682 inc/ticket.class.php:2483
+#: inc/ticket.class.php:5527 inc/ticket.class.php:5553
+#: inc/ticket.class.php:5636 inc/ticket.class.php:5685
+#: inc/ticket.class.php:5738 inc/ticketcost.class.php:406
 #: inc/ticket_ticket.class.php:119 inc/ticket_ticket.class.php:121
-#: inc/toolbox.class.php:961 inc/toolbox.class.php:1094
+#: inc/toolbox.class.php:962 inc/toolbox.class.php:1095
 #: inc/useremail.class.php:164 install/update_0681_07.php:543
 #: install/update_0681_07.php:546 install/update_0681_07.php:551
 #: install/update_0681_07.php:554
@@ -1391,7 +1391,7 @@ msgstr "Diccionario general"
 #: inc/ruledictionnarysoftware.class.php:81
 #: inc/ruledictionnarysoftware.class.php:104
 #: inc/rulesoftwarecategory.class.php:74 inc/software.class.php:49
-#: inc/softwarelicense.class.php:768 inc/softwareversion.class.php:117
+#: inc/softwarelicense.class.php:772 inc/softwareversion.class.php:117
 #: install/update_0713_072.php:156 install/update_0713_072.php:508
 msgid "Software"
 msgid_plural "Software"
@@ -1420,7 +1420,7 @@ msgstr[1] "Programas"
 #: inc/ruledictionnaryprinter.class.php:79
 #: inc/ruledictionnaryprinter.class.php:103
 #: inc/ruledictionnaryprintermodel.class.php:61
-#: inc/ruleimportcomputer.class.php:119 inc/search.class.php:5270
+#: inc/ruleimportcomputer.class.php:119 inc/search.class.php:5272
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] "Fabricante"
@@ -1509,7 +1509,7 @@ msgstr[1] "Modelos de teléfono"
 #: inc/blacklist.class.php:69 inc/blacklist.class.php:96
 #: inc/bookmark.class.php:242 inc/budget.class.php:288
 #: inc/cartridgeitem.class.php:186 inc/cartridgeitem.class.php:286
-#: inc/change_item.class.php:155 inc/commonitiltask.class.php:1159
+#: inc/change_item.class.php:155 inc/commonitiltask.class.php:1165
 #: inc/computer.class.php:427 inc/computer.class.php:739
 #: inc/computer_item.class.php:477 inc/consumableitem.class.php:132
 #: inc/consumableitem.class.php:233 inc/contact.class.php:206
@@ -1553,11 +1553,11 @@ msgstr[1] "Modelos de teléfono"
 #: inc/ruledictionnaryprintertype.class.php:57
 #: inc/ruledictionnaryprintertype.class.php:70 inc/ruleticket.class.php:287
 #: inc/ruleticket.class.php:402 inc/softwarelicense.class.php:188
-#: inc/softwarelicense.class.php:319 inc/softwarelicense.class.php:649
+#: inc/softwarelicense.class.php:319 inc/softwarelicense.class.php:653
 #: inc/supplier.class.php:422 inc/ticket.class.php:1886
 #: inc/ticket.class.php:2108 inc/ticket.class.php:3333
 #: inc/ticket.class.php:4051 inc/ticketfollowup.class.php:639
-#: inc/user.class.php:3091 inc/user.class.php:3166
+#: inc/user.class.php:3097 inc/user.class.php:3172
 msgid "Type"
 msgid_plural "Types"
 msgstr[0] "Tipo"
@@ -1609,9 +1609,9 @@ msgstr[1] "Tipos de teléfono"
 #: inc/dropdown.class.php:736 inc/html.class.php:1745
 #: inc/operatingsystem.class.php:43 inc/report.class.php:200
 #: inc/ruledictionnaryoperatingsystem.class.php:54
-#: inc/ruledictionnaryoperatingsystem.class.php:66 inc/software.class.php:556
+#: inc/ruledictionnaryoperatingsystem.class.php:66 inc/software.class.php:557
 #: inc/softwareversion.class.php:135 inc/softwareversion.class.php:167
-#: inc/softwareversion.class.php:262
+#: inc/softwareversion.class.php:269
 msgid "Operating system"
 msgid_plural "Operating systems"
 msgstr[0] "S.O."
@@ -1631,7 +1631,7 @@ msgstr[1] "Service packs"
 #: inc/computer_softwareversion.class.php:894 inc/plugin.class.php:329
 #: inc/ruledictionnaryoperatingsystemversion.class.php:57
 #: inc/ruledictionnaryoperatingsystemversion.class.php:70
-#: inc/ruledictionnarysoftware.class.php:110 inc/software.class.php:525
+#: inc/ruledictionnarysoftware.class.php:110 inc/software.class.php:526
 #: inc/softwareversion.class.php:50
 msgid "Version"
 msgid_plural "Versions"
@@ -1709,7 +1709,7 @@ msgstr "Buscar"
 #: inc/notificationtargetticket.class.php:610 inc/peripheral.class.php:237
 #: inc/peripheral.class.php:459 inc/phone.class.php:236
 #: inc/phone.class.php:489 inc/printer.class.php:339 inc/printer.class.php:616
-#: inc/search.class.php:5250
+#: inc/search.class.php:5252
 msgid "Alternate username"
 msgstr "Contacto"
 
@@ -1740,20 +1740,20 @@ msgstr "Elemento asociado"
 #: inc/link.class.php:167 inc/log.class.php:268 inc/monitor.class.php:451
 #: inc/networkequipment.class.php:419 inc/networkname.class.php:247
 #: inc/networkport.class.php:1084 inc/networkport.class.php:1123
-#: inc/notificationtargetcommonitilobject.class.php:880
-#: inc/notificationtargetcommonitilobject.class.php:975
+#: inc/notificationtargetcommonitilobject.class.php:901
+#: inc/notificationtargetcommonitilobject.class.php:997
 #: inc/notificationtargetproblem.class.php:256
 #: inc/notificationtargetticket.class.php:785
 #: inc/notificationtargetticket.class.php:798 inc/peripheral.class.php:426
 #: inc/phone.class.php:456 inc/printer.class.php:583 inc/problem.class.php:475
 #: inc/problem.class.php:1142 inc/problem.class.php:1623
 #: inc/profile_user.class.php:794 inc/reservationitem.class.php:156
-#: inc/search.class.php:5201 inc/search.class.php:5222 inc/sla.class.php:208
-#: inc/software.class.php:430 inc/softwarelicense.class.php:765
+#: inc/search.class.php:5203 inc/search.class.php:5224 inc/sla.class.php:208
+#: inc/software.class.php:430 inc/softwarelicense.class.php:769
 #: inc/supplier.class.php:259 inc/ticket.class.php:1752
 #: inc/ticket.class.php:1874 inc/ticket.class.php:3853
-#: inc/ticket.class.php:4516 inc/ticket.class.php:5453
-#: inc/ticket.class.php:5662 inc/user.class.php:2337 inc/user.class.php:3595
+#: inc/ticket.class.php:4516 inc/ticket.class.php:5466
+#: inc/ticket.class.php:5675 inc/user.class.php:2343 inc/user.class.php:3601
 msgid "ID"
 msgstr "ID"
 
@@ -1778,10 +1778,10 @@ msgstr "ID"
 #: inc/notificationtargetticket.class.php:604 inc/peripheral.class.php:231
 #: inc/peripheral.class.php:449 inc/phone.class.php:230
 #: inc/printer.class.php:333 inc/printer.class.php:606
-#: inc/ruleimportcomputer.class.php:113 inc/search.class.php:5233
+#: inc/ruleimportcomputer.class.php:113 inc/search.class.php:5235
 #: inc/softwarelicense.class.php:198 inc/softwarelicense.class.php:301
-#: inc/softwarelicense.class.php:640 inc/softwarelicense.class.php:766
-#: inc/supplier.class.php:425 inc/user.class.php:3094 inc/user.class.php:3169
+#: inc/softwarelicense.class.php:644 inc/softwarelicense.class.php:770
+#: inc/supplier.class.php:425 inc/user.class.php:3100 inc/user.class.php:3175
 msgid "Serial number"
 msgstr "Número de serie"
 
@@ -1798,9 +1798,9 @@ msgstr "Número de serie"
 #: inc/notificationtargetticket.class.php:605 inc/peripheral.class.php:241
 #: inc/peripheral.class.php:454 inc/phone.class.php:239
 #: inc/phone.class.php:484 inc/printer.class.php:343 inc/printer.class.php:611
-#: inc/search.class.php:5237 inc/softwarelicense.class.php:210
+#: inc/search.class.php:5239 inc/softwarelicense.class.php:210
 #: inc/softwarelicense.class.php:306 inc/supplier.class.php:426
-#: inc/user.class.php:3095 inc/user.class.php:3170
+#: inc/user.class.php:3101 inc/user.class.php:3176
 msgid "Inventory number"
 msgstr "Número de inventario"
 
@@ -2013,8 +2013,8 @@ msgstr "No se puede cambiar un puerto de red migrado a otro desconocido"
 msgid "Network port is not available..."
 msgstr "El puerto de red no está disponible ..."
 
-#: front/planning.php:128 inc/commonitiltask.class.php:1018
-#: inc/commonitiltask.class.php:1165 inc/event.class.php:117
+#: front/planning.php:128 inc/commonitiltask.class.php:1024
+#: inc/commonitiltask.class.php:1171 inc/event.class.php:117
 #: inc/event.class.php:125 inc/html.class.php:1220 inc/reminder.class.php:431
 #: inc/reminder.class.php:1118
 msgid "Planning"
@@ -2053,13 +2053,13 @@ msgstr "Probar el motor de reglas"
 msgid "Cache information"
 msgstr "Información sobre la caché"
 
-#: front/popup.php:76 front/popup.php:82
+#: front/popup.php:76 front/popup.php:82 inc/bookmark.class.php:575
 msgid "Bookmark"
 msgid_plural "Bookmarks"
 msgstr[0] "marcador"
 msgstr[1] "Marcadores"
 
-#: front/popup.php:100 inc/user.class.php:2915
+#: front/popup.php:100 inc/user.class.php:2921
 msgid "Import a user"
 msgstr "Importar un usuario"
 
@@ -2141,8 +2141,8 @@ msgstr "Lista del material bajo contrato"
 #: inc/networkport.class.php:1077 inc/networkport_vlan.class.php:164
 #: inc/notification.class.php:136 inc/notification.class.php:261
 #: inc/notificationtarget.class.php:1207
-#: inc/notificationtargetcommonitilobject.class.php:959
 #: inc/notificationtargetcommonitilobject.class.php:981
+#: inc/notificationtargetcommonitilobject.class.php:1003
 #: inc/notificationtargetcontract.class.php:155
 #: inc/notificationtargetcrontask.class.php:88
 #: inc/notificationtargetsoftwarelicense.class.php:87
@@ -2159,20 +2159,20 @@ msgstr "Lista del material bajo contrato"
 #: inc/rulecollection.class.php:416 inc/rulecollection.class.php:445
 #: inc/rulecriteria.class.php:132 inc/ruledictionnaryprinter.class.php:75
 #: inc/ruledictionnaryprinter.class.php:97 inc/ruleright.class.php:81
-#: inc/search.class.php:5195 inc/search.class.php:5216 inc/sla.class.php:148
+#: inc/search.class.php:5197 inc/search.class.php:5218 inc/sla.class.php:148
 #: inc/sla.class.php:202 inc/slalevel.class.php:112 inc/slalevel.class.php:155
 #: inc/slalevel.class.php:270 inc/software.class.php:206
-#: inc/software.class.php:424 inc/software.class.php:898
+#: inc/software.class.php:424 inc/software.class.php:899
 #: inc/softwarelicense.class.php:194 inc/softwarelicense.class.php:296
-#: inc/softwarelicense.class.php:629 inc/softwareversion.class.php:130
+#: inc/softwarelicense.class.php:633 inc/softwareversion.class.php:130
 #: inc/softwareversion.class.php:162 inc/supplier.class.php:117
 #: inc/supplier.class.php:253 inc/supplier.class.php:424
 #: inc/ticketcost.class.php:258 inc/ticketcost.class.php:374
 #: inc/tickettemplatehiddenfield.class.php:239
 #: inc/tickettemplatemandatoryfield.class.php:249
 #: inc/tickettemplatepredefinedfield.class.php:286 inc/transfer.class.php:82
-#: inc/transfer.class.php:3045 inc/user.class.php:1855 inc/user.class.php:3093
-#: inc/user.class.php:3168
+#: inc/transfer.class.php:3045 inc/user.class.php:1861 inc/user.class.php:3099
+#: inc/user.class.php:3174
 msgid "Name"
 msgstr "Nombre"
 
@@ -2192,7 +2192,7 @@ msgstr "Nombre"
 #: inc/ruleimportentity.class.php:165 inc/ruleticket.class.php:500
 #: inc/software.class.php:215 inc/ticket.class.php:1986
 #: inc/ticket.class.php:3411 inc/ticket.class.php:4366 inc/user.class.php:1767
-#: inc/user.class.php:1881 inc/user.class.php:2060
+#: inc/user.class.php:1887 inc/user.class.php:2066
 msgid "Location"
 msgid_plural "Locations"
 msgstr[0] "Lugar"
@@ -2208,7 +2208,7 @@ msgstr "Fecha de compra"
 #: front/report.contract.list.php:122 front/report.infocom.php:128
 #: front/report.year.list.php:134 inc/commondbtm.class.php:2660
 #: inc/infocom.class.php:535 inc/infocom.class.php:1318
-#: inc/search.class.php:4223
+#: inc/search.class.php:4225
 msgid "Warranty expiration date"
 msgstr "Expiración de garantía"
 
@@ -2254,11 +2254,11 @@ msgstr[1] "Electrónica de red"
 #: inc/contract_supplier.class.php:344 inc/db.function.php:1196
 #: inc/dropdown.class.php:317 inc/dropdown.class.php:342
 #: inc/entity.class.php:461 inc/entity.class.php:964 inc/html.class.php:1113
-#: inc/notificationtargetcommonitilobject.class.php:900 inc/phone.class.php:52
+#: inc/notificationtargetcommonitilobject.class.php:922 inc/phone.class.php:52
 #: inc/profile.class.php:725 inc/profile.class.php:1502
 #: inc/supplier.class.php:127 inc/supplier.class.php:300
-#: inc/transfer.class.php:3181 inc/user.class.php:1734 inc/user.class.php:1860
-#: inc/user.class.php:2012 inc/user.class.php:2368
+#: inc/transfer.class.php:3181 inc/user.class.php:1734 inc/user.class.php:1866
+#: inc/user.class.php:2018 inc/user.class.php:2374
 #: install/update_0681_07.php:568 install/update_0723_078.php:3687
 msgid "Phone"
 msgid_plural "Phones"
@@ -2370,8 +2370,8 @@ msgstr "Informe de los materiales por años"
 #: inc/computer_softwareversion.class.php:495
 #: inc/computer_softwareversion.class.php:746
 #: inc/computer_softwareversion.class.php:894 inc/entity.class.php:1478
-#: inc/plugin.class.php:330 inc/software.class.php:562
-#: inc/software.class.php:901 inc/softwarelicense.class.php:48
+#: inc/plugin.class.php:330 inc/software.class.php:563
+#: inc/software.class.php:902 inc/softwarelicense.class.php:48
 #: install/install.php:541
 msgid "License"
 msgid_plural "Licenses"
@@ -2397,7 +2397,7 @@ msgid "Replay the rules dictionary"
 msgstr "Repetir las reglas del diccionario"
 
 #: front/rule.common.php:76 inc/migration.class.php:81
-#: inc/software.class.php:940 install/update.php:129
+#: inc/software.class.php:941 install/update.php:129
 msgid "Work in progress..."
 msgstr "Proceso realizandose..."
 
@@ -2433,7 +2433,7 @@ msgstr "Autenticaciones externas"
 
 #: front/setup.auth.php:48 inc/auth.class.php:768 inc/authldap.class.php:60
 #: inc/html.class.php:1474 inc/html.class.php:1488 inc/html.class.php:1954
-#: inc/ruleright.class.php:250 inc/user.class.php:3544
+#: inc/ruleright.class.php:248 inc/user.class.php:3550
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
 msgstr[0] "LDAP"
@@ -2643,7 +2643,7 @@ msgstr "Satisfacción"
 
 #: front/stat.graph.php:82 front/stat.graph.php:90
 #: inc/commonitilobject.class.php:2433 inc/commonitilobject.class.php:2581
-#: inc/commonitiltask.class.php:502 inc/problem.class.php:644
+#: inc/commonitiltask.class.php:508 inc/problem.class.php:644
 #: inc/ruleticket.class.php:324 inc/ruleticket.class.php:422
 #: inc/ticket.class.php:2324 install/update_05_051.php:73
 msgid "Technician"
@@ -2656,7 +2656,7 @@ msgstr "Técnico"
 #: inc/contract_supplier.class.php:341 inc/html.class.php:1266
 #: inc/infocom.class.php:952 inc/infocom.class.php:1331
 #: inc/infocom.class.php:1458
-#: inc/notificationtargetcommonitilobject.class.php:404
+#: inc/notificationtargetcommonitilobject.class.php:424
 #: inc/profile.class.php:742 inc/profile.class.php:1519
 #: inc/supplier.class.php:53 inc/transfer.class.php:3194
 msgid "Supplier"
@@ -2676,7 +2676,7 @@ msgstr[1] "Proveedores"
 #: inc/knowbaseitem.class.php:1480 inc/knowbaseitem.class.php:1581
 #: inc/log.class.php:269 inc/monitor.class.php:261 inc/monitor.class.php:494
 #: inc/networkequipment.class.php:298 inc/networkequipment.class.php:462
-#: inc/notificationtargetcommonitilobject.class.php:965
+#: inc/notificationtargetcommonitilobject.class.php:987
 #: inc/notificationtargetproblem.class.php:222
 #: inc/notificationtargetticket.class.php:612
 #: inc/notificationtargetuser.class.php:51 inc/peripheral.class.php:252
@@ -2688,7 +2688,7 @@ msgstr[1] "Proveedores"
 #: inc/profile_user.class.php:812 inc/profile_user.class.php:874
 #: inc/profile_user.class.php:890 inc/reminder.class.php:1209
 #: inc/reservationitem.class.php:175 inc/rssfeed.class.php:1051
-#: inc/rulemailcollector.class.php:142 inc/search.class.php:5246
+#: inc/rulemailcollector.class.php:142 inc/search.class.php:5248
 #: inc/software.class.php:248 inc/software.class.php:479
 #: inc/ticketfollowup.class.php:776 inc/user.class.php:51
 #: install/update_0713_072.php:553
@@ -2702,12 +2702,12 @@ msgstr[1] "Usuarios"
 #: inc/auth.class.php:1217 inc/authldap.class.php:792
 #: inc/authldap.class.php:934 inc/authldap.class.php:2758
 #: inc/change.class.php:467 inc/change.class.php:849
-#: inc/commonitiltask.class.php:979 inc/commonitiltask.class.php:1182
+#: inc/commonitiltask.class.php:985 inc/commonitiltask.class.php:1188
 #: inc/db.function.php:1218 inc/knowbaseitem.class.php:804
 #: inc/knowbaseitem.class.php:941 inc/knowbaseitem.class.php:1186
 #: inc/knowbaseitem.class.php:1247 inc/knowbaseitem.class.php:1441
-#: inc/notificationtargetcommonitilobject.class.php:883
 #: inc/notificationtargetcommonitilobject.class.php:904
+#: inc/notificationtargetcommonitilobject.class.php:926
 #: inc/notificationtargetproblem.class.php:204
 #: inc/notificationtargetticket.class.php:623 inc/problem.class.php:537
 #: inc/problem.class.php:1340 inc/problem.class.php:1562
@@ -2715,7 +2715,7 @@ msgstr[1] "Usuarios"
 #: inc/ruleticket.class.php:398 inc/software.class.php:219
 #: inc/software.class.php:449 inc/ticket.class.php:1953
 #: inc/ticket.class.php:3340 inc/ticket.class.php:4076
-#: inc/ticket.class.php:5179 inc/user.class.php:1746 inc/user.class.php:2486
+#: inc/ticket.class.php:5179 inc/user.class.php:1746 inc/user.class.php:2492
 msgid "Category"
 msgstr "Categoría"
 
@@ -2738,9 +2738,9 @@ msgstr "Categoría"
 #: inc/printer.class.php:632 inc/profile.class.php:1219
 #: inc/profile.class.php:1698 inc/reminder.class.php:1227
 #: inc/reservationitem.class.php:182 inc/rssfeed.class.php:1068
-#: inc/rulemailcollector.class.php:143 inc/search.class.php:5260
+#: inc/rulemailcollector.class.php:143 inc/search.class.php:5262
 #: inc/software.class.php:256 inc/software.class.php:485
-#: inc/user.class.php:2383 inc/user.class.php:3208
+#: inc/user.class.php:2389 inc/user.class.php:3214
 msgid "Group"
 msgid_plural "Groups"
 msgstr[0] "Grupo"
@@ -2748,8 +2748,8 @@ msgstr[1] "Grupos"
 
 #: front/stat.graph.php:179 front/stat.tracking.php:88
 #: inc/change.class.php:430 inc/change.class.php:864
-#: inc/commonitiltask.class.php:814 inc/commonitiltask.class.php:823
-#: inc/notificationtargetcommonitilobject.class.php:890
+#: inc/commonitiltask.class.php:820 inc/commonitiltask.class.php:829
+#: inc/notificationtargetcommonitilobject.class.php:911
 #: inc/problem.class.php:499 inc/problem.class.php:1355
 #: inc/problem.class.php:1558 inc/ruleticket.class.php:377
 #: inc/ruleticket.class.php:466 inc/ticket.class.php:1904
@@ -2759,7 +2759,7 @@ msgstr "Prioridad"
 
 #: front/stat.graph.php:186 front/stat.tracking.php:86
 #: inc/change.class.php:418 inc/change.class.php:841 inc/config.class.php:654
-#: inc/notificationtargetcommonitilobject.class.php:888
+#: inc/notificationtargetcommonitilobject.class.php:909
 #: inc/problem.class.php:487 inc/problem.class.php:1333
 #: inc/ruleticket.class.php:371 inc/ruleticket.class.php:460
 #: inc/ticket.class.php:1892 inc/ticket.class.php:3368
@@ -2770,7 +2770,7 @@ msgstr "Urgencia"
 #: front/stat.graph.php:193 front/stat.tracking.php:87
 #: inc/change.class.php:424 inc/change.class.php:499 inc/change.class.php:855
 #: inc/config.class.php:636
-#: inc/notificationtargetcommonitilobject.class.php:889
+#: inc/notificationtargetcommonitilobject.class.php:910
 #: inc/problem.class.php:493 inc/problem.class.php:1347
 #: inc/ruleticket.class.php:374 inc/ruleticket.class.php:463
 #: inc/ticket.class.php:1898 inc/ticket.class.php:4230
@@ -2781,8 +2781,8 @@ msgstr "Impacto"
 #: inc/authldap.class.php:788 inc/authldap.class.php:928
 #: inc/authldap.class.php:2757 inc/contact.class.php:215
 #: inc/contact.class.php:369 inc/db.function.php:1212
-#: inc/notificationtargetcommonitilobject.class.php:903
-#: inc/user.class.php:1763 inc/user.class.php:2481
+#: inc/notificationtargetcommonitilobject.class.php:925
+#: inc/user.class.php:1763 inc/user.class.php:2487
 msgctxt "person"
 msgid "Title"
 msgstr "Título"
@@ -2790,7 +2790,7 @@ msgstr "Título"
 #: front/stat.graph.php:208 front/stat.tracking.php:89
 #: inc/change.class.php:569 inc/commonitilobject.class.php:3430
 #: inc/commonitilobject.class.php:3506 inc/dropdown.class.php:675
-#: inc/notificationtargetcommonitilobject.class.php:913
+#: inc/notificationtargetcommonitilobject.class.php:935
 #: inc/problem.class.php:683 inc/solutiontemplate.class.php:63
 #: inc/solutiontemplate.class.php:85 inc/solutiontype.class.php:42
 #: inc/ticket.class.php:2363
@@ -2830,7 +2830,7 @@ msgstr "Siguiente"
 
 #: front/stat.graph.php:356 inc/itilcategory.class.php:162
 #: inc/notificationtargetproblem.class.php:211 inc/problem.class.php:699
-#: inc/search.class.php:5296
+#: inc/search.class.php:5298
 msgctxt "quantity"
 msgid "Number of tickets"
 msgstr "Incidencias asignadas"
@@ -2863,11 +2863,11 @@ msgstr "Número de incidencias cerradas"
 #: inc/commonitilobject.class.php:2209 inc/commonitilobject.class.php:2333
 #: inc/commonitilobject.class.php:2339 inc/commonitilobject.class.php:2986
 #: inc/group.class.php:223 inc/group.class.php:426
-#: inc/notificationtargetcommonitilobject.class.php:399
-#: inc/notificationtargetcommonitilobject.class.php:418
-#: inc/notificationtargetcommonitilobject.class.php:896
-#: inc/notificationtargetcommonitilobject.class.php:898
-#: inc/notificationtargetcommonitilobject.class.php:930
+#: inc/notificationtargetcommonitilobject.class.php:419
+#: inc/notificationtargetcommonitilobject.class.php:438
+#: inc/notificationtargetcommonitilobject.class.php:917
+#: inc/notificationtargetcommonitilobject.class.php:919
+#: inc/notificationtargetcommonitilobject.class.php:952
 #: inc/notificationtargetplanningrecall.class.php:51
 #: inc/notificationtargetreservation.class.php:62
 #: inc/notificationtargetticket.class.php:671
@@ -2882,11 +2882,11 @@ msgstr[0] "Solicitante"
 msgstr[1] "Solicitantes"
 
 #: front/stat.tracking.php:78 inc/commonitilobject.class.php:2384
-#: inc/commonitiltask.class.php:1161 inc/knowbaseitem.class.php:604
+#: inc/commonitiltask.class.php:1167 inc/knowbaseitem.class.php:604
 #: inc/knowbaseitem.class.php:827 inc/knowbaseitem.class.php:1245
-#: inc/notificationtargetcommonitilobject.class.php:400
-#: inc/notificationtargetcommonitilobject.class.php:403
-#: inc/notificationtargetcommonitilobject.class.php:905
+#: inc/notificationtargetcommonitilobject.class.php:420
+#: inc/notificationtargetcommonitilobject.class.php:423
+#: inc/notificationtargetcommonitilobject.class.php:927
 #: inc/notificationtargetplanningrecall.class.php:140
 #: inc/notificationtargetproblem.class.php:200
 #: inc/notificationtargetreservation.class.php:149
@@ -2912,7 +2912,7 @@ msgstr "Árbol de localización"
 #: front/stat.tracking.php:100 inc/cartridgeitem.class.php:265
 #: inc/change.class.php:389 inc/commondbrelation.class.php:274
 #: inc/commondbtm.class.php:2846 inc/commondevice.class.php:63
-#: inc/commondropdown.class.php:431 inc/commonitiltask.class.php:475
+#: inc/commondropdown.class.php:431 inc/commonitiltask.class.php:481
 #: inc/commontreedropdown.class.php:564 inc/computer.class.php:721
 #: inc/computer_softwarelicense.class.php:59 inc/consumableitem.class.php:212
 #: inc/contact.class.php:293 inc/contract.class.php:543
@@ -2930,18 +2930,18 @@ msgstr "Árbol de localización"
 #: inc/printer.class.php:573 inc/problem.class.php:458
 #: inc/profile.class.php:1422 inc/profile_user.class.php:790
 #: inc/reminder.class.php:389 inc/reservationitem.class.php:145
-#: inc/rssfeed.class.php:406 inc/search.class.php:5191
-#: inc/search.class.php:5212 inc/sla.class.php:198 inc/software.class.php:420
+#: inc/rssfeed.class.php:406 inc/search.class.php:5193
+#: inc/search.class.php:5214 inc/sla.class.php:198 inc/software.class.php:420
 #: inc/softwareversion.class.php:158 inc/supplier.class.php:249
 #: inc/ticket.class.php:1857 inc/ticketfollowup.class.php:751
-#: inc/transfer.class.php:78 inc/user.class.php:2326
+#: inc/transfer.class.php:78 inc/user.class.php:2332
 msgid "Characteristics"
 msgstr "Características"
 
 #: front/stat.tracking.php:101 inc/commonitilobject.class.php:2211
 #: inc/commonitilobject.class.php:2427 inc/commonitilobject.class.php:3039
 #: inc/group.class.php:227 inc/group.class.php:431
-#: inc/notificationtargetcommonitilobject.class.php:943
+#: inc/notificationtargetcommonitilobject.class.php:965
 msgid "Assigned to"
 msgstr "Asignada a"
 
@@ -3174,7 +3174,7 @@ msgid "Authentication on mail server"
 msgstr "Identificación sobre el servidor POP/IMAP"
 
 #: inc/auth.class.php:776 inc/authmail.class.php:90
-#: inc/ruleright.class.php:258
+#: inc/ruleright.class.php:256
 msgid "Email server"
 msgstr "Servidor de correo IMAP/POP"
 
@@ -3205,7 +3205,7 @@ msgstr "Base interna de GLPI"
 msgid "Not yet authenticated"
 msgstr "Aún no se ha identificado"
 
-#: inc/auth.class.php:989 inc/user.class.php:2177
+#: inc/auth.class.php:989 inc/user.class.php:2183
 msgid "Force synchronization"
 msgstr "Forzar la sincronicación"
 
@@ -3287,7 +3287,7 @@ msgstr "Suprimir la terminación '@domain' del inicio de sesión en la forma log
 #: inc/auth.class.php:1143 inc/authldap.class.php:745
 #: inc/authldap.class.php:898 inc/authldap.class.php:2752
 #: inc/contact.class.php:146 inc/contact.class.php:297 inc/user.class.php:1667
-#: inc/user.class.php:1933 inc/user.class.php:2343
+#: inc/user.class.php:1939 inc/user.class.php:2349
 msgid "Surname"
 msgstr "Apellido"
 
@@ -3295,7 +3295,7 @@ msgstr "Apellido"
 #: inc/authldap.class.php:904 inc/authldap.class.php:2753
 #: inc/contact.class.php:156 inc/contact.class.php:303
 #: inc/notificationtargetuser.class.php:116 inc/user.class.php:1684
-#: inc/user.class.php:1955 inc/user.class.php:2348
+#: inc/user.class.php:1961 inc/user.class.php:2354
 msgid "First name"
 msgstr "Nombre"
 
@@ -3343,11 +3343,11 @@ msgstr "Nombre"
 #: inc/reservationitem.class.php:169 inc/reservationitem.class.php:304
 #: inc/rssfeed.class.php:452 inc/rssfeed.class.php:654 inc/rule.class.php:307
 #: inc/rule.class.php:428 inc/ruledictionnaryprinter.class.php:83
-#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:5241
+#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:5243
 #: inc/sla.class.php:151 inc/sla.class.php:219 inc/software.class.php:242
 #: inc/software.class.php:438 inc/softwarelicense.class.php:222
 #: inc/softwarelicense.class.php:343 inc/softwareversion.class.php:125
-#: inc/softwareversion.class.php:172 inc/softwareversion.class.php:264
+#: inc/softwareversion.class.php:172 inc/softwareversion.class.php:271
 #: inc/supplier.class.php:131 inc/supplier.class.php:325
 #: inc/ticket.class.php:2040 inc/ticket.class.php:2048
 #: inc/ticket.class.php:2137 inc/ticketcost.class.php:288
@@ -3356,12 +3356,12 @@ msgstr "Nombre"
 #: inc/ticketvalidation.class.php:654 inc/ticketvalidation.class.php:766
 #: inc/ticketvalidation.class.php:779 inc/ticketvalidation.class.php:805
 #: inc/transfer.class.php:94 inc/transfer.class.php:3048
-#: inc/user.class.php:1754 inc/user.class.php:2423 inc/vlan.class.php:164
+#: inc/user.class.php:1754 inc/user.class.php:2429 inc/vlan.class.php:164
 msgid "Comments"
 msgstr "Comentarios"
 
 #: inc/auth.class.php:1162 inc/authldap.class.php:755 inc/user.class.php:1759
-#: inc/user.class.php:2458
+#: inc/user.class.php:2464
 msgid "Administrative number"
 msgstr "Matrícula"
 
@@ -3369,9 +3369,9 @@ msgstr "Matrícula"
 #: inc/authldap.class.php:916 inc/authldap.class.php:2755
 #: inc/contact.class.php:168 inc/contact.class.php:319
 #: inc/contact_supplier.class.php:412 inc/dropdown.class.php:322
-#: inc/notificationtargetcommonitilobject.class.php:901
-#: inc/user.class.php:1751 inc/user.class.php:1868 inc/user.class.php:2038
-#: inc/user.class.php:2373
+#: inc/notificationtargetcommonitilobject.class.php:923
+#: inc/user.class.php:1751 inc/user.class.php:1874 inc/user.class.php:2044
+#: inc/user.class.php:2379
 msgid "Phone 2"
 msgstr "Teléfono 2"
 
@@ -3379,8 +3379,10 @@ msgstr "Teléfono 2"
 #: inc/authldap.class.php:922 inc/authldap.class.php:2756
 #: inc/contact.class.php:174 inc/contact.class.php:324
 #: inc/contact_supplier.class.php:413 inc/db.function.php:1201
-#: inc/dropdown.class.php:327 inc/user.class.php:1743 inc/user.class.php:1873
-#: inc/user.class.php:1992 inc/user.class.php:2378
+#: inc/dropdown.class.php:327
+#: inc/notificationtargetcommonitilobject.class.php:921
+#: inc/user.class.php:1743 inc/user.class.php:1879 inc/user.class.php:1998
+#: inc/user.class.php:2384
 msgid "Mobile phone"
 msgstr "Móvil"
 
@@ -3388,15 +3390,15 @@ msgstr "Móvil"
 #: inc/authldap.class.php:981 inc/config.class.php:741
 #: inc/notificationtemplatetranslation.class.php:126
 #: inc/notificationtemplatetranslation.class.php:205
-#: inc/notificationtemplatetranslation.class.php:280 inc/user.class.php:2003
-#: inc/user.class.php:2428
+#: inc/notificationtemplatetranslation.class.php:280 inc/user.class.php:2009
+#: inc/user.class.php:2434
 msgid "Language"
 msgstr "Idioma"
 
 #: inc/auth.class.php:1228 inc/authldap.class.php:544
 #: inc/authldap.class.php:699 inc/authldap.class.php:802
 #: inc/authldap.class.php:830 inc/bookmark.class.php:270
-#: inc/profile.class.php:667 inc/user.class.php:3404 inc/user.class.php:3435
+#: inc/profile.class.php:667 inc/user.class.php:3410 inc/user.class.php:3441
 msgid "Save"
 msgstr "Registrar"
 
@@ -3435,11 +3437,11 @@ msgstr "Valores por defecto"
 #: inc/problem.class.php:1296 inc/problem.class.php:1552
 #: inc/profile.class.php:534 inc/profile.class.php:1432
 #: inc/reminder.class.php:447 inc/reservationitem.class.php:188
-#: inc/rssfeed.class.php:472 inc/search.class.php:5264 inc/sla.class.php:158
+#: inc/rssfeed.class.php:472 inc/search.class.php:5266 inc/sla.class.php:158
 #: inc/software.class.php:454 inc/softwarelicense.class.php:243
 #: inc/ticket.class.php:1947 inc/ticket.class.php:4012
 #: inc/ticket.class.php:5169 inc/transfer.class.php:88
-#: inc/transfer.class.php:3054 inc/user.class.php:2435
+#: inc/transfer.class.php:3054 inc/user.class.php:2441
 msgid "Last update"
 msgstr "Última modificación"
 
@@ -3457,16 +3459,16 @@ msgstr "Servidor por defecto"
 #: inc/rssfeed.class.php:430 inc/rssfeed.class.php:661 inc/rule.class.php:302
 #: inc/rule.class.php:422 inc/rule.class.php:2234
 #: inc/rulecollection.class.php:418 inc/rulecollection.class.php:447
-#: inc/ruleright.class.php:333 inc/slalevel.class.php:125
+#: inc/ruleright.class.php:331 inc/slalevel.class.php:125
 #: inc/slalevel.class.php:157 inc/slalevel.class.php:274
 #: inc/ticketrecurrent.class.php:138 inc/ticketrecurrent.class.php:242
-#: inc/user.class.php:1738 inc/user.class.php:2363
+#: inc/user.class.php:1738 inc/user.class.php:2369
 msgid "Active"
 msgstr "Activo"
 
 #: inc/authldap.class.php:421 inc/authldap.class.php:866
 #: inc/authldapreplicate.class.php:93 inc/authmail.class.php:106
-#: inc/config.class.php:1192 inc/toolbox.class.php:1938
+#: inc/config.class.php:1192 inc/toolbox.class.php:1939
 msgid "Server"
 msgstr "Servidor"
 
@@ -3531,9 +3533,9 @@ msgid "Maximum number of results"
 msgstr "Número máximo de resultados"
 
 #: inc/authldap.class.php:524 inc/contract.class.php:253
-#: inc/search.class.php:4430 inc/softwarelicense.class.php:231
-#: inc/softwarelicense.class.php:315 inc/softwarelicense.class.php:688
-#: inc/softwarelicense.class.php:712
+#: inc/search.class.php:4432 inc/softwarelicense.class.php:231
+#: inc/softwarelicense.class.php:315 inc/softwarelicense.class.php:692
+#: inc/softwarelicense.class.php:716
 msgid "Unlimited"
 msgstr "Ilimitado"
 
@@ -3779,7 +3781,7 @@ msgstr "Añadir una réplica LDAP"
 
 #. TRANS: for mail connection system
 #: inc/authmail.class.php:111 inc/mailcollector.class.php:331
-#: inc/toolbox.class.php:2015
+#: inc/toolbox.class.php:2016
 msgid "Connection string"
 msgstr "Cadena de conexión"
 
@@ -3796,7 +3798,7 @@ msgstr "Nombre de dominio IMAP/POP <br>(formato correo del tipo usuario@dominio)
 #: inc/mailcollector.class.php:284 inc/monitor.class.php:348
 #: inc/networkequipment.class.php:378 inc/peripheral.class.php:312
 #: inc/phone.class.php:352 inc/printer.class.php:478 inc/rule.class.php:435
-#: inc/software.class.php:278 inc/user.class.php:1819
+#: inc/software.class.php:278 inc/user.class.php:1825
 #, php-format
 msgid "Last update on %s"
 msgstr "Última actualización el %s"
@@ -3848,8 +3850,8 @@ msgstr "%1$s - ID %2$d"
 msgid "New item"
 msgstr "Nuevo item"
 
-#: inc/bookmark.class.php:251 inc/commonitiltask.class.php:464
-#: inc/commonitiltask.class.php:993 inc/commonitiltask.class.php:1163
+#: inc/bookmark.class.php:251 inc/commonitiltask.class.php:470
+#: inc/commonitiltask.class.php:999 inc/commonitiltask.class.php:1169
 #: inc/notificationtargetplanningrecall.class.php:143
 #: inc/notificationtargetproblem.class.php:201
 #: inc/notificationtargetticket.class.php:620
@@ -3862,10 +3864,6 @@ msgstr "Privado"
 #: inc/bookmark.class.php:403
 msgid "Partial load of the bookmark."
 msgstr "Carga parcial del marcador"
-
-#: inc/bookmark.class.php:575
-msgid "Bookmarks"
-msgstr "Marcadores"
 
 #: inc/bookmark.class.php:577
 msgid "Default view"
@@ -4010,9 +4008,9 @@ msgstr[1] "Elementos asociados"
 #: inc/search.class.php:1324 inc/search.class.php:1328
 #: inc/search.class.php:1356 inc/search.class.php:1375
 #: inc/slalevel.class.php:161 inc/softwarelicense.class.php:565
-#: inc/softwareversion.class.php:254 inc/supplier.class.php:529
-#: inc/ticket.class.php:5323 inc/ticketcost.class.php:388
-#: inc/ticketvalidation.class.php:668 inc/user.class.php:3208
+#: inc/softwareversion.class.php:261 inc/supplier.class.php:529
+#: inc/ticket.class.php:5332 inc/ticketcost.class.php:388
+#: inc/ticketvalidation.class.php:668 inc/user.class.php:3214
 #, php-format
 msgid "%1$s = %2$s"
 msgstr "%1$s = %2$s"
@@ -4022,8 +4020,8 @@ msgstr "%1$s = %2$s"
 #: inc/computer_softwarelicense.class.php:302
 #: inc/computer_softwareversion.class.php:615 inc/consumable.class.php:624
 #: inc/consumable.class.php:662 inc/contract_item.class.php:661
-#: inc/item_problem.class.php:235 inc/softwarelicense.class.php:711
-#: inc/softwareversion.class.php:282 inc/stat.class.php:464
+#: inc/item_problem.class.php:235 inc/softwarelicense.class.php:715
+#: inc/softwareversion.class.php:289 inc/stat.class.php:464
 #: inc/state.class.php:123 inc/state.class.php:171 inc/supplier.class.php:529
 #: inc/ticketcost.class.php:439
 msgid "Total"
@@ -4068,14 +4066,14 @@ msgid "Start"
 msgstr "Principio"
 
 #: inc/calendar_holiday.class.php:133 inc/calendarsegment.class.php:319
-#: inc/calendarsegment.class.php:345 inc/commonitiltask.class.php:909
+#: inc/calendarsegment.class.php:345 inc/commonitiltask.class.php:915
 #: inc/contract.class.php:282 inc/contract.class.php:292
 #: inc/contract.class.php:302 inc/contract.class.php:1345
 #: inc/crontask.class.php:1087 inc/dbmysql.class.php:590
 #: inc/holiday.class.php:62 inc/holiday.class.php:86 inc/html.class.php:4208
 #: inc/html.class.php:4209 inc/html.class.php:4370 inc/html.class.php:4371
 #: inc/planning.class.php:420 inc/reminder.class.php:705
-#: inc/search.class.php:4230
+#: inc/search.class.php:4232
 msgid "End"
 msgstr "Fin"
 
@@ -4107,7 +4105,7 @@ msgstr "Agregar periodo"
 
 #: inc/calendarsegment.class.php:314 inc/calendarsegment.class.php:343
 #: inc/config.class.php:943 inc/config.class.php:961
-#: inc/notificationtargetcommonitilobject.class.php:942
+#: inc/notificationtargetcommonitilobject.class.php:964
 #: inc/planning.class.php:327 inc/reservation.class.php:1002
 msgid "Day"
 msgid_plural "Days"
@@ -4187,7 +4185,7 @@ msgstr "Reintegrar al stock"
 msgid "Worn cartridges"
 msgstr "Cartuchos usados"
 
-#: inc/cartridge.class.php:538 inc/commonitiltask.class.php:904
+#: inc/cartridge.class.php:538 inc/commonitiltask.class.php:910
 #: inc/consumable.class.php:501 inc/ticketvalidation.class.php:648
 msgctxt "item"
 msgid "State"
@@ -4304,7 +4302,7 @@ msgstr "Páginas impresas"
 #: inc/contract.class.php:623 inc/contract.class.php:624
 #: inc/contract.class.php:625 inc/contract.class.php:626
 #: inc/contract_supplier.class.php:243 inc/dropdown.class.php:1197
-#: inc/infocom.class.php:1107 inc/search.class.php:4172
+#: inc/infocom.class.php:1107 inc/search.class.php:4174
 #: inc/ticketrecurrent.class.php:190 inc/ticketrecurrent.class.php:219
 #, php-format
 msgid "%d month"
@@ -4326,13 +4324,13 @@ msgstr "Referencia"
 #: inc/itilcategory.class.php:119 inc/monitor.class.php:210
 #: inc/monitor.class.php:574 inc/networkequipment.class.php:247
 #: inc/networkequipment.class.php:517
-#: inc/notificationtargetcommonitilobject.class.php:413
+#: inc/notificationtargetcommonitilobject.class.php:433
 #: inc/notificationtargetreservation.class.php:58
 #: inc/notificationtargetreservation.class.php:155
 #: inc/peripheral.class.php:201 inc/peripheral.class.php:509
 #: inc/phone.class.php:200 inc/phone.class.php:549 inc/printer.class.php:303
 #: inc/printer.class.php:712 inc/reservationitem.class.php:201
-#: inc/search.class.php:5275 inc/software.class.php:224
+#: inc/search.class.php:5277 inc/software.class.php:224
 #: inc/software.class.php:466
 msgid "Technician in charge of the hardware"
 msgstr "Responsable técnico"
@@ -4343,7 +4341,7 @@ msgstr "Responsable técnico"
 #: inc/itilcategory.class.php:67 inc/monitor.class.php:223
 #: inc/monitor.class.php:581 inc/networkequipment.class.php:260
 #: inc/networkequipment.class.php:524
-#: inc/notificationtargetcommonitilobject.class.php:415
+#: inc/notificationtargetcommonitilobject.class.php:435
 #: inc/notificationtargetreservation.class.php:60 inc/peripheral.class.php:214
 #: inc/peripheral.class.php:516 inc/phone.class.php:213
 #: inc/phone.class.php:556 inc/printer.class.php:316 inc/printer.class.php:719
@@ -4408,9 +4406,9 @@ msgstr "Agregar un modelo de impresora compatible"
 #: inc/itilcategory.class.php:328 inc/knowbaseitem.class.php:1347
 #: inc/netpoint.class.php:331 inc/networkalias.class.php:376
 #: inc/notificationtarget.class.php:1245 inc/profile_user.class.php:237
-#: inc/rule.class.php:2212 inc/search.class.php:5714
-#: inc/software.class.php:918 inc/softwarelicense.class.php:570
-#: inc/softwarelicense.class.php:733 inc/softwareversion.class.php:293
+#: inc/rule.class.php:2212 inc/search.class.php:5716
+#: inc/software.class.php:919 inc/softwarelicense.class.php:570
+#: inc/softwarelicense.class.php:737 inc/softwareversion.class.php:300
 #: inc/state.class.php:183 inc/ticketcost.class.php:446
 #: inc/tickettemplatehiddenfield.class.php:251
 #: inc/tickettemplatemandatoryfield.class.php:270
@@ -4483,7 +4481,7 @@ msgid "Plans"
 msgstr "Planes"
 
 #: inc/change.class.php:188 inc/change.class.php:565 inc/change.class.php:575
-#: inc/notificationtargetcommonitilobject.class.php:914
+#: inc/notificationtargetcommonitilobject.class.php:936
 #: inc/problem.class.php:214 inc/problem.class.php:225
 #: inc/problem.class.php:679 inc/problem.class.php:688
 #: inc/ticket.class.php:460 inc/ticket.class.php:2359
@@ -4495,7 +4493,7 @@ msgstr[1] "Soluciones"
 
 #: inc/change.class.php:393 inc/change.class.php:883
 #: inc/change_ticket.class.php:143 inc/change_ticket.class.php:255
-#: inc/notificationtargetcommonitilobject.class.php:881
+#: inc/notificationtargetcommonitilobject.class.php:902
 #: inc/notificationtargetplanningrecall.class.php:142
 #: inc/notificationtargetproblem.class.php:259
 #: inc/notificationtargetticket.class.php:794
@@ -4510,13 +4508,13 @@ msgstr "Título"
 
 #: inc/change.class.php:400 inc/change.class.php:914
 #: inc/commonitilobject.class.php:3449 inc/commonitilobject.class.php:3512
-#: inc/commonitiltask.class.php:479 inc/commonitiltask.class.php:815
-#: inc/commonitiltask.class.php:824 inc/commonitiltask.class.php:964
-#: inc/commonitiltask.class.php:1160 inc/commonitiltask.class.php:1185
+#: inc/commonitiltask.class.php:485 inc/commonitiltask.class.php:821
+#: inc/commonitiltask.class.php:830 inc/commonitiltask.class.php:970
+#: inc/commonitiltask.class.php:1166 inc/commonitiltask.class.php:1191
 #: inc/crontask.class.php:396 inc/crontask.class.php:1016
 #: inc/crontask.class.php:1072 inc/crontask.class.php:1230
-#: inc/notificationtargetcommonitilobject.class.php:884
-#: inc/notificationtargetcommonitilobject.class.php:886
+#: inc/notificationtargetcommonitilobject.class.php:905
+#: inc/notificationtargetcommonitilobject.class.php:907
 #: inc/notificationtargetcrontask.class.php:89
 #: inc/notificationtargetplanningrecall.class.php:144
 #: inc/notificationtargetproblem.class.php:203
@@ -4541,8 +4539,8 @@ msgid "Description"
 msgstr "Descripción"
 
 #: inc/change.class.php:412 inc/change.class.php:836
-#: inc/commondbtm.class.php:2609 inc/commonitiltask.class.php:515
-#: inc/commonitiltask.class.php:986 inc/computer.class.php:416
+#: inc/commondbtm.class.php:2609 inc/commonitiltask.class.php:521
+#: inc/commonitiltask.class.php:992 inc/computer.class.php:416
 #: inc/computer.class.php:749 inc/computer_softwarelicense.class.php:498
 #: inc/computer_softwareversion.class.php:486
 #: inc/computer_softwareversion.class.php:893 inc/config.class.php:406
@@ -4550,7 +4548,7 @@ msgstr "Descripción"
 #: inc/crontask.class.php:1069 inc/crontask.class.php:1238
 #: inc/monitor.class.php:193 inc/monitor.class.php:469
 #: inc/networkequipment.class.php:230 inc/networkequipment.class.php:437
-#: inc/notificationtargetcommonitilobject.class.php:887
+#: inc/notificationtargetcommonitilobject.class.php:908
 #: inc/notificationtargetplanningrecall.class.php:148
 #: inc/notificationtargetproblem.class.php:209
 #: inc/notificationtargetticket.class.php:628 inc/peripheral.class.php:184
@@ -4560,14 +4558,14 @@ msgstr "Descripción"
 #: inc/problem.class.php:671 inc/problem.class.php:1328
 #: inc/problem.class.php:1550 inc/reminder.class.php:407
 #: inc/reminder.class.php:710 inc/report.class.php:91
-#: inc/ruleticket.class.php:470 inc/search.class.php:5206
-#: inc/search.class.php:5227 inc/slalevel.class.php:247
-#: inc/software.class.php:537 inc/softwareversion.class.php:139
-#: inc/softwareversion.class.php:177 inc/softwareversion.class.php:261
+#: inc/ruleticket.class.php:470 inc/search.class.php:5208
+#: inc/search.class.php:5229 inc/slalevel.class.php:247
+#: inc/software.class.php:538 inc/softwareversion.class.php:139
+#: inc/softwareversion.class.php:177 inc/softwareversion.class.php:268
 #: inc/state.class.php:112 inc/ticket.class.php:1880 inc/ticket.class.php:2057
 #: inc/ticket.class.php:2351 inc/ticket.class.php:4132
 #: inc/ticket.class.php:5167 inc/ticketvalidation.class.php:833
-#: inc/user.class.php:3096 inc/user.class.php:3171
+#: inc/user.class.php:3102 inc/user.class.php:3177
 msgid "Status"
 msgid_plural "Statuses"
 msgstr[0] "Estado"
@@ -4575,7 +4573,7 @@ msgstr[1] "Estado"
 
 #: inc/change.class.php:436 inc/change.class.php:767
 #: inc/commonitilobject.class.php:3712
-#: inc/notificationtargetcommonitilobject.class.php:892
+#: inc/notificationtargetcommonitilobject.class.php:913
 #: inc/notificationtargetproblem.class.php:202
 #: inc/notificationtargetticket.class.php:621
 #: inc/notificationtargetticket.class.php:629 inc/problem.class.php:506
@@ -4585,7 +4583,7 @@ msgid "Opening date"
 msgstr "Fecha de apertura"
 
 #: inc/change.class.php:442 inc/commonitilobject.class.php:3725
-#: inc/notificationtargetcommonitilobject.class.php:893
+#: inc/notificationtargetcommonitilobject.class.php:914
 #: inc/problem.class.php:512 inc/problem.class.php:1314
 #: inc/ticket.class.php:1916
 msgid "Closing date"
@@ -4593,12 +4591,12 @@ msgstr "Fecha de cierre"
 
 #: inc/change.class.php:448 inc/change.class.php:803
 #: inc/commonitilobject.class.php:3715
-#: inc/notificationtargetcommonitilobject.class.php:895
+#: inc/notificationtargetcommonitilobject.class.php:916
 #: inc/problem.class.php:518 inc/problem.class.php:1279
 #: inc/problem.class.php:1645 inc/slalevel.class.php:186
 #: inc/slalevel.class.php:370 inc/ticket.class.php:1922
 #: inc/ticket.class.php:3895 inc/ticket.class.php:3897
-#: inc/ticket.class.php:5479
+#: inc/ticket.class.php:5492
 msgid "Due date"
 msgstr "Vencimiento"
 
@@ -4609,9 +4607,9 @@ msgid "Resolution date"
 msgstr "Fecha de resolución"
 
 #: inc/change.class.php:479 inc/change.class.php:862
-#: inc/commonitiltask.class.php:509 inc/crontask.class.php:933
+#: inc/commonitiltask.class.php:515 inc/crontask.class.php:933
 #: inc/crontask.class.php:1014
-#: inc/notificationtargetcommonitilobject.class.php:891
+#: inc/notificationtargetcommonitilobject.class.php:912
 #: inc/notificationtargetproblem.class.php:205
 #: inc/notificationtargetticket.class.php:624 inc/problem.class.php:548
 #: inc/problem.class.php:1353 inc/ticket.class.php:1997
@@ -4649,7 +4647,7 @@ msgid "Evaluation"
 msgstr "Evaluación"
 
 #: inc/change.class.php:602
-#: inc/notificationtargetcommonitilobject.class.php:595
+#: inc/notificationtargetcommonitilobject.class.php:615
 #: inc/profile.class.php:934 inc/ticket.class.php:2030
 #: inc/ticket.class.php:2034 inc/ticket.class.php:2048
 #: inc/ticket.class.php:2057 inc/ticket.class.php:2073
@@ -4704,7 +4702,7 @@ msgstr "Resuelto y Cerrado"
 
 #. TRANS: %s is the user name
 #. TRANS: %s is user name
-#: inc/change.class.php:795 inc/commonitiltask.class.php:790
+#: inc/change.class.php:795 inc/commonitiltask.class.php:796
 #, php-format
 msgid "By %s"
 msgstr "Por %s"
@@ -4845,7 +4843,7 @@ msgstr "Elemento restaurado correctamente"
 #: inc/profile.class.php:1060 inc/profile.class.php:1180
 #: inc/profile.class.php:1306 inc/profile.class.php:1406
 #: inc/reservation.class.php:771 inc/reservationitem.class.php:309
-#: inc/ticket.class.php:4556 inc/ticket.class.php:4571 inc/user.class.php:2077
+#: inc/ticket.class.php:4556 inc/ticket.class.php:4571 inc/user.class.php:2083
 msgctxt "button"
 msgid "Save"
 msgstr "Registrar"
@@ -4897,7 +4895,7 @@ msgstr "Cambio visible en sub-entidades"
 
 #: inc/commondbtm.class.php:2592 inc/commontreedropdown.class.php:568
 #: inc/db.function.php:486 inc/entity.class.php:437
-#: inc/notificationtargetcommonitilobject.class.php:957
+#: inc/notificationtargetcommonitilobject.class.php:979
 msgid "Complete name"
 msgstr "Nombre completo"
 
@@ -4910,7 +4908,7 @@ msgstr "Nombre completo"
 #: inc/notificationtargetticket.class.php:611 inc/peripheral.class.php:227
 #: inc/peripheral.class.php:464 inc/phone.class.php:226
 #: inc/phone.class.php:494 inc/printer.class.php:329 inc/printer.class.php:621
-#: inc/search.class.php:5255
+#: inc/search.class.php:5257
 msgid "Alternate username number"
 msgstr "Número de contacto"
 
@@ -4963,23 +4961,23 @@ msgid "%1$s trying to add an item that already exists: %2$s"
 msgstr "%1$s intenta añadir un elemento que ya existe: %2$s"
 
 #: inc/commondbtm.class.php:4265 inc/entity.class.php:1402
-#: inc/entity.class.php:1447 inc/search.class.php:4848 inc/user.class.php:2431
+#: inc/entity.class.php:1447 inc/search.class.php:4850 inc/user.class.php:2437
 msgid "Default value"
 msgstr "Valor predeterminado"
 
-#: inc/commondbtm.class.php:4559
+#: inc/commondbtm.class.php:4564
 msgid "Choose a template"
 msgstr "Elija una plantilla"
 
-#: inc/commondbtm.class.php:4561
+#: inc/commondbtm.class.php:4566
 msgid "Blank Template"
 msgstr "Plantilla vacía"
 
-#: inc/commondbtm.class.php:4564
+#: inc/commondbtm.class.php:4569
 msgid "Templates"
 msgstr "Plantillas"
 
-#: inc/commondbtm.class.php:4591
+#: inc/commondbtm.class.php:4596
 msgid "Add a template..."
 msgstr "Añadir una plantilla..."
 
@@ -5026,8 +5024,8 @@ msgstr "Reemplazar"
 
 #: inc/commonglpi.class.php:60 inc/rule.class.php:1633
 #: inc/ticket.class.php:2962 inc/ticket.class.php:3013
-#: inc/ticket.class.php:4313 inc/ticket.class.php:5589
-#: inc/ticket.class.php:5711
+#: inc/ticket.class.php:4313 inc/ticket.class.php:5602
+#: inc/ticket.class.php:5724
 msgid "General"
 msgstr "General"
 
@@ -5045,7 +5043,7 @@ msgstr "Primero"
 msgid "Last"
 msgstr "Último"
 
-#: inc/commonglpi.class.php:518 inc/user.class.php:2069
+#: inc/commonglpi.class.php:518 inc/user.class.php:2075
 msgid "Debug"
 msgstr "Depurar"
 
@@ -5060,7 +5058,7 @@ msgstr "Seguimiento por correo"
 #: inc/commonitilobject.class.php:556 inc/commonitilobject.class.php:603
 #: inc/commonitilobject.class.php:2669 inc/mailcollector.class.php:121
 #: inc/mailcollector.class.php:146 inc/notificationmailsetting.class.php:151
-#: inc/notificationmailsetting.class.php:164 inc/user.class.php:3518
+#: inc/notificationmailsetting.class.php:164 inc/user.class.php:3524
 msgid "Invalid email address"
 msgstr "Correo electrónico no válido"
 
@@ -5251,8 +5249,8 @@ msgstr "Muy bajo"
 
 #: inc/commonitilobject.class.php:2210 inc/commonitilobject.class.php:2391
 #: inc/commonitilobject.class.php:2397 inc/commonitilobject.class.php:3005
-#: inc/notificationtargetcommonitilobject.class.php:422
-#: inc/notificationtargetcommonitilobject.class.php:915
+#: inc/notificationtargetcommonitilobject.class.php:442
+#: inc/notificationtargetcommonitilobject.class.php:937
 #: inc/ruleticket.class.php:343 inc/ruleticket.class.php:445
 msgid "Watcher"
 msgid_plural "Watchers"
@@ -5272,8 +5270,8 @@ msgid "Waiting time"
 msgstr "Tiempo de espera"
 
 #: inc/commonitilobject.class.php:2360 inc/commonitilobject.class.php:2591
-#: inc/notificationtargetcommonitilobject.class.php:417
-#: inc/notificationtargetcommonitilobject.class.php:909
+#: inc/notificationtargetcommonitilobject.class.php:437
+#: inc/notificationtargetcommonitilobject.class.php:931
 #: inc/ruleticket.class.php:318 inc/ruleticket.class.php:414
 msgid "Requester group"
 msgid_plural "Requester groups"
@@ -5281,8 +5279,8 @@ msgstr[0] ""
 msgstr[1] "Grupo solicitante"
 
 #: inc/commonitilobject.class.php:2413 inc/commonitilobject.class.php:2595
-#: inc/notificationtargetcommonitilobject.class.php:421
-#: inc/notificationtargetcommonitilobject.class.php:911
+#: inc/notificationtargetcommonitilobject.class.php:441
+#: inc/notificationtargetcommonitilobject.class.php:933
 #: inc/ruleticket.class.php:349 inc/ruleticket.class.php:454
 msgid "Watcher group"
 msgid_plural "Watcher groups"
@@ -5290,7 +5288,7 @@ msgstr[0] "Grupo de Observadores"
 msgstr[1] "Grupos de Observadores"
 
 #: inc/commonitilobject.class.php:2449
-#: inc/notificationtargetcommonitilobject.class.php:908
+#: inc/notificationtargetcommonitilobject.class.php:930
 #: inc/ruleticket.class.php:337 inc/ruleticket.class.php:439
 msgid "Assigned to a supplier"
 msgstr "Asignado a un proveedor"
@@ -5313,7 +5311,7 @@ msgid "Watcher user"
 msgstr "Usuario observador"
 
 #: inc/commonitilobject.class.php:2599
-#: inc/notificationtargetcommonitilobject.class.php:420
+#: inc/notificationtargetcommonitilobject.class.php:440
 msgid "Group in charge of the ticket"
 msgstr "Grupo encargado de la incidencia"
 
@@ -5359,76 +5357,76 @@ msgid_plural "Tasks"
 msgstr[0] "Tarea"
 msgstr[1] "Tareas"
 
-#: inc/commonitiltask.class.php:228 inc/commonitiltask.class.php:310
+#: inc/commonitiltask.class.php:234 inc/commonitiltask.class.php:316
 #: inc/reminder.class.php:577 inc/reminder.class.php:622
 #: inc/reservation.class.php:274
 msgid ""
 "Error in entering dates. The starting date is later than the ending date"
 msgstr "Error al introducir las fechas. La fecha de inicio es posterior a la fecha de fin"
 
-#: inc/commonitiltask.class.php:460 inc/commonitiltask.class.php:463
+#: inc/commonitiltask.class.php:466 inc/commonitiltask.class.php:469
 #: inc/profile_user.class.php:844 inc/profile_user.class.php:851
 #: inc/profile_user.class.php:856
 #, php-format
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
 
-#: inc/commonitiltask.class.php:484 inc/problem.class.php:621
+#: inc/commonitiltask.class.php:490 inc/problem.class.php:621
 #: inc/ticket.class.php:2294
 msgid "Task category"
 msgstr "Categoría de tarea"
 
-#: inc/commonitiltask.class.php:496
+#: inc/commonitiltask.class.php:502
 msgid "Public followup"
 msgstr "Seguimiento público"
 
 #. TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
-#: inc/commonitiltask.class.php:706
+#: inc/commonitiltask.class.php:712
 #, php-format
 msgid "%1$s: from %2$s to %3$s:"
 msgstr "%1$s: de %2$s a %3$s:"
 
 #. TRANS: %1$s is the start time of a planned item, %2$s is the end
-#: inc/commonitiltask.class.php:761
+#: inc/commonitiltask.class.php:767
 #, php-format
 msgid "From %1$s to %2$s :"
 msgstr "Desde %1$s hasta %2$s :"
 
 #. TRANS: %s is the start time of a planned item
-#: inc/commonitiltask.class.php:770
+#: inc/commonitiltask.class.php:776
 #, php-format
 msgid "Start at %s:"
 msgstr "Comienza a las %s"
 
 #. TRANS: %s is the end time of a planned item
-#: inc/commonitiltask.class.php:775
+#: inc/commonitiltask.class.php:781
 #, php-format
 msgid "End at %s:"
 msgstr "Finaliza a las %s"
 
 #. TRANS: %1$s is name of the item, %2$d is its ID
-#: inc/commonitiltask.class.php:781
+#: inc/commonitiltask.class.php:787
 #, php-format
 msgid "%1$s (#%2$d)"
 msgstr "%1$s (#%2$d)"
 
-#: inc/commonitiltask.class.php:802 inc/reminder.class.php:999
+#: inc/commonitiltask.class.php:808 inc/reminder.class.php:999
 #, php-format
 msgid "Recall on %s"
 msgstr "Recordar en %s"
 
-#: inc/commonitiltask.class.php:900 inc/commonitiltask.class.php:1076
+#: inc/commonitiltask.class.php:906 inc/commonitiltask.class.php:1082
 #: inc/dbconnection.class.php:428 inc/group_user.class.php:173
 #: inc/group_user.class.php:249 inc/htmltablemain.class.php:238
-#: inc/planningrecall.class.php:247 inc/search.class.php:4445
+#: inc/planningrecall.class.php:247 inc/search.class.php:4447
 msgid "None"
 msgstr "Ninguno"
 
-#: inc/commonitiltask.class.php:907 inc/reminder.class.php:702
+#: inc/commonitiltask.class.php:913 inc/reminder.class.php:702
 msgid "Begin"
 msgstr "Inicio"
 
-#: inc/commonitiltask.class.php:1001 inc/commonitiltask.class.php:1160
+#: inc/commonitiltask.class.php:1007 inc/commonitiltask.class.php:1166
 #: inc/contract.class.php:366 inc/contract.class.php:575
 #: inc/crontask.class.php:1070 inc/notificationtargetticket.class.php:650
 #: inc/problem.class.php:655 inc/reservation.class.php:710
@@ -5439,23 +5437,23 @@ msgstr "Duración"
 
 #. TRANS: %1$s is the begin date, %2$s is the end date
 #. TRANS: %1$s is the start time of a planned item, %2$s is the end
-#: inc/commonitiltask.class.php:1046 inc/reminder.class.php:761
+#: inc/commonitiltask.class.php:1052 inc/reminder.class.php:761
 #: inc/reminder.class.php:931 inc/reminder.class.php:971
 #: inc/reminder.class.php:1119
 #, php-format
 msgid "From %1$s to %2$s"
 msgstr "De %1$s a %2$s"
 
-#: inc/commonitiltask.class.php:1071
+#: inc/commonitiltask.class.php:1077
 msgid "Plan this task"
 msgstr "Planificar este seguimiento"
 
-#: inc/commonitiltask.class.php:1150 inc/problem.class.php:441
+#: inc/commonitiltask.class.php:1156 inc/problem.class.php:441
 #: inc/ticket.class.php:1719
 msgid "Add a new task"
 msgstr "Añadir una nueva tarea"
 
-#: inc/commonitiltask.class.php:1155
+#: inc/commonitiltask.class.php:1161
 msgid "No task found."
 msgstr "Tarea no encontrada."
 
@@ -5522,8 +5520,8 @@ msgstr "Ubicación actualizada. Los elementos conectados han sido movidos a la m
 #: inc/profile_user.class.php:388 inc/profile_user.class.php:390
 #: inc/profile_user.class.php:538 inc/profile_user.class.php:541
 #: inc/profile_user.class.php:544 inc/profile_user.class.php:546
-#: inc/search.class.php:4037 inc/search.class.php:4041
-#: inc/search.class.php:4078 inc/search.class.php:4082
+#: inc/search.class.php:4039 inc/search.class.php:4043
+#: inc/search.class.php:4080 inc/search.class.php:4084
 #: inc/ticket.class.php:3333 inc/ticket.class.php:3340
 #: inc/ticket.class.php:3368 inc/ticket.class.php:3395
 #: inc/ticket.class.php:3411 inc/ticket.class.php:3420
@@ -5646,7 +5644,7 @@ msgstr[1] "Memorias"
 #: inc/devicememory.class.php:52 inc/item_devicegraphiccard.class.php:50
 #: inc/item_deviceharddrive.class.php:50 inc/item_devicememory.class.php:51
 #: inc/networkequipment.class.php:357 inc/networkequipment.class.php:496
-#: inc/toolbox.class.php:961 inc/toolbox.class.php:1085
+#: inc/toolbox.class.php:962 inc/toolbox.class.php:1086
 msgid "Mio"
 msgstr "Mb"
 
@@ -5827,12 +5825,12 @@ msgstr "Número de ordenadores afectados"
 
 #: inc/computer_softwarelicense.class.php:397
 #: inc/computer_softwarelicense.class.php:551
-#: inc/softwarelicense.class.php:646
+#: inc/softwarelicense.class.php:650
 msgid "Affected computers"
 msgstr "Equipos afectados"
 
-#: inc/computer_softwareversion.class.php:55 inc/software.class.php:900
-#: inc/softwareversion.class.php:263
+#: inc/computer_softwareversion.class.php:55 inc/software.class.php:901
+#: inc/softwareversion.class.php:270
 msgid "Installation"
 msgid_plural "Installations"
 msgstr[0] "Instalación"
@@ -6130,7 +6128,7 @@ msgstr "Siempre"
 #: inc/dropdown.class.php:671 inc/entity.class.php:304 inc/event.class.php:124
 #: inc/html.class.php:1135 inc/profile.class.php:115 inc/profile.class.php:562
 #: inc/profile.class.php:841 inc/profile.class.php:1390
-#: inc/profile.class.php:1723 inc/search.class.php:5291
+#: inc/profile.class.php:1723 inc/search.class.php:5293
 msgid "Assistance"
 msgstr "Soporte"
 
@@ -6403,8 +6401,8 @@ msgstr "Número máximo de tareas (ejecución externa)"
 msgid "Logs in files (SQL, email, automatic action...)"
 msgstr "Registros en ficheros (SQL, correo, cron...)"
 
-#: inc/config.class.php:1150 inc/user.class.php:1691 inc/user.class.php:1983
-#: inc/user.class.php:3397
+#: inc/config.class.php:1150 inc/user.class.php:1691 inc/user.class.php:1989
+#: inc/user.class.php:3403
 msgid "Password security policy"
 msgstr "Pólitica de seguridad de las contraseñas"
 
@@ -6678,7 +6676,7 @@ msgstr "Estado"
 msgid "Country"
 msgstr "País"
 
-#: inc/contact.class.php:220 inc/user.class.php:1826
+#: inc/contact.class.php:220 inc/user.class.php:1832
 msgid "Vcard"
 msgstr "vCard"
 
@@ -6754,7 +6752,7 @@ msgstr "Duración inicial"
 
 #: inc/contract.class.php:212 inc/contract.class.php:422
 #: inc/contract.class.php:594 inc/contract.class.php:1346
-#: inc/notificationtargetcontract.class.php:45 inc/search.class.php:4233
+#: inc/notificationtargetcontract.class.php:45 inc/search.class.php:4235
 msgid "Notice"
 msgstr "Preaviso"
 
@@ -6849,9 +6847,9 @@ msgctxt "button"
 msgid "Remove an item"
 msgstr "Borrar un elemento"
 
-#: inc/contract.class.php:642 inc/software.class.php:632
+#: inc/contract.class.php:642 inc/software.class.php:633
 #: inc/softwarelicense.class.php:235 inc/softwarelicense.class.php:338
-#: inc/softwarelicense.class.php:660
+#: inc/softwarelicense.class.php:664
 msgid "Expiration"
 msgstr "Expiración"
 
@@ -6938,7 +6936,7 @@ msgstr "Tácito"
 msgid "Express"
 msgstr "Expresa"
 
-#: inc/contract.class.php:1347 inc/search.class.php:4236
+#: inc/contract.class.php:1347 inc/search.class.php:4238
 msgid "End + Notice"
 msgstr "Fin + Aviso"
 
@@ -7131,7 +7129,7 @@ msgstr "Número mínimo"
 
 #: inc/crontask.class.php:942 inc/crontask.class.php:946
 #: inc/crontask.class.php:950 inc/crontask.class.php:955
-#: inc/search.class.php:5738 inc/search.class.php:5758
+#: inc/search.class.php:5740 inc/search.class.php:5760
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
@@ -7167,7 +7165,7 @@ msgstr "Listado de las últimas ejecuciones"
 #: inc/crontask.class.php:1015 inc/crontask.class.php:1071
 #: inc/fieldunicity.class.php:554 inc/problem.class.php:1100
 #: inc/softwarelicense.class.php:228 inc/softwarelicense.class.php:312
-#: inc/softwarelicense.class.php:644 inc/stat.class.php:389
+#: inc/softwarelicense.class.php:648 inc/stat.class.php:389
 #: inc/ticket.class.php:5080
 msgctxt "quantity"
 msgid "Number"
@@ -7462,14 +7460,14 @@ msgstr[1] "Asuntos de los documentos"
 
 #: inc/document.class.php:50 inc/document.class.php:161
 #: inc/event.class.php:133 inc/html.class.php:1302
-#: inc/notificationtargetcommonitilobject.class.php:931
-#: inc/notificationtargetcommonitilobject.class.php:970
-#: inc/notificationtargetcommonitilobject.class.php:972
-#: inc/notificationtargetcommonitilobject.class.php:974
-#: inc/notificationtargetcommonitilobject.class.php:976
-#: inc/notificationtargetcommonitilobject.class.php:978
-#: inc/notificationtargetcommonitilobject.class.php:980
-#: inc/notificationtargetcommonitilobject.class.php:982
+#: inc/notificationtargetcommonitilobject.class.php:953
+#: inc/notificationtargetcommonitilobject.class.php:992
+#: inc/notificationtargetcommonitilobject.class.php:994
+#: inc/notificationtargetcommonitilobject.class.php:996
+#: inc/notificationtargetcommonitilobject.class.php:998
+#: inc/notificationtargetcommonitilobject.class.php:1000
+#: inc/notificationtargetcommonitilobject.class.php:1002
+#: inc/notificationtargetcommonitilobject.class.php:1004
 #: inc/profile.class.php:746 inc/profile.class.php:1524
 #: inc/transfer.class.php:3214
 msgid "Document"
@@ -7502,13 +7500,13 @@ msgid "Use a FTP installed file"
 msgstr "Seleccionar un fichero instalado por FTP"
 
 #: inc/document.class.php:346 inc/document.class.php:834
-#: inc/notificationtargetcommonitilobject.class.php:979
+#: inc/notificationtargetcommonitilobject.class.php:1001
 msgid "Web Link"
 msgstr "Enlace web"
 
 #: inc/document.class.php:352 inc/document.class.php:855
 #: inc/document_item.class.php:600 inc/document_item.class.php:675
-#: inc/notificationtargetcommonitilobject.class.php:973
+#: inc/notificationtargetcommonitilobject.class.php:995
 msgid "Heading"
 msgstr "Asunto"
 
@@ -7533,7 +7531,7 @@ msgid "%s Mio max"
 msgstr "%s Mio max"
 
 #: inc/document.class.php:657
-#: inc/notificationtargetcommonitilobject.class.php:918
+#: inc/notificationtargetcommonitilobject.class.php:940
 msgctxt "quantity"
 msgid "Number of documents"
 msgstr "Número de documentos"
@@ -7608,7 +7606,7 @@ msgstr "No hay ficheros disponibles"
 
 #: inc/document_item.class.php:393 inc/entity.class.php:1530
 #: inc/event.class.php:123 inc/html.class.php:1143 inc/html.class.php:2634
-#: inc/notificationtargetcommonitilobject.class.php:885
+#: inc/notificationtargetcommonitilobject.class.php:906
 #: inc/notificationtargetproblem.class.php:234
 #: inc/notificationtargetproblem.class.php:245
 #: inc/notificationtargetproblem.class.php:256
@@ -8306,7 +8304,7 @@ msgid "Security"
 msgstr "Seguridad"
 
 #: inc/event.class.php:135 inc/html.class.php:1398 inc/html.class.php:2009
-#: inc/html.class.php:2676 inc/search.class.php:5348
+#: inc/html.class.php:2676 inc/search.class.php:5350
 msgid "Plugins"
 msgstr "Plugins"
 
@@ -8345,7 +8343,7 @@ msgstr[0] "%1$s acceso desde %2$s"
 msgstr[1] "%1$s accesos desde %2$s"
 
 #: inc/fieldblacklist.class.php:62 inc/fieldblacklist.class.php:88
-#: inc/log.class.php:269 inc/notificationtargetcommonitilobject.class.php:967
+#: inc/log.class.php:269 inc/notificationtargetcommonitilobject.class.php:989
 #: inc/ruleaction.class.php:138 inc/rule.class.php:617
 msgid "Field"
 msgid_plural "Fields"
@@ -8376,7 +8374,7 @@ msgstr "Es necesario seleccionar un tipo y al menos un campo"
 
 #: inc/fieldunicity.class.php:547 inc/fieldunicity.class.php:572
 #: inc/notificationevent.class.php:224 inc/stat.class.php:1148
-#: inc/user.class.php:3564
+#: inc/user.class.php:3570
 msgid "No item to display"
 msgstr "No hay artículos para mostrar"
 
@@ -8461,7 +8459,7 @@ msgid "Delegatee"
 msgstr "Delegado"
 
 #: inc/group.class.php:660 inc/group_user.class.php:426
-#: inc/problem.class.php:1834 inc/ticket.class.php:5255
+#: inc/problem.class.php:1834 inc/ticket.class.php:5256
 msgid "Child groups"
 msgstr "Subgrupos"
 
@@ -8482,7 +8480,7 @@ msgstr "Mover"
 msgid "%1$s / %2$s"
 msgstr "%1$s / %2$s"
 
-#: inc/group_user.class.php:143 inc/user.class.php:2171
+#: inc/group_user.class.php:143 inc/user.class.php:2177
 msgid "Associate to a group"
 msgstr "Asociar a un grupo"
 
@@ -8494,8 +8492,8 @@ msgstr "Dinámico"
 #. TRANS: D for Dynamic
 #: inc/group_user.class.php:228 inc/profile_user.class.php:220
 #: inc/profile_user.class.php:382 inc/profile_user.class.php:538
-#: inc/profile_user.class.php:850 inc/search.class.php:4041
-#: inc/search.class.php:4082 inc/useremail.class.php:164
+#: inc/profile_user.class.php:850 inc/search.class.php:4043
+#: inc/search.class.php:4084 inc/useremail.class.php:164
 msgid "D"
 msgstr "D"
 
@@ -8619,9 +8617,9 @@ msgstr[1] "Tipos de periférico"
 #: inc/profile.class.php:81 inc/profile_user.class.php:338
 #: inc/profile_user.class.php:463 inc/profile_user.class.php:835
 #: inc/reminder.class.php:1284 inc/rssfeed.class.php:1125
-#: inc/ruleright.class.php:98 inc/ruleright.class.php:325
-#: inc/rulerightcollection.class.php:158 inc/user.class.php:1789
-#: inc/user.class.php:2210 inc/user.class.php:2441 inc/user.class.php:2471
+#: inc/ruleright.class.php:98 inc/ruleright.class.php:323
+#: inc/rulerightcollection.class.php:158 inc/user.class.php:1794
+#: inc/user.class.php:2216 inc/user.class.php:2447 inc/user.class.php:2477
 msgid "Profile"
 msgid_plural "Profiles"
 msgstr[0] "Perfil"
@@ -8689,14 +8687,14 @@ msgid_plural "%1$s seconds"
 msgstr[0] "%1$s segundo"
 msgstr[1] "%1$s segundos"
 
-#: inc/html.class.php:2430 inc/toolbox.class.php:1215
-#: inc/toolbox.class.php:1219
+#: inc/html.class.php:2430 inc/toolbox.class.php:1216
+#: inc/toolbox.class.php:1220
 msgid "You will find it on the GLPI-PROJECT.org site."
 msgstr "La encontrará en la página : <a href='http://glpi-project.org' target='_blank'>http://glpi-project.org</a>."
 
-#: inc/html.class.php:2432 inc/toolbox.class.php:1213
-#: inc/toolbox.class.php:1217 inc/toolbox.class.php:1225
-#: inc/toolbox.class.php:1228
+#: inc/html.class.php:2432 inc/toolbox.class.php:1214
+#: inc/toolbox.class.php:1218 inc/toolbox.class.php:1226
+#: inc/toolbox.class.php:1229
 #, php-format
 msgid "A new version is available: %s."
 msgstr "Una nueva versión está disponible: %s"
@@ -9124,7 +9122,7 @@ msgid "Template for an incident"
 msgstr "Plantilla para un incidente"
 
 #: inc/itilcategory.class.php:170 inc/notificationtargetticket.class.php:637
-#: inc/search.class.php:5308 inc/ticket.class.php:2421
+#: inc/search.class.php:5310 inc/ticket.class.php:2421
 msgid "Number of problems"
 msgstr "Número de problemas"
 
@@ -9215,7 +9213,7 @@ msgid "Delete this item from the FAQ"
 msgstr "Eliminar este artículo de las Preguntas Frecuentes públicas"
 
 #: inc/knowbaseitem.class.php:736 inc/knowbaseitem.class.php:737
-#: inc/user.class.php:1888
+#: inc/user.class.php:1894
 msgid "Edit"
 msgstr "Editar"
 
@@ -9293,7 +9291,7 @@ msgstr[1] "Destinatarios"
 #: inc/reminder.class.php:1265 inc/reminder.class.php:1295
 #: inc/rssfeed.class.php:1080 inc/rssfeed.class.php:1106
 #: inc/rssfeed.class.php:1136 inc/rule.class.php:1360
-#: inc/search.class.php:4035 inc/search.class.php:4076
+#: inc/search.class.php:4037 inc/search.class.php:4078
 msgid "R"
 msgstr "R"
 
@@ -9397,12 +9395,12 @@ msgstr "Desbloquear dispositivos"
 msgid "Unlock virtual machines"
 msgstr "Desbloquear máquinas virtules"
 
-#: inc/log.class.php:73 inc/notificationtargetcommonitilobject.class.php:929
-#: inc/notificationtargetcommonitilobject.class.php:960
-#: inc/notificationtargetcommonitilobject.class.php:962
-#: inc/notificationtargetcommonitilobject.class.php:964
-#: inc/notificationtargetcommonitilobject.class.php:966
-#: inc/notificationtargetcommonitilobject.class.php:968
+#: inc/log.class.php:73 inc/notificationtargetcommonitilobject.class.php:951
+#: inc/notificationtargetcommonitilobject.class.php:982
+#: inc/notificationtargetcommonitilobject.class.php:984
+#: inc/notificationtargetcommonitilobject.class.php:986
+#: inc/notificationtargetcommonitilobject.class.php:988
+#: inc/notificationtargetcommonitilobject.class.php:990
 #: inc/transfer.class.php:3068
 msgid "Historical"
 msgstr "Histórico"
@@ -9412,7 +9410,7 @@ msgid "No historical"
 msgstr "No hay histórico"
 
 #. TRANS: a noun, modification, change
-#: inc/log.class.php:271 inc/notificationtargetcommonitilobject.class.php:969
+#: inc/log.class.php:271 inc/notificationtargetcommonitilobject.class.php:991
 msgctxt "name"
 msgid "Update"
 msgstr "Actualizar"
@@ -9678,7 +9676,7 @@ msgstr "valor por defecto debe ser numérico"
 msgid "Change of the database layout - %s"
 msgstr "Cambio de la estructura de la base de datos - %s"
 
-#: inc/migration.class.php:587 inc/software.class.php:1011
+#: inc/migration.class.php:587 inc/software.class.php:1012
 #: install/update.php:137
 msgid "Task completed."
 msgstr "Proceso terminado"
@@ -10075,7 +10073,7 @@ msgstr "Modo de notificación"
 
 #: inc/notification.class.php:267 inc/notificationevent.class.php:44
 #: inc/notificationtargetcartridgeitem.class.php:82
-#: inc/notificationtargetcommonitilobject.class.php:916
+#: inc/notificationtargetcommonitilobject.class.php:938
 #: inc/notificationtargetconsumableitem.class.php:84
 #: inc/notificationtargetcontract.class.php:154
 #: inc/notificationtargetinfocom.class.php:87
@@ -10194,112 +10192,112 @@ msgstr "Administrador"
 msgid "Entity administrator"
 msgstr "Administrador de entidad"
 
-#: inc/notificationtargetcommonitilobject.class.php:395
+#: inc/notificationtargetcommonitilobject.class.php:415
 msgid "Former technician in charge of the ticket"
 msgstr "Técnico anteriormente encargado de la incidencia"
 
-#: inc/notificationtargetcommonitilobject.class.php:406
+#: inc/notificationtargetcommonitilobject.class.php:426
 msgid "Manager of the group in charge of the ticket"
 msgstr "Director del grupo a cargo de la incidencia"
 
-#: inc/notificationtargetcommonitilobject.class.php:408
+#: inc/notificationtargetcommonitilobject.class.php:428
 msgid "Group in charge of the ticket without manager"
 msgstr "Grupo encargado de la incidencia sin administrador"
 
-#: inc/notificationtargetcommonitilobject.class.php:409
+#: inc/notificationtargetcommonitilobject.class.php:429
 msgid "Requester group manager"
 msgstr "Supervisor de grupos de solicitantes"
 
-#: inc/notificationtargetcommonitilobject.class.php:411
+#: inc/notificationtargetcommonitilobject.class.php:431
 msgid "Requester group without manager"
 msgstr "Grupos de solicitantes sin supervisor"
 
-#: inc/notificationtargetcommonitilobject.class.php:416
+#: inc/notificationtargetcommonitilobject.class.php:436
 msgid "Technician in charge of the ticket"
 msgstr "Técnico encargado de la incidencia"
 
-#: inc/notificationtargetcommonitilobject.class.php:419
+#: inc/notificationtargetcommonitilobject.class.php:439
 #: inc/notificationtargetreservation.class.php:61
 msgid "Hardware user"
 msgstr "Usuario del material"
 
-#: inc/notificationtargetcommonitilobject.class.php:423
+#: inc/notificationtargetcommonitilobject.class.php:443
 msgid "Watcher group manager"
 msgstr "Supervisor del grupo de de observadores"
 
-#: inc/notificationtargetcommonitilobject.class.php:425
+#: inc/notificationtargetcommonitilobject.class.php:445
 msgid "Watcher group without manager"
 msgstr "Grupo de de observadores sin supervisor"
 
-#: inc/notificationtargetcommonitilobject.class.php:429
+#: inc/notificationtargetcommonitilobject.class.php:449
 #: inc/ticketvalidation.class.php:650 inc/ticketvalidation.class.php:751
 #: inc/ticketvalidation.class.php:772 inc/ticketvalidation.class.php:849
 msgid "Approval requester"
 msgstr "Solicitante de la validación"
 
-#: inc/notificationtargetcommonitilobject.class.php:430
+#: inc/notificationtargetcommonitilobject.class.php:450
 #: inc/ticket.class.php:2094 inc/ticketvalidation.class.php:583
 #: inc/ticketvalidation.class.php:653 inc/ticketvalidation.class.php:757
 #: inc/ticketvalidation.class.php:775 inc/ticketvalidation.class.php:856
 msgid "Approver"
 msgstr "Usuario de validación"
 
-#: inc/notificationtargetcommonitilobject.class.php:434
+#: inc/notificationtargetcommonitilobject.class.php:454
 msgid "Technician in charge of the task"
 msgstr "Técnico responsable de la tarea"
 
-#: inc/notificationtargetcommonitilobject.class.php:435
+#: inc/notificationtargetcommonitilobject.class.php:455
 msgid "Task author"
 msgstr "Autor de la tarea"
 
-#: inc/notificationtargetcommonitilobject.class.php:441
+#: inc/notificationtargetcommonitilobject.class.php:461
 msgid "Followup author"
 msgstr "Autor del seguimiento"
 
-#: inc/notificationtargetcommonitilobject.class.php:894
+#: inc/notificationtargetcommonitilobject.class.php:915
 #: inc/problem.class.php:1309
 msgid "Date of solving"
 msgstr "Fecha de solución"
 
-#: inc/notificationtargetcommonitilobject.class.php:897
+#: inc/notificationtargetcommonitilobject.class.php:918
 msgid "Requester ID"
 msgstr "ID del solicitante"
 
-#: inc/notificationtargetcommonitilobject.class.php:899
+#: inc/notificationtargetcommonitilobject.class.php:920
 #: inc/ruleticket.class.php:300
 msgid "Requester location"
 msgstr "Ubicación del solicitante"
 
-#: inc/notificationtargetcommonitilobject.class.php:906
+#: inc/notificationtargetcommonitilobject.class.php:928
 #: inc/ticket.class.php:2006
 msgid "Last updater"
 msgstr "Autor de la última modificación"
 
-#: inc/notificationtargetcommonitilobject.class.php:907
+#: inc/notificationtargetcommonitilobject.class.php:929
 msgid "Assigned to technicians"
 msgstr "Asignado a los técnicos"
 
-#: inc/notificationtargetcommonitilobject.class.php:912
+#: inc/notificationtargetcommonitilobject.class.php:934
 msgid "Assigned to groups"
 msgstr "Asignado a los grupos"
 
-#: inc/notificationtargetcommonitilobject.class.php:917
+#: inc/notificationtargetcommonitilobject.class.php:939
 msgid "Number of unresolved items"
 msgstr "Número de elementos sin resolver"
 
-#: inc/notificationtargetcommonitilobject.class.php:945
+#: inc/notificationtargetcommonitilobject.class.php:967
 msgid "No defined category"
 msgstr "No hay categoría asignada"
 
-#: inc/notificationtargetcommonitilobject.class.php:955
+#: inc/notificationtargetcommonitilobject.class.php:977
 msgid "Web link to approval the solution"
 msgstr "Enlace web a la aprobación de la solución"
 
-#: inc/notificationtargetcommonitilobject.class.php:961
+#: inc/notificationtargetcommonitilobject.class.php:983
 msgid "Number of items"
 msgstr "Número de elementos"
 
-#: inc/notificationtargetcommonitilobject.class.php:1000
+#: inc/notificationtargetcommonitilobject.class.php:1022
 #: inc/notificationtargetticket.class.php:822
 msgid "Status value in database"
 msgstr "Valor del estado en la base de datos"
@@ -10491,7 +10489,7 @@ msgid "Deletion of a ticket"
 msgstr "Supresión de una incidencia"
 
 #: inc/notificationtargetticket.class.php:196
-#: inc/notificationtargetticket.class.php:773 inc/ticket.class.php:5817
+#: inc/notificationtargetticket.class.php:773 inc/ticket.class.php:5830
 msgid "Not solved tickets"
 msgstr "Incidencias sin resolver"
 
@@ -11056,17 +11054,17 @@ msgctxt "problem"
 msgid "Assigned"
 msgstr "Asignada a"
 
-#: inc/problem.class.php:1637 inc/ticket.class.php:5467
+#: inc/problem.class.php:1637 inc/ticket.class.php:5480
 #, php-format
 msgid "Closed on %s"
 msgstr "Cerrada el %s"
 
-#: inc/problem.class.php:1641 inc/ticket.class.php:5471
+#: inc/problem.class.php:1641 inc/ticket.class.php:5484
 #, php-format
 msgid "Solved on %s"
 msgstr "Solucionado el %s"
 
-#: inc/problem.class.php:1649 inc/ticket.class.php:5483
+#: inc/problem.class.php:1649 inc/ticket.class.php:5496
 #, php-format
 msgid "Opened on %s"
 msgstr "Abierta el %s"
@@ -11128,7 +11126,7 @@ msgid "Entity right"
 msgstr "Permiso local"
 
 #: inc/profile.class.php:515 inc/profile.class.php:1444
-#: inc/user.class.php:1801 inc/user.class.php:2023 inc/user.class.php:2491
+#: inc/user.class.php:1807 inc/user.class.php:2029 inc/user.class.php:2497
 msgid "Default profile"
 msgstr "Perfil predeterminado"
 
@@ -11484,8 +11482,9 @@ msgid "Add an authorization to a user"
 msgstr "Añadir perfíl de usuario"
 
 #: inc/profile_user.class.php:137 inc/profile_user.class.php:286
-#: inc/ruleright.class.php:100 inc/ruleright.class.php:329
-#: inc/rulerightcollection.class.php:163 inc/user.class.php:2212
+#: inc/ruleright.class.php:100 inc/ruleright.class.php:327
+#: inc/rulerightcollection.class.php:163 inc/user.class.php:1790
+#: inc/user.class.php:2218
 msgid "Recursive"
 msgstr "Recursivo"
 
@@ -11498,7 +11497,7 @@ msgstr "D=Dinámico, R=Recursivo"
 msgid "No user found"
 msgstr "No se han encontrado usuarios"
 
-#: inc/profile_user.class.php:899
+#: inc/profile_user.class.php:899 inc/user.class.php:1789
 msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] "Autorización"
@@ -11617,31 +11616,31 @@ msgstr "Material no disponible temporalmente"
 msgid "All reservable devices"
 msgstr "Todos los dispositivos en préstamo"
 
-#: inc/reservation.class.php:542 inc/toolbox.class.php:2071
+#: inc/reservation.class.php:542 inc/toolbox.class.php:2072
 msgid "Monday"
 msgstr "Lunes"
 
-#: inc/reservation.class.php:543 inc/toolbox.class.php:2072
+#: inc/reservation.class.php:543 inc/toolbox.class.php:2073
 msgid "Tuesday"
 msgstr "Martes"
 
-#: inc/reservation.class.php:544 inc/toolbox.class.php:2073
+#: inc/reservation.class.php:544 inc/toolbox.class.php:2074
 msgid "Wednesday"
 msgstr "Miércoles"
 
-#: inc/reservation.class.php:545 inc/toolbox.class.php:2074
+#: inc/reservation.class.php:545 inc/toolbox.class.php:2075
 msgid "Thursday"
 msgstr "Jueves"
 
-#: inc/reservation.class.php:546 inc/toolbox.class.php:2075
+#: inc/reservation.class.php:546 inc/toolbox.class.php:2076
 msgid "Friday"
 msgstr "Viernes"
 
-#: inc/reservation.class.php:547 inc/toolbox.class.php:2076
+#: inc/reservation.class.php:547 inc/toolbox.class.php:2077
 msgid "Saturday"
 msgstr "Sábado"
 
-#: inc/reservation.class.php:548 inc/toolbox.class.php:2070
+#: inc/reservation.class.php:548 inc/toolbox.class.php:2071
 msgid "Sunday"
 msgstr "Domingo"
 
@@ -11737,8 +11736,8 @@ msgstr "Esto borrará todas las reservas en curso."
 msgid "Authorize reservations"
 msgstr "Autorizar el préstamo"
 
-#: inc/reservationitem.class.php:298 inc/search.class.php:4443
-#: inc/search.class.php:4447
+#: inc/reservationitem.class.php:298 inc/search.class.php:4445
+#: inc/search.class.php:4449
 msgid "Modify the comment"
 msgstr "Modificar el comentario"
 
@@ -11943,26 +11942,26 @@ msgstr "Reglas locales: %s"
 msgid "Rules applicable in the sub-entities"
 msgstr "Reglas de subentidades"
 
-#: inc/rulecriteria.class.php:478 inc/search.class.php:5462
-#: inc/search.class.php:5496 inc/search.class.php:5508
-#: inc/search.class.php:5514 inc/search.class.php:5519
-#: inc/search.class.php:5526 inc/search.class.php:5544
-#: inc/search.class.php:5551
+#: inc/rulecriteria.class.php:478 inc/search.class.php:5464
+#: inc/search.class.php:5498 inc/search.class.php:5510
+#: inc/search.class.php:5516 inc/search.class.php:5521
+#: inc/search.class.php:5528 inc/search.class.php:5546
+#: inc/search.class.php:5553
 msgid "is"
 msgstr "es"
 
-#: inc/rulecriteria.class.php:479 inc/search.class.php:5466
-#: inc/search.class.php:5497 inc/search.class.php:5509
-#: inc/search.class.php:5515 inc/search.class.php:5520
-#: inc/search.class.php:5527 inc/search.class.php:5545
-#: inc/search.class.php:5552
+#: inc/rulecriteria.class.php:479 inc/search.class.php:5468
+#: inc/search.class.php:5499 inc/search.class.php:5511
+#: inc/search.class.php:5517 inc/search.class.php:5522
+#: inc/search.class.php:5529 inc/search.class.php:5547
+#: inc/search.class.php:5554
 msgid "is not"
 msgstr "no es"
 
-#: inc/rulecriteria.class.php:480 inc/search.class.php:5445
-#: inc/search.class.php:5470 inc/search.class.php:5495
-#: inc/search.class.php:5510 inc/search.class.php:5530
-#: inc/search.class.php:5550
+#: inc/rulecriteria.class.php:480 inc/search.class.php:5447
+#: inc/search.class.php:5472 inc/search.class.php:5497
+#: inc/search.class.php:5512 inc/search.class.php:5532
+#: inc/search.class.php:5552
 msgid "contains"
 msgstr "contiene"
 
@@ -11995,14 +11994,14 @@ msgid "does not exist"
 msgstr "no existe"
 
 #: inc/rulecriteria.class.php:504 inc/search.class.php:1285
-#: inc/search.class.php:1362 inc/search.class.php:5474
-#: inc/search.class.php:5559
+#: inc/search.class.php:1362 inc/search.class.php:5476
+#: inc/search.class.php:5561
 msgid "under"
 msgstr "Debajo de"
 
 #: inc/rulecriteria.class.php:505 inc/search.class.php:1292
-#: inc/search.class.php:1369 inc/search.class.php:5478
-#: inc/search.class.php:5560
+#: inc/search.class.php:1369 inc/search.class.php:5480
+#: inc/search.class.php:5562
 msgid "not under"
 msgstr "no bajo"
 
@@ -12095,7 +12094,7 @@ msgstr "Diccionario de impresoras"
 #: inc/ruledictionnaryprinter.class.php:100
 #: inc/ruledictionnarysoftware.class.php:107
 #: inc/ruleimportcomputer.class.php:133 inc/ruleimportentity.class.php:169
-#: inc/ruleright.class.php:337
+#: inc/ruleright.class.php:335
 msgid "To be unaware of import"
 msgstr "Ignorar la importación"
 
@@ -12250,7 +12249,7 @@ msgstr "Usuario con un único perfil"
 msgid "Entity from domain"
 msgstr "Entidad del dominio"
 
-#: inc/rulemailcollector.class.php:202 inc/ruleright.class.php:309
+#: inc/rulemailcollector.class.php:202 inc/ruleright.class.php:307
 msgid "Entity from TAG"
 msgstr "Entidad desde TAG"
 
@@ -12270,31 +12269,31 @@ msgstr "sin respuesta por correo electrónico"
 msgid "with email response"
 msgstr "con respuesta por correo electrónico"
 
-#: inc/ruleright.class.php:235
+#: inc/ruleright.class.php:233
 msgid "Automatic user assignment"
 msgstr "Asignación automática de usuarios"
 
-#: inc/ruleright.class.php:246
+#: inc/ruleright.class.php:244
 msgid "Global criteria"
 msgstr "Criterios globales"
 
-#: inc/ruleright.class.php:280
+#: inc/ruleright.class.php:278
 msgid "Imported group from an LDAP directory"
 msgstr "Grupo importado de un directorio LDAP"
 
-#: inc/ruleright.class.php:304
+#: inc/ruleright.class.php:302
 msgid "Entity based on LDAP information"
 msgstr "Entidad desde LDAP"
 
-#: inc/ruleright.class.php:314
+#: inc/ruleright.class.php:312
 msgid "Entity from mail domain"
 msgstr "Entidad del dominio de correo electrónico"
 
-#: inc/ruleright.class.php:320
+#: inc/ruleright.class.php:318
 msgid "Entity from complete name"
 msgstr "Nombre completo de entidad origen"
 
-#: inc/ruleright.class.php:352
+#: inc/ruleright.class.php:350
 msgid "LDAP criteria"
 msgstr "Criterio LDAP"
 
@@ -12381,11 +12380,11 @@ msgstr "Mostrar la papelera"
 msgid "Don't show deleted items"
 msgstr "No mostrar items borrados"
 
-#: inc/search.class.php:5482 inc/search.class.php:5528
+#: inc/search.class.php:5484 inc/search.class.php:5530
 msgid "before"
 msgstr "antes"
 
-#: inc/search.class.php:5486 inc/search.class.php:5529
+#: inc/search.class.php:5488 inc/search.class.php:5531
 msgid "after"
 msgstr "después de"
 
@@ -12460,12 +12459,12 @@ msgstr[1] "- %d minutos"
 msgid "Automatic actions of SLA"
 msgstr "Acciones automáticas de SLA"
 
-#: inc/software.class.php:70 inc/software.class.php:938
+#: inc/software.class.php:70 inc/software.class.php:939
 msgid "Merging"
 msgstr "Agrupación"
 
 #. TRANS: a noun, (ex : this software is an upgrade of..)
-#: inc/software.class.php:285 install/install.php:134 install/update.php:854
+#: inc/software.class.php:285 install/install.php:134 install/update.php:855
 msgid "Upgrade"
 msgstr "Actualizar"
 
@@ -12477,53 +12476,53 @@ msgstr "Volver a calcular la categoría"
 msgid "Number of installations"
 msgstr "Número de instalaciones"
 
-#: inc/software.class.php:529
+#: inc/software.class.php:530
 msgid "Version name"
 msgstr "Nombre de versión"
 
-#: inc/software.class.php:547
+#: inc/software.class.php:548
 msgid "Version comments"
 msgstr "Comentarios de versión"
 
-#: inc/software.class.php:581
+#: inc/software.class.php:582
 msgid "License name"
 msgstr "Nombre de licencia"
 
-#: inc/software.class.php:590
+#: inc/software.class.php:591
 msgid "License serial number"
 msgstr "Número de serie de la licencia"
 
-#: inc/software.class.php:598
+#: inc/software.class.php:599
 msgid "License inventory number"
 msgstr "Número de inventario de la licencia"
 
-#: inc/software.class.php:605
+#: inc/software.class.php:606
 msgid "Number of licenses"
 msgstr "Número de licencias"
 
-#: inc/software.class.php:615
+#: inc/software.class.php:616
 msgid "License types"
 msgstr "Tipo de licencias"
 
-#: inc/software.class.php:624
+#: inc/software.class.php:625
 msgid "License comments"
 msgstr "Comentarios de licencia"
 
-#: inc/software.class.php:891
+#: inc/software.class.php:892
 msgid "Merge"
 msgstr "Reagrupar"
 
-#: inc/software.class.php:1008
+#: inc/software.class.php:1009
 msgid "Software deleted after merging"
 msgstr "Programas enviados a la papelera después de reagrupar"
 
 #: inc/softwarelicense.class.php:204 inc/softwarelicense.class.php:325
-#: inc/softwarelicense.class.php:652
+#: inc/softwarelicense.class.php:656
 msgid "Purchase version"
 msgstr "Versión comprada"
 
 #: inc/softwarelicense.class.php:216 inc/softwarelicense.class.php:332
-#: inc/softwarelicense.class.php:656
+#: inc/softwarelicense.class.php:660
 msgid "Version in use"
 msgstr "Versión en uso"
 
@@ -12541,12 +12540,12 @@ msgstr "Licencia %1$s expirada en %2$s"
 msgid "Send licenses alert failed"
 msgstr "Fallo en el envío de alertas de licencias"
 
-#: inc/softwarelicense.class.php:575 inc/softwarelicense.class.php:719
+#: inc/softwarelicense.class.php:575 inc/softwarelicense.class.php:723
 msgctxt "button"
 msgid "Add a license"
 msgstr "Añadir una licencia"
 
-#: inc/softwareversion.class.php:286 inc/softwareversion.class.php:297
+#: inc/softwareversion.class.php:247 inc/softwareversion.class.php:293
 msgctxt "button"
 msgid "Add a version"
 msgstr "Añadir versión"
@@ -12880,8 +12879,8 @@ msgid_plural "%d new tickets"
 msgstr[0] "%d nueva incidencia"
 msgstr[1] "%d nuevas incidencias"
 
-#: inc/ticket.class.php:5145 inc/ticket.class.php:5334
-#: inc/ticket.class.php:5390
+#: inc/ticket.class.php:5145 inc/ticket.class.php:5346
+#: inc/ticket.class.php:5403
 msgid "No ticket found."
 msgstr "No se han hallado incidencias.."
 
@@ -12889,45 +12888,49 @@ msgstr "No se han hallado incidencias.."
 msgid "Assigned"
 msgstr "Asignada a"
 
-#: inc/ticket.class.php:5253
+#: inc/ticket.class.php:5254
 msgid "Last tickets"
 msgstr "última(s) incidencia(s)"
 
-#: inc/ticket.class.php:5312 inc/ticket.class.php:5342
+#: inc/ticket.class.php:5320 inc/ticket.class.php:5354
 msgid "New ticket for this item..."
 msgstr "Nueva incidencia para este item..."
 
-#: inc/ticket.class.php:5327
+#: inc/ticket.class.php:5336
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
 msgstr[0] "Ultima %d incidencia"
 msgstr[1] "Ultimas %d incidencias"
 
-#: inc/ticket.class.php:5381
+#: inc/ticket.class.php:5343
+msgid "You don't have right to see all tickets"
+msgstr ""
+
+#: inc/ticket.class.php:5394
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
 msgstr[0] "Incidencias enlazadas al equipo"
 msgstr[1] "Incidencia sobre los elementos de red"
 
-#: inc/ticket.class.php:5475
+#: inc/ticket.class.php:5488
 #, php-format
 msgid "Put on hold on %s"
 msgstr "Poner en espera %s"
 
-#: inc/ticket.class.php:5638 inc/ticket.class.php:5736
+#: inc/ticket.class.php:5651 inc/ticket.class.php:5749
 msgid "No ticket in progress."
 msgstr "No hay incidencias pendientes."
 
-#: inc/ticket.class.php:5788
+#: inc/ticket.class.php:5801
 msgid "Assign equipment"
 msgstr "Asignar material"
 
-#: inc/ticket.class.php:5814
+#: inc/ticket.class.php:5827
 msgid "Automatic tickets closing"
 msgstr "Cerrado administrativo de las incidencias"
 
-#: inc/ticket.class.php:5820
+#: inc/ticket.class.php:5833
 msgid "Generation of satisfaction surveys"
 msgstr "Generación de encuestas de satisfacción"
 
@@ -13120,328 +13123,328 @@ msgstr "Comentario de la solicitud"
 msgid "Request date"
 msgstr "Fecha de la solicitud"
 
-#: inc/toolbox.class.php:785
+#: inc/toolbox.class.php:786
 msgid "Test done"
 msgstr "Prueba efectuada"
 
-#: inc/toolbox.class.php:785
+#: inc/toolbox.class.php:786
 msgid "Results"
 msgstr "Resultados"
 
-#: inc/toolbox.class.php:788
+#: inc/toolbox.class.php:789
 msgid "Testing PHP Parser"
 msgstr "Prueba del intérprete PHP"
 
-#: inc/toolbox.class.php:797
+#: inc/toolbox.class.php:798
 msgid ""
 "GLPI is not compatible with the option zend.ze1_compatibility_mode = On."
 msgstr "GLPI no es compatible con la directiva zend.ze1_compatibility_mode = On."
 
-#: inc/toolbox.class.php:801 inc/toolbox.class.php:802
+#: inc/toolbox.class.php:802 inc/toolbox.class.php:803
 msgid "PHP version is at least 5.3.0 - Perfect!"
 msgstr "Versión de PHP es por lo menos 5.3.0 - ¡Perfecto!"
 
-#: inc/toolbox.class.php:809
+#: inc/toolbox.class.php:810
 msgid "You must install at least PHP 5.3.0."
 msgstr "Debe instalar al menos PHP 5.3.0"
 
-#: inc/toolbox.class.php:814
+#: inc/toolbox.class.php:815
 msgid "MySQL Improved extension test"
 msgstr "Prueba de extensión mejorada de MySQL"
 
-#: inc/toolbox.class.php:817 inc/toolbox.class.php:818
+#: inc/toolbox.class.php:818 inc/toolbox.class.php:819
 msgid "Ok - the MySQLi class exist - Perfect!"
 msgstr "Bien - la clase MySQLi existe - ¡Perfecto!"
 
-#: inc/toolbox.class.php:822
+#: inc/toolbox.class.php:823
 msgid "You must install the MySQL Improved extension for PHP."
 msgstr "Debe compilar su PHP con la extensión Mysql."
 
-#: inc/toolbox.class.php:828
+#: inc/toolbox.class.php:829
 msgid "Sessions test"
 msgstr "Prueba de Sesiones"
 
-#: inc/toolbox.class.php:833
+#: inc/toolbox.class.php:834
 msgid "Your parser PHP is not installed with sessions support!"
 msgstr "¡Su intérprete PHP no ha sido compilado con soporte de sesiones!"
 
-#: inc/toolbox.class.php:839 inc/toolbox.class.php:840
+#: inc/toolbox.class.php:840 inc/toolbox.class.php:841
 msgid "Sessions support is available - Perfect!"
 msgstr "El soporte de sesiones está operativo - ¡Perfecto!"
 
-#: inc/toolbox.class.php:845
+#: inc/toolbox.class.php:846
 msgid "Make sure that sessions support has been activated in your php.ini"
 msgstr "Compruebe que esté activado el soporte de sesiones en su php.ini"
 
-#: inc/toolbox.class.php:852
+#: inc/toolbox.class.php:853
 msgid "Test session auto start"
 msgstr "Prueba sesión de autoinicio"
 
-#: inc/toolbox.class.php:855
+#: inc/toolbox.class.php:856
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
 msgstr "session.auto_start está activada. Revisar el fichero .htaccess en la raíz de GLPI para más información"
 
-#: inc/toolbox.class.php:861
+#: inc/toolbox.class.php:862
 msgid "Test if Session_use_trans_sid is used"
 msgstr "Prueba de utilización de Session_use_trans_sid"
 
-#: inc/toolbox.class.php:866
+#: inc/toolbox.class.php:867
 msgid "You must desactivate the Session_use_trans_id option in your php.ini"
 msgstr "Debe desactivar la opción Session_use_trans_id en su PHP.ini"
 
-#: inc/toolbox.class.php:871 inc/toolbox.class.php:872
+#: inc/toolbox.class.php:872 inc/toolbox.class.php:873
 msgid "Ok - the sessions works (no problem with trans_id) - Perfect!"
 msgstr "Las sesiones funcionan (no hay problemas de trans_id) - ¡Perfecto!"
 
-#: inc/toolbox.class.php:878
+#: inc/toolbox.class.php:879
 msgid "magic_quotes_sybase extension test"
 msgstr "Prueba de la extensión magic_quotes_sybase"
 
-#: inc/toolbox.class.php:883
+#: inc/toolbox.class.php:884
 msgid ""
 "GLPI does not work with the magic_quotes_sybase option. Please turn it off "
 "and retry"
 msgstr "GLPI no puede funcionar con la opción magic_quotes_sybase . Por favor desactive esta opción Off y reintente"
 
-#: inc/toolbox.class.php:889 inc/toolbox.class.php:891
+#: inc/toolbox.class.php:890 inc/toolbox.class.php:892
 msgid "The magic_quotes_sybase option isn't active on your server - Perfect!"
 msgstr "Su servidor no utiliza la opción magic_quotes_sybase - ¡Perfecto!"
 
-#: inc/toolbox.class.php:897
+#: inc/toolbox.class.php:898
 msgid "Test ctype functions"
 msgstr "Comprobar funciones ctype"
 
-#: inc/toolbox.class.php:901
+#: inc/toolbox.class.php:902
 msgid "GLPI can't work correctly without the ctype functions"
 msgstr "GLPI no puede funcionar correctamente sin las funciones ctype"
 
-#: inc/toolbox.class.php:906 inc/toolbox.class.php:907
-#: inc/toolbox.class.php:922 inc/toolbox.class.php:923
-#: inc/toolbox.class.php:938 inc/toolbox.class.php:939
+#: inc/toolbox.class.php:907 inc/toolbox.class.php:908
+#: inc/toolbox.class.php:923 inc/toolbox.class.php:924
+#: inc/toolbox.class.php:939 inc/toolbox.class.php:940
 msgid "The functionality is found - Perfect!"
 msgstr "Se han encontrado las funciones - ¡Perfecto!"
 
-#: inc/toolbox.class.php:912
+#: inc/toolbox.class.php:913
 msgid "Test json functions"
 msgstr "Prueba de las funciones  json"
 
-#: inc/toolbox.class.php:916
+#: inc/toolbox.class.php:917
 msgid ""
 "GLPI can't work correctly without the json_encode and json_decode functions"
 msgstr "GLPI no puede funcionar correctamente sin las funciones json_encode y json_decode"
 
-#: inc/toolbox.class.php:929
+#: inc/toolbox.class.php:930
 msgid "Mbstring extension test"
 msgstr "Prueba de la extensión mbstring"
 
-#: inc/toolbox.class.php:933
+#: inc/toolbox.class.php:934
 msgid "Mbstring extension of your parser PHP is not installed"
 msgstr "La extensión mbstring del interprete PHP no está instalada"
 
-#: inc/toolbox.class.php:945
+#: inc/toolbox.class.php:946
 msgid "Allocated memory test"
 msgstr "Comprobar la memoria asignada"
 
-#: inc/toolbox.class.php:953 inc/toolbox.class.php:954
+#: inc/toolbox.class.php:954 inc/toolbox.class.php:955
 msgid "Unlimited memory - Perfect!"
 msgstr "Memoria ilimitada - ¡Perfecto!"
 
-#: inc/toolbox.class.php:960
+#: inc/toolbox.class.php:961
 msgid "Allocated memory"
 msgstr "Memoria asignada"
 
-#: inc/toolbox.class.php:963
+#: inc/toolbox.class.php:964
 msgid "A minimum of 64MB is commonly required for GLPI."
 msgstr "Generalmente se necesita un mínimo de 64MB para GLPI."
 
-#: inc/toolbox.class.php:964
+#: inc/toolbox.class.php:965
 msgid "Try increasing the memory_limit parameter in the php.ini file."
 msgstr "Intente aumentar el parámetro memory_limit en el fichero php.ini."
 
-#: inc/toolbox.class.php:971 inc/toolbox.class.php:972
+#: inc/toolbox.class.php:972 inc/toolbox.class.php:973
 msgid "Allocated memory > 64Mio - Perfect!"
 msgstr "Memoria asignada > 64 MB - ¡Perfecto!"
 
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
-#: inc/toolbox.class.php:1009
+#: inc/toolbox.class.php:1010
 #, php-format
 msgid "SELinux mode is %s"
 msgstr "Modo SELinux es %s"
 
 #. TRANS: %s is an option name
-#: inc/toolbox.class.php:1030
+#: inc/toolbox.class.php:1031
 #, php-format
 msgid "SELinux boolean configuration for %s"
 msgstr "Configuración booleana de SELinux para %s"
 
 #. TRANS: list of unit (o for octet)
-#: inc/toolbox.class.php:1085
+#: inc/toolbox.class.php:1086
 msgid "o"
 msgstr "B"
 
-#: inc/toolbox.class.php:1085
+#: inc/toolbox.class.php:1086
 msgid "Kio"
 msgstr "KiB"
 
-#: inc/toolbox.class.php:1085
+#: inc/toolbox.class.php:1086
 msgid "Gio"
 msgstr "GiB"
 
-#: inc/toolbox.class.php:1085
+#: inc/toolbox.class.php:1086
 msgid "Tio"
 msgstr "TiB"
 
-#: inc/toolbox.class.php:1235 inc/toolbox.class.php:1237
-#: inc/toolbox.class.php:1242 inc/toolbox.class.php:1244
+#: inc/toolbox.class.php:1236 inc/toolbox.class.php:1238
+#: inc/toolbox.class.php:1243 inc/toolbox.class.php:1245
 msgid "You have the latest available version"
 msgstr "Tiene instalada la última versión disponible"
 
 #. TRANS: %s is the error string
-#: inc/toolbox.class.php:1500
+#: inc/toolbox.class.php:1501
 #, php-format
 msgid "Connection failed. If you use a proxy, please configure it. (%s)"
 msgstr "Verificación imposible. Si está detrás de un proxy, configúrelo. (%s)"
 
 #. TRANS: %s is the error string
-#: inc/toolbox.class.php:1520
+#: inc/toolbox.class.php:1521
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
 msgstr "No se ha podido conectar con el servidor proxy (%s)"
 
-#: inc/toolbox.class.php:1585
+#: inc/toolbox.class.php:1586
 msgid "No data available on the web site"
 msgstr "No hay datos disponibles en este sitio web"
 
 #. TRANS: %s is the error string
-#: inc/toolbox.class.php:1588
+#: inc/toolbox.class.php:1589
 #, php-format
 msgid "Impossible to connect to site (%s)"
 msgstr "Imposible conectarse al sitio (%s)"
 
-#: inc/toolbox.class.php:1942
+#: inc/toolbox.class.php:1943
 msgid "Connection options"
 msgstr "Opciones de conexión"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1946
+#: inc/toolbox.class.php:1947
 msgid "IMAP"
 msgstr "IMAP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1949
+#: inc/toolbox.class.php:1950
 msgid "POP"
 msgstr "POP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1956
+#: inc/toolbox.class.php:1957
 msgid "SSL"
 msgstr "SSL"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1964
+#: inc/toolbox.class.php:1965
 msgid "TLS"
 msgstr "TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1967
+#: inc/toolbox.class.php:1968
 msgid "NO-TLS"
 msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1974
+#: inc/toolbox.class.php:1975
 msgid "NO-VALIDATE-CERT"
 msgstr "NO-VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1977
+#: inc/toolbox.class.php:1978
 msgid "VALIDATE-CERT"
 msgstr "VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1984
+#: inc/toolbox.class.php:1985
 msgid "NORSH"
 msgstr "NORSH"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1991
+#: inc/toolbox.class.php:1992
 msgid "SECURE"
 msgstr "SEGURO"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:1998
+#: inc/toolbox.class.php:1999
 msgid "DEBUG"
 msgstr "Depurar"
 
-#: inc/toolbox.class.php:2004
+#: inc/toolbox.class.php:2005
 msgid "Incoming mail folder (optional, often INBOX)"
 msgstr "Carpeta de correo entrante (opcional, a menudo bandeja de entrada)"
 
 #. TRANS: for mail connection system
-#: inc/toolbox.class.php:2009
+#: inc/toolbox.class.php:2010
 msgid "Port (optional)"
 msgstr "Puerto (opcional)"
 
-#: inc/toolbox.class.php:2084
+#: inc/toolbox.class.php:2085
 msgid "January"
 msgstr "Enero"
 
-#: inc/toolbox.class.php:2085
+#: inc/toolbox.class.php:2086
 msgid "February"
 msgstr "Febrero"
 
-#: inc/toolbox.class.php:2086
+#: inc/toolbox.class.php:2087
 msgid "March"
 msgstr "Marzo"
 
-#: inc/toolbox.class.php:2087
+#: inc/toolbox.class.php:2088
 msgid "April"
 msgstr "Abril"
 
-#: inc/toolbox.class.php:2088
+#: inc/toolbox.class.php:2089
 msgid "May"
 msgstr "Mayo"
 
-#: inc/toolbox.class.php:2089
+#: inc/toolbox.class.php:2090
 msgid "June"
 msgstr "Junio"
 
-#: inc/toolbox.class.php:2090
+#: inc/toolbox.class.php:2091
 msgid "July"
 msgstr "Julio"
 
-#: inc/toolbox.class.php:2091
+#: inc/toolbox.class.php:2092
 msgid "August"
 msgstr "Agosto"
 
-#: inc/toolbox.class.php:2092
+#: inc/toolbox.class.php:2093
 msgid "September"
 msgstr "Septiembre"
 
-#: inc/toolbox.class.php:2093
+#: inc/toolbox.class.php:2094
 msgid "October"
 msgstr "Octubre"
 
-#: inc/toolbox.class.php:2094
+#: inc/toolbox.class.php:2095
 msgid "November"
 msgstr "Noviembre"
 
-#: inc/toolbox.class.php:2095
+#: inc/toolbox.class.php:2096
 msgid "December"
 msgstr "Diciembre"
 
-#: inc/toolbox.class.php:2224
+#: inc/toolbox.class.php:2225
 msgid ""
 "The action you have requested is not allowed. Reload previous page before "
 "doing action again."
@@ -13561,7 +13564,7 @@ msgstr "Añadir usuario..."
 msgid "... From an external source"
 msgstr "... Desde un origen externo"
 
-#: inc/user.class.php:1675 inc/user.class.php:1968 inc/user.class.php:3393
+#: inc/user.class.php:1675 inc/user.class.php:1974 inc/user.class.php:3399
 msgid "Password confirmation"
 msgstr "Confirmar contraseña"
 
@@ -13571,124 +13574,124 @@ msgstr "Confirmar contraseña"
 msgid "Last synchronization on %s"
 msgstr "Ultima sincronización en %s"
 
-#: inc/user.class.php:1721 inc/user.class.php:2452 inc/user.class.php:3546
+#: inc/user.class.php:1721 inc/user.class.php:2458 inc/user.class.php:3552
 msgid "User DN"
 msgstr "Usuario DN"
 
-#: inc/user.class.php:1809 inc/user.class.php:2051 inc/user.class.php:2497
+#: inc/user.class.php:1815 inc/user.class.php:2057 inc/user.class.php:2503
 msgid "Default entity"
 msgstr "Entidad por defecto"
 
-#: inc/user.class.php:1821
+#: inc/user.class.php:1827
 #, php-format
 msgid "Last login on %s"
 msgstr "Ultimo acceso en %s"
 
-#: inc/user.class.php:2066
+#: inc/user.class.php:2072
 msgid "Use GLPI in mode"
 msgstr "Utilizar GLPI en modo"
 
-#: inc/user.class.php:2067
+#: inc/user.class.php:2073
 msgid "Normal"
 msgstr "Normal"
 
-#: inc/user.class.php:2114
+#: inc/user.class.php:2120
 msgid "Unable to update login. A user already exists."
 msgstr "Imposible actualizar acceso. El usuario ya existe,"
 
-#: inc/user.class.php:2172
+#: inc/user.class.php:2178
 msgid "Associate to a profile"
 msgstr "Asociar a un perfil"
 
-#: inc/user.class.php:2176
+#: inc/user.class.php:2182
 msgctxt "button"
 msgid "Change the authentication method"
 msgstr "Cambiar el método de autentificación"
 
-#: inc/user.class.php:2393
+#: inc/user.class.php:2399
 msgid "Last login"
 msgstr "Última conexión"
 
-#: inc/user.class.php:2408
+#: inc/user.class.php:2414
 msgid "LDAP directory for authentication"
 msgstr "Directorio LDAP para autenticación"
 
-#: inc/user.class.php:2416
+#: inc/user.class.php:2422
 msgid "Email server for authentication"
 msgstr "Servidor de correo para autentificación"
 
-#: inc/user.class.php:2464
+#: inc/user.class.php:2470
 msgid "Last synchronization"
 msgstr "Última sincronización"
 
-#: inc/user.class.php:2502
+#: inc/user.class.php:2508
 msgid "Number of tickets as requester"
 msgstr "Número de incidencias como solicitante"
 
-#: inc/user.class.php:2519
+#: inc/user.class.php:2525
 msgid "Number of written tickets"
 msgstr "Número de incidencias escritas"
 
-#: inc/user.class.php:2944
+#: inc/user.class.php:2950
 msgid "Automatically add a user of an external source"
 msgstr "Añadir directamente un usuario de una fuente externa"
 
-#: inc/user.class.php:2951
+#: inc/user.class.php:2957
 msgid "Import from directories"
 msgstr "Importar del directorio"
 
-#: inc/user.class.php:2957
+#: inc/user.class.php:2963
 msgid "Import from other sources"
 msgstr "Importar desde otras fuentes"
 
-#: inc/user.class.php:2993
+#: inc/user.class.php:2999
 msgid "Update authentification method to"
 msgstr "Actualizado el método de autenticación a"
 
-#: inc/user.class.php:3319
+#: inc/user.class.php:3325
 msgid "Deleted user in LDAP directory"
 msgstr "Usuario borrado de LDAP"
 
-#: inc/user.class.php:3382
+#: inc/user.class.php:3388
 msgid "Please confirm your email address and enter your new password."
 msgstr "Por favor, confirme su correo electronico e introduzca su nueva contraseña."
 
-#: inc/user.class.php:3411 inc/user.class.php:3474
+#: inc/user.class.php:3417 inc/user.class.php:3480
 msgid ""
 "Your password reset request has expired or is invalid. Please renew it."
 msgstr "Su pregunta para reiniciar la contraseña ha expirado o es inválida. Vuelva a configurarla"
 
-#: inc/user.class.php:3430
+#: inc/user.class.php:3436
 msgid ""
 "Please enter your email address. An email will be sent to you and you will "
 "be able to choose a new password."
 msgstr "Introduzca su dirección de correo electrónico. Un correo electrónico le será enviado y podrá elegir una nueva contraseña."
 
-#: inc/user.class.php:3462
+#: inc/user.class.php:3468
 msgid "Reset password successful."
 msgstr "Contraseña cambiada correctamente."
 
-#: inc/user.class.php:3478 inc/user.class.php:3522
+#: inc/user.class.php:3484 inc/user.class.php:3528
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
 msgstr "La configuración de autenticación no le permite cambiar su contraseña."
 
-#: inc/user.class.php:3482 inc/user.class.php:3526
+#: inc/user.class.php:3488 inc/user.class.php:3532
 msgid "Email address not found."
 msgstr "Dirección de correo no existe"
 
-#: inc/user.class.php:3516
+#: inc/user.class.php:3522
 msgid ""
 "An email has been sent to your email address. The email contains information"
 " for reset your password."
 msgstr "Se ha enviado un correo a su dirección de correo. Este correo tiene información para reiniciar su contraseña"
 
-#: inc/user.class.php:3550
+#: inc/user.class.php:3556
 msgid "User information"
 msgstr "Información del usuario"
 
-#: inc/user.class.php:3568
+#: inc/user.class.php:3574
 msgid "Connection failed"
 msgstr "fallo de conexión"
 
@@ -13750,7 +13753,7 @@ msgstr "He leído y NO ACEPTO los términos de la licencia enunciados arriba"
 
 #: install/install.php:113 install/install.php:157 install/install.php:168
 #: install/install.php:210 install/install.php:267 install/install.php:288
-#: install/install.php:328 install/install.php:486 install/update.php:872
+#: install/install.php:328 install/install.php:486 install/update.php:873
 msgid "Continue"
 msgstr "Continuar"
 
@@ -13801,7 +13804,7 @@ msgstr "El servidor ha respondido: %s"
 msgid "The server or/and user field is empty"
 msgstr "El campo servidor y/o el campo usuario están vacíos"
 
-#: install/install.php:241 install/update.php:880
+#: install/install.php:241 install/update.php:881
 msgid "Database connection successful"
 msgstr "La conexión con la base de datos ha sido correcta"
 
@@ -13874,7 +13877,7 @@ msgid "You can delete or modify these accounts as well as the initial data."
 msgstr "Puede borrar o modificar estas cuentas así como las primeras entradas en la base de datos"
 
 #: install/install.php:449 install/update_content.php:371
-#: install/update.php:929
+#: install/update.php:930
 msgid "Use GLPI"
 msgstr "Utilizar GLPI"
 
@@ -14029,26 +14032,26 @@ msgstr "Nueva jerarquía"
 msgid "This is the new hierarchy. If it's complete approve it."
 msgstr "He aquí la nueva jerarquía generada. Si es correcta puede aceptarla."
 
-#: install/update.php:862
+#: install/update.php:863
 msgid "Impossible to accomplish an update by this way!"
 msgstr "¡Imposible acceder a la actualización de esta forma!"
 
-#: install/update.php:864
+#: install/update.php:865
 msgid "Go back to GLPI"
 msgstr "Volver a GLPI"
 
-#: install/update.php:869
+#: install/update.php:870
 #, php-format
 msgid "Caution! You will update the GLPI database named: %s"
 msgstr "¡Atención! Va a actualizar la base de datos de GLPI :%s"
 
-#: install/update.php:907
+#: install/update.php:908
 msgid ""
 "All users having administrators rights have have been updated to 'super-"
 "admin' rights with the creation of his new user type."
 msgstr "Todos los administradores tienen permisos de 'super-admin'. También se ha añadido este nuevo tipo de usuario."
 
-#: install/update.php:937
+#: install/update.php:938
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
