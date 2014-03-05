@@ -123,7 +123,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
          echo "<th>".__('Entity')."</th>";
       }
 
-      echo "<th>".__('Value')."</th><th>".__('ANV')."</th>";
+      echo "<th>"._x('price', 'Value')."</th><th>".__('ANV')."</th>";
       echo "<th>".__('TCO')."</th><th>".__('Date of purchase')."</th>";
       echo "<th>".__('Startup date')."</th><th>".__('Warranty expiration date')."</th></tr>";
 
@@ -227,8 +227,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
             $valeurgraphtot[$key] += $valeurgraph[$key];
          }
 
-         Stat::showGraph(array(__('Value') => $valeurgraphdisplay),
-                         array('title' => __('Value'),
+         Stat::showGraph(array(_x('price', 'Value') => $valeurgraphdisplay),
+                         array('title' => _x('price', 'Value'),
                                'width' => 400));
          echo "</td></tr>";
       }
@@ -276,8 +276,8 @@ if (count($valeurnettegraphtot) > 0) {
 }
 if (count($valeurgraphtot) > 0) {
    $valeurgraphtotdisplay = array_map('round', $valeurgraphtot);
-   Stat::showGraph(array(__('Value') => $valeurgraphtotdisplay),
-                   array('title' => __('Value')));
+   Stat::showGraph(array(_x('price', 'Value') => $valeurgraphtotdisplay),
+                   array('title' => _x('price', 'Value')));
 }
 
 Html::footer();

@@ -129,7 +129,7 @@ class Budget extends CommonDropdown{
            "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Value')."</td>";
+      echo "<td>"._x('price', 'Value')."</td>";
       echo "<td><input type='text' name='value' size='14'
                  value='".Html::formatNumber($this->fields["value"], true)."'></td></tr>";
 
@@ -215,7 +215,7 @@ class Budget extends CommonDropdown{
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'value';
-      $tab[4]['name']            = __('Value');
+      $tab[4]['name']            = _x('price', 'Value');
       $tab[4]['datatype']        = 'decimal';
 
       $tab[16]['table']          = $this->getTable();
@@ -279,7 +279,7 @@ class Budget extends CommonDropdown{
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";
-      echo "<th>".__('Value')."</th>";
+      echo "<th>"._x('price', 'Value')."</th>";
       echo "</tr>";
 
       $num       = 0;

@@ -214,8 +214,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
                $valeurgraphtot[$key] += $valeurgraph[$key];
             }
 
-            Stat::showGraph(array(__('Value') => $valeurgraphdisplay),
-                            array('title' => __('Value'),
+            Stat::showGraph(array(_x('price', 'Value') => $valeurgraphdisplay),
+                            array('title' => _x('price', 'Value'),
                                   'width' => 400));
 
             echo "</td></tr>";
@@ -266,8 +266,8 @@ if (count($valeurnettegraphtot) >0) {
 }
 if (count($valeurgraphtot) >0) {
    $valeurgraphtotdisplay = array_map('round', $valeurgraphtot);
-   Stat::showGraph(array(__('Value') => $valeurgraphtotdisplay),
-                   array('title' => __('Value')));
+   Stat::showGraph(array(_x('price', 'Value') => $valeurgraphtotdisplay),
+                   array('title' => _x('price', 'Value')));
 }
 
 Html::footer();
