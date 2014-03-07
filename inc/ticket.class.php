@@ -5099,7 +5099,8 @@ class Ticket extends CommonITILObject {
    static function showListForItem(CommonDBTM $item) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRightsAnd(self::$rightname, array(self::READALL, CREATE))) {
+      if (!Session::haveRightsOr(self::$rightname,
+                                  array(self::READALL, self::READMY, self::READASSIGN, CREATE))) {
          return false;
       }
 
@@ -5181,7 +5182,7 @@ class Ticket extends CommonITILObject {
                         " AND `itemtype` = '".$item->getType()."')";
 
             // you can only see your tickets
-            if (!Session::haveRight("show_all_ticket","1")) {
+            if (!Session::haveRight(self::$rightname, self::READALL)) {
                $restrict .= " AND (`glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
                                    OR (`glpi_tickets_users`.`tickets_id` = '".$item->getID()."'
                                        AND `glpi_tickets_users`.`users_id`
@@ -5247,7 +5248,7 @@ class Ticket extends CommonITILObject {
             $title = printf(__('%1$s (%2$s)'), $title, $link);
             echo "</th></tr>";
          } else {
-            echo "<tr><th>".__("You don't have right to see all tickets")."</th></tr>";
+            echo "<tr><th colspan='$colspan'>".__("You don't have right to see all tickets")."</th></tr>";
          }
 
       } else {
