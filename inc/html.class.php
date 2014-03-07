@@ -2814,7 +2814,7 @@ class Html {
             $p[$key] = $val;
          }
       }
-
+      /// TODO see to manage canedit
       $output = "<input id='showdate".$p['rand']."' type='text' size='10' name='_$name' ".
                   "value='".self::convDate($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'],
@@ -2990,6 +2990,7 @@ class Html {
          $p['timestep'] = $CFG_GLPI['time_step'];
       }
 
+      /// TODO see to manage timestep / canedit
       $minHour   = 0;
       $maxHour   = 23;
       $minMinute = 0;
