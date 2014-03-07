@@ -4463,7 +4463,7 @@ class Ticket extends CommonITILObject {
                             _sx('button', 'Restore')."'></td>";
                   }
                } else {
-                  if (self::canUpdate()) {
+                  if (self::canUpdate() && $canupdate) {
                      echo "<input type='submit' class='submit' name='update' value='".
                             _sx('button', 'Save')."'></td>";
                   }
