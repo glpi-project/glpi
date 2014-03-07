@@ -2814,19 +2814,18 @@ class Html {
             $p[$key] = $val;
          }
       }
-      /// TODO see to manage canedit
       $output = "<input id='showdate".$p['rand']."' type='text' size='10' name='_$name' ".
                   "value='".self::convDate($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'],
                                            'id'    => "hiddendate".$p['rand'],
                                            'size'  => 10));
-      if ($p['maybeempty']) {
+      if ($p['maybeempty'] && $p['canedit']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
                       "\" id='resetdate".$p['rand']."'>";
       }
 
       $js = '';
-      if ($p['maybeempty']) {
+      if ($p['maybeempty'] && $p['canedit']) {
          $js .= "$('#resetdate".$p['rand']."').click(function(){
                   $('#showdate".$p['rand']."').val('');
                   $('#hiddendate".$p['rand']."').val('');
@@ -2845,6 +2844,11 @@ class Html {
                   showWeek: true,
                   buttonImage: '".$CFG_GLPI['root_doc']."/pics/calendar.png',
                   buttonImageOnly: true  ";
+
+      if (!$p['canedit']) {
+         $js .= ",disabled: true";
+      }
+      
       if (!empty($p['min'])) {
          $js .= ",minDate: '".self::convDate($p['min'])."'";
       }
@@ -2990,7 +2994,6 @@ class Html {
          $p['timestep'] = $CFG_GLPI['time_step'];
       }
 
-      /// TODO see to manage timestep / canedit
       $minHour   = 0;
       $maxHour   = 23;
       $minMinute = 0;
@@ -3030,13 +3033,13 @@ class Html {
       $output  = "<input id='showdate".$p['rand']."' type='text' name='_$name' value='".
                    self::convDateTime($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "hiddendate".$p['rand']));
-      if ($p['maybeempty']) {
+      if ($p['maybeempty'] && $p['canedit']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
                       "\" id='resetdate".$p['rand']."'>";
       }
 
       $js = "";
-      if ($p['maybeempty']) {
+      if ($p['maybeempty'] && $p['canedit']) {
          $js .= "$('#resetdate".$p['rand']."').click(function(){
                   $('#showdate".$p['rand']."').val('');
                   $('#hiddendate".$p['rand']."').val('');
@@ -3051,6 +3054,7 @@ class Html {
                   altFieldTimeOnly: false,
                   firstDay: 1,
                   parse: 'loose',
+                  stepMinute: ".$p['timestep'].",
                   showSecond: false,
                   showOtherMonths: true,
                   selectOtherMonths: true,
@@ -3062,6 +3066,10 @@ class Html {
                   controlType: 'select',
                   buttonImage: '../pics/calendar.png',
                   buttonImageOnly: true";
+      if (!$p['canedit']) {
+         $js .= ",disabled: true";
+      }
+      
       if (!empty($p['min'])) {
          $js .= ",minDate: '".self::convDate($p['min'])."'";
       }
