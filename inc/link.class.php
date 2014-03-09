@@ -396,7 +396,7 @@ class Link extends CommonDBTM {
       if ($item->getType() == 'User') {
          $restrict = Profile_User::getEntitiesForUser($item->getID());
       }
-      
+
       $query = "SELECT `glpi_links`.`id`,
                        `glpi_links`.`link` AS link,
                        `glpi_links`.`name` AS name ,
@@ -475,6 +475,25 @@ class Link extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td class='center b'>".__('No link defined')."</td></tr>";
          echo "</table></div>";
       }
+   }
+
+
+   /**
+    * @since version 0.84.6
+   **/
+   static function getSearchOptionsToAdd() {
+
+      $tab                      = array();
+
+      $tab[65]['table']          = 'glpi_links';
+      $tab[65]['field']          = 'link';
+      $tab[65]['name']           = __('Link or filename');
+      $tab[65]['datatype']       = 'itemlink';
+      $tab[65]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_links_itemtypes',
+                                                   'joinparams' => array('jointype' => 'itemtypeonly')));
+
+      return $tab;
    }
 }
 ?>
