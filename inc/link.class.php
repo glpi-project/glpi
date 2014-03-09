@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -178,6 +178,22 @@ class Link extends CommonDBTM {
       $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
       $tab[80]['datatype']      = 'dropdown';
+
+      return $tab;
+   }
+
+
+   static function getSearchOptionsToAdd() {
+
+      $tab                      = array();
+
+      $tab[65]['table']          = 'glpi_links';
+      $tab[65]['field']          = 'link';
+      $tab[65]['name']           = __('Link or filename');
+      $tab[65]['datatype']       = 'itemlink';
+      $tab[65]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_links_itemtypes',
+                                                   'joinparams' => array('jointype' => 'itemtypeonly')));
 
       return $tab;
    }

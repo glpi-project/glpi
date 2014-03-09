@@ -163,9 +163,9 @@ class Search {
       } else {
          $entity_restrict = $item->isEntityAssign();
       }
-      
+
       self::$output_type = $output_type;
-      
+
       $metanames = array();
 
       // Get the items to display
@@ -2874,7 +2874,7 @@ class Search {
                   case 'notequals' :
                      return " $link (`$table`.`id` NOT IN ('".implode("','",$_SESSION['glpigroups'])."')) ";
                      break;
-                     
+
                   case 'under' :
                      $groups = $_SESSION['glpigroups'];
                      foreach ($_SESSION['glpigroups'] as $g) {
@@ -2883,7 +2883,7 @@ class Search {
                      $groups = array_unique($groups);
                      return " $link (`$table`.`id` IN ('".implode("','", $groups)."')) ";
                      break;
-                     
+
                   case 'notunder' :
                      $groups = $_SESSION['glpigroups'];
                      foreach ($_SESSION['glpigroups'] as $g) {
@@ -2891,7 +2891,7 @@ class Search {
                      }
                      $groups = array_unique($groups);
                      return " $link (`$table`.`id` NOT IN ('".implode("','", $groups)."')) ";
-                     break;                     
+                     break;
                }
             }
             break;
@@ -3633,6 +3633,18 @@ class Search {
                                               $addcondition) ";
                   break;
 
+               case "itemtypeonly" :
+                  $used_itemtype = $itemtype;
+                  if (isset($joinparams['specific_itemtype'])
+                      && !empty($joinparams['specific_itemtype'])) {
+                     $used_itemtype = $joinparams['specific_itemtype'];
+                  }
+                  // Itemtype join
+                  $specific_leftjoin = " LEFT JOIN `$new_table` $AS
+                                          ON (`$nt`.`itemtype` = '$used_itemtype'
+                                              $addcondition) ";
+                  break;
+
                default :
                   // Standard join
                   $specific_leftjoin = "LEFT JOIN `$new_table` $AS
@@ -4045,7 +4057,7 @@ class Search {
                      if (!empty($comp)) {
                         $text = sprintf(__('%1$s %2$s'), $text, "(".$comp.")");
                      }
-                     
+
                      if (!in_array($text,$added)) {
                         if ($count_display) {
                            $out .= "<br>";
@@ -5341,6 +5353,11 @@ class Search {
          if (in_array($itemtype, $CFG_GLPI["infocom_types"])
              || ($itemtype == 'AllAssets')) {
             $search[$itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
+         }
+
+         if (in_array($itemtype, $CFG_GLPI["link_types"])) {
+            $search[$itemtype]['link'] = __('Link');
+            $search[$itemtype] += Link::getSearchOptionsToAdd($itemtype);
          }
 
          if ($withplugins) {
