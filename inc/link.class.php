@@ -183,6 +183,9 @@ class Link extends CommonDBTM {
    }
 
 
+   /**
+    * @since version 0.84.6
+   **/
    static function getSearchOptionsToAdd() {
 
       $tab                      = array();
