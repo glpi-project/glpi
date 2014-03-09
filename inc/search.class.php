@@ -3409,6 +3409,18 @@ class Search {
                                               $addcondition) ";
                   break;
 
+               case "itemtypeonly" :
+                  $used_itemtype = $itemtype;
+                  if (isset($joinparams['specific_itemtype'])
+                      && !empty($joinparams['specific_itemtype'])) {
+                     $used_itemtype = $joinparams['specific_itemtype'];
+                  }
+                  // Itemtype join
+                  $specific_leftjoin = " LEFT JOIN `$new_table` $AS
+                                          ON (`$nt`.`itemtype` = '$used_itemtype'
+                                              $addcondition) ";
+                  break;
+
                default :
                   // Standard join
                   $specific_leftjoin = "LEFT JOIN `$new_table` $AS
@@ -4938,6 +4950,11 @@ class Search {
          if (InfoCom::canApplyOn($itemtype)
              || ($itemtype == 'AllAssets')) {
             $search[$itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
+         }
+
+         if (in_array($itemtype, $CFG_GLPI["link_types"])) {
+            $search[$itemtype]['link'] = __('Link');
+            $search[$itemtype] += Link::getSearchOptionsToAdd($itemtype);
          }
 
          if ($withplugins) {
