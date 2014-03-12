@@ -215,7 +215,15 @@ function step3($host, $user, $password, $update) {
 
    error_reporting(16);
    echo "<h3>".__('Test of the connection at the database')."</h3>";
-   $link = new mysqli($host, $user, $password);
+   
+   //Check if the port is in url
+   $hostport = explode(":", $host);
+   if (count($hostport) < 2) {
+     $link = new mysqli($hostport[0], $user, $password);
+   } else {
+     $link = new mysqli($hostport[0], $user, $password, '', $hostport[1]);
+   }
+
 
    if ($link->connect_error
        || empty($host)
@@ -339,8 +347,13 @@ function step4 ($databasename, $newdatabasename) {
       $DB->queryOrDie($query, "4203");
    }
 
-
-   $link            = new mysqli($host, $user, $password);
+   //Check if the port is in url
+   $hostport = explode(":", $host);
+   if (count($hostport) < 2) {
+     $link = new mysqli($hostport[0], $user, $password);
+   } else {
+     $link = new mysqli($hostport[0], $user, $password, '', $hostport[1]);
+   }
 
    $databasename    = $link->real_escape_string($databasename);
    $newdatabasename = $link->real_escape_string($newdatabasename);
