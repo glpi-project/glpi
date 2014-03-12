@@ -2130,7 +2130,7 @@ class Search {
 
 
       // Virtual display no select : only get additional fields
-      if ($field == '_virtual') {
+      if (strpos($field, '_virtual') === 0) {
          return $ADDITONALFIELDS;
       }
 
@@ -3225,7 +3225,7 @@ class Search {
       $cleannt    = $nt;
 
       // Virtual field no link
-      if ($linkfield == '_virtual') {
+      if (strpos($linkfield, '_virtual') === 0) {
          return false;
       }
 
@@ -4217,6 +4217,14 @@ class Search {
                }
                break;
 
+            case 'glpi_projects._virtual_planned_duration' :
+               return Html::timestampToString(ProjectTask::getTotalPlannedDurationForProject($data["id"]),
+                                 false);
+
+            case 'glpi_projects._virtual_effective_duration' :
+               return Html::timestampToString(ProjectTask::getTotalEffectiveDurationForProject($data["id"]),
+                                 false);
+
             case 'glpi_cartridgeitems._virtual' :
                return Cartridge::getCount($data["id"], $data[$num][0]['alarm_threshold'],
                                           self::$output_type != self::HTML_OUTPUT);
@@ -4224,7 +4232,7 @@ class Search {
             case 'glpi_printers._virtual' :
                return Cartridge::getCountForPrinter($data["id"],
                                                     self::$output_type != self::HTML_OUTPUT);
-
+                                                    
             case 'glpi_consumableitems._virtual' :
                return Consumable::getCount($data["id"], $data[$num][0]['alarm_threshold'],
                                            self::$output_type != self::HTML_OUTPUT);

@@ -465,6 +465,14 @@ class Project extends CommonDBTM {
       $tab[8]['name']            = __('Planned end date');
       $tab[8]['datatype']        = 'datetime';
 
+      $tab[17]['table']           = $this->getTable();
+      $tab[17]['field']           = '_virtual_planned_duration';
+      $tab[17]['name']            = __('Planned duration');
+      $tab[17]['datatype']        = 'specific';
+      $tab[17]['nosearch']        = true;
+      $tab[17]['massiveaction']   = false;
+      $tab[17]['nosort']          = true;
+      
       $tab[9]['table']           = $this->getTable();
       $tab[9]['field']           = 'real_start_date';
       $tab[9]['name']            = __('Real start date');
@@ -475,6 +483,14 @@ class Project extends CommonDBTM {
       $tab[10]['name']           = __('Real end date');
       $tab[10]['datatype']       = 'datetime';
 
+      $tab[18]['table']           = $this->getTable();
+      $tab[18]['field']           = '_virtual_effective_duration';
+      $tab[18]['name']            = __('Effective duration');
+      $tab[18]['datatype']        = 'specific';
+      $tab[18]['nosearch']        = true;
+      $tab[18]['massiveaction']   = false;
+      $tab[18]['nosort']          = true;
+      
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
