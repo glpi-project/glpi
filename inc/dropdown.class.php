@@ -1017,6 +1017,7 @@ class Dropdown {
       $p['limit_planning'] = false;
       $p['display']        = true;
       $p['width']          = '80%';
+      $p['step']           = $CFG_GLPI["time_step"];
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1026,7 +1027,6 @@ class Dropdown {
 
       $begin = 0;
       $end   = 24;
-      $step  = $CFG_GLPI["time_step"];
       // Check if the $step is Ok for the $value field
       $split = explode(":", $p['value']);
 
@@ -1035,9 +1035,9 @@ class Dropdown {
          $min = $split[1];
 
          // Problem
-         if (($min%$step) != 0) {
+         if (($min%$p['step']) != 0) {
             // set minimum step
-            $step = 5;
+            $p['step'] = 5;
          }
       }
 
@@ -1058,7 +1058,7 @@ class Dropdown {
             $tmp = $i;
          }
 
-         for ($j=0 ; $j<60 ; $j+=$step) {
+         for ($j=0 ; $j<60 ; $j+=$p['step']) {
             if ($j < 10) {
                $val = $tmp.":0$j";
             } else {
