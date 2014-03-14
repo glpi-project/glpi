@@ -3142,6 +3142,14 @@ class Ticket extends CommonITILObject {
 
       $email  = UserEmail::getDefaultForUser($ID);
 
+      // Load ticket template if available to have type if predefined
+      $tt   = $this->getTicketTemplateToUse($ticket_template, 0, 0,
+                                            $_SESSION["glpiactive_entity"]);
+
+      $type = '';
+      if (isset($tt->predefined['type'])) {
+         $type = $tt->predefined['type'];
+      }
 
       // Set default values...
       $default_values = array('_users_id_requester_notif'
@@ -3162,7 +3170,7 @@ class Ticket extends CommonITILObject {
                               'due_date'            => 'NULL',
                               'slas_id'             => 0,
                               '_add_validation'     => 0,
-                              'type'                => Entity::getUsedConfig('tickettype',
+                              'type'                => $type?$type:Entity::getUsedConfig('tickettype',
                                                                              $_SESSION['glpiactive_entity'],
                                                                              '', Ticket::INCIDENT_TYPE),
                               '_right'              => "id");
