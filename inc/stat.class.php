@@ -412,8 +412,8 @@ class Stat {
             echo Search::showHeaderItem($output_type, __('Number of late tickets'), $header_num);
             echo Search::showHeaderItem($output_type, __('Number of closed tickets'), $header_num);
          } else {
-            echo Search::showHeaderItem($output_type, __('Opened'), $header_num);
-            echo Search::showHeaderItem($output_type, __('Solved'), $header_num);
+            echo Search::showHeaderItem($output_type, _x('ticket','Opened'), $header_num);
+            echo Search::showHeaderItem($output_type, _n('Solved', 'Solved', 2), $header_num);
             echo Search::showHeaderItem($output_type, __('Late'), $header_num);
             echo Search::showHeaderItem($output_type, __('Closed'), $header_num);
          }
@@ -430,7 +430,7 @@ class Stat {
                                            $header_num);
 
             } else {
-               echo Search::showHeaderItem($output_type, __('Opened'), $header_num);
+               echo Search::showHeaderItem($output_type, _x('survey','Opened'), $header_num);
                echo Search::showHeaderItem($output_type, __('Answered'), $header_num);
                echo Search::showHeaderItem($output_type, __('Average'), $header_num);
             }
