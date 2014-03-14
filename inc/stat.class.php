@@ -436,8 +436,9 @@ class Stat extends CommonGLPI {
             echo Search::showHeaderItem($output_type, __('Number of late tickets'), $header_num);
             echo Search::showHeaderItem($output_type, __('Number of closed tickets'), $header_num);
          } else {
-            echo Search::showHeaderItem($output_type, __('Opened'), $header_num);
-            echo Search::showHeaderItem($output_type, __('Solved'), $header_num);
+            echo Search::showHeaderItem($output_type, _nx('ticket','Opened','Opened',2), $header_num);
+            echo Search::showHeaderItem($output_type, _nx('ticket','Solved', 'Solved', 2),
+                                        $header_num);
             echo Search::showHeaderItem($output_type, __('Late'), $header_num);
             echo Search::showHeaderItem($output_type, __('Closed'), $header_num);
          }
@@ -454,8 +455,10 @@ class Stat extends CommonGLPI {
                                            $header_num);
 
             } else {
-               echo Search::showHeaderItem($output_type, __('Opened'), $header_num);
-               echo Search::showHeaderItem($output_type, __('Answered'), $header_num);
+               echo Search::showHeaderItem($output_type, _nx('survey','Opened','Opened',2),
+                                           $header_num);
+               echo Search::showHeaderItem($output_type, _nx('survey','Answered','Answered',2),
+                                           $header_num);
                echo Search::showHeaderItem($output_type, __('Average'), $header_num);
             }
          }

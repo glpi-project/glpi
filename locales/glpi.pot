@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-14 10:14+0100\n"
+"POT-Creation-Date: 2014-03-14 11:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -138,8 +138,8 @@ msgstr ""
 #: inc/ruleticket.class.php:536 inc/ruleticket.class.php:542
 #: inc/ruleticket.class.php:548 inc/search.class.php:1272
 #: inc/search.class.php:3810 inc/search.class.php:3848
-#: inc/softwareversion.class.php:234 inc/stat.class.php:1272
-#: inc/stat.class.php:1275 inc/stat.class.php:1278 inc/stat.class.php:1479
+#: inc/softwareversion.class.php:234 inc/stat.class.php:1275
+#: inc/stat.class.php:1278 inc/stat.class.php:1281 inc/stat.class.php:1482
 #: inc/state.class.php:286 inc/state.class.php:291 inc/state.class.php:297
 #: inc/state.class.php:302 inc/state.class.php:307 inc/state.class.php:312
 #: inc/state.class.php:317 inc/ticket.class.php:2581 inc/ticket.class.php:2584
@@ -891,7 +891,7 @@ msgstr ""
 #: inc/rulerightcollection.class.php:153 inc/ruleticket.class.php:419
 #: inc/search.class.php:4899 inc/sla.class.php:252 inc/software.class.php:534
 #: inc/software.class.php:965 inc/softwarelicense.class.php:625
-#: inc/softwarelicense.class.php:854 inc/stat.class.php:1458
+#: inc/softwarelicense.class.php:854 inc/stat.class.php:1461
 #: inc/supplier.class.php:311 inc/supplier.class.php:401
 #: inc/ticket.class.php:2044 inc/user.class.php:1980 inc/user.class.php:2604
 #: inc/user.class.php:2638 inc/user.class.php:3390 inc/user.class.php:3470
@@ -1007,8 +1007,8 @@ msgid ""
 msgstr ""
 
 #: front/allassets.php:40 inc/bookmark.class.php:689 inc/config.class.php:440
-#: inc/html.class.php:1214 inc/stat.class.php:1513 inc/stat.class.php:1525
-#: inc/stat.class.php:1534
+#: inc/html.class.php:1214 inc/stat.class.php:1516 inc/stat.class.php:1528
+#: inc/stat.class.php:1537
 msgid "Global"
 msgstr ""
 
@@ -2007,7 +2007,7 @@ msgstr ""
 
 #: front/find_num.php:93 inc/commonitilobject.class.php:5034
 #: inc/notificationtargetticket.class.php:608 inc/ruleticket.class.php:527
-#: inc/stat.class.php:1456 inc/ticket.class.php:2015 inc/ticket.class.php:4166
+#: inc/stat.class.php:1459 inc/ticket.class.php:2015 inc/ticket.class.php:4166
 #: inc/ticket.class.php:4916
 msgid "Associated element"
 msgstr ""
@@ -2613,7 +2613,7 @@ msgstr ""
 msgid "By location"
 msgstr ""
 
-#: front/report.networking.php:63 inc/stat.class.php:1519
+#: front/report.networking.php:63 inc/stat.class.php:1522
 msgid "By hardware"
 msgstr ""
 
@@ -2824,21 +2824,25 @@ msgid "Statistics"
 msgstr ""
 
 #: front/stat.global.php:92 front/stat.global.php:203 front/stat.graph.php:337
-#: front/stat.graph.php:444 inc/stat.class.php:439 inc/stat.class.php:457
+#: inc/stat.class.php:439
+msgctxt "ticket"
 msgid "Opened"
-msgstr ""
+msgid_plural "Opened"
+msgstr[0] ""
+msgstr[1] ""
 
-#: front/stat.global.php:93 front/stat.graph.php:338 inc/stat.class.php:440
-#: inc/ticket.class.php:2463
+#: front/stat.global.php:93
 msgid "Solved"
-msgstr ""
+msgid_plural "Solved"
+msgstr[0] ""
+msgstr[1] ""
 
 #: front/stat.global.php:94 front/stat.graph.php:339
-#: inc/commonitilobject.class.php:2503 inc/stat.class.php:441
+#: inc/commonitilobject.class.php:2503 inc/stat.class.php:442
 msgid "Late"
 msgstr ""
 
-#: front/stat.global.php:95 front/stat.graph.php:340 inc/stat.class.php:442
+#: front/stat.global.php:95 front/stat.graph.php:340 inc/stat.class.php:443
 #: inc/ticket.class.php:2464 install/update_084_085.php:2068
 msgid "Closed"
 msgstr ""
@@ -2849,12 +2853,12 @@ msgid "Number"
 msgstr ""
 
 #: front/stat.global.php:145 front/stat.graph.php:386
-#: inc/commonitilobject.class.php:4124 inc/stat.class.php:475
+#: inc/commonitilobject.class.php:4124 inc/stat.class.php:478
 msgid "Closure"
 msgstr ""
 
 #: front/stat.global.php:146 front/stat.graph.php:387
-#: inc/commonitilobject.class.php:4113 inc/stat.class.php:474
+#: inc/commonitilobject.class.php:4113 inc/stat.class.php:477
 msgid "Resolution"
 msgstr ""
 
@@ -2863,7 +2867,7 @@ msgid "Real duration"
 msgstr ""
 
 #: front/stat.global.php:151 front/stat.graph.php:392
-#: inc/commonitilobject.class.php:4102 inc/stat.class.php:472
+#: inc/commonitilobject.class.php:4102 inc/stat.class.php:475
 msgid "Take into account"
 msgstr ""
 
@@ -2879,9 +2883,12 @@ msgid_plural "Hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: front/stat.global.php:204 front/stat.graph.php:445 inc/stat.class.php:458
+#: front/stat.global.php:204 front/stat.graph.php:445 inc/stat.class.php:460
+msgctxt "survey"
 msgid "Answered"
-msgstr ""
+msgid_plural "Answered"
+msgstr[0] ""
+msgstr[1] ""
 
 #: front/stat.global.php:220 front/stat.graph.php:461
 #: front/stat.location.php:212 front/stat.location.php:213
@@ -2893,7 +2900,7 @@ msgstr ""
 #: front/stat.global.php:222 front/stat.graph.php:358 front/stat.graph.php:463
 #: front/stat.location.php:167 front/stat.location.php:179
 #: front/stat.location.php:191 front/stat.location.php:203
-#: front/stat.location.php:215 inc/stat.class.php:1511
+#: front/stat.location.php:215 inc/stat.class.php:1514
 msgid "Tickets"
 msgstr ""
 
@@ -3107,6 +3114,13 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
+#: front/stat.graph.php:338 inc/stat.class.php:440 inc/ticket.class.php:2463
+msgctxt "ticket"
+msgid "Solved"
+msgid_plural "Solved"
+msgstr[0] ""
+msgstr[1] ""
+
 #: front/stat.graph.php:356 inc/itilcategory.class.php:156
 #: inc/notificationtargetchange.class.php:202
 #: inc/notificationtargetproblem.class.php:207
@@ -3115,6 +3129,13 @@ msgstr ""
 msgctxt "quantity"
 msgid "Number of tickets"
 msgstr ""
+
+#: front/stat.graph.php:444 inc/stat.class.php:458
+msgctxt "survey"
+msgid "Opened"
+msgid_plural "Opened"
+msgstr[0] ""
+msgstr[1] ""
 
 #: front/stat.location.php:102 front/stat.tracking.php:130
 msgid "Show graphics"
@@ -4060,7 +4081,7 @@ msgstr[1] ""
 
 #: inc/backup.class.php:63 inc/commondbtm.class.php:4269 inc/log.class.php:632
 #: inc/profile.class.php:2208 inc/reminder.class.php:1319
-#: inc/report.class.php:439 inc/rssfeed.class.php:1154 inc/stat.class.php:1609
+#: inc/report.class.php:439 inc/rssfeed.class.php:1154 inc/stat.class.php:1612
 msgid "Read"
 msgstr ""
 
@@ -4326,7 +4347,7 @@ msgstr ""
 #: inc/computer_softwareversion.class.php:621 inc/consumable.class.php:646
 #: inc/consumable.class.php:684 inc/item_project.class.php:247
 #: inc/softwarelicense.class.php:804 inc/softwareversion.class.php:308
-#: inc/stat.class.php:488 inc/state.class.php:160 inc/state.class.php:214
+#: inc/stat.class.php:491 inc/state.class.php:160 inc/state.class.php:214
 #: inc/supplier.class.php:514
 msgid "Total"
 msgstr ""
@@ -4808,7 +4829,7 @@ msgstr ""
 #: inc/notificationtargetticket.class.php:776
 #: inc/notificationtargetticket.class.php:778 inc/profile.class.php:1081
 #: inc/profile.class.php:1086 inc/profile.class.php:1992
-#: inc/stat.class.php:1532
+#: inc/stat.class.php:1535
 msgid "Change"
 msgid_plural "Changes"
 msgstr[0] ""
@@ -9366,7 +9387,7 @@ msgstr ""
 
 #: inc/fieldunicity.class.php:555 inc/fieldunicity.class.php:580
 #: inc/notificationevent.class.php:233 inc/project.class.php:1317
-#: inc/stat.class.php:1172 inc/user.class.php:3891
+#: inc/stat.class.php:1175 inc/user.class.php:3891
 msgid "No item to display"
 msgstr ""
 
@@ -9477,7 +9498,7 @@ msgstr ""
 #: inc/reminder.class.php:1226 inc/reminder.class.php:1281
 #: inc/rssfeed.class.php:1060 inc/rssfeed.class.php:1115
 #: inc/ruleticket.class.php:82 inc/search.class.php:1536
-#: inc/stat.class.php:1384
+#: inc/stat.class.php:1387
 #, php-format
 msgid "%1$s / %2$s"
 msgstr ""
@@ -11376,7 +11397,7 @@ msgstr ""
 #: inc/notificationtargetticket.class.php:771 inc/problem.class.php:69
 #: inc/problem.class.php:858 inc/profile.class.php:1075
 #: inc/profile.class.php:1077 inc/profile.class.php:1975
-#: inc/stat.class.php:1523
+#: inc/stat.class.php:1526
 msgid "Problem"
 msgid_plural "Problems"
 msgstr[0] ""
@@ -14030,79 +14051,79 @@ msgstr ""
 msgid "Number of closed tickets"
 msgstr ""
 
-#: inc/stat.class.php:448
+#: inc/stat.class.php:449
 msgid "Number of opened satisfaction survey"
 msgstr ""
 
-#: inc/stat.class.php:451
+#: inc/stat.class.php:452
 msgid "Number of answered satisfaction survey"
 msgstr ""
 
-#: inc/stat.class.php:453
+#: inc/stat.class.php:454
 msgid "Average satisfaction"
 msgstr ""
 
-#: inc/stat.class.php:459 inc/stat.class.php:487
+#: inc/stat.class.php:462 inc/stat.class.php:490
 msgid "Average"
 msgstr ""
 
-#: inc/stat.class.php:465
+#: inc/stat.class.php:468
 msgid "Average time to take into account"
 msgstr ""
 
-#: inc/stat.class.php:468
+#: inc/stat.class.php:471
 msgid "Average time to resolution"
 msgstr ""
 
-#: inc/stat.class.php:469
+#: inc/stat.class.php:472
 msgid "Average time to closure"
 msgstr ""
 
-#: inc/stat.class.php:481
+#: inc/stat.class.php:484
 msgid "Average real duration of treatment of the ticket"
 msgstr ""
 
-#: inc/stat.class.php:484
+#: inc/stat.class.php:487
 msgid "Total real duration of treatment of the ticket"
 msgstr ""
 
-#: inc/stat.class.php:701
+#: inc/stat.class.php:704
 msgid "No statistics are available"
 msgstr ""
 
-#: inc/stat.class.php:1377
+#: inc/stat.class.php:1380
 msgid "SVG"
 msgstr ""
 
-#: inc/stat.class.php:1381
+#: inc/stat.class.php:1384
 msgid "PNG"
 msgstr ""
 
-#: inc/stat.class.php:1386
+#: inc/stat.class.php:1389
 msgid "CSV"
 msgstr ""
 
-#: inc/stat.class.php:1460
+#: inc/stat.class.php:1463
 msgid "Number of tickets"
 msgstr ""
 
-#: inc/stat.class.php:1515
+#: inc/stat.class.php:1518
 msgid "By ticket"
 msgstr ""
 
-#: inc/stat.class.php:1517
+#: inc/stat.class.php:1520
 msgid "By hardware characteristics"
 msgstr ""
 
-#: inc/stat.class.php:1527
+#: inc/stat.class.php:1530
 msgid "By problem"
 msgstr ""
 
-#: inc/stat.class.php:1536
+#: inc/stat.class.php:1539
 msgid "By change"
 msgstr ""
 
-#: inc/stat.class.php:1542
+#: inc/stat.class.php:1545
 msgid "Select statistics to be displayed"
 msgstr ""
 
