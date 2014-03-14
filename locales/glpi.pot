@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-14 10:04+0100\n"
+"POT-Creation-Date: 2014-03-14 10:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4120,6 +4120,27 @@ msgstr ""
 msgid "Uninstalling a cartridge"
 msgstr ""
 
+#: inc/cartridge.class.php:330 inc/cartridge.class.php:443
+msgctxt "cartridge"
+msgid "New"
+msgid_plural "New"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/cartridge.class.php:333 inc/cartridge.class.php:446
+msgctxt "cartridge"
+msgid "Used"
+msgid_plural "Used"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/cartridge.class.php:335 inc/cartridge.class.php:448
+msgctxt "cartridge"
+msgid "Worn"
+msgid_plural "Worn"
+msgstr[0] ""
+msgstr[1] ""
+
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the new one, %3$d the used one, %4$d worn one
 #: inc/cartridge.class.php:341
@@ -4129,21 +4150,6 @@ msgstr ""
 
 #: inc/cartridge.class.php:347 inc/cartridge.class.php:349
 msgid "No cartridge"
-msgstr ""
-
-#: inc/cartridge.class.php:443
-msgctxt "cartridge"
-msgid "New"
-msgstr ""
-
-#: inc/cartridge.class.php:446
-msgctxt "cartridge"
-msgid "Used"
-msgstr ""
-
-#: inc/cartridge.class.php:448
-msgctxt "cartridge"
-msgid "Worn"
 msgstr ""
 
 #: inc/cartridge.class.php:515 inc/commondbtm.class.php:3434
@@ -6525,6 +6531,20 @@ msgstr ""
 #: inc/consumable.class.php:337 inc/consumable.class.php:339
 msgid "No consumable"
 msgstr ""
+
+#: inc/consumable.class.php:392
+msgctxt "consumable"
+msgid "New"
+msgid_plural "New"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/consumable.class.php:395
+msgctxt "consumable"
+msgid "Used"
+msgid_plural "Used"
+msgstr[0] ""
+msgstr[1] ""
 
 #: inc/consumable.class.php:423
 msgctxt "button"
