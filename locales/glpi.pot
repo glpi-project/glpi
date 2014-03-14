@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-14 11:41+0100\n"
+"POT-Creation-Date: 2014-03-14 11:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2823,15 +2823,16 @@ msgstr ""
 msgid "Statistics"
 msgstr ""
 
-#: front/stat.global.php:92 front/stat.global.php:203 front/stat.graph.php:337
-#: inc/stat.class.php:439
+#: front/stat.global.php:92 front/stat.graph.php:337 inc/stat.class.php:439
 msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
 msgstr[0] ""
 msgstr[1] ""
 
-#: front/stat.global.php:93
+#: front/stat.global.php:93 front/stat.graph.php:338 inc/stat.class.php:440
+#: inc/ticket.class.php:2463
+msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
 msgstr[0] ""
@@ -2880,6 +2881,13 @@ msgstr ""
 #: inc/config.class.php:1066 inc/config.class.php:1083 inc/sla.class.php:178
 msgid "Hour"
 msgid_plural "Hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: front/stat.global.php:203 front/stat.graph.php:444 inc/stat.class.php:458
+msgctxt "survey"
+msgid "Opened"
+msgid_plural "Opened"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -3114,13 +3122,6 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: front/stat.graph.php:338 inc/stat.class.php:440 inc/ticket.class.php:2463
-msgctxt "ticket"
-msgid "Solved"
-msgid_plural "Solved"
-msgstr[0] ""
-msgstr[1] ""
-
 #: front/stat.graph.php:356 inc/itilcategory.class.php:156
 #: inc/notificationtargetchange.class.php:202
 #: inc/notificationtargetproblem.class.php:207
@@ -3129,13 +3130,6 @@ msgstr[1] ""
 msgctxt "quantity"
 msgid "Number of tickets"
 msgstr ""
-
-#: front/stat.graph.php:444 inc/stat.class.php:458
-msgctxt "survey"
-msgid "Opened"
-msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
 
 #: front/stat.location.php:102 front/stat.tracking.php:130
 msgid "Show graphics"
