@@ -184,25 +184,6 @@ class Link extends CommonDBTM {
 
 
    /**
-    * @since version 0.84.6
-   **/
-   static function getSearchOptionsToAdd() {
-
-      $tab                      = array();
-
-      $tab[65]['table']          = 'glpi_links';
-      $tab[65]['field']          = 'link';
-      $tab[65]['name']           = __('Link or filename');
-      $tab[65]['datatype']       = 'itemlink';
-      $tab[65]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_links_itemtypes',
-                                                   'joinparams' => array('jointype' => 'itemtypeonly')));
-
-      return $tab;
-   }
-
-
-   /**
     * Generate link
     *
     * @param $link    string   original string content
