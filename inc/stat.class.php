@@ -412,8 +412,10 @@ class Stat {
             echo Search::showHeaderItem($output_type, __('Number of late tickets'), $header_num);
             echo Search::showHeaderItem($output_type, __('Number of closed tickets'), $header_num);
          } else {
-            echo Search::showHeaderItem($output_type, _x('ticket','Opened'), $header_num);
-            echo Search::showHeaderItem($output_type, _n('Solved', 'Solved', 2), $header_num);
+            echo Search::showHeaderItem($output_type,  _nx('ticket','Opened','Opened',2),
+                                        $header_num);
+            echo Search::showHeaderItem($output_type,  _nx('ticket','Solved', 'Solved', 2),
+                                        $header_num);
             echo Search::showHeaderItem($output_type, __('Late'), $header_num);
             echo Search::showHeaderItem($output_type, __('Closed'), $header_num);
          }
@@ -430,8 +432,10 @@ class Stat {
                                            $header_num);
 
             } else {
-               echo Search::showHeaderItem($output_type, _x('survey','Opened'), $header_num);
-               echo Search::showHeaderItem($output_type, _x('survey','Answered'), $header_num);
+               echo Search::showHeaderItem($output_type,_nx('survey','Opened','Opened',2),
+                                           $header_num);
+               echo Search::showHeaderItem($output_type, _nx('survey','Answered','Answered',2),
+                                           $header_num);
                echo Search::showHeaderItem($output_type, __('Average'), $header_num);
             }
          }

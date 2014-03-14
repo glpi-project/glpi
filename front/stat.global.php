@@ -87,8 +87,8 @@ $values['closed']  = Stat::constructEntryValues($_GET['itemtype'], "inter_closed
 $values['late']    = Stat::constructEntryValues($_GET['itemtype'], "inter_solved_late",
                                                 $_GET["date1"], $_GET["date2"]);
 
-$available = array('total'  => _x('ticket','Opened'),
-                   'solved' => _n('Solved', 'Solved', 2),
+$available = array('total'  => _nx('ticket', 'Opened', 'Opened', 2),
+                   'solved' => _nx('ticket', 'Solved', 'Solved', 2),
                    'late'   => __('Late'),
                    'closed' => __('Closed'),);
 echo "<div class='center'>";
@@ -198,8 +198,8 @@ if ($_GET['itemtype'] == 'Ticket') {
                                                               $_GET["date1"], $_GET["date2"]);
 
 
-   $available = array('opensatisfaction'   => _x('survey','Opened'),
-                      'answersatisfaction' => _x('survey','Answered'));
+   $available = array('opensatisfaction'   => _nx('survey','Opened','Opened',2),
+                      'answersatisfaction' => _nx('survey','Answered','Answered',2));
    echo "<div class='center'>";
 
    foreach ($available as $key => $name) {
