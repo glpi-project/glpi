@@ -431,7 +431,7 @@ class Stat {
 
             } else {
                echo Search::showHeaderItem($output_type, _x('survey','Opened'), $header_num);
-               echo Search::showHeaderItem($output_type, __('Answered'), $header_num);
+               echo Search::showHeaderItem($output_type, _x('survey','Answered'), $header_num);
                echo Search::showHeaderItem($output_type, __('Average'), $header_num);
             }
          }
