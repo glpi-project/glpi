@@ -140,6 +140,7 @@ class Search {
       $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
       $p['display_type'] = self::HTML_OUTPUT;
       $p['list_limit']   = $_SESSION['glpilist_limit'];
+      $p['massiveactionparams'] = array();
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
@@ -1201,10 +1202,12 @@ class Search {
              && ($data['display_type'] == self::HTML_OUTPUT)) {
 
             Html::openMassiveActionsForm($massformid);
-            $massiveactionparams = array('num_displayed' => $end_display-$begin_display,
-                                         'fixed'         => false,
-                                         'is_deleted'    => $data['search']['is_deleted'],
-                                         'container'     => $massformid);
+            $massiveactionparams = $data['search']['massiveactionparams'];
+            $massiveactionparams['num_displayed'] = $end_display-$begin_display;
+            $massiveactionparams['fixed'] = false;
+            $massiveactionparams['is_deleted'] = $data['search']['is_deleted'];
+            $massiveactionparams['container'] = $massformid;
+            
             Html::showMassiveActions($massiveactionparams);
          }
 
@@ -1667,8 +1670,11 @@ class Search {
       $p['is_deleted']   = 0;
       $p['criteria']     = array();
       $p['metacriteria'] = array();
+      $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
+      $p['showreset']    = true;
+      $p['showbookmark'] = true;
+      $p['addhidden']    = array();
 
-      $p['target']      = Toolbox::getItemTypeSearchURL($itemtype);
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
@@ -1734,22 +1740,36 @@ class Search {
       // Display submit button
       echo "<td width='80' class='center'>";
       echo "<input type='submit' value=\""._sx('button', 'Search')."\" class='submit' >";
-      echo "</td><td>";
-      Bookmark::showSaveButton(Bookmark::SEARCH, $itemtype);
-      echo "<a href='".$p['target']."?reset=reset' >";
-      echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
-            $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
+      echo "</td>";
+      if ($p['showbookmark'] || $p['showreset']) {
+         echo "<td>";
+         if ($p['showbookmark']) {
+            Bookmark::showSaveButton(Bookmark::SEARCH, $itemtype);
+         }
 
-      echo "</td></tr></table>\n";
+         if ($p['showreset']) {
+            echo "<a href='".$p['target']."?reset=reset' >";
+            echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
+                  $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
+         }
+         echo "</td>";
+      }
+      echo "</tr></table>\n";
 
       echo "</td></tr>";
       echo "</table>\n";
 
+      if (count($p['addhidden'])) {
+         foreach ($p['addhidden'] as $key => $val) {
+            echo Html::hidden($key, array('value' => $val));
+         }
+      }
+      
       // For dropdown
-      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-
+      echo Html::hidden('itemtype', array('value' => $itemtype));
       // Reset to start when submit new search
-      echo "<input type='hidden' name='start' value='0'>";
+      echo Html::hidden('start', array('value'    => 0));
+      
       echo "</div>";
       Html::closeForm();
    }
