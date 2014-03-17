@@ -1204,9 +1204,9 @@ class Search {
             Html::openMassiveActionsForm($massformid);
             $massiveactionparams = $data['search']['massiveactionparams'];
             $massiveactionparams['num_displayed'] = $end_display-$begin_display;
-            $massiveactionparams['fixed'] = false;
-            $massiveactionparams['is_deleted'] = $data['search']['is_deleted'];
-            $massiveactionparams['container'] = $massformid;
+            $massiveactionparams['fixed']         = false;
+            $massiveactionparams['is_deleted']    = $data['search']['is_deleted'];
+            $massiveactionparams['container']     = $massformid;
             
             Html::showMassiveActions($massiveactionparams);
          }
