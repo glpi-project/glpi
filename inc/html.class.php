@@ -3064,7 +3064,7 @@ class Html {
                   showOn: 'button',
                   showWeek: true,
                   controlType: 'select',
-                  buttonImage: '../pics/calendar.png',
+                  buttonImage: '".$CFG_GLPI['root_doc']."/pics/calendar.png',
                   buttonImageOnly: true";
       if (!$p['canedit']) {
          $js .= ",disabled: true";
