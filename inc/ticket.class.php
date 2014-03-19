@@ -3098,7 +3098,7 @@ class Ticket extends CommonITILObject {
                // Set if already predefined field
                // Set if ticket template change
                if ((count($values['_predefined_fields'])==0
-                       && $values[$predeffield] == $default_values[$predeffield]))
+                       && ($values[$predeffield] == $default_values[$predeffield]))
                    || (isset($values['_predefined_fields'][$predeffield])
                        && ($values[$predeffield] == $values['_predefined_fields'][$predeffield]))
                    || (isset($values['_tickettemplates_id'])
