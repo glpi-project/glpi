@@ -2595,6 +2595,9 @@ class Search {
          case 'Reminder' :
             return Reminder::addVisibilityRestrict();
 
+         case 'RSSFeed' :
+            return RSSFeed::addVisibilityRestrict();
+
          case 'Notification' :
             if (!Session::haveRight('config','w')) {
                return " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
@@ -3325,6 +3328,9 @@ class Search {
              return self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                       "glpi_profiles_users", "profiles_users_id", 0, 0,
                                       array('jointype' => 'child'));
+
+         case 'RSSFeed' :
+            return RSSFeed::addVisibilityJoins();
 
          case 'Reminder' :
             return Reminder::addVisibilityJoins();
