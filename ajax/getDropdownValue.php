@@ -487,6 +487,14 @@ if ($item instanceof CommonTreeDropdown) {
                    $where";
          break;
 
+      case "Profile" :
+         $query = "SELECT DISTINCT `$table`.*
+                   FROM `$table`
+                   LEFT JOIN `glpi_profilerights`
+                        ON (`glpi_profilerights`.`profiles_id` = `$table`.`id`)
+                   $where";
+         break;
+
       default :
          $query = "SELECT `$table`.* $addselect
                    FROM `$table`
@@ -501,6 +509,7 @@ if ($item instanceof CommonTreeDropdown) {
       $query .= " ORDER BY `$table`.`$field`
                  $LIMIT";
    }
+
    if ($result = $DB->query($query)) {
 
       // Display first if no search
