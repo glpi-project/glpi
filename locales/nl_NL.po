@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-03-14 17:05+0100\n"
-"PO-Revision-Date: 2014-03-14 16:06+0000\n"
+"PO-Revision-Date: 2014-03-18 12:00+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Dutch (Netherlands) (http://www.transifex.com/projects/p/GLPI/language/nl_NL/)\n"
 "MIME-Version: 1.0\n"
@@ -65,7 +65,7 @@ msgstr "Verzenden"
 #: inc/notificationtargetuser.class.php:43 inc/user.class.php:3696
 #: inc/user.class.php:3744
 msgid "Forgotten password?"
-msgstr ""
+msgstr "Wachtwoord vergeten?"
 
 #: index.php:143
 msgid "You must activate the JavaScript function of your browser"
@@ -626,7 +626,7 @@ msgstr "Geen"
 #: inc/authldap.class.php:1202 inc/html.class.php:513 inc/html.class.php:730
 #: inc/massiveaction.class.php:802
 msgid "Warning"
-msgstr ""
+msgstr "Waarschuwing"
 
 #. TRANS: %1$s is address, %2$s is netmask
 #: ajax/dropdownShowIPNetwork.php:55
@@ -777,7 +777,7 @@ msgstr ""
 
 #: ajax/searchmetarow.php:64
 msgid "Delete a global search criterion"
-msgstr ""
+msgstr "Verwijder een globaal zoek criterium"
 
 #: ajax/searchoptionvalue.php:77
 msgid "My groups"
@@ -785,11 +785,11 @@ msgstr "Mijn groepen"
 
 #: ajax/searchrow.php:63
 msgid "Add a search criterion"
-msgstr ""
+msgstr "Voeg een zoek criterium toe"
 
 #: ajax/searchrow.php:78
 msgid "Add a global search criterion"
-msgstr ""
+msgstr "Voeg een globaal zoek criterium toe"
 
 #: ajax/searchrow.php:104 ajax/searchrow.php:106
 msgid "Show the dustbin"
@@ -801,7 +801,7 @@ msgstr "Recupereren (undelete)"
 
 #: ajax/searchrow.php:112
 msgid "Delete a search criterion"
-msgstr ""
+msgstr "Verwijder een zoek criterium"
 
 #: ajax/searchrow.php:139 ajax/searchrow.php:156 inc/config.class.php:352
 #: inc/search.class.php:1448
@@ -1106,7 +1106,7 @@ msgstr "Verwijderd"
 
 #: front/backup.php:578 front/backup.php:583
 msgid "Backup the database?"
-msgstr ""
+msgstr "Database backup-en?"
 
 #: front/backup.php:581
 msgid "SQL Dump"
@@ -1164,7 +1164,7 @@ msgstr[1] "Datums"
 #: front/backup.php:617 front/backup.php:668
 #, php-format
 msgid "Delete the file %s?"
-msgstr ""
+msgstr "Bestand %s verwijderen?"
 
 #: front/backup.php:619 front/backup.php:671 inc/backup.class.php:65
 #: inc/bookmark.class.php:350 inc/bookmark.class.php:652
@@ -1192,19 +1192,19 @@ msgstr ""
 #: inc/transfer.class.php:3126
 msgctxt "button"
 msgid "Delete permanently"
-msgstr ""
+msgstr "Verwijder definitief"
 
 #. TRANS: %s is the filename
 #: front/backup.php:627
 #, php-format
 msgid "Replace the current database with the backup file %s?"
-msgstr ""
+msgstr "Huidige database vervangen door backup bestand %s?"
 
 #: front/backup.php:629
 msgid ""
 "Warning, your actual database will be totaly overwriten by the database you "
 "want to restore !!!"
-msgstr ""
+msgstr "Waarschuwing, de huidige database zal compleet worden overschreven door de database die u wilt herstellen!!!"
 
 #: front/backup.php:634
 msgid "Restore"
@@ -2687,7 +2687,7 @@ msgstr "Verzenden"
 msgid "Blacklist"
 msgid_plural "Blacklists"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Blacklists"
 
 #: front/search.php:37 inc/entity.class.php:832 inc/html.class.php:1350
 #: inc/html.class.php:1529 inc/html.class.php:1533
@@ -3150,7 +3150,7 @@ msgstr "Aantal opgelost"
 #: front/stat.location.php:188 front/stat.location.php:189
 #: front/stat.tracking.php:198 front/stat.tracking.php:199
 msgid "Number solved late"
-msgstr ""
+msgstr "Aantal te laat opgelost"
 
 #: front/stat.location.php:200 front/stat.location.php:201
 #: front/stat.tracking.php:211 front/stat.tracking.php:212
@@ -3450,7 +3450,7 @@ msgstr "Login naam of wachtwoord niet ingevuld"
 #: inc/auth.class.php:817
 #, php-format
 msgid "%1$s log in from IP %2$s"
-msgstr ""
+msgstr "%1$s log in van IP %2$s"
 
 #. TRANS: %1$s is the login of the user and %2$s its IP address
 #: inc/auth.class.php:827
@@ -3479,7 +3479,7 @@ msgstr "Email server"
 #: inc/commonglpi.class.php:786 inc/tickettemplatemandatoryfield.class.php:186
 #, php-format
 msgid "%1$s + %2$s"
-msgstr ""
+msgstr "%1$s + %2$s"
 
 #: inc/auth.class.php:927 inc/auth.class.php:931
 msgid "CAS"
@@ -3777,15 +3777,15 @@ msgstr "Tijd zone van de LDAP directory"
 
 #: inc/authldap.class.php:449
 msgid "Use paged results"
-msgstr ""
+msgstr "Gebruik 'paged' resultaten"
 
 #: inc/authldap.class.php:452
 msgid "Page size"
-msgstr ""
+msgstr "'Page' grootte"
 
 #: inc/authldap.class.php:460
 msgid "Maximum number of results"
-msgstr ""
+msgstr "Maximum aantal resultaten"
 
 #: inc/authldap.class.php:465 inc/contract.class.php:262
 #: inc/search.class.php:4120 inc/softwarelicense.class.php:306
@@ -3986,7 +3986,7 @@ msgstr "Selecteer de gewenste entiteit"
 
 #: inc/authldap.class.php:2761
 msgid "Search criteria for users"
-msgstr ""
+msgstr "Zoek criteria voor gebruikers"
 
 #: inc/authldap.class.php:2799
 msgid "No directory selected"
@@ -4201,7 +4201,7 @@ msgstr "Updaten"
 
 #: inc/bookmark.class.php:716
 msgid "Load"
-msgstr ""
+msgstr "Laden"
 
 #: inc/bookmark.class.php:723
 msgid "Not default search"
@@ -4382,7 +4382,7 @@ msgstr[1] "Kalenders"
 #: inc/rule.class.php:594
 msgctxt "button"
 msgid "Duplicate"
-msgstr ""
+msgstr "Dupliceren"
 
 #: inc/calendar_holiday.class.php:104
 msgid "Add a close time"
@@ -5132,7 +5132,7 @@ msgstr "Maak een wijziging voor dit probleem"
 
 #: inc/change_problem.class.php:265 inc/problem_ticket.class.php:381
 msgid "Add a problem"
-msgstr ""
+msgstr "Voeg een probleem toe"
 
 #: inc/change_project.class.php:65
 msgid "Link Project/Change"
@@ -5456,7 +5456,7 @@ msgstr "Vervang"
 
 #: inc/commondropdown.class.php:696
 msgid "Transfer and merge"
-msgstr ""
+msgstr "Verzenden en samenvoegen"
 
 #: inc/commondropdown.class.php:713
 msgctxt "button"
@@ -5606,7 +5606,7 @@ msgstr "Totale kost"
 #: inc/commonitilcost.class.php:454 inc/contractcost.class.php:346
 #: inc/projectcost.class.php:346
 msgid "Add a new cost"
-msgstr ""
+msgstr "Voeg nieuwe kosten toe"
 
 #: inc/commonitilcost.class.php:468 inc/profile.class.php:999
 #: inc/profile.class.php:1933
@@ -6059,7 +6059,7 @@ msgstr[1] ""
 
 #: inc/commonitiltask.class.php:597
 msgid "Private task"
-msgstr ""
+msgstr "Besloten taak"
 
 #. TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
 #: inc/commonitiltask.class.php:841
@@ -6448,7 +6448,7 @@ msgstr[1] "Processoren"
 
 #: inc/computer.class.php:829
 msgid "Processor frequency"
-msgstr ""
+msgstr "Processor frequentie"
 
 #: inc/computer.class.php:830 inc/devicememory.class.php:56
 #: inc/deviceprocessor.class.php:52 inc/deviceprocessor.class.php:56
@@ -6602,7 +6602,7 @@ msgstr[1] "Virtualisatie systemen"
 
 #: inc/computer.class.php:1049
 msgid "Virtual machine processor number"
-msgstr ""
+msgstr "Processor nummer van virtuele machine"
 
 #: inc/computer.class.php:1057
 msgid "Memory of virtual machines"
@@ -6936,7 +6936,7 @@ msgstr "GLPI server tijdszone"
 msgid "Mysql replica"
 msgid_plural "Mysql replicas"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Mysql replica"
 
 #: inc/config.class.php:597 inc/dbconnection.class.php:420
 #: install/install.php:200
@@ -7102,7 +7102,7 @@ msgstr "Notificaties voor mijn wijzigingen"
 
 #: inc/config.class.php:942
 msgid "Results to display on home page"
-msgstr ""
+msgstr "Resultaten om weer te geven op Start pagina"
 
 #: inc/config.class.php:954
 msgid "PDF export font"
@@ -7164,23 +7164,23 @@ msgstr ""
 
 #: inc/config.class.php:1052
 msgid "OK state color"
-msgstr ""
+msgstr "Kleur status OK"
 
 #: inc/config.class.php:1058
 msgid "Warning state color"
-msgstr ""
+msgstr "Kleur status Waarschuwing"
 
 #: inc/config.class.php:1062
 msgid "Warning state threshold"
-msgstr ""
+msgstr "Grenswaarde status Waarschuwing"
 
 #: inc/config.class.php:1074
 msgid "Critical state color"
-msgstr ""
+msgstr "Kleur status Kritiek"
 
 #: inc/config.class.php:1078
 msgid "Critical state threshold"
-msgstr ""
+msgstr "Grenswaarde status Kritiek"
 
 #: inc/config.class.php:1111 inc/config.class.php:1286
 msgid "Password minimum length"
@@ -7363,7 +7363,7 @@ msgstr ""
 
 #: inc/config.class.php:1694
 msgid "Checking write permissions for upload files"
-msgstr ""
+msgstr "Controleer schrijf rechten van upload bestanden"
 
 #: inc/config.class.php:1696
 msgid "Checking write permissions for pictures files"
@@ -7562,7 +7562,7 @@ msgstr "Vcard"
 #: inc/contact.class.php:249
 msgctxt "button"
 msgid "Add a supplier"
-msgstr ""
+msgstr "Voeg een leverancier toe"
 
 #: inc/contact.class.php:361 inc/contract.class.php:723
 msgid "Associated supplier"
@@ -7578,7 +7578,7 @@ msgstr[1] "Linkt Contactpersonen/Leveranciers"
 
 #: inc/contact_supplier.class.php:186 inc/contract_supplier.class.php:325
 msgid "Add a supplier"
-msgstr ""
+msgstr "Voeg een leverancier toe"
 
 #: inc/contact_supplier.class.php:222 inc/contract_supplier.class.php:360
 #: inc/dropdown.class.php:749 inc/supplier.class.php:134
@@ -7684,7 +7684,7 @@ msgstr "zon- en feestdagen"
 #: inc/contract.class.php:356
 msgctxt "quantity"
 msgid "Number of contracts"
-msgstr ""
+msgstr "Aantal contracten"
 
 #: inc/contract.class.php:373
 msgid "Contract number"
@@ -7920,7 +7920,7 @@ msgstr "Intern"
 #: inc/link.class.php:440 inc/link.class.php:464
 #, php-format
 msgid "%1$s #%2$s"
-msgstr ""
+msgstr "%1$s #%2$s"
 
 #: inc/crontask.class.php:779
 msgid "Launch"
@@ -7953,7 +7953,7 @@ msgstr "Aantal uitvoeringen"
 msgid "%s start"
 msgid_plural "%s starts"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%s starten"
 
 #. TRANS: %s is the number of stops
 #: inc/crontask.class.php:921
@@ -7961,7 +7961,7 @@ msgstr[1] ""
 msgid "%s stop"
 msgid_plural "%s stops"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%s stoppen"
 
 #: inc/crontask.class.php:944
 msgid "Minimal time"
@@ -7975,7 +7975,7 @@ msgstr "Minimum duur"
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%s seconden"
 
 #: inc/crontask.class.php:949
 msgid "Maximal time"
@@ -8046,7 +8046,7 @@ msgstr ""
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Schoon %1$d sessie bestanden op aangemaakt meer dan %2$s seconden geleden"
 
 #: inc/crontask.class.php:1399
 #, php-format
@@ -8074,7 +8074,7 @@ msgstr ""
 msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Schoon %1$d grafiek bestanden op aangemaakt meer dan %2$s seconden geleden"
 
 #: inc/crontask.class.php:1490
 #, php-format
@@ -8356,7 +8356,7 @@ msgstr "Stoppen"
 
 #: inc/displaypreference.class.php:551
 msgid "Delete permanently"
-msgstr ""
+msgstr "Verwijder definitief"
 
 #. TRANS: short for : Search result user display
 #: inc/displaypreference.class.php:701
@@ -8484,7 +8484,7 @@ msgstr "%s Mio max"
 #: inc/notificationtargetprojecttask.class.php:507
 msgctxt "quantity"
 msgid "Number of documents"
-msgstr ""
+msgstr "Aantal documenten"
 
 #: inc/document.class.php:777 inc/document_item.class.php:531
 #: inc/html.class.php:5031 inc/notificationtemplatetranslation.class.php:335
@@ -8591,7 +8591,7 @@ msgstr "Voeg een nieuw bestand toe"
 #: inc/document_item.class.php:705
 msgctxt "button"
 msgid "Associate an existing document"
-msgstr ""
+msgstr "Koppel een bestaand document"
 
 #: inc/documenttype.class.php:51 inc/documenttype.class.php:87
 msgid "Icon"
@@ -8631,7 +8631,7 @@ msgstr "Fout bij het lezen van directory %s"
 #: inc/dropdown.class.php:561
 #, php-format
 msgid "Error: %s is not a directory"
-msgstr ""
+msgstr "Error: %s is geen map"
 
 #: inc/dropdown.class.php:586 inc/dropdown.class.php:590
 #: inc/dropdown.class.php:591
@@ -8643,7 +8643,7 @@ msgstr "GMT"
 msgid "%s hour"
 msgid_plural "%s hours"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%s uren"
 
 #: inc/dropdown.class.php:711
 msgid "Common"
@@ -9016,7 +9016,7 @@ msgstr "Zoekfilter (indien nodig)"
 
 #: inc/entity.class.php:546
 msgid "Mail domain"
-msgstr ""
+msgstr "Email domein"
 
 #: inc/entity.class.php:550 inc/entity.class.php:1324
 msgid "Notification options"
@@ -9047,7 +9047,7 @@ msgstr "Administrator naam"
 
 #: inc/entity.class.php:588 inc/entity.class.php:1340
 msgid "Response address (if needed)"
-msgstr ""
+msgstr "Antwoord adres (indien nodig)"
 
 #: inc/entity.class.php:593 inc/entity.class.php:1370
 #: inc/notificationmailsetting.class.php:173
@@ -9160,11 +9160,11 @@ msgstr "Start datum van garantie"
 
 #: inc/entity.class.php:777
 msgid "Satisfaction survey configuration"
-msgstr ""
+msgstr "Configuratie tevredenheidsonderzoek"
 
 #: inc/entity.class.php:784
 msgid "Satisfaction survey trigger rate"
-msgstr ""
+msgstr "tevredenheidsonderzoek"
 
 #. TRANS: software in plural
 #: inc/entity.class.php:803 inc/entity.class.php:1254
@@ -9205,7 +9205,7 @@ msgstr "LDAP filter geassocieerd met de entiteit (indien noodzakelijk)"
 
 #: inc/entity.class.php:1187
 msgid "Autofill dates for financial and administrative information"
-msgstr ""
+msgstr "Automatisch vullen van datums voor financiële en administratieve informatie"
 
 #: inc/entity.class.php:1191 inc/entity.class.php:1240
 #: inc/entity.class.php:2306 inc/entity.class.php:2409
@@ -9374,7 +9374,7 @@ msgstr "Niveau"
 msgid "%1$s login since %2$s"
 msgid_plural "%1$s logins since %2$s"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "%1$s logins sinds %2$s"
 
 #: inc/fieldunicity.class.php:78 inc/fieldunicity.class.php:328
 msgid "Unique fields"
@@ -9514,7 +9514,7 @@ msgstr "Gedelegeerde"
 #: inc/stat.class.php:1387
 #, php-format
 msgid "%1$s / %2$s"
-msgstr ""
+msgstr "%1$s / %2$s"
 
 #: inc/group_user.class.php:147 inc/user.class.php:2382
 msgid "Associate to a group"
@@ -9547,11 +9547,11 @@ msgstr "Een gebruiker toevoegen"
 msgid "Criterion"
 msgid_plural "Criteria"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Criteria"
 
 #: inc/group_user.class.php:458 inc/group_user.class.php:542
 msgid "D=Dynamic"
-msgstr ""
+msgstr "D=Dynamisch"
 
 #: inc/group_user.class.php:721
 msgid "Move to group"
@@ -9839,7 +9839,7 @@ msgstr "Weergeven (aantal items)"
 #: inc/html.class.php:4082
 #, php-format
 msgid "%1$d on %2$d"
-msgstr ""
+msgstr "%1$d op %2$d"
 
 #: inc/html.class.php:4875
 msgid "Drag and drop your file here, or"
@@ -9889,7 +9889,7 @@ msgstr "Geen item aan het eind van garantie"
 
 #: inc/infocom.class.php:538
 msgid "send infocom alert failed"
-msgstr ""
+msgstr "Versturen van infocom alarm mislukt"
 
 #: inc/infocom.class.php:618 inc/infocom.class.php:635
 msgid "Linear"
@@ -10264,7 +10264,7 @@ msgstr "Recentelijk toegevoegd"
 
 #: inc/knowbaseitem.class.php:1322
 msgid "Last updated entries"
-msgstr ""
+msgstr "Laatst bijgewerkt"
 
 #: inc/knowbaseitem.class.php:1325
 msgid "Most popular questions"
@@ -10320,7 +10320,7 @@ msgstr[1] "Profielen"
 
 #: inc/knowbaseitem.class.php:1683
 msgid "Knowledge base administration"
-msgstr ""
+msgstr "kennisbank beheer"
 
 #: inc/knowbaseitem.class.php:1684
 msgid "Publish in the FAQ"
@@ -10488,7 +10488,7 @@ msgstr "Herstel het item"
 
 #: inc/log.class.php:379
 msgid "Add the component"
-msgstr ""
+msgstr "Voeg de component toe"
 
 #. TRANS: %1$s is the old_value, %2$s is the new_value
 #: inc/log.class.php:397
@@ -10517,11 +10517,11 @@ msgstr ""
 
 #: inc/log.class.php:436
 msgid "Install the software"
-msgstr ""
+msgstr "Installeeer de software"
 
 #: inc/log.class.php:443
 msgid "Uninstall the software"
-msgstr ""
+msgstr "De-installeer de software"
 
 #: inc/log.class.php:453
 msgid "Disconnect the item"
@@ -10533,7 +10533,7 @@ msgstr "Verbind het item"
 
 #: inc/log.class.php:477
 msgid "Add a link with an item"
-msgstr ""
+msgstr "Voeg een link toe met een item"
 
 #: inc/log.class.php:486
 msgid "Delete a link with an item"
@@ -10570,7 +10570,7 @@ msgstr "aanpassing van een veld"
 #: inc/log.class.php:603
 #, php-format
 msgid "Change %1$s by %2$s"
-msgstr ""
+msgstr "Wijzig %1$s in %2$s"
 
 #: inc/mailcollector.class.php:242
 msgid "mbstring extension not found. Warning with charsets used."
@@ -10621,7 +10621,7 @@ msgstr "Email %s niet gevonden. Import onmogelijk."
 msgid ""
 "Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, "
 "errors=%4$d, blacklisted=%5$d"
-msgstr ""
+msgstr "Aantal berichten: beschikbaar=%1$d, opgehaald=%2$d, geweigerd=%3$d, fouten=%4$d, op zwarte lijst=%5$d"
 
 #: inc/mailcollector.class.php:602
 msgid "Could not connect to mailgate server"
@@ -10708,7 +10708,7 @@ msgstr ""
 #: inc/massiveaction.class.php:481
 msgctxt "button"
 msgid "Add to transfer list"
-msgstr ""
+msgstr "Toevoegen aan verzendlijst"
 
 #: inc/massiveaction.class.php:529
 msgctxt "button"
@@ -11097,7 +11097,7 @@ msgstr "item is niet gelinkt aan een object"
 #: inc/networkportinstantiation.class.php:798
 #, php-format
 msgid "%1$s on %2$s"
-msgstr ""
+msgstr "%1$s op %2$s"
 
 #: inc/networkportinstantiation.class.php:796 inc/profile.class.php:534
 msgid "Without name"
@@ -11236,7 +11236,7 @@ msgstr[1] ""
 #: inc/queuedmail.class.php:189 inc/queuedmail.class.php:595
 #: inc/ticket.class.php:2097
 msgid "Creation date"
-msgstr ""
+msgstr "Aanmaak datum"
 
 #: inc/notepad.class.php:201
 #: inc/notificationtargetcommonitilobject.class.php:1025
@@ -11454,7 +11454,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:432
 msgid "Requester group manager"
-msgstr ""
+msgstr "Manager Aanvrager groep"
 
 #: inc/notificationtargetcommonitilobject.class.php:434
 msgid "Requester group except manager users"
@@ -11508,7 +11508,7 @@ msgstr "Toegewezen aan groepen"
 
 #: inc/notificationtargetcommonitilobject.class.php:1036
 msgid "Number of unresolved items"
-msgstr ""
+msgstr "Aantal niet opgeloste items"
 
 #: inc/notificationtargetcommonitilobject.class.php:1042
 #: inc/notificationtargetproject.class.php:593
@@ -11575,7 +11575,7 @@ msgstr "De volgende automatische acties werden fout afgehandeld, correctie is no
 
 #: inc/notificationtargetdbconnection.class.php:56
 msgid "Desynchronization MySQL replica"
-msgstr ""
+msgstr "De-synchronisatie MySQL replica"
 
 #: inc/notificationtargetdbconnection.class.php:67
 msgid "Can't connect to the database."
@@ -12028,7 +12028,7 @@ msgstr "CSS"
 msgid "Template translation"
 msgid_plural "Template translations"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Sjabloon vertalingen"
 
 #: inc/notificationtemplatetranslation.class.php:124
 msgid "Show list of available tags"
@@ -12208,7 +12208,7 @@ msgstr "Bekijk de gehele planning"
 msgid "Planning reminder"
 msgid_plural "Planning reminders"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Planning herinneringen"
 
 #: inc/planningrecall.class.php:266
 #, php-format
@@ -12406,7 +12406,7 @@ msgstr ""
 
 #: inc/problem.class.php:855
 msgid "Problem followup"
-msgstr ""
+msgstr "Probleem opvolging"
 
 #: inc/problem.class.php:953
 msgid "No problem in progress."
@@ -12532,7 +12532,7 @@ msgstr[1] "Publieke Herinneringen"
 msgid "Public RSS feed"
 msgid_plural "Public RSS feeds"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Publieke RSS Feeds"
 
 #: inc/profile.class.php:861 inc/profile.class.php:1629
 msgid "Financial and administratives information"
@@ -12595,7 +12595,7 @@ msgstr "Regels die een computer toewijzen aam een entiteit"
 #: inc/rulemailcollector.class.php:64
 #: inc/rulemailcollectorcollection.class.php:47
 msgid "Rules for assigning a ticket created through a mails receiver"
-msgstr ""
+msgstr "Regels voor het toewijzen van tickets aangemaakt middels een Mail Ontvanger"
 
 #: inc/profile.class.php:1340 inc/profile.class.php:1793
 msgid "Rules for assigning a category to a software"
@@ -12672,7 +12672,7 @@ msgstr "Recursief"
 #: inc/profile_user.class.php:194 inc/profile_user.class.php:336
 #: inc/profile_user.class.php:485
 msgid "D=Dynamic, R=Recursive"
-msgstr ""
+msgstr "D=Dynamisch, R=Recursief"
 
 #: inc/profile_user.class.php:588
 msgid "No user found"
@@ -13070,7 +13070,7 @@ msgstr "Apparaat tijdelijk niet beschikbaar"
 
 #: inc/reservation.class.php:443
 msgid "All reservable devices"
-msgstr ""
+msgstr "Alle te reserveren apparaten"
 
 #: inc/reservation.class.php:560
 msgid "Reserve"
@@ -13178,7 +13178,7 @@ msgstr "Materiaal reservaties die vandaag vervallen"
 
 #: inc/reservationitem.class.php:636
 msgid "Send reservation alert failed"
-msgstr ""
+msgstr "Versturen van een reserveringswaarschuwing mislukt"
 
 #: inc/reservationitem.class.php:675
 msgid "Make a reservation"
@@ -13190,7 +13190,7 @@ msgstr ""
 
 #: inc/rssfeed.class.php:425 inc/rssfeed.class.php:663
 msgid "Number of items displayed"
-msgstr ""
+msgstr "Aantal weergegeven items"
 
 #: inc/rssfeed.class.php:440 inc/rssfeed.class.php:648
 msgid "Refresh rate"
@@ -13333,7 +13333,7 @@ msgstr "Resultaat van een reguliere expressie"
 
 #: inc/rule.class.php:2029
 msgid "Key"
-msgstr ""
+msgstr "Sleutel"
 
 #: inc/rule.class.php:2896
 msgid "Rules using the object have been disabled."
@@ -13489,7 +13489,7 @@ msgstr "niet onder"
 
 #: inc/rulecriteria.class.php:617
 msgid "Add a criterion"
-msgstr ""
+msgstr "Voeg een criterium toe"
 
 #: inc/ruledictionnarycomputermodelcollection.class.php:46
 #: inc/ruledictionnarymonitormodelcollection.class.php:42
@@ -13550,7 +13550,7 @@ msgstr "Operating systems dictionary"
 
 #: inc/ruledictionnaryoperatingsystemservicepackcollection.class.php:42
 msgid "Dictionnary of service packs"
-msgstr ""
+msgstr "Woordenboek voor Service packes"
 
 #: inc/ruledictionnaryoperatingsystemversioncollection.class.php:42
 msgid "Dictionnary of operating system versions"
@@ -13626,7 +13626,7 @@ msgstr "Waarschuwing voor de dictionary-regels opnieuw worden toegepast"
 msgid ""
 "Warning! This operation can put merged software in the dustbin.<br>Sure to "
 "notify your users."
-msgstr ""
+msgstr "Waarschuwing! Deze actie kan samengevoegde software in de prullenbak doen belandenThis . Stel uw gebruikers op de hoogte."
 
 #: inc/ruledictionnarysoftwarecollection.class.php:88
 msgid "Manufacturer choice"
@@ -13717,7 +13717,7 @@ msgstr "Received email header"
 
 #: inc/rulemailcollector.class.php:141
 msgid "Known mail domain"
-msgstr ""
+msgstr "Bekend email domein"
 
 #: inc/rulemailcollector.class.php:149
 msgid "User featuring the profile"
@@ -13745,15 +13745,15 @@ msgstr "Entiteit gebaseerd op gebruikersprofiel"
 
 #: inc/rulemailcollector.class.php:201 inc/rulemailcollector.class.php:206
 msgid "Reject email"
-msgstr ""
+msgstr "Weiger email"
 
 #: inc/rulemailcollector.class.php:202
 msgid "without email response"
-msgstr ""
+msgstr "zonder email reactie"
 
 #: inc/rulemailcollector.class.php:207
 msgid "with email response"
-msgstr ""
+msgstr "met email reactie"
 
 #: inc/ruleright.class.php:230
 msgid "Automatic user assignment"
@@ -13761,7 +13761,7 @@ msgstr "Automatische toekenning gebruiker(s)"
 
 #: inc/ruleright.class.php:241
 msgid "Global criteria"
-msgstr ""
+msgstr "Globale criteria"
 
 #: inc/ruleright.class.php:275
 msgid "Imported group from an LDAP directory"
@@ -13839,17 +13839,17 @@ msgstr ""
 #: inc/search.class.php:1558 inc/search.class.php:1561
 #, php-format
 msgid "%1$s <> %2$s"
-msgstr ""
+msgstr "%1$s <> %2$s"
 
 #: inc/search.class.php:1488 inc/search.class.php:1567
 #, php-format
 msgid "%1$s < %2$s"
-msgstr ""
+msgstr "%1$s < %2$s"
 
 #: inc/search.class.php:1492 inc/search.class.php:1572
 #, php-format
 msgid "%1$s > %2$s"
-msgstr ""
+msgstr "%1$s > %2$s"
 
 #: inc/search.class.php:5086 inc/search.class.php:5134
 msgid "before"
@@ -13920,14 +13920,14 @@ msgstr "Automatische SLA herinneringen"
 msgid "+ %d minute"
 msgid_plural "+ %d minutes"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "+ %d minuten"
 
 #: inc/slalevel.class.php:358
 #, php-format
 msgid "- %d minute"
 msgid_plural "- %d minutes"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "- %d minuten"
 
 #: inc/slalevel_ticket.class.php:82
 msgid "Automatic actions of SLA"
@@ -13962,7 +13962,7 @@ msgstr "Versie naam"
 
 #: inc/software.class.php:586
 msgid "Version comments"
-msgstr ""
+msgstr "Versie opmerkingen"
 
 #: inc/software.class.php:622
 msgid "License name"
@@ -13970,11 +13970,11 @@ msgstr "Licentie naam"
 
 #: inc/software.class.php:631
 msgid "License serial number"
-msgstr ""
+msgstr "Licentie serie nummer"
 
 #: inc/software.class.php:639
 msgid "License inventory number"
-msgstr ""
+msgstr "Licentie inventarisnummer"
 
 #: inc/software.class.php:646
 msgctxt "phone"
@@ -13983,7 +13983,7 @@ msgstr "Aantal licenties"
 
 #: inc/software.class.php:665
 msgid "License comments"
-msgstr ""
+msgstr "Licentie opmerkingen"
 
 #: inc/software.class.php:676 inc/softwarelicense.class.php:323
 msgid "Never expire"
@@ -14039,7 +14039,7 @@ msgstr "Licentie %1$s verliep op %2$s"
 
 #: inc/softwarelicense.class.php:533
 msgid "Send licenses alert failed"
-msgstr ""
+msgstr "Versturen van licentie waarschuwingen mislukt"
 
 #: inc/softwarelicense.class.php:676
 msgctxt "button"
@@ -14113,15 +14113,15 @@ msgstr "Geen statistieken beschikbaar"
 
 #: inc/stat.class.php:1380
 msgid "SVG"
-msgstr ""
+msgstr "SVG"
 
 #: inc/stat.class.php:1384
 msgid "PNG"
-msgstr ""
+msgstr "PNG"
 
 #: inc/stat.class.php:1389
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 #: inc/stat.class.php:1463
 msgid "Number of tickets"
@@ -14212,15 +14212,15 @@ msgstr "Aanvraag validatie"
 #: inc/ticket.class.php:1987
 msgctxt "button"
 msgid "Link tickets"
-msgstr ""
+msgstr "Koppel tickets"
 
 #: inc/ticket.class.php:2104
 msgid "Response date"
-msgstr ""
+msgstr "Reactie datum"
 
 #: inc/ticket.class.php:2176
 msgid "Private followup"
-msgstr ""
+msgstr "Besloten opvolging"
 
 #: inc/ticket.class.php:2204
 msgid "Take into account time"
@@ -14240,7 +14240,7 @@ msgstr "Aantal gelinkte tickets"
 
 #: inc/ticket.class.php:2245
 msgid "Number of duplicated tickets"
-msgstr ""
+msgstr "Aantal gedupliceerde tickets"
 
 #: inc/ticket.class.php:2459 install/update_084_085.php:2062
 msgctxt "ticket"
@@ -14698,7 +14698,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:888
 msgid "You must install the MySQL Improved extension for PHP."
-msgstr ""
+msgstr "U dient de MySQL verbeterde uitbreidingen voor PHP te installeren."
 
 #: inc/toolbox.class.php:894
 msgid "Sessions test"
@@ -14840,19 +14840,19 @@ msgstr "SELinux boolean configuratie voor %s"
 #. TRANS: list of unit (o for octet)
 #: inc/toolbox.class.php:1182
 msgid "o"
-msgstr ""
+msgstr "o"
 
 #: inc/toolbox.class.php:1182
 msgid "Kio"
-msgstr ""
+msgstr "Kio"
 
 #: inc/toolbox.class.php:1182
 msgid "Gio"
-msgstr ""
+msgstr "Gio"
 
 #: inc/toolbox.class.php:1182
 msgid "Tio"
-msgstr ""
+msgstr "Tio"
 
 #: inc/toolbox.class.php:1416 inc/toolbox.class.php:1418
 #: inc/toolbox.class.php:1423 inc/toolbox.class.php:1425
@@ -14889,43 +14889,43 @@ msgstr "Verbindingsopties"
 #. open.php
 #: inc/toolbox.class.php:2067
 msgid "IMAP"
-msgstr ""
+msgstr "IMAP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:2069
 msgid "POP"
-msgstr ""
+msgstr "POP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:2078
 msgid "SSL"
-msgstr ""
+msgstr "SSL"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:2088
 msgid "TLS"
-msgstr ""
+msgstr "TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:2090
 msgid "NO-TLS"
-msgstr ""
+msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:2106
 msgid "NO-VALIDATE-CERT"
-msgstr ""
+msgstr "NO-VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:2108
 msgid "VALIDATE-CERT"
-msgstr ""
+msgstr "VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
@@ -14958,7 +14958,7 @@ msgstr "Poort (optioneel)"
 msgid ""
 "The action you have requested is not allowed. Reload previous page before "
 "doing action again."
-msgstr ""
+msgstr "De handeling die u wilt uitvoeren is niet toegestaan. Herlaad de vorige pagina voor u de handeling opnieuw uitvoert."
 
 #: inc/transfer.class.php:3121 inc/transfer.class.php:3128
 msgid "Keep"
@@ -14966,11 +14966,11 @@ msgstr "Bewaren"
 
 #: inc/transfer.class.php:3134
 msgid "Software of computers"
-msgstr ""
+msgstr "Software van computers"
 
 #: inc/transfer.class.php:3138
 msgid "If software are no longer used"
-msgstr ""
+msgstr "Als de software niet langer wordt gebruikt"
 
 #: inc/transfer.class.php:3148
 msgid "Components of computers"
@@ -15002,23 +15002,23 @@ msgstr "Directe verbindingen"
 
 #: inc/transfer.class.php:3192
 msgid "If monitors are no longer used"
-msgstr ""
+msgstr "Als monitoren niet langer worden gebruikt"
 
 #: inc/transfer.class.php:3202
 msgid "If printers are no longer used"
-msgstr ""
+msgstr "Als printers niet langer worden gebruikt"
 
 #: inc/transfer.class.php:3212
 msgid "If devices are no longer used"
-msgstr ""
+msgstr "Als apparaten niet langer worden gebruikt"
 
 #: inc/transfer.class.php:3222
 msgid "If phones are no longer used"
-msgstr ""
+msgstr "Als telefoons niet langer worden gebruikt"
 
 #: inc/transfer.class.php:3235
 msgid "If suppliers are no longer used"
-msgstr ""
+msgstr "Als leveranciers niet langer worden gebruikt"
 
 #: inc/transfer.class.php:3241
 msgid "Links between suppliers and contacts"
@@ -15026,11 +15026,11 @@ msgstr "Relaties tussen leveranciers en contacten"
 
 #: inc/transfer.class.php:3245
 msgid "If contacts are no longer used"
-msgstr ""
+msgstr "Als contactpersonen niet langer worden gebruikt"
 
 #: inc/transfer.class.php:3255
 msgid "If documents are no longer used"
-msgstr ""
+msgstr "Als documenten niet langer worden gebruikt"
 
 #: inc/transfer.class.php:3265
 msgid "If contracts are no longer used"
@@ -15144,7 +15144,7 @@ msgstr ""
 #: inc/user.class.php:2393
 msgctxt "button"
 msgid "Change the authentication method"
-msgstr ""
+msgstr "Wijzig de authenticatie methode"
 
 #: inc/user.class.php:2555
 msgid "Last login"
@@ -15211,7 +15211,7 @@ msgstr "Paswoord reset is verlopen of onjuist, gelieve te hernieuwen"
 msgid ""
 "Please enter your email address. An email will be sent to you and you will "
 "be able to choose a new password."
-msgstr ""
+msgstr "Vul a.u.b. uw email adres in. Er zal een email naar u worden gestuurd en u kunt dan een nieuw wachtwoord kiezen."
 
 #: inc/user.class.php:3784
 msgid "Reset password successful."
@@ -15275,7 +15275,7 @@ msgstr "Standaard email"
 
 #: inc/vlan.class.php:161
 msgid "Untagged"
-msgstr ""
+msgstr "Untagged"
 
 #: inc/wifinetwork.class.php:62
 msgid "Ad-hoc"

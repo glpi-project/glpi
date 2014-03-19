@@ -4,15 +4,15 @@
 # 
 # Translators:
 # qubit, 2013
-# qubit, 2013
+# qubit, 2013-2014
 # zombpj, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-03-14 17:05+0100\n"
-"PO-Revision-Date: 2014-03-14 16:06+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-03-18 17:22+0000\n"
+"Last-Translator: qubit\n"
 "Language-Team: Latvian (Latvia) (http://www.transifex.com/projects/p/GLPI/language/lv_LV/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -819,11 +819,11 @@ msgstr ""
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:60
 msgid "and/or"
-msgstr ""
+msgstr "un/vai"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:60
 msgid "Add new devices"
-msgstr ""
+msgstr "Pievienot jaunu iekārtu"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:63
 msgid "No unaffected device !"
@@ -2872,18 +2872,18 @@ msgstr "Statistika"
 msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atvērts"
+msgstr[1] "Atvērts"
+msgstr[2] "Atvērts"
 
 #: front/stat.global.php:93 front/stat.graph.php:338 inc/stat.class.php:440
 #: inc/ticket.class.php:2463
 msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atrisināts"
+msgstr[1] "Atrisināts"
+msgstr[2] "Atrisināts"
 
 #: front/stat.global.php:94 front/stat.graph.php:339
 #: inc/commonitilobject.class.php:2503 inc/stat.class.php:442
@@ -2936,17 +2936,17 @@ msgstr[2] "Stundas"
 msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atvērts"
+msgstr[1] "Atvērts"
+msgstr[2] "Atvērts"
 
 #: front/stat.global.php:204 front/stat.graph.php:445 inc/stat.class.php:460
 msgctxt "survey"
 msgid "Answered"
 msgid_plural "Answered"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Atbildēt"
+msgstr[1] "Atbildēt"
+msgstr[2] "Atbildēt"
 
 #: front/stat.global.php:220 front/stat.graph.php:461
 #: front/stat.location.php:212 front/stat.location.php:213
@@ -4243,9 +4243,9 @@ msgstr "Daļēja grāmatzīmes ielāde."
 #: inc/bookmark.class.php:668
 msgid "Bookmark"
 msgid_plural "Bookmarks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Grāmatzīme"
+msgstr[1] "Grāmatzīme"
+msgstr[2] "Grāmatzīmes"
 
 #: inc/bookmark.class.php:670
 msgid "Default view"
@@ -4576,7 +4576,7 @@ msgstr "Nav kasetnes"
 #: inc/cartridge.class.php:422
 #, php-format
 msgid "Total: %1$d (%2$d used, %3$d worn)"
-msgstr ""
+msgstr "Kopā: %1$d (%2$d lietoti, %3$d nolietoti)"
 
 #: inc/cartridge.class.php:658 inc/consumable.class.php:484
 #: inc/infocom.class.php:958 inc/infocom.class.php:1684
@@ -6149,9 +6149,9 @@ msgstr "Uzdevuma numurs"
 #: inc/profile.class.php:1424 inc/taskcategory.class.php:52
 msgid "Task category"
 msgid_plural "Task categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Uzdevuma kategorija"
+msgstr[1] "Uzdevuma kategorija"
+msgstr[2] "Uzdevuma kategorijas"
 
 #: inc/commonitiltask.class.php:597
 msgid "Private task"
@@ -6207,7 +6207,7 @@ msgstr "Darāmais"
 
 #: inc/commonitiltask.class.php:1004
 msgid "Planned"
-msgstr ""
+msgstr "Plānot"
 
 #: inc/commonitiltask.class.php:1010 inc/planning.class.php:164
 #: inc/planning.class.php:180
@@ -6813,7 +6813,7 @@ msgstr "Programmatūra bez kategorijas"
 
 #: inc/computer_softwareversion.class.php:773
 msgid "Valid license"
-msgstr ""
+msgstr "Derīga licence"
 
 #: inc/computervirtualmachine.class.php:195
 #: inc/computervirtualmachine.class.php:346
@@ -8821,23 +8821,23 @@ msgstr[2] "Pieteikumu kategorijas"
 #: inc/dropdown.class.php:727 inc/projectstate.class.php:47
 msgid "Project state"
 msgid_plural "Project states"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Projekta status"
+msgstr[1] "Projekta status"
+msgstr[2] "Projekta statusi"
 
 #: inc/dropdown.class.php:728 inc/projecttype.class.php:47
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Projekta tips"
+msgstr[1] "Projekta tips"
+msgstr[2] "Projekta tipi"
 
 #: inc/dropdown.class.php:729 inc/projecttasktype.class.php:46
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Projekta uzdevuma tips"
+msgstr[1] "Projekta uzdevuma tips"
+msgstr[2] "Projekta uzdevuma tipi"
 
 #: inc/dropdown.class.php:735 inc/networkequipmenttype.class.php:44
 #: inc/rule.class.php:411
@@ -9145,9 +9145,9 @@ msgstr "Eksportēt"
 #: inc/notificationtemplatetranslation.class.php:395
 msgid "Translation"
 msgid_plural "Translations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tulkojums"
+msgstr[1] "Tulkojums"
+msgstr[2] "Tulkojumi"
 
 #: inc/dropdowntranslation.class.php:98 inc/dropdowntranslation.class.php:109
 msgid "There's already a translation for this field in this language"
@@ -9831,7 +9831,7 @@ msgstr "Ielādēt grāmatzīmes"
 
 #: inc/html.class.php:1690
 msgid "^Top^"
-msgstr ""
+msgstr "^Uz augšu^"
 
 #: inc/html.class.php:1741 inc/toolbox.class.php:1396
 #: inc/toolbox.class.php:1400
@@ -10054,11 +10054,11 @@ msgstr ""
 
 #: inc/html.class.php:5068
 msgid "Upload successful"
-msgstr ""
+msgstr "Veiksmīga augšupielāde"
 
 #: inc/html.class.php:5071
 msgid "Upload error"
-msgstr ""
+msgstr "Kļūda augšupielādējot "
 
 #: inc/html.class.php:5140
 msgid "Check/uncheck all"
@@ -11873,7 +11873,7 @@ msgstr "Simptomi"
 
 #: inc/notificationtargetproject.class.php:51
 msgid "New project"
-msgstr ""
+msgstr "Jauns projekts"
 
 #: inc/notificationtargetproject.class.php:52
 msgid "Update of a project"
@@ -11887,7 +11887,7 @@ msgstr ""
 #: inc/notificationtargetproject.class.php:571 inc/project.class.php:454
 #: inc/project.class.php:544
 msgid "Manager group"
-msgstr ""
+msgstr "Grupas vadītājs"
 
 #: inc/notificationtargetproject.class.php:66
 msgid "Manager of manager group"
@@ -11928,7 +11928,7 @@ msgstr ""
 #: inc/notificationtargetproject.class.php:559 inc/project.class.php:390
 #: inc/project.class.php:824
 msgid "Code"
-msgstr ""
+msgstr "Kods"
 
 #: inc/notificationtargetproject.class.php:564
 #: inc/notificationtargetproject.class.php:588
@@ -11937,7 +11937,7 @@ msgstr ""
 #: inc/project.class.php:891 inc/projecttask.class.php:410
 #: inc/projecttask.class.php:635 inc/projecttask.class.php:714
 msgid "Planned start date"
-msgstr ""
+msgstr "Plānotais sākuma datums"
 
 #: inc/notificationtargetproject.class.php:565
 #: inc/notificationtargetproject.class.php:589
@@ -11946,7 +11946,7 @@ msgstr ""
 #: inc/project.class.php:901 inc/projecttask.class.php:422
 #: inc/projecttask.class.php:640 inc/projecttask.class.php:715
 msgid "Planned end date"
-msgstr ""
+msgstr "Plānotais beigu datums"
 
 #: inc/notificationtargetproject.class.php:566
 #: inc/notificationtargetproject.class.php:590
@@ -11955,7 +11955,7 @@ msgstr ""
 #: inc/project.class.php:895 inc/projecttask.class.php:415
 #: inc/projecttask.class.php:645
 msgid "Real start date"
-msgstr ""
+msgstr "Reālais sākuma datums"
 
 #: inc/notificationtargetproject.class.php:567
 #: inc/notificationtargetproject.class.php:591
@@ -11964,7 +11964,7 @@ msgstr ""
 #: inc/project.class.php:905 inc/projecttask.class.php:426
 #: inc/projecttask.class.php:650
 msgid "Real end date"
-msgstr ""
+msgstr "Reālais beigu datums"
 
 #: inc/notificationtargetproject.class.php:574
 #: inc/notificationtargetproject.class.php:587
@@ -11973,21 +11973,21 @@ msgstr ""
 #: inc/project.class.php:849 inc/projecttask.class.php:395
 #: inc/projecttask.class.php:619 inc/projecttask.class.php:713
 msgid "Percent done"
-msgstr ""
+msgstr "Procenti paveikti"
 
 #: inc/notificationtargetproject.class.php:575
 #: inc/notificationtargetprojecttask.class.php:474 inc/project.class.php:470
 #: inc/project.class.php:911 inc/projecttask.class.php:432
 #: inc/projecttask.class.php:655 inc/projecttask.class.php:716
 msgid "Planned duration"
-msgstr ""
+msgstr "Plānotais ilgums"
 
 #: inc/notificationtargetproject.class.php:576
 #: inc/notificationtargetprojecttask.class.php:475 inc/project.class.php:488
 #: inc/project.class.php:918 inc/projecttask.class.php:443
 #: inc/projecttask.class.php:665 inc/projecttask.class.php:717
 msgid "Effective duration"
-msgstr ""
+msgstr "Efektivitātes ilgums"
 
 #: inc/notificationtargetproject.class.php:578
 #: inc/notificationtargetprojecttask.class.php:479
@@ -12012,9 +12012,9 @@ msgstr[2] ""
 #: inc/projectteam.class.php:68
 msgid "Project team"
 msgid_plural "Project teams"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Projekta komanda"
+msgstr[1] "Projekta komanda"
+msgstr[2] "Projekta komandas"
 
 #: inc/notificationtargetprojecttask.class.php:51
 msgid "New project task"
@@ -12042,9 +12042,9 @@ msgstr ""
 #: inc/projecttask.class.php:342 inc/projecttask.class.php:577
 msgid "Project"
 msgid_plural "Projects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Projekts"
+msgstr[1] "Projekts"
+msgstr[2] "Projekti"
 
 #: inc/notificationtargetprojecttask.class.php:476
 #: inc/projecttask.class.php:455
@@ -12823,7 +12823,7 @@ msgstr ""
 
 #: inc/profile.class.php:1316 inc/queuedmail.class.php:49
 msgid "Mail queue"
-msgstr ""
+msgstr "Pasta rinda"
 
 #: inc/profile.class.php:1334 inc/profile.class.php:1775
 msgid "Rules for assigning a computer to an entity"
@@ -12936,11 +12936,11 @@ msgstr ""
 
 #: inc/project.class.php:137
 msgid "GANTT"
-msgstr ""
+msgstr "GANTT"
 
 #: inc/project.class.php:196 inc/project.class.php:206
 msgid "My tasks"
-msgstr ""
+msgstr "Mani uzdevumi"
 
 #: inc/project.class.php:441 inc/project.class.php:864
 msgid "Show on global GANTT"
@@ -13063,7 +13063,7 @@ msgstr "Sestdiena"
 
 #: inc/projectstate.class.php:59 inc/projectstate.class.php:80
 msgid "Color"
-msgstr ""
+msgstr "Krāsa"
 
 #: inc/projectstate.class.php:63 inc/projectstate.class.php:85
 msgid "Finished state"
@@ -13072,9 +13072,9 @@ msgstr ""
 #: inc/projecttask.class.php:63
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Projekta uzdevums"
+msgstr[1] "Projekta uzdevums"
+msgstr[2] "Projekta uzdevumi"
 
 #: inc/projecttask.class.php:149
 msgid "Update (actor)"
@@ -13087,7 +13087,7 @@ msgstr "Autors"
 #: inc/projecttask.class.php:760
 msgctxt "button"
 msgid "Add a task"
-msgstr ""
+msgstr "Pievienot uzdevumu"
 
 #: inc/projecttaskteam.class.php:68
 msgid "Task team"
@@ -13150,7 +13150,7 @@ msgstr ""
 
 #: inc/queuedmail.class.php:262 inc/queuedmail.class.php:632
 msgid "Message ID"
-msgstr ""
+msgstr "Ziņojuma ID"
 
 #: inc/queuedmail.class.php:268 inc/queuedmail.class.php:605
 msgid "Number of tries of sent"
@@ -14139,9 +14139,9 @@ msgstr "Maksimālais laiks, lai risinātu"
 #: inc/sla.class.php:177
 msgid "Minute"
 msgid_plural "Minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Minūte"
+msgstr[1] "Minūte"
+msgstr[2] "Minūtes"
 
 #: inc/sla.class.php:198 inc/sla.class.php:241
 msgid "End of working day"
@@ -14204,7 +14204,7 @@ msgstr "Pārrēķināt kategoriju"
 #. TRANS: Indicator to know is all licenses of the software are valids
 #: inc/software.class.php:529
 msgid "Valid licenses"
-msgstr ""
+msgstr "Derīgas licences"
 
 #: inc/software.class.php:540
 msgctxt "quantity"
@@ -14247,7 +14247,7 @@ msgstr ""
 #: inc/software.class.php:682 inc/softwarelicense.class.php:310
 msgctxt "adjective"
 msgid "Valid"
-msgstr ""
+msgstr "Derīgs"
 
 #: inc/software.class.php:956
 msgid "Merge"
@@ -14270,7 +14270,7 @@ msgstr "Versija lietošanā"
 #: inc/softwarelicense.class.php:312
 msgctxt "adjective"
 msgid "Invalid"
-msgstr ""
+msgstr "Nederīgs"
 
 #: inc/softwarelicense.class.php:324
 msgid ""
@@ -14280,7 +14280,7 @@ msgstr ""
 
 #: inc/softwarelicense.class.php:429
 msgid "Valid"
-msgstr ""
+msgstr "Derīgs"
 
 #: inc/softwarelicense.class.php:449
 msgid "Send alarms on expired licenses"
@@ -14432,7 +14432,7 @@ msgstr[2] "Saistītie līgumi"
 
 #: inc/ticket.class.php:148
 msgid "Create ticket"
-msgstr ""
+msgstr "Izveidot pieteikumu"
 
 #: inc/ticket.class.php:493 inc/ticket.class.php:510
 msgid "Created tickets"
@@ -14539,9 +14539,9 @@ msgstr "Versija"
 #: inc/ticket.class.php:2774
 msgid "Installed software"
 msgid_plural "Installed software"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Uzstādītā programmatūra"
+msgstr[1] "Uzstādītā programmatūra"
+msgstr[2] "Uzstādītā programmatūra"
 
 #: inc/ticket.class.php:2827
 msgid "Or complete search"
@@ -14601,7 +14601,7 @@ msgstr "Aizvēršanas datums"
 
 #: inc/ticket.class.php:4052
 msgid "Reopen"
-msgstr ""
+msgstr "Atsākt"
 
 #: inc/ticket.class.php:4416
 #, php-format
@@ -14610,7 +14610,7 @@ msgstr "Datne (%s)"
 
 #: inc/ticket.class.php:4432
 msgid "Default documents:"
-msgstr ""
+msgstr "Noklusētais dokuments:"
 
 #: inc/ticket.class.php:4708 inc/ticket.class.php:4875
 msgid "Your tickets to close"
@@ -14789,7 +14789,7 @@ msgstr ""
 
 #: inc/ticketfollowup.class.php:870 inc/tickettask.class.php:226
 msgid "Update all"
-msgstr ""
+msgstr "Atjaunot visus"
 
 #: inc/ticketfollowup.class.php:871 inc/tickettask.class.php:227
 msgid "Add to all tickets"
@@ -15052,15 +15052,15 @@ msgstr "Jūsu PHP parserim nav instalēts Mbstring paplašinājums"
 
 #: inc/toolbox.class.php:1011
 msgid "GD extension test"
-msgstr ""
+msgstr "GD paplašinājuma pārbaude"
 
 #: inc/toolbox.class.php:1015
 msgid "GD extension of your parser PHP is not installed"
-msgstr ""
+msgstr "Jūsu PHP parserim nav instalēts GD paplašinājums"
 
 #: inc/toolbox.class.php:1026
 msgid "Cryptography test"
-msgstr ""
+msgstr "Kriptogrāfijas tests"
 
 #: inc/toolbox.class.php:1034 inc/toolbox.class.php:1035
 msgid "PHP >= 5.3.7 recommended, with crypt extension"
