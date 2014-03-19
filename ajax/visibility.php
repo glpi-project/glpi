@@ -98,10 +98,17 @@ if (isset($_POST['type']) && !empty($_POST['type'])
          break;
 
       case 'Profile' :
+         $checkright = (READ | CREATE | UPDATE | PURGE);
+         $righttocheck = $_POST['right'];
+         if ($_POST['right'] == 'faq') {
+            $righttocheck = 'knowbase';
+            $checkright = KnowbaseItem::READFAQ;
+         }
+      
          $params             = array('rand'      => $rand,
                                      'name'      => $prefix.'profiles_id'.$suffix,
-                                     'condition' => "`".$_POST['right']."` & ".
-                                                    (READ | CREATE | UPDATE | PURGE));
+                                     'condition' => "`glpi_profilerights`.`name` = '$righttocheck' ".
+                                                    " AND `glpi_profilerights`.`rights` & ".$checkright);
          $params['toupdate'] = array('value_fieldname'
                                                   => 'value',
                                      'to_update'  => "subvisibility$rand",
