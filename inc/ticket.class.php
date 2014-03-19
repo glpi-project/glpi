@@ -3142,15 +3142,6 @@ class Ticket extends CommonITILObject {
 
       $email  = UserEmail::getDefaultForUser($ID);
 
-      // Load ticket template if available to have type if predefined
-      $tt   = $this->getTicketTemplateToUse($ticket_template, 0, 0,
-                                            $_SESSION["glpiactive_entity"]);
-
-      $type = '';
-      if (isset($tt->predefined['type'])) {
-         $type = $tt->predefined['type'];
-      }
-
       // Set default values...
       $default_values = array('_users_id_requester_notif'
                                                     => array('use_notification'
@@ -3170,7 +3161,7 @@ class Ticket extends CommonITILObject {
                               'due_date'            => 'NULL',
                               'slas_id'             => 0,
                               '_add_validation'     => 0,
-                              'type'                => $type?$type:Entity::getUsedConfig('tickettype',
+                              'type'                => Entity::getUsedConfig('tickettype',
                                                                              $_SESSION['glpiactive_entity'],
                                                                              '', Ticket::INCIDENT_TYPE),
                               '_right'              => "id");
@@ -3284,14 +3275,14 @@ class Ticket extends CommonITILObject {
 
       // Store predefined fields to be able not to take into account on change template
       $predefined_fields = array();
-
       if (isset($tt->predefined) && count($tt->predefined)) {
          foreach ($tt->predefined as $predeffield => $predefvalue) {
             if (isset($values[$predeffield]) && isset($default_values[$predeffield])) {
-               // Is always default value : not set
+               // Is always default value : not set and first load
                // Set if already predefined field
                // Set if ticket template change
-               if (($values[$predeffield] == $default_values[$predeffield])
+               if ((count($values['_predefined_fields'])==0
+                       && ($values[$predeffield] == $default_values[$predeffield]))
                    || (isset($values['_predefined_fields'][$predeffield])
                        && ($values[$predeffield] == $values['_predefined_fields'][$predeffield]))
                    || (isset($values['_tickettemplates_id'])
@@ -3303,7 +3294,10 @@ class Ticket extends CommonITILObject {
                echo "<input type='hidden' name='$predeffield' value='$predefvalue'>";
             }
          }
-
+         // All predefined override : add option to say predifined exists
+         if (count($predefined_fields) == 0) {
+            $predefined_fields['_all_predefined_override'] = 1;
+         }
       } else { // No template load : reset predefined values
          if (count($values['_predefined_fields'])) {
             foreach ($values['_predefined_fields'] as $predeffield => $predefvalue) {
@@ -3776,7 +3770,8 @@ class Ticket extends CommonITILObject {
                   // Is always default value : not set
                   // Set if already predefined field
                   // Set if ticket template change
-                  if (($values[$predeffield] == $default_values[$predeffield])
+                  if ((count($values['_predefined_fields'])==0
+                       && ($values[$predeffield] == $default_values[$predeffield]))
                      || (isset($values['_predefined_fields'][$predeffield])
                          && ($values[$predeffield] == $values['_predefined_fields'][$predeffield]))
                      || (isset($values['_tickettemplates_id'])
@@ -3787,6 +3782,10 @@ class Ticket extends CommonITILObject {
                      $predefined_fields[$predeffield] = $predefvalue;
                   }
                }
+            }
+            // All predefined override : add option to say predifined exists
+            if (count($predefined_fields) == 0) {
+               $predefined_fields['_all_predefined_override'] = 1;
             }
 
          } else { // No template load : reset predefined values
