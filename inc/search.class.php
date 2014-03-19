@@ -1675,6 +1675,7 @@ class Search {
       $p['showbookmark'] = true;
       $p['addhidden']    = array();
       $p['actionname']   = 'search';
+      $p['actionvalue']  = _sx('button', 'Search');
 
 
       foreach ($params as $key => $val) {
@@ -1740,7 +1741,7 @@ class Search {
 
       // Display submit button
       echo "<td width='80' class='center'>";
-      echo "<input type='submit' name='".$p['actionname']."' value=\""._sx('button', 'Search')."\" class='submit' >";
+      echo "<input type='submit' name='".$p['actionname']."' value=\"".$p['actionvalue']."\" class='submit' >";
       echo "</td>";
       if ($p['showbookmark'] || $p['showreset']) {
          echo "<td>";
