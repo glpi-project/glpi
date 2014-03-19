@@ -3097,7 +3097,8 @@ class Ticket extends CommonITILObject {
                // Is always default value : not set
                // Set if already predefined field
                // Set if ticket template change
-               if (($values[$predeffield] == $default_values[$predeffield])
+               if ((count($values['_predefined_fields'])==0
+                       && $values[$predeffield] == $default_values[$predeffield]))
                    || (isset($values['_predefined_fields'][$predeffield])
                        && ($values[$predeffield] == $values['_predefined_fields'][$predeffield]))
                    || (isset($values['_tickettemplates_id'])
@@ -3109,7 +3110,10 @@ class Ticket extends CommonITILObject {
                echo "<input type='hidden' name='$predeffield' value='$predefvalue'>";
             }
          }
-
+         // All predefined override : add option to say predifined exists
+         if (count($predefined_fields) == 0) {
+            $predefined_fields['_all_predefined_override'] = 1;
+         }
       } else { // No template load : reset predefined values
          if (count($values['_predefined_fields'])) {
             foreach ($values['_predefined_fields'] as $predeffield => $predefvalue) {
@@ -3666,7 +3670,8 @@ class Ticket extends CommonITILObject {
                   // Is always default value : not set
                   // Set if already predefined field
                   // Set if ticket template change
-                  if (($values[$predeffield] == $default_values[$predeffield])
+                  if ((count($values['_predefined_fields'])==0
+                       && ($values[$predeffield] == $default_values[$predeffield]))
                      || (isset($values['_predefined_fields'][$predeffield])
                          && ($values[$predeffield] == $values['_predefined_fields'][$predeffield]))
                      || (isset($values['_tickettemplates_id'])
@@ -3677,6 +3682,10 @@ class Ticket extends CommonITILObject {
                      $predefined_fields[$predeffield] = $predefvalue;
                   }
                }
+            }
+            // All predefined override : add option to say predifined exists
+            if (count($predefined_fields) == 0) {
+               $predefined_fields['_all_predefined_override'] = 1;
             }
 
          } else { // No template load : reset predefined values
