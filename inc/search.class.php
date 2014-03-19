@@ -2399,6 +2399,9 @@ class Search {
          case 'Reminder' :
             return Reminder::addVisibilityRestrict();
 
+         case 'RSSFeed' :
+            return RSSFeed::addVisibilityRestrict();
+
          case 'Notification' :
             if (!Config::canView()) {
                return " `glpi_notifications`.`itemtype` NOT IN ('Crontask', 'DBConnection') ";
@@ -3124,6 +3127,9 @@ class Search {
          case 'Reminder' :
             return Reminder::addVisibilityJoins();
 
+         case 'RSSFeed' :
+            return RSSFeed::addVisibilityJoins();
+            
          case 'ProjectTask' :
             // Same structure in addDefaultWhere
             $out  = '';
