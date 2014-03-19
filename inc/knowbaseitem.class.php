@@ -153,10 +153,11 @@ class KnowbaseItem extends CommonDBTM {
                $ong[1] = $this->getTypeName(1);
                if ($item->canUpdateItem()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $ong[2] = self::createTabEntry(__('Targets'),
-                                                    $item->countVisibilities());
+                     $nb = $item->countVisibilities();
+                     $ong[2] = self::createTabEntry(_n('Target','Targets',$nb),
+                                                    $nb);
                   } else {
-                     $ong[2] = __('Targets');
+                     $ong[2] = _n('Target','Targets',2);
                   }
                   $ong[3] = __('Edit');
                }
@@ -201,7 +202,45 @@ class KnowbaseItem extends CommonDBTM {
       }
    }
 
+   function post_addItem() {
+      if (isset($this->input["_visibility"])
+         && isset($this->input["_visibility"]['_type'])
+         && !empty($this->input["_visibility"]["_type"])) {
 
+         $this->input["_visibility"]['knowbaseitems_id'] = $this->getID();
+         $item = NULL;
+         switch ($this->input["_visibility"]['_type']) {
+            case 'User' :
+               if (isset($this->input["_visibility"]['users_id']) && $this->input["_visibility"]['users_id']) {
+                  $item = new KnowbaseItem_User();
+               }
+               break;
+
+            case 'Group' :
+               if (isset($this->input["_visibility"]['groups_id']) && $this->input["_visibility"]['groups_id']) {
+                  $item = new Group_KnowbaseItem();
+               }
+               break;
+
+            case 'Profile' :
+               if (isset($this->input["_visibility"]['profiles_id']) && $this->input["_visibility"]['profiles_id']) {
+                  $item = new KnowbaseItem_Profile();
+               }
+               break;
+
+            case 'Entity' :
+               $item = new Entity_KnowbaseItem();
+               break;
+         }
+         if (!is_null($item)) {
+            $item->add($this->input["_visibility"]);
+            Event::log($this->getID(), "knowbaseitem", 4, "tools",
+                     //TRANS: %s is the user login
+                     sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
+         }
+      }
+   }
+   
    /**
     * @since version 0.83
    **/
@@ -519,7 +558,8 @@ class KnowbaseItem extends CommonDBTM {
     * @return nothing (display the form)
    **/
    function showForm($ID, $options=array()) {
-
+      global $CFG_GLPI;
+      
       // show kb item form
       if (!Session::haveRightsOr(self::$rightname, array(UPDATE, self::PUBLISHFAQ))) {
          return false;
@@ -547,7 +587,8 @@ class KnowbaseItem extends CommonDBTM {
             }
          }
       }
-
+      $rand = mt_rand();
+      
       Html::initEditorSystem('answer');
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -628,6 +669,27 @@ class KnowbaseItem extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
+      if ($this->isNewID($ID)) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>"._n('Target','Targets',1)."</td>";
+         echo "<td>";
+         $types = array('Entity', 'Group', 'Profile', 'User');
+
+         $addrand = Dropdown::showItemTypes('_visibility[_type]', $types);
+         echo "</td><td colspan='2'>";
+         $params  = array('type'   => '__VALUE__',
+                          'right'  => 'knowbase',
+                          'prefix' => '_visibility',
+                          'nobutton' => 1);
+
+         Ajax::updateItemOnSelectEvent("dropdown__visibility__type_".$addrand,"visibility$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/visibility.php",
+                                       $params);
+         echo "<span id='visibility$rand'></span>";
+         echo "</td>";
+         echo "</tr>\n";
+      }
+         
       $this->showFormButtons($options);
       return true;
    } // function showForm
@@ -1443,6 +1505,16 @@ class KnowbaseItem extends CommonDBTM {
       $tab[9]['datatype']       = 'integer';
       $tab[9]['massiveaction']  = false;
 
+      $tab[10]['table']         = $this->getTable();
+      $tab[10]['field']         = 'begin_date';
+      $tab[10]['name']          = __('Visibility start date');
+      $tab[10]['datatype']      = 'datetime';
+
+      $tab[11]['table']         = $this->getTable();
+      $tab[11]['field']         = 'end_date';
+      $tab[11]['name']          = __('Visibility end date');
+      $tab[11]['datatype']      = 'datetime';
+      
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
       $tab[19]['name']          = __('Last update');
@@ -1501,7 +1573,7 @@ class KnowbaseItem extends CommonDBTM {
 
          $addrand = Dropdown::showItemTypes('_type', $types);
          $params  = array('type'  => '__VALUE__',
-                          'right' => ($this->getfield('is_faq') ? 'faq' : 'knowbase'));
+                          'right' => ($this->getField('is_faq') ? 'faq' : 'knowbase'));
 
          Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/visibility.php",
