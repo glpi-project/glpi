@@ -9,13 +9,14 @@
 # Mr.Sfigatto <marco.macone@gmail.com>, 2014
 # tiziano.sartori <tiziano.sartori@gmail.com>, 2013
 # tiziano.sartori <tiziano.sartori@gmail.com>, 2013
+# Vincenzo Reale <vinx.reale@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-03-14 17:05+0100\n"
-"PO-Revision-Date: 2014-03-14 16:06+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-03-15 22:20+0000\n"
+"Last-Translator: Vincenzo Reale <vinx.reale@gmail.com>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/GLPI/language/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2835,16 +2836,16 @@ msgstr "Statistiche"
 msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aperto"
+msgstr[1] "Aperti"
 
 #: front/stat.global.php:93 front/stat.graph.php:338 inc/stat.class.php:440
 #: inc/ticket.class.php:2463
 msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Risolto"
+msgstr[1] "Risolti"
 
 #: front/stat.global.php:94 front/stat.graph.php:339
 #: inc/commonitilobject.class.php:2503 inc/stat.class.php:442
@@ -2896,15 +2897,15 @@ msgstr[1] "Ore"
 msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aperto"
+msgstr[1] "Aperti"
 
 #: front/stat.global.php:204 front/stat.graph.php:445 inc/stat.class.php:460
 msgctxt "survey"
 msgid "Answered"
 msgid_plural "Answered"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Risposto"
+msgstr[1] "Risposti"
 
 #: front/stat.global.php:220 front/stat.graph.php:461
 #: front/stat.location.php:212 front/stat.location.php:213
@@ -4190,8 +4191,8 @@ msgstr "Caricamento parziale del segnalibro."
 #: inc/bookmark.class.php:668
 msgid "Bookmark"
 msgid_plural "Bookmarks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Segnalibro"
+msgstr[1] "Segnalibri"
 
 #: inc/bookmark.class.php:670
 msgid "Default view"
@@ -5502,7 +5503,7 @@ msgstr "Ripristina le opzioni di visualizzazione"
 
 #: inc/commonglpi.class.php:1240
 msgid "Unable to get item"
-msgstr ""
+msgstr "Impossibile ottenere l'elemento"
 
 #: inc/commonglpi.class.php:1243
 msgid "Authorization error"
@@ -5998,7 +5999,7 @@ msgstr "Da %s"
 
 #: inc/commonitilobject.class.php:5005 inc/project.class.php:706
 msgid "No item in progress."
-msgstr ""
+msgstr "Nessun elemento in avanzamento."
 
 #: inc/commonitilobject.class.php:5032
 msgid "Assigned"
@@ -6060,8 +6061,8 @@ msgstr "Numero di attività"
 #: inc/profile.class.php:1424 inc/taskcategory.class.php:52
 msgid "Task category"
 msgid_plural "Task categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Categoria di attività"
+msgstr[1] "Categorie di attività"
 
 #: inc/commonitiltask.class.php:597
 msgid "Private task"
@@ -9821,7 +9822,7 @@ msgstr[1] "+ %d anni"
 #: inc/html.class.php:3755
 msgctxt "button"
 msgid "Drag and drop or paste image"
-msgstr ""
+msgstr "Trascina e rilascia o incolla l'immagine"
 
 #: inc/html.class.php:3757
 msgid "Item is too large"
@@ -10373,8 +10374,8 @@ msgstr "Aggiungi un tipo di elemento"
 #: inc/ticket.class.php:2025
 msgid "Associated item type"
 msgid_plural "Associated item types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo di elemento associato"
+msgstr[1] "Tipi di elementi associati"
 
 #: inc/location.class.php:56 inc/location.class.php:95
 #: inc/location.class.php:126
@@ -10669,7 +10670,7 @@ msgstr "Numero di email da ricevere"
 
 #: inc/mailcollector.class.php:1494
 msgid "Send alarms on receiver errors"
-msgstr ""
+msgstr "Invia allarmi in caso di errori del ricevente"
 
 #: inc/mailcollector.class.php:1649
 msgid ""
@@ -12741,7 +12742,7 @@ msgstr[1] "Membri"
 #: inc/project.class.php:1279
 #, php-format
 msgid "Invalid items (no start or end date): %s"
-msgstr ""
+msgstr "Elementi non validi (nessuna data di inizo o fine): %s"
 
 #: inc/project.class.php:1285 inc/toolbox.class.php:2236
 msgid "January"
@@ -12950,8 +12951,8 @@ msgstr "PCI"
 #: inc/registeredid.class.php:61
 msgid "Registered ID (issued by PCI-SIG)"
 msgid_plural "Registered IDs (issued by PCI-SIG)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "ID registrato (emesso da PCI-SIG)"
+msgstr[1] "ID registrati (emessi da PCI-SIG)"
 
 #: inc/reminder.class.php:57
 msgid "Reminder"
@@ -13955,7 +13956,7 @@ msgstr "Ricalcola la categoria"
 #. TRANS: Indicator to know is all licenses of the software are valids
 #: inc/software.class.php:529
 msgid "Valid licenses"
-msgstr ""
+msgstr "Licenze valide"
 
 #: inc/software.class.php:540
 msgctxt "quantity"
@@ -13998,7 +13999,7 @@ msgstr "Nessuna scadenza"
 #: inc/software.class.php:682 inc/softwarelicense.class.php:310
 msgctxt "adjective"
 msgid "Valid"
-msgstr ""
+msgstr "Valida"
 
 #: inc/software.class.php:956
 msgid "Merge"
@@ -14021,7 +14022,7 @@ msgstr "Versione in uso"
 #: inc/softwarelicense.class.php:312
 msgctxt "adjective"
 msgid "Invalid"
-msgstr ""
+msgstr "Non valida"
 
 #: inc/softwarelicense.class.php:324
 msgid ""
@@ -14031,7 +14032,7 @@ msgstr ""
 
 #: inc/softwarelicense.class.php:429
 msgid "Valid"
-msgstr ""
+msgstr "Valida"
 
 #: inc/softwarelicense.class.php:449
 msgid "Send alarms on expired licenses"
@@ -14288,8 +14289,8 @@ msgstr "Versione"
 #: inc/ticket.class.php:2774
 msgid "Installed software"
 msgid_plural "Installed software"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Programma installato"
+msgstr[1] "Programmi installati"
 
 #: inc/ticket.class.php:2827
 msgid "Or complete search"
@@ -14418,7 +14419,7 @@ msgstr[1] "ultime %d chiamate"
 
 #: inc/ticket.class.php:5251
 msgid "You don't have right to see all tickets"
-msgstr ""
+msgstr "Non hai i permessi per vedere tutti i ticket"
 
 #: inc/ticket.class.php:5305
 msgid "Ticket on linked items"

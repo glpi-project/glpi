@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-03-14 17:05+0100\n"
-"PO-Revision-Date: 2014-03-14 16:06+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-03-14 19:11+0000\n"
+"Last-Translator: pastotdf <luisuriarte@gmail.com>\n"
 "Language-Team: Spanish (Argentina) (http://www.transifex.com/projects/p/GLPI/language/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2834,16 +2834,16 @@ msgstr "Estadísticas"
 msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Abierto"
+msgstr[1] "Abiertos"
 
 #: front/stat.global.php:93 front/stat.graph.php:338 inc/stat.class.php:440
 #: inc/ticket.class.php:2463
 msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Resuelto"
+msgstr[1] "Resueltos"
 
 #: front/stat.global.php:94 front/stat.graph.php:339
 #: inc/commonitilobject.class.php:2503 inc/stat.class.php:442
@@ -2895,8 +2895,8 @@ msgstr[1] "Horas"
 msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Abierto"
+msgstr[1] "Abiertos"
 
 #: front/stat.global.php:204 front/stat.graph.php:445 inc/stat.class.php:460
 msgctxt "survey"
@@ -4189,8 +4189,8 @@ msgstr "Carga parcial del marcador"
 #: inc/bookmark.class.php:668
 msgid "Bookmark"
 msgid_plural "Bookmarks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Marcador"
+msgstr[1] "Marcadores"
 
 #: inc/bookmark.class.php:670
 msgid "Default view"
@@ -6059,8 +6059,8 @@ msgstr "Número de tareas"
 #: inc/profile.class.php:1424 inc/taskcategory.class.php:52
 msgid "Task category"
 msgid_plural "Task categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Categoría de Tarea"
+msgstr[1] "Categorías de Tarea"
 
 #: inc/commonitiltask.class.php:597
 msgid "Private task"
@@ -9820,7 +9820,7 @@ msgstr[1] "+ %d años"
 #: inc/html.class.php:3755
 msgctxt "button"
 msgid "Drag and drop or paste image"
-msgstr ""
+msgstr "Arrastrar y soltar o pegar imágen"
 
 #: inc/html.class.php:3757
 msgid "Item is too large"
@@ -10372,8 +10372,8 @@ msgstr "Agregar un tipo de ítem"
 #: inc/ticket.class.php:2025
 msgid "Associated item type"
 msgid_plural "Associated item types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de elemento asociado"
+msgstr[1] "Tipos de elementos asociados"
 
 #: inc/location.class.php:56 inc/location.class.php:95
 #: inc/location.class.php:126
@@ -10387,15 +10387,15 @@ msgstr "Número de habitación"
 
 #: inc/location.class.php:64 inc/location.class.php:136
 msgid "Longitude"
-msgstr ""
+msgstr "Longitud"
 
 #: inc/location.class.php:68 inc/location.class.php:142
 msgid "Latitude"
-msgstr ""
+msgstr "Latitud"
 
 #: inc/location.class.php:72 inc/location.class.php:148
 msgid "Altitude"
-msgstr ""
+msgstr "Altitud"
 
 #: inc/location.class.php:107
 msgid "Location comments"
@@ -12850,7 +12850,7 @@ msgstr "Creador"
 #: inc/projecttask.class.php:760
 msgctxt "button"
 msgid "Add a task"
-msgstr ""
+msgstr "Agregar tarea"
 
 #: inc/projecttaskteam.class.php:68
 msgid "Task team"
@@ -13954,7 +13954,7 @@ msgstr "Recalcular la categoría"
 #. TRANS: Indicator to know is all licenses of the software are valids
 #: inc/software.class.php:529
 msgid "Valid licenses"
-msgstr ""
+msgstr "Licencias válidas"
 
 #: inc/software.class.php:540
 msgctxt "quantity"
@@ -13997,7 +13997,7 @@ msgstr ""
 #: inc/software.class.php:682 inc/softwarelicense.class.php:310
 msgctxt "adjective"
 msgid "Valid"
-msgstr ""
+msgstr "Válido"
 
 #: inc/software.class.php:956
 msgid "Merge"
@@ -14020,7 +14020,7 @@ msgstr "Versión en uso"
 #: inc/softwarelicense.class.php:312
 msgctxt "adjective"
 msgid "Invalid"
-msgstr ""
+msgstr "Inválido"
 
 #: inc/softwarelicense.class.php:324
 msgid ""
@@ -14030,7 +14030,7 @@ msgstr ""
 
 #: inc/softwarelicense.class.php:429
 msgid "Valid"
-msgstr ""
+msgstr "Válido"
 
 #: inc/softwarelicense.class.php:449
 msgid "Send alarms on expired licenses"
@@ -14287,8 +14287,8 @@ msgstr "versión"
 #: inc/ticket.class.php:2774
 msgid "Installed software"
 msgid_plural "Installed software"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Software instalado"
+msgstr[1] "Software instalado"
 
 #: inc/ticket.class.php:2827
 msgid "Or complete search"
