@@ -489,10 +489,11 @@ class Reminder extends CommonDBTM {
             case 'Reminder' :
                if ($item->canUpdate()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return array(1 => self::createTabEntry(__('Targets'),
-                                                            $item->countVisibilities()));
+                     $nb = $item->countVisibilities();
+                     return array(1 => self::createTabEntry(_n('Target','Targets',$nb),
+                                                            $nb));
                   }
-                  return array(1 => __('Targets'));
+                  return array(1 => _n('Target','Targets',2));
                }
          }
       }
