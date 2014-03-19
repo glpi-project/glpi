@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-03-14 17:07+0100\n"
-"PO-Revision-Date: 2014-03-14 16:12+0000\n"
+"PO-Revision-Date: 2014-03-15 22:20+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Italian (Italy) (http://www.transifex.com/projects/p/GLPI/language/it_IT/)\n"
 "MIME-Version: 1.0\n"
@@ -2562,7 +2562,7 @@ msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Aperti"
 
 #: front/stat.global.php:91 front/stat.graph.php:338 inc/stat.class.php:417
 #: inc/ticket.class.php:2619
@@ -2570,7 +2570,7 @@ msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Risolti"
 
 #: front/stat.global.php:92 front/stat.graph.php:339 inc/stat.class.php:419
 #: inc/ticket.class.php:1935
@@ -2623,14 +2623,14 @@ msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Aperti"
 
 #: front/stat.global.php:202 front/stat.graph.php:445 inc/stat.class.php:437
 msgctxt "survey"
 msgid "Answered"
 msgid_plural "Answered"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Risposti"
 
 #: front/stat.global.php:218 front/stat.graph.php:461
 #: front/stat.location.php:218 front/stat.location.php:219
@@ -12804,7 +12804,7 @@ msgstr "Versione"
 msgid "Installed software"
 msgid_plural "Installed software"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Programmi installati"
 
 #: inc/ticket.class.php:3006
 msgid "Or complete search"
@@ -12925,7 +12925,7 @@ msgstr[1] "ultime %d chiamate"
 
 #: inc/ticket.class.php:5351
 msgid "You don't have right to see all tickets"
-msgstr ""
+msgstr "Non hai i permessi per vedere tutti i ticket"
 
 #: inc/ticket.class.php:5402
 msgid "Ticket on linked items"

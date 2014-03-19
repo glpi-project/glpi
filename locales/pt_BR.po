@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-03-14 17:07+0100\n"
-"PO-Revision-Date: 2014-03-14 16:14+0000\n"
+"PO-Revision-Date: 2014-03-14 17:01+0000\n"
 "Last-Translator: Rafael Ferreira <rafael.f.f1@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/GLPI/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -2622,15 +2622,15 @@ msgstr[1] "Horas"
 msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Aberta"
+msgstr[1] "Abertas"
 
 #: front/stat.global.php:202 front/stat.graph.php:445 inc/stat.class.php:437
 msgctxt "survey"
 msgid "Answered"
 msgid_plural "Answered"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Respondido"
+msgstr[1] "Respondidos"
 
 #: front/stat.global.php:218 front/stat.graph.php:461
 #: front/stat.location.php:218 front/stat.location.php:219
@@ -12803,8 +12803,8 @@ msgstr "versão"
 #: inc/ticket.class.php:2952
 msgid "Installed software"
 msgid_plural "Installed software"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Software instalado"
+msgstr[1] "Softwares instalados"
 
 #: inc/ticket.class.php:3006
 msgid "Or complete search"

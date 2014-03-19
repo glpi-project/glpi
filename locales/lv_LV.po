@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-03-14 17:07+0100\n"
-"PO-Revision-Date: 2014-03-14 16:12+0000\n"
+"PO-Revision-Date: 2014-03-18 17:22+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Latvian (Latvia) (http://www.transifex.com/projects/p/GLPI/language/lv_LV/)\n"
 "MIME-Version: 1.0\n"
@@ -2605,7 +2605,7 @@ msgid "Opened"
 msgid_plural "Opened"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "Atvērts"
 
 #: front/stat.global.php:91 front/stat.graph.php:338 inc/stat.class.php:417
 #: inc/ticket.class.php:2619
@@ -2614,7 +2614,7 @@ msgid "Solved"
 msgid_plural "Solved"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "Atrisināts"
 
 #: front/stat.global.php:92 front/stat.graph.php:339 inc/stat.class.php:419
 #: inc/ticket.class.php:1935
@@ -2669,7 +2669,7 @@ msgid "Opened"
 msgid_plural "Opened"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "Atvērts"
 
 #: front/stat.global.php:202 front/stat.graph.php:445 inc/stat.class.php:437
 msgctxt "survey"
@@ -2677,7 +2677,7 @@ msgid "Answered"
 msgid_plural "Answered"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "Atbildēt"
 
 #: front/stat.global.php:218 front/stat.graph.php:461
 #: front/stat.location.php:218 front/stat.location.php:219
@@ -13040,7 +13040,7 @@ msgid "Installed software"
 msgid_plural "Installed software"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "Uzstādītā programmatūra"
 
 #: inc/ticket.class.php:3006
 msgid "Or complete search"
