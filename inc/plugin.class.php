@@ -382,7 +382,7 @@ class Plugin extends CommonDBTM {
             echo "</td><td>";
             switch ($plug['state']) {
                case self::ANEW :
-                  echo _x('plugin', 'New');
+                  echo _x('status', 'New');
                   break;
 
                case self::ACTIVATED :

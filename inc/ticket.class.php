@@ -2612,18 +2612,18 @@ class Ticket extends CommonITILObject {
    static function getAllStatusArray($withmetaforsearch=false) {
 
       // To be overridden by class
-      $tab = array(self::INCOMING => _x('ticket', 'New'),
-                   self::ASSIGNED => __('Processing (assigned)'),
-                   self::PLANNED  => __('Processing (planned)'),
+      $tab = array(self::INCOMING => _x('status', 'New'),
+                   self::ASSIGNED => _x('status', 'Processing (assigned)'),
+                   self::PLANNED  => _x('status', 'Processing (planned)'),
                    self::WAITING  => __('Pending'),
-                   self::SOLVED   => _nx('ticket','Solved', 'Solved', 1),
-                   self::CLOSED   => __('Closed'));
+                   self::SOLVED   => _x('status', 'Solved'),
+                   self::CLOSED   => _x('status', 'Closed'));
 
       if ($withmetaforsearch) {
-         $tab['notold']    = __('Not solved');
-         $tab['notclosed'] = __('Not closed');
+         $tab['notold']    = _x('status', 'Not solved');
+         $tab['notclosed'] = _x('status', 'Not closed');
          $tab['process']   = __('Processing');
-         $tab['old']       = __('Solved + Closed');
+         $tab['old']       = _x('status', 'Solved + Closed');
          $tab['all']       = __('All');
       }
       return $tab;

@@ -597,10 +597,10 @@ class Change extends CommonITILObject {
       /// TODO define standard function to check solved / closed status
 
       // To be overridden by class
-      $tab = array(self::INCOMING      => _x('change', 'New'),
+      $tab = array(self::INCOMING      => _x('status', 'New'),
                    self::EVALUATION    => __('Evaluation'),
                    self::APPROVAL      => __('Approval'),
-                   self::ACCEPTED      => _x('change', 'Accepted'),
+                   self::ACCEPTED      => _x('status', 'Accepted'),
                    self::WAITING       => __('Pending'),
 //                   self::ACCEPTED      => __('Processing (assigned)'),
 //                   self::PLANNED        => __('Processing (planned)'),
@@ -608,15 +608,15 @@ class Change extends CommonITILObject {
                    self::QUALIFICATION => __('Qualification'),
                    self::SOLVED        => __('Applied'),
                    self::OBSERVED      => __('Review'),
-                   self::CLOSED        => _x('change', 'Closed'),
+                   self::CLOSED        => _x('status', 'Closed'),
 //                   'abandoned'     => __('Abandonned'), // managed using dustbin ?
    );
 
       if ($withmetaforsearch) {
-         $tab['notold']    = _x('change', 'Not solved');
-         $tab['notclosed'] = _x('change', 'Not closed');
+         $tab['notold']    = _x('status', 'Not solved');
+         $tab['notclosed'] = _x('status', 'Not closed');
          $tab['process']   = __('Processing');
-         $tab['old']       = _x('change', 'Solved + Closed');
+         $tab['old']       = _x('status', 'Solved + Closed');
          $tab['all']       = __('All');
       }
       return $tab;
@@ -663,7 +663,7 @@ class Change extends CommonITILObject {
    static function getNewStatusArray() {
       return array(self::INCOMING, self::ACCEPTED, self::EVALUATION, self::APPROVAL);
    }
-   
+
    /**
     * Get the ITIL object test, qualification or accepted status list
     * To be overridden by class

@@ -717,20 +717,20 @@ class Problem extends CommonITILObject {
    static function getAllStatusArray($withmetaforsearch=false) {
 
       // To be overridden by class
-      $tab = array(self::INCOMING => _x('problem', 'New'),
-                   self::ACCEPTED => _x('problem', 'Accepted'),
-                   self::ASSIGNED => _x('problem', 'Processing (assigned)'),
-                   self::PLANNED  => _x('problem', 'Processing (planned)'),
+      $tab = array(self::INCOMING => _x('status', 'New'),
+                   self::ACCEPTED => _x('status', 'Accepted'),
+                   self::ASSIGNED => _x('status', 'Processing (assigned)'),
+                   self::PLANNED  => _x('status', 'Processing (planned)'),
                    self::WAITING  => __('Pending'),
-                   self::SOLVED   => _x('problem', 'Solved'),
+                   self::SOLVED   => _x('status', 'Solved'),
                    self::OBSERVED => __('Under observation'),
-                   self::CLOSED   => _x('problem', 'Closed'));
+                   self::CLOSED   => _x('status', 'Closed'));
 
       if ($withmetaforsearch) {
-         $tab['notold']    = _x('problem', 'Not solved');
-         $tab['notclosed'] = _x('problem', 'Not closed');
+         $tab['notold']    = _x('status', 'Not solved');
+         $tab['notclosed'] = _x('status', 'Not closed');
          $tab['process']   = __('Processing');
-         $tab['old']       = _x('problem', 'Solved + Closed');
+         $tab['old']       = _x('status', 'Solved + Closed');
          $tab['all']       = __('All');
       }
       return $tab;
@@ -1899,7 +1899,7 @@ class Problem extends CommonITILObject {
          if (count($_SESSION["glpiactiveentities"]) > 1) {
             $colspan++;
          }
-         
+
          echo "<tr><th colspan='$colspan'>";
 
          //TRANS : %d is the number of problems
@@ -1935,7 +1935,7 @@ class Problem extends CommonITILObject {
             }
          }
       }
-      
+
       if (count($restrict)) {
          $query = "SELECT ".self::getCommonSelect()."
                    FROM `glpi_problems`
