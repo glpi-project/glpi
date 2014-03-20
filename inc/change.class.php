@@ -426,7 +426,7 @@ class Change extends CommonITILObject {
       $tab[64]['datatype']      = 'text';
 
       $tab += Notepad::getSearchOptionsToAdd();
-      
+
       $tab += ChangeValidation::getSearchOptionsToAdd();
 
       $tab += ChangeTask::getSearchOptionsToAdd();
@@ -449,23 +449,23 @@ class Change extends CommonITILObject {
    **/
    static function getAllStatusArray($withmetaforsearch=false) {
 
-      $tab = array(self::INCOMING      => _x('change', 'New'),
+      $tab = array(self::INCOMING      => _x('status', 'New'),
                    self::EVALUATION    => __('Evaluation'),
                    self::APPROVAL      => __('Approval'),
-                   self::ACCEPTED      => _x('change', 'Accepted'),
+                   self::ACCEPTED      => _x('status', 'Accepted'),
                    self::WAITING       => __('Pending'),
                    self::TEST          => _x('change','Test'),
                    self::QUALIFICATION => __('Qualification'),
                    self::SOLVED        => __('Applied'),
                    self::OBSERVED      => __('Review'),
-                   self::CLOSED        => _x('change', 'Closed'),
+                   self::CLOSED        => _x('status', 'Closed'),
    );
 
       if ($withmetaforsearch) {
-         $tab['notold']    = _x('change', 'Not solved');
-         $tab['notclosed'] = _x('change', 'Not closed');
+         $tab['notold']    = _x('status', 'Not solved');
+         $tab['notclosed'] = _x('status', 'Not closed');
          $tab['process']   = __('Processing');
-         $tab['old']       = _x('change', 'Solved + Closed');
+         $tab['old']       = _x('status', 'Solved + Closed');
          $tab['all']       = __('All');
       }
       return $tab;
