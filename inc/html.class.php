@@ -4996,7 +4996,7 @@ class Html {
                         $('#progress".$p['rand']." .uploadbar').css({
                               'width':progress + '%'
                         });
-                        $('#progress".$p['rand']." .uploadbar').text(progress + '%').show().delay(2000).fadeOut('slow');
+                        $('#progress".$p['rand']." .uploadbar').text(progress + '%').show().delay(5000).fadeOut('slow');
                   },
                send: function (e, data) {
                   if (1==".(($p['imagePaste'])?1:0)."
@@ -5068,7 +5068,7 @@ class Html {
       $script.="                 $('#progress".$p['rand']." .uploadbar').text('".__('Upload successful')."');\n
                                  $('#progress".$p['rand']." .uploadbar').css('width', '100%');\n
                               } else {\n
-                                 $('#progress".$p['rand']." .uploadbar').text('".__('Upload error')."');\n
+                                 $('#progress".$p['rand']." .uploadbar').text(file.error);\n
                                  $('#progress".$p['rand']." .uploadbar').css('width', '100%');\n
                               }
                            });
