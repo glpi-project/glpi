@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-20 17:37+0100\n"
+"POT-Creation-Date: 2014-03-21 16:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -187,7 +187,7 @@ msgstr ""
 #: inc/document.class.php:879 inc/document_item.class.php:404
 #: inc/dropdown.class.php:356 inc/group_user.class.php:223
 #: inc/group_user.class.php:228 inc/group_user.class.php:442
-#: inc/group_user.class.php:516 inc/html.class.php:4426
+#: inc/group_user.class.php:516 inc/html.class.php:4425
 #: inc/ipnetwork_vlan.class.php:176 inc/item_devicegraphiccard.class.php:49
 #: inc/item_deviceharddrive.class.php:49 inc/item_devicememory.class.php:50
 #: inc/item_deviceprocessor.class.php:49 inc/item_problem.class.php:203
@@ -639,7 +639,7 @@ msgstr ""
 #: inc/contract_item.class.php:414 inc/contract_item.class.php:595
 #: inc/contract_supplier.class.php:210 inc/contract_supplier.class.php:342
 #: inc/document.class.php:862 inc/document_item.class.php:320
-#: inc/document_item.class.php:668 inc/entity.class.php:123
+#: inc/document_item.class.php:674 inc/entity.class.php:123
 #: inc/fieldunicity.class.php:360 inc/group.class.php:698
 #: inc/html.class.php:1496 inc/infocom.class.php:1532
 #: inc/ipnetwork_vlan.class.php:162 inc/item_problem.class.php:159
@@ -882,7 +882,7 @@ msgid "XML Dump"
 msgstr ""
 
 #: front/backup.php:588 inc/document.class.php:335 inc/document.class.php:830
-#: inc/document_item.class.php:669
+#: inc/document_item.class.php:675
 #: inc/notificationtargetcommonitilobject.class.php:999
 #: inc/ticket.class.php:3437
 msgid "File"
@@ -898,7 +898,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:3710 inc/commonitiltask.class.php:496
 #: inc/commonitiltask.class.php:975 inc/commonitiltask.class.php:1165
 #: inc/crontask.class.php:1013 inc/crontask.class.php:1068
-#: inc/document_item.class.php:673 inc/event.class.php:240
+#: inc/document_item.class.php:679 inc/event.class.php:240
 #: inc/event.class.php:293 inc/knowbaseitem.class.php:1446
 #: inc/log.class.php:268 inc/notificationtargetcommonitilobject.class.php:985
 #: inc/notificationtargetfieldunicity.class.php:86
@@ -1323,7 +1323,7 @@ msgstr ""
 #: inc/toolbox.class.php:962 inc/toolbox.class.php:1095
 #: inc/useremail.class.php:164 install/update_0681_07.php:543
 #: install/update_0681_07.php:546 install/update_0681_07.php:551
-#: install/update_0681_07.php:554 plugins/hook.php:122 plugins/hook.php:136
+#: install/update_0681_07.php:554
 #, php-format
 msgid "%1$s %2$s"
 msgstr ""
@@ -2116,7 +2116,7 @@ msgstr ""
 #: inc/crontask.class.php:384 inc/crontask.class.php:1218
 #: inc/db.function.php:1183 inc/document.class.php:316
 #: inc/document.class.php:818 inc/document_item.class.php:319
-#: inc/document_item.class.php:667 inc/entity.class.php:515
+#: inc/document_item.class.php:673 inc/entity.class.php:515
 #: inc/fieldunicity.class.php:308 inc/group.class.php:201
 #: inc/group.class.php:698 inc/ipnetwork_vlan.class.php:161
 #: inc/item_problem.class.php:160 inc/itilcategory.class.php:300
@@ -2815,8 +2815,8 @@ msgstr[1] ""
 
 #: front/stat.graph.php:282 front/stat.graph.php:283
 #: inc/commonglpi.class.php:470 inc/commonglpi.class.php:471
-#: inc/commonglpi.class.php:474 inc/html.class.php:4185
-#: inc/html.class.php:4186 inc/html.class.php:4313 inc/html.class.php:4314
+#: inc/commonglpi.class.php:474 inc/html.class.php:4184
+#: inc/html.class.php:4185 inc/html.class.php:4312 inc/html.class.php:4313
 #: inc/planning.class.php:290 inc/planning.class.php:291
 #: inc/reservation.class.php:488 inc/reservation.class.php:489
 msgid "Previous"
@@ -2824,8 +2824,8 @@ msgstr ""
 
 #: front/stat.graph.php:292 front/stat.graph.php:293
 #: inc/commonglpi.class.php:483 inc/commonglpi.class.php:484
-#: inc/commonglpi.class.php:487 inc/html.class.php:4206
-#: inc/html.class.php:4207 inc/html.class.php:4365 inc/html.class.php:4366
+#: inc/commonglpi.class.php:487 inc/html.class.php:4205
+#: inc/html.class.php:4206 inc/html.class.php:4364 inc/html.class.php:4365
 #: inc/planning.class.php:370 inc/planning.class.php:371
 #: inc/reservation.class.php:493 inc/reservation.class.php:494
 msgid "Next"
@@ -3713,7 +3713,7 @@ msgid "To change"
 msgstr ""
 
 #: inc/authldap.class.php:2716 inc/entity.class.php:802
-#: inc/html.class.php:3865
+#: inc/html.class.php:3864
 msgid "Select the desired entity"
 msgstr ""
 
@@ -3988,7 +3988,7 @@ msgstr[1] ""
 #: inc/computervirtualmachine.class.php:295 inc/contact_supplier.class.php:294
 #: inc/contact_supplier.class.php:423 inc/contractcost.class.php:305
 #: inc/contract_item.class.php:426 inc/contract_item.class.php:661
-#: inc/document_item.class.php:691 inc/group_user.class.php:206
+#: inc/document_item.class.php:697 inc/group_user.class.php:206
 #: inc/group_user.class.php:449 inc/ipaddress.class.php:283
 #: inc/item_problem.class.php:235 inc/netpoint.class.php:365
 #: inc/networkalias.class.php:392 inc/networkname.class.php:799
@@ -4052,8 +4052,8 @@ msgstr ""
 #: inc/calendarsegment.class.php:344 inc/contract.class.php:280
 #: inc/contract.class.php:290 inc/contract.class.php:300
 #: inc/crontask.class.php:1083 inc/dbmysql.class.php:564
-#: inc/holiday.class.php:59 inc/holiday.class.php:81 inc/html.class.php:4182
-#: inc/html.class.php:4183 inc/html.class.php:4308 inc/html.class.php:4309
+#: inc/holiday.class.php:59 inc/holiday.class.php:81 inc/html.class.php:4181
+#: inc/html.class.php:4182 inc/html.class.php:4307 inc/html.class.php:4308
 #: inc/planning.class.php:416
 msgid "Start"
 msgstr ""
@@ -4063,8 +4063,8 @@ msgstr ""
 #: inc/contract.class.php:282 inc/contract.class.php:292
 #: inc/contract.class.php:302 inc/contract.class.php:1345
 #: inc/crontask.class.php:1087 inc/dbmysql.class.php:590
-#: inc/holiday.class.php:62 inc/holiday.class.php:86 inc/html.class.php:4209
-#: inc/html.class.php:4210 inc/html.class.php:4371 inc/html.class.php:4372
+#: inc/holiday.class.php:62 inc/holiday.class.php:86 inc/html.class.php:4208
+#: inc/html.class.php:4209 inc/html.class.php:4370 inc/html.class.php:4371
 #: inc/planning.class.php:420 inc/reminder.class.php:705
 #: inc/search.class.php:4238
 msgid "End"
@@ -7498,13 +7498,13 @@ msgid "Web Link"
 msgstr ""
 
 #: inc/document.class.php:352 inc/document.class.php:857
-#: inc/document_item.class.php:600 inc/document_item.class.php:671
+#: inc/document_item.class.php:600 inc/document_item.class.php:677
 #: inc/notificationtargetcommonitilobject.class.php:995
 msgid "Heading"
 msgstr ""
 
 #: inc/document.class.php:358 inc/document.class.php:841
-#: inc/document_item.class.php:672 inc/documenttype.class.php:54
+#: inc/document_item.class.php:678 inc/documenttype.class.php:54
 #: inc/documenttype.class.php:86
 msgid "MIME type"
 msgstr ""
@@ -7619,17 +7619,17 @@ msgstr[1] ""
 msgid "Add a document"
 msgstr ""
 
-#: inc/document_item.class.php:615
+#: inc/document_item.class.php:618
 msgctxt "button"
 msgid "Add a new file"
 msgstr ""
 
-#: inc/document_item.class.php:640
+#: inc/document_item.class.php:646
 msgctxt "button"
 msgid "Associate an existing document"
 msgstr ""
 
-#: inc/document_item.class.php:670
+#: inc/document_item.class.php:676
 msgid "Web link"
 msgstr ""
 
@@ -8723,118 +8723,118 @@ msgid ""
 "configuration."
 msgstr ""
 
-#: inc/html.class.php:3647
+#: inc/html.class.php:3646
 msgid "Now"
 msgstr ""
 
-#: inc/html.class.php:3649 inc/html.class.php:3652
+#: inc/html.class.php:3648 inc/html.class.php:3651
 msgid "Today"
 msgstr ""
 
-#: inc/html.class.php:3656
+#: inc/html.class.php:3655
 msgid "Specify a date"
 msgstr ""
 
-#: inc/html.class.php:3661 inc/slalevel.class.php:353
+#: inc/html.class.php:3660 inc/slalevel.class.php:353
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/html.class.php:3666 inc/slalevel.class.php:365
+#: inc/html.class.php:3665 inc/slalevel.class.php:365
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/html.class.php:3670
+#: inc/html.class.php:3669
 msgid "last Sunday"
 msgstr ""
 
-#: inc/html.class.php:3671
+#: inc/html.class.php:3670
 msgid "last Monday"
 msgstr ""
 
-#: inc/html.class.php:3672
+#: inc/html.class.php:3671
 msgid "last Tuesday"
 msgstr ""
 
-#: inc/html.class.php:3673
+#: inc/html.class.php:3672
 msgid "last Wednesday"
 msgstr ""
 
-#: inc/html.class.php:3674
+#: inc/html.class.php:3673
 msgid "last Thursday"
 msgstr ""
 
-#: inc/html.class.php:3675
+#: inc/html.class.php:3674
 msgid "last Friday"
 msgstr ""
 
-#: inc/html.class.php:3676
+#: inc/html.class.php:3675
 msgid "last Saturday"
 msgstr ""
 
-#: inc/html.class.php:3680
+#: inc/html.class.php:3679
 #, php-format
 msgid "- %d week"
 msgid_plural "- %d weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/html.class.php:3684
+#: inc/html.class.php:3683
 msgid "Beginning of the month"
 msgstr ""
 
-#: inc/html.class.php:3688
+#: inc/html.class.php:3687
 #, php-format
 msgid "- %d month"
 msgid_plural "- %d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/html.class.php:3692
+#: inc/html.class.php:3691
 msgid "Beginning of the year"
 msgstr ""
 
-#: inc/html.class.php:3696
+#: inc/html.class.php:3695
 #, php-format
 msgid "- %d year"
 msgid_plural "- %d years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/html.class.php:3702 inc/slalevel.class.php:349
+#: inc/html.class.php:3701 inc/slalevel.class.php:349
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/html.class.php:3707 inc/slalevel.class.php:361
+#: inc/html.class.php:3706 inc/slalevel.class.php:361
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/html.class.php:3711
+#: inc/html.class.php:3710
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/html.class.php:3715
+#: inc/html.class.php:3714
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/html.class.php:3719
+#: inc/html.class.php:3718
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
@@ -8842,17 +8842,17 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
-#: inc/html.class.php:4200 inc/html.class.php:4358
+#: inc/html.class.php:4199 inc/html.class.php:4357
 #, php-format
 msgid "From %1$d to %2$d on %3$d"
 msgstr ""
 
-#: inc/html.class.php:4393 inc/html.class.php:4398
+#: inc/html.class.php:4392 inc/html.class.php:4397
 msgid "Display (number of items)"
 msgstr ""
 
 #. TRANS %1$d %2$d are numbers (displayed, total)
-#: inc/html.class.php:4420
+#: inc/html.class.php:4419
 #, php-format
 msgid "%1$d on %2$d"
 msgstr ""
@@ -13980,8 +13980,4 @@ msgstr ""
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
-msgstr ""
-
-#: plugins/hook.php:122 plugins/hook.php:136
-msgid "Can't create folder"
 msgstr ""
