@@ -628,9 +628,6 @@ class Document_Item extends CommonDBRelation{
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='4' class='center'>";
-            echo "<input type='hidden' name='entities_id' value='$entity'>";
-            echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
-
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
             if ($item->getType() == 'Ticket') {
