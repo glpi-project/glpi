@@ -42,6 +42,8 @@ class Fieldblacklist extends CommonDropdown {
 
    static $rightname = 'config';
 
+   var $can_be_translated = false;
+
 
    static function getTypeName($nb=0) {
       return _n('Ignored value for the unicity', 'Ignored values for the unicity', $nb);

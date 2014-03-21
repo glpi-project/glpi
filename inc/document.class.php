@@ -270,6 +270,7 @@ class Document extends CommonDBTM {
             return false;
          }
       } */
+      toolbox::logdebug("input doc", $input);
       return $input;
    }
 
@@ -683,7 +684,7 @@ class Document extends CommonDBTM {
                    LEFT JOIN `glpi_knowbaseitems`
                         ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`)
                    LEFT JOIN `glpi_entities_knowbaseitems`
-                        ON (`glpi_knowbaseitems`.`id` = `glpi_entities_knowbaseitems`.`knowbaseitems_id`)                        
+                        ON (`glpi_knowbaseitems`.`id` = `glpi_entities_knowbaseitems`.`knowbaseitems_id`)
                    WHERE `glpi_documents_items`.`itemtype` = 'KnowbaseItem'
                          AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
                          AND `glpi_knowbaseitems`.`is_faq` = '1'

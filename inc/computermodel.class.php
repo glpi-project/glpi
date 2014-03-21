@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 class ComputerModel extends CommonDropdown {
 
    var $additional_fields_for_dictionnary = array('manufacturer');
-   var $can_be_translated = true;
+
 
    static function getTypeName($nb=0) {
       return _n('Computer model', 'Computer models', $nb);

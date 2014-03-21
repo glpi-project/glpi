@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -38,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
 /// SolutionType class
 class SolutionType extends CommonDropdown {
 
-   var $can_be_translated = true;
 
    static function getTypeName($nb=0) {
       return _n('Solution type', 'Solution types', $nb);

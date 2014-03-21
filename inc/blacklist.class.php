@@ -47,6 +47,8 @@ class Blacklist extends CommonDropdown {
 
    static $rightname = 'config';
 
+   var $can_be_translated = false;
+
    const IP     = 1;
    const MAC    = 2;
    const SERIAL = 3;

@@ -53,6 +53,8 @@ class TicketRecurrent extends CommonDropdown {
 
    static $rightname              = 'ticketrecurrent';
 
+   var $can_be_translated         = false;
+
 
 
    static function getTypeName($nb=0) {

@@ -38,10 +38,9 @@ if (!defined('GLPI_ROOT')) {
 /// Class Domain
 class Domain extends CommonDropdown {
 
-   var $can_be_translated = true;
-
    static $rightname = 'domain';
 
+   var $can_be_translated = false;
 
 
    static function getTypeName($nb=0) {

@@ -45,6 +45,8 @@ class SolutionTemplate extends CommonDropdown {
 
    static $rightname = 'solutiontemplate';
 
+   var $can_be_translated = false;
+
 
    static function getTypeName($nb=0) {
       return _n('Solution template', 'Solution templates', $nb);

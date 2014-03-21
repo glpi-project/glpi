@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 /// Class Network
 class Network extends CommonDropdown {
+
 
    static function getTypeName($nb=0) {
       return _n('Network', 'Networks', $nb);

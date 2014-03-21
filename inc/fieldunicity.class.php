@@ -44,6 +44,7 @@ class FieldUnicity extends CommonDropdown {
    public $dohistory       = true;
 
    var $second_level_menu  = "control";
+   var $can_be_translated  = false;
 
    static $rightname       = 'config';
 

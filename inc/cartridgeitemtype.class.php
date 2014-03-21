@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 /// Class CartridgeItemType
 class CartridgeItemType extends CommonDropdown {
+
 
    static function getTypeName($nb=0) {
       return _n('Cartridge type', 'Cartridge types', $nb);

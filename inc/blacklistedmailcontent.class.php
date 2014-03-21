@@ -47,6 +47,8 @@ class BlacklistedMailContent extends CommonDropdown {
 
    static $rightname       = 'config';
 
+   var $can_be_translated = false;
+
 
    static function getTypeName($nb=0) {
       return __('Blacklisted mail content');

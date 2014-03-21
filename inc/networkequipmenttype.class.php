@@ -38,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
 /// Class NetworkEquipementType
 class NetworkEquipmentType extends CommonDropdown {
 
-   var $can_be_translated = true;
 
    static function getTypeName($nb=0) {
       return _n('Networking equipment type', 'Networking equipment types', $nb);

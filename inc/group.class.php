@@ -44,6 +44,7 @@ class Group extends CommonTreeDropdown {
 
    static $rightname = 'group';
 
+
    static function getTypeName($nb=0) {
       return _n('Group', 'Groups', $nb);
    }

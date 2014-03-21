@@ -43,6 +43,7 @@ class FQDN extends CommonDropdown {
 
    static $rightname = 'internet';
 
+   var $can_be_translated = false;
 
 
    static function getTypeName($nb=0) {

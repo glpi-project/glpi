@@ -53,7 +53,8 @@ class TicketTemplate extends CommonDropdown {
    public $display_dropdowntitle     = false;
 
    static $rightname                 = 'tickettemplate';
-   var $can_be_translated = false;
+
+   var $can_be_translated            = false;
 
    // Specific fields
    /// Mandatory Fields

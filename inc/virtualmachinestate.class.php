@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 /// Class Filesystem
 class VirtualMachineState extends CommonDropdown {
+
 
    static function getTypeName($nb=0) {
       return _n('State of the virtual machine', 'States of the virtual machine', $nb);

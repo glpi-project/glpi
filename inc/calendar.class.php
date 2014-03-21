@@ -42,10 +42,12 @@ class Calendar extends CommonDropdown {
 
    // From CommonDBTM
    var $dohistory                      = true;
+   var $can_be_translated              = false;
 
    static protected $forward_entity_to = array('CalendarSegment');
 
    static $rightname = 'calendar';
+
 
    /**
     * @since version 0.84
