@@ -42,6 +42,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 abstract class CommonTreeDropdown extends CommonDropdown {
 
+   var $can_be_translated = false;
+
 
    /**
     * Return Additional Fileds for this type

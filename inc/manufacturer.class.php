@@ -39,6 +39,8 @@ if (!defined('GLPI_ROOT')) {
 /// @todo study if we should integrate getHTMLTableHeader and getHTMLTableCellsForItem ...
 class Manufacturer extends CommonDropdown {
 
+   var $can_be_translated = false;
+
 
    static function getTypeName($nb=0) {
       return _n('Manufacturer', 'Manufacturers', $nb);

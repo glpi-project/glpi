@@ -42,6 +42,7 @@ class Vlan extends CommonDropdown {
 
    public $dohistory = true;
 
+   var $can_be_translated = false;
 
 
    static function getTypeName($nb=0) {

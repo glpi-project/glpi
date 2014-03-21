@@ -43,6 +43,8 @@ class WifiNetwork extends CommonDropdown {
 
    static $rightname = 'internet';
 
+   var $can_be_translated = false;
+
 
 
    static function getWifiCardVersion() {

@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -37,6 +37,9 @@ if (!defined('GLPI_ROOT')) {
 
 /// Class Filesystem
 class VirtualMachineSystem extends CommonDropdown {
+
+   var $can_be_translated = false;
+
 
    static function getTypeName($nb=0) {
       return _n('Virtualization model', 'Virtualization models', $nb);

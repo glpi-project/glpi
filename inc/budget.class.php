@@ -46,6 +46,7 @@ class Budget extends CommonDropdown{
    static $rightname           = 'budget';
    protected $usenotepadrights = true;
 
+   var $can_be_translated = false;
 
 
    static function getTypeName($nb=0) {
@@ -235,7 +236,7 @@ class Budget extends CommonDropdown{
       $tab[86]['datatype']       = 'bool';
 
       $tab += Notepad::getSearchOptionsToAdd();
-      
+
       return $tab;
    }
 
@@ -400,7 +401,7 @@ class Budget extends CommonDropdown{
                                'criteria'   => array(0 => array('value'      => '$$$$'.$budgets_id,
                                                                 'searchtype' => 'contains',
                                                                 'field'      => 50)));
-                  
+
                   echo "<a href='". $item->getSearchURL() . "?" .Toolbox::append_params($opt). "'>".
                         __('Device list')."</a></td>";
                   echo "<td class='center'>-</td><td class='center'>-</td><td class='center'>-".

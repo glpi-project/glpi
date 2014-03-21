@@ -43,6 +43,7 @@ class Netpoint extends CommonDropdown {
 
    static $rightname = 'netpoint';
 
+   var $can_be_translated = false;
 
 
    function getAdditionalFields() {

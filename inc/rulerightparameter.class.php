@@ -40,6 +40,9 @@ class RuleRightParameter extends CommonDropdown {
 
    static $rightname = 'rule_ldap';
 
+   var $can_be_translated = false;
+
+
    /**
     * @see CommonDBTM::prepareInputForAdd()
    **/
