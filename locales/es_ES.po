@@ -17,8 +17,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-03-21 16:44+0100\n"
-"PO-Revision-Date: 2014-03-21 15:45+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-03-26 10:00+0000\n"
+"Last-Translator: SergioGonzalezGonzalez <sergio@sergio-gonzalez.com>\n"
 "Language-Team: Spanish (Spain) (http://www.transifex.com/projects/p/GLPI/language/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -615,7 +615,7 @@ msgstr "Por día"
 
 #: ajax/resaperiod.php:75
 msgid "Each month, same date"
-msgstr "Cada mes, el mismo día."
+msgstr "Cada mes, el mismo día"
 
 #: ajax/resaperiod.php:76
 msgid "Each month, same day of week"
@@ -780,7 +780,7 @@ msgid ""
 "You are trying to use GLPI with files from an earlier version to the version"
 " of the database. Please install the GLPI files corresponding to the version"
 " of your database."
-msgstr "Está intentando utilizar GLPI con una versión de la base de datos prevista para una versión superior. Por favor, instale la versión correspondiente a su base de datos."
+msgstr "Está intentando utilizar GLPI con archivos de una versión anterior a la versión de la base de datos. Instale los archivos de GLPI corresondientes a la versión de su base de datos, por favor."
 
 #: front/allassets.php:40 inc/bookmark.class.php:588 inc/config.class.php:372
 #: inc/html.class.php:1128 inc/stat.class.php:1496 inc/stat.class.php:1508
@@ -1127,7 +1127,7 @@ msgstr "%s instala un cartucho"
 #: front/cartridge.form.php:80
 #, php-format
 msgid "%s updates a cartridge"
-msgstr "%s actualizaciones de un cartucho"
+msgstr "%s actualiza un cartucho"
 
 #. TRANS: %s is the user login
 #: front/cartridgeitem_printermodel.form.php:43
@@ -1254,7 +1254,7 @@ msgstr "%s añade un enlace con un proveedor"
 #: front/contractcost.form.php:53 front/ticketcost.form.php:46
 #, php-format
 msgid "%s adds a cost"
-msgstr "%s añadir un coste"
+msgstr "%s añade un coste"
 
 #. TRANS: %s is the user login
 #: front/contractcost.form.php:63 front/ticketcost.form.php:56
@@ -1625,7 +1625,7 @@ msgstr[1] "Sistemas operativos"
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:70
 msgid "Service pack"
 msgid_plural "Service packs"
-msgstr[0] "Service Pack"
+msgstr[0] "Service pack"
 msgstr[1] "Service packs"
 
 #: front/dictionnary.php:122 inc/computer_softwareversion.class.php:462
@@ -2036,7 +2036,7 @@ msgstr "%s intenta utilizar un camino no estándar."
 #: front/plugin.php:56
 #, php-format
 msgid "The plugin %s is incompatible with this version of GLPI"
-msgstr "El plugin %s es incompaticle con esta versión de GLPI"
+msgstr "El complemento %s no es compatible con esta versión de GLPI"
 
 #: front/plugin.php:58
 msgid "Delete or update it otherwise GLPI will not work correctly."
@@ -2212,7 +2212,7 @@ msgstr "Fecha de compra"
 #: inc/infocom.class.php:535 inc/infocom.class.php:1318
 #: inc/search.class.php:4231
 msgid "Warranty expiration date"
-msgstr "Fecha de caducidad de la garantía"
+msgstr "Fecha de vencimiento de la garantía"
 
 #: front/report.contract.list.php:123 front/report.year.list.php:135
 #: inc/contract.class.php:185 inc/contract_item.class.php:416
@@ -3007,7 +3007,7 @@ msgstr "%s añade un actor"
 #: front/tickettemplatehiddenfield.form.php:46
 #, php-format
 msgid "%s adds hidden field"
-msgstr "%s añade campos ocultos"
+msgstr "%s añade un campo oculto"
 
 #. TRANS: %s is the user login
 #: front/tickettemplatemandatoryfield.form.php:46
@@ -3145,7 +3145,7 @@ msgstr "Sí"
 #: inc/alert.class.php:256
 #, php-format
 msgid "Alert sent on %s"
-msgstr "Alerta enviada el %s"
+msgstr "Aviso enviado el %s"
 
 #: inc/auth.class.php:107 inc/auth.class.php:202 inc/auth.class.php:247
 #: inc/auth.class.php:274
@@ -3297,7 +3297,7 @@ msgstr[1] "Campos de almacenamiento del usuario en la petición HTTP"
 
 #: inc/auth.class.php:1137
 msgid "Remove the domain of logins like login@domain"
-msgstr "Suprimir el dominio similar a usuario@dominio, del inicio de sesión"
+msgstr "Eliminar el dominio de los inicios de sesión similares a usuario@dominio"
 
 #: inc/auth.class.php:1143 inc/authldap.class.php:745
 #: inc/authldap.class.php:898 inc/authldap.class.php:2752
@@ -3537,7 +3537,7 @@ msgstr "Huso horario del directorio LDAP"
 
 #: inc/authldap.class.php:514
 msgid "Use paged results"
-msgstr "Utilice los resultados paginados"
+msgstr "Usar resultados paginados"
 
 #: inc/authldap.class.php:517
 msgid "Page size"
@@ -3568,11 +3568,11 @@ msgstr "Desreferenciar siempre"
 
 #: inc/authldap.class.php:537
 msgid "Dereferenced during the search (but not when locating)"
-msgstr "Desreferenciado durante la búsqueda"
+msgstr "Desreferenciado durante la búsqueda (pero no cuando la localización)"
 
 #: inc/authldap.class.php:538
 msgid "Dereferenced when locating (not during the search)"
-msgstr "Desreferenciado durante la localización"
+msgstr "Desreferenciado durante la localización (no durante la búsqueda)"
 
 #: inc/authldap.class.php:580 inc/authldap.class.php:592
 msgid "List of LDAP directory replicates"
@@ -4101,8 +4101,8 @@ msgstr "Recurrente"
 #: inc/dropdown.class.php:733 inc/holiday.class.php:42
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] "Períodos de cierre"
-msgstr[1] "Periodos cerrados"
+msgstr[0] "Periodo de cierre"
+msgstr[1] "Periodos de cierre"
 
 #: inc/calendarsegment.class.php:61
 msgid "Time range"
@@ -4116,7 +4116,7 @@ msgstr "No se puede añadir el periodo de tiempo, se solapa con otro existente"
 
 #: inc/calendarsegment.class.php:312
 msgid "Add a schedule"
-msgstr "Agregar periodo"
+msgstr "Añadir un horario"
 
 #: inc/calendarsegment.class.php:314 inc/calendarsegment.class.php:343
 #: inc/config.class.php:943 inc/config.class.php:961
@@ -4145,7 +4145,7 @@ msgstr[1] "Cartuchos"
 
 #: inc/cartridge.class.php:250
 msgid "Installing a cartridge"
-msgstr "Instalación de un cartucho"
+msgstr "Instalar un cartucho"
 
 #: inc/cartridge.class.php:256
 msgid "No free cartridge"
@@ -4153,7 +4153,7 @@ msgstr "No hay cartuchos libres"
 
 #: inc/cartridge.class.php:290
 msgid "Uninstalling a cartridge"
-msgstr "Desinstalación de un cartucho"
+msgstr "Quitar un cartucho"
 
 #: inc/cartridge.class.php:330 inc/cartridge.class.php:443
 msgctxt "cartridge"
@@ -4214,7 +4214,7 @@ msgstr "Añadir fecha"
 #: inc/cartridge.class.php:539 inc/cartridge.class.php:777
 #: inc/cartridge.class.php:927 inc/consumable.class.php:504
 msgid "Use date"
-msgstr "Utilizado fecha"
+msgstr "Utilizar fecha"
 
 #: inc/cartridge.class.php:540
 msgid "Used on"
@@ -4269,7 +4269,7 @@ msgstr "Añadir cartuchos"
 
 #: inc/cartridge.class.php:734
 msgid "No cartridge available"
-msgstr "No hay ningún cartucho disponible"
+msgstr "Ningún cartucho disponible"
 
 #: inc/cartridge.class.php:737 inc/computer.class.php:637
 #: inc/computer_softwareversion.class.php:682
@@ -4280,7 +4280,7 @@ msgstr "Instalar"
 
 #: inc/cartridge.class.php:752
 msgid "End of life"
-msgstr "Término de vida"
+msgstr "Fin de la vida"
 
 #: inc/cartridge.class.php:754
 msgid "Update printer counter"
@@ -4371,7 +4371,7 @@ msgstr "Ubicación de existencias"
 #: inc/cartridgeitem.class.php:231 inc/cartridgeitem.class.php:312
 #: inc/consumableitem.class.php:177 inc/consumableitem.class.php:259
 msgid "Alert threshold"
-msgstr "Umbral de alarma"
+msgstr "Umbral de aviso"
 
 #: inc/cartridgeitem.class.php:256 inc/computer.class.php:643
 #: inc/consumableitem.class.php:203 inc/contact.class.php:284
@@ -4387,7 +4387,7 @@ msgstr "Añadir a la lista de traslados"
 
 #: inc/cartridgeitem.class.php:347 inc/cartridgeitem.class.php:491
 msgid "Send alarms on cartridges"
-msgstr "Enviar alertas de cartuchos"
+msgstr "Enviar avisos de cartuchos"
 
 #. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
 #. number
@@ -4396,13 +4396,13 @@ msgstr "Enviar alertas de cartuchos"
 msgid ""
 "Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s "
 "- Remaining %3$d"
-msgstr "Umbral de alerta alcanzado para el tipo de cartucho: %1$s - Referencia %2$s - Restante %3$d"
+msgstr "Umbral de aviso alcanzado para el tipo de cartucho: %1$s - Referencia %2$s - Restante %3$d"
 
 #. TRANS: %s is entity name
 #: inc/cartridgeitem.class.php:429
 #, php-format
 msgid "%s: send cartridge alert failed"
-msgstr "%s: No se pudo enviar la alerta de cartuchos"
+msgstr "%s: fallo al enviar el aviso de cartuchos"
 
 #: inc/cartridgeitem_printermodel.class.php:153
 msgid "Add a compatible printer model"
@@ -4656,7 +4656,7 @@ msgstr "Lista de verificación"
 #: inc/ticket.class.php:2615
 msgctxt "status"
 msgid "New"
-msgstr ""
+msgstr "Nuevo"
 
 #: inc/change.class.php:601
 msgid "Evaluation"
@@ -4677,7 +4677,7 @@ msgstr[1] "Validaciones"
 #: inc/change.class.php:603 inc/problem.class.php:721
 msgctxt "status"
 msgid "Accepted"
-msgstr ""
+msgstr "Aceptado"
 
 #: inc/change.class.php:604 inc/commonitilobject.class.php:3763
 #: inc/problem.class.php:724 inc/ticket.class.php:2618
@@ -4700,25 +4700,25 @@ msgstr "Revisar"
 #: inc/ticket.class.php:2620
 msgctxt "status"
 msgid "Closed"
-msgstr ""
+msgstr "Cerrado"
 
 #: inc/change.class.php:616 inc/problem.class.php:730
 #: inc/ticket.class.php:2623
 msgctxt "status"
 msgid "Not solved"
-msgstr ""
+msgstr "No resuelto"
 
 #: inc/change.class.php:617 inc/problem.class.php:731
 #: inc/ticket.class.php:2624
 msgctxt "status"
 msgid "Not closed"
-msgstr ""
+msgstr "No cerrado"
 
 #: inc/change.class.php:619 inc/problem.class.php:733
 #: inc/ticket.class.php:2626
 msgctxt "status"
 msgid "Solved + Closed"
-msgstr ""
+msgstr "Resuelto + Cerrado"
 
 #. TRANS: %s is the user name
 #. TRANS: %s is user name
@@ -4826,7 +4826,7 @@ msgstr "Añadir"
 
 #: inc/commondbconnexity.class.php:226
 msgid "Cannot update item: not enough right on the parent(s) item(s)"
-msgstr "No es posible actualizar el elemento: permisos insuficientes en los elementos precedentes."
+msgstr "No se puede actualizar el elemento: permisos insuficientes en el(los) elemento(s) raíz"
 
 #: inc/commondbtm.class.php:921
 msgid "Item successfully added"
@@ -4876,7 +4876,7 @@ msgstr "Restablecer"
 
 #: inc/commondbtm.class.php:1886 inc/ticket.class.php:4569
 msgid "Confirm the final deletion?"
-msgstr "¿Confirma el borrado final?"
+msgstr "¿Confirma la supresión final?"
 
 #: inc/commondbtm.class.php:1888 inc/commondbtm.class.php:3441
 #: inc/ticket.class.php:4572 inc/transfer.class.php:3064
@@ -4899,15 +4899,15 @@ msgstr "Nombre de la plantilla"
 
 #: inc/commondbtm.class.php:2091
 msgid "You are not allowed to change the visibility flag for child entities."
-msgstr "Usted no tiene los permisos suficientes para modificar la visibilidad en las subentidades"
+msgstr "No tiene permiso para cambiar la opción de visibilidad para entidades hijas."
 
 #: inc/commondbtm.class.php:2096
 msgid "Can't change this attribute. It's inherited from its parent."
-msgstr "Este elemento es dependiente de otro. La modificación no está permitida"
+msgstr "No puede cambiar este atributo. Está heredado desde su padre."
 
 #: inc/commondbtm.class.php:2100
 msgid "Flag change forbidden. Linked items found."
-msgstr "La existencia de elementos enlazados impiden la modificación de este atributo"
+msgstr "Cambio de opción prohibido. Elementos enlazados encontrados."
 
 #: inc/commondbtm.class.php:2104
 msgid "Change visibility in child entities"
@@ -4964,7 +4964,7 @@ msgstr "Registro imposible para %s"
 #: inc/commondbtm.class.php:3762
 #, php-format
 msgid "Item successfully added but duplicate record on %s"
-msgstr "Artículo agregado con éxito, pero registro duplicado en %s"
+msgstr "Elemento añadido correctamente pero registro duplicado en %s"
 
 #: inc/commondbtm.class.php:3765
 msgid "Other item exist"
@@ -5274,8 +5274,8 @@ msgstr "Muy bajo"
 #: inc/ruleticket.class.php:343 inc/ruleticket.class.php:445
 msgid "Watcher"
 msgid_plural "Watchers"
-msgstr[0] "Supervisor"
-msgstr[1] "Supervisores"
+msgstr[0] "Observador"
+msgstr[1] "Observadores"
 
 #: inc/commonitilobject.class.php:2306
 msgid "Resolution time"
@@ -5304,8 +5304,8 @@ msgstr[1] "Grupos solicitantes"
 #: inc/ruleticket.class.php:349 inc/ruleticket.class.php:454
 msgid "Watcher group"
 msgid_plural "Watcher groups"
-msgstr[0] "Grupo de Observadores"
-msgstr[1] "Grupos de Observadores"
+msgstr[0] "Grupo de observación"
+msgstr[1] "Grupos de observación"
 
 #: inc/commonitilobject.class.php:2449
 #: inc/notificationtargetcommonitilobject.class.php:930
@@ -5433,7 +5433,7 @@ msgstr "%1$s (#%2$d)"
 #: inc/commonitiltask.class.php:808 inc/reminder.class.php:999
 #, php-format
 msgid "Recall on %s"
-msgstr "Recordar en %s"
+msgstr "Retirar en %s"
 
 #: inc/commonitiltask.class.php:906 inc/commonitiltask.class.php:1082
 #: inc/dbconnection.class.php:428 inc/group_user.class.php:173
@@ -5444,7 +5444,7 @@ msgstr "Ninguno"
 
 #: inc/commonitiltask.class.php:913 inc/reminder.class.php:702
 msgid "Begin"
-msgstr "Inicio"
+msgstr "Comienzo"
 
 #: inc/commonitiltask.class.php:1007 inc/commonitiltask.class.php:1166
 #: inc/contract.class.php:366 inc/contract.class.php:575
@@ -5951,7 +5951,7 @@ msgstr "Longitud mínima de texto para la búsqueda dinámica en menús desplega
 
 #: inc/config.class.php:263
 msgid "Don't use dynamic display if the number of items is less than"
-msgstr "No utilizar Ajax si el número de elementos es inferior a (0=nunca)"
+msgstr "No utilizar vista dinámica si el número de elementos es inferior a"
 
 #: inc/config.class.php:267
 msgid "Buffer time for dynamic search in dropdowns"
@@ -5985,7 +5985,7 @@ msgstr "último criterio"
 
 #: inc/config.class.php:296
 msgid "default criterion"
-msgstr "criteriopor defecto"
+msgstr "criterio predeterminado"
 
 #: inc/config.class.php:299
 msgid "Global search"
@@ -6138,7 +6138,7 @@ msgstr "Si está sincronizado (cambios del usuario actual)"
 
 #: inc/config.class.php:545
 msgid "If synced or read-only account"
-msgstr "Si sincronizado o cuenta somente leitura"
+msgstr "Si sincronizado o cuenta de solo lectura"
 
 #: inc/config.class.php:546
 msgid "Always"
@@ -6158,11 +6158,11 @@ msgstr "Intervalo para las horas (minutos)"
 
 #: inc/config.class.php:592
 msgid "Limit of the schedules for planning"
-msgstr "Límite de horarios para la planificación"
+msgstr "Límite horario para la planificación"
 
 #: inc/config.class.php:599
 msgid "Default file size limit imported by the mails receiver"
-msgstr "Servidor de correo POP: tamaño máximo de cada fichero adjunto (0 : sin límite)"
+msgstr "Límite de tamaño de archivo predeterminado importados por los destinatarios de correo"
 
 #: inc/config.class.php:605
 msgid "Default heading when adding a document to a ticket"
@@ -6182,7 +6182,7 @@ msgstr "Mostrar información personal en el formulario de nueva incidencia (inte
 
 #: inc/config.class.php:623
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
-msgstr "Permitir las aperturas de incidencias anónimas (helpdesk.html)"
+msgstr "Permitir la creación de incidencias anónimas (sistema_de_ayuda.destinatario)"
 
 #: inc/config.class.php:625
 msgid "Allow anonymous followups (receiver)"
@@ -6230,7 +6230,7 @@ msgstr "Límite de caracteres por defecto en desplegables"
 
 #: inc/config.class.php:783
 msgid "Display order of surnames firstnames"
-msgstr "Visualiza el orden de apellido y nombre"
+msgstr "Orden de visualización de apellidos y nombres"
 
 #: inc/config.class.php:784
 msgid "Surname, First name"
@@ -6254,7 +6254,7 @@ msgstr "Mostrar ID GLPI"
 
 #: inc/config.class.php:825
 msgid "CSV delimiter"
-msgstr "Delimitador CSV"
+msgstr "Separador CSV"
 
 #: inc/config.class.php:833
 msgid "Notifications for my changes"
@@ -6262,7 +6262,7 @@ msgstr "Notificaciones de mis cambios"
 
 #: inc/config.class.php:837
 msgid "Results to display on home page"
-msgstr "Resultados para mostrar en la página principal"
+msgstr "Resultados a mostrar en la página principal"
 
 #: inc/config.class.php:849
 msgid "Private followups by default"
@@ -6270,7 +6270,7 @@ msgstr "Seguimientos privados por defecto"
 
 #: inc/config.class.php:851
 msgid "Show new tickets on the home page"
-msgstr "Mostrar las incidencias nuevas al entrar en el sistema"
+msgstr "Mostrar las incidencias nuevas en la página principal"
 
 #: inc/config.class.php:855
 msgid "Private tasks by default"
@@ -6327,7 +6327,7 @@ msgstr "Evolución de la fecha de vencimiento"
 
 #: inc/config.class.php:926
 msgid "OK state color"
-msgstr "Estado del color bien"
+msgstr "Color del estado OK"
 
 #: inc/config.class.php:933
 msgid "Warning state color"
@@ -6343,7 +6343,7 @@ msgstr "Color del estado crítico"
 
 #: inc/config.class.php:955
 msgid "Critical state threshold"
-msgstr "Umbral de estado crítico"
+msgstr "Umbral del estado crítico"
 
 #: inc/config.class.php:986 inc/config.class.php:1158
 msgid "Password minimum length"
@@ -6375,19 +6375,19 @@ msgstr "!Contraseña demasiado corta!"
 
 #: inc/config.class.php:1080
 msgid "Password must include at least a digit!"
-msgstr "¡La contraseña debe incluir al menos un dígito!"
+msgstr "¡La contraseña debe incluir, al menos, un dígito!"
 
 #: inc/config.class.php:1088
 msgid "Password must include at least a lowercase letter!"
-msgstr "¡La contraseña debe contener al menos una letra minúscula!"
+msgstr "¡La contraseña debe contener, al menos, una letra minúscula!"
 
 #: inc/config.class.php:1096
 msgid "Password must include at least a uppercase letter!"
-msgstr "¡La contraseña debe contener al menos una letra mayúscula!"
+msgstr "¡La contraseña debe contener, al menos, una letra mayúscula!"
 
 #: inc/config.class.php:1104
 msgid "Password must include at least a symbol!"
-msgstr "¡La contraseña debe contener al menos un símbolo!"
+msgstr "¡La contraseña debe contener, al menos, un símbolo!"
 
 #: inc/config.class.php:1128
 msgid "Log Level"
@@ -6501,23 +6501,23 @@ msgstr "Prueba de escritura de los archivos gráficos"
 
 #: inc/config.class.php:1535
 msgid "Checking write permissions for lock files"
-msgstr "Comprobación de los permisos de escritura para los archivos de bloqueo"
+msgstr "Comprobar de los permisos de escritura sobre los archivos de bloqueo"
 
 #: inc/config.class.php:1537
 msgid "Checking write permissions for plugins document files"
-msgstr "Comprobación de los permisos de escritura para los documentos de plugins"
+msgstr "Comprobar de los permisos de escritura sobre los archivos de documentación de los complementos"
 
 #: inc/config.class.php:1539
 msgid "Checking write permissions for temporary files"
-msgstr "Comprobación de permisos de escritura para los archivos temporales"
+msgstr "Comprobar los permisos de escritura sobre los archivos temporales"
 
 #: inc/config.class.php:1541
 msgid "Checking write permissions for rss files"
-msgstr "Comprobando permisos de escritura para los archivos rss"
+msgstr "Comprobar los permisos de escritura para los archivos rss"
 
 #: inc/config.class.php:1543
 msgid "Checking write permissions for upload files"
-msgstr "Comprobación de los permisos de escritura para subir archivos"
+msgstr "Comprobar los permisos de escritura para cargar archivos"
 
 #: inc/config.class.php:1551
 msgid "The directory could not be created."
@@ -6633,13 +6633,13 @@ msgstr "Enviar avisos de consumibles"
 msgid ""
 "Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
 " - Remaining %3$d"
-msgstr "Umbral de alerta alcanzado para el tipo de consumible: %1$s - Referencia %2$s - Restante %3$d"
+msgstr "Umbral de aviso alcanzado para el tipo de consumible: %1$s - Referencia %2$s - Restante %3$d"
 
 #. TRANS: %s is entity name
 #: inc/consumableitem.class.php:374
 #, php-format
 msgid "%s: send consumable alert failed"
-msgstr "%s: enviar fallo en la alerta de consumible"
+msgstr "%s: fallo al enviar el aviso de consumible"
 
 #: inc/consumableitemtype.class.php:42 inc/dropdown.class.php:690
 msgid "Consumable type"
@@ -6717,7 +6717,7 @@ msgstr[1] "Enlace contacto/proveedor"
 
 #: inc/contact_supplier.class.php:254 inc/contract_supplier.class.php:315
 msgid "Add a supplier"
-msgstr "Añadir proveedor"
+msgstr "Añadir un proveedor"
 
 #: inc/contact_supplier.class.php:283 inc/contract_supplier.class.php:343
 #: inc/dropdown.class.php:695 inc/supplier.class.php:121
@@ -6788,7 +6788,7 @@ msgstr "Periodo de renovación del contrato"
 #: inc/contract.class.php:236 inc/contract.class.php:441
 #: inc/contract.class.php:616
 msgid "Invoice period"
-msgstr "Periodicidad de facturación"
+msgstr "Periodo de facturación"
 
 #: inc/contract.class.php:248 inc/contract.class.php:458
 #: inc/contract.class.php:636
@@ -6802,7 +6802,7 @@ msgstr "Número máximo de elementos"
 #: inc/contract.class.php:260 inc/contract.class.php:681
 #: inc/infocom.class.php:1377
 msgid "Email alarms"
-msgstr "Alertas de correo"
+msgstr "Avisos de correo"
 
 #: inc/contract.class.php:275
 msgid "Support hours"
@@ -6865,13 +6865,13 @@ msgstr "Añadir un elemento"
 #: inc/contract.class.php:478 inc/document.class.php:680
 msgctxt "button"
 msgid "Remove an item"
-msgstr "Borrar un elemento"
+msgstr "Eliminar un elemento"
 
 #: inc/contract.class.php:642 inc/software.class.php:633
 #: inc/softwarelicense.class.php:235 inc/softwarelicense.class.php:338
 #: inc/softwarelicense.class.php:664
 msgid "Expiration"
-msgstr "Expiración"
+msgstr "Vencimiento"
 
 #: inc/contract.class.php:653
 msgid "Expiration date + notice"
@@ -6908,11 +6908,11 @@ msgstr "Contratos vencidos en los últimos 30 días"
 
 #: inc/contract.class.php:862
 msgid "Contracts expiring in less than 7 days"
-msgstr "Contratos que expiran en menos de 7 días"
+msgstr "Contratos que vencen en menos de 7 días"
 
 #: inc/contract.class.php:869
 msgid "Contracts expiring in less than 30 days"
-msgstr "Contratos que expiran en menos de 30 días"
+msgstr "Contratos que vencen en menos de 30 días"
 
 #: inc/contract.class.php:876
 msgid "Contracts where notice begins in less than 7 days"
@@ -6924,7 +6924,7 @@ msgstr "Contratos cuyo pre-aviso comienza en menos de 30 días"
 
 #: inc/contract.class.php:912
 msgid "Send alarms on contracts"
-msgstr "Enviar alertas de contratos"
+msgstr "Enviar avisos de contratos"
 
 #: inc/contract.class.php:992
 msgid "Contract entered in notice time"
@@ -6944,7 +6944,7 @@ msgstr "Duración del contrato terminado"
 
 #: inc/contract.class.php:1115
 msgid "send contract alert failed"
-msgstr "el envio de alerta del contrato falló"
+msgstr "fallo al enviar el aviso de contrato"
 
 #: inc/contract.class.php:1255 inc/contract.class.php:1276
 #: inc/contract.class.php:1296
@@ -6975,8 +6975,8 @@ msgstr "Añadir un nuevo coste"
 #: inc/contract_item.class.php:88
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
-msgstr[0] "Vínculo Contrato/Elemento"
-msgstr[1] "Vínculos Contrato/Elemento"
+msgstr[0] "Enlace Contrato/Elemento"
+msgstr[1] "Enlaces Contrato/Elemento"
 
 #: inc/contract_item.class.php:154
 msgid "Associated item ID"
@@ -6984,7 +6984,7 @@ msgstr "ID del elemento asociado"
 
 #: inc/contract_item.class.php:384 inc/contract_supplier.class.php:181
 msgid "Add a contract"
-msgstr "Añadir un Contrato"
+msgstr "Añadir un contrato"
 
 #: inc/crontask.class.php:70 inc/event.class.php:132 inc/html.class.php:1933
 #: install/update_0723_078.php:3203
@@ -7041,11 +7041,11 @@ msgstr "Última ejecución"
 #: inc/crontask.class.php:454 inc/crontask.class.php:519
 #: inc/search.class.php:1835
 msgid "Blank"
-msgstr "Borrar"
+msgstr "Vaciar"
 
 #: inc/crontask.class.php:621 inc/crontask.class.php:1091
 msgid "Running"
-msgstr "En proceso de ejecución"
+msgstr "En ejecución"
 
 #: inc/crontask.class.php:624 inc/crontask.class.php:647
 msgid "Scheduled"
@@ -7065,7 +7065,7 @@ msgstr "Se requiere un mínimo de 64 MB para GLPI."
 
 #: inc/crontask.class.php:729
 msgid "No task with Run mode = CLI, fix your tasks configuration"
-msgstr "No hay  tareas con modo ejecución  = CLI, corregir la configuración de tareas"
+msgstr "No hay  tareas con modo ejecución = CLI, corrija la configuración de las tareas"
 
 #: inc/crontask.class.php:735
 msgid "External"
@@ -7098,7 +7098,7 @@ msgstr "Función %s indefinida  (para cron)"
 
 #: inc/crontask.class.php:783
 msgid "Nothing to launch"
-msgstr "Nada que lanzar"
+msgstr "Nada que ejecutar"
 
 #: inc/crontask.class.php:791
 msgid "Can't get DB lock"
@@ -7208,19 +7208,19 @@ msgstr "Hora de finalización del periodo de ejecución"
 #, php-format
 msgid "Clean %1$d session file created since more than %2$s seconds"
 msgid_plural "Clean %1$d session files created since more than %2$s seconds"
-msgstr[0] "Limpia el fichero de sesión %1$d creado desde hace más de %2$s segundos"
-msgstr[1] "Limpia los ficheros de sesión %1$d creados desde hace más de %2$s segundos"
+msgstr[0] "Limpiar el archivo de sesión %1$d creado desde hace más de %2$s segundos"
+msgstr[1] "Limpiar los archivos de sesión %1$d creados desde hace más de %2$s segundos"
 
 #: inc/crontask.class.php:1353
 #, php-format
 msgid "Clean %1$d graph file created since more than %2$s seconds"
 msgid_plural "Clean %1$d graph files created since more than %2$s seconds"
-msgstr[0] "Limpieza del fichero de gráficas %1$d creado hace más de %2$s segundos"
-msgstr[1] "Limpeza de los ficheros de gráficas %1$d creados hace más de %2$s segundos"
+msgstr[0] "Limpiar el archivo gráfico %1$d creado desde hace más de %2$s segundos"
+msgstr[1] "Limpiar los archivos gráficos %1$d creados desde hace más de %2$s segundos"
 
 #: inc/crontask.class.php:1461
 msgid "Check for new updates"
-msgstr "Comprobar actualizaciones"
+msgstr "Comprobar nuevas actualizaciones"
 
 #: inc/crontask.class.php:1464
 msgid "Clean old logs"
@@ -7451,7 +7451,7 @@ msgstr "Frecuencia predeterminada"
 
 #: inc/displaypreference.class.php:288
 msgid "No personal criteria. Create personal parameters?"
-msgstr "No hay criterios personales. ¿Desea crear sus parámetros personales?"
+msgstr "No hay criterios personales. ¿Crear parámetros personales?"
 
 #: inc/displaypreference.class.php:299 inc/displaypreference.class.php:451
 #: inc/search.class.php:881 inc/search.class.php:882
@@ -7517,7 +7517,7 @@ msgstr "Archivo actual"
 
 #: inc/document.class.php:340
 msgid "Use a FTP installed file"
-msgstr "Seleccionar un fichero instalado por FTP"
+msgstr "Usar un archivo FTP instalado"
 
 #: inc/document.class.php:346 inc/document.class.php:836
 #: inc/notificationtargetcommonitilobject.class.php:1001
@@ -7597,7 +7597,7 @@ msgstr "El fichero es válido. La carga es correcta."
 #: inc/document.class.php:1079
 msgid ""
 "Potential upload attack or file too large. Moving temporary file failed."
-msgstr "Posible ataque de carga o un archivo demasiado grande. Fallo al mover archivos temporales."
+msgstr "Ataque potencial en el envío o el archivo es demasiado grande. Fallo al mover el archivo temporal."
 
 #: inc/document.class.php:1097
 msgid "Unauthorized file type"
@@ -7666,7 +7666,7 @@ msgstr "Icono"
 
 #: inc/documenttype.class.php:47 inc/documenttype.class.php:91
 msgid "Authorized upload"
-msgstr "Subida autorizada"
+msgstr "Envío autorizado"
 
 #: inc/documenttype.class.php:50 inc/documenttype.class.php:75
 msgid "Extension"
@@ -7883,12 +7883,12 @@ msgstr[1] "Criterio LDAP"
 #: inc/dropdown.class.php:772 inc/fieldunicity.class.php:48
 #: inc/html.class.php:1925
 msgid "Fields unicity"
-msgstr "Campos únicos"
+msgstr "Campos de unicidad"
 
 #: inc/dropdown.class.php:773 inc/fieldblacklist.class.php:42
 msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
-msgstr[0] "Valor no válido"
+msgstr[0] "Valor ignorado para la unicidad"
 msgstr[1] "Valores ignorados para la unicidad"
 
 #. TRANS: %d is a number of years
@@ -8056,43 +8056,43 @@ msgstr "Firma de los correos"
 
 #: inc/entity.class.php:575
 msgid "Alarms on cartridges"
-msgstr "Alertas de cartuchos"
+msgstr "Avisos de cartuchos"
 
 #: inc/entity.class.php:582
 msgid "Alarms on consumables"
-msgstr "Alertas de consumibles"
+msgstr "Avisos de consumibles"
 
 #: inc/entity.class.php:594 inc/entity.class.php:1480
 #: inc/notificationtargetsoftwarelicense.class.php:43
 msgid "Alarms on expired licenses"
-msgstr "Alertas de caducidad de licencias"
+msgstr "Avisos sobre licencias vencidas"
 
 #: inc/entity.class.php:601 inc/entity.class.php:1493
 msgid "Send license alarms before"
-msgstr "Enviar alertas de licencias antes de"
+msgstr "Enviar avisos de licencias antes de"
 
 #: inc/entity.class.php:608 inc/entity.class.php:1389
 msgid "Alarms on contracts"
-msgstr "Alertas de contratos"
+msgstr "Avisos de contratos"
 
 #: inc/entity.class.php:615 inc/entity.class.php:1414
 msgid "Send contract alarms before"
-msgstr "Enviar alertas de contrato antes de"
+msgstr "Enviar avisos de contrato antes de"
 
 #: inc/entity.class.php:622 inc/entity.class.php:1434
 #: inc/infocom.class.php:1129 inc/infocom.class.php:1527
 #: inc/notificationtargetinfocom.class.php:43
 msgid "Alarms on financial and administrative information"
-msgstr "Alertas de información financiera y administrativa"
+msgstr "Avisos de información financiera y administrativa"
 
 #: inc/entity.class.php:629 inc/entity.class.php:1460
 msgid "Send financial and administrative information alarms before"
-msgstr "Enviar alertas de información financiera y administrativa antes de"
+msgstr "Enviar avisos de información financiera y administrativa antes de"
 
 #: inc/entity.class.php:636 inc/entity.class.php:1514
 #: inc/reservationitem.class.php:409
 msgid "Alerts on reservations"
-msgstr "Alertas sobre reservas"
+msgstr "Avisos sobre reservas"
 
 #: inc/entity.class.php:643 inc/entity.class.php:1759
 #: inc/notificationtargetticket.class.php:638
@@ -8105,7 +8105,7 @@ msgstr "Inmediatamente"
 
 #: inc/entity.class.php:657
 msgid "Alerts on tickets which are not solved"
-msgstr "Alertas sobre las incidencias sin resolver"
+msgstr "Avisos sobre las incidencias sin resolver"
 
 #: inc/entity.class.php:664 inc/entity.class.php:1736
 msgid "Automatic assignment of tickets"
@@ -8152,11 +8152,11 @@ msgstr[1] "Plantillas de incidencia"
 
 #: inc/entity.class.php:752
 msgid "Default value for alarms on contracts"
-msgstr "Valor predeterminando para alertas de contratos"
+msgstr "Valor predeterminando para avisos de contratos"
 
 #: inc/entity.class.php:759
 msgid "Default value for alarms on financial and administrative information"
-msgstr "Valor predeterminado para alertas de información financiera y administrativa"
+msgstr "Valor predeterminado para avisos de información financiera y administrativa"
 
 #: inc/entity.class.php:766 inc/entity.class.php:1327
 msgid "Default threshold for cartridges count"
@@ -8173,7 +8173,7 @@ msgstr "Entidad para la creación de software"
 
 #: inc/entity.class.php:803
 msgid "to see the entity and its sub-entities"
-msgstr "para ver la entidad y sus sub-entidades"
+msgstr "Ver la entidad y sus sub-entidades"
 
 #. TRANS: %s is the user login
 #: inc/entity.class.php:884
@@ -8183,7 +8183,7 @@ msgstr "%s añade el elemento"
 
 #: inc/entity.class.php:1050
 msgid "Values for the generic rules for assignment to entities"
-msgstr "Valores para las reglas genéricas de asociación a las entidades"
+msgstr "Valores para las reglas genéricas para la asignación a entidades"
 
 #: inc/entity.class.php:1054
 msgid ""
@@ -8256,15 +8256,15 @@ msgstr "Opciones de notificación"
 
 #: inc/entity.class.php:1307
 msgid "Alarms options"
-msgstr "Opciones de alertas"
+msgstr "Opciones de avisos"
 
 #: inc/entity.class.php:1313
 msgid "Reminders frequency for alarms on cartridges"
-msgstr "Frecuencia de recordatorios para alertas de cartuchos"
+msgstr "Frecuencia de recordatorios para avisos de cartuchos"
 
 #: inc/entity.class.php:1351
 msgid "Reminders frequency for alarms on consumables"
-msgstr "Frecuencia de recordatorios para alertas de consumibles"
+msgstr "Frecuencia de recordatorios para avisos de consumibles"
 
 #: inc/entity.class.php:1512 inc/event.class.php:118 inc/event.class.php:131
 #: inc/html.class.php:1355 inc/html.class.php:2642 inc/html.class.php:2643
@@ -8278,7 +8278,7 @@ msgstr[1] "Reservas"
 
 #: inc/entity.class.php:1532
 msgid "Alerts on tickets which are not solved since"
-msgstr "Alertas de incidencias sin resolver desde hace"
+msgstr "Avisos sobre las incidencias sin resolver desde hace"
 
 #: inc/entity.class.php:1697 inc/entity.class.php:1710
 #: inc/entity.class.php:2257 inc/sla.class.php:168
@@ -8410,11 +8410,11 @@ msgstr "Nombre de dominio completo. Emplear la notación clásica (etiquetas sep
 
 #: inc/fqdn.class.php:87
 msgid "FQDN must not be empty"
-msgstr "El FDQN no debe estar vacío"
+msgstr "El FQDN no debe estar vacío"
 
 #: inc/fqdn.class.php:96
 msgid "FQDN is not valid"
-msgstr "EL FDQN no es válido"
+msgstr "El FQDN no es válido"
 
 #: inc/fqdnlabel.class.php:107
 #, php-format
@@ -8423,11 +8423,11 @@ msgstr "Nombre de Internet incorrecto: %s"
 
 #: inc/group.class.php:118 inc/group.class.php:638 inc/user.class.php:195
 msgid "Used items"
-msgstr "Materiales utilizados"
+msgstr "Elementos utilizados"
 
 #: inc/group.class.php:121 inc/group.class.php:634 inc/user.class.php:196
 msgid "Managed items"
-msgstr "Material gestionado"
+msgstr "Elementos gestionados"
 
 #: inc/group.class.php:219
 msgid "Visible in a ticket"
@@ -8469,7 +8469,7 @@ msgstr "Valor del atributo"
 #: inc/group_user.class.php:420 inc/group_user.class.php:473
 #: inc/group_user.class.php:691
 msgid "Manager"
-msgstr "Supervisor"
+msgstr "Gestor"
 
 #: inc/group.class.php:463 inc/group_user.class.php:165
 #: inc/group_user.class.php:198 inc/group_user.class.php:296
@@ -8664,8 +8664,8 @@ msgstr "General"
 #: inc/html.class.php:1921
 msgid "Check"
 msgid_plural "Checks"
-msgstr[0] "Comprobación"
-msgstr[1] "Comprobaciones"
+msgstr[0] "Prueba"
+msgstr[1] "Pruebas"
 
 #: inc/html.class.php:1961
 msgid "Others"
@@ -8886,7 +8886,7 @@ msgstr "%1$d en %2$d"
 
 #: inc/infocom.class.php:418
 msgid "Send alarms on financial and administrative information"
-msgstr "Enviar alertas sobre información financiera y administrativa"
+msgstr "Enviar avisos sobre información financiera y administrativa"
 
 #. TRANS: %1$s is the warranty end date and %2$s the name of the item
 #: inc/infocom.class.php:467
@@ -8900,7 +8900,7 @@ msgstr "No hay elementos alcanzando el fin de la garantía."
 
 #: inc/infocom.class.php:511
 msgid "send infocom alert failed"
-msgstr "Fallo en el envío de alertas financiero - administrativas"
+msgstr "fallo al enviar el aviso financiero/administrativo"
 
 #: inc/infocom.class.php:590 inc/infocom.class.php:612
 msgid "Linear"
@@ -8922,7 +8922,7 @@ msgstr "No se ha encontrado el elemento solicitado"
 msgid ""
 "For this type of item, the financial and administrative information are only"
 " a model for the items which you should add."
-msgstr "Para este tipo de elemento, la información financiera y administrativa son sólo un modelo para los artículos que usted debe agregar."
+msgstr "Para este tipo de elemento, la información financiera y administrativa son solo un modelo para los elementos que debe añadir."
 
 #: inc/infocom.class.php:975 inc/infocom.class.php:1231
 #: inc/infocom.class.php:1463
@@ -9044,7 +9044,7 @@ msgstr "Red direccionable"
 
 #: inc/ipnetwork.class.php:170
 msgid "Set the network using notation address/mask"
-msgstr "Configurar la red usando la notación dirección / máscara"
+msgstr "Configurar la red usando la notación dirección/máscara"
 
 #: inc/ipnetwork.class.php:177
 msgid "An addressable network is a network defined on an equipment"
@@ -9179,7 +9179,7 @@ msgstr "Gestionar"
 #: inc/reminder.class.php:508 inc/reminder.class.php:511
 #: inc/rssfeed.class.php:490 inc/rssfeed.class.php:493
 msgid "Targets"
-msgstr "Destino"
+msgstr "Objetivos"
 
 #: inc/knowbaseitem.class.php:576
 msgid "Category name"
@@ -9195,7 +9195,7 @@ msgstr "Seleccionar una categoría para este artículo:"
 #: inc/notificationtemplatetranslation.class.php:286
 #: inc/notificationtemplatetranslation.class.php:484
 msgid "Subject"
-msgstr "Tema"
+msgstr "Asunto"
 
 #: inc/knowbaseitem.class.php:588 inc/knowbaseitem.class.php:811
 #: inc/knowbaseitem.class.php:1241 inc/knowbaseitem.class.php:1457
@@ -9271,7 +9271,7 @@ msgstr "Últimas entradas actualizadas"
 
 #: inc/knowbaseitem.class.php:1373
 msgid "Most popular questions"
-msgstr "Artículos más consultados"
+msgstr "Preguntas más populares"
 
 #: inc/knowbaseitem.class.php:1463
 msgid "FAQ item"
@@ -9286,7 +9286,7 @@ msgstr[1] "Vistas"
 #: inc/knowbaseitem.class.php:1523 inc/reminder.class.php:1156
 #: inc/rssfeed.class.php:998
 msgid "Add a target"
-msgstr "Añadir destino"
+msgstr "Añadir objetivo"
 
 #: inc/knowbaseitem.class.php:1555 inc/reminder.class.php:1183
 #: inc/rssfeed.class.php:1026
@@ -9464,7 +9464,7 @@ msgstr "Añadir el componente"
 #: inc/log.class.php:379
 #, php-format
 msgid "Change the component %1$s: %2$s"
-msgstr "Cambiar el componente %1$s por %2$s"
+msgstr "Cambiar el componente %1$s: %2$s"
 
 #. TRANS: %1$s is the update date, %2$s is the last updater name
 #: inc/log.class.php:381 inc/ticket.class.php:4023
@@ -9551,7 +9551,7 @@ msgstr "Errores de conexión"
 
 #: inc/mailcollector.class.php:249
 msgid "Use Kerberos authentication"
-msgstr "Utilice la autenticación Kerberos"
+msgstr "Usar autenticación Kerberos"
 
 #: inc/mailcollector.class.php:257 inc/mailcollector.class.php:359
 msgid "Accepted mail archive folder (optional)"
@@ -9563,16 +9563,16 @@ msgstr "Carpeta de almacén de correo rechazado (opcional)"
 
 #: inc/mailcollector.class.php:268 inc/mailcollector.class.php:343
 msgid "Maximum size of each file imported by the mails receiver"
-msgstr "Tamaño máximo de cada archivo importado por el receptor de correo"
+msgstr "Tamaño máximo de cada archivo importado por el destinatario de correo"
 
 #: inc/mailcollector.class.php:273
 msgid "Use mail date, instead of collect one"
-msgstr "Usar fecha de correo, en vez de recoger una"
+msgstr "Usar fecha de correo, en lugar de recoger una"
 
 #: inc/mailcollector.class.php:303
 msgctxt "button"
 msgid "Get email tickets now"
-msgstr "Recuperar ahora"
+msgstr "Recuperar incidencias por correo ahora"
 
 #: inc/mailcollector.class.php:434
 #, php-format
@@ -9628,7 +9628,7 @@ msgstr "Recuperar correo electrónico (destinatarios de correos)"
 
 #: inc/mailcollector.class.php:1434
 msgid "Number of emails to retrieve"
-msgstr "Número de mensajes para recuperar"
+msgstr "Número de mensajes a recuperar"
 
 #: inc/mailcollector.class.php:1551
 msgid ""
@@ -9763,7 +9763,7 @@ msgstr[1] "Alias de red"
 
 #: inc/networkalias.class.php:276
 msgid "Add a network alias"
-msgstr "Añadir  un alias de red"
+msgstr "Añadir un alias de red"
 
 #: inc/networkalias.class.php:385 inc/ruleimportcomputer.class.php:106
 msgid "Computer's name"
@@ -9773,7 +9773,7 @@ msgstr "Nombre del equipo"
 msgid ""
 "The MAC address and the IP of the equipment are included in an aggregated "
 "network port"
-msgstr "La dirección MAC y la dirección IP del equipo se incluyen en un puerto de red agregado"
+msgstr "La dirección MAC y la dirección IP del equipo están incluídas en un puerto de red agregado"
 
 #: inc/networkname.class.php:174 inc/networkname.class.php:459
 #: inc/networkname.class.php:806 inc/networkport.class.php:966
@@ -9881,7 +9881,7 @@ msgstr "Asociar"
 
 #: inc/networkportdialup.class.php:45
 msgid "Connection by dial line - Dialup Port"
-msgstr "Conexión por marcado telefónico - Puerto de RTB"
+msgstr "Conexión por marcado telefónico - Puerto RTB"
 
 #: inc/networkportdialup.class.php:57 inc/networkportdialup.class.php:82
 #: inc/networkportethernet.class.php:110 inc/networkportethernet.class.php:126
@@ -10130,11 +10130,11 @@ msgstr "Error en el envío del correo"
 #: inc/notificationmail.class.php:251
 #, php-format
 msgid "An email was sent to %s"
-msgstr "Correo de seguimiento enviado a %s"
+msgstr "Se ha enviado un correo a %s"
 
 #: inc/notificationmailsetting.class.php:167
 msgid "Response name (if needed)"
-msgstr "Nombre remitente (si es necesario)"
+msgstr "Nombre de respuesta (si es necesario)"
 
 #: inc/notificationmailsetting.class.php:174
 msgid "The PHP mail function is unknown or is not activated on your system."
@@ -10170,11 +10170,11 @@ msgstr "Servidor SMTP"
 
 #: inc/notificationmailsetting.class.php:197
 msgid "SMTP login (optional)"
-msgstr "Inicio sesión (login) SMTP (opcional)"
+msgstr "Usuario SMTP (opcional)"
 
 #: inc/notificationmailsetting.class.php:205
 msgid "SMTP password (optional)"
-msgstr "Contraseña SMTP"
+msgstr "Contraseña SMTP (opcional)"
 
 #: inc/notificationmailsetting.class.php:216
 msgid "Send a test email to the administrator"
@@ -10182,7 +10182,7 @@ msgstr "Enviar un correo de prueba al administrador"
 
 #: inc/notificationtargetcartridgeitem.class.php:43
 msgid "Cartridges alarm"
-msgstr "Alerta de cartuchos"
+msgstr "Aviso de cartuchos"
 
 #: inc/notificationtargetcartridgeitem.class.php:85
 #: inc/notificationtargetconsumableitem.class.php:87
@@ -10197,11 +10197,11 @@ msgstr "Gestor del grupo %s"
 
 #: inc/notificationtarget.class.php:742
 msgid "Manager of group"
-msgstr "Director de grupo"
+msgstr "Gestor de grupo"
 
 #: inc/notificationtarget.class.php:746
 msgid "Group without manager"
-msgstr "Grupo sin administrador"
+msgstr "Grupo sin gestor"
 
 #: inc/notificationtarget.class.php:764
 #: inc/notificationtargetdbconnection.class.php:51
@@ -10222,15 +10222,15 @@ msgstr "Gestor del grupo a cargo de la incidencia"
 
 #: inc/notificationtargetcommonitilobject.class.php:428
 msgid "Group in charge of the ticket without manager"
-msgstr "Grupo encargado de la incidencia sin administrador"
+msgstr "Grupo al cargo de la incidencia sin gestor"
 
 #: inc/notificationtargetcommonitilobject.class.php:429
 msgid "Requester group manager"
-msgstr "Supervisor de grupos de solicitantes"
+msgstr "Gestor del grupo solicitante"
 
 #: inc/notificationtargetcommonitilobject.class.php:431
 msgid "Requester group without manager"
-msgstr "Grupos de solicitantes sin supervisor"
+msgstr "Grupo solicitante sin gestor"
 
 #: inc/notificationtargetcommonitilobject.class.php:436
 msgid "Technician in charge of the ticket"
@@ -10243,11 +10243,11 @@ msgstr "Usuario de hardware"
 
 #: inc/notificationtargetcommonitilobject.class.php:443
 msgid "Watcher group manager"
-msgstr "Supervisor del grupo de de observadores"
+msgstr "Gestor del grupo de observación"
 
 #: inc/notificationtargetcommonitilobject.class.php:445
 msgid "Watcher group without manager"
-msgstr "Grupo de de observadores sin supervisor"
+msgstr "Grupo de observación sin gestor"
 
 #: inc/notificationtargetcommonitilobject.class.php:449
 #: inc/ticketvalidation.class.php:650 inc/ticketvalidation.class.php:751
@@ -10291,7 +10291,7 @@ msgstr "Ubicación del solicitante"
 #: inc/notificationtargetcommonitilobject.class.php:928
 #: inc/ticket.class.php:2006
 msgid "Last updater"
-msgstr "Autor de la última modificación"
+msgstr "Autor de la última actualización"
 
 #: inc/notificationtargetcommonitilobject.class.php:929
 msgid "Assigned to technicians"
@@ -10324,7 +10324,7 @@ msgstr "Valor del estado en la base de datos"
 
 #: inc/notificationtargetconsumableitem.class.php:43
 msgid "Consumables alarm"
-msgstr "Alerta de consumibles"
+msgstr "Aviso de consumibles"
 
 #: inc/notificationtargetcontract.class.php:44
 msgid "End of contract"
@@ -10336,7 +10336,7 @@ msgstr "Aviso de periodicidad"
 
 #: inc/notificationtargetcontract.class.php:63
 msgid "Contracts alarm"
-msgstr "Alerta de contratos"
+msgstr "Aviso de contratos"
 
 #: inc/notificationtargetcontract.class.php:124
 #: inc/notificationtargetcontract.class.php:162
@@ -10380,7 +10380,7 @@ msgstr "La base de datos esclava está desincronizada. La diferencia es de:"
 #: inc/notificationtargetfieldunicity.class.php:43
 #: inc/notificationtargetfieldunicity.class.php:89
 msgid "Alert on duplicate record"
-msgstr "Alerta sobre registro duplicado"
+msgstr "Aviso sobre registro duplicado"
 
 #: inc/notificationtargetfieldunicity.class.php:70
 msgid "Item successfully added but duplicate record on"
@@ -10397,11 +10397,11 @@ msgstr "Acción prevista"
 #: inc/notificationtargetinfocom.class.php:90
 #: inc/notificationtargetsoftwarelicense.class.php:85
 msgid "Expiration date"
-msgstr "Fecha de caducidad"
+msgstr "Fecha de vencimiento"
 
 #: inc/notificationtargetplanningrecall.class.php:43
 msgid "Planning recall"
-msgstr "Planificación de retiro"
+msgstr "Planificar retirada"
 
 #: inc/notificationtargetproblem.class.php:51
 msgid "New problem"
@@ -10469,7 +10469,7 @@ msgstr "Supresión de una reserva"
 
 #: inc/notificationtargetreservation.class.php:47
 msgid "Reservation expired"
-msgstr "Reserva caducada"
+msgstr "Reserva vencida"
 
 #: inc/notificationtargetticket.class.php:184
 msgid "Update of a ticket"
@@ -10694,7 +10694,7 @@ msgstr "Etiqueta"
 #: inc/notificationtemplatetranslation.class.php:335
 #: inc/notificationtemplatetranslation.class.php:375
 msgid "Label"
-msgstr "Etiqueta"
+msgstr "Término"
 
 #: inc/notificationtemplatetranslation.class.php:338
 msgid "Possible values"
@@ -10749,7 +10749,7 @@ msgstr "Razón del rechazo"
 
 #: inc/notimportedemail.class.php:231
 msgid "Unable to affect the email to an entity"
-msgstr "No se puede asociar el correo electrónico a una entidad"
+msgstr "No se puede asociar el correo a una entidad"
 
 #: inc/notimportedemail.class.php:232
 msgid "Email not found. Impossible import"
@@ -10763,7 +10763,7 @@ msgstr "Marca"
 #: inc/phone.class.php:307 inc/phone.class.php:499
 msgctxt "quantity"
 msgid "Number of lines"
-msgstr "Cantidad de líneas"
+msgstr "Número de líneas"
 
 #: inc/phone.class.php:312
 msgid "Flags"
@@ -10879,7 +10879,7 @@ msgstr[1] "Autores"
 
 #: inc/plugin.class.php:333
 msgid "CSRF compliant"
-msgstr "conforme CSRF"
+msgstr "Compatible CSRF"
 
 #: inc/plugin.class.php:389
 msgctxt "plugin"
@@ -10889,7 +10889,7 @@ msgstr "Activado"
 #: inc/plugin.class.php:393
 msgctxt "plugin"
 msgid "Not installed"
-msgstr "Sin instalar"
+msgstr "No instalado"
 
 #: inc/plugin.class.php:397
 msgid "To update"
@@ -10931,7 +10931,7 @@ msgstr "Función inexistente"
 
 #: inc/plugin.class.php:534
 msgid "Not CSRF compliant"
-msgstr "No conforme CSRF"
+msgstr "No compatible CSRF"
 
 #: inc/plugin.class.php:537
 msgctxt "button"
@@ -10990,17 +10990,17 @@ msgstr "Descripción de la tarea"
 #: inc/problem.class.php:722 inc/ticket.class.php:2616
 msgctxt "status"
 msgid "Processing (assigned)"
-msgstr ""
+msgstr "En curso (asignada)"
 
 #: inc/problem.class.php:723 inc/ticket.class.php:2617
 msgctxt "status"
 msgid "Processing (planned)"
-msgstr ""
+msgstr "En curso (planificada)"
 
 #: inc/problem.class.php:725 inc/ticket.class.php:2619
 msgctxt "status"
 msgid "Solved"
-msgstr ""
+msgstr "Resuelto"
 
 #: inc/problem.class.php:726
 msgid "Under observation"
@@ -11008,7 +11008,7 @@ msgstr "Bajo observación"
 
 #: inc/problem.class.php:908 inc/problem.class.php:962
 msgid "Problems on pending status"
-msgstr "Problemas pendientes"
+msgstr "Problemas en estados pendientes"
 
 #: inc/problem.class.php:926 inc/problem.class.php:978
 msgid "Problems to be processed"
@@ -11515,7 +11515,7 @@ msgstr "Visibilidad"
 
 #: inc/reminder.class.php:751
 msgid "Add to schedule"
-msgstr "Añadir a la planificación"
+msgstr "Añadir horario"
 
 #: inc/reminder.class.php:982
 #, php-format
@@ -11583,7 +11583,7 @@ msgstr "Cuidado: no existe valor predeterminado"
 
 #: inc/reservation.class.php:278
 msgid "The required item is already reserved for this timeframe"
-msgstr "El material solicitado ya está reservado para este horario."
+msgstr "El activo solicitado ya está reservado para este periodo de tiempo"
 
 #: inc/reservation.class.php:282
 msgid "Unknown error"
@@ -11591,15 +11591,15 @@ msgstr "Error desconocido"
 
 #: inc/reservation.class.php:285
 msgid "Back to planning"
-msgstr "Volver al calendario"
+msgstr "Volver a la planificación"
 
 #: inc/reservation.class.php:437
 msgid "Device temporarily unavailable"
-msgstr "Material no disponible temporalmente"
+msgstr "Dispositivo no disponible temporalmente"
 
 #: inc/reservation.class.php:461
 msgid "All reservable devices"
-msgstr "Todos los dispositivos en préstamo"
+msgstr "Todos los dispositivos que se pueden reservar"
 
 #: inc/reservation.class.php:542 inc/toolbox.class.php:2072
 msgid "Monday"
@@ -11699,19 +11699,19 @@ msgstr[1] "Activos reservables"
 
 #: inc/reservationitem.class.php:247
 msgid "Make unavailable"
-msgstr "Haga clic para que quede no disponible"
+msgstr "Hacer no disponible"
 
 #: inc/reservationitem.class.php:251
 msgid "Make available"
-msgstr "Haga clic para que quede disponible"
+msgstr "Hacer disponible"
 
 #: inc/reservationitem.class.php:257
 msgid "Prohibit reservations"
-msgstr "No autorizar el préstamo"
+msgstr "Prohibir reservas"
 
 #: inc/reservationitem.class.php:259
 msgid "Are you sure you want to return this non-reservable item?"
-msgstr "¿Está seguro de devolver este elemento no reservable?"
+msgstr "¿Está seguro de que quiere devolver este activo no reservable?"
 
 #: inc/reservationitem.class.php:260
 msgid "That will remove all the reservations in progress."
@@ -11719,7 +11719,7 @@ msgstr "Esto suprimirá todas las reservas en curso."
 
 #: inc/reservationitem.class.php:265
 msgid "Authorize reservations"
-msgstr "Autorizar el préstamo"
+msgstr "Autorizar reservas"
 
 #: inc/reservationitem.class.php:298 inc/search.class.php:4451
 #: inc/search.class.php:4455
@@ -11728,15 +11728,15 @@ msgstr "Modificar el comentario"
 
 #: inc/reservationitem.class.php:460
 msgid "Device reservations expiring today"
-msgstr "Equipos con reserva en los que expira hoy"
+msgstr "Las reservas sobre el dispositivo vencen hoy"
 
 #: inc/reservationitem.class.php:501
 msgid "Send reservation alert failed"
-msgstr "Fallo en el envío de alertas de reserva"
+msgstr "Fallo al enviar el aviso de reserva"
 
 #: inc/rssfeed.class.php:417
 msgid "Creator"
-msgstr "Creador"
+msgstr "Autor"
 
 #: inc/rssfeed.class.php:436 inc/rssfeed.class.php:611
 msgid "Error"
@@ -11752,16 +11752,16 @@ msgstr "Tasa de recarga"
 
 #: inc/rssfeed.class.php:693 inc/rssfeed.class.php:748
 msgid "Error retrieving RSS feed"
-msgstr "Error obteniendo el canal RSS"
+msgstr "Error al obtener el canal RSS"
 
 #: inc/rssfeed.class.php:698
 msgid "RSS feeds found"
-msgstr "RSS feeds encontrado"
+msgstr "Canales RSS encontrados"
 
 #: inc/rssfeed.class.php:807
 msgctxt "button"
 msgid "Use"
-msgstr "Utilizar"
+msgstr "Usar"
 
 #: inc/rssfeed.class.php:878
 msgid "Personal RSS feed"
@@ -11775,23 +11775,23 @@ msgstr "Asignar"
 
 #: inc/ruleaction.class.php:346
 msgid "Assign the value from regular expression"
-msgstr "Asigna el valor de la expresión regular"
+msgstr "Asigna el valor desde una expresión regular"
 
 #: inc/ruleaction.class.php:347
 msgid "Add the result of regular expression"
-msgstr "Añadir el resultado de una expresión regular"
+msgstr "Añade el resultado de una expresión regular"
 
 #: inc/ruleaction.class.php:348
 msgid "Assign: equipment by IP address"
-msgstr "Asignar : IP del equipo"
+msgstr "Asignar: equipamiento por dirección IP"
 
 #: inc/ruleaction.class.php:349
 msgid "Assign: equipment by name + domain"
-msgstr "Asignar : nombre del equipo + dominio"
+msgstr "Asignar: equipamiento por nombre + dominio"
 
 #: inc/ruleaction.class.php:350
 msgid "Assign: equipment by MAC address"
-msgstr "Asignar : material por la dirección MAC"
+msgstr "Asignar: equipamiento por la dirección MAC"
 
 #: inc/ruleaction.class.php:351
 msgid "Recalculate"
@@ -11828,7 +11828,7 @@ msgstr "Posición"
 #: inc/rule.class.php:296 inc/rule.class.php:418 inc/rule.class.php:2175
 #: inc/ruleright.class.php:87 inc/slalevel.class.php:297
 msgid "Logical operator"
-msgstr "Tipo de emparejamiento"
+msgstr "Operador lógico"
 
 #: inc/rule.class.php:342 inc/rule.class.php:488 inc/rule.class.php:1921
 msgid "and"
@@ -11842,7 +11842,7 @@ msgstr "o"
 msgid ""
 "It is possible to affect the result of a regular expression using the string"
 " #0"
-msgstr "Puede asignar el resultado de una expresión regular utilizando la cadena #0"
+msgstr "Se puede alterar el resultado de una expresión regular utilizando la cadena #0"
 
 #: inc/rule.class.php:618
 msgid "Action type"
@@ -11915,7 +11915,7 @@ msgstr "Inactiva"
 #: inc/rulecollection.class.php:1132
 #, php-format
 msgid "Rules applied: %s"
-msgstr "Reglas heredadas: %s"
+msgstr "Reglas aplicadas: %s"
 
 #. TRANS: %s is the entity name
 #: inc/rulecollection.class.php:1140
@@ -11925,7 +11925,7 @@ msgstr "Reglas locales: %s"
 
 #: inc/rulecollection.class.php:1146
 msgid "Rules applicable in the sub-entities"
-msgstr "Reglas de subentidades"
+msgstr "Reglas aplicables en las sub-entidades"
 
 #: inc/rulecriteria.class.php:478 inc/search.class.php:5470
 #: inc/search.class.php:5504 inc/search.class.php:5516
@@ -12005,7 +12005,7 @@ msgstr "Diccionario de tipos de equipos"
 #: inc/ruledictionnaryprintercollection.class.php:78
 #, php-format
 msgid "Replay rules on existing database started on %s"
-msgstr "Ejecutar reglas en base de datos existente iniciado %s"
+msgstr "Volver a ejecutar las reglas en base de datos existente iniciado en %s"
 
 #. TRANS: %1$s is a row, %2$s is total rows
 #: inc/ruledictionnarydropdowncollection.class.php:86
@@ -12014,18 +12014,18 @@ msgstr "Ejecutar reglas en base de datos existente iniciado %s"
 #: inc/ruledictionnarysoftwarecollection.class.php:200
 #, php-format
 msgid "Replay rules on existing database: %1$s/%2$s"
-msgstr "Repetir reglas para la base de datos existente: %1$s/%2$s"
+msgstr "Volver a ejecutar las reglas en la base de datos existente: %1$s/%2$s"
 
 #: inc/ruledictionnarydropdowncollection.class.php:142
 msgid "Error replaying rules"
-msgstr "Error repitiendo las reglas"
+msgstr "Error volviendo a ejecutar las reglas"
 
 #: inc/ruledictionnarydropdowncollection.class.php:270
 #: inc/ruledictionnaryprintercollection.class.php:161
 #: inc/ruledictionnarysoftwarecollection.class.php:211
 #, php-format
 msgid "Replay rules on existing database ended on %s"
-msgstr "Ejecutar reglas en base de datos existente iniciado %s"
+msgstr "Volver a ejecutar las reglas en base de datos existente finalizando en %s"
 
 #: inc/ruledictionnarymanufacturercollection.class.php:48
 msgid "Dictionary of manufacturers"
@@ -12133,7 +12133,7 @@ msgstr "Selecciona un fabricante"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:91
 msgid "Replay dictionary rules for manufacturers (----- = All)"
-msgstr "Ejecutar las reglas del diccionario de los fabricantes (----- = Todas)"
+msgstr "Ejecutar nuevamente las reglas del diccionario para los fabricantes (----- = Todas)"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:285
 #: inc/ruledictionnarysoftwarecollection.class.php:387
@@ -12244,15 +12244,15 @@ msgstr "Entidad basada en el perfil de usuario"
 
 #: inc/rulemailcollector.class.php:210 inc/rulemailcollector.class.php:215
 msgid "Reject email"
-msgstr "Rechazar correo electrónico"
+msgstr "Rechazar correo"
 
 #: inc/rulemailcollector.class.php:211
 msgid "without email response"
-msgstr "sin respuesta por correo electrónico"
+msgstr "sin respuesta por correo"
 
 #: inc/rulemailcollector.class.php:216
 msgid "with email response"
-msgstr "con respuesta por correo electrónico"
+msgstr "con respuesta por correo"
 
 #: inc/ruleright.class.php:233
 msgid "Automatic user assignment"
@@ -12276,7 +12276,7 @@ msgstr "Entidad desde dominio de correo"
 
 #: inc/ruleright.class.php:318
 msgid "Entity from complete name"
-msgstr "Nombre completo de entidad origen"
+msgstr "Entidad desde el nombre completo"
 
 #: inc/ruleright.class.php:350
 msgid "LDAP criteria"
@@ -12415,7 +12415,7 @@ msgstr[1] "Niveles de escalado"
 
 #: inc/slalevel.class.php:110
 msgid "Add an escalation level"
-msgstr "Fecha vencimiento"
+msgstr "Añadir un nivel de escalado"
 
 #: inc/slalevel.class.php:117 inc/slalevel.class.php:156
 #: inc/slalevel.class.php:285
@@ -12513,17 +12513,17 @@ msgstr "Versión en uso"
 
 #: inc/softwarelicense.class.php:358
 msgid "Send alarms on expired licenses"
-msgstr "Enviar alertas de licencias caducadas"
+msgstr "Enviar avisos sobre licencias vencidas"
 
 #. TRANS: %1$s the license name, %2$s is the expiration date
 #: inc/softwarelicense.class.php:408
 #, php-format
 msgid "License %1$s expired on %2$s"
-msgstr "Licencia %1$s caducada en %2$s"
+msgstr "Licencia %1$s vencida en %2$s"
 
 #: inc/softwarelicense.class.php:442
 msgid "Send licenses alert failed"
-msgstr "Fallo en el envío de alertas de licencias"
+msgstr "Fallo al enviar el aviso de licencias"
 
 #: inc/softwarelicense.class.php:575 inc/softwarelicense.class.php:723
 msgctxt "button"
@@ -12537,23 +12537,23 @@ msgstr "Añadir una versión"
 
 #: inc/stat.class.php:398
 msgid "Real duration of treatment of the ticket"
-msgstr "Duración de la incidencia (real)"
+msgstr "Duraciónal real del tratamiento de la incidencia"
 
 #: inc/stat.class.php:410
 msgid "Number of opened tickets"
-msgstr "Número de tíquets abiertos"
+msgstr "Número de incidencias abiertas"
 
 #: inc/stat.class.php:411
 msgid "Number of solved tickets"
-msgstr "Número de tíquets resueltos"
+msgstr "Número de incidencias resueltas"
 
 #: inc/stat.class.php:412
 msgid "Number of late tickets"
-msgstr "Número de tíquets atrasados"
+msgstr "Número de incidencias fuera de plazo"
 
 #: inc/stat.class.php:413
 msgid "Number of closed tickets"
-msgstr "Número de tíquets cerrados"
+msgstr "Número de incidencias cerradas"
 
 #: inc/stat.class.php:426
 msgid "Number of opened satisfaction survey"
@@ -12573,7 +12573,7 @@ msgstr "Promedio"
 
 #: inc/stat.class.php:445
 msgid "Average time to take into account"
-msgstr "Tiempo medio de respuesta"
+msgstr "Tiempo medio a tener en cuenta"
 
 #: inc/stat.class.php:448
 msgid "Average time to resolution"
@@ -12625,7 +12625,7 @@ msgstr "Por problema"
 
 #: inc/stat.class.php:1516
 msgid "Select statistics to be displayed"
-msgstr "Seleccione las estadísticas que desea ver"
+msgstr "Seleccionar las estadísticas a mostrar"
 
 #: inc/state.class.php:56
 msgid "Keep status"
@@ -12665,7 +12665,7 @@ msgstr "Encuesta no generada"
 #: inc/ticket.class.php:749 inc/ticket.class.php:1076
 #, php-format
 msgid "Mandatory fields are not filled. Please correct: %s"
-msgstr "Los campos obligatorios no están completados. Por favor, corrija: %s"
+msgstr "No se han completado los campos obligatorios. Corríjalo, por favor: %s"
 
 #: inc/ticket.class.php:797 inc/ticket.class.php:1350
 msgid "Unknown ticket"
@@ -12712,7 +12712,7 @@ msgstr "Seguimiento privado"
 
 #: inc/ticket.class.php:2223
 msgid "Take into account time"
-msgstr "Tiempo en atender el servicio"
+msgstr "Tiempo a tener en cuenta"
 
 #: inc/ticket.class.php:2238
 msgid "All linked tickets"
@@ -12724,7 +12724,7 @@ msgstr "Incidencias duplicadas"
 
 #: inc/ticket.class.php:2254
 msgid "Number of all linked tickets"
-msgstr "Número de incidencias enlazadas"
+msgstr "Número de todas las incidencias enlazadas"
 
 #: inc/ticket.class.php:2262
 msgid "Number of duplicated tickets"
@@ -12770,7 +12770,7 @@ msgstr "Compruebe su información personnal"
 
 #: inc/ticket.class.php:3328
 msgid "Describe the incident or request"
-msgstr "Describa el problema/acción"
+msgstr "Describa el incidente o la solicitud"
 
 #: inc/ticket.class.php:3381
 msgid "Inform me about the actions taken"
@@ -12783,12 +12783,12 @@ msgstr "Enviar mensaje"
 #: inc/ticket.class.php:3869
 #, php-format
 msgid "The ticket will be added in the entity %s"
-msgstr "Incidencia creada en la entidad %s"
+msgstr "La incidencia se añadirá en la entidad %s"
 
 #: inc/ticket.class.php:3927
 #, php-format
 msgid "Next escalation: %s"
-msgstr "Próximo nivel: %s"
+msgstr "Siguiente escalado: %s"
 
 #: inc/ticket.class.php:3966
 msgid ""
@@ -13059,7 +13059,7 @@ msgstr "Rechazado"
 
 #: inc/ticketvalidation.class.php:401
 msgid "Granted"
-msgstr "Aceptado"
+msgstr "Concedido"
 
 #: inc/ticketvalidation.class.php:403
 msgid "Not subject to approval"
@@ -13116,7 +13116,7 @@ msgstr "Debe instalar al menos PHP 5.3.0."
 
 #: inc/toolbox.class.php:815
 msgid "MySQL Improved extension test"
-msgstr "Prueba de extensión mejorada de MySQL"
+msgstr "Prueba sobre la extensión MySQL Improved"
 
 #: inc/toolbox.class.php:818 inc/toolbox.class.php:819
 msgid "Ok - the MySQLi class exist - Perfect!"
@@ -13124,7 +13124,7 @@ msgstr "Correcto - la clase MySQLi existe - ¡Perfecto!"
 
 #: inc/toolbox.class.php:823
 msgid "You must install the MySQL Improved extension for PHP."
-msgstr "Debe compilar su PHP con la extensión MySQL."
+msgstr "Debe instalar la extensión MySQL Improved para PHP."
 
 #: inc/toolbox.class.php:829
 msgid "Sessions test"
@@ -13136,7 +13136,7 @@ msgstr "¡Su intérprete PHP no está instalado con soporte de sesiones!"
 
 #: inc/toolbox.class.php:840 inc/toolbox.class.php:841
 msgid "Sessions support is available - Perfect!"
-msgstr "El soporte de sesiones está operativo - ¡Perfecto!"
+msgstr "El soporte de sesiones está disponible - ¡Perfecto!"
 
 #: inc/toolbox.class.php:846
 msgid "Make sure that sessions support has been activated in your php.ini"
@@ -13150,19 +13150,19 @@ msgstr "Prueba sesión de autoinicio"
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
-msgstr "session.auto_start está activada. Revisar el fichero .htaccess en la raíz de GLPI para más información"
+msgstr "session.auto_start está activado. Ver el archivo .htaccess en la carpeta raíz de GLPI para más información."
 
 #: inc/toolbox.class.php:862
 msgid "Test if Session_use_trans_sid is used"
-msgstr "Prueba de utilización de Session_use_trans_sid"
+msgstr "Probar si se utiliza Session_use_trans_sid"
 
 #: inc/toolbox.class.php:867
 msgid "You must desactivate the Session_use_trans_id option in your php.ini"
-msgstr "Debe desactivar la opción Session_use_trans_id en su PHP.ini"
+msgstr "Debe desactivar la opción Session_use_trans_id en su php.ini"
 
 #: inc/toolbox.class.php:872 inc/toolbox.class.php:873
 msgid "Ok - the sessions works (no problem with trans_id) - Perfect!"
-msgstr "Las sesiones funcionan (no hay problemas de trans_id) - ¡Perfecto!"
+msgstr "Ok - Las sesiones funcionan (no hay problemas con trans_id) - ¡Perfecto!"
 
 #: inc/toolbox.class.php:879
 msgid "magic_quotes_sybase extension test"
@@ -13172,15 +13172,15 @@ msgstr "Prueba de la extensión magic_quotes_sybase"
 msgid ""
 "GLPI does not work with the magic_quotes_sybase option. Please turn it off "
 "and retry"
-msgstr "GLPI no puede funcionar con la opción magic_quotes_sybase . Por favor desactive esta opción Off y reintente"
+msgstr "GLPI no funciona con la opción magic_quotes_sybase. Desactívela y vuelva a probar, por favor"
 
 #: inc/toolbox.class.php:890 inc/toolbox.class.php:892
 msgid "The magic_quotes_sybase option isn't active on your server - Perfect!"
-msgstr "Su servidor no utiliza la opción magic_quotes_sybase - ¡Perfecto!"
+msgstr "No está activada la opción magic_quotes_sybase en su servidor - ¡Perfecto!"
 
 #: inc/toolbox.class.php:898
 msgid "Test ctype functions"
-msgstr "Comprobar funciones ctype"
+msgstr "Probar funciones ctype"
 
 #: inc/toolbox.class.php:902
 msgid "GLPI can't work correctly without the ctype functions"
@@ -13190,11 +13190,11 @@ msgstr "GLPI no puede funcionar correctamente sin las funciones ctype"
 #: inc/toolbox.class.php:923 inc/toolbox.class.php:924
 #: inc/toolbox.class.php:939 inc/toolbox.class.php:940
 msgid "The functionality is found - Perfect!"
-msgstr "Se han encontrado las funciones - ¡Perfecto!"
+msgstr "Se ha encontrado la funcionalidad - ¡Perfecto!"
 
 #: inc/toolbox.class.php:913
 msgid "Test json functions"
-msgstr "Prueba de las funciones  json"
+msgstr "Prueba de las funciones json"
 
 #: inc/toolbox.class.php:917
 msgid ""
@@ -13271,13 +13271,13 @@ msgstr "Tiene instalada la última versión disponible"
 #: inc/toolbox.class.php:1501
 #, php-format
 msgid "Connection failed. If you use a proxy, please configure it. (%s)"
-msgstr "Verificación imposible. Si está detrás de un proxy, configúrelo. (%s)"
+msgstr "Ha fallado la conexión. Si utiliza un proxy, configúrelo, por favor. (%s)"
 
 #. TRANS: %s is the error string
 #: inc/toolbox.class.php:1521
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
-msgstr "No se ha podido conectar con el servidor proxy (%s)"
+msgstr "Fallo al conectar con el servidor proxy (%s)"
 
 #: inc/toolbox.class.php:1586
 msgid "No data available on the web site"
@@ -13355,7 +13355,7 @@ msgstr "DEPURAR"
 
 #: inc/toolbox.class.php:2005
 msgid "Incoming mail folder (optional, often INBOX)"
-msgstr "Carpeta de correo entrante (opcional, a menudo bandeja de entrada)"
+msgstr "Carpeta de correo entrante (opcional, a menudo INBOX)"
 
 #. TRANS: for mail connection system
 #: inc/toolbox.class.php:2010
@@ -13434,11 +13434,11 @@ msgstr "Componentes de equipos"
 
 #: inc/transfer.class.php:3117
 msgid "Links between printers and cartridge types and cartridges"
-msgstr "Enlaces entre impresoras y los tipos de cartuchos y cartuchos"
+msgstr "Enlaces entre impresoras, tipos de cartuchos y cartuchos"
 
 #: inc/transfer.class.php:3122
 msgid "If the cartridge types are no longer used"
-msgstr "Si los tipos de cartuchos ya no se utilizan"
+msgstr "Si los tipos de cartucho ya no se utilizan"
 
 #: inc/transfer.class.php:3128
 msgid "Links between cartridge types and cartridges"
@@ -13496,7 +13496,7 @@ msgstr "Si los contratos ya no se utilizan"
 msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now"
-msgstr "Puede añadir más elementos o transferir los que hay ahora"
+msgstr "Puede continuar añadiendo elementos a transferir o ejecutar la transferencia ahora"
 
 #: inc/transfer.class.php:3250
 msgid "Think of making a backup before transferring items."
@@ -13520,7 +13520,7 @@ msgstr "No se puede añadir. Este usuario ya existe."
 
 #: inc/user.class.php:496 inc/user.class.php:623
 msgid "Error: the two passwords do not match"
-msgstr "Error : las dos contraseñas no son idénticas"
+msgstr "Error: las dos contraseñas no son idénticas"
 
 #: inc/user.class.php:1569
 msgid "Add user..."
@@ -13584,7 +13584,7 @@ msgstr "Directorio LDAP para autenticación"
 
 #: inc/user.class.php:2422
 msgid "Email server for authentication"
-msgstr "Servidor de correo para autentificación"
+msgstr "Servidor de correo para autenticación"
 
 #: inc/user.class.php:2470
 msgid "Last synchronization"
@@ -13612,7 +13612,7 @@ msgstr "Importar desde otras fuentes"
 
 #: inc/user.class.php:2999
 msgid "Update authentification method to"
-msgstr "Actualizado el método de autenticación a"
+msgstr "Actualizar el método de autenticación a"
 
 #: inc/user.class.php:3325
 msgid "Deleted user in LDAP directory"
@@ -13620,7 +13620,7 @@ msgstr "Usuario suprimido del directorio LDAP"
 
 #: inc/user.class.php:3388
 msgid "Please confirm your email address and enter your new password."
-msgstr "Por favor, confirme su correo electronico e introduzca su nueva contraseña."
+msgstr "Confirme su dirección de correo e introduzca su nueva contraseña, por favor."
 
 #: inc/user.class.php:3417 inc/user.class.php:3480
 msgid ""
@@ -13641,7 +13641,7 @@ msgstr "Contraseña reiniciada correctamente."
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
-msgstr "La configuración de autenticación no le permite cambiar su contraseña."
+msgstr "La configuración del método de autenticación no le permite cambiar su contraseña."
 
 #: inc/user.class.php:3488 inc/user.class.php:3532
 msgid "Email address not found."
@@ -13729,7 +13729,7 @@ msgstr "Instalación o actualización de GLPI"
 
 #: install/install.php:123
 msgid "Choose 'Install' for a completely new installation of GLPI."
-msgstr "Elija 'Instalación' para una nueva instalación completa de GLPI"
+msgstr "Elija 'Instalar' para una instalación completamente nueva de GLPI"
 
 #: install/install.php:124
 msgid ""
@@ -13743,7 +13743,7 @@ msgstr "Verificación de la compatibilidad de su entorno con la ejecución de GL
 
 #: install/install.php:163 install/install.php:182 install/install.php:482
 msgid "Do you want to continue?"
-msgstr "¿ Quieres continuar ?"
+msgstr "¿Quiere continuar?"
 
 #: install/install.php:198
 msgid "Database connection setup"
@@ -13759,7 +13759,7 @@ msgstr "Prueba de la conexión a la base de datos"
 
 #: install/install.php:223
 msgid "Can't connect to the database"
-msgstr "Imposible conectarse a la base de datos"
+msgstr "No se puede conectar con la base de datos"
 
 #: install/install.php:224 install/install.php:365 install/install.php:413
 #, php-format
@@ -13772,19 +13772,19 @@ msgstr "El campo servidor y/o usuario están vacíos"
 
 #: install/install.php:241 install/update.php:884
 msgid "Database connection successful"
-msgstr "La conexión con la base de datos ha sido correcta"
+msgstr "Conexión con la base de datos correcta"
 
 #: install/install.php:244
 msgid "Please select a database:"
-msgstr "Seleccione una base de datos:"
+msgstr "Seleccione una base de datos, por favor:"
 
 #: install/install.php:258
 msgid "Create a new database or use an existing one:"
-msgstr "Crear una nueva base de datos o utilizar la que ya existe:"
+msgstr "Crear una base de datos nueva o utilizar una ya existente:"
 
 #: install/install.php:272
 msgid "Please select the database to update:"
-msgstr "Seleccione la base de datos a actualizar:"
+msgstr "Seleccione la base de datos a actualizar, por favor:"
 
 #: install/install.php:305
 msgid "Initialization of the database"
@@ -13792,15 +13792,15 @@ msgstr "Inicialización de la base de datos"
 
 #: install/install.php:364
 msgid "Impossible to use the database:"
-msgstr "Imposible utilizar la base:"
+msgstr "Imposible utilizar la base de datos:"
 
 #: install/install.php:371 install/install.php:387 install/install.php:403
 msgid "OK - database was initialized"
-msgstr "OK - La base ha sido inicializada"
+msgstr "OK - La base de datos ha sido inicializada"
 
 #: install/install.php:375 install/install.php:391 install/install.php:407
 msgid "Impossible to write the database setup file"
-msgstr "Imposible escribir el fichero de configuración de su base de datos"
+msgstr "Imposible escribir el archivo de configuración de la base de datos"
 
 #: install/install.php:383 install/install.php:397
 msgid "Database created"
@@ -13820,7 +13820,7 @@ msgstr "La instalación ha terminado"
 
 #: install/install.php:443
 msgid "Default logins / passwords are:"
-msgstr "Los usuarios de acceso y claves predeterminados son:"
+msgstr "Los usuarios / contraseñas predeterminadas son:"
 
 #: install/install.php:444
 msgid "glpi/glpi for the administrator account"
@@ -13832,15 +13832,15 @@ msgstr "tech/tech para la cuenta de técnico"
 
 #: install/install.php:446
 msgid "normal/normal for the normal account"
-msgstr "normal para la cuenta normal"
+msgstr "normal/normal para la cuenta normal"
 
 #: install/install.php:447
 msgid "post-only/postonly for the postonly account"
-msgstr "post-only/post-only para la cuenta postonly"
+msgstr "post-only/postonly para la cuenta de sólo lectura"
 
 #: install/install.php:448
 msgid "You can delete or modify these accounts as well as the initial data."
-msgstr "Puede borrar o modificar estas cuentas así como las primeras entradas en la base de datos"
+msgstr "Puede suprimir o modificar estas cuentas así como los datos iniciales."
 
 #: install/install.php:449 install/update_content.php:371
 #: install/update.php:933
@@ -13850,11 +13850,11 @@ msgstr "Utilizar GLPI"
 #: install/install.php:481
 msgid ""
 "Can't create the database connection file, please verify file permissions."
-msgstr "Imposible crear el fichero de conexión a la base de datos, compruebe los permisos sobre los ficheros"
+msgstr "Imposible crear el archivo de conexión a la base de datos, compruebe los permisos sobre el archivo, por favor."
 
 #: install/install.php:547
 msgid "Beginning of the installation"
-msgstr "Inicio de la instalación"
+msgstr "Comienzo de la instalación"
 
 #. TRANS %s is step number
 #: install/install.php:554 install/install.php:564 install/install.php:570
@@ -13881,7 +13881,7 @@ msgstr "Seguros"
 
 #: install/update_051_06.php:167
 msgid "Hardware support"
-msgstr "Mantenimiento Hardware"
+msgstr "Mantenimiento hardware"
 
 #: install/update_051_06.php:172
 msgid "Software support"
@@ -13889,7 +13889,7 @@ msgstr "Mantenimiento de software"
 
 #: install/update_051_06.php:177
 msgid "Service provided"
-msgstr "Prestación"
+msgstr "Prestación de servicio"
 
 #. TRANS: %s is the number of new version
 #: install/update_0713_072.php:41 install/update_072_0721.php:42
@@ -13970,7 +13970,7 @@ msgstr "La nueva estructura es jerárquica"
 
 #: install/update.php:405
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
-msgstr "Si utiliza un carácter de separación puede indicarlo para automatizar la generación de la jerarquía"
+msgstr "Proporcione un separador para automatizar la generación de la nueva jerarquía."
 
 #: install/update.php:406
 msgid ""
@@ -13980,7 +13980,7 @@ msgstr "Puede especificar también una ubicación raíz que incluirá todas las 
 
 #: install/update.php:409
 msgid "Delimiter"
-msgstr "Carácter de separación"
+msgstr "Separador"
 
 #: install/update.php:411
 msgid "Root location"
@@ -14009,7 +14009,7 @@ msgstr "Volver a GLPI"
 #: install/update.php:873
 #, php-format
 msgid "Caution! You will update the GLPI database named: %s"
-msgstr "¡Atención! Va a actualizar la base de datos de GLPI :%s"
+msgstr "¡Atención! Va a actualizar la base de datos de GLPI: %s"
 
 #: install/update.php:911
 msgid ""
@@ -14021,4 +14021,4 @@ msgstr "A raíz de la creación de este nuevo tipo de usuario, se han actualizad
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
-msgstr "La conexión a la base de datos ha fallado, compruebe los parámetros de conexión que figuran en el fichero config_db.php"
+msgstr "La conexión a la base de datos ha fallado, compruebe los parámetros de conexión que figuran en el archivo config_db.php"

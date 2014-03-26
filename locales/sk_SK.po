@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-03-21 16:44+0100\n"
-"PO-Revision-Date: 2014-03-21 15:45+0000\n"
+"PO-Revision-Date: 2014-03-26 08:53+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/GLPI/language/sk_SK/)\n"
 "MIME-Version: 1.0\n"
@@ -2612,7 +2612,7 @@ msgid "Solved"
 msgid_plural "Solved"
 msgstr[0] ""
 msgstr[1] ""
-msgstr[2] ""
+msgstr[2] "Vyriešené"
 
 #: front/stat.global.php:92 front/stat.graph.php:339 inc/stat.class.php:419
 #: inc/ticket.class.php:1935
@@ -4729,7 +4729,7 @@ msgstr ""
 #: inc/ticket.class.php:2615
 msgctxt "status"
 msgid "New"
-msgstr ""
+msgstr "Nový"
 
 #: inc/change.class.php:601
 msgid "Evaluation"
@@ -4751,7 +4751,7 @@ msgstr[2] "Schválenia"
 #: inc/change.class.php:603 inc/problem.class.php:721
 msgctxt "status"
 msgid "Accepted"
-msgstr ""
+msgstr "Akceptovaný"
 
 #: inc/change.class.php:604 inc/commonitilobject.class.php:3763
 #: inc/problem.class.php:724 inc/ticket.class.php:2618
@@ -4774,25 +4774,25 @@ msgstr ""
 #: inc/ticket.class.php:2620
 msgctxt "status"
 msgid "Closed"
-msgstr ""
+msgstr "Uzatvorené"
 
 #: inc/change.class.php:616 inc/problem.class.php:730
 #: inc/ticket.class.php:2623
 msgctxt "status"
 msgid "Not solved"
-msgstr ""
+msgstr "Nevyriešené"
 
 #: inc/change.class.php:617 inc/problem.class.php:731
 #: inc/ticket.class.php:2624
 msgctxt "status"
 msgid "Not closed"
-msgstr ""
+msgstr "Nie je uzavreté"
 
 #: inc/change.class.php:619 inc/problem.class.php:733
 #: inc/ticket.class.php:2626
 msgctxt "status"
 msgid "Solved + Closed"
-msgstr ""
+msgstr "Vyriešené + Uzavreté"
 
 #. TRANS: %s is the user name
 #. TRANS: %s is user name
@@ -11202,17 +11202,17 @@ msgstr "Popis úlohy"
 #: inc/problem.class.php:722 inc/ticket.class.php:2616
 msgctxt "status"
 msgid "Processing (assigned)"
-msgstr ""
+msgstr "Spracovanie (priradené)"
 
 #: inc/problem.class.php:723 inc/ticket.class.php:2617
 msgctxt "status"
 msgid "Processing (planned)"
-msgstr ""
+msgstr "Spracovanie (naplánované)"
 
 #: inc/problem.class.php:725 inc/ticket.class.php:2619
 msgctxt "status"
 msgid "Solved"
-msgstr ""
+msgstr "Vyriešené"
 
 #: inc/problem.class.php:726
 msgid "Under observation"
@@ -13454,7 +13454,7 @@ msgstr "Test alokovanej pamäte"
 
 #: inc/toolbox.class.php:954 inc/toolbox.class.php:955
 msgid "Unlimited memory - Perfect!"
-msgstr ""
+msgstr "Neobmedzená pamäť - Výborne!"
 
 #: inc/toolbox.class.php:961
 msgid "Allocated memory"
@@ -13487,7 +13487,7 @@ msgstr ""
 #. TRANS: list of unit (o for octet)
 #: inc/toolbox.class.php:1086
 msgid "o"
-msgstr ""
+msgstr "o"
 
 #: inc/toolbox.class.php:1086
 msgid "Kio"
@@ -13516,7 +13516,7 @@ msgstr "Spojenie zlyhalo. Ak používate proxy, prosím nastavte ho. (%s)"
 #: inc/toolbox.class.php:1521
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
-msgstr ""
+msgstr "Zlyhalo pripojenie na proxy server (%s)"
 
 #: inc/toolbox.class.php:1586
 msgid "No data available on the web site"
