@@ -54,7 +54,6 @@ if (isset($_POST["itemtype"])
    if ($_POST["num"] == 0) {
       $addclass = ' headerRow';
    }
-
    echo "<tr class='normalcriteria$addclass' id='$rowid'><td class='left' width='45%'>";
    // First line display add / delete images for normal and meta search items
    if ($_POST["num"] == 0) {
@@ -94,7 +93,6 @@ if (isset($_POST["itemtype"])
       if ($_POST["itemtype"] != 'AllAssets') {
          $item = getItemForItemtype($_POST["itemtype"]);
       }
-
       if ($item && $item->maybeDeleted()) {
          echo "<input type='hidden' id='is_deleted' name='is_deleted' value='".$p['is_deleted']."'>";
          echo "<a href='#' onClick = \"toogle('is_deleted','','','');
@@ -168,7 +166,8 @@ if (isset($_POST["itemtype"])
                                              'width' => '60%'));
    $field_id = Html::cleanId("dropdown_criteria[".$_POST["num"]."][field]$rand");
    echo "</td><td class='left'>";
-   echo "<div id='SearchSpan".$_POST["itemtype"].$_POST["num"]."'>\n";
+   $spanid= 'SearchSpan'.$_POST["itemtype"].$_POST["num"];
+   echo "<div id='$spanid'>\n";
 
    $used_itemtype = $_POST["itemtype"];
 
@@ -189,7 +188,8 @@ if (isset($_POST["itemtype"])
                    'num'        => $_POST["num"],
                    'value'      => $_POST["value"],
                    'searchtype' => $_POST["searchtype"]);
-   Ajax::updateItemOnSelectEvent($field_id, "SearchSpan".$_POST["itemtype"].$_POST["num"],
+
+   Ajax::updateItemOnSelectEvent($field_id, $spanid,
                                  $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params);
 
    echo "</td></tr>\n";
