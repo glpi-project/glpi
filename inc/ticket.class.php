@@ -3158,8 +3158,6 @@ class Ticket extends CommonITILObject {
                               'entities_id'         => $_SESSION['glpiactive_entity'],
                               'plan'                => array(),
                               'global_validation'   => 'none',
-                              'due_date'            => 'NULL',
-                              'slas_id'             => 0,
                               '_add_validation'     => 0,
                               'type'                => Entity::getUsedConfig('tickettype',
                                                                              $_SESSION['glpiactive_entity'],
