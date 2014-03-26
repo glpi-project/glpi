@@ -130,7 +130,7 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
 
-   if ($track->can($_POST["id"],'r')) {
+   if ($track->can($_POST["tickets_id"],'r')) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["tickets_id"]);
    }
    Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this item'),
@@ -145,7 +145,7 @@ if (isset($_POST["add"])) {
    Event::log($_POST['tickets_id'], "ticket", 4, "tracking",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
 
-   if ($track->can($_POST["id"],'r')) {
+   if ($track->can($_POST["tickets_id"],'r')) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["tickets_id"]);
    }
    Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this item'),
