@@ -2629,6 +2629,9 @@ function update084to085() {
    $migration->addField("glpi_locations", "longitude", "string");
    $migration->addField("glpi_locations", "altitude", "string");
 
+   // Add log Key
+   $migration->addKey('glpi_logs', 'linked_action');
+   
    // Add fixed columns as variables :
    $ADDTODISPLAYPREF['CartridgeItem']   = array(9);
    $ADDTODISPLAYPREF['ConsumableItem']  = array(9);
