@@ -356,7 +356,7 @@ class Session {
                                                                __('tree structure'));
          }
 
-         if (countElementsInTable('glpi_entities') < count($_SESSION['glpiactiveentities'])) {
+         if (countElementsInTable('glpi_entities') <= count($_SESSION['glpiactiveentities'])) {
             $_SESSION['glpishowallentities'] = 1;
          } else {
             $_SESSION['glpishowallentities'] = 0;
