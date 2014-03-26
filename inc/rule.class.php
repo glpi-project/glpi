@@ -554,7 +554,7 @@ class Rule extends CommonDBTM {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
-
+   
       $collectiontype = $this->getCollectionClassName();
       if ($collection = getItemForItemtype($collectiontype)) {
          if ($isadmin
@@ -1817,7 +1817,7 @@ class Rule extends CommonDBTM {
 
       if ($canedit) {
          echo "<td width='10'>";
-         Html::showMassiveActionCheckBox(__CLASS__, $this->fields["id"]);
+         Html::showMassiveActionCheckBox($this->getType(), $this->fields["id"]);
          echo "</td>";
 
       } else {
@@ -1830,7 +1830,7 @@ class Rule extends CommonDBTM {
                          Html::showToolTip($this->fields["comment"], array('display' => false)));
       }
       echo "<td>".$link."</td>";
-      echo "<td>".$this->fields["description"].$this->fields["ranking"]."</td>";
+      echo "<td>".$this->fields["description"]."</td>";
       if ($this->useConditions()) {
          echo "<td>".$this->getConditionName($this->fields["condition"])."</td>";
       }
