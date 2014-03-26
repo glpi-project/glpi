@@ -242,7 +242,6 @@ class Ticket extends CommonITILObject {
       if (!Session::haveAccessToEntity($this->getEntityID())) {
          return false;
       }
-
       return (Session::haveRight(self::$rightname, self::READALL)
               || (Session::haveRight(self::$rightname, self::READMY)
                   && (($this->fields["users_id_recipient"] === Session::getLoginUserID())
@@ -258,7 +257,7 @@ class Ticket extends CommonITILObject {
                           && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"]))
                       || (Session::haveRight(self::$rightname, self::ASSIGN)
                           && ($this->fields["status"] == self::INCOMING))))
-              || (Session::haveRight('ticketvalidation', TicketValidation::getValidateRights())
+              || (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())
                   && TicketValidation::canValidate($this->fields["id"])));
    }
 

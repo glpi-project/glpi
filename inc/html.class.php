@@ -2027,7 +2027,7 @@ class Html {
          $opt['reset']         = 'reset';
          $opt['criteria'][0]['field']      = 55; // validation status
          $opt['criteria'][0]['searchtype'] = 'equals';
-         $opt['criteria'][0]['value']      = "waiting";
+         $opt['criteria'][0]['value']      = TicketValidation::WAITING;
          $opt['criteria'][0]['link']       = 'AND';
 
          $opt['criteria'][1]['field']      = 59; // validation aprobator

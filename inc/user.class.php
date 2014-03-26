@@ -2932,6 +2932,7 @@ class User extends CommonDBTM {
                                        OR `glpi_profilerights`.`rights` & ".TicketValidation::CREATEDEMAND.") ".
                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                              $entity_restrict, 1).") ";
+                     $forcecentral = false;
                      break;
 
                   case 'validate_request' :
@@ -2939,6 +2940,7 @@ class User extends CommonDBTM {
                                   AND (`glpi_profilerights`.`rights` & ".TicketValidation::VALIDATEREQUEST.") ".
                                    getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                               $entity_restrict, 1).") ";
+                     $forcecentral = false;
                      break;
 
                   case 'validate_incident' :
@@ -2946,6 +2948,7 @@ class User extends CommonDBTM {
                                   AND (`glpi_profilerights`.`rights` & ".TicketValidation::VALIDATEINCIDENT.") ".
                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                              $entity_restrict, 1).") ";
+                     $forcecentral = false;
                      break;
 
                   case 'validate' :
