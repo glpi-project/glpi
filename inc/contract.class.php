@@ -729,7 +729,7 @@ class Contract extends CommonDBTM {
                                                       'joinparams' => array('jointype' => 'child')));
 
       $tab += Notepad::getSearchOptionsToAdd();
-      
+
       $tab['cost']                  = __('Cost');
 
       $tab[11]['table']             = 'glpi_contractcosts';
@@ -1405,6 +1405,7 @@ class Contract extends CommonDBTM {
 
       $options['entities_id'] = $this->getEntityID();
       $options['contracts']   = array();
+      $options['items']       = array();
       NotificationEvent::debugEvent($this, $options);
    }
 
