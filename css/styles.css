@@ -1100,7 +1100,7 @@ div#tabcontent {
 /* ################--------------- Notepad  ---------------#################### */
 
 .boxnote {
-   margin: auto;
+   margin: 0 auto;
    width: 80%;
    text-align: left;
    border-radius:10px;
@@ -1114,14 +1114,15 @@ div#tabcontent {
 
 .boxnoteleft {
    float: left;
-   width: 100px;
-   min-height: 60px;
+   width: 10%;
+   min-height: 50px;
    height: 100%;
    padding: 4px;
 }
 .boxnotecontent {
    float: left;
-   padding: 4px;
+   padding: 1px;
+   width: 75%;
 /*   top:  -60px;
    left: 110px;*/
 /*    width: 300px; */
@@ -1130,9 +1131,10 @@ div#tabcontent {
    float: right;
 /*   top:  0px;
    left: 0px;*/
-   width: 100px;
-   min-height: 60px;
-   padding: 4px;
+   width: 10%;
+   min-height: 50px;
+   padding: 1px;
+   vertical-align: middle;
 }
 .boxnotetext {
    padding: 10px;

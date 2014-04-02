@@ -246,7 +246,7 @@ class Notepad extends CommonDBChild {
          echo "</div>";
          echo "</div>"; // box notecontent
 
-         echo "<div class='boxnoteright'>";
+         echo "<div class='boxnoteright'><br>";
          echo Html::submit(_x('button','Add'), array('name' => 'add'));
          echo "</div>";
 
@@ -262,16 +262,18 @@ class Notepad extends CommonDBChild {
             echo "<div class='boxnoteleft'>";
             if ($canedit) {
                Html::showSimpleForm(Toolbox::getItemTypeFormURL('Notepad'),
-                                    array('purge' => 'purge'), '',
+                                    array('purge' => 'purge'),
+                                    _x('button', 'Delete permanently'),
                                     array('id'   => $note['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
             echo "</div>"; // boxnoteleft
 
-            echo "<div class='boxnotecontent pointer'>";
+            echo "<div class='boxnotecontent'>";
 
             echo "<div class='boxnotetext'>";
             $content = nl2br($note['content']);
+            if (empty($content)) $content = NOT_AVAILABLE;
             if ($canedit) {
                $content ="<a href='#$id' onclick=\"".Html::jsHide("view$id")." ".
                            Html::jsShow("edit$id")."\">".$content.'</a>';
@@ -307,7 +309,7 @@ class Notepad extends CommonDBChild {
                 echo "<textarea name='content' rows=5 cols=100>".$note['content']."</textarea>";
                 echo "</div>"; // boxnotecontent
 
-                echo "<div class='boxnoteright'>";
+                echo "<div class='boxnoteright'><br>";
                 echo Html::submit(_x('button','Update'), array('name' => 'update'));
                 echo "</div>"; // boxnoteright
 
