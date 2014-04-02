@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Loader
  */
 
 namespace Zend\Loader;
@@ -19,8 +18,6 @@ require_once __DIR__ . '/SplAutoloader.php';
  * Allows autoloading both namespaced and vendor-prefixed classes. Class
  * lookups are performed on the filesystem. If a class file for the referenced
  * class is not found, a PHP warning will be raised by include().
- *
- * @package    Zend_Loader
  */
 class StandardAutoloader implements SplAutoloader
 {
@@ -92,6 +89,7 @@ class StandardAutoloader implements SplAutoloader
                 case self::AUTOREGISTER_ZF:
                     if ($pairs) {
                         $this->registerNamespace('Zend', dirname(__DIR__));
+                        $this->registerNamespace('ZendXml', dirname(dirname((__DIR__))) . '/ZendXml');
                     }
                     break;
                 case self::LOAD_NS:
@@ -305,7 +303,6 @@ class StandardAutoloader implements SplAutoloader
                 if (file_exists($filename)) {
                     return include $filename;
                 }
-                return false;
             }
         }
         return false;
@@ -327,5 +324,4 @@ class StandardAutoloader implements SplAutoloader
         $directory .= DIRECTORY_SEPARATOR;
         return $directory;
     }
-
 }

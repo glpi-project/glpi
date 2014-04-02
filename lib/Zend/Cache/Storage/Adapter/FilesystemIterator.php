@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Cache
  */
 
 namespace Zend\Cache\Storage\Adapter;
@@ -13,18 +12,13 @@ namespace Zend\Cache\Storage\Adapter;
 use GlobIterator;
 use Zend\Cache\Storage\IteratorInterface;
 
-/**
- * @category   Zend
- * @package    Zend_Cache
- * @subpackage Storage
- */
 class FilesystemIterator implements IteratorInterface
 {
 
     /**
-     * The apc storage instance
+     * The Filesystem storage instance
      *
-     * @var Apc
+     * @var Filesystem
      */
     protected $storage;
 
@@ -95,7 +89,7 @@ class FilesystemIterator implements IteratorInterface
      * Set iterator mode
      *
      * @param int $mode
-     * @return ApcIterator Fluent interface
+     * @return FilesystemIterator Fluent interface
      */
     public function setMode($mode)
     {
@@ -153,7 +147,7 @@ class FilesystemIterator implements IteratorInterface
     /**
      * Checks if current position is valid
      *
-     * @return boolean
+     * @return bool
      */
     public function valid()
     {
@@ -170,10 +164,17 @@ class FilesystemIterator implements IteratorInterface
     /**
      * Rewind the Iterator to the first element.
      *
-     * @return void
+     * @return bool false if the operation failed.
      */
     public function rewind()
     {
-        return $this->globIterator->rewind();
+        try {
+            return $this->globIterator->rewind();
+        } catch (\LogicException $e) {
+            // @link https://bugs.php.net/bug.php?id=55701
+            // GlobIterator throws LogicException with message
+            // 'The parent constructor was not called: the object is in an invalid state'
+            return false;
+        }
     }
 }

@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Loader
  */
 
 namespace Zend\Loader;
@@ -16,9 +15,6 @@ use Traversable;
 
 /**
  * Plugin class locator interface
- *
- * @category   Zend
- * @package    Zend_Loader
  */
 class PluginClassLoader implements PluginClassLocator
 {
@@ -68,7 +64,7 @@ class PluginClassLoader implements PluginClassLocator
             return;
         }
 
-        if (!is_array($map) && !$map instanceof \Traversable) {
+        if (!is_array($map) && !$map instanceof Traversable) {
             throw new Exception\InvalidArgumentException('Expects an array or Traversable object');
         }
         foreach ($map as $key => $value) {

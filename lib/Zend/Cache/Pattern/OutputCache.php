@@ -3,20 +3,14 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Cache
  */
 
 namespace Zend\Cache\Pattern;
 
 use Zend\Cache\Exception;
 
-/**
- * @category   Zend
- * @package    Zend_Cache
- * @subpackage Pattern
- */
 class OutputCache extends AbstractPattern
 {
     /**
@@ -50,7 +44,7 @@ class OutputCache extends AbstractPattern
      *
      * @param  string  $key Key
      * @throws Exception\MissingKeyException if key is missing
-     * @return boolean
+     * @return bool
      */
     public function start($key)
     {
@@ -76,7 +70,7 @@ class OutputCache extends AbstractPattern
      * and displays the buffer.
      *
      * @throws Exception\RuntimeException if output cache not started or buffering not active
-     * @return boolean TRUE on success, FALSE on failure writing to cache
+     * @return bool TRUE on success, FALSE on failure writing to cache
      */
     public function end()
     {

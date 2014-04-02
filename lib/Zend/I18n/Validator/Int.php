@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_I18n
  */
 
 namespace Zend\I18n\Validator;
@@ -13,15 +12,11 @@ namespace Zend\I18n\Validator;
 use Locale;
 use NumberFormatter;
 use Traversable;
+use Zend\I18n\Exception as I18nException;
 use Zend\Stdlib\ArrayUtils;
 use Zend\Validator\AbstractValidator;
 use Zend\Validator\Exception;
 
-/**
- * @category   Zend
- * @package    Zend_I18n
- * @subpackage Validator
- */
 class Int extends AbstractValidator
 {
     const INVALID = 'intInvalid';
@@ -46,9 +41,17 @@ class Int extends AbstractValidator
      * Constructor for the integer validator
      *
      * @param  array|Traversable $options
+     * @throws Exception\ExtensionNotLoadedException if ext/intl is not present
      */
     public function __construct($options = array())
     {
+        if (!extension_loaded('intl')) {
+            throw new I18nException\ExtensionNotLoadedException(sprintf(
+                '%s component requires the intl PHP extension',
+                __NAMESPACE__
+            ));
+        }
+
         if ($options instanceof Traversable) {
             $options = ArrayUtils::iteratorToArray($options);
         }
@@ -86,8 +89,8 @@ class Int extends AbstractValidator
     /**
      * Returns true if and only if $value is a valid integer
      *
-     * @param  string|integer $value
-     * @return boolean
+     * @param  string|int $value
+     * @return bool
      * @throws Exception\InvalidArgumentException
      */
     public function isValid($value)

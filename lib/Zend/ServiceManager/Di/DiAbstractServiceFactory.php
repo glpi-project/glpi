@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_ServiceManager
  */
 
 namespace Zend\ServiceManager\Di;
@@ -37,15 +36,14 @@ class DiAbstractServiceFactory extends DiServiceFactory implements AbstractFacto
     /**
      * {@inheritDoc}
      */
-    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $serviceName, $requestedName)
+    public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
         $this->serviceLocator = $serviceLocator;
         if ($requestedName) {
-            return $this->get($requestedName, array(), true);
-        } else {
-            return $this->get($serviceName, array(), true);
+            return $this->get($requestedName, array());
         }
 
+        return $this->get($serviceName, array());
     }
 
     /**

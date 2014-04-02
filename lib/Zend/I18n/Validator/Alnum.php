@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_I18n
  */
 
 namespace Zend\I18n\Validator;
@@ -13,11 +12,6 @@ namespace Zend\I18n\Validator;
 use Zend\I18n\Filter\Alnum as AlnumFilter;
 use Zend\Validator\AbstractValidator;
 
-/**
- * @category   Zend
- * @package    Zend_I18n
- * @subpackage Validator
- */
 class Alnum extends AbstractValidator
 {
     const INVALID      = 'alnumInvalid';
@@ -62,14 +56,14 @@ class Alnum extends AbstractValidator
         parent::__construct($options);
 
         if (is_scalar($allowWhiteSpace)) {
-            $this->options['allowWhiteSpace'] = (boolean) $allowWhiteSpace;
+            $this->options['allowWhiteSpace'] = (bool) $allowWhiteSpace;
         }
     }
 
     /**
      * Returns the allowWhiteSpace option
      *
-     * @return boolean
+     * @return bool
      */
     public function getAllowWhiteSpace()
     {
@@ -79,12 +73,12 @@ class Alnum extends AbstractValidator
     /**
      * Sets the allowWhiteSpace option
      *
-     * @param boolean $allowWhiteSpace
+     * @param  bool $allowWhiteSpace
      * @return AlnumFilter Provides a fluent interface
      */
     public function setAllowWhiteSpace($allowWhiteSpace)
     {
-        $this->options['allowWhiteSpace'] = (boolean) $allowWhiteSpace;
+        $this->options['allowWhiteSpace'] = (bool) $allowWhiteSpace;
         return $this;
     }
 
@@ -92,7 +86,7 @@ class Alnum extends AbstractValidator
      * Returns true if and only if $value contains only alphabetic and digit characters
      *
      * @param  string $value
-     * @return boolean
+     * @return bool
      */
     public function isValid($value)
     {

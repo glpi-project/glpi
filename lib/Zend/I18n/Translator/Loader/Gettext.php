@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_I18n
  */
 
 namespace Zend\I18n\Translator\Loader;
@@ -17,12 +16,8 @@ use Zend\Stdlib\ErrorHandler;
 
 /**
  * Gettext loader.
- *
- * @category   Zend
- * @package    Zend_I18n
- * @subpackage Translator
  */
-class Gettext implements FileLoaderInterface
+class Gettext extends AbstractFileLoader
 {
     /**
      * Current file pointer.
@@ -34,7 +29,7 @@ class Gettext implements FileLoaderInterface
     /**
      * Whether the current file is little endian.
      *
-     * @var boolean
+     * @var bool
      */
     protected $littleEndian;
 
@@ -49,9 +44,10 @@ class Gettext implements FileLoaderInterface
      */
     public function load($locale, $filename)
     {
-        if (!is_file($filename) || !is_readable($filename)) {
+        $resolvedFile = $this->resolveFile($filename);
+        if (!$resolvedFile) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Could not open file %s for reading',
+                'Could not find or open file %s for reading',
                 $filename
             ));
         }
@@ -59,7 +55,7 @@ class Gettext implements FileLoaderInterface
         $textDomain = new TextDomain();
 
         ErrorHandler::start();
-        $this->file = fopen($filename, 'rb');
+        $this->file = fopen($resolvedFile, 'rb');
         $error = ErrorHandler::stop();
         if (false === $this->file) {
             throw new Exception\InvalidArgumentException(sprintf(
@@ -130,12 +126,10 @@ class Gettext implements FileLoaderInterface
                     $textDomain[$originalString[0]] = $translationString;
 
                     array_shift($originalString);
-	
-/// PROBLEM WITH GLPI WHEN singular = plural                    
-/// opened bug http://framework.zend.com/issues/browse/ZF-11974
-//                    foreach ($originalString as $string) {
-//                        $textDomain[$string] = '';
-//                    }
+
+                    foreach ($originalString as $string) {
+                        $textDomain[$string] = '';
+                    }
                 } else {
                     $textDomain[$originalString[0]] = $translationString[0];
                 }
@@ -165,7 +159,7 @@ class Gettext implements FileLoaderInterface
     /**
      * Read a single integer from the current file.
      *
-     * @return integer
+     * @return int
      */
     protected function readInteger()
     {
@@ -181,15 +175,15 @@ class Gettext implements FileLoaderInterface
     /**
      * Read an integer from the current file.
      *
-     * @param  integer $num
-     * @return integer
+     * @param  int $num
+     * @return int
      */
     protected function readIntegerList($num)
     {
         if ($this->littleEndian) {
             return unpack('V' . $num, fread($this->file, 4 * $num));
-        } else {
-            return unpack('N' . $num, fread($this->file, 4 * $num));
         }
+
+        return unpack('N' . $num, fread($this->file, 4 * $num));
     }
 }

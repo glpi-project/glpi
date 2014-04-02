@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_EventManager
  */
 
 namespace Zend\EventManager;
@@ -19,11 +18,10 @@ use Zend\Stdlib\PriorityQueue;
  * Allows attaching to EMs composed by other classes without having an instance first.
  * The assumption is that the SharedEventManager will be injected into EventManager
  * instances, and then queried for additional listeners when triggering an event.
- *
- * @category   Zend
- * @package    Zend_EventManager
  */
-class SharedEventManager implements SharedEventManagerInterface
+class SharedEventManager implements
+    SharedEventAggregateAwareInterface,
+    SharedEventManagerInterface
 {
     /**
      * Identifiers with event connections
@@ -67,7 +65,7 @@ class SharedEventManager implements SharedEventManagerInterface
         $listeners = array();
         foreach ($ids as $id) {
             if (!array_key_exists($id, $this->identifiers)) {
-                $this->identifiers[$id] = new EventManager();
+                $this->identifiers[$id] = new EventManager($id);
             }
             $listeners[] = $this->identifiers[$id]->attach($event, $callback, $priority);
         }
@@ -75,6 +73,22 @@ class SharedEventManager implements SharedEventManagerInterface
             return $listeners;
         }
         return $listeners[0];
+    }
+
+    /**
+     * Attach a listener aggregate
+     *
+     * Listener aggregates accept an EventManagerInterface instance, and call attachShared()
+     * one or more times, typically to attach to multiple events using local
+     * methods.
+     *
+     * @param  SharedListenerAggregateInterface $aggregate
+     * @param  int $priority If provided, a suggested priority for the aggregate to use
+     * @return mixed return value of {@link ListenerAggregateInterface::attachShared()}
+     */
+    public function attachAggregate(SharedListenerAggregateInterface $aggregate, $priority = 1)
+    {
+        return $aggregate->attachShared($this, $priority);
     }
 
     /**
@@ -90,6 +104,20 @@ class SharedEventManager implements SharedEventManagerInterface
             return false;
         }
         return $this->identifiers[$id]->detach($listener);
+    }
+
+    /**
+     * Detach a listener aggregate
+     *
+     * Listener aggregates accept a SharedEventManagerInterface instance, and call detachShared()
+     * of all previously attached listeners.
+     *
+     * @param  SharedListenerAggregateInterface $aggregate
+     * @return mixed return value of {@link SharedListenerAggregateInterface::detachShared()}
+     */
+    public function detachAggregate(SharedListenerAggregateInterface $aggregate)
+    {
+        return $aggregate->detachShared($this);
     }
 
     /**

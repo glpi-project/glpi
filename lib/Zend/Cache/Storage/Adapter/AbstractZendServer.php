@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Cache
  */
 
 namespace Zend\Cache\Storage\Adapter;
@@ -14,11 +13,6 @@ use stdClass;
 use Zend\Cache\Exception;
 use Zend\Cache\Storage\Capabilities;
 
-/**
- * @category   Zend
- * @package    Zend_Cache
- * @subpackage Storage
- */
 abstract class AbstractZendServer extends AbstractAdapter
 {
     /**
@@ -34,20 +28,19 @@ abstract class AbstractZendServer extends AbstractAdapter
      * Internal method to get an item.
      *
      * @param  string  $normalizedKey
-     * @param  boolean $success
+     * @param  bool $success
      * @param  mixed   $casToken
      * @return mixed Data on success, null on failure
      * @throws Exception\ExceptionInterface
      */
     protected function internalGetItem(& $normalizedKey, & $success = null, & $casToken = null)
     {
-        $prefix      = $this->getOptions()->getNamespace() . self::NAMESPACE_SEPARATOR;
-        $internalKey = $prefix . $normalizedKey;
+        $namespace   = $this->getOptions()->getNamespace();
+        $prefix      = ($namespace === '') ? '' : $namespace . self::NAMESPACE_SEPARATOR;
 
-        $result = $this->zdcFetch($internalKey);
-        if ($result === false) {
+        $result = $this->zdcFetch($prefix . $normalizedKey);
+        if ($result === null) {
             $success = false;
-            $result  = null;
         } else {
             $success  = true;
             $casToken = $result;
@@ -65,18 +58,22 @@ abstract class AbstractZendServer extends AbstractAdapter
      */
     protected function internalGetItems(array & $normalizedKeys)
     {
-        $prefix  = $this->getOptions()->getNamespace() . self::NAMESPACE_SEPARATOR;
-        $prefixL = strlen($prefix);
+        $namespace = $this->getOptions()->getNamespace();
+        if ($namespace === '') {
+            return $this->zdcFetchMulti($normalizedKeys);
+        }
 
+        $prefix       = $namespace . self::NAMESPACE_SEPARATOR;
         $internalKeys = array();
         foreach ($normalizedKeys as $normalizedKey) {
             $internalKeys[] = $prefix . $normalizedKey;
         }
 
-        $fetch  = $this->zdcFetchMulti($internalKeys);
-        $result = array();
+        $fetch   = $this->zdcFetchMulti($internalKeys);
+        $result  = array();
+        $prefixL = strlen($prefix);
         foreach ($fetch as $k => & $v) {
-            $result[ substr($k, $prefixL) ] = $v;
+            $result[substr($k, $prefixL)] = $v;
         }
 
         return $result;
@@ -86,13 +83,13 @@ abstract class AbstractZendServer extends AbstractAdapter
      * Internal method to test if an item exists.
      *
      * @param  string $normalizedKey
-     * @return boolean
+     * @return bool
      * @throws Exception\ExceptionInterface
      */
     protected function internalHasItem(& $normalizedKey)
     {
-
-        $prefix = $this->getOptions()->getNamespace() . self::NAMESPACE_SEPARATOR;
+        $namespace = $this->getOptions()->getNamespace();
+        $prefix    = ($namespace === '') ? '' : $namespace . self::NAMESPACE_SEPARATOR;
         return  ($this->zdcFetch($prefix . $normalizedKey) !== false);
     }
 
@@ -105,16 +102,20 @@ abstract class AbstractZendServer extends AbstractAdapter
      */
     protected function internalHasItems(array & $normalizedKeys)
     {
-        $prefix  = $this->getOptions()->getNamespace() . self::NAMESPACE_SEPARATOR;
-        $prefixL = strlen($prefix);
+        $namespace = $this->getOptions()->getNamespace();
+        if ($namespace === '') {
+            return array_keys($this->zdcFetchMulti($normalizedKeys));
+        }
 
+        $prefix       = $namespace . self::NAMESPACE_SEPARATOR;
         $internalKeys = array();
         foreach ($normalizedKeys as $normalizedKey) {
             $internalKeys[] = $prefix . $normalizedKey;
         }
 
-        $fetch  = $this->zdcFetchMulti($internalKeys);
-        $result = array();
+        $fetch   = $this->zdcFetchMulti($internalKeys);
+        $result  = array();
+        $prefixL = strlen($prefix);
         foreach ($fetch as $internalKey => & $value) {
             $result[] = substr($internalKey, $prefixL);
         }
@@ -134,18 +135,23 @@ abstract class AbstractZendServer extends AbstractAdapter
      */
     protected function internalGetMetadatas(array & $normalizedKeys)
     {
-        $prefix  = $this->getOptions()->getNamespace() . self::NAMESPACE_SEPARATOR;
-        $prefixL = strlen($prefix);
+        $namespace = $this->getOptions()->getNamespace();
+        if ($namespace === '') {
+            $result = $this->zdcFetchMulti($normalizedKeys);
+            return array_fill_keys(array_keys($result), array());
+        }
 
+        $prefix       = $namespace . self::NAMESPACE_SEPARATOR;
         $internalKeys = array();
         foreach ($normalizedKeys as $normalizedKey) {
             $internalKeys[] = $prefix . $normalizedKey;
         }
 
-        $fetch  = $this->zdcFetchMulti($internalKeys);
-        $result = array();
+        $fetch   = $this->zdcFetchMulti($internalKeys);
+        $result  = array();
+        $prefixL = strlen($prefix);
         foreach ($fetch as $internalKey => $value) {
-            $result[ substr($internalKey, $prefixL) ] = array();
+            $result[substr($internalKey, $prefixL)] = array();
         }
 
         return $result;
@@ -158,14 +164,15 @@ abstract class AbstractZendServer extends AbstractAdapter
      *
      * @param  string $normalizedKey
      * @param  mixed  $value
-     * @return boolean
+     * @return bool
      * @throws Exception\ExceptionInterface
      */
     protected function internalSetItem(& $normalizedKey, & $value)
     {
-        $options = $this->getOptions();
-        $internalKey = $options->getNamespace() . self::NAMESPACE_SEPARATOR . $normalizedKey;
-        $this->zdcStore($internalKey, $value, $options->getTtl());
+        $options   = $this->getOptions();
+        $namespace = $options->getNamespace();
+        $prefix    = ($namespace === '') ? '' : $namespace . self::NAMESPACE_SEPARATOR;
+        $this->zdcStore($prefix . $normalizedKey, $value, $options->getTtl());
         return true;
     }
 
@@ -173,13 +180,14 @@ abstract class AbstractZendServer extends AbstractAdapter
      * Internal method to remove an item.
      *
      * @param  string $normalizedKey
-     * @return boolean
+     * @return bool
      * @throws Exception\ExceptionInterface
      */
     protected function internalRemoveItem(& $normalizedKey)
     {
-        $internalKey = $this->getOptions()->getNamespace() . self::NAMESPACE_SEPARATOR . $normalizedKey;
-        return $this->zdcDelete($internalKey);
+        $namespace = $this->getOptions()->getNamespace();
+        $prefix    = ($namespace === '') ? '' : $namespace . self::NAMESPACE_SEPARATOR;
+        return $this->zdcDelete($prefix . $normalizedKey);
     }
 
     /* status */
@@ -258,7 +266,7 @@ abstract class AbstractZendServer extends AbstractAdapter
      * Delete data from Zend Data Cache (zdc)
      *
      * @param  string $internalKey
-     * @return boolean
+     * @return bool
      * @throws Exception\RuntimeException
      */
     abstract protected function zdcDelete($internalKey);

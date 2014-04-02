@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Cache
  */
 
 namespace Zend\Cache\Storage\Adapter;
@@ -14,40 +13,29 @@ use Memcached as MemcachedResource;
 use Zend\Cache\Exception;
 
 /**
- * These are options specific to the APC adapter
- *
- * @category   Zend
- * @package    Zend_Cache
- * @subpackage Storage
+ * These are options specific to the Memcached adapter
  */
 class MemcachedOptions extends AdapterOptions
 {
     /**
-     * A memcached resource to share
-     *
-     * @var null|MemcachedResource
+     * The namespace separator
+     * @var string
      */
-    protected $memcachedResource;
+    protected $namespaceSeparator = ':';
 
     /**
-     * List of memcached servers to add on initialize
+     * The memcached resource manager
+     *
+     * @var null|MemcachedResourceManager
+     */
+    protected $resourceManager;
+
+    /**
+     * The resource id of the resource manager
      *
      * @var string
      */
-    protected $servers = array(
-        array(
-            'host'   => '127.0.0.1',
-            'port'   => 11211,
-            'weight' => 0,
-        ),
-    );
-
-    /**
-     * List of Libmemcached options to set on initialize
-     *
-     * @var array
-     */
-    protected $libOptions = array();
+    protected $resourceId = 'default';
 
     /**
      * Set namespace.
@@ -73,16 +61,51 @@ class MemcachedOptions extends AdapterOptions
     }
 
     /**
+     * Set namespace separator
+     *
+     * @param  string $namespaceSeparator
+     * @return MemcachedOptions
+     */
+    public function setNamespaceSeparator($namespaceSeparator)
+    {
+        $namespaceSeparator = (string) $namespaceSeparator;
+        if ($this->namespaceSeparator !== $namespaceSeparator) {
+            $this->triggerOptionEvent('namespace_separator', $namespaceSeparator);
+            $this->namespaceSeparator = $namespaceSeparator;
+        }
+        return $this;
+    }
+
+    /**
+     * Get namespace separator
+     *
+     * @return string
+     */
+    public function getNamespaceSeparator()
+    {
+        return $this->namespaceSeparator;
+    }
+
+    /**
      * A memcached resource to share
      *
      * @param null|MemcachedResource $memcachedResource
      * @return MemcachedOptions
+     * @deprecated Please use the resource manager instead
      */
     public function setMemcachedResource(MemcachedResource $memcachedResource = null)
     {
-        if ($this->memcachedResource !== $memcachedResource) {
+        trigger_error(
+            'This method is deprecated and will be removed in the feature'
+            . ', please use the resource manager instead',
+            E_USER_DEPRECATED
+        );
+
+        if ($memcachedResource !== null) {
             $this->triggerOptionEvent('memcached_resource', $memcachedResource);
-            $this->memcachedResource = $memcachedResource;
+            $resourceManager = $this->getResourceManager();
+            $resourceId      = $this->getResourceId();
+            $resourceManager->setResource($resourceId, $memcachedResource);
         }
         return $this;
     }
@@ -90,117 +113,133 @@ class MemcachedOptions extends AdapterOptions
     /**
      * Get memcached resource to share
      *
-     * @return null|MemcachedResource
+     * @return MemcachedResource
+     * @deprecated Please use the resource manager instead
      */
     public function getMemcachedResource()
     {
-        return $this->memcachedResource;
+        trigger_error(
+            'This method is deprecated and will be removed in the feature'
+            . ', please use the resource manager instead',
+            E_USER_DEPRECATED
+        );
+
+        return $this->resourceManager->getResource($this->getResourceId());
+    }
+
+    /**
+     * Set the memcached resource manager to use
+     *
+     * @param null|MemcachedResourceManager $resourceManager
+     * @return MemcachedOptions
+     */
+    public function setResourceManager(MemcachedResourceManager $resourceManager = null)
+    {
+        if ($this->resourceManager !== $resourceManager) {
+            $this->triggerOptionEvent('resource_manager', $resourceManager);
+            $this->resourceManager = $resourceManager;
+        }
+        return $this;
+    }
+
+    /**
+     * Get the memcached resource manager
+     *
+     * @return MemcachedResourceManager
+     */
+    public function getResourceManager()
+    {
+        if (!$this->resourceManager) {
+            $this->resourceManager = new MemcachedResourceManager();
+        }
+        return $this->resourceManager;
+    }
+
+    /**
+     * Get the memcached resource id
+     *
+     * @return string
+     */
+    public function getResourceId()
+    {
+        return $this->resourceId;
+    }
+
+    /**
+     * Set the memcached resource id
+     *
+     * @param string $resourceId
+     * @return MemcachedOptions
+     */
+    public function setResourceId($resourceId)
+    {
+        $resourceId = (string) $resourceId;
+        if ($this->resourceId !== $resourceId) {
+            $this->triggerOptionEvent('resource_id', $resourceId);
+            $this->resourceId = $resourceId;
+        }
+        return $this;
+    }
+
+    /**
+     * Get the persistent id
+     *
+     * @return string
+     */
+    public function getPersistentId()
+    {
+        return $this->getResourceManager()->getPersistentId($this->getResourceId());
+    }
+
+    /**
+     * Set the persistent id
+     *
+     * @param string $persistentId
+     * @return MemcachedOptions
+     */
+    public function setPersistentId($persistentId)
+    {
+        $this->triggerOptionEvent('persistent_id', $persistentId);
+        $this->getResourceManager()->setPersistentId($this->getResourceId(), $persistentId);
+        return $this;
     }
 
     /**
      * Add a server to the list
      *
-     * @param  string $host
-     * @param  int $port
-     * @param  int $weight
+     * @param string $host
+     * @param int $port
+     * @param int $weight
      * @return MemcachedOptions
+     * @deprecated Please use the resource manager instead
      */
     public function addServer($host, $port = 11211, $weight = 0)
     {
-        $new = array(
+        trigger_error(
+            'This method is deprecated and will be removed in the feature'
+            . ', please use the resource manager instead',
+            E_USER_DEPRECATED
+        );
+
+        $this->getResourceManager()->addServer($this->getResourceId(), array(
             'host'   => $host,
             'port'   => $port,
             'weight' => $weight
-        );
+        ));
 
-        foreach ($this->servers as $server) {
-            $diff = array_diff($new, $server);
-            if (empty($diff)) {
-                // Done -- server is already present
-                return $this;
-            }
-        }
-
-        $this->servers[] = $new;
         return $this;
     }
 
     /**
-     * Set a list of memcached servers to add on initialize
-     *
-     * @param string|array $servers list of servers
-     * @return MemcachedOptions
-     * @throws Exception\InvalidArgumentException
-     */
+    * Set a list of memcached servers to add on initialize
+    *
+    * @param string|array $servers list of servers
+    * @return MemcachedOptions
+    * @throws Exception\InvalidArgumentException
+    */
     public function setServers($servers)
     {
-        if (!is_array($servers)) {
-            return $this->setServers(explode(',', $servers));
-        }
-
-        $this->servers = array();
-        foreach ($servers as $server) {
-            // default values
-            $host   = null;
-            $port   = 11211;
-            $weight = 1;
-
-            if (!is_array($server) && !is_string($server)) {
-                throw new Exception\InvalidArgumentException('Invalid server specification provided; must be an array or string');
-            }
-
-            // parse a single server from an array
-            if (is_array($server)) {
-                if (!isset($server[0]) && !isset($server['host'])) {
-                    throw new Exception\InvalidArgumentException("Invalid list of servers given");
-                }
-
-                // array(array(<host>[, <port>[, <weight>]])[, ...])
-                if (isset($server[0])) {
-                    $host   = (string) $server[0];
-                    $port   = isset($server[1]) ? (int) $server[1] : $port;
-                    $weight = isset($server[2]) ? (int) $server[2] : $weight;
-                }
-
-                // array(array('host' => <host>[, 'port' => <port>[, 'weight' => <weight>]])[, ...])
-                if (!isset($server[0]) && isset($server['host'])) {
-                    $host   = (string)$server['host'];
-                    $port   = isset($server['port'])   ? (int) $server['port']   : $port;
-                    $weight = isset($server['weight']) ? (int) $server['weight'] : $weight;
-                }
-            }
-
-            // parse a single server from a string
-            if (!is_array($server)) {
-                $server = trim($server);
-                if (strpos($server, '://') === false) {
-                    $server = 'tcp://' . $server;
-                }
-
-                $server = parse_url($server);
-                if (!$server) {
-                    throw new Exception\InvalidArgumentException("Invalid list of servers given");
-                }
-
-                $host = $server['host'];
-                $port = isset($server['port']) ? (int)$server['port'] : $port;
-
-                if (isset($server['query'])) {
-                    $query = null;
-                    parse_str($server['query'], $query);
-                    if (isset($query['weight'])) {
-                        $weight = (int)$query['weight'];
-                    }
-                }
-            }
-
-            if (!$host) {
-                throw new Exception\InvalidArgumentException('The list of servers must contain a host value.');
-            }
-
-            $this->addServer($host, $port, $weight);
-        }
-
+        $this->getResourceManager()->setServers($this->getResourceId(), $servers);
         return $this;
     }
 
@@ -211,27 +250,19 @@ class MemcachedOptions extends AdapterOptions
      */
     public function getServers()
     {
-        return $this->servers;
+        return $this->getResourceManager()->getServers($this->getResourceId());
     }
 
     /**
-     * Set libmemcached options
-     *
-     * @param array $libOptions
-     * @return MemcachedOptions
-     * @link http://php.net/manual/memcached.constants.php
-     */
+    * Set libmemcached options
+    *
+    * @param array $libOptions
+    * @return MemcachedOptions
+    * @link http://php.net/manual/memcached.constants.php
+    */
     public function setLibOptions(array $libOptions)
     {
-        $normalizedOptions = array();
-        foreach ($libOptions as $key => $value) {
-            $this->normalizeLibOptionKey($key);
-            $normalizedOptions[$key] = $value;
-        }
-
-        $this->triggerOptionEvent('lib_options', $normalizedOptions);
-        $this->libOptions = array_diff_key($this->libOptions, $normalizedOptions) + $normalizedOptions;
-
+        $this->getResourceManager()->setLibOptions($this->getResourceId(), $libOptions);
         return $this;
     }
 
@@ -239,16 +270,20 @@ class MemcachedOptions extends AdapterOptions
      * Set libmemcached option
      *
      * @param string|int $key
-     * @param mixed      $value
+     * @param mixed $value
      * @return MemcachedOptions
      * @link http://php.net/manual/memcached.constants.php
+     * @deprecated Please use lib_options or the resource manager instead
      */
     public function setLibOption($key, $value)
     {
-        $this->normalizeLibOptionKey($key);
-        $this->triggerOptionEvent('lib_options', array($key, $value));
-        $this->libOptions[$key] = $value;
+        trigger_error(
+            'This method is deprecated and will be removed in the feature'
+            . ', please use "lib_options" or the resource manager instead',
+            E_USER_DEPRECATED
+        );
 
+        $this->getResourceManager()->setLibOption($this->getResourceId(), $key, $value);
         return $this;
     }
 
@@ -260,41 +295,25 @@ class MemcachedOptions extends AdapterOptions
      */
     public function getLibOptions()
     {
-        return $this->libOptions;
+        return $this->getResourceManager()->getLibOptions($this->getResourceId());
     }
 
     /**
-     * Get libmemcached option
-     *
-     * @param string|int $key
-     * @return mixed
-     * @link http://php.net/manual/memcached.constants.php
-     */
+    * Get libmemcached option
+    *
+    * @param string|int $key
+    * @return mixed
+    * @link http://php.net/manual/memcached.constants.php
+    * @deprecated Please use lib_options or the resource manager instead
+    */
     public function getLibOption($key)
     {
-        $this->normalizeLibOptionKey($key);
-        if (isset($this->libOptions[$key])) {
-            return $this->libOptions[$key];
-        }
-        return null;
-    }
+        trigger_error(
+            'This method is deprecated and will be removed in the feature'
+            . ', please use "lib_options" or the resource manager instead',
+            E_USER_DEPRECATED
+        );
 
-    /**
-     * Normalize libmemcached option name into it's constant value
-     *
-     * @param string|int $key
-     * @throws Exception\InvalidArgumentException
-     */
-    protected function normalizeLibOptionKey(& $key)
-    {
-        if (is_string($key)) {
-            $const = 'Memcached::OPT_' . str_replace(array(' ', '-'), '_', strtoupper($key));
-            if (!defined($const)) {
-                throw new Exception\InvalidArgumentException("Unknown libmemcached option '{$key}' ({$const})");
-            }
-            $key = constant($const);
-        } else {
-            $key = (int) $key;
-        }
+        return $this->getResourceManager()->getLibOption($this->getResourceId(), $key);
     }
 }

@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Loader
  */
 
 namespace Zend\Loader;
@@ -13,16 +12,10 @@ namespace Zend\Loader;
 use ReflectionClass;
 use Traversable;
 
-require_once __DIR__ . '/SplAutoloader.php';
-
 if (class_exists('Zend\Loader\AutoloaderFactory')) {
     return;
 }
 
-/**
- * @category   Zend
- * @package    Zend_Loader
- */
 abstract class AutoloaderFactory
 {
     const STANDARD_AUTOLOADER = 'Zend\Loader\StandardAutoloader';
@@ -115,7 +108,7 @@ abstract class AutoloaderFactory
     }
 
     /**
-     * Get an list of all autoloaders registered with the factory
+     * Get a list of all autoloaders registered with the factory
      *
      * Returns an array of autoloader instances.
      *
@@ -215,7 +208,7 @@ abstract class AutoloaderFactory
         if (is_subclass_of($className, $type)) {
             return true;
         }
-        if (version_compare(PHP_VERSION, '5.3.7', '>=')) {
+        if (PHP_VERSION_ID >= 50307) {
             return false;
         }
         if (!interface_exists($type)) {

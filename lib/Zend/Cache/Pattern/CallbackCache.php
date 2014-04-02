@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Cache
  */
 
 namespace Zend\Cache\Pattern;
@@ -13,11 +12,6 @@ namespace Zend\Cache\Pattern;
 use Zend\Cache\Exception;
 use Zend\Stdlib\ErrorHandler;
 
-/**
- * @category   Zend
- * @package    Zend_Cache
- * @subpackage Pattern
- */
 class CallbackCache extends AbstractPattern
 {
     /**
@@ -54,7 +48,7 @@ class CallbackCache extends AbstractPattern
         $key     = $this->generateCallbackKey($callback, $args);
         $result  = $storage->getItem($key, $success);
         if ($success) {
-            if (!isset($result[0])) {
+            if (!array_key_exists(0, $result)) {
                 throw new Exception\RuntimeException("Invalid cached data for key '{$key}'");
             }
 
