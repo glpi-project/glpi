@@ -742,14 +742,15 @@ class TicketFollowup  extends CommonDBTM {
             }
             echo "</div>"; // boxnoteleft
 
-            echo "<div class='boxnotecontent'>";
-
-            echo "<div class='boxnotetext pointer'";
+            echo "<div class='boxnotecontent'";
             if ($canedit) {
                echo " onClick=\"viewEditFollowup".$ticket->fields['id'].
-                         $data['id']."$rand();\" ";
+                         $data['id']."$rand(); ".Html::jsHide("view$id")." ".
+                           Html::jsShow("viewfollowup" . $ticket->fields['id'].$data["id"]."$rand")."\" ";
             }
             echo ">";
+
+            echo "<div class='boxnotetext pointer'>";
             $content = nl2br($data['content']);
             if (empty($content)) $content = NOT_AVAILABLE;
             echo $content.'</div>'; // boxnotetext
@@ -774,13 +775,15 @@ class TicketFollowup  extends CommonDBTM {
             echo "</div>"; // boxnotecontent
             echo "</div>"; // boxnote
             if ($canedit) {
+               echo "<div id='viewfollowup" . $ticket->fields['id'].$data["id"]."$rand' class='starthidden'></div>\n";
+               
                echo "\n<script type='text/javascript' >\n";
                echo "function viewEditFollowup". $ticket->fields['id'].$data["id"]."$rand() {\n";
                $params = array('type'       => __CLASS__,
                               'parenttype' => 'Ticket',
                               'tickets_id' => $data["tickets_id"],
                               'id'         => $data["id"]);
-               Ajax::updateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
+               Ajax::updateItemJsCode("viewfollowup" . $ticket->fields['id'].$data["id"]."$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
                echo "};";
                echo "</script>\n";
