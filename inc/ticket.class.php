@@ -2639,7 +2639,8 @@ class Ticket extends CommonITILObject {
                      if ($item->maybeTemplate()) {
                         $query .= " AND `is_template` = '0' ";
                      }
-
+                     $query .= ' ORDER BY `name`';
+                     
                      $result = $DB->query($query);
                      if ($DB->numrows($result) > 0) {
                         $type_name = $item->getTypeName();
