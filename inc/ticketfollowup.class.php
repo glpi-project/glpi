@@ -580,7 +580,8 @@ class TicketFollowup  extends CommonDBTM {
          if ($this->fields["date"]) {
             echo "</td><td>".__('Date')."</td>";
             echo "<td>".Html::convDateTime($this->fields["date"]);
-         } else {
+         } else {   
+
             echo "</td><td colspan='2'>&nbsp;";
          }
          echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
