@@ -417,55 +417,11 @@ class Link extends CommonDBTM {
       if ($DB->numrows($result) > 0) {
          echo "<tr><th>".self::getTypeName(2)."</th></tr>";
          while ($data = $DB->fetch_assoc($result)) {
-            $name = $data["name"];
-            if (empty($name)) {
-               $name = $data["link"];
-            }
-            $names = self::generateLinkContents($name, $item);
-            $file  = trim($data["data"]);
+            $links = self::getAllLinksFor($item, $data);
 
-            if (empty($file)) {
-               // Generate links
-               $links = self::generateLinkContents($data['link'], $item);
-               $i     = 1;
-               foreach ($links as $key => $link) {
-                  $name =  (isset($names[$key]) ? $names[$key] : reset($names));
-                  echo "<tr class='tab_bg_2'>";
-                  $url = $link;
-                  echo "<td class='center'><a href='$url'";
-                  if ($data['open_window']) {
-                     echo " target='_blank'";
-                  }
-                  echo ">";
-                  $linkname = sprintf(__('%1$s #%2$s'), $name, $i);
-                  $linkname = printf(__('%1$s: %2$s'), $linkname, $link);
-                  echo "</a></td></tr>";
-                  $i++;
-               }
-            } else {
-               // Generate files
-               $files = self::generateLinkContents($data['link'], $item);
-               $links = self::generateLinkContents($data['data'], $item);
-               $i     = 1;
-               foreach ($links as $key => $link) {
-                  $name =  (isset($names[$key]) ? $names[$key] : reset($names));
-                  if (isset($files[$key])) {
-                     // a different name for each file, ex name = foo-[IP].txt
-                     $file = $files[$key];
-                  } else {
-                     // same name for all files, ex name = foo.txt
-                     $file = reset($files);
-                  }
-                  echo "<tr class='tab_bg_2'>";
-                  $url = $CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['id'].
-                         "&amp;itemtype=".$item->getType().
-                         "&amp;id=".$item->getID()."&amp;rank=$key";
-                  echo "<td class='center'><a href='$url' target='_blank'>";
-                  $linkname = sprintf(__('%1$s #%2$s'), $name, $i);
-                  $linkname = printf(__('%1$s: %2$s'), $linkname, $file);
-                  echo "</a></td></tr>";
-                  $i++;
-               }
+            foreach ($links as $link) {
+               echo "<tr class='tab_bg_2'>";
+               echo "<td class='center'>$link</td></tr>";
             }
          }
          echo "</table></div>";
@@ -476,7 +432,80 @@ class Link extends CommonDBTM {
          echo "</table></div>";
       }
    }
+   
+   /**
+    * Show Links for an item
+    *
+    * @param $item                     CommonDBTM object
+    * @param $params    array of params : must contain id / name / link / data
+   **/
+   static function getAllLinksFor($item, $params = array()) {
+      global $CFG_GLPI;
+      
+      $computedlinks = array();
+      if (!isset($params['name']) || !isset($params['link']) || !isset($params['data'])
+         || !isset($params['id'])) {
+         return $computedlinks;
+      }
 
+      if (!isset($params['open_window'])) {
+         $params['open_window'] = true;
+      }
+      
+      if (empty($params['name'])) {
+         $params['name'] = $params['link'];
+      }
+      $names = self::generateLinkContents($params['name'], $item);
+      $file  = trim($params['data']);
+
+      if (empty($file)) {
+         // Generate links
+         $links = self::generateLinkContents($params['link'], $item);
+         $i     = 1;
+         foreach ($links as $key => $val) {
+            $name =  (isset($names[$key]) ? $names[$key] : reset($names));
+            $url = $val;
+            $newlink = "<a href='$url'";
+            if ($params['open_window']) {
+               $newlink .= " target='_blank'";
+            }
+            $newlink .= ">";
+            $linkname = sprintf(__('%1$s #%2$s'), $name, $i);
+            $newlink .= sprintf(__('%1$s: %2$s'), $linkname, $val);
+            $newlink .= "</a>";
+            $computedlinks[] = $newlink;
+            $i++;
+         }
+      } else {
+         // Generate files
+         $files = self::generateLinkContents($params['link'], $item);
+         $links = self::generateLinkContents($params['data'], $item);
+         $i     = 1;
+         foreach ($links as $key => $val) {
+            $name =  (isset($names[$key]) ? $names[$key] : reset($names));
+            if (isset($files[$key])) {
+               // a different name for each file, ex name = foo-[IP].txt
+               $file = $files[$key];
+            } else {
+               // same name for all files, ex name = foo.txt
+               $file = reset($files);
+            }
+            $url = $CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$params['id'].
+                     "&amp;itemtype=".$item->getType().
+                     "&amp;id=".$item->getID()."&amp;rank=$key";
+            $newlink = "<a href='$url' target='_blank'>";
+            $linkname = sprintf(__('%1$s #%2$s'), $name, $i);
+            $newlink .= sprintf(__('%1$s: %2$s'), $linkname, $val);
+            $newlink .= "</a>";
+            $computedlinks[] = $newlink;
+            $i++;
+         }
+      }
+
+
+      return $computedlinks;
+
+   }
 
    /**
     * @since version 0.85
@@ -486,9 +515,13 @@ class Link extends CommonDBTM {
       $tab                      = array();
 
       $tab[145]['table']          = 'glpi_links';
-      $tab[145]['field']          = 'link';
+      $tab[145]['field']          = '_virtual';
       $tab[145]['name']           = _n('External link', 'External links', 2);
-      $tab[145]['datatype']       = 'itemlink';
+      $tab[145]['datatype']       = 'specific';
+      $tab[145]['additionalfields']   = array('id','link', 'name', 'data', 'open_window');
+      $tab[145]['nosearch']       = true;
+      $tab[145]['forcegroupby']   = true;
+      $tab[145]['nosort']         = true;
       $tab[145]['joinparams']     = array('beforejoin'
                                           => array('table'      => 'glpi_links_itemtypes',
                                                    'joinparams' => array('jointype' => 'itemtypeonly')));

@@ -2730,7 +2730,7 @@ class User extends CommonDBTM {
 
 
    /**
-    * @since ersion 0.84
+    * @since version 0.84
     *
     * @param $field
     * @param $values

@@ -1069,7 +1069,6 @@ class Search {
          }
 
          $data['data']['count'] = count($data['data']['rows']);
-
       } else {
          echo $DBread->error();
       }
@@ -4265,6 +4264,29 @@ class Search {
                return Consumable::getCount($data["id"], $data[$num][0]['alarm_threshold'],
                                            self::$output_type != self::HTML_OUTPUT);
 
+            case 'glpi_links._virtual' :
+               $out = '';
+               if (($item = getItemForItemtype($itemtype))
+                  && $item->getFromDB($data['id'])) {
+                  if (count($data[$num])) {
+                     $count_display = 0;
+                     foreach ($data[$num] as$val) {
+
+                        if (is_array($val)) {
+                           $links = Link::getAllLinksFor($item, $val);
+                           foreach ($links as $link) {
+                              if ($count_display) {
+                                 $out .=  self::LBBR;
+                              }
+                              $out .= $link;
+                              $count_display++;
+                           }
+                        }
+                     }
+                  }
+               }
+               return $out;
+                                           
             case 'glpi_reservationitems._virtual' :
                if ($data[$num][0]['is_active']) {
                   return "<a href='reservation.php?reservationitems_id=".
