@@ -301,7 +301,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>";
       Dropdown::showNumber("number", array('value' => $this->fields["number"],
                                            'min'   => 1,
-                                           'max'   => 1000,
+                                           'max'   => 10000,
                                            'step'  => 1,
                                            'toadd' => array(-1 => __('Unlimited'))));
       if ($ID > 0) {
