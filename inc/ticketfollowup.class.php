@@ -754,8 +754,19 @@ class TicketFollowup  extends CommonDBTM {
             if (isset($techs[$data['users_id']])) {
                $color = 'bytech';
             }
+
+            $classtoadd = '';
+            if ($canedit) {
+               $classtoadd = " pointer";
+            }
             
-            echo "<div class='boxnote $color' id='view$id'>";
+            echo "<div class='boxnote $color $classtoadd' id='view$id'";
+            if ($canedit) {
+               echo " onClick=\"viewEditFollowup".$ticket->fields['id'].
+                         $data['id']."$rand(); ".Html::jsHide("view$id")." ".
+                           Html::jsShow("viewfollowup" . $ticket->fields['id'].$data["id"]."$rand")."\" ";
+            }
+            echo ">";
 
             echo "<div class='boxnoteleft'>";
             if ($candelete) {
@@ -770,18 +781,9 @@ class TicketFollowup  extends CommonDBTM {
             echo "</div>"; // boxnoteleft
 
             echo "<div class='boxnotecontent'";
-            if ($canedit) {
-               echo " onClick=\"viewEditFollowup".$ticket->fields['id'].
-                         $data['id']."$rand(); ".Html::jsHide("view$id")." ".
-                           Html::jsShow("viewfollowup" . $ticket->fields['id'].$data["id"]."$rand")."\" ";
-            }
             echo ">";
 
-            echo "<div class='boxnotetext";
-            if ($canedit) {
-               echo " pointer";
-            }
-            echo "'>";
+            echo "<div class='boxnotetext'>";
             $content = nl2br($data['content']);
             if (empty($content)) $content = NOT_AVAILABLE;
             echo $content.'</div>'; // boxnotetext
