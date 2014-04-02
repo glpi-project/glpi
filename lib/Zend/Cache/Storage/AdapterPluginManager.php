@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Cache
  */
 
 namespace Zend\Cache\Storage;
@@ -19,10 +18,6 @@ use Zend\ServiceManager\AbstractPluginManager;
  * Enforces that adapters retrieved are instances of
  * StorageInterface. Additionally, it registers a number of default
  * adapters available.
- *
- * @category   Zend
- * @package    Zend_Cache
- * @subpackage Storage
  */
 class AdapterPluginManager extends AbstractPluginManager
 {
@@ -33,10 +28,15 @@ class AdapterPluginManager extends AbstractPluginManager
      */
     protected $invokableClasses = array(
         'apc'            => 'Zend\Cache\Storage\Adapter\Apc',
+        'blackhole'      => 'Zend\Cache\Storage\Adapter\BlackHole',
+        'dba'            => 'Zend\Cache\Storage\Adapter\Dba',
         'filesystem'     => 'Zend\Cache\Storage\Adapter\Filesystem',
+        'memcache'       => 'Zend\Cache\Storage\Adapter\Memcache',
         'memcached'      => 'Zend\Cache\Storage\Adapter\Memcached',
         'memory'         => 'Zend\Cache\Storage\Adapter\Memory',
-        'dba'            => 'Zend\Cache\Storage\Adapter\Dba',
+        'redis'          => 'Zend\Cache\Storage\Adapter\Redis',
+        'session'        => 'Zend\Cache\Storage\Adapter\Session',
+        'xcache'         => 'Zend\Cache\Storage\Adapter\XCache',
         'wincache'       => 'Zend\Cache\Storage\Adapter\WinCache',
         'zendserverdisk' => 'Zend\Cache\Storage\Adapter\ZendServerDisk',
         'zendservershm'  => 'Zend\Cache\Storage\Adapter\ZendServerShm',

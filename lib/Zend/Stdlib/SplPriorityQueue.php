@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Stdlib
  */
 
 namespace Zend\Stdlib;
@@ -17,9 +16,6 @@ use Serializable;
  *
  * Also, provides predictable heap order for datums added with the same priority
  * (i.e., they will be emitted in the same order they are enqueued).
- *
- * @category   Zend
- * @package    Zend_Stdlib
  */
 class SplPriorityQueue extends \SplPriorityQueue implements Serializable
 {

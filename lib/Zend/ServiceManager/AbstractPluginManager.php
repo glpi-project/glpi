@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_ServiceManager
  */
 
 namespace Zend\ServiceManager;
@@ -19,9 +18,6 @@ namespace Zend\ServiceManager;
  * the plugin when retrieved. Finally, enables the allowOverride property by
  * default to allow registering factories, aliases, and invokables to take
  * the place of those provided by the implementing class.
- *
- * @category   Zend
- * @package    Zend_ServiceManager
  */
 abstract class AbstractPluginManager extends ServiceManager implements ServiceLocatorAwareInterface
 {
@@ -30,7 +26,7 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
      *
      * @var bool
      */
-    protected $allowOverride   = true;
+    protected $allowOverride = true;
 
     /**
      * Whether or not to auto-add a class as an invokable class if it exists
@@ -68,9 +64,6 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
         $this->addInitializer(function ($instance) use ($self) {
             if ($instance instanceof ServiceLocatorAwareInterface) {
                 $instance->setServiceLocator($self);
-            }
-            if ($instance instanceof ServiceManagerAwareInterface) {
-                $instance->setServiceManager($self);
             }
         });
     }
@@ -149,7 +142,7 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
     /**
      * Get the main plugin manager. Useful for fetching dependencies from within factories.
      *
-     * @return mixed
+     * @return ServiceLocatorInterface
      */
     public function getServiceLocator()
     {
@@ -195,9 +188,11 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
      */
     protected function createFromFactory($canonicalName, $requestedName)
     {
-        $factory = $this->factories[$canonicalName];
+        $factory            = $this->factories[$canonicalName];
+        $hasCreationOptions = !(null === $this->creationOptions || (is_array($this->creationOptions) && empty($this->creationOptions)));
+
         if (is_string($factory) && class_exists($factory, true)) {
-            if (null === $this->creationOptions || (is_array($this->creationOptions) && empty($this->creationOptions))) {
+            if (!$hasCreationOptions) {
                 $factory = new $factory();
             } else {
                 $factory = new $factory($this->creationOptions);
@@ -219,4 +214,34 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
         return $instance;
     }
 
+    /**
+     * Create service via callback
+     *
+     * @param  callable $callable
+     * @param  string   $cName
+     * @param  string   $rName
+     * @throws Exception\ServiceNotCreatedException
+     * @throws Exception\ServiceNotFoundException
+     * @throws Exception\CircularDependencyFoundException
+     * @return object
+     */
+    protected function createServiceViaCallback($callable, $cName, $rName)
+    {
+        if (is_object($callable)) {
+            $factory = $callable;
+        } elseif (is_array($callable)) {
+            // reset both rewinds and returns the value of the first array element
+            $factory = reset($callable);
+        }
+
+        if (isset($factory)
+            && ($factory instanceof MutableCreationOptionsInterface)
+            && is_array($this->creationOptions)
+            && !empty($this->creationOptions)
+        ) {
+            $factory->setCreationOptions($this->creationOptions);
+        }
+
+        return parent::createServiceViaCallback($callable, $cName, $rName);
+    }
 }

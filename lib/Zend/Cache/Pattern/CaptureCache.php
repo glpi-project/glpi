@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Cache
  */
 
 namespace Zend\Cache\Pattern;
@@ -13,11 +12,6 @@ namespace Zend\Cache\Pattern;
 use Zend\Cache\Exception;
 use Zend\Stdlib\ErrorHandler;
 
-/**
- * @category   Zend
- * @package    Zend_Cache
- * @subpackage Pattern
- */
 class CaptureCache extends AbstractPattern
 {
     /**
@@ -63,10 +57,10 @@ class CaptureCache extends AbstractPattern
         }
 
         $path = $this->pageId2Path($pageId);
-        $file = $path . \DIRECTORY_SEPARATOR . $this->pageId2Filename($pageId);
+        $file = $path . DIRECTORY_SEPARATOR . $this->pageId2Filename($pageId);
 
-        $this->createDirectoryStructure($publicDir . \DIRECTORY_SEPARATOR . $path);
-        $this->putFileContent($publicDir . \DIRECTORY_SEPARATOR . $file, $content);
+        $this->createDirectoryStructure($publicDir . DIRECTORY_SEPARATOR . $path);
+        $this->putFileContent($publicDir . DIRECTORY_SEPARATOR . $file, $content);
     }
 
     /**
@@ -89,8 +83,8 @@ class CaptureCache extends AbstractPattern
         }
 
         $file = $publicDir
-            . \DIRECTORY_SEPARATOR . $this->pageId2Path($pageId)
-            . \DIRECTORY_SEPARATOR . $this->pageId2Filename($pageId);
+            . DIRECTORY_SEPARATOR . $this->pageId2Path($pageId)
+            . DIRECTORY_SEPARATOR . $this->pageId2Filename($pageId);
 
         if (file_exists($file)) {
             ErrorHandler::start();
@@ -110,7 +104,7 @@ class CaptureCache extends AbstractPattern
      *
      * @param  null|string $pageId
      * @throws Exception\LogicException
-     * @return boolean
+     * @return bool
      */
     public function has($pageId = null)
     {
@@ -124,8 +118,8 @@ class CaptureCache extends AbstractPattern
         }
 
         $file = $publicDir
-            . \DIRECTORY_SEPARATOR . $this->pageId2Path($pageId)
-            . \DIRECTORY_SEPARATOR . $this->pageId2Filename($pageId);
+            . DIRECTORY_SEPARATOR . $this->pageId2Path($pageId)
+            . DIRECTORY_SEPARATOR . $this->pageId2Filename($pageId);
 
         return file_exists($file);
     }
@@ -136,7 +130,7 @@ class CaptureCache extends AbstractPattern
      * @param  null|string $pageId
      * @throws Exception\LogicException
      * @throws Exception\RuntimeException
-     * @return boolean
+     * @return bool
      */
     public function remove($pageId = null)
     {
@@ -150,8 +144,8 @@ class CaptureCache extends AbstractPattern
         }
 
         $file = $publicDir
-            . \DIRECTORY_SEPARATOR . $this->pageId2Path($pageId)
-            . \DIRECTORY_SEPARATOR . $this->pageId2Filename($pageId);
+            . DIRECTORY_SEPARATOR . $this->pageId2Path($pageId)
+            . DIRECTORY_SEPARATOR . $this->pageId2Filename($pageId);
 
         if (file_exists($file)) {
             ErrorHandler::start();
@@ -237,8 +231,8 @@ class CaptureCache extends AbstractPattern
         }
 
         // convert requested "/" to the valid local directory separator
-        if ('/' != \DIRECTORY_SEPARATOR) {
-            $path = str_replace('/', \DIRECTORY_SEPARATOR, $path);
+        if ('/' != DIRECTORY_SEPARATOR) {
+            $path = str_replace('/', DIRECTORY_SEPARATOR, $path);
         }
 
         return $path;
@@ -265,7 +259,7 @@ class CaptureCache extends AbstractPattern
         ErrorHandler::start();
 
         $umask = ($umask !== false) ? umask($umask) : false;
-        $rs    = file_put_contents($file, $data, $locking ? \LOCK_EX : 0);
+        $rs    = file_put_contents($file, $data, $locking ? LOCK_EX : 0);
         if ($umask) {
             umask($umask);
         }
@@ -354,7 +348,7 @@ class CaptureCache extends AbstractPattern
 
             // make all missing path parts
             foreach ($parts as $part) {
-                $path.= \DIRECTORY_SEPARATOR . $part;
+                $path.= DIRECTORY_SEPARATOR . $part;
 
                 // create a single directory, set and reset umask immediately
                 $umask = ($umask !== false) ? umask($umask) : false;
@@ -365,7 +359,7 @@ class CaptureCache extends AbstractPattern
 
                 if (!$res) {
                     $oct = ($perm === false) ? '777' : decoct($perm);
-                    $err = ErrorHandler::stop();
+                    ErrorHandler::stop();
                     throw new Exception\RuntimeException(
                         "mkdir('{$path}', 0{$oct}, false) failed"
                     );
@@ -373,7 +367,7 @@ class CaptureCache extends AbstractPattern
 
                 if ($perm !== false && !chmod($path, $perm)) {
                     $oct = decoct($perm);
-                    $err = ErrorHandler::stop();
+                    ErrorHandler::stop();
                     throw new Exception\RuntimeException(
                         "chmod('{$path}', 0{$oct}) failed"
                     );
@@ -382,5 +376,24 @@ class CaptureCache extends AbstractPattern
         }
 
         ErrorHandler::stop();
+    }
+
+    /**
+     * Returns the generated file name.
+     *
+     * @param null|string $pageId
+     * @return string
+     */
+    public function getFilename($pageId = null)
+    {
+        if ($pageId === null) {
+            $pageId = $this->detectPageId();
+        }
+
+        $publicDir = $this->getOptions()->getPublicDir();
+        $path      = $this->pageId2Path($pageId);
+        $file      = $path . DIRECTORY_SEPARATOR . $this->pageId2Filename($pageId);
+
+        return $publicDir . $file;
     }
 }

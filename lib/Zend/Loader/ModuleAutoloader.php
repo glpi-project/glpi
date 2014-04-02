@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Loader
  */
 
 namespace Zend\Loader;
@@ -99,6 +98,29 @@ class ModuleAutoloader implements SplAutoloader
     }
 
     /**
+     * Retrieves the class map for all loaded modules.
+     *
+     * @return array
+     */
+    public function getModuleClassMap()
+    {
+        return $this->moduleClassMap;
+    }
+
+    /**
+     * Sets the class map used to speed up the module autoloading.
+     *
+     * @param  array $classmap
+     * @return ModuleAutoloader
+     */
+    public function setModuleClassMap(array $classmap)
+    {
+        $this->moduleClassMap = $classmap;
+
+        return $this;
+    }
+
+    /**
      * Autoload a class
      *
      * @param   $class
@@ -111,6 +133,11 @@ class ModuleAutoloader implements SplAutoloader
         // Limit scope of this autoloader
         if (substr($class, -7) !== '\Module') {
             return false;
+        }
+
+        if (isset($this->moduleClassMap[$class])) {
+            require_once $this->moduleClassMap[$class];
+            return $class;
         }
 
         $moduleName = substr($class, 0, -7);
@@ -126,14 +153,14 @@ class ModuleAutoloader implements SplAutoloader
             }
         }
 
-        if (count($this->namespacedPaths) >= 1 ) {
-            foreach ( $this->namespacedPaths as $namespace=>$path ) {
-                if ( false === strpos($moduleName,$namespace) ) {
+        if (count($this->namespacedPaths) >= 1) {
+            foreach ($this->namespacedPaths as $namespace => $path) {
+                if (false === strpos($moduleName, $namespace)) {
                     continue;
                 }
 
-                $moduleName_buffer = str_replace($namespace . "\\", "", $moduleName );
-                $path .= DIRECTORY_SEPARATOR . $moduleName_buffer . DIRECTORY_SEPARATOR;
+                $moduleNameBuffer = str_replace($namespace . "\\", "", $moduleName );
+                $path .= DIRECTORY_SEPARATOR . $moduleNameBuffer . DIRECTORY_SEPARATOR;
 
                 $classLoaded = $this->loadModuleFromDir($path, $class);
                 if ($classLoaded) {
@@ -157,6 +184,16 @@ class ModuleAutoloader implements SplAutoloader
 
         foreach ($this->paths as $path) {
             $path = $path . $moduleClassPath;
+
+            if ($path == '.' || substr($path, 0, 2) == './' || substr($path, 0, 2) == '.\\') {
+                $basePath = realpath('.');
+
+                if (false === $basePath) {
+                    $basePath = getcwd();
+                }
+
+                $path = rtrim($basePath, '\/\\') . substr($path, 1);
+            }
 
             $classLoaded = $this->loadModuleFromDir($path, $class);
             if ($classLoaded) {
@@ -295,10 +332,11 @@ class ModuleAutoloader implements SplAutoloader
     public function registerPaths($paths)
     {
         if (!is_array($paths) && !$paths instanceof Traversable) {
-            throw new \InvalidArgumentException(
+            require_once __DIR__ . '/Exception/InvalidArgumentException.php';
+            throw new Exception\InvalidArgumentException(
                 'Parameter to \\Zend\\Loader\\ModuleAutoloader\'s '
                 . 'registerPaths method must be an array or '
-                . 'implement the \\Traversable interface'
+                . 'implement the Traversable interface'
             );
         }
 
@@ -324,14 +362,15 @@ class ModuleAutoloader implements SplAutoloader
     public function registerPath($path, $moduleName = false)
     {
         if (!is_string($path)) {
-            throw new \InvalidArgumentException(sprintf(
+            require_once __DIR__ . '/Exception/InvalidArgumentException.php';
+            throw new Exception\InvalidArgumentException(sprintf(
                 'Invalid path provided; must be a string, received %s',
                 gettype($path)
             ));
         }
         if ($moduleName) {
-            if (in_array( substr($moduleName, -2 ), array('\\*','\\%') ) ) {
-                $this->namespacedPaths[ substr($moduleName, 0, -2 ) ] = static::normalizePath($path);
+            if (in_array( substr($moduleName, -2), array('\\*', '\\%'))) {
+                $this->namespacedPaths[substr($moduleName, 0, -2)] = static::normalizePath($path);
             } else {
                 $this->explicitPaths[$moduleName] = static::normalizePath($path);
             }

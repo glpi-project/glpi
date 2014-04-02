@@ -3,17 +3,12 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_ServiceManager
  */
 
 namespace Zend\ServiceManager;
 
-/**
- * @category Zend
- * @package  Zend_ServiceManager
- */
 class Config implements ConfigInterface
 {
     /**
@@ -112,6 +107,17 @@ class Config implements ConfigInterface
     }
 
     /**
+     * Get the delegator services map, with keys being the services acting as delegates,
+     * and values being the delegator factories names
+     *
+     * @return array
+     */
+    public function getDelegators()
+    {
+        return (isset($this->config['delegators'])) ? $this->config['delegators'] : array();
+    }
+
+    /**
      * Configure service manager
      *
      * @param ServiceManager $serviceManager
@@ -150,6 +156,11 @@ class Config implements ConfigInterface
         foreach ($this->getShared() as $name => $isShared) {
             $serviceManager->setShared($name, $isShared);
         }
-    }
 
+        foreach ($this->getDelegators() as $originalServiceName => $delegators) {
+            foreach ($delegators as $delegator) {
+                $serviceManager->addDelegator($originalServiceName, $delegator);
+            }
+        }
+    }
 }

@@ -13,7 +13,13 @@
     },
     "target-dir": "Zend/EventManager",
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.3.23",
         "zendframework/zend-stdlib": "self.version"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.2-dev",
+            "dev-develop": "2.3-dev"
+        }
     }
 }

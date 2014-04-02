@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_Cache
  */
 
 namespace Zend\Cache\Storage;
@@ -15,11 +14,6 @@ use stdClass;
 use Zend\Cache\Exception;
 use Zend\EventManager\EventsCapableInterface;
 
-/**
- * @category   Zend
- * @package    Zend_Cache
- * @subpackage Storage
- */
 class Capabilities
 {
     /**
@@ -49,7 +43,7 @@ class Capabilities
     * If it's NULL the capability isn't set and the getter
     * returns the base capability or the default value.
      *
-     * @var null|boolean
+     * @var null|bool
      */
     protected $expiredRead;
 
@@ -89,7 +83,7 @@ class Capabilities
     * If it's NULL the capability isn't set and the getter
     * returns the base capability or the default value.
      *
-     * @var null|boolean
+     * @var null|bool
      */
     protected $namespaceIsPrefix;
 
@@ -109,7 +103,7 @@ class Capabilities
     * If it's NULL the capability isn't set and the getter
     * returns the base capability or the default value.
      *
-     * @var null|boolean
+     * @var null|bool
      */
     protected $staticTtl;
 
@@ -149,7 +143,7 @@ class Capabilities
     * If it's NULL the capability isn't set and the getter
     * returns the base capability or the default value.
      *
-     * @var null|boolean
+     * @var null|bool
      */
     protected $useRequestTime;
 
@@ -337,7 +331,7 @@ class Capabilities
      * Is the time-to-live handled static (on write)
      * or dynamic (on read)
      *
-     * @return boolean
+     * @return bool
      */
     public function getStaticTtl()
     {
@@ -348,12 +342,12 @@ class Capabilities
      * Set if the time-to-live handled static (on write) or dynamic (on read)
      *
      * @param  stdClass $marker
-     * @param  boolean $flag
+     * @param  bool $flag
      * @return Capabilities Fluent interface
      */
     public function setStaticTtl(stdClass $marker, $flag)
     {
-        return $this->setCapability($marker, 'staticTtl', (bool)$flag);
+        return $this->setCapability($marker, 'staticTtl', (bool) $flag);
     }
 
     /**
@@ -386,7 +380,7 @@ class Capabilities
     /**
      * Get use request time
      *
-     * @return boolean
+     * @return bool
      */
     public function getUseRequestTime()
     {
@@ -397,18 +391,18 @@ class Capabilities
      * Set use request time
      *
      * @param  stdClass $marker
-     * @param  boolean $flag
+     * @param  bool $flag
      * @return Capabilities Fluent interface
      */
     public function setUseRequestTime(stdClass $marker, $flag)
     {
-        return $this->setCapability($marker, 'useRequestTime', (bool)$flag);
+        return $this->setCapability($marker, 'useRequestTime', (bool) $flag);
     }
 
     /**
      * Get if expired items are readable
      *
-     * @return boolean
+     * @return bool
      */
     public function getExpiredRead()
     {
@@ -419,12 +413,12 @@ class Capabilities
      * Set if expired items are readable
      *
      * @param  stdClass $marker
-     * @param  boolean $flag
+     * @param  bool $flag
      * @return Capabilities Fluent interface
      */
     public function setExpiredRead(stdClass $marker, $flag)
     {
-        return $this->setCapability($marker, 'expiredRead', (bool)$flag);
+        return $this->setCapability($marker, 'expiredRead', (bool) $flag);
     }
 
     /**
@@ -457,7 +451,7 @@ class Capabilities
     /**
      * Get if namespace support is implemented as prefix
      *
-     * @return boolean
+     * @return bool
      */
     public function getNamespaceIsPrefix()
     {
@@ -468,12 +462,12 @@ class Capabilities
      * Set if namespace support is implemented as prefix
      *
      * @param  stdClass $marker
-     * @param  boolean $flag
+     * @param  bool $flag
      * @return Capabilities Fluent interface
      */
     public function setNamespaceIsPrefix(stdClass $marker, $flag)
     {
-        return $this->setCapability($marker, 'namespaceIsPrefix', (bool)$flag);
+        return $this->setCapability($marker, 'namespaceIsPrefix', (bool) $flag);
     }
 
     /**

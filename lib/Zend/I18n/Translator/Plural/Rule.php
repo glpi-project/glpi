@@ -3,9 +3,8 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_I18n
  */
 
 namespace Zend\I18n\Translator\Plural;
@@ -14,10 +13,6 @@ use Zend\I18n\Exception;
 
 /**
  * Plural rule evaluator.
- *
- * @category   Zend
- * @package    Zend_I18n
- * @subpackage Translator
  */
 class Rule
 {
@@ -38,14 +33,14 @@ class Rule
     /**
      * Number of plurals in this rule.
      *
-     * @var integer
+     * @var int
      */
     protected $numPlurals;
 
     /**
      * Create a new plural rule.
      *
-     * @param  integer $numPlurals
+     * @param  int $numPlurals
      * @param  array   $ast
      * @return Rule
      */
@@ -58,8 +53,8 @@ class Rule
     /**
      * Evaluate a number and return the plural index.
      *
-     * @param  integer $number
-     * @return integer
+     * @param  int $number
+     * @return int
      * @throws Exception\RangeException
      */
     public function evaluate($number)
@@ -77,11 +72,21 @@ class Rule
     }
 
     /**
+     * Get number of possible plural forms.
+     *
+     * @return int
+     */
+    public function getNumPlurals()
+    {
+        return $this->numPlurals;
+    }
+
+    /**
      * Evaluate a part of an ast.
      *
      * @param  array   $ast
-     * @param  integer $number
-     * @return integer
+     * @param  int $number
+     * @return int
      * @throws Exception\ParseException
      */
     protected function evaluateAstPart(array $ast, $number)
@@ -205,7 +210,7 @@ class Rule
         $tree = static::$parser->parse($match['plural']);
         $ast  = static::createAst($tree);
 
-        return new self($numPlurals, $ast);
+        return new static($numPlurals, $ast);
     }
 
     /**

@@ -3,35 +3,29 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
- * @package   Zend_View
  */
 
 namespace Zend\I18n\Translator;
 
-/**
- * @category   Zend
- * @package    Zend_I18n
- * @subpackage Translator
- */
 interface TranslatorAwareInterface
 {
     /**
      * Sets translator to use in helper
      *
-     * @param  Translator $translator  [optional] translator.
-     *                                 Default is null, which sets no translator.
-     * @param  string     $textDomain  [optional] text domain
-     *                                 Default is null, which skips setTranslatorTextDomain
+     * @param  TranslatorInterface $translator  [optional] translator.
+     *                                           Default is null, which sets no translator.
+     * @param  string              $textDomain  [optional] text domain
+     *                                           Default is null, which skips setTranslatorTextDomain
      * @return TranslatorAwareInterface
      */
-    public function setTranslator(Translator $translator = null, $textDomain = null);
+    public function setTranslator(TranslatorInterface $translator = null, $textDomain = null);
 
     /**
      * Returns translator used in object
      *
-     * @return Translator|null
+     * @return TranslatorInterface|null
      */
     public function getTranslator();
 
