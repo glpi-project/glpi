@@ -660,6 +660,11 @@ class TicketFollowup  extends CommonDBTM {
          $reopen_case = true;
       }
 
+      $tech = (Session::haveRight(self::$rightname, self::ADDALLTICKET)
+         || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+         || (isset($_SESSION["glpigroups"])
+               && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
+
       $RESTRICT = "";
       if (!$showprivate) {
          $RESTRICT = " AND (`is_private` = '0'
@@ -727,6 +732,10 @@ class TicketFollowup  extends CommonDBTM {
                        );
          $currentpos = -1;
          while ($data = $DB->fetch_assoc($result)) {
+            $this->getFromDB($data['id']);
+            $candelete = $this->canPurge() && $this->canPurgeItem();
+            $canedit = $this->canUpdate() && $this->canUpdateItem();
+            
             $time = max(0,time()-strtotime($data['date']));
             if (!isset($steps[$currentpos])
                || $steps[$currentpos]['end'] < $time) {
@@ -738,7 +747,6 @@ class TicketFollowup  extends CommonDBTM {
                   echo "<h3>".$steps[$currentpos]['name']."</h3>";
                }
             }
-            $canedit = $this->canEdit($data['id']);
 
             $id = 'followup'.$data['id'].$rand;
 
@@ -750,7 +758,7 @@ class TicketFollowup  extends CommonDBTM {
             echo "<div class='boxnote $color' id='view$id'>";
 
             echo "<div class='boxnoteleft'>";
-            if ($canedit) {
+            if ($candelete) {
                Html::showSimpleForm(Toolbox::getItemTypeFormURL('TicketFollowup'),
                                     array('purge' => 'purge'),
                                     _x('button', 'Delete permanently'),
@@ -769,7 +777,11 @@ class TicketFollowup  extends CommonDBTM {
             }
             echo ">";
 
-            echo "<div class='boxnotetext pointer'>";
+            echo "<div class='boxnotetext";
+            if ($canedit) {
+               echo " pointer";
+            }
+            echo "'>";
             $content = nl2br($data['content']);
             if (empty($content)) $content = NOT_AVAILABLE;
             echo $content.'</div>'; // boxnotetext
