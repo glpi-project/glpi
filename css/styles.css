@@ -1115,7 +1115,7 @@ div#tabcontent {
 .boxnoteleft {
    float: left;
    width: 10%;
-   min-height: 50px;
+   min-height: 40px;
    height: 100%;
    padding: 4px;
 }
@@ -1132,12 +1132,12 @@ div#tabcontent {
 /*   top:  0px;
    left: 0px;*/
    width: 10%;
-   min-height: 50px;
+   min-height: 40px;
    padding: 1px;
    vertical-align: middle;
 }
 .boxnotetext {
-   padding: 10px;
+   padding: 5px;
 }
 /* ################--------------- box (redirect and other)  ---------------#################### */
 
