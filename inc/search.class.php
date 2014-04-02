@@ -4989,7 +4989,7 @@ class Search {
          }
 
          if (in_array($itemtype, $CFG_GLPI["link_types"])) {
-            $search[$itemtype]['link'] = __('Link');
+            $search[$itemtype]['link'] = _n('External link', 'External links',2);
             $search[$itemtype] += Link::getSearchOptionsToAdd($itemtype);
          }
 

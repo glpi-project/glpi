@@ -487,7 +487,7 @@ class Link extends CommonDBTM {
 
       $tab[145]['table']          = 'glpi_links';
       $tab[145]['field']          = 'link';
-      $tab[145]['name']           = __('Link or filename');
+      $tab[145]['name']           = _n('External link', 'External links', 2);
       $tab[145]['datatype']       = 'itemlink';
       $tab[145]['joinparams']     = array('beforejoin'
                                           => array('table'      => 'glpi_links_itemtypes',
