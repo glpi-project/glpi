@@ -265,7 +265,9 @@ class Notepad extends CommonDBChild {
                                     array('purge' => 'purge'),
                                     _x('button', 'Delete permanently'),
                                     array('id'   => $note['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png");
+                                    $CFG_GLPI["root_doc"]."/pics/delete.png",
+                                    '',
+                                     __('Confirm the final deletion?'));
             }
             echo "</div>"; // boxnoteleft
 
