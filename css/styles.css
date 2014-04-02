@@ -1110,6 +1110,7 @@ div#tabcontent {
    margin-bottom: 5px;
    position:relative;
    overflow: auto;
+   font-size: 11px;
 }
 
 .boxnoteleft {
@@ -1139,6 +1140,15 @@ div#tabcontent {
 .boxnotetext {
    padding: 5px;
 }
+
+.bytech {
+   background: #f2f2f2;
+}
+
+.byuser {
+   background: #e7e7e2;
+}
+
 /* ################--------------- box (redirect and other)  ---------------#################### */
 
 .box {

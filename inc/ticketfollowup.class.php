@@ -648,6 +648,12 @@ class TicketFollowup  extends CommonDBTM {
       $caneditall    = Session::haveRight(self::$rightname, self::UPDATEALL);
       $tmp           = array('tickets_id' => $tID);
       $canadd        = $this->can(-1, CREATE, $tmp);
+      $showuserlink = 0;
+      if (User::canView()) {
+         $showuserlink = 1;
+      }
+      $techs = $ticket->getAllUsers(CommonITILActor::ASSIGN);
+      
       $reopen_case = false;
       if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
           && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
@@ -660,7 +666,7 @@ class TicketFollowup  extends CommonDBTM {
                             OR `users_id` ='" . Session::getLoginUserID() . "') ";
       }
 
-      $query = "SELECT `id`, `date`
+      $query = "SELECT *
                 FROM `glpi_ticketfollowups`
                 WHERE `tickets_id` = '$tID'
                       $RESTRICT
@@ -710,24 +716,76 @@ class TicketFollowup  extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
          echo "<th class='b'>" . __('No followup for this ticket.')."</th></tr></table>";
       } else {
-         echo "<table class='tab_cadre_fixehov'>";
 
-         $header = "<tr><th>".__('Type')."</th><th>" . __('Date') . "</th>";
-         $header .= "<th>" . __('Description') . "</th>";//"<th>" . __('Duration') . "</th>";
-         $header .= "<th>" . __('Writer') . "</th>";
-         if ($showprivate) {
-            $header .= "<th>" . __('Private') . "</th>";
-         }
-         $header .= "</tr>\n";
-         echo $header;
-
+         
          while ($data = $DB->fetch_assoc($result)) {
-            if ($this->getFromDB($data['id'])) {
-               $this->showInTicketSumnary($ticket, $rand, $showprivate);
+            $canedit = $this->canEdit($data['id']);
+
+            $id = 'followup'.$data['id'].$rand;
+
+            $color = 'byuser';
+            if (isset($techs[$data['users_id']])) {
+               $color = 'bytech';
+            }
+            
+            echo "<div class='boxnote $color' id='view$id'>";
+
+            echo "<div class='boxnoteleft'>";
+            if ($canedit) {
+               Html::showSimpleForm(Toolbox::getItemTypeFormURL('TicketFollowup'),
+                                    array('purge' => 'purge'),
+                                    _x('button', 'Delete permanently'),
+                                    array('id'   => $data['id']),
+                                    $CFG_GLPI["root_doc"]."/pics/delete.png",
+                                    '',
+                                     __('Confirm the final deletion?'));
+            }
+            echo "</div>"; // boxnoteleft
+
+            echo "<div class='boxnotecontent'>";
+
+            echo "<div class='boxnotetext pointer'";
+            if ($canedit) {
+               echo " onClick=\"viewEditFollowup".$ticket->fields['id'].
+                         $data['id']."$rand();\" ";
+            }
+            echo ">";
+            $content = nl2br($data['content']);
+            if (empty($content)) $content = NOT_AVAILABLE;
+            echo $content.'</div>'; // boxnotetext
+
+            echo "<div class='floatright'>";
+            $username = NOT_AVAILABLE;
+            if ($data['users_id']) {
+               $username = getUserName($data['users_id'], $showuserlink);
+            }
+            $name = sprintf(__('Create by %1$s on %2$s'), $username,
+                              Html::convDateTime($data['date']));
+            if ($data['requesttypes_id']) {
+               $name = sprintf(__('%1$s - %2$s'), $name,
+                         Dropdown::getDropdownName('glpi_requesttypes',
+                                                   $data['requesttypes_id']));
+            }
+            if ($showprivate && $data["is_private"]) {
+               $name = sprintf(__('%1$s - %2$s'), $name, __('Private'));
+            }
+            echo $name;
+            echo "</div>"; // floatright
+            echo "</div>"; // boxnotecontent
+            echo "</div>"; // boxnote
+            if ($canedit) {
+               echo "\n<script type='text/javascript' >\n";
+               echo "function viewEditFollowup". $ticket->fields['id'].$data["id"]."$rand() {\n";
+               $params = array('type'       => __CLASS__,
+                              'parenttype' => 'Ticket',
+                              'tickets_id' => $data["tickets_id"],
+                              'id'         => $data["id"]);
+               Ajax::updateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+               echo "};";
+               echo "</script>\n";
             }
          }
-         echo $header;
-         echo "</table>";
       }
    }
 
