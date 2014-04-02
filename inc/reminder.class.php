@@ -1285,7 +1285,7 @@ class Reminder extends CommonDBTM {
 
                $names   = Dropdown::getDropdownName('glpi_profiles',$data['profiles_id'],1);
                $tooltip = Html::showToolTip($names["comment"], array('display' => false));
-               $entname = sprintf(__('%1$s %2$s'), $names["name"], $entname);
+               $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
                if ($data['entities_id'] >= 0) {
                   $entname = sprintf(__('%1$s / %2$s'), $entname,
                                      Dropdown::getDropdownName('glpi_entities',
