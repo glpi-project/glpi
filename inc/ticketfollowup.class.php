@@ -716,9 +716,28 @@ class TicketFollowup  extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
          echo "<th class='b'>" . __('No followup for this ticket.')."</th></tr></table>";
       } else {
-
-         
+         $steps = array(0 => array('end'   => WEEK_TIMESTAMP,
+                                   'name'  => __('Last week')),
+                        1 => array('end'   => MONTH_TIMESTAMP,
+                                   'name'  => __('Last month')),
+                        2 => array('end'   => 12*MONTH_TIMESTAMP,
+                                   'name'  => __('Last year')),
+                        3 => array('end'   => 9999999*MONTH_TIMESTAMP,
+                                   'name'  => __('Oldest')),
+                       );
+         $currentpos = -1;
          while ($data = $DB->fetch_assoc($result)) {
+            $time = max(0,time()-strtotime($data['date']));
+            if (!isset($steps[$currentpos])
+               || $steps[$currentpos]['end'] < $time) {
+               $currentpos++;
+               while ($currentpos < 4 && $steps[$currentpos]['end'] < $time) {
+                  $currentpos++;
+               }
+               if (isset($steps[$currentpos])) {
+                  echo "<h3>".$steps[$currentpos]['name']."</h3>";
+               }
+            }
             $canedit = $this->canEdit($data['id']);
 
             $id = 'followup'.$data['id'].$rand;
