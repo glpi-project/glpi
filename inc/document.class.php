@@ -270,7 +270,6 @@ class Document extends CommonDBTM {
             return false;
          }
       } */
-      toolbox::logdebug("input doc", $input);
       return $input;
    }
 
