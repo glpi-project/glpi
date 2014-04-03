@@ -129,13 +129,19 @@ if ($item instanceof CommonTreeDropdown) {
       $where .= " AND `$table`.`id` = '$one_item'";
    } else {
       if (!empty($_GET['searchText'])) {
-
+         $search = Search::makeTextSearch($_GET['searchText']);
          if (Session::haveTranslations($_GET['itemtype'], 'completename')) {
-            $where .= " AND (`$table`.`completename` ".Search::makeTextSearch($_GET['searchText']).
-                             "OR `namet`.`value` ".Search::makeTextSearch($_GET['searchText']).")" ;
+            $where .= " AND (`$table`.`completename` $search ".
+                             "OR `namet`.`value` $search " ;
          } else {
-            $where .= " AND `$table`.`completename` ".Search::makeTextSearch($_GET['searchText']);
+            $where .= " AND (`$table`.`completename` $search ";
          }
+         // Also search by id
+         if ($displaywith && in_array('id', $_GET['displaywith'])) {
+            $where .= " OR `$table`.`id` ".$search;         
+         }
+         
+         $where .= ")";
       }
    }
 
@@ -446,6 +452,11 @@ if ($item instanceof CommonTreeDropdown) {
          if ($_GET['itemtype'] == "SoftwareLicense") {
             $where .= " OR `glpi_softwares`.`name` ".$search;
          }
+         // Also search by id
+         if ($displaywith && in_array('id', $_GET['displaywith'])) {
+            $where .= " OR `$table`.`id` ".$search;         
+         }
+
          $where .= ')';
       }
    }
