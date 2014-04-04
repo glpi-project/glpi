@@ -715,7 +715,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       echo "<div class='spaced'>";
-      if ($canedit && $number && ($withtemplate < 2)) {
+      if ($canedit && $number && ($withtemplate < 2) && Document::canView()) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed'  => $number,
                                       'container'      => 'mass'.__CLASS__.$rand);
@@ -731,7 +731,7 @@ class Document_Item extends CommonDBRelation{
       $header_top    = '';
       $header_bottom = '';
       $header_end    = '';
-      if ($canedit && $number && ($withtemplate < 2)) {
+      if ($canedit && $number && ($withtemplate < 2) && Document::canView()) {
          $header_top    .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_top    .= "</th>";
          $header_bottom .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
@@ -778,7 +778,7 @@ class Document_Item extends CommonDBRelation{
             $assocID      = $data["assocID"];
 
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-            if ($canedit && ($withtemplate < 2)) {
+            if ($canedit && ($withtemplate < 2) && Document::canView()) {
                echo "<td width='10'>";
                Html::showMassiveActionCheckBox(__CLASS__, $data["assocID"]);
                echo "</td>";
