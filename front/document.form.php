@@ -42,13 +42,17 @@ if (!isset($_GET["id"])) {
 $doc          = new Document();
 
 if (isset($_POST["add"])) {
+   $item = new $_POST['itemtype']();
    $doc->check(-1, CREATE, $_POST);
 
    if ($newID = $doc->add($_POST)) {
       Event::log($newID, "documents", 4, "login",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $doc->fields["name"]));
-      if ($_SESSION['glpibackcreated']) {
+      if ($_SESSION['glpibackcreated']
+         && $doc->canView()) {
          Html::redirect($doc->getFormURL()."?id=".$newID);
+      } else {
+         Html::redirect($item->getFormURL()."?id=".$_POST["items_id"]);
       }
    }
 
