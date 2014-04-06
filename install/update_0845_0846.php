@@ -73,11 +73,10 @@ function update0845to0846() {
                    SET `doc_i`.`entities_id` = `doc`.`entities_id`,
                        `doc_i`.`is_recursive` = `doc`.`is_recursive`";
    $DB->queryOrDie($query_doc_i, "0.84.6 change entities_id in documents_items");
-   
+
    // must always be at the end
    $migration->executeMigration();
 
    return $updateresult;
 }
-
 ?>
