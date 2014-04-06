@@ -1179,14 +1179,17 @@ class Contract extends CommonDBTM {
     *
     * Print a select named $name with contracts options and selected value $value
     * @param $options   array of possible options:
-    *    - name : string / name of the select (default is contracts_id)
-    *    - value : integer / preselected value (default 0)
-    *    - entity : integer or array / restrict to a defined entity or array of entities
-    *                   (default -1 : no restriction)
-    *    - entity_sons : boolean / if entity restrict specified auto select its sons
-    *                   only available if entity is a single value not an array (default false)
-    *    - used : array / Already used items ID: not to display in dropdown (default empty)
-    *    - nochecklimit : boolean / disable limit for nomber of device (for supplier, default false)
+    *    - name          : string / name of the select (default is contracts_id)
+    *    - value         : integer / preselected value (default 0)
+    *    - entity        : integer or array / restrict to a defined entity or array of entities
+    *                      (default -1 : no restriction)
+    *    - rand          : (defauolt mt_rand)
+    *    - entity_sons   : boolean / if entity restrict specified auto select its sons
+    *                      only available if entity is a single value not an array (default false)
+    *    - used          : array / Already used items ID: not to display in dropdown (default empty)
+    *    - nochecklimit  : boolean / disable limit for nomber of device (for supplier, default false)
+    *    - on_change     : string / value to transmit to "onChange"
+    *    - display       : boolean / display or return string (deault true)
     *
     * @return Nothing (display)
    **/
