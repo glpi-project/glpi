@@ -198,7 +198,12 @@ class Computer_Item extends CommonDBRelation{
 
          if (count($updates)) {
             $updates['id'] = $input['items_id'];
-            $item->update($updates);
+            $history = true;
+            if (isset($input['_no_history'])
+                    && $input['_no_history']) {
+               $history = false;
+            }
+            $item->update($updates, $history);
          }
       }
       return parent::prepareInputForAdd($input);
