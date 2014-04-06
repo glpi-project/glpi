@@ -53,9 +53,10 @@ if (isset($_POST['type']) && !empty($_POST['type'])
    } else {
       $_POST['prefix'] = '';
    }
+
+   echo "<table class='tab_format'><tr><td>";
    switch ($_POST['type']) {
       case 'User' :
-         echo "<table class='tab_format'><tr><td>";
          User::dropdown(array('right' => $_POST['right'],
                               'name'  => $prefix.'users_id'.$suffix));
          echo "</td>";
@@ -73,19 +74,14 @@ if (isset($_POST['type']) && !empty($_POST['type'])
                                                            'type'     => $_POST['type'],
                                                            'prefix'   => $_POST['prefix']));
 
-         echo "<table class='tab_format'><tr><td>";
-                                                   
          Group::dropdown($params);
-         
          echo "</td><td>";
          echo "<span id='subvisibility$rand'></span>";
          echo "</td>";
-         
          $display = true;
          break;
 
       case 'Entity' :
-         echo "<table class='tab_format'><tr><td>";
          Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities'],
                                 'value'  => $_SESSION['glpiactive_entity'],
                                 'name'   => $prefix.'entities_id'.$suffix));
@@ -104,7 +100,6 @@ if (isset($_POST['type']) && !empty($_POST['type'])
             $righttocheck = 'knowbase';
             $checkright = KnowbaseItem::READFAQ;
          }
-      
          $params             = array('rand'      => $rand,
                                      'name'      => $prefix.'profiles_id'.$suffix,
                                      'condition' => "`glpi_profilerights`.`name` = '$righttocheck' ".
@@ -117,19 +112,17 @@ if (isset($_POST['type']) && !empty($_POST['type'])
                                                            'type'     => $_POST['type'],
                                                            'prefix'   => $_POST['prefix']));
 
-         echo "<table class='tab_format'><tr><td>";
          Profile::dropdown($params);
          echo "</td><td>";
          echo "<span id='subvisibility$rand'></span>";
          echo "</td>";
-
          $display = true;
          break;
    }
 
    if ($display && (!isset($_POST['nobutton']) || !$_POST['nobutton'])) {
       echo "<td><input type='submit' name='addvisibility' value=\""._sx('button','Add')."\"
-                   class='submit'></td></table>";
+                   class='submit'></td></td></tr></table>";
    }
 }
 ?>
