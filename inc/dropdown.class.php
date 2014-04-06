@@ -1006,6 +1006,7 @@ class Dropdown {
     *     - limit_planning     limit planning to the configuration range (default false)
     *     - display   boolean  if false get string
     *     - width              specific width needed (default 80%)
+    *     - step               step time (defaut config GLPI)
     *
     * @since 0.85 update prototype
     *@return Nothing (display)
