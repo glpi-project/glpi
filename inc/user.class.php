@@ -641,6 +641,7 @@ class User extends CommonDBTM {
 
    function prepareInputForUpdate($input) {
       global $CFG_GLPI;
+
       //picture manually uploaded by user
       if (isset($input["_blank_picture"]) && $input["_blank_picture"]) {
          self::dropPictureFiles($this->fields['picture']);
@@ -649,13 +650,14 @@ class User extends CommonDBTM {
 
          if (isset($_FILES['picture'])) {
             if (!count($_FILES['picture'])
-               || empty($_FILES['picture']['name'])
-               || !is_file($_FILES['picture']['tmp_name'])) {
+                || empty($_FILES['picture']['name'])
+                || !is_file($_FILES['picture']['tmp_name'])) {
 
                switch ($_FILES['picture']['error']) {
                   case UPLOAD_ERR_INI_SIZE :
                   case UPLOAD_ERR_FORM_SIZE :
-                     Session::addMessageAfterRedirect(__('File too large to be added.'), false, ERROR);
+                     Session::addMessageAfterRedirect(__('File too large to be added.'), false,
+                                                      ERROR);
                      break;
 
                   case UPLOAD_ERR_NO_FILE :
@@ -691,7 +693,7 @@ class User extends CommonDBTM {
             $input['picture'] = $this->syncLdapPhoto();
          }
       }
-      
+
       if (isset($input["password2"])) {
          // Empty : do not update
          if (empty($input["password"])) {

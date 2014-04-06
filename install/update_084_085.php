@@ -1894,7 +1894,7 @@ function update084to085() {
 
    $migration->migrationOneTable('glpi_documents');
    $query = "UPDATE `glpi_documents`
-                   SET `tag` = `id`";
+             SET `tag` = `id`";
    $DB->queryOrDie($query, "0.85 set tag to all documents");
 
 

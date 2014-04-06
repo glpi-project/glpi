@@ -130,16 +130,16 @@ class Search {
       global $CFG_GLPI;
 
       // Default values of parameters
-      $p['criteria']     = array();
-      $p['metacriteria'] = array();
-      $p['sort']         = '1'; //
-      $p['order']        = 'ASC';//
-      $p['start']        = 0;//
-      $p['is_deleted']   = 0;
-      $p['export_all']   = 0;
-      $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
-      $p['display_type'] = self::HTML_OUTPUT;
-      $p['list_limit']   = $_SESSION['glpilist_limit'];
+      $p['criteria']            = array();
+      $p['metacriteria']        = array();
+      $p['sort']                = '1'; //
+      $p['order']               = 'ASC';//
+      $p['start']               = 0;//
+      $p['is_deleted']          = 0;
+      $p['export_all']          = 0;
+      $p['target']              = Toolbox::getItemTypeSearchURL($itemtype);
+      $p['display_type']        = self::HTML_OUTPUT;
+      $p['list_limit']          = $_SESSION['glpilist_limit'];
       $p['massiveactionparams'] = array();
 
       foreach ($params as $key => $val) {
@@ -1201,12 +1201,12 @@ class Search {
              && ($data['display_type'] == self::HTML_OUTPUT)) {
 
             Html::openMassiveActionsForm($massformid);
-            $massiveactionparams = $data['search']['massiveactionparams'];
+            $massiveactionparams                  = $data['search']['massiveactionparams'];
             $massiveactionparams['num_displayed'] = $end_display-$begin_display;
             $massiveactionparams['fixed']         = false;
             $massiveactionparams['is_deleted']    = $data['search']['is_deleted'];
             $massiveactionparams['container']     = $massformid;
-            
+
             Html::showMassiveActions($massiveactionparams);
          }
 
@@ -1765,12 +1765,12 @@ class Search {
             echo Html::hidden($key, array('value' => $val));
          }
       }
-      
+
       // For dropdown
       echo Html::hidden('itemtype', array('value' => $itemtype));
       // Reset to start when submit new search
       echo Html::hidden('start', array('value'    => 0));
-      
+
       echo "</div>";
       Html::closeForm();
    }
@@ -3130,7 +3130,7 @@ class Search {
 
          case 'RSSFeed' :
             return RSSFeed::addVisibilityJoins();
-            
+
          case 'ProjectTask' :
             // Same structure in addDefaultWhere
             $out  = '';
@@ -4246,11 +4246,11 @@ class Search {
 
             case 'glpi_projects._virtual_planned_duration' :
                return Html::timestampToString(ProjectTask::getTotalPlannedDurationForProject($data["id"]),
-                                 false);
+                                              false);
 
             case 'glpi_projects._virtual_effective_duration' :
                return Html::timestampToString(ProjectTask::getTotalEffectiveDurationForProject($data["id"]),
-                                 false);
+                                              false);
 
             case 'glpi_cartridgeitems._virtual' :
                return Cartridge::getCount($data["id"], $data[$num][0]['alarm_threshold'],
@@ -4259,7 +4259,7 @@ class Search {
             case 'glpi_printers._virtual' :
                return Cartridge::getCountForPrinter($data["id"],
                                                     self::$output_type != self::HTML_OUTPUT);
-                                                    
+
             case 'glpi_consumableitems._virtual' :
                return Consumable::getCount($data["id"], $data[$num][0]['alarm_threshold'],
                                            self::$output_type != self::HTML_OUTPUT);
@@ -4267,7 +4267,7 @@ class Search {
             case 'glpi_links._virtual' :
                $out = '';
                if (($item = getItemForItemtype($itemtype))
-                  && $item->getFromDB($data['id'])) {
+                   && $item->getFromDB($data['id'])) {
                   if (count($data[$num])) {
                      $count_display = 0;
                      foreach ($data[$num] as$val) {
@@ -4286,7 +4286,7 @@ class Search {
                   }
                }
                return $out;
-                                           
+
             case 'glpi_reservationitems._virtual' :
                if ($data[$num][0]['is_active']) {
                   return "<a href='reservation.php?reservationitems_id=".

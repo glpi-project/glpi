@@ -580,7 +580,7 @@ class TicketFollowup  extends CommonDBTM {
          if ($this->fields["date"]) {
             echo "</td><td>".__('Date')."</td>";
             echo "<td>".Html::convDateTime($this->fields["date"]);
-         } else {   
+         } else {
 
             echo "</td><td colspan='2'>&nbsp;";
          }
@@ -653,7 +653,7 @@ class TicketFollowup  extends CommonDBTM {
          $showuserlink = 1;
       }
       $techs = $ticket->getAllUsers(CommonITILActor::ASSIGN);
-      
+
       $reopen_case = false;
       if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
           && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
@@ -661,9 +661,9 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       $tech = (Session::haveRight(self::$rightname, self::ADDALLTICKET)
-         || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-         || (isset($_SESSION["glpigroups"])
-               && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
+               || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+               || (isset($_SESSION["glpigroups"])
+                   && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
 
       $RESTRICT = "";
       if (!$showprivate) {
@@ -704,8 +704,8 @@ class TicketFollowup  extends CommonDBTM {
                echo Html::scriptBlock("viewAddFollowup".$ticket->fields['id']."$rand()");
             } else {
                echo "<div class='center firstbloc'>".
-                  "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id'].
-                                            "$rand();'>";
+                    "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id'].
+                                              "$rand();'>";
                if ($reopen_case) {
                   _e('Reopen the ticket');
                } else {
@@ -734,13 +734,13 @@ class TicketFollowup  extends CommonDBTM {
          while ($data = $DB->fetch_assoc($result)) {
             $this->getFromDB($data['id']);
             $candelete = $this->canPurge() && $this->canPurgeItem();
-            $canedit = $this->canUpdate() && $this->canUpdateItem();
-            
-            $time = max(0,time()-strtotime($data['date']));
+            $canedit   = $this->canUpdate() && $this->canUpdateItem();
+
+            $time      = max(0,time()-strtotime($data['date']));
             if (!isset($steps[$currentpos])
-               || $steps[$currentpos]['end'] < $time) {
+                || ($steps[$currentpos]['end'] < $time)) {
                $currentpos++;
-               while ($currentpos < 4 && $steps[$currentpos]['end'] < $time) {
+               while (($currentpos < 4) && ($steps[$currentpos]['end'] < $time)) {
                   $currentpos++;
                }
                if (isset($steps[$currentpos])) {
@@ -759,12 +759,12 @@ class TicketFollowup  extends CommonDBTM {
             if ($canedit) {
                $classtoadd = " pointer";
             }
-            
+
             echo "<div class='boxnote $color $classtoadd' id='view$id'";
             if ($canedit) {
                echo " onClick=\"viewEditFollowup".$ticket->fields['id'].
-                         $data['id']."$rand(); ".Html::jsHide("view$id")." ".
-                           Html::jsShow("viewfollowup" . $ticket->fields['id'].$data["id"]."$rand")."\" ";
+                        $data['id']."$rand(); ".Html::jsHide("view$id")." ".
+                        Html::jsShow("viewfollowup" . $ticket->fields['id'].$data["id"]."$rand")."\" ";
             }
             echo ">";
 
@@ -773,7 +773,7 @@ class TicketFollowup  extends CommonDBTM {
                Html::showSimpleForm(Toolbox::getItemTypeFormURL('TicketFollowup'),
                                     array('purge' => 'purge'),
                                     _x('button', 'Delete permanently'),
-                                    array('id'   => $data['id']),
+                                    array('id' => $data['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png",
                                     '',
                                      __('Confirm the final deletion?'));
@@ -809,7 +809,7 @@ class TicketFollowup  extends CommonDBTM {
             echo "</div>"; // boxnote
             if ($canedit) {
                echo "<div id='viewfollowup" . $ticket->fields['id'].$data["id"]."$rand' class='starthidden'></div>\n";
-               
+
                echo "\n<script type='text/javascript' >\n";
                echo "function viewEditFollowup". $ticket->fields['id'].$data["id"]."$rand() {\n";
                $params = array('type'       => __CLASS__,
