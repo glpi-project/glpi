@@ -202,28 +202,38 @@ class KnowbaseItem extends CommonDBTM {
       }
    }
 
+
+   /**
+    * @since version 0.85
+    * @see CommonDBTM::post_addItem()
+   **/
    function post_addItem() {
+
       if (isset($this->input["_visibility"])
-         && isset($this->input["_visibility"]['_type'])
-         && !empty($this->input["_visibility"]["_type"])) {
+          && isset($this->input["_visibility"]['_type'])
+          && !empty($this->input["_visibility"]["_type"])) {
 
          $this->input["_visibility"]['knowbaseitems_id'] = $this->getID();
-         $item = NULL;
+         $item                                           = NULL;
+
          switch ($this->input["_visibility"]['_type']) {
             case 'User' :
-               if (isset($this->input["_visibility"]['users_id']) && $this->input["_visibility"]['users_id']) {
+               if (isset($this->input["_visibility"]['users_id'])
+                   && $this->input["_visibility"]['users_id']) {
                   $item = new KnowbaseItem_User();
                }
                break;
 
             case 'Group' :
-               if (isset($this->input["_visibility"]['groups_id']) && $this->input["_visibility"]['groups_id']) {
+               if (isset($this->input["_visibility"]['groups_id'])
+                   && $this->input["_visibility"]['groups_id']) {
                   $item = new Group_KnowbaseItem();
                }
                break;
 
             case 'Profile' :
-               if (isset($this->input["_visibility"]['profiles_id']) && $this->input["_visibility"]['profiles_id']) {
+               if (isset($this->input["_visibility"]['profiles_id'])
+                   && $this->input["_visibility"]['profiles_id']) {
                   $item = new KnowbaseItem_Profile();
                }
                break;
@@ -240,7 +250,8 @@ class KnowbaseItem extends CommonDBTM {
          }
       }
    }
-   
+
+
    /**
     * @since version 0.83
    **/
@@ -559,7 +570,7 @@ class KnowbaseItem extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
-      
+
       // show kb item form
       if (!Session::haveRightsOr(self::$rightname, array(UPDATE, self::PUBLISHFAQ))) {
          return false;
@@ -588,7 +599,7 @@ class KnowbaseItem extends CommonDBTM {
          }
       }
       $rand = mt_rand();
-      
+
       Html::initEditorSystem('answer');
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -673,23 +684,21 @@ class KnowbaseItem extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>"._n('Target','Targets',1)."</td>";
          echo "<td>";
-         $types = array('Entity', 'Group', 'Profile', 'User');
-
+         $types   = array('Entity', 'Group', 'Profile', 'User');
          $addrand = Dropdown::showItemTypes('_visibility[_type]', $types);
          echo "</td><td colspan='2'>";
-         $params  = array('type'   => '__VALUE__',
-                          'right'  => 'knowbase',
-                          'prefix' => '_visibility',
+         $params  = array('type'     => '__VALUE__',
+                          'right'    => 'knowbase',
+                          'prefix'   => '_visibility',
                           'nobutton' => 1);
 
          Ajax::updateItemOnSelectEvent("dropdown__visibility__type_".$addrand,"visibility$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/visibility.php",
                                        $params);
          echo "<span id='visibility$rand'></span>";
-         echo "</td>";
-         echo "</tr>\n";
+         echo "</td></tr>\n";
       }
-         
+
       $this->showFormButtons($options);
       return true;
    } // function showForm
@@ -1514,7 +1523,7 @@ class KnowbaseItem extends CommonDBTM {
       $tab[11]['field']         = 'end_date';
       $tab[11]['name']          = __('Visibility end date');
       $tab[11]['datatype']      = 'datetime';
-      
+
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
       $tab[19]['name']          = __('Last update');

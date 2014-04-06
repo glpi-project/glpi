@@ -55,21 +55,22 @@ $errors =  array(
         6 => __('Missing a temporary folder'),
         7 => __('Failed to write file to disk'),
         8 => __('A PHP extension stopped the file upload'),
-        'post_max_size' => __('The uploaded file exceeds the post_max_size directive in php.ini'),
-        'max_file_size' => __('File is too big'),
-        'min_file_size' => __('File is too small'),
-        'accept_file_types' => __('Filetype not allowed'),
+        'post_max_size'       => __('The uploaded file exceeds the post_max_size directive in php.ini'),
+        'max_file_size'       => __('File is too big'),
+        'min_file_size'       => __('File is too small'),
+        'accept_file_types'   => __('Filetype not allowed'),
         'max_number_of_files' => __('Maximum number of files exceeded'),
-        'max_width' => __('Image exceeds maximum width'),
-        'min_width' => __('Image requires a minimum width'),
-        'max_height' => __('Image exceeds maximum height'),
-        'min_height' => __('Image requires a minimum height')
+        'max_width'           => __('Image exceeds maximum width'),
+        'min_width'           => __('Image requires a minimum width'),
+        'max_height'          => __('Image exceeds maximum height'),
+        'min_height'          => __('Image requires a minimum height')
     );
 
 $upload_handler = new UploadHandler(array('upload_dir'        => GLPI_ROOT.'/files/_tmp/',
                                           'param_name'        => $_GET['name'],
                                           'orient_image'      => false,
-                                          'image_versions'    => array()), false, $errors);
+                                          'image_versions'    => array()),
+                                    false, $errors);
 $response = $upload_handler->post(false);
 
 // clean compute display filesize

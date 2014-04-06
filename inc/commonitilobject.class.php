@@ -241,14 +241,18 @@ abstract class CommonITILObject extends CommonDBTM {
       return array();
    }
 
+
    /**
-    * get users linked to a object including groups ones
+    * get users linked to an object including groups ones
+    *
+    * @since version 0.85
     *
     * @param $type type to search (see constants)
     *
     * @return array
-   **/   
+   **/
    function getAllUsers ($type) {
+
       $users = array();
       foreach ($this->getUsers($type) as $link) {
          $users[$link['users_id']] = $link['users_id'];
@@ -263,6 +267,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return $users;
    }
+
 
    /**
     * get suppliers linked to a object

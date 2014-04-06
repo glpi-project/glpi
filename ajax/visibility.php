@@ -94,11 +94,11 @@ if (isset($_POST['type']) && !empty($_POST['type'])
          break;
 
       case 'Profile' :
-         $checkright = (READ | CREATE | UPDATE | PURGE);
+         $checkright   = (READ | CREATE | UPDATE | PURGE);
          $righttocheck = $_POST['right'];
          if ($_POST['right'] == 'faq') {
             $righttocheck = 'knowbase';
-            $checkright = KnowbaseItem::READFAQ;
+            $checkright   = KnowbaseItem::READFAQ;
          }
          $params             = array('rand'      => $rand,
                                      'name'      => $prefix.'profiles_id'.$suffix,
