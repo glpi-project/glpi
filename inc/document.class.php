@@ -485,10 +485,13 @@ class Document extends CommonDBTM {
       }
 
       $out = '';
+      $open = '';
+      $close = '';
       if (self::canView()) {
-         $out = "<a href='".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".
+         $open = "<a href='".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".
                   $this->fields['id'].$params."' alt=\"".$initfileout."\"
                         title=\"".$initfileout."\"target='_blank'>";
+         $close = "</a>";
       }
       $splitter = explode("/",$this->fields['filepath']);
 
@@ -507,7 +510,7 @@ class Document extends CommonDBTM {
             }
          }
       }
-      $out .= "<span class='b'>$fileout</span></a>";
+      $out .= "$open<span class='b'>$fileout</span>$close";
 
       return $out;
    }
