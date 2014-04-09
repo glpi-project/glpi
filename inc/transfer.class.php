@@ -3091,7 +3091,7 @@ class Transfer extends CommonDBTM {
                         // Update links
                         $query = "UPDATE `$itemdevicetable`
                                  SET `$fk` = '$newdeviceID',
-                                       `items_id` = '$newID'
+                                     `items_id` = '$newID'
                                  WHERE `id` = '".$data['id']."'";
                         $DB->query($query);
                         $this->transferItem($itemdevicetype, $data['id'], $data['id']);
