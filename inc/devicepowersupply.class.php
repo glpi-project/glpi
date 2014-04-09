@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class DevicePowerSupply
 class DevicePowerSupply extends CommonDevice {
 
+   static protected $forward_entity_to = array('Item_DevicePowerSupply');
+
    static function getTypeName($nb=0) {
       return _n('Power supply', 'Power supplies', $nb);
    }

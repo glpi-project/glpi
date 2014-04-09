@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceMotherboard
 class DeviceMotherboard extends CommonDevice {
 
+   static protected $forward_entity_to = array('Item_DeviceMotherboard');
+
    static function getTypeName($nb=0) {
       return _n('System board', 'System boards', $nb);
    }

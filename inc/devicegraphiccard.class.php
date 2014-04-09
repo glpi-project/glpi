@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceGraphicCard
 class DeviceGraphicCard extends CommonDevice {
 
+   static protected $forward_entity_to = array('Item_DeviceGraphicCard');
+
    static function getTypeName($nb=0) {
       return _n('Graphics card', 'Graphics cards', $nb);
    }
