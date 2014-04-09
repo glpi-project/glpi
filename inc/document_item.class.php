@@ -477,7 +477,7 @@ class Document_Item extends CommonDBRelation{
          $linkparam = "&amp;tickets_id=".$item->fields['id'];
       }
 
-      $canedit       =  $item->canadditem('Document');
+      $canedit       =  $item->canAddItem('Document') && Document::canView();
       $rand          = mt_rand();
       $is_recursive  = $item->isRecursive();
 
@@ -557,7 +557,7 @@ class Document_Item extends CommonDBRelation{
          }
       }
 
-      if ($canedit && $withtemplate < 2) {
+      if ($item->canAddItem('Document') && $withtemplate < 2) {
          // Restrict entity for knowbase
          $entities = "";
          $entity   = $_SESSION["glpiactive_entity"];
