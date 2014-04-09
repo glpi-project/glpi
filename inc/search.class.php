@@ -4693,7 +4693,7 @@ class Search {
                                                                         'display' => false)));
 
                      } else {
-                        $out = $text;
+                        $out .= $text;
                      }
 
                   }
