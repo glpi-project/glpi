@@ -1617,24 +1617,37 @@ class Search {
       $linked = array();
       // Define meta search items to linked
 
-
-      if (Toolbox::is_a($itemtype, 'Computer')) {
-         $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer', 'Software');
-      } else if (Toolbox::is_a($itemtype, 'Ticket')) {
-         if (Session::haveRight("ticket", Ticket::READALL)) {
-            $linked = array_keys(Ticket::getAllTypesForHelpdesk());
-         }
-      } else if (Toolbox::is_a($itemtype, 'Printer')
-               || Toolbox::is_a($itemtype, 'Monitor')
-               || Toolbox::is_a($itemtype, 'Peripheral')
-               || Toolbox::is_a($itemtype, 'Software')
-               || Toolbox::is_a($itemtype, 'Phone')) {
-         $linked = array('Computer');
+      switch (static::getMetaReferenceItemtype($itemtype)) {
+         case 'Computer' :
+            $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer', 'Software');
+            break;
+         case 'Ticket' :
+            if (Session::haveRight("ticket", Ticket::READALL)) {
+               $linked = array_keys(Ticket::getAllTypesForHelpdesk());
+            }
+            break;
+         case 'Printer' :
+         case 'Monitor' :
+         case "Peripheral" :
+         case "Software" :
+         case "Phone" :
+            $linked = array('Computer');
+            break;
       }
       return $linked;
    }
 
-
+   static function getMetaReferenceItemtype ($itemtype) {
+      $types = array('Computer', 'Ticket', 'Printer', 'Monitor', 'Peripheral',
+                     'Software', 'Phone');
+      foreach ($types as $type) {
+         if (Toolbox::is_a($itemtype, $type)) {
+            return $type;
+         }
+      }
+      return false;
+   }
+   
    /**
     * @since version 0.85
    **/
@@ -3486,7 +3499,7 @@ class Search {
          $LINK = " LEFT JOIN ";
       }
 
-      switch ($from_type) {
+      switch (static::getMetaReferenceItemtype($from_type)) {
          case 'Ticket' :
             $totable = getTableForItemType($to_type);
             array_push($already_link_tables2,$totable);
