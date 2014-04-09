@@ -1,4 +1,4 @@
-.ui-dialog { z-index: 10000 !important ;}
+.ui-dialog { z-index: 1000 !important ;}
 
 .ui-widget-content a { color: #659900; }
 .ui-widget-content span.vsubmit, a.vsubmit {color: #8f5a0a;}
