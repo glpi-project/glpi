@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DeviceControl extends CommonDevice {
 
+   static protected $forward_entity_to = array('Item_DeviceControl');
+   
    static function getTypeName($nb=0) {
       return _n('Controller', 'Controllers', $nb);
    }

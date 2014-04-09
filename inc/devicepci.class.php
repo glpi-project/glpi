@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DevicePci extends CommonDevice {
 
+   static protected $forward_entity_to = array('Item_DevicePci');
+   
    static function getTypeName($nb=0) {
       return _n('Other component', 'Other components', $nb);
    }

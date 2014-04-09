@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceDrive
 class DeviceDrive extends CommonDevice {
 
+   static protected $forward_entity_to = array('Item_DeviceDrive');
+   
    static function getTypeName($nb=0) {
       return _n('Drive', 'Drives', $nb);
    }

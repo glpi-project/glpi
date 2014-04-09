@@ -55,11 +55,6 @@ class Transfer extends CommonDBTM {
    var $to                    = -1;
    /// type of initial item transfered
    var $inittype              = 0;
-   /// item types which have infocoms
-   var $DEVICES_TYPES = array('DeviceCase', 'DeviceControl', 'DeviceDrive', 'DeviceGraphicCard',
-                              'DeviceHardDrive', 'DeviceMemory', 'DeviceMotherboard',
-                              'DeviceNetworkCard', 'DevicePci', 'DevicePowerSupply',
-                              'DeviceProcessor', 'DeviceSoundCard');
 
    static $rightname = 'transfer';
 
@@ -509,7 +504,7 @@ class Transfer extends CommonDBTM {
 
       $this->item_search['NetworkEquipment']
             = $this->createSearchConditionUsingArray($this->needtobe_transfer['NetworkEquipment']);
-
+            
       // Tickets
       if ($this->options['keep_ticket']) {
          foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
@@ -884,7 +879,7 @@ class Transfer extends CommonDBTM {
 
                $query = "SELECT `documents_id`, `glpi_documents`.`is_recursive`,
                                 `glpi_documents`.`entities_id`
-                         FROM `glpi_documents_items`
+                         FROM `glpi_documents_items`getItemtypesThatCanHave
                          LEFT JOIN `glpi_documents`
                               ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
                          WHERE `itemtype` = '$itemtype'
@@ -987,7 +982,7 @@ class Transfer extends CommonDBTM {
             }
 
             // Device : keep / delete : network case : delete if net connection delete in import case
-            if (in_array($itemtype, array('Computer'))) {
+            if (in_array($itemtype, Item_Devices::getConcernedItems())) {
                $this->transferDevices($itemtype, $ID);
             }
 
@@ -2920,13 +2915,13 @@ class Transfer extends CommonDBTM {
     * @param $ID              ID of the computer
    **/
    function transferDevices($itemtype, $ID) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       // Only same case because no duplication of computers
       switch ($this->options['keep_device']) {
          // delete devices
          case 0 :
-            foreach ($this->DEVICES_TYPES as $type) {
+            foreach (Item_Devices as $type) {
                $table = getTableForItemType('Item_'.$type);
                $query = "DELETE
                          FROM `$table`

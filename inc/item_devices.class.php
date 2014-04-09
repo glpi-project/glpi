@@ -45,12 +45,13 @@ class Item_Devices extends CommonDBRelation {
    static public $itemtype_1            = 'itemtype';
    static public $items_id_1            = 'items_id';
    static public $mustBeAttached_1      = false;
-
+   static public $take_entity_1         = false ;
    static public $checkItem_2_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
 
    static protected $notable            = true;
 
    static public $logs_for_item_2       = false;
+   static public $take_entity_2         = true ;
 
    static public $log_history_1_add     = Log::HISTORY_ADD_DEVICE;
    static public $log_history_1_update  = Log::HISTORY_UPDATE_DEVICE;
@@ -696,9 +697,6 @@ class Item_Devices extends CommonDBRelation {
       $device_type = static::getDeviceType();
       $device      = new $device_type();
       $device->getFromDB($devices_id);
-
-      $input['entities_id']  = $device->getEntityID();
-      $input['is_recursive'] = $device->isRecursive();
 
       foreach (static::getSpecificities() as $field => $attributs) {
          if (isset($device->fields[$field.'_default'])) {
