@@ -54,9 +54,10 @@ if (isset($_POST['type']) && !empty($_POST['type'])
       $_POST['prefix'] = '';
    }
 
-   echo "<table class='tab_format'><tr><td>";
+   echo "<table class='tab_format'><tr>";
    switch ($_POST['type']) {
       case 'User' :
+         echo "<td>";
          User::dropdown(array('right' => $_POST['right'],
                               'name'  => $prefix.'users_id'.$suffix));
          echo "</td>";
@@ -64,6 +65,7 @@ if (isset($_POST['type']) && !empty($_POST['type'])
          break;
 
       case 'Group' :
+         echo "<td>";
          $params             = array('rand' => $rand,
                                      'name' => $prefix.'groups_id'.$suffix);
          $params['toupdate'] = array('value_fieldname'
@@ -82,6 +84,7 @@ if (isset($_POST['type']) && !empty($_POST['type'])
          break;
 
       case 'Entity' :
+         echo "<td>";
          Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities'],
                                 'value'  => $_SESSION['glpiactive_entity'],
                                 'name'   => $prefix.'entities_id'.$suffix));
@@ -94,6 +97,7 @@ if (isset($_POST['type']) && !empty($_POST['type'])
          break;
 
       case 'Profile' :
+         echo "<td>";
          $checkright   = (READ | CREATE | UPDATE | PURGE);
          $righttocheck = $_POST['right'];
          if ($_POST['right'] == 'faq') {
@@ -122,7 +126,11 @@ if (isset($_POST['type']) && !empty($_POST['type'])
 
    if ($display && (!isset($_POST['nobutton']) || !$_POST['nobutton'])) {
       echo "<td><input type='submit' name='addvisibility' value=\""._sx('button','Add')."\"
-                   class='submit'></td></td></tr></table>";
+                   class='submit'></td>";
+   } else {
+      // For table w3c
+      echo "<td>&nbsp;</td>";
    }
+   echo "</tr></table>";
 }
 ?>
