@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceMemory
 class DeviceMemory extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceMemory');
+   static protected $forward_entity_to = array('Item_DeviceMemory', 'Infocom');
    
    static function getTypeName($nb=0) {
       return _n('Memory', 'Memories', $nb);

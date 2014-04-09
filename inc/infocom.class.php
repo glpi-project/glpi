@@ -99,7 +99,6 @@ class Infocom extends CommonDBChild {
       global $CFG_GLPI;
 
       return array_merge($CFG_GLPI['infocom_types'],
-                         CommonDevice::getDeviceTypes(),
                          Item_Devices::getDeviceTypes());
    }
 

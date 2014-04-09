@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DeviceNetworkCard extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceNetworkCard');
+   static protected $forward_entity_to = array('Item_DeviceNetworkCard', 'Infocom');
 
    static function getTypeName($nb=0) {
       return _n('Network card', 'Network cards', $nb);

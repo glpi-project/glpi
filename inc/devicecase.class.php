@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class DeviceCase
 class DeviceCase extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceCase');
+   static protected $forward_entity_to = array('Item_DeviceCase', 'Infocom');
 
    static function getTypeName($nb=0) {
       return _n('Case', 'Cases', $nb);

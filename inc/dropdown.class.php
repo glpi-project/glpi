@@ -691,6 +691,7 @@ class Dropdown {
          foreach (CommonDevice::getDeviceTypes() as $device_type) {
             $devices[$device_type] = $device_type::getTypeName(2);
          }
+         asort($devices);
          $optgroup = array(_n('Component', 'Components', 2) => $devices);
       }
       return $optgroup;
@@ -918,7 +919,6 @@ class Dropdown {
    static function showItemTypeList($optgroup) {
 
       echo "<div id='list_nav'>";
-
       $nb = 0;
       foreach ($optgroup as $label => $dp) {
          $nb += count($dp);
