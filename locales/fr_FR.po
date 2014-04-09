@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-03-21 16:44+0100\n"
-"PO-Revision-Date: 2014-03-21 15:48+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-04-04 16:10+0000\n"
+"Last-Translator: Nelly Mahu-Lasson <nini.lasson@orange.fr>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -11898,7 +11898,7 @@ msgstr "Le moteur traite toutes les règles."
 
 #: inc/rulecollection.class.php:344
 msgid "The engine passes the result of a rule to the following one."
-msgstr "Le moteur passe le résultat d'un règle à la suivante."
+msgstr "Le moteur passe le résultat d'une règle à la suivante."
 
 #: inc/rulecollection.class.php:486 inc/software.class.php:320
 msgid "Replay the dictionary rules"
