@@ -360,7 +360,7 @@ class PlanningRecall extends CommonDBChild {
 
       $pr = new self();
       foreach ($DB->request($query) as $data) {
-         if ($pr->getFromDB($data['id'])) {
+         if ($pr->getFromDB($data['id']) && $pr->getItem()) {
             if (NotificationEvent::raiseEvent('planningrecall', $pr)) {
 
                $cron_status         = 1;
@@ -372,6 +372,9 @@ class PlanningRecall extends CommonDBChild {
 
                $alert->add($input);
             }
+         } else {
+            // Clean item
+            $pr->delete($data);
          }
       }
       return $cron_status;
