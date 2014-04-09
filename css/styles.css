@@ -535,8 +535,10 @@ td { }
    filter : alpha(opacity=10);*/
 }
 
-.tab_cadrehov tr.rowHover, 
-.tab_cadre_fixehov tr.rowHover{
+.tab_cadrehov tr.rowHover,
+.tab_cadrehov td.rowHover,
+.tab_cadre_fixehov tr.rowHover,
+.tab_cadre_fixehov td.rowHover{
    background-color:#e7e7e2;
 /*   opacity: 0.5;
    filter : alpha(opacity=10);*/
