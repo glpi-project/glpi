@@ -3306,7 +3306,7 @@ class Transfer extends CommonDBTM {
       $params['value'] = $this->fields['keep_reservation'];
       Dropdown::showFromArray('keep_reservation',$keep, $params);
       echo "</td>";
-      echo "<td>".__('Components of computers')."</td><td>";
+      echo "<td>"._n('Component', 'Components', 2)."</td><td>";
       $params['value'] = $this->fields['keep_device'];
       Dropdown::showFromArray('keep_device',$keep, $params);
       echo "</td></tr>";
