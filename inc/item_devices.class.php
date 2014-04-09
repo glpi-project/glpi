@@ -64,7 +64,8 @@ class Item_Devices extends CommonDBRelation {
    // This var is defined by CommonDBRelation ...
    var $no_form_page                    = false;
 
-
+   static protected $forward_entity_to = array('Infocom');
+   
    /**
     * @since version 0.85
    **/

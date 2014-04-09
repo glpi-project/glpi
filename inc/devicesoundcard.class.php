@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class DeviceSoundCard extends CommonDevice {
 
-   static protected $forward_entity_to = array('Item_DeviceSoundCard');
+   static protected $forward_entity_to = array('Item_DeviceSoundCard', 'Infocom');
    
    static function getTypeName($nb=0) {
       return _n('Soundcard', 'Soundcards', $nb);
