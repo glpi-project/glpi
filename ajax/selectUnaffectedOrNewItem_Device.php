@@ -64,7 +64,12 @@ if ($_POST['items_id']
    } else {
       $devices = array();
       foreach ($result as $row) {
-         $devices[$row['id']] = $row['name'];
+         $name = $row['name'];
+         if (empty($name)) {
+            $name = $row['id'];
+         }
+         $devices[$row['id']] = $name;
+         
       }
       dropdown::showFromArray($linktype::getForeignKeyField(), $devices, array('multiple' => true));
    }
