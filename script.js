@@ -732,29 +732,25 @@ function massiveUpdateCheckbox(criterion, reference) {
 $(function(){
 
         $("body").delegate('td','mouseover mouseleave', function(e) {
-//                 var table = $(this).closest('table');
-                var col = $(this).closest('tr').children().index($(this));
-//                 var row = table.children().index($(this).parent());
-                if (!$(this).closest('tr').hasClass('noHover')) {
-//                   alert(col);
-                  if (e.type == 'mouseover') {
-   //                         $(this).addClass("hover");
-                           $(this).closest('tr').addClass("rowHover");
-//                            $(this).parent().children().addClass("columnHover");
+            var col = $(this).closest('tr').children().index($(this));
+            var tr = $(this).closest('tr');
+            if (!$(this).closest('tr').hasClass('noHover')) {
+            if (e.type == 'mouseover') {
+               tr.addClass("rowHover");
+               // If rowspan
+               if (tr.has('td[rowspan]').length == 0) {
 
-                           $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').addClass("headHover");
-//                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).addClass("columnHover");
-//                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).addClass("headHover");
-                  }
-                  else {
-   //                         $(this).removeClass("hover");
-//                            $(this).parent().children().removeClass("columnHover");
-                           $(this).closest('tr').removeClass("rowHover");
-//                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).removeClass("columnHover");
-//                            $("tr:not(.noHover) td:nth-child("+(col+1)+")", table).removeClass("headHover");
-                           $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').removeClass("headHover");
-                  }
-                }
+                     tr.prevAll('tr:has(td[rowspan]):first').find('td[rowspan]').addClass("rowHover");
+               }
+
+               $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').addClass("headHover");
+            } else {
+               tr.removeClass("rowHover");
+               // remove rowspan
+               tr.removeClass("rowHover").prevAll('tr:has(td[rowspan]):first').find('td[rowspan]').removeClass("rowHover");
+               $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').removeClass("headHover");
+            }
+            }
         });
 
 });
