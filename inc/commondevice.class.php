@@ -145,7 +145,59 @@ abstract class CommonDevice extends CommonDropdown {
                          'type'  => 'dropdownValue'));
    }
 
+   /**
+    * Can I change recursive flag to false
+    * check if there is "linked" object in another entity
+    *
+    * Overloaded from CommonDBTM
+    *
+    * @return booleen
+   **/
+   function canUnrecurs() {
+      global $DB;
 
+      $ID = $this->fields['id'];
+      if (($ID < 0)
+          || !$this->fields['is_recursive']) {
+         return true;
+      }
+      if (!parent::canUnrecurs()) {
+         return false;
+      }
+      $entities = "(".$this->fields['entities_id'];
+      foreach (getAncestorsOf("glpi_entities", $this->fields['entities_id']) as $papa) {
+         $entities .= ",$papa";
+      }
+      $entities .= ")";
+      
+      
+      // RELATION : device -> item_device -> item 
+      $linktype = static::getItem_DeviceType();
+      $linktable = getTableForItemType($linktype);
+
+      $sql = "SELECT `itemtype`,
+                     GROUP_CONCAT(DISTINCT `items_id`) AS ids
+               FROM `$linktable`
+               WHERE `$linktable`.`".$this->getForeignKeyField()."` = '$ID'
+               GROUP BY `itemtype`";
+
+      foreach ($DB->request($sql) as $data) {
+         if (!empty($data["itemtype"])) {
+            $itemtable = getTableForItemType($data["itemtype"]);
+            if ($item = getItemForItemtype($data["itemtype"])) {
+                  // For each itemtype which are entity dependant
+                  if ($item->isEntityAssign()) {
+                     if (countElementsInTable($itemtable, "id IN (".$data["ids"].")
+                                             AND entities_id NOT IN $entities") > 0) {
+                        return false;
+                     }
+                  }
+            }
+         }
+      }
+      return true;
+   }
+   
    function getSearchOptions() {
 
       $tab = array();
