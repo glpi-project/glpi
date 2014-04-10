@@ -50,6 +50,16 @@ if (isset($_POST["itemtype"])
    if (isset($_SESSION['glpisearch'][$_POST["itemtype"]]['metacriteria'][$_POST["num"]])
        && is_array($_SESSION['glpisearch'][$_POST["itemtype"]]['metacriteria'][$_POST["num"]])) {
       $metacriteria = $_SESSION['glpisearch'][$_POST["itemtype"]]['metacriteria'][$_POST["num"]];
+   } else {
+      // Set default field
+      $options  = Search::getCleanedOptions($_POST["itemtype"]);
+
+      foreach ($options as $key => $val) {
+         if (is_array($val)) {
+            $metacriteria['field'] = $key;
+            break;
+         }
+      }
    }
    $linked =  Search::getMetaItemtypeAvailable($_POST["itemtype"]);
    $rand   = mt_rand();
@@ -57,7 +67,7 @@ if (isset($_POST["itemtype"])
    $rowid  = 'metasearchrow'.$_POST['itemtype'].$rand;
 
    echo "<tr class='metacriteria' id='$rowid'><td class='left' colspan='2'>";
-
+   
    echo "<table class='tab_format'><tr class='left'>";
    echo "<td width='30%'>";
    echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
