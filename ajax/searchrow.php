@@ -116,6 +116,13 @@ if (isset($_POST["itemtype"])
    if (isset($_SESSION['glpisearch'][$_POST["itemtype"]]['criteria'][$_POST["num"]])
        && is_array($_SESSION['glpisearch'][$_POST["itemtype"]]['criteria'][$_POST["num"]])) {
       $criteria = $_SESSION['glpisearch'][$_POST["itemtype"]]['criteria'][$_POST["num"]];
+   } else {
+      foreach ($options as $key => $val) {
+         if (is_array($val)) {
+            $criteria['field'] = $key;
+            break;
+         }
+      }
    }
 
    // Display link item
@@ -157,9 +164,10 @@ if (isset($_POST["itemtype"])
       $values['all'] = __('All');
    }
    $value = '';
+
    if (isset($criteria['field'])) {
       $value = $criteria['field'];
-   }
+   } 
 
    $rand     = Dropdown::showFromArray("criteria[".$_POST["num"]."][field]", $values,
                                        array('value' => $value,
