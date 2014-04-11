@@ -2611,7 +2611,20 @@ function update084to085() {
          $migration->addKey($table, 'busID');
       }
    }
+   
+   // Add key
+   foreach (array('glpi_items_devicecases', 'glpi_items_devicecontrols', 'glpi_items_devicedrives',
+                  'glpi_items_devicegraphiccards', 'glpi_items_deviceharddrives',
+                  'glpi_items_devicememories', 'glpi_items_devicemotherboards',
+                  'glpi_items_devicenetworkcards', 'glpi_items_devicepcis',
+                  'glpi_items_devicepowersupplies', 'glpi_items_deviceprocessors',
+                  'glpi_items_devicesoundcards') as $table) {
+      $migration->dropKey($table, 'item');
+      $migration->migrationOneTable($table);
+      $migration->addKey($table, array('itemtype', ('items_id')), 'item');
+   }
 
+   
    if (!FieldExists('glpi_devicegraphiccards', 'chipset')) {
       $migration->addField('glpi_devicegraphiccards', 'chipset', 'string');
       $migration->addKey('glpi_devicegraphiccards', 'chipset');
