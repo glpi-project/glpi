@@ -439,10 +439,7 @@ class Document extends CommonDBTM {
                         title=\"".$initfileout."\"target='_blank'>";
          $close = "</a>";
       }
-      
-      $out = "<a href='".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".
-               $this->fields['id'].$params."' alt=\"".$initfileout.
-               "\" title=\"".$initfileout."\" target='_blank'>";
+
 
       $splitter = explode("/",$this->fields['filepath']);
 
