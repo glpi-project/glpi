@@ -370,6 +370,14 @@ class Problem extends CommonITILObject {
       }
 
    }
+   
+   /**
+    * Actions done at the end of the getFromDB function
+    *
+    * @return nothing
+   **/
+   function post_getFromDB() {
+   }
 
 
    /**
@@ -1150,7 +1158,7 @@ class Problem extends CommonITILObject {
       echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<textarea id='content$rand' name='content' cols='90' rows='6'>".
-             $this->fields["content"]."</textarea>";
+             Html::clean(Html::entity_decode_deep($this->fields["content"]))."</textarea>";
       echo "</td></tr>";
 
       if ($ID) {
