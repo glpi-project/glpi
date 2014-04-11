@@ -2621,7 +2621,7 @@ function update084to085() {
                   'glpi_items_devicesoundcards') as $table) {
       $migration->dropKey($table, 'item');
       $migration->migrationOneTable($table);
-      $migration->addKey($table, array('itemtype', ('items_id')), 'item');
+      $migration->addKey($table, array('itemtype', 'items_id'), 'item');
    }
 
    
