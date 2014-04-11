@@ -5011,7 +5011,8 @@ class Html {
                         reader.onloadend = function(e){
                            $('#desc_paste_image').html(e.target.result);
                            tinyMCE.imagePaste.processpaste($('#desc_paste_image'),
-                                                           '"._sx('button', 'Paste image')."');
+                                                           '"._sx('button', 'Paste image')."', 
+                                                           data.originalFiles[0]);
                         }
                      }
                      return false
