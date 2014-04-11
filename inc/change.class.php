@@ -743,7 +743,7 @@ class Change extends CommonITILObject {
       echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<textarea id='content$rand' name='content' cols='90' rows='6'>".
-             $this->fields["content"]."</textarea>";
+            Html::clean(Html::entity_decode_deep($this->fields["content"]))."</textarea>";
       echo "</td>";
       echo "</tr>";
       $options['colspan'] = 3;
