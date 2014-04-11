@@ -127,9 +127,11 @@ class Gettext extends AbstractFileLoader
 
                     array_shift($originalString);
 
-                    foreach ($originalString as $string) {
-                        $textDomain[$string] = '';
-                    }
+/// PROBLEM WITH GLPI WHEN singular = plural                    
+/// opened bug http://framework.zend.com/issues/browse/ZF-11974
+//                    foreach ($originalString as $string) {
+//                        $textDomain[$string] = '';
+//                    }
                 } else {
                     $textDomain[$originalString[0]] = $translationString[0];
                 }
