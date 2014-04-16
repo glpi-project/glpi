@@ -341,10 +341,17 @@ class TicketRecurrent extends CommonDropdown {
             if (preg_match('/([0-9]+)MONTH/',$periodicity, $matches)) {
                $value = $matches[1];
                $step  = 'MONTH';
-            }
-            if (preg_match('/([0-9]+)YEAR/',$periodicity, $matches)) {
+            } else if (preg_match('/([0-9]+)YEAR/',$periodicity, $matches)) {
                $value = $matches[1];
                $step = 'YEAR';
+            } else {
+               if (($value%DAY_TIMESTAMP)==0) {
+                  $value = $value/DAY_TIMESTAMP;
+                  $step  = "DAY";
+               } else {
+                  $value = $value/HOUR_TIMESTAMP;
+                  $step  = "HOUR";
+               }
             }
             while ($timestart < $now) {
                $timestart = strtotime("+ $value $step",$timestart);
