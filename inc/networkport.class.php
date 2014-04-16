@@ -851,13 +851,6 @@ class NetworkPort extends CommonDBChild {
       $tab['network']            = __('Networking');
 
       $joinparams                = array('jointype' => 'itemtype_item');
-      if ($itemtype == 'Computer') {
-         $joinparams['beforejoin'] = array('table'      => 'glpi_items_devicenetworkcards',
-                                           'joinparams' => array('jointype' => 'itemtype_item',
-                                                                 'specific_itemtype'
-                                                                            => 'Computer',
-                                                                 'nolink'   => true));
-      }
 
       $tab[21]['table']         = 'glpi_networkports';
       $tab[21]['field']         = 'mac';

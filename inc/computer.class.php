@@ -871,6 +871,14 @@ class Computer extends CommonDBTM {
                                           => array('table'      => 'glpi_items_devicenetworkcards',
                                                    'joinparams' => $items_device_joinparams));
 
+      $tab[20]['table']          = 'glpi_items_devicenetworkcards';
+      $tab[20]['field']          = 'mac';
+      $tab[20]['name']           = __('MAC address');
+      $tab[20]['forcegroupby']   = true;
+      $tab[20]['massiveaction']  = false;
+      $tab[20]['datatype']       = 'string';
+      $tab[20]['joinparams']     = $items_device_joinparams;
+                                                   
       $tab[12]['table']          = 'glpi_devicesoundcards';
       $tab[12]['field']          = 'designation';
       $tab[12]['name']           = __('Soundcard');
