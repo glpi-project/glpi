@@ -1303,7 +1303,11 @@ class CronTask extends CommonDBTM{
    static function cronSession($task) {
 
       // max time to keep the file session
-      $maxlifetime = session_cache_expire();
+      $maxlifetime = ini_get('session.gc_maxlifetime');
+      if ($maxlifetime==0) {
+         $maxlifetime == WEEK_TIMESTAMP;
+      }
+
       $nb          = 0;
       foreach (glob(GLPI_SESSION_DIR."/sess_*") as $filename) {
          if ((filemtime($filename) + $maxlifetime) < time()) {
