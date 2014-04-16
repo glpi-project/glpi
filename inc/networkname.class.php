@@ -267,8 +267,24 @@ class NetworkName extends FQDNLabel {
 
 
    function post_updateItem($history=1) {
-
+      global $DB;
+      
       $this->post_workOnItem();
+      if (count($this->updates)) {
+         // Update Ticket Tco
+         if (in_array("itemtype", $this->updates)
+             || in_array("items_id", $this->updates)) {
+             
+            $ip = new IPAddress();
+            // Update IPAddress
+            foreach ($DB->request('glpi_ipaddresses', array('itemtype' => 'NetworkName',
+                                                            'items_id' => $this->getID())) as $data) {
+               $ip->update(array('id' => $data['id'],
+                                 'itemtype' => 'NetworkName',
+                                 'items_id' => $this->getID()));
+            }
+         }
+      }
       parent::post_updateItem($history);
    }
 
@@ -323,7 +339,7 @@ class NetworkName extends FQDNLabel {
     * @param $itemtype
    **/
    static function affectAddress($networkNameID, $items_id, $itemtype) {
-
+      global $DB;
       $networkName = new self();
       return $networkName->update(array('id'       => $networkNameID,
                                         'items_id' => $items_id,

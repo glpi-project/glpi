@@ -182,7 +182,30 @@ class NetworkPort extends CommonDBChild {
       return true;
    }
 
+   function post_updateItem($history=1) {
+      global $DB;
 
+      if (count($this->updates)) {
+         // Update Ticket Tco
+         if (in_array("itemtype", $this->updates)
+             || in_array("items_id", $this->updates)) {
+
+            $ip = new IPAddress();
+            // Update IPAddress
+            foreach ($DB->request('glpi_networknames', array('itemtype' => 'NetworkPort',
+                                                             'items_id' => $this->getID())) as $dataname) {
+               foreach ($DB->request('glpi_ipaddresses', array('itemtype' => 'NetworkName',
+                                                               'items_id' => $dataname['id'])) as $data) {
+                  $ip->update(array('id' => $data['id'],
+                                    'mainitemtype' => $this->fields['itemtype'],
+                                    'mainitems_id' => $this->fields['items_id']));
+               }
+            }
+         }
+      }
+      parent::post_updateItem($history);
+   }
+   
    /**
     * \brief split input fields when validating a port
     *
