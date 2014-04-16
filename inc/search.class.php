@@ -876,7 +876,7 @@ class Search {
 
       // Use a ReadOnly connection if available and configured to be used
       $DBread = DBConnection::getReadConnection();
-      $DBread->query("SET SESSION group_concat_max_len = 4096;");
+      $DBread->query("SET SESSION group_concat_max_len = 16384;");
 
       $result = $DBread->query($data['sql']['search']);
       /// Check group concat limit : if warning : increase limit
