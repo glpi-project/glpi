@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-04-16 09:06+0200\n"
-"PO-Revision-Date: 2014-04-16 07:08+0000\n"
+"PO-Revision-Date: 2014-04-16 11:41+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Greek (Greece) (http://www.transifex.com/projects/p/GLPI/language/el_GR/)\n"
 "MIME-Version: 1.0\n"
@@ -1407,7 +1407,7 @@ msgstr ""
 #: front/projectcost.form.php:53 front/ticketcost.form.php:46
 #, php-format
 msgid "%s adds a cost"
-msgstr ""
+msgstr "%s προσθέτει κόστος"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:65 front/contractcost.form.php:63
@@ -1421,7 +1421,7 @@ msgstr ""
 #: front/projectcost.form.php:74 front/ticketcost.form.php:65
 #, php-format
 msgid "%s updates a cost"
-msgstr ""
+msgstr "%s ενημερώνει κόστος"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:56 front/projecttask.form.php:53
@@ -5354,7 +5354,7 @@ msgstr ""
 #: inc/commondbtm.class.php:2043 inc/notepad.class.php:270
 #: inc/ticket.class.php:4487 inc/ticketfollowup.class.php:779
 msgid "Confirm the final deletion?"
-msgstr ""
+msgstr "Επιβεβαίωση τελικής διαγραφής;"
 
 #: inc/commondbtm.class.php:2047 inc/commondbtm.class.php:4276
 #: inc/massiveaction.class.php:556 inc/ticket.class.php:4492
@@ -7256,47 +7256,47 @@ msgstr ""
 
 #: inc/config.class.php:1111 inc/config.class.php:1286
 msgid "Password minimum length"
-msgstr ""
+msgstr "Ελάχιστο μήκος κωδικού ασφαλείας"
 
 #: inc/config.class.php:1127
 msgid "Digit"
-msgstr ""
+msgstr "Ψηφίο"
 
 #: inc/config.class.php:1138
 msgid "Lowercase"
-msgstr ""
+msgstr "Μικρά"
 
 #: inc/config.class.php:1149
 msgid "Uppercase"
-msgstr ""
+msgstr "Κεφαλαία"
 
 #: inc/config.class.php:1160
 msgid "Symbol"
-msgstr ""
+msgstr "Σύμβολο"
 
 #: inc/config.class.php:1174
 msgid "Password must contains"
-msgstr ""
+msgstr "Ο κωδικός ασφαλείας πρέπει να περιέχει"
 
 #: inc/config.class.php:1197
 msgid "Password too short!"
-msgstr ""
+msgstr "Κωδικός ασφαλείας πολύ μικρός!"
 
 #: inc/config.class.php:1204
 msgid "Password must include at least a digit!"
-msgstr ""
+msgstr "Ο κωδικός ασφαλείας θα πρέπει να περιλαμβάνει τουλάχιστον ένα ψηφίο!"
 
 #: inc/config.class.php:1212
 msgid "Password must include at least a lowercase letter!"
-msgstr ""
+msgstr "Ο κωδικός ασφαλείας θα πρέπει να περιλαμβάνει τουλάχιστον ενα μικρό γράμμα!"
 
 #: inc/config.class.php:1220
 msgid "Password must include at least a uppercase letter!"
-msgstr ""
+msgstr "Ο κωδικός ασφαλείας θα πρέπει να περιλαμβάνει τουλάχιστον ενα κεφαλαίο γράμμα!"
 
 #: inc/config.class.php:1228
 msgid "Password must include at least a symbol!"
-msgstr ""
+msgstr "Ο κωδικός ασφαλείας θα πρέπει να περιλαμβάνει τουλάχιστον ενα σύμβολο!"
 
 #: inc/config.class.php:1254
 msgid "Log Level"
@@ -7333,27 +7333,27 @@ msgstr "Καταγραφές σε αρχεία (SQL, mail, cron...)"
 #: inc/config.class.php:1278 inc/user.class.php:1861 inc/user.class.php:2191
 #: inc/user.class.php:3726
 msgid "Password security policy"
-msgstr ""
+msgstr "Πολιτική ασφαλείας κωδικών"
 
 #: inc/config.class.php:1282
 msgid "Password security policy validation"
-msgstr ""
+msgstr "Επικύρωση πολιτικής ασφαλείας κωδικών"
 
 #: inc/config.class.php:1295
 msgid "Password need digit"
-msgstr ""
+msgstr "Ο κωδικός χρειάζεται ψηφίο"
 
 #: inc/config.class.php:1299
 msgid "Password need lowercase character"
-msgstr ""
+msgstr "Ο κωδικός χρειάζεται μικρό χαρακτήρα"
 
 #: inc/config.class.php:1306
 msgid "Password need uppercase character"
-msgstr ""
+msgstr "Ο κωδικός χρειάζεται κεφαλαίο χαρακτήρα"
 
 #: inc/config.class.php:1310
 msgid "Password need symbol"
-msgstr ""
+msgstr "Ο κωδικός χρειάζεται σύμβολο"
 
 #: inc/config.class.php:1317 inc/config.class.php:1321
 msgid "Maintenance mode"
@@ -7466,7 +7466,7 @@ msgstr "Έλεγχος δικαιώματος εγγραφής στο φάκελ
 
 #: inc/config.class.php:1727 inc/config.class.php:1729
 msgid "A file and a directory have be created and deleted - Perfect!"
-msgstr ""
+msgstr "Ένα αρχείο και ένας φάκελος δημιουργήθηκαν και διαγράφηκαν - Τέλεια!"
 
 #: inc/config.class.php:1738
 msgid "Checking write permissions for log files"
@@ -7474,7 +7474,7 @@ msgstr "Έλεγχος εγγραφής αρχείων καταγραφής"
 
 #: inc/config.class.php:1747 inc/config.class.php:1748
 msgid "A file was created - Perfect!"
-msgstr ""
+msgstr "Ένα αρχείο δημιουργήθηκε  - Τέλεια !"
 
 #: inc/consumable.class.php:195 inc/consumable.class.php:489
 msgctxt "button"
@@ -7776,7 +7776,7 @@ msgstr "Πρόσθεσε ένα στοιχείο"
 #: inc/contract.class.php:504 inc/document.class.php:1324
 msgctxt "button"
 msgid "Remove an item"
-msgstr ""
+msgstr "Απόσυρση στοιχείου"
 
 #: inc/contract.class.php:669 inc/software.class.php:673
 #: inc/softwarelicense.class.php:318 inc/softwarelicense.class.php:424
@@ -7871,7 +7871,7 @@ msgstr "Προσθήκη Συμβολαίου"
 #: inc/contract.class.php:1439
 msgctxt "button"
 msgid "Remove a contract"
-msgstr ""
+msgstr "Απόσυρση συμβολαίου"
 
 #: inc/contract_item.class.php:92
 msgid "Link Contract/Item"
@@ -8645,7 +8645,7 @@ msgstr "Προσθήκη Εγγράφου"
 #: inc/document.class.php:1318
 msgctxt "button"
 msgid "Remove a document"
-msgstr ""
+msgstr "Απόσυρση εγγράφου"
 
 #: inc/document_item.class.php:527
 msgid "Web link"
@@ -8985,7 +8985,7 @@ msgstr "Χρήση ατομικής διαχείρισης"
 
 #: inc/dropdown.class.php:1856
 msgid "Do you really want to use unitary management for this item?"
-msgstr ""
+msgstr "Θέλετε πραγματικά να χρησιμοποιήσετε ατομική διαχείριση  γι'αυτό το στοιχείο;"
 
 #: inc/dropdown.class.php:1857 inc/dropdown.class.php:1860
 #: inc/dropdown.class.php:1861
@@ -9542,7 +9542,7 @@ msgstr ""
 #: inc/group.class.php:345
 msgctxt "button"
 msgid "Add a delegatee"
-msgstr ""
+msgstr "Προσθήκη ενός εξουσιοδοτούμενου"
 
 #: inc/group.class.php:346
 msgctxt "button"
@@ -10319,11 +10319,11 @@ msgstr ""
 
 #: inc/knowbaseitem.class.php:962
 msgid "All my articles"
-msgstr ""
+msgstr "Όλα τα άρθρα μου"
 
 #: inc/knowbaseitem.class.php:964
 msgid "All unpublished articles"
-msgstr ""
+msgstr "Όλα τα ανέκδοτα άρθρα"
 
 #: inc/knowbaseitem.class.php:1344
 msgid "Use as a solution"
@@ -10335,7 +10335,7 @@ msgstr "Πρόσφατες καταχωρήσεις"
 
 #: inc/knowbaseitem.class.php:1393
 msgid "Last updated entries"
-msgstr ""
+msgstr "Τελευταία ενημερωμένες εγγραφές"
 
 #: inc/knowbaseitem.class.php:1396
 msgid "Most popular questions"
@@ -11248,7 +11248,7 @@ msgstr "Προσθέστε την σωστή IP στην θύρα δικτύου
 
 #: inc/networkportmigration.class.php:249
 msgid "Unknown network port"
-msgstr ""
+msgstr "Άγνωστη θύρα δικτύου"
 
 #: inc/networkportmigration.class.php:256
 msgid "I don't understand why this migration error is not deleted."
@@ -12270,7 +12270,7 @@ msgstr "Το πλάνο σας"
 #: inc/planning.class.php:1167
 #, php-format
 msgid "Ticket #%1$s %2$s"
-msgstr ""
+msgstr "Αίτημα #%1$s %2$s"
 
 #: inc/planning.class.php:1204
 msgid "See personnal planning"
@@ -12439,19 +12439,19 @@ msgstr "Υπό παρακολούθηση"
 
 #: inc/problem.class.php:678 inc/problem.class.php:728
 msgid "Problems on pending status"
-msgstr ""
+msgstr "Προβλήματα σε κατάσταση αναμονής"
 
 #: inc/problem.class.php:694 inc/problem.class.php:744
 msgid "Problems to be processed"
-msgstr ""
+msgstr "Προβλήματα για επεξεργασία"
 
 #: inc/problem.class.php:710 inc/problem.class.php:760
 msgid "Your problems in progress"
-msgstr ""
+msgstr "Τα προβλήματά σας σε εξέλιξη"
 
 #: inc/problem.class.php:863
 msgid "Problem followup"
-msgstr ""
+msgstr "Παρακολούθηση προβλήματος"
 
 #: inc/problem.class.php:961
 msgid "No problem in progress."
@@ -13186,7 +13186,7 @@ msgstr "Απαγορέψτε κρατήσεις"
 
 #: inc/reservationitem.class.php:272
 msgid "Are you sure you want to return this non-reservable item?"
-msgstr ""
+msgstr "Είστε σίγουροι ότι θέλετε να επιστρέψετε αυτό το μη-δανειζόμενο στοιχείο;"
 
 #: inc/reservationitem.class.php:273
 msgid "That will remove all the reservations in progress."
@@ -13671,7 +13671,7 @@ msgstr "Επιλογή κατασκευαστή"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:90
 msgid "Replay dictionary rules for manufacturers (----- = All)"
-msgstr ""
+msgstr "Επανάληψη κανόνων λεξικού κατασκευαστών (----- = All)"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:284
 #: inc/ruledictionnarysoftwarecollection.class.php:385
@@ -13722,7 +13722,7 @@ msgstr "εαν κενό στο GLPI"
 #: inc/ruleimportentity.class.php:46
 #: inc/ruleimportentitycollection.class.php:63
 msgid "Rules for assigning an item to an entity"
-msgstr ""
+msgstr "Κανόνες ανάθεσης στοιχείου σε μια οντότητα"
 
 #: inc/rulemailcollector.class.php:94
 msgid "Email body"
@@ -14708,7 +14708,7 @@ msgstr "Το GLPI δεν είναι συμβατό με την επιλογή ze
 
 #: inc/toolbox.class.php:867 inc/toolbox.class.php:868
 msgid "PHP version is at least 5.3.0 - Perfect!"
-msgstr ""
+msgstr "Η έκδοση PHP είναι τουλάχιστον 5.3.0 - Τέλεια !"
 
 #: inc/toolbox.class.php:875
 msgid "You must install at least PHP 5.3.0."
@@ -14720,7 +14720,7 @@ msgstr "Δοκιμή"
 
 #: inc/toolbox.class.php:883 inc/toolbox.class.php:884
 msgid "Ok - the MySQLi class exist - Perfect!"
-msgstr ""
+msgstr "Οκ  - Η  MySQLi class υπάρχει - Τέλεια !"
 
 #: inc/toolbox.class.php:888
 msgid "You must install the MySQL Improved extension for PHP."
@@ -14736,7 +14736,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:905 inc/toolbox.class.php:906
 msgid "Sessions support is available - Perfect!"
-msgstr ""
+msgstr "Η υποστήριξη των sessions είναι διαθέσιμη - Τέλεια !"
 
 #: inc/toolbox.class.php:911
 msgid "Make sure that sessions support has been activated in your php.ini"
@@ -14762,7 +14762,7 @@ msgstr "Θα πρέπει να απενεργοποιήσετε την μετα�
 
 #: inc/toolbox.class.php:938 inc/toolbox.class.php:939
 msgid "Ok - the sessions works (no problem with trans_id) - Perfect!"
-msgstr ""
+msgstr "Οκ - η υποστήριξη των sessions λειτουργεί (κανένα πρόβλημα με το trans_id) - Τέλεια!"
 
 #: inc/toolbox.class.php:946
 msgid "magic_quotes_sybase extension test"
@@ -14772,11 +14772,11 @@ msgstr "Έλεγχος της προέκτασης magic_quotes_sybase"
 msgid ""
 "GLPI does not work with the magic_quotes_sybase option. Please turn it off "
 "and retry"
-msgstr ""
+msgstr "Το GLPI δεν μπορεί να λειτουργήσει με την επιλογή magic_quotes_sybase. Παρακαλώ απενεργοποιήστε την και ξαναπροσπαθήστε."
 
 #: inc/toolbox.class.php:957 inc/toolbox.class.php:959
 msgid "The magic_quotes_sybase option isn't active on your server - Perfect!"
-msgstr ""
+msgstr "Η επιλογή magic_quotes_sybase δεν είναι ενεργή στον διακομιστή σας - Τέλεια !"
 
 #: inc/toolbox.class.php:965
 msgid "Test ctype functions"
@@ -14833,7 +14833,7 @@ msgstr "Έλεγχος κατανεμημένης μνήμης"
 
 #: inc/toolbox.class.php:1050 inc/toolbox.class.php:1051
 msgid "Unlimited memory - Perfect!"
-msgstr ""
+msgstr "Απεριόριστη μνήμη - Τέλεια!"
 
 #: inc/toolbox.class.php:1057
 msgid "Allocated memory"
@@ -14957,13 +14957,13 @@ msgstr "VALIDATE-CERT"
 #. open.php
 #: inc/toolbox.class.php:2124
 msgid "NORSH"
-msgstr ""
+msgstr "NORSH"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
 #: inc/toolbox.class.php:2134
 msgid "SECURE"
-msgstr ""
+msgstr "SECURE"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
@@ -15056,7 +15056,7 @@ msgstr "Εαν τα έγγραφα δεν χρησιμοποιούνται πλ�
 
 #: inc/transfer.class.php:3426
 msgid "If contracts are no longer used"
-msgstr ""
+msgstr "Εαν τα συμβόλαια δεν χρησιμοποιούνται πλέον"
 
 #: inc/transfer.class.php:3446
 msgid ""
@@ -15373,7 +15373,7 @@ msgstr "Έλεγχος συμβατότητας του περιβάλλοντό�
 
 #: install/install.php:161 install/install.php:180 install/install.php:487
 msgid "Do you want to continue?"
-msgstr ""
+msgstr "Θέλετε να συνεχίσετε;"
 
 #: install/install.php:196
 msgid "Database connection setup"
@@ -15438,11 +15438,11 @@ msgstr "Η βάση δεδομένων δημιουργήθηκε"
 
 #: install/install.php:414
 msgid "Error in creating database!"
-msgstr ""
+msgstr "Λάθος κατά τη δημιουργία της βάσης δεδομένων !"
 
 #: install/install.php:421
 msgid "You didn't select a database!"
-msgstr ""
+msgstr "Δεν επιλέξατε βάση δεδομένων !"
 
 #: install/install.php:447
 msgid "The installation is finished"
@@ -15567,7 +15567,7 @@ msgstr "Πρέπει να προχωρήσετε στην αναβάθμιση �
 
 #: install/update.php:190
 msgid "Continue?"
-msgstr ""
+msgstr "Συνέχεια;"
 
 #: install/update.php:403
 msgid "Locations update"
@@ -15618,7 +15618,7 @@ msgstr "Πίσω στο GLPI"
 #: install/update.php:885
 #, php-format
 msgid "Caution! You will update the GLPI database named: %s"
-msgstr ""
+msgstr "Προσοχή! Θα ενημερώσετε τη GLPI βάση δεδομένων με όνομα: %s"
 
 #: install/update.php:918
 msgid ""
