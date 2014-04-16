@@ -693,6 +693,7 @@ class TicketFollowup  extends CommonDBTM {
                          'id'         => -1);
          Ajax::updateItemJsCode("viewfollowup" . $ticket->fields['id'] . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo Html::jsHide('addbutton'.$ticket->fields['id'] . "$rand");
          echo "};";
          echo "</script>\n";
          // Not closed ticket or closed
@@ -703,7 +704,7 @@ class TicketFollowup  extends CommonDBTM {
             if (isset($_GET['_openfollowup']) && $_GET['_openfollowup']) {
                echo Html::scriptBlock("viewAddFollowup".$ticket->fields['id']."$rand()");
             } else {
-               echo "<div class='center firstbloc'>".
+               echo "<div id='addbutton".$ticket->fields['id'] . "$rand' class='center firstbloc'>".
                     "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id'].
                                               "$rand();'>";
                if ($reopen_case) {
