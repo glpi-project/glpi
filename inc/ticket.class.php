@@ -744,54 +744,6 @@ class Ticket extends CommonITILObject {
                    )) {
                $mandatory_missing[$key] = $fieldsname[$val];
             }
-
-            // For actors mandatory
-/*            if (($key == '_users_id_requester')
-                 && ($this->countUsers(CommonITILActor::REQUESTER) == 0)
-                 && (!isset($input['_itil_requester'])
-                     || ($input['_itil_requester']['users_id'] == 0))) {
-               $mandatory_missing[$key] = $fieldsname[$val];
-            }
-
-            if (($key == '_groups_id_requester')
-                 && ($this->countGroups(CommonITILActor::REQUESTER) <= 0)
-                 && (!isset($input['_itil_requester'])
-                     || ($input['_itil_requester']['groups_id'] <= 0))) {
-               $mandatory_missing[$key] = $fieldsname[$val];
-            }
-
-            if (($key == '_users_id_observer')
-                 && ($this->countUsers(CommonITILActor::OBSERVER) <= 0)
-                 && (!isset($this->input['_itil_observer']['users_id'])
-                     || ($this->input['_itil_observer']['users_id'] <= 0))) {
-               $mandatory_missing[$key] = $fieldsname[$val];
-            }
-            if (($key == '_groups_id_observer')
-                 && ($this->countGroups(CommonITILActor::OBSERVER) <= 0)
-                 && (!isset($this->input['_itil_observer']['groups_id'])
-                     || ($this->input['_itil_observer']['groups_id'] <= 0))) {
-               $mandatory_missing[$key] = $fieldsname[$val];
-            }
-
-            if (($key == '_users_id_assign')
-                 && ($this->countUsers(CommonITILActor::ASSIGN) <= 0)
-                 && (!isset($this->input['_itil_assign']['users_id'])
-                     || ($this->input['_itil_assign']['users_id'] <= 0))) {
-               $mandatory_missing[$key] = $fieldsname[$val];
-            }
-            if (($key == '_groups_id_assign')
-                 && ($this->countGroups(CommonITILActor::ASSIGN) <= 0)
-                 && (!isset($this->input['_itil_assign']['groups_id'])
-                     || ($this->input['_itil_assign']['groups_id'] <= 0))) {
-               $mandatory_missing[$key] = $fieldsname[$val];
-            }
-            if (($key == '_suppliers_id_assign')
-                 && ($this->countSuppliers(CommonITILActor::ASSIGN) <= 0)
-                 && (!isset($this->input['_itil_assign']['suppliers_id'])
-                     || ($this->input['_itil_assign']['suppliers_id'] <= 0))) {
-               $mandatory_missing[$key] = $fieldsname[$val];
-            }
-*/
          }
          if (count($mandatory_missing)) {
             //TRANS: %s are the fields concerned
