@@ -370,15 +370,6 @@ class Problem extends CommonITILObject {
       }
 
    }
-   
-   /**
-    * Actions done at the end of the getFromDB function
-    *
-    * @return nothing
-   **/
-   function post_getFromDB() {
-   }
-
 
    /**
     * Get default values to search engine to override
