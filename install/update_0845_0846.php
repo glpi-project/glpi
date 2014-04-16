@@ -99,7 +99,7 @@ function update0845to0846() {
       $migration->migrationOneTable($table);
       $migration->addKey($table, array('itemtype', 'items_id', 'is_deleted'), 'item');
    }
-   
+
    // must always be at the end
    $migration->executeMigration();
 

@@ -134,6 +134,23 @@ class IPAddress extends CommonDBChild {
             return false;
          }
       }
+      if (isset($input['itemtype']) && isset($input['items_id'])) {
+         $input['mainitemtype'] = 'NULL';
+         $input['mainitems_id'] = 'NULL';
+         if ($input['itemtype'] == 'NetworkName') {
+            $name = new NetworkName();
+            if ($name->getFromDB($input['items_id'])) {
+               if ($port = getItemForItemtype($name->getField('itemtype'))) {
+                  if ($port->getFromDB($name->getField('items_id'))) {
+                     if (isset($port->fields['itemtype']) && isset($port->fields['items_id'])) {
+                        $input['mainitemtype'] = $port->fields['itemtype'];
+                        $input['mainitems_id'] = $port->fields['items_id'];
+                     }
+                  }
+               }
+            }
+         }
+      }
 
       return array_merge($input, $this->setArrayFromAddress($input, "version", "name", "binary"));
    }

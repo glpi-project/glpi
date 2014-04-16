@@ -3432,7 +3432,12 @@ class Search {
                                               $addcondition)";
                   break;
 
+               case "mainitemtype_mainitem" :
+                  $addmain = 'main';
                case "itemtype_item" :
+                  if (!isset($addmain)) {
+                     $addmain = '';
+                  }
                   $used_itemtype = $itemtype;
                   if (isset($joinparams['specific_itemtype'])
                       && !empty($joinparams['specific_itemtype'])) {
@@ -3440,8 +3445,8 @@ class Search {
                   }
                   // Itemtype join
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
-                                          ON (`$rt`.`id` = `$nt`.`items_id`
-                                              AND `$nt`.`itemtype` = '$used_itemtype'
+                                          ON (`$rt`.`id` = `$nt`.`".$addmain."items_id`
+                                              AND `$nt`.`".$addmain."itemtype` = '$used_itemtype'
                                               $addcondition) ";
                   break;
 

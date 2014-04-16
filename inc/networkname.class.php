@@ -115,8 +115,8 @@ class NetworkName extends FQDNLabel {
       }
       $this->displayRecursiveItems($recursiveItems, "Link");
       if (count($recursiveItems) > 0) {
-         echo " - <input type='submit' name='unaffect' value=\"" . _sx('button', 'Dissociate') .
-                   "\" class='submit'>";
+         Html::showSimpleForm($this->getFormURL(), 'unaffect', _sx('button', 'Dissociate'),
+                              array('id' => $ID));
       }
 
       echo "</td></tr>\n";
@@ -207,12 +207,8 @@ class NetworkName extends FQDNLabel {
       $tab[126]['name']          = __('IP');
       $tab[126]['forcegroupby']  = true;
       $tab[126]['massiveaction'] = false;
-      $tab[126]['joinparams']    = array('jointype'          => 'itemtype_item',
-                                         'condition'         => 'AND NEWTABLE.`is_deleted` = 0',
-                                         'specific_itemtype' => 'NetworkName',
-                                         'beforejoin'        => array('table' => 'glpi_networknames',
-                                                                      'joinparams'
-                                                                              => $joinparams));
+      $tab[126]['joinparams']    = array('jointype'          => 'mainitemtype_mainitem',
+                                         'condition'         => 'AND NEWTABLE.`is_deleted` = 0');
 
       $tab[127]['table']         = 'glpi_networknames';
       $tab[127]['field']         = 'name';

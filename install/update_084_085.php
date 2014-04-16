@@ -2557,7 +2557,8 @@ function update084to085() {
 
    //////////////////////////////////////////////////
    // Device update
-
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Devices'));
+   
    foreach (array_merge(CommonDevice::getDeviceTypes(),
                         Item_Devices::getDeviceTypes()) as $itemtype) {
       $table = $itemtype::getTable();
@@ -2647,7 +2648,7 @@ function update084to085() {
    $ADDTODISPLAYPREF['ConsumableItem']  = array(9);
    $ADDTODISPLAYPREF['ReservationItem'] = array(9);
 
-
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'License validity'));
    // for licence validity
    if ($migration->addField("glpi_softwarelicenses", "is_valid", "bool", array("value" => 1))) {
       $migration->migrationOneTable("glpi_softwarelicenses");
@@ -2722,6 +2723,25 @@ function update084to085() {
    //Add comment field to a virtualmachine
    $migration->addField('glpi_computervirtualmachines','comment', 'text');
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'IP improvment'));
+   // Ip search improve
+   $migration->addField('glpi_ipaddresses', 'mainitems_id', 'integer');
+   $migration->addField('glpi_ipaddresses', 'mainitemtype', 'string', array('after'  => 'mainitems_id'));
+   $migration->migrationOneTable('glpi_ipaddresses');
+   $migration->addKey('glpi_ipaddresses', array('mainitemtype', 'mainitems_id', 'is_deleted'), 'mainitem');
+
+   $query_doc_i = "UPDATE `glpi_ipaddresses` as `ip`
+                   INNER JOIN `glpi_networknames` as `netname`
+                     ON  (`ip`.`items_id` = `netname`.`id`
+                            AND `ip`.`itemtype` = 'NetworkName')
+                   INNER JOIN `glpi_networkports` as `netport`
+                     ON  (`netname`.`items_id` = `netport`.`id`
+                            AND `netname`.`itemtype` = 'NetworkPort')
+                   SET `ip`.`mainitemtype` = `netport`.`itemtype`,
+                       `ip`.`mainitems_id` = `netport`.`items_id`";
+   $DB->queryOrDie($query_doc_i, "0.85 update mainitems fields of ipaddresses");
+
+   
    // Upgrade ticket bookmarks
    $query = "SELECT *
              FROM `glpi_bookmarks`
