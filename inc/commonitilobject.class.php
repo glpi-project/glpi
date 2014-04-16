@@ -3990,10 +3990,10 @@ abstract class CommonITILObject extends CommonDBTM {
       //Types of the plugins (keep the plugin hook for right check)
       if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
          foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value) {
-            $ptypes = Plugin::doOneHook($plugin, 'AssignToTicket', $types);
+            $ptypes = Plugin::doOneHook($plugin, 'AssignToTicket', $ptypes);
          }
       }
-      asort($types);
+      asort($ptypes);
       //Types of the core (after the plugin for robustness)
       foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
