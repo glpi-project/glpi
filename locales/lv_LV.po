@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-04-16 09:06+0200\n"
-"PO-Revision-Date: 2014-04-16 07:08+0000\n"
+"PO-Revision-Date: 2014-04-16 07:20+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Latvian (Latvia) (http://www.transifex.com/projects/p/GLPI/language/lv_LV/)\n"
 "MIME-Version: 1.0\n"
@@ -14549,7 +14549,7 @@ msgstr "Versija"
 
 #: inc/ticket.class.php:2774
 msgid "Installed software"
-msgstr ""
+msgstr "Uzstādītā programmatūra"
 
 #: inc/ticket.class.php:2826
 msgid "Or complete search"

@@ -18,7 +18,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-04-16 09:06+0200\n"
-"PO-Revision-Date: 2014-04-16 07:08+0000\n"
+"PO-Revision-Date: 2014-04-16 13:41+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -11936,11 +11936,11 @@ msgstr "Expiration d'une réservation"
 
 #: inc/notificationtargetticket.class.php:119
 msgid "To answer by email, write above this line"
-msgstr "Pour répondre par courriel, écrivez sous cette ligne"
+msgstr "Pour répondre par courriel, écrivez au dessus de cette ligne"
 
 #: inc/notificationtargetticket.class.php:127
 msgid "To answer by email, write under this line"
-msgstr "Pour répondre par courriel, écrivez au dessus de cette ligne"
+msgstr "Pour répondre par courriel, écrivez au dessous de cette ligne"
 
 #: inc/notificationtargetticket.class.php:208
 msgid "Update of a ticket"
@@ -14301,7 +14301,7 @@ msgstr "version"
 
 #: inc/ticket.class.php:2774
 msgid "Installed software"
-msgstr ""
+msgstr "Logiciels installés"
 
 #: inc/ticket.class.php:2826
 msgid "Or complete search"
