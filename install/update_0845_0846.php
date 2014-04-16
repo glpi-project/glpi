@@ -95,6 +95,12 @@ function update0845to0846() {
                      AND `num` = 12";
       $DB->queryOrDie($query, "0.84 status in glpi_tickettemplatepredefinedfields $old to $new");
    }
+
+   foreach (array('glpi_ipaddresses', 'glpi_networknames') as $table) {
+      $migration->dropKey($table, 'item');
+      $migration->migrationOneTable($table);
+      $migration->addKey($table, array('itemtype', 'items_id', 'is_deleted'), 'item');
+   }
    
    // must always be at the end
    $migration->executeMigration();

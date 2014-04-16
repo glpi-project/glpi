@@ -265,7 +265,7 @@ class NetworkName extends FQDNLabel {
       $tab[126]['forcegroupby']  = true;
       $tab[126]['massiveaction'] = false;
       $tab[126]['joinparams']    = array('jointype'          => 'itemtype_item',
-                                        'condition'         => 'AND NOT NEWTABLE.`is_deleted`',
+                                        'condition'         => 'AND NEWTABLE.`is_deleted` = 0',
                                         'specific_itemtype' => 'NetworkName',
                                         'beforejoin'        => array('table' => 'glpi_networknames',
                                                                      'joinparams'
