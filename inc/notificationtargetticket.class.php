@@ -116,7 +116,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    * Get header to add to content
    **/
    function getContentHeader() {
-      return self::HEADERTAG.' '.__('To answer by email, write above this line').' '.self::HEADERTAG;
+      if (MailCollector::getNumberOfActiveMailCollectors()) {
+         return self::HEADERTAG.' '.__('To answer by email, write above this line').' '.self::HEADERTAG;
+      }
+
+      return '';
    }
 
 
@@ -124,7 +128,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    * Get footer to add to content
    **/
    function getContentFooter() {
-      return self::FOOTERTAG.' '.__('To answer by email, write under this line').' '.self::FOOTERTAG;
+      if (MailCollector::getNumberOfActiveMailCollectors()) {
+         return self::FOOTERTAG.' '.__('To answer by email, write under this line').' '.self::FOOTERTAG;
+      }
+
+      return '';
    }
 
 
