@@ -659,6 +659,7 @@ class Ticket extends CommonITILObject {
          }
       }
       $check_allowed_fields_for_template = false;
+      $allowed_fields = array();
       if (!Session::isCron()
           && !Session::haveRight("update_ticket","1")) {
 
@@ -734,7 +735,6 @@ class Ticket extends CommonITILObject {
       if (count($tt->mandatory)) {
          $mandatory_missing = array();
          $fieldsname        = $tt->getAllowedFieldsNames(true);
-         //TODO $allowed_fields not defined
          foreach ($tt->mandatory as $key => $val) {
             if ((!$check_allowed_fields_for_template || in_array($key,$allowed_fields))
                 && (isset($input[$key])
