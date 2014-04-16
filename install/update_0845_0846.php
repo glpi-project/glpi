@@ -74,6 +74,28 @@ function update0845to0846() {
                        `doc_i`.`is_recursive` = `doc`.`is_recursive`";
    $DB->queryOrDie($query_doc_i, "0.84.6 change entities_id in documents_items");
 
+
+   $status  = array('new'           => CommonITILObject::INCOMING,
+                    'assign'        => CommonITILObject::ASSIGNED,
+                    'plan'          => CommonITILObject::PLANNED,
+                    'waiting'       => CommonITILObject::WAITING,
+                    'solved'        => CommonITILObject::SOLVED,
+                    'closed'        => CommonITILObject::CLOSED,
+                    'accepted'      => CommonITILObject::ACCEPTED,
+                    'observe'       => CommonITILObject::OBSERVED,
+                    'evaluation'    => CommonITILObject::EVALUATION,
+                    'approbation'   => CommonITILObject::APPROVAL,
+                    'test'          => CommonITILObject::TEST,
+                    'qualification' => CommonITILObject::QUALIFICATION);
+   // Migrate datas
+   foreach ($status as $old => $new) {
+      $query = "UPDATE `glpi_tickettemplatepredefinedfields`
+                  SET `value` = '$new'
+                  WHERE `value` = '$old'
+                     AND `num` = 12";
+      $DB->queryOrDie($query, "0.84 status in glpi_tickettemplatepredefinedfields $old to $new");
+   }
+   
    // must always be at the end
    $migration->executeMigration();
 

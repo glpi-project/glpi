@@ -2062,6 +2062,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return false;
       }
    }
+   
    /**
     * show groups asociated
     *
