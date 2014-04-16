@@ -2144,30 +2144,71 @@ abstract class CommonITILObject extends CommonDBTM {
       return (isset($tab[$value]) ? $tab[$value] : $value);
    }
 
+   /**
+    * get field part name corresponding to actor type
+    *
+    * @param $type      integer : user type
+    *
+    * @return get typename
+   **/
+   static function getActorFieldNameType($type) {
+      switch ($type) {
+         case CommonITILActor::REQUESTER :
+            return 'requester';
+            break;
 
+         case CommonITILActor::OBSERVER :
+            return 'observer';
+            break;
+
+         case CommonITILActor::ASSIGN :
+            return 'assign';
+            break;
+
+         default :
+            return false;
+      }
+   }
+   
    /**
     * show groups asociated
     *
     * @param $type      integer : user type
     * @param $canedit   boolean : can edit ?
+    * @param $options   array    options for default values ($options of showForm)
     *
     * @return nothing display
    **/
-   function showGroupsAssociated($type, $canedit) {
+   function showGroupsAssociated($type, $canedit, array $options = array()) {
       global $CFG_GLPI;
 
       $groupicon = self::getActorIcon('group',$type);
       $group     = new Group();
       $linkclass = new $this->grouplinkclass();
 
+      $itemtype = $this->getType();
+      $typename = self::getActorFieldNameType($type);
+
+      $candelete = true;
+      $mandatory = '';
+      // For ticket templates : mandatories
+      if (($itemtype == 'Ticket')
+          && isset($options['_tickettemplate'])) {
+         $mandatory = $options['_tickettemplate']->getMandatoryMark("_groups_id_".$typename);
+         if ($options['_tickettemplate']->isMandatoryField("_groups_id_".$typename)
+            && isset($this->groups[$type]) && (count($this->groups[$type])==1)) {
+            $candelete = false;
+         }
+      }
+      
       if (isset($this->groups[$type]) && count($this->groups[$type])) {
          foreach ($this->groups[$type] as $d) {
             $k = $d['groups_id'];
-            echo "$groupicon&nbsp;";
+            echo "$mandatory$groupicon&nbsp;";
             if ($group->getFromDB($k)) {
                echo $group->getLink(array('comments' => true));
             }
-            if ($canedit) {
+            if ($canedit && $candelete) {
                echo "&nbsp;";
                Html::showSimpleForm($linkclass->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
@@ -2186,10 +2227,11 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $type      integer : user type
     * @param $canedit   boolean : can edit ?
+    * @param $options   array    options for default values ($options of showForm)
     *
     * @return nothing display
    **/
-   function showSuppliersAssociated($type, $canedit) {
+   function showSuppliersAssociated($type, $canedit, array $options = array()) {
       global $CFG_GLPI;
 
       $showsupplierlink = 0;
@@ -2201,10 +2243,26 @@ abstract class CommonITILObject extends CommonDBTM {
       $supplier     = new Supplier();
       $linksupplier  = new $this->supplierlinkclass();
 
+
+      $itemtype = $this->getType();
+      $typename = self::getActorFieldNameType($type);
+
+      $candelete = true;
+      $mandatory = '';
+      // For ticket templates : mandatories
+      if (($itemtype == 'Ticket')
+          && isset($options['_tickettemplate'])) {
+         $mandatory = $options['_tickettemplate']->getMandatoryMark("_suppliers_id_".$typename);
+         if ($options['_tickettemplate']->isMandatoryField("_suppliers_id_".$typename)
+            && isset($this->suppliers[$type]) && (count($this->suppliers[$type])==1)) {
+            $candelete = false;
+         }
+      }
+      
       if (isset($this->suppliers[$type]) && count($this->suppliers[$type])) {
          foreach ($this->suppliers[$type] as $d) {
             $k = $d['suppliers_id'];
-            echo "$suppliericon&nbsp;";
+            echo "$mandatory$suppliericon&nbsp;";
             if ($supplier->getFromDB($k)) {
                echo $supplier->getLink(array('comments' => $showsupplierlink));
                echo "&nbsp;";
@@ -2232,7 +2290,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
 
             }
-            if ($canedit) {
+            if ($canedit && $candelete) {
                echo "&nbsp;";
                Html::showSimpleForm($linksupplier->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
@@ -2931,10 +2989,11 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $type      integer  user type
     * @param $canedit   boolean  can edit ?
+    * @param $options   array    options for default values ($options of showForm)
     *
     * @return nothing display
    **/
-   function showUsersAssociated($type, $canedit) {
+   function showUsersAssociated($type, $canedit, array $options = array()) {
       global $CFG_GLPI;
 
       $showuserlink = 0;
@@ -2945,11 +3004,26 @@ abstract class CommonITILObject extends CommonDBTM {
       $user     = new User();
       $linkuser = new $this->userlinkclass();
 
+      $itemtype = $this->getType();
+      $typename = self::getActorFieldNameType($type);
+
+      $candelete = true;
+      $mandatory = '';
+      // For ticket templates : mandatories
+      if (($itemtype == 'Ticket')
+          && isset($options['_tickettemplate'])) {
+         $mandatory = $options['_tickettemplate']->getMandatoryMark("_users_id_".$typename);
+         if ($options['_tickettemplate']->isMandatoryField("_users_id_".$typename)
+            && isset($this->users[$type]) && (count($this->users[$type])==1)) {
+            $candelete = false;
+         }
+      }
+      
       if (isset($this->users[$type]) && count($this->users[$type])) {
          foreach ($this->users[$type] as $d) {
             $k = $d['users_id'];
 
-            echo "$usericon&nbsp;";
+            echo "$mandatory$usericon&nbsp;";
 
             if ($k) {
                $userdata = getUserName($k, 2);
@@ -2992,7 +3066,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
             }
 
-            if ($canedit) {
+            if ($canedit && $candelete) {
                echo "&nbsp;";
                Html::showSimpleForm($linkuser->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
@@ -3034,10 +3108,10 @@ abstract class CommonITILObject extends CommonDBTM {
           && ($type == CommonITILActor::ASSIGN)) {
          $types['supplier'] = __('Supplier');
       }
-
+      
+      $typename = self::getActorFieldNameType($type);
       switch ($type) {
          case CommonITILActor::REQUESTER :
-            $typename = 'requester';
             if (isset($is_hidden['_users_id_requester']) && $is_hidden['_users_id_requester']) {
                unset($types['user']);
             }
@@ -3047,7 +3121,6 @@ abstract class CommonITILObject extends CommonDBTM {
             break;
 
          case CommonITILActor::OBSERVER :
-            $typename = 'observer';
             if (isset($is_hidden['_users_id_observer']) && $is_hidden['_users_id_observer']) {
                unset($types['user']);
             }
@@ -3057,7 +3130,6 @@ abstract class CommonITILObject extends CommonDBTM {
             break;
 
          case CommonITILActor::ASSIGN :
-            $typename = 'assign';
             if (isset($is_hidden['_users_id_assign']) && $is_hidden['_users_id_assign']) {
                unset($types['user']);
             }
@@ -3106,22 +3178,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function showActorAddFormOnCreate($type, array $options) {
       global $CFG_GLPI;
 
-      switch ($type) {
-         case CommonITILActor::REQUESTER :
-            $typename = 'requester';
-            break;
-
-         case CommonITILActor::OBSERVER :
-            $typename = 'observer';
-            break;
-
-         case CommonITILActor::ASSIGN :
-            $typename = 'assign';
-            break;
-
-         default :
-            return false;
-      }
+      $typename = self::getActorFieldNameType($type);
 
       $itemtype = $this->getType();
 
@@ -3514,7 +3571,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
       } else if (!$is_hidden['_users_id_requester']) {
-         $this->showUsersAssociated(CommonITILActor::REQUESTER, $candeleterequester);
+         $this->showUsersAssociated(CommonITILActor::REQUESTER, $candeleterequester, $options);
       }
 
       // Requester Group
@@ -3544,7 +3601,7 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
       } else if (!$is_hidden['_groups_id_requester']) {
-         $this->showGroupsAssociated(CommonITILActor::REQUESTER, $candeleterequester);
+         $this->showGroupsAssociated(CommonITILActor::REQUESTER, $candeleterequester, $options);
       }
       echo "</td>";
 
@@ -3570,7 +3627,7 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
       } else if (!$is_hidden['_users_id_observer']) {
-         $this->showUsersAssociated(CommonITILActor::OBSERVER, $candeleteobserver);
+         $this->showUsersAssociated(CommonITILActor::OBSERVER, $candeleteobserver, $options);
       }
 
       // Observer Group
@@ -3598,7 +3655,7 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
       } else if (!$is_hidden['_groups_id_observer']) {
-         $this->showGroupsAssociated(CommonITILActor::OBSERVER, $candeleteobserver);
+         $this->showGroupsAssociated(CommonITILActor::OBSERVER, $candeleteobserver, $options);
       }
       echo "</td>";
 
@@ -3635,7 +3692,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
       } else if (!$is_hidden['_users_id_assign']) {
-         $this->showUsersAssociated(CommonITILActor::ASSIGN, $candeleteassign);
+         $this->showUsersAssociated(CommonITILActor::ASSIGN, $candeleteassign, $options);
       }
 
       // Assign Groups
@@ -3688,7 +3745,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
       } else if (!$is_hidden['_groups_id_assign']) {
-         $this->showGroupsAssociated(CommonITILActor::ASSIGN, $candeleteassign);
+         $this->showGroupsAssociated(CommonITILActor::ASSIGN, $candeleteassign, $options);
       }
 
       // Assign Suppliers
@@ -3708,7 +3765,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
       } else if (!$is_hidden['_suppliers_id_assign']) {
-         $this->showSuppliersAssociated(CommonITILActor::ASSIGN, $candeleteassign);
+         $this->showSuppliersAssociated(CommonITILActor::ASSIGN, $candeleteassign, $options);
       }
 
       echo "</td>";
