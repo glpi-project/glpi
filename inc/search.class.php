@@ -2209,15 +2209,6 @@ class Search {
                      MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_min,
                       $ADDITONALFIELDS";
 
-         case "glpi_networkports.mac" :
-            $port = " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$')
-                                  AS ".$NAME."_$num, ";
-            if ($itemtype == 'Computer') {
-               $port .= " GROUP_CONCAT(`glpi_items_devicenetworkcards`.`mac` SEPARATOR '$$$$')
-                                      AS ".$NAME."_".$num."_macdev, ";
-            }
-            return $port.$ADDITONALFIELDS;
-
          case "glpi_profiles.name" :
             if (($itemtype == 'User')
                 && ($ID == 20)) {
@@ -2752,15 +2743,6 @@ class Search {
                }
             }
             break;
-
-         case "glpi_networkports.mac" :
-            if ($itemtype == 'Computer') {
-               return "$link (".self::makeTextCriteria("`glpi_items_devicenetworkcards`.`mac`",
-                                                       $val, $nott,'').
-                              self::makeTextCriteria("`$table`.`$field`", $val ,$nott, 'OR').")";
-            }
-            return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
-
 
          case "glpi_auth_tables.name" :
             $user_searchopt = self::getOptions('User');
@@ -3929,31 +3911,6 @@ class Search {
                   return $doc->getDownloadLink();
                }
                return NOT_AVAILABLE;
-
-            case "glpi_networkports.mac" :
-               $out = "";
-               if ($itemtype == 'Computer') {
-                  $displayed     = array();
-                  $count_display = 0;
-                  for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
-                     foreach (array('name', 'macdev') as $field) {
-                        if (isset($data[$num][$k][$field])) {
-                           $lowstr = Toolbox::strtolower($data[$num][$k][$field]);
-                           if ((strlen(trim($data[$num][$k][$field])) > 0)
-                               && !in_array($lowstr, $displayed)) {
-                              if ($count_display) {
-                                 $out .= self::LBBR;
-                              }
-                              $count_display++;
-                              $out        .= $data[$num][$k][$field];
-                              $displayed[] = $lowstr;
-                           }
-                        }
-                     }
-                  }
-                 return $out;
-               }
-               break;
 
             case "glpi_tickets_tickets.tickets_id_1" :
                $out        = "";
