@@ -663,16 +663,15 @@ if (count($files)) {
            "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
             "<td class='right'>".Toolbox::getSize($taille_fic)."</td>".
             "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
-            "<td>&nbsp;";
-            //TRANS: %s is the filename
-            $string = sprintf(__('Delete the file %s?'),$file);
-           echo "<a href=\"#\" ".HTML::addConfirmationOnAction($string,
-                     "window.location='".$CFG_GLPI["root_doc"]."/front/backup.php?delfile=$file'").
-                ">"._x('button', 'Delete permanently')."</a>&nbsp;</td>";
-
-            "<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>".
-            "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".__('Download')."</a>".
-            "</td></tr>";
+            "<td colspan=2>";
+      //TRANS: %s is the filename
+      $string = sprintf(__('Delete the file %s?'),$file);
+      Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile', _x('button', 'Delete permanently'),
+                           array('file' => $file),'','',$string);
+      echo "</td>";
+      echo "<td>&nbsp;<a class='vsubmit' href=\"document.send.php?file=_dumps/$file\">".
+                       __('Download')."</a></td>".
+           "</tr>";
    }
 }
 closedir($dir);
