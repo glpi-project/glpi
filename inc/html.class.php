@@ -3747,10 +3747,10 @@ class Html {
       global $CFG_GLPI;
 
       $params = array('name'         => $name,
+                      'filename'     => self::generateImageName(),
                       'root_doc'     => $CFG_GLPI['root_doc'],
                       'rand'         => $rand,
                       'showfilesize' => 1,
-//                      'maxsize'  => 500,
                       'lang'         => array('pasteimage'   => _sx('button',
                                                                     'Drag and drop or paste image'),
                                               'itemnotfound' => __('Item not found'),
@@ -5100,6 +5100,10 @@ class Html {
          }\n";
 
       return $script;
+   }
+   
+   static function generateImageName(){
+      return 'pastedImage'.str_replace('-', '', Html::convDateTime(date('Y-m-d', time())));
    }
 
    /**
