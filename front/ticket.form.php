@@ -75,12 +75,13 @@ if (isset($_POST["add"])) {
 
 
    if ($track->can($_POST["id"], READ)) {
-      $toadd = '';
       // Copy solution to KB redirect to KB
       if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
-         $toadd = "&_sol_to_kb=1";
+         Html::redirect($CFG_GLPI["root_doc"].
+         "/front/knowbaseitem.form.php?id=new&item_itemtype=Ticket&item_items_id=". $_POST["id"]);
+      } else {
+         Html::back();
       }
-      Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"].$toadd);
    }
    Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this ticket'),
                                     true, ERROR);
@@ -140,7 +141,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST['addme_assign'])) {
    $ticket_user = new Ticket_User();
-   
+
    $track->check($_POST['tickets_id'], READ);
    $input = array('tickets_id'       => $_POST['tickets_id'],
                   'users_id'         => Session::getLoginUserID(),
