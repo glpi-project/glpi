@@ -42,8 +42,9 @@ Report::title();
 $items = $CFG_GLPI["contract_types"];
 
 # Titre
+echo "<div class='center'>";
 echo "<span class='big b'>".__('List of the hardware under contract')."</span><br><br>";
-
+echo "</div>";
 # Request All
 if ((isset($_POST["item_type"][0]) && ($_POST["item_type"][0] == '0'))
     || !isset($_POST["item_type"])) {
@@ -56,49 +57,105 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
       if (in_array($val,$items)) {
          $itemtable = getTableForItemType($val);
 
-         $query[$val] = "SELECT `$itemtable`.`name` AS itemname,
-                                `$itemtable`.`is_deleted` AS itemdeleted,
-                                `glpi_locations`.`completename` AS location,
-                                `glpi_contracttypes`.`name` AS type,
-                                `glpi_infocoms`.`buy_date`,
-                                `glpi_infocoms`.`warranty_duration`,
-                                `glpi_contracts`.`begin_date`,
-                                `glpi_contracts`.`duration`,
-                                `glpi_entities`.`completename` AS entname,
-                                `glpi_entities`.`id` AS entID
-                         FROM `glpi_contracts_items`
-                         INNER JOIN `glpi_contracts`
+         if (($val == 'Project')
+             || ($val == 'SoftwareLicense')) {
+
+            $select = $join = '';
+            if ($val == 'SoftwareLicense') {
+               $select = "`glpi_infocoms`.`buy_date`,
+                          `glpi_infocoms`.`warranty_duration`,";
+               $join   = " LEFT JOIN `glpi_infocoms`
+                              ON (`glpi_infocoms`.`itemtype` = '$val'
+                                  AND `$itemtable`.`id` = `glpi_infocoms`.`items_id`)";
+            }
+
+            $query[$val] = "SELECT `$itemtable`.`name` AS itemname,
+                                   `glpi_contracttypes`.`name` AS type,
+                                   $select
+                                   `glpi_contracts`.`begin_date`,
+                                   `glpi_contracts`.`duration`,
+                                   `glpi_entities`.`completename` AS entname,
+                                   `glpi_entities`.`id` AS entID
+                            FROM `glpi_contracts_items`
+                            INNER JOIN `glpi_contracts`
+                               ON (`glpi_contracts_items`.`contracts_id` = `glpi_contracts`.`id`)
+                            $join
+                            INNER JOIN `$itemtable`
+                               ON (`glpi_contracts_items`.`itemtype` = '$val'
+                                   AND `$itemtable`.`id` = `glpi_contracts_items`.`items_id`)
+                            LEFT JOIN `glpi_contracttypes`
+                               ON (`glpi_contracts`.`contracttypes_id` = `glpi_contracttypes`.`id`)
+                            LEFT JOIN `glpi_entities`
+                               ON (`$itemtable`.`entities_id` = `glpi_entities`.`id`) ".
+                            getEntitiesRestrictRequest("WHERE",$itemtable);
+
+
+            if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
+               $query[$val] .= " AND ( ";
+               $first = true;
+               foreach ($_POST["year"] as $key2 => $val2) {
+                  if (!$first) {
+                     $query[$val] .= " OR ";
+                  } else {
+                     $first = false;
+                  }
+                  if ($val == 'Project') {
+                     $query[$val] .= " YEAR(`glpi_contracts`.`begin_date`) = '$val2'";
+                  }
+                  if ($val == 'SoftwareLicense') {
+                     $query[$val] .= " YEAR(`glpi_infocoms`.`buy_date`) = '$val2'
+                                       OR YEAR(`glpi_contracts`.`begin_date`) = '$val2'";
+                  }
+               }
+               $query[$val] .= ")";
+            }
+            $query[$val] .= " ORDER BY entname ASC, itemname ASC";
+
+         } else {
+            $query[$val] = "SELECT `$itemtable`.`name` AS itemname,
+                                   `$itemtable`.`is_deleted` AS itemdeleted,
+                                   `glpi_locations`.`completename` AS location,
+                                   `glpi_contracttypes`.`name` AS type,
+                                   `glpi_infocoms`.`buy_date`,
+                                   `glpi_infocoms`.`warranty_duration`,
+                                   `glpi_contracts`.`begin_date`,
+                                   `glpi_contracts`.`duration`,
+                                   `glpi_entities`.`completename` AS entname,
+                                   `glpi_entities`.`id` AS entID
+                            FROM `glpi_contracts_items`
+                            INNER JOIN `glpi_contracts`
                               ON (`glpi_contracts_items`.`contracts_id` = `glpi_contracts`.`id`)
-                         INNER JOIN `$itemtable`
+                            INNER JOIN `$itemtable`
                               ON (`glpi_contracts_items`.`itemtype` = '$val'
                                   AND `$itemtable`.`id` = `glpi_contracts_items`.`items_id`)
-                         LEFT JOIN `glpi_infocoms`
+                            LEFT JOIN `glpi_infocoms`
                               ON (`glpi_infocoms`.`itemtype` = '$val'
                                   AND `$itemtable`.`id` = `glpi_infocoms`.`items_id`)
-                         LEFT JOIN `glpi_contracttypes`
+                            LEFT JOIN `glpi_contracttypes`
                               ON (`glpi_contracts`.`contracttypes_id` = `glpi_contracttypes`.`id`)
-                         LEFT JOIN `glpi_locations`
+                            LEFT JOIN `glpi_locations`
                               ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)
-                         LEFT JOIN `glpi_entities`
+                            LEFT JOIN `glpi_entities`
                               ON (`$itemtable`.`entities_id` = `glpi_entities`.`id`)
-                         WHERE `$itemtable`.`is_template` ='0' ".
-                               getEntitiesRestrictRequest("AND",$itemtable);
+                            WHERE `$itemtable`.`is_template` ='0' ".
+                                  getEntitiesRestrictRequest("AND",$itemtable);
 
-         if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
-            $query[$val] .= " AND ( ";
-            $first = true;
-            foreach ($_POST["year"] as $key2 => $val2) {
-               if (!$first) {
-                  $query[$val] .= " OR ";
-               } else {
-                  $first = false;
+            if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
+               $query[$val] .= " AND ( ";
+               $first = true;
+               foreach ($_POST["year"] as $key2 => $val2) {
+                  if (!$first) {
+                     $query[$val] .= " OR ";
+                  } else {
+                     $first = false;
+                  }
+                  $query[$val] .= " YEAR(`glpi_infocoms`.`buy_date`) = '$val2'
+                                   OR YEAR(`glpi_contracts`.`begin_date`) = '$val2'";
                }
-               $query[$val] .= " YEAR(`glpi_infocoms`.`buy_date`) = '$val2'
-                                OR YEAR(`glpi_contracts`.`begin_date`) = '$val2'";
+               $query[$val] .= ")";
             }
-            $query[$val] .= ")";
+            $query[$val] .= " ORDER BY entname ASC, itemdeleted DESC, itemname ASC";
          }
-         $query[$val] .= " ORDER BY entname ASC, itemdeleted DESC, itemname ASC";
       }
    }
 }
@@ -110,7 +167,7 @@ if (isset($query) && count($query)) {
       $result = $DB->query($val);
       if ($result && $DB->numrows($result)) {
          $item = new $key();
-         echo "<span class='b'>".$item->getTypeName(1)."</span>";
+         echo "<div class='center'><span class='b'>".$item->getTypeName(1)."</span></div>";
          echo "<table class='tab_cadrehov'>";
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".__('Deleted')."</th>";
@@ -130,6 +187,12 @@ if (isset($query) && count($query)) {
                echo "<td> ".$data['itemname']." </td>";
             } else {
                echo "<td> ".NOT_AVAILABLE." </td>";
+            }
+            if (($key != 'Project')
+                || ($key != 'SoftwareLicense')) {
+               $data['itemdeleted'] = 0;
+               $data['location']    = '';
+               $data['buy_date']    = '';
             }
             echo "<td> ".Dropdown::getYesNo($data['itemdeleted'])." </td>";
 
