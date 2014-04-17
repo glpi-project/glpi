@@ -174,8 +174,9 @@ class Change extends CommonITILObject {
          switch ($item->getType()) {
             case __CLASS__ :
                $ong = array(1 => __('Analysis'),
-                            2 => __('Plans'),
-                            3 => __('Solution'));
+                            3 => __('Plans'),
+                            //Solution must be index 2
+                            2 => __('Solution'));
                if ($item->canUpdate()) {
                   $ong[4] = __('Statistics');
                }
@@ -196,15 +197,16 @@ class Change extends CommonITILObject {
                   break;
 
                case 2 :
-                  $item->showPlanForm();
+                  if (!isset($_GET['load_kb_sol'])) {
+                     $_GET['load_kb_sol'] = 0;
+                  }
+                  $item->showSolutionForm($_GET['load_kb_sol']);
                   break;
 
                case 3 :
-                  if (!isset($_POST['load_kb_sol'])) {
-                     $_POST['load_kb_sol'] = 0;
-                  }
-                  $item->showSolutionForm($_POST['load_kb_sol']);
+                  $item->showPlanForm();
                   break;
+
                case 4 :
                   $item->showStats();
                   break;
