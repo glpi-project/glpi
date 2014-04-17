@@ -39,10 +39,12 @@ Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
 
 Report::title();
 
-$items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
-               'Software');
+$items = $CFG_GLPI["contract_types"];
+
 # Titre
+echo "<div class='center'>";
 echo "<span class='big b'>".__('List of the hardware under contract')."</span><br><br>";
+echo "</div>";
 
 # Request All
 if ((isset($_POST["item_type"][0]) && ($_POST["item_type"][0] == '0'))
@@ -56,9 +58,17 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
       if (in_array($val,$items)) {
          $itemtable = getTableForItemType($val);
 
+         $select = '';
+         $where  = 1;
+         $order  = '';
+         if ($val != 'SoftwareLicense') {
+            $select = "`$itemtable`.`is_deleted` AS itemdeleted,
+                        `glpi_locations`.`completename` AS location,";
+            $where  = "WHERE `$itemtable`.`is_template` ='0'";
+            $order  = " itemdeleted DESC, ";
+         }
          $query[$val] = "SELECT `$itemtable`.`name` AS itemname,
-                                `$itemtable`.`is_deleted` AS itemdeleted,
-                                `glpi_locations`.`completename` AS location,
+                                $select
                                 `glpi_contracttypes`.`name` AS type,
                                 `glpi_infocoms`.`buy_date`,
                                 `glpi_infocoms`.`warranty_duration`,
@@ -81,7 +91,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                               ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)
                          LEFT JOIN `glpi_entities`
                               ON (`$itemtable`.`entities_id` = `glpi_entities`.`id`)
-                         WHERE `$itemtable`.`is_template` ='0' ".
+                         $where ".
                                getEntitiesRestrictRequest("AND",$itemtable);
 
          if (isset($_POST["annee"][0]) && ($_POST["annee"][0] != 'toutes')) {
@@ -98,7 +108,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
             }
             $query[$val] .= ")";
          }
-         $query[$val] .= " ORDER BY entname ASC, itemdeleted DESC, itemname ASC";
+         $query[$val] .= " ORDER BY entname ASC, $order itemname ASC";
       }
    }
 }
@@ -110,7 +120,7 @@ if (isset($query) && count($query)) {
       $result = $DB->query($val);
       if ($result && $DB->numrows($result)) {
          $item = new $key();
-         echo "<span class='b'>".$item->getTypeName(1)."</span>";
+         echo "<div class='center'><span class='b'>".$item->getTypeName(1)."</span></div>";
          echo "<table class='tab_cadre_report'>";
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".__('Deleted')."</th>";
@@ -136,7 +146,10 @@ if (isset($query) && count($query)) {
             if ($display_entity) {
                echo "<td>".$data['entname']."</td>";
             }
-
+            if ($key != 'SoftwareLicense') {
+               $data['itemdeleted'] = 0;
+               $data['location']    = '';
+            }
             if ($data['location']) {
                echo "<td> ".$data['location']." </td>";
             } else {
