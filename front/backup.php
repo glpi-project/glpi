@@ -656,16 +656,16 @@ if (count($files)) {
             "<td class='right'>".Toolbox::getSize($taille_fic)."</td>".
             "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
             "<td>&nbsp;";
-            //TRANS: %s is the filename
-            $string = sprintf(__('Delete the file %s?'),$file);
-            Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile', _x('button', 'Delete permanently'),
-                                 array('file' => $file),'','',$string);
-            echo "<td>&nbsp;";
-            echo "<td>&nbsp;<a class='vsubmit' href=\"document.send.php?file=_dumps/$file\">".
-                            __('Download')."</a>".
-            "</td>";
-            "<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>".
-            "</tr>";
+      //TRANS: %s is the filename
+      $string = sprintf(__('Delete the file %s?'),$file);
+      Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile', _x('button', 'Delete permanently'),
+                           array('file' => $file),'','',$string);
+      echo "</td>&nbsp;";
+      echo "<td>&nbsp;<a class='vsubmit' href=\"document.send.php?file=_dumps/$file\">".
+                        __('Download')."</a>".
+           "</td>";
+           "<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>".
+           "</tr>";
    }
 }
 closedir($dir);
