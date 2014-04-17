@@ -28,7 +28,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -58,7 +58,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    /// Set default variables for all new objects
    var $WordWrap           = 80;
    /// Defaut charset
-   var $CharSet            = "utf-8";
+   var $charSet            = "utf-8";
 
 
    /**
@@ -239,7 +239,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       if (!empty($options['messageid'])) {
          $mmail->MessageID = "<".$options['messageid'].">";
       }
-      
+
       $messageerror = __('Error in sending the email');
 
       if (!$mmail->Send()) {
