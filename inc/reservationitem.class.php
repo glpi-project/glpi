@@ -412,7 +412,8 @@ class ReservationItem extends CommonDBChild {
                 LEFT JOIN `glpi_peripheraltypes`
                   ON `glpi_peripherals`.`peripheraltypes_id` = `glpi_peripheraltypes`.`id`
                 WHERE `itemtype` = 'Peripheral'
-                      AND `is_active` = 1".
+                      AND `is_active` = 1
+                      AND `peripheraltypes_id`".
                       getEntitiesRestrictRequest(" AND", 'glpi_reservationitems', 'entities_id',
                             $_SESSION['glpiactiveentities'])."
                 ORDER BY `glpi_peripheraltypes`.`name`";
@@ -424,7 +425,6 @@ class ReservationItem extends CommonDBChild {
 
       Dropdown::showFromArray("reservation_types", $values,
                               array('value' => $_POST['reservation_types']));
-
 
       echo "</td></tr>";
       echo "</table>";
