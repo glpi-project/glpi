@@ -644,7 +644,7 @@ class Document_Item extends CommonDBRelation{
          $q = "SELECT COUNT(*)
                FROM `glpi_documents`
                WHERE `is_deleted` = '0'
-               $limit";      if ($canedit) echo 'yy';
+               $limit";
 
          $result = $DB->query($q);
          $nb     = $DB->result($result,0,0);
