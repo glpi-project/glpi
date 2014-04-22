@@ -1996,6 +1996,8 @@ function update084to085() {
       $ADDTODISPLAYPREF['Project'] = array(3,4,12,5,15,21);
    }
 
+   $migration->addField("glpi_projects", 'is_deleted', "bool");
+   
    if (countElementsInTable("glpi_profilerights", "`name` = 'project'") == 0) {
       ProfileRight::addProfileRights(array('project'));
 
