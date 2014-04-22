@@ -717,6 +717,10 @@ class Plugin extends CommonDBTM {
          $this->update(array('id'    => $ID,
                              'state' => self::NOTACTIVATED));
          $this->removeFromSession($this->fields['directory']);
+         // reset menu
+         if (isset($_SESSION['glpimenu'])) {
+            unset($_SESSION['glpimenu']);
+         }
       }
    }
 
