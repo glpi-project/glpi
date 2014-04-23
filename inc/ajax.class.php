@@ -302,18 +302,18 @@ class Ajax {
             echo "<li><a title=\"".str_replace(array('<sup>', '</sup>'),'',$val['title'])."\" ";
             echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
             // extract sup information
-            $title = '';
-            $limit = 16;
+//             $title = '';
+//             $limit = 16;
             // No title strip for horizontal menu
-            if ($orientation == 'vertical') {
-               if (preg_match('/(.*)(<sup>.*<\/sup>)/',$val['title'], $regs)) {
-                  $title = Html::resume_text(trim($regs[1]),$limit-2).$regs[2];
-               } else {
-                  $title = Html::resume_text(trim($val['title']),$limit);
-               }
-            } else {
+//             if ($orientation == 'vertical') {
+//                if (preg_match('/(.*)(<sup>.*<\/sup>)/',$val['title'], $regs)) {
+//                   $title = Html::resume_text(trim($regs[1]),$limit-2).$regs[2];
+//                } else {
+//                   $title = Html::resume_text(trim($val['title']),$limit);
+//                }
+//             } else {
                $title = $val['title'];
-            }
+//             }
             echo $title."</a></li>";
             $current ++;
          }

@@ -43,8 +43,11 @@
 }
 .ui-tabs-vertical .ui-tabs-nav li a {
    display: block;
-   width: 128px;
+   width: 150px;
    text-align: left;
+   text-overflow: ellipsis;     /** IE6+, Firefox 7+, Opera 11+, Chrome, Safari **/
+   -o-text-overflow: ellipsis;
+   overflow: hidden;
 }
 
 .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
