@@ -253,6 +253,10 @@ input {
    vertical-align: middle;
 }
 
+input[type="checkbox"] {
+    border: 0;
+}
+
 input[type="image"] {
    height: auto;
    background-color: transparent;
