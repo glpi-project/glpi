@@ -43,7 +43,7 @@
 }
 .ui-tabs-vertical .ui-tabs-nav li a {
    display: block;
-   width: 150px;
+   width: 145px;
    text-align: left;
    text-overflow: ellipsis;     /** IE6+, Firefox 7+, Opera 11+, Chrome, Safari **/
    -o-text-overflow: ellipsis;
