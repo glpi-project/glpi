@@ -79,10 +79,10 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                             FROM `glpi_contracts_items`
                             INNER JOIN `glpi_contracts`
                                ON (`glpi_contracts_items`.`contracts_id` = `glpi_contracts`.`id`)
-                            $join
                             INNER JOIN `$itemtable`
                                ON (`glpi_contracts_items`.`itemtype` = '$val'
                                    AND `$itemtable`.`id` = `glpi_contracts_items`.`items_id`)
+                            $join
                             LEFT JOIN `glpi_contracttypes`
                                ON (`glpi_contracts`.`contracttypes_id` = `glpi_contracttypes`.`id`)
                             LEFT JOIN `glpi_entities`
