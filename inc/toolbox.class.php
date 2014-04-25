@@ -1970,10 +1970,10 @@ class Toolbox {
 
       echo "<select name='server_cert'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/novalidate-cert' ".(($tab['validate-cert'] === true) ?" selected ":"");
+      echo "<option value='/novalidate-cert' ".(($tab['validate-cert'] === false) ?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('NO-VALIDATE-CERT')."</option>\n";
-      echo "<option value='/validate-cert' " .(($tab['validate-cert'] === false) ?" selected ":"");
+      echo "<option value='/validate-cert' " .(($tab['validate-cert'] === true) ?" selected ":"");
       //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
       echo ">".__('VALIDATE-CERT')."</option>\n";
       echo "</select>\n";
