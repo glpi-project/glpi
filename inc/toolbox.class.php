@@ -2108,10 +2108,10 @@ class Toolbox {
                      '/validate-cert' => __('VALIDATE-CERT'),);
 
       $svalue = '';
-      if (($tab['validate-cert'] === true)) {
+      if (($tab['validate-cert'] === false)) {
          $svalue = '/novalidate-cert';
       }
-      if (($tab['validate-cert'] === false)) {
+      if (($tab['validate-cert'] === true)) {
          $svalue = '/validate-cert';
       }
 
