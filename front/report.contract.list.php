@@ -57,6 +57,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
       if (in_array($val,$items)) {
          $itemtable = getTableForItemType($val);
 
+         $order = "itemdeleted DESC,";
          if (($val == 'Project')
              || ($val == 'SoftwareLicense')) {
 
@@ -67,8 +68,11 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                $join   = " LEFT JOIN `glpi_infocoms`
                               ON (`glpi_infocoms`.`itemtype` = '$val'
                                   AND `$itemtable`.`id` = `glpi_infocoms`.`items_id`)";
+               $order = '';
             }
-
+            if ($val == 'Project') {
+               $select = "`$itemtable`.`is_deleted` AS itemdeleted,";
+            }
             $query[$val] = "SELECT `$itemtable`.`name` AS itemname,
                                    `glpi_contracttypes`.`name` AS type,
                                    $select
@@ -109,7 +113,6 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                }
                $query[$val] .= ")";
             }
-            $query[$val] .= " ORDER BY entname ASC, itemname ASC";
 
          } else {
             $query[$val] = "SELECT `$itemtable`.`name` AS itemname,
@@ -154,8 +157,8 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                }
                $query[$val] .= ")";
             }
-            $query[$val] .= " ORDER BY entname ASC, itemdeleted DESC, itemname ASC";
          }
+         $query[$val] .= " ORDER BY entname ASC, $order itemname ASC";
       }
    }
 }
