@@ -2434,7 +2434,7 @@ class Rule extends CommonDBTM {
                                                             = '".$item->getID()."'");
                   }
 
-                  return self::createTabEntry(self::getTypeName(2), 2);
+                  return self::createTabEntry(self::getTypeName(2), $nb);
                }
                return $this->getTypeName(2);
 
