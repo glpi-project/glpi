@@ -48,16 +48,10 @@ if (isset($_POST["add"])) {
    if ($newID = $doc->add($_POST)) {
       Event::log($newID, "documents", 4, "login",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $doc->fields["name"]));
-      // From item tab
-      if (isset($_POST['itemtype']) && isset($_POST['items_id'])) {
-         Html::back();
-      } else  {
-         if ($_SESSION['glpibackcreated']) {
-            Html::redirect($doc->getFormURL()."?id=".$newID);
-         } else {
-            Html::redirect($item->getFormURL()."?id=".$_POST["items_id"]);
-         }
-      }
+      // Not from item tab
+      if ($_SESSION['glpibackcreated'] && (!isset($_POST['itemtype']) || !isset($_POST['items_id']))) {
+         Html::redirect($doc->getFormURL()."?id=".$newID);
+      } 
    }
 
    Html::back();
