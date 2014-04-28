@@ -554,7 +554,7 @@ class Rule extends CommonDBTM {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
-   
+
       $collectiontype = $this->getCollectionClassName();
       if ($collection = getItemForItemtype($collectiontype)) {
          if ($isadmin
@@ -2963,7 +2963,7 @@ class Rule extends CommonDBTM {
                                                             = '".$item->getID()."'");
                   }
 
-                  return self::createTabEntry(self::getTypeName($nb), $nb);
+                  return self::createTabEntry(self::getTypeName(2), $nb);
                }
                return $this->getTypeName($nb);
 
