@@ -2144,32 +2144,34 @@ abstract class CommonITILObject extends CommonDBTM {
       return (isset($tab[$value]) ? $tab[$value] : $value);
    }
 
+
    /**
     * get field part name corresponding to actor type
     *
     * @param $type      integer : user type
     *
+    * @since version 0.84.6
+    *
     * @return get typename
    **/
    static function getActorFieldNameType($type) {
+
       switch ($type) {
          case CommonITILActor::REQUESTER :
             return 'requester';
-            break;
 
          case CommonITILActor::OBSERVER :
             return 'observer';
-            break;
 
          case CommonITILActor::ASSIGN :
             return 'assign';
-            break;
 
          default :
             return false;
       }
    }
-   
+
+
    /**
     * show groups asociated
     *
@@ -2179,15 +2181,15 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return nothing display
    **/
-   function showGroupsAssociated($type, $canedit, array $options = array()) {
+   function showGroupsAssociated($type, $canedit, array $options=array()) {
       global $CFG_GLPI;
 
       $groupicon = self::getActorIcon('group',$type);
       $group     = new Group();
       $linkclass = new $this->grouplinkclass();
 
-      $itemtype = $this->getType();
-      $typename = self::getActorFieldNameType($type);
+      $itemtype  = $this->getType();
+      $typename  = self::getActorFieldNameType($type);
 
       $candelete = true;
       $mandatory = '';
@@ -2196,11 +2198,11 @@ abstract class CommonITILObject extends CommonDBTM {
           && isset($options['_tickettemplate'])) {
          $mandatory = $options['_tickettemplate']->getMandatoryMark("_groups_id_".$typename);
          if ($options['_tickettemplate']->isMandatoryField("_groups_id_".$typename)
-            && isset($this->groups[$type]) && (count($this->groups[$type])==1)) {
+             && isset($this->groups[$type]) && (count($this->groups[$type])==1)) {
             $candelete = false;
          }
       }
-      
+
       if (isset($this->groups[$type]) && count($this->groups[$type])) {
          foreach ($this->groups[$type] as $d) {
             $k = $d['groups_id'];
@@ -2231,7 +2233,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return nothing display
    **/
-   function showSuppliersAssociated($type, $canedit, array $options = array()) {
+   function showSuppliersAssociated($type, $canedit, array $options=array()) {
       global $CFG_GLPI;
 
       $showsupplierlink = 0;
@@ -2241,24 +2243,24 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $suppliericon = self::getActorIcon('supplier',$type);
       $supplier     = new Supplier();
-      $linksupplier  = new $this->supplierlinkclass();
+      $linksupplier = new $this->supplierlinkclass();
 
 
-      $itemtype = $this->getType();
-      $typename = self::getActorFieldNameType($type);
+      $itemtype     = $this->getType();
+      $typename     = self::getActorFieldNameType($type);
 
-      $candelete = true;
-      $mandatory = '';
+      $candelete    = true;
+      $mandatory    = '';
       // For ticket templates : mandatories
       if (($itemtype == 'Ticket')
           && isset($options['_tickettemplate'])) {
          $mandatory = $options['_tickettemplate']->getMandatoryMark("_suppliers_id_".$typename);
          if ($options['_tickettemplate']->isMandatoryField("_suppliers_id_".$typename)
-            && isset($this->suppliers[$type]) && (count($this->suppliers[$type])==1)) {
+             && isset($this->suppliers[$type]) && (count($this->suppliers[$type])==1)) {
             $candelete = false;
          }
       }
-      
+
       if (isset($this->suppliers[$type]) && count($this->suppliers[$type])) {
          foreach ($this->suppliers[$type] as $d) {
             $k = $d['suppliers_id'];
@@ -2993,19 +2995,19 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return nothing display
    **/
-   function showUsersAssociated($type, $canedit, array $options = array()) {
+   function showUsersAssociated($type, $canedit, array $options=array()) {
       global $CFG_GLPI;
 
       $showuserlink = 0;
       if (User::canView()) {
          $showuserlink = 2;
       }
-      $usericon = self::getActorIcon('user',$type);
-      $user     = new User();
-      $linkuser = new $this->userlinkclass();
+      $usericon  = self::getActorIcon('user',$type);
+      $user      = new User();
+      $linkuser  = new $this->userlinkclass();
 
-      $itemtype = $this->getType();
-      $typename = self::getActorFieldNameType($type);
+      $itemtype  = $this->getType();
+      $typename  = self::getActorFieldNameType($type);
 
       $candelete = true;
       $mandatory = '';
@@ -3014,11 +3016,11 @@ abstract class CommonITILObject extends CommonDBTM {
           && isset($options['_tickettemplate'])) {
          $mandatory = $options['_tickettemplate']->getMandatoryMark("_users_id_".$typename);
          if ($options['_tickettemplate']->isMandatoryField("_users_id_".$typename)
-            && isset($this->users[$type]) && (count($this->users[$type])==1)) {
+             && isset($this->users[$type]) && (count($this->users[$type])==1)) {
             $candelete = false;
          }
       }
-      
+
       if (isset($this->users[$type]) && count($this->users[$type])) {
          foreach ($this->users[$type] as $d) {
             $k = $d['users_id'];
@@ -3108,7 +3110,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && ($type == CommonITILActor::ASSIGN)) {
          $types['supplier'] = __('Supplier');
       }
-      
+
       $typename = self::getActorFieldNameType($type);
       switch ($type) {
          case CommonITILActor::REQUESTER :

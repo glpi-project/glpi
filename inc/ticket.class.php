@@ -746,7 +746,7 @@ class Ticket extends CommonITILObject {
          }
       }
       $check_allowed_fields_for_template = false;
-      $allowed_fields = array();
+      $allowed_fields                    = array();
       if (!Session::isCron()
           && !Session::haveRight(self::$rightname, UPDATE)) {
 

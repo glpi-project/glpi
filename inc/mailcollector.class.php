@@ -1690,6 +1690,10 @@ class MailCollector  extends CommonDBTM {
       return $DB->result($result, 0, 'cpt');
    }
 
+
+   /**
+    * @since version 0.85
+   **/
    static function getNumberOfActiveMailCollectors() {
       global $DB;
 
@@ -1700,7 +1704,7 @@ class MailCollector  extends CommonDBTM {
 
       return $DB->result($result, 0, 'cpt');
    }
-   
+
 
    /**
     * @param $name

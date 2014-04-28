@@ -484,13 +484,13 @@ class Document extends CommonDBTM {
          $fileout = Toolbox::substr($fileout,0,$len)."&hellip;";
       }
 
-      $out = '';
-      $open = '';
+      $out   = '';
+      $open  = '';
       $close = '';
       if (self::canView()) {
-         $open = "<a href='".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".
-                  $this->fields['id'].$params."' alt=\"".$initfileout."\"
-                        title=\"".$initfileout."\"target='_blank'>";
+         $open  = "<a href='".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".
+                    $this->fields['id'].$params."' alt=\"".$initfileout."\"
+                    title=\"".$initfileout."\"target='_blank'>";
          $close = "</a>";
       }
       $splitter = explode("/",$this->fields['filepath']);
