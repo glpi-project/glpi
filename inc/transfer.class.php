@@ -507,16 +507,16 @@ class Transfer extends CommonDBTM {
             = $this->createSearchConditionUsingArray($this->needtobe_transfer['NetworkEquipment']);
 
 
-      // Devices 
+      // Devices
       if ($this->options['keep_device']) {
          foreach (Item_Devices::getConcernedItems() as $itemtype) {
             $itemtable = getTableForItemType($itemtype);
             if (isset($this->item_search[$itemtype])) {
                foreach (Item_Devices::getItemAffinities($itemtype) as $itemdevicetype) {
                   $itemdevicetable = getTableForItemType($itemdevicetype);
-                  $devicetype = $itemdevicetype::getDeviceType();
-                  $devicetable = getTableForItemType($devicetype);
-                  $fk = getForeignKeyFieldForTable($devicetable);
+                  $devicetype      = $itemdevicetype::getDeviceType();
+                  $devicetable     = getTableForItemType($devicetype);
+                  $fk              = getForeignKeyFieldForTable($devicetable);
                   $query = "SELECT DISTINCT `$itemdevicetable`.`$fk`,
                                  `$devicetable`.`entities_id`,
                                  `$devicetable`.`is_recursive`
@@ -526,19 +526,19 @@ class Transfer extends CommonDBTM {
                            WHERE `$itemdevicetable`.`itemtype` = '$itemtype'
                                  AND `$itemdevicetable`.`items_id`
                                        IN ".$this->item_search[$itemtype];
-//                   echo $query;
+
                   foreach ($DB->request($query) as $data) {
                      if ($data['is_recursive']
-                        && in_array($data['entities_id'], $to_entity_ancestors)) {
+                         && in_array($data['entities_id'], $to_entity_ancestors)) {
                         $this->addNotToBeTransfer($devicetype, $data[$fk]);
                      } else {
                         if (!isset($this->needtobe_transfer[$devicetype][$data[$fk]])) {
                            $this->addToBeTransfer($devicetype, $data[$fk]);
                            $query2 = "SELECT `$itemdevicetable`.`id`
-                                    FROM `$itemdevicetable`
-                                    WHERE `$itemdevicetable`.`$fk` = '".$data[$fk]."'
-                                          AND `$itemdevicetable`.`itemtype` = '$itemtype'
-                                          AND `$itemdevicetable`.`items_id`
+                                      FROM `$itemdevicetable`
+                                      WHERE `$itemdevicetable`.`$fk` = '".$data[$fk]."'
+                                            AND `$itemdevicetable`.`itemtype` = '$itemtype'
+                                            AND `$itemdevicetable`.`items_id`
                                                 IN ".$this->item_search[$itemtype];
                            foreach ($DB->request($query2) as $data2) {
                               $this->addToBeTransfer($itemdevicetype, $data2['id']);
@@ -564,7 +564,7 @@ class Transfer extends CommonDBTM {
                = $this->createSearchConditionUsingArray($this->noneedtobe_transfer[$itemtype]);
       }
 
-      
+
       // Tickets
       if ($this->options['keep_ticket']) {
          foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
@@ -1134,7 +1134,7 @@ class Transfer extends CommonDBTM {
                // Computer Disks :  delete them or not ?
                $this->transferComputerDisks($ID);
             }
-            
+
             Plugin::doHook("item_transfer", array('type'        => $itemtype,
                                                   'id'          => $ID,
                                                   'newID'       => $newID,
@@ -2972,7 +2972,7 @@ class Transfer extends CommonDBTM {
     *
     * @param $itemtype        original type of transfered item
     * @param $ID              ID of the item
-   * @param $newID            new ID of the item
+    * @param $newID           new ID of the item
    **/
    function transferDevices($itemtype, $ID, $newID) {
       global $DB, $CFG_GLPI;
@@ -2986,7 +2986,7 @@ class Transfer extends CommonDBTM {
                $query = "DELETE
                          FROM `$table`
                          WHERE `itemtype` = '$itemtype'
-                           AND `items_id` = '$ID'";
+                               AND `items_id` = '$ID'";
                $result = $DB->query($query);
             }
 
@@ -2994,24 +2994,24 @@ class Transfer extends CommonDBTM {
          default :
             foreach (Item_Devices::getItemAffinities($itemtype) as $itemdevicetype) {
                $itemdevicetable = getTableForItemType($itemdevicetype);
-               $devicetype = $itemdevicetype::getDeviceType();
-               $devicetable = getTableForItemType($devicetype);
-               $fk = getForeignKeyFieldForTable($devicetable);
-               
-               $device = new $devicetype();
+               $devicetype      = $itemdevicetype::getDeviceType();
+               $devicetable     = getTableForItemType($devicetype);
+               $fk              = getForeignKeyFieldForTable($devicetable);
+
+               $device          = new $devicetype();
                // Get contracts for the item
                $query = "SELECT *
-                        FROM `$itemdevicetable`
-                        WHERE `items_id` = '$ID'
-                              AND `itemtype` = '$itemtype'
-                              AND `$fk` NOT IN ".$this->item_recurs[$devicetype];
+                         FROM `$itemdevicetable`
+                         WHERE `items_id` = '$ID'
+                               AND `itemtype` = '$itemtype'
+                               AND `$fk` NOT IN ".$this->item_recurs[$devicetype];
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result) > 0) {
                      // Foreach get item
                      while ($data = $DB->fetch_assoc($result)) {
-                        $item_ID            = $data[$fk];
-                        $newdeviceID      = -1;
+                        $item_ID     = $data[$fk];
+                        $newdeviceID = -1;
 
                         // is already transfer ?
                         if (isset($this->already_transfer[$devicetype][$item_ID])) {
@@ -3022,22 +3022,22 @@ class Transfer extends CommonDBTM {
                            // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
                            $canbetransfer = true;
                            $query = "SELECT DISTINCT `itemtype`
-                                    FROM `$itemdevicetable`
-                                    WHERE `$fk` = '$item_ID'";
+                                     FROM `$itemdevicetable`
+                                     WHERE `$fk` = '$item_ID'";
 
                            if ($result_type = $DB->query($query)) {
                               if ($DB->numrows($result_type) > 0) {
                                  while (($data_type = $DB->fetch_assoc($result_type))
-                                       && $canbetransfer) {
+                                        && $canbetransfer) {
                                     $dtype = $data_type['itemtype'];
 
                                     if (isset($this->item_search[$dtype])) {
                                        // No items to transfer -> exists links
                                        $query_search = "SELECT COUNT(*) AS cpt
-                                                      FROM `$itemdevicetable`
-                                                      WHERE `$fk` = '$item_ID'
-                                                            AND `itemtype` = '$dtype'
-                                                            AND `items_id`
+                                                        FROM `$itemdevicetable`
+                                                        WHERE `$fk` = '$item_ID'
+                                                              AND `itemtype` = '$dtype'
+                                                              AND `items_id`
                                                                   NOT IN ".$this->item_search[$dtype];
                                        $result_search = $DB->query($query_search);
 
@@ -3062,9 +3062,9 @@ class Transfer extends CommonDBTM {
                               $device->getFromDB($item_ID);
                               // No : search device
                               $query = "SELECT *
-                                       FROM `$devicetable`
-                                       WHERE `entities_id` = '".$this->to."'
-                                             AND `name` = '".addslashes($device->fields['name'])."'";
+                                        FROM `$devicetable`
+                                        WHERE `entities_id` = '".$this->to."'
+                                              AND `name` = '".addslashes($device->fields['name'])."'";
 
                               if ($result_search = $DB->query($query)) {
                                  if ($DB->numrows($result_search) > 0) {
@@ -3081,7 +3081,7 @@ class Transfer extends CommonDBTM {
                                  $input                = $device->fields;
                                  $input['entities_id'] = $this->to;
                                  unset($device->fields);
-                                 $newdeviceID        = $device->add(Toolbox::addslashes_deep($input));
+                                 $newdeviceID = $device->add(Toolbox::addslashes_deep($input));
                                  // 2 - transfer as copy
                                  $this->transferItem($devicetype, $item_ID, $newdeviceID);
                               }
@@ -3090,9 +3090,9 @@ class Transfer extends CommonDBTM {
 
                         // Update links
                         $query = "UPDATE `$itemdevicetable`
-                                 SET `$fk` = '$newdeviceID',
-                                     `items_id` = '$newID'
-                                 WHERE `id` = '".$data['id']."'";
+                                  SET `$fk` = '$newdeviceID',
+                                      `items_id` = '$newID'
+                                  WHERE `id` = '".$data['id']."'";
                         $DB->query($query);
                         $this->transferItem($itemdevicetype, $data['id'], $data['id']);
                      }

@@ -151,6 +151,8 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * Overloaded from CommonDBTM
     *
+    * @since version 0.85
+    *
     * @return booleen
    **/
    function canUnrecurs() {
@@ -169,35 +171,36 @@ abstract class CommonDevice extends CommonDropdown {
          $entities .= ",$papa";
       }
       $entities .= ")";
-      
-      
-      // RELATION : device -> item_device -> item 
-      $linktype = static::getItem_DeviceType();
+
+
+      // RELATION : device -> item_device -> item
+      $linktype  = static::getItem_DeviceType();
       $linktable = getTableForItemType($linktype);
 
       $sql = "SELECT `itemtype`,
                      GROUP_CONCAT(DISTINCT `items_id`) AS ids
-               FROM `$linktable`
-               WHERE `$linktable`.`".$this->getForeignKeyField()."` = '$ID'
-               GROUP BY `itemtype`";
+              FROM `$linktable`
+              WHERE `$linktable`.`".$this->getForeignKeyField()."` = '$ID'
+              GROUP BY `itemtype`";
 
       foreach ($DB->request($sql) as $data) {
          if (!empty($data["itemtype"])) {
             $itemtable = getTableForItemType($data["itemtype"]);
             if ($item = getItemForItemtype($data["itemtype"])) {
-                  // For each itemtype which are entity dependant
-                  if ($item->isEntityAssign()) {
-                     if (countElementsInTable($itemtable, "id IN (".$data["ids"].")
-                                             AND entities_id NOT IN $entities") > 0) {
-                        return false;
-                     }
+               // For each itemtype which are entity dependant
+               if ($item->isEntityAssign()) {
+                  if (countElementsInTable($itemtable, "id IN (".$data["ids"].")
+                                           AND entities_id NOT IN $entities") > 0) {
+                     return false;
                   }
+               }
             }
          }
       }
       return true;
    }
-   
+
+
    function getSearchOptions() {
 
       $tab = array();

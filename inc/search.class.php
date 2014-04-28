@@ -1621,11 +1621,13 @@ class Search {
          case 'Computer' :
             $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer', 'Software');
             break;
+
          case 'Ticket' :
             if (Session::haveRight("ticket", Ticket::READALL)) {
                $linked = array_keys(Ticket::getAllTypesForHelpdesk());
             }
             break;
+
          case 'Printer' :
          case 'Monitor' :
          case "Peripheral" :
@@ -1637,7 +1639,14 @@ class Search {
       return $linked;
    }
 
+
+   /**
+    * @since version 0.85
+    *
+    * @param $itemtype
+   **/
    static function getMetaReferenceItemtype ($itemtype) {
+
       $types = array('Computer', 'Ticket', 'Printer', 'Monitor', 'Peripheral',
                      'Software', 'Phone');
       foreach ($types as $type) {
@@ -1647,7 +1656,8 @@ class Search {
       }
       return false;
    }
-   
+
+
    /**
     * @since version 0.85
    **/
@@ -5404,7 +5414,7 @@ class Search {
             // set font
             $pdf->SetFont($font, '', 8);
             $pdf->AddPage();
-            $PDF_TABLE.='</table>';
+            $PDF_TABLE .= '</table>';
             $pdf->writeHTML($PDF_TABLE, true, false, true, false, '');
             $pdf->Output('glpi.pdf', 'I');
             break;
@@ -5459,7 +5469,7 @@ class Search {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
-            $PDF_TABLE = "<table  cellspacing=\"0\" cellpadding=\"1\" border=\"1\" >";
+            $PDF_TABLE = "<table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" >";
             break;
 
          case self::SYLK_OUTPUT : // Sylk

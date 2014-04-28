@@ -2848,7 +2848,7 @@ class Html {
       if (!$p['canedit']) {
          $js .= ",disabled: true";
       }
-      
+
       if (!empty($p['min'])) {
          $js .= ",minDate: '".self::convDate($p['min'])."'";
       }
@@ -3069,7 +3069,7 @@ class Html {
       if (!$p['canedit']) {
          $js .= ",disabled: true";
       }
-      
+
       if (!empty($p['min'])) {
          $js .= ",minDate: '".self::convDate($p['min'])."'";
       }
@@ -5011,7 +5011,7 @@ class Html {
                         reader.onloadend = function(e){
                            $('#desc_paste_image').html(e.target.result);
                            tinyMCE.imagePaste.processpaste($('#desc_paste_image'),
-                                                           '"._sx('button', 'Paste image')."', 
+                                                           '"._sx('button', 'Paste image')."',
                                                            data.originalFiles[0]);
                         }
                      }
@@ -5101,10 +5101,17 @@ class Html {
 
       return $script;
    }
-   
+
+
+   /**
+    * @since version 0.85
+    *
+    * @return string
+   **/
    static function generateImageName(){
       return 'pastedImage'.str_replace('-', '', Html::convDateTime(date('Y-m-d', time())));
    }
+
 
    /**
     * Display choice matrix

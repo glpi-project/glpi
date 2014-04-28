@@ -89,10 +89,10 @@ function update0845to0846() {
    // Migrate datas
    foreach ($status as $old => $new) {
       $query = "UPDATE `glpi_tickettemplatepredefinedfields`
-                  SET `value` = '$new'
-                  WHERE `value` = '$old'
-                     AND `num` = 12";
-      $DB->queryOrDie($query, "0.84 status in glpi_tickettemplatepredefinedfields $old to $new");
+                SET `value` = '$new'
+                WHERE `value` = '$old'
+                      AND `num` = 12";
+      $DB->queryOrDie($query, "0.84.6 status in glpi_tickettemplatepredefinedfields $old to $new");
    }
    foreach (array('glpi_ipaddresses', 'glpi_networknames') as $table) {
       $migration->dropKey($table, 'item');
