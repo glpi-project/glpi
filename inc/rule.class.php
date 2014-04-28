@@ -2965,7 +2965,7 @@ class Rule extends CommonDBTM {
 
                   return self::createTabEntry(self::getTypeName(2), $nb);
                }
-               return $this->getTypeName($nb);
+               return $this->getTypeName(2);
 
             case 'SLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
