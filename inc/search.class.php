@@ -3426,6 +3426,7 @@ class Search {
 
                case "mainitemtype_mainitem" :
                   $addmain = 'main';
+
                case "itemtype_item" :
                   if (!isset($addmain)) {
                      $addmain = '';
