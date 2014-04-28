@@ -602,7 +602,7 @@ class Computer_Item extends CommonDBRelation{
 
             if ($canedit) {
                echo "<td width='10'>";
-               Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
+               Html::showMassiveActionCheckBox(__CLASS__, $key);
                echo "</td>";
             }
             echo "<td ".
