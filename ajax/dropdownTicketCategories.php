@@ -41,23 +41,29 @@ if (!defined('GLPI_ROOT')) {
 }
 
 $opt = array('entity' => $_POST["entity_restrict"]);
-if ($_POST['type'] == $_POST['currenttype']) {
-   $opt['value'] = $_POST['value'];
-}
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    $opt['condition'] = "`is_helpdeskvisible`='1' AND ";
 } else {
    $opt['condition'] = '';
 }
+$currentcateg = new ItilCategory();
+$currentcateg->getFromDB($_POST['value']);
+
 if ($_POST["type"]) {
    switch ($_POST['type']) {
       case Ticket::INCIDENT_TYPE :
          $opt['condition'].= " `is_incident`='1'";
+         if ($currentcateg->getField('is_incident') == 1) {
+            $opt['value'] = $_POST['value'];
+         }
          break;
 
       case Ticket::DEMAND_TYPE:
          $opt['condition'].= " `is_request`='1'";
+         if ($currentcateg->getField('is_request') == 1) {
+            $opt['value'] = $_POST['value'];
+         }         
          break;
    }
 }
