@@ -451,6 +451,15 @@ td { }
    box-shadow: 0px 2px 5px #666;*/
 }
 
+.tab_cadre_postonly {
+   margin: 0 auto;
+   /*border: 1px solid #bbbbbb;*/
+   z-index:1;
+   text-align: left;
+   font-size: 11px;
+   width: 80%;
+}
+
 .tab_cadre_navigation {
    margin: 0 auto;
    padding: 4px;
