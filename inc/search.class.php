@@ -2513,7 +2513,7 @@ class Search {
                   $condition .= " OR $assign_table.users_id = '".Session::getLoginUserID()."' ";
                }
 
-               if (Session::haveRight("ticket", array(Ticket::READASSIGN))) { // show mine + assign to me
+               if (Session::haveRight("ticket", Ticket::READASSIGN)) { // assign to me
 
                   $condition .=" OR $assign_table.`users_id` = '".Session::getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
