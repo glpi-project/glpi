@@ -434,7 +434,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $paramsma = array('num_displayed' => $_SESSION['glpilist_limit'],
+               $paramsma = array('num_displayed' => $number,
                                  'specific_actions' => array('move_version'
                                                                      => _x('button', 'Move'),
                                                              'purge' => _x('button',
@@ -645,7 +645,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       if (Plugin::haveImport()) {
          $add_dynamic = "`glpi_computers_softwareversions`.`is_dynamic`,";
       }
-      
+
       $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
                        `glpi_softwares`.`name` AS softname,
                        `glpi_computers_softwareversions`.`id`,
@@ -975,14 +975,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       echo "</td>";
-      
+
       echo "</td>";
       if (isset($data['is_dynamic'])) {
          echo "<td class='center'>";
          echo Dropdown::getYesNo($data['is_dynamic']);
          echo "</td>";
-      }  
-      
+      }
+
       echo "</tr>\n";
 
       return $licids;
@@ -1007,9 +1007,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       } else {
          $version = $data["softwareversions_id_buy"];
       }
-      
+
       $ID = $data['linkID'];
-      
+
       $multiple  = false;
       $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
       $link      = $link_item."?id=".$data['id'];
