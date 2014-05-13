@@ -2161,9 +2161,9 @@ class Search {
                $ADDITONALFIELDS .= " GROUP_CONCAT(DISTINCT CONCAT(IFNULL(`$table$addtable`.`$key`,
                                                                          '".self::NULLVALUE."'),
                                                    '$$', $tocomputeid) SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_$key, ";
+                                    AS `".$NAME."_".$num."_$key`, ";
             } else {
-               $ADDITONALFIELDS .= "`$table$addtable`.`$key` AS ".$NAME."_".$num."_$key, ";
+               $ADDITONALFIELDS .= "`$table$addtable`.`$key` AS `".$NAME."_".$num."_$key`, ";
             }
          }
       }
@@ -2196,18 +2196,18 @@ class Search {
                      $addaltemail
                         = "GROUP_CONCAT(DISTINCT CONCAT(`$ticket_user_table`.`users_id`, ' ',
                                                         `$ticket_user_table`.`alternative_email`)
-                                                        SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
+                                                        SEPARATOR '$$$$') AS `".$NAME."_".$num."_2`, ";
                   }
                   return " GROUP_CONCAT(DISTINCT `$table$addtable`.`id` SEPARATOR '$$$$')
-                                       AS ".$NAME."_".$num.",
+                                       AS `".$NAME."_".$num."`,
                            $addaltemail
                            $ADDITONALFIELDS";
 
                }
-               return " `$table$addtable`.`$field` AS ".$NAME."_$num,
-                        `$table$addtable`.`realname` AS ".$NAME."_".$num."_realname,
-                        `$table$addtable`.`id`  AS ".$NAME."_".$num."_id,
-                        `$table$addtable`.`firstname` AS ".$NAME."_".$num."_firstname,
+               return " `$table$addtable`.`$field` AS `".$NAME."_$num`,
+                        `$table$addtable`.`realname` AS `".$NAME."_".$num."_realname`,
+                        `$table$addtable`.`id`  AS `".$NAME."_".$num."_id`,
+                        `$table$addtable`.`firstname` AS `".$NAME."_".$num."_firstname`,
                         $ADDITONALFIELDS";
             }
             break;
@@ -2215,20 +2215,20 @@ class Search {
          case "glpi_softwarelicenses.number" :
             return " FLOOR(SUM(`$table$addtable`.`$field`)
                            * COUNT(DISTINCT `$table$addtable`.`id`)
-                           / COUNT(`$table$addtable`.`id`)) AS ".$NAME."_".$num.",
-                     MIN(`$table$addtable`.`$field`) AS ".$NAME."_".$num."_min,
+                           / COUNT(`$table$addtable`.`id`)) AS `".$NAME."_".$num."`,
+                     MIN(`$table$addtable`.`$field`) AS `".$NAME."_".$num."_min`,
                       $ADDITONALFIELDS";
 
          case "glpi_profiles.name" :
             if (($itemtype == 'User')
                 && ($ID == 20)) {
-               return " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$') AS ".$NAME."_$num,
+               return " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$') AS `".$NAME."_$num`,
                         GROUP_CONCAT(`glpi_profiles_users`.`entities_id` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_entities_id,
+                                    AS `".$NAME."_".$num."_entities_id`,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_is_recursive,
+                                    AS `".$NAME."_".$num."_is_recursive`,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_dynamic` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_is_dynamic,
+                                    AS `".$NAME."_".$num."_is_dynamic`,
                         $ADDITONALFIELDS";
             }
             break;
@@ -2237,27 +2237,27 @@ class Search {
             if (($itemtype == 'User')
                 && ($ID == 80)) {
                return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '$$$$')
-                                    AS ".$NAME."_$num,
+                                    AS `".$NAME."_$num`,
                         GROUP_CONCAT(`glpi_profiles_users`.`profiles_id` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_profiles_id,
+                                    AS `".$NAME."_".$num."_profiles_id`,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_is_recursive,
+                                    AS `".$NAME."_".$num."_is_recursive`,
                         GROUP_CONCAT(`glpi_profiles_users`.`is_dynamic` SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num."_is_dynamic,
+                                    AS `".$NAME."_".$num."_is_dynamic`,
                         $ADDITONALFIELDS";
             }
             break;
 
          case "glpi_auth_tables.name":
             $user_searchopt = self::getOptions('User');
-            return " `glpi_users`.`authtype` AS ".$NAME."_".$num.",
-                     `glpi_users`.`auths_id` AS ".$NAME."_".$num."_auths_id,
+            return " `glpi_users`.`authtype` AS `".$NAME."_".$num."`,
+                     `glpi_users`.`auths_id` AS `".$NAME."_".$num."_auths_id`,
                      `glpi_authldaps".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`$field`
-                              AS ".$NAME."_".$num."_ldapname,
+                              AS `".$NAME."_".$num."_ldapname`,
                      `glpi_authmails".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`$field`
-                              AS ".$NAME."_".$num."_mailname,
+                              AS `".$NAME."_".$num."_mailname`,
                      $ADDITONALFIELDS";
 
          case "glpi_softwarelicenses.name" :
@@ -2266,7 +2266,7 @@ class Search {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `$table$addtable`.`$field`, '$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num.",
+                                    AS `".$NAME."_".$num."`,
                         $ADDITONALFIELDS";
             }
             break;
@@ -2279,13 +2279,13 @@ class Search {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `$table$addtable`.`$field`,'$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num.",
+                                    AS `".$NAME."_".$num."`,
                         $ADDITONALFIELDS";
             }
             return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`name`, ' - ',
                                                   `$table$addtable`.`$field`, '$$',
                                                   `$table$addtable`.`id`) SEPARATOR '$$$$')
-                                 AS ".$NAME."_".$num.",
+                                 AS `".$NAME."_".$num."`,
                      $ADDITONALFIELDS";
 
          case "glpi_states.name" :
@@ -2294,13 +2294,13 @@ class Search {
                                                      `glpi_softwareversions$addtable`.`name`, ' - ',
                                                      `$table$addtable`.`$field`, '$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
-                                     AS ".$NAME."_".$num.",
+                                     AS `".$NAME."_".$num."`,
                         $ADDITONALFIELDS";
             } else if ($itemtype == 'Software') {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwareversions`.`name`, ' - ',
                                                      `$table$addtable`.`$field`,'$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
-                                    AS ".$NAME."_".$num.",
+                                    AS `".$NAME."_".$num."`,
                         $ADDITONALFIELDS";
             }
             break;
@@ -2329,7 +2329,7 @@ class Search {
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "count" :
-               return " COUNT(DISTINCT `$table$addtable`.`$field`) AS ".$NAME."_".$num.",
+               return " COUNT(DISTINCT `$table$addtable`.`$field`) AS `".$NAME."_".$num."`,
                      $ADDITONALFIELDS";
 
             case "date_delay" :
@@ -2349,12 +2349,12 @@ class Search {
                                                          INTERVAL (`$table$addtable`.`".
                                                                     $searchopt[$ID]["datafields"][2].
                                                                     "` $add_minus) $interval)
-                                         SEPARATOR '$$$$') AS ".$NAME."_$num,
+                                         SEPARATOR '$$$$') AS `".$NAME."_$num`,
                            $ADDITONALFIELDS";
                }
                return "ADDDATE(`$table$addtable`.`".$searchopt[$ID]["datafields"][1]."`,
                                INTERVAL (`$table$addtable`.`".$searchopt[$ID]["datafields"][2].
-                                          "` $add_minus) $interval) AS ".$NAME."_$num,
+                                          "` $add_minus) $interval) AS `".$NAME."_$num`,
                        $ADDITONALFIELDS";
 
             case "itemlink" :
@@ -2362,11 +2362,11 @@ class Search {
                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   return " GROUP_CONCAT(DISTINCT CONCAT($tocompute, '$$' ,
                                                         `$table$addtable`.`id`) SEPARATOR '$$$$')
-                                       AS ".$NAME."_$num,
+                                       AS `".$NAME."_$num`,
                            $ADDITONALFIELDS";
                }
-               return " $tocompute AS ".$NAME."_$num,
-                        `$table$addtable`.`id` AS ".$NAME."_".$num."_id,
+               return " $tocompute AS `".$NAME."_$num`,
+                        `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
                         $ADDITONALFIELDS";
          }
       }
@@ -2378,21 +2378,21 @@ class Search {
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
                                                    '$$',$tocomputeid) SEPARATOR '$$$$')
-                                  AS ".$NAME."_".$num."_trans, ";
+                                  AS `".$NAME."_".$num."_trans`, ";
 
          }
          return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
                                                '$$',$tocomputeid) SEPARATOR '$$$$')
-                              AS ".$NAME."_$num,
+                              AS `".$NAME."_$num`,
                   $TRANS
                   $ADDITONALFIELDS";
       }
       $TRANS = '';
       if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-         $TRANS = $tocomputetrans." AS ".$NAME."_".$num."_trans, ";
+         $TRANS = $tocomputetrans." AS `".$NAME."_".$num."_trans`, ";
 
       }
-      return "$tocompute AS ".$NAME."_$num, $TRANS $ADDITONALFIELDS";
+      return "$tocompute AS `".$NAME."_$num`, $TRANS $ADDITONALFIELDS";
    }
 
 
@@ -3463,7 +3463,7 @@ class Search {
                   $transitemtype = getItemTypeForTable($new_table);
                   if (Session::haveTranslations($transitemtype, $field)) {
                      $transAS            = $nt.'_trans';
-                     $specific_leftjoin .= "LEFT JOIN `glpi_dropdowntranslations` AS $transAS
+                     $specific_leftjoin .= "LEFT JOIN `glpi_dropdowntranslations` AS `$transAS`
                                              ON (`$transAS`.`itemtype` = '$transitemtype'
                                                  AND `$transAS`.`items_id` = `$nt`.`id`
                                                  AND `$transAS`.`language` = '".
@@ -3510,7 +3510,7 @@ class Search {
                case 'Printer' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
@@ -3520,7 +3520,7 @@ class Search {
                case 'Monitor' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
@@ -3530,7 +3530,7 @@ class Search {
                case 'Peripheral' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
@@ -3541,7 +3541,7 @@ class Search {
                case 'Phone' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$to_type')
@@ -3553,17 +3553,17 @@ class Search {
                   array_push($already_link_tables2,"glpi_softwareversions_$to_type");
                   array_push($already_link_tables2,"glpi_softwarelicenses_$to_type");
                   return " $LINK `glpi_computers_softwareversions`
-                                    AS glpi_computers_softwareversions_$to_type
+                                    AS `glpi_computers_softwareversions_$to_type`
                               ON (`glpi_computers_softwareversions_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`
                                   AND `glpi_computers_softwareversions_$to_type`.`is_deleted` = '0')
-                           $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
+                           $LINK `glpi_softwareversions` AS `glpi_softwareversions_$to_type`
                               ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$to_type`.`id`)
                            $LINK `glpi_softwares`
                               ON (`glpi_softwareversions_$to_type`.`softwares_id`
                                        = `glpi_softwares`.`id`)
-                           LEFT JOIN `glpi_softwarelicenses` AS glpi_softwarelicenses_$to_type
+                           LEFT JOIN `glpi_softwarelicenses` AS `glpi_softwarelicenses_$to_type`
                               ON (`glpi_softwares`.`id`
                                        = `glpi_softwarelicenses_$to_type`.`softwares_id`".
                                   getEntitiesRestrictRequest(' AND',
@@ -3577,7 +3577,7 @@ class Search {
                case 'Computer' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_monitors`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
@@ -3591,7 +3591,7 @@ class Search {
                case 'Computer' :
                   array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_printers`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
@@ -3606,7 +3606,7 @@ class Search {
                case 'Computer' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id`
                                        = `glpi_peripherals`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
@@ -3621,7 +3621,7 @@ class Search {
                case 'Computer' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
-                  return " $LINK `glpi_computers_items` AS glpi_computers_items_$to_type
+                  return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`
                                   AND `glpi_computers_items_$to_type`.`itemtype` = '$from_type')
                            $LINK `glpi_computers`
@@ -3636,11 +3636,11 @@ class Search {
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   array_push($already_link_tables2,"glpi_softwareversions_$to_type");
                   array_push($already_link_tables2,"glpi_softwareversions_$to_type");
-                  return " $LINK `glpi_softwareversions` AS glpi_softwareversions_$to_type
+                  return " $LINK `glpi_softwareversions` AS `glpi_softwareversions_$to_type`
                               ON (`glpi_softwareversions_$to_type`.`softwares_id`
                                        = `glpi_softwares`.`id`)
                            $LINK `glpi_computers_softwareversions`
-                                    AS glpi_computers_softwareversions_$to_type
+                                    AS `glpi_computers_softwareversions_$to_type`
                               ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
                                        = `glpi_softwareversions_$to_type`.`id`
                                   AND `glpi_computers_softwareversions_$to_type`.`is_deleted` = '0')
