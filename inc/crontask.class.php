@@ -387,7 +387,7 @@ class CronTask extends CommonDBTM{
       if (!Config::canView() || !$this->getFromDB($ID)) {
          return false;
       }
-
+      $options['candel'] = false;
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
