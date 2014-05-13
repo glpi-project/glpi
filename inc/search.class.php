@@ -3263,14 +3263,14 @@ class Search {
 //           || $new_table=="glpi_users_validation") {
       if (!empty($linkfield) && ($linkfield != getForeignKeyFieldForTable($new_table))) {
          $nt .= "_".$linkfield;
-         $AS  = " AS ".$nt;
+         $AS  = " AS `$nt`";
       }
 
       $complexjoin = self::computeComplexJoinID($joinparams);
 
       if (!empty($complexjoin)) {
          $nt .= "_".$complexjoin;
-         $AS  = " AS ".$nt;
+         $AS  = " AS `$nt`";
       }
 
 //       }
@@ -3280,7 +3280,7 @@ class Search {
       $cleanrt    = $rt;
       if ($meta) {
          $addmetanum = "_".$meta_type;
-         $AS         = " AS $nt$addmetanum";
+         $AS         = " AS `$nt$addmetanum`";
          $nt         = $nt.$addmetanum;
       }
 
