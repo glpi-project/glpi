@@ -58,7 +58,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    /// Set default variables for all new objects
    var $WordWrap           = 80;
    /// Defaut charset
-   var $charSet            = "utf-8";
+   var $CharSet            = "utf-8";
 
 
    /**
@@ -215,6 +215,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
       $mmail = new self();
       $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
+      //$mmail->CharSet = $this->charSet;
       // For exchange
       $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
 
