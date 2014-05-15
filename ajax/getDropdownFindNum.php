@@ -79,11 +79,14 @@ if ((strlen($_GET['searchText']) > 0)) {
    $where .= " AND (`name` ".$search."
                     OR `id` = '".$_GET['searchText']."'";
 
-   if (($_GET['table'] != "glpi_softwares")
-       && !$itemtypeisplugin) {
-      $where .= " OR `contact` ".$search."
-                  OR `serial` ".$search."
-                  OR `otherserial` ".$search;
+   if (FieldExists($_GET['table'],"contact")) {
+      $where .= " OR `contact` ".$search;
+   }
+   if (FieldExists($_GET['table'],"serial")) {
+      $where .= " OR `serial` ".$search;
+   }
+   if (FieldExists($_GET['table'],"otherserial")) {
+      $where .= " OR `otherserial` ".$search;
    }
    $where .= ")";
 }
@@ -121,17 +124,14 @@ if ($DB->numrows($result)) {
    while ($data = $DB->fetch_assoc($result)) {
       $output = $data['name'];
 
-      if (($_GET['table'] != "glpi_softwares")
-          && !$itemtypeisplugin) {
-         if (!empty($data['contact'])) {
-            $output = sprintf(__('%1$s - %2$s'), $output, $data['contact']);
-         }
-         if (!empty($data['serial'])) {
-            $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
-         }
-         if (!empty($data['otherserial'])) {
-            $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
-         }
+      if (isset($data['contact']) && !empty($data['contact'])) {
+         $output = sprintf(__('%1$s - %2$s'), $output, $data['contact']);
+      }
+      if (isset($data['serial']) && !empty($data['serial'])) {
+         $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
+      }
+      if (isset($data['otherserial']) && !empty($data['otherserial'])) {
+         $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
       }
 
       if (empty($output)
