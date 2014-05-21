@@ -2797,7 +2797,7 @@ function update084to085() {
             if (isset($options['field2']) && is_array($options['field2'])) {
                $newkey = 0;
                foreach ($options['field2'] as $key => $val) {
-                  $options['metacriteria'][$newkey]['field2'] = $val;
+                  $options['metacriteria'][$newkey]['field'] = $val;
 
                   //  other field
                   if (isset($options['itemtype2'][$key])) {
