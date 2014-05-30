@@ -433,7 +433,7 @@ class Document extends CommonDBTM {
       $out = '';
       $open = '';
       $close = '';
-      if (self::canView()) {
+      if (self::canView() || self::canViewFile()) {
          $open = "<a href='".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".
                   $this->fields['id'].$params."' alt=\"".$initfileout."\"
                         title=\"".$initfileout."\"target='_blank'>";
