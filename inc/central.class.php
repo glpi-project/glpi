@@ -61,9 +61,7 @@ class Central extends CommonGLPI {
          $tabs[1] = __('Personal View');
          $tabs[2] = __('Group View');
          $tabs[3] = __('Global View');
-         if (Session::haveRight("rssfeed_public","r")) {
-            $tabs[4] = _n('RSS feed', 'RSS feeds', 2);
-         }
+         $tabs[4] = _n('RSS feed', 'RSS feeds', 2);
 
          return $tabs;
       }
@@ -227,7 +225,7 @@ class Central extends CommonGLPI {
       echo "<tr><td class='top' width='50%'>";
       RSSFeed::showListForCentral();
       echo "</td><td class='top' width='50%'>";
-      if (Session::haveRight("rssfeed_public","r")) {
+      if (RSSFeed::canView()) {
          RSSFeed::showListForCentral(false);
       } else {
          echo "&nbsp;";
