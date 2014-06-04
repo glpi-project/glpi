@@ -543,7 +543,8 @@ class Auth {
 
       // If not already auth
       if (!$this->auth_succeded) {
-         if (empty($login_name) || empty($login_password)) {
+         if (empty($login_name) || strstr($login_name, "\0")
+             || empty($login_password) || strstr($login_password, "\0")) {
             $this->addToError(__('Empty login or password'));
          } else {
             // exists=0 -> user doesn't yet exist
