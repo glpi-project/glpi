@@ -2812,6 +2812,13 @@ class Search {
                return $out;
             }
          }
+         $function = 'plugin_'.$plug['plugin'].'_addSpecificWhere';
+         if (function_exists($function)) {
+            $out = $function($link,$nott,$itemtype,$ID,$val,$searchtype);
+            if (!empty($out)) {
+               return $out;
+            }
+         }
       }
 
       switch ($inittable.".".$field) {
@@ -3133,6 +3140,13 @@ class Search {
             $function = 'plugin_'.$plug.'_addWhere';
             if (function_exists($function)) {
                $out = $function($link, $nott, $itemtype, $ID, $val);
+               if (!empty($out)) {
+                  return $out;
+               }
+            }
+            $function = 'plugin_'.$plug.'_addSpecificWhere';
+            if (function_exists($function)) {
+               $out = $function($link, $nott, $itemtype, $ID, $val, $searchtype);
                if (!empty($out)) {
                   return $out;
                }
