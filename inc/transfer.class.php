@@ -386,37 +386,34 @@ class Transfer extends CommonDBTM {
       // License / Software :  keep / delete + clean unused / keep unused
       if ($this->options['keep_software']) {
          // Clean DB
-         $query = "SELECT `glpi_computers_softwareversions`.`id`
-                   FROM `glpi_computers_softwareversions`
-                   LEFT JOIN `glpi_computers`
-                      ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
-                   WHERE `glpi_computers`.`id` IS NULL";
+         $query = "SELECT DISTINCT `glpi_computers_softwareversions`.`computers_id`
+                   FROM  `glpi_computers_softwareversions`
+                   WHERE `glpi_computers_softwareversions`.`computers_id`
+                     NOT IN (SELECT id FROM `glpi_computers`)";
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                while ($data = $DB->fetch_assoc($result)) {
                   $query = "DELETE
                             FROM `glpi_computers_softwareversions`
-                            WHERE `id` = '".$data['id']."'";
+                            WHERE `computers_id` = '".$data['computers_id']."'";
                   $DB->query($query);
                }
             }
          }
 
          // Clean DB
-         $query = "SELECT `glpi_computers_softwareversions`.`id`
-                   FROM `glpi_computers_softwareversions`
-                   LEFT JOIN `glpi_softwareversions`
-                      ON (`glpi_computers_softwareversions`.`softwareversions_id`
-                           = `glpi_softwareversions`.`id`)
-                   WHERE `glpi_softwareversions`.`id` IS NULL";
+         $query = "SELECT DISTINCT `glpi_computers_softwareversions`.`softwareversions_id`
+                   FROM  `glpi_computers_softwareversions`
+                   WHERE `glpi_computers_softwareversions`.`softwareversions_id`
+                     NOT IN (SELECT id FROM `glpi_softwareversions`)";
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                while ($data = $DB->fetch_assoc($result)) {
                   $query = "DELETE
                             FROM `glpi_computers_softwareversions`
-                            WHERE `id` = '".$data['id']."'";
+                            WHERE `softwareversions_id` = '".$data['softwareversions_id']."'";
                   $DB->query($query);
                }
             }
