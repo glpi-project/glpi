@@ -433,7 +433,8 @@ class Document extends CommonDBTM {
       $out = '';
       $open = '';
       $close = '';
-      if (self::canView() || self::canViewFile()) {
+      if (self::canView()
+          || self::canViewFile(array('tickets_id' =>$this->fields['tickets_id']))) {
          $open = "<a href='".$CFG_GLPI["root_doc"]."/front/document.send.php?docid=".
                   $this->fields['id'].$params."' alt=\"".$initfileout."\"
                         title=\"".$initfileout."\"target='_blank'>";
@@ -556,8 +557,8 @@ class Document extends CommonDBTM {
          // Tracking Case
          if (isset($options["tickets_id"])) {
             $job = new Ticket();
-
             if ($job->can($options["tickets_id"],'r')) {
+
                $query = "SELECT *
                          FROM `glpi_documents_items`
                          WHERE `glpi_documents_items`.`items_id` = '".$options["tickets_id"]."'
