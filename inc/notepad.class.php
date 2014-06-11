@@ -273,14 +273,6 @@ class Notepad extends CommonDBChild {
 
             echo "<div class='boxnotecontent'>";
 
-            echo "<div class='boxnotetext'>";
-            $content = nl2br($note['content']);
-            if (empty($content)) $content = NOT_AVAILABLE;
-            if ($canedit) {
-               $content ="<a href='#$id' onclick=\"".Html::jsHide("view$id")." ".
-                           Html::jsShow("edit$id")."\">".$content.'</a>';
-            }
-            echo $content.'</div>'; // boxnotetext
 
             echo "<div class='floatright'>";
             $username = NOT_AVAILABLE;
@@ -297,6 +289,22 @@ class Notepad extends CommonDBChild {
                               Html::convDateTime($note['date']));
             printf(__('%1$s / %2$s'), $update, $create);
             echo "</div>"; // floatright
+
+            
+            echo "<div class='boxnotetext ".($canedit?'pointer':'')."' ";
+            if ($canedit) {
+               echo "onclick=\"".Html::jsHide("view$id")." ".
+                              Html::jsShow("edit$id")."\"";
+            }
+            echo ">";
+            $content = nl2br($note['content']);
+            if (empty($content)) $content = NOT_AVAILABLE;
+//             if ($canedit) {
+//                $content ="<a href='#$id' onclick=\"".Html::jsHide("view$id")." ".
+//                            Html::jsShow("edit$id")."\">".$content.'</a>';
+//             }
+            echo $content.'</div>'; // boxnotetext
+
             echo "</div>"; // boxnotecontent
             echo "</div>"; // boxnote
 
