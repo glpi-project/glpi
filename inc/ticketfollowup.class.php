@@ -722,26 +722,27 @@ class TicketFollowup  extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
          echo "<th class='b'>" . __('No followup for this ticket.')."</th></tr></table>";
       } else {
-         $steps = array(0 => array('end'   => WEEK_TIMESTAMP,
-                                   'name'  => __('Last week')),
-                        1 => array('end'   => MONTH_TIMESTAMP,
+         $steps = array(0 => array('end'   => strtotime('today'),
+                                   'name'  => __('Today')),
+                        1 => array('end'   => strtotime('last monday'),
+                                   'name'  => __('This week')),
+                        2 => array('end'   => strtotime('-1 month'),
                                    'name'  => __('Last month')),
-                        2 => array('end'   => 12*MONTH_TIMESTAMP,
-                                   'name'  => __('Last year')),
-                        3 => array('end'   => 9999999*MONTH_TIMESTAMP,
+                        3 => array('end'   => 0,
                                    'name'  => __('Oldest')),
                        );
+
          $currentpos = -1;
          while ($data = $DB->fetch_assoc($result)) {
             $this->getFromDB($data['id']);
             $candelete = $this->canPurge() && $this->canPurgeItem();
             $canedit   = $this->canUpdate() && $this->canUpdateItem();
 
-            $time      = max(0,time()-strtotime($data['date']));
+            $time      = strtotime($data['date']);
             if (!isset($steps[$currentpos])
-                || ($steps[$currentpos]['end'] < $time)) {
+                || ($steps[$currentpos]['end'] > $time)) {
                $currentpos++;
-               while (($currentpos < 4) && ($steps[$currentpos]['end'] < $time)) {
+               while (($currentpos < 4) && ($steps[$currentpos]['end'] > $time)) {
                   $currentpos++;
                }
                if (isset($steps[$currentpos])) {
