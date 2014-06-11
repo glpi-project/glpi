@@ -424,11 +424,11 @@ class Printer  extends CommonDBTM {
       echo "<td>"._n('Port','Ports',2)."</td>";
       echo "<td>\n<table>";
       // serial interface
-      echo "<tr><td>".__('Serial')."</td><td>";
+      echo "<tr><td>".__('Serial')."</td><td width='80'>";
       Dropdown::showYesNo("have_serial", $this->fields["have_serial"]);
       echo "</td>";
       // parallel interface?
-      echo "<td>".__('Parallel')."</td><td>";
+      echo "<td>".__('Parallel')."</td><td width='80'>";
       Dropdown::showYesNo("have_parallel", $this->fields["have_parallel"]);
       echo "</td></tr>";
       // USB interface?
@@ -710,7 +710,7 @@ class Printer  extends CommonDBTM {
       $tab[86]['datatype']         = 'bool';
 
       $tab += Notepad::getSearchOptionsToAdd();
-      
+
       return $tab;
    }
 
