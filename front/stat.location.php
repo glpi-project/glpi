@@ -194,7 +194,7 @@ if (!$_GET['showgraph']) {
 
    if (isset($data['closed']) && is_array($data['closed'])) {
       foreach ($data['closed'] as $key => $val) {
-         $newkey = Html::clean($key);
+         $newkey = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
          $cleandata[$newkey]=$val;
       }
       Stat::showGraph(array(__('Number closed') => $cleandata),
@@ -206,7 +206,7 @@ if (!$_GET['showgraph']) {
 
    if (isset($data['opensatisfaction']) && is_array($data['opensatisfaction'])) {
       foreach ($data['opensatisfaction'] as $key => $val) {
-         $newkey             = Html::clean($key);
+         $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
          $cleandata[$newkey] = $val;
       }
       Stat::showGraph(array(__('Satisfaction survey') => $cleandata),
