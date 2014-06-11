@@ -142,9 +142,14 @@ class Notepad extends CommonDBChild {
       global $DB;
 
       $data = array();
-      foreach($DB->request('glpi_notepads', array('itemtype' => $item->getType(),
-                                                  'items_id' => $item->getID(),
-                                                  'ORDER'    => 'date_mod DESC')) as $note) {
+      $query = "SELECT `glpi_notepads`.*, `glpi_users`.`picture`
+                FROM `glpi_notepads`
+                LEFT JOIN `glpi_users` ON (`glpi_notepads`.`users_id_lastupdater` = `glpi_users`.`id`)
+                WHERE `glpi_notepads`.`itemtype` = '".$item->getType()."'
+                     AND `glpi_notepads`.`items_id` = '".$item->getID()."'
+                ORDER BY `date_mod` DESC";
+      
+      foreach($DB->request($query) as $note) {
          $data[] = $note;
       }
       return $data;
@@ -257,18 +262,15 @@ class Notepad extends CommonDBChild {
       if (count($notes)) {
          foreach ($notes as $note) {
             $id = 'note'.$note['id'].$rand;
+            $classtoadd = '';
+            if ($canedit) {
+               $classtoadd = " pointer";
+            }
             echo "<div class='boxnote' id='view$id'>";
 
             echo "<div class='boxnoteleft'>";
-            if ($canedit) {
-               Html::showSimpleForm(Toolbox::getItemTypeFormURL('Notepad'),
-                                    array('purge' => 'purge'),
-                                    _x('button', 'Delete permanently'),
-                                    array('id'   => $note['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png",
-                                    '',
-                                     __('Confirm the final deletion?'));
-            }
+            echo "<img class='user_picture_verysmall' alt=\"".__s('Picture')."\" src='".
+                User::getThumbnailURLForPicture($note['picture'])."'>";
             echo "</div>"; // boxnoteleft
 
             echo "<div class='boxnotecontent'>";
@@ -291,7 +293,7 @@ class Notepad extends CommonDBChild {
             echo "</div>"; // floatright
 
             
-            echo "<div class='boxnotetext ".($canedit?'pointer':'')."' ";
+            echo "<div class='boxnotetext $classtoadd' ";
             if ($canedit) {
                echo "onclick=\"".Html::jsHide("view$id")." ".
                               Html::jsShow("edit$id")."\"";
@@ -299,13 +301,20 @@ class Notepad extends CommonDBChild {
             echo ">";
             $content = nl2br($note['content']);
             if (empty($content)) $content = NOT_AVAILABLE;
-//             if ($canedit) {
-//                $content ="<a href='#$id' onclick=\"".Html::jsHide("view$id")." ".
-//                            Html::jsShow("edit$id")."\">".$content.'</a>';
-//             }
             echo $content.'</div>'; // boxnotetext
 
             echo "</div>"; // boxnotecontent
+            echo "<div class='boxnoteright'>";
+            if ($canedit) {
+               Html::showSimpleForm(Toolbox::getItemTypeFormURL('Notepad'),
+                                    array('purge' => 'purge'),
+                                    _x('button', 'Delete permanently'),
+                                    array('id'   => $note['id']),
+                                    $CFG_GLPI["root_doc"]."/pics/delete.png",
+                                    '',
+                                     __('Confirm the final deletion?'));
+            }
+            echo "</div>"; // boxnoteright            
             echo "</div>"; // boxnote
 
              if ($canedit) {

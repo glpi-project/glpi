@@ -764,12 +764,7 @@ class TicketFollowup  extends CommonDBTM {
                $classtoadd = " pointer";
             }
 
-            echo "<div class='boxnote $color $classtoadd' id='view$id'";
-            if ($canedit) {
-               echo " onClick=\"viewEditFollowup".$ticket->fields['id'].
-                        $data['id']."$rand(); ".Html::jsHide("view$id")." ".
-                        Html::jsShow("viewfollowup" . $ticket->fields['id'].$data["id"]."$rand")."\" ";
-            }
+            echo "<div class='boxnote $color' id='view$id'";
             echo ">";
 
             echo "<div class='boxnoteleft'>";
@@ -798,7 +793,13 @@ class TicketFollowup  extends CommonDBTM {
             echo $name;
             echo "</div>"; // floatright
 
-            echo "<div class='boxnotetext'>";
+            echo "<div class='boxnotetext $classtoadd'";
+            if ($canedit) {
+               echo " onClick=\"viewEditFollowup".$ticket->fields['id'].
+                        $data['id']."$rand(); ".Html::jsHide("view$id")." ".
+                        Html::jsShow("viewfollowup" . $ticket->fields['id'].$data["id"]."$rand")."\" ";
+            }
+            echo ">";
             $content = nl2br($data['content']);
             if (empty($content)) $content = NOT_AVAILABLE;
             echo $content.'</div>'; // boxnotetext
