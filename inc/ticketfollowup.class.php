@@ -160,11 +160,6 @@ class TicketFollowup  extends CommonDBTM {
          return false;
       }
 
-      if ($ticket->getFromDB($this->fields['tickets_id'])
-          && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
-         return false;
-      }
-
       if (($this->fields["users_id"] === Session::getLoginUserID())
           && Session::haveRight(self::$rightname, self::UPDATEMY)) {
          return true;
