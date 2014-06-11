@@ -380,13 +380,16 @@ class CommonGLPI {
          if (isset($options['withtemplate'])) {
             $withtemplate = $options['withtemplate'];
          }
-         foreach ($options as $key => $val) {
-            // Do not include id options
-            if (($key[0] != '_') && ($key != 'id')) {
-               $extraparamhtml .= "&amp;$key=$val";
-               $extraparam     .= "&$key=$val";
-            }
-         }
+         $extraparamhtml = "&amp;".Toolbox::append_params($options,'&amp;');
+         $extraparam     = "&".Toolbox::append_params($options);
+         
+//          foreach ($options as $key => $val) {
+//             // Do not include id options
+//             if (($key[0] != '_') && ($key != 'id')) {
+//                $extraparamhtml .= "&amp;$key=$val";
+//                $extraparam     .= "&$key=$val";
+//             }
+//          }
       }
 
       if (empty($withtemplate)
