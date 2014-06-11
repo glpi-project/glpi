@@ -167,7 +167,7 @@ if (!$_GET['showgraph']) {
 
    if (isset($data['opened']) && is_array($data['opened'])) {
       foreach ($data['opened'] as $key => $val) {
-         $newkey             = Html::clean($key);
+         $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
          $cleandata[$newkey] = $val;
       }
       Stat::showGraph(array(__('Number opened') => $cleandata),
@@ -179,7 +179,7 @@ if (!$_GET['showgraph']) {
 
    if (isset($data['solved']) && is_array($data['solved'])) {
       foreach ($data['solved'] as $key => $val) {
-         $newkey             = Html::clean($key);
+         $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
          $cleandata[$newkey] = $val;
       }
       Stat::showGraph(array(__('Number solved') => $cleandata),
@@ -191,7 +191,7 @@ if (!$_GET['showgraph']) {
 
    if (isset($data['late']) && is_array($data['late'])) {
       foreach ($data['late'] as $key => $val) {
-         $newkey             = Html::clean($key);
+         $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
          $cleandata[$newkey] = $val;
       }
 
@@ -205,7 +205,7 @@ if (!$_GET['showgraph']) {
 
    if (isset($data['closed']) && is_array($data['closed'])) {
       foreach ($data['closed'] as $key => $val) {
-         $newkey             = Html::clean($key);
+         $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
          $cleandata[$newkey] = $val;
       }
       Stat::showGraph(array(__('Number closed') => $cleandata),
@@ -218,7 +218,7 @@ if (!$_GET['showgraph']) {
    if ($_GET['itemtype'] == 'Ticket') {
       if (isset($data['opensatisfaction']) && is_array($data['opensatisfaction'])) {
          foreach ($data['opensatisfaction'] as $key => $val) {
-            $newkey             = Html::clean($key);
+            $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
             $cleandata[$newkey] = $val;
          }
          Stat::showGraph(array(__('Satisfaction survey') => $cleandata),
