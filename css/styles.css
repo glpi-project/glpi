@@ -1135,6 +1135,8 @@ div#tabcontent {
    font-size: 11px;
 }
 
+
+
 .boxnoteleft {
    float: left;
    width: 10%;
@@ -1145,6 +1147,7 @@ div#tabcontent {
 .boxnotecontent {
    float: left;
    padding: 1px;
+   padding-top: 5px;
    width: 75%;
 /*   top:  -60px;
    left: 110px;*/
@@ -1158,6 +1161,13 @@ div#tabcontent {
    min-height: 40px;
    padding: 1px;
    vertical-align: middle;
+}
+
+.boxnotefloatright {
+   float: right;
+   position: relative;
+   padding-left: 20px;
+   padding-bottom:  5px;
 }
 .boxnotetext {
    padding: 5px;

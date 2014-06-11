@@ -276,7 +276,7 @@ class Notepad extends CommonDBChild {
             echo "<div class='boxnotecontent'>";
 
 
-            echo "<div class='floatright'>";
+            echo "<div class='boxnotefloatright'>";
             $username = NOT_AVAILABLE;
             if ($note['users_id_lastupdater']) {
                $username = getUserName($note['users_id_lastupdater'], $showuserlink);

@@ -775,7 +775,7 @@ class TicketFollowup  extends CommonDBTM {
             echo "<div class='boxnotecontent'";
             echo ">";
 
-            echo "<div class='floatright'>";
+            echo "<div class='boxnotefloatright'>";
             $username = NOT_AVAILABLE;
             if ($data['users_id']) {
                $username = getUserName($data['users_id'], $showuserlink);
