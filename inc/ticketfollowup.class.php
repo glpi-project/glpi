@@ -780,11 +780,6 @@ class TicketFollowup  extends CommonDBTM {
             echo "<div class='boxnotecontent'";
             echo ">";
 
-            echo "<div class='boxnotetext'>";
-            $content = nl2br($data['content']);
-            if (empty($content)) $content = NOT_AVAILABLE;
-            echo $content.'</div>'; // boxnotetext
-
             echo "<div class='floatright'>";
             $username = NOT_AVAILABLE;
             if ($data['users_id']) {
@@ -802,6 +797,12 @@ class TicketFollowup  extends CommonDBTM {
             }
             echo $name;
             echo "</div>"; // floatright
+
+            echo "<div class='boxnotetext'>";
+            $content = nl2br($data['content']);
+            if (empty($content)) $content = NOT_AVAILABLE;
+            echo $content.'</div>'; // boxnotetext
+
             echo "</div>"; // boxnotecontent
             echo "<div class='boxnoteright'>";
             if ($candelete) {
