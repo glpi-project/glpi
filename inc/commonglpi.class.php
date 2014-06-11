@@ -752,9 +752,15 @@ class CommonGLPI {
          }
 
          if ($prev >= 0) {
-            echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml'>".
+            echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>".
                   "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
                     "\" title=\"".__s('Previous')."\"></a></td>";
+            $js = '$("body").keydown(function(e) {
+                       if(e.keyCode == 37 && e.ctrlKey) {
+                         window.location = $("#previouspage").attr("href");
+                       }
+                  });';
+            echo Html::scriptBlock($js);
          } else {
             echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
                                     __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
@@ -798,9 +804,15 @@ class CommonGLPI {
          }
 
          if ($next >= 0) {
-            echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml'>".
+            echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>".
                   "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
                     "\" title=\"".__s('Next')."\"></a></td>";
+            $js = '$("body").keydown(function(e) {
+                       if(e.keyCode == 39 && e.ctrlKey) {
+                         window.location = $("#nextpage").attr("href");
+                       }
+                  });';
+            echo Html::scriptBlock($js);
          } else {
             echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
                                      __s('Next')."\" title=\"".__s('Next')."\"></td>";
