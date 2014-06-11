@@ -671,8 +671,9 @@ class TicketFollowup  extends CommonDBTM {
                             OR `users_id` ='" . Session::getLoginUserID() . "') ";
       }
 
-      $query = "SELECT *
+      $query = "SELECT `glpi_ticketfollowups`.*, `glpi_users`.`picture`
                 FROM `glpi_ticketfollowups`
+                LEFT JOIN `glpi_users` ON (`glpi_ticketfollowups`.`users_id` = `glpi_users`.`id`)
                 WHERE `tickets_id` = '$tID'
                       $RESTRICT
                 ORDER BY `date` DESC";
@@ -733,6 +734,7 @@ class TicketFollowup  extends CommonDBTM {
                        );
 
          $currentpos = -1;
+
          while ($data = $DB->fetch_assoc($result)) {
             $this->getFromDB($data['id']);
             $candelete = $this->canPurge() && $this->canPurgeItem();
@@ -771,15 +773,8 @@ class TicketFollowup  extends CommonDBTM {
             echo ">";
 
             echo "<div class='boxnoteleft'>";
-            if ($candelete) {
-               Html::showSimpleForm(Toolbox::getItemTypeFormURL('TicketFollowup'),
-                                    array('purge' => 'purge'),
-                                    _x('button', 'Delete permanently'),
-                                    array('id' => $data['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png",
-                                    '',
-                                     __('Confirm the final deletion?'));
-            }
+            echo "<img class='user_picture_verysmall' alt=\"".__s('Picture')."\" src='".
+                User::getThumbnailURLForPicture($data['picture'])."'>";
             echo "</div>"; // boxnoteleft
 
             echo "<div class='boxnotecontent'";
@@ -808,6 +803,17 @@ class TicketFollowup  extends CommonDBTM {
             echo $name;
             echo "</div>"; // floatright
             echo "</div>"; // boxnotecontent
+            echo "<div class='boxnoteright'>";
+            if ($candelete) {
+               Html::showSimpleForm(Toolbox::getItemTypeFormURL('TicketFollowup'),
+                                    array('purge' => 'purge'),
+                                    _x('button', 'Delete permanently'),
+                                    array('id' => $data['id']),
+                                    $CFG_GLPI["root_doc"]."/pics/delete.png",
+                                    '',
+                                     __('Confirm the final deletion?'));
+            }
+            echo "</div>"; // boxnoteright
             echo "</div>"; // boxnote
             if ($canedit) {
                echo "<div id='viewfollowup" . $ticket->fields['id'].$data["id"]."$rand' class='starthidden'></div>\n";

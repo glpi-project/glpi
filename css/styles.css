@@ -781,6 +781,13 @@ td.rotate {
    height:71px;
    border-radius: 5px;
 }
+
+.user_picture_verysmall {
+   margin: 0 auto;
+   width:35px;
+   height:35px;
+   border-radius: 5px;
+}
 /* ################--------------- Space to replace &nbsp; ---------------#################### */
 
 /* 2 space */
