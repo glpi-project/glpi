@@ -47,8 +47,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST['add_close'])
-           ||(isset($_POST['add_reopen'])
-              && isset($_POST['content']) && ($_POST['content'] == $fup->fields["content"]))) {
+           ||isset($_POST['add_reopen'])) {
    $ticket = new Ticket();
    if ($ticket->getFromDB($_POST["tickets_id"]) && $ticket->canApprove()) {
       $fup->add($_POST);
