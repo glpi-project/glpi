@@ -728,12 +728,15 @@ class TicketFollowup  extends CommonDBTM {
                                    'name'  => __('Today')),
                         1 => array('end'   => strtotime('last monday'),
                                    'name'  => __('This week')),
-                        2 => array('end'   => strtotime('-1 month'),
+                        2 => array('end'   => strtotime('last monday', strtotime('last monday')),
+                                   'name'  => __('Last week')),
+                        3 => array('end'   => strtotime('midnight first day of'),
+                                   'name'  => __('This month')),
+                        4 => array('end'   => strtotime('midnight first day of last month'),
                                    'name'  => __('Last month')),
-                        3 => array('end'   => 0,
+                        5 => array('end'   => 0,
                                    'name'  => __('Oldest')),
                        );
-
          $currentpos = -1;
 
          while ($data = $DB->fetch_assoc($result)) {
@@ -745,7 +748,7 @@ class TicketFollowup  extends CommonDBTM {
             if (!isset($steps[$currentpos])
                 || ($steps[$currentpos]['end'] > $time)) {
                $currentpos++;
-               while (($currentpos < 4) && ($steps[$currentpos]['end'] > $time)) {
+               while (($steps[$currentpos]['end'] > $time) && isset($steps[$currentpos+1])) {
                   $currentpos++;
                }
                if (isset($steps[$currentpos])) {
