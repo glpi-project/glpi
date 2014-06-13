@@ -735,7 +735,7 @@ class TicketFollowup  extends CommonDBTM {
                         4 => array('end'   => strtotime('midnight first day of last month'),
                                    'name'  => __('Last month')),
                         5 => array('end'   => 0,
-                                   'name'  => __('Oldest')),
+                                   'name'  => __('More than one month')),
                        );
          $currentpos = -1;
 
