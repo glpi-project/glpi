@@ -1260,7 +1260,6 @@ function update084to085() {
       $query = "CREATE TABLE `glpi_changetasks` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `changes_id` int(11) NOT NULL DEFAULT '0',
-                  `changetasks_id` int(11) NOT NULL DEFAULT '0',
                   `taskcategories_id` int(11) NOT NULL DEFAULT '0',
                   `state` int(11) NOT NULL DEFAULT '0',
                   `date` datetime DEFAULT NULL,
@@ -1272,7 +1271,6 @@ function update084to085() {
                   `actiontime` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `changes_id` (`changes_id`),
-                  KEY `changetasks_id` (`changetasks_id`),
                   KEY `state` (`state`),
                   KEY `users_id` (`users_id`),
                   KEY `users_id_tech` (`users_id_tech`),
@@ -1693,7 +1691,13 @@ function update084to085() {
    // Add validation percent for tickets
    $migration->addField('glpi_tickets', 'validation_percent', 'integer', array('value' => 0));
 
+   // Add missing key
+   $migration->addKey('glpi_tickettasks', 'state');
+   $migration->addKey('glpi_tickettasks', 'users_id_tech');
+   $migration->addKey('glpi_tickettasks', 'begin');
+   $migration->addKey('glpi_tickettasks', 'end');
 
+   
    // Create notification for reply to satisfaction survey based on satisfaction notif
    // Check if notifications already exists
    if (countElementsInTable('glpi_notifications',
