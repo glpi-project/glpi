@@ -1259,14 +1259,10 @@ function update084to085() {
    if (!TableExists('glpi_changetasks')) {
       $query = "CREATE TABLE `glpi_changetasks` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `name` varchar(255) DEFAULT NULL,
                   `changes_id` int(11) NOT NULL DEFAULT '0',
                   `changetasks_id` int(11) NOT NULL DEFAULT '0',
-                  `is_blocked` tinyint(1) NOT NULL DEFAULT '0',
                   `taskcategories_id` int(11) NOT NULL DEFAULT '0',
-                  `status` varchar(255) DEFAULT NULL,
-                  `priority` int(11) NOT NULL DEFAULT '1',
-                  `percentdone` int(11) NOT NULL DEFAULT '0',
+                  `state` int(11) NOT NULL DEFAULT '0',
                   `date` datetime DEFAULT NULL,
                   `begin` datetime DEFAULT NULL,
                   `end` datetime DEFAULT NULL,
@@ -1275,13 +1271,9 @@ function update084to085() {
                   `content` longtext COLLATE utf8_unicode_ci,
                   `actiontime` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
-                  KEY `name` (`name`),
                   KEY `changes_id` (`changes_id`),
                   KEY `changetasks_id` (`changetasks_id`),
-                  KEY `is_blocked` (`is_blocked`),
-                  KEY `priority` (`priority`),
-                  KEY `status` (`status`),
-                  KEY `percentdone` (`percentdone`),
+                  KEY `state` (`state`),
                   KEY `users_id` (`users_id`),
                   KEY `users_id_tech` (`users_id_tech`),
                   KEY `date` (`date`),
@@ -1291,7 +1283,7 @@ function update084to085() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_changetasks");
    }
-
+   
    if (!TableExists('glpi_changecosts')) {
       $query = "CREATE TABLE `glpi_changecosts` (
                `id` int(11) NOT NULL AUTO_INCREMENT,
