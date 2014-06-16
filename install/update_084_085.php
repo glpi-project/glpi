@@ -1319,7 +1319,7 @@ function update084to085() {
             `users_id_validate` int(11) NOT NULL DEFAULT '0',
             `comment_submission` text COLLATE utf8_unicode_ci,
             `comment_validation` text COLLATE utf8_unicode_ci,
-            `status` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'waiting',
+            `status` int(11) NOT NULL DEFAULT '2',
             `submission_date` datetime DEFAULT NULL,
             `validation_date` datetime DEFAULT NULL,
             PRIMARY KEY (`id`),
