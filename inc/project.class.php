@@ -394,7 +394,7 @@ class Project extends CommonDBTM {
       $tab[13]['table']          = $this->getTable();
       $tab[13]['field']          = 'name';
       $tab[13]['name']           = __('Father');
-      $tab[13]['datatype']       = 'dropdown';
+      $tab[13]['datatype']       = 'itemlink';
       $tab[13]['massiveaction']  = false;
       // Add virtual condition to relink table
       $tab[13]['joinparams']     = array('condition' => "AND 1=1");
@@ -830,12 +830,12 @@ class Project extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Priority')."</td>";
       echo "<td>";
-      CommonITILObject::dropdownPriority(array('value' => $this->fields['priority']));
+      CommonITILObject::dropdownPriority(array('value' => $this->fields['priority'],
+                                               'withmajor' => 1));
       echo "</td>";
       echo "<td>".__('As child of')."</td>";
       echo "<td>";
-      $this->dropdown(array('comments' => 0,
-                            'entity'   => $this->fields['entities_id'],
+      $this->dropdown(array('entity'   => $this->fields['entities_id'],
                             'value'    => $this->fields['projects_id'],
                             'used'     => array($this->fields['id'])));
       echo "</td>";
@@ -975,8 +975,9 @@ class Project extends CommonDBTM {
 
       switch ($field) {
          case 'priority' :
-            $options['name']  = $name;
-            $options['value'] = $values[$field];
+            $options['name']      = $name;
+            $options['value']     = $values[$field];
+            $options['withmajor'] = 1;
             return CommonITILObject::dropdownPriority($options);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
