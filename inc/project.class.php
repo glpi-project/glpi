@@ -1045,7 +1045,7 @@ class Project extends CommonDBTM {
       $header_bottom = '';
       $header_end    = '';
       if ($canedit && $nb) {
-         $header_top    .= "<th width='10'>";
+         $header_begin    .= "<th width='10'>";
          $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          $header_end    .= "</th>";
