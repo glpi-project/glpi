@@ -108,6 +108,7 @@ class NotificationTargetContract extends NotificationTarget {
                   $typename = $type->getTypeName();
                   foreach ($item as $item_data) {
                      $toadd[] = sprintf(__('%1$s - %2$s'),$typename, $item_data['name']);
+                     $tmp['##contract.items.number##']++;
                   }
                }
             }
