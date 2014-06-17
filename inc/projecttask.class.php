@@ -349,8 +349,7 @@ class ProjectTask extends CommonDBChild {
       echo "</td>";
       echo "<td>".__('As child of')."</td>";
       echo "<td>";
-      $this->dropdown(array('comments'  => 0,
-                            'entity'    => $this->fields['entities_id'],
+      $this->dropdown(array('entity'    => $this->fields['entities_id'],
                             'value'     => $this->fields['projecttasks_id'],
                             'condition' => "`glpi_projecttasks`.`projects_id`='".
                                              $this->fields['projects_id']."'",
