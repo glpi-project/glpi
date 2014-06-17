@@ -112,6 +112,9 @@ class NotificationTarget extends CommonDBChild {
       $this->options    = $options;
       $this->getNotificationTargets($entity);
       $this->getAdditionalTargets($event);
+      // add new target by plugin
+      unset($this->data);
+      Plugin::doHook('item_add_targets', $this);
       asort($this->notification_targets);
    }
 
@@ -134,7 +137,7 @@ class NotificationTarget extends CommonDBChild {
     * @return true
    **/
    function validateSendTo($event, array $infos, $notify_me=false) {
-      
+
       if (!$notify_me) {
          if (isset($infos['users_id'])
              // Check login user and not event launch by crontask
@@ -984,7 +987,14 @@ class NotificationTarget extends CommonDBChild {
 
                default :
                   //Maybe a target specific to a type
-                  $this->getSpecificTargets($data,$options);
+                  // action for target from core
+                  if ($data['items_id'] < 1000) {
+                     $this->getSpecificTargets($data,$options);
+                  // action for target from plugin
+                  } else {
+                     $this->data = $data;
+                     Plugin::doHook('item_action_targets',$this);
+                  }
             }
             break;
 
@@ -1002,7 +1012,7 @@ class NotificationTarget extends CommonDBChild {
          case Notification::GROUP_WITHOUT_SUPERVISOR_TYPE :
             $this->getAddressesByGroup(2, $data['items_id']);
             break;
-            
+
          //Send to all the users of a profile
          case Notification::PROFILE_TYPE :
             $this->getUsersAddressesByProfile($data['items_id']);
