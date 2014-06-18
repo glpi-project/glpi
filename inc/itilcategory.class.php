@@ -84,6 +84,10 @@ class ITILCategory extends CommonTreeDropdown {
                          'label'     => __('Visible for a problem'),
                          'type'      => 'bool',
                          'list'      => true),
+                   array('name'      => 'is_change',
+                         'label'     => __('Visible for a change'),
+                         'type'      => 'bool',
+                         'list'      => true),
                    array('name'      => 'tickettemplates_id_demand',
                          'label'     => __('Template for a request'),
                          'type'      => 'dropdownValue',
@@ -146,6 +150,11 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[76]['name']           = __('Visible for a problem');
       $tab[76]['datatype']       = 'bool';
 
+      $tab[85]['table']          = $this->getTable();
+      $tab[85]['field']          = 'is_change';
+      $tab[85]['name']           = __('Visible for a change');
+      $tab[85]['datatype']       = 'bool';
+      
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'is_helpdeskvisible';
       $tab[3]['name']            = __('Visible in the simplified interface');
@@ -195,6 +204,7 @@ class ITILCategory extends CommonTreeDropdown {
       $this->fields['is_request']         = 1;
       $this->fields['is_incident']        = 1;
       $this->fields['is_problem']         = 1;
+      $this->fields['is_change']          = 1;
    }
 
 
