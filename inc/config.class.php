@@ -405,10 +405,11 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Assets') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>". __('Enable the financial and administrative information by default')."</td><td>";
+      echo "<td width='30%'>". __('Enable the financial and administrative information by default')."</td>";
+      echo "<td  width='20%'>";
       Dropdown::ShowYesNo('auto_create_infocoms', $CFG_GLPI["auto_create_infocoms"]);
-      echo "</td><td> " . __('Restrict monitor management') . "</td>";
-      echo "<td>";
+      echo "</td><td width='20%'> " . __('Restrict monitor management') . "</td>";
+      echo "<td width='30%'>";
       $this->dropdownGlobalManagement ("monitors_management_restrict",
                                        $CFG_GLPI["monitors_management_restrict"]);
       echo "</td></tr>";
