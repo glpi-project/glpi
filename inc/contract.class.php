@@ -984,6 +984,7 @@ class Contract extends CommonDBTM {
                $message = sprintf(__('%1$s: %2$s')."<br>\n", $data["name"],
                                   Infocom::getWarrantyExpir($data["begin_date"],
                                                             $data["duration"], $data["notice"]));
+               $data['items']      = Contract_Item::getItemsForContract($data['id'], $entity);
                $contract_infos[$type][$entity][$data['id']] = $data;
 
                if (!isset($contract_messages[$type][$entity])) {
@@ -1059,9 +1060,7 @@ class Contract extends CommonDBTM {
                                                 strtotime($next_alerts[$type]." +".($before)." day"));
                      $message            = sprintf(__('%1$s: %2$s')."<br>\n",
                                                  $data["name"], Html::convDate($real_alert_date));
-                     $data['alert_date'] = $real_alert_date;
-                     $data['items']      = Contract_Item::getItemsForContract($data['id'], $entity);
-                     $contract_infos[$type][$entity][$data['id']] = $data;
+                     $contract_infos[$type][$entity][$data['id']]['alert_date'] = $real_alert_date;
 
                      switch ($type) {
                         case 'periodicitynotice' :
