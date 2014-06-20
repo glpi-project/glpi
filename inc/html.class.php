@@ -1638,7 +1638,7 @@ class Html {
 
       echo "</div>";
       Html::scriptStart();
-      echo "var show_all_menu_modal = ".self::jsGetElementbyID('show_all_menu').".dialog({
+      echo self::jsGetElementbyID('show_all_menu').".dialog({
          height: 'auto',
          width: 'auto',
          modal: true,
@@ -1662,9 +1662,9 @@ class Html {
 
       /// MENU ALL
       echo "<li>";
-      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png' ".
-             "onclick=\"show_all_menu_modal.dialog('open');\">";
-      echo "</li>";
+      echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open');\">";
+      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png'>";
+      echo "</a></li>";
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
          self::showProfileSelecter($CFG_GLPI["root_doc"]."/front/central.php");
