@@ -183,7 +183,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          }
          // Parent changes => clear ancestors and update its level and completename
          if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
-            $input["ancestors_cache"] = NULL;
+            $input["ancestors_cache"] = '';
             return $this->adaptTreeFieldsFromUpdateOrAdd($input);
          }
       }
@@ -331,7 +331,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             Log::history($ID, $this->getType(), $changes, $this->getType(),
                          Log::HISTORY_UPDATE_SUBITEM);
          }
-
+         getAncestorsOf(getTableForItemType($this->getType()), $ID);
       }
    }
 
