@@ -2823,6 +2823,10 @@ class Search {
 
       switch ($inittable.".".$field) {
 //          case "glpi_users_validation.name" :
+         //for bool
+         case $table.".is_active" :
+            return " $link (`$table`.`is_active` ".$SEARCH.") ";
+
          case "glpi_users.name" :
             if ($itemtype == 'User') { // glpi_users case / not link table
                if (in_array($searchtype, array('equals', 'notequals'))) {
