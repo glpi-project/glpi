@@ -4404,7 +4404,7 @@ class Ticket extends CommonITILObject {
                $linkparam['value'] = $values["_link"]['tickets_id_2'];
             }
             Ticket::dropdown($linkparam);
-            echo "</td></tr></table>"    ;
+            echo "</td></tr></table>";
             echo "</div>";
 
             if (isset($values["_link"])
@@ -4421,7 +4421,7 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       // View files added
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       // Permit to add doc when creating a ticket
       echo "<th width='$colsize3%'>";
       echo $tt->getBeginHiddenFieldText('_documents_id');
@@ -4514,7 +4514,7 @@ class Ticket extends CommonITILObject {
       if (!$CFG_GLPI['use_rich_text']) {
          $colspan = 4;
       }
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<td colspan='$colspan'>";
       echo $tt->getBeginHiddenFieldValue('_documents_id');
       echo Html::file(array('multiple' => true, 'showfilecontainer' => 'fileupload_info'));
