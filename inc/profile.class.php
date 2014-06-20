@@ -681,8 +681,7 @@ class Profile extends CommonDBTM {
       }
       TicketTemplate::dropdown($options);
       echo "</td>";
-      echo "<td colspan='2'>&nbsp;";
-      echo "</td></tr>\n";
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('See hardware of my groups')."</td><td>";
