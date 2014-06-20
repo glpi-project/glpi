@@ -2668,10 +2668,7 @@ class Search {
       }
 
       switch ($inittable.".".$field) {
-//          case "glpi_users_validation.name" :
-         //for bool
-         case $table.".is_active" :
-            return " $link (`$table`.`is_active` ".$SEARCH.") ";
+// //          case "glpi_users_validation.name" :
 
          case "glpi_users.name" :
             if ($itemtype == 'User') { // glpi_users case / not link table
@@ -3033,7 +3030,10 @@ class Search {
                      $val = 1;
                   }
                }
-               // No break here : use number comparaison case
+               if ($searchtype == 'notequals') {
+                  $nott = !$nott;
+               }
+            // No break here : use number comparaison case
 
             case "count" :
             case "number" :
