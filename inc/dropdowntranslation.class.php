@@ -483,7 +483,7 @@ class DropdownTranslation extends CommonDBChild {
       echo "</td>";
       echo "<td>".__('Value')."</td>";
       echo "<td><input type='text' name='value' value=\"".$this->fields['value']."\" size='50'>";
-      echo "</td><td colspan='2'>&nbsp;</td>";
+      echo "</td>";
       echo "</tr>\n";
       $this->showFormButtons($options);
       return true;

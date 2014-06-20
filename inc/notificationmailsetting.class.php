@@ -129,10 +129,6 @@ class NotificationMailSetting extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>" . __('Enable followup via email') . "</td><td>";
       Dropdown::showYesNo("use_mailing", $CFG_GLPI["use_mailing"]);
       echo "</td>";
-      echo "<td>" . __('Add documents into ticket notifications') . "</td><td>";
-      Dropdown::showYesNo("attach_ticket_documents_to_mail",
-                          $CFG_GLPI["attach_ticket_documents_to_mail"]);
-      echo "</td>";
 
       if ($CFG_GLPI['use_mailing']) {
          echo "<td colspan='2'></td></tr>";
@@ -162,6 +158,14 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<td><input type='text' name='admin_reply_name' size='40' value='" .
                     $CFG_GLPI["admin_reply_name"] . "'>";
          echo " </td></tr>";
+         
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>" . __('Add documents into ticket notifications') . "</td><td>";
+         Dropdown::showYesNo("attach_ticket_documents_to_mail",
+                             $CFG_GLPI["attach_ticket_documents_to_mail"]);
+         echo "</td>";
+         echo "<td colspan='2'></td></tr>";
+         
          if (!function_exists('mail')) {
              echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
              echo "<span class='red'>" .
