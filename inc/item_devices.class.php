@@ -448,7 +448,8 @@ class Item_Devices extends CommonDBRelation {
       }
 
       echo "</div>";
-
+      // Force disable selected items
+      $_SESSION['glpimassiveactionselected'] = array();
    }
 
 
