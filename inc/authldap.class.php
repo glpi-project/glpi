@@ -745,7 +745,7 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>" . __('Picture') . "</td>";
       echo "<td><input type='text' name='picture_field' value='".
-                 $this->fields["picture_field"]."'></td></tr>";
+                 $this->fields["picture_field"]."'></td><td colspan='2'></td></tr>";
 
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";

@@ -336,6 +336,7 @@ class Config extends CommonDBTM {
 //                                  'max'   => 5000,
 //                                  'step'  => 100,
 //                                  'unit'  => 'millisecond'));
+      echo "<td colspan='2'></td>";
       echo "</td></tr>";
 
 //      echo "<tr class='tab_bg_2'>";
@@ -684,7 +685,17 @@ class Config extends CommonDBTM {
       MailCollector::showMaxFilesize('default_mailcollector_filesize_max',
                                      $CFG_GLPI["default_mailcollector_filesize_max"]);
       echo "</td>";
-
+      
+      echo "<td>" . __('Use rich text for helpdesk') . "</td><td>";
+      $id                 = 'alert'.mt_rand();
+      $param['on_change'] = '$("#'.$id.'").html("");
+            if ($(this).val() == 0) {
+               $("#'.$id.'").html("<br>'.__('You will lose the formatting of your data').'");
+            }';
+      Dropdown::showYesNo("use_rich_text", $CFG_GLPI["use_rich_text"], -1, $param);
+      echo "<span class='red' id='".$id."'></span>";
+      echo "</td></tr>";
+      
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Default heading when adding a document to a ticket') . "</td><td>";
       DocumentCategory::dropdown(array('value' => $CFG_GLPI["documentcategories_id_forticket"],
@@ -709,18 +720,6 @@ class Config extends CommonDBTM {
       echo "</td><td>" . __('Allow anonymous followups (receiver)') . "</td><td>";
       Dropdown::showYesNo("use_anonymous_followups", $CFG_GLPI["use_anonymous_followups"]);
       echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Use rich text for helpdesk') . "</td><td>";
-      $id                 = 'alert'.mt_rand();
-      $param['on_change'] = '$("#'.$id.'").html("");
-            if ($(this).val() == 0) {
-               $("#'.$id.'").html("<br>'.__('You will lose the formatting of your data').'");
-            }';
-      Dropdown::showYesNo("use_rich_text", $CFG_GLPI["use_rich_text"], -1, $param);
-      echo "<span class='red' id='".$id."'></span>";
-      echo "</td>";
-      echo "</tr>";
 
       echo "</table>";
 
@@ -966,7 +965,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".__('Go to created item after creation')."</td>";
       echo "<td>";
       Dropdown::showYesNo("backcreated", $data["backcreated"]);
-      echo "</td></tr>";
+      echo "</td><td colspan='2'></td></tr>";
 
 
 
