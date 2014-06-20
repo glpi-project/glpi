@@ -271,7 +271,11 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='subheader'>".__('Can be manager')."</td>";
+      echo "<td class='subheader' colspan='2'>".__('Visible in a project');
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Can be manager')."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_manager', $this->fields['is_manager']);
       echo "</td></tr>";
