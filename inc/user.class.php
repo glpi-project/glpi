@@ -1878,7 +1878,6 @@ class User extends CommonDBTM {
       echo "</td><td>";
       UserEmail::showForUser($this);
       echo "</td>";
-      echo "<td>&nbsp;</td>";
       echo "</tr>";
 
 
