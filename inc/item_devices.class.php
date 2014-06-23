@@ -971,21 +971,19 @@ class Item_Devices extends CommonDBRelation {
       echo "<td>".$device->getLink()."</td>";
       echo "</tr>";
       $even = 0;
+      $nb = count(static::getSpecificities());
       foreach (static::getSpecificities() as $field => $attributs) {
          if (($even % 2) == 0) {
-            echo "<tr>";
+            echo "<tr class='tab_bg_1'>";
          }
          echo "<td>".$attributs['long name']."</td>";
          echo "<td>";
          Html::autocompletionTextField($this, $field, array('size' => $attributs['size']));
          echo "</td>";
-         if (($even % 2) == 1) {
-            echo "</tr>";
-         }
          $even ++;
-      }
-      if (($even % 2) == 1) {
-         echo "</tr>";
+         if (($even == $nb) && (($nb % 2) != 0) && $nb > 1) {
+            echo "<td></td><td></td></tr>";
+         }
       }
       $this->showFormButtons($options);
 
