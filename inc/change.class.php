@@ -682,7 +682,7 @@ class Change extends CommonITILObject {
       echo "</table>";
 
       echo "<table class='tab_cadre_fixe' id='mainformtable2'>";
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".__('Status')."</th>";
       echo "<td width='$colsize2%'>";
       self::dropdownStatus(array('value'    => $this->fields["status"],
