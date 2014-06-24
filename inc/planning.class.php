@@ -500,7 +500,7 @@ class Planning extends CommonGLPI {
       echo "<td>".__('Start')."</td>\n";
       echo "<td>";
       Html::showDateField("begin", array('value'      => $begin,
-                                         'myabeempty' => false));
+                                         'maybeempty' => false));
       echo "</td>\n";
       echo "<td>".__('End')."</td>\n";
       echo "<td>";
