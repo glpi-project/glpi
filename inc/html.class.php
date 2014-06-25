@@ -3670,6 +3670,7 @@ class Html {
          tinyMCE.init({
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
          mode : 'exact',
+         browser_spellcheck : true,
          elements: '$name',
          valid_elements: '*[*]',
          plugins : 'table,directionality,searchreplace,paste,tabfocus,autoresize',
