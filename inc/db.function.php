@@ -1466,7 +1466,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
                       FROM `$table`
                       WHERE `$field` LIKE '$like' ";
 
-            if ($itemtype != INFOCOM_TYPE) {
+            if ($itemtype != 'Infocom') {
                $query .= " AND `is_deleted` = '0'
                            AND `is_template` = '0'";
 
