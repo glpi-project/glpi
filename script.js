@@ -621,7 +621,7 @@ function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
 
    var tblRows = document.getElementById(tbl).rows;
    for (i=0 ; i < tblRows.length ; i++) {
-      if (tblRows[i].className != "headerRow") {
+      if (tblRows[i].className.indexOf("headerRow") == -1) {
          if (tblRows[i].style.display == 'none') {
             tblRows[i].style.display = "table-row";
             if (img_name != ''){
