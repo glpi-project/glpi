@@ -4113,6 +4113,7 @@ class Html {
          mode : 'exact',
          elements: '$name',
          valid_elements: '*[*]',
+         browser_spellcheck : true,
          plugins : 'table,directionality,searchreplace',
          theme : 'advanced',
          entity_encoding : 'raw', ";
