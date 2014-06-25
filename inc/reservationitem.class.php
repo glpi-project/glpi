@@ -383,11 +383,17 @@ class ReservationItem extends CommonDBChild {
       $default_delay = floor((strtotime($_POST['reserve']["end"]) - strtotime($_POST['reserve']["begin"]))
                              /$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)
                        *$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
-
-      Dropdown::showTimeStamp("reserve[_duration]", array('min'        => 0,
+      $rand = Dropdown::showTimeStamp("reserve[_duration]", array('min'        => 0,
                                                           'max'        => 48*HOUR_TIMESTAMP,
                                                           'value'      => $default_delay,
                                                           'emptylabel' => __('Specify an end date')));
+      echo "<br><div id='date_end$rand'></div>";
+      $params = array('duration'     => '__VALUE__',
+                     'end'          => $_POST['reserve']["end"],
+                     'name'         => "reserve[end]");
+
+      Ajax::updateItemOnSelectEvent("dropdown_reserve[_duration]$rand", "date_end$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('Item type')."</td><td>";
