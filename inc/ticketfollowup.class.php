@@ -724,11 +724,20 @@ class TicketFollowup  extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
          echo "<th class='b'>" . __('No followup for this ticket.')."</th></tr></table>";
       } else {
-         $steps = array(0 => array('end'   => strtotime('today'),
+         $today          = strtotime('today');
+         $lastmonday     = strtotime('last monday');
+         $lastlastmonday = strtotime('last monday', strtotime('last monday'));
+         // Case of monday
+         if (($today-$lastmonday)==7*DAY_TIMESTAMP) {
+            $lastlastmonday = $lastmonday;
+            $lastmonday = $today;
+         }
+         
+         $steps = array(0 => array('end'   => $today,
                                    'name'  => __('Today')),
-                        1 => array('end'   => strtotime('last monday'),
+                        1 => array('end'   => $lastmonday,
                                    'name'  => __('This week')),
-                        2 => array('end'   => strtotime('last monday', strtotime('last monday')),
+                        2 => array('end'   => $lastlastmonday,
                                    'name'  => __('Last week')),
                         3 => array('end'   => strtotime('midnight first day of'),
                                    'name'  => __('This month')),
