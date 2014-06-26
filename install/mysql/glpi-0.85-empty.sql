@@ -2859,7 +2859,7 @@ CREATE TABLE `glpi_itilcategories` (
   `is_incident` int(11) NOT NULL DEFAULT '1',
   `is_request` int(11) NOT NULL DEFAULT '1',
   `is_problem` int(11) NOT NULL DEFAULT '1',
-  `is_change` tinyint(1) NOT NULL DEFAULT '0',
+  `is_change` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),

@@ -1178,7 +1178,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 create glpi_changes");
    }
 
-   $migration->addField('glpi_itilcategories', 'is_change', 'bool');
+   $migration->addField('glpi_itilcategories', 'is_change', 'bool', array('value' => 1));
    $migration->addKey('glpi_itilcategories', 'is_change');
    
    if (!TableExists('glpi_changes_users')) {
