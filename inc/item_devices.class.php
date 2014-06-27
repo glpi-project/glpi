@@ -59,13 +59,12 @@ class Item_Devices extends CommonDBRelation {
    static public $log_history_1_lock    = Log::HISTORY_LOCK_DEVICE;
    static public $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
-   static $rightname                    = 'device';
 
    // This var is defined by CommonDBRelation ...
    var $no_form_page                    = false;
 
    static protected $forward_entity_to = array('Infocom');
-   
+
    /**
     * @since version 0.85
    **/
