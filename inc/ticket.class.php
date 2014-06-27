@@ -2371,49 +2371,50 @@ class Ticket extends CommonITILObject {
          $tab[24]['htmltext']       = true;
          $tab[24]['massiveaction']  = false;
 
+         If (TicketCost::canView()) {
+            $tab['cost']               = __('Cost');
 
-         $tab['cost']               = __('Cost');
+            $tab[48]['table']          = 'glpi_ticketcosts';
+            $tab[48]['field']          = 'totalcost';
+            $tab[48]['name']           = __('Total cost');
+            $tab[48]['datatype']       = 'decimal';
+            $tab[48]['forcegroupby']   = true;
+            $tab[48]['usehaving']      = true;
+            $tab[48]['massiveaction']  = false;
+            $tab[48]['joinparams']     = array('jointype'  => 'child');
 
-         $tab[48]['table']          = 'glpi_ticketcosts';
-         $tab[48]['field']          = 'totalcost';
-         $tab[48]['name']           = __('Total cost');
-         $tab[48]['datatype']       = 'decimal';
-         $tab[48]['forcegroupby']   = true;
-         $tab[48]['usehaving']      = true;
-         $tab[48]['massiveaction']  = false;
-         $tab[48]['joinparams']     = array('jointype'  => 'child');
+            $tab[42]['table']          = 'glpi_ticketcosts';
+            $tab[42]['field']          = 'cost_time';
+            $tab[42]['name']           = __('Time cost');
+            $tab[42]['datatype']       = 'decimal';
+            $tab[42]['forcegroupby']   = true;
+            $tab[42]['massiveaction']  = false;
+            $tab[42]['joinparams']     = array('jointype'  => 'child');
 
-         $tab[42]['table']          = 'glpi_ticketcosts';
-         $tab[42]['field']          = 'cost_time';
-         $tab[42]['name']           = __('Time cost');
-         $tab[42]['datatype']       = 'decimal';
-         $tab[42]['forcegroupby']   = true;
-         $tab[42]['massiveaction']  = false;
-         $tab[42]['joinparams']     = array('jointype'  => 'child');
+            $tab[49]['table']          = 'glpi_ticketcosts';
+            $tab[49]['field']          = 'actiontime';
+            $tab[49]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('Duration'));
+            $tab[49]['datatype']       = 'timestamp';
+            $tab[49]['forcegroupby']   = true;
+            $tab[49]['massiveaction']  = false;
+            $tab[49]['joinparams']     = array('jointype'  => 'child');
 
-         $tab[49]['table']          = 'glpi_ticketcosts';
-         $tab[49]['field']          = 'actiontime';
-         $tab[49]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('Duration'));
-         $tab[49]['datatype']       = 'timestamp';
-         $tab[49]['forcegroupby']   = true;
-         $tab[49]['massiveaction']  = false;
-         $tab[49]['joinparams']     = array('jointype'  => 'child');
+            $tab[43]['table']          = 'glpi_ticketcosts';
+            $tab[43]['field']          = 'cost_fixed';
+            $tab[43]['name']           = __('Fixed cost');
+            $tab[43]['datatype']       = 'decimal';
+            $tab[43]['forcegroupby']   = true;
+            $tab[43]['massiveaction']  = false;
+            $tab[43]['joinparams']     = array('jointype'  => 'child');
 
-         $tab[43]['table']          = 'glpi_ticketcosts';
-         $tab[43]['field']          = 'cost_fixed';
-         $tab[43]['name']           = __('Fixed cost');
-         $tab[43]['datatype']       = 'decimal';
-         $tab[43]['forcegroupby']   = true;
-         $tab[43]['massiveaction']  = false;
-         $tab[43]['joinparams']     = array('jointype'  => 'child');
-
-         $tab[44]['table']          = 'glpi_ticketcosts';
-         $tab[44]['field']          = 'cost_material';
-         $tab[44]['name']           = __('Material cost');
-         $tab[44]['datatype']       = 'decimal';
-         $tab[44]['forcegroupby']   = true;
-         $tab[44]['massiveaction']  = false;
-         $tab[44]['joinparams']     = array('jointype'  => 'child');
+            $tab[44]['table']          = 'glpi_ticketcosts';
+            $tab[44]['field']          = 'cost_material';
+            $tab[44]['name']           = __('Material cost');
+            $tab[44]['datatype']       = 'decimal';
+            $tab[44]['forcegroupby']   = true;
+            $tab[44]['massiveaction']  = false;
+            $tab[44]['joinparams']     = array('jointype'  => 'child');
+         }
 
          $tab['problem']            = Problem::getTypeName(2);
 
