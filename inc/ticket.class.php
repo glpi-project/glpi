@@ -2254,7 +2254,9 @@ class Ticket extends CommonITILObject {
 
          $tab += $this->getSearchOptionsSolution();
 
-         $tab += TicketCost::getSearchOptionsToAdd();
+         if (Session::haveRight('ticketcost', READ)) {
+            $tab += TicketCost::getSearchOptionsToAdd();
+         }
 
          $tab['problem']            = Problem::getTypeName(2);
 
