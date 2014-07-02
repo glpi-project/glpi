@@ -319,12 +319,18 @@ class Html {
 
       // Display : clean display
       switch ($_SESSION['glpinumber_format']) {
-         case 2 : // Other French
-            return str_replace(' ', '&nbsp;', number_format($number, $decimal, ',', ' '));
-
          case 0 : // French
             return str_replace(' ', '&nbsp;', number_format($number, $decimal, '.', ' '));
 
+         case 2 : // Other French
+            return str_replace(' ', '&nbsp;', number_format($number, $decimal, ',', ' '));
+
+         case 3 : // No space with dot
+            return number_format($number, $decimal, '.', '');
+
+         case 4 : // No space with comma
+            return number_format($number, $decimal, ',', '');
+            
          default: // English
             return number_format($number, $decimal, '.', ',');
       }
