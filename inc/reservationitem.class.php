@@ -368,7 +368,7 @@ class ReservationItem extends CommonDBChild {
          $_POST['reservation_types'] = '';
       }
       echo "<form method='post' name='form' action='".Toolbox::getItemTypeSearchURL(__CLASS__)."'>";
-      echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
+      echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
       echo "<th colspan='3'>".__('Find a free item in a specific period')."</th></tr>";
 
 
@@ -441,7 +441,7 @@ class ReservationItem extends CommonDBChild {
       // GET method passed to form creation
       echo "<div id='nosearch' class='center'>";
       echo "<form name='form' method='GET' action='reservation.form.php'>";
-      echo "<table class='tab_cadrehov'>";
+      echo "<table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='".($showentity?"5":"4")."'>".self::getTypeName(1)."</th></tr>\n";
 
       foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
