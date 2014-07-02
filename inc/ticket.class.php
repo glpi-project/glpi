@@ -4611,7 +4611,7 @@ class Ticket extends CommonITILObject {
    static function showDocumentAddButton($size=25) {
       global $CFG_GLPI;
 
-      echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 5;</script>";
+      echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 15;</script>";
       echo "<span id='addfilebutton'><img title=\"".__s('Add')."\" alt=\"".
              __s('Add')."\" onClick=\"if (nbfiles<maxfiles){
                            var row = Ext.get('uploadfiles');
