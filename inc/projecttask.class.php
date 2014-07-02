@@ -1058,15 +1058,23 @@ class ProjectTask extends CommonDBChild {
             }
          }
 
+
+         $parents = 0;
+         if ($task->fields['projecttasks_id'] > 0) {
+            $parents = count(getAncestorsOf("glpi_projecttasks", $ID));
+         }
+                  
          // Add current task
          $todisplay[$real_begin.'#'.$real_end.'#task'.$task->getID()]
-                        = array('name' => $task->fields['name'],
-                              'desc'   => $task->fields['content'],
-                              'link'   => $task->getlink(),
-                              'type'   => 'task',
-                              'percent'=> $task->fields['percent_done'],
-                              'from'   => $real_begin,
-                              'to'     => $real_end);
+                        = array('id'    => $task->getID(),
+                              'name'    => $task->fields['name'],
+                              'desc'    => $task->fields['content'],
+                              'link'    => $task->getlink(),
+                              'type'    => 'task',
+                              'percent' => isset($task->fields['percent_done'])?$task->fields['percent_done']:0,
+                              'from'    => $real_begin,
+                              'parents' => $parents,
+                              'to'      => $real_end);
 
          // Add ordered subtasks
          foreach($subtasks as $key => $val) {

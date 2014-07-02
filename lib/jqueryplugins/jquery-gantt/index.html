@@ -5,7 +5,7 @@
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
         <link rel="stylesheet" href="css/style.css" />
-        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" />
         <link rel="stylesheet" href="http://taitems.github.com/UX-Lab/core/css/prettify.css" />
 		<style type="text/css">
 			body {
@@ -51,9 +51,6 @@
 				</li>
 				<li>
 					<strong><a href="mailto:leo.pfeifenberger@googlemail.com" target="_blank">Leo Pfeifenberger</a></strong> made <em>major</em> performance updates as well as adding requested features such as click events, state persisting via cookies and scrollToToday on load functionality.
-				</li>
-				<li>
-					<strong><a href="mailto:grzegorz.russek@gmail.com" target="_blank">Grzegorz Russek</a></strong> helped fix the White Whale of a bug that prevented the hour view rendering correctly. Nice one.
 				</li>
 			</ul>
 
@@ -428,9 +425,10 @@ values: [{
 		</div>
 
     </body>
-	<script src="js/jquery.min.js"></script>
+	<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 	<script src="js/jquery.fn.gantt.js"></script>
-	<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+	<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
+	<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-popover.js"></script>
 	<script src="http://taitems.github.com/UX-Lab/core/js/prettify.js"></script>
     <script>
 
@@ -443,6 +441,7 @@ values: [{
 					name: "Sprint 0",
 					desc: "Analysis",
 					values: [{
+						id: "t01",
 						from: "/Date(1320192000000)/",
 						to: "/Date(1322401600000)/",
 						label: "Requirement Gathering", 
@@ -452,10 +451,12 @@ values: [{
 					name: " ",
 					desc: "Scoping",
 					values: [{
+						id: "t02",
 						from: "/Date(1322611200000)/",
 						to: "/Date(1323302400000)/",
 						label: "Scoping", 
-						customClass: "ganttRed"
+						customClass: "ganttRed",
+						dep: "t01"
 					}]
 				},{
 					name: "Sprint 1",
@@ -522,7 +523,9 @@ values: [{
 					}]
 				}],
 				navigate: "scroll",
-				maxScale: "hours",
+				scale: "weeks",
+				maxScale: "months",
+				minScale: "days",
 				itemsPerPage: 10,
 				onItemClick: function(data) {
 					alert("Item clicked - show some details");

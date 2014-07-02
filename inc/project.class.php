@@ -1169,10 +1169,11 @@ class Project extends CommonDBTM {
 
          // Add current project
          $todisplay[$real_begin.'#'.$real_end.'#project'.$project->getID()]
-                      = array('name'     => $project->fields['name'],
+                      = array('id'       => $project->getID(),
+                              'name'     => $project->fields['name'],
                               'link'     => $project->getLink(),
                               'desc'     => $project->fields['content'],
-                              'percent'  => $project->fields['percent_done'],
+                              'percent'  => isset($project->fields['percent_done'])?$project->fields['percent_done']:0,
                               'type'     => 'project',
                               'from'     => $real_begin,
                               'to'       => $real_end);
@@ -1247,7 +1248,7 @@ class Project extends CommonDBTM {
                                                            'desc'
                                                             => $val['desc'],
                                                          'label'
-                                                            => $val['link'],
+                                                            => $val['percent']."%",
                                                          'customClass'
                                                             => $color))
                                  );
@@ -1255,7 +1256,7 @@ class Project extends CommonDBTM {
 
                   case 'task' :
                      $temp = array('name'   => ' ',
-                                   'desc'   => $val['link'],
+                                   'desc'   => str_repeat('-',$val['parents']).$val['link'],
                                    'values' => array(array('from'
                                                             => "/Date(".strtotime($val['from'])."000)/",
                                                            'to'
@@ -1263,7 +1264,7 @@ class Project extends CommonDBTM {
                                                            'desc'
                                                             => $val['desc'],
                                                            'label'
-                                                            => $val['link'],
+                                                            => $val['percent']."%",
                                                            'customClass'
                                                             => $color))
                                  );
@@ -1298,7 +1299,7 @@ class Project extends CommonDBTM {
                            $('.gantt').gantt({
                                  source: ".json_encode($data).",
                                  navigate: 'scroll',
-                                 maxScale: 'hours',
+                                 maxScale: 'months',
                                  itemsPerPage: 20,
                                  months: ".json_encode($months).",
                                  dow: ".json_encode($dow).",
