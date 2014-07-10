@@ -233,10 +233,9 @@ class SoftwareVersion extends CommonDBChild {
             if (!empty($data['sname'])) {
                $output = sprintf(__('%1$s - %2$s'), $output, $data['sname']);
             }
-            $values = array($ID => $output);
+            $values[$ID] = $output;
          }
       }
-
       return Dropdown::showFromArray($p['name'], $values);
    }
 
