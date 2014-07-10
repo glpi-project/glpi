@@ -474,7 +474,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
             $options['items']       = array($item->getID() => $item->fields);
          }
          $target = NotificationTarget::getInstance($item, $event, $options);
-         $infos  = array('language'=> $_SESSION['glpilanguage']);
+         $infos  = array('language'=> $_SESSION['glpilanguage'],
+                         'additionnaloption' => array('usertype' => NotificationTarget::GLPI_USER));
 
          $template->resetComputedTemplates();
          $template->setSignature(Notification::getMailingSignature($_SESSION['glpiactive_entity']));

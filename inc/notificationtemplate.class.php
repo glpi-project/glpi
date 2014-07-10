@@ -215,6 +215,7 @@ class NotificationTemplate extends CommonDBTM {
       } else {
          $additionnaloption =  array();
       }
+      
       $tid  = $language;
       $tid .= serialize($additionnaloption);
 
@@ -279,7 +280,7 @@ class NotificationTemplate extends CommonDBTM {
 
                $template_datas['content_html'] = self::process($template_datas['content_html'],
                                                                $data_html);
-               if (get_class($target->obj) == 'Ticket') {
+               if (get_class($target->obj) == 'Ticket' && isset($options['item'])) {
                   $Ticket = new Ticket();
                   $template_datas['content_html']
                           = $Ticket->convertContentForNotification($template_datas['content_html'],
