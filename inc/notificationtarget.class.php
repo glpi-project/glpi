@@ -982,14 +982,7 @@ class NotificationTarget extends CommonDBChild {
 
                default :
                   //Maybe a target specific to a type
-                  // action for target from core
-                  if ($data['items_id'] < 1000) {
-                     $this->getSpecificTargets($data,$options);
-                  // action for target from plugin
-                  } else {
-                     $this->data = $data;
-                     Plugin::doHook('item_action_targets',$this);
-                  }
+                  $this->getSpecificTargets($data,$options);
             }
             break;
 
@@ -1012,6 +1005,10 @@ class NotificationTarget extends CommonDBChild {
             //Maybe a target specific to a type
             $this->getSpecificTargets($data,$options);
       }
+      // action for target from plugin
+      $this->data = $data;
+      Plugin::doHook('item_action_targets',$this);
+
    }
 
 
