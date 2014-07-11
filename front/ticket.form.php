@@ -184,8 +184,8 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
 
 } else {
    Html::header(__('New ticket'),'',"helpdesk","ticket");
-   unset($_POST['id']);
-   $track->display($_POST);
+   unset($_GET['id']);
+   $track->display($_GET);
 }
 
 
