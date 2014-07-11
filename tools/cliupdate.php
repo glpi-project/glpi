@@ -278,6 +278,7 @@ switch ($current_version) {
       include("../install/update_0845_0846.php");
       update0845to0846();
 
+   case "0.84.6" :
    case GLPI_VERSION :
       break;
 

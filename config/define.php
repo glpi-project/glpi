@@ -32,7 +32,7 @@
 */
 
 // Current version of GLPI
-define("GLPI_VERSION","0.84.6");
+define("GLPI_VERSION","0.84.7");
 define("GLPI_DEMO_MODE","0");
 
 define("GLPI_USE_CSRF_CHECK", "1");
