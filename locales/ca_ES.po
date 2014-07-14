@@ -4,6 +4,7 @@
 # 
 # Translators:
 # duub, 2014
+# emwa goldwoman, 2014
 # Josep Rodriguez Tolosa <josep@asic.udl.cat>, 2014
 # Josep Rodriguez Tolosa <josep@asic.udl.cat>, 2013
 # ramon lopez <info@proferamon.com>, 2014
@@ -13,8 +14,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-25 08:54+0200\n"
-"PO-Revision-Date: 2014-06-25 06:55+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-07-13 16:30+0000\n"
+"Last-Translator: emwa goldwoman\n"
 "Language-Team: Catalan (Spain) (http://www.transifex.com/projects/p/GLPI/language/ca_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9536,7 +9537,7 @@ msgstr "Pot ser modificat"
 
 #: inc/group.class.php:274
 msgid "Visible in a project"
-msgstr ""
+msgstr "Visible en un projecte"
 
 #: inc/group.class.php:278 inc/group.class.php:463
 msgid "Can be manager"
@@ -10163,11 +10164,11 @@ msgstr "Capacitat"
 
 #: inc/item_deviceprocessor.class.php:61
 msgid "Cores"
-msgstr ""
+msgstr "Nuclis"
 
 #: inc/item_deviceprocessor.class.php:65
 msgid "Threads"
-msgstr ""
+msgstr "Fils"
 
 #. TRANS: %s is the type of the component
 #: inc/item_devices.class.php:76
@@ -10231,7 +10232,7 @@ msgstr "Visible per un problema"
 
 #: inc/itilcategory.class.php:88 inc/itilcategory.class.php:155
 msgid "Visible for a change"
-msgstr ""
+msgstr "Visible per un canvi"
 
 #: inc/itilcategory.class.php:92 inc/itilcategory.class.php:129
 msgid "Template for a request"
@@ -14551,7 +14552,7 @@ msgstr "No hi ha seguiment per a aquesta incidència"
 
 #: inc/ticketfollowup.class.php:730
 msgid "This week"
-msgstr ""
+msgstr "Aquesta setmana"
 
 #: inc/ticketfollowup.class.php:732
 msgid "Last week"
@@ -14559,7 +14560,7 @@ msgstr "Última setmana"
 
 #: inc/ticketfollowup.class.php:734
 msgid "This month"
-msgstr ""
+msgstr "Aquest mes"
 
 #: inc/ticketfollowup.class.php:736
 msgid "Last month"
@@ -14567,7 +14568,7 @@ msgstr "Últim mes"
 
 #: inc/ticketfollowup.class.php:738
 msgid "Before the last month"
-msgstr ""
+msgstr "Abans de l'últim mes"
 
 #: inc/ticketfollowup.class.php:904
 msgid "Approval of the solution"
