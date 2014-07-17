@@ -861,12 +861,11 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       echo "<div>";
-
       echo "<form method='get' action='".$this->getSearchURL()."'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
       echo "<input type='text' size='50' name='contains' value=\"".
-             stripslashes(Html::cleanInputText($params["contains"]))."\"></td>";
+             Html::cleanInputText(stripslashes($params["contains"]))."\"></td>";
       echo "<td class='left'>";
       echo "<input type='submit' value=\""._sx('button','Search')."\" class='submit'></td></tr>";
       echo "</table>";
