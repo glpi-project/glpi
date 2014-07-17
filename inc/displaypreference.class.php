@@ -292,7 +292,7 @@ class DisplayPreference extends CommonDBTM {
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
          echo __('No personal criteria. Create personal parameters?')."<span class='small_space'>";
-         echo "<input type='submit' name='activate' value=\""._sx('button', 'Post')."\"
+         echo "<input type='submit' name='activate' value=\"".__('Create')."\"
                 class='submit'>";
          echo "</span>";
          Html::closeForm();
