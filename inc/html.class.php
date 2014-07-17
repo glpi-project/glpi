@@ -1217,10 +1217,10 @@ class Html {
 
          foreach ($allassets as $type) {
             if (isset($menu['assets']['content'][strtolower($type)])) {
-               $menu['assets']['content']['state']['title']            = __('Global');
-               $menu['assets']['content']['state']['shortcut']         = '';
-               $menu['assets']['content']['state']['page']             = '/front/allassets.php';
-               $menu['assets']['content']['state']['links']['search']  = '/front/allassets.php';
+               $menu['assets']['content']['allassets']['title']            = __('Global');
+               $menu['assets']['content']['allassets']['shortcut']         = '';
+               $menu['assets']['content']['allassets']['page']             = '/front/allassets.php';
+               $menu['assets']['content']['allassets']['links']['search']  = '/front/allassets.php';
                break;
             }
          }
