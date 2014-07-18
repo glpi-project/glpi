@@ -319,10 +319,12 @@ class DisplayPreference extends CommonDBTM {
                $values[$group][$key] = $val["name"];
             }
          }
-         Dropdown::showFromArray('num', $values);
-         echo "<span class='small_space'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
-         echo "</span>";
+         if ($values) {
+            Dropdown::showFromArray('num', $values);
+            echo "<span class='small_space'>";
+            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+            echo "</span>";
+         }
          Html::closeForm();
          echo "</td></tr>\n";
 
@@ -465,10 +467,12 @@ class DisplayPreference extends CommonDBTM {
                $values[$group][$key] = $val["name"];
             }
          }
-         Dropdown::showFromArray('num', $values);
-         echo "<span class='small_space'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
-         echo "</span>";
+         if ($values) {
+            Dropdown::showFromArray('num', $values);
+            echo "<span class='small_space'>";
+            echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+            echo "</span>";
+         }
          Html::closeForm();
          echo "</td></tr>";
       }
