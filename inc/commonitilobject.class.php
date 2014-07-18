@@ -5003,7 +5003,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                $item_num, $p['row_num'], $align);
 
          // Eigth column
-         $eigth_column = "<span class='b'>".$item->fields["name"]."</span>&nbsp;";
+         $eigth_column = "<span class='b'>".$item->getName()."</span>&nbsp;";
 
          // Add link
          if ($item->canViewItem()) {
