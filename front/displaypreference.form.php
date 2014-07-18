@@ -43,9 +43,16 @@ Session::haveRightsOr('serach_config', array(DisplayPreference::PERSONAL,
 
 $setupdisplay = new DisplayPreference();
 
+
+
 if (isset($_POST["activate"])) {
    $setupdisplay->activatePerso($_POST);
 
+} else if (isset($_POST["disable"])) {
+   if ($_POST['users_id'] == Session::getLoginUserID()) {
+       $setupdisplay->deleteByCriteria(array('users_id' => $_POST['users_id'],
+                                                       'itemtype' => $_POST['itemtype']));
+   }
 } else if (isset($_POST["add"])) {
    $setupdisplay->add($_POST);
 

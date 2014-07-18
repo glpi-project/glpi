@@ -302,7 +302,16 @@ class DisplayPreference extends CommonDBTM {
          $already_added = self::getForTypeUser($itemtype, $IDuser);
 
          echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
-         echo __('Select default items to show')."</th></tr>";
+         echo "<form method='post' action='$target'>";
+         echo "<input type='hidden' name='itemtype' value='$itemtype'>";
+         echo "<input type='hidden' name='users_id' value='$IDuser'>";
+         echo __('Select default items to show')."<span class='small_space'>";
+         echo "<input type='submit' name='disable' value=\"".__('Delete')."\"
+                class='submit'>";
+         echo "</span>";
+         Html::closeForm();
+         
+         echo "</th></tr>";
          echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
          echo "<form method='post' action=\"$target\">";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
