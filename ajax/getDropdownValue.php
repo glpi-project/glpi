@@ -294,15 +294,11 @@ if ($item instanceof CommonTreeDropdown) {
 
             if ($_SESSION['glpiuse_flat_dropdowntree']) {
                if (isset($data['transcompletename']) && !empty($data['transcompletename'])) {
-                  $output = $data['transcompletename'];
+                  $outputval = $data['transcompletename'];
                } else {
-                  $output = $data['completename'];
+                  $outputval = $data['completename'];
                }
-
-               if ($level > 1) {
-                  $level = 0;
-               }
-
+               $level = 0;
             } else { // Need to check if parent is the good one
                      // Do not do if only get one item
                if (($level > 1)
