@@ -2814,7 +2814,7 @@ class Ticket extends CommonITILObject {
       $rand = mt_rand();
 
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] == 0) {
-         echo "<input type='hidden' name='$myname' value='0'>";
+         echo "<input type='hidden' name='$myname' value=''>";
          echo "<input type='hidden' name='items_id' value='0'>";
 
       } else {
