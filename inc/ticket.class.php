@@ -3405,7 +3405,9 @@ class Ticket extends CommonITILObject {
                     'slas_id'                   => 0,
                     '_add_validation'           => 0,
                     'type'                      => $type,
-                    '_documents_id'             => array());
+                    '_documents_id'             => array(),
+                    '_filename'                 => array(),
+                    '_tag_filename'             => array());
    }
 
 
@@ -3548,6 +3550,7 @@ class Ticket extends CommonITILObject {
 
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
+
       foreach ($default_values as $name => $value) {
          if (!isset($values[$name])) {
             if (isset($saved[$name])) {
@@ -3658,7 +3661,7 @@ class Ticket extends CommonITILObject {
       } else {
          $values['_predefined_fields'] = array();
       }
-
+      
       // Store predefined fields to be able not to take into account on change template
       // Only manage predefined values on ticket creation
       $predefined_fields = array();
