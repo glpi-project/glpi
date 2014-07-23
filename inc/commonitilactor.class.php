@@ -168,6 +168,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       $user          = new User();
       $default_email = "";
+      $emails = array();
       if ($user->getFromDB($this->fields["users_id"])) {
          $default_email = $user->getDefaultEmail();
          $emails        = $user->getAllEmails();
