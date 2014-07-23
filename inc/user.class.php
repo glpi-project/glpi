@@ -3193,7 +3193,7 @@ class User extends CommonDBTM {
          } else if (empty($user["link"])) {
             $user["link"] = $CFG_GLPI['root_doc']."/front/user.php";
          }
-         $output .= Html::showToolTip($user["comment"],
+         $output .= "&nbsp;".Html::showToolTip($user["comment"],
                                       array('contentid' => $comment_id,
                                             'display'   => false,
                                             'link'      => $user["link"],

@@ -206,7 +206,7 @@ class Dropdown {
             $options_tooltip['linktarget'] = '_blank';
          }
 
-         $output .= Html::showToolTip($comment,$options_tooltip);
+         $output .= "&nbsp;".Html::showToolTip($comment,$options_tooltip);
 
          if (($item instanceof CommonDropdown)
              && $item->canCreate()
