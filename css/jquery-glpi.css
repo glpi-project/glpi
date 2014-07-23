@@ -15,6 +15,7 @@
 .ui-timepicker-rtl dl { text-align: right; }
 .ui-timepicker-rtl dl dd { margin: 0 65px 10px 10px; }
 
+.hasDatepicker {margin-right:3px;}
 
 /* css styles for tabs */
 
@@ -218,3 +219,5 @@ input.submit {
    text-align: left;
    font-size: 11px;
 }
+
+
