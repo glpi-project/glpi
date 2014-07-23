@@ -4522,7 +4522,12 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='$colspan'>";
       echo $tt->getBeginHiddenFieldValue('_documents_id');
-      echo Html::file(array('multiple' => true, 'showfilecontainer' => 'fileupload_info'));
+
+      echo Html::file(array('multiple' => true,
+                            'showfilecontainer' => 'fileupload_info',
+                            'values' => array('filename' => $values['_filename'],
+                                              'tag' => $values['_tag_filename'])
+                            ));
       echo "</td>";
       if ($CFG_GLPI['use_rich_text']) {
          echo "<td colspan='$colspan'>";

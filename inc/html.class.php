@@ -4864,6 +4864,7 @@ class Html {
       $p['pasteZone']         = false;
       $p['dropZone']          = 'dropdoc'.$randupload;
       $p['rand']              = $randupload;
+      $p['values']            = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -4971,6 +4972,7 @@ class Html {
       $p['pasteZone']         = false;
       $p['dropZone']          = 'dropdoc'.$randupload;
       $p['rand']              = $randupload;
+      $p['values']            = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -5065,7 +5067,7 @@ class Html {
             });
          };\n
          function displayUploadedFile".$p['rand']."(file, tag){
-            var p = $('<p/>').attr('id',file.id).html('<b>".__('File')." : </b>'+file.display+' <b>".__('Tag')." : </b>'+tag.tag).appendTo('#".$p['showfilecontainer']."');\n
+            var p = $('<p/>').attr('id',file.id).html('<b>".__('File')." : </b>'+file.display+' <b>".__('Tag')." : </b>'+tag.tag+' ').appendTo('#".$p['showfilecontainer']."');\n
             var p2 = $('<p/>').attr('id',file.id+'2').css({'display':'none'}).appendTo('#".$p['showfilecontainer']."');\n
 
             // File
@@ -5109,6 +5111,22 @@ class Html {
             }
          };\n";
 
+//       if (is_array($p['values']) && isset($p['values']['filename'])
+//          && is_array($p['values']['filename']) && count($p['values']['filename'])) {
+//          foreach ($p['values']['filename'] as $key => $name) {
+//             if (isset($p['values']['tag'][$key])) {
+//                $script .= "var tag$key = {};
+//                            tag$key.tag = '".$p['values']['tag'][$key]."';
+//                            tag$key.name = '#".$p['values']['tag'][$key]."#';
+//                            var file$key= {};
+//                            file$key.name = '".$p['values']['filename'][$key]."';
+//                            file$key.display = '".$p['values']['filename'][$key]."';
+//                            file$key.id = 'file$key';
+//                            displayUploadedFile".$p['rand']."(file$key, tag$key);
+//                            ";
+//             }
+//          }
+//       }
       return $script;
    }
 
