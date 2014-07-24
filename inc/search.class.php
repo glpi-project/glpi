@@ -137,7 +137,7 @@ class Search {
       $p['start']               = 0;//
       $p['is_deleted']          = 0;
       $p['export_all']          = 0;
-      $p['target']              = Toolbox::getItemTypeSearchURL($itemtype);
+      $p['target']              = $itemtype::getSearchURL();
       $p['display_type']        = self::HTML_OUTPUT;
       $p['list_limit']          = $_SESSION['glpilist_limit'];
       $p['massiveactionparams'] = array();
@@ -1688,7 +1688,7 @@ class Search {
       $p['is_deleted']   = 0;
       $p['criteria']     = array();
       $p['metacriteria'] = array();
-      $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
+      $p['target']       = $itemtype::getSearchURL();
       $p['showreset']    = true;
       $p['showbookmark'] = true;
       $p['addhidden']    = array();
@@ -1768,7 +1768,10 @@ class Search {
          }
 
          if ($p['showreset']) {
-            echo "<a href='".$p['target']."?reset=reset' >";
+            echo "<a href='"
+               .$p['target']
+               .(strpos($p['target'],'?') ? '&amp;' : '?')
+               ."reset=reset' >";
             echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
                   $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
          }
@@ -4327,7 +4330,7 @@ class Search {
                         $out .= $separate;
                      }
                      $count_display++;
-                     $page  = Toolbox::getItemTypeFormURL($linkitemtype);
+                     $page  = $linkitemtype::getFormUrl();
                      $page .= (strpos($page,'?') ? '&id' : '?id');
                      $name  = Dropdown::getValueWithUnit($data[$num][$k]['name'],$unit);
                      if ($_SESSION["glpiis_ids_visible"] || empty($data[$num][$k]['name'])) {
