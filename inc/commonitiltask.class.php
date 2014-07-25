@@ -1203,7 +1203,9 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       User::dropdown($params);
       echo "</td>\n";
-      echo "<td>".__('Planning')."</td>";
+      if ($item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED)) {
+         echo "<td>".__('Planning')."</td>";
+      }
       echo "<td>";
 
       if (!empty($this->fields["begin"])) {
@@ -1256,11 +1258,12 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "};";
             echo "</script>";
 
-            echo "<div id='plan'  onClick='showPlanUpdate()'>\n";
-            echo "<span class='vsubmit'>".__('Plan this task')."</span>";
-            echo "</div>\n";
-            echo "<div id='viewplan'></div>\n";
-
+            if ($item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED)) {
+               echo "<div id='plan'  onClick='showPlanUpdate()'>\n";
+               echo "<span class='vsubmit'>".__('Plan this task')."</span>";
+               echo "</div>\n";
+               echo "<div id='viewplan'></div>\n";
+            }
          } else {
             _e('None');
          }
@@ -1333,8 +1336,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "};";
          echo "</script>\n";
          if (($item->fields["status"] != CommonITILObject::SOLVED)
-             && ($item->fields["status"] != CommonITILObject::CLOSED)
-             && ($item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED))) {
+             && ($item->fields["status"] != CommonITILObject::CLOSED)) {
             echo "<div class='center'>".
                  "<a class='vsubmit' href='javascript:viewAddTask".$item->fields['id']."$rand();'>";
             echo __('Add a new task')."</a></div><br>\n";
