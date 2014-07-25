@@ -1333,7 +1333,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "};";
          echo "</script>\n";
          if (($item->fields["status"] != CommonITILObject::SOLVED)
-             && ($item->fields["status"] != CommonITILObject::CLOSED)) {
+             && ($item->fields["status"] != CommonITILObject::CLOSED)
+             && ($item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED))) {
             echo "<div class='center'>".
                  "<a class='vsubmit' href='javascript:viewAddTask".$item->fields['id']."$rand();'>";
             echo __('Add a new task')."</a></div><br>\n";
