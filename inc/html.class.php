@@ -4877,21 +4877,21 @@ class Html {
          $addshowfilecontainer   = true;
          $p['showfilecontainer'] = "filedata$randupload";
       }
-
+      
       //echo "<input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
       $out  = "<div class='fileupload' id='".$p['dropZone']."'>";
       $out .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
       $out .= "<input id='fileupload$randupload' type='file' name='".$p['name']."[]' data-url='".
                 $CFG_GLPI["root_doc"]."/front/fileupload.php?name=".$p['name'].
                 "&amp;showfilesize=".$p['showfilesize']."'>";
+      if ($addshowfilecontainer) {
+         $out .= "<div id='".$p['showfilecontainer']."'></div>";
+      }
 
       $script  = self::fileScript($p)."\n uploadFile();";
       $out    .= Html::scriptBlock($script);
       $out    .=  "<div id='progress$randupload' style='display:none'>".
                   "<div class='uploadbar' style='width: 0%;'></div></div>";
-      if ($addshowfilecontainer) {
-         $out .= "<div id='".$p['showfilecontainer']."'></div>";
-      }
       $out .= "</div>";
 
       return $out;
@@ -5117,7 +5117,6 @@ class Html {
          foreach ($p['values']['filename'] as $key => $name) {
             if (isset($p['values']['tag'][$key])) {
                $file = GLPI_ROOT.'/files/_tmp/'.$p['values']['filename'][$key];
-
                if (file_exists($file)) {
                   $display = sprintf('%1$s %2$s', $p['values']['filename'][$key],
                                                   Toolbox::getSize(filesize($file)));

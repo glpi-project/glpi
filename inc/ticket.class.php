@@ -2980,7 +2980,9 @@ class Ticket extends CommonITILObject {
                               'type'                => Entity::getUsedConfig('tickettype',
                                                                              $_SESSION['glpiactive_entity'],
                                                                              '', Ticket::INCIDENT_TYPE),
-                              '_right'              => "id");
+                              '_right'              => "id",
+                              '_filename'           => array(),
+                              '_tag_filename'       => array());
 
       // Get default values from posted values on reload form
       if (!$ticket_template) {
@@ -3305,7 +3307,11 @@ class Ticket extends CommonITILObject {
       echo "<td colspan='4'>";
       echo "<table width='100%'><tr>";
       echo "<td width='$width '>";
-      echo Html::file(array('multiple' => true));
+
+      echo Html::file(array('multiple' => true,
+                            'values' => array('filename' => $values['_filename'],
+                                              'tag' => $values['_tag_filename'])
+                     ));
 //       "<div id='uploadfiles'><input type='file' name='filename[]' value='' size='60'></div>";
       echo "</td>";
       if ($CFG_GLPI['use_rich_text']) {
