@@ -4384,7 +4384,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       if ($view_linked_tickets) {
-         echo "<th width='$colsize3%'>". _n('Linked ticket', 'Linked tickets', 2);
+         echo "<th width='$colsize1%'>". _n('Linked ticket', 'Linked tickets', 2);
          $rand_linked_ticket = mt_rand();
          if ($canupdate) {
             echo "&nbsp;";
@@ -4393,7 +4393,7 @@ class Ticket extends CommonITILObject {
                    class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          }
          echo '</th>';
-         echo "<td width='$colsize4%' colspan='3'>";
+         echo "<td width='".(100-$colsize1)."%' colspan='3'>";
          if ($canupdate) {
             echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
             echo "<table class='tab_format' width='100%'><tr><td width='30%'>";
@@ -4428,7 +4428,7 @@ class Ticket extends CommonITILObject {
       // View files added
       echo "<tr class='tab_bg_1'>";
       // Permit to add doc when creating a ticket
-      echo "<th width='$colsize3%'>";
+      echo "<th width='$colsize1%'>";
       echo $tt->getBeginHiddenFieldText('_documents_id');
       $doctitle =  sprintf(__('File (%s)'), Document::getMaxUploadSize());
       printf(__('%1$s%2$s'), $doctitle, $tt->getMandatoryMark('_documents_id'));
@@ -4438,7 +4438,7 @@ class Ticket extends CommonITILObject {
       }
       echo $tt->getEndHiddenFieldText('_documents_id');
       echo "</th>";
-      echo "<td colspan='2'>";
+      echo "<td colspan='3' width='".(100-$colsize1)."%' >";
       // Do not set values
       echo $tt->getEndHiddenFieldValue('_documents_id');
       if ($tt->isPredefinedField('_documents_id')) {
