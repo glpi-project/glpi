@@ -4980,7 +4980,7 @@ class Html {
          }
       }
 
-      $script = "var fileindex".$p['rand']." = 0;
+      $script = "fileindex".$p['rand']." = 0;
          function uploadFile() {
             $('#fileupload".$p['rand']."').fileupload({
                //forceIframeTransport: true,
@@ -5050,9 +5050,6 @@ class Html {
                                     }
                                  }\n";
       }
-      if ($p['multiple']) {
-         $script.= "             fileindex".$p['rand']." = fileindex".$p['rand']."+1;\n";
-      }
       $script.="                 $('#progress".$p['rand']." .uploadbar').text('".__('Upload successful')."');\n
                                  $('#progress".$p['rand']." .uploadbar').css('width', '100%');\n
                               } else {\n
@@ -5089,8 +5086,12 @@ class Html {
             $('<img src=\"".$CFG_GLPI['root_doc']."/pics/delete.png\">').click(function(){\n
                deleteImagePasted(elementsIdToRemove, tag.tag);\n
             }).appendTo(p);\n
-
+            ";
+         if ($p['multiple']) {
+            $script.= "             fileindex".$p['rand']." = fileindex".$p['rand']."+1;\n";
          }
+
+         $script .= "}
          function deleteImagePasted(elementsIdToRemove, tagToRemove){\n
             // Remove file display lines
             $.each(elementsIdToRemove, function (index, id) {\n
@@ -5110,23 +5111,29 @@ class Html {
                fileindex".$p['rand']."--;\n
             }
          };\n";
+      
+      if (is_array($p['values']) && isset($p['values']['filename'])
+         && is_array($p['values']['filename']) && count($p['values']['filename'])) {
+         foreach ($p['values']['filename'] as $key => $name) {
+            if (isset($p['values']['tag'][$key])) {
+               $file = GLPI_ROOT.'/files/_tmp/'.$p['values']['filename'][$key];
 
-//       if (is_array($p['values']) && isset($p['values']['filename'])
-//          && is_array($p['values']['filename']) && count($p['values']['filename'])) {
-//          foreach ($p['values']['filename'] as $key => $name) {
-//             if (isset($p['values']['tag'][$key])) {
-//                $script .= "var tag$key = {};
-//                            tag$key.tag = '".$p['values']['tag'][$key]."';
-//                            tag$key.name = '#".$p['values']['tag'][$key]."#';
-//                            var file$key= {};
-//                            file$key.name = '".$p['values']['filename'][$key]."';
-//                            file$key.display = '".$p['values']['filename'][$key]."';
-//                            file$key.id = 'file$key';
-//                            displayUploadedFile".$p['rand']."(file$key, tag$key);
-//                            ";
-//             }
-//          }
-//       }
+               if (file_exists($file)) {
+                  $display = sprintf('%1$s %2$s', $p['values']['filename'][$key],
+                                                  Toolbox::getSize(filesize($file)));
+                  $script .= "var tag$key = {};
+                              tag$key.tag = '".$p['values']['tag'][$key]."';
+                              tag$key.name = '#".$p['values']['tag'][$key]."#';
+                              var file$key= {};
+                              file$key.name = '".addslashes($p['values']['filename'][$key])."'
+                              file$key.display = '".addslashes($display)."';
+                              file$key.id = 'file$key';
+                              displayUploadedFile".$p['rand']."(file$key, tag$key);
+                              ";
+               }
+            }
+         }
+      }
       return $script;
    }
 
