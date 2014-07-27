@@ -137,7 +137,11 @@ class Search {
       $p['start']               = 0;//
       $p['is_deleted']          = 0;
       $p['export_all']          = 0;
-      $p['target']              = $itemtype::getSearchURL();
+      if (class_exists($itemtype)) {
+         $p['target']       = $itemtype::getSearchURL();
+      } else {
+         $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
+      }
       $p['display_type']        = self::HTML_OUTPUT;
       $p['list_limit']          = $_SESSION['glpilist_limit'];
       $p['massiveactionparams'] = array();
@@ -1688,7 +1692,11 @@ class Search {
       $p['is_deleted']   = 0;
       $p['criteria']     = array();
       $p['metacriteria'] = array();
-      $p['target']       = $itemtype::getSearchURL();
+      if (class_exists($itemtype)) {
+         $p['target']       = $itemtype::getSearchURL();
+      } else {
+         $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
+      }
       $p['showreset']    = true;
       $p['showbookmark'] = true;
       $p['addhidden']    = array();
