@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-25 08:54+0200\n"
-"PO-Revision-Date: 2014-07-22 21:50+0000\n"
+"PO-Revision-Date: 2014-07-28 15:51+0000\n"
 "Last-Translator: zoran kajis <zkajis@gmail.com>\n"
 "Language-Team: Serbian (Serbia) (http://www.transifex.com/projects/p/GLPI/language/sr_RS/)\n"
 "MIME-Version: 1.0\n"
@@ -63,7 +63,7 @@ msgstr "Lozinka"
 #: install/update.php:413 install/update.php:429
 msgctxt "button"
 msgid "Post"
-msgstr "Postavi"
+msgstr "Porijava"
 
 #: index.php:130 front/lostpassword.php:45
 #: inc/notificationtargetuser.class.php:43 inc/user.class.php:3707
@@ -85,7 +85,7 @@ msgstr "Provera dozvola za upis sesija fajlova"
 
 #: index.php:158
 msgid "Invalid use of session ID"
-msgstr "Neispravno koršćenje ID sesije"
+msgstr "Istekla sesija korisnika"
 
 #: index.php:170
 msgid "Access to the Frequently Asked Questions"
@@ -3217,9 +3217,9 @@ msgstr[2] "Vrste rešenja"
 #: inc/ticketfollowup.class.php:943
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] "Izvor zahteva"
-msgstr[1] "Izvori zahteva"
-msgstr[2] "Izvori zahteva"
+msgstr[0] "Prijava podneta"
+msgstr[1] "Prijave podnete"
+msgstr[2] "Prijave podnete"
 
 #: front/stat.graph.php:282 front/stat.graph.php:283
 #: inc/commonglpi.class.php:756 inc/commonglpi.class.php:757
@@ -3364,7 +3364,7 @@ msgstr "Karakteristike"
 #: inc/group.class.php:263 inc/group.class.php:458
 #: inc/notificationtargetcommonitilobject.class.php:1098
 msgid "Assigned to"
-msgstr "Dodenjen"
+msgstr "Dodeljen"
 
 #: front/stat.tracking.php:102
 msgid "Technician as assigned"
@@ -4848,7 +4848,7 @@ msgstr "Lokacija zaliha"
 #: inc/cartridgeitem.class.php:233 inc/cartridgeitem.class.php:356
 #: inc/consumableitem.class.php:193 inc/consumableitem.class.php:306
 msgid "Alert threshold"
-msgstr "Uzbuna prekoračen prag"
+msgstr "Prag opreznosti"
 
 #: inc/cartridgeitem.class.php:308 inc/printer.class.php:647
 msgid "Number of used cartridges"
@@ -4864,7 +4864,7 @@ msgstr "Broj novih kertridža"
 
 #: inc/cartridgeitem.class.php:389 inc/cartridgeitem.class.php:534
 msgid "Send alarms on cartridges"
-msgstr "Pošalji uzbunu na kertridže"
+msgstr "Pošalji alarm na kertridže"
 
 #. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
 #. number
@@ -4873,7 +4873,7 @@ msgstr "Pošalji uzbunu na kertridže"
 msgid ""
 "Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s "
 "- Remaining %3$d"
-msgstr "Prekoračen prag uzbune za tik kertridža: %1$s - Preporučeno %2$s - Preostalo %3$d"
+msgstr "Dostignut prag alarmiranja za vrstu kertridža: %1$s - Preporučeno %2$s - Preostalo %3$d"
 
 #. TRANS: %s is entity name
 #: inc/cartridgeitem.class.php:471
@@ -6648,7 +6648,7 @@ msgstr[2] "Vrsta memorije"
 #: inc/networkequipment.class.php:395 inc/networkequipment.class.php:527
 #: inc/toolbox.class.php:1058 inc/toolbox.class.php:1182
 msgid "Mio"
-msgstr "Mio"
+msgstr "Mb"
 
 #: inc/computer.class.php:853 inc/computervirtualmachine.class.php:209
 #: inc/computervirtualmachine.class.php:345 inc/devicememory.class.php:44
@@ -6814,7 +6814,7 @@ msgstr "Dodaj iznos"
 #: inc/mailcollector.class.php:1717
 #, php-format
 msgid "%s Mio"
-msgstr "%s Mio"
+msgstr "%s Mb"
 
 #: inc/computer_item.class.php:283 inc/computer_item.class.php:308
 #: inc/computer_item.class.php:424 inc/computer_item.class.php:568
@@ -7682,7 +7682,7 @@ msgstr "Broj novog potrošnog materijala"
 
 #: inc/consumableitem.class.php:328 inc/consumableitem.class.php:431
 msgid "Send alarms on consumables"
-msgstr "Pošalji uzbunu za potrošni materijal"
+msgstr "Pošalji alarm za potrošni materijal"
 
 #. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
 #. number
@@ -7870,7 +7870,7 @@ msgstr "Maksimalni broj stavki"
 #: inc/contract.class.php:269 inc/contract.class.php:703
 #: inc/infocom.class.php:1418
 msgid "Email alarms"
-msgstr "Email uzbuna"
+msgstr "Email alarmi"
 
 #: inc/contract.class.php:284
 msgid "Support hours"
@@ -7954,7 +7954,7 @@ msgstr "Ugovori kojima objava počinje za manje od 30 dana"
 
 #: inc/contract.class.php:959
 msgid "Send alarms on contracts"
-msgstr "Pošalji uzbunu za ugovore"
+msgstr "Pošalji alarme za ugovore"
 
 #: inc/contract.class.php:1040
 msgid "Contract entered in notice time"
@@ -8708,7 +8708,7 @@ msgstr "Koristi FTP instalirane fajlove"
 #: inc/document.class.php:436
 #, php-format
 msgid "%s Mio max"
-msgstr "%s Mio max"
+msgstr "%s Mb max"
 
 #: inc/document.class.php:719
 #: inc/notificationtargetcommonitilobject.class.php:1037
@@ -9518,11 +9518,11 @@ msgstr "Nema promene entiteta"
 
 #: inc/entity.class.php:1378
 msgid "Alarms options"
-msgstr "Opcije uzbune"
+msgstr "Opcije alarma"
 
 #: inc/entity.class.php:1384
 msgid "Reminders frequency for alarms on cartridges"
-msgstr "Učestalost podsetnika za uzbune kertridža"
+msgstr "Učestalost podsetnika za alarme kertridža"
 
 #: inc/entity.class.php:1425
 msgid "Reminders frequency for alarms on consumables"
@@ -13567,8 +13567,8 @@ msgstr "Kopiraj iz stavke"
 #: inc/rule.class.php:250
 msgid "Dictionary"
 msgid_plural "Dictionaries"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Rečnik"
+msgstr[1] "Rečnika"
 msgstr[2] "Rečnici"
 
 #: inc/rule.class.php:398
@@ -13899,7 +13899,7 @@ msgstr "Biće nesvesno uvezeni"
 #: inc/ruledictionnarysoftwarecollection.class.php:148
 #, php-format
 msgid "%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)"
-msgstr "%1$s - pravila odgovora na postojeću bazu podataka: %2$s/%3$s (%4$s Mio)"
+msgstr "%1$s - pravila odgovora na postojeću bazu podataka: %2$s/%3$s (%4$s Mb)"
 
 #: inc/ruledictionnaryprintermodelcollection.class.php:42
 msgid "Dictionnary of printer models"
@@ -15131,7 +15131,7 @@ msgstr "Dodeljena memorija"
 
 #: inc/toolbox.class.php:1060
 msgid "A minimum of 64Mio is commonly required for GLPI."
-msgstr "Minimum 64Mio je zahtev za GLPI."
+msgstr "Minimum 64Mb je zahtev za GLPI."
 
 #: inc/toolbox.class.php:1061
 msgid "Try increasing the memory_limit parameter in the php.ini file."
@@ -15139,7 +15139,7 @@ msgstr "Pokušajte povećati parametar memory_limit u php.ini fajlu."
 
 #: inc/toolbox.class.php:1068 inc/toolbox.class.php:1069
 msgid "Allocated memory > 64Mio - Perfect!"
-msgstr "Dodeljena memorija > 64Mio - Perfektno!"
+msgstr "Dodeljena memorija > 64Mb - Perfektno!"
 
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
 #: inc/toolbox.class.php:1106
@@ -15627,7 +15627,7 @@ msgstr "Vrsta Wifi mreže"
 
 #: install/install.php:100
 msgid "Unofficial translations are also available"
-msgstr "Nežvanični prevodi su takođe dostupni"
+msgstr "Nezvanični prevodi su takođe dostupni"
 
 #: install/install.php:105
 msgid "I have read and ACCEPT the terms of the license written above."
