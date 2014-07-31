@@ -422,7 +422,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                        `glpi_states`.`name` AS state,
                        `glpi_groups`.`name` AS groupe,
                        `glpi_softwarelicenses`.`name` AS lname,
-                       `glpi_softwarelicenses`.`id` AS lID
+                       `glpi_softwarelicenses`.`id` AS lID,
+                       `glpi_softwarelicenses`.`softwares_id` AS softid
                 FROM `glpi_computers_softwarelicenses`
                 INNER JOIN `glpi_softwarelicenses`
                      ON (`glpi_computers_softwarelicenses`.`softwarelicenses_id`
@@ -451,15 +452,15 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             if ($canedit) {
                $rand = mt_rand();
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-               $massiveactionparams
-                  = array('num_displayed'
-                           => $_SESSION['glpilist_limit'],
-                          'container'
-                           => 'mass'.__CLASS__.$rand,
-                          'specific_actions'
-                           => array(__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_license'
-                                             => _x('button', 'Move'),
-                                    'purge' => _x('button', 'Delete permanently')));
+               $massiveactionparams = array('num_displayed'    => $_SESSION['glpilist_limit'],
+                                            'container'        => 'mass'.__CLASS__.$rand,
+                                            'specific_actions' => array('purge' => _x('button', 'Delete permanently')));
+
+               // show transfer only if multi licenses for this software
+               if (self::countLicenses($data['softid']) > 1) {
+                  $massiveactionparams['specific_actions'][__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'move_license'] =_x('button', 'Move');
+               }
+
                // Options to update license
                $massiveactionparams['extraparams']['options']['move']['used'] = array($searchID);
                $massiveactionparams['extraparams']['options']['move']['softwares_id']
@@ -689,5 +690,28 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       }
       return true;
    }
+
+
+   /**
+    * @since version 0.85
+    *
+    * count number of licenses for a software
+    **/
+   static function countLicenses($softwares_id) {
+      global $DB;
+
+      $query = "SELECT COUNT(*)
+      FROM `glpi_softwarelicenses`
+      WHERE `softwares_id` = '$softwares_id' " .
+      getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses');
+
+      $result = $DB->query($query);
+
+      if ($DB->numrows($result) != 0) {
+         return $DB->result($result, 0, 0);
+      }
+      return 0;
+   }
+
 }
 ?>
