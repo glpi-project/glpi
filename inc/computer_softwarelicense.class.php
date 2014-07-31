@@ -701,9 +701,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       global $DB;
 
       $query = "SELECT COUNT(*)
-      FROM `glpi_softwarelicenses`
-      WHERE `softwares_id` = '$softwares_id' " .
-      getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses');
+                FROM `glpi_softwarelicenses`
+                WHERE `softwares_id` = '$softwares_id' " .
+                      getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses');
 
       $result = $DB->query($query);
 
