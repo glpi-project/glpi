@@ -236,7 +236,7 @@ class SoftwareVersion extends CommonDBChild {
             $values[$ID] = $output;
          }
       }
-      return Dropdown::showFromArray($p['name'], $values);
+      return Dropdown::showFromArray($p['name'], $values, $p);
    }
 
 
