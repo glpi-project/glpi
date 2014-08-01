@@ -853,15 +853,21 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          if ($canedit) {
             $rand = mt_rand();
             Html::openMassiveActionsForm('massSoftwareLicense'.$rand);
-            $actions = array('Computer_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.
+
+            // install only if license has a version
+            $result = $DB->query($query);
+            $data   = $DB->fetch_assoc($result);
+            if ($data['softwareversions_id_buy'] || $data['softwareversions_id_use']) {
+               $actions = array('Computer_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.
                                 'install' => _x('button', 'Install'));
+            }
             if (SoftwareLicense::canUpdate()) {
                $actions['purge'] = _x('button', 'Delete permanently');
             }
 
             $massiveactionparams = array('num_displayed'    => $number,
-                              'container'        => 'massSoftwareLicense'.$rand,
-                              'specific_actions' => $actions);
+                                         'container'        => 'massSoftwareLicense'.$rand,
+                                         'specific_actions' => $actions);
 
             Html::showMassiveActions($massiveactionparams);
          }
@@ -1031,8 +1037,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td>";
-         if ((empty($withtemplate) || ($withtemplate != 2))
-             && ($version > 0)) {
+         if (empty($withtemplate) || ($withtemplate != 2)) {
             Html::showMassiveActionCheckBox('Computer_SoftwareLicense', $ID);
          }
          echo "</td>";
