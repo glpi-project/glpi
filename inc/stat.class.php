@@ -488,7 +488,7 @@ class Stat extends CommonGLPI {
                                         $header_num);
          } else {
             echo Search::showHeaderItem($output_type, __('Average'), $header_num);
-            echo Search::showHeaderItem($output_type, __('Total'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Total duration'), $header_num);
          }
          // End Line for column headers
          echo Search::showEndLine($output_type);
