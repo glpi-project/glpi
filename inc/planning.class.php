@@ -682,7 +682,7 @@ class Planning extends CommonGLPI {
    static function showPlanning($who, $who_group, $when, $type, $limititemtype='') {
       global $CFG_GLPI, $DB;
 
-      if (!Session::haveRightsOr(self::$rightname, array(self::READMY, self::READALL))) {
+      if (!Session::haveRightsOr(self::$rightname, array(self::READALL, self::READGROUP))) {
          return false;
       }
 
