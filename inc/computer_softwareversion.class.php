@@ -854,13 +854,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $rand = mt_rand();
             Html::openMassiveActionsForm('massSoftwareLicense'.$rand);
 
-            // install only if license has a version
-            $result = $DB->query($query);
-            $data   = $DB->fetch_assoc($result);
-            if ($data['softwareversions_id_buy'] || $data['softwareversions_id_use']) {
-               $actions = array('Computer_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.
-                                'install' => _x('button', 'Install'));
-            }
+            $actions = array('Computer_SoftwareLicense'.MassiveAction::CLASS_ACTION_SEPARATOR.
+                              'install' => _x('button', 'Install'));
             if (SoftwareLicense::canUpdate()) {
                $actions['purge'] = _x('button', 'Delete permanently');
             }
@@ -1021,12 +1016,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
       global $CFG_GLPI;
 
-      $version = 0;
-      if ($data["softwareversions_id_use"]>0) {
-         $version = $data["softwareversions_id_use"];
-      } else {
-         $version = $data["softwareversions_id_buy"];
-      }
 
       $ID = $data['linkID'];
 

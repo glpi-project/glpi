@@ -185,7 +185,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                               $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                            } else {
                               $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                          }
+                           }
                         } else {
                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                         }
