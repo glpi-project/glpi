@@ -878,7 +878,7 @@ class Computer extends CommonDBTM {
       $tab[20]['massiveaction']  = false;
       $tab[20]['datatype']       = 'string';
       $tab[20]['joinparams']     = $items_device_joinparams;
-                                                   
+
       $tab[12]['table']          = 'glpi_devicesoundcards';
       $tab[12]['field']          = 'designation';
       $tab[12]['name']           = __('Soundcard');
@@ -958,7 +958,7 @@ class Computer extends CommonDBTM {
 
       $tab[150]['table']         = 'glpi_computerdisks';
       $tab[150]['field']         = 'totalsize';
-      $tab[150]['name']          = __('Global size');
+      $tab[150]['name']          = sprintf(__('%1$s (%2$s)'), __('Global size'), __('Mio'));
       $tab[150]['forcegroupby']  = true;
       $tab[150]['usehaving']     = true;
       $tab[150]['datatype']      = 'number';
