@@ -1003,7 +1003,7 @@ class Computer extends CommonDBTM {
 
       $tab[150]['table']         = 'glpi_computerdisks';
       $tab[150]['field']         = 'totalsize';
-      $tab[150]['name']          = __('Global size')." (".__('Mio').")";
+      $tab[150]['name']          = sprintf(__('%1$s (%2$s)'),__('Global size'),__('Mio'));
       $tab[150]['forcegroupby']  = true;
       $tab[150]['usehaving']     = true;
       $tab[150]['datatype']      = 'number';
