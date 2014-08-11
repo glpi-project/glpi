@@ -34,6 +34,9 @@
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
+// GLPIMailer::__construct don't call PHPMailer::__construct
+// so PHPMailerAutoload is not registered, so need this
+require_once(GLPI_PHPMAILER_DIR . "/class.smtp.php");
 require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
 
 
