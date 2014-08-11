@@ -2241,14 +2241,14 @@ class CommonDBTM extends CommonGLPI {
                echo "<table class='tab_format'><tr class='headerRow'><th>".$entityname."</th>";
                echo "<th class='right'>".__('Child entities')."</th><th>";
                if ($params['canedit']) {
-                  if (!$this->can($ID,'recursive')) {
-                     echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                     $comment = __('You are not allowed to change the visibility flag for child entities.');
-                     // CommonDBChild : entity data is get or copy from parent
-
-                  } else if ( $this instanceof CommonDBChild) {
+                  if ( $this instanceof CommonDBChild) {
                      echo Dropdown::getYesNo($this->isRecursive());
                      $comment = __("Can't change this attribute. It's inherited from its parent.");
+                     // CommonDBChild : entity data is get or copy from parent
+
+                  } else if (!$this->can($ID,'recursive')) {
+                     echo Dropdown::getYesNo($this->fields["is_recursive"]);
+                     $comment = __('You are not allowed to change the visibility flag for child entities.');
 
                   } else if ( !$this->canUnrecurs()) {
                      echo Dropdown::getYesNo($this->fields["is_recursive"]);
