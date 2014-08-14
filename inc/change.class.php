@@ -42,7 +42,7 @@ class Change extends CommonITILObject {
 
    // From CommonDBTM
    public $dohistory                   = true;
-   static protected $forward_entity_to = array('ChangeValidation');
+   static protected $forward_entity_to = array('ChangeValidation', 'ChangeCost');
 
    // From CommonITIL
    public $userlinkclass               = 'Change_User';

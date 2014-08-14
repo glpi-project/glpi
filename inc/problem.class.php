@@ -51,6 +51,8 @@ class Problem extends CommonITILObject {
    static $rightname            = 'problem';
    protected $usenotepadrights  = true;
 
+   static protected $forward_entity_to = array('ProblemCost');
+
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';
    const IMPACT_MASK_FIELD    = 'impact_mask';
