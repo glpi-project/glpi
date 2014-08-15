@@ -1789,7 +1789,7 @@ class User extends CommonDBTM {
          echo "<th colspan='2'>"._n('Authorization','Authorizations',1)."</th>";
          echo "<td>" .  __('Recursive') . "</td><td>";
          Dropdown::showYesNo("_is_recursive",0);
-         echo "</td></tr>";      
+         echo "</td></tr>";
          echo "<tr class='tab_bg_1'>";
          echo "<td>" .  __('Profile') . "</td><td>";
          Profile::dropdownUnder(array('name'  => '_profiles_id',
@@ -2062,6 +2062,14 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
+         echo "<tr class='tab_bg_1'><td>" . __('Administrative number') . "</td><td>";
+         if ($extauth
+             && isset($authtype['registration_number']) && !empty($authtype['registration_number'])) {
+            echo $this->fields["registration_number"];
+         } else {
+            Html::autocompletionTextField($this, "registration_number");
+         }
+         echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('Location') . "</td><td>";
          $entities = Profile_User::getUserEntities($ID, true);
@@ -2688,7 +2696,7 @@ class User extends CommonDBTM {
             }
             $forcecentral = true;
             $where        = array();
-            
+
             foreach ($right as $r) {
                // Check read or active for rights
                $where[] = " (`glpi_profiles`.`".$r."` IN ('1', 'r', 'w') ".
