@@ -201,7 +201,7 @@ class UserEmail  extends CommonDBChild {
       }
       $canedit = ($user->can($users_id,"w") || ($users_id == Session::getLoginUserID()));
 
-      parent::showAddChildButtonForItemForm($user, '_useremails');
+      parent::showAddChildButtonForItemForm($user, '_useremails', $canedit);
 
       return;
    }
