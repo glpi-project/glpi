@@ -2265,6 +2265,14 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
+         echo "<tr class='tab_bg_1'><td>" . __('Administrative number') . "</td><td>";
+         if ($extauth
+             && isset($authtype['registration_number']) && !empty($authtype['registration_number'])) {
+            echo $this->fields["registration_number"];
+         } else {
+            Html::autocompletionTextField($this, "registration_number");
+         }
+         echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('Location') . "</td><td>";
          $entities = Profile_User::getUserEntities($ID, true);
