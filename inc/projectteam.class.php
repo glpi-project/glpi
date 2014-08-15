@@ -43,15 +43,19 @@ if (!defined('GLPI_ROOT')) {
  * @author Julien Dombre
  * @since version 0.85
  **/
-class ProjectTeam extends CommonDBChild {
+class ProjectTeam extends CommonDBRelation {
 
    // From CommonDBTM
    public $dohistory                   = true;
    var $no_form_page                   = true;
 
-   // From CommonDBChild
-   static public $itemtype             = 'Project';
-   static public $items_id             = 'projects_id';
+   // From CommonDBRelation
+   static public $itemtype_1          = 'Project';
+   static public $items_id_1          = 'projects_id';
+
+   static public $itemtype_2          = 'itemtype';
+   static public $items_id_2          = 'items_id';
+   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
    static public $available_types      = array('User', 'Group', 'Supplier', 'Contact');
 
