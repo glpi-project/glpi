@@ -2478,10 +2478,10 @@ class Profile extends CommonDBTM {
              && ((!empty($info['itemtype'])) || (!empty($info['rights'])))
              && (!empty($info['label']))
              && (!empty($info['field']))) {
-//             // Add right if it does not exists ; security
-//             if (!isset($availablerights[$info['field']])) {
-//                ProfileRight::addProfileRights(array($info['field']));
-//             }
+            // Add right if it does not exists : security for update 
+            if (!isset($availablerights[$info['field']])) {
+               ProfileRight::addProfileRights(array($info['field']));
+            }
             
             $row = array('label'   => $info['label'],
                          'columns' => array());
