@@ -478,7 +478,7 @@ if ($item instanceof CommonTreeDropdown) {
    switch ($_GET['itemtype']) {
       case "Contact" :
          $query = "SELECT `$table`.`entities_id`,
-                          CONCAT(`name`,' ',`firstname`) AS $field,
+                          CONCAT(IFNULL(`name`,''),' ',IFNULL(`firstname`,'')) AS $field,
                           `$table`.`comment`, `$table`.`id`
                    FROM `$table`
                    $where";
