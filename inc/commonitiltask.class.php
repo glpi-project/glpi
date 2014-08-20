@@ -433,7 +433,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       if (!empty($this->fields['begin'])
-          && $item->isStatusExists(CommonITILObject::PLANNED) 
+          && $this->input["_job"]->isStatusExists(CommonITILObject::PLANNED)
           && (($this->input["_job"]->fields["status"] == CommonITILObject::INCOMING)
               || ($this->input["_job"]->fields["status"] == CommonITILObject::ASSIGNED))) {
 
