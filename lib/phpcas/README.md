@@ -8,6 +8,9 @@ Please see the phpCAS website for more information:
 
 https://wiki.jasig.org/display/CASC/phpCAS
 
+[![Build Status](https://travis-ci.org/Jasig/phpCAS.png)](https://travis-ci.org/Jasig/phpCAS)
+
+
 LICENSE
 -------
 
