@@ -2064,7 +2064,7 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . __('Administrative number') . "</td><td>";
          if ($extauth
-             && isset($authtype['registration_number']) && !empty($authtype['registration_number'])) {
+             && isset($authtype['registration_number_field']) && !empty($authtype['registration_number_field'])) {
             echo $this->fields["registration_number"];
          } else {
             Html::autocompletionTextField($this, "registration_number");
