@@ -12,14 +12,15 @@
 # Juranir dos Santos <juranir.santos@gmail.com>, 2014
 # Juranir dos Santos <juranir.santos@gmail.com>, 2014
 # Rafael Ferreira <rafael.f.f1@gmail.com>, 2013-2014
+# rodrigoevildead <rodrigo.evildead@gmail.com>, 2014
 # Vinicius Santoros Candido Correa <vini.santoro@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-25 08:54+0200\n"
-"PO-Revision-Date: 2014-06-25 06:55+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-07-29 16:20+0000\n"
+"Last-Translator: rodrigoevildead <rodrigo.evildead@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/GLPI/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2947,7 +2948,7 @@ msgstr "Duração real"
 #: front/stat.global.php:151 front/stat.graph.php:392
 #: inc/commonitilobject.class.php:4188 inc/stat.class.php:475
 msgid "Take into account"
-msgstr "Levar em consideração"
+msgstr "Atribuição"
 
 #: front/stat.global.php:185 front/stat.graph.php:425
 #: inc/crontask.class.php:954 inc/stat.class.php:419
@@ -9541,7 +9542,7 @@ msgstr "Pode ser notificado"
 
 #: inc/group.class.php:274
 msgid "Visible in a project"
-msgstr ""
+msgstr "Visível em um projeto"
 
 #: inc/group.class.php:278 inc/group.class.php:463
 msgid "Can be manager"
@@ -10168,11 +10169,11 @@ msgstr "Capacidade"
 
 #: inc/item_deviceprocessor.class.php:61
 msgid "Cores"
-msgstr ""
+msgstr "Núcleos"
 
 #: inc/item_deviceprocessor.class.php:65
 msgid "Threads"
-msgstr ""
+msgstr "Threads"
 
 #. TRANS: %s is the type of the component
 #: inc/item_devices.class.php:76

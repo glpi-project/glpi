@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-25 08:54+0200\n"
-"PO-Revision-Date: 2014-06-25 06:55+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-06-25 10:41+0000\n"
+"Last-Translator: Luis A. Uriarte <luisuriarte@gmail.com>\n"
 "Language-Team: Spanish (Argentina) (http://www.transifex.com/projects/p/GLPI/language/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9537,7 +9537,7 @@ msgstr "Puede ser notificada"
 
 #: inc/group.class.php:274
 msgid "Visible in a project"
-msgstr ""
+msgstr "Visible en un proyecto"
 
 #: inc/group.class.php:278 inc/group.class.php:463
 msgid "Can be manager"
@@ -10164,11 +10164,11 @@ msgstr "Capacidad"
 
 #: inc/item_deviceprocessor.class.php:61
 msgid "Cores"
-msgstr ""
+msgstr "Nucleos"
 
 #: inc/item_deviceprocessor.class.php:65
 msgid "Threads"
-msgstr ""
+msgstr "Hilos"
 
 #. TRANS: %s is the type of the component
 #: inc/item_devices.class.php:76

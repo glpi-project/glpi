@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-25 08:54+0200\n"
-"PO-Revision-Date: 2014-07-28 20:21+0000\n"
+"PO-Revision-Date: 2014-07-30 21:00+0000\n"
 "Last-Translator: Sebastien <sebastien.janez@free.fr>\n"
 "Language-Team: Slovenian (Slovenia) (http://www.transifex.com/projects/p/GLPI/language/sl_SI/)\n"
 "MIME-Version: 1.0\n"
@@ -83,7 +83,7 @@ msgstr "Preverjanje pravic pisanja za datoteke sej"
 
 #: index.php:158
 msgid "Invalid use of session ID"
-msgstr ""
+msgstr "Neveljavna uporaba ID seje"
 
 #: index.php:170
 msgid "Access to the Frequently Asked Questions"
@@ -169,7 +169,7 @@ msgstr "%1$s - Vrata %2$s"
 #: ajax/dropdownConnectNetworkPort.php:102
 #, php-format
 msgid "%1$s - Network outlet %2$s"
-msgstr ""
+msgstr "%1$s - Omrežni vtičnici %2$s"
 
 #. TRANS: %1$s is the name, %2$s the ID
 #. TRANS: %1$s is a name, %2$s is ID
@@ -1008,7 +1008,7 @@ msgstr "Poizkusite ponovno"
 #: config/config.php:224 inc/plugin.class.php:491 install/install.php:132
 msgctxt "button"
 msgid "Upgrade"
-msgstr "Nadgradnja"
+msgstr "Nadgradi"
 
 #: config/config.php:230
 msgid ""
@@ -1455,19 +1455,19 @@ msgstr "%s posodobi opravilo"
 #: front/commonitilvalidation.form.php:63
 #, php-format
 msgid "%s adds an approval"
-msgstr ""
+msgstr "%s doda odobritev"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:73
 #, php-format
 msgid "%s updates an approval"
-msgstr ""
+msgstr "%s posodobi odobritev"
 
 #. TRANS: %s is the user login
 #: front/commonitilvalidation.form.php:82
 #, php-format
 msgid "%s purges an approval"
-msgstr ""
+msgstr "%s počisti odobritev"
 
 #. TRANS: %s is the user login
 #: front/computerdisk.form.php:53
@@ -1658,10 +1658,10 @@ msgstr ""
 #: install/update_0723_078.php:3889
 msgid "Component"
 msgid_plural "Components"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Komponent"
+msgstr[1] "Komponenta"
+msgstr[2] "Komponenti"
+msgstr[3] "Komponente"
 
 #: front/dictionnary.php:39 inc/html.class.php:1155 inc/profile.class.php:100
 #: inc/profile.class.php:1326 inc/profile.class.php:1751
@@ -1689,9 +1689,9 @@ msgstr "Globalni slovar"
 #: install/update_0713_072.php:156 install/update_0713_072.php:508
 msgid "Software"
 msgid_plural "Software"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Programska oprema"
+msgstr[1] "Programski opremi"
+msgstr[2] "Programske opreme"
 msgstr[3] "Programske opreme"
 
 #: front/dictionnary.php:54 inc/cartridgeitem.class.php:198
@@ -1730,9 +1730,9 @@ msgstr[3] "Proizvajalce"
 #: inc/transfer.class.php:3356
 msgid "Printer"
 msgid_plural "Printers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Tiskalnik"
+msgstr[1] "Tiskalnika"
+msgstr[2] "Tiskalniki"
 msgstr[3] "Tiskalnike"
 
 #: front/dictionnary.php:66 front/stat.location.php:84
@@ -1789,9 +1789,9 @@ msgstr[3] "Modele monitorja"
 #: inc/rule.class.php:307
 msgid "Printer model"
 msgid_plural "Printer models"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Model tiskalnika"
+msgstr[1] "Modela tiskalnika"
+msgstr[2] "Modeli tiskalnika"
 msgstr[3] "Modele tiskalnika"
 
 #: front/dictionnary.php:77
@@ -2240,18 +2240,18 @@ msgstr "Inventarna številka"
 #: inc/profile.class.php:1509
 msgid "Computer"
 msgid_plural "Computers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Računalnik"
+msgstr[1] "Računalnika"
+msgstr[2] "Računalniki"
 msgstr[3] "Računalnike"
 
 #: front/find_num.php:100 inc/networkequipment.class.php:59
 msgid "Network device"
 msgid_plural "Network devices"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Omrežna naprava"
+msgstr[1] "Omrežni napravi"
+msgstr[2] "Omrežne naprave"
+msgstr[3] "Omrežne naprave"
 
 #: front/find_num.php:102 inc/lock.class.php:481 inc/monitor.class.php:57
 #: inc/profile.class.php:780 inc/profile.class.php:1518
@@ -2412,15 +2412,15 @@ msgstr ""
 
 #: front/migrationcleaner.php:41
 msgid "You don't need the \"migration cleaner\" tool anymore..."
-msgstr ""
+msgstr "Ne potrebujete več orodja \"čistilec migracije\" ..."
 
 #: front/migrationcleaner.php:45 inc/migrationcleaner.class.php:48
 msgid "Migration cleaner"
-msgstr ""
+msgstr "Čistilec migracije"
 
 #: front/migrationcleaner.php:50
 msgid "\"Migration cleaner\" tool"
-msgstr ""
+msgstr "Orodje \"čistilec migracije\""
 
 #: front/migrationcleaner.php:57 inc/ipnetwork.class.php:1018
 msgid "Reinit the network topology"
@@ -2743,7 +2743,7 @@ msgstr "Omrežno poročilo po lokaciji: %s"
 #: front/report.netpoint.list.php:46
 #, php-format
 msgid "Network report by outlet: %s"
-msgstr "Omrežno poročilo po meniju: %s"
+msgstr "Omrežno poročilo po vtičnici: %s"
 
 #: front/report.networking.php:45 inc/report.class.php:90
 msgid "Network report"
@@ -2759,7 +2759,7 @@ msgstr "Po računalniški strojni opremi - hardware"
 
 #: front/report.networking.php:75
 msgid "By network outlet"
-msgstr "Po menijih"
+msgstr "Po omrežni vtičnici"
 
 #: front/report.switch.list.php:47
 #, php-format
@@ -2937,7 +2937,7 @@ msgstr "%1$s doda licenco %2$s"
 #: front/softwarelicense.form.php:64
 #, php-format
 msgid "%1$s purges the license %2$s"
-msgstr ""
+msgstr "%1$s počisti licenco %2$s"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:73
@@ -2994,7 +2994,7 @@ msgstr[3] "Urejeno"
 #: front/stat.global.php:94 front/stat.graph.php:339
 #: inc/commonitilobject.class.php:2590 inc/stat.class.php:442
 msgid "Late"
-msgstr ""
+msgstr "Pozno"
 
 #: front/stat.global.php:95 front/stat.graph.php:340 inc/stat.class.php:443
 #: install/update_084_085.php:2069
@@ -3034,10 +3034,10 @@ msgstr "Povprečni čas"
 #: inc/config.class.php:1066 inc/config.class.php:1083 inc/sla.class.php:178
 msgid "Hour"
 msgid_plural "Hours"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Ura"
+msgstr[1] "Uri"
+msgstr[2] "Ure"
+msgstr[3] "Ure"
 
 #: front/stat.global.php:203 front/stat.graph.php:444 inc/stat.class.php:458
 msgctxt "survey"
@@ -3142,9 +3142,9 @@ msgstr[3] "Dobavitelje"
 #: install/update_0713_072.php:553
 msgid "User"
 msgid_plural "Users"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Uporabnik"
+msgstr[1] "Uporabnika"
+msgstr[2] "Uporabniki"
 msgstr[3] "Uporabnike"
 
 #: front/stat.graph.php:126 front/stat.graph.php:216
@@ -3362,7 +3362,7 @@ msgstr[3] "Naročnik"
 #: inc/notificationtargetticket.class.php:630 inc/reminder.class.php:384
 #: inc/ticket.class.php:2186
 msgid "Writer"
-msgstr ""
+msgstr "Pisec"
 
 #: front/stat.tracking.php:80 front/stat.tracking.php:108
 msgid "Group tree"
@@ -3790,9 +3790,9 @@ msgstr ""
 #: install/update_0681_07.php:567 install/update_0723_078.php:3687
 msgid "Phone"
 msgid_plural "Phones"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Telefon"
+msgstr[1] "Telefona"
+msgstr[2] "Telefoni"
 msgstr[3] "Telefone"
 
 #: inc/auth.class.php:1341 inc/authldap.class.php:728
@@ -4270,7 +4270,7 @@ msgstr ""
 
 #: inc/backup.class.php:66
 msgid "Check for upgrade"
-msgstr "Preveri za posodobitev"
+msgstr "Preveri za nadgraditev "
 
 #: inc/blacklist.class.php:75 inc/blacklist.class.php:101
 #: inc/dropdowntranslation.class.php:378 inc/dropdowntranslation.class.php:484
@@ -4647,10 +4647,10 @@ msgstr[3] "Dan"
 #: inc/profile.class.php:792 inc/profile.class.php:1563
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Kartuša"
+msgstr[1] "Kartuši"
+msgstr[2] "Kartuše"
+msgstr[3] "Kartuše"
 
 #: inc/cartridge.class.php:280
 msgid "Installing a cartridge"
@@ -4671,7 +4671,7 @@ msgid_plural "New"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "Novo"
 
 #: inc/cartridge.class.php:362 inc/cartridge.class.php:414
 #: inc/cartridge.class.php:589
@@ -4895,7 +4895,7 @@ msgstr "Reference"
 #: inc/search.class.php:4931 inc/software.class.php:262
 #: inc/software.class.php:498
 msgid "Technician in charge of the hardware"
-msgstr "Odgovorni tehnik"
+msgstr "Tehnik odgovoren za strojno opremo"
 
 #: inc/cartridgeitem.class.php:217 inc/cartridgeitem.class.php:350
 #: inc/computer.class.php:459 inc/computer.class.php:800
@@ -4909,7 +4909,7 @@ msgstr "Odgovorni tehnik"
 #: inc/phone.class.php:503 inc/printer.class.php:314 inc/printer.class.php:691
 #: inc/software.class.php:273 inc/software.class.php:505
 msgid "Group in charge of the hardware"
-msgstr ""
+msgstr "Skupina odgovona za strojno opremo"
 
 #: inc/cartridgeitem.class.php:226 inc/consumableitem.class.php:186
 msgid "Stock location"
@@ -4918,7 +4918,7 @@ msgstr "Kraj zaloge"
 #: inc/cartridgeitem.class.php:233 inc/cartridgeitem.class.php:356
 #: inc/consumableitem.class.php:193 inc/consumableitem.class.php:306
 msgid "Alert threshold"
-msgstr ""
+msgstr "Alarmni prag"
 
 #: inc/cartridgeitem.class.php:308 inc/printer.class.php:647
 msgid "Number of used cartridges"
@@ -4953,7 +4953,7 @@ msgstr ""
 
 #: inc/cartridgeitem_printermodel.class.php:148
 msgid "Add a compatible printer model"
-msgstr ""
+msgstr "Dodaj model združljivega tiskalnika"
 
 #: inc/cartridgeitem_printermodel.class.php:204
 #: inc/commonitilcost.class.php:557 inc/commonitilvalidation.class.php:863
@@ -5103,7 +5103,7 @@ msgstr ""
 #: inc/ticket.class.php:2459
 msgctxt "status"
 msgid "New"
-msgstr ""
+msgstr "Novo"
 
 #: inc/change.class.php:455
 msgid "Evaluation"
@@ -5730,7 +5730,7 @@ msgstr "Zadnji"
 
 #: inc/commonglpi.class.php:1169
 msgid "Reset display options"
-msgstr ""
+msgstr "Ponastavi možnosti prikaza"
 
 #: inc/commonglpi.class.php:1255
 msgid "Unable to get item"
@@ -6170,7 +6170,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:2972
 #: inc/notificationtargetcommonitilobject.class.php:443
 msgid "Group in charge of the ticket"
-msgstr "Skupina odgovorna za naročila"
+msgstr "Skupina odgovorna za nalogo"
 
 #: inc/commonitilobject.class.php:3438
 msgid "Actor"
@@ -6639,10 +6639,10 @@ msgstr ""
 #: inc/profile.class.php:1536
 msgid "Network"
 msgid_plural "Networks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Omrežje"
+msgstr[1] "Omrežji"
+msgstr[2] "Omrežja"
+msgstr[3] "Omrežja"
 
 #: inc/computer.class.php:536 inc/computer.class.php:782
 #: inc/domain.class.php:47 inc/dropdown.class.php:814
@@ -6939,7 +6939,7 @@ msgstr ""
 
 #: inc/computer_item.class.php:541
 msgid "Connect a computer"
-msgstr ""
+msgstr "Poveži računalnik"
 
 #: inc/computer_item.class.php:623
 msgid "Not connected"
@@ -6972,7 +6972,7 @@ msgstr[3] "Licence"
 
 #: inc/computer_softwarelicense.class.php:291
 msgid "Number of affected computers"
-msgstr ""
+msgstr "Število prizadetih računalnikov"
 
 #: inc/computer_softwarelicense.class.php:406
 #: inc/computer_softwarelicense.class.php:568
@@ -7296,7 +7296,7 @@ msgstr "Pomoč"
 
 #: inc/config.class.php:662
 msgid "Step for the hours (minutes)"
-msgstr ""
+msgstr "Korak za ure (minute)"
 
 #: inc/config.class.php:674
 msgid "Limit of the schedules for planning"
@@ -7743,7 +7743,7 @@ msgid_plural "New"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
-msgstr[3] ""
+msgstr[3] "Novo"
 
 #: inc/consumable.class.php:405
 msgctxt "consumable"
@@ -8539,7 +8539,7 @@ msgstr ""
 #: inc/dbconnection.class.php:385
 #, php-format
 msgid "Mysql server: %1$s, difference between master and slave: %2$s"
-msgstr ""
+msgstr "Mysql strežnik: %1$s, razlika med glavni in suženj: %2$s"
 
 #: inc/dbconnection.class.php:423
 msgid "can't connect to the database"
@@ -9473,7 +9473,7 @@ msgstr ""
 #: inc/entity.class.php:566 inc/entity.class.php:1327
 #: inc/notificationmailsetting.class.php:137
 msgid "Administrator email"
-msgstr "Administrator Pošte"
+msgstr "Elektronska pošta skrbnika"
 
 #: inc/entity.class.php:572 inc/entity.class.php:1336
 #: inc/notificationmailsetting.class.php:150
@@ -9487,7 +9487,7 @@ msgstr ""
 #: inc/entity.class.php:583 inc/entity.class.php:1331
 #: inc/notificationmailsetting.class.php:144
 msgid "Administrator name"
-msgstr "Administrator Ime"
+msgstr "Ime skrbnika"
 
 #: inc/entity.class.php:588 inc/entity.class.php:1340
 msgid "Response address (if needed)"
@@ -9923,12 +9923,12 @@ msgstr "Dodaj uporabnika"
 #: inc/group.class.php:348
 msgctxt "button"
 msgid "Add a manager"
-msgstr ""
+msgstr "Dodaj upravitelja"
 
 #: inc/group.class.php:349
 msgctxt "button"
 msgid "Add a delegatee"
-msgstr ""
+msgstr "Dodaj pooblaščencu"
 
 #: inc/group.class.php:350
 msgctxt "button"
@@ -10060,20 +10060,20 @@ msgstr ""
 #, php-format
 msgid "%1$s%2$d minute"
 msgid_plural "%1$s%2$d minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%1$s%2$d minut"
+msgstr[1] "%1$s%2$d minutq"
+msgstr[2] "%1$s%2$d minuti"
+msgstr[3] "%1$s%2$d minute"
 
 #. TRANS:  %1$s is the sign (-or empty), %2$d number of seconds
 #: inc/html.class.php:402
 #, php-format
 msgid "%1$s%2$s second"
 msgid_plural "%1$s%2$s seconds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%1$s%2$s sekund"
+msgstr[1] "%1$s%2$s sekunda"
+msgstr[2] "%1$s%2$s sekundi"
+msgstr[3] "%1$s%2$s sekunde"
 
 #: inc/html.class.php:514 inc/html.class.php:3756
 #: inc/profile_user.class.php:424
@@ -10099,7 +10099,7 @@ msgstr "Odjavi"
 #: inc/html.class.php:1656 inc/html.class.php:1659 inc/html.class.php:1660
 #: inc/html.class.php:2063 inc/html.class.php:2066 inc/html.class.php:2067
 msgid "Load a bookmark"
-msgstr ""
+msgstr "Nalagaj zaznamek"
 
 #: inc/html.class.php:1690
 msgid "^Top^"
@@ -10175,10 +10175,10 @@ msgstr "Navedi datum"
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "- %d ura"
+msgstr[1] "- %d uri"
+msgstr[2] "- %d ure"
+msgstr[3] "- %d ure"
 
 #: inc/html.class.php:3240 inc/slalevel.class.php:381
 #, php-format
@@ -10333,11 +10333,11 @@ msgstr ""
 #: inc/html.class.php:5014
 msgctxt "button"
 msgid "Paste image"
-msgstr ""
+msgstr "Prilepi sliko"
 
 #: inc/html.class.php:5069
 msgid "Upload successful"
-msgstr ""
+msgstr "Prenos uspešen"
 
 #: inc/html.class.php:5152
 msgid "Check/uncheck all"
@@ -10562,11 +10562,11 @@ msgstr "Kapaciteta"
 
 #: inc/item_deviceprocessor.class.php:61
 msgid "Cores"
-msgstr ""
+msgstr "Jedra"
 
 #: inc/item_deviceprocessor.class.php:65
 msgid "Threads"
-msgstr ""
+msgstr "Niti"
 
 #. TRANS: %s is the type of the component
 #: inc/item_devices.class.php:76
@@ -10716,7 +10716,7 @@ msgstr ""
 
 #: inc/knowbaseitem.class.php:652
 msgid "Visible until"
-msgstr ""
+msgstr "Vidno do"
 
 #: inc/knowbaseitem.class.php:661 inc/knowbaseitem.class.php:774
 #: inc/knowbaseitem.class.php:1248 inc/knowbaseitem.class.php:1497
@@ -10747,11 +10747,11 @@ msgstr ""
 
 #: inc/knowbaseitem.class.php:962
 msgid "All my articles"
-msgstr ""
+msgstr "Vsi moji članki"
 
 #: inc/knowbaseitem.class.php:964
 msgid "All unpublished articles"
-msgstr ""
+msgstr "Vsi neobjavljeni članki"
 
 #: inc/knowbaseitem.class.php:1344
 msgid "Use as a solution"
@@ -10835,7 +10835,7 @@ msgstr ""
 
 #: inc/knowbaseitem.class.php:1765
 msgid "Publish in the FAQ"
-msgstr ""
+msgstr "Objavi v FAQ"
 
 #: inc/knowbaseitem.class.php:1767
 msgid "Read the FAQ"
@@ -10865,7 +10865,7 @@ msgstr "Povezava ali ime datoteke"
 
 #: inc/link.class.php:133
 msgid "Open in a new window"
-msgstr ""
+msgstr "Odpri v novo okno"
 
 #: inc/link.class.php:137
 msgid "File content"
@@ -11043,7 +11043,7 @@ msgstr "Namesti programsko opremo"
 
 #: inc/log.class.php:443
 msgid "Uninstall the software"
-msgstr "Izbriši programsko opremo"
+msgstr "Odstrani programsko opremo"
 
 #: inc/log.class.php:453
 msgid "Disconnect the item"
@@ -11100,7 +11100,7 @@ msgstr "mbstring dodatka nisem našel. Opozorilo nabor znakov uporabljenih."
 
 #: inc/mailcollector.class.php:246
 msgid "Email address"
-msgstr "Email naslov"
+msgstr "Elektronski naslov"
 
 #: inc/mailcollector.class.php:252 inc/mailcollector.class.php:394
 #: inc/notificationtargetmailcollector.class.php:85
@@ -11109,7 +11109,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:275
 msgid "Use Kerberos authentication"
-msgstr ""
+msgstr "Uporabi Kerberos avtentikacijo"
 
 #: inc/mailcollector.class.php:283 inc/mailcollector.class.php:384
 msgid "Accepted mail archive folder (optional)"
@@ -11368,7 +11368,7 @@ msgstr ""
 #: install/update_0843_0844.php:116
 #, php-format
 msgid "Data migration - %s"
-msgstr ""
+msgstr "Migracija podatkov - %s"
 
 #: inc/monitor.class.php:263 inc/peripheral.class.php:256
 #: inc/phone.class.php:255 inc/printer.class.php:358
@@ -11416,7 +11416,7 @@ msgstr ""
 #: inc/netpoint.class.php:316 inc/netpoint.class.php:375
 #, php-format
 msgid "Network outlets for %s"
-msgstr ""
+msgstr "Omrežne vtičnice za %s"
 
 #: inc/networkalias.class.php:55
 msgid "Network alias"
@@ -11462,7 +11462,7 @@ msgstr ""
 
 #: inc/networkname.class.php:679
 msgid "Create a new network name"
-msgstr ""
+msgstr "Ustvari novo ime omrežja"
 
 #: inc/networkname.class.php:770
 msgid "No network name found"
@@ -11606,7 +11606,7 @@ msgstr "Lokalna omrežna vrata"
 
 #: inc/networkportinstantiation.class.php:292
 msgid "this port"
-msgstr ""
+msgstr "ta vrata"
 
 #: inc/networkportinstantiation.class.php:523
 msgid "No network card available"
@@ -11667,7 +11667,7 @@ msgstr ""
 
 #: inc/networkportmigration.class.php:215
 msgid "Invalid address or netmask"
-msgstr ""
+msgstr "Nepravilen naslov ali podomrežna maska"
 
 #: inc/networkportmigration.class.php:217
 msgid "No conflicting network"
@@ -11688,7 +11688,7 @@ msgstr "Neznana omrežja"
 
 #: inc/networkportmigration.class.php:233
 msgid "Add a network"
-msgstr ""
+msgstr "Dodaj omrežje"
 
 #: inc/networkportmigration.class.php:247
 msgid "Add a correct IP to the network port"
@@ -11766,7 +11766,7 @@ msgstr[3] ""
 #: inc/queuedmail.class.php:189 inc/queuedmail.class.php:595
 #: inc/ticket.class.php:2097
 msgid "Creation date"
-msgstr ""
+msgstr "Datum kreacije"
 
 #: inc/notepad.class.php:206
 #: inc/notificationtargetcommonitilobject.class.php:1025
@@ -11811,7 +11811,7 @@ msgstr[3] "Dogodke"
 
 #: inc/notificationmail.class.php:121
 msgid "Mail test"
-msgstr "Mail Test"
+msgstr "Test Mail "
 
 #: inc/notificationmail.class.php:122
 msgid "This is a test email."
@@ -11823,7 +11823,7 @@ msgstr ""
 
 #: inc/notificationmail.class.php:128
 msgid "Test email sent to administrator"
-msgstr ""
+msgstr "Test pošiljanje elektronsko sporočilo skrbniku"
 
 #: inc/notificationmail.class.php:177
 msgid "Error inserting email to queue"
@@ -11968,7 +11968,7 @@ msgstr ""
 #: inc/notificationtarget.class.php:762
 #: inc/notificationtargetdbconnection.class.php:51
 msgid "Administrator"
-msgstr "Administrator"
+msgstr "Skrbnik"
 
 #: inc/notificationtarget.class.php:764
 msgid "Entity administrator"
@@ -12013,7 +12013,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:457
 msgid "Technician in charge of the task"
-msgstr ""
+msgstr "Teknik odgovoren za nalogo"
 
 #: inc/notificationtargetcommonitilobject.class.php:458
 msgid "Task author"
@@ -12562,7 +12562,7 @@ msgstr ""
 
 #: inc/notificationtargetuser.class.php:129
 msgid "You have been made a request to reset your account password."
-msgstr ""
+msgstr "Prosili ste za ponastavit vašo geslo"
 
 #: inc/notificationtargetuser.class.php:131
 msgid "Just follow this link (you have one day):"
@@ -12801,7 +12801,7 @@ msgstr "Omogočeno"
 #: inc/plugin.class.php:416
 msgctxt "plugin"
 msgid "Not installed"
-msgstr "Ni inštaliran"
+msgstr "Ni nameščen"
 
 #: inc/plugin.class.php:420
 msgid "To update"
@@ -12810,12 +12810,12 @@ msgstr "Posodobi"
 #: inc/plugin.class.php:424
 msgctxt "plugin"
 msgid "Installed / not configured"
-msgstr "Instaliran / ni konfiguriran"
+msgstr "Nameščen/ ni konfiguriran"
 
 #: inc/plugin.class.php:428
 msgctxt "plugin"
 msgid "Installed / not activated"
-msgstr "Instaliran / ni aktiviran"
+msgstr "Nameščen/ ni aktiviran"
 
 #: inc/plugin.class.php:433
 msgid "Error / to clean"
@@ -13470,7 +13470,7 @@ msgstr "Napaka pri pošiljanju emaila"
 #: inc/queuedmail.class.php:417
 #, php-format
 msgid "An email was sent to %s"
-msgstr ""
+msgstr "Elektronska sporočila je bila poslana %s"
 
 #: inc/queuedmail.class.php:444
 msgid "Send mails in queue"
@@ -14505,7 +14505,7 @@ msgstr "Združevati"
 #. TRANS: a noun, (ex : this software is an upgrade of..)
 #: inc/software.class.php:323 install/update.php:870
 msgid "Upgrade"
-msgstr "Nadgradnja"
+msgstr "Nadgraditev "
 
 #: inc/software.class.php:353
 msgid "Recalculate the category"
@@ -14825,7 +14825,7 @@ msgstr "različica"
 
 #: inc/ticket.class.php:2775
 msgid "Installed software"
-msgstr ""
+msgstr "Nameščena programska oprema"
 
 #: inc/ticket.class.php:2827
 msgid "Or complete search"
@@ -15040,7 +15040,7 @@ msgstr "Spremeni prioriteto"
 #: inc/ticketfollowup.class.php:287
 #, php-format
 msgid "Added document: %s"
-msgstr ""
+msgstr "Dodani dokument: %s"
 
 #: inc/ticketfollowup.class.php:324 inc/ticketfollowup.class.php:571
 msgid "If you want to reopen the ticket, you must specify a reason"
@@ -15262,11 +15262,11 @@ msgstr "PHP verzija je najmanj 5.3.0 - Odlično !"
 
 #: inc/toolbox.class.php:875
 msgid "You must install at least PHP 5.3.0."
-msgstr ""
+msgstr "Morate namestiti vsaj PHP 5.3.0"
 
 #: inc/toolbox.class.php:880
 msgid "MySQL Improved extension test"
-msgstr "Testiraj"
+msgstr "Test MYSQL Improved razširitev"
 
 #: inc/toolbox.class.php:883 inc/toolbox.class.php:884
 msgid "Ok - the MySQLi class exist - Perfect!"
@@ -15330,11 +15330,11 @@ msgstr ""
 
 #: inc/toolbox.class.php:965
 msgid "Test ctype functions"
-msgstr ""
+msgstr "Test ctype funkcije"
 
 #: inc/toolbox.class.php:969
 msgid "GLPI can't work correctly without the ctype functions"
-msgstr ""
+msgstr "GLPI ne more delati pravilno brez ctype funkcij"
 
 #: inc/toolbox.class.php:974 inc/toolbox.class.php:975
 #: inc/toolbox.class.php:990 inc/toolbox.class.php:991
@@ -15355,7 +15355,7 @@ msgstr "GLPI ne more delati pravilno z json_encode in json_decode funkcijo"
 
 #: inc/toolbox.class.php:996
 msgid "Mbstring extension test"
-msgstr "mbstring podaljšek test"
+msgstr "Test MBString razširitev"
 
 #: inc/toolbox.class.php:1000
 msgid "Mbstring extension of your parser PHP is not installed"
@@ -15363,7 +15363,7 @@ msgstr "Mbstring podaljšek za tvoj razčlenjevalnik PHP ni nameščen"
 
 #: inc/toolbox.class.php:1011
 msgid "GD extension test"
-msgstr ""
+msgstr "Test GD razširitev"
 
 #: inc/toolbox.class.php:1015
 msgid "GD extension of your parser PHP is not installed"
@@ -15371,7 +15371,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:1026
 msgid "Cryptography test"
-msgstr ""
+msgstr "Test kriptografija"
 
 #: inc/toolbox.class.php:1034 inc/toolbox.class.php:1035
 msgid "PHP >= 5.3.7 recommended, with crypt extension"
@@ -15391,7 +15391,7 @@ msgstr "Dodeljen pomnilnik"
 
 #: inc/toolbox.class.php:1060
 msgid "A minimum of 64Mio is commonly required for GLPI."
-msgstr ""
+msgstr "Za GLPI je ponavadi potrebno minimalno 64MB."
 
 #: inc/toolbox.class.php:1061
 msgid "Try increasing the memory_limit parameter in the php.ini file."
@@ -15656,11 +15656,11 @@ msgstr "Potrdilo za geslo"
 
 #: inc/user.class.php:1885
 msgid "Valid since"
-msgstr ""
+msgstr "Velja od"
 
 #: inc/user.class.php:1891
 msgid "Valid until"
-msgstr ""
+msgstr "Velja do"
 
 #. TRANS: %s is the date of last sync
 #: inc/user.class.php:1909
@@ -15670,7 +15670,7 @@ msgstr "Zadnja sinhronizacija na %s"
 
 #: inc/user.class.php:1914 inc/user.class.php:2622 inc/user.class.php:3884
 msgid "User DN"
-msgstr "Uporabniški DN"
+msgstr "Uporabnik DN"
 
 #: inc/user.class.php:1917
 msgid "User missing in LDAP directory"
@@ -15787,7 +15787,7 @@ msgstr ""
 
 #: inc/user.class.php:3795
 msgid "Reset password successful."
-msgstr ""
+msgstr "Ponastavitev geslo uspešen."
 
 #: inc/user.class.php:3811 inc/user.class.php:3860
 msgid ""
@@ -15797,13 +15797,13 @@ msgstr ""
 
 #: inc/user.class.php:3815 inc/user.class.php:3864
 msgid "Email address not found."
-msgstr ""
+msgstr "E-poštni naslov ni bilo mogoče najti."
 
 #: inc/user.class.php:3854
 msgid ""
 "An email has been sent to your email address. The email contains information"
 " for reset your password."
-msgstr ""
+msgstr "Elektronska pošta je bila poslana na vaš e-poštni naslov. E-pošta sporočila vsebuje informacije za ponastavitev gesla."
 
 #: inc/user.class.php:3888
 msgid "User information"
@@ -15909,17 +15909,17 @@ msgstr "Namestitev ali posodobitev GLPI"
 
 #: install/install.php:121
 msgid "Choose 'Install' for a completely new installation of GLPI."
-msgstr "Izberite 'Install' za popolnoma novo namestitev GLPI (podatki, ki bodo uvoženi z GLPI bodo privzeti podatki)"
+msgstr "Izberite 'Namesti' za popolnoma novo namestitev GLPI,"
 
 #: install/install.php:122
 msgid ""
 "Select 'Upgrade' to update your version of GLPI from an earlier version"
-msgstr ""
+msgstr "Izberite 'Nadgradi' za nadgraditev svojo različico GLPI iz prejšnje različice"
 
 #: install/install.php:142
 msgid ""
 "Checking of the compatibility of your environment with the execution of GLPI"
-msgstr "Preverjam kompatibilnost tvojega okolja z izvrševanjem GLPI"
+msgstr "Preverjanje združljivosti vašega okolja z izvajanjem GLPI"
 
 #: install/install.php:161 install/install.php:180 install/install.php:487
 msgid "Do you want to continue?"
@@ -15935,7 +15935,7 @@ msgstr "Bazno povezovalni parametri"
 
 #: install/install.php:217
 msgid "Test of the connection at the database"
-msgstr "Preverjanje povezave pri bazi"
+msgstr "Test za priključitev na podatkovni bazi"
 
 #: install/install.php:231
 msgid "Can't connect to the database"
@@ -15988,7 +15988,7 @@ msgstr "Baza je bila ustvarjena"
 
 #: install/install.php:414
 msgid "Error in creating database!"
-msgstr ""
+msgstr "Napaka pri ustvarjanju baze podatkov!"
 
 #: install/install.php:421
 msgid "You didn't select a database!"
@@ -16000,11 +16000,11 @@ msgstr "Namestitev je končana"
 
 #: install/install.php:448
 msgid "Default logins / passwords are:"
-msgstr "Privzeta uporabniška imena / gesla so:"
+msgstr "Privzeta uporabniška imena / gesla sta:"
 
 #: install/install.php:449
 msgid "glpi/glpi for the administrator account"
-msgstr "glpi/glpi za administracijski račun"
+msgstr "glpi/glpi za račun skrbnika"
 
 #: install/install.php:450
 msgid "tech/tech for the technician account"
@@ -16041,7 +16041,7 @@ msgstr "Začetek namestitve"
 #: install/install.php:585 install/install.php:597
 #, php-format
 msgid "Step %d"
-msgstr ""
+msgstr "Korak %d"
 
 #: install/update_05_051.php:78
 msgid "Commercial"
@@ -16105,7 +16105,7 @@ msgstr "Root entiteta"
 #: install/update_084_085.php:2063
 msgctxt "ticket"
 msgid "New"
-msgstr ""
+msgstr "Novo"
 
 #: install/update.php:187
 msgid "Update successful, your database is up to date"

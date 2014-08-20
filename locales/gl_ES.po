@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-25 08:54+0200\n"
-"PO-Revision-Date: 2014-06-25 06:55+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-06-27 12:00+0000\n"
+"Last-Translator: Oscar Beiro <makeijan@gmail.com>\n"
 "Language-Team: Galician (Spain) (http://www.transifex.com/projects/p/GLPI/language/gl_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -83,7 +83,7 @@ msgstr "Proba de escritura de ficheiros de sesións"
 
 #: index.php:158
 msgid "Invalid use of session ID"
-msgstr ""
+msgstr "Utilización incorrecta do ID de sesión"
 
 #: index.php:170
 msgid "Access to the Frequently Asked Questions"
@@ -817,11 +817,11 @@ msgstr ""
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:60
 msgid "and/or"
-msgstr ""
+msgstr "e/ou"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:60
 msgid "Add new devices"
-msgstr ""
+msgstr "Engadir novo dispositivo"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:63
 msgid "No unaffected device !"
@@ -1400,7 +1400,7 @@ msgstr "%s eliminar un actor"
 #: front/problem_user.form.php:60 front/ticket_user.form.php:62
 msgid ""
 "You have been redirected because you no longer have access to this item"
-msgstr ""
+msgstr "Vostede foi redirixido porque xa non teñen acceso a este elemento"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:56 front/contractcost.form.php:53
@@ -2184,7 +2184,7 @@ msgstr "Número de inventario"
 #: inc/profile.class.php:1509
 msgid "Computer"
 msgid_plural "Computers"
-msgstr[0] "computador"
+msgstr[0] "Computador"
 msgstr[1] "Computadores"
 
 #: front/find_num.php:100 inc/networkequipment.class.php:59
@@ -2898,7 +2898,7 @@ msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Abertas"
 
 #: front/stat.global.php:93 front/stat.graph.php:338 inc/stat.class.php:440
 msgctxt "ticket"
@@ -2958,14 +2958,14 @@ msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Abertas"
 
 #: front/stat.global.php:204 front/stat.graph.php:445 inc/stat.class.php:460
 msgctxt "survey"
 msgid "Answered"
 msgid_plural "Answered"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Respondidas"
 
 #: front/stat.global.php:220 front/stat.graph.php:461
 #: front/stat.location.php:212 front/stat.location.php:213
@@ -6362,7 +6362,7 @@ msgstr "%1$s (%2$d%%) "
 msgid ""
 "This item is waiting for approval, do you really want to resolve or close "
 "it?"
-msgstr ""
+msgstr "Este elemento está a agardar aprobación, queres resolver ou fechala?"
 
 #: inc/commontreedropdown.class.php:54 inc/commontreedropdown.class.php:515
 #: inc/group.class.php:245 inc/itilcategory.class.php:54
@@ -6746,7 +6746,7 @@ msgstr[1] "Licenzas"
 
 #: inc/computer_softwarelicense.class.php:291
 msgid "Number of affected computers"
-msgstr "Número de equipos afectados"
+msgstr "Computadores afectados"
 
 #: inc/computer_softwarelicense.class.php:406
 #: inc/computer_softwarelicense.class.php:568
@@ -6813,7 +6813,7 @@ msgstr "Xeral"
 #: inc/config.class.php:216
 #, php-format
 msgid "Maintenance mode activated. Backdoor using: %s"
-msgstr ""
+msgstr "Activado o modo de mantemento. Acceso alternativo: %s"
 
 #: inc/config.class.php:245 inc/config.class.php:1251
 #: inc/config.class.php:1591 inc/profile.class.php:1395
@@ -6863,7 +6863,7 @@ msgstr "Tipo de gráfica por defecto"
 
 #: inc/config.class.php:301
 msgid "Translation of dropdowns"
-msgstr ""
+msgstr "Tradución de despregables"
 
 #: inc/config.class.php:304
 msgid "Knowledge base translation"
@@ -6875,7 +6875,7 @@ msgstr "Visualización dinámica"
 
 #: inc/config.class.php:313
 msgid "Page size for dropdown (paging using scroll)"
-msgstr ""
+msgstr "Tamaño de páxina para despregable (desprazar usando o scroll)"
 
 #: inc/config.class.php:319
 msgid "Autocompletion of text fields"
@@ -6884,7 +6884,7 @@ msgstr "Autocompletar campos de texto"
 #: inc/config.class.php:325
 msgid ""
 "Don't show search engine in dropdowns if the number of items is less than"
-msgstr ""
+msgstr "Non usar o motor de búsqueda en despregables se o número de elementos e menor de"
 
 #: inc/config.class.php:351
 msgid "Search engine"
@@ -7078,7 +7078,7 @@ msgstr "Tamaño máximo predeterminado dos arquivos importados polo colector de 
 
 #: inc/config.class.php:689
 msgid "Use rich text for helpdesk"
-msgstr ""
+msgstr "Usar texto enriquecido para o SAT"
 
 #: inc/config.class.php:693
 msgid "You will lose the formatting of your data"
@@ -8198,7 +8198,7 @@ msgstr "Seguimento das tarefas programadas"
 
 #: inc/crontask.class.php:1623
 msgid "Archives log files and deletes aging ones"
-msgstr ""
+msgstr "Arquivar logs e eliminar os vellos"
 
 #: inc/crontask.class.php:1624
 msgid "Number of days to keep archived logs"
@@ -10178,7 +10178,7 @@ msgstr ""
 
 #: inc/item_devices.class.php:150
 msgid "bus ID"
-msgstr ""
+msgstr "ID de Bus"
 
 #: inc/item_devices.class.php:359
 msgid "Type of component"
@@ -10304,11 +10304,11 @@ msgstr[1] "%d vistas"
 
 #: inc/knowbaseitem.class.php:647
 msgid "Visible since"
-msgstr ""
+msgstr "Visible dende"
 
 #: inc/knowbaseitem.class.php:652
 msgid "Visible until"
-msgstr ""
+msgstr "Visible deica"
 
 #: inc/knowbaseitem.class.php:661 inc/knowbaseitem.class.php:774
 #: inc/knowbaseitem.class.php:1248 inc/knowbaseitem.class.php:1497
@@ -10799,7 +10799,7 @@ msgstr ""
 
 #: inc/massiveaction.class.php:271
 msgid "Invalid process"
-msgstr ""
+msgstr "Proceso incorrecto"
 
 #: inc/massiveaction.class.php:452 inc/massiveaction.class.php:757
 msgid "Select the type of the item on which applying this action"
@@ -10827,11 +10827,11 @@ msgstr ""
 
 #: inc/massiveaction.class.php:744
 msgid "Select the common field that you want to update"
-msgstr ""
+msgstr "Seleccione o campo común que quere actualizar"
 
 #: inc/massiveaction.class.php:746
 msgid "Select the field that you want to update"
-msgstr ""
+msgstr "Seleccione o campo que quere actualizar"
 
 #: inc/massiveaction.class.php:751 inc/rule.class.php:766
 #: inc/rule.class.php:923 inc/rule.class.php:2455
@@ -10849,7 +10849,7 @@ msgstr ""
 
 #: inc/massiveaction.class.php:1066
 msgid "You can't delete that item, because it is used for one or more items"
-msgstr ""
+msgstr "Non pode eliminar este elemento, porque está en uso por un ou máis elementos"
 
 #: inc/migration.class.php:199
 msgid "default_value must be 0 or 1"
@@ -11327,8 +11327,8 @@ msgstr "ESSID"
 #: inc/notepad.class.php:170
 msgid "Note"
 msgid_plural "Notes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nota"
+msgstr[1] "Notas"
 
 #: inc/notepad.class.php:179 inc/notificationtargetproject.class.php:562
 #: inc/notificationtargetproject.class.php:583
@@ -13006,7 +13006,7 @@ msgstr "Días a manter os correos enviados"
 
 #: inc/registeredid.class.php:55
 msgid "PCI"
-msgstr ""
+msgstr "PCI"
 
 #: inc/registeredid.class.php:61
 msgid "Registered ID (issued by PCI-SIG)"
@@ -13233,7 +13233,7 @@ msgstr ""
 
 #: inc/reservationitem.class.php:595
 msgid "Device reservations expiring today"
-msgstr "Equipos con reserva nos que expira hoxe"
+msgstr "Reservas de dispositivos que rematan hoxe"
 
 #: inc/reservationitem.class.php:636
 msgid "Send reservation alert failed"
@@ -13557,7 +13557,7 @@ msgstr "Dicionario de modelos de computador"
 
 #: inc/ruledictionnarycomputertypecollection.class.php:46
 msgid "Dictionnary of computer types"
-msgstr "Dicionario de tipos de ordenador"
+msgstr "Dicionario de tipos de computador"
 
 #: inc/ruledictionnarydropdowncollection.class.php:61
 #: inc/ruledictionnarydropdowncollection.class.php:116
@@ -13703,11 +13703,11 @@ msgstr "Material eliminado polas regras de dicionario GLPI"
 #: inc/ruleimportcomputer.class.php:53
 #: inc/ruleimportcomputercollection.class.php:62
 msgid "Rules for import and link computers"
-msgstr "Normas de importación e vinculación dos equipos"
+msgstr "Normas de importación e vinculación dos compturadores"
 
 #: inc/ruleimportcomputer.class.php:76
 msgid "Target entity for the computer"
-msgstr "entidade destino para o equipo"
+msgstr "Entidade dee destino para o computador"
 
 #: inc/ruleimportcomputer.class.php:82
 msgid "Find computers in GLPI having the status"
@@ -13888,11 +13888,11 @@ msgstr "Solicitude de aprobación para o director do grupo de técnicos"
 #. TRANS: short for : Business rules for ticket (entity parent)
 #: inc/ruleticket.class.php:585
 msgid "Parent business"
-msgstr ""
+msgstr "Regra de negocio pai"
 
 #: inc/ruleticket.class.php:586
 msgid "Business rules for ticket (entity parent)"
-msgstr ""
+msgstr "Regra de negocio para a asistencia (entidade pai)"
 
 #: inc/search.class.php:1483 inc/search.class.php:1485
 #: inc/search.class.php:1560 inc/search.class.php:1563
@@ -13947,12 +13947,12 @@ msgstr "Tempo máximo de resolución"
 #: inc/sla.class.php:177
 msgid "Minute"
 msgid_plural "Minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Minuto"
+msgstr[1] "Minutos"
 
 #: inc/sla.class.php:198 inc/sla.class.php:241
 msgid "End of working day"
-msgstr ""
+msgstr "Fin da xornada de traballo"
 
 #: inc/slalevel.class.php:85 inc/ticket.class.php:2078
 #: inc/ticket.class.php:3818 inc/ticket.class.php:3830
@@ -14046,7 +14046,7 @@ msgstr "Comentarios da licenza"
 
 #: inc/software.class.php:676 inc/softwarelicense.class.php:323
 msgid "Never expire"
-msgstr ""
+msgstr "Nunca caduca"
 
 #: inc/software.class.php:682 inc/softwarelicense.class.php:310
 msgctxt "adjective"
@@ -14234,7 +14234,7 @@ msgstr[1] "Contratos asociados"
 
 #: inc/ticket.class.php:148
 msgid "Create ticket"
-msgstr ""
+msgstr "Crear asistencia"
 
 #: inc/ticket.class.php:492 inc/ticket.class.php:509
 msgid "Created tickets"
@@ -14315,7 +14315,7 @@ msgstr "Versión"
 
 #: inc/ticket.class.php:2775
 msgid "Installed software"
-msgstr ""
+msgstr "Software instalado"
 
 #: inc/ticket.class.php:2827
 msgid "Or complete search"
@@ -14384,7 +14384,7 @@ msgstr "Ficheiro (%s)"
 
 #: inc/ticket.class.php:4444
 msgid "Default documents:"
-msgstr ""
+msgstr "Documentos predefinido:"
 
 #: inc/ticket.class.php:4720 inc/ticket.class.php:4887
 msgid "Your tickets to close"
@@ -14444,13 +14444,13 @@ msgstr[1] "Últimas %d asistencias"
 
 #: inc/ticket.class.php:5263
 msgid "You don't have right to see all tickets"
-msgstr ""
+msgstr "Non ten permisos para visualizar todas as asistencias"
 
 #: inc/ticket.class.php:5317
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] "Asistencia enlazadas ao equipo"
-msgstr[1] "Asistencias dos elementos de rede"
+msgstr[0] "Asistencia dos elementos ligados"
+msgstr[1] "Asistencias dos elementos ligados"
 
 #: inc/ticket.class.php:5430
 msgid "No ticket in progress."
@@ -14488,7 +14488,7 @@ msgstr "Ver tódalas asistencias"
 #. TRANS: short for : See assigned tickets (group associated)
 #: inc/ticket.class.php:5733
 msgid "See assigned"
-msgstr ""
+msgstr "Ver asignadas"
 
 #: inc/ticket.class.php:5734
 msgid "See assigned tickets"
@@ -14501,7 +14501,7 @@ msgstr "Asignar unha asistencia"
 #. TRANS: short for : Steal a ticket
 #: inc/ticket.class.php:5739
 msgid "Steal"
-msgstr ""
+msgstr "Levar"
 
 #: inc/ticket.class.php:5740
 msgid "Steal a ticket"
@@ -14510,7 +14510,7 @@ msgstr "Quitar unha asistencia"
 #. TRANS: short for : To be in charge of a ticket
 #: inc/ticket.class.php:5742
 msgid "Beeing in charge"
-msgstr ""
+msgstr "Estar a cargo"
 
 #: inc/ticket.class.php:5743
 msgid "To be in charge of a ticket"
@@ -14580,19 +14580,19 @@ msgstr "Rexeitar a solución"
 
 #: inc/ticketfollowup.class.php:979 inc/tickettask.class.php:226
 msgid "Update all"
-msgstr ""
+msgstr "Actualizar todo"
 
 #: inc/ticketfollowup.class.php:980 inc/tickettask.class.php:227
 msgid "Add to all tickets"
-msgstr ""
+msgstr "Engadir a todas a asistencias"
 
 #: inc/ticketfollowup.class.php:981 inc/tickettask.class.php:228
 msgid "See private ones"
-msgstr ""
+msgstr "Ver as privadas"
 
 #: inc/ticketfollowup.class.php:985
 msgid "Add followup (associated groups)"
-msgstr ""
+msgstr "Engadir seguemento (asociado a grupos)"
 
 #: inc/ticketfollowup.class.php:986
 msgid "Add a followup to tickets of associated groups"
@@ -14612,7 +14612,7 @@ msgstr "Engadir un seguimento ás asistencias (peticionario)"
 
 #: inc/ticketfollowup.class.php:990 inc/tickettask.class.php:231
 msgid "See public ones"
-msgstr ""
+msgstr "Ver as públicas"
 
 #: inc/ticketrecurrent.class.php:159 inc/ticketrecurrent.class.php:266
 msgid "Preliminary creation"
@@ -14839,11 +14839,11 @@ msgstr "A extensión mbstring do interprete PHP non está instalada"
 
 #: inc/toolbox.class.php:1011
 msgid "GD extension test"
-msgstr ""
+msgstr "Proba da extensión GD"
 
 #: inc/toolbox.class.php:1015
 msgid "GD extension of your parser PHP is not installed"
-msgstr ""
+msgstr "A extensión GD do teu parser PHP non está instalada"
 
 #: inc/toolbox.class.php:1026
 msgid "Cryptography test"
@@ -14851,7 +14851,7 @@ msgstr "Profa criptográfica"
 
 #: inc/toolbox.class.php:1034 inc/toolbox.class.php:1035
 msgid "PHP >= 5.3.7 recommended, with crypt extension"
-msgstr ""
+msgstr "PHP>=5.3.7 recomendado, con extensión crypt"
 
 #: inc/toolbox.class.php:1042
 msgid "Allocated memory test"
@@ -14867,7 +14867,7 @@ msgstr "Memoria asignada"
 
 #: inc/toolbox.class.php:1060
 msgid "A minimum of 64Mio is commonly required for GLPI."
-msgstr ""
+msgstr "Requírese un mínimo de 64 MB para o GLPI"
 
 #: inc/toolbox.class.php:1061
 msgid "Try increasing the memory_limit parameter in the php.ini file."
@@ -15108,7 +15108,7 @@ msgstr "Baleirar a lista de elementos a transferir"
 
 #: inc/user.class.php:503
 msgid "The login is not valid. Unable to add the user."
-msgstr ""
+msgstr "O login non é válido. Non se pode engadir o usuario."
 
 #: inc/user.class.php:515
 msgid "Unable to add. The user already exists."
@@ -15136,7 +15136,7 @@ msgstr ""
 
 #: inc/user.class.php:1891
 msgid "Valid until"
-msgstr ""
+msgstr "Válido deica"
 
 #. TRANS: %s is the date of last sync
 #: inc/user.class.php:1909
@@ -15150,7 +15150,7 @@ msgstr "Usuario DN"
 
 #: inc/user.class.php:1917
 msgid "User missing in LDAP directory"
-msgstr ""
+msgstr "Usuario inexistente no directorio LDAP"
 
 #: inc/user.class.php:2004 inc/user.class.php:2260 inc/user.class.php:2673
 msgid "Default entity"
@@ -15175,11 +15175,11 @@ msgstr "Imposible actualizar acceso. O usuario xa existe,"
 
 #: inc/user.class.php:2331
 msgid "The login is not valid. Unable to update login."
-msgstr ""
+msgstr "O login non é válido. Non se pode actualizar o login."
 
 #: inc/user.class.php:2392
 msgid "Dissociate from a group"
-msgstr ""
+msgstr "Disociar de un grupo"
 
 #: inc/user.class.php:2394
 msgid "Associate to a profile"
@@ -15187,7 +15187,7 @@ msgstr "Asignar a un perfil"
 
 #: inc/user.class.php:2396
 msgid "Dissociate from a profile"
-msgstr ""
+msgstr "Disociar de un perfil"
 
 #: inc/user.class.php:2401
 msgctxt "button"
@@ -15292,7 +15292,7 @@ msgstr "fallo de conexión"
 #. TRANS: short for : Add users from an external source
 #: inc/user.class.php:4102
 msgid "Add external"
-msgstr ""
+msgstr "Engadir de fonte externa"
 
 #: inc/user.class.php:4103
 msgid "Add users from an external source"
@@ -15315,7 +15315,7 @@ msgstr ""
 
 #: inc/user.class.php:4109
 msgid "Update method for user authentication and synchronization"
-msgstr ""
+msgstr "Actualizar o método para autenticación e sincronización"
 
 #: inc/useremail.class.php:132 inc/useremail.class.php:155
 msgid "Default email"

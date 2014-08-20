@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-25 08:54+0200\n"
-"PO-Revision-Date: 2014-06-25 06:55+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-07-29 09:31+0000\n"
+"Last-Translator: Tiago Cruz <tiago@focruz.com>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/GLPI/language/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -44,7 +44,7 @@ msgstr "Utilizador"
 #: inc/mailcollector.class.php:267 inc/user.class.php:1858
 #: inc/user.class.php:2187 inc/user.class.php:3716
 msgid "Password"
-msgstr "Senha"
+msgstr "Palavra-Passe"
 
 #: index.php:122 ajax/dropdownMassiveActionAuthMethods.php:66
 #: ajax/dropdownMassiveActionField.php:54 inc/authldap.class.php:1108
@@ -823,7 +823,7 @@ msgstr ""
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:60
 msgid "Add new devices"
-msgstr ""
+msgstr "Adicionar novos equipamentos"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:63
 msgid "No unaffected device !"
@@ -4255,8 +4255,8 @@ msgstr "Carregamento parcial do marcador"
 #: inc/bookmark.class.php:668
 msgid "Bookmark"
 msgid_plural "Bookmarks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Favorito"
+msgstr[1] "Favoritos"
 
 #: inc/bookmark.class.php:670
 msgid "Default view"
@@ -4669,7 +4669,7 @@ msgstr "Adiciona cartuchos"
 #. TRANS : multiplier
 #: inc/cartridge.class.php:894
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: inc/cartridge.class.php:900
 msgid "No cartridge available"
@@ -5182,7 +5182,7 @@ msgstr "Ver tudo"
 
 #: inc/change.class.php:863 inc/problem.class.php:1472
 msgid "See (author)"
-msgstr ""
+msgstr "Ver (autor)"
 
 #: inc/change_item.class.php:128 inc/contract_item.class.php:589
 #: inc/document_item.class.php:313 inc/item_problem.class.php:132
@@ -5357,7 +5357,7 @@ msgstr ""
 #: inc/commondbtm.class.php:2043 inc/notepad.class.php:315
 #: inc/ticket.class.php:4488 inc/ticketfollowup.class.php:820
 msgid "Confirm the final deletion?"
-msgstr ""
+msgstr "Confirma a eliminação ?"
 
 #: inc/commondbtm.class.php:2047 inc/commondbtm.class.php:4276
 #: inc/massiveaction.class.php:556 inc/ticket.class.php:4493
@@ -5483,7 +5483,7 @@ msgstr "Eliminar"
 
 #: inc/commondbtm.class.php:4279
 msgid "Read note"
-msgstr ""
+msgstr "Ler nota"
 
 #: inc/commondbtm.class.php:4280
 msgid "Read the item's note"
@@ -5637,7 +5637,7 @@ msgstr[1] "Custos"
 #: inc/projectcost.class.php:277 inc/projectcost.class.php:356
 #: inc/user.class.php:2678
 msgid "Begin date"
-msgstr ""
+msgstr "Data de Início"
 
 #: inc/commonitilcost.class.php:127 inc/commonitilcost.class.php:193
 #: inc/commonitilcost.class.php:347 inc/commonitilcost.class.php:486
@@ -6025,8 +6025,8 @@ msgstr "Guardar e adicionar á base do conhecimento"
 #: inc/commonitilobject.class.php:4185
 msgid "Time"
 msgid_plural "Times"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tempo"
+msgstr[1] "Tempos"
 
 #: inc/commonitilobject.class.php:4880
 #, php-format
@@ -6185,7 +6185,7 @@ msgstr "Por fazer"
 
 #: inc/commonitiltask.class.php:1004
 msgid "Planned"
-msgstr ""
+msgstr "Planeado"
 
 #: inc/commonitiltask.class.php:1010 inc/planning.class.php:164
 #: inc/planning.class.php:180
@@ -7017,8 +7017,8 @@ msgstr "Servidor de Horário para o GLPI"
 #: inc/config.class.php:1601 inc/dbconnection.class.php:48
 msgid "Mysql replica"
 msgid_plural "Mysql replicas"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Replica do Mysql"
+msgstr[1] "Replicas do Mysql"
 
 #: inc/config.class.php:599 inc/dbconnection.class.php:420
 #: install/install.php:200
@@ -8750,14 +8750,14 @@ msgstr[1] "Categorias do Pedido"
 #: inc/dropdown.class.php:728 inc/projectstate.class.php:47
 msgid "Project state"
 msgid_plural "Project states"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Estado do projeto"
+msgstr[1] "Estado dos projetos"
 
 #: inc/dropdown.class.php:729 inc/projecttype.class.php:47
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de Projeto"
+msgstr[1] "Tipos de Projeto"
 
 #: inc/dropdown.class.php:730 inc/projecttasktype.class.php:47
 msgid "Project tasks type"
@@ -9047,8 +9047,8 @@ msgstr "Exportar"
 #: inc/notificationtemplatetranslation.class.php:395
 msgid "Translation"
 msgid_plural "Translations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tradução"
+msgstr[1] "Traduções"
 
 #: inc/dropdowntranslation.class.php:98 inc/dropdowntranslation.class.php:109
 msgid "There's already a translation for this field in this language"
@@ -9553,7 +9553,7 @@ msgstr "Adicionar um utilizador"
 #: inc/group.class.php:348
 msgctxt "button"
 msgid "Add a manager"
-msgstr ""
+msgstr "Adicionar Gestor"
 
 #: inc/group.class.php:349
 msgctxt "button"
@@ -9634,8 +9634,8 @@ msgstr "Adicionar um utilizador"
 #: inc/rulerightparameter.class.php:61 inc/rulerightparameter.class.php:78
 msgid "Criterion"
 msgid_plural "Criteria"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Critério"
+msgstr[1] "Critérios"
 
 #: inc/group_user.class.php:458 inc/group_user.class.php:542
 msgid "D=Dynamic"
@@ -10209,8 +10209,8 @@ msgstr ""
 #: inc/item_devices.class.php:622 inc/knowbaseitem.class.php:1513
 msgid "View"
 msgid_plural "Views"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Vista"
+msgstr[1] "Vistas"
 
 #: inc/itilcategory.class.php:72 inc/itilcategory.class.php:160
 msgid "Visible in the simplified interface"
@@ -10281,8 +10281,8 @@ msgstr "Gerir"
 #: inc/rssfeed.class.php:477
 msgid "Target"
 msgid_plural "Targets"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Destino"
+msgstr[1] "Destinos"
 
 #: inc/knowbaseitem.class.php:162 inc/user.class.php:2082
 msgid "Edit"
@@ -10484,15 +10484,15 @@ msgstr "numero da sala"
 
 #: inc/location.class.php:64 inc/location.class.php:136
 msgid "Longitude"
-msgstr ""
+msgstr "Longitude"
 
 #: inc/location.class.php:68 inc/location.class.php:142
 msgid "Latitude"
-msgstr ""
+msgstr "Latitude"
 
 #: inc/location.class.php:72 inc/location.class.php:148
 msgid "Altitude"
-msgstr ""
+msgstr "Altitude"
 
 #: inc/location.class.php:107
 msgid "Location comments"
@@ -11119,7 +11119,7 @@ msgstr "Ligado a"
 
 #: inc/networkportethernet.class.php:44
 msgid "Ethernet port"
-msgstr ""
+msgstr "Porta Ethernet"
 
 #: inc/networkportethernet.class.php:88 inc/networkportethernet.class.php:133
 #: inc/networkportethernet.class.php:192
@@ -11329,8 +11329,8 @@ msgstr "ESSID"
 #: inc/notepad.class.php:170
 msgid "Note"
 msgid_plural "Notes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nota"
+msgstr[1] "Notas"
 
 #: inc/notepad.class.php:179 inc/notificationtargetproject.class.php:562
 #: inc/notificationtargetproject.class.php:583

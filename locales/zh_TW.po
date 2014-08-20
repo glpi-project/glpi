@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-25 08:54+0200\n"
-"PO-Revision-Date: 2014-06-25 06:55+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-07-10 15:02+0000\n"
+"Last-Translator: cwlin0416 <cwlin0416@gmail.com>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.com/projects/p/GLPI/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -62,7 +62,7 @@ msgstr "密碼"
 #: install/update.php:413 install/update.php:429
 msgctxt "button"
 msgid "Post"
-msgstr "確定"
+msgstr "送出"
 
 #: index.php:130 front/lostpassword.php:45
 #: inc/notificationtargetuser.class.php:43 inc/user.class.php:3707
@@ -170,7 +170,7 @@ msgstr "%1$s - 連接埠 %2$s"
 #: ajax/dropdownConnectNetworkPort.php:102
 #, php-format
 msgid "%1$s - Network outlet %2$s"
-msgstr "%1$s - 網路面版 %2$s"
+msgstr "%1$s - 網路插座 %2$s"
 
 #. TRANS: %1$s is the name, %2$s the ID
 #. TRANS: %1$s is a name, %2$s is ID
@@ -247,7 +247,7 @@ msgstr "%1$s (%2$s)"
 #: front/ticket_user.form.php:42 inc/commonitilobject.class.php:2275
 #: inc/commonitilobject.class.php:2856 inc/commonitilobject.class.php:3048
 msgid "Email followup"
-msgstr "郵件後續追蹤"
+msgstr "電子郵件追蹤"
 
 #. TRANS: %1$s is the auth method type, %2$s the auth method name or link
 #. TRANS: %1$s is a name, %2$s is a number
@@ -645,7 +645,7 @@ msgstr "最先/最後地址：%1$s/%2$s"
 #: ajax/dropdownShowIPNetwork.php:59
 #, php-format
 msgid "Gateway: %s"
-msgstr "閘道：%s"
+msgstr "通訊閘：%s"
 
 #: ajax/dropdownTrackingDeviceType.php:48 front/find_num.php:78
 msgid "Enter the first letters (user, item name, serial or asset number)"
@@ -916,7 +916,7 @@ msgstr "處理中"
 #, php-format
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
-msgstr[0] "在這個項目%s的聯繫單正在進行或近期已解決"
+msgstr[0] "此項目的 %s 個待辦事項正在處理中或最近已解決。"
 
 #: ajax/ticketsatisfaction.php:59 inc/entity.class.php:790
 msgid "Create survey after"
@@ -938,7 +938,7 @@ msgstr "已停用"
 
 #: ajax/ticketsatisfaction.php:82
 msgid "For tickets closed after"
-msgstr "讓聯繫單關閉,於"
+msgstr "待辦事項關閉於"
 
 #: ajax/ticketsatisfaction.php:88 inc/link.class.php:118
 msgid "Valid tags"
@@ -1655,7 +1655,7 @@ msgstr "辭典"
 
 #: front/dictionnary.php:46
 msgid "Global dictionary"
-msgstr "總體的辭典"
+msgstr "全域字典"
 
 #: front/dictionnary.php:50 front/find_num.php:147
 #: inc/computer_softwareversion.class.php:693 inc/dropdown.class.php:826
@@ -1767,7 +1767,7 @@ msgstr[0] "網路裝置樣式"
 #: inc/phonemodel.class.php:45 inc/rule.class.php:346
 msgid "Phone model"
 msgid_plural "Phone models"
-msgstr[0] "電話型號"
+msgstr[0] "電話機型號"
 
 #: front/dictionnary.php:91 front/stat.graph.php:148
 #: front/stat.location.php:83 front/stat.tracking.php:92
@@ -1872,7 +1872,7 @@ msgstr[0] "網路裝置類型"
 #: inc/phonetype.class.php:43 inc/rule.class.php:424
 msgid "Phone type"
 msgid_plural "Phone types"
-msgstr[0] "電話類型"
+msgstr[0] "電話機類型"
 
 #: front/dictionnary.php:116 front/dictionnary.php:119
 #: front/stat.location.php:85 inc/computer.class.php:543
@@ -1988,35 +1988,35 @@ msgstr ""
 
 #: front/fileupload.php:59
 msgid "File is too big"
-msgstr ""
+msgstr "檔案過大"
 
 #: front/fileupload.php:60
 msgid "File is too small"
-msgstr ""
+msgstr "檔案過小"
 
 #: front/fileupload.php:61
 msgid "Filetype not allowed"
-msgstr ""
+msgstr "不允許使用的檔案類型"
 
 #: front/fileupload.php:62
 msgid "Maximum number of files exceeded"
-msgstr ""
+msgstr "超過檔案數量限制"
 
 #: front/fileupload.php:63
 msgid "Image exceeds maximum width"
-msgstr ""
+msgstr "圖片超過最大寬度"
 
 #: front/fileupload.php:64
 msgid "Image requires a minimum width"
-msgstr ""
+msgstr "圖片需要最小寬度"
 
 #: front/fileupload.php:65
 msgid "Image exceeds maximum height"
-msgstr ""
+msgstr "圖片超過最大高度"
 
 #: front/fileupload.php:66
 msgid "Image requires a minimum height"
-msgstr ""
+msgstr "圖片需要最小高度"
 
 #: front/find_num.php:74
 msgid "Search the ID of your hardware"
@@ -2053,7 +2053,7 @@ msgstr "硬體類型"
 #: inc/stat.class.php:1459 inc/ticket.class.php:2015 inc/ticket.class.php:4173
 #: inc/ticket.class.php:4928
 msgid "Associated element"
-msgstr "相關物件"
+msgstr "相關的物件"
 
 #: front/find_num.php:94 inc/authldap.class.php:815 inc/authmail.class.php:106
 #: inc/budget.class.php:197 inc/cartridge.class.php:692
@@ -2196,7 +2196,7 @@ msgstr "常見問題解答"
 #: front/helpdesk.public.php:89 front/ticket.form.php:186
 #: inc/notificationtargetticket.class.php:219 inc/ticket.class.php:3768
 msgid "New ticket"
-msgstr "新增聯繫單"
+msgstr "新增待辦事項"
 
 #: front/helpdesk.public.php:94 inc/html.class.php:1298
 #: inc/html.class.php:1455 inc/html.class.php:1456 inc/html.class.php:1825
@@ -2399,7 +2399,7 @@ msgstr "%s嘗試使用一個非標準路徑"
 #: front/plugin.php:56
 #, php-format
 msgid "The plugin %s is incompatible with this version of GLPI"
-msgstr "該插件%s不符合這個GLPI的版本"
+msgstr "外掛程式 %s 與此版本的 GLPI 不相容"
 
 #: front/plugin.php:58
 msgid "Delete or update it otherwise GLPI will not work correctly."
@@ -2639,7 +2639,7 @@ msgstr "根據地點的網絡報告: %s"
 #: front/report.netpoint.list.php:46
 #, php-format
 msgid "Network report by outlet: %s"
-msgstr "根據網絡點的網絡報告: %s"
+msgstr "網路報表依插座：%s"
 
 #: front/report.networking.php:45 inc/report.class.php:90
 msgid "Network report"
@@ -2655,7 +2655,7 @@ msgstr "根據硬體"
 
 #: front/report.networking.php:75
 msgid "By network outlet"
-msgstr "根據網絡點"
+msgstr "依網路插座"
 
 #: front/report.switch.list.php:47
 #, php-format
@@ -2772,11 +2772,11 @@ msgstr[0] "通知"
 
 #: front/setup.notification.php:52 inc/notificationmailsetting.class.php:129
 msgid "Enable followup via email"
-msgstr "使用郵件後續追蹤"
+msgstr "開啟使用電子郵件追蹤"
 
 #: front/setup.notification.php:66 inc/notificationmailsetting.class.php:58
 msgid "Email followups configuration"
-msgstr "電子郵件後續追蹤設定"
+msgstr "電子郵件追蹤設定"
 
 #: front/setup.notification.php:69 inc/notification.class.php:167
 #: inc/notification.class.php:345 inc/notificationevent.class.php:225
@@ -2790,7 +2790,7 @@ msgstr[0] "通知樣板"
 msgid ""
 "Impossible to configure the notifications: please configure your email "
 "followup using the above configuration."
-msgstr "無法設定通知：請啟用電子郵件監控"
+msgstr "無法設定通知：請使用以上設定值設定電子郵件追蹤功能"
 
 #: front/setup.templates.php:58 inc/html.class.php:1548
 msgid "Manage templates..."
@@ -2935,7 +2935,7 @@ msgstr "滿意度調查"
 #: front/stat.location.php:191 front/stat.location.php:203
 #: front/stat.location.php:215 inc/stat.class.php:1514
 msgid "Tickets"
-msgstr "聯繫單"
+msgstr "待辦事項"
 
 #: front/stat.global.php:229 front/stat.global.php:246
 #: front/stat.graph.php:470 front/stat.graph.php:486
@@ -3149,7 +3149,7 @@ msgstr "下一步"
 #: inc/search.class.php:4952
 msgctxt "quantity"
 msgid "Number of tickets"
-msgstr "聯繫單的數量"
+msgstr "待辦事項數量"
 
 #: front/stat.location.php:102 front/stat.tracking.php:130
 msgid "Show graphics"
@@ -3275,7 +3275,7 @@ msgstr "技術員在作業"
 #: front/ticketfollowup.form.php:46
 #, php-format
 msgid "%s adds a followup"
-msgstr "%s 新增一個後續追蹤"
+msgstr "%s 新增一個追蹤"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:57
@@ -3287,18 +3287,18 @@ msgstr "%s 核准或拒絕一個解決方案"
 #: front/ticketfollowup.form.php:67
 #, php-format
 msgid "%s updates a followup"
-msgstr "%s 更新一個後續追蹤"
+msgstr "%s 更新一個追蹤"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:76
 #, php-format
 msgid "%s purges a followup"
-msgstr "%s 清除一個後續追蹤"
+msgstr "%s 清除一個追蹤"
 
 #: front/ticket.form.php:85
 msgid ""
 "You have been redirected because you no longer have access to this ticket"
-msgstr "您已被重定向，因為你無法再使用此聯繫單"
+msgstr "因為您已無權限存取此待辦事項，已重新導向至其他頁面"
 
 #: front/ticket.form.php:180
 msgid "Save solution to the knowledge base"
@@ -3326,11 +3326,11 @@ msgstr "%s 新增預定義欄位"
 #: front/ticket_ticket.form.php:48
 #, php-format
 msgid "%s purges link between tickets"
-msgstr "%s 清除除與問題單的連結"
+msgstr "%s 清除待辦事項間的連結"
 
 #: front/tracking.injector.php:78 inc/ticket.class.php:1563
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "您的聯繫單已登記,正在進行處理。."
+msgstr "您的待辦事項已登記，目前狀態為處理中。."
 
 #: front/tracking.injector.php:83 inc/config.class.php:1723
 #: inc/config.class.php:1743 inc/itilcategory.class.php:323
@@ -4009,7 +4009,7 @@ msgstr "沒有已選擇的目錄"
 
 #: inc/authldap.class.php:2804
 msgid "No directory associated to entity: impossible search"
-msgstr "沒有目錄關聯的實體：不能搜索"
+msgstr "沒有與實體相關的目錄：無法搜尋"
 
 #: inc/authldap.class.php:2969 inc/transfer.class.php:3256
 #: inc/transfer.class.php:3258
@@ -4274,7 +4274,7 @@ msgstr[0] "項目"
 #: inc/budget.class.php:272 inc/item_devices.class.php:964
 #: inc/supplier.class.php:395
 msgid "No associated item"
-msgstr "沒有關聯的項目"
+msgstr "沒有相關的項目"
 
 #: inc/budget.class.php:274 inc/document_item.class.php:196
 #: inc/document_item.class.php:199 inc/notificationtargetchange.class.php:207
@@ -4287,7 +4287,7 @@ msgstr "沒有關聯的項目"
 #: inc/supplier.class.php:397
 msgid "Associated item"
 msgid_plural "Associated items"
-msgstr[0] "關聯項目"
+msgstr[0] "相關的項目"
 
 #. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
 #. headings of a list)
@@ -5103,7 +5103,7 @@ msgstr "查看所有"
 
 #: inc/change.class.php:863 inc/problem.class.php:1472
 msgid "See (author)"
-msgstr "查看(作者)"
+msgstr "查看 (作者)"
 
 #: inc/change_item.class.php:128 inc/contract_item.class.php:589
 #: inc/document_item.class.php:313 inc/item_problem.class.php:132
@@ -5132,7 +5132,7 @@ msgstr "新增一個問題"
 #: inc/change_project.class.php:65
 msgid "Link Project/Change"
 msgid_plural "Links Project/Change"
-msgstr[0] "專案/變更 連結"
+msgstr[0] "連結 專案/變更"
 
 #: inc/change_project.class.php:258
 msgid "Add a project"
@@ -5146,21 +5146,21 @@ msgstr[0] "變更作業"
 #: inc/change_ticket.class.php:63
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
-msgstr[0] "連結聯繫單/變更"
+msgstr[0] "連結 待辦事項/變更"
 
 #: inc/change_ticket.class.php:229 inc/problem_ticket.class.php:270
 #: inc/projecttask_ticket.class.php:162
 msgid "Add a ticket"
-msgstr "新增聯繫單"
+msgstr "新增待辦事項"
 
 #: inc/change_ticket.class.php:252 inc/commonitilobject.class.php:3937
 #: inc/problem_ticket.class.php:300
 msgid "Solve tickets"
-msgstr "解決的連繫單"
+msgstr "解決待辦事項"
 
 #: inc/change_ticket.class.php:341
 msgid "Create a change from this ticket"
-msgstr "建立這個聯繫單的變更"
+msgstr "使用此待辦事項建立變更"
 
 #: inc/commondbchild.class.php:236 inc/networkportinstantiation.class.php:529
 msgid "Item not linked to an object"
@@ -5509,7 +5509,7 @@ msgstr ""
 
 #: inc/commonitilactor.class.php:179 inc/commonitilactor.class.php:259
 msgid "Email Followup"
-msgstr "郵件後續追蹤"
+msgstr "電子郵件追蹤"
 
 #: inc/commonitilcost.class.php:49 inc/commonitilcost.class.php:163
 #: inc/commonitilcost.class.php:193 inc/contract.class.php:455
@@ -5604,7 +5604,7 @@ msgstr "新增一個新成本"
 #: inc/profile.class.php:1932
 msgid "Ticket cost"
 msgid_plural "Ticket costs"
-msgstr[0] "聯繫單成本"
+msgstr[0] "待辦事項成本"
 
 #: inc/commonitilcost.class.php:471
 msgid "Item duration"
@@ -5640,7 +5640,7 @@ msgstr ""
 #: inc/ticket_ticket.class.php:65 inc/transfer.class.php:3283
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] "聯繫單"
+msgstr[0] "待辦事項"
 
 #: inc/commonitilobject.class.php:628 inc/commonitilobject.class.php:675
 #: inc/commonitilobject.class.php:3058 inc/mailcollector.class.php:147
@@ -5658,7 +5658,7 @@ msgstr "無效的資料. 取消更新."
 #: inc/commonitilobject.class.php:1561
 #, php-format
 msgid "Document Ticket %d"
-msgstr "聯繫單文件 %d"
+msgstr "待辦事項文件 %d "
 
 #: inc/commonitilobject.class.php:1700
 msgctxt "priority"
@@ -5894,11 +5894,11 @@ msgstr "技術人員群組"
 
 #: inc/commonitilobject.class.php:2866
 msgid "Email for followup"
-msgstr "郵件追蹤"
+msgstr "電子郵件追蹤"
 
 #: inc/commonitilobject.class.php:2946
 msgid "Requester user"
-msgstr "需求者"
+msgstr "請求者使用者"
 
 #: inc/commonitilobject.class.php:2950
 msgid "Watcher user"
@@ -5907,7 +5907,7 @@ msgstr "監督者"
 #: inc/commonitilobject.class.php:2972
 #: inc/notificationtargetcommonitilobject.class.php:443
 msgid "Group in charge of the ticket"
-msgstr "聯繫單管理群組"
+msgstr "負責此待辦事項的群組"
 
 #: inc/commonitilobject.class.php:3438
 msgid "Actor"
@@ -6022,7 +6022,7 @@ msgstr[0] "作業類別"
 
 #: inc/commonitiltask.class.php:528
 msgid "Public followup"
-msgstr "公開的後續追蹤"
+msgstr "公開追蹤"
 
 #: inc/commonitiltask.class.php:576
 #: inc/notificationtargetcommonitilobject.class.php:1073
@@ -6204,7 +6204,7 @@ msgstr "申請日期"
 #: inc/commonitilvalidation.class.php:1021
 #: inc/notificationtargetcommonitilobject.class.php:452
 msgid "Approval requester"
-msgstr "請求核准者"
+msgstr "核准請求者"
 
 #: inc/commonitilvalidation.class.php:802
 #: inc/commonitilvalidation.class.php:995
@@ -6236,7 +6236,7 @@ msgstr "核准說明"
 
 #: inc/commonitilvalidation.class.php:807
 msgid "Approvals for the ticket"
-msgstr "核准這些聯繫單"
+msgstr "核准此待辦事項"
 
 #: inc/commonitilvalidation.class.php:954
 #: inc/notificationtargetticket.class.php:650
@@ -6686,7 +6686,7 @@ msgstr "新增虛擬機"
 
 #: inc/computervirtualmachine.class.php:332
 msgid "No virtual machine associated with the computer"
-msgstr "沒有虛擬機與電腦關聯"
+msgstr "沒有與此電腦相關的虛擬機器"
 
 #: inc/computervirtualmachine.class.php:334
 msgid "List of virtual machines"
@@ -6806,7 +6806,7 @@ msgstr "螢幕管理限制"
 
 #: inc/config.class.php:418
 msgid "Software category deleted by the dictionary rules"
-msgstr "透過辭典刪除將影響軟體類別"
+msgstr "已依字典規則刪除軟體分類"
 
 #: inc/config.class.php:422
 msgid "Restrict device management"
@@ -6972,27 +6972,27 @@ msgstr ""
 
 #: inc/config.class.php:700
 msgid "Default heading when adding a document to a ticket"
-msgstr "當新增聯繫單文件時加入一個預設的標題"
+msgstr "新增文件至待辦事項時的預設標題"
 
 #: inc/config.class.php:704
 msgid "By default, a software may be linked to a ticket"
-msgstr "依預設, 一個軟體可以連結至聯繫單"
+msgstr "軟體可預設連結至一個待辦事項"
 
 #: inc/config.class.php:710
 msgid "Keep tickets when purging hardware in the inventory"
-msgstr "當硬體從資產移除後仍保留聯繫單"
+msgstr "從此存貨中清除硬體時保留待辦事項"
 
 #: inc/config.class.php:712
 msgid "Show personnal information in new ticket form (simplified interface)"
-msgstr "在新的聯繫單表格顯示個人資訊(簡單介面)"
+msgstr "在新增待辦事項表單中顯示個人資訊 (簡單介面)"
 
 #: inc/config.class.php:718
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
-msgstr "允許匿名創建聯繫單(服務台接收)"
+msgstr "允許匿名建立待辦事項 (helpdesk.receiver)"
 
 #: inc/config.class.php:720
 msgid "Allow anonymous followups (receiver)"
-msgstr "允許匿名後續追蹤(收件人)"
+msgstr "允許匿名追蹤 (收件人)"
 
 #: inc/config.class.php:727
 msgid "Matrix of calculus for priority"
@@ -7084,11 +7084,11 @@ msgstr ""
 
 #: inc/config.class.php:976
 msgid "Private followups by default"
-msgstr "根據個人的預設"
+msgstr "預設非公開追蹤"
 
 #: inc/config.class.php:978
 msgid "Show new tickets on the home page"
-msgstr "在首頁顯示新聯繫單"
+msgstr "在首頁顯示新待辦事項"
 
 #: inc/config.class.php:982
 msgid "Private tasks by default"
@@ -7100,11 +7100,11 @@ msgstr "依預設請求源"
 
 #: inc/config.class.php:989
 msgid "Pre-select me as a technician when creating a ticket"
-msgstr "創建聯繫單時，預先選我做為技術人員"
+msgstr "建立待辦事項時預設選擇我為技術人員"
 
 #: inc/config.class.php:996
 msgid "Automatically refresh the list of tickets (minutes)"
-msgstr "自動更新聯繫單清單 (分鐘)"
+msgstr "自動更新待辦事項清單 (每分鐘)"
 
 #: inc/config.class.php:1006
 msgid "Priority colors"
@@ -7317,7 +7317,7 @@ msgstr "檢查鎖定檔案的寫入權限"
 
 #: inc/config.class.php:1688
 msgid "Checking write permissions for plugins document files"
-msgstr "檢查插件文件檔案的寫入權限"
+msgstr "檢查外掛程式文件檔案的寫入權限"
 
 #: inc/config.class.php:1690
 msgid "Checking write permissions for temporary files"
@@ -7528,12 +7528,12 @@ msgstr "新增一個供應商"
 #: inc/contact.class.php:361 inc/contract.class.php:723
 msgid "Associated supplier"
 msgid_plural "Associated suppliers"
-msgstr[0] "關聯供應商"
+msgstr[0] "相關的供應商"
 
 #: inc/contact_supplier.class.php:50
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
-msgstr[0] "連結聯絡人/供應商"
+msgstr[0] "連結 聯絡人/供應商"
 
 #: inc/contact_supplier.class.php:186 inc/contract_supplier.class.php:325
 msgid "Add a supplier"
@@ -7764,7 +7764,7 @@ msgstr[0] "連結合約/項目"
 
 #: inc/contract_item.class.php:158 inc/queuedmail.class.php:281
 msgid "Associated item ID"
-msgstr "相關的項目ID"
+msgstr "相關的項目 ID"
 
 #: inc/contract_item.class.php:389 inc/contract_supplier.class.php:181
 msgid "Add a contract"
@@ -7808,7 +7808,7 @@ msgstr "系統鎖定"
 
 #: inc/crontask.class.php:425
 msgid "Disabled plugin"
-msgstr "已停用插件"
+msgstr "已停用的外掛程式"
 
 #: inc/crontask.class.php:437 inc/crontask.class.php:1285
 msgid "Run mode"
@@ -8269,7 +8269,7 @@ msgstr "核心數量"
 #: inc/deviceprocessor.class.php:63 inc/deviceprocessor.class.php:92
 #: inc/item_deviceprocessor.class.php:64
 msgid "Number of threads"
-msgstr "線程數量"
+msgstr "執行緒數量"
 
 #: inc/displaypreference.class.php:294
 msgid "No personal criteria. Create personal parameters?"
@@ -8429,7 +8429,7 @@ msgstr "標籤"
 #: inc/document.class.php:818
 msgctxt "quantity"
 msgid "Number of associated items"
-msgstr "相關的項目數"
+msgstr "相關的項目數量"
 
 #: inc/document.class.php:867 inc/document.class.php:1185
 msgid "Upload directory doesn't exist"
@@ -8592,7 +8592,7 @@ msgstr[0] "項目狀態"
 #: inc/profile.class.php:1414
 msgid "Ticket category"
 msgid_plural "Ticket categories"
-msgstr[0] "聯繫單類別"
+msgstr[0] "待辦事項類別"
 
 #: inc/dropdown.class.php:728 inc/projectstate.class.php:47
 msgid "Project state"
@@ -8607,7 +8607,7 @@ msgstr[0] "專案類型"
 #: inc/dropdown.class.php:730 inc/projecttasktype.class.php:47
 msgid "Project tasks type"
 msgid_plural "Project tasks types"
-msgstr[0] "專案任務類型"
+msgstr[0] "專案工作類型"
 
 #: inc/dropdown.class.php:736 inc/networkequipmenttype.class.php:43
 #: inc/rule.class.php:411
@@ -8692,7 +8692,7 @@ msgstr[0] "分位"
 #: inc/networkportinstantiation.class.php:561 inc/profile.class.php:1420
 msgid "Network outlet"
 msgid_plural "Network outlets"
-msgstr[0] "網路點"
+msgstr[0] "網路插座"
 
 #: inc/dropdown.class.php:816 inc/networkport.class.php:918
 #: inc/networkportinstantiation.class.php:128 inc/vlan.class.php:50
@@ -8860,7 +8860,7 @@ msgstr "所有頁面以 CSV 導出"
 #: inc/rulecollection.class.php:804
 msgctxt "button"
 msgid "Export"
-msgstr "導出"
+msgstr "匯出"
 
 #: inc/dropdowntranslation.class.php:48
 #: inc/knowbaseitemtranslation.class.php:55
@@ -9018,12 +9018,12 @@ msgstr "耗材數量的預設門檻值"
 #: inc/tickettemplate.class.php:122
 msgid "Ticket template"
 msgid_plural "Ticket templates"
-msgstr[0] "聯繫單樣板"
+msgstr[0] "待辦事項樣板"
 
 #: inc/entity.class.php:698 inc/entity.class.php:1838
 #: inc/notificationtargetticket.class.php:637
 msgid "Automatic closing of solved tickets after"
-msgstr "聯繫單自動結案,自"
+msgstr "自動結束已解決的待辦事項於"
 
 #: inc/entity.class.php:708 inc/entity.class.php:1842
 msgid "Immediatly"
@@ -9031,15 +9031,15 @@ msgstr "立即"
 
 #: inc/entity.class.php:712
 msgid "Alerts on tickets which are not solved"
-msgstr "尚未解決聯繫單的警訊."
+msgstr "提示尚未解決的待辦事項"
 
 #: inc/entity.class.php:719 inc/entity.class.php:1815
 msgid "Automatic assignment of tickets"
-msgstr "自動分配聯繫單"
+msgstr "自動分配待辦事項"
 
 #: inc/entity.class.php:733 inc/entity.class.php:1797
 msgid "Tickets default type"
-msgstr "聯繫單的預設類型"
+msgstr "待辦事項的預設類型"
 
 #: inc/entity.class.php:749 inc/entity.class.php:1212
 #: inc/infocom.class.php:1004 inc/infocom.class.php:1312
@@ -9102,7 +9102,7 @@ msgstr "LDAP目錄搜索使用者界面中使用的值"
 
 #: inc/entity.class.php:1144
 msgid "LDAP filter associated to the entity (if necessary)"
-msgstr "LDAP篩選 關聯至物件（如需要）"
+msgstr "與此實體相關的 LDAP 篩選器 (若需要)"
 
 #: inc/entity.class.php:1187
 msgid "Autofill dates for financial and administrative information"
@@ -9174,7 +9174,7 @@ msgstr[0] "預借"
 
 #: inc/entity.class.php:1608
 msgid "Alerts on tickets which are not solved since"
-msgstr "尚未解決聯繫單的警訊,自從"
+msgstr "提示尚未解決的待辦事項自"
 
 #: inc/entity.class.php:1776 inc/entity.class.php:1789
 #: inc/entity.class.php:2341 inc/sla.class.php:169
@@ -9238,7 +9238,7 @@ msgstr "安全"
 #: inc/plugin.class.php:60 inc/search.class.php:5008
 msgid "Plugin"
 msgid_plural "Plugins"
-msgstr[0] "插件"
+msgstr[0] "外掛程式"
 
 #: inc/event.class.php:231 inc/event.class.php:329
 msgid "No Event"
@@ -9340,7 +9340,7 @@ msgstr "管理的項目"
 
 #: inc/group.class.php:253
 msgid "Visible in a ticket"
-msgstr "在聯繫單可見"
+msgstr "在待辦事項中顯示"
 
 #: inc/group.class.php:268 inc/group.class.php:468
 msgid "Can be notified"
@@ -9348,7 +9348,7 @@ msgstr "可通知"
 
 #: inc/group.class.php:274
 msgid "Visible in a project"
-msgstr ""
+msgstr "在專案中顯示"
 
 #: inc/group.class.php:278 inc/group.class.php:463
 msgid "Can be manager"
@@ -9542,7 +9542,7 @@ msgstr ""
 #: inc/html.class.php:1741 inc/toolbox.class.php:1396
 #: inc/toolbox.class.php:1400
 msgid "You will find it on the GLPI-PROJECT.org site."
-msgstr "你可以在GLPI-PROJECT.org 網站找到相關訊息."
+msgstr "你可於 GLPI-PROJECT.org 網站找到相關訊息。"
 
 #: inc/html.class.php:1743 inc/toolbox.class.php:1394
 #: inc/toolbox.class.php:1398 inc/toolbox.class.php:1406
@@ -9554,21 +9554,21 @@ msgstr "一個新的可用版本：%s"
 #: inc/html.class.php:1940 inc/profile.class.php:1886
 #: inc/ticket.class.php:5024
 msgid "Create a ticket"
-msgstr "創建一張聯繫單"
+msgstr "建立待辦事項"
 
 #: inc/html.class.php:1949 inc/ticket.class.php:5028
 msgid "Ticket followup"
-msgstr "聯繫單後續"
+msgstr "待辦事項追蹤"
 
 #: inc/html.class.php:1992
 msgid "Plugins"
-msgstr "插件"
+msgstr "外掛程式"
 
 #: inc/html.class.php:2042 inc/html.class.php:2043 inc/ticket.class.php:180
 #: inc/ticket.class.php:181 inc/ticket.class.php:2943
 #: inc/ticket.class.php:2944
 msgid "Ticket waiting for your approval"
-msgstr "待您核准的聯繫單"
+msgstr "等待您核准的待辦事項"
 
 #: inc/html.class.php:2277
 msgid "Check all"
@@ -9756,7 +9756,7 @@ msgstr ""
 msgid ""
 "Purchase date incompatible with the associated budget. %1$s not in budget "
 "period: %2$s / %3$s"
-msgstr ""
+msgstr "購買日期與此相關的預算不一致。 %1$s 不在此預算期間當中：%2$s / %3$s"
 
 #: inc/infocom.class.php:444
 msgid "Send alarms on financial and administrative information"
@@ -9910,7 +9910,7 @@ msgstr "IP 版本"
 #: inc/ipnetwork.class.php:84 inc/ipnetwork.class.php:165
 #: inc/networkportmigration.class.php:293
 msgid "Gateway"
-msgstr "Gateway"
+msgstr "通訊閘"
 
 #: inc/ipnetwork.class.php:90 inc/ipnetwork.class.php:169
 msgid "Addressable network"
@@ -9942,7 +9942,7 @@ msgstr "網路已經定義在可見實體"
 
 #: inc/ipnetwork.class.php:308
 msgid "Invalid gateway address"
-msgstr "無效的網路閘道位址"
+msgstr "無效的通訊閘位址"
 
 #: inc/ipnetwork_vlan.class.php:134 inc/networkport.class.php:938
 #: inc/networkport_vlan.class.php:135
@@ -9960,11 +9960,11 @@ msgstr "容量"
 
 #: inc/item_deviceprocessor.class.php:61
 msgid "Cores"
-msgstr ""
+msgstr "核心"
 
 #: inc/item_deviceprocessor.class.php:65
 msgid "Threads"
-msgstr ""
+msgstr "執行緒"
 
 #. TRANS: %s is the type of the component
 #: inc/item_devices.class.php:76
@@ -10260,7 +10260,7 @@ msgstr "新增項目類型"
 #: inc/ticket.class.php:2025
 msgid "Associated item type"
 msgid_plural "Associated item types"
-msgstr[0] "關聯項目類型"
+msgstr[0] "相關的項目類型"
 
 #: inc/location.class.php:56 inc/location.class.php:95
 #: inc/location.class.php:126
@@ -10274,15 +10274,15 @@ msgstr "房號"
 
 #: inc/location.class.php:64 inc/location.class.php:136
 msgid "Longitude"
-msgstr ""
+msgstr "經度"
 
 #: inc/location.class.php:68 inc/location.class.php:142
 msgid "Latitude"
-msgstr ""
+msgstr "緯度"
 
 #: inc/location.class.php:72 inc/location.class.php:148
 msgid "Altitude"
-msgstr ""
+msgstr "海拔"
 
 #: inc/location.class.php:107
 msgid "Location comments"
@@ -10498,7 +10498,7 @@ msgstr "使用郵件日期替代一次收集"
 #: inc/mailcollector.class.php:328
 msgctxt "button"
 msgid "Get email tickets now"
-msgstr "現在取得eMail 聯繫單"
+msgstr "立即取得電子郵件待辦事項"
 
 #: inc/mailcollector.class.php:459
 #, php-format
@@ -10784,7 +10784,7 @@ msgstr "%1$s 增加了數個網點"
 #: inc/netpoint.class.php:316 inc/netpoint.class.php:375
 #, php-format
 msgid "Network outlets for %s"
-msgstr "%s 的網路網點"
+msgstr "%s 的網路插座"
 
 #: inc/networkalias.class.php:55
 msgid "Network alias"
@@ -10823,7 +10823,7 @@ msgstr "新增一個網路名稱"
 
 #: inc/networkname.class.php:668
 msgid "Not associated"
-msgstr "沒有關聯"
+msgstr "未相關"
 
 #: inc/networkname.class.php:679
 msgid "Create a new network name"
@@ -11015,7 +11015,7 @@ msgstr "無效的網路(已定義或者含無效的位址)"
 
 #: inc/networkportmigration.class.php:116
 msgid "Gateway not include inside the network"
-msgstr "閘道不包括在網路內"
+msgstr "通訊閘不在該網段內"
 
 #: inc/networkportmigration.class.php:198
 #: inc/networkportmigration.class.php:326
@@ -11042,7 +11042,7 @@ msgstr "你必需新增一個網路"
 #: inc/networkportmigration.class.php:230
 #, php-format
 msgid "Append a correct gateway to the network %s"
-msgstr "附加一個正確的閘道到網路%s"
+msgstr "新增了一個正確的通訊閘至網路 %s"
 
 #: inc/networkportmigration.class.php:232
 msgid "Unknown network"
@@ -11196,7 +11196,7 @@ msgstr "回應名稱（如有必要）"
 
 #: inc/notificationmailsetting.class.php:163
 msgid "Add documents into ticket notifications"
-msgstr ""
+msgstr "新增文件至待辦事項通知"
 
 #: inc/notificationmailsetting.class.php:172
 msgid "The PHP mail function is unknown or is not activated on your system."
@@ -11316,7 +11316,7 @@ msgstr "群組的管理員"
 
 #: inc/notificationtarget.class.php:744
 msgid "Group except manager users"
-msgstr "群組 除管理使用者外"
+msgstr "除管理者以外的群組"
 
 #: inc/notificationtarget.class.php:762
 #: inc/notificationtargetdbconnection.class.php:51
@@ -11329,27 +11329,27 @@ msgstr "管理者實體"
 
 #: inc/notificationtargetcommonitilobject.class.php:419
 msgid "Former technician in charge of the ticket"
-msgstr "前線工程師負責此聯繫單"
+msgstr "負責此待辦事項的前技術人員"
 
 #: inc/notificationtargetcommonitilobject.class.php:429
 msgid "Manager of the group in charge of the ticket"
-msgstr "聯繫單的管理群組負責人"
+msgstr "負責此待辦事項的群組的管理者"
 
 #: inc/notificationtargetcommonitilobject.class.php:431
 msgid "Group in charge of the ticket except manager users"
-msgstr ""
+msgstr "除管理者以外負責此待辦事項的群組"
 
 #: inc/notificationtargetcommonitilobject.class.php:432
 msgid "Requester group manager"
-msgstr "需求人員群組管理員"
+msgstr "請求者群組管理者"
 
 #: inc/notificationtargetcommonitilobject.class.php:434
 msgid "Requester group except manager users"
-msgstr ""
+msgstr "除管理者以外的請求者群組"
 
 #: inc/notificationtargetcommonitilobject.class.php:439
 msgid "Technician in charge of the ticket"
-msgstr "技術員負責的聯繫單"
+msgstr "負責此待辦事項的技術人員"
 
 #: inc/notificationtargetcommonitilobject.class.php:442
 #: inc/notificationtargetreservation.class.php:64
@@ -11362,7 +11362,7 @@ msgstr "監督群組管理員"
 
 #: inc/notificationtargetcommonitilobject.class.php:448
 msgid "Watcher group except manager users"
-msgstr ""
+msgstr "除管理者以外的監督者群組"
 
 #: inc/notificationtargetcommonitilobject.class.php:457
 msgid "Technician in charge of the task"
@@ -11374,11 +11374,11 @@ msgstr "作業作者"
 
 #: inc/notificationtargetcommonitilobject.class.php:464
 msgid "Followup author"
-msgstr "後續追蹤作業"
+msgstr "追蹤作者"
 
 #: inc/notificationtargetcommonitilobject.class.php:1015
 msgid "Requester ID"
-msgstr "請求者ID"
+msgstr "請求者 ID"
 
 #: inc/notificationtargetcommonitilobject.class.php:1017
 #: inc/ruleticket.class.php:352
@@ -11542,15 +11542,15 @@ msgstr "徵狀"
 
 #: inc/notificationtargetproject.class.php:51
 msgid "New project"
-msgstr ""
+msgstr "新專案"
 
 #: inc/notificationtargetproject.class.php:52
 msgid "Update of a project"
-msgstr ""
+msgstr "更新專案"
 
 #: inc/notificationtargetproject.class.php:53
 msgid "Deletion of a project"
-msgstr ""
+msgstr "刪除專案"
 
 #: inc/notificationtargetproject.class.php:65
 #: inc/notificationtargetproject.class.php:571 inc/project.class.php:454
@@ -11564,35 +11564,35 @@ msgstr ""
 
 #: inc/notificationtargetproject.class.php:68
 msgid "Manager group except manager users"
-msgstr ""
+msgstr "除管理者以外的管理者群組"
 
 #: inc/notificationtargetproject.class.php:69
 msgid "User of project team"
-msgstr ""
+msgstr "專案團隊使用者"
 
 #: inc/notificationtargetproject.class.php:70
 msgid "Group of project team"
-msgstr ""
+msgstr "專案團隊群組"
 
 #: inc/notificationtargetproject.class.php:71
 #: inc/notificationtargetprojecttask.class.php:66
 msgid "Manager of group of project team"
-msgstr ""
+msgstr "專案團隊群組管理者"
 
 #: inc/notificationtargetproject.class.php:73
 #: inc/notificationtargetprojecttask.class.php:68
 msgid "Group of project team except manager users"
-msgstr ""
+msgstr "除管理者以外的專案團隊群組"
 
 #: inc/notificationtargetproject.class.php:74
 #: inc/notificationtargetprojecttask.class.php:69
 msgid "Contact of project team"
-msgstr ""
+msgstr "專案團隊聯絡人"
 
 #: inc/notificationtargetproject.class.php:75
 #: inc/notificationtargetprojecttask.class.php:70
 msgid "Supplier of project team"
-msgstr ""
+msgstr "專案團隊供應商"
 
 #: inc/notificationtargetproject.class.php:559 inc/project.class.php:390
 #: inc/project.class.php:824
@@ -11679,27 +11679,27 @@ msgstr[0] ""
 #: inc/projectteam.class.php:68
 msgid "Project team"
 msgid_plural "Project teams"
-msgstr[0] ""
+msgstr[0] "專案團隊"
 
 #: inc/notificationtargetprojecttask.class.php:51
 msgid "New project task"
-msgstr ""
+msgstr "新增專案工作"
 
 #: inc/notificationtargetprojecttask.class.php:52
 msgid "Update of a project task"
-msgstr ""
+msgstr "更新專案工作"
 
 #: inc/notificationtargetprojecttask.class.php:53
 msgid "Deletion of a project task"
-msgstr ""
+msgstr "刪除專案工作"
 
 #: inc/notificationtargetprojecttask.class.php:64
 msgid "Project team user"
-msgstr ""
+msgstr "專案團隊使用者"
 
 #: inc/notificationtargetprojecttask.class.php:65
 msgid "Project team group"
-msgstr ""
+msgstr "專案團隊群組"
 
 #: inc/notificationtargetprojecttask.class.php:460
 #: inc/notificationtargetprojecttask.class.php:525 inc/profile.class.php:929
@@ -11707,12 +11707,12 @@ msgstr ""
 #: inc/projecttask.class.php:342 inc/projecttask.class.php:576
 msgid "Project"
 msgid_plural "Projects"
-msgstr[0] ""
+msgstr[0] "專案"
 
 #: inc/notificationtargetprojecttask.class.php:476
 #: inc/projecttask.class.php:454
 msgid "Tickets duration"
-msgstr ""
+msgstr "待辦事項處理時間"
 
 #: inc/notificationtargetreservation.class.php:47
 msgid "New reservation"
@@ -11740,11 +11740,11 @@ msgstr ""
 
 #: inc/notificationtargetticket.class.php:220
 msgid "Update of a ticket"
-msgstr "更新一個聯繫單"
+msgstr "更新待辦事項"
 
 #: inc/notificationtargetticket.class.php:221
 msgid "Ticket solved"
-msgstr "已解決的聯繫單"
+msgstr "已解決待辦事項"
 
 #: inc/notificationtargetticket.class.php:222
 #: inc/notificationtargetticket.class.php:759
@@ -11757,28 +11757,28 @@ msgstr "驗證請求回覆"
 
 #: inc/notificationtargetticket.class.php:224
 msgid "New followup"
-msgstr "新問題單的後續"
+msgstr "新追蹤"
 
 #: inc/notificationtargetticket.class.php:225
 msgid "Update of a followup"
-msgstr "更新一個後續追蹤"
+msgstr "更新追蹤"
 
 #: inc/notificationtargetticket.class.php:226
 msgid "Deletion of a followup"
-msgstr "後續刪除"
+msgstr "刪除追蹤"
 
 #: inc/notificationtargetticket.class.php:230
 msgid "Closing of the ticket"
-msgstr "將聯繫單結案"
+msgstr "結束待辦事項"
 
 #: inc/notificationtargetticket.class.php:231
 msgid "Deletion of a ticket"
-msgstr "刪除聯繫單"
+msgstr "刪除待辦事項"
 
 #: inc/notificationtargetticket.class.php:232
 #: inc/notificationtargetticket.class.php:753 inc/ticket.class.php:5513
 msgid "Not solved tickets"
-msgstr "未解決的聯繫單"
+msgstr "未解決的待辦事項"
 
 #: inc/notificationtargetticket.class.php:233
 msgid "Automatic reminders of SLAs"
@@ -11795,7 +11795,7 @@ msgstr ""
 msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
-msgstr[0] "不需回覆, 在%s日後, 聯繫單會自動結案"
+msgstr[0] "沒有任何回覆的待辦事項將會於 %s 天後自動關閉"
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetticket.class.php:520
@@ -11819,12 +11819,12 @@ msgstr "SLA"
 #: inc/notificationtargetticket.class.php:633 inc/ticket.class.php:2153
 msgctxt "quantity"
 msgid "Number of followups"
-msgstr "後續追蹤的數量"
+msgstr "追蹤的數量"
 
 #: inc/notificationtargetticket.class.php:634
 msgctxt "quantity"
 msgid "Number of linked tickets"
-msgstr "聯繫單已連結的數量"
+msgstr "已連結的待辦事項數量"
 
 #: inc/notificationtargetticket.class.php:655
 #: inc/notificationtargetticket.class.php:658
@@ -11874,7 +11874,7 @@ msgstr "邀請填寫調查"
 #: inc/ticket.class.php:2123 inc/ticketfollowup.class.php:66
 msgid "Followup"
 msgid_plural "Followups"
-msgstr[0] "後續追蹤"
+msgstr[0] "追蹤"
 
 #: inc/notificationtargetticket.class.php:721
 #: inc/notificationtargetticket.class.php:734
@@ -11886,7 +11886,7 @@ msgstr[0] "後續追蹤"
 #: inc/ticket.class.php:4382
 msgid "Linked ticket"
 msgid_plural "Linked tickets"
-msgstr[0] "已連結的聯繫單"
+msgstr[0] "已連結的待辦事項"
 
 #: inc/notificationtargetuser.class.php:117
 msgid "Token"
@@ -12068,7 +12068,7 @@ msgstr "您的計劃"
 #: inc/planning.class.php:1167
 #, php-format
 msgid "Ticket #%1$s %2$s"
-msgstr "聯繫單 #%1$s %2$s"
+msgstr "待辦事項 #%1$s %2$s"
 
 #: inc/planning.class.php:1204
 msgid "See personnal planning"
@@ -12099,7 +12099,7 @@ msgstr "發送計劃恢復"
 
 #: inc/plugin.class.php:349
 msgid "Plugins list"
-msgstr "插件清單"
+msgstr "外掛程式清單"
 
 #: inc/plugin.class.php:354
 msgid "Author"
@@ -12174,11 +12174,11 @@ msgstr "清除"
 
 #: inc/plugin.class.php:586
 msgid "No plugin installed"
-msgstr "沒有安裝插件"
+msgstr "沒有已安裝的外掛程式"
 
 #: inc/plugin.class.php:593
 msgid "See the catalog of plugins"
-msgstr "檢視插件目錄"
+msgstr "檢視外掛程式的類別"
 
 #: inc/printer.class.php:412 inc/printer.class.php:627
 msgid "Initial page counter"
@@ -12246,7 +12246,7 @@ msgstr "您的問題在進行"
 
 #: inc/problem.class.php:854
 msgid "Problem followup"
-msgstr "問題後續追蹤"
+msgstr "問題追蹤"
 
 #: inc/problem.class.php:952
 msgid "No problem in progress."
@@ -12286,11 +12286,11 @@ msgstr[0] "問題作業"
 #: inc/problem_ticket.class.php:60
 msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
-msgstr[0] "連結聯繫單/問題"
+msgstr[0] "連結 待辦事項/問題"
 
 #: inc/problem_ticket.class.php:394
 msgid "Create a problem from this ticket"
-msgstr "建立這個聯繫單的問題"
+msgstr "使用此待辦事項建立問題"
 
 #: inc/profile.class.php:93 inc/profile.class.php:99
 msgid "Life cycles"
@@ -12328,7 +12328,7 @@ msgstr "更新密碼"
 
 #: inc/profile.class.php:596 inc/profile.class.php:1497
 msgid "Ticket creation form on login"
-msgstr "登入時建立聯繫單"
+msgstr "登入時顯示新增待辦事項表單"
 
 #: inc/profile.class.php:652 inc/profile.class.php:1027
 msgid "Association"
@@ -12337,17 +12337,17 @@ msgstr "關連"
 #: inc/profile.class.php:655 inc/profile.class.php:1037
 #: inc/profile.class.php:1941
 msgid "Link with items for the creation of tickets"
-msgstr "建立聯繫單的連結項目"
+msgstr "建立待辦事項時連結項目"
 
 #: inc/profile.class.php:663 inc/profile.class.php:1045
 #: inc/profile.class.php:1947
 msgid "Associable items to a ticket"
-msgstr "聯繫單可連接的項目"
+msgstr "可與待辦事項建立關聯的項目"
 
 #: inc/profile.class.php:671 inc/profile.class.php:973
 #: inc/profile.class.php:1895
 msgid "Default ticket template"
-msgstr "預設樣板"
+msgstr "預設待辦事項樣板"
 
 #: inc/profile.class.php:687 inc/profile.class.php:1031
 #: inc/profile.class.php:1953
@@ -12389,7 +12389,7 @@ msgstr "預借管理"
 
 #: inc/profile.class.php:1001 inc/ticketrecurrent.class.php:61
 msgid "Recurrent tickets"
-msgstr "經常性聯繫單"
+msgstr "例行待辦事項"
 
 #: inc/profile.class.php:1070 inc/reminder.class.php:684
 #: inc/state.class.php:69 inc/state.class.php:286 inc/state.class.php:291
@@ -12405,7 +12405,7 @@ msgstr "來自\\ 給"
 #: inc/profile.class.php:1162 inc/profile.class.php:1263
 #: inc/profile.class.php:1960
 msgid "Life cycle of tickets"
-msgstr "聯繫單的生命週期"
+msgstr "待辦事項的生命週期"
 
 #: inc/profile.class.php:1165 inc/profile.class.php:1967
 msgid "Life cycle of problems"
@@ -12427,7 +12427,7 @@ msgstr "電腦分配給實體的規則"
 #: inc/rulemailcollector.class.php:64
 #: inc/rulemailcollectorcollection.class.php:47
 msgid "Rules for assigning a ticket created through a mails receiver"
-msgstr "透過郵件接收器建立聯繫單指派規則"
+msgstr "透過郵件收件者建立的待辦事項指派規則"
 
 #: inc/profile.class.php:1339 inc/profile.class.php:1792
 msgid "Rules for assigning a category to a software"
@@ -12435,20 +12435,20 @@ msgstr "分配某個類別給軟體的規則"
 
 #: inc/profile.class.php:1342
 msgid "Business rules for tickets (entity)"
-msgstr "聯繫單的業物規則(實體)"
+msgstr "待辦事項的商業規則 (實體)"
 
 #: inc/profile.class.php:1349 inc/profile.class.php:1357
 #: inc/profile.class.php:1810
 msgid "Dropdowns dictionary"
-msgstr "下拉列表辭典"
+msgstr "下拉式選單字典"
 
 #: inc/profile.class.php:1352 inc/profile.class.php:1801
 msgid "Software dictionary"
-msgstr "軟體辭典"
+msgstr "軟體字典"
 
 #: inc/profile.class.php:1355
 msgid "Printers dictionnary"
-msgstr "印表機詞典"
+msgstr "印表機字典"
 
 #: inc/profile.class.php:1398
 msgid "Search result display"
@@ -12466,7 +12466,7 @@ msgstr "下拉式選單實體"
 #: inc/profile.class.php:1755 inc/ruleticket.class.php:51
 #: inc/ruleticketcollection.class.php:67
 msgid "Business rules for tickets"
-msgstr "聯繫單業務規則"
+msgstr "待辦事項的商業規則"
 
 #: inc/profile.class.php:2204
 msgid "No access"
@@ -12660,7 +12660,7 @@ msgstr ""
 #: inc/projecttask.class.php:63
 msgid "Project task"
 msgid_plural "Project tasks"
-msgstr[0] ""
+msgstr[0] "專案工作"
 
 #: inc/projecttask.class.php:149
 msgid "Update (actor)"
@@ -12683,11 +12683,11 @@ msgstr[0] ""
 #: inc/projecttask_ticket.class.php:65
 msgid "Link Ticket/Project task"
 msgid_plural "Links Ticket/Project task"
-msgstr[0] ""
+msgstr[0] "連結 待辦事項/專案 工作"
 
 #: inc/projecttask_ticket.class.php:178
 msgid "Create a ticket from this task"
-msgstr ""
+msgstr "使用此工作建立待辦事項"
 
 #: inc/queuedmail.class.php:81
 msgctxt "button"
@@ -12857,7 +12857,7 @@ msgstr "設備名稱"
 
 #: inc/requesttype.class.php:50 inc/requesttype.class.php:64
 msgid "Default for tickets"
-msgstr "聯繫單的預設值"
+msgstr "預設的待辦事項"
 
 #: inc/requesttype.class.php:53 inc/requesttype.class.php:70
 msgid "Default for mail recipients"
@@ -13305,11 +13305,11 @@ msgstr "新增標準"
 #: inc/ruledictionnarycomputermodelcollection.class.php:46
 #: inc/ruledictionnarymonitormodelcollection.class.php:42
 msgid "Dictionnary of computer models"
-msgstr "電腦型號辭典"
+msgstr "電腦型號字典"
 
 #: inc/ruledictionnarycomputertypecollection.class.php:46
 msgid "Dictionnary of computer types"
-msgstr "電腦類型辭典"
+msgstr "電腦類型字典"
 
 #: inc/ruledictionnarydropdowncollection.class.php:61
 #: inc/ruledictionnarydropdowncollection.class.php:116
@@ -13341,52 +13341,52 @@ msgstr "現有的資料庫上重新執行規則, 結束於%s"
 
 #: inc/ruledictionnarymanufacturercollection.class.php:46
 msgid "Dictionary of manufacturers"
-msgstr "製造商辭典"
+msgstr "製造商字典"
 
 #: inc/ruledictionnarymonitortypecollection.class.php:46
 msgid "Dictionnary of monitor types"
-msgstr "顯示器類型辭典"
+msgstr "螢幕類型字典"
 
 #: inc/ruledictionnarynetworkequipmentmodelcollection.class.php:42
 msgid "Dictionnary of networking equipment models"
-msgstr "網路型號辭典"
+msgstr "網路設備型號字典"
 
 #: inc/ruledictionnarynetworkequipmenttypecollection.class.php:42
 msgid "Dictionnary of network equipment types"
-msgstr "網路設備類型辭典"
+msgstr "網路設備類型字典"
 
 #: inc/ruledictionnaryoperatingsystemcollection.class.php:42
 msgid "Dictionnary of operating systems"
-msgstr "作業系統辭典"
+msgstr "作業系統字典"
 
 #: inc/ruledictionnaryoperatingsystemservicepackcollection.class.php:42
 msgid "Dictionnary of service packs"
-msgstr "辭典的服務包"
+msgstr "Service Pack 字典"
 
 #: inc/ruledictionnaryoperatingsystemversioncollection.class.php:42
 msgid "Dictionnary of operating system versions"
-msgstr "OS版本辭典"
+msgstr "作業系統版本字典"
 
 #: inc/ruledictionnaryperipheralmodelcollection.class.php:42
 msgid "Dictionnary of device models"
-msgstr "外圍設備型號辭典"
+msgstr "週邊裝置型號字典"
 
 #: inc/ruledictionnaryperipheraltypecollection.class.php:42
 msgid "Dictionnary of device types"
-msgstr "外圍設備類型辭典"
+msgstr "週邊裝置類型字典"
 
 #: inc/ruledictionnaryphonemodelcollection.class.php:42
 msgid "Dictionnary of phone models"
-msgstr "電話辭典"
+msgstr "電話機型號字典"
 
 #: inc/ruledictionnaryphonetypecollection.class.php:42
 msgid "Dictionnary of phone types"
-msgstr "電話類型辭典"
+msgstr "電話機類型字典"
 
 #: inc/ruledictionnaryprinter.class.php:52
 #: inc/ruledictionnaryprintercollection.class.php:51
 msgid "Dictionnary of printers"
-msgstr "印表機辭典"
+msgstr "印表機字典"
 
 #: inc/ruledictionnaryprinter.class.php:100
 #: inc/ruledictionnarysoftware.class.php:107
@@ -13404,18 +13404,18 @@ msgstr "%1$s -  現有的資料庫重放規則: %2$s/%3$s (%4$s Mio)"
 
 #: inc/ruledictionnaryprintermodelcollection.class.php:42
 msgid "Dictionnary of printer models"
-msgstr "印表機型號辭典"
+msgstr "印表機型號字典"
 
 #: inc/ruledictionnaryprintertypecollection.class.php:42
 msgid "Dictionnary of printer types"
-msgstr "印表機類型辭典"
+msgstr "印表機類型字典"
 
 #. TRANS: plural for software
 #. TRANS: software in plural
 #: inc/ruledictionnarysoftware.class.php:58
 #: inc/ruledictionnarysoftwarecollection.class.php:52
 msgid "Dictionnary of software"
-msgstr "軟體辭典"
+msgstr "軟體字典"
 
 #: inc/ruledictionnarysoftware.class.php:85
 #: inc/ruledictionnarysoftware.class.php:114
@@ -13427,11 +13427,11 @@ msgstr "出版商"
 #: inc/ruledictionnarysoftware.class.php:118 inc/software.class.php:268
 #: inc/software.class.php:523
 msgid "Associable to a ticket"
-msgstr "顯示於服務台"
+msgstr "可與待辦事項關聯的項目"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:82
 msgid "Warning before running rename based on the dictionary rules"
-msgstr "在依辭典執行變更名稱前警告"
+msgstr "在依字典執行重新名稱前顯示警告訊息"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:86
 msgid ""
@@ -13445,12 +13445,12 @@ msgstr "製造商的選擇"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:90
 msgid "Replay dictionary rules for manufacturers (----- = All)"
-msgstr "依辭典替換製造商((----- = All))"
+msgstr "依字典替換製造商 (----- = All)"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:284
 #: inc/ruledictionnarysoftwarecollection.class.php:385
 msgid "Software deleted by GLPI dictionary rules"
-msgstr "透過GLPI辭典刪除軟體"
+msgstr "已依 GLPI 字典規則刪除軟體"
 
 #: inc/ruleimportcomputer.class.php:53
 #: inc/ruleimportcomputercollection.class.php:62
@@ -13619,7 +13619,7 @@ msgstr "考量所新增優先順序,此行為是必要的或是會影響作業�
 
 #: inc/ruleticket.class.php:346
 msgid "Requester in group"
-msgstr ""
+msgstr "群組中的請求者"
 
 #: inc/ruleticket.class.php:358
 msgid "Item location"
@@ -13627,11 +13627,11 @@ msgstr "項目位置"
 
 #: inc/ruleticket.class.php:364
 msgid "Ticket location"
-msgstr "聯繫單位置"
+msgstr "待辦事項位置"
 
 #: inc/ruleticket.class.php:554
 msgid "Approval request to requester group manager"
-msgstr ""
+msgstr "核准請求者群組管理者的請求"
 
 #: inc/ruleticket.class.php:561
 msgid "Approval request to technician group manager"
@@ -13644,7 +13644,7 @@ msgstr ""
 
 #: inc/ruleticket.class.php:586
 msgid "Business rules for ticket (entity parent)"
-msgstr ""
+msgstr "待辦事項的商業規則 (父實體)"
 
 #: inc/search.class.php:1483 inc/search.class.php:1485
 #: inc/search.class.php:1560 inc/search.class.php:1563
@@ -13690,7 +13690,7 @@ msgstr "不允許您所提出的需求"
 
 #: inc/sla.class.php:170
 msgid "Calendar of the ticket"
-msgstr "聯繫單的日曆"
+msgstr "此待辦事項的日曆"
 
 #: inc/sla.class.php:173
 msgid "Maximum time to solve"
@@ -13860,23 +13860,23 @@ msgstr "新增一個版本"
 
 #: inc/stat.class.php:422
 msgid "Real duration of treatment of the ticket"
-msgstr "真正的聯繫單處理時間"
+msgstr "實際處理待辦事項的時間"
 
 #: inc/stat.class.php:434
 msgid "Number of opened tickets"
-msgstr "已開啟的聯繫單數量"
+msgstr "已開啟的待辦事項數量"
 
 #: inc/stat.class.php:435
 msgid "Number of solved tickets"
-msgstr "已解決的聯繫單數量"
+msgstr "已解決的待辦事項數量"
 
 #: inc/stat.class.php:436
 msgid "Number of late tickets"
-msgstr "延誤的聯繫單數量"
+msgstr "已延誤的待辦事項數量"
 
 #: inc/stat.class.php:437
 msgid "Number of closed tickets"
-msgstr "已結案的聯繫單數量"
+msgstr "已結束的待辦事項數量"
 
 #: inc/stat.class.php:449
 msgid "Number of opened satisfaction survey"
@@ -13908,11 +13908,11 @@ msgstr "平均結案時間"
 
 #: inc/stat.class.php:484
 msgid "Average real duration of treatment of the ticket"
-msgstr "平均聯繫單真正的處理時間"
+msgstr "實際處理待辦事項的平均時間"
 
 #: inc/stat.class.php:487
 msgid "Total real duration of treatment of the ticket"
-msgstr "總聯繫單真正的處理時間"
+msgstr "實際處理待辦事項的總時間"
 
 #: inc/stat.class.php:704
 msgid "No statistics are available"
@@ -13932,11 +13932,11 @@ msgstr "CSV"
 
 #: inc/stat.class.php:1463
 msgid "Number of tickets"
-msgstr "聯繫單的數量"
+msgstr "待辦事項數量"
 
 #: inc/stat.class.php:1518
 msgid "By ticket"
-msgstr "依聯繫單"
+msgstr "依待辦事項"
 
 #: inc/stat.class.php:1520
 msgid "By hardware characteristics"
@@ -13971,20 +13971,20 @@ msgstr "新增聯絡人"
 #: inc/supplier.class.php:294
 msgid "Associated contact"
 msgid_plural "Associated contacts"
-msgstr[0] "相關聯絡人"
+msgstr[0] "相關的聯絡人"
 
 #: inc/supplier.class.php:322
 msgid "Associated contract"
 msgid_plural "Associated contracts"
-msgstr[0] "關聯合約"
+msgstr[0] "關聯的合約"
 
 #: inc/ticket.class.php:148
 msgid "Create ticket"
-msgstr ""
+msgstr "建立待辦事項"
 
 #: inc/ticket.class.php:492 inc/ticket.class.php:509
 msgid "Created tickets"
-msgstr "建立聯繫單"
+msgstr "已建立待辦事項"
 
 #: inc/ticket.class.php:589
 msgid "No generated survey"
@@ -13998,7 +13998,7 @@ msgstr "未填寫必須輸入的欄位,請更正: %s"
 
 #: inc/ticket.class.php:959 inc/ticket.class.php:1503
 msgid "Unknown ticket"
-msgstr "未知的聯繫單"
+msgstr "不明的待辦事項"
 
 #: inc/ticket.class.php:1719
 #, php-format
@@ -14007,7 +14007,7 @@ msgstr "%1$s 更新項目 %2$s"
 
 #: inc/ticket.class.php:1971 inc/ticketfollowup.class.php:715
 msgid "Add a new followup"
-msgstr "新增後續追蹤"
+msgstr "新增追蹤"
 
 #: inc/ticket.class.php:1980 inc/ticket.class.php:4104
 #: inc/tickettemplate.class.php:231
@@ -14017,7 +14017,7 @@ msgstr "請求核准"
 #: inc/ticket.class.php:1987
 msgctxt "button"
 msgid "Link tickets"
-msgstr "連結聯繫單"
+msgstr "連結待辦事項"
 
 #: inc/ticket.class.php:2104
 msgid "Response date"
@@ -14025,7 +14025,7 @@ msgstr "回覆日期"
 
 #: inc/ticket.class.php:2176
 msgid "Private followup"
-msgstr "私人後續追蹤"
+msgstr "非公開追蹤"
 
 #: inc/ticket.class.php:2204
 msgid "Take into account time"
@@ -14033,19 +14033,19 @@ msgstr "考量到帳戶時間"
 
 #: inc/ticket.class.php:2217
 msgid "All linked tickets"
-msgstr "所有聯繫單的連結"
+msgstr "所有連結的待辦事項"
 
 #: inc/ticket.class.php:2226
 msgid "Duplicated tickets"
-msgstr "重複的聯繫單"
+msgstr "重複的待辦事項"
 
 #: inc/ticket.class.php:2237
 msgid "Number of all linked tickets"
-msgstr "所有聯繫單的連結數量"
+msgstr "所有連結的待辦事項數量"
 
 #: inc/ticket.class.php:2245
 msgid "Number of duplicated tickets"
-msgstr "重複的聯繫單數量"
+msgstr "重複的待辦事項數量"
 
 #: inc/ticket.class.php:2676
 msgid "Devices own by my groups"
@@ -14069,11 +14069,11 @@ msgstr "或完成搜尋"
 
 #: inc/ticket.class.php:2945
 msgid "Tickets awaiting approval"
-msgstr "待核准的聯繫單"
+msgstr "等待核准的待辦事項"
 
 #: inc/ticket.class.php:3012
 msgid "This ticket concerns me"
-msgstr "與我有關的聯繫單"
+msgstr "與我有關的待辦事項"
 
 #: inc/ticket.class.php:3033 inc/ticket.class.php:3063
 msgid "Check your personnal information"
@@ -14094,7 +14094,7 @@ msgstr "發送訊息"
 #: inc/ticket.class.php:3765
 #, php-format
 msgid "The ticket will be added in the entity %s"
-msgstr "聯繫單已被建立為一個實體 %s"
+msgstr "此待辦事項已新增至實體 %s"
 
 #: inc/ticket.class.php:3825
 #, php-format
@@ -14105,7 +14105,7 @@ msgstr "下一個提升: %s"
 msgid ""
 "The assignment of a SLA to a ticket causes the recalculation of the due "
 "date."
-msgstr "分配到聯繫單的 SLA，導致重新計算到期日期."
+msgstr "指派 SLA 至待辦事項，重新計算到期日。"
 
 #: inc/ticket.class.php:3867
 msgid "Escalations defined in the SLA will be triggered under this new date."
@@ -14134,70 +14134,70 @@ msgstr ""
 
 #: inc/ticket.class.php:4720 inc/ticket.class.php:4887
 msgid "Your tickets to close"
-msgstr "您待結案的聯繫單"
+msgstr "您待結束的待辦事項"
 
 #: inc/ticket.class.php:4736 inc/ticket.class.php:4803
 msgid "Tickets on pending status"
-msgstr "聯繫單待決定狀態"
+msgstr "擱置的待辦事項"
 
 #: inc/ticket.class.php:4752 inc/ticket.class.php:4819
 msgid "Tickets to be processed"
-msgstr "需處理的聯繫單"
+msgstr "需處理的待辦事項"
 
 #: inc/ticket.class.php:4768 inc/ticket.class.php:4903
 msgid "Your observed tickets"
-msgstr "你所評論的聯繫單"
+msgstr "你追蹤的待辦事項"
 
 #: inc/ticket.class.php:4785 inc/ticket.class.php:4920
 msgid "Your tickets in progress"
-msgstr "您進行中的聯繫單"
+msgstr "您待處理的待辦事項"
 
 #: inc/ticket.class.php:4841
 msgid "Your tickets to validate"
-msgstr "您待生效的聯繫單"
+msgstr "您待檢驗的待辦事項"
 
 #: inc/ticket.class.php:4858
 msgid "Your rejected tickets"
-msgstr "您被退回的聯繫單"
+msgstr "您被退回的待辦事項"
 
 #. TRANS: %d is the number of new tickets
 #: inc/ticket.class.php:5080
 #, php-format
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
-msgstr[0] "%d 新聯繫單"
+msgstr[0] "%d 筆新待辦事項"
 
 #: inc/ticket.class.php:5096 inc/ticket.class.php:5267
 #: inc/ticket.class.php:5327
 msgid "No ticket found."
-msgstr "沒有發現聯繫單."
+msgstr "沒有任何待辦事項。"
 
 #: inc/ticket.class.php:5167
 msgid "Last tickets"
-msgstr "最近的聯繫單"
+msgstr "最近的待辦事項"
 
 #: inc/ticket.class.php:5242 inc/ticket.class.php:5275
 msgid "New ticket for this item..."
-msgstr "為此項目新增問題單…"
+msgstr "為此項目新增待辦事項..."
 
 #: inc/ticket.class.php:5257
 #, php-format
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
-msgstr[0] "最近%d的聯繫單"
+msgstr[0] "最近的 %d 筆待辦事項"
 
 #: inc/ticket.class.php:5263
 msgid "You don't have right to see all tickets"
-msgstr "無法正常顯示所有聯繫單"
+msgstr "您沒有權限檢視所有待辦事項"
 
 #: inc/ticket.class.php:5317
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] "聯繫單在連結的項目"
+msgstr[0] "於已連結項目上的待辦事項"
 
 #: inc/ticket.class.php:5430
 msgid "No ticket in progress."
-msgstr "沒有聯繫單在進行."
+msgstr "沒有待辦事項處理中。"
 
 #: inc/ticket.class.php:5484
 msgid "Assign equipment"
@@ -14205,7 +14205,7 @@ msgstr "指派 設備"
 
 #: inc/ticket.class.php:5510
 msgid "Automatic tickets closing"
-msgstr "聯繫單自動結案"
+msgstr "自動結束待辦事項"
 
 #: inc/ticket.class.php:5516
 msgid "Generation of satisfaction surveys"
@@ -14213,20 +14213,20 @@ msgstr "產生滿意度調查"
 
 #: inc/ticket.class.php:5726
 msgid "See my ticket"
-msgstr ""
+msgstr "檢視我的待辦事項"
 
 #. TRANS: short for : See tickets created by my groups
 #: inc/ticket.class.php:5728
 msgid "See group ticket"
-msgstr "查看群組聯繫單"
+msgstr "檢視群組待辦事項"
 
 #: inc/ticket.class.php:5729
 msgid "See tickets created by my groups"
-msgstr "依我的創建群組查看聯繫單"
+msgstr "檢視由我的群組建立的待辦事項"
 
 #: inc/ticket.class.php:5731
 msgid "See all tickets"
-msgstr "查看所有聯繫單"
+msgstr "檢視所有待辦事項"
 
 #. TRANS: short for : See assigned tickets (group associated)
 #: inc/ticket.class.php:5733
@@ -14235,11 +14235,11 @@ msgstr ""
 
 #: inc/ticket.class.php:5734
 msgid "See assigned tickets"
-msgstr "查看所有已指派問題單"
+msgstr "檢視已指派的待辦事項"
 
 #: inc/ticket.class.php:5737
 msgid "Assign a ticket"
-msgstr "指派聯繫單"
+msgstr "指派待辦事項"
 
 #. TRANS: short for : Steal a ticket
 #: inc/ticket.class.php:5739
@@ -14248,7 +14248,7 @@ msgstr ""
 
 #: inc/ticket.class.php:5740
 msgid "Steal a ticket"
-msgstr "竊取聯繫單"
+msgstr "竊取待辦事項"
 
 #. TRANS: short for : To be in charge of a ticket
 #: inc/ticket.class.php:5742
@@ -14257,7 +14257,7 @@ msgstr ""
 
 #: inc/ticket.class.php:5743
 msgid "To be in charge of a ticket"
-msgstr "重為聯繫單負責人"
+msgstr "成為待辦事項負責人"
 
 #: inc/ticket.class.php:5744
 msgid "Change the priority"
@@ -14271,7 +14271,7 @@ msgstr "新增文件: %s"
 
 #: inc/ticketfollowup.class.php:324 inc/ticketfollowup.class.php:571
 msgid "If you want to reopen the ticket, you must specify a reason"
-msgstr ""
+msgstr "您必須填寫原因才能重新開啟待辦事項"
 
 #: inc/ticketfollowup.class.php:328
 msgid "If you reject the solution, you must specify a reason"
@@ -14279,35 +14279,35 @@ msgstr "如果你拒絕該解決方案，您必須明確說明原因"
 
 #: inc/ticketfollowup.class.php:474 inc/ticketfollowup.class.php:597
 msgid "Source of followup"
-msgstr "後續來源"
+msgstr "追蹤來源"
 
 #: inc/ticketfollowup.class.php:713
 msgid "Reopen the ticket"
-msgstr ""
+msgstr "重新開啟待辦事項"
 
 #: inc/ticketfollowup.class.php:725
 msgid "No followup for this ticket."
-msgstr "這個聯繫單沒有後續追蹤。"
+msgstr "此待辦事項沒有追蹤。"
 
 #: inc/ticketfollowup.class.php:730
 msgid "This week"
-msgstr ""
+msgstr "本週"
 
 #: inc/ticketfollowup.class.php:732
 msgid "Last week"
-msgstr "進近一週"
+msgstr "最近一週"
 
 #: inc/ticketfollowup.class.php:734
 msgid "This month"
-msgstr ""
+msgstr "本月"
 
 #: inc/ticketfollowup.class.php:736
 msgid "Last month"
-msgstr "進近個月"
+msgstr "最近一個月"
 
 #: inc/ticketfollowup.class.php:738
 msgid "Before the last month"
-msgstr ""
+msgstr "最後一個月之前"
 
 #: inc/ticketfollowup.class.php:904
 msgid "Approval of the solution"
@@ -14327,7 +14327,7 @@ msgstr ""
 
 #: inc/ticketfollowup.class.php:980 inc/tickettask.class.php:227
 msgid "Add to all tickets"
-msgstr ""
+msgstr "新增至所有待辦事項"
 
 #: inc/ticketfollowup.class.php:981 inc/tickettask.class.php:228
 msgid "See private ones"
@@ -14335,23 +14335,23 @@ msgstr ""
 
 #: inc/ticketfollowup.class.php:985
 msgid "Add followup (associated groups)"
-msgstr ""
+msgstr "新增追蹤 (相關的群組)"
 
 #: inc/ticketfollowup.class.php:986
 msgid "Add a followup to tickets of associated groups"
-msgstr "新增聯繫單後續追蹤關連群組"
+msgstr "新增追蹤至相關群組的待辦事項"
 
 #: inc/ticketfollowup.class.php:987
 msgid "Update followups (author)"
-msgstr "更新後續追蹤(作者)"
+msgstr "更新追蹤 (作者)"
 
 #: inc/ticketfollowup.class.php:988
 msgid "Add followup (requester)"
-msgstr ""
+msgstr "新增追蹤 (請求者)"
 
 #: inc/ticketfollowup.class.php:989
 msgid "Add a followup to tickets (requester)"
-msgstr "新增聯繫單後續 (作者)"
+msgstr "新增追蹤至待辦事項 (請求者)"
 
 #: inc/ticketfollowup.class.php:990 inc/tickettask.class.php:231
 msgid "See public ones"
@@ -14375,29 +14375,29 @@ msgstr "無效讀頻率。它必須大於初建值。"
 #: inc/ticketrecurrent.class.php:425
 #, php-format
 msgid "Failed to create recurrent ticket %s"
-msgstr "最近建立失敗的聯繫單 %s"
+msgstr "建立例行待辦事項失敗 %s"
 
 #: inc/ticketrecurrent.class.php:479
 #, php-format
 msgid "Ticket %d successfully created"
-msgstr "聯繫單 %d 已成功建立"
+msgstr "待辦事項 %d 已待辦事項建立成功"
 
 #: inc/ticketrecurrent.class.php:482
 msgid "Ticket creation failed (check mandatory fields)"
-msgstr "聯繫單建立失敗 (檢查必填欄位)"
+msgstr "待辦事項建立失敗 (請檢查必填欄位)"
 
 #: inc/ticketrecurrent.class.php:485
 msgid "Ticket creation failed (no template)"
-msgstr "聯繫單建立失敗 (沒有樣板)"
+msgstr "待辦事項建立失敗 (無該樣板)"
 
 #: inc/ticketsatisfaction.class.php:121
 msgid "Satisfaction with the resolution of the ticket"
-msgstr "該聯繫單的滿意度調查結果"
+msgstr "此待辦事項處理結果的滿意度"
 
 #: inc/tickettask.class.php:56
 msgid "Ticket task"
 msgid_plural "Ticket tasks"
-msgstr[0] "聯繫單作業"
+msgstr[0] "待辦事項工作"
 
 #: inc/tickettemplatehiddenfield.class.php:61
 msgid "Hidden field"
@@ -14809,7 +14809,7 @@ msgstr "如果供應商已不再使用"
 
 #: inc/transfer.class.php:3399
 msgid "Links between suppliers and contacts"
-msgstr "連結聯絡人和供應商"
+msgstr "連結供應商與聯絡人"
 
 #: inc/transfer.class.php:3403
 msgid "If contacts are no longer used"
@@ -14955,15 +14955,15 @@ msgstr "已刪除LDAP目錄中的使用者"
 
 #: inc/user.class.php:2688
 msgid "Number of tickets as requester"
-msgstr "聯繫單需求數量"
+msgstr "作為請求者的待辦事項數量"
 
 #: inc/user.class.php:2705
 msgid "Number of written tickets"
-msgstr "聯繫單寫作數量"
+msgstr "已填寫的待辦事項數量"
 
 #: inc/user.class.php:2715
 msgid "Number of assigned tickets"
-msgstr ""
+msgstr "已指派的待辦事項數量"
 
 #: inc/user.class.php:3218 inc/user.class.php:3225
 msgid "Import a user"

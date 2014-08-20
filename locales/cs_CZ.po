@@ -12,8 +12,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-25 08:54+0200\n"
-"PO-Revision-Date: 2014-06-25 06:55+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2014-08-05 14:31+0000\n"
+"Last-Translator: Martin Denes <marchino.cz@gmail.com>\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/GLPI/language/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2659,7 +2659,7 @@ msgstr "Typ položky"
 #: front/stat.global.php:71 front/stat.graph.php:307 front/stat.item.php:73
 #: front/stat.location.php:104 front/stat.tracking.php:132
 msgid "Display report"
-msgstr "Zobrazit zprávu"
+msgstr "Zobrazit výkaz"
 
 #: front/report.infocom.conso.php:198 front/report.infocom.conso.php:199
 #: front/report.infocom.conso.php:263 front/report.infocom.conso.php:264
@@ -2705,16 +2705,16 @@ msgstr "Datum zprovoznění"
 #: front/report.location.list.php:45
 #, php-format
 msgid "Network report by location: %s"
-msgstr "Zpráva o síti podle umístění: %s"
+msgstr "Výkaz o síti podle umístění: %s"
 
 #: front/report.netpoint.list.php:46
 #, php-format
 msgid "Network report by outlet: %s"
-msgstr "Zpráva o síti podle zásuvek: %s"
+msgstr "Výkaz o síti podle zásuvek: %s"
 
 #: front/report.networking.php:45 inc/report.class.php:90
 msgid "Network report"
-msgstr "Zpráva o síti"
+msgstr "Výkaz o síti"
 
 #: front/report.networking.php:52
 msgid "By location"
@@ -2731,7 +2731,7 @@ msgstr "Podle síťové zásuvky"
 #: front/report.switch.list.php:47
 #, php-format
 msgid "Network report by hardware: %s"
-msgstr "Zpráva o síti podle hardware: %s"
+msgstr "Výkaz o síti podle hardware: %s"
 
 #: front/report.year.list.php:45 inc/budget.class.php:406
 #: inc/contract_item.class.php:566
@@ -2748,7 +2748,7 @@ msgstr "Seznam materiálu"
 
 #: front/report.year.php:47
 msgid "Equipment's report by year"
-msgstr "Zpráva o vybavení podle roku"
+msgstr "Výkaz o vybavení podle roku"
 
 #: front/reservation.form.php:41 front/reservationitem.php:42
 #: front/reservation.php:43 front/tracking.injector.php:55
@@ -2824,9 +2824,9 @@ msgstr "Není možné použít LDAP jako externí zdroj pro připojení"
 #: inc/notificationmailsetting.class.php:181
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] "Mail server"
-msgstr[1] "Mail servery"
-msgstr[2] "Mail serverů"
+msgstr[0] "Emailový server"
+msgstr[1] "Emailové servery"
+msgstr[2] "Emailové servery"
 
 #: front/setup.auth.php:59 inc/authmail.class.php:204
 msgid "Impossible to use email server as external source of connection"
@@ -3588,7 +3588,7 @@ msgstr "Ověření v adresáři LDAP"
 
 #: inc/auth.class.php:886
 msgid "Authentication on mail server"
-msgstr "Ověření v poštovním serveru"
+msgstr "Ověření v emailovém serveru"
 
 #: inc/auth.class.php:920 inc/authmail.class.php:96
 #: inc/ruleright.class.php:253
@@ -4194,7 +4194,7 @@ msgstr "Konfigurace emailového serveru"
 
 #: inc/authmail.class.php:218
 msgid "Test connection to email server"
-msgstr "Testovat připojení k poštovnímu serveru"
+msgstr "Testovat připojení k emailovému serveru"
 
 #: inc/autoupdatesystem.class.php:43 inc/computer.class.php:609
 #: inc/computer.class.php:714
@@ -4247,7 +4247,7 @@ msgstr "UUID"
 
 #: inc/blacklistedmailcontent.class.php:54 inc/dropdown.class.php:718
 msgid "Blacklisted mail content"
-msgstr "Přidat obsah e-mailu na černou listinu"
+msgstr "Přidat obsah emailu na černou listinu"
 
 #: inc/blacklistedmailcontent.class.php:71
 #: inc/blacklistedmailcontent.class.php:89 inc/knowbaseitem.class.php:668
@@ -7191,7 +7191,7 @@ msgstr "Omezení plánovací tabulky"
 
 #: inc/config.class.php:684
 msgid "Default file size limit imported by the mails receiver"
-msgstr "Výchozí limit velikosti souboru importovaného pomocí mailového přijímače"
+msgstr "Výchozí limit velikosti souboru importovaného pomocí emailového přijímače"
 
 #: inc/config.class.php:689
 msgid "Use rich text for helpdesk"
@@ -9289,7 +9289,7 @@ msgstr "Volby upozornění"
 
 #: inc/entity.class.php:554 inc/entity.class.php:1349
 msgid "Delay to send email notifications"
-msgstr "Zpoždění při zasílání upozornění e-mailem"
+msgstr "Zpoždění při zasílání upozornění emailem"
 
 #: inc/entity.class.php:566 inc/entity.class.php:1327
 #: inc/notificationmailsetting.class.php:137
@@ -9721,7 +9721,7 @@ msgstr "Mohou být zaslána avíza"
 
 #: inc/group.class.php:274
 msgid "Visible in a project"
-msgstr ""
+msgstr "Viditelné v projektu"
 
 #: inc/group.class.php:278 inc/group.class.php:463
 msgid "Can be manager"
@@ -10363,11 +10363,11 @@ msgstr "Kapacita"
 
 #: inc/item_deviceprocessor.class.php:61
 msgid "Cores"
-msgstr ""
+msgstr "Jádra"
 
 #: inc/item_deviceprocessor.class.php:65
 msgid "Threads"
-msgstr ""
+msgstr "Vlákna"
 
 #. TRANS: %s is the type of the component
 #: inc/item_devices.class.php:76
@@ -10432,7 +10432,7 @@ msgstr "Viditelné pro problém"
 
 #: inc/itilcategory.class.php:88 inc/itilcategory.class.php:155
 msgid "Visible for a change"
-msgstr ""
+msgstr "Viditelné pro změnu"
 
 #: inc/itilcategory.class.php:92 inc/itilcategory.class.php:129
 msgid "Template for a request"
@@ -10904,11 +10904,11 @@ msgstr "Použít ověřování přes Kerberos"
 
 #: inc/mailcollector.class.php:283 inc/mailcollector.class.php:384
 msgid "Accepted mail archive folder (optional)"
-msgstr "Archivní složka přijatých mailů (volitelně)"
+msgstr "Archivní složka přijatých emailů (volitelně)"
 
 #: inc/mailcollector.class.php:287 inc/mailcollector.class.php:389
 msgid "Refused mail archive folder (optional)"
-msgstr "Archivní složka odmítnutých mailů (volitelně)"
+msgstr "Archivní složka odmítnutých emailů (volitelně)"
 
 #: inc/mailcollector.class.php:294 inc/mailcollector.class.php:368
 msgid "Maximum size of each file imported by the mails receiver"
@@ -10916,7 +10916,7 @@ msgstr "Maximální velikost jednotlivého souboru importovaného mailovým při
 
 #: inc/mailcollector.class.php:299
 msgid "Use mail date, instead of collect one"
-msgstr "Použijte datum mailu místo jednoho z těchto"
+msgstr "Použijte datum emailu místo jednoho z těchto"
 
 #: inc/mailcollector.class.php:328
 msgctxt "button"
@@ -10938,13 +10938,13 @@ msgstr "Počet zpráv: dostupné =%1$d, získané=%2$d, odmítnuté=%3$d, chyby=
 
 #: inc/mailcollector.class.php:602
 msgid "Could not connect to mailgate server"
-msgstr "Nelze se připojit k mailové bráně"
+msgstr "Nelze se připojit k emailové bráně"
 
 #. TRANS: %s is the ID of the mailgate
 #: inc/mailcollector.class.php:612
 #, php-format
 msgid "Could not find mailgate %d"
-msgstr "Nelze najít mailovou bránu %d"
+msgstr "Nelze najít emailovou bránu %d"
 
 #. TRANS: %s is a directory
 #: inc/mailcollector.class.php:671
@@ -10968,7 +10968,7 @@ msgstr "Neplatná konfigurace přijímače %2$s pro složku %1$s"
 
 #: inc/mailcollector.class.php:1490
 msgid "Retrieve email (Mails receivers)"
-msgstr "Načíst mail (Mailové přijímače)"
+msgstr "Načíst email (Emailové přijímače)"
 
 #: inc/mailcollector.class.php:1491
 msgid "Number of emails to retrieve"
@@ -10982,7 +10982,7 @@ msgstr "Posílat alarmy v případě poruch přijímače"
 msgid ""
 "Your email could not be processed.\n"
 "If the problem persists, contact the administrator"
-msgstr "Váš e-mail se nepodařilo zpracovat.⏎ Pokud problém přetrvává, obraťte se na správce"
+msgstr "Váš email se nepodařilo zpracovat.\nPokud problém přetrvává, obraťte se na správce"
 
 #: inc/mailcollector.class.php:1660
 msgid "List of not imported emails"
@@ -11614,7 +11614,7 @@ msgstr "Zkušební email poslán správci"
 
 #: inc/notificationmail.class.php:177
 msgid "Error inserting email to queue"
-msgstr "Chyba při vložení e-mailu do fronty"
+msgstr "Chyba při vložení emailu do fronty"
 
 #: inc/notificationmail.class.php:182
 #, php-format
@@ -12171,11 +12171,11 @@ msgstr "Rezervace vypršela"
 
 #: inc/notificationtargetticket.class.php:121
 msgid "To answer by email, write above this line"
-msgstr "Chcete-li odpovědět e-mailem, napište jej nad tento řádek"
+msgstr "Chcete-li odpovědět emailem, napište jej nad tento řádek"
 
 #: inc/notificationtargetticket.class.php:135
 msgid "To answer by email, write under this line"
-msgstr "Chcete-li odpovědět e-mailem, napište jej pod tento řádek"
+msgstr "Chcete-li odpovědět emailem, napište jej pod tento řádek"
 
 #: inc/notificationtargetticket.class.php:220
 msgid "Update of a ticket"
@@ -12367,7 +12367,7 @@ msgstr "Zobrazit seznam příznaků k dispozici"
 #: inc/notificationtemplatetranslation.class.php:488
 #: inc/queuedmail.class.php:256 inc/queuedmail.class.php:645
 msgid "Email text body"
-msgstr "Textové tělo mailu"
+msgstr "Textové tělo emailu"
 
 #: inc/notificationtemplatetranslation.class.php:149
 msgid "(leave the field empty for a generation from HTML)"
@@ -12378,7 +12378,7 @@ msgstr "(pro generování z HTML ponechte toto pole prázdné)"
 #: inc/notificationtemplatetranslation.class.php:489
 #: inc/queuedmail.class.php:249 inc/queuedmail.class.php:644
 msgid "Email HTML body"
-msgstr "HTML tělo mailu"
+msgstr "HTML tělo emailu"
 
 #: inc/notificationtemplatetranslation.class.php:227
 msgid "Default translation"
@@ -12408,9 +12408,9 @@ msgstr "Náhled"
 #: inc/notimportedemail.class.php:60
 msgid "Refused email"
 msgid_plural "Refused emails"
-msgstr[0] "Odmítnutý mail"
-msgstr[1] "Odmítnuté maily"
-msgstr[2] "Odmítnutých mailů"
+msgstr[0] "Odmítnutý email"
+msgstr[1] "Odmítnuté emaily"
+msgstr[2] "Odmítnuté emaily"
 
 #: inc/notimportedemail.class.php:74
 msgid "Delete emails"
@@ -12418,15 +12418,15 @@ msgstr "Smazat email(y)"
 
 #: inc/notimportedemail.class.php:136 inc/rulemailcollector.class.php:98
 msgid "From email header"
-msgstr "Hlavička mailu From"
+msgstr "Hlavička emailu Od"
 
 #: inc/notimportedemail.class.php:142 inc/rulemailcollector.class.php:102
 msgid "To email header"
-msgstr "Hlavička mailu To"
+msgstr "Hlavička emailu Komu"
 
 #: inc/notimportedemail.class.php:148 inc/rulemailcollector.class.php:89
 msgid "Subject email header"
-msgstr "Hlavička mailu Subject"
+msgstr "Hlavička emailu Předmět "
 
 #: inc/notimportedemail.class.php:154 inc/rulemailcollector.class.php:80
 #: inc/ruleticket.class.php:434
@@ -12435,7 +12435,7 @@ msgstr "Emailový přijímač"
 
 #: inc/notimportedemail.class.php:159
 msgid "Message-ID email header"
-msgstr "Hlavička mailu Message-ID"
+msgstr "Hlavička emailu Message-ID"
 
 #: inc/notimportedemail.class.php:171 inc/rulecollection.class.php:1168
 msgid "Reason of rejection"
@@ -12852,9 +12852,9 @@ msgstr[2] "Veřejných záložek"
 #: inc/report.class.php:51
 msgid "Report"
 msgid_plural "Reports"
-msgstr[0] "Zpráva"
-msgstr[1] "Zprávy"
-msgstr[2] "Zprávy"
+msgstr[0] "Výkaz"
+msgstr[1] "Výkazy"
+msgstr[2] "Výkazy"
 
 #: inc/profile.class.php:922
 msgid "Administration of reservations"
@@ -12890,7 +12890,7 @@ msgstr "Životní cyklus změn"
 
 #: inc/profile.class.php:1315 inc/queuedmail.class.php:49
 msgid "Mail queue"
-msgstr "E-mailová fronta"
+msgstr "Fronta emailů"
 
 #: inc/profile.class.php:1333 inc/profile.class.php:1774
 msgid "Rules for assigning a computer to an entity"
@@ -12900,7 +12900,7 @@ msgstr "Pravidla pro přiřazení počítače do entity"
 #: inc/rulemailcollector.class.php:64
 #: inc/rulemailcollectorcollection.class.php:47
 msgid "Rules for assigning a ticket created through a mails receiver"
-msgstr "Pravidla pro přiřazení požadavku vytvořeného mailovým přijímačem"
+msgstr "Pravidla pro přiřazení požadavku vytvořeného emailovým přijímačem"
 
 #: inc/profile.class.php:1339 inc/profile.class.php:1792
 msgid "Rules for assigning a category to a software"
@@ -13189,7 +13189,7 @@ msgstr "Datum odeslání"
 
 #: inc/queuedmail.class.php:207 inc/queuedmail.class.php:611
 msgid "Sender email"
-msgstr "E-mail odesílatele"
+msgstr "Email odesílatele"
 
 #: inc/queuedmail.class.php:213 inc/queuedmail.class.php:613
 msgid "Sender name"
@@ -13197,7 +13197,7 @@ msgstr "Jméno odesílatele"
 
 #: inc/queuedmail.class.php:219 inc/queuedmail.class.php:618
 msgid "Recipient email"
-msgstr "E-mail příjemce"
+msgstr "Email příjemce"
 
 #: inc/queuedmail.class.php:225 inc/queuedmail.class.php:620
 msgid "Recipient name"
@@ -13205,7 +13205,7 @@ msgstr "Jméno příjemce"
 
 #: inc/queuedmail.class.php:231 inc/queuedmail.class.php:625
 msgid "Reply-to email"
-msgstr "E-mailová adresa pro odpověď"
+msgstr "Emailová adresa pro odpověď"
 
 #: inc/queuedmail.class.php:237 inc/queuedmail.class.php:627
 msgid "Reply-to name"
@@ -13234,15 +13234,15 @@ msgstr "Email byl odleslán na %s"
 
 #: inc/queuedmail.class.php:444
 msgid "Send mails in queue"
-msgstr "Odeslané zprávy ve frontě"
+msgstr "Odeslat emaily ve frontě"
 
 #: inc/queuedmail.class.php:445
 msgid "Maximum emails to send at once"
-msgstr "Maximální počet e-mailů, které lze poslat najednou"
+msgstr "Maximální počet emailů, které lze poslat najednou"
 
 #: inc/queuedmail.class.php:448
 msgid "Clean mail queue"
-msgstr "Vyčistit frontu e-mailů"
+msgstr "Vyčistit frontu emailů"
 
 #: inc/queuedmail.class.php:449
 msgid "Days to keep sent emails"
@@ -13306,7 +13306,7 @@ msgstr "Konec v %s"
 
 #: inc/report.class.php:73
 msgid "Default report"
-msgstr "Výchozí zpráva"
+msgstr "Výchozí výkaz"
 
 #: inc/report.class.php:78
 msgid "By contract"
@@ -13328,11 +13328,11 @@ msgstr "Další finanční a administrativní informace (licence, náplně, spot
 
 #: inc/report.class.php:94 install/update_051_06.php:147
 msgid "Loan"
-msgstr "Půjčky"
+msgstr "Zápůjčka"
 
 #: inc/report.class.php:108
 msgid "Select the report you want to generate"
-msgstr "Zvolte zprávu, kterou chcete vygenerovat"
+msgstr "Zvolte výkaz, který chcete vygenerovat"
 
 #: inc/report.class.php:349
 msgid "Device 1"
@@ -13352,7 +13352,7 @@ msgstr "Výchozí pro požadavky"
 
 #: inc/requesttype.class.php:53 inc/requesttype.class.php:70
 msgid "Default for mail recipients"
-msgstr "Výchozí pro příjemce pošty"
+msgstr "Výchozí pro příjemce emailů"
 
 #: inc/requesttype.class.php:112 inc/requesttype.class.php:125
 msgid "Be careful: there is no default value"
@@ -14003,31 +14003,31 @@ msgstr "Tělo emailu"
 
 #: inc/rulemailcollector.class.php:106
 msgid "In-Reply-To email header"
-msgstr "Hlavička mailu In-Reply-To"
+msgstr "Hlavička emailu In-Reply-To"
 
 #: inc/rulemailcollector.class.php:110 inc/ruleticket.class.php:438
 msgid "X-Priority email header"
-msgstr "Hlavička mailu X-Priority"
+msgstr "Hlavička emailu X-Priority"
 
 #: inc/rulemailcollector.class.php:114
 msgid "X-Auto-Response-Suppress email header"
-msgstr "Hlavička mailu X-Auto-Response-Suppress"
+msgstr "Hlavička emailu X-Auto-Response-Suppress"
 
 #: inc/rulemailcollector.class.php:118
 msgid "Auto-Submitted email header"
-msgstr "Hlavička mailu Auto-Submitted"
+msgstr "Hlavička emailu Auto-Submitted"
 
 #: inc/rulemailcollector.class.php:123
 msgid "X-UCE-Status email header"
-msgstr "Hlavička mailu X-UCE-Status"
+msgstr "Hlavička emailu X-UCE-Status"
 
 #: inc/rulemailcollector.class.php:127
 msgid "Received email header"
-msgstr "Přijatá hlavička mailu"
+msgstr "Hlavička přijatého emailu"
 
 #: inc/rulemailcollector.class.php:141
 msgid "Known mail domain"
-msgstr "Známá mailová doména"
+msgstr "Známá emailová doména"
 
 #: inc/rulemailcollector.class.php:149
 msgid "User featuring the profile"
@@ -14808,7 +14808,7 @@ msgstr "Žádné doplňující zprávy pro tento požadavek."
 
 #: inc/ticketfollowup.class.php:730
 msgid "This week"
-msgstr ""
+msgstr "Tento týden"
 
 #: inc/ticketfollowup.class.php:732
 msgid "Last week"
@@ -14816,7 +14816,7 @@ msgstr "Minulý týden"
 
 #: inc/ticketfollowup.class.php:734
 msgid "This month"
-msgstr ""
+msgstr "Tento měsíc"
 
 #: inc/ticketfollowup.class.php:736
 msgid "Last month"
@@ -14824,7 +14824,7 @@ msgstr "Minulý měsíc"
 
 #: inc/ticketfollowup.class.php:738
 msgid "Before the last month"
-msgstr ""
+msgstr "Před minulým měsícem"
 
 #: inc/ticketfollowup.class.php:904
 msgid "Approval of the solution"
@@ -15468,7 +15468,7 @@ msgstr "LDAP adresář pro autentizaci"
 
 #: inc/user.class.php:2586
 msgid "Email server for authentication"
-msgstr "Mailový server pro autentizaci"
+msgstr "Emailový server pro autentizaci"
 
 #: inc/user.class.php:2634
 msgid "Last synchronization"

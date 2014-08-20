@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-25 08:54+0200\n"
-"PO-Revision-Date: 2014-07-13 16:30+0000\n"
+"PO-Revision-Date: 2014-07-20 12:41+0000\n"
 "Last-Translator: emwa goldwoman\n"
 "Language-Team: Catalan (Spain) (http://www.transifex.com/projects/p/GLPI/language/ca_ES/)\n"
 "MIME-Version: 1.0\n"
@@ -65,7 +65,7 @@ msgstr "Contrasenya"
 #: install/update.php:413 install/update.php:429
 msgctxt "button"
 msgid "Post"
-msgstr "Valida"
+msgstr "Enviar"
 
 #: index.php:130 front/lostpassword.php:45
 #: inc/notificationtargetuser.class.php:43 inc/user.class.php:3707
@@ -639,7 +639,7 @@ msgstr "Advertència"
 #: ajax/dropdownShowIPNetwork.php:55
 #, php-format
 msgid "IP network: %1$s/%2$s"
-msgstr "Xarxa IP: %1$s/%2$s"
+msgstr "IP de la xarxa: %1$s/%2$s"
 
 #: ajax/dropdownShowIPNetwork.php:56
 #, php-format
@@ -922,8 +922,8 @@ msgstr "En curs"
 #, php-format
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
-msgstr[0] "%s incidència en curs o recentment resolta per aquest element"
-msgstr[1] "%s incidències en curs o recentment resoltes per aquest element"
+msgstr[0] "%s incidència en curs o recentment resolta en aquest element"
+msgstr[1] "%s incidències en curs o recentment resoltes en aquest element"
 
 #: ajax/ticketsatisfaction.php:59 inc/entity.class.php:790
 msgid "Create survey after"
@@ -936,7 +936,7 @@ msgstr "Com més aviat millor"
 
 #: ajax/ticketsatisfaction.php:71
 msgid "Rate to trigger survey"
-msgstr "Tasca per activar enquesta"
+msgstr "Valora per activar enquesta"
 
 #: ajax/ticketsatisfaction.php:77 inc/crontask.class.php:647
 #: inc/crontask.class.php:666 inc/entity.class.php:1901
@@ -995,7 +995,7 @@ msgstr "El servei està aturat per manteniment. Aviat tornarà a estar actiu."
 msgid ""
 "The version of the database is not compatible with the version of the "
 "installed files. An update is necessary."
-msgstr "La teva versió de la base de dades no és compatible amb la versió del codi instal·lat. Cal una actualització."
+msgstr "La versió de la base de dades no és compatible amb la versió del codi instal·lat. Cal una actualització."
 
 #: config/config.php:216 install/install.php:174 install/install.php:184
 msgid "Try again"
@@ -1067,7 +1067,7 @@ msgstr "ERROR:"
 #: front/backup.php:231 inc/document.class.php:872 inc/document.class.php:960
 #, php-format
 msgid "File %s not found."
-msgstr "Fitxer %s no trobat"
+msgstr "Fitxer %s no trobat."
 
 #. TRANS: %s is the name of the file
 #: front/backup.php:242 front/backup.php:355
@@ -1103,7 +1103,7 @@ msgstr "%s esborrat"
 
 #: front/backup.php:601
 msgid "Check if a new version is available"
-msgstr "Comprova si hi ha una nova versió disponible"
+msgstr "Comprova si hi ha una versió nova disponible"
 
 #: front/backup.php:609 front/report.contract.list.php:176
 #: front/report.year.list.php:127 inc/notificationtargetticket.class.php:627
@@ -1117,11 +1117,11 @@ msgstr "Vols fer una còpia de seguretat de la base de dades?"
 
 #: front/backup.php:615
 msgid "SQL Dump"
-msgstr "Còpia de seguretat en SQL"
+msgstr "Volcat en SQL"
 
 #: front/backup.php:620
 msgid "XML Dump"
-msgstr "Còpia de seguretat en XML"
+msgstr "Volcat en XML"
 
 #: front/backup.php:625 inc/document.class.php:417 inc/document.class.php:766
 #: inc/document_item.class.php:526 inc/html.class.php:5032
@@ -1210,7 +1210,7 @@ msgstr "Reemplaça l'actual base de dades amb la còpia de seguretat %s?"
 msgid ""
 "Warning, your actual database will be totaly overwriten by the database you "
 "want to restore !!!"
-msgstr "Compte! La teva base de dades serà substituïda per la què vols recuperar!"
+msgstr "Compte! La base de dades serà substituïda per la què vols recuperar!"
 
 #: front/backup.php:669
 msgid "Restore"
@@ -1557,7 +1557,7 @@ msgstr "Executa l'script com un usuari d'apache"
 #: front/crontask.form.php:50
 #, php-format
 msgid "Task %s executed"
-msgstr "%s de la tasca executada"
+msgstr "%s tasca executada"
 
 #. TRANS: %1$s is the name of the tab, $2$d is number of items in the tab
 #. between ()
@@ -1632,7 +1632,7 @@ msgstr "Següent tasca per executar: %s"
 
 #: front/crontask.php:49 front/crontask.php:50
 msgid "No action pending"
-msgstr "Sense tasca per realitzar"
+msgstr "Cap acció pendent"
 
 #: front/crontask.php:56
 msgid ""
@@ -1945,11 +1945,11 @@ msgstr "Opcions de visualització"
 
 #: front/document.send.php:44
 msgid "Unknown file"
-msgstr "Arxiu desconegut"
+msgstr "Fitxer desconegut"
 
 #: front/document.send.php:48
 msgid "File not found"
-msgstr "Arxiu no trobat"
+msgstr "Fitxer no trobat"
 
 #: front/document.send.php:54
 msgid "File is altered (bad checksum)"
@@ -1958,11 +1958,11 @@ msgstr "Arxiu alterat (comprovació de sumes errònia)"
 #: front/document.send.php:59 front/document.send.php:78
 #: front/graph.send.php:53
 msgid "Unauthorized access to this file"
-msgstr "Accés no autoritzat a aquest arxiu"
+msgstr "Accés no autoritzat a aquest fitxer"
 
 #: front/document.send.php:81
 msgid "Invalid filename"
-msgstr "Nom d'arxiu incorrecte"
+msgstr "Nom de fitxer incorrecte"
 
 #. TRANS: %s is the user login
 #: front/dropdown.common.form.php:92 front/group.form.php:91
@@ -1973,7 +1973,7 @@ msgstr "%s reemplaça un element"
 #: front/dropdown.common.form.php:111 inc/profile_user.class.php:99
 #: inc/transfer.class.php:3511
 msgid "No selected element or badly defined operation"
-msgstr "No s'han seleccionat elements o l'operació està mal definida"
+msgstr "No s'ha seleccionat cap element o l'operació està mal definida"
 
 #: front/dropdown.php:43 front/stat.location.php:83
 #: inc/commondropdown.class.php:63 inc/commondropdown.class.php:161
@@ -2051,7 +2051,7 @@ msgstr "La imatge requereix una alçada mínima"
 
 #: front/find_num.php:74
 msgid "Search the ID of your hardware"
-msgstr "Cerca l'identificador del teu d'equip"
+msgstr "Cerca l'identificador del teu maquinari"
 
 #: front/find_num.php:83 inc/authldap.class.php:2795 inc/knowbase.class.php:66
 #: inc/knowbaseitem.class.php:871 inc/planning.class.php:523
@@ -2077,7 +2077,7 @@ msgstr "Contacte"
 
 #: front/find_num.php:92 inc/ticket.class.php:3211
 msgid "Hardware type"
-msgstr "Tipus de material"
+msgstr "Tipus de maquinari"
 
 #: front/find_num.php:93 inc/commonitilobject.class.php:5120
 #: inc/notificationtargetticket.class.php:620 inc/ruleticket.class.php:527
@@ -2226,7 +2226,7 @@ msgstr "%s afegeix un usuari a un grup"
 #: front/knowbaseitem.form.php:148 inc/html.class.php:1966
 #: inc/itilcategory.class.php:227 inc/profile.class.php:728
 msgid "FAQ"
-msgstr "FAQ"
+msgstr "PMF"
 
 #: front/helpdesk.public.php:89 front/ticket.form.php:186
 #: inc/notificationtargetticket.class.php:219 inc/ticket.class.php:3768
@@ -2241,7 +2241,7 @@ msgstr "Inici"
 
 #: front/ipnetwork.form.php:42
 msgid "Successfully recreated network tree"
-msgstr "Arbre de xarxa refet correctament"
+msgstr "Arbre de xarxa refet amb èxit"
 
 #. TRANS: %s is the user login
 #: front/ipnetwork_vlan.form.php:46 front/networkport_vlan.form.php:46
@@ -2323,7 +2323,7 @@ msgstr "L'extensió IMAP del teu intèrpret PHP no està instal·lada"
 
 #: front/massiveaction.php:44
 msgid "Bulk modification error"
-msgstr "Error de modificació massiva"
+msgstr "Error en modificació massiva"
 
 #: front/massiveaction.php:56
 msgid "Bulk modification"
@@ -2455,7 +2455,7 @@ msgstr "%s afegeix un membre de l'equip"
 
 #: front/report.contract.list.php:46
 msgid "List of the hardware under contract"
-msgstr "Llista del material sota contracte"
+msgstr "Llista del maquinari sota contracte"
 
 #: front/report.contract.list.php:175 front/report.infocom.php:121
 #: front/report.year.list.php:126 inc/authldap.class.php:337
@@ -2607,7 +2607,7 @@ msgstr[1] "Tipus de contractes"
 
 #: front/report.contract.php:47
 msgid "Hardware under contract"
-msgstr "Material sota contracte"
+msgstr "Maquinari sota contracte"
 
 #: front/report.contract.php:51 front/report.year.php:52
 #: inc/crontask.class.php:1303 inc/notificationtargetinfocom.class.php:92
@@ -4755,7 +4755,7 @@ msgstr "Referència"
 #: inc/search.class.php:4931 inc/software.class.php:262
 #: inc/software.class.php:498
 msgid "Technician in charge of the hardware"
-msgstr "Responsable tècnic"
+msgstr "Responsable tècnic del maquinari"
 
 #: inc/cartridgeitem.class.php:217 inc/cartridgeitem.class.php:350
 #: inc/computer.class.php:459 inc/computer.class.php:800
@@ -7098,7 +7098,7 @@ msgstr "Programa associable a una incidència per defecte"
 
 #: inc/config.class.php:710
 msgid "Keep tickets when purging hardware in the inventory"
-msgstr "Conserva les incidències quan eliminis un element de l'inventari"
+msgstr "Conserva les incidències quan eliminis maquinari de l'inventari"
 
 #: inc/config.class.php:712
 msgid "Show personnal information in new ticket form (simplified interface)"
@@ -9533,7 +9533,7 @@ msgstr "Visible en una incidència"
 
 #: inc/group.class.php:268 inc/group.class.php:468
 msgid "Can be notified"
-msgstr "Pot ser modificat"
+msgstr "Pot ser notificat"
 
 #: inc/group.class.php:274
 msgid "Visible in a project"
@@ -11573,7 +11573,7 @@ msgstr "Tècnic encarregat d'aquesta incidència"
 #: inc/notificationtargetcommonitilobject.class.php:442
 #: inc/notificationtargetreservation.class.php:64
 msgid "Hardware user"
-msgstr "Usuari del material"
+msgstr "Usuari del maquinari"
 
 #: inc/notificationtargetcommonitilobject.class.php:446
 msgid "Watcher group manager"
@@ -13075,7 +13075,7 @@ msgstr "Per anys"
 
 #: inc/report.class.php:84
 msgid "Hardware financial and administrative information"
-msgstr "Dades financeres i administratives del material inventariat"
+msgstr "Dades financeres i administratives del maquinari inventariat"
 
 #: inc/report.class.php:86
 msgid ""

@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-06-25 08:54+0200\n"
-"PO-Revision-Date: 2014-07-28 15:51+0000\n"
+"PO-Revision-Date: 2014-08-18 15:51+0000\n"
 "Last-Translator: zoran kajis <zkajis@gmail.com>\n"
 "Language-Team: Serbian (Serbia) (http://www.transifex.com/projects/p/GLPI/language/sr_RS/)\n"
 "MIME-Version: 1.0\n"
@@ -63,7 +63,7 @@ msgstr "Lozinka"
 #: install/update.php:413 install/update.php:429
 msgctxt "button"
 msgid "Post"
-msgstr "Porijava"
+msgstr "Postavi"
 
 #: index.php:130 front/lostpassword.php:45
 #: inc/notificationtargetuser.class.php:43 inc/user.class.php:3707
@@ -738,7 +738,7 @@ msgstr "Javno"
 #: inc/rule.class.php:739 inc/sla.class.php:258 inc/software.class.php:560
 #: inc/supplier.class.php:317
 msgid "Child entities"
-msgstr "Naslednici subjekta"
+msgstr "Naslednik entiteta"
 
 #: ajax/private_public.php:73
 msgid "Set personal"
@@ -1019,7 +1019,7 @@ msgstr "Pokušavate koristiti GLPI sa zastarelim fajlovima u poređenju sa verzi
 #: inc/html.class.php:1214 inc/stat.class.php:1516 inc/stat.class.php:1528
 #: inc/stat.class.php:1537
 msgid "Global"
-msgstr "Sva sredstva"
+msgstr "Sav inventar"
 
 #: front/authldap.form.php:54 front/authmail.form.php:66
 msgid "Test successful"
@@ -4985,9 +4985,9 @@ msgstr "MySQL repliciranje: samo čitanje"
 #: inc/stat.class.php:1535
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] "Promene"
-msgstr[1] "Promene"
-msgstr[2] "Promene"
+msgstr[0] "Izmena"
+msgstr[1] "Izmena"
+msgstr[2] "Izmene"
 
 #: inc/change.class.php:176 inc/problem.class.php:173
 #: inc/problem.class.php:186 inc/problem.class.php:428
@@ -7023,7 +7023,7 @@ msgstr "Opšta pretraga"
 #: inc/profile.class.php:96 inc/profile.class.php:809
 #: inc/profile.class.php:1505 inc/transfer.class.php:3273
 msgid "Assets"
-msgstr "Sredstva"
+msgstr "Inventar"
 
 #: inc/config.class.php:409
 msgid "Enable the financial and administrative information by default"
@@ -8110,7 +8110,7 @@ msgstr "CLI"
 
 #: inc/crontask.class.php:750
 msgid "A minimum of 64 Mio is commonly required for GLPI."
-msgstr "Minimum 64 Mio je potrebno za GLPI"
+msgstr "Minimum 64 Mb je potrebno za GLPI"
 
 #: inc/crontask.class.php:755
 msgid "No task with Run mode = CLI, fix your tasks configuration"
@@ -11383,7 +11383,7 @@ msgstr "Nema opcija za ovu vrstu porta."
 #: inc/networkportinstantiation.class.php:130
 #: inc/networkportinstantiation.class.php:158
 msgid "Virtual ports"
-msgstr "Virtalni portovi"
+msgstr "Virtualni portovi"
 
 #: inc/networkportinstantiation.class.php:132
 msgid "Opposite link"
@@ -11543,7 +11543,7 @@ msgstr "ESSID"
 msgid "Note"
 msgid_plural "Notes"
 msgstr[0] "Beleška"
-msgstr[1] "Beleški"
+msgstr[1] "Beleške"
 msgstr[2] "Beleške"
 
 #: inc/notepad.class.php:179 inc/notificationtargetproject.class.php:562
@@ -11688,7 +11688,7 @@ msgstr "Nova promena"
 
 #: inc/notificationtargetchange.class.php:57
 msgid "Update of a change"
-msgstr "Ažuriranje promene"
+msgstr "Ažuriranje izmene"
 
 #: inc/notificationtargetchange.class.php:58
 msgid "Change solved"
@@ -11714,11 +11714,11 @@ msgstr "Brisanje zadatka"
 
 #: inc/notificationtargetchange.class.php:62
 msgid "Closure of a change"
-msgstr "Zatvaranje promene"
+msgstr "Zatvaranje izmene"
 
 #: inc/notificationtargetchange.class.php:63
 msgid "Deleting a change"
-msgstr "Brisanje promene"
+msgstr "Brisanje izmene"
 
 #: inc/notificationtargetchange.class.php:226
 #: inc/notificationtargetchange.class.php:238
@@ -12759,7 +12759,7 @@ msgstr "Kreiraj problem od ovog tiketa"
 
 #: inc/profile.class.php:93 inc/profile.class.php:99
 msgid "Life cycles"
-msgstr "Životni vek"
+msgstr "Ciklus trajanja"
 
 #: inc/profile.class.php:312 inc/profile.class.php:334
 msgid "This profile is the last with write rights on profiles"
@@ -12878,15 +12878,15 @@ msgstr "Od \\ Za"
 #: inc/profile.class.php:1162 inc/profile.class.php:1263
 #: inc/profile.class.php:1960
 msgid "Life cycle of tickets"
-msgstr "Životni vek tiketa"
+msgstr "Ciklus trajanja tiketa"
 
 #: inc/profile.class.php:1165 inc/profile.class.php:1967
 msgid "Life cycle of problems"
-msgstr "Životni vek problema"
+msgstr "Ciklus trajanja problema"
 
 #: inc/profile.class.php:1168 inc/profile.class.php:1984
 msgid "Life cycle of changes"
-msgstr "Životni vek promena"
+msgstr "Ciklus trajanja promena"
 
 #: inc/profile.class.php:1315 inc/queuedmail.class.php:49
 msgid "Mail queue"
@@ -15659,7 +15659,7 @@ msgstr "Odaberi 'Nadogradnja' za ažuriranje vaše GLPI verzije sa ranije verzij
 #: install/install.php:142
 msgid ""
 "Checking of the compatibility of your environment with the execution of GLPI"
-msgstr "Provera kompatibilnosti vašeg okruženja sa izvršavanjem GLPI"
+msgstr "Provera kompatibilnosti vašeg okruženja za korišćenje GLPI"
 
 #: install/install.php:161 install/install.php:180 install/install.php:487
 msgid "Do you want to continue?"

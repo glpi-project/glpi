@@ -4,7 +4,7 @@
 # 
 # Translators:
 # qubit, 2013
-# Qubit, 2013-2014
+# Qubit Bit, 2013-2014
 # zombpj, 2013
 msgid ""
 msgstr ""
