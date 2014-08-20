@@ -2085,6 +2085,21 @@ abstract class CommonITILObject extends CommonDBTM {
       return $tab;
    }
 
+   /**
+    * Is the ITIL object status exists for the object
+    *
+    * @since version 0.85
+    *
+    * @param $status   status
+    *
+    * @return boolean
+   **/
+   static function isStatusExists($status) {
+
+      $tab = static::getAllStatusArray();
+
+      return isset($tab[$status]);
+   }   
 
    /**
     * Dropdown of object status

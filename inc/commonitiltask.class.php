@@ -311,6 +311,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             }
 
             if (!empty($this->fields['begin'])
+                && $item->isStatusExists(CommonITILObject::PLANNED) 
                 && (($item->fields["status"] == CommonITILObject::INCOMING)
                      || ($item->fields["status"] == CommonITILObject::ASSIGNED))) {
 
@@ -432,6 +433,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       if (!empty($this->fields['begin'])
+          && $item->isStatusExists(CommonITILObject::PLANNED) 
           && (($this->input["_job"]->fields["status"] == CommonITILObject::INCOMING)
               || ($this->input["_job"]->fields["status"] == CommonITILObject::ASSIGNED))) {
 
@@ -1106,10 +1108,12 @@ abstract class CommonITILTask  extends CommonDBTM {
          $this->check(-1, CREATE, $options);
       }
 
-      $canplan = Session::haveRight("planning", Planning::READMY);
       $rand = mt_rand();
       $this->showFormHeader($options);
 
+      $canplan = (!$item->isStatusExists(CommonITILObject::PLANNED) 
+                  || $item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED));
+      
       $rowspan = 3 ;
       if ($this->maybePrivate()) {
          $rowspan++;
@@ -1203,7 +1207,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       User::dropdown($params);
       echo "</td>\n";
-      if ($item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED)) {
+      if ($canplan) {
          echo "<td>".__('Planning')."</td>";
       }
       echo "<td>";
@@ -1258,7 +1262,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "};";
             echo "</script>";
 
-            if ($item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED)) {
+            if ($canplan) {
                echo "<div id='plan'  onClick='showPlanUpdate()'>\n";
                echo "<span class='vsubmit'>".__('Plan this task')."</span>";
                echo "</div>\n";
