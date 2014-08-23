@@ -50,8 +50,8 @@ class ProjectTaskTeam extends CommonDBRelation {
    var $no_form_page                   = true;
 
    // From CommonDBRelation
-   static public $itemtype             = 'ProjectTask';
-   static public $items_id             = 'projecttasks_id';
+   static public $itemtype_1             = 'ProjectTask';
+   static public $items_id_1             = 'projecttasks_id';
    
    static public $itemtype_2          = 'itemtype';
    static public $items_id_2          = 'items_id';
@@ -84,7 +84,7 @@ class ProjectTaskTeam extends CommonDBRelation {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate
-          && self::canView()) {
+          && static::canView()) {
          switch ($item->getType()) {
             case 'ProjectTask' :
                if ($_SESSION['glpishow_count_on_tabs']) {
