@@ -620,7 +620,7 @@ class RuleAction extends CommonDBChild {
             }
 
             if (!$display) {
-               Html::autocompletionTextField($this, "value", $param['value']);
+               Html::autocompletionTextField($this, "value", $param);
             }
       }
    }
