@@ -1068,7 +1068,8 @@ class RuleCollection extends CommonDBTM {
 
             //process direct attributes
             foreach ($rule as &$val) {
-               if (empty($val)) {
+               if (is_array($val)
+                       && empty($val)) {
                   $val = "";
                }
             }
