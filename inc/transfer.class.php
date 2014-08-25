@@ -3058,10 +3058,15 @@ class Transfer extends CommonDBTM {
                            } else {
                               $device->getFromDB($item_ID);
                               // No : search device
+                              $field = "name";
+                              if (!FieldExists($devicetable, "name")) {
+                                 $field = "designation";
+                              }
+
                               $query = "SELECT *
                                         FROM `$devicetable`
                                         WHERE `entities_id` = '".$this->to."'
-                                              AND `name` = '".addslashes($device->fields['name'])."'";
+                                              AND `".$field."` = '".addslashes($device->fields[$field])."'";
 
                               if ($result_search = $DB->query($query)) {
                                  if ($DB->numrows($result_search) > 0) {
@@ -3076,6 +3081,12 @@ class Transfer extends CommonDBTM {
                                  // 1 - create new item
                                  unset($device->fields['id']);
                                  $input                = $device->fields;
+                                 // Fix for fields with NULL in DB
+                                 foreach ($input as $key=>$value) {
+                                    if ($value == '') {
+                                       unset($input[$key]);
+                                    }
+                                 }
                                  $input['entities_id'] = $this->to;
                                  unset($device->fields);
                                  $newdeviceID = $device->add(Toolbox::addslashes_deep($input));
