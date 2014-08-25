@@ -1017,10 +1017,13 @@ class Rule extends CommonDBTM {
       $this->getTitleAction();
 
 
+      if ($canedit) {
+         echo "<div id='viewaction" . $rules_id . "$rand'></div>\n";
+      }
+
       if ($canedit
           && (($this->maxActionsCount() == 0)
               || (sizeof($this->actions) < $this->maxActionsCount()))) {
-         echo "<div id='viewaction" . $rules_id . "$rand'></div>\n";
 
          echo "<script type='text/javascript' >\n";
          echo "function viewAddAction" . $rules_id . "$rand() {\n";
