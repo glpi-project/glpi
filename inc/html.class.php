@@ -73,7 +73,8 @@ class Html {
 
       $value = htmLawed($value, array('elements' => 'none',
                                       'keep_bad' => 2,
-                                      'comment' => 1));
+                                      'comment' => 1,
+                                      'cdata'   => 1));
 
 /*
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
