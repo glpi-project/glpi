@@ -72,7 +72,8 @@ class Html {
       include_once(GLPI_HTMLAWED);
 
       $value = htmLawed($value, array('elements' => 'none',
-                                      'keep_bad' => 2));
+                                      'keep_bad' => 2,
+                                      'comment' => 1));
 
 /*
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
