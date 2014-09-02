@@ -311,7 +311,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             }
 
             if (!empty($this->fields['begin'])
-                && $item->isStatusExists(CommonITILObject::PLANNED) 
+                && $item->isStatusExists(CommonITILObject::PLANNED)
                 && (($item->fields["status"] == CommonITILObject::INCOMING)
                      || ($item->fields["status"] == CommonITILObject::ASSIGNED))) {
 
@@ -1111,9 +1111,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       $rand = mt_rand();
       $this->showFormHeader($options);
 
-      $canplan = (!$item->isStatusExists(CommonITILObject::PLANNED) 
+      $canplan = (!$item->isStatusExists(CommonITILObject::PLANNED)
                   || $item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED));
-      
+
       $rowspan = 3 ;
       if ($this->maybePrivate()) {
          $rowspan++;
@@ -1249,7 +1249,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
 
       } else {
-         if (Session::haveRight('planning', Planning::READMY)) {
+         if ($canplan) {
             echo "<script type='text/javascript' >\n";
             echo "function showPlanUpdate() {\n";
             echo Html::jsHide('plan');
