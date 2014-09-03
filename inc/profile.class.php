@@ -2336,9 +2336,7 @@ class Profile extends CommonDBTM {
       $values = array();
       foreach ($CFG_GLPI["ticket_types"] as $key => $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
-            if (!isPluginItemType($itemtype)) { // No Plugin for the moment
-               $values[$itemtype] = $item->getTypeName();
-            }
+            $values[$itemtype] = $item->getTypeName();
          } else {
             unset($CFG_GLPI["ticket_types"][$key]);
          }

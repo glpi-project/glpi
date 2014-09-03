@@ -4087,6 +4087,14 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
       asort($types); // core type first... asort could be better ?
+
+      // Drop not available plugins
+      foreach($ptypes as $itemtype => $itemtype_name) {
+         if (!in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+            unset($ptypes[$itemtype]);
+         }
+      }
+      
       $types = array_merge($types, $ptypes);
       return $types;
    }
@@ -4103,23 +4111,25 @@ abstract class CommonITILObject extends CommonDBTM {
       global $PLUGIN_HOOKS;
 
       /// TODO : assign_to_ticket to assign_to_itil
-      // Plugin case
-      if ($plug = isPluginItemType($itemtype)) {
-         //If it's not a core's type, then check plugins
-         $types = array();
-         if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
-            $types = Plugin::doOneHook($plug['plugin'], 'AssignToTicket', $types);
-            if (array_key_exists($itemtype,$types)) {
-               return true;
-            }
-         }
-      // standard case
-      } else {
-         if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-            return true;
-         }
+//       // Plugin case
+//       if ($plug = isPluginItemType($itemtype)) {
+//          //If it's not a core's type, then check plugins
+//          $types = array();
+//          if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
+//             $types = Plugin::doOneHook($plug['plugin'], 'AssignToTicket', $types);
+//             if (array_key_exists($itemtype,$types)) {
+//                return true;
+//             }
+//          }
+//       // standard case
+//       } else {
+//          if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+//             return true;
+//          }
+//       }
+      if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+         return true;
       }
-
       return false;
    }
 
