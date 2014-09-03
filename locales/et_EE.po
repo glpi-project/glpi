@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-08-20 08:25+0200\n"
-"PO-Revision-Date: 2014-08-19 06:20+0000\n"
+"PO-Revision-Date: 2014-08-28 21:11+0000\n"
 "Last-Translator: pexy <pexyyy@gmail.com>\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.com/projects/p/GLPI/language/et_EE/)\n"
 "MIME-Version: 1.0\n"
@@ -3019,7 +3019,7 @@ msgstr "%s lisas eeltäidetud välja"
 #: front/ticket_ticket.form.php:48
 #, php-format
 msgid "%s deletes link between tickets"
-msgstr ""
+msgstr "%s kustutas seose teadete vahel"
 
 #. TRANS: %s is the user login
 #: front/ticketvalidation.form.php:52
@@ -4798,7 +4798,7 @@ msgstr "Lisa teade"
 
 #: inc/change_ticket.class.php:235
 msgid "Create a change from this ticket"
-msgstr ""
+msgstr "Loo muudatus selle teate alusel"
 
 #: inc/commondbchild.class.php:212 inc/networkportinstantiation.class.php:519
 msgid "Item not linked to an object"
@@ -6523,7 +6523,7 @@ msgstr ""
 
 #: inc/config.class.php:1553 inc/config.class.php:1602
 msgid "The file could not be created."
-msgstr ""
+msgstr "Faili ei suudetud luua"
 
 #: inc/config.class.php:1554
 msgid "The file was created but can't be deleted."
@@ -8475,7 +8475,7 @@ msgstr ""
 #: inc/group.class.php:660 inc/group_user.class.php:426
 #: inc/problem.class.php:1834 inc/ticket.class.php:5264
 msgid "Child groups"
-msgstr ""
+msgstr "Alamgrupid"
 
 #: inc/group.class.php:693 inc/networkport.class.php:971
 #: inc/rule.class.php:196
@@ -9464,7 +9464,7 @@ msgstr ""
 #: inc/log.class.php:381 inc/ticket.class.php:4024
 #, php-format
 msgid "%1$s by %2$s"
-msgstr ""
+msgstr "%1$s %2$s poolt"
 
 #: inc/log.class.php:391
 msgid "Delete the component"
@@ -10975,7 +10975,7 @@ msgstr "Wifi"
 
 #: inc/problem.class.php:444 inc/ticket.class.php:1728
 msgid "Add an actor"
-msgstr ""
+msgstr "Lisa osaleja"
 
 #: inc/problem.class.php:603
 msgid "Task description"
@@ -12301,11 +12301,11 @@ msgstr ""
 
 #: inc/ruleticket.class.php:306
 msgid "Item location"
-msgstr ""
+msgstr "Asja asukoht"
 
 #: inc/ruleticket.class.php:312
 msgid "Ticket location"
-msgstr ""
+msgstr "Teate asukoht"
 
 #: inc/ruleticket.class.php:482 inc/ticketvalidation.class.php:633
 msgid "Send an approval request"
@@ -12682,7 +12682,7 @@ msgstr "Kinnituse päring"
 #: inc/ticket.class.php:1729
 msgctxt "button"
 msgid "Link tickets"
-msgstr ""
+msgstr "Seo teated"
 
 #: inc/ticket.class.php:1930
 msgid "Due date + Progress"
@@ -12710,7 +12710,7 @@ msgstr "Reageerimisaeg"
 
 #: inc/ticket.class.php:2239
 msgid "All linked tickets"
-msgstr ""
+msgstr "Kõik seotud teated"
 
 #: inc/ticket.class.php:2246
 msgid "Duplicated tickets"
@@ -12743,8 +12743,8 @@ msgstr "Versioon"
 #: inc/ticket.class.php:2955
 msgid "Installed software"
 msgid_plural "Installed software"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Installeeritud tarkvara"
+msgstr[1] "Installeeritud tarkvara"
 
 #: inc/ticket.class.php:3009
 msgid "Or complete search"
@@ -12756,7 +12756,7 @@ msgstr "Kinnitust ootavad teated"
 
 #: inc/ticket.class.php:3199
 msgid "This ticket concerns me"
-msgstr ""
+msgstr "See teade puudutab mind"
 
 #: inc/ticket.class.php:3220 inc/ticket.class.php:3250
 msgid "Check your personnal information"
@@ -12817,7 +12817,7 @@ msgstr "Töötlemist ootavad teated"
 
 #: inc/ticket.class.php:4827 inc/ticket.class.php:4960
 msgid "Your observed tickets"
-msgstr ""
+msgstr "Sinu vaadeldavad teated"
 
 #: inc/ticket.class.php:4842 inc/ticket.class.php:4977
 msgid "Your tickets in progress"
@@ -12902,7 +12902,7 @@ msgstr "Teate kestvus"
 #: inc/ticketfollowup.class.php:281
 #, php-format
 msgid "Added document: %s"
-msgstr ""
+msgstr "Lisas faili: %s"
 
 #: inc/ticketfollowup.class.php:317
 msgid "If you reject the solution, you must specify a reason"
