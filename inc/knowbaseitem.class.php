@@ -639,7 +639,9 @@ class KnowbaseItem extends CommonDBTM {
       }
       echo "</td><td>";
       //TRANS: %d is the number of view
-      printf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]);
+      if ($ID) {
+         printf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]);
+      }
       echo "</td>";
       echo "</tr>\n";
 
