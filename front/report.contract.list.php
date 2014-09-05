@@ -195,7 +195,7 @@ if (isset($query) && count($query)) {
                 || ($key != 'SoftwareLicense')) {
                $data['itemdeleted'] = 0;
                $data['location']    = '';
-               $data['buy_date']    = '';
+ //              $data['buy_date']    = '';
             }
             echo "<td> ".Dropdown::getYesNo($data['itemdeleted'])." </td>";
 
