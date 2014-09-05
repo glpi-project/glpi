@@ -649,12 +649,14 @@ class KnowbaseItem extends CommonDBTM {
       echo "<td>".__('Visible since')."</td><td>";
       Html::showDateTimeField("begin_date", array('value'       => $this->fields["begin_date"],
                                                   'timestep'    => 1,
-                                                  'maybeempty'  => true));
+                                                  'maybeempty' => true,
+                                                  'canedit'    => $canedit));
       echo "</td>";
       echo "<td>".__('Visible until')."</td><td>";
       Html::showDateTimeField("end_date", array('value'       => $this->fields["end_date"],
                                                 'timestep'    => 1,
-                                                'maybeempty'  => true));
+                                                'maybeempty' => true,
+                                                'canedit'    => $canedit));
       echo "</td></tr>";
 
 
