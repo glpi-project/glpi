@@ -1198,6 +1198,10 @@ class KnowbaseItem extends CommonDBTM {
             $title = sprintf(__('%1$s: %2$s'), __('Category'), $title);
          }
 
+         if (!Session::haveRight('knowbase', READ)) {
+           echo "<p class=red center>".__('Research limits to the articles of FAQ, according to your rights').
+                "</p>";
+         }
          Session::initNavigateListItems('KnowbaseItem', $title);
 
          $numrows    = $DB->numrows($result);
