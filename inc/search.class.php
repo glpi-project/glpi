@@ -1261,7 +1261,8 @@ class Search {
                 && (!isset($val['searchopt']['nosort'])
                     || !$val['searchopt']['nosort'])) {
 
-               $linkto = $data['search']['target']."?itemtype=".$data['itemtype']."&amp;sort=".
+               $linkto = $data['search']['target'].(strpos($data['search']['target'],'?') ? '&amp;' : '?').
+                           "itemtype=".$data['itemtype']."&amp;sort=".
                            $val['id']."&amp;order=".
                            (($data['search']['order'] == "ASC") ?"DESC":"ASC").
                            "&amp;start=".$data['search']['start']."&amp;".$globallinkto;
