@@ -894,7 +894,7 @@ class Dropdown {
 
       foreach ($optgroup as $label => $dp) {
          foreach ($dp as $key => $val) {
-            $search = Toolbox::getItemTypeSearchURL($key);
+            $search = $key::getSearchURL();
 
             if (basename($search) == basename($value)) {
                $selected = $search;
@@ -937,7 +937,7 @@ class Dropdown {
                 && $itemtype->isEntityAssign()) {
                $class="class='tab_bg_2'";
             }
-            echo "<tr $class><td><a href='".Toolbox::getItemTypeSearchURL($key)."'>";
+            echo "<tr $class><td><a href='".$key::getSearchURL()."'>";
             echo "$val</a></td></tr>\n";
             $i++;
          }
