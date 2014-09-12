@@ -720,7 +720,8 @@ class ReservationItem extends CommonDBChild {
          if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
             $tabs[1] = __('Reservation');
          }
-         if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+         if (($_SESSION["glpiactiveprofile"]["interface"] == "central")
+             && Session::haveRight("reservation", READ)) {
             $tabs[2] = __('Administration');
          }
          return $tabs;
