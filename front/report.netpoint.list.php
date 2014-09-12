@@ -56,7 +56,7 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
                                         "PORT_1.`id` = `glpi_networkportethernets`.`networkports_id`",
                                         "`glpi_netpoints`.`id` = '".$_POST["prise"]."'",
                                         '',
-                                        "`glpi_locations`.`name` AS extra,",
+                                        "`glpi_locations`.`completename` AS extra,",
                                         Location::getTypeName());
 
    Html::footer();
