@@ -2459,8 +2459,8 @@ class Profile extends CommonDBTM {
       }
 
       // To be completed before display to avoid non available rights in DB
-//       $availablerights = ProfileRight::getAllPossibleRights();
-      
+       $availablerights = ProfileRight::getAllPossibleRights();
+
       $column_labels = array();
       $columns       = array();
       $rows          = array();
@@ -2476,11 +2476,11 @@ class Profile extends CommonDBTM {
              && ((!empty($info['itemtype'])) || (!empty($info['rights'])))
              && (!empty($info['label']))
              && (!empty($info['field']))) {
-            // Add right if it does not exists : security for update 
+            // Add right if it does not exists : security for update
             if (!isset($availablerights[$info['field']])) {
                ProfileRight::addProfileRights(array($info['field']));
             }
-            
+
             $row = array('label'   => $info['label'],
                          'columns' => array());
             if (!empty($info['row_class'])) {
