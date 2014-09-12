@@ -53,6 +53,17 @@ class ReservationItem extends CommonDBChild {
    public $get_item_to_display_tab = false;
    public $showdebug               = false;
 
+
+   /**
+    * @since version 0.85
+   **/
+   static function canView() {
+      global $CFG_GLPI;
+
+      return Session::haveRightsOr(self::$rightname, array(READ, self::RESERVEANITEM));
+   }
+
+
    static function getTypeName($nb=0) {
       return _n('Reservable item', 'Reservable items',$nb);
    }
