@@ -57,10 +57,15 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
          $itemtable = getTableForItemType($val);
 
          $deleted_field       = "`$itemtable`.`is_deleted`";
-         $location_field      = "`glpi_locations`.`completename`";
-         $add_leftjoin        = "LEFT JOIN `glpi_locations`
-                                    ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)";
-         $template_condition  = "`$itemtable`.`is_template` = '0'";
+         $location_field      = "''";
+         $add_leftjoin        = "";
+         $template_condition  = '1';
+         if ($val != 'Project') {
+            $location_field      = "`glpi_locations`.`completename`";
+            $template_condition  = "`$itemtable`.`is_template` = '0'";
+            $add_leftjoin        = "LEFT JOIN `glpi_locations`
+                                       ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)";
+         }
          if ($val == 'SoftwareLicense') {
             $deleted_field       = "`glpi_softwares`.`is_deleted`";
             $location_field      = "''";
