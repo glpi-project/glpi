@@ -191,12 +191,16 @@ if (isset($query) && count($query)) {
             } else {
                echo "<td> ".NOT_AVAILABLE." </td>";
             }
-            if (($key != 'Project')
-                || ($key != 'SoftwareLicense')) {
+            if (!isset($data['itemdeleted'])) {
                $data['itemdeleted'] = 0;
-               $data['location']    = '';
- //              $data['buy_date']    = '';
             }
+            if (!isset($data['buy_date']) ){
+               $data['buy_date'] = '';
+            }
+            if (!isset($data['warranty_duration'])) {
+               $data['warranty_duration'] = 0;
+            }            
+
             echo "<td> ".Dropdown::getYesNo($data['itemdeleted'])." </td>";
 
             if ($display_entity) {
