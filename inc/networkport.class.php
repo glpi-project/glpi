@@ -1032,18 +1032,19 @@ class NetworkPort extends CommonDBChild {
             $np->fields["items_id"] = $new_items_id;
             $portid                 = $np->addToDB();
 
-            $instantiation = $np->getInstantiation();
-            if ($instantiation !== false) {
-               $instantiation->add(array('id' => $portid));
-               unset($instantiation);
-            }
+            /// Duplicate instantiation infos ? needed ? this code do not duplicate only create empty one
+//             $instantiation = $np->getInstantiation();
+//             if ($instantiation !== false) {
+//                $instantiation->add(array('networkports_id' => $portid));
+//                unset($instantiation);
+//             }
 
             $npv = new NetworkPort_Vlan();
             foreach ($DB->request($npv->getTable(),
-                                  array($npv->items_id_1 => $data["id"])) as $vlan) {
+                                  array($npv::$items_id_1 => $data["id"])) as $vlan) {
 
-               $input = array($npv->items_id_1 => $portid,
-                              $npv->items_id_2 => $vlan['vlans_id']);
+               $input = array($npv::$items_id_1 => $portid,
+                              $npv::$items_id_2 => $vlan['vlans_id']);
                if (isset($vlan['tagged'])) {
                   $input['tagged'] = $vlan['tagged'];
                }
