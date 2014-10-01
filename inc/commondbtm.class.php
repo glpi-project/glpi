@@ -1680,13 +1680,11 @@ class CommonDBTM extends CommonGLPI {
       if (!$this->checkEntity()) {
          return false;
       }
-
       // Can delete an object with Infocom only if can delete Infocom
       if (InfoCom::canApplyOn($this)) {
          $infocom = new Infocom();
-
          if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
-            return $infocom->canDelete();
+            return $infocom->canPurge();
          }
       }
       return true;
