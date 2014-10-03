@@ -1165,6 +1165,10 @@ class Reservation extends CommonDBChild {
       // Print reservation in progress
       $query = "SELECT *
                 FROM `glpi_reservations`
+                LEFT JOIN `glpi_reservationitems`
+                  ON `glpi_reservations`.`reservationitems_id` = `glpi_reservationitems`.`id`
+                LEFT JOIN `glpi_entities`
+                  ON  `glpi_reservationitems`.`entities_id` = `glpi_entities`.`id`
                 WHERE `end` > '".$now."'
                       AND `users_id` = '$ID'
                 ORDER BY `begin`";
@@ -1182,6 +1186,7 @@ class Reservation extends CommonDBChild {
          echo "<tr><th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "<th>".__('Item')."</th>";
+         echo "<th>".__('Entity')."</th>";
          echo "<th>".__('By')."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
@@ -1199,6 +1204,7 @@ class Reservation extends CommonDBChild {
                   }
                }
                echo "<td class='center'>$link</td>";
+               echo "<td class='center'>".$data['completename']."</td>";
 
             } else {
                echo "<td class='center'>&nbsp;</td>";
@@ -1220,6 +1226,10 @@ class Reservation extends CommonDBChild {
       // Print old reservations
       $query = "SELECT *
                 FROM `glpi_reservations`
+                LEFT JOIN `glpi_reservationitems`
+                  ON `glpi_reservations`.`reservationitems_id` = `glpi_reservationitems`.`id`
+                LEFT JOIN `glpi_entities`
+                  ON  `glpi_reservationitems`.`entities_id` = `glpi_entities`.`id`
                 WHERE `end` <= '".$now."'
                       AND `users_id` = '$ID'
                 ORDER BY `begin` DESC";
@@ -1237,6 +1247,7 @@ class Reservation extends CommonDBChild {
          echo "<tr><th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "<th>".__('Item')."</th>";
+         echo "<th>".__('Entity')."</th>";
          echo "<th>".__('By')."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
@@ -1254,6 +1265,7 @@ class Reservation extends CommonDBChild {
                   }
                }
                echo "<td class='center'>$link</td>";
+               echo "<td class='center'>".$data['completename']."</td>";
 
             } else {
                echo "<td class='center'>&nbsp;</td>";
