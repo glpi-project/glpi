@@ -33,7 +33,7 @@
 
 
 include ('../inc/includes.php');
-Session::checkRight("config", UPDATE);
+Session::checkRight("config", READ);
 
 $config = new Config();
 $_POST['id'] = 1;
