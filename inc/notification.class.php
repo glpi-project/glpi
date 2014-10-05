@@ -214,7 +214,8 @@ class Notification extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td>";
       echo "<td>";
       if (!Session::haveRight(static::$rightname, UPDATE)) {
-         echo $this->fields['itemtype'];
+         $itemtype = $this->fields['itemtype'];
+         echo $itemtype::getTypeName(1);
          $rand ='';
       } else if (Config::canUpdate()
           && ($this->getEntityID() == 0)) {
