@@ -2419,23 +2419,11 @@ class Profile extends CommonDBTM {
    **/
    static function getRightsFor($itemtype, $interface='central') {
 
-
-      switch ($itemtype) {
-         case 'Cartridge' :
-            $item = new CartridgeItem();
-            return $item->getRights($interface);
-
-         case 'Consumable' :
-            $item = new ConsumableItem();
-            return $item->getRights($interface);
-
-         default :
-            if (class_exists($itemtype)) {
-               $item = new $itemtype();
-               return $item->getRights($interface);
-            }
+      if (class_exists($itemtype)) {
+         $item = new $itemtype();
+         return $item->getRights($interface);
       }
-      return false;
+
    }
 
 

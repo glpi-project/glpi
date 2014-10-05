@@ -48,7 +48,6 @@ class Consumable extends CommonDBChild {
    var $no_form_page                   = true;
 
    static $rightname                   = 'consumable';
-   protected $usenotepadrights         = true;
 
    // From CommonDBChild
    static public $itemtype             = 'ConsumableItem';
@@ -735,5 +734,9 @@ class Consumable extends CommonDBChild {
          }
    }
 
+   function getRights($interface='central') {
+      $ci = new ConsumableItem();
+      return $ci->getRights($interface);
+   }   
 }
 ?>

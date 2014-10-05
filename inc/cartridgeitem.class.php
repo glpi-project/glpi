@@ -47,6 +47,7 @@ class CartridgeItem extends CommonDBTM {
    // From CommonDBTM
    static protected $forward_entity_to = array('Cartridge', 'Infocom');
    public $dohistory                   = true;
+   protected $usenotepadrights         = true;
 
    static $rightname                   = 'cartridge';
 
@@ -552,5 +553,6 @@ class CartridgeItem extends CommonDBTM {
       $options['items']       = array($item);
       NotificationEvent::debugEvent($this, $options);
    }
+   
 }
 ?>
