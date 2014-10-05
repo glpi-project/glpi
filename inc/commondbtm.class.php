@@ -4274,10 +4274,10 @@ class CommonDBTM extends CommonGLPI {
                                  'long'  => _x('button', 'Put in dustbin'));
       }
       if ($this->usenotepadrights) {
-         $values[READNOTE] = array('short' => __('Read note'),
-                                   'long' => __("Read the item's note"));
-         $values[UPDATENOTE] = array('short' => __('Update note'),
-                                     'long' => __("Update the item's note"));
+         $values[READNOTE] = array('short' => __('Read notes'),
+                                   'long' => __("Read the item's notes"));
+         $values[UPDATENOTE] = array('short' => __('Update notes'),
+                                     'long' => __("Update the item's notes"));
       }
 
       return $values;
