@@ -4173,10 +4173,14 @@ class CommonDBTM extends CommonGLPI {
       if ($result = $DB->query($query)) {
          echo "<div class='center'><table class='tab_cadre'>";
          if ($add) {
+            $blank_params =
+               (strpos($target, '?') ? '&amp;' : '?')
+               . "id=-1&amp;withtemplate=2";
+            $target_blank = $target . $blank_params;
             echo "<tr><th>" . $item->getTypeName(1)."</th>";
             echo "<th>".__('Choose a template')."</th></tr>";
             echo "<tr><td class='tab_bg_1 center' colspan='2'>";
-            echo "<a href=\"$target?id=-1&amp;withtemplate=2\">".__('Blank Template')."</a></td>";
+            echo "<a href=\"$target_blank\">".__('Blank Template')."</a></td>";
             echo "</tr>";
          } else {
             echo "<tr><th>".$item->getTypeName(1)."</th><th>".__('Templates')."</th></tr>";
@@ -4188,8 +4192,14 @@ class CommonDBTM extends CommonGLPI {
                $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
             }
             if ($item->canCreate() && !$add) {
+               $modify_params =
+                  (strpos($target, '?') ? '&amp;' : '?')
+                  . "id=".$data['id']
+                  . "&amp;withtemplate=1";
+               $target_modify = $target . $modify_params;
+
                echo "<tr><td class='tab_bg_1 center'>";
-               echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=1\">";
+               echo "<a href=\"$target_modify\">";
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
                echo "<td class='tab_bg_2 center b'>";
                Html::showSimpleForm($target, 'purge', _x('button', 'Delete permanently'),
@@ -4197,16 +4207,26 @@ class CommonDBTM extends CommonGLPI {
                                           'id'           => $data['id']));
                echo "</td>";
             } else {
+               $add_params =
+                  (strpos($target, '?') ? '&amp;' : '?')
+                  . "id=".$data['id']
+                  . "&amp;withtemplate=2";
+               $target_add = $target . $add_params;
+
                echo "<tr><td class='tab_bg_1 center' colspan='2'>";
-               echo "<a href=\"$target?id=" . $data["id"] . "&amp;withtemplate=2\">";
+               echo "<a href=\"$target_add\">";
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
             }
             echo "</tr>";
          }
 
          if ($item->canCreate() && !$add) {
+            $create_params =
+               (strpos($target, '?') ? '&amp;' : '?')
+               . "withtemplate=1";
+            $target_create = $target . $create_params;
             echo "<tr><td class='tab_bg_2 center b' colspan='2'>";
-            echo "<a href=\"$target?withtemplate=1\">" . __('Add a template...') . "</a>";
+            echo "<a href=\"$target_create\">" . __('Add a template...') . "</a>";
             echo "</td></tr>";
          }
          echo "</table></div>\n";

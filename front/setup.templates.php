@@ -40,7 +40,7 @@ Session::checkCentralAccess();
 
 if (isset($_GET["itemtype"])) {
 
-   $link = Toolbox::getItemTypeFormURL($_GET["itemtype"]);
+   $link = $_GET["itemtype"]::getFormURL();
    $item = str_replace(".form.php","",$link);
    $item = str_replace("front/","",$item);
 
