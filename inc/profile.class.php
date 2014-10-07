@@ -1319,10 +1319,7 @@ class Profile extends CommonDBTM {
                             'field'     => 'backup'),
                       array('itemtype'  => 'Log',
                             'label'     => _n('Log', 'Logs', 2),
-                            'field'     => 'logs'),
-                      array('itemtype'  => 'Transfer',
-                            'label'     => __('Transfer'),
-                            'field'     => 'transfer'));
+                            'field'     => 'logs'));
       $matrix_options['title'] = __('Administration');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
@@ -1341,7 +1338,10 @@ class Profile extends CommonDBTM {
                       array('itemtype'  => 'RuleTicket',
                             'label'     => __('Business rules for tickets (entity)'),
                             'field'     => 'rule_ticket',
-                            'row_class' => 'tab_bg_2'));
+                            'row_class' => 'tab_bg_2'),
+                      array('itemtype'  => 'Transfer',
+                            'label'     => __('Transfer'),
+                            'field'     => 'transfer'));
       $matrix_options['title'] = _n('Rule', 'Rules', 2);
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
