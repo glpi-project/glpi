@@ -485,6 +485,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $datas['##ticket.numberofchanges##'] = count($datas['changes']);
 
+         $restrict .= " ORDER BY `date` DESC, `id` ASC";
+         
          //Followup infos
          $followups          = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
          $datas['followups'] = array();
