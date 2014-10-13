@@ -246,7 +246,7 @@ if ($item instanceof CommonTreeDropdown) {
             foreach ($toadd as $key => $val) {
                if (($one_item < 0) || ($one_item == $key)) {
                   array_push($datas, array('id'   => $key,
-                                           'text' => $val));
+                                           'text' => stripslashes($val)));
                }
             }
          }
@@ -533,7 +533,7 @@ if ($item instanceof CommonTreeDropdown) {
             foreach ($toadd as $key => $val) {
                if (($one_item < 0) || ($one_item == $key)) {
                   array_push($datas, array('id'    => $key,
-                                           'text'  => $val));
+                                           'text'  => stripslashes($val)));
                }
             }
          }

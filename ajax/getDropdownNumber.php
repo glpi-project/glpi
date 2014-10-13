@@ -80,7 +80,7 @@ if ($_GET['page'] == 1) {
       foreach ($toadd as $key => $val) {
          if (($one_item < 0) || ($one_item == $key)) {
             array_push($datas, array('id'   => $key,
-                                     'text' => strval($val)));
+                                     'text' => strval(stripslashes($val))));
          }
       }
    }
@@ -118,7 +118,7 @@ if ($one_item < 0 && count($values)) {
          $txt = Dropdown::getValueWithUnit($one_item,$_GET['unit']);
       }
       array_push($datas, array('id'   => $one_item,
-                               'text' => strval($txt)));
+                               'text' => strval(stripslashes($txt))));
       $count++;
    }
 }
