@@ -255,10 +255,9 @@ class Reminder extends CommonDBTM {
    **/
    static function addVisibilityJoins($forceall=false) {
 
-      if (!self::canView()) {
+      if (!Session::haveRight(self::$rightname, READ)) {
          return '';
       }
-
       // Users
       $join = " LEFT JOIN `glpi_reminders_users`
                      ON (`glpi_reminders_users`.`reminders_id` = `glpi_reminders`.`id`) ";
@@ -299,7 +298,7 @@ class Reminder extends CommonDBTM {
 
       $restrict = "`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."' ";
 
-      if (!self::canView()) {
+      if (!Session::haveRight(self::$rightname, READ)) {
          return $restrict;
       }
 
