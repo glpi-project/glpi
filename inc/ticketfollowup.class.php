@@ -278,8 +278,14 @@ class TicketFollowup  extends CommonDBTM {
       if (!$input["_job"]->getFromDB($input["tickets_id"])) {
          return false;
       }
+      
       // Manage File attached (from mailgate)
+      // Pass filename if set to ticket
+      if (isset($input['_filename'])) {
+         $input["_job"]->input['_filename'] = $input['_filename'];
+      }
       $docadded = $input["_job"]->addFiles();
+
       if (count($docadded) > 0) {
          $input['content'] .= "\n";
          foreach ($docadded as $name) {
