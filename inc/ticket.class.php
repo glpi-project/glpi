@@ -2780,14 +2780,14 @@ class Ticket extends CommonITILObject {
             }
          }
          echo "<div id='tracking_my_devices'>";
-         $rand = Dropdown::showFromArray('my_items', $my_devices);
+         $rand = Dropdown::showFromArray('_my_items', $my_devices);
          echo "</div>";
 
 
          // Auto update summary of active or just solved tickets
          $params = array('my_items' => '__VALUE__');
 
-         Ajax::updateItemOnSelectEvent("dropdown_my_items$rand","item_ticket_selection_information",
+         Ajax::updateItemOnSelectEvent("dropdown__my_items$rand","item_ticket_selection_information",
                                        $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
                                        $params);
 
