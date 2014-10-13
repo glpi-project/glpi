@@ -1506,7 +1506,6 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function addFiles($donotif=1, $disablenotif=0) {
       global $CFG_GLPI;
-
       if (!isset($this->input['_filename']) || (count($this->input['_filename']) == 0)) {
          return array();
       }
@@ -1528,9 +1527,10 @@ abstract class CommonITILObject extends CommonDBTM {
                                    $image_coordinates['img_y'],
                                    $image_coordinates['img_x'],
                                    $image_coordinates['img_w'],
-                                   $image_coordinates['img_h']);
+                                   $image_coordinates['img_h'],
+                                   0);
          } else {
-            Toolbox::resizePicture($filename, $filename, 0, 0, 0, 0, 0, 0);
+            Toolbox::resizePicture($filename, $filename, 0, 0, 0, 0, 0, 0, 0);
          }
 
          //If file tag is present

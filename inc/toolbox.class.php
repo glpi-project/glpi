@@ -1238,11 +1238,12 @@ class Toolbox {
     * @param $img_x         string   x axis of picture (default 0)
     * @param $img_width     string   width of picture (default 0)
     * @param $img_height    string   height of picture (default 0)
+    * @param $max_size      integer  max size of the picture (default 500, is set to 0 no resize)
     *
     * @return bool : true or false
    **/
    static function resizePicture($source_path, $dest_path, $new_width=71, $new_height=71,
-                                 $img_y=0, $img_x=0, $img_width=0, $img_height=0) {
+                                 $img_y=0, $img_x=0, $img_width=0, $img_height=0, $max_size=500) {
 
       //get img informations (dimensions and extension)
       $img_infos  = getimagesize($source_path);
@@ -1259,17 +1260,18 @@ class Toolbox {
          $new_height = $img_infos[1];
       }
 
-      // Image max size is 500 pixels
-      $max_size = 500;
-      if (($img_width > $max_size)
-          || ($img_height > $max_size)) {
-         $source_aspect_ratio = $img_width / $img_height;
-         if ($source_aspect_ratio < 1) {
-           $new_width  = $max_size * $source_aspect_ratio;
-           $new_height = $max_size;
-         } else {
-           $new_width  = $max_size;
-           $new_height = $max_size / $source_aspect_ratio;
+      // Image max size is 500 pixels : is set to 0 no resize
+      if ($max_size>0) {
+         if (($img_width > $max_size)
+            || ($img_height > $max_size)) {
+            $source_aspect_ratio = $img_width / $img_height;
+            if ($source_aspect_ratio < 1) {
+            $new_width  = $max_size * $source_aspect_ratio;
+            $new_height = $max_size;
+            } else {
+            $new_width  = $max_size;
+            $new_height = $max_size / $source_aspect_ratio;
+            }
          }
       }
 
