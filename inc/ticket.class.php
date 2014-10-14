@@ -5863,8 +5863,7 @@ class Ticket extends CommonITILObject {
                 && ($ok || empty($mime))) {
                // Replace tags by image in textarea
                $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
-                        "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'
-                        width='300'/>";
+                       "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'/>";
 
                // Replace tag by the image
                $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
@@ -5968,7 +5967,9 @@ class Ticket extends CommonITILObject {
    **/
    static function convertContentForTicket($content_html, $files, $tags) {
 
-      $html = str_replace('&', '&amp;', $content_html);
+      // We inject another meta tag
+      $contentType = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
+      $html = str_replace('<head>', '<head>'.$contentType, Html::entity_decode_deep($content_html));
 
       // We parse HTML with dom
       libxml_use_internal_errors(true);
@@ -5999,8 +6000,8 @@ class Ticket extends CommonITILObject {
       $body = $dom->getElementsByTagName('body')->item(0);
       foreach ($body->childNodes as $child)
          $doc->appendChild($doc->importNode($child, true));
-
-      return utf8_decode(Html::entity_decode_deep($doc->saveHTML()));
+      
+      return Html::entity_decode_deep($doc->saveHTML());
    }
 
 
