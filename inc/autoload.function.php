@@ -351,6 +351,11 @@ class SimplePie_Autoloader {
    **/
    public function autoload($class) {
 
+      // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
+      if (empty($class) || is_numeric($class) || (strpos($class, '.') !== false)) {
+         return false;
+      }
+   
       // Only load the class if it starts with "SimplePie"
       if (strpos($class, 'SimplePie') !== 0) {
          return;
