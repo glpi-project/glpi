@@ -703,11 +703,15 @@ class Transfer extends CommonDBTM {
             }
          }
 
+
          // Supplier infocoms
          if ($this->options['keep_infocom']) {
             foreach ($CFG_GLPI["infocom_types"] as $itemtype) {
                if (isset($this->item_search[$itemtype])) {
                   $itemtable = getTableForItemType($itemtype);
+                  $this->item_search[$itemtype]
+                     = $this->createSearchConditionUsingArray($this->needtobe_transfer[$itemtype]);
+
                   // Clean DB
                   $query = "SELECT `glpi_infocoms`.`id`
                             FROM `glpi_infocoms`
