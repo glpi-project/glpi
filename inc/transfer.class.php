@@ -793,6 +793,9 @@ class Transfer extends CommonDBTM {
             foreach (Infocom::getItemtypesThatCanHave() as $itemtype) {
                if (isset($this->item_search[$itemtype])) {
                   $itemtable = getTableForItemType($itemtype);
+                  $this->item_search[$itemtype]
+                   = $this->createSearchConditionUsingArray($this->needtobe_transfer[$itemtype]);
+
                   // Clean DB
                   $query = "SELECT `glpi_infocoms`.`id`
                             FROM `glpi_infocoms`
