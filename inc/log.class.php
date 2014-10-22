@@ -254,9 +254,8 @@ class Log extends CommonDBTM {
       $items_id = $item->getField('id');
 
       $SEARCHOPTION = Search::getOptions($itemtype);
-
-      if (isset($_POST["start"])) {
-         $start = $_POST["start"];
+      if (isset($_GET["start"])) {
+         $start = intval($_GET["start"]);
       } else {
          $start = 0;
       }

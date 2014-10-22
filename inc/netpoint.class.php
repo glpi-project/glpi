@@ -256,8 +256,8 @@ class Netpoint extends CommonDropdown {
       $item->check($ID, READ);
       $canedit  = $item->canEdit($ID);
 
-      if (isset($_POST["start"])) {
-         $start = $_POST["start"];
+      if (isset($_GET["start"])) {
+         $start = intval($_GET["start"]);
       } else {
          $start = 0;
       }
