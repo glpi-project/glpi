@@ -258,9 +258,11 @@ function glpi_autoload($classname) {
 
    // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
    if (empty($classname) || is_numeric($classname) || (strpos($classname, '.') !== false)) {
-      return false;
+      die("Security die. trying to load an forbidden class name");
    }
 
+   
+   
    $dir = GLPI_ROOT . "/inc/";
    if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
@@ -294,6 +296,14 @@ function glpi_autoload($classname) {
       if (preg_match('/^CAS_.*/', $classname)) {
          return false;
       }
+      // Do not try to load Zend using GLPI autoload
+      if (preg_match('/^Zend.*/', $classname)) {
+         return false;
+      }
+      // Do not try to load Simplepie using GLPI autoload
+      if (preg_match('/^SimplePie.*/', $classname)) {
+         return false;
+      }
 
       $item = strtolower($classname);
    }
@@ -312,6 +322,9 @@ function glpi_autoload($classname) {
    }
 }
 
+// Use spl autoload to allow stackable autoload.
+spl_autoload_register('glpi_autoload');
+
 require_once (GLPI_ZEND_PATH . '/Loader/StandardAutoloader.php');
 $option = array(Zend\Loader\StandardAutoloader::LOAD_NS => array('Zend' => GLPI_ZEND_PATH));
 $loader = new Zend\Loader\StandardAutoloader($option);
@@ -319,9 +332,6 @@ $loader->register();
 
 // SimplePie autoloader
 spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
-
-// Use spl autoload to allow stackable autoload.
-spl_autoload_register('glpi_autoload');
 
 
 
