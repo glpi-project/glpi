@@ -893,14 +893,17 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $this->showFormHeader($options);
 
       if ($validation_admin) {
-         $ticket = new Ticket();
-         $ticket->getFromDB($this->fields[static::$items_id]);
+         if ($this->getType() == 'ChangeValidation') {
+            $validation_right = 'validation';
+         } else if ($this->getType() == 'TicketValidation') {
+            $ticket = new Ticket();
+            $ticket->getFromDB($this->fields[static::$items_id]);
 
-         $validation_right = 'validate_incident';
-         if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
-            $validation_right = 'validate_request';
+            $validation_right = 'validate_incident';
+            if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
+               $validation_right = 'validate_request';
+            }
          }
-
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Approval requester')."</td>";
          echo "<td>";
@@ -1211,7 +1214,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
-
+      toolbox::logdebug("opt", $options, $params['users_id_validate'], "VIDE", !empty($params['users_id_validate']));
       $types = array(0       => Dropdown::EMPTY_VALUE,
                      'user'  => __('User'),
                      'group' => __('Group'));
