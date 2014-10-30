@@ -1214,7 +1214,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
-      toolbox::logdebug("opt", $options, $params['users_id_validate'], "VIDE", !empty($params['users_id_validate']));
+
       $types = array(0       => Dropdown::EMPTY_VALUE,
                      'user'  => __('User'),
                      'group' => __('Group'));
