@@ -56,6 +56,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       $events = array('new'            => __('New change'),
                       'update'         => __('Update of a change'),
                       'solved'         => __('Change solved'),
+                      'validation'     => __('Validation request'),
                       'add_task'       => __('New task'),
                       'update_task'    => __('Update of a task'),
                       'delete_task'    => __('Deletion of a task'),
@@ -74,6 +75,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
       // Common ITIL datas
       $datas                         = parent::getDatasForObject($item, $options, $simple);
+
+      // Specific datas
+      $datas['##change.urlvalidation##']
+                     = $this->formatURL($options['additionnaloption']['usertype'],
+                                        "change_".$item->getField("id")."_ChangeValidation$1");
+      $datas['##change.globalvalidation##']
+                     = ChangeValidation::getStatus($item->getField('global_validation'));
 
 //       $datas["##problem.impacts##"]  = $item->getField('impactcontent');
 //       $datas["##problem.causes##"]   = $item->getField('causecontent');
@@ -189,6 +197,41 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
          $datas['##change.numberofitems##'] = count($datas['items']);
 
+         //Validation infos
+         $restrict = "`changes_id`='".$item->getField('id')."'";
+
+         if (isset($options['validation_id']) && $options['validation_id']) {
+            $restrict .= " AND `glpi_changevalidations`.`id` = '".$options['validation_id']."'";
+         }
+
+         $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
+
+         $validations = getAllDatasFromTable('glpi_changevalidations',$restrict);
+         $datas['validations'] = array();
+         foreach ($validations as $validation) {
+            $tmp = array();
+            $tmp['##validation.submission.title##']
+            //TRANS: %s is the user name
+                     = sprintf(__('An approval request has been submitted by %s'),
+                                  Html::clean(getUserName($validation['users_id'])));
+
+            $tmp['##validation.author##']
+                     = Html::clean(getUserName($validation['users_id']));
+
+            $tmp['##validation.status##']
+                     = TicketValidation::getStatus($validation['status']);
+            $tmp['##validation.storestatus##']
+                     = $validation['status'];
+            $tmp['##validation.submissiondate##']
+                     = Html::convDateTime($validation['submission_date']);
+            $tmp['##validation.commentsubmission##']
+                     = $validation['comment_submission'];
+            $tmp['##validation.validator##']
+                     =  Html::clean(getUserName($validation['users_id_validate']));
+
+            $datas['validations'][] = $tmp;
+         }
+
       }
       return $datas;
    }
@@ -212,7 +255,8 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                     'item.contact'              => __('Alternate username'),
                     'item.contactnumber'        => __('Alternate username number'),
                     'item.user'                 => __('User'),
-                    'item.group'                => __('Group'),);
+                    'item.group'                => __('Group'),
+                    'change.globalvalidation'   => __('Global approval status'),);
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -220,6 +264,35 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                                    'value'  => true,
                                    'events' => NotificationTarget::TAG_FOR_ALL_EVENTS));
       }
+
+      //Events specific for validation
+      $tags = array('validation.author'            => __('Requester'),
+                    'validation.status'            => __('Status of the approval request'),
+                    'validation.submissiondate'    => sprintf(__('%1$s: %2$s'), __('Request'),
+                                                              __('Date')),
+                    'validation.commentsubmission' => sprintf(__('%1$s: %2$s'), __('Request'),
+                                                              __('Comments')));
+
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'    => $tag,
+                                   'label'  => $label,
+                                   'value'  => true,
+                                   'events' => array('validation', 'validation')));
+      }
+
+      //Tags without lang for validation
+      $tags = array('validation.submission.title' => __('A validation request has been submitted'),
+                    'change.urlvalidation'        => sprintf(__('%1$s: %2$s'), __('Validation request'),
+                                                             __('URL')));
+
+      foreach ($tags as $tag => $label) {
+         $this->addTagToList(array('tag'   => $tag,
+                                   'label' => $label,
+                                   'value' => true,
+                                   'lang'  => false,
+                                   'events' => array('validation', 'validation')));
+      }
+
 
       //Foreach global tags
       $tags = array('tickets'  => _n('Ticket', 'Tickets', 2),
