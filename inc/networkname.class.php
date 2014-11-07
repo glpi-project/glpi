@@ -605,7 +605,10 @@ class NetworkName extends FQDNLabel {
             if (empty($internetName)) {
                $internetName = "(".$line["id"].")";
             }
-            $content  = "<a href='" . $address->getLinkURL(). "'>".$internetName."</a>";
+            $content  = $internetName;
+            if (Session::haveRight('internet', UPDATE)) {
+               $content  = "<a href='" . $address->getLinkURL(). "'>".$internetName."</a>";
+            }
 
             if (!isset($options['dont_display'][$column_name])) {
                $header              = $row->getGroup()->getHeaderByName('Internet', $column_name);
@@ -652,7 +655,8 @@ class NetworkName extends FQDNLabel {
       $rand = mt_rand();
 
       if (($item->getType() == 'NetworkPort')
-          && $item->canUpdateItem()) {
+          && Session::haveRight('internet', UPDATE)) {
+     //     && $item->canUpdateItem()) {
 
          $items_id = $item->getID();
          $itemtype = $item->getType();
@@ -717,7 +721,7 @@ class NetworkName extends FQDNLabel {
          $canedit = false;
 
       } else {
-         $canedit = $item->canUpdateItem();
+         $canedit = Session::haveRight('internet', UPDATE);//$item->canUpdateItem();
       }
 
       $table_options['canedit']                  = false;
