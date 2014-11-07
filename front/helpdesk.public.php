@@ -67,7 +67,10 @@ if (isset($_GET["redirect"])) {
 }
 
 // redirect if no create ticket right
-if (!Session::haveRight('ticket', CREATE)) {
+if (!Session::haveRight('ticket', CREATE)
+    && !Session::haveRight('ticket', CREATE)
+    && !Session::haveRight("rssfeed_public", READ)) {
+
    if (Session::haveRight('followup', TicketFollowup::SEEPUBLIC)
        || Session::haveRight('task', TicketTask::SEEPUBLIC)
        || Session::haveRightsOr('ticketvalidation', array(TicketValidation::VALIDATEREQUEST,
