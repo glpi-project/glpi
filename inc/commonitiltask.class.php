@@ -1070,7 +1070,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo Html::convDateTime($this->fields["end"])."</td></tr>";
          echo "<tr><td>".__('By')."</td><td>";
          echo getUserName($this->fields["users_id_tech"])."</td></tr>";
-         if (PlanningRecall::isAvailable()) {
+         if (PlanningRecall::isAvailable()
+             && $_SESSION["glpiactiveprofile"]["interface"] == "central") {
             echo "<tr><td>"._x('Planning','Reminder')."</td><td>";
             PlanningRecall::specificForm(array('itemtype' => $this->getType(),
                                                'items_id' => $this->fields["id"]));
