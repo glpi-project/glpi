@@ -1680,13 +1680,6 @@ class CommonDBTM extends CommonGLPI {
       if (!$this->checkEntity()) {
          return false;
       }
-      // Can delete an object with Infocom only if can delete Infocom
-      if (InfoCom::canApplyOn($this)) {
-         $infocom = new Infocom();
-         if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
-            return $infocom->canPurge();
-         }
-      }
       return true;
    }
 
@@ -1706,7 +1699,7 @@ class CommonDBTM extends CommonGLPI {
          return false;
       }
 
-      // Can delete an object with Infocom only if can delete Infocom
+      // Can purge an object with Infocom only if can purge Infocom
       if (InfoCom::canApplyOn($this)) {
          $infocom = new Infocom();
 
