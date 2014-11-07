@@ -89,9 +89,9 @@ class Profile extends CommonDBTM {
          switch ($item->getType()) {
             case __CLASS__ :
                if ($item->fields['interface'] == 'helpdesk') {
-                  $ong[4] = __('Assistance'); // Helpdesk
-                  $ong[5] = __('Life cycles');
-                  $ong[8] = __('Tools');
+                  $ong[3] = __('Assistance'); // Helpdesk
+                  $ong[4] = __('Life cycles');
+                  $ong[6] = __('Tools');
                } else {
                   $ong[2] = __('Assets');
                   $ong[3] = __('Assistance');
