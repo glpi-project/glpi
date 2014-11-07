@@ -693,7 +693,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='4' class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table>\n";
          Html::closeForm();
