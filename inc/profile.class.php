@@ -94,12 +94,13 @@ class Profile extends CommonDBTM {
                   $ong[8] = __('Tools');
                } else {
                   $ong[2] = __('Assets');
-                  $ong[3] = __('Management');
-                  $ong[4] = __('Assistance');
-                  $ong[5] = __('Life cycles');
-                  $ong[6] = __('Administration');
-                  $ong[7] = __('Setup');
-                  $ong[8] = __('Tools');
+                  $ong[3] = __('Assistance');
+                  $ong[4] = __('Life cycles');
+                  $ong[5] = __('Management');
+                  $ong[6] = __('Tools');
+                  $ong[7] = __('Administration');
+                  $ong[8] = __('Setup');
+
                }
                return $ong;
          }
@@ -118,10 +119,6 @@ class Profile extends CommonDBTM {
                break;
 
             case 3 :
-               $item->showFormManagement();
-               break;
-
-            case 4 :
                if ($item->fields['interface'] == 'helpdesk') {
                   $item->showFormTrackingHelpdesk();
                } else {
@@ -129,7 +126,7 @@ class Profile extends CommonDBTM {
                }
                break;
 
-            case 5 :
+            case 4 :
                if ($item->fields['interface'] == 'helpdesk') {
                   $item->showFormLifeCycleHelpdesk();
                } else {
@@ -137,15 +134,11 @@ class Profile extends CommonDBTM {
                }
                break;
 
+            case 5 :
+               $item->showFormManagement();
+               break;
+
             case 6 :
-               $item->showFormAdmin();
-               break;
-
-            case 7 :
-               $item->showFormSetup();
-               break;
-
-            case 8 :
                if ($item->fields['interface'] == 'helpdesk') {
                   $item->showFormToolsHelpdesk();
                } else {
@@ -153,6 +146,13 @@ class Profile extends CommonDBTM {
                }
                break;
 
+            case 7 :
+               $item->showFormAdmin();
+               break;
+
+            case 8 :
+               $item->showFormSetup();
+               break;
          }
       }
       return true;
