@@ -53,15 +53,16 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
    **/
    function getEvents() {
 
-      $events = array('new'            => __('New change'),
-                      'update'         => __('Update of a change'),
-                      'solved'         => __('Change solved'),
-                      'validation'     => __('Validation request'),
-                      'add_task'       => __('New task'),
-                      'update_task'    => __('Update of a task'),
-                      'delete_task'    => __('Deletion of a task'),
-                      'closed'         => __('Closure of a change'),
-                      'delete'         => __('Deleting a change'));
+      $events = array('new'               => __('New change'),
+                      'update'            => __('Update of a change'),
+                      'solved'            => __('Change solved'),
+                      'validation'        => __('Validation request'),
+                      'validation_answer' => __('Validation request answer'),
+                      'add_task'          => __('New task'),
+                      'update_task'       => __('Update of a task'),
+                      'delete_task'       => __('Deletion of a task'),
+                      'closed'            => __('Closure of a change'),
+                      'delete'            => __('Deleting a change'));
       asort($events);
       return $events;
    }
@@ -211,23 +212,38 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
          foreach ($validations as $validation) {
             $tmp = array();
             $tmp['##validation.submission.title##']
-            //TRANS: %s is the user name
+                                 //TRANS: %s is the user name
                      = sprintf(__('An approval request has been submitted by %s'),
                                   Html::clean(getUserName($validation['users_id'])));
+
+            $tmp['##validation.answer.title##']
+                                 //TRANS: %s is the user name
+                     = sprintf(__('An answer to an an approval request was produced by %s'),
+                                  Html::clean(getUserName($validation['users_id_validate'])));
 
             $tmp['##validation.author##']
                      = Html::clean(getUserName($validation['users_id']));
 
             $tmp['##validation.status##']
                      = TicketValidation::getStatus($validation['status']);
+
             $tmp['##validation.storestatus##']
                      = $validation['status'];
+
             $tmp['##validation.submissiondate##']
                      = Html::convDateTime($validation['submission_date']);
+
             $tmp['##validation.commentsubmission##']
                      = $validation['comment_submission'];
+
+            $tmp['##validation.validationdate##']
+                     = Html::convDateTime($validation['validation_date']);
+
             $tmp['##validation.validator##']
                      =  Html::clean(getUserName($validation['users_id_validate']));
+
+            $tmp['##validation.commentvalidation##']
+                     = $validation['comment_validation'];
 
             $datas['validations'][] = $tmp;
          }
@@ -271,7 +287,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                     'validation.submissiondate'    => sprintf(__('%1$s: %2$s'), __('Request'),
                                                               __('Date')),
                     'validation.commentsubmission' => sprintf(__('%1$s: %2$s'), __('Request'),
-                                                              __('Comments')));
+                                                              __('Comments')),
+                    'validation.validationdate'    => sprintf(__('%1$s: %2$s'), __('Validation'),
+                                                             __('Date')),
+                    'validation.validator'         => __('Decision-maker'),
+                    'validation.commentvalidation' => sprintf(__('%1$s: %2$s'), __('Validation'),
+                                                             __('Comments'))
+      );
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -281,9 +303,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       }
 
       //Tags without lang for validation
-      $tags = array('validation.submission.title' => __('A validation request has been submitted'),
-                    'change.urlvalidation'        => sprintf(__('%1$s: %2$s'), __('Validation request'),
-                                                             __('URL')));
+      $tags = array('validation.submission.title'
+                                    => __('A validation request has been submitted'),
+                    'validation.answer.title'
+                                    => __('An answer to a validation request was produced'),
+                    'change.urlvalidation'
+                                    => sprintf(__('%1$s: %2$s'), __('Validation request'),
+                                               __('URL')));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
