@@ -649,19 +649,25 @@ class Profile extends CommonDBTM {
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>".__('Association')."</th></tr>\n";
+      echo "<tr class='tab_bg_5'><th colspan='2'>".__('Association')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='20%'>".__('Link with items for the creation of tickets')."</td>";
-      echo "<td colspan='5'>";
+      echo "<td width=30%>".__('See hardware of my groups')."</td><td>";
+      Html::showCheckbox(array('name'    => '_show_group_hardware',
+                               'checked' => $this->fields['show_group_hardware']));
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Link with items for the creation of tickets')."</td>";
+      echo "<td>";
       self::getLinearRightChoice(self::getHelpdeskHardwareTypes(true),
                                  array('field' => 'helpdesk_hardware',
                                        'value' => $this->fields['helpdesk_hardware']));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td width='20%'>".__('Associable items to a ticket')."</td>";
-      echo "<td colspan='5'><input type='hidden' name='_helpdesk_item_types' value='1'>";
+      echo "<td>".__('Associable items to a ticket')."</td>";
+      echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
 
       echo "</td>";
@@ -682,12 +688,6 @@ class Profile extends CommonDBTM {
       TicketTemplate::dropdown($options);
       echo "</td>";
       echo "</tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('See hardware of my groups')."</td><td>";
-      Html::showCheckbox(array('name' => '_show_group_hardware',
-                               'checked' => $this->fields['show_group_hardware']));
-      echo "</td></tr>\n";
 
       if ($canedit) {
          echo "<tr class='tab_bg_1'>";
@@ -967,7 +967,7 @@ class Profile extends CommonDBTM {
 
       echo "<table class='tab_cadre_fixe'>";
       // Assistance / Tracking-helpdesk
-      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Assistance')."</th></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".__('Assistance')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Ticket', 'Tickets', 2).': '.__('Default ticket template')."</td><td  width='30%'>";
@@ -1024,7 +1024,7 @@ class Profile extends CommonDBTM {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Association')."</th>";
+      echo "<tr class='tab_bg_5'><th colspan='2'>".__('Association')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -1043,7 +1043,7 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Associable items to a ticket')."</td>";
-      echo "<td  colspan='5'><input type='hidden' name='_helpdesk_item_types' value='1'>";
+      echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
       // Linear_HIT
 //      self::getLinearRightChoice(self::getHelpdeskItemtypes(),
