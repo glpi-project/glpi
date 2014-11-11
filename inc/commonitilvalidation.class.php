@@ -70,6 +70,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
+   static function getPurgeRights() {
+      return array(PURGE);
+   }
+
+
    static function getValidateRights() {
       return array(static::VALIDATE);
    }
@@ -112,7 +117,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       return Session::haveRightsOr(static::$rightname,
                                    array_merge(static::getCreateRights(),
-                                               static::getValidateRights()));
+                                               static::getValidateRights(),
+                                               static::getPurgeRights()));
    }
 
 
@@ -706,7 +712,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       if (!Session::haveRightsOr(static::$rightname,
                                  array_merge(static::getCreateRights(),
-                                             static::getValidateRights()))) {
+                                             static::getValidateRights(),
+                                             static::getPurgeRights()))) {
          return false;
       }
 
