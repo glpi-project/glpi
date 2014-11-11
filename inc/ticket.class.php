@@ -3208,8 +3208,8 @@ class Ticket extends CommonITILObject {
 
          echo "</td></tr>";
       }
-
-      if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0) {
+      if (($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0)
+          && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]))) {
          if (!$tt->isHiddenField('itemtype')) {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".sprintf(__('%1$s%2$s'), __('Hardware type'),
@@ -3667,7 +3667,7 @@ class Ticket extends CommonITILObject {
       } else {
          $values['_predefined_fields'] = array();
       }
-      
+
       // Store predefined fields to be able not to take into account on change template
       // Only manage predefined values on ticket creation
       $predefined_fields = array();
@@ -6000,7 +6000,7 @@ class Ticket extends CommonITILObject {
       $body = $dom->getElementsByTagName('body')->item(0);
       foreach ($body->childNodes as $child)
          $doc->appendChild($doc->importNode($child, true));
-      
+
       return Html::entity_decode_deep($doc->saveHTML());
    }
 
