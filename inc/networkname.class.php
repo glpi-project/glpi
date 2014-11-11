@@ -606,7 +606,7 @@ class NetworkName extends FQDNLabel {
                $internetName = "(".$line["id"].")";
             }
             $content  = $internetName;
-            if (Session::haveRight('internet', UPDATE)) {
+            if (Session::haveRight('internet', READ)) {
                $content  = "<a href='" . $address->getLinkURL(). "'>".$internetName."</a>";
             }
 

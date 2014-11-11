@@ -109,7 +109,7 @@ if (isset($_POST["add"])) {
       $_GET["itemtype"] = "";
    }
 
-   Session::checkRight("internet", UPDATE);
+   Session::checkRight("internet", READ);
    Html::header(NetworkName::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'commondropdown',
                'NetworkName');
 

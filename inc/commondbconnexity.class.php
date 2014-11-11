@@ -423,11 +423,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
    static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted=0,
                                                 CommonDBTM $checkitem=NULL) {
 
+      toolbox::logdebug("itemtype", $itemtype);
+      //(!Session::haveRight('internet', UPDATE)) {
       $unaffect = false;
       $affect   = false;
       if (Toolbox::is_a($itemtype, 'CommonDBChild')) {
          $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
-         if (!$itemtype::$mustBeAttached) {
+         if (!$itemtype::$mustBeAttached
+             && Session::haveRight($itemtype::$rightname, UPDATE)) {
             $unaffect = true;
             $affect   = true;
          } else if ($specificities['reaffect']) {
