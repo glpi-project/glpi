@@ -427,8 +427,7 @@ abstract class CommonDBConnexity extends CommonDBTM {
       $affect   = false;
       if (Toolbox::is_a($itemtype, 'CommonDBChild')) {
          $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
-         if (!$itemtype::$mustBeAttached
-             && Session::haveRight($itemtype::$rightname, UPDATE)) {
+         if (!$itemtype::$mustBeAttached) {
             $unaffect = true;
             $affect   = true;
          } else if ($specificities['reaffect']) {
