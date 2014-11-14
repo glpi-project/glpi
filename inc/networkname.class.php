@@ -114,7 +114,7 @@ class NetworkName extends FQDNLabel {
          echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
       }
       $this->displayRecursiveItems($recursiveItems, "Link");
-      if (count($recursiveItems) > 0) {
+      if ((count($recursiveItems) > 0) && $this->canUpdate()) {
          Html::showSimpleForm($this->getFormURL(), 'unaffect', _sx('button', 'Dissociate'),
                               array('id' => $ID));
       }
@@ -655,8 +655,8 @@ class NetworkName extends FQDNLabel {
       $rand = mt_rand();
 
       if (($item->getType() == 'NetworkPort')
-          && Session::haveRight('internet', UPDATE)) {
-     //     && $item->canUpdateItem()) {
+          && Session::haveRight('internet', UPDATE)
+          && $item->canUpdateItem()) {
 
          $items_id = $item->getID();
          $itemtype = $item->getType();
@@ -721,7 +721,7 @@ class NetworkName extends FQDNLabel {
          $canedit = false;
 
       } else {
-         $canedit = Session::haveRight('internet', UPDATE);//$item->canUpdateItem();
+         $canedit = Session::haveRight('internet', UPDATE) && $item->canUpdateItem();
       }
 
       $table_options['canedit']                  = false;
