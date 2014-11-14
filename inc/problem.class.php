@@ -1888,6 +1888,11 @@ class Problem extends CommonITILObject {
       // Ticket for the item
       echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
 
+      $colspan = 9;
+      if (count($_SESSION["glpiactiveentities"]) > 1) {
+         $colspan++;
+      }
+
       if ($number > 0) {
 
          Session::initNavigateListItems('Problem',
@@ -1895,10 +1900,6 @@ class Problem extends CommonITILObject {
                //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->getName()));
-         $colspan = 9;
-         if (count($_SESSION["glpiactiveentities"]) > 1) {
-            $colspan++;
-         }
 
          echo "<tr><th colspan='$colspan'>";
 
