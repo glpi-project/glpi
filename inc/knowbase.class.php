@@ -65,7 +65,7 @@ class Knowbase extends CommonGLPI {
       if ($item->getType() == __CLASS__) {
          $tabs[1] = _x('button', 'Search');
          $tabs[2] = _x('button', 'Browse');
-         if (KnowbaseItem::canCreate()) {
+         if (KnowbaseItem::canUpdate()) {
             $tabs[3] = _x('button', 'Manage');
          }
 

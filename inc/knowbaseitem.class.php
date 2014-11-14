@@ -80,10 +80,18 @@ class KnowbaseItem extends CommonDBTM {
       }
    }
 
-   
+
    static function canCreate() {
 
       return Session::haveRightsOr(self::$rightname, array(CREATE, self::PUBLISHFAQ));
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   static function canUpdate() {
+      return Session::haveRightsOr(self::$rightname, array(UPDATE, self::KNOWBASEADMIN));
    }
 
 
@@ -585,7 +593,8 @@ class KnowbaseItem extends CommonDBTM {
       global $CFG_GLPI;
 
       // show kb item form
-      if (!Session::haveRightsOr(self::$rightname, array(UPDATE, self::PUBLISHFAQ))) {
+      if (!Session::haveRightsOr(self::$rightname,
+                                 array(UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN))) {
          return false;
       }
 
@@ -958,7 +967,8 @@ class KnowbaseItem extends CommonDBTM {
    function showManageForm($options) {
       global $CFG_GLPI;
 
-      if (!Session::haveRightsOr(self::$rightname, array(UPDATE, self::PUBLISHFAQ))) {
+      if (!Session::haveRightsOr(self::$rightname,
+                                 array(UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN))) {
          return false;
       }
       $params['unpublished'] = 'my';
