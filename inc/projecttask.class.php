@@ -96,6 +96,11 @@ class ProjectTask extends CommonDBChild {
    }
 
 
+   static function canCreate() {
+      return (Session::haveRight(self::$rightname, UPDATE));
+   }
+
+
    static function canUpdate() {
 
       return (parent::canUpdate()
@@ -1063,7 +1068,7 @@ class ProjectTask extends CommonDBChild {
          if ($task->fields['projecttasks_id'] > 0) {
             $parents = count(getAncestorsOf("glpi_projecttasks", $ID));
          }
-                  
+
          // Add current task
          $todisplay[$real_begin.'#'.$real_end.'#task'.$task->getID()]
                         = array('id'    => $task->getID(),
