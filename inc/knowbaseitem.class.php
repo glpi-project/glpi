@@ -645,10 +645,20 @@ class KnowbaseItem extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Put this item in the FAQ')."</td>";
-      echo "<td>";
-      Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
-      echo "</td>";
+      if (Session::haveRight(self::$rightname, self::PUBLISHFAQ)) {
+         echo "<td>".__('Put this item in the FAQ')."</td>";
+         echo "<td>";
+         Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
+         echo "</td>";
+      } else {
+         echo "<td colspan='2'>";
+         if ($this->fields["is_faq"]) {
+            _e('This item is part of the FAQ');
+         } else {
+            _e('This item is not part of the FAQ');
+         }
+         echo "</td>";
+      }
       echo "<td>";
       $showuserlink = 0;
       if (Session::haveRight('user', READ)) {
