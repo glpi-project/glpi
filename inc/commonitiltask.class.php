@@ -1057,7 +1057,11 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (isset($this->fields["state"])) {
             echo Planning::getState($this->fields["state"])."<br>";
          }
-         _e('None');
+         if ($this->fields["users_id_tech"]) {
+            echo sprintf('%1$s %2$s',__('By'),getUserName($this->fields["users_id_tech"]));
+         } else {
+            _e('None');
+         }
       } else {
          echo "<table width='100%'>";
          if (isset($this->fields["state"])) {
