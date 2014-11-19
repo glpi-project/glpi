@@ -35,14 +35,14 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Filesystem
+/// Class VirtualMachineSystem
 class VirtualMachineSystem extends CommonDropdown {
 
    var $can_be_translated = false;
 
 
    static function getTypeName($nb=0) {
-      return _n('Virtualization model', 'Virtualization models', $nb);
+      return _n('Virtualization system', 'Virtualization systems', $nb);
    }
 
 }
