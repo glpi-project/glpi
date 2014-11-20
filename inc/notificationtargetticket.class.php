@@ -156,8 +156,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $query = "SELECT `profiles_id` as id
                 FROM `glpi_profilerights`
                 WHERE `glpi_profilerights`.`name` = 'followup'
-                  AND `glpi_profilerights`.`rights` & ".
-                     (TicketFollowup::SEEPRIVATE | TicketFollowup::SEEPUBLIC);
+                  AND `glpi_profilerights`.`rights` & ".TicketFollowup::SEEPRIVATE;
 
       foreach ($DB->request($query) as $data) {
          $this->private_profiles[$data['id']] = $data['id'];
@@ -486,7 +485,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $datas['##ticket.numberofchanges##'] = count($datas['changes']);
 
          $restrict .= " ORDER BY `date` DESC, `id` ASC";
-         
+
          //Followup infos
          $followups          = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
          $datas['followups'] = array();
