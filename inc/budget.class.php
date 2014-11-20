@@ -292,6 +292,7 @@ class Budget extends CommonDropdown{
       $itemtypes[] = 'Ticket';
       $itemtypes[] = 'Problem';
       $itemtypes[] = 'Change';
+      $itemtypes[] = 'Project';
 
       foreach ($itemtypes as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
@@ -334,6 +335,20 @@ class Budget extends CommonDropdown{
                             ORDER BY `".$item->getTable()."`.`entities_id`,
                                      `".$item->getTable()."`.`name`";
                break;
+
+               case 'Project' :
+                  $query = "SELECT `".$item->getTable()."`.`id`,
+                                   `".$item->getTable()."`.`entities_id`,
+                                    SUM(`glpi_projectcosts`.`cost`) as value
+                            FROM `glpi_projectcosts`
+                            INNER JOIN `".$item->getTable()."`
+                                 ON (`".$item->getTable()."`.`id` = `glpi_projectcosts`.`projects_id`)
+                            WHERE `glpi_projectcosts`.`budgets_id` = '$budgets_id' ".
+                                  getEntitiesRestrictRequest(" AND", $item->getTable())."
+                            GROUP BY `".$item->getTable()."`.`id`, `".$item->getTable()."`.`entities_id`
+                            ORDER BY `".$item->getTable()."`.`entities_id`,
+                                     `".$item->getTable()."`.`name`";
+                                                break;
 
                case 'Cartridge' :
                   $query = "SELECT `".$item->getTable()."`.*,
