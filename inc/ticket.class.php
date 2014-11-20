@@ -4479,19 +4479,18 @@ class Ticket extends CommonITILObject {
             if (Session::haveRightsOr(self::$rightname, array(UPDATE, DELETE, PURGE))
                 || $this->canDeleteItem()
                 || $this->canUpdateItem()) {
-               echo "<td class='tab_bg_2 center' colspan='2'>";
+               echo "<td class='tab_bg_2 center' colspan='4'>";
                if ($this->fields["is_deleted"] == 1) {
                   if (self::canPurge()) {
                      echo "<input type='submit' class='submit' name='restore' value='".
-                            _sx('button', 'Restore')."'></td>";
+                            _sx('button', 'Restore')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                   }
                } else {
                   if (self::canUpdate() ) {
                      echo "<input type='submit' class='submit' name='update' value='".
-                            _sx('button', 'Save')."'></td>";
+                            _sx('button', 'Save')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                   }
                }
-               echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
                   if (self::canPurge()) {
                      echo "<input type='submit' class='submit' name='purge' value='".
