@@ -1742,7 +1742,8 @@ class User extends CommonDBTM {
          $buttons["user.form.php"] = __('Add user...');
          $title                    = "";
 
-         if (Auth::useAuthExt()) {
+         if (Auth::useAuthExt()
+             && Session::haveRight("user", self::IMPORTEXTAUTHUSERS)) {
             // This requires write access because don't use entity config.
             $buttons["user.form.php?new=1&amp;ext_auth=1"] = __('... From an external source');
          }
