@@ -685,7 +685,7 @@ class Config extends CommonDBTM {
       MailCollector::showMaxFilesize('default_mailcollector_filesize_max',
                                      $CFG_GLPI["default_mailcollector_filesize_max"]);
       echo "</td>";
-      
+
       echo "<td>" . __('Use rich text for helpdesk') . "</td><td>";
       $id                 = 'alert'.mt_rand();
       $param['on_change'] = '$("#'.$id.'").html("");
@@ -695,7 +695,7 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("use_rich_text", $CFG_GLPI["use_rich_text"], -1, $param);
       echo "<span class='red' id='".$id."'></span>";
       echo "</td></tr>";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Default heading when adding a document to a ticket') . "</td><td>";
       DocumentCategory::dropdown(array('value' => $CFG_GLPI["documentcategories_id_forticket"],
@@ -977,8 +977,13 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          echo "<td>".__('Private followups by default')."</td><td>";
          Dropdown::showYesNo("followup_private", $data["followup_private"]);
-         echo "</td><td> " . __('Show new tickets on the home page') . "</td><td>";
-         Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
+         echo "</td><td>". __('Show new tickets on the home page') . "</td><td>";
+         if (Session::haveRightsOr("ticket",
+                                    array(Ticket::READMY, Ticket::READALL, Ticket::READASSIGN))) {
+            Dropdown::showYesNo("show_jobs_at_login", $data["show_jobs_at_login"]);
+         } else {
+            echo Dropdown::getYesNo(0);
+         }
          echo " </td></tr>";
 
          echo "<tr class='tab_bg_2'><td>" . __('Private tasks by default') . "</td><td>";
