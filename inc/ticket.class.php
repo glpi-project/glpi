@@ -5358,7 +5358,10 @@ class Ticket extends CommonITILObject {
       // Should be called in a <table>-segment
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
-      $showprivate = Session::haveRight('followup', TicketFollowup::SEEPRIVATE);
+      $showprivate = false;
+      if (Session::haveRight('followup', TicketFollowup::SEEPRIVATE)) {
+         $showprivate = true;
+      }
 
       $job  = new self();
       $rand = mt_rand();
