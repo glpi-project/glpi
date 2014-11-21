@@ -5078,12 +5078,12 @@ class Ticket extends CommonITILObject {
                       AND NOT `is_deleted`
                 ORDER BY `glpi_tickets`.`date_mod` DESC
                 LIMIT ".intval($_SESSION['glpilist_limit']);
+
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
       if ($number > 0) {
          Session::initNavigateListItems('Ticket');
-
          $options['criteria'][0]['field']      = 12;
          $options['criteria'][0]['searchtype'] = 'equals';
          $options['criteria'][0]['value']   = self::INCOMING;
@@ -5092,7 +5092,7 @@ class Ticket extends CommonITILObject {
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          //TRANS: %d is the number of new tickets
-         echo "<tr><th colspan='11'>".sprintf(_n('%d new ticket','%d new tickets', $number), $number);
+         echo "<tr><th colspan='12'>".sprintf(_n('%d new ticket','%d new tickets', $number), $number);
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                 Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
          echo "</th></tr>";
