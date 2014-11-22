@@ -77,7 +77,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    function validateSendTo($event, array $infos, $notify_me=false) {
 
       // Always send notification for satisfaction : if send on ticket closure
-      if ($event != 'satisfaction') {
+      if (($event != 'satisfaction')
+          || ($event != 'new')) {
          // Check global ones for notification to myself
          if (!parent::validateSendTo($event, $infos, $notify_me)) {
             return false;
