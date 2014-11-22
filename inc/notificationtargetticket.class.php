@@ -69,8 +69,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     * @see NotificationTarget::validateSendTo()
    **/
    function validateSendTo($event, array $infos, $notify_me=false) {
+
       // Always send notification for satisfaction : if send on ticket closure
-      if ($event != 'satisfaction') {
+      if (($event != 'satisfaction')
+          || ($event != 'new')) {
          // Check global ones for notification to myself
          if (!parent::validateSendTo($event, $infos, $notify_me)) {
             return false;
@@ -286,7 +288,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $datas['##ticket.location##']
                      = Dropdown::getDropdownName('glpi_locations', $item->getField('locations_id'));
       }
-      
+
       // is ticket deleted
       $datas['##ticket.isdeleted##'] = Dropdown::getYesNo($item->getField('is_deleted'));
 
