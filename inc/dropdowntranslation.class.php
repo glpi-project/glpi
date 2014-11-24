@@ -113,19 +113,17 @@ class DropdownTranslation extends CommonDBChild {
 
 
    function post_purgeItem() {
-
       if ($this->fields['field'] == 'name') {
          $translation = new self();
          //If last translated field is deleted, then delete also completename record
          if ($this->getNumberOfTranslations($this->fields['itemtype'], $this->fields['items_id'],
                                             $this->fields['field'],
-                                            $this->fields['language']) == 1) {
+                                            $this->fields['language']) == 0) {
 
             if ($completenames_id = self::getTranslationID($this->fields['itemtype'],
                                                            $this->fields['items_id'],
                                                            'completename',
                                                            $this->fields['language'])) {
-                                                           Toolbox::logDebug('Drop '.$completenames_id);
                $translation->delete(array('id' => $completenames_id));
             }
          }
@@ -666,7 +664,45 @@ class DropdownTranslation extends CommonDBChild {
       return $value;
    }
 
+   /**
+    * Get translations for an item
+    *
+    * @param $itemtype    itemtype
+    * @param $field       the field for which the translation is needed
+    * @param $items_id    item ID
+    *
+    * @return the value translated if a translation is available, or the same value if not
+   **/
+   static function getTranslationsForAnItem($itemtype, $items_id, $field) {
+      global $DB;
 
+      $query   = "SELECT *
+                  FROM `".self::getTable()."`
+                  WHERE `itemtype` = '$itemtype'
+                    AND `items_id` = '$items_id'
+                    AND `field` = '$field'";
+      $data = array();
+      foreach ($DB->request($query) as $tmp) {
+         $data[$tmp['id']] = $tmp;
+      }
+
+      return $data;
+   }
+   /**
+    * Regenerate all completename translations for an item
+    *
+    * @param $itemtype    itemtype
+    * @param $items_id    item ID
+    *
+    * @return the value translated if a translation is available, or the same value if not
+   **/
+    static function regenerateAllCompletenameTranslationsFor($itemtype, $items_id) {
+        foreach (self::getTranslationsForAnItem($itemtype, $items_id, 'completename') as $data) {
+            $dt = new DropdownTranslation();
+            $dt->generateCompletename($data, false);
+        }
+    }
+   
    /**
     * Check if there's at least one translation for this itemtype
     *

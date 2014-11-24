@@ -217,6 +217,10 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $query = "SELECT `id`, `name`
                    FROM `".$this->getTable()."`
                    WHERE `".$this->getForeignKeyField()."` = '$ID'";
+        if (Session::haveTranslations($this->getType(), 'completename')) {
+            DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $ID);
+        }
+                   
          foreach ($DB->request($query) as $data) {
             $query = "UPDATE `".$this->getTable()."`
                       SET ";
@@ -240,6 +244,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             }
             $query .= implode(', ',$fieldsToUpdate)." WHERE `id`= '".$data["id"]."'";
             $DB->query($query);
+            // Translations :
+            if (Session::haveTranslations($this->getType(), 'completename')) {
+                DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $data['id']);
+            }
+            
             $this->regenerateTreeUnderID($data["id"], $updateName, $changeParent);
          }
       }
