@@ -3479,16 +3479,12 @@ class Search {
                   $transitemtype = getItemTypeForTable($new_table);
                   if (Session::haveTranslations($transitemtype, $field)) {
                      $transAS            = $nt.'_trans';
-                     $fieldtranslate = 'name';
-                     if ($field > 0) {
-                        $fieldtranslate = $field;
-                     }
                      $specific_leftjoin .= "LEFT JOIN `glpi_dropdowntranslations` AS `$transAS`
                                              ON (`$transAS`.`itemtype` = '$transitemtype'
-                                                 AND `$transAS`.`items_id` = `$ref_table`.`id`
+                                                 AND `$transAS`.`items_id` = `$nt`.`id`
                                                  AND `$transAS`.`language` = '".
                                                        $_SESSION['glpilanguage']."'
-                                                 AND `$transAS`.`field` = '$fieldtranslate')";
+                                                 AND `$transAS`.`field` = '$field')";
                   }
                   break;
             }
