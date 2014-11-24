@@ -584,7 +584,8 @@ class Bookmark extends CommonDBTM {
                 FROM `".$this->getTable()."`
                 LEFT JOIN `glpi_bookmarks_users`
                   ON (`".$this->getTable()."`.`itemtype` = `glpi_bookmarks_users`.`itemtype`
-                      AND `".$this->getTable()."`.`id` = `glpi_bookmarks_users`.`bookmarks_id`)
+                      AND `".$this->getTable()."`.`id` = `glpi_bookmarks_users`.`bookmarks_id`
+                      AND `glpi_bookmarks_users`.`users_id` = '".Session::getLoginUserID()."')
                 WHERE ";
 
       if ($is_private) {
