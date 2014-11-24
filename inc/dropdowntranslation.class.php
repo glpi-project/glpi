@@ -125,6 +125,7 @@ class DropdownTranslation extends CommonDBChild {
                                                            $this->fields['items_id'],
                                                            'completename',
                                                            $this->fields['language'])) {
+                                                           Toolbox::logDebug('Drop '.$completenames_id);
                $translation->delete(array('id' => $completenames_id));
             }
          }
@@ -162,13 +163,14 @@ class DropdownTranslation extends CommonDBChild {
 
    function post_addItem() {
 
+      // Add to session
+      $_SESSION['glpi_dropdowntranslations'][$this->fields['itemtype']][$this->fields['field']]
+            = $this->fields['field'];
+
       if (!isset($this->input['_no_completename'])) {
          $translation = new self();
          $translation->generateCompletename($this->fields, true);
       }
-      // Add to session
-      $_SESSION['glpi_dropdowntranslations'][$this->fields['itemtype']][$this->fields['field']]
-            = $this->fields['field'];
    }
 
 
