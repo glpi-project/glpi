@@ -756,8 +756,10 @@ class CommonGLPI {
                   "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
                     "\" title=\"".__s('Previous')."\"></a></td>";
             $js = '$("body").keydown(function(e) {
-                       if(e.keyCode == 37 && e.ctrlKey) {
-                         window.location = $("#previouspage").attr("href");
+                       if ($("input, textarea").is(":focus") === false) {
+                          if(e.keyCode == 37 && e.ctrlKey) {
+                            window.location = $("#previouspage").attr("href");
+                          }
                        }
                   });';
             echo Html::scriptBlock($js);
@@ -808,8 +810,10 @@ class CommonGLPI {
                   "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
                     "\" title=\"".__s('Next')."\"></a></td>";
             $js = '$("body").keydown(function(e) {
-                       if(e.keyCode == 39 && e.ctrlKey) {
-                         window.location = $("#nextpage").attr("href");
+                       if ($("input, textarea").is(":focus") === false) {
+                          if(e.keyCode == 39 && e.ctrlKey) {
+                            window.location = $("#nextpage").attr("href");
+                          }
                        }
                   });';
             echo Html::scriptBlock($js);
