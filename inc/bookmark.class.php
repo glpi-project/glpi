@@ -758,7 +758,7 @@ class Bookmark extends CommonDBTM {
          echo "</table></div>";
 
          if ($is_private
-             || Session::haveRight('bookmark_public', DELETE)) {
+             || Session::haveRight('bookmark_public', PURGE)) {
             $massiveactionparams['ontop']       = false;
             $massiveactionparams['forcecreate'] = true;
             Html::showMassiveActions($massiveactionparams);
