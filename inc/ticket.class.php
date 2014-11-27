@@ -4272,7 +4272,9 @@ class Ticket extends CommonITILObject {
 
       } else {
          $idpriority = 0;
+         echo $tt->getBeginHiddenFieldValue('priority');
          echo "<span id='$idajax'>".parent::getPriorityName($this->fields["priority"])."</span>";
+         echo $tt->getEndHiddenFieldValue('priority', $this);
       }
 
       if ($canupdate
