@@ -901,7 +901,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       if ($validation_admin) {
          if ($this->getType() == 'ChangeValidation') {
-            $validation_right = 'validation';
+            $validation_right = 'validate';
          } else if ($this->getType() == 'TicketValidation') {
             $ticket = new Ticket();
             $ticket->getFromDB($this->fields[static::$items_id]);
