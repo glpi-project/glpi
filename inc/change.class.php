@@ -435,7 +435,7 @@ class Change extends CommonITILObject {
 
       $tab += $this->getSearchOptionsSolution();
 
-      $tab += TicketCost::getSearchOptionsToAdd();
+      $tab += ChangeCost::getSearchOptionsToAdd();
 
       return $tab;
    }
