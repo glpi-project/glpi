@@ -333,7 +333,7 @@ class Html {
 
          case 4 : // No space with comma
             return number_format($number, $decimal, ',', '');
-            
+
          default: // English
             return number_format($number, $decimal, '.', ',');
       }
@@ -1009,15 +1009,6 @@ class Html {
       echo "<link rel='shortcut icon' type='images/x-icon' href='".
              $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
-      // AJAX library
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.js");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.js");
-      } else {
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.min.js");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.min.js");
-      }
-
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/css/jstree/style.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.css");
@@ -1028,6 +1019,33 @@ class Html {
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/css/style.css");
 
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
+
+      // Add specific css for plugins
+      if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
+
+         foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $files) {
+            if (is_array($files)) {
+               foreach ($files as $file) {
+                  if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
+                     echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$file");
+                  }
+               }
+            } else {
+               if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
+                  echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$files");
+               }
+            }
+         }
+      }
+
+      // AJAX library
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.js");
+      } else {
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.min.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.min.js");
+      }
 
       echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js");
 
@@ -1060,7 +1078,6 @@ class Html {
          }
       }
 
-
       // Some Javascript-Functions which we may need later
       echo Html::script($CFG_GLPI["root_doc"].'/script.js');
 
@@ -1077,24 +1094,6 @@ class Html {
             } else {
                if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
                   echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$files");
-               }
-            }
-         }
-      }
-
-      // Add specific css for plugins
-      if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
-
-         foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $files) {
-            if (is_array($files)) {
-               foreach ($files as $file) {
-                  if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                     echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$file");
-                  }
-               }
-            } else {
-               if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
-                  echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$files");
                }
             }
          }
@@ -4880,7 +4879,7 @@ class Html {
          $addshowfilecontainer   = true;
          $p['showfilecontainer'] = "filedata$randupload";
       }
-      
+
       //echo "<input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
       $out  = "<div class='fileupload' id='".$p['dropZone']."'>";
       $out .= "<span class='b'>".__('Drag and drop your file here, or').'</span><br>';
@@ -5114,7 +5113,7 @@ class Html {
                fileindex".$p['rand']."--;\n
             }
          };\n";
-      
+
       if (is_array($p['values']) && isset($p['values']['filename'])
          && is_array($p['values']['filename']) && count($p['values']['filename'])) {
          foreach ($p['values']['filename'] as $key => $name) {
