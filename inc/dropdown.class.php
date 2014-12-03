@@ -167,6 +167,11 @@ class Dropdown {
 
       $field_id = Html::cleanId("dropdown_".$params['name'].$params['rand']);
 
+      // Manage condition
+      if (!empty($params['condition'])) {
+        $params['condition'] = static::addNewCondition($params['condition']);
+      }
+      
       $p = array('value'                => $params['value'],
                  'valuename'            => $name,
                  'width'                => $params['width'],
@@ -174,7 +179,7 @@ class Dropdown {
                  'display_emptychoice'  => $params['display_emptychoice'],
                  'displaywith'          => $params['displaywith'],
                  'emptylabel'           => $params['emptylabel'],
-                 'condition'            => Toolbox::cleanNewLines($params['condition']),
+                 'condition'            => $params['condition'],
                  'used'                 => $params['used'],
                  'toadd'                => $params['toadd'],
                  'entity_restrict'      => $params['entity'],
@@ -252,7 +257,13 @@ class Dropdown {
       return $output;
    }
 
-
+    static function addNewCondition($condition) {
+        $condition = Toolbox::cleanNewLines($condition);
+        $sha1=sha1($condition);
+        $_SESSION['glpicondition'][$sha1] = $condition;
+        return $sha1;
+    }
+    
    /**
     * Get the value of a dropdown
     *
@@ -1233,8 +1244,9 @@ class Dropdown {
                     'entity_restrict'     => $params['entity_restrict'],
                     'showItemSpecificity' => $params['showItemSpecificity']);
 
+         // manage condition
          if ($params['onlyglobal']) {
-            $p['condition'] = "`is_global` = 1";
+            $p['condition'] = static::addNewCondition("`is_global` = 1");  ;
          }
 
          $field_id = Html::cleanId("dropdown_".$params['itemtype_name'].$rand);

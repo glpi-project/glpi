@@ -64,7 +64,11 @@ if (!isset($_GET['permit_select_parent'])) {
 }
 
 if (isset($_GET['condition']) && !empty($_GET['condition'])) {
-   $_GET['condition'] = rawurldecode(stripslashes($_GET['condition']));
+    if (isset($_SESSION['glpicondition'][$_GET['condition']])) {
+        $_GET['condition'] = $_SESSION['glpicondition'][$_GET['condition']];
+    } else {
+        $_GET['condition'] = '';
+    }
 }
 
 if (!isset($_GET['emptylabel']) || ($_GET['emptylabel'] == '')) {
