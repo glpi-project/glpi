@@ -72,13 +72,17 @@ if (!isset($_POST['permit_select_parent'])) {
    $_POST['permit_select_parent'] = false;
 }
 
-// No define rand
-if (!isset($_POST['rand'])) {
+    // No define rand
+    if (!isset($_POST['rand'])) {
    $_POST['rand'] = mt_rand();
 }
 
 if (isset($_POST['condition']) && !empty($_POST['condition'])) {
-   $_POST['condition'] = rawurldecode(stripslashes($_POST['condition']));
+    if (isset($_SESSION['glpicondition'][$_POST['condition']])) {
+        $_POST['condition'] = $_SESSION['glpicondition'][$_POST['condition']];
+    } else {
+        $_POST['condition'] = '';
+    }
 }
 
 if (!isset($_POST['emptylabel']) || ($_POST['emptylabel'] == '')) {

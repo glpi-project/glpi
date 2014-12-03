@@ -177,6 +177,11 @@ class Dropdown {
          }
       }
 
+      // Manage condition
+      if (!empty($params['condition'])) {
+        $params['condition'] = static::addNewCondition($params['condition']);
+      }
+      
       $param = array('searchText'           => '__VALUE__',
                       'value'               => $params['value'],
                       'itemtype'            => $itemtype,
@@ -259,6 +264,11 @@ class Dropdown {
       }
    }
 
+    static function addNewCondition($condition) {
+        $sha1=sha1($condition);
+        $_SESSION['glpicondition'][$sha1] = $condition;
+        return $sha1;
+    }   
 
    /**
     * Get the value of a dropdown
@@ -1095,7 +1105,7 @@ class Dropdown {
                           'entity_restrict' => $entity_restrict);
 
          if ($onlyglobal) {
-            $params['condition'] = "`is_global` = '1'";
+            $params['condition'] = static::addNewCondition("`is_global` = '1'");
          }
          Ajax::updateItemOnSelectEvent("itemtype$rand", "show_$myname$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php", $params);
