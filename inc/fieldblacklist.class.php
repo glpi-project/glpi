@@ -49,6 +49,12 @@ class Fieldblacklist extends CommonDropdown {
       return _n('Ignored value for the unicity', 'Ignored values for the unicity', $nb);
    }
 
+
+   static function canPurge() {
+      return Session::haveRight(static::$rightname, UPDATE);
+   }
+
+
    function getAdditionalFields() {
 
       return array(array('name'  => 'itemtype',
