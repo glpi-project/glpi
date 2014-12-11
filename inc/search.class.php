@@ -2507,10 +2507,13 @@ class Search {
 
                $condition = "(";
 
-               $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
-                              OR $observer_table.users_id = '".Session::getLoginUserID()."'
-                              OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'";
-
+               if (Session::haveRight("ticket", Ticket::READMY)) {
+                    $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
+                                    OR $observer_table.users_id = '".Session::getLoginUserID()."'
+                                    OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'";
+               } else {
+                    $condition .= "0=1";
+               }
 
                if (Session::haveRight("ticket", Ticket::READGROUP)) {
                   if (count($_SESSION['glpigroups'])) {
