@@ -3052,7 +3052,8 @@ class AuthLDAP extends CommonDBTM {
          $ong[1]  = _sx('button','Test');                     // test connexion
          $ong[2]  = _n('User', 'Users', 2);
          $ong[3]  = _n('Group', 'Groups', 2);
-         $ong[4]  = __('Entity');                  // params for entity config
+/// TODO clean fields entity_XXX if not used         
+//          $ong[4]  = __('Entity');                  // params for entity config
          $ong[5]  = __('Advanced information');   // params for entity advanced config
          $ong[6]  = _n('Replicate', 'Replicates', 2);
 
