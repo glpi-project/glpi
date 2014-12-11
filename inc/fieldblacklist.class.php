@@ -50,9 +50,17 @@ class Fieldblacklist extends CommonDropdown {
    }
 
 
-   static function canPurge() {
-      return Session::haveRight(static::$rightname, UPDATE);
+   static function canCreate() {
+      return static::canUpdate();
    }
+
+   /**
+    * @since version 0.85
+   **/
+   static function canPurge() {
+      return static::canUpdate();
+   }
+
 
 
    function getAdditionalFields() {
