@@ -46,7 +46,7 @@ class Item_Devices extends CommonDBRelation {
    static public $items_id_1            = 'items_id';
    static public $mustBeAttached_1      = false;
    static public $take_entity_1         = false ;
-   static public $checkItem_2_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
+//    static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
 
    static protected $notable            = true;
 
@@ -58,7 +58,6 @@ class Item_Devices extends CommonDBRelation {
    static public $log_history_1_delete  = Log::HISTORY_DELETE_DEVICE;
    static public $log_history_1_lock    = Log::HISTORY_LOCK_DEVICE;
    static public $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
-
 
    // This var is defined by CommonDBRelation ...
    var $no_form_page                    = false;
@@ -560,12 +559,25 @@ class Item_Devices extends CommonDBRelation {
       if ($is_device) {
          $fk = 'items_id';
 
-         $query = "SELECT *
+         // Entity restrict
+         $leftjoin = '';
+         $where = "";
+         if (!empty($peer_type)) {
+            $leftjoin = "LEFT JOIN `".getTableForItemType($peer_type)."` 
+                        ON (`".$this->getTable()."`.`items_id` = `".getTableForItemType($peer_type)."`.`id`
+                            AND `".$this->getTable()."`.`itemtype` = '$peer_type')";
+            $where = getEntitiesRestrictRequest(" AND", getTableForItemType($peer_type));
+         }
+         
+         $query = "SELECT `".$this->getTable()."`.*
                    FROM `".$this->getTable()."`
+                   $leftjoin
                    WHERE `".$this->getDeviceForeignKey()."` = '".$item->getID()."'
-                         AND `itemtype` = '$peer_type'
-                         AND `is_deleted` = '0'
-                   ORDER BY `itemtype`, `$fk`";
+                         AND `".$this->getTable()."`.`itemtype` = '$peer_type'
+                         AND `".$this->getTable()."`.`is_deleted` = '0'
+                         $where
+                   ORDER BY `".$this->getTable()."`.`itemtype`, `".$this->getTable()."`.`$fk`";
+
       } else {
          $fk = $this->getDeviceForeignKey();
 
