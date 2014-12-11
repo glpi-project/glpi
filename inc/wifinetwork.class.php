@@ -46,6 +46,9 @@ class WifiNetwork extends CommonDropdown {
    var $can_be_translated = false;
 
 
+   static function getTypeName($nb=0) {
+      return _n('Wifi network', 'Wifi networks', $nb);
+   }
 
    static function getWifiCardVersion() {
 
@@ -82,6 +85,7 @@ class WifiNetwork extends CommonDropdown {
    function defineTabs($options=array()) {
 
       $ong  = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('NetworkPort',$ong, $options);
 
       return $ong;
@@ -124,9 +128,6 @@ class WifiNetwork extends CommonDropdown {
    }
 
 
-   static function getTypeName($nb=0) {
-      return _n('Wifi network', 'Wifi networks', $nb);
-   }
 
 }
 ?>
