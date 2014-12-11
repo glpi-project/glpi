@@ -148,7 +148,8 @@ class Computer extends CommonDBTM {
                $query = "SELECT *
                          FROM `glpi_computers_items`
                          WHERE `computers_id` = '".$this->fields["id"]."'
-                               AND `itemtype` = '".$t."'";
+                               AND `itemtype` = '".$t."'
+                               AND NOT `is_deleted`";
                if ($result = $DB->query($query)) {
                   $resultnum = $DB->numrows($result);
                   $item      = new $t();
@@ -197,7 +198,8 @@ class Computer extends CommonDBTM {
                $query = "SELECT *
                          FROM `glpi_computers_items`
                          WHERE `computers_id` = '".$this->fields["id"]."'
-                               AND `itemtype` = '".$t."'";
+                               AND `itemtype` = '".$t."'
+                               AND NOT `is_deleted`";
 
                if ($result = $DB->query($query)) {
                   $resultnum = $DB->numrows($result);
@@ -243,7 +245,8 @@ class Computer extends CommonDBTM {
                $query = "SELECT *
                          FROM `glpi_computers_items`
                          WHERE `computers_id` = '".$this->fields["id"]."'
-                               AND `itemtype` = '".$t."'";
+                               AND `itemtype` = '".$t."'
+                               AND NOT `is_deleted`";
 
                if ($result = $DB->query($query)) {
                   $resultnum = $DB->numrows($result);
@@ -285,7 +288,8 @@ class Computer extends CommonDBTM {
                $query = "SELECT *
                          FROM `glpi_computers_items`
                          WHERE `computers_id` = '".$this->fields["id"]."'
-                               AND `itemtype` = '".$t."'";
+                               AND `itemtype` = '".$t."'
+                               AND NOT `is_deleted`";
 
                if ($result = $DB->query($query)) {
                   $resultnum = $DB->numrows($result);
