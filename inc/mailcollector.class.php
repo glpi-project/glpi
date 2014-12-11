@@ -1640,7 +1640,7 @@ class MailCollector  extends CommonDBTM {
    function sendMailRefusedResponse($to='', $subject='') {
       global $CFG_GLPI;
 
-      $mmail           = new NotificationMail();
+      $mmail = new GLPIMailer();
       $mmail->AddCustomHeader("Auto-Submitted: auto-replied");
       $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
       $mmail->AddAddress($to);
