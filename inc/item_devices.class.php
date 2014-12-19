@@ -64,6 +64,15 @@ class Item_Devices extends CommonDBRelation {
 
    static protected $forward_entity_to = array('Infocom');
 
+
+   /**
+    * @since version 0.85
+    * No READ right for devices and extends CommonDBRelation not CommonDevice
+   **/
+   static function canView() {
+      return true;
+   }
+
    /**
     * @since version 0.85
    **/
@@ -332,7 +341,10 @@ class Item_Devices extends CommonDBRelation {
       if (!$item->can($ID, READ)) {
          return false;
       }
-      $canedit = (($withtemplate != 2) && $item->canEdit($ID));
+
+      $canedit = (($withtemplate != 2)
+                  && $item->canEdit($ID)
+                  && Session::haveRightsOr('device', array(UPDATE, PURGE)));
       echo "<div class='spaced'>";
       $rand = mt_rand();
       if ($canedit) {
@@ -563,12 +575,12 @@ class Item_Devices extends CommonDBRelation {
          $leftjoin = '';
          $where = "";
          if (!empty($peer_type)) {
-            $leftjoin = "LEFT JOIN `".getTableForItemType($peer_type)."` 
+            $leftjoin = "LEFT JOIN `".getTableForItemType($peer_type)."`
                         ON (`".$this->getTable()."`.`items_id` = `".getTableForItemType($peer_type)."`.`id`
                             AND `".$this->getTable()."`.`itemtype` = '$peer_type')";
             $where = getEntitiesRestrictRequest(" AND", getTableForItemType($peer_type));
          }
-         
+
          $query = "SELECT `".$this->getTable()."`.*
                    FROM `".$this->getTable()."`
                    $leftjoin
@@ -626,6 +638,7 @@ class Item_Devices extends CommonDBRelation {
             }
 
          }
+
 
          if ($options['canedit']) {
             $mode = __s('Update');
