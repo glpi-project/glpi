@@ -1036,7 +1036,7 @@ class Computer extends CommonDBTM {
                                           => array('table'      => 'glpi_computervirtualmachines',
                                                    'joinparams' => array('jointype' => 'child')));
 
-      $tab[162]['table']         = 'glpi_virtualmachinetypes';
+      $tab[162]['table']         = 'glpi_virtualmachinesystems';
       $tab[162]['field']         = 'name';
       $tab[162]['name']          = __('Virtualization model');
       $tab[162]['forcegroupby']  = true;
