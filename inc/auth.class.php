@@ -610,6 +610,7 @@ class Auth extends CommonGLPI {
             $this->user->fields['authtype'] = $authtype;
             $user_dn                        = false;
 
+            $ldapservers = '';
             //if LDAP enabled too, get user's infos from LDAP
             if (Toolbox::canUseLdap()) {
                $ldapservers = array();
