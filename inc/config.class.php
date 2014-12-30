@@ -824,10 +824,8 @@ class Config extends CommonDBTM {
             $url  = $CFG_GLPI['root_doc']."/front/user.form.php";
          }
       }
-      $canedit = Config::canUpdate();
-      if ($canedit) {
          echo "<form name='form' action='$url' method='post'>";
-      }
+
       // Only set id for user prefs
       if ($userpref) {
          echo "<input type='hidden' name='id' value='".$data['id']."'>";
@@ -970,7 +968,6 @@ class Config extends CommonDBTM {
       echo "</td><td colspan='2'></td></tr>";
 
 
-
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
 
@@ -1093,12 +1090,10 @@ class Config extends CommonDBTM {
                               array('value' => $data['duedatecritical_unit']));
       echo "</td></tr>";
 
-      if ($canedit) {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
          echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>";
-      }
 
       echo "</table></div>";
       Html::closeForm();
