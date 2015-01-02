@@ -640,7 +640,7 @@ class Item_Devices extends CommonDBRelation {
          }
 
 
-         if ($options['canedit']) {
+         if (Session::haveRight('device', UPDATE)) {
             $mode = __s('Update');
          } else {
             $mode = __s('View');
@@ -1009,6 +1009,7 @@ class Item_Devices extends CommonDBRelation {
             echo "<td></td><td></td></tr>";
          }
       }
+      $options['canedit'] =  Session::haveRight('device', UPDATE);
       $this->showFormButtons($options);
 
       return true;
