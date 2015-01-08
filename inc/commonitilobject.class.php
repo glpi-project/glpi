@@ -2356,12 +2356,12 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab                       = array();
       $tab['stats']              = __('Statistics');
 
-      $tab[151]['table']         = $this->getTable();
-      $tab[151]['field']         = 'solve_delay_stat';
-      $tab[151]['name']          = __('Resolution time');
-      $tab[151]['datatype']      = 'timestamp';
-      $tab[151]['forcegroupby']  = true;
-      $tab[151]['massiveaction'] = false;
+      $tab[154]['table']         = $this->getTable();
+      $tab[154]['field']         = 'solve_delay_stat';
+      $tab[154]['name']          = __('Resolution time');
+      $tab[154]['datatype']      = 'timestamp';
+      $tab[154]['forcegroupby']  = true;
+      $tab[154]['massiveaction'] = false;
 
       $tab[152]['table']         = $this->getTable();
       $tab[152]['field']         = 'close_delay_stat';
