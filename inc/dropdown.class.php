@@ -781,10 +781,10 @@ class Dropdown {
                                 ),
 
                     _n('Virtual machine', 'Virtual machines', 2)
-                        => array('VirtualMachineType'   => _n('Virtualization model',
-                                                              'Virtualization models', 2),
-                                 'VirtualMachineSystem' => _n('Virtualization system',
+                        => array('VirtualMachineType'   => _n('Virtualization system',
                                                               'Virtualization systems', 2),
+                                 'VirtualMachineSystem' => _n('Virtualization model',
+                                                              'Virtualization models', 2),
                                  'VirtualMachineState'  => _n('State of the virtual machine',
                                                               'States of the virtual machine', 2)
                                 ),

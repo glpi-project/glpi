@@ -42,7 +42,7 @@ class VirtualMachineSystem extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      return _n('Virtualization system', 'Virtualization systems', $nb);
+      return _n('Virtualization model', 'Virtualization models', $nb);
    }
 
 }

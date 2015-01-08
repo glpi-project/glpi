@@ -171,13 +171,13 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Virtualization system')."</td>";
+      VirtualMachineType::dropdown(array('value' => $this->fields['virtualmachinetypes_id']));
       echo "<td>";
-      VirtualMachineSystem::dropdown(array('value' => $this->fields['virtualmachinesystems_id']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Virtualization model')."</td>";
-      VirtualMachineType::dropdown(array('value' => $this->fields['virtualmachinetypes_id']));
+      VirtualMachineSystem::dropdown(array('value' => $this->fields['virtualmachinesystems_id']));
       echo "<td>";
       echo "</td></tr>";
 
