@@ -110,7 +110,7 @@ class Report extends CommonGLPI{
 
       $count    = count($report_list);
       $selected = -1;
-      $values   = array('/glpi085/front/report.php' => Dropdown::EMPTY_VALUE);
+      $values   = array($CFG_GLPI["root_doc"].'/front/report.php' => Dropdown::EMPTY_VALUE);
 
       while ($data = each($report_list)) {
          $val           = $data[0];
