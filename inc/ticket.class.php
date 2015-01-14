@@ -4129,7 +4129,7 @@ class Ticket extends CommonITILObject {
             $validation_right = 'validate_incident';
          }
          if (($values['type'] == self::DEMAND_TYPE)
-             && Session::haveRight('ticketvalidaton', TicketValidation::CREATEREQUEST)) {
+             && Session::haveRight('ticketvalidation', TicketValidation::CREATEREQUEST)) {
             $validation_right = 'validate_request';
          }
 
