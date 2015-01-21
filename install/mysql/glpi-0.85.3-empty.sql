@@ -5516,6 +5516,7 @@ CREATE TABLE `glpi_projecttasks` (
   `projecttasktypes_id` int(11) NOT NULL DEFAULT '0',
   `users_id` int(11) NOT NULL DEFAULT '0',
   `percent_done` int(11) NOT NULL DEFAULT '0',
+  `is_milestone` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -5531,7 +5532,8 @@ CREATE TABLE `glpi_projecttasks` (
   KEY `real_end_date` (`real_end_date`),
   KEY `percent_done` (`percent_done`),
   KEY `projectstates_id` (`projectstates_id`),
-  KEY `projecttasktypes_id` (`projecttasktypes_id`)
+  KEY `projecttasktypes_id` (`projecttasktypes_id`),
+  KEY `is_milestone` (`is_milestone`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

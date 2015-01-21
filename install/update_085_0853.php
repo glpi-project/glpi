@@ -73,6 +73,9 @@ function update085to0853() {
    Config::setConfigurationValues('core', array('task_state' => Planning::TODO));
    $migration->addField("glpi_users", "task_state", "int(11) DEFAULT NULL");
    
+   $migration->addField('glpi_projecttasks', 'is_milestone', 'bool');
+   $migration->addKey('glpi_projecttasks', 'is_milestone');
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
