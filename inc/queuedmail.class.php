@@ -221,7 +221,7 @@ class QueuedMail extends CommonDBTM {
       $tab[7]['massiveaction']   = false;
 
       $tab[8]['table']           = $this->getTable();
-      $tab[8]['field']           = 'recipentname';
+      $tab[8]['field']           = 'recipientname';
       $tab[8]['name']            = __('Recipient name');
       $tab[8]['datatype']        = 'string';
       $tab[8]['massiveaction']   = false;
