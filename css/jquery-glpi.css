@@ -220,4 +220,6 @@ input.submit {
    font-size: 11px;
 }
 
-
+.fn-gantt .ganttMilestone {
+    background-color: #000000;
+}

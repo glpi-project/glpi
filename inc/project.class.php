@@ -1255,6 +1255,9 @@ class Project extends CommonDBTM {
                      break;
 
                   case 'task' :
+                     if (isset($val['is_milestone']) && $val['is_milestone']) {
+                        $color = 'ganttMilestone';
+                     }
                      $temp = array('name'   => ' ',
                                    'desc'   => str_repeat('-',$val['parents']).$val['link'],
                                    'values' => array(array('from'
@@ -1264,7 +1267,7 @@ class Project extends CommonDBTM {
                                                            'desc'
                                                             => $val['desc'],
                                                            'label'
-                                                            => $val['percent']."%",
+                                                            => strlen($val['percent']==0)?'':$val['percent']."%",
                                                            'customClass'
                                                             => $color))
                                  );
@@ -1309,11 +1312,6 @@ class Project extends CommonDBTM {
                                  onAddClick: function(dt, rowId) {
    //                                         alert('Empty space clicked - add an item!');
                                  },
-                                 onRender: function() {
-   //                                         if (window.console && typeof console.log === 'function') {
-   //                                                 console.log('chart rendered');
-   //                                         }
-                                 }
                            });";
          echo Html::scriptBlock($js);
       } else {

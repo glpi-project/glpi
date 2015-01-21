@@ -259,6 +259,11 @@ class ProjectTask extends CommonDBChild {
 
 
    function prepareInputForUpdate($input) {
+      if (isset($input['is_milestone']) 
+            && $input['is_milestone']){
+         $input['plan_end_date'] = $input['plan_start_date'];
+         $input['real_end_date'] = $input['real_start_date'];
+      }   
       return Project::checkPlanAndRealDates($input);
    }
 
@@ -270,6 +275,12 @@ class ProjectTask extends CommonDBChild {
       }
       if (!isset($input['date'])) {
          $input['date'] = $_SESSION['glpi_currenttime'];
+      }
+
+      if (isset($input['is_milestone']) 
+            && $input['is_milestone']){
+         $input['plan_end_date'] = $input['plan_start_date'];
+         $input['real_end_date'] = $input['real_start_date'];
       }
 
       return Project::checkPlanAndRealDates($input);
@@ -405,7 +416,12 @@ class ProjectTask extends CommonDBChild {
                                                  'unit'  => '%'));
 
       echo "</td>";
-      echo "<td colspan='2'>&nbsp;</td>";
+      echo "<td>";
+      _e('Milestone');
+      echo "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("is_milestone", $this->fields["is_milestone"]);
+      echo "</td>";      
       echo "</tr>";
 
       echo "<tr><td colspan='4' class='subheader'>".__('Planning')."</td></tr>";
@@ -678,6 +694,11 @@ class ProjectTask extends CommonDBChild {
       $tab[16]['field']             = 'comment';
       $tab[16]['name']              = __('Comments');
       $tab[16]['datatype']          = 'text';
+
+      $tab[18]['table']             = $this->getTable();
+      $tab[18]['field']             = 'is_milestone';
+      $tab[18]['name']              = __('Milestone');
+      $tab[18]['datatype']          = 'bool';
 
       $tab[80]['table']             = 'glpi_entities';
       $tab[80]['field']             = 'completename';
@@ -1023,6 +1044,7 @@ class ProjectTask extends CommonDBChild {
                                                                 'real_start_date'))) as $data) {
             $subtasks += static::getDataToDisplayOnGantt($data['id']);
          }
+         
          $real_begin = NULL;
          $real_end   = NULL;
          // Use real if set
@@ -1069,6 +1091,12 @@ class ProjectTask extends CommonDBChild {
             $parents = count(getAncestorsOf("glpi_projecttasks", $ID));
          }
 
+         if ($task->fields['is_milestone']){
+            $percent = "";
+         }else{
+            $percent = isset($task->fields['percent_done'])?$task->fields['percent_done']:0;
+         }
+
          // Add current task
          $todisplay[$real_begin.'#'.$real_end.'#task'.$task->getID()]
                         = array('id'    => $task->getID(),
@@ -1076,10 +1104,11 @@ class ProjectTask extends CommonDBChild {
                               'desc'    => $task->fields['content'],
                               'link'    => $task->getlink(),
                               'type'    => 'task',
-                              'percent' => isset($task->fields['percent_done'])?$task->fields['percent_done']:0,
+                              'percent' => $percent,
                               'from'    => $real_begin,
                               'parents' => $parents,
-                              'to'      => $real_end);
+                              'to'      => $real_end,
+                              'is_milestone' => $task->fields['is_milestone']);
 
          // Add ordered subtasks
          foreach($subtasks as $key => $val) {
