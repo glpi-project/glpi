@@ -2620,7 +2620,7 @@ class User extends CommonDBTM {
 
       $tab[20]['table']                = 'glpi_profiles';
       $tab[20]['field']                = 'name';
-      $tab[20]['name']                 = sprintf(__('%1$s (%2$s)'), _n('Profile', 'Profiles', 2),
+      $tab[20]['name']                 = sprintf(__('%1$s (%2$s)'), _n('Profile', 'Profiles', Session::getPluralNumber()),
                                                  _n('Entity', 'Entities', 1));
       $tab[20]['forcegroupby']         = true;
       $tab[20]['massiveaction']        = false;
@@ -2655,7 +2655,7 @@ class User extends CommonDBTM {
       $tab[80]['table']                = 'glpi_entities';
       $tab[80]['linkfield']            = 'entities_id';
       $tab[80]['field']                = 'completename';
-      $tab[80]['name']                 = sprintf(__('%1$s (%2$s)'), _n('Entity', 'Entities', 2),
+      $tab[80]['name']                 = sprintf(__('%1$s (%2$s)'), _n('Entity', 'Entities', Session::getPluralNumber()),
                                                  _n('Profile', 'Profiles', 1));
       $tab[80]['forcegroupby']         = true;
       $tab[80]['datatype']             = 'dropdown';

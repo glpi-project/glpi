@@ -118,14 +118,14 @@ class Event extends CommonDBTM {
       }
 
       $logItemtype = array('system'      => __('System'),
-                           'devices'     => _n('Component', 'Components', 2),
+                           'devices'     => _n('Component', 'Components', Session::getPluralNumber()),
                            'planning'    => __('Planning'),
-                           'reservation' => _n('Reservation', 'Reservations', 2),
-                           'dropdown'    => _n('Dropdown', 'Dropdowns', 2),
-                           'rules'       => _n('Rule', 'Rules', 2));
+                           'reservation' => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+                           'dropdown'    => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
+                           'rules'       => _n('Rule', 'Rules', Session::getPluralNumber()));
 
       $logService = array('inventory'    => __('Assets'),
-                          'tracking'     => _n('Ticket', 'Tickets', 2),
+                          'tracking'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                           'maintain'     => __('Assistance'),
                           'planning'     => __('Planning'),
                           'tools'        => __('Tools'),
@@ -133,11 +133,11 @@ class Event extends CommonDBTM {
                           'login'        => __('Connection'),
                           'setup'        => __('Setup'),
                           'security'     => __('Security'),
-                          'reservation'  => _n('Reservation', 'Reservations', 2),
-                          'cron'         => _n('Automatic action', 'Automatic actions', 2),
-                          'document'     => _n('Document', 'Documents', 2),
-                          'notification' => _n('Notification', 'Notifications',2),
-                          'plugin'       => _n('Plugin', 'Plugins',2));
+                          'reservation'  => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+                          'cron'         => _n('Automatic action', 'Automatic actions', Session::getPluralNumber()),
+                          'document'     => _n('Document', 'Documents', Session::getPluralNumber()),
+                          'notification' => _n('Notification', 'Notifications', Session::getPluralNumber()),
+                          'plugin'       => _n('Plugin', 'Plugins', Session::getPluralNumber()));
 
       return array($logItemtype, $logService);
    }

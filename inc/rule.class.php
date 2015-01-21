@@ -247,12 +247,12 @@ class Rule extends CommonDBTM {
           || Session::haveRight("rule_dictionnary_software", READ)
           || Session::haveRight("rule_dictionnary_printer", READ)) {
 
-         $menu['dictionnary']['title']    = _n('Dictionary', 'Dictionaries', 2);
+         $menu['dictionnary']['title']    = _n('Dictionary', 'Dictionaries', Session::getPluralNumber());
          $menu['dictionnary']['shortcut'] = '';
          $menu['dictionnary']['page']     = '/front/dictionnary.php';
 
          $menu['dictionnary']['options']['manufacturers']['title']
-                           = _n('Manufacturer', 'Manufacturers', 2);
+                           = _n('Manufacturer', 'Manufacturers', Session::getPluralNumber());
          $menu['dictionnary']['options']['manufacturers']['page']
                            = '/front/ruledictionnarymanufacturer.php';
          $menu['dictionnary']['options']['manufacturers']['links']['search']
@@ -265,7 +265,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['software']['title']
-                           = _n('Software', 'Software', 2);
+                           = _n('Software', 'Software', Session::getPluralNumber());
          $menu['dictionnary']['options']['software']['page']
                            = '/front/ruledictionnarysoftware.php';
          $menu['dictionnary']['options']['software']['links']['search']
@@ -278,7 +278,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['model.computer']['title']
-                           = _n('Computer model', 'Computer models', 2);
+                           = _n('Computer model', 'Computer models', Session::getPluralNumber());
          $menu['dictionnary']['options']['model.computer']['page']
                            = '/front/ruledictionnarycomputermodel.php';
          $menu['dictionnary']['options']['model.computer']['links']['search']
@@ -291,7 +291,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['model.monitor']['title']
-                           = _n('Monitor model', 'Monitor models', 2);
+                           = _n('Monitor model', 'Monitor models', Session::getPluralNumber());
          $menu['dictionnary']['options']['model.monitor']['page']
                            = '/front/ruledictionnarymonitormodel.php';
          $menu['dictionnary']['options']['model.monitor']['links']['search']
@@ -304,7 +304,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['model.printer']['title']
-                           = _n('Printer model', 'Printer models', 2);
+                           = _n('Printer model', 'Printer models', Session::getPluralNumber());
          $menu['dictionnary']['options']['model.printer']['page']
                            = '/front/ruledictionnaryprintermodel.php';
          $menu['dictionnary']['options']['model.printer']['links']['search']
@@ -317,7 +317,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['model.peripheral']['title']
-                           = _n('Peripheral model', 'Peripheral models', 2);
+                           = _n('Peripheral model', 'Peripheral models', Session::getPluralNumber());
          $menu['dictionnary']['options']['model.peripheral']['page']
                            = '/front/ruledictionnaryperipheralmodel.php';
          $menu['dictionnary']['options']['model.peripheral']['links']['search']
@@ -330,7 +330,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['model.networking']['title']
-                           = _n('Networking equipment model', 'Networking equipment models', 2);
+                           = _n('Networking equipment model', 'Networking equipment models', Session::getPluralNumber());
          $menu['dictionnary']['options']['model.networking']['page']
                            = '/front/ruledictionnarynetworkequipmentmodel.php';
          $menu['dictionnary']['options']['model.networking']['links']['search']
@@ -343,7 +343,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['model.phone']['title']
-                           = _n('Phone model', 'Phone models', 2);
+                           = _n('Phone model', 'Phone models', Session::getPluralNumber());
          $menu['dictionnary']['options']['model.phone']['page']
                            = '/front/ruledictionnaryphonemodel.php';
          $menu['dictionnary']['options']['model.phone']['links']['search']
@@ -356,7 +356,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['type.computer']['title']
-                           = _n('Computer type', 'Computer types', 2);
+                           = _n('Computer type', 'Computer types', Session::getPluralNumber());
          $menu['dictionnary']['options']['type.computer']['page']
                            = '/front/ruledictionnarycomputertype.php';
          $menu['dictionnary']['options']['type.computer']['links']['search']
@@ -369,7 +369,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['type.monitor']['title']
-                           = _n('Monitor type', 'Monitors types', 2);
+                           = _n('Monitor type', 'Monitors types', Session::getPluralNumber());
          $menu['dictionnary']['options']['type.monitor']['page']
                            = '/front/ruledictionnarymonitortype.php';
          $menu['dictionnary']['options']['type.monitor']['links']['search']
@@ -382,7 +382,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['type.printer']['title']
-                           = _n('Printer type', 'Printer types', 2);
+                           = _n('Printer type', 'Printer types', Session::getPluralNumber());
          $menu['dictionnary']['options']['type.printer']['page']
                            = '/front/ruledictionnaryprintertype.php';
          $menu['dictionnary']['options']['type.printer']['links']['search']
@@ -395,7 +395,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['type.peripheral']['title']
-                           = _n('Peripheral type', 'Peripheral types', 2);
+                           = _n('Peripheral type', 'Peripheral types', Session::getPluralNumber());
          $menu['dictionnary']['options']['type.peripheral']['page']
                            = '/front/ruledictionnaryperipheraltype.php';
          $menu['dictionnary']['options']['type.peripheral']['links']['search']
@@ -408,7 +408,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['type.networking']['title']
-                           = _n('Networking equipment type', 'Networking equipment types', 2);
+                           = _n('Networking equipment type', 'Networking equipment types', Session::getPluralNumber());
          $menu['dictionnary']['options']['type.networking']['page']
                            = '/front/ruledictionnarynetworkequipmenttype.php';
          $menu['dictionnary']['options']['type.networking']['links']['search']
@@ -421,7 +421,7 @@ class Rule extends CommonDBTM {
 
 
          $menu['dictionnary']['options']['type.phone']['title']
-                           = _n('Phone type', 'Phone types', 2);
+                           = _n('Phone type', 'Phone types', Session::getPluralNumber());
          $menu['dictionnary']['options']['type.phone']['page']
                            = '/front/ruledictionnaryphonetype.php';
          $menu['dictionnary']['options']['type.phone']['links']['search']
@@ -472,7 +472,7 @@ class Rule extends CommonDBTM {
          }
 
          $menu['dictionnary']['options']['printer']['title']
-                           = _n('Printer', 'Printers', 2);
+                           = _n('Printer', 'Printers', Session::getPluralNumber());
          $menu['dictionnary']['options']['printer']['page']
                            = '/front/ruledictionnaryprinter.php';
          $menu['dictionnary']['options']['printer']['links']['search']
@@ -1070,7 +1070,7 @@ class Rule extends CommonDBTM {
          $header_bottom .= Html::getCheckAllAsCheckbox('mass'.$this->ruleactionclass.$rand)."</th>";
       }
 
-      $header_end .= "<th class='center b'>"._n('Field', 'Fields', 2)."</th>";
+      $header_end .= "<th class='center b'>"._n('Field', 'Fields', Session::getPluralNumber())."</th>";
       $header_end .= "<th class='center b'>".__('Action type')."</th>";
       $header_end .= "<th class='center b'>".__('Value')."</th>";
       $header_end .= "</tr>\n";
@@ -1159,7 +1159,7 @@ class Rule extends CommonDBTM {
 
       echo "<table $style>";
       echo "<tr class='noHover'>".
-           "<th colspan='".($canedit&&$nb?" 4 ":"3")."'>". _n('Criterion', 'Criteria', 2)."</th>".
+           "<th colspan='".($canedit&&$nb?" 4 ":"3")."'>". _n('Criterion', 'Criteria', Session::getPluralNumber())."</th>".
            "</tr>\n";
 
       $header_begin  = "<tr>";
@@ -1225,7 +1225,7 @@ class Rule extends CommonDBTM {
 
       $items      = array('' => Dropdown::EMPTY_VALUE);
       $group      = array();
-      $groupname  = _n('Criterion', 'Criteria', 2);
+      $groupname  = _n('Criterion', 'Criteria', Session::getPluralNumber());
       foreach ($this->getAllCriteria() as $ID => $crit) {
          // Manage group system
          if (!is_array($crit)) {
@@ -2453,7 +2453,7 @@ class Rule extends CommonDBTM {
          echo "<form name='testrule_form' id='testrule_form' method='post' action='$target'>\n";
          echo "<div class='spaced'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='3'>" . _n('Criterion', 'Criteria', 2) . "</th></tr>";
+         echo "<tr><th colspan='3'>" . _n('Criterion', 'Criteria', Session::getPluralNumber()) . "</th></tr>";
 
          $type_match        = (($this->fields["match"] == self::AND_MATCHING) ?__('and') :__('or'));
          $already_displayed = array();

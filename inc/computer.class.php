@@ -812,7 +812,7 @@ class Computer extends CommonDBTM {
 
       $tab += Notepad::getSearchOptionsToAdd();
 
-      $tab['periph']             = _n('Component', 'Components', 2);
+      $tab['periph']             = _n('Component', 'Components', Session::getPluralNumber());
 
       $items_device_joinparams   = array('jointype'          => 'itemtype_item',
                                          'specific_itemtype' => 'Computer');
@@ -950,7 +950,7 @@ class Computer extends CommonDBTM {
                                           => array('table'      => 'glpi_items_devicepowersupplies',
                                                    'joinparams' => $items_device_joinparams));
 
-      $tab['disk']               = _n('Volume', 'Volumes', 2);
+      $tab['disk']               = _n('Volume', 'Volumes', Session::getPluralNumber());
 
       $tab[156]['table']         = 'glpi_computerdisks';
       $tab[156]['field']         = 'name';
@@ -1016,7 +1016,7 @@ class Computer extends CommonDBTM {
                                          => array('table'      => 'glpi_computerdisks',
                                                   'joinparams' => array('jointype' => 'child')));
 
-      $tab['virtualmachine']     = _n('Virtual machine', 'Virtual machines', 2);
+      $tab['virtualmachine']     = _n('Virtual machine', 'Virtual machines', Session::getPluralNumber());
 
       $tab[160]['table']         = 'glpi_computervirtualmachines';
       $tab[160]['field']         = 'name';

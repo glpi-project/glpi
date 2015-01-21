@@ -277,7 +277,7 @@ class Lock {
       }
       if ($nb) {
          $header = true;
-         echo "<tr><th colspan='2'>"._n('Component', 'Components', 2)."</th></tr>\n";
+         echo "<tr><th colspan='2'>"._n('Component', 'Components', Session::getPluralNumber())."</th></tr>\n";
          foreach ($types as $old => $type) {
             $associated_type  = str_replace('Item_', '', $type);
             $associated_table = getTableForItemType($associated_type);
@@ -478,16 +478,16 @@ class Lock {
 
       switch ($ma->getAction()) {
          case 'unlock' :
-            $types = array('Monitor'                => _n('Monitor', 'Monitors', 2),
-                           'Peripheral'             => _n('Device', 'Devices', 2),
-                           'Printer'                => _n('Printer', 'Printers', 2),
-                           'SoftwareVersion'        => _n('Version', 'Versions', 2),
-                           'NetworkPort'            => _n('Network port', 'Network ports', 2),
-                           'NetworkName'            => _n('Network name', 'Network names', 2),
-                           'IPAddress'              => _n('IP address', 'IP addresses', 2),
-                           'ComputerDisk'           => _n('Volume', 'Volumes', 2),
-                           'Device'                 => _n('Component', 'Components', 2),
-                           'ComputerVirtualMachine' => _n('Virtual machine', 'Virtual machines', 2));
+            $types = array('Monitor'                => _n('Monitor', 'Monitors', Session::getPluralNumber()),
+                           'Peripheral'             => _n('Device', 'Devices', Session::getPluralNumber()),
+                           'Printer'                => _n('Printer', 'Printers', Session::getPluralNumber()),
+                           'SoftwareVersion'        => _n('Version', 'Versions', Session::getPluralNumber()),
+                           'NetworkPort'            => _n('Network port', 'Network ports', Session::getPluralNumber()),
+                           'NetworkName'            => _n('Network name', 'Network names', Session::getPluralNumber()),
+                           'IPAddress'              => _n('IP address', 'IP addresses', Session::getPluralNumber()),
+                           'ComputerDisk'           => _n('Volume', 'Volumes', Session::getPluralNumber()),
+                           'Device'                 => _n('Component', 'Components', Session::getPluralNumber()),
+                           'ComputerVirtualMachine' => _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()));
 
             _e('Select the type of the item that must be unlock');
             echo "<br><br>\n";

@@ -2048,7 +2048,7 @@ class Ticket extends CommonITILObject {
       // For ticket template
       $tab[142]['table']            = 'glpi_documents';
       $tab[142]['field']            = 'name';
-      $tab[142]['name']             = _n('Document', 'Documents', 2);
+      $tab[142]['name']             = _n('Document', 'Documents', Session::getPluralNumber());
       $tab[142]['forcegroupby']     = true;
       $tab[142]['usehaving']        = true;
       $tab[142]['nosearch']         = true;
@@ -2120,7 +2120,7 @@ class Ticket extends CommonITILObject {
       $tab[63]['massiveaction']        = false;
       $tab[63]['joinparams']           = array('jointype' => 'child');
 
-      $tab['followup']                 = _n('Followup', 'Followups', 2);
+      $tab['followup']                 = _n('Followup', 'Followups', Session::getPluralNumber());
 
       $followup_condition = '';
       if (!Session::haveRight('followup', TicketFollowup::SEEPRIVATE)) {
@@ -2210,7 +2210,7 @@ class Ticket extends CommonITILObject {
       if (Session::haveRightsOr(self::$rightname,
                                 array(self::READALL, self::READASSIGN, self::OWN))) {
 
-         $tab['linktickets']          = _n('Linked ticket', 'Linked tickets', 2);
+         $tab['linktickets']          = _n('Linked ticket', 'Linked tickets', Session::getPluralNumber());
 
          $tab[40]['table']            = 'glpi_tickets_tickets';
          $tab[40]['field']            = 'tickets_id_1';
@@ -4392,7 +4392,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       if ($view_linked_tickets) {
-         echo "<th width='$colsize1%'>". _n('Linked ticket', 'Linked tickets', 2);
+         echo "<th width='$colsize1%'>". _n('Linked ticket', 'Linked tickets', Session::getPluralNumber());
          $rand_linked_ticket = mt_rand();
          if ($canupdate) {
             echo "&nbsp;";

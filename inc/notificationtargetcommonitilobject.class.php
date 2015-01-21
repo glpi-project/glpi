@@ -1011,7 +1011,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.closedate'             => __('Closing date'),
                     $objettype.'.solvedate'             => __('Date of solving'),
                     $objettype.'.duedate'               => __('Due date'),
-                    $objettype.'.authors'               => _n('Requester', 'Requesters', 2),
+                    $objettype.'.authors'               => _n('Requester', 'Requesters', Session::getPluralNumber()),
                     'author.id'                         => __('Requester ID'),
                     'author.name'                       => __('Requester'),
                     'author.location'                   => __('Requester location'),
@@ -1026,12 +1026,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.assigntousers'         => __('Assigned to technicians'),
                     $objettype.'.assigntosupplier'      => __('Assigned to a supplier'),
                     $objettype.'.groups'                => _n('Requester group',
-                                                              'Requester groups', 2),
-                    $objettype.'.observergroups'        => _n('Watcher group', 'Watcher groups', 2),
+                                                              'Requester groups', Session::getPluralNumber()),
+                    $objettype.'.observergroups'        => _n('Watcher group', 'Watcher groups', Session::getPluralNumber()),
                     $objettype.'.assigntogroups'        => __('Assigned to groups'),
                     $objettype.'.solution.type'         => __('Solution type'),
                     $objettype.'.solution.description'  => _n('Solution', 'Solutions', 1),
-                    $objettype.'.observerusers'         => _n('Watcher', 'Watchers', 2),
+                    $objettype.'.observerusers'         => _n('Watcher', 'Watchers', Session::getPluralNumber()),
                     $objettype.'.action'                => _n('Event', 'Events', 1),
                     $objettype.'.numberofunresolved'    => __('Number of unresolved items'),
                     $objettype.'.numberofdocuments'     => _x('quantity', 'Number of documents'),
@@ -1082,9 +1082,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       //Foreach global tags
       $tags = array('log'      => __('Historical'),
-                    'tasks'    => _n('Task', 'Tasks', 2),
-                    'costs'    => _n('Cost', 'Costs', 2),
-                    'authors'  => _n('Requester', 'Requesters', 2));
+                    'tasks'    => _n('Task', 'Tasks', Session::getPluralNumber()),
+                    'costs'    => _n('Cost', 'Costs', Session::getPluralNumber()),
+                    'authors'  => _n('Requester', 'Requesters', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
@@ -1094,13 +1094,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = array($objettype.'.days'               => _n('Day', 'Days', 2),
+      $tags = array($objettype.'.days'               => _n('Day', 'Days', Session::getPluralNumber()),
                     $objettype.'.attribution'        => __('Assigned to'),
                     $objettype.'.entity'             => __('Entity'),
                     $objettype.'.nocategoryassigned' => __('No defined category'),
                     $objettype.'.log'                => __('Historical'),
-                    $objettype.'.tasks'              => _n('Task', 'Tasks', 2),
-                    $objettype.'.costs'              => _n('Cost', 'Costs', 2));
+                    $objettype.'.tasks'              => _n('Task', 'Tasks', Session::getPluralNumber()),
+                    $objettype.'.costs'              => _n('Cost', 'Costs', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -1140,7 +1140,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'document.name'              => sprintf(__('%1$s: %2$s'), __('Document'),
                                                             __('Name')),
                      $objettype.'.urldocument'   => sprintf(__('%1$s: %2$s'),
-                                                            _n('Document', 'Documents', 2),
+                                                            _n('Document', 'Documents', Session::getPluralNumber()),
                                                             __('URL')));
 
       foreach ($tags as $tag => $label) {

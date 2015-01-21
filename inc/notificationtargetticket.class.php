@@ -724,11 +724,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
 
      //Foreach global tags
-     $tags = array('followups'     => _n('Followup', 'Followups', 2),
-                   'validations'   => _n('Validation','Validations',2),
-                   'linkedtickets' => _n('Linked ticket', 'Linked tickets', 2),
-                   'problems'      => _n('Problem', 'Problems', 2),
-                   'changes'       => _n('Change', 'Changes', 2));
+     $tags = array('followups'     => _n('Followup', 'Followups', Session::getPluralNumber()),
+                   'validations'   => _n('Validation','Validations', Session::getPluralNumber()),
+                   'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
+                   'problems'      => _n('Problem', 'Problems', Session::getPluralNumber()),
+                   'changes'       => _n('Change', 'Changes', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
@@ -739,9 +739,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
 
       //Tags with just lang
-      $tags = array('ticket.linkedtickets'    => _n('Linked ticket', 'Linked tickets', 2),
-                    'ticket.problems'         => _n('Problem', 'Problems', 2),
-                    'ticket.changes'          => _n('Change', 'Changes', 2),
+      $tags = array('ticket.linkedtickets'    => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
+                    'ticket.problems'         => _n('Problem', 'Problems', Session::getPluralNumber()),
+                    'ticket.changes'          => _n('Change', 'Changes', Session::getPluralNumber()),
                     'ticket.autoclosewarning'
                      => sprintf(_n('Without a reply, the ticket will be automatically closed after %s day',
                                    'Without a reply, the ticket will be automatically closed after %s days',

@@ -1067,8 +1067,8 @@ class Config extends CommonDBTM {
       echo "<td>";
       Dropdown::showNumber("duedatewarning_less", array('value' => $data['duedatewarning_less']));
       $elements = array('%'     => '%',
-                        'hours' => _n('Hour', 'Hours', 2),
-                        'days'  => _n('Day', 'Days', 2));
+                        'hours' => _n('Hour', 'Hours', Session::getPluralNumber()),
+                        'days'  => _n('Day', 'Days', Session::getPluralNumber()));
       echo "&nbsp;";
       Dropdown::showFromArray("duedatewarning_unit", $elements,
                               array('value' => $data['duedatewarning_unit']));
@@ -1084,8 +1084,8 @@ class Config extends CommonDBTM {
       Dropdown::showNumber("duedatecritical_less", array('value' => $data['duedatecritical_less']));
       echo "&nbsp;";
       $elements = array('%'    => '%',
-                       'hours' => _n('Hour', 'Hours', 2),
-                       'days'  => _n('Day', 'Days', 2));
+                       'hours' => _n('Hour', 'Hours', Session::getPluralNumber()),
+                       'days'  => _n('Day', 'Days', Session::getPluralNumber()));
       Dropdown::showFromArray("duedatecritical_unit", $elements,
                               array('value' => $data['duedatecritical_unit']));
       echo "</td></tr>";
@@ -1600,7 +1600,7 @@ class Config extends CommonDBTM {
 
             if (DBConnection::isDBSlaveActive()
                 && Config::canUpdate()) {
-               $tabs[6]  = _n('Mysql replica', 'Mysql replicas', 2);  // Slave
+               $tabs[6]  = _n('Mysql replica', 'Mysql replicas', Session::getPluralNumber());  // Slave
             }
             return $tabs;
       }

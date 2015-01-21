@@ -633,16 +633,16 @@ class Profile extends CommonDBTM {
                               'default_class' => 'tab_bg_2');
 
       $rights = array(array('rights'     => Profile::getRightsFor('Ticket', 'helpdesk'),
-                            'label'      => _n('Ticket', 'Tickets', 2),
+                            'label'      => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                             'field'      => 'ticket'),
                       array('rights'     => Profile::getRightsFor('TicketFollowup', 'helpdesk'),
-                            'label'      => _n('Followup', 'Followups', 2),
+                            'label'      => _n('Followup', 'Followups', Session::getPluralNumber()),
                             'field'      => 'followup'),
                       array('rights'     => Profile::getRightsFor('TicketTask', 'helpdesk'),
-                            'label'      => _n('Task', 'Tasks', 2),
+                            'label'      => _n('Task', 'Tasks', Session::getPluralNumber()),
                             'field'      => 'task'),
                       array('rights'     => Profile::getRightsFor('TicketValidation', 'helpdesk'),
-                            'label'      => _n('Validation', 'Validations', 2),
+                            'label'      => _n('Validation', 'Validations', Session::getPluralNumber()),
                             'field'      => 'ticketvalidation'));
 
       $matrix_options['title'] = __('Assistance');
@@ -728,13 +728,13 @@ class Profile extends CommonDBTM {
                             'label'     => __('FAQ'),
                             'field'     => 'knowbase'),
                       array('rights'  => Profile::getRightsFor('ReservationItem', 'helpdesk'),
-                            'label'     => _n('Reservation', 'Reservations', 2),
+                            'label'     => _n('Reservation', 'Reservations', Session::getPluralNumber()),
                             'field'     => 'reservation'),
                       array('rights'    => Profile::getRightsFor('Reminder', 'helpdesk'),
-                            'label'     => _n('Public reminder', 'Public reminders', 2),
+                            'label'     => _n('Public reminder', 'Public reminders', Session::getPluralNumber()),
                             'field'     => 'reminder_public'),
                       array('rights'    => Profile::getRightsFor('RSSFeed', 'helpdesk'),
-                            'label'     => _n('Public RSS feed', 'Public RSS feeds', 2),
+                            'label'     => _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()),
                             'field'     => 'rssfeed_public'));
 
       $matrix_options['title'] = __('Tools');
@@ -774,31 +774,31 @@ class Profile extends CommonDBTM {
       }
 
       $rights = array(array('itemtype'  => 'Computer',
-                            'label'     => _n('Computer', 'Computers', 2),
+                            'label'     => _n('Computer', 'Computers', Session::getPluralNumber()),
                             'field'     => 'computer'),
                       array('itemtype'  => 'Monitor',
-                            'label'     => _n('Monitor', 'Monitors', 2),
+                            'label'     => _n('Monitor', 'Monitors', Session::getPluralNumber()),
                             'field'     => 'monitor'),
                       array('itemtype'  => 'Software',
-                            'label'     => _n('Software', 'Software', 2),
+                            'label'     => _n('Software', 'Software', Session::getPluralNumber()),
                             'field'     => 'software'),
                       array('itemtype'  => 'NetworkEquipment',
-                            'label'     => _n('Network', 'Networks', 2),
+                            'label'     => _n('Network', 'Networks', Session::getPluralNumber()),
                             'field'     => 'networking'),
                       array('itemtype'  => 'Printer',
-                            'label'     => _n('Printer', 'Printers', 2),
+                            'label'     => _n('Printer', 'Printers', Session::getPluralNumber()),
                             'field'     => 'printer'),
                       array('itemtype'  => 'Cartridge',
-                            'label'     => _n('Cartridge', 'Cartridges', 2),
+                            'label'     => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
                             'field'     => 'cartridge'),
                       array('itemtype'  => 'Consumable',
-                            'label'     => _n('Consumable', 'Consumables', 2),
+                            'label'     => _n('Consumable', 'Consumables', Session::getPluralNumber()),
                             'field'     => 'consumable'),
                       array('itemtype'  => 'Phone',
-                            'label'     => _n('Phone', 'Phones', 2),
+                            'label'     => _n('Phone', 'Phones', Session::getPluralNumber()),
                             'field'     => 'phone'),
                       array('itemtype'  => 'Peripheral',
-                            'label'     => _n('Device', 'Devices', 2),
+                            'label'     => _n('Device', 'Devices', Session::getPluralNumber()),
                             'field'     => 'peripheral'),
                       array('itemtype'  => 'NetworkName',
                             'label'     => __('Internet'),
@@ -847,14 +847,14 @@ class Profile extends CommonDBTM {
 
 
       $rights = array(array('itemtype'  => 'Contact',
-                            'label'     => _n('Contact', 'Contacts', 2)." / ".
-                                           _n('Supplier', 'Suppliers', 2),
+                            'label'     => _n('Contact', 'Contacts', Session::getPluralNumber())." / ".
+                                           _n('Supplier', 'Suppliers', Session::getPluralNumber()),
                             'field'     => 'contact_enterprise'),
                       array('itemtype'  => 'Document',
-                            'label'     => _n('Document', 'Documents', 2),
+                            'label'     => _n('Document', 'Documents', Session::getPluralNumber()),
                             'field'     => 'document'),
                       array('itemtype'  => 'Contract',
-                            'label'     => _n('Contract', 'Contracts', 2),
+                            'label'     => _n('Contract', 'Contracts', Session::getPluralNumber()),
                             'field'     => 'contract'),
                       array('itemtype'  => 'Infocom',
                             'label'     => __('Financial and administratives information'),
@@ -904,16 +904,16 @@ class Profile extends CommonDBTM {
 
 
       $rights = array(array('itemtype'  => 'Reminder',
-                            'label'     => _n('Public reminder', 'Public reminders', 2),
+                            'label'     => _n('Public reminder', 'Public reminders', Session::getPluralNumber()),
                             'field'     => 'reminder_public'),
                       array('itemtype'  => 'RSSFeed',
-                            'label'     => _n('Public RSS feed', 'Public RSS feeds', 2),
+                            'label'     => _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()),
                             'field'     => 'rssfeed_public'),
                       array('itemtype'  => 'Bookmark',
-                            'label'     => _n('Public bookmark', 'Public bookmarks', 2),
+                            'label'     => _n('Public bookmark', 'Public bookmarks', Session::getPluralNumber()),
                             'field'     => 'bookmark_public'),
                       array('itemtype'  => 'Report',
-                            'label'     => _n('Report', 'Reports', 2),
+                            'label'     => _n('Report', 'Reports', Session::getPluralNumber()),
                             'field'     => 'reports'),
                       array('itemtype'  => 'KnowbaseItem',
                             'label'     => __('Knowledge base'),
@@ -926,12 +926,12 @@ class Profile extends CommonDBTM {
 
 
       $rights = array(array('itemtype'   => 'Project',
-                            'label'      => _n('Project', 'Projects', 2),
+                            'label'      => _n('Project', 'Projects', Session::getPluralNumber()),
                             'field'      => 'project'),
                       array('itemtype'   => 'ProjectTask',
-                            'label'      => _n('Task', 'Task', 2),
+                            'label'      => _n('Task', 'Task', Session::getPluralNumber()),
                             'field'      => 'projecttask'));
-      $matrix_options['title'] = _n('Project', 'Projects', 2);
+      $matrix_options['title'] = _n('Project', 'Projects', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       if ($canedit
@@ -970,7 +970,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='2'>".__('Assistance')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>"._n('Ticket', 'Tickets', 2).': '.__('Default ticket template')."</td><td  width='30%'>";
+      echo "<td>"._n('Ticket', 'Tickets', Session::getPluralNumber()).': '.__('Default ticket template')."</td><td  width='30%'>";
       // Only root entity ones and recursive
       $options = array('value'     => $this->fields["tickettemplates_id"],
                        'entity'    => 0);
@@ -992,33 +992,33 @@ class Profile extends CommonDBTM {
                               'default_class' => 'tab_bg_2');
 
       $rights = array(array('itemtype'  => 'Ticket',
-                            'label'     => _n('Ticket', 'Tickets', 2),
+                            'label'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                             'field'     => 'ticket'),
                       array('itemtype'  => 'TicketCost',
-                            'label'     => _n('Ticket cost', 'Ticket costs', 2),
+                            'label'     => _n('Ticket cost', 'Ticket costs', Session::getPluralNumber()),
                             'field'     => 'ticketcost'),
                       array('itemtype'  => 'TicketRecurrent',
                             'label'     => __('Recurrent tickets'),
                             'field'     => 'ticketrecurrent'),
                       array('itemtype'  => 'TicketTemplate',
-                            'label'     => _n('Ticket template', 'Ticket templates', 2),
+                            'label'     => _n('Ticket template', 'Ticket templates', Session::getPluralNumber()),
                             'field'     => 'tickettemplate'));
-      $matrix_options['title'] = _n('Ticket', 'Tickets', 2);
+      $matrix_options['title'] = _n('Ticket', 'Tickets', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       $rights = array(array('itemtype'  => 'TicketFollowup',
-                            'label'     => _n('Followup', 'Followups', 2),
+                            'label'     => _n('Followup', 'Followups', Session::getPluralNumber()),
                             'field'     => 'followup'),
                       array('itemtype'  => 'TicketTask',
-                            'label'     => _n('Task', 'Tasks', 2),
+                            'label'     => _n('Task', 'Tasks', Session::getPluralNumber()),
                             'field'     => 'task'));
-      $matrix_options['title'] = _n('Followup', 'Followups', 2)." / "._n('Task', 'Tasks', 2);
+      $matrix_options['title'] = _n('Followup', 'Followups', Session::getPluralNumber())." / "._n('Task', 'Tasks', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       $rights = array(array('itemtype'  => 'TicketValidation',
-                            'label'     => _n('Validation', 'Validations', 2),
+                            'label'     => _n('Validation', 'Validations', Session::getPluralNumber()),
                             'field'     => 'ticketvalidation'));
-      $matrix_options['title'] = _n('Validation', 'Validations', 2);
+      $matrix_options['title'] = _n('Validation', 'Validations', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
 
@@ -1071,18 +1071,18 @@ class Profile extends CommonDBTM {
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       $rights = array(array('itemtype'   => 'Problem',
-                            'label'      => _n('Problem', 'Problems', 2),
+                            'label'      => _n('Problem', 'Problems', Session::getPluralNumber()),
                             'field'      => 'problem'));
-      $matrix_options['title'] = _n('Problem', 'Problems', 2);
+      $matrix_options['title'] = _n('Problem', 'Problems', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       $rights = array(array('itemtype'   => 'Change',
-                            'label'      => _n('Change', 'Changes', 2),
+                            'label'      => _n('Change', 'Changes', Session::getPluralNumber()),
                             'field'      => 'change'),
                       array('itemtype'  => 'ChangeValidation',
-                            'label'     => _n('Validation', 'Validations', 2),
+                            'label'     => _n('Validation', 'Validations', Session::getPluralNumber()),
                             'field'     => 'changevalidation'));
-      $matrix_options['title'] = _n('Change', 'Changes', 2);
+      $matrix_options['title'] = _n('Change', 'Changes', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       if ($canedit
@@ -1299,17 +1299,17 @@ class Profile extends CommonDBTM {
                               'default_class' => 'tab_bg_4');
 
       $rights = array(array('itemtype'  => 'User',
-                            'label'     => _n('User', 'Users', 2),
+                            'label'     => _n('User', 'Users', Session::getPluralNumber()),
                             'field'     => 'user',
                             'row_class' => 'tab_bg_2'),
                       array('itemtype'  => 'Entity',
-                            'label'     => _n('Entity', 'Entities', 2),
+                            'label'     => _n('Entity', 'Entities', Session::getPluralNumber()),
                             'field'     => 'entity'),
                       array('itemtype'  => 'Group',
-                            'label'     => _n('Group', 'Groups', 2),
+                            'label'     => _n('Group', 'Groups', Session::getPluralNumber()),
                             'field'     => 'group'),
                       array('itemtype'  => 'Profile',
-                            'label'     => _n('Profile', 'Profiles', 2),
+                            'label'     => _n('Profile', 'Profiles', Session::getPluralNumber()),
                             'field'     => 'profile'),
                       array('itemtype'  => 'QueuedMail',
                             'label'     => __('Mail queue'),
@@ -1318,7 +1318,7 @@ class Profile extends CommonDBTM {
                             'label'     => __('Maintenance'),
                             'field'     => 'backup'),
                       array('itemtype'  => 'Log',
-                            'label'     => _n('Log', 'Logs', 2),
+                            'label'     => _n('Log', 'Logs', Session::getPluralNumber()),
                             'field'     => 'logs'));
       $matrix_options['title'] = __('Administration');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
@@ -1342,7 +1342,7 @@ class Profile extends CommonDBTM {
                       array('itemtype'  => 'Transfer',
                             'label'     => __('Transfer'),
                             'field'     => 'transfer'));
-      $matrix_options['title'] = _n('Rule', 'Rules', 2);
+      $matrix_options['title'] = _n('Rule', 'Rules', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
       $rights = array(array('itemtype'  => 'RuleDictionnaryDropdown',
@@ -1398,38 +1398,38 @@ class Profile extends CommonDBTM {
                             'label'     => __('Search result display'),
                             'field'     => 'search_config'),
                       array('itemtype'  => 'Item_Devices',
-                            'label'     => _n('Component', 'Components', 2),
+                            'label'     => _n('Component', 'Components', Session::getPluralNumber()),
                             'field'     => 'device'),
                       array('rights'    => $dropdown_rights,
-                            'label'     => _n('Global dropdown', 'Global dropdowns', 2),
+                            'label'     => _n('Global dropdown', 'Global dropdowns', Session::getPluralNumber()),
                             'field'     => 'dropdown'),
                       __('Entity dropdowns'),
                       array('itemtype'  => 'Domain',
-                            'label'     => _n('Domain', 'Domains', 2),
+                            'label'     => _n('Domain', 'Domains', Session::getPluralNumber()),
                             'field'     => 'domain'),
                       array('itemtype'  => 'Location',
-                            'label'     => _n('Location', 'Locations', 2),
+                            'label'     => _n('Location', 'Locations', Session::getPluralNumber()),
                             'field'     => 'location'),
                       array('itemtype'  => 'ITILCategory',
-                            'label'     => _n('Ticket category', 'Ticket categories', 2),
+                            'label'     => _n('Ticket category', 'Ticket categories', Session::getPluralNumber()),
                             'field'     => 'itilcategory'),
                       array('itemtype'  => 'KnowbaseItemCategory',
-                            'label'     => _n('Knowledge base category', 'Knowledge base categories', 2),
+                            'label'     => _n('Knowledge base category', 'Knowledge base categories', Session::getPluralNumber()),
                             'field'     => 'knowbasecategory'),
                       array('itemtype'  => 'Netpoint',
-                            'label'     => _n('Network outlet', 'Network outlets', 2),
+                            'label'     => _n('Network outlet', 'Network outlets', Session::getPluralNumber()),
                             'field'     => 'netpoint'),
                       array('itemtype'  => 'TaskCategory',
-                            'label'     => _n('Task category','Task categories', 2),
+                            'label'     => _n('Task category','Task categories', Session::getPluralNumber()),
                             'field'     => 'taskcategory'),
                       array('itemtype'  => 'State',
-                            'label'     => _n('Status of items', 'Statuses of items', 2),
+                            'label'     => _n('Status of items', 'Statuses of items', Session::getPluralNumber()),
                             'field'     => 'state'),
                       array('itemtype'  => 'SolutionTemplate',
-                            'label'     => _n('Solution template', 'Solution templates', 2),
+                            'label'     => _n('Solution template', 'Solution templates', Session::getPluralNumber()),
                             'field'     => 'solutiontemplate'),
                       array('itemtype'  => 'Calendar',
-                            'label'     => _n('Calendar', 'Calendars', 2),
+                            'label'     => _n('Calendar', 'Calendars', Session::getPluralNumber()),
                             'field'     => 'calendar'),
                       array('itemtype'  => 'DocumentType',
                             'label'     => __('Document type'),
@@ -1506,7 +1506,7 @@ class Profile extends CommonDBTM {
 
       $tab[20]['table']          = 'glpi_profilerights';
       $tab[20]['field']          = 'rights';
-      $tab[20]['name']           = _n('Computer', 'Computers', 2);
+      $tab[20]['name']           = _n('Computer', 'Computers', Session::getPluralNumber());
       $tab[20]['datatype']       = 'right';
       $tab[20]['rightclass']     = 'Computer';
       $tab[20]['rightname']      = 'computer';
@@ -1515,7 +1515,7 @@ class Profile extends CommonDBTM {
 
       $tab[21]['table']          = 'glpi_profilerights';
       $tab[21]['field']          = 'rights';
-      $tab[21]['name']           = _n('Monitor', 'Monitors', 2);
+      $tab[21]['name']           = _n('Monitor', 'Monitors', Session::getPluralNumber());
       $tab[21]['datatype']       = 'right';
       $tab[21]['rightclass']     = 'Monitor';
       $tab[21]['rightname']      = 'monitor';
@@ -1524,7 +1524,7 @@ class Profile extends CommonDBTM {
 
       $tab[22]['table']          = 'glpi_profilerights';
       $tab[22]['field']          = 'rights';
-      $tab[22]['name']           = _n('Software', 'Software', 2);
+      $tab[22]['name']           = _n('Software', 'Software', Session::getPluralNumber());
       $tab[22]['datatype']       = 'right';
       $tab[22]['rightclass']     = 'Software';
       $tab[22]['rightname']      = 'software';
@@ -1533,7 +1533,7 @@ class Profile extends CommonDBTM {
 
       $tab[23]['table']          = 'glpi_profilerights';
       $tab[23]['field']          = 'rights';
-      $tab[23]['name']           = _n('Network', 'Networks', 2);
+      $tab[23]['name']           = _n('Network', 'Networks', Session::getPluralNumber());
       $tab[23]['datatype']       = 'right';
       $tab[23]['rightclass']     = 'Networking';
       $tab[23]['rightname']      = 'networking';
@@ -1551,7 +1551,7 @@ class Profile extends CommonDBTM {
 
       $tab[25]['table']          = 'glpi_profilerights';
       $tab[25]['field']          = 'rights';
-      $tab[25]['name']           = _n('Device', 'Devices', 2);
+      $tab[25]['name']           = _n('Device', 'Devices', Session::getPluralNumber());
       $tab[25]['datatype']       = 'right';
       $tab[25]['rightclass']     = 'Peripheral';
       $tab[25]['rightname']      = 'peripheral';
@@ -1560,7 +1560,7 @@ class Profile extends CommonDBTM {
 
       $tab[26]['table']          = 'glpi_profilerights';
       $tab[26]['field']          = 'rights';
-      $tab[26]['name']           = _n('Cartridge', 'Cartridges', 2);
+      $tab[26]['name']           = _n('Cartridge', 'Cartridges', Session::getPluralNumber());
       $tab[26]['datatype']       = 'right';
       $tab[26]['rightclass']     = 'Cartridge';
       $tab[26]['rightname']      = 'cartridge';
@@ -1569,7 +1569,7 @@ class Profile extends CommonDBTM {
 
       $tab[27]['table']          = 'glpi_profilerights';
       $tab[27]['field']          = 'rights';
-      $tab[27]['name']           = _n('Consumable', 'Consumables', 2);
+      $tab[27]['name']           = _n('Consumable', 'Consumables', Session::getPluralNumber());
       $tab[27]['datatype']       = 'right';
       $tab[27]['rightclass']     = 'Consumable';
       $tab[27]['rightname']      = 'consumable';
@@ -1578,7 +1578,7 @@ class Profile extends CommonDBTM {
 
       $tab[28]['table']          = 'glpi_profilerights';
       $tab[28]['field']          = 'rights';
-      $tab[28]['name']           = _n('Phone', 'Phones', 2);
+      $tab[28]['name']           = _n('Phone', 'Phones', Session::getPluralNumber());
       $tab[28]['datatype']       = 'right';
       $tab[28]['rightclass']     = 'Phone';
       $tab[28]['rightname']      = 'phone';
@@ -1607,7 +1607,7 @@ class Profile extends CommonDBTM {
 
       $tab[31]['table']          = 'glpi_profilerights';
       $tab[31]['field']          = 'rights';
-      $tab[31]['name']           = _n('Document', 'Documents', 2);
+      $tab[31]['name']           = _n('Document', 'Documents', Session::getPluralNumber());
       $tab[31]['datatype']       = 'right';
       $tab[31]['rightclass']     = 'Document';
       $tab[31]['rightname']      = 'document';
@@ -1616,7 +1616,7 @@ class Profile extends CommonDBTM {
 
       $tab[32]['table']          ='glpi_profilerights';
       $tab[32]['field']          = 'rights';
-      $tab[32]['name']           = _n('Contract', 'Contracts', 2);
+      $tab[32]['name']           = _n('Contract', 'Contracts', Session::getPluralNumber());
       $tab[32]['datatype']       = 'right';
       $tab[32]['rightclass']     = 'Contract';
       $tab[32]['rightname']      = 'contract';
@@ -1654,7 +1654,7 @@ class Profile extends CommonDBTM {
 
       $tab[36]['table']          = 'glpi_profilerights';
       $tab[36]['field']          = 'rights';
-      $tab[36]['name']           = _n('Reservation', 'Reservations', 2);
+      $tab[36]['name']           = _n('Reservation', 'Reservations', Session::getPluralNumber());
       $tab[36]['datatype']       = 'right';
       $tab[36]['rightclass']     = 'ReservationItem';
       $tab[36]['rightname']      = 'reservation';
@@ -1663,7 +1663,7 @@ class Profile extends CommonDBTM {
 
       $tab[38]['table']          = 'glpi_profilerights';
       $tab[38]['field']          = 'rights';
-      $tab[38]['name']           = _n('Report', 'Reports', 2);
+      $tab[38]['name']           = _n('Report', 'Reports', Session::getPluralNumber());
       $tab[38]['datatype']       = 'right';
       $tab[38]['rightclass']     = 'Report';
       $tab[38]['rightname']      = 'reports';
@@ -1675,7 +1675,7 @@ class Profile extends CommonDBTM {
 
       $tab[42]['table']          = 'glpi_profilerights';
       $tab[42]['field']          = 'rights';
-      $tab[42]['name']           = _n('Dropdown', 'Dropdowns', 2);
+      $tab[42]['name']           = _n('Dropdown', 'Dropdowns', Session::getPluralNumber());
       $tab[42]['datatype']       = 'right';
       $tab[42]['rightclass']     = 'DropdownTranslation';
       $tab[42]['rightname']      = 'dropdown';
@@ -1684,7 +1684,7 @@ class Profile extends CommonDBTM {
 
       $tab[44]['table']          = 'glpi_profilerights';
       $tab[44]['field']          = 'rights';
-      $tab[44]['name']           = _n('Component', 'Components', 2);
+      $tab[44]['name']           = _n('Component', 'Components', Session::getPluralNumber());
       $tab[44]['datatype']       = 'right';
       $tab[44]['rightclass']     = 'Item_Devices';
       $tab[44]['rightname']      = 'device';
@@ -1741,7 +1741,7 @@ class Profile extends CommonDBTM {
 
       $tab[107]['table']         = 'glpi_profilerights';
       $tab[107]['field']         = 'rights';
-      $tab[107]['name']          = _n('Calendar', 'Calendars', 2);
+      $tab[107]['name']          = _n('Calendar', 'Calendars', Session::getPluralNumber());
       $tab[107]['datatype']      = 'right';
       $tab[107]['rightclass']    = 'Calendar';
       $tab[107]['rightname']     = 'calendar';
@@ -1825,7 +1825,7 @@ class Profile extends CommonDBTM {
 
       $tab[56]['table']          = 'glpi_profilerights';
       $tab[56]['field']          = 'rights';
-      $tab[56]['name']           = _n('User', 'Users', 2);
+      $tab[56]['name']           = _n('User', 'Users', Session::getPluralNumber());
       $tab[56]['datatype']       = 'right';
       $tab[56]['rightclass']     = 'User';
       $tab[56]['rightname']      = 'user';
@@ -1834,7 +1834,7 @@ class Profile extends CommonDBTM {
 
       $tab[58]['table']          = 'glpi_profilerights';
       $tab[58]['field']          = 'rights';
-      $tab[58]['name']           = _n('Group', 'Groups', 2);
+      $tab[58]['name']           = _n('Group', 'Groups', Session::getPluralNumber());
       $tab[58]['datatype']       = 'right';
       $tab[58]['rightclass']     = 'Group';
       $tab[58]['rightname']      = 'group';
@@ -1843,7 +1843,7 @@ class Profile extends CommonDBTM {
 
       $tab[59]['table']          = 'glpi_profilerights';
       $tab[59]['field']          = 'rights';
-      $tab[59]['name']           = _n('Entity', 'Entities', 2);
+      $tab[59]['name']           = _n('Entity', 'Entities', Session::getPluralNumber());
       $tab[59]['datatype']       = 'right';
       $tab[59]['rightclass']     = 'Entity';
       $tab[59]['rightname']      = 'entity';
@@ -1861,7 +1861,7 @@ class Profile extends CommonDBTM {
 
       $tab[61]['table']          = 'glpi_profilerights';
       $tab[61]['field']          = 'rights';
-      $tab[61]['name']           = _n('Log', 'Logs', 2);
+      $tab[61]['name']           = _n('Log', 'Logs', Session::getPluralNumber());
       $tab[61]['datatype']       = 'right';
       $tab[61]['rightclass']     = 'Log';
       $tab[61]['rightname']      = 'logs';
@@ -1902,7 +1902,7 @@ class Profile extends CommonDBTM {
 
       $tab[103]['table']         = 'glpi_profilerights';
       $tab[103]['field']         = 'rights';
-      $tab[103]['name']          = _n('Ticket template', 'Ticket templates', 2);
+      $tab[103]['name']          = _n('Ticket template', 'Ticket templates', Session::getPluralNumber());
       $tab[103]['datatype']      = 'right';
       $tab[103]['rightclass']    = 'TicketTemplate';
       $tab[103]['rightname']     = 'tickettemplate';
@@ -1929,7 +1929,7 @@ class Profile extends CommonDBTM {
 
       $tab[119]['table']         = 'glpi_profilerights';
       $tab[119]['field']         = 'rights';
-      $tab[119]['name']          = _n('Ticket cost', 'Ticket costs', 2);
+      $tab[119]['name']          = _n('Ticket cost', 'Ticket costs', Session::getPluralNumber());
       $tab[119]['datatype']      = 'right';
       $tab[119]['rightclass']    = 'TicketCost';
       $tab[119]['rightname']     = 'ticketcost';
@@ -1971,7 +1971,7 @@ class Profile extends CommonDBTM {
 
       $tab[112]['table']         = 'glpi_profilerights';
       $tab[112]['field']         = 'right';
-      $tab[112]['name']          = _n('Problem', 'Problems', 2);
+      $tab[112]['name']          = _n('Problem', 'Problems', Session::getPluralNumber());
       $tab[112]['datatype']      = 'right';
       $tab[112]['rightclass']    = 'Problem';
       $tab[112]['rightname']     = 'problem';
@@ -1988,7 +1988,7 @@ class Profile extends CommonDBTM {
 
       $tab[115]['table']         = 'glpi_profilerights';
       $tab[115]['field']         = 'right';
-      $tab[115]['name']          =_n('Change', 'Changes', 2);
+      $tab[115]['name']          =_n('Change', 'Changes', Session::getPluralNumber());
       $tab[115]['datatype']      = 'right';
       $tab[115]['rightclass']    = 'Change';
       $tab[115]['rightname']     = 'change';
@@ -2007,7 +2007,7 @@ class Profile extends CommonDBTM {
 
       $tab[63]['table']          = 'glpi_profilerights';
       $tab[63]['field']          = 'rights';
-      $tab[63]['name']           = _n('Public reminder', 'Public reminders', 2);
+      $tab[63]['name']           = _n('Public reminder', 'Public reminders', Session::getPluralNumber());
       $tab[63]['datatype']       = 'right';
       $tab[63]['rightclass']     = 'Reminder';
       $tab[63]['rightname']      = 'reminder_public';
@@ -2016,7 +2016,7 @@ class Profile extends CommonDBTM {
 
       $tab[64]['table']          = 'glpi_profilerights';
       $tab[64]['field']          = 'rights';
-      $tab[64]['name']           = _n('Public bookmark', 'Public bookmarks', 2);
+      $tab[64]['name']           = _n('Public bookmark', 'Public bookmarks', Session::getPluralNumber());
       $tab[64]['datatype']       = 'right';
       $tab[64]['rightclass']     = 'Bookmark';
       $tab[64]['rightname']      = 'bookmark_public';
@@ -2025,7 +2025,7 @@ class Profile extends CommonDBTM {
 
       $tab[120]['table']          = 'glpi_profilerights';
       $tab[120]['field']          = 'rights';
-      $tab[120]['name']           = _n('Public RSS feed', 'Public RSS feeds', 2);
+      $tab[120]['name']           = _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber());
       $tab[120]['datatype']       = 'right';
       $tab[120]['rightclass']     = 'RSSFeed';
       $tab[120]['rightname']      = 'rssfeed_public';

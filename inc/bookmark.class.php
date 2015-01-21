@@ -666,7 +666,7 @@ class Bookmark extends CommonDBTM {
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       echo "<th>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand)."</th>";
-      echo "<th class='center' colspan='2'>"._n('Bookmark', 'Bookmarks', 2)."</th>";
+      echo "<th class='center' colspan='2'>"._n('Bookmark', 'Bookmarks', Session::getPluralNumber())."</th>";
       echo "<th width='20px'>&nbsp;</th>";
       echo "<th>".__('Default view')."</th>";
       $colspan = 5;

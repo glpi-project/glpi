@@ -565,7 +565,10 @@ class Session {
       if (empty($newfile) || !is_file(GLPI_ROOT . $newfile)) {
          $newfile = "/locales/en_GB.mo";
       }
-
+      
+      if (isset($CFG_GLPI["languages"][$trytoload][5])) {
+        $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
+      }
       $TRANSLATE = new Zend\I18n\Translator\Translator;
       try {
          $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc'));
@@ -602,6 +605,15 @@ class Session {
       return $trytoload;
    }
 
+   static function getPluralNumber() {
+      global $DEFAULT_PLURAL_NUMBER;
+
+      if (isset($_SESSION['glpipluralnumber'])) {
+         return $_SESSION['glpipluralnumber'];
+      } else {
+         return $DEFAULT_PLURAL_NUMBER;
+      }
+   }
 
    /**
     * Detect cron mode or interactive

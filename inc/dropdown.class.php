@@ -703,7 +703,7 @@ class Dropdown {
             $devices[$device_type] = $device_type::getTypeName(2);
          }
          asort($devices);
-         $optgroup = array(_n('Component', 'Components', 2) => $devices);
+         $optgroup = array(_n('Component', 'Components', Session::getPluralNumber()) => $devices);
       }
       return $optgroup;
    }
@@ -721,136 +721,136 @@ class Dropdown {
       if (is_null($optgroup)) {
          $optgroup
             = array(__('Common')
-                        => array('Location'               => _n('Location', 'Locations', 2),
+                        => array('Location'               => _n('Location', 'Locations', Session::getPluralNumber()),
                                  'State'                  => _n('Status of items',
-                                                                'Statuses of items', 2),
-                                 'Manufacturer'           => _n('Manufacturer', 'Manufacturers', 2),
+                                                                'Statuses of items', Session::getPluralNumber()),
+                                 'Manufacturer'           => _n('Manufacturer', 'Manufacturers', Session::getPluralNumber()),
                                  'Blacklist'              => _n('Blacklist','Blacklists',2),
                                  'BlacklistedMailContent' => __('Blacklisted mail content')
                                 ),
 
                     __('Assistance')
                         => array('ITILCategory'     => _n('Ticket category', 'Ticket categories',2),
-                                 'TaskCategory'     => _n('Task category','Task categories', 2),
-                                 'SolutionType'     => _n('Solution type', 'Solution types', 2),
-                                 'RequestType'      => _n('Request source', 'Request sources', 2),
+                                 'TaskCategory'     => _n('Task category','Task categories', Session::getPluralNumber()),
+                                 'SolutionType'     => _n('Solution type', 'Solution types', Session::getPluralNumber()),
+                                 'RequestType'      => _n('Request source', 'Request sources', Session::getPluralNumber()),
                                  'SolutionTemplate' => _n('Solution template',
-                                                          'Solution templates', 2),
-                                 'ProjectState'     => _n('Project state', 'Project states', 2),
-                                 'ProjectType'      => _n('Project type', 'Project types', 2),
+                                                          'Solution templates', Session::getPluralNumber()),
+                                 'ProjectState'     => _n('Project state', 'Project states', Session::getPluralNumber()),
+                                 'ProjectType'      => _n('Project type', 'Project types', Session::getPluralNumber()),
                                  'ProjectTaskType'  => _n('Project tasks type',
-                                                          'Project tasks types', 2),
+                                                          'Project tasks types', Session::getPluralNumber()),
                                 ),
 
-                    _n('Type', 'Types', 2)
-                        => array('ComputerType'         => _n('Computer type', 'Computers types', 2),
+                    _n('Type', 'Types', Session::getPluralNumber())
+                        => array('ComputerType'         => _n('Computer type', 'Computers types', Session::getPluralNumber()),
                                  'NetworkEquipmentType' => _n('Networking equipment type',
-                                                              'Networking equipment types', 2),
-                                 'PrinterType'          => _n('Printer type', 'Printer types', 2),
-                                 'MonitorType'          => _n('Monitor type', 'Monitor types', 2),
-                                 'PeripheralType'       => _n('Devices type', 'Devices types', 2),
-                                 'PhoneType'            => _n('Phone type', 'Phones types', 2),
-                                 'SoftwareLicenseType'  => _n('License type', 'License types', 2),
+                                                              'Networking equipment types', Session::getPluralNumber()),
+                                 'PrinterType'          => _n('Printer type', 'Printer types', Session::getPluralNumber()),
+                                 'MonitorType'          => _n('Monitor type', 'Monitor types', Session::getPluralNumber()),
+                                 'PeripheralType'       => _n('Devices type', 'Devices types', Session::getPluralNumber()),
+                                 'PhoneType'            => _n('Phone type', 'Phones types', Session::getPluralNumber()),
+                                 'SoftwareLicenseType'  => _n('License type', 'License types', Session::getPluralNumber()),
                                  'CartridgeItemType'    => _n('Cartridge type',
-                                                              'Cartridge types', 2),
+                                                              'Cartridge types', Session::getPluralNumber()),
                                  'ConsumableItemType'   => _n('Consumable type',
-                                                              'Consumable types', 2),
-                                 'ContractType'         => _n('Contract type', 'Contract types', 2),
-                                 'ContactType'          => _n('Contact type', 'Contact types', 2),
-                                 'DeviceMemoryType'     => _n('Memory type', 'Memory types', 2),
+                                                              'Consumable types', Session::getPluralNumber()),
+                                 'ContractType'         => _n('Contract type', 'Contract types', Session::getPluralNumber()),
+                                 'ContactType'          => _n('Contact type', 'Contact types', Session::getPluralNumber()),
+                                 'DeviceMemoryType'     => _n('Memory type', 'Memory types', Session::getPluralNumber()),
                                  'SupplierType'         => _n('Third party type',
-                                                              'Third party types', 2),
+                                                              'Third party types', Session::getPluralNumber()),
                                  'InterfaceType'        => _n('Interface type (Hard drive...)',
-                                                              'Interface types (Hard drive...)', 2) ,
-                                 'DeviceCaseType'       => _n('Case type', 'Case types', 2),
+                                                              'Interface types (Hard drive...)', Session::getPluralNumber()) ,
+                                 'DeviceCaseType'       => _n('Case type', 'Case types', Session::getPluralNumber()),
                                  'PhonePowerSupply'     => _n('Phone power supply type',
-                                                              'Phones power supply types', 2),
-                                 'Filesystem'           => _n('File system', 'File systems', 2)
+                                                              'Phones power supply types', Session::getPluralNumber()),
+                                 'Filesystem'           => _n('File system', 'File systems', Session::getPluralNumber())
                                 ),
 
                     __('Model')
                         => array('ComputerModel'         => _n('Computer model',
-                                                               'Computer models', 2),
+                                                               'Computer models', Session::getPluralNumber()),
                                  'NetworkEquipmentModel' => _n('Networking equipment model',
-                                                               'Networking equipment models', 2),
-                                 'PrinterModel'          => _n('Printer model', 'Printer models', 2),
-                                 'MonitorModel'          => _n('Monitor model', 'Monitor models', 2),
+                                                               'Networking equipment models', Session::getPluralNumber()),
+                                 'PrinterModel'          => _n('Printer model', 'Printer models', Session::getPluralNumber()),
+                                 'MonitorModel'          => _n('Monitor model', 'Monitor models', Session::getPluralNumber()),
                                  'PeripheralModel'       => _n('Peripheral model',
-                                                               'Peripheral models', 2),
-                                 'PhoneModel'            =>  _n('Phone model', 'Phone models', 2)
+                                                               'Peripheral models', Session::getPluralNumber()),
+                                 'PhoneModel'            =>  _n('Phone model', 'Phone models', Session::getPluralNumber())
                                 ),
 
-                    _n('Virtual machine', 'Virtual machines', 2)
+                    _n('Virtual machine', 'Virtual machines', Session::getPluralNumber())
                         => array('VirtualMachineType'   => _n('Virtualization system',
-                                                              'Virtualization systems', 2),
+                                                              'Virtualization systems', Session::getPluralNumber()),
                                  'VirtualMachineSystem' => _n('Virtualization model',
-                                                              'Virtualization models', 2),
+                                                              'Virtualization models', Session::getPluralNumber()),
                                  'VirtualMachineState'  => _n('State of the virtual machine',
-                                                              'States of the virtual machine', 2)
+                                                              'States of the virtual machine', Session::getPluralNumber())
                                 ),
 
                     __('Management')
                         => array('DocumentCategory' => _n('Document heading',
-                                                          'Document headings', 2),
-                                 'DocumentType'     => _n('Document type', 'Document types', 2)
+                                                          'Document headings', Session::getPluralNumber()),
+                                 'DocumentType'     => _n('Document type', 'Document types', Session::getPluralNumber())
                                 ),
 
                     __('Tools')
                         => array('KnowbaseItemCategory' => _n('Knowledge base category',
-                                                              'Knowledge base categories', 2)
+                                                              'Knowledge base categories', Session::getPluralNumber())
                                 ),
 
                     __('Calendar')
-                        => array('Calendar' => _n('Calendar', 'Calendars', 2),
-                                 'Holiday'  => _n('Close time', 'Close times', 2)
+                        => array('Calendar' => _n('Calendar', 'Calendars', Session::getPluralNumber()),
+                                 'Holiday'  => _n('Close time', 'Close times', Session::getPluralNumber())
                                 ),
 
                     _n('Operating system', 'Operating systems',2)
                         => array('OperatingSystem'     => _n('Operating system',
-                                                             'Operating systems', 2),
+                                                             'Operating systems', Session::getPluralNumber()),
                                  'OperatingSystemVersion'
                                                       => _n('Version of the operating system',
-                                                            'Versions of the operating system', 2),
+                                                            'Versions of the operating system', Session::getPluralNumber()),
                                  'OperatingSystemServicePack'
-                                                      => _n('Service pack', 'Service packs', 2),
-                                 'AutoUpdateSystem'   => _n('Update source', 'Update sources', 2)
+                                                      => _n('Service pack', 'Service packs', Session::getPluralNumber()),
+                                 'AutoUpdateSystem'   => _n('Update source', 'Update sources', Session::getPluralNumber())
                                 ),
 
                     __('Networking')
                         => array('NetworkInterface'         => _n('Network interface',
-                                                                  'Network interfaces', 2),
-                                 'NetworkEquipmentFirmware' => _n('Firmware', 'Firmwares', 2),
+                                                                  'Network interfaces', Session::getPluralNumber()),
+                                 'NetworkEquipmentFirmware' => _n('Firmware', 'Firmwares', Session::getPluralNumber()),
                                  'Netpoint'                 => _n('Network outlet',
-                                                                  'Network outlets', 2),
-                                 'Domain'                   => _n('Domain', 'Domains', 2),
-                                 'Network'                  => _n('Network', 'Networks', 2),
+                                                                  'Network outlets', Session::getPluralNumber()),
+                                 'Domain'                   => _n('Domain', 'Domains', Session::getPluralNumber()),
+                                 'Network'                  => _n('Network', 'Networks', Session::getPluralNumber()),
                                  'Vlan'                     => __('VLAN')
                                 ),
 
                     __('Internet')
-                        => array('IPNetwork'    => _n('IP network', 'IP networks', 2),
-                                 'FQDN'         => _n('Internet domain', 'Internet domains', 2),
-                                 'WifiNetwork'  => _n('Wifi network', 'Wifi networks', 2),
-                                 'NetworkName'  => _n('Network name', 'Network names', 2)
+                        => array('IPNetwork'    => _n('IP network', 'IP networks', Session::getPluralNumber()),
+                                 'FQDN'         => _n('Internet domain', 'Internet domains', Session::getPluralNumber()),
+                                 'WifiNetwork'  => _n('Wifi network', 'Wifi networks', Session::getPluralNumber()),
+                                 'NetworkName'  => _n('Network name', 'Network names', Session::getPluralNumber())
                                 ),
 
                     _n('Software', 'Software', 1)
                         => array('SoftwareCategory' => _n('Software category',
-                                                          'Software categories', 2)
+                                                          'Software categories', Session::getPluralNumber())
                                 ),
 
                     __('User')
-                        => array('UserTitle'     => _n('User title', 'Users titles', 2),
-                                 'UserCategory'  => _n('User category', 'User categories', 2)
+                        => array('UserTitle'     => _n('User title', 'Users titles', Session::getPluralNumber()),
+                                 'UserCategory'  => _n('User category', 'User categories', Session::getPluralNumber())
                                 ),
 
                     __('Authorizations assignment rules')
-                        => array('RuleRightParameter' => _n('LDAP criterion', 'LDAP criteria', 2)
+                        => array('RuleRightParameter' => _n('LDAP criterion', 'LDAP criteria', Session::getPluralNumber())
                                 ),
 
                     __('Fields unicity')
                         => array('Fieldblacklist' => _n('Ignored value for the unicity',
-                                                        'Ignored values for the unicity', 2)
+                                                        'Ignored values for the unicity', Session::getPluralNumber())
                                 ),
 
                     __('External authentications')

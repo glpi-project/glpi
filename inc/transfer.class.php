@@ -3287,14 +3287,14 @@ class Transfer extends CommonDBTM {
       echo "<td colspan='4' class='center b'>".__('Assets')."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Network port', 'Network ports', 2)."</td><td>";
+      echo "<td>"._n('Network port', 'Network ports', Session::getPluralNumber())."</td><td>";
       $options = array(0 => _x('button', 'Delete permanently'),
                        1 => _x('button', 'Disconnect') ,
                        2 => __('Keep') );
       $params['value'] = $this->fields['keep_networklink'];
       Dropdown::showFromArray('keep_networklink',$options,$params);
       echo "</td>";
-      echo "<td>"._n('Ticket', 'Tickets', 2)."</td><td>";
+      echo "<td>"._n('Ticket', 'Tickets', Session::getPluralNumber())."</td><td>";
       $options = array(0 => _x('button', 'Delete permanently'),
                        1 => _x('button', 'Disconnect') ,
                        2 => __('Keep') );
@@ -3313,11 +3313,11 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Reservation', 'Reservations', 2)."</td><td>";
+      echo "<td>"._n('Reservation', 'Reservations', Session::getPluralNumber())."</td><td>";
       $params['value'] = $this->fields['keep_reservation'];
       Dropdown::showFromArray('keep_reservation',$keep, $params);
       echo "</td>";
-      echo "<td>"._n('Component', 'Components', 2)."</td><td>";
+      echo "<td>"._n('Component', 'Components', Session::getPluralNumber())."</td><td>";
       $params['value'] = $this->fields['keep_device'];
       Dropdown::showFromArray('keep_device',$keep, $params);
       echo "</td></tr>";
@@ -3357,7 +3357,7 @@ class Transfer extends CommonDBTM {
       echo "<td colspan='4' class='center b'>".__('Direct connections')."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Monitor', 'Monitors', 2)."</td><td>";
+      echo "<td>"._n('Monitor', 'Monitors', Session::getPluralNumber())."</td><td>";
       $params['value'] = $this->fields['keep_dc_monitor'];
       Dropdown::showFromArray('keep_dc_monitor', $keep, $params);
       echo "</td>";
@@ -3367,7 +3367,7 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Printer', 'Printers', 2)."</td><td>";
+      echo "<td>"._n('Printer', 'Printers', Session::getPluralNumber())."</td><td>";
       $params['value'] = $this->fields['keep_dc_printer'];
       Dropdown::showFromArray('keep_dc_printer', $keep, $params);
       echo "</td>";
@@ -3377,7 +3377,7 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Device', 'Devices', 2)."</td><td>";
+      echo "<td>"._n('Device', 'Devices', Session::getPluralNumber())."</td><td>";
       $params['value'] = $this->fields['keep_dc_peripheral'];
       Dropdown::showFromArray('keep_dc_peripheral', $keep, $params);
       echo "</td>";
@@ -3387,7 +3387,7 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Phone', 'Phones', 2)."</td><td>";
+      echo "<td>"._n('Phone', 'Phones', Session::getPluralNumber())."</td><td>";
       $params['value'] = $this->fields['keep_dc_phone'];
       Dropdown::showFromArray('keep_dc_phone', $keep, $params);
       echo "</td>";
@@ -3400,7 +3400,7 @@ class Transfer extends CommonDBTM {
       echo "<td colspan='4' class='center b'>".__('Management')."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Supplier', 'Suppliers', 2)."</td><td>";
+      echo "<td>"._n('Supplier', 'Suppliers', Session::getPluralNumber())."</td><td>";
       $params['value'] = $this->fields['keep_supplier'];
       Dropdown::showFromArray('keep_supplier', $keep, $params);
       echo "</td>";
@@ -3420,7 +3420,7 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Document', 'Documents', 2)."</td><td>";
+      echo "<td>"._n('Document', 'Documents', Session::getPluralNumber())."</td><td>";
       $params['value'] = $this->fields['keep_document'];
       Dropdown::showFromArray('keep_document', $keep, $params);
       echo "</td>";
@@ -3430,7 +3430,7 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Contract', 'Contracts', 2)."</td><td>";
+      echo "<td>"._n('Contract', 'Contracts', Session::getPluralNumber())."</td><td>";
       $params['value'] = $this->fields['keep_contract'];
       Dropdown::showFromArray('keep_contract', $keep, $params);
       echo "</td>";
