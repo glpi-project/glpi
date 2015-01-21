@@ -166,7 +166,7 @@ class DropdownTranslation extends CommonDBChild {
       // Add to session
       $_SESSION['glpi_dropdowntranslations'][$this->fields['itemtype']][$this->fields['field']]
             = $this->fields['field'];
-
+            
       if (!isset($this->input['_no_completename'])) {
          $translation = new self();
          $translation->generateCompletename($this->fields, true);
@@ -240,6 +240,8 @@ class DropdownTranslation extends CommonDBChild {
    **/
    function generateCompletename($input, $add=true) {
       global $DB;
+      // Force completename translated : used for the first translation
+      $_SESSION['glpi_dropdowntranslations'][$input['itemtype']]['completename'] = 'completename';
       
       //If there's already a completename for this language, get it's ID, otherwise 0
       $completenames_id = self::getTranslationID($input['items_id'], $input['itemtype'],
