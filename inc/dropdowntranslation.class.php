@@ -285,8 +285,8 @@ class DropdownTranslation extends CommonDBChild {
       foreach (getSonsOf($item->getTable(), $item->getID()) as $son) {
          //Try to regenerate translated completename only if a completename already exists
          //for this son
-         $completenames_id = self::getTranslationID($son, $input['itemtype'],
-                                                    'completename', $input['language']);
+//          $completenames_id = self::getTranslationID($son, $input['itemtype'],
+//                                                     'completename', $input['language']);
          if ($son != $item->getID()) {
             $input2 = $input;
             $input2['items_id'] = $son;
