@@ -104,9 +104,9 @@ if (isset($_POST["add"])) {
 
 }  else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      Html::helpHeader(RSSFeed::getTypeName(2),'',$_SESSION["glpiname"]);
+      Html::helpHeader(RSSFeed::getTypeName(Session::getPluralNumber()),'',$_SESSION["glpiname"]);
    } else {
-      Html::header(RSSFeed::getTypeName(2),'',"tools","rssfeed");
+      Html::header(RSSFeed::getTypeName(Session::getPluralNumber()),'',"tools","rssfeed");
    }
 
    $rssfeed->display(array('id' => $_GET["id"]));

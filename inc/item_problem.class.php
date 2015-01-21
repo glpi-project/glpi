@@ -294,7 +294,7 @@ class Item_Problem extends CommonDBRelation{
                         }
                      }
                   }
-                  return self::createTabEntry(Problem::getTypeName(2), $nb);
+                  return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
                }
          }
       }

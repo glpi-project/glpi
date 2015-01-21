@@ -368,7 +368,7 @@ class CommonGLPI {
     * @return character menu shortcut key
    **/
    static function getMenuName() {
-      return static::getTypeName(2);
+      return static::getTypeName(Session::getPluralNumber());
    }
 
 

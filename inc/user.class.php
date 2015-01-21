@@ -77,7 +77,7 @@ class User extends CommonDBTM {
    static function getAdditionalMenuOptions() {
 
       if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)) {
-         $options['ldap']['title'] = AuthLDAP::getTypeName(2);
+         $options['ldap']['title'] = AuthLDAP::getTypeName(Session::getPluralNumber());
          $options['ldap']['page']  = "/front/ldap.php";
          return $options;
       }
@@ -1739,7 +1739,7 @@ class User extends CommonDBTM {
       global $CFG_GLPI;
 
       $buttons = array();
-      $title   = self::getTypeName(2);
+      $title   = self::getTypeName(Session::getPluralNumber());
 
       if (static::canCreate()) {
          $buttons["user.form.php"] = __('Add user...');
@@ -1756,7 +1756,7 @@ class User extends CommonDBTM {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
       }
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", self::getTypeName(2), $title,
+      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", self::getTypeName(Session::getPluralNumber()), $title,
                          $buttons);
    }
 

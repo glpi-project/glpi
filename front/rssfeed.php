@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 
 Session::checkCentralAccess();
 
-Html::header(RSSFeed::getTypeName(2),$_SERVER['PHP_SELF'],"tools","rssfeed");
+Html::header(RSSFeed::getTypeName(Session::getPluralNumber()),$_SERVER['PHP_SELF'],"tools","rssfeed");
 
 Search::show('RSSFeed');
 

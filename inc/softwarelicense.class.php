@@ -678,7 +678,7 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       // Display the pager
-      Html::printAjaxPager(self::getTypeName(2), $start, $number);
+      Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
 
       $rand  = mt_rand();
       $query = "SELECT `glpi_softwarelicenses`.*,
@@ -820,7 +820,7 @@ class SoftwareLicense extends CommonDBTM {
             _e('No item found');
          }
       }
-      Html::printAjaxPager(self::getTypeName(2), $start, $number);
+      Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
 
       echo "</div>";
    }
@@ -863,10 +863,10 @@ class SoftwareLicense extends CommonDBTM {
             case 'Software' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $count = self::countForSoftware($item->getID());
-                  return self::createTabEntry(self::getTypeName(2),
+                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                               (($count >= 0) ? $count : '&infin;'));
                }
-               return self::getTypeName(2);
+               return self::getTypeName(Session::getPluralNumber());
          }
       }
       return '';

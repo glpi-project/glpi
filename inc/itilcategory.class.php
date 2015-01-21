@@ -257,7 +257,7 @@ class ITILCategory extends CommonTreeDropdown {
       if (Session::haveRight(self::$rightname, READ)) {
          switch ($item->getType()) {
             case 'TicketTemplate' :
-               $ong[1] = $this->getTypeName(2);
+               $ong[1] = $this->getTypeName(Session::getPluralNumber());
                return $ong;
          }
       }

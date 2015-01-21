@@ -39,7 +39,7 @@ Session::checkRight("reports", READ);
 
 // Titre
 if (isset($_POST["switch"]) && $_POST["switch"]) {
-   Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "report");
+   Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "report");
 
    Report::title();
 

@@ -468,9 +468,9 @@ class NetworkAlias extends FQDNLabel {
                   $numberElements = countElementsInTable($this->getTable(),
                                                          "fqdns_id='".$item->getID()."'");
             }
-            return self::createTabEntry(self::getTypeName(2), $numberElements);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $numberElements);
          }
-         return self::getTypeName(2);
+         return self::getTypeName(Session::getPluralNumber());
       }
       return '';
    }

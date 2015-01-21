@@ -397,7 +397,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
                                                                    "notificationtemplates_id
                                                                         = '".$item->getID()."'"));
                }
-               return self::getTypeName(2);
+               return self::getTypeName(Session::getPluralNumber());
          }
       }
       return '';

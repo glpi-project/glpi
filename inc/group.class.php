@@ -58,7 +58,7 @@ class Group extends CommonTreeDropdown {
    static function getAdditionalMenuOptions() {
 
       if (Session::haveRight('user', User::UPDATEAUTHENT)) {
-         $options['ldap']['title'] = AuthLDAP::getTypeName(2);
+         $options['ldap']['title'] = AuthLDAP::getTypeName(Session::getPluralNumber());
          $options['ldap']['page']  = "/front/ldap.group.php";
          return $options;
       }
@@ -327,10 +327,10 @@ class Group extends CommonTreeDropdown {
          $title                     = "";
 
       } else {
-         $title = self::getTypeName(2);
+         $title = self::getTypeName(Session::getPluralNumber());
       }
 
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/groupes.png", self::getTypeName(2), $title,
+      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/groupes.png", self::getTypeName(Session::getPluralNumber()), $title,
                          $buttons);
    }
 
@@ -475,7 +475,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'is_usergroup';
-      $tab[15]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), User::getTypeName(2));
+      $tab[15]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), User::getTypeName(Session::getPluralNumber()));
       $tab[15]['datatype']      = 'bool';
 
       $tab[70]['table']         = 'glpi_users';
@@ -696,7 +696,7 @@ class Group extends CommonTreeDropdown {
          $tree = 0;
       }
       if ($this->getField('is_usergroup')) {
-         echo "</td><td class='center'>".User::getTypeName(2)."&nbsp;";
+         echo "</td><td class='center'>".User::getTypeName(Session::getPluralNumber())."&nbsp;";
          Dropdown::showYesNo('user', $user, -1,
                              array('on_change' => 'reloadTab("start=0&user="+this.value)'));
       } else {

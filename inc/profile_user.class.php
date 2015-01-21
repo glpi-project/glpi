@@ -190,7 +190,7 @@ class Profile_User extends CommonDBRelation {
             $header_end    .= "</th>";
          }
          $header_end .= "<th>"._n('Entity', 'Entities', Session::getPluralNumber())."</th>";
-         $header_end .= "<th>".sprintf(__('%1$s (%2$s)'), self::getTypeName(2),
+         $header_end .= "<th>".sprintf(__('%1$s (%2$s)'), self::getTypeName(Session::getPluralNumber()),
                                        __('D=Dynamic, R=Recursive'));
          $header_end .= "</th></tr>";
          echo $header_begin.$header_top.$header_end;

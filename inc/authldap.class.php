@@ -981,7 +981,7 @@ class AuthLDAP extends CommonDBTM {
       $ldap_servers = self::getLdapServers();
 
       if (!empty($ldap_servers)) {
-         echo "<tr class='tab_bg_2'><th>" . self::getTypeName(2) . "</th></tr>\n";
+         echo "<tr class='tab_bg_2'><th>" . self::getTypeName(Session::getPluralNumber()) . "</th></tr>\n";
          echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
          foreach ($ldap_servers as $ID => $value) {
             $fields = array('Server'            => 'host',

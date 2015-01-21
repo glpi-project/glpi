@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("contact_enterprise", READ);
 
-Html::header(Contact::getTypeName(2), $_SERVER['PHP_SELF'], "management", "contact");
+Html::header(Contact::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "contact");
 
 Search::show('Contact');
 

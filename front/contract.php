@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("contract", READ);
 
-Html::header(Contract::getTypeName(2), $_SERVER['PHP_SELF'], "management", "contract");
+Html::header(Contract::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "contract");
 
 Search::show('Contract');
 

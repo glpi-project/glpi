@@ -179,10 +179,10 @@ abstract class CommonITILTask  extends CommonDBTM {
                                    OR `users_id` = '" . Session::getLoginUserID() . "') ";
             }
 
-            return self::createTabEntry(self::getTypeName(2),
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                         countElementsInTable($this->getTable(), $restrict));
          }
-         return self::getTypeName(2);
+         return self::getTypeName(Session::getPluralNumber());
       }
       return '';
    }

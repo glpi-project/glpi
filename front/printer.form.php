@@ -101,7 +101,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["id"]);
 
 } else {
-   Html::header(Printer::getTypeName(2), $_SERVER['PHP_SELF'], "assets","printer");
+   Html::header(Printer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets","printer");
    $print->display(array('id'           => $_GET["id"],
                          'withtemplate' => $_GET["withtemplate"]));
    Html::footer();

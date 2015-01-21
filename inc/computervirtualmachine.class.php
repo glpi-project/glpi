@@ -63,12 +63,12 @@ class ComputerVirtualMachine extends CommonDBChild {
           && Computer::canView()) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(2),
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                         countElementsInTable('glpi_computervirtualmachines',
                                                              "computers_id = '".$item->getID()."'
                                                                  AND `is_deleted`='0'"));
          }
-         return self::getTypeName(2);
+         return self::getTypeName(Session::getPluralNumber());
       }
       return '';
    }

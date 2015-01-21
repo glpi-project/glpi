@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/peripheral.form.php?id=".$_POST["id"]);
 
 } else {
-   Html::header(Peripheral::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "peripheral");
+   Html::header(Peripheral::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "peripheral");
    $peripheral->display(array('id'           => $_GET["id"],
                               'withtemplate' => $_GET["withtemplate"]));
    Html::footer();

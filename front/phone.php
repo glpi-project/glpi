@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("phone", READ);
 
-Html::header(Phone::getTypeName(2), $_SERVER['PHP_SELF'], 'assets', 'phone');
+Html::header(Phone::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets', 'phone');
 
 Search::show('Phone');
 

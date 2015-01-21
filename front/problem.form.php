@@ -108,7 +108,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_POST['problems_id']);
 } else {
-   Html::header(Problem::getTypeName(2), $_SERVER['PHP_SELF'], "helpdesk", "problem");
+   Html::header(Problem::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "problem");
    $problem->display($_GET);
    Html::footer();
 }

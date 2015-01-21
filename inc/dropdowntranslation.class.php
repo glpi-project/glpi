@@ -67,10 +67,10 @@ class DropdownTranslation extends CommonDBChild {
 
       if (self::canBeTranslated($item)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(2),
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                         self::getNumberOfTranslationsForItem($item));
          }
-         return self::getTypeName(2);
+         return self::getTypeName(Session::getPluralNumber());
       }
       return '';
    }

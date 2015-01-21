@@ -447,7 +447,7 @@ class MassiveAction {
              && (count($keys) > 1)) {
             $itemtypes = array(-1 => Dropdown::EMPTY_VALUE);
             foreach ($keys as $itemtype) {
-               $itemtypes[$itemtype] = $itemtype::getTypeName(2);
+               $itemtypes[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
             }
             _e('Select the type of the item on which applying this action')."<br>\n";
 
@@ -723,7 +723,7 @@ class MassiveAction {
                   $choose_itemtype  = true;
                   $itemtype_choices = array(-1 => Dropdown::EMPTY_VALUE);
                   foreach ($itemtypes as $itemtype) {
-                     $itemtype_choices[$itemtype] = $itemtype::getTypeName(2);
+                     $itemtype_choices[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
                   }
                } else {
                   $options         = array(0 => Dropdown::EMPTY_VALUE);
@@ -935,7 +935,7 @@ class MassiveAction {
                }
                $percent = 100 * $nb_done / count($this->items[$itemtype]);
                Html::progressBar('itemtype_'.$this->identifier,
-                                 array('message' => $itemtype::getTypeName(2),
+                                 array('message' => $itemtype::getTypeName(Session::getPluralNumber()),
                                        'percent' => $percent));
             }
          }

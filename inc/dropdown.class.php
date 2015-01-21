@@ -700,7 +700,7 @@ class Dropdown {
       if (is_null($optgroup)) {
          $devices = array();
          foreach (CommonDevice::getDeviceTypes() as $device_type) {
-            $devices[$device_type] = $device_type::getTypeName(2);
+            $devices[$device_type] = $device_type::getTypeName(Session::getPluralNumber());
          }
          asort($devices);
          $optgroup = array(_n('Component', 'Components', Session::getPluralNumber()) => $devices);

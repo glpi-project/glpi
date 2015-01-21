@@ -178,12 +178,12 @@ class TicketFollowup  extends CommonDBTM {
       if ($item->getType() == 'Ticket') {
          if (Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry(self::getTypeName(2),
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                            countElementsInTable('glpi_ticketfollowups',
                                                                 "`tickets_id`
                                                                      = '".$item->getID()."'"));
             }
-            return self::getTypeName(2);
+            return self::getTypeName(Session::getPluralNumber());
          }
       }
       return '';

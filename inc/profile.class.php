@@ -1816,7 +1816,7 @@ class Profile extends CommonDBTM {
 
       $tab[55]['table']          = 'glpi_profilerights';
       $tab[55]['field']          = 'rights';
-      $tab[55]['name']           = self::getTypeName(2);
+      $tab[55]['name']           = self::getTypeName(Session::getPluralNumber());
       $tab[55]['datatype']       = 'right';
       $tab[55]['rightclass']     = 'Profile';
       $tab[55]['rightname']      = 'profile';

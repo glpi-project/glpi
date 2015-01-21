@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("software", READ);
 
-Html::header(Software::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "software");
+Html::header(Software::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "software");
 
 Search::show('Software');
 

@@ -75,7 +75,7 @@ class ReservationItem extends CommonDBChild {
     * @since version 0.85
    **/
    static function getMenuName() {
-      return Reservation::getTypeName(2);
+      return Reservation::getTypeName(Session::getPluralNumber());
    }
 
 

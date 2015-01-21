@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("profile", READ);
 
-Html::header(Profile::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "profile");
+Html::header(Profile::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "profile");
 
 Search::show('Profile');
 

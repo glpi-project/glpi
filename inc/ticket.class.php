@@ -125,7 +125,7 @@ class Ticket extends CommonITILObject {
    static function getAdditionalMenuOptions() {
 
       if (TicketTemplate::canView()) {
-         $menu['TicketTemplate']['title']           = TicketTemplate::getTypeName(2);
+         $menu['TicketTemplate']['title']           = TicketTemplate::getTypeName(Session::getPluralNumber());
          $menu['TicketTemplate']['page']            = TicketTemplate::getSearchURL(false);
          $menu['TicketTemplate']['links']['search'] = TicketTemplate::getSearchURL(false);
          if (TicketTemplate::canCreate()) {
@@ -482,7 +482,7 @@ class Ticket extends CommonITILObject {
 
       if (static::canView()) {
          $nb    = 0;
-         $title = self::getTypeName(2);
+         $title = self::getTypeName(Session::getPluralNumber());
          if ($_SESSION['glpishow_count_on_tabs']) {
             switch ($item->getType()) {
                case 'User' :
@@ -2258,7 +2258,7 @@ class Ticket extends CommonITILObject {
             $tab += TicketCost::getSearchOptionsToAdd();
          }
 
-         $tab['problem']            = Problem::getTypeName(2);
+         $tab['problem']            = Problem::getTypeName(Session::getPluralNumber());
 
          $tab[141]['table']         = 'glpi_problems_tickets';
          $tab[141]['field']         = 'id';

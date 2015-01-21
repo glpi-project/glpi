@@ -55,7 +55,7 @@ class MigrationCleaner extends CommonGLPI {
    static function getAdditionalMenuOptions() {
 
       if (static::canView()) {
-         $options['networkportmigration']['title']  = NetworkPortMigration::getTypeName(2);
+         $options['networkportmigration']['title']  = NetworkPortMigration::getTypeName(Session::getPluralNumber());
          $options['networkportmigration']['page']   = NetworkPortMigration::getSearchURL(false);
          $options['networkportmigration']['search'] = NetworkPortMigration::getSearchURL(false);
 

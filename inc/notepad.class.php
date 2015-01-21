@@ -104,9 +104,9 @@ class Notepad extends CommonDBChild {
 
       if (Session::haveRight($item::$rightname, READNOTE)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), self::countForItem($item));
          }
-         return self::getTypeName(2);
+         return self::getTypeName(Session::getPluralNumber());
       }
       return false;
    }

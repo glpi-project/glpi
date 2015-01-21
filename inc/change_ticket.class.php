@@ -79,14 +79,14 @@ class Change_Ticket extends CommonDBRelation{
                   $nb = countElementsInTable('glpi_changes_tickets',
                                              "`changes_id` = '".$item->getID()."'");
                }
-               return self::createTabEntry(Ticket::getTypeName(2), $nb);
+               return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Ticket' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_changes_tickets',
                                              "`tickets_id` = '".$item->getID()."'");
                }
-               return self::createTabEntry(Change::getTypeName(2), $nb);
+               return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';

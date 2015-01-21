@@ -662,7 +662,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                   $nb = self::countForLicense($item->getID());
                }
                return array(1 => __('Summary'),
-                            2 => self::createTabEntry(Computer::getTypeName(2), $nb));
+                            2 => self::createTabEntry(Computer::getTypeName(Session::getPluralNumber()), $nb));
             }
             break;
       }

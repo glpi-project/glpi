@@ -204,7 +204,7 @@ class Rule extends CommonDBTM {
           || Session::haveRight("rule_softwarecategories", READ)
           || Session::haveRight("rule_mailcollector", READ)) {
 
-         $menu['rule']['title'] = static::getTypeName(2);
+         $menu['rule']['title'] = static::getTypeName(Session::getPluralNumber());
          $menu['rule']['page']  = static::getSearchURL(false);
 
          foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
@@ -228,7 +228,7 @@ class Rule extends CommonDBTM {
       if (Transfer::canView()
           && Session::isMultiEntitiesMode()) {
 
-         $menu['rule']['title'] = static::getTypeName(2);
+         $menu['rule']['title'] = static::getTypeName(Session::getPluralNumber());
          $menu['rule']['page']  = static::getSearchURL(false);
 
          $menu['rule']['options']['transfer']['title']           = __('Transfer');
@@ -2966,19 +2966,19 @@ class Rule extends CommonDBTM {
                                                             = '".$item->getID()."'");
                   }
 
-                  return self::createTabEntry(self::getTypeName(2), $nb);
+                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
                }
-               return $this->getTypeName(2);
+               return $this->getTypeName(Session::getPluralNumber());
 
             case 'SLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(2),
+                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                               countElementsInTable('glpi_ruleactions',
                                                                    "`field` = 'slas_id'
                                                                      AND `value`
                                                                         = '".$item->getID()."'"));
                }
-               return $this->getTypeName(2);
+               return $this->getTypeName(Session::getPluralNumber());
 
             default:
                if ($item instanceof Rule) {

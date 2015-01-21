@@ -173,7 +173,7 @@ if (!$_GET['showgraph']) {
       Stat::showGraph(array(__('Number opened') => $cleandata),
                       array('title'     => __('Number opened'),
                             'showtotal' => 1,
-                            'unit'      => $item->getTypeName(2),
+                            'unit'      => $item->getTypeName(Session::getPluralNumber()),
                             'type'      => 'pie'));
    }
 
@@ -185,7 +185,7 @@ if (!$_GET['showgraph']) {
       Stat::showGraph(array(__('Number solved') => $cleandata),
                       array('title'     => __('Number solved'),
                             'showtotal' => 1,
-                            'unit'      => $item->getTypeName(2),
+                            'unit'      => $item->getTypeName(Session::getPluralNumber()),
                             'type'      => 'pie'));
    }
 
@@ -198,7 +198,7 @@ if (!$_GET['showgraph']) {
       Stat::showGraph(array(__('Number solved late') => $cleandata),
                       array('title'     => __('Number solved late'),
                             'showtotal' => 1,
-                            'unit'      => $item->getTypeName(2),
+                            'unit'      => $item->getTypeName(Session::getPluralNumber()),
                             'type'      => 'pie'));
    }
 
@@ -211,7 +211,7 @@ if (!$_GET['showgraph']) {
       Stat::showGraph(array(__('Number closed') => $cleandata),
                       array('title'     => __('Number closed'),
                             'showtotal' => 1,
-                            'unit'      => $item->getTypeName(2),
+                            'unit'      => $item->getTypeName(Session::getPluralNumber()),
                             'type'      => 'pie'));
    }
 
@@ -224,7 +224,7 @@ if (!$_GET['showgraph']) {
          Stat::showGraph(array(__('Satisfaction survey') => $cleandata),
                         array('title'     => __('Satisfaction survey'),
                               'showtotal' => 1,
-                              'unit'      => $item->getTypeName(2),
+                              'unit'      => $item->getTypeName(Session::getPluralNumber()),
                               'type'      => 'pie'));
       }
    }

@@ -79,14 +79,14 @@ class Change_Problem extends CommonDBRelation{
                   $nb = countElementsInTable('glpi_changes_problems',
                                              "`changes_id` = '".$item->getID()."'");
                }
-               return self::createTabEntry(Problem::getTypeName(2), $nb);
+               return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Problem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_changes_problems',
                                              "`problems_id` = '".$item->getID()."'");
                }
-               return self::createTabEntry(Change::getTypeName(2), $nb);
+               return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';

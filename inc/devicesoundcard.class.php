@@ -54,7 +54,7 @@ class DeviceSoundCard extends CommonDevice {
                                      'label' => __('Type'),
                                      'type'  => 'text'),
                                array('name'  => 'none',
-                                     'label' => RegisteredID::getTypeName(2).
+                                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
                                         RegisteredID::showAddChildButtonForItemForm($this,
                                                                                     '_registeredID',
                                                                                     NULL, false),

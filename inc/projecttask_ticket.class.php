@@ -76,7 +76,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
                   $nb = countElementsInTable('glpi_projecttasks_tickets',
                                              "`projecttasks_id` = '".$item->getID()."'");
                }
-               return self::createTabEntry(Ticket::getTypeName(2), $nb);
+               return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
 
          }
       }

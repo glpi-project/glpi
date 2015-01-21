@@ -76,7 +76,7 @@ class KnowbaseItem extends CommonDBTM {
       if (!Session::haveRight('knowbase', READ)) {
          return __('FAQ');
       } else {
-         return static::getTypeName(2);
+         return static::getTypeName(Session::getPluralNumber());
       }
    }
 

@@ -392,7 +392,7 @@ class TicketRecurrent extends CommonDropdown {
 
       switch ($name) {
          case 'ticketrecurrent' :
-            return array('description' => self::getTypeName(2));
+            return array('description' => self::getTypeName(Session::getPluralNumber()));
       }
       return array();
    }

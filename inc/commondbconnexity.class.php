@@ -509,14 +509,14 @@ abstract class CommonDBConnexity extends CommonDBTM {
                         $values[0] = __('First Item');
                      } else {
                         $itemtype_1 = $itemtype::$itemtype_1;
-                        $values[0]  = $itemtype_1::getTypeName(2);
+                        $values[0]  = $itemtype_1::getTypeName(Session::getPluralNumber());
                      }
                      if ((empty($itemtype::$itemtype_2))
                          || (preg_match('/^itemtype/', $itemtype::$itemtype_2))) {
                         $values[1] = __('Second Item');
                      } else {
                         $itemtype_2 = $itemtype::$itemtype_2;
-                        $values[1]  = $itemtype_2::getTypeName(2);
+                        $values[1]  = $itemtype_2::getTypeName(Session::getPluralNumber());
                      }
                      echo sprintf(__('Select a peer for %s:'), $itemtype::getTypeName());
                      Dropdown::showFromArray($peer_field, $values);

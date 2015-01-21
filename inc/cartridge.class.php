@@ -1175,16 +1175,16 @@ class Cartridge extends CommonDBChild {
          switch ($item->getType()) {
             case 'Printer' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(2), self::countForPrinter($item));
+                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), self::countForPrinter($item));
                }
-               return self::getTypeName(2);
+               return self::getTypeName(Session::getPluralNumber());
 
             case 'CartridgeItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(2),
+                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                               self::countForCartridgeItem($item));
                }
-               return self::getTypeName(2);
+               return self::getTypeName(Session::getPluralNumber());
       }
       return '';
    }

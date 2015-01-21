@@ -41,7 +41,7 @@ if (!Session::haveRightsOr('reservation', array(READ, ReservationItem::RESERVEAN
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
    Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 } else {
-   Html::header(Reservation::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "reservationitem");
+   Html::header(Reservation::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reservationitem");
 }
 
 $res = new ReservationItem();

@@ -60,7 +60,7 @@ class ConsumableItem extends CommonDBTM {
     * @since version 0.85
    **/
    static function getMenuName() {
-      return Consumable::getTypeName(2);
+      return Consumable::getTypeName(Session::getPluralNumber());
    }
 
 

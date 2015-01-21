@@ -50,7 +50,7 @@ if (empty($_POST) || (count($_POST) == 0)) {
 }
 
 if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
-   Html::nullHeader(Ticket::getTypeName(2));
+   Html::nullHeader(Ticket::getTypeName(Session::getPluralNumber()));
 } else if ($_POST["_from_helpdesk"]) {
    Html::helpHeader(__('Simplified interface'), '', $_SESSION["glpiname"]);
 } else {

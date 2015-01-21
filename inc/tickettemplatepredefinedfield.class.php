@@ -131,12 +131,12 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       if (($item->getType() == 'TicketTemplate')
           && Session::haveRight("tickettemplate", READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(2),
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                         countElementsInTable($this->getTable(),
                                                              "`tickettemplates_id`
                                                                = '".$item->getID()."'"));
          }
-         return self::getTypeName(2);
+         return self::getTypeName(Session::getPluralNumber());
       }
       return '';
    }

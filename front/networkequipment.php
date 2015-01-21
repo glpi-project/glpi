@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("networking", READ);
 
-Html::header(NetworkEquipment::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "networkequipment");
+Html::header(NetworkEquipment::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "networkequipment");
 
 Search::show('NetworkEquipment');
 

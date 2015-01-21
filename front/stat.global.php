@@ -115,7 +115,7 @@ foreach ($available as $key => $name) {
 
 Stat::showGraph($toprint, array('title'     => _x('Quantity', 'Number'),
                                 'showtotal' => 1,
-                                'unit'      => $item->getTypeName(2)));
+                                'unit'      => $item->getTypeName(Session::getPluralNumber())));
 
 //Temps moyen de resolution d'intervention
 $values2['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'] ,"inter_avgsolvedtime",

@@ -146,7 +146,7 @@ if (isset($_GET['getvcard'])) {
 
 
    if (isset($_GET["ext_auth"])) {
-      Html::header(User::getTypeName(2), '', "admin", "user");
+      Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
       User::showAddExtAuthForm();
       Html::footer();
    } else if (isset($_POST['add_ext_auth_ldap'])) {
@@ -172,7 +172,7 @@ if (isset($_GET['getvcard'])) {
          Html::back();
    } else {
       Session::checkRight("user", READ);
-      Html::header(User::getTypeName(2), '', "admin", "user");
+      Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
       $user->display(array('id' => $_GET["id"]));
       Html::footer();
 

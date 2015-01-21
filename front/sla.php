@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("sla", READ);
 
-Html::header(SLA::getTypeName(2), $_SERVER['PHP_SELF'], "config", "sla");
+Html::header(SLA::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "sla");
 
 Search::show('SLA');
 

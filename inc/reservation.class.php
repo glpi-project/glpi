@@ -63,7 +63,7 @@ class Reservation extends CommonDBChild {
 
       if (!$withtemplate
           && Session::haveRight("reservation", READ)) {
-         return self::getTypeName(2);
+         return self::getTypeName(Session::getPluralNumber());
       }
       return '';
    }

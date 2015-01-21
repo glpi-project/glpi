@@ -502,7 +502,7 @@ class Item_Devices extends CommonDBRelation {
             $column_label = __('Dissociated devices');
             $group_name   = 'None';
          } else {
-            $column_label = $peer_type::getTypeName(2);
+            $column_label = $peer_type::getTypeName(Session::getPluralNumber());
             $group_name   = $peer_type;
          }
 
@@ -514,7 +514,7 @@ class Item_Devices extends CommonDBRelation {
             //TRANS : %1$s is the type of the device
             //        %2$s is the type of the item
             //        %3$s is the name of the item (used for headings of a list),
-            $itemtype_nav_title = sprintf(__('%1$s of %2$s: %3$s'), $peer_type::getTypeName(2),
+            $itemtype_nav_title = sprintf(__('%1$s of %2$s: %3$s'), $peer_type::getTypeName(Session::getPluralNumber()),
                                           $item->getTypeName(1), $item->getName());
             $peer_column->setItemType($peer_type, $itemtype_nav_title);
          }
@@ -527,7 +527,7 @@ class Item_Devices extends CommonDBRelation {
          //TRANS : %1$s is the type of the device
          //        %2$s is the type of the item
          //        %3$s is the name of the item (used for headings of a list),
-         $options['itemtype_title'] = sprintf(__('%1$s of %2$s: %3$s'), $peer_type::getTypeName(2),
+         $options['itemtype_title'] = sprintf(__('%1$s of %2$s: %3$s'), $peer_type::getTypeName(Session::getPluralNumber()),
                                               $item->getTypeName(1), $item->getName());
 
          $peer_type::getHTMLTableHeader($item->getType(), $table_group, $common_column, NULL,
@@ -545,10 +545,10 @@ class Item_Devices extends CommonDBRelation {
          $specificity_columns[$field] = $spec_column;
       }
 
-      $infocom_column  = $table_group->addHeader('infocom', Infocom::getTypeName(2),
+      $infocom_column  = $table_group->addHeader('infocom', Infocom::getTypeName(Session::getPluralNumber()),
                                                  $specific_column, $spec_column);
 
-      $document_column = $table_group->addHeader('document', Document::getTypeName(2),
+      $document_column = $table_group->addHeader('document', Document::getTypeName(Session::getPluralNumber()),
                                                  $specific_column, $spec_column);
 
       if ($item->isDynamic()) {

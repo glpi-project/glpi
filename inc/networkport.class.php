@@ -433,13 +433,13 @@ class NetworkPort extends CommonDBChild {
       $options[__('Common options')]
          = NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions();
       $options[__('Internet information')]
-         = array('names'       => array('name'    => NetworkName::getTypeName(2),
+         = array('names'       => array('name'    => NetworkName::getTypeName(Session::getPluralNumber()),
                                         'default' => false),
-                 'aliases'     => array('name'    => NetworkAlias::getTypeName(2),
+                 'aliases'     => array('name'    => NetworkAlias::getTypeName(Session::getPluralNumber()),
                                         'default' => false),
-                 'ipaddresses' => array('name'    => IPAddress::getTypeName(2),
+                 'ipaddresses' => array('name'    => IPAddress::getTypeName(Session::getPluralNumber()),
                                         'default' => true),
-                 'ipnetworks'  => array('name'    => IPNetwork::getTypeName(2),
+                 'ipnetworks'  => array('name'    => IPNetwork::getTypeName(Session::getPluralNumber()),
                                         'default' => true));
 
       foreach (self::getNetworkPortInstantiations() as $portType) {
@@ -551,7 +551,7 @@ class NetworkPort extends CommonDBChild {
 
       $table->setTitle($table_name);
 
-      $c_main = $table->addHeader('main', self::getTypeName(2));
+      $c_main = $table->addHeader('main', self::getTypeName(Session::getPluralNumber()));
 
       if (($display_options['dynamic_import']) && ($item->isDynamic())) {
          $table_options['display_isDynamic'] = true;
@@ -593,7 +593,7 @@ class NetworkPort extends CommonDBChild {
             $group_title = __('Network ports waiting for manual migration');
          } else {
             $group_name  = $portType;
-            $group_title = $portType::getTypeName(2);
+            $group_title = $portType::getTypeName(Session::getPluralNumber());
          }
 
          $t_group = $table->createGroup($group_name, $group_title);
@@ -1070,9 +1070,9 @@ class NetworkPort extends CommonDBChild {
       if (NetworkEquipment::canView()) {
          if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), self::countForItem($item));
             }
-            return (self::getTypeName(2));
+            return (self::getTypeName(Session::getPluralNumber()));
          }
       }
 
@@ -1080,7 +1080,7 @@ class NetworkPort extends CommonDBChild {
          $nbAlias = countElementsInTable('glpi_networkportaliases',
                                          "`networkports_id_alias` = '".$item->getField('id')."'");
          if ($nbAlias > 0) {
-            $aliases = self::createTabEntry(NetworkPortAlias::getTypeName(2), $nbAlias);
+            $aliases = self::createTabEntry(NetworkPortAlias::getTypeName(Session::getPluralNumber()), $nbAlias);
          } else {
             $aliases = '';
          }
@@ -1088,7 +1088,7 @@ class NetworkPort extends CommonDBChild {
                                               "`networkports_id_list`
                                                    LIKE '%\"".$item->getField('id')."\"%'");
          if ($nbAggregates > 0) {
-            $aggregates = self::createTabEntry(NetworkPortAggregate::getTypeName(2),
+            $aggregates = self::createTabEntry(NetworkPortAggregate::getTypeName(Session::getPluralNumber()),
                                                $nbAggregates);
          } else {
             $aggregates = '';

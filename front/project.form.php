@@ -92,7 +92,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Project::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "project");
+   Html::header(Project::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
 
    if (isset($_GET['showglobalgantt']) && $_GET['showglobalgantt']) {
       $project->showGantt(-1);

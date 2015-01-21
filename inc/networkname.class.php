@@ -135,7 +135,7 @@ class NetworkName extends FQDNLabel {
       echo "</td>\n</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".IPAddress::getTypeName(2);
+      echo "<td>".IPAddress::getTypeName(Session::getPluralNumber());
       IPAddress::showAddChildButtonForItemForm($this, '_ipaddresses');
       echo "</td>";
       echo "<td>";
@@ -148,7 +148,7 @@ class NetworkName extends FQDNLabel {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".IPNetwork::getTypeName(2)."</td><td>";
+      echo "<td>".IPNetwork::getTypeName(Session::getPluralNumber())."</td><td>";
       _e('IP network is not included in the database. However, you can see current available networks.');
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'><td>&nbsp;</td><td>";
@@ -212,14 +212,14 @@ class NetworkName extends FQDNLabel {
 
       $tab[127]['table']         = 'glpi_networknames';
       $tab[127]['field']         = 'name';
-      $tab[127]['name']          = self::getTypeName(2);
+      $tab[127]['name']          = self::getTypeName(Session::getPluralNumber());
       $tab[127]['forcegroupby']  = true;
       $tab[127]['massiveaction'] = false;
       $tab[127]['joinparams']    = $joinparams;
 
       $tab[128]['table']         = 'glpi_networkaliases';
       $tab[128]['field']         = 'name';
-      $tab[128]['name']          = NetworkAlias::getTypeName(2);
+      $tab[128]['name']          = NetworkAlias::getTypeName(Session::getPluralNumber());
       $tab[128]['forcegroupby']  = true;
       $tab[128]['massiveaction'] = false;
       $tab[128]['joinparams']    = array('jointype'   => 'child',
@@ -437,7 +437,7 @@ class NetworkName extends FQDNLabel {
 
       echo "</tr><tr class='tab_bg_1'>\n";
 
-      echo "<td>".IPAddress::getTypeName(2);
+      echo "<td>".IPAddress::getTypeName(Session::getPluralNumber());
       IPAddress::showAddChildButtonForItemForm($name, 'NetworkName__ipaddresses');
       echo "</td>";
       echo "<td>";
@@ -446,7 +446,7 @@ class NetworkName extends FQDNLabel {
 
       // MoYo : really need to display it here ?
       // make confure because not updatable
-//       echo "<td>".IPNetwork::getTypeName(2)."&nbsp;";
+//       echo "<td>".IPNetwork::getTypeName(Session::getPluralNumber())."&nbsp;";
 //       Html::showToolTip(__('IP network is not included in the database. However, you can see current available networks.'));
 //       echo "</td><td>";
 //       IPNetwork::showIPNetworkProperties($name->getEntityID());
@@ -729,7 +729,7 @@ class NetworkName extends FQDNLabel {
       $table_options['massiveactionnetworkname'] = $canedit;
       $table                                     = new HTMLTableMain();
       $column                                    = $table->addHeader('Internet',
-                                                                     self::getTypeName(2));
+                                                                     self::getTypeName(Session::getPluralNumber()));
       $t_group                                   = $table->createGroup('Main', '');
 
       self::getHTMLTableHeader(__CLASS__, $t_group, $column, NULL, $table_options);
@@ -742,7 +742,7 @@ class NetworkName extends FQDNLabel {
          $number = $table->getNumberOfRows();
          if ($item->getType() == 'FQDN') {
             $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
-            Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
          }
          Session::initNavigateListItems(__CLASS__,
                                  //TRANS : %1$s is the itemtype name,
@@ -768,7 +768,7 @@ class NetworkName extends FQDNLabel {
          }
 
          if ($item->getType() == 'FQDN') {
-            Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
          }
       } else {
          echo "<table class='tab_cadre_fixe'><tr><th>".__('No network name found')."</th></tr>";
@@ -828,9 +828,9 @@ class NetworkName extends FQDNLabel {
       if ($item->getID()
           && $item->can($item->getField('id'), READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), self::countForItem($item));
          }
-         return self::getTypeName(2);
+         return self::getTypeName(Session::getPluralNumber());
       }
       return '';
    }

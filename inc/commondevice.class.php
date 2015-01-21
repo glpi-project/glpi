@@ -99,7 +99,7 @@ abstract class CommonDevice extends CommonDropdown {
 
       $menu = array();
       if (Session::haveRightsOr('device', array(CREATE, UPDATE, PURGE))) {
-         $menu['title'] = static::getTypeName(2);
+         $menu['title'] = static::getTypeName(Session::getPluralNumber());
          $menu['page']  = '/front/device.php';
 
          $dps = Dropdown::getDeviceItemTypes();

@@ -712,7 +712,7 @@ class Document extends CommonDBTM {
    static function getSearchOptionsToAdd() {
 
       $tab                       = array();
-      $tab['document']           = self::getTypeName(2);
+      $tab['document']           = self::getTypeName(Session::getPluralNumber());
 
       $tab[119]['table']         = 'glpi_documents_items';
       $tab[119]['field']         = 'id';

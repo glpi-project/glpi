@@ -96,7 +96,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $menu = array();
       if (get_called_class() == 'CommonDropdown') {
-         $menu['title']             = static::getTypeName(2);
+         $menu['title']             = static::getTypeName(Session::getPluralNumber());
          $menu['shortcut']          = 'n';
          $menu['page']              = '/front/dropdown.php';
          $menu['config']['default'] = '/front/dropdown.php';
@@ -170,7 +170,7 @@ abstract class CommonDropdown extends CommonDBTM {
       if (empty($this->third_level_menu)) {
         $this->third_level_menu = $this->getType();
       }
-      Html::header($this->getTypeName(2), '', $this->first_level_menu, $this->second_level_menu,
+      Html::header($this->getTypeName(Session::getPluralNumber()), '', $this->first_level_menu, $this->second_level_menu,
                    $this->third_level_menu);
    }
 

@@ -378,7 +378,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       // Display the pager
-      Html::printAjaxPager(self::getTypeName(2), $start, $number);
+      Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
 
       $query = "SELECT DISTINCT `glpi_computers_softwareversions`.*,
                        `glpi_computers`.`name` AS compname,
@@ -573,7 +573,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             _e('No item found');
          }
       } // Query
-      Html::printAjaxPager(self::getTypeName(2), $start, $number);
+      Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
 
       echo "</div>\n";
    }
@@ -598,7 +598,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<div class='center'>";
       echo "<table class='tab_cadre'><tr>";
       echo "<th>".__('Entity')."</th>";
-      echo "<th>".self::getTypeName(2)."</th>";
+      echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
       echo "</tr>\n";
 
       $tot = 0;
@@ -718,7 +718,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='2'>".Software::getTypeName(2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".Software::getTypeName(Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo __('Category')."</td><td>";
       SoftwareCategory::dropdown(array('value'      => $crit,
@@ -1113,10 +1113,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          case 'Software' :
             if (!$withtemplate) {
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(2),
+                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                               self::countForSoftware($item->getID()));
                }
-               return self::getTypeName(2);
+               return self::getTypeName(Session::getPluralNumber());
             }
             break;
 
@@ -1127,7 +1127,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                   $nb = self::countForVersion($item->getID());
                }
                return array(1 => __('Summary'),
-                            2 => self::createTabEntry(self::getTypeName(2), $nb));
+                            2 => self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb));
             }
             break;
 
@@ -1135,12 +1135,12 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             // Installation allowed for template
             if (Software::canView()) {
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(Software::getTypeName(2),
+                  return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()),
                                               countElementsInTable('glpi_computers_softwareversions',
                                                                    "computers_id = '".$item->getID()."'
                                                                       AND `is_deleted`='0'"));
                }
-               return Software::getTypeName(2);
+               return Software::getTypeName(Session::getPluralNumber());
             }
             break;
       }

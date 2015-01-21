@@ -415,7 +415,7 @@ class Link extends CommonDBTM {
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
       if ($DB->numrows($result) > 0) {
-         echo "<tr><th>".self::getTypeName(2)."</th></tr>";
+         echo "<tr><th>".self::getTypeName(Session::getPluralNumber())."</th></tr>";
          while ($data = $DB->fetch_assoc($result)) {
             $links = self::getAllLinksFor($item, $data);
 
@@ -427,7 +427,7 @@ class Link extends CommonDBTM {
          echo "</table></div>";
 
       } else {
-         echo "<tr class='tab_bg_2'><th>".self::getTypeName(2)."</th></tr>";
+         echo "<tr class='tab_bg_2'><th>".self::getTypeName(Session::getPluralNumber())."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center b'>".__('No link defined')."</td></tr>";
          echo "</table></div>";
       }

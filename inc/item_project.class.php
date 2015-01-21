@@ -292,7 +292,7 @@ class Item_Project extends CommonDBRelation{
                         }
                      }
                   }
-                  return self::createTabEntry(Project::getTypeName(2), $nb);
+                  return self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb);
                }
          }
       }

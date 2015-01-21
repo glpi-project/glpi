@@ -97,7 +97,7 @@ class Lock {
                $tmp->getFromDB($line['items_id']);
                $header = true;
                if ($first) {
-                  echo "<tr><th colspan='2'>".$type::getTypeName(2)."</th></tr>\n";
+                  echo "<tr><th colspan='2'>".$type::getTypeName(Session::getPluralNumber())."</th></tr>\n";
                   $first = false;
                }
 
@@ -119,7 +119,7 @@ class Lock {
             foreach ($DB->request(getTableForItemType($type), $params) as $line) {
                $header = true;
                if ($first) {
-                  echo "<tr><th colspan='2'>".$type::getTypeName(2)."</th></tr>\n";
+                  echo "<tr><th colspan='2'>".$type::getTypeName(Session::getPluralNumber())."</th></tr>\n";
                   $first = false;
                }
 
@@ -149,7 +149,7 @@ class Lock {
          foreach ($DB->request($query) as $line) {
             $header = true;
             if ($first) {
-               echo "<tr><th colspan='2'>".Software::getTypeName(2)."</th></tr>\n";
+               echo "<tr><th colspan='2'>".Software::getTypeName(Session::getPluralNumber())."</th></tr>\n";
                $first = false;
             }
 
@@ -179,7 +179,7 @@ class Lock {
          foreach ($DB->request($query) as $line) {
             $header = true;
             if ($first) {
-               echo "<tr><th colspan='2'>".SoftwareLicense::getTypeName(2)."</th>".
+               echo "<tr><th colspan='2'>".SoftwareLicense::getTypeName(Session::getPluralNumber())."</th>".
                      "</tr>\n";
                $first = false;
             }
@@ -203,7 +203,7 @@ class Lock {
          $item->getFromDB($line['id']);
          $header = true;
          if ($first) {
-            echo "<tr><th colspan='2'>".NetworkPort::getTypeName(2)."</th></tr>\n";
+            echo "<tr><th colspan='2'>".NetworkPort::getTypeName(Session::getPluralNumber())."</th></tr>\n";
             $first = false;
          }
 
@@ -227,7 +227,7 @@ class Lock {
          $item->getFromDB($line['id']);
          $header = true;
          if ($first) {
-            echo "<tr><th colspan='2'>".NetworkName::getTypeName(2)."</th></tr>\n";
+            echo "<tr><th colspan='2'>".NetworkName::getTypeName(Session::getPluralNumber())."</th></tr>\n";
             $first = false;
          }
 
@@ -255,7 +255,7 @@ class Lock {
          $item->getFromDB($line['id']);
          $header = true;
          if ($first) {
-            echo "<tr><th colspan='2'>".IPAddress::getTypeName(2)."</th></tr>\n";
+            echo "<tr><th colspan='2'>".IPAddress::getTypeName(Session::getPluralNumber())."</th></tr>\n";
             $first = false;
          }
 
@@ -328,7 +328,7 @@ class Lock {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->isDynamic() && $item->canCreate()) {
-         return Lock::getTypeName(2);
+         return Lock::getTypeName(Session::getPluralNumber());
       }
       return '';
    }

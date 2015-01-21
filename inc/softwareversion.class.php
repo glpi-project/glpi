@@ -282,7 +282,7 @@ class SoftwareVersion extends CommonDBChild {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             echo "<table class='tab_cadre_fixehov'><tr>";
-            echo "<th>".self::getTypeName(2)."</th>";
+            echo "<th>".self::getTypeName(Session::getPluralNumber())."</th>";
             echo "<th>".__('Status')."</th>";
             echo "<th>".__('Operating system')."</th>";
             echo "<th>"._n('Installation', 'Installations', Session::getPluralNumber())."</th>";
@@ -325,12 +325,12 @@ class SoftwareVersion extends CommonDBChild {
          switch ($item->getType()) {
             case 'Software' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(2),
+                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                               countElementsInTable($this->getTable(),
                                                                    "softwares_id
                                                                         = '".$item->getID()."'"));
                }
-               return self::getTypeName(2);
+               return self::getTypeName(Session::getPluralNumber());
          }
       }
       return '';

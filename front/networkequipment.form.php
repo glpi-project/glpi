@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(NetworkEquipment::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "networkequipment");
+   Html::header(NetworkEquipment::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "networkequipment");
    $netdevice->display(array('id'           => $_GET["id"],
                              'withtemplate' => $_GET["withtemplate"]));
    Html::footer();

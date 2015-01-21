@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Cartridge::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "cartridgeitem");
+   Html::header(Cartridge::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "cartridgeitem");
    $cartype->display(array('id' => $_GET["id"]));
    Html::footer();
 }

@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates a task'), $_SESSION["glpiname"]));
    Html::back();
 } else {
-   Html::header(ProjectTask::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "project");
+   Html::header(ProjectTask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
    $task->display(array('id'          => $_GET["id"],
                         'projects_id' => $_GET["projects_id"]));
    Html::footer();

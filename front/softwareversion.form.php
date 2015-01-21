@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(SoftwareVersion::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "software");
+   Html::header(SoftwareVersion::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "software");
    $version->display(array('id'           => $_GET["id"],
                            'softwares_id' => $_GET["softwares_id"]));
    Html::footer();

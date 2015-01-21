@@ -104,7 +104,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_POST['changes_id']);
 } else {
-   Html::header(Change::getTypeName(2), $_SERVER['PHP_SELF'], "helpdesk", "change");
+   Html::header(Change::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "helpdesk", "change");
    $change->display($_GET);
    Html::footer();
 }

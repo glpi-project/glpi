@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("monitor", READ);
 
-Html::header(Monitor::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "monitor");
+Html::header(Monitor::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "monitor");
 
 Search::show('Monitor');
 

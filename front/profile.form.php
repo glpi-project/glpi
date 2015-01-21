@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
    Html::back();
 }
 
-Html::header(Profile::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "profile");
+Html::header(Profile::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "profile");
 
 $prof->display(array('id' => $_GET["id"]));
 

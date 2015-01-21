@@ -130,9 +130,9 @@ class Project extends CommonDBTM {
                   $nb = countElementsInTable($this->getTable(),
                                              "`".$this->getForeignKeyField()."` = '".
                                                 $item->getID()."'");
-                  $ong[1] = self::createTabEntry($this->getTypeName(2), $nb);
+                  $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
                } else {
-                  $ong[1] = $this->getTypeName(2);
+                  $ong[1] = $this->getTypeName(Session::getPluralNumber());
                }
                $ong[2] = __('GANTT');
                return $ong;
@@ -186,7 +186,7 @@ class Project extends CommonDBTM {
       // No view to project by right on tasks add it
       if (!static::canView()
           && Session::haveRight('projecttask', ProjectTask::READMY)) {
-         $menu['project']['title']                    = Project::getTypeName(2);
+         $menu['project']['title']                    = Project::getTypeName(Session::getPluralNumber());
          $menu['project']['page']                     = ProjectTask::getSearchURL(false);
 
          $links = static::getAdditionalMenuLinks();

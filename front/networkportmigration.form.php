@@ -93,7 +93,7 @@ if (isset($_POST["purge"])) {
 
 } else {
    Session::checkRight("networking",UPDATE);
-   Html::header(NetworkPort::getTypeName(2), $_SERVER['PHP_SELF'], "tools",
+   Html::header(NetworkPort::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools",
                 "migration", "networkportmigration");
 
    $np->display(array('id' => $_GET["id"]));

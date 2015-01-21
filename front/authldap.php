@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("config", READ);
 
-Html::header(AuthLDAP::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'auth', 'ldap');
+Html::header(AuthLDAP::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'config', 'auth', 'ldap');
 
 Search::show('AuthLDAP');
 

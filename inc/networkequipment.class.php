@@ -68,7 +68,7 @@ class NetworkEquipment extends CommonDBTM {
    static function getAdditionalMenuOptions() {
 
       if (static::canView()) {
-         $options['networkport']['title'] = NetworkPort::getTypeName(2);
+         $options['networkport']['title'] = NetworkPort::getTypeName(Session::getPluralNumber());
          $options['networkport']['page']  = NetworkPort::getFormURL(false);
 
          return $options;

@@ -88,7 +88,7 @@ if (isset($_GET['_in_modal'])) {
    }
 
    Session::checkRight("internet", UPDATE);
-   Html::header(NetworkAlias::getTypeName(2), $_SERVER['PHP_SELF'], 'assets');
+   Html::header(NetworkAlias::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets');
 
    $alias->display($_GET);
    Html::footer();

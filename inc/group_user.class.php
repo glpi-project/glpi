@@ -428,7 +428,7 @@ class Group_User extends CommonDBRelation{
 
       // Mini Search engine
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='2'>".User::getTypeName(2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".User::getTypeName(Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo _n('Criterion', 'Criteria', 1)."&nbsp;";
       $crits = array(''                => Dropdown::EMPTY_VALUE,
@@ -455,7 +455,7 @@ class Group_User extends CommonDBRelation{
       if ($number) {
          echo "<div class='spaced'>";
          Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),
-                                      User::getTypeName(2), __('D=Dynamic')),
+                                      User::getTypeName(Session::getPluralNumber()), __('D=Dynamic')),
                               $start, $number);
 
          Session::initNavigateListItems('User',
@@ -539,7 +539,7 @@ class Group_User extends CommonDBRelation{
             Html::closeForm();
          }
          Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),
-                                      User::getTypeName(2), __('D=Dynamic')),
+                                      User::getTypeName(Session::getPluralNumber()), __('D=Dynamic')),
                               $start, $number);
 
          echo "</div>";
@@ -666,24 +666,24 @@ class Group_User extends CommonDBRelation{
             case 'User' :
                if (Group::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(Group::getTypeName(2),
+                     return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()),
                                                  countElementsInTable($this->getTable(),
                                                                       "users_id
                                                                         = '".$item->getID()."'"));
                   }
-                  return Group::getTypeName(2);
+                  return Group::getTypeName(Session::getPluralNumber());
                }
                break;
 
             case 'Group' :
                if (User::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(User::getTypeName(2),
+                     return self::createTabEntry(User::getTypeName(Session::getPluralNumber()),
                                                  countElementsInTable("glpi_groups_users",
                                                                       "`groups_id`
                                                                         = '".$item->getID()."'" ));
                   }
-                  return User::getTypeName(2);
+                  return User::getTypeName(Session::getPluralNumber());
                }
                break;
          }

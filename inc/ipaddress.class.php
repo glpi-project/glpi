@@ -238,7 +238,7 @@ class IPAddress extends CommonDBChild {
 
          $table           = new HTMLTableMain();
          $content         = "<a href='javascript:reloadTab(\"order=ip\");'>" .
-                              self::getTypeName(2) . "</a>";
+                              self::getTypeName(Session::getPluralNumber()) . "</a>";
          $internet_column = $table->addHeader('IP Address', $content);
          $content         = sprintf(__('%1$s - %2$s'), _n('Item', 'Items', Session::getPluralNumber()),
                                     "<a href='javascript:reloadTab(\"order=itemtype\");'>" .
@@ -248,7 +248,7 @@ class IPAddress extends CommonDBChild {
          if ($order_by_itemtype) {
             foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
                $table_options['group_'.$itemtype] = $table->createGroup($itemtype,
-                                                                        $itemtype::getTypeName(2));
+                                                                        $itemtype::getTypeName(Session::getPluralNumber()));
 
                self::getHTMLTableHeader($item->getType(), $table_options['group_'.$itemtype],
                                         $item_column, NULL, $table_options);
@@ -264,7 +264,7 @@ class IPAddress extends CommonDBChild {
          self::getHTMLTableCellsForItem(NULL, $item, NULL, $table_options);
 
          if ($table->getNumberOfRows() > 0) {
-            Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
 
             Session::initNavigateListItems(__CLASS__,
                                            //TRANS : %1$s is the itemtype name,
@@ -275,7 +275,7 @@ class IPAddress extends CommonDBChild {
                                   'display_super_for_each_group' => false,
                                   'display_tfoot'                => false));
 
-            Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
          } else {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>".__('No IP address found')."</th></tr>";
@@ -324,9 +324,9 @@ class IPAddress extends CommonDBChild {
       if ($item->getID()
           && $item->can($item->getField('id'), READ)) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), self::countForItem($item));
          }
-         return self::getTypeName(2);
+         return self::getTypeName(Session::getPluralNumber());
       }
       return '';
    }

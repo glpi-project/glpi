@@ -92,11 +92,11 @@ class ContractCost extends CommonDBChild {
           && Contract::canView()) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(2),
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                         countElementsInTable('glpi_contractcosts',
                                                              "contracts_id = '".$item->getID()."'"));
          }
-         return self::getTypeName(2);
+         return self::getTypeName(Session::getPluralNumber());
       }
       return '';
    }

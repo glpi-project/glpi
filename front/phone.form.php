@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/phone.form.php?id=".$_POST["id"]);
 
 } else {
-   Html::header(Phone::getTypeName(2), $_SERVER['PHP_SELF'], 'assets', 'phone');
+   Html::header(Phone::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets', 'phone');
    $phone->display(array('id'           => $_GET["id"],
                          'withtemplate' => $_GET["withtemplate"]));
    Html::footer();

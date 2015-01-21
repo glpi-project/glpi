@@ -221,7 +221,7 @@ class NotificationEvent extends CommonDBTM {
          $events = $target->getAllEvents();
 
          if (count($events)>0) {
-            echo "<tr><th>".self::getTypeName(2).'</th><th>'._n('Recipient', 'Recipients', Session::getPluralNumber())."</th>";
+            echo "<tr><th>".self::getTypeName(Session::getPluralNumber()).'</th><th>'._n('Recipient', 'Recipients', Session::getPluralNumber())."</th>";
             echo "<th>"._n('Notification template', 'Notification templates', Session::getPluralNumber())."</th>".
                  "<th>"._n('Email', 'Emails', Session::getPluralNumber())."</th></tr>";
 

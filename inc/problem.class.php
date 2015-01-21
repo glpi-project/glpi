@@ -458,7 +458,7 @@ class Problem extends CommonITILObject {
 
       $tab += ProblemCost::getSearchOptionsToAdd();
 
-      $tab['ticket']             = Ticket::getTypeName(2);
+      $tab['ticket']             = Ticket::getTypeName(Session::getPluralNumber());
 
       $tab[141]['table']         = 'glpi_problems_tickets';
       $tab[141]['field']         = 'id';

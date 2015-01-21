@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 
 Session::haveRightsOr('change', array(Change::READALL, Change::READMY));
 
-Html::header(Change::getTypeName(2), '', "helpdesk", "change");
+Html::header(Change::getTypeName(Session::getPluralNumber()), '', "helpdesk", "change");
 
 Search::show('Change');
 

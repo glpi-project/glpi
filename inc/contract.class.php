@@ -340,7 +340,7 @@ class Contract extends CommonDBTM {
    static function getSearchOptionsToAdd() {
 
       $tab                       = array();
-      $tab['contract']           = self::getTypeName(2);
+      $tab['contract']           = self::getTypeName(Session::getPluralNumber());
 
       $joinparams                = array('beforejoin'
                                           => array('table'      => 'glpi_contracts_items',

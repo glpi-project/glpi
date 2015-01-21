@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 
 Session::haveRightsOr('project', array(Project::READALL, Project::READMY));
 
-Html::header(Project::getTypeName(2), $_SERVER['PHP_SELF'], "tools", "project");
+Html::header(Project::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
 
 Search::show('Project');
 

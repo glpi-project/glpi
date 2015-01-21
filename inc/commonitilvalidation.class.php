@@ -201,9 +201,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
               $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."'";
             }
             $nb = countElementsInTable(static::getTable(),$restrict);
-            return self::createTabEntry(self::getTypeName(2), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
-         return self::getTypeName(2);
+         return self::getTypeName(Session::getPluralNumber());
       }
       return '';
    }
@@ -729,7 +729,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
-      echo "<th colspan='3'>".self::getTypeName(2)."</th>";
+      echo "<th colspan='3'>".self::getTypeName(Session::getPluralNumber())."</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";

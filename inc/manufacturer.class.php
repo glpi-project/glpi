@@ -68,7 +68,7 @@ class Manufacturer extends CommonDropdown {
    function getAdditionalFields() {
 
       return array(array('name'  => 'none',
-                         'label' => RegisteredID::getTypeName(2).
+                         'label' => RegisteredID::getTypeName(Session::getPluralNumber()).
                                        RegisteredID::showAddChildButtonForItemForm($this,
                                                                                    '_registeredID',
                                                                                    NULL, false),

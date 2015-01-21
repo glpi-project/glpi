@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("config", READ);
 
-Html::header(NotImportedEmail::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailcollector",
+Html::header(NotImportedEmail::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "mailcollector",
              "notimportedemails");
 
 Search::show('NotImportedEmail');

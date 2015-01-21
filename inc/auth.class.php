@@ -99,12 +99,12 @@ class Auth extends CommonGLPI {
             $menu['title']                              = __('Authentication');
             $menu['page']                               = '/front/setup.auth.php';
 
-            $menu['options']['ldap']['title']           = AuthLDAP::getTypeName(2);
+            $menu['options']['ldap']['title']           = AuthLDAP::getTypeName(Session::getPluralNumber());
             $menu['options']['ldap']['page']            = '/front/authldap.php';
             $menu['options']['ldap']['links']['search'] = '/front/authldap.php';
             $menu['options']['ldap']['links']['add']    = '' .'/front/authldap.form.php';
 
-            $menu['options']['imap']['title']           = AuthMail::getTypeName(2);
+            $menu['options']['imap']['title']           = AuthMail::getTypeName(Session::getPluralNumber());
             $menu['options']['imap']['page']            = '/front/authmail.php';
             $menu['options']['imap']['links']['search'] = '/front/authmail.php';
             $menu['options']['imap']['links']['add']    = '' .'/front/authmail.form.php';

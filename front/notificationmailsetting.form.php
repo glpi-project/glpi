@@ -46,7 +46,7 @@ if (!empty($_POST["test_smtp_send"])) {
    Html::back();
 }
 
-Html::header(Notification::getTypeName(2), $_SERVER['PHP_SELF'], "config", "notification", "config");
+Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification", "config");
 
 $notificationmail->display(array('id' => 1));
 

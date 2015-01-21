@@ -36,7 +36,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("cartridge", READ);
 
-Html::header(Cartridge::getTypeName(2), $_SERVER['PHP_SELF'], "assets", "cartridgeitem");
+Html::header(Cartridge::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "cartridgeitem");
 
 Search::show('CartridgeItem');
 

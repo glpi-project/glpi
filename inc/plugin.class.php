@@ -67,7 +67,7 @@ class Plugin extends CommonDBTM {
     * @since version 0.85
    **/
    static function getMenuName() {
-      return static::getTypeName(2);
+      return static::getTypeName(Session::getPluralNumber());
    }
 
 

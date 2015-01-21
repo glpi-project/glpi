@@ -97,7 +97,7 @@ if (isset($_POST["add"])) {
 
 // Disconnect a computer from a printer/monitor/phone/peripheral
 } else {//print computer information
-   Html::header(Computer::GetTypeName(2), $_SERVER['PHP_SELF'], "assets", "computer");
+   Html::header(Computer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "computer");
    //show computer form to add
    $computer->display(array('id'           => $_GET["id"],
                             'withtemplate' => $_GET["withtemplate"]));

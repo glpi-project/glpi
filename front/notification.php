@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("notification", READ);
 
-Html::header(Notification::getTypeName(2), $_SERVER['PHP_SELF'], "config", "notification",
+Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "notification",
              "notification");
 
 Search::show('Notification');

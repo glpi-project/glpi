@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("group", READ);
 
-Html::header(Group::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "group");
+Html::header(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "group");
 
 $group = new Group();
 $group->title();

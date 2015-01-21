@@ -72,7 +72,7 @@ class State extends CommonTreeDropdown {
 
       foreach ($this->visibility_fields as $type => $field) {
          $fields[] = array('name'  => $field,
-                           'label' => $type::getTypeName(2),
+                           'label' => $type::getTypeName(Session::getPluralNumber()),
                            'type'  => 'bool',
                            'list'  => true);
       }
@@ -150,7 +150,7 @@ class State extends CommonTreeDropdown {
 
          foreach ($state_type as $key => $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
-               echo "<th>".$item->getTypeName(2)."</th>";
+               echo "<th>".$item->getTypeName(Session::getPluralNumber())."</th>";
                $total[$itemtype] = 0;
             } else {
                unset($state_type[$key]);
@@ -283,39 +283,39 @@ class State extends CommonTreeDropdown {
 
       $tab[21]['table']    = $this->getTable();
       $tab[21]['field']    = 'is_visible_computer';
-      $tab[21]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Computer::getTypeName(2));
+      $tab[21]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Computer::getTypeName(Session::getPluralNumber()));
       $tab[21]['datatype'] = 'bool';
 
       $tab[22]['table']    = $this->getTable();
       $tab[22]['field']    = 'is_visible_softwareversion';
       $tab[22]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'),
-                                     SoftwareVersion::getTypeName(2));
+                                     SoftwareVersion::getTypeName(Session::getPluralNumber()));
       $tab[22]['datatype'] = 'bool';
 
       $tab[23]['table']    = $this->getTable();
       $tab[23]['field']    = 'is_visible_monitor';
-      $tab[23]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Monitor::getTypeName(2));
+      $tab[23]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Monitor::getTypeName(Session::getPluralNumber()));
       $tab[23]['datatype'] = 'bool';
 
       $tab[24]['table']    = $this->getTable();
       $tab[24]['field']    = 'is_visible_printer';
-      $tab[24]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Printer::getTypeName(2));
+      $tab[24]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Printer::getTypeName(Session::getPluralNumber()));
       $tab[24]['datatype'] = 'bool';
 
       $tab[25]['table']    = $this->getTable();
       $tab[25]['field']    = 'is_visible_peripheral';
-      $tab[25]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Peripheral::getTypeName(2));
+      $tab[25]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Peripheral::getTypeName(Session::getPluralNumber()));
       $tab[25]['datatype'] = 'bool';
 
       $tab[26]['table']    = $this->getTable();
       $tab[26]['field']    = 'is_visible_phone';
-      $tab[26]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Phone::getTypeName(2));
+      $tab[26]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'), Phone::getTypeName(Session::getPluralNumber()));
       $tab[26]['datatype'] = 'bool';
 
       $tab[27]['table']    = $this->getTable();
       $tab[27]['field']    = 'is_visible_networkequipment';
       $tab[27]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'),
-                                     NetworkEquipment::getTypeName(2));
+                                     NetworkEquipment::getTypeName(Session::getPluralNumber()));
       $tab[27]['datatype'] = 'bool';
 
       return $tab;

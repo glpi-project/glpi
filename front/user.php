@@ -35,7 +35,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("user", READ);
 
-Html::header(User::getTypeName(2), '', "admin", "user");
+Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
 
 $user = new User();
 $user->title();

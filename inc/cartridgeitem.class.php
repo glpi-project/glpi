@@ -62,7 +62,7 @@ class CartridgeItem extends CommonDBTM {
     * @since version 0.85
    **/
    static function getMenuName() {
-      return Cartridge::getTypeName(2);
+      return Cartridge::getTypeName(Session::getPluralNumber());
    }
 
 

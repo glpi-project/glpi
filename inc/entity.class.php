@@ -299,7 +299,7 @@ class Entity extends CommonTreeDropdown {
          switch ($item->getType()) {
             case __CLASS__ :
                $ong    = array();
-               $ong[1] = $this->getTypeName(2);
+               $ong[1] = $this->getTypeName(Session::getPluralNumber());
                $ong[2] = __('Address');
                $ong[3] = __('Advanced information');
                if (Notification::canView()) {

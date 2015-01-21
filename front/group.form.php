@@ -78,7 +78,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_GET['_in_modal'])) {
-   Html::popHeader(Group::getTypeName(2),$_SERVER['PHP_SELF']);
+   Html::popHeader(Group::getTypeName(Session::getPluralNumber()),$_SERVER['PHP_SELF']);
    $group->showForm($_GET["id"]);
    Html::popFooter();
 
@@ -92,7 +92,7 @@ if (isset($_POST["add"])) {
    $group->redirectToList();
 
 } else {
-   Html::header(Group::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "group");
+   Html::header(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "group");
    $group->display(array('id' =>$_GET["id"]));
    Html::footer();
 }

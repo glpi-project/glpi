@@ -1128,19 +1128,19 @@ class NotificationTarget extends CommonDBChild {
          switch ($item->getType()) {
             case 'Group' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(Notification::getTypeName(2),
+                  return self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()),
                                               self::countForGroup($item));
                }
-               return Notification::getTypeName(2);
+               return Notification::getTypeName(Session::getPluralNumber());
 
             case 'Notification' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(2),
+                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
                                               countElementsInTable($this->getTable(),
                                                                    "notifications_id
                                                                         = '".$item->getID()."'"));
                }
-               return self::getTypeName(2);
+               return self::getTypeName(Session::getPluralNumber());
          }
       }
       return '';

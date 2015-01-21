@@ -69,7 +69,7 @@ if (isset($_POST["purge"])) {
    Html::back();
 
 } else {
-   Html::header($item_device->getTypeName(2), '', "config", "commondevice", get_class($item_device));
+   Html::header($item_device->getTypeName(Session::getPluralNumber()), '', "config", "commondevice", get_class($item_device));
 
    if (!isset($options)) {
       $options = array();
