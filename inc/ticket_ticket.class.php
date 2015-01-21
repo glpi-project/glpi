@@ -172,7 +172,7 @@ class Ticket_Ticket extends CommonDBRelation {
                              "' alt=\"".Ticket::getStatus($ticket->fields["status"])."\"
                              title=\"". Ticket::getStatus($ticket->fields["status"])."\">";
                if ($canupdate) {
-                  $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'delete',
+                  $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'purge',
                                                          _x('button', 'Delete permanently'),
                                                          array('id'         => $linkID,
                                                                'tickets_id' => $ID),
