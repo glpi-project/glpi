@@ -690,7 +690,10 @@ class User extends CommonDBTM {
             }
          } else {
             //ldap jpegphoto synchronisation.
-            $input['picture'] = $this->syncLdapPhoto();
+            if (isset($this->fields["authtype"])
+                && (($this->fields["authtype"] == Auth::LDAP))) {
+                $input['picture'] = $this->syncLdapPhoto();
+            }
          }
       }
 
