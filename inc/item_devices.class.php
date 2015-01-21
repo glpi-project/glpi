@@ -302,7 +302,7 @@ class Item_Devices extends CommonDBRelation {
             if (isset($nb)) {
                return self::createTabEntry(_n('Component', 'Components', $nb), $nb);
             }
-            return _n('Component', 'Components', 2);
+            return _n('Component', 'Components', Session::getPluralNumber());
          }
          if ($item instanceof CommonDevice) {
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -317,7 +317,7 @@ class Item_Devices extends CommonDBRelation {
             if (isset($nb)) {
                return self::createTabEntry(_n('Item', 'Items', $nb), $nb);
             }
-            return _n('Item', 'Items', 2);
+            return _n('Item', 'Items', Session::getPluralNumber());
          }
       }
       return '';
@@ -356,7 +356,7 @@ class Item_Devices extends CommonDBRelation {
 
       $table = new HTMLTableMain();
 
-      $table->setTitle(_n('Component', 'Components', 2));
+      $table->setTitle(_n('Component', 'Components', Session::getPluralNumber()));
       if ($canedit) {
          $delete_all_column = $table->addHeader('delete all',
                                                 Html::getCheckAllAsCheckbox("form_device_action$rand",
@@ -366,7 +366,7 @@ class Item_Devices extends CommonDBRelation {
          $delete_all_column = NULL;
       }
 
-      $column_label    = ($is_device ? _n('Item', 'Items', 2) : __('Type of component'));
+      $column_label    = ($is_device ? _n('Item', 'Items', Session::getPluralNumber()) : __('Type of component'));
       $common_column   = $table->addHeader('common', $column_label);
       $specific_column = $table->addHeader('specificities', __('Specificities'));
       $specific_column->setHTMLClass('center');

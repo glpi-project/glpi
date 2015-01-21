@@ -240,7 +240,7 @@ class IPAddress extends CommonDBChild {
          $content         = "<a href='javascript:reloadTab(\"order=ip\");'>" .
                               self::getTypeName(2) . "</a>";
          $internet_column = $table->addHeader('IP Address', $content);
-         $content         = sprintf(__('%1$s - %2$s'), _n('Item', 'Items', 2),
+         $content         = sprintf(__('%1$s - %2$s'), _n('Item', 'Items', Session::getPluralNumber()),
                                     "<a href='javascript:reloadTab(\"order=itemtype\");'>" .
                                       __('Order by item type') . "</a>");
          $item_column     = $table->addHeader('Item', $content);

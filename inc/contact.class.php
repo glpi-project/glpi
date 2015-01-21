@@ -358,7 +358,7 @@ class Contact extends CommonDBTM{
 
       $tab[8]['table']          = 'glpi_suppliers';
       $tab[8]['field']          = 'name';
-      $tab[8]['name']           = _n('Associated supplier', 'Associated suppliers', 2);
+      $tab[8]['name']           = _n('Associated supplier', 'Associated suppliers', Session::getPluralNumber());
       $tab[8]['forcegroupby']   = true;
       $tab[8]['datatype']       = 'itemlink';
       $tab[8]['joinparams']     = array('beforejoin'

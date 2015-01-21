@@ -1157,7 +1157,7 @@ class Html {
          $menu['tools']['types']        = array('Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
                                                 'ReservationItem', 'Report', 'MigrationCleaner');
 
-         $menu['plugins']['title']      = _n('Plugin', 'Plugins',2);
+         $menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
          $menu['plugins']['types']      = array();
 
          $menu['admin']['title']        = __('Administration');
@@ -1954,7 +1954,7 @@ class Html {
           || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
          echo "<li id='menu3'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php' title=\"".
-                __s('Ticket followup')."\" class='itemP'>"._n('Ticket','Tickets',2)."</a>";
+                __s('Ticket followup')."\" class='itemP'>"._n('Ticket','Tickets', Session::getPluralNumber())."</a>";
          echo "</li>";
       }
 
@@ -1962,8 +1962,8 @@ class Html {
       if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
          echo "<li id='menu4'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php' title=\"".
-                _sn('Reservation', 'Reservations', 2)."\" class='itemP'>".
-                _n('Reservation', 'Reservations', 2)."</a>";
+                _sn('Reservation', 'Reservations', Session::getPluralNumber())."\" class='itemP'>".
+                _n('Reservation', 'Reservations', Session::getPluralNumber())."</a>";
          echo "</li>";
       }
 
@@ -1996,7 +1996,7 @@ class Html {
 
          asort($list);
          echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\">";
-         echo "<a href='#' title=\""._sn('Plugin', 'Plugins', 2)."\" class='itemP'>".
+         echo "<a href='#' title=\""._sn('Plugin', 'Plugins', Session::getPluralNumber())."\" class='itemP'>".
                 __('Plugins')."</a>";  // default none
          echo "<ul class='ssmenu'>";
 
@@ -2643,7 +2643,7 @@ class Html {
       $p['rand']              = '';
       $p['container']         = '';
       $p['display_arrow']     = true;
-      $p['title']             = _n('Action', 'Actions', 2);
+      $p['title']             = _n('Action', 'Actions', Session::getPluralNumber());
       $p['item']              = false;
       $p['tag_to_send']      = 'common';
 

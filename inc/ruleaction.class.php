@@ -158,7 +158,7 @@ class RuleAction extends CommonDBChild {
 
       $tab[2]['table']            = $this->getTable();
       $tab[2]['field']            = 'field';
-      $tab[2]['name']             = _n('Field', 'Fields', 2);
+      $tab[2]['name']             = _n('Field', 'Fields', Session::getPluralNumber());
       $tab[2]['massiveaction']    = false;
       $tab[2]['datatype']         = 'specific';
       $tab[2]['additionalfields'] = array('rules_id');

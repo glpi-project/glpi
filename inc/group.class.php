@@ -285,13 +285,13 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Item', 'Items', 2)."</td>";
+      echo "<td>"._n('Item', 'Items', Session::getPluralNumber())."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('User', 'Users', 2)."</td><td>";
+      echo "<td>"._n('User', 'Users', Session::getPluralNumber())."</td><td>";
       Dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
       echo "</td>";
       echo "<td colspan='2' class='center'>";
@@ -470,7 +470,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[17]['table']         = $this->getTable();
       $tab[17]['field']         = 'is_itemgroup';
-      $tab[17]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), _n('Item', 'Items', 2));
+      $tab[17]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), _n('Item', 'Items', Session::getPluralNumber()));
       $tab[17]['datatype']      = 'bool';
 
       $tab[15]['table']         = $this->getTable();

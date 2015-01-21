@@ -303,7 +303,7 @@ class Entity extends CommonTreeDropdown {
                $ong[2] = __('Address');
                $ong[3] = __('Advanced information');
                if (Notification::canView()) {
-                  $ong[4] = _n('Notification', 'Notifications',2);
+                  $ong[4] = _n('Notification', 'Notifications', Session::getPluralNumber());
                }
                if (Session::haveRightsOr(self::$rightname,
                                          array(self::READHELPDESK, self::UPDATEHELPDESK))) {
@@ -1249,7 +1249,7 @@ class Entity extends CommonTreeDropdown {
                               array('value' => $entity->getField('autofill_warranty_date')));
       echo "</td><td colspan='2'></td></tr>";
 
-      echo "<tr><th colspan='4'>"._n('Software', 'Software', 2)."</th></tr>";
+      echo "<tr><th colspan='4'>"._n('Software', 'Software', Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('Entity for software creation') . "</td>";
       echo "<td>";
@@ -1379,7 +1379,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='2'>";
-      echo _n('Cartridge', 'Cartridges', 2);
+      echo _n('Cartridge', 'Cartridges', Session::getPluralNumber());
       echo "</th>";
       echo "<td>" . __('Reminders frequency for alarms on cartridges') . "</td><td>";
       $default_value = $entity->fields['cartridges_alert_repeat'];
@@ -1419,7 +1419,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='2'>";
-      echo _n('Consumable', 'Consumables', 2);
+      echo _n('Consumable', 'Consumables', Session::getPluralNumber());
       echo "</th>";
 
       echo "<td>" . __('Reminders frequency for alarms on consumables') . "</td><td>";
@@ -1461,7 +1461,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='3'>";
-      echo _n('Contract', 'Contracts', 2);
+      echo _n('Contract', 'Contracts', Session::getPluralNumber());
       echo "</th>";
       echo "<td>" . __('Alarms on contracts') . "</td><td>";
       $default_value = $entity->fields['use_contracts_alert'];
@@ -1552,7 +1552,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='2'>";
-      echo _n('License', 'Licenses', 2);
+      echo _n('License', 'Licenses', Session::getPluralNumber());
       echo "</th>";
       echo "<td>" . __('Alarms on expired licenses') . "</td><td>";
       $default_value = $entity->fields['use_licenses_alert'];
@@ -1585,7 +1585,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='1'>";
-      echo _n('Reservation', 'Reservations', 2);
+      echo _n('Reservation', 'Reservations', Session::getPluralNumber());
       echo "</th>";
       echo "<td>" . __('Alerts on reservations') . "</td><td>";
       Alert::dropdownIntegerNever('use_reservations_alert',
@@ -1603,7 +1603,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='1'>";
-      echo _n('Ticket', 'Tickets', 2);
+      echo _n('Ticket', 'Tickets', Session::getPluralNumber());
       echo "</th>";
       echo "<td >". __('Alerts on tickets which are not solved since'). "</td><td>";
       Alert::dropdownIntegerNever('notclosed_delay', $entity->fields["notclosed_delay"],

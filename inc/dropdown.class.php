@@ -725,12 +725,12 @@ class Dropdown {
                                  'State'                  => _n('Status of items',
                                                                 'Statuses of items', Session::getPluralNumber()),
                                  'Manufacturer'           => _n('Manufacturer', 'Manufacturers', Session::getPluralNumber()),
-                                 'Blacklist'              => _n('Blacklist','Blacklists',2),
+                                 'Blacklist'              => _n('Blacklist','Blacklists', Session::getPluralNumber()),
                                  'BlacklistedMailContent' => __('Blacklisted mail content')
                                 ),
 
                     __('Assistance')
-                        => array('ITILCategory'     => _n('Ticket category', 'Ticket categories',2),
+                        => array('ITILCategory'     => _n('Ticket category', 'Ticket categories', Session::getPluralNumber()),
                                  'TaskCategory'     => _n('Task category','Task categories', Session::getPluralNumber()),
                                  'SolutionType'     => _n('Solution type', 'Solution types', Session::getPluralNumber()),
                                  'RequestType'      => _n('Request source', 'Request sources', Session::getPluralNumber()),
@@ -805,7 +805,7 @@ class Dropdown {
                                  'Holiday'  => _n('Close time', 'Close times', Session::getPluralNumber())
                                 ),
 
-                    _n('Operating system', 'Operating systems',2)
+                    _n('Operating system', 'Operating systems', Session::getPluralNumber())
                         => array('OperatingSystem'     => _n('Operating system',
                                                              'Operating systems', Session::getPluralNumber()),
                                  'OperatingSystemVersion'

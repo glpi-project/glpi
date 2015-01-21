@@ -436,8 +436,8 @@ class Stat extends CommonGLPI {
             echo Search::showHeaderItem($output_type, __('Number of late tickets'), $header_num);
             echo Search::showHeaderItem($output_type, __('Number of closed tickets'), $header_num);
          } else {
-            echo Search::showHeaderItem($output_type, _nx('ticket','Opened','Opened',2), $header_num);
-            echo Search::showHeaderItem($output_type, _nx('ticket','Solved', 'Solved', 2),
+            echo Search::showHeaderItem($output_type, _nx('ticket','Opened','Opened', Session::getPluralNumber()), $header_num);
+            echo Search::showHeaderItem($output_type, _nx('ticket','Solved', 'Solved', Session::getPluralNumber()),
                                         $header_num);
             echo Search::showHeaderItem($output_type, __('Late'), $header_num);
             echo Search::showHeaderItem($output_type, __('Closed'), $header_num);
@@ -455,9 +455,9 @@ class Stat extends CommonGLPI {
                                            $header_num);
 
             } else {
-               echo Search::showHeaderItem($output_type, _nx('survey','Opened','Opened',2),
+               echo Search::showHeaderItem($output_type, _nx('survey','Opened','Opened', Session::getPluralNumber()),
                                            $header_num);
-               echo Search::showHeaderItem($output_type, _nx('survey','Answered','Answered',2),
+               echo Search::showHeaderItem($output_type, _nx('survey','Answered','Answered', Session::getPluralNumber()),
                                            $header_num);
                echo Search::showHeaderItem($output_type, __('Average'), $header_num);
             }
@@ -1523,7 +1523,7 @@ class Stat extends CommonGLPI {
       $stat_list["Ticket"]["Ticket_Item"]["file"]     = "stat.item.php";
 
       if (Problem::canView()) {
-         $opt_list["Problem"]                               = _n('Problem', 'Problems', 2);
+         $opt_list["Problem"]                               = _n('Problem', 'Problems', Session::getPluralNumber());
 
          $stat_list["Problem"]["Problem_Global"]["name"]    = __('Global');
          $stat_list["Problem"]["Problem_Global"]["file"]    = "stat.global.php?itemtype=Problem";
@@ -1532,7 +1532,7 @@ class Stat extends CommonGLPI {
       }
 
       if (Change::canView()) {
-         $opt_list["Change"]                             = _n('Change', 'Changes', 2);
+         $opt_list["Change"]                             = _n('Change', 'Changes', Session::getPluralNumber());
 
          $stat_list["Change"]["Change_Global"]["name"]   = __('Global');
          $stat_list["Change"]["Change_Global"]["file"]   = "stat.global.php?itemtype=Change";

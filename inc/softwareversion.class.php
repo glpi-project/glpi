@@ -111,7 +111,7 @@ class SoftwareVersion extends CommonDBChild {
 
       $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_1'><td>"._n('Software', 'Software', 2)."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Software', 'Software', Session::getPluralNumber())."</td>";
       echo "<td>";
       if ($this->isNewID($ID)) {
          echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
@@ -285,7 +285,7 @@ class SoftwareVersion extends CommonDBChild {
             echo "<th>".self::getTypeName(2)."</th>";
             echo "<th>".__('Status')."</th>";
             echo "<th>".__('Operating system')."</th>";
-            echo "<th>"._n('Installation', 'Installations', 2)."</th>";
+            echo "<th>"._n('Installation', 'Installations', Session::getPluralNumber())."</th>";
             echo "<th>".__('Comments')."</th>";
             echo "</tr>\n";
 

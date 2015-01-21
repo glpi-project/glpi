@@ -292,7 +292,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $canedit         = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
       $canshowcomputer = Computer::canView();
 
-      $refcolumns = array('vername'           => _n('Version', 'Versions',2),
+      $refcolumns = array('vername'           => _n('Version', 'Versions', Session::getPluralNumber()),
                           'compname'          => __('Name'),
                           'entity'            => __('Entity'),
                           'serial'            => __('Serial number'),
@@ -301,7 +301,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           'state,compname'    => __('Status'),
                           'groupe,compname'   => __('Group'),
                           'username,compname' => __('User'),
-                          'lname'             => _n('License', 'Licenses', 2));
+                          'lname'             => _n('License', 'Licenses', Session::getPluralNumber()));
       if ($crit != "softwares_id") {
          unset($refcolumns['vername']);
       }
@@ -690,7 +690,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 $CFG_GLPI["root_doc"]."/front/computer_softwareversion.form.php'>";
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><td class='center'>";
-         echo _n('Software', 'Software', 2)."&nbsp;&nbsp;";
+         echo _n('Software', 'Software', Session::getPluralNumber())."&nbsp;&nbsp;";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
          echo "</td><td width='20%'>";
@@ -809,7 +809,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>";
-         echo _n('License', 'Licenses', 2)."&nbsp;&nbsp;";
+         echo _n('License', 'Licenses', Session::getPluralNumber())."&nbsp;&nbsp;";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
          echo "</td><td width='20%'>";

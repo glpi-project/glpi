@@ -1877,7 +1877,7 @@ class User extends CommonDBTM {
       echo "<td>".__('Active')."</td><td>";
       Dropdown::showYesNo('is_active',$this->fields['is_active']);
       echo "</td>";
-      echo "<td>" . _n('Email','Emails',2);
+      echo "<td>" . _n('Email','Emails', Session::getPluralNumber());
       UserEmail::showAddEmailButton($this);
       echo "</td><td>";
       UserEmail::showForUser($this);
@@ -2214,7 +2214,7 @@ class User extends CommonDBTM {
             Html::autocompletionTextField($this, "phone");
          }
          echo "</td>";
-         echo "<td class='top'>" . _n('Email', 'Emails',2);
+         echo "<td class='top'>" . _n('Email', 'Emails', Session::getPluralNumber());
          UserEmail::showAddEmailButton($this);
          echo "</td><td>";
          UserEmail::showForUser($this);
@@ -2532,7 +2532,7 @@ class User extends CommonDBTM {
 
       $tab[5]['table']                 = 'glpi_useremails';
       $tab[5]['field']                 = 'email';
-      $tab[5]['name']                  = _n('Email', 'Emails',2);
+      $tab[5]['name']                  = _n('Email', 'Emails', Session::getPluralNumber());
       $tab[5]['datatype']              = 'email';
       $tab[5]['joinparams']            = array('jointype'=>'child');
       $tab[5]['forcegroupby']          = true;
@@ -2562,7 +2562,7 @@ class User extends CommonDBTM {
 
       $tab[13]['table']                = 'glpi_groups';
       $tab[13]['field']                = 'completename';
-      $tab[13]['name']                 = _n('Group','Groups',2);
+      $tab[13]['name']                 = _n('Group','Groups', Session::getPluralNumber());
       $tab[13]['forcegroupby']         = true;
       $tab[13]['datatype']             = 'itemlink';
       $tab[13]['massiveaction']        = false;

@@ -198,7 +198,7 @@ class MailCollector  extends CommonDBTM {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
-               return _n('Action', 'Actions', 2);
+               return _n('Action', 'Actions', Session::getPluralNumber());
          }
       }
       return '';
@@ -1674,7 +1674,7 @@ class MailCollector  extends CommonDBTM {
 
       if (count($buttons)) {
          Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png",
-                            _n('Receiver', 'Receivers', 2), $message, $buttons);
+                            _n('Receiver', 'Receivers', Session::getPluralNumber()), $message, $buttons);
       }
 
    }

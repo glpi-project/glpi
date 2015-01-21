@@ -283,7 +283,7 @@ class Netpoint extends CommonDropdown {
          echo "<form action='".$netpoint->getFormURL()."' method='post'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'>";
-         echo "<td class='b'>"._n('Network outlet', 'Network outlets', 2)."</td>";
+         echo "<td class='b'>"._n('Network outlet', 'Network outlets', Session::getPluralNumber())."</td>";
          echo "<td>".__('Name')."</td><td>";
          echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
          Dropdown::showNumber('_from', array('value' => 0,

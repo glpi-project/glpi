@@ -271,7 +271,7 @@ class Item_Problem extends CommonDBRelation{
                                              "`problems_id` = '".$item->getID()."'");
                }
 
-               return self::createTabEntry(_n('Item', 'Items', 2), $nb);
+               return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
             default :
                if (Session::haveRight("problem", Problem::READALL)) {

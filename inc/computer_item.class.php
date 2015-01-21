@@ -767,10 +767,10 @@ class Computer_Item extends CommonDBRelation{
             case 'Monitor' :
                if (Computer::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(_n('Connection','Connections',2),
+                     return self::createTabEntry(_n('Connection','Connections', Session::getPluralNumber()),
                                                  self::countForItem($item));
                   }
-                  return _n('Connection','Connections',2);
+                  return _n('Connection','Connections', Session::getPluralNumber());
                }
                break;
 
@@ -780,10 +780,10 @@ class Computer_Item extends CommonDBRelation{
                    || Peripheral::canView()
                    || Monitor::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(_n('Connection','Connections',2),
+                     return self::createTabEntry(_n('Connection','Connections', Session::getPluralNumber()),
                                                  self::countForComputer($item));
                   }
-                  return _n('Connection','Connections',2);
+                  return _n('Connection','Connections', Session::getPluralNumber());
                }
                break;
          }

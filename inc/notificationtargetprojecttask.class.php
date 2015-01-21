@@ -537,7 +537,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
                     'document.name'           => sprintf(__('%1$s: %2$s'), __('Document'),
                                                          __('Name')),
                     'projecttask.urldocument' => sprintf(__('%1$s: %2$s'),
-                                                         _n('Document', 'Documents', 2), __('URL')),
+                                                         _n('Document', 'Documents', Session::getPluralNumber()), __('URL')),
                     'projecttask.entity'      => sprintf(__('%1$s (%2$s)'),
                                                          __('Entity'), __('Complete name')),
                     'projecttask.shortentity' => sprintf(__('%1$s (%2$s)'),
@@ -561,9 +561,9 @@ class NotificationTargetProjectTask extends NotificationTarget {
       //Tags with just lang
       $tags = array('projecttask.entity'   => __('Entity'),
                     'projecttask.log'      => __('Historical'),
-                    'projecttask.tasks'    => _n('Task', 'Tasks', 2),
+                    'projecttask.tasks'    => _n('Task', 'Tasks', Session::getPluralNumber()),
                     'projecttask.team'     => __('Project team'),
-                    'projecttask.tickets'  => _n('Ticket', 'Tickets', 2));
+                    'projecttask.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -574,9 +574,9 @@ class NotificationTargetProjectTask extends NotificationTarget {
 
       //Foreach global tags
       $tags = array('log'         => __('Historical'),
-                    'tasks'       => _n('Task', 'Tasks', 2),
-                    'tickets'     => _n('Ticket', 'Tickets', 2),
-                    'teammembers' => _n('Team member', 'Team members', 2));
+                    'tasks'       => _n('Task', 'Tasks', Session::getPluralNumber()),
+                    'tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+                    'teammembers' => _n('Team member', 'Team members', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,

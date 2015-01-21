@@ -71,7 +71,7 @@ class RuleSoftwareCategory extends Rule {
       }
 
       $criterias['name']['field']         = 'name';
-      $criterias['name']['name']          = _n('Software', 'Software', 2);
+      $criterias['name']['name']          = _n('Software', 'Software', Session::getPluralNumber());
       $criterias['name']['table']         = 'glpi_softwares';
 
       $criterias['manufacturer']['field'] = 'name';

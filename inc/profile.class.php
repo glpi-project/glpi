@@ -1435,10 +1435,10 @@ class Profile extends CommonDBTM {
                             'label'     => __('Document type'),
                             'field'     => 'typedoc'),
                       array('itemtype'  => 'Link',
-                            'label'     => _n('External link', 'External links',2),
+                            'label'     => _n('External link', 'External links', Session::getPluralNumber()),
                             'field'     => 'link'),
                       array('itemtype'  => 'Notification',
-                            'label'     => _n('Notification', 'Notifications',2),
+                            'label'     => _n('Notification', 'Notifications', Session::getPluralNumber()),
                             'field'     => 'notification'),
                       array('itemtype'  => 'SLA',
                             'label'     => __('SLA'),
@@ -1542,7 +1542,7 @@ class Profile extends CommonDBTM {
 
       $tab[24]['table']          = 'glpi_profilerights';
       $tab[24]['field']          = 'rights';
-      $tab[24]['name']           = _n('Printer', 'Printers',2);
+      $tab[24]['name']           = _n('Printer', 'Printers', Session::getPluralNumber());
       $tab[24]['datatype']       = 'right';
       $tab[24]['rightclass']     = 'Printer';
       $tab[24]['rightname']      = 'printer';
@@ -1694,7 +1694,7 @@ class Profile extends CommonDBTM {
 
       $tab[106]['table']         = 'glpi_profilerights';
       $tab[106]['field']         = 'rights';
-      $tab[106]['name']          = _n('Notification', 'Notifications',2);
+      $tab[106]['name']          = _n('Notification', 'Notifications', Session::getPluralNumber());
       $tab[106]['datatype']      = 'right';
       $tab[106]['rightclass']    = 'Notification';
       $tab[106]['rightname']     = 'notification';
@@ -1712,7 +1712,7 @@ class Profile extends CommonDBTM {
 
       $tab[46]['table']          = 'glpi_profilerights';
       $tab[46]['field']          = 'rights';
-      $tab[46]['name']           = _n('External link', 'External links',2);
+      $tab[46]['name']           = _n('External link', 'External links', Session::getPluralNumber());
       $tab[46]['datatype']       = 'right';
       $tab[46]['rightclass']     = 'Link';
       $tab[46]['rightname']      = 'link';

@@ -174,9 +174,9 @@ class SLA extends CommonDBTM {
       echo "<td>";
       Dropdown::showNumber("resolution_time", array('value' => $this->fields["resolution_time"],
                                                     'min'   => 0));
-      $possible_values = array('minute'   => _n('Minute', 'Minutes', 2),
-                               'hour'     => _n('Hour', 'Hours', 2),
-                               'day'      => _n('Day', 'Days', 2));
+      $possible_values = array('minute'   => _n('Minute', 'Minutes', Session::getPluralNumber()),
+                               'hour'     => _n('Hour', 'Hours', Session::getPluralNumber()),
+                               'day'      => _n('Day', 'Days', Session::getPluralNumber()));
       $rand = Dropdown::showFromArray('definition_time', $possible_values,
                                       array('value'     => $this->fields["definition_time"],
                                             'on_change' => 'appearhideendofworking()'));

@@ -124,7 +124,7 @@ class NotificationMailSetting extends CommonDBTM {
       echo "<div>";
       echo "<input type='hidden' name='id' value='1'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Notification', 'Notifications',2)."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>"._n('Notification', 'Notifications', Session::getPluralNumber())."</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>" . __('Enable followup via email') . "</td><td>";
       Dropdown::showYesNo("use_mailing", $CFG_GLPI["use_mailing"]);

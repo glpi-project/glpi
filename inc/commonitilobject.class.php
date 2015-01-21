@@ -2864,7 +2864,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                                              => 'AND NEWTABLE.`type`
                                                                   = '.CommonITILActor::ASSIGN)));
 
-      $tab['notification']      = _n('Notification', 'Notifications',2);
+      $tab['notification']      = _n('Notification', 'Notifications', Session::getPluralNumber());
 
       $tab[35]['table']         = getTableForItemType($this->userlinkclass);
       $tab[35]['field']         = 'use_notification';
@@ -4197,7 +4197,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>"._n('Date', 'Dates',2)."</th></tr>";
+      echo "<tr><th colspan='2'>"._n('Date', 'Dates', Session::getPluralNumber())."</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('Opening date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['date'])."</td></tr>";
@@ -4216,7 +4216,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<td>".Html::convDateTime($this->fields['closedate'])."</td></tr>";
       }
 
-      echo "<tr><th colspan='2'>"._n('Time', 'Times',2)."</th></tr>";
+      echo "<tr><th colspan='2'>"._n('Time', 'Times', Session::getPluralNumber())."</th></tr>";
 
       if (isset($this->fields['takeintoaccount_delay_stat'])) {
          echo "<tr class='tab_bg_2'><td>".__('Take into account')."</td><td>";
@@ -5144,7 +5144,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $items[__('Last update')]        = "date_mod";
 
       if (count($_SESSION["glpiactiveentities"]) > 1) {
-         $items[_n('Entity', 'Entities', 2)] = "glpi_entities.completename";
+         $items[_n('Entity', 'Entities', Session::getPluralNumber())] = "glpi_entities.completename";
       }
 
       $items[__('Priority')]           = "priority";

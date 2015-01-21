@@ -101,7 +101,7 @@ class NotificationTargetMailCollector extends NotificationTarget {
       }
 
       //Foreach global tags
-      $tags = array('mailcollectors' => _n('Receiver', 'Receivers', 2));
+      $tags = array('mailcollectors' => _n('Receiver', 'Receivers', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,

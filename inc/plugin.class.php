@@ -351,7 +351,7 @@ class Plugin extends CommonDBTM {
       if (!empty($pluglist)) {
          echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions',1)."</th>";
          echo "<th>".__('License')."</th>";
-         echo "<th>".__('Status')."</th><th>"._n('Author', 'Authors',2)."</th>";
+         echo "<th>".__('Status')."</th><th>"._n('Author', 'Authors', Session::getPluralNumber())."</th>";
          echo "<th>".__('Website')."</th>";
          echo "<th>".__('CSRF compliant')."</th>";
          echo "<th colspan='2'>&nbsp;</th></tr>\n";

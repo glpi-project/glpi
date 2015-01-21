@@ -297,7 +297,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[9]['table']              = 'glpi_cartridgeitems';
       $tab[9]['field']              = '_virtual';
-      $tab[9]['name']               = _n('Cartridge','Cartridges',2);
+      $tab[9]['name']               = _n('Cartridge','Cartridges', Session::getPluralNumber());
       $tab[9]['datatype']           = 'specific';
       $tab[9]['massiveaction']      = false;
       $tab[9]['nosearch']           = true;

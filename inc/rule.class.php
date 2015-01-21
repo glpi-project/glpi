@@ -1056,7 +1056,7 @@ class Rule extends CommonDBTM {
 
       echo "<table $style>";
       echo "<tr class='noHover'>";
-      echo "<th colspan='".($canedit && $nb?'4':'3')."'>" . _n('Action','Actions',2) . "</th></tr>";
+      echo "<th colspan='".($canedit && $nb?'4':'3')."'>" . _n('Action','Actions', Session::getPluralNumber()) . "</th></tr>";
 
       $header_begin  = "<tr>";
       $header_top    = '';

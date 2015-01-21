@@ -99,8 +99,8 @@ class Planning extends CommonGLPI {
             $tabs[2] = __('Group View');
          }
          if (Session::haveRight(self::$rightname, self::READALL)) {
-            $tabs[3] = _n('User', 'Users', 2);
-            $tabs[4] = _n('Group', 'Groups', 2);
+            $tabs[3] = _n('User', 'Users', Session::getPluralNumber());
+            $tabs[4] = _n('Group', 'Groups', Session::getPluralNumber());
          }
 
          return $tabs;

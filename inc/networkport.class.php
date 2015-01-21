@@ -579,7 +579,7 @@ class NetworkPort extends CommonDBChild {
          }
 
          $c_network = $table->addHeader('Internet', _n(__('Internet information'),
-                                                       __('Internet information'), 2));
+                                                       __('Internet information'), Session::getPluralNumber()));
          $c_network->setHTMLClass('center');
 
       } else {
@@ -836,7 +836,7 @@ class NetworkPort extends CommonDBChild {
          echo "</td></tr>\n";
 
       } else {
-         echo "<tr class='tab_bg_1'><td>". _n('Port number', 'Port numbers', 2) ."</td>\n";
+         echo "<tr class='tab_bg_1'><td>". _n('Port number', 'Port numbers', Session::getPluralNumber()) ."</td>\n";
          echo "<td>";
          echo "<input type='hidden' name='several' value='yes'>";
          echo "<input type='hidden' name='logical_number' value=''>\n";

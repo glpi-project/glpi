@@ -153,9 +153,9 @@ class Notification extends CommonDBTM {
 
       if (Notification::canView()
           || Config::canView()) {
-         $menu['title']                                      = _n('Notification', 'Notifications', 2);
+         $menu['title']                                      = _n('Notification', 'Notifications', Session::getPluralNumber());
          $menu['page']                                       = '/front/setup.notification.php';
-         $menu['options']['notification']['title']           = _n('Notification', 'Notifications', 2);
+         $menu['options']['notification']['title']           = _n('Notification', 'Notifications', Session::getPluralNumber());
          $menu['options']['notification']['page']            = '/front/notification.php';
          $menu['options']['notification']['links']['add']    = '/front/notification.form.php';
          $menu['options']['notification']['links']['search'] = '/front/notification.php';
@@ -164,7 +164,7 @@ class Notification extends CommonDBTM {
          $menu['options']['config']['page']  = '/front/notificationmailsetting.form.php';
 
          $menu['options']['notificationtemplate']['title']
-                        = _n('Notification template', 'Notification templates', 2);
+                        = _n('Notification template', 'Notification templates', Session::getPluralNumber());
          $menu['options']['notificationtemplate']['page']
                         = '/front/notificationtemplate.php';
          $menu['options']['notificationtemplate']['links']['add']
@@ -346,7 +346,7 @@ class Notification extends CommonDBTM {
 
       $tab[4]['table']           = 'glpi_notificationtemplates';
       $tab[4]['field']           = 'name';
-      $tab[4]['name']            = _n('Notification template', 'Notification templates', 2);
+      $tab[4]['name']            = _n('Notification template', 'Notification templates', Session::getPluralNumber());
       $tab[4]['datatype']        = 'itemlink';
 
       $tab[5]['table']           = $this->getTable();

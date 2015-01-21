@@ -267,7 +267,7 @@ class Change_Item extends CommonDBRelation{
                                              "`changes_id` = '".$item->getID()."'");
                }
 
-               return self::createTabEntry(_n('Item', 'Items', 2), $nb);
+               return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
          }
       }
       return '';

@@ -492,7 +492,7 @@ class Reminder extends CommonDBTM {
                      return array(1 => self::createTabEntry(_n('Target','Targets',$nb),
                                                             $nb));
                   }
-                  return array(1 => _n('Target','Targets',2));
+                  return array(1 => _n('Target','Targets', Session::getPluralNumber()));
                }
          }
       }
@@ -1038,7 +1038,7 @@ class Reminder extends CommonDBTM {
                    ORDER BY `glpi_reminders`.`name`";
 
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.php'>".
-                    _n('Personal reminder', 'Personal reminders', 2)."</a>";
+                    _n('Personal reminder', 'Personal reminders', Session::getPluralNumber())."</a>";
 
       } else {
          // Show public reminders / not mines : need to have access to public reminders
@@ -1062,9 +1062,9 @@ class Reminder extends CommonDBTM {
 
          if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
             $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".
-                       _n('Public reminder', 'Public reminders', 2)."</a>";
+                       _n('Public reminder', 'Public reminders', Session::getPluralNumber())."</a>";
          } else {
-            $titre = _n('Public reminder', 'Public reminders', 2);
+            $titre = _n('Public reminder', 'Public reminders', Session::getPluralNumber());
          }
       }
 
@@ -1187,7 +1187,7 @@ class Reminder extends CommonDBTM {
          $header_end    .= "</th>";
       }
       $header_end .= "<th>".__('Type')."</th>";
-      $header_end .= "<th>"._n('Recipient', 'Recipients', 2)."</th>";
+      $header_end .= "<th>"._n('Recipient', 'Recipients', Session::getPluralNumber())."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 

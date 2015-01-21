@@ -82,7 +82,7 @@ class TicketRecurrent extends CommonDropdown {
       if (Session::haveRight('tickettemplate', READ)) {
          switch ($item->getType()) {
             case 'TicketRecurrent' :
-               $ong[1] = _n('Information', 'Information', 2);
+               $ong[1] = _n('Information', 'Information', Session::getPluralNumber());
                return $ong;
          }
       }

@@ -158,7 +158,7 @@ abstract class CommonDropdown extends CommonDBTM {
    function title() {
 
       if ($this->display_dropdowntitle) {
-         Dropdown::showItemTypeMenu(_n('Dropdown', 'Dropdowns', 2),
+         Dropdown::showItemTypeMenu(_n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
                                     Dropdown::getStandardDropdownItemTypes(),
                                     $this->getSearchURL());
       }

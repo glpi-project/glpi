@@ -159,11 +159,11 @@ class Link_Itemtype extends CommonDBChild {
          switch ($item->getType()) {
             case 'Link' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Associated item type', 'Associated item types',2),
+                  return self::createTabEntry(_n('Associated item type', 'Associated item types', Session::getPluralNumber()),
                                               countElementsInTable($this->getTable(),
                                                                    "links_id = '".$item->getID()."'"));
                }
-               return _n('Associated item type', 'Associated item types',2);
+               return _n('Associated item type', 'Associated item types', Session::getPluralNumber());
          }
       }
       return '';

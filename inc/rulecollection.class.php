@@ -804,7 +804,7 @@ class RuleCollection extends CommonDBTM {
       $buttons["rule.backup.php?action=export"] = _x('button', 'Export');
 
       Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/sauvegardes.png",
-                         _n('User', 'Users', 2), $title, $buttons);
+                         _n('User', 'Users', Session::getPluralNumber()), $title, $buttons);
    }
 
 
@@ -1246,7 +1246,7 @@ class RuleCollection extends CommonDBTM {
 
                echo "<table class='tab_cadre' style='width:100%'>";
                echo "<tr class='tab_bg_2'>";
-               echo "<th class='center b'>"._n('Field', 'Fields', 2)."</th>";
+               echo "<th class='center b'>"._n('Field', 'Fields', Session::getPluralNumber())."</th>";
                echo "<th class='center b'>".__('Action type')."</th>";
                echo "<th class='center b'>".__('Value')."</th>";
                echo "</tr>\n";
@@ -1487,7 +1487,7 @@ class RuleCollection extends CommonDBTM {
          echo "<form name='testrule_form' id='testrulesengine_form' method='post' action='$target'>";
          echo "\n<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>" . _n('Criterion', 'Criteria', 2) . "</th></tr>\n";
+         echo "<tr><th colspan='2'>" . _n('Criterion', 'Criteria', Session::getPluralNumber()) . "</th></tr>\n";
 
          //Brower all criterias
          foreach ($input as $criteria) {
@@ -1901,7 +1901,7 @@ class RuleCollection extends CommonDBTM {
                               Dropdown::getDropdownName('glpi_entities',
                                                         $_SESSION['glpiactive_entity']));
          }
-         $title = _n('Rule', 'Rules', 2);
+         $title = _n('Rule', 'Rules', Session::getPluralNumber());
          if ($item->isRuleRecursive()) {
             //TRANS: %s is the entity name
             $title = sprintf(__('Local rules: %s'),

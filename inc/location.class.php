@@ -182,7 +182,7 @@ class Location extends CommonTreeDropdown {
             case __CLASS__ :
                $ong    = array();
                $ong[1] = $this->getTypeName(2);
-               $ong[2] = _n('Item', 'Items', 2);
+               $ong[2] = _n('Item', 'Items', Session::getPluralNumber());
                return $ong;
          }
       }

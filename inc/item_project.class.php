@@ -268,7 +268,7 @@ class Item_Project extends CommonDBRelation{
                                              "`projects_id` = '".$item->getID()."'");
                }
 
-               return self::createTabEntry(_n('Item', 'Items', 2), $nb);
+               return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
             default :
                // Not used now

@@ -720,7 +720,7 @@ class Contract extends CommonDBTM {
 
       $tab[29]['table']             = 'glpi_suppliers';
       $tab[29]['field']             = 'name';
-      $tab[29]['name']              = _n('Associated supplier', 'Associated suppliers', 2);
+      $tab[29]['name']              = _n('Associated supplier', 'Associated suppliers', Session::getPluralNumber());
       $tab[29]['forcegroupby']      = true;
       $tab[29]['datatype']          = 'itemlink';
       $tab[29]['massiveaction']     = false;
@@ -745,7 +745,7 @@ class Contract extends CommonDBTM {
 
       $tab[41]['table']             = 'glpi_contractcosts';
       $tab[41]['field']             = 'cost';
-      $tab[41]['name']              = _n('Cost', 'Costs', 2);
+      $tab[41]['name']              = _n('Cost', 'Costs', Session::getPluralNumber());
       $tab[41]['datatype']          = 'decimal';
       $tab[41]['forcegroupby']      = true;
       $tab[41]['massiveaction']     = false;

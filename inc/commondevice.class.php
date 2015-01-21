@@ -233,7 +233,7 @@ abstract class CommonDevice extends CommonDropdown {
 
    function title() {
 
-      Dropdown::showItemTypeMenu(_n('Component', 'Components', 2),
+      Dropdown::showItemTypeMenu(_n('Component', 'Components', Session::getPluralNumber()),
                                  Dropdown::getDeviceItemTypes(), $this->getSearchURL());
    }
 

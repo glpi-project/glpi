@@ -183,7 +183,7 @@ class NotificationTargetContract extends NotificationTarget {
       }
 
       //Foreach global tags
-      $tags = array('contracts' => _n('Contract', 'Contracts', 2));
+      $tags = array('contracts' => _n('Contract', 'Contracts', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,

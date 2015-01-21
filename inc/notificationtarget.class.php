@@ -314,7 +314,7 @@ class NotificationTarget extends CommonDBChild {
 
          }
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='4'>" . _n('Recipient', 'Recipients', 2) . "</th></tr>";
+         echo "<tr><th colspan='4'>" . _n('Recipient', 'Recipients', Session::getPluralNumber()) . "</th></tr>";
          echo "<tr class='tab_bg_2'>";
 
          $values = array();

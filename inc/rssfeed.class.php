@@ -474,7 +474,7 @@ class RSSFeed extends CommonDBTM {
                                2 => self::createTabEntry(_n('Target','Targets', $nb),
                                                          $nb));
                }
-               return array(2 => _n('Target','Targets',2));
+               return array(2 => _n('Target','Targets', Session::getPluralNumber()));
          }
       }
       return '';
@@ -856,7 +856,7 @@ class RSSFeed extends CommonDBTM {
                    ORDER BY `glpi_rssfeeds`.`name`";
 
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/rssfeed.php'>".
-                    _n('Personal RSS feed', 'Personal RSS feeds', 2)."</a>";
+                    _n('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber())."</a>";
 
       } else {
          // Show public rssfeeds / not mines : need to have access to public rssfeeds
@@ -879,9 +879,9 @@ class RSSFeed extends CommonDBTM {
 
          if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
             $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/rssfeed.php\">".
-                       _n('Public RSS feed', 'Public RSS feeds', 2)."</a>";
+                       _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber())."</a>";
          } else {
-            $titre = _n('Public RSS feed', 'Public RSS feeds', 2);
+            $titre = _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber());
          }
       }
 
@@ -1021,7 +1021,7 @@ class RSSFeed extends CommonDBTM {
          $header_end    .= "</th>";
       }
       $header_end .= "<th>".__('Type')."</th>";
-      $header_end .= "<th>"._n('Recipient', 'Recipients', 2)."</th>";
+      $header_end .= "<th>"._n('Recipient', 'Recipients', Session::getPluralNumber())."</th>";
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 

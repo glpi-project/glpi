@@ -562,7 +562,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab                       = array();
 
-      $tab['task']               = _n('Task', 'Tasks', 2);
+      $tab['task']               = _n('Task', 'Tasks', Session::getPluralNumber());
 
       $tab[26]['table']          = static::getTable();
       $tab[26]['field']          = 'content';

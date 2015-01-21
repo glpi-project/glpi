@@ -5020,7 +5020,7 @@ class Search {
          }
 
          if (in_array($itemtype, $CFG_GLPI["link_types"])) {
-            $search[$itemtype]['link'] = _n('External link', 'External links',2);
+            $search[$itemtype]['link'] = _n('External link', 'External links', Session::getPluralNumber());
             $search[$itemtype] += Link::getSearchOptionsToAdd($itemtype);
          }
 
@@ -5028,7 +5028,7 @@ class Search {
             // Search options added by plugins
             $plugsearch = Plugin::getAddSearchOptions($itemtype);
             if (count($plugsearch)) {
-               $search[$itemtype] += array('plugins' => _n('Plugin','Plugins',2));
+               $search[$itemtype] += array('plugins' => _n('Plugin','Plugins', Session::getPluralNumber()));
                $search[$itemtype] += $plugsearch;
             }
          }

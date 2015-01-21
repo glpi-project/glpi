@@ -52,11 +52,11 @@ class Link extends CommonDBTM {
 
       if (self::canView()) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(_n('Link','Links',2),
+            return self::createTabEntry(_n('Link','Links', Session::getPluralNumber()),
                                         countElementsInTable('glpi_links_itemtypes',
                                                              "`itemtype` = '".$item->getType()."'"));
          }
-         return _n('Link','Links',2);
+         return _n('Link','Links', Session::getPluralNumber());
       }
       return '';
    }
@@ -520,7 +520,7 @@ class Link extends CommonDBTM {
 
       $tab[145]['table']             = 'glpi_links';
       $tab[145]['field']             = '_virtual';
-      $tab[145]['name']              = _n('External link', 'External links', 2);
+      $tab[145]['name']              = _n('External link', 'External links', Session::getPluralNumber());
       $tab[145]['datatype']          = 'specific';
       $tab[145]['additionalfields']  = array('id','link', 'name', 'data', 'open_window');
       $tab[145]['nosearch']          = true;

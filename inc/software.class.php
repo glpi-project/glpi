@@ -561,7 +561,7 @@ class Software extends CommonDBTM {
       $tab[86]['datatype']       = 'bool';
       $tab[86]['massiveaction']  = false;
 
-      $tab['versions']           = _n('Version', 'Versions',2);
+      $tab['versions']           = _n('Version', 'Versions', Session::getPluralNumber());
 
       $tab[5]['table']           = 'glpi_softwareversions';
       $tab[5]['field']           = 'name';
@@ -600,7 +600,7 @@ class Software extends CommonDBTM {
 
       $tab += Notepad::getSearchOptionsToAdd();
 
-      $tab['license']            = _n('License', 'Licenses', 2);
+      $tab['license']            = _n('License', 'Licenses', Session::getPluralNumber());
 
       $licjoin       = array();
       $licjoinexpire = array();
@@ -653,7 +653,7 @@ class Software extends CommonDBTM {
       $tab[164]['table']         = 'glpi_softwarelicensetypes';
       $tab[164]['field']         = 'name';
       $tab[164]['datatype']      = 'dropdown';
-      $tab[164]['name']          = _n('License type', 'License types', 2);
+      $tab[164]['name']          = _n('License type', 'License types', Session::getPluralNumber());
       $tab[164]['forcegroupby']  = true;
       $tab[164]['massiveaction'] = false;
       $tab[164]['joinparams']    = array('beforejoin'
@@ -963,8 +963,8 @@ class Software extends CommonDBTM {
          echo "</th>";
          echo "<th>".__('Name')."</th>";
          echo "<th>".__('Entity')."</th>";
-         echo "<th>"._n('Installation', 'Installations', 2)."</th>";
-         echo "<th>"._n('License', 'Licenses', 2)."</th></tr>";
+         echo "<th>"._n('Installation', 'Installations', Session::getPluralNumber())."</th>";
+         echo "<th>"._n('License', 'Licenses', Session::getPluralNumber())."</th></tr>";
 
          foreach ($req as $data) {
             echo "<tr class='tab_bg_2'>";

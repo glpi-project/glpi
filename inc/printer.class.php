@@ -421,7 +421,7 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Port','Ports',2)."</td>";
+      echo "<td>"._n('Port','Ports', Session::getPluralNumber())."</td>";
       echo "<td>\n<table>";
       // serial interface
       echo "<tr><td>".__('Serial')."</td><td width='80'>";
@@ -636,7 +636,7 @@ class Printer  extends CommonDBTM {
       $tab[9]['table']             = 'glpi_printers';
       $tab[9]['field']             = '_virtual';
       $tab[9]['linkfield']         = '_virtual';
-      $tab[9]['name']              = _n('Cartridge','Cartridges',2);
+      $tab[9]['name']              = _n('Cartridge','Cartridges', Session::getPluralNumber());
       $tab[9]['datatype']          = 'specific';
       $tab[9]['massiveaction']     = false;
       $tab[9]['nosearch']          = true;

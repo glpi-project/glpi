@@ -83,7 +83,7 @@ class NetworkEquipment extends CommonDBTM {
     * @since version 0.85
    **/
    static function getMenuName() {
-      return _n('Network', 'Networks', 2);
+      return _n('Network', 'Networks', Session::getPluralNumber());
    }
 
 

@@ -392,7 +392,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          switch ($item->getType()) {
             case 'NotificationTemplate' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Translation', 'Translations',2),
+                  return self::createTabEntry(_n('Translation', 'Translations', Session::getPluralNumber()),
                                               countElementsInTable($this->getTable(),
                                                                    "notificationtemplates_id
                                                                         = '".$item->getID()."'"));

@@ -132,9 +132,9 @@ class Infocom extends CommonDBChild {
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Item', 'Items', 2), self::countForSupplier($item));
+                  return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), self::countForSupplier($item));
                }
-               return _n('Item', 'Items', 2);
+               return _n('Item', 'Items', Session::getPluralNumber());
 
             default :
                if ($_SESSION['glpishow_count_on_tabs']) {

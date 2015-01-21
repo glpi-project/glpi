@@ -189,7 +189,7 @@ class Profile_User extends CommonDBRelation {
             $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
             $header_end    .= "</th>";
          }
-         $header_end .= "<th>"._n('Entity', 'Entities', 2)."</th>";
+         $header_end .= "<th>"._n('Entity', 'Entities', Session::getPluralNumber())."</th>";
          $header_end .= "<th>".sprintf(__('%1$s (%2$s)'), self::getTypeName(2),
                                        __('D=Dynamic, R=Recursive'));
          $header_end .= "</th></tr>";
@@ -333,7 +333,7 @@ class Profile_User extends CommonDBRelation {
       echo "<thead><tr>";
 
       echo "<th class='noHover' colspan='$headerspan'>";
-      printf(__('%1$s (%2$s)'), _n('User', 'Users', 2), __('D=Dynamic, R=Recursive'));
+      printf(__('%1$s (%2$s)'), _n('User', 'Users', Session::getPluralNumber()), __('D=Dynamic, R=Recursive'));
       echo "</th></tr></thead>";
 
 
@@ -481,7 +481,7 @@ class Profile_User extends CommonDBRelation {
       echo "<table class='tab_cadre_fixe'><tr>";
       echo "<th>".sprintf(__('%1$s: %2$s'), __('Profile'), $prof->fields["name"])."</th></tr>\n";
 
-      echo "<tr><th colspan='2'>".sprintf(__('%1$s (%2$s)'), _n('User', 'Users', 2),
+      echo "<tr><th colspan='2'>".sprintf(__('%1$s (%2$s)'), _n('User', 'Users', Session::getPluralNumber()),
                                           __('D=Dynamic, R=Recursive'))."</th></tr>";
       echo "</table>\n";
       echo "<table class='tab_cadre_fixe'>";
@@ -926,7 +926,7 @@ class Profile_User extends CommonDBRelation {
                      $nb = countElementsInTable($this->getTable(),
                                                 "entities_id = '".$item->getID()."'");
                   }
-                  return self::createTabEntry(_n('User', 'Users', 2), $nb);
+                  return self::createTabEntry(_n('User', 'Users', Session::getPluralNumber()), $nb);
                }
                break;
 
@@ -942,7 +942,7 @@ class Profile_User extends CommonDBRelation {
                                                                             $_SESSION['glpiactiveentities'],
                                                                             true));
                   }
-                  return self::createTabEntry(_n('User', 'Users', 2), $nb);
+                  return self::createTabEntry(_n('User', 'Users', Session::getPluralNumber()), $nb);
                }
                break;
 
@@ -951,7 +951,7 @@ class Profile_User extends CommonDBRelation {
                   $nb = countElementsInTable($this->getTable(),
                                              "users_id = '".$item->getID()."'");
                }
-               return self::createTabEntry(_n('Authorization','Authorizations',2), $nb);
+               return self::createTabEntry(_n('Authorization','Authorizations', Session::getPluralNumber()), $nb);
 
          }
       }

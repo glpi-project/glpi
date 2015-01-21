@@ -63,7 +63,7 @@ class Central extends CommonGLPI {
          $tabs[1] = __('Personal View');
          $tabs[2] = __('Group View');
          $tabs[3] = __('Global View');
-         $tabs[4] = _n('RSS feed', 'RSS feeds', 2);
+         $tabs[4] = _n('RSS feed', 'RSS feeds', Session::getPluralNumber());
 
          return $tabs;
       }

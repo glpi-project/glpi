@@ -555,7 +555,7 @@ class Ticket extends CommonITILObject {
             return $ong;
 
       //   default :
-      //      return _n('Ticket','Tickets',2);
+      //      return _n('Ticket','Tickets', Session::getPluralNumber());
       }
 
       return '';
@@ -5044,7 +5044,7 @@ class Ticket extends CommonITILObject {
                 Toolbox::append_params($options,'&amp;')."\">".__('Ticket followup')."</a>";
       }
       echo "</th></tr>";
-      echo "<tr><th>"._n('Ticket','Tickets',2)."</th><th>"._x('quantity', 'Number')."</th></tr>";
+      echo "<tr><th>"._n('Ticket','Tickets', Session::getPluralNumber())."</th><th>"._x('quantity', 'Number')."</th></tr>";
 
       foreach ($status as $key => $val) {
          $options['criteria'][0]['value'] = $key;
