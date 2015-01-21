@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-09 11:15+0100\n"
+"POT-Creation-Date: 2014-12-11 14:09+0100\n"
 "PO-Revision-Date: 2014-11-12 14:50+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Thai (Thailand) (http://www.transifex.com/projects/p/GLPI/language/th_TH/)\n"
@@ -137,7 +137,7 @@ msgstr "การเข้าถึงคำถามที่พบบ่อย
 #: inc/reservationitem.class.php:527 inc/reservationitem.class.php:614
 #: inc/ruleticket.class.php:536 inc/ruleticket.class.php:542
 #: inc/ruleticket.class.php:548 inc/search.class.php:1279
-#: inc/search.class.php:3860 inc/search.class.php:3898
+#: inc/search.class.php:3863 inc/search.class.php:3901
 #: inc/softwareversion.class.php:234 inc/stat.class.php:1275
 #: inc/stat.class.php:1278 inc/stat.class.php:1281 inc/stat.class.php:1482
 #: inc/state.class.php:286 inc/state.class.php:291 inc/state.class.php:297
@@ -224,8 +224,8 @@ msgstr "%1$s - Network outlet %2$s"
 #: inc/profile_user.class.php:336 inc/profile_user.class.php:484
 #: inc/projectcost.class.php:374 inc/rule.class.php:2148
 #: inc/rulecollection.class.php:1195 inc/rulemailcollector.class.php:201
-#: inc/rulemailcollector.class.php:206 inc/search.class.php:4214
-#: inc/search.class.php:4346 inc/session.class.php:361
+#: inc/rulemailcollector.class.php:206 inc/search.class.php:4217
+#: inc/search.class.php:4349 inc/session.class.php:361
 #: inc/session.class.php:364 inc/softwareversion.class.php:231
 #: inc/supplier.class.php:485 inc/ticket.class.php:1562
 #: inc/ticket.class.php:2581 inc/ticket.class.php:2660
@@ -517,7 +517,7 @@ msgstr[0] "เมล์"
 #: inc/contract_supplier.class.php:190 inc/contract_supplier.class.php:333
 #: inc/displaypreference.class.php:334 inc/displaypreference.class.php:482
 #: inc/document_item.class.php:326 inc/group_user.class.php:173
-#: inc/group_user.class.php:316 inc/item_devices.class.php:427
+#: inc/group_user.class.php:316 inc/item_devices.class.php:426
 #: inc/item_problem.class.php:147 inc/item_project.class.php:143
 #: inc/link_itemtype.class.php:101 inc/netpoint.class.php:277
 #: inc/netpoint.class.php:300 inc/networkport.class.php:511
@@ -593,7 +593,7 @@ msgstr "เพิ่ม"
 #: inc/reservationitem.class.php:193 inc/reservationitem.class.php:328
 #: inc/rssfeed.class.php:435 inc/rssfeed.class.php:636 inc/rule.class.php:728
 #: inc/rule.class.php:857 inc/ruledictionnaryprinter.class.php:83
-#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:4909
+#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:4912
 #: inc/sla.class.php:152 inc/sla.class.php:247 inc/software.class.php:280
 #: inc/software.class.php:476 inc/softwarelicense.class.php:294
 #: inc/softwarelicense.class.php:434 inc/softwareversion.class.php:122
@@ -624,8 +624,8 @@ msgstr "ทั้งหมด"
 #: inc/commonitiltask.class.php:1277 inc/dbconnection.class.php:428
 #: inc/dropdown.class.php:1804 inc/group_user.class.php:177
 #: inc/group_user.class.php:264 inc/htmltablemain.class.php:240
-#: inc/item_devices.class.php:607 inc/planningrecall.class.php:248
-#: inc/profileright.class.php:304 inc/search.class.php:4160
+#: inc/item_devices.class.php:619 inc/planningrecall.class.php:248
+#: inc/profileright.class.php:304 inc/search.class.php:4163
 msgid "None"
 msgstr "ไม่มี"
 
@@ -837,8 +837,7 @@ msgstr "ไม่มีข้อจำกัด"
 
 #: ajax/subvisibility.php:63 front/report.contract.list.php:178
 #: front/report.infocom.php:123 front/report.year.list.php:134
-#: inc/authldap.class.php:3055 inc/budget.class.php:229
-#: inc/budget.class.php:279 inc/budget.class.php:594
+#: inc/budget.class.php:229 inc/budget.class.php:279 inc/budget.class.php:594
 #: inc/cartridgeitem.class.php:368 inc/change_item.class.php:170
 #: inc/commondbtm.class.php:3399 inc/commondevice.class.php:227
 #: inc/commondropdown.class.php:423 inc/commonitilcost.class.php:152
@@ -858,7 +857,7 @@ msgstr "ไม่มีข้อจำกัด"
 #: inc/document_item.class.php:356 inc/document_item.class.php:525
 #: inc/entity.class.php:129 inc/fieldunicity.class.php:369
 #: inc/group.class.php:739 inc/infocom.class.php:1574
-#: inc/ipnetwork_vlan.class.php:168 inc/item_devices.class.php:120
+#: inc/ipnetwork_vlan.class.php:168 inc/item_devices.class.php:119
 #: inc/item_problem.class.php:173 inc/item_project.class.php:169
 #: inc/knowbaseitem.class.php:1578 inc/knowbaseitem.class.php:1727
 #: inc/link.class.php:188 inc/location.class.php:271 inc/monitor.class.php:534
@@ -897,7 +896,7 @@ msgstr "ไม่มีข้อจำกัด"
 #: inc/ruleimportcomputer.class.php:434 inc/ruleimportentity.class.php:161
 #: inc/rulemailcollector.class.php:185 inc/ruleright.class.php:295
 #: inc/rulerightcollection.class.php:153 inc/ruleticket.class.php:419
-#: inc/search.class.php:4947 inc/sla.class.php:252 inc/software.class.php:534
+#: inc/search.class.php:4950 inc/sla.class.php:252 inc/software.class.php:534
 #: inc/software.class.php:965 inc/softwarelicense.class.php:625
 #: inc/softwarelicense.class.php:854 inc/stat.class.php:1461
 #: inc/supplier.class.php:311 inc/supplier.class.php:401
@@ -1238,7 +1237,7 @@ msgstr "ตั้งค่า"
 #: front/change.form.php:49 front/computer.form.php:52
 #: front/consumableitem.form.php:50 front/contact.form.php:57
 #: front/contract.form.php:55 front/document.form.php:50
-#: front/dropdown.common.form.php:57 front/dropdown.common.form.php:61
+#: front/dropdown.common.form.php:56 front/dropdown.common.form.php:60
 #: front/group.form.php:48 front/infocom.form.php:43
 #: front/knowbaseitem.form.php:57 front/link.form.php:49
 #: front/mailcollector.form.php:49 front/monitor.form.php:52
@@ -1293,7 +1292,7 @@ msgstr "%s กู้คืนรายการ"
 #: front/change.form.php:80 front/computer.form.php:85
 #: front/consumableitem.form.php:83 front/contact.form.php:90
 #: front/contract.form.php:89 front/document.form.php:85
-#: front/dropdown.common.form.php:82 front/group.form.php:68
+#: front/dropdown.common.form.php:81 front/group.form.php:68
 #: front/infocom.form.php:51 front/item_device.common.form.php:57
 #: front/knowbaseitem.form.php:80 front/link.form.php:57
 #: front/mailcollector.form.php:62 front/monitor.form.php:83
@@ -1318,7 +1317,7 @@ msgstr "%s ล้างรายการ"
 #: front/change.form.php:89 front/computer.form.php:95
 #: front/consumableitem.form.php:93 front/contact.form.php:100
 #: front/contract.form.php:99 front/document.form.php:95
-#: front/dropdown.common.form.php:101 front/group.form.php:77
+#: front/dropdown.common.form.php:100 front/group.form.php:77
 #: front/infocom.form.php:60 front/item_device.common.form.php:68
 #: front/knowbaseitem.form.php:71 front/link.form.php:65
 #: front/mailcollector.form.php:71 front/monitor.form.php:92
@@ -1603,9 +1602,9 @@ msgstr "งาน %s ดำเนินการ"
 #: inc/search.class.php:1538 inc/search.class.php:1542
 #: inc/search.class.php:1589 inc/search.class.php:1590
 #: inc/search.class.php:1595 inc/search.class.php:1596
-#: inc/search.class.php:3810 inc/search.class.php:3847
-#: inc/search.class.php:3874 inc/search.class.php:3912
-#: inc/search.class.php:4219 inc/search.class.php:4380
+#: inc/search.class.php:3813 inc/search.class.php:3850
+#: inc/search.class.php:3877 inc/search.class.php:3915
+#: inc/search.class.php:4222 inc/search.class.php:4383
 #: inc/ticket.class.php:2331 inc/ticket.class.php:5384
 #: inc/ticket.class.php:5440 inc/ticket_ticket.class.php:181
 #: inc/ticket_ticket.class.php:183 inc/toolbox.class.php:1058
@@ -1643,8 +1642,8 @@ msgstr ""
 #: front/device.php:38 front/device.php:42 inc/commondevice.class.php:56
 #: inc/commondevice.class.php:236 inc/computer.class.php:811
 #: inc/dropdown.class.php:706 inc/event.class.php:121
-#: inc/item_devices.class.php:295 inc/item_devices.class.php:297
-#: inc/item_devices.class.php:348 inc/lock.class.php:280
+#: inc/item_devices.class.php:294 inc/item_devices.class.php:296
+#: inc/item_devices.class.php:347 inc/lock.class.php:280
 #: inc/lock.class.php:489 inc/profile.class.php:1401
 #: inc/profile.class.php:1687 inc/transfer.class.php:3320
 #: install/update_0723_078.php:3889
@@ -1701,7 +1700,7 @@ msgstr[0] "โปรแกรม"
 #: inc/ruledictionnaryprinter.class.php:79
 #: inc/ruledictionnaryprinter.class.php:103
 #: inc/ruledictionnaryprintermodel.class.php:61
-#: inc/ruleimportcomputer.class.php:110 inc/search.class.php:4938
+#: inc/ruleimportcomputer.class.php:110 inc/search.class.php:4941
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] "ผู้ผลิต"
@@ -1795,8 +1794,8 @@ msgstr[0] "รุ่นโทรศัพท์"
 #: inc/devicememory.class.php:141 inc/devicesoundcard.class.php:54
 #: inc/devicesoundcard.class.php:71 inc/devicesoundcard.class.php:96
 #: inc/displaypreference.class.php:616 inc/document_item.class.php:354
-#: inc/dropdown.class.php:745 inc/fieldblacklist.class.php:61
-#: inc/fieldblacklist.class.php:83 inc/fieldunicity.class.php:76
+#: inc/dropdown.class.php:745 inc/fieldblacklist.class.php:69
+#: inc/fieldblacklist.class.php:91 inc/fieldunicity.class.php:76
 #: inc/fieldunicity.class.php:336 inc/group.class.php:684
 #: inc/group.class.php:739 inc/infocom.class.php:1557
 #: inc/item_problem.class.php:172 inc/item_project.class.php:168
@@ -1944,12 +1943,12 @@ msgid "Invalid filename"
 msgstr "ไม่มีไฟล์"
 
 #. TRANS: %s is the user login
-#: front/dropdown.common.form.php:92 front/group.form.php:91
+#: front/dropdown.common.form.php:91 front/group.form.php:91
 #, php-format
 msgid "%s replaces an item"
 msgstr "%s แทนที่รายการ"
 
-#: front/dropdown.common.form.php:111 inc/profile_user.class.php:99
+#: front/dropdown.common.form.php:110 inc/profile_user.class.php:99
 #: inc/transfer.class.php:3525
 msgid "No selected element or badly defined operation"
 msgstr "ไม่มีองค์ประกอบที่เลือกหรือการดำเนินงานที่ไม่ถูกต้อง"
@@ -2049,7 +2048,7 @@ msgstr "ค้นหา"
 #: inc/notificationtargetticket.class.php:626 inc/peripheral.class.php:235
 #: inc/peripheral.class.php:411 inc/phone.class.php:235
 #: inc/phone.class.php:442 inc/printer.class.php:337 inc/printer.class.php:564
-#: inc/search.class.php:4918
+#: inc/search.class.php:4921
 msgid "Alternate username"
 msgstr "ชื่อผู้ใช้งาน"
 
@@ -2099,8 +2098,8 @@ msgstr "องค์ประกอบที่เกี่ยวข้อง"
 #: inc/profile_user.class.php:849 inc/project.class.php:384
 #: inc/project.class.php:618 inc/projectcost.class.php:137
 #: inc/projecttask.class.php:575 inc/queuedmail.class.php:183
-#: inc/reservationitem.class.php:166 inc/search.class.php:4869
-#: inc/search.class.php:4890 inc/sla.class.php:222 inc/software.class.php:468
+#: inc/reservationitem.class.php:166 inc/search.class.php:4872
+#: inc/search.class.php:4893 inc/sla.class.php:222 inc/software.class.php:468
 #: inc/softwarelicense.class.php:852 inc/supplier.class.php:231
 #: inc/ticket.class.php:3767 inc/ticket.class.php:5374
 #: inc/ticket_ticket.class.php:65 inc/user.class.php:2516
@@ -2118,8 +2117,8 @@ msgstr "ID"
 #: inc/computer_softwareversion.class.php:1055
 #: inc/computervirtualmachine.class.php:268
 #: inc/computervirtualmachine.class.php:382 inc/contract_item.class.php:631
-#: inc/document_item.class.php:357 inc/item_devices.class.php:142
-#: inc/item_devices.class.php:143 inc/item_problem.class.php:175
+#: inc/document_item.class.php:357 inc/item_devices.class.php:141
+#: inc/item_devices.class.php:142 inc/item_problem.class.php:175
 #: inc/item_project.class.php:171 inc/location.class.php:273
 #: inc/monitor.class.php:236 inc/monitor.class.php:426
 #: inc/networkequipment.class.php:316 inc/networkequipment.class.php:479
@@ -2130,7 +2129,7 @@ msgstr "ID"
 #: inc/notificationtargetticket.class.php:620 inc/peripheral.class.php:229
 #: inc/peripheral.class.php:401 inc/phone.class.php:229
 #: inc/phone.class.php:432 inc/printer.class.php:331 inc/printer.class.php:554
-#: inc/ruleimportcomputer.class.php:104 inc/search.class.php:4901
+#: inc/ruleimportcomputer.class.php:104 inc/search.class.php:4904
 #: inc/softwarelicense.class.php:270 inc/softwarelicense.class.php:387
 #: inc/softwarelicense.class.php:626 inc/softwarelicense.class.php:853
 #: inc/supplier.class.php:403 inc/user.class.php:3412 inc/user.class.php:3492
@@ -2153,7 +2152,7 @@ msgstr "Serial No."
 #: inc/notificationtargetticket.class.php:621 inc/peripheral.class.php:239
 #: inc/peripheral.class.php:406 inc/phone.class.php:238
 #: inc/phone.class.php:437 inc/printer.class.php:341 inc/printer.class.php:559
-#: inc/reservationitem.class.php:188 inc/search.class.php:4905
+#: inc/reservationitem.class.php:188 inc/search.class.php:4908
 #: inc/softwarelicense.class.php:282 inc/softwarelicense.class.php:392
 #: inc/supplier.class.php:404 inc/user.class.php:3413 inc/user.class.php:3493
 msgid "Inventory number"
@@ -2175,12 +2174,12 @@ msgstr[0] "อุปกรณ์เน็ตเวร์ค"
 
 #: front/find_num.php:102 inc/lock.class.php:481 inc/monitor.class.php:57
 #: inc/profile.class.php:780 inc/profile.class.php:1518
-#: inc/transfer.class.php:3360 inc/wifinetwork.class.php:69
+#: inc/transfer.class.php:3360 inc/wifinetwork.class.php:72
 msgid "Monitor"
 msgid_plural "Monitors"
 msgstr[0] "จอภาพ"
 
-#: front/find_num.php:103 inc/item_devices.class.php:969
+#: front/find_num.php:103 inc/item_devices.class.php:981
 #: inc/lock.class.php:482 inc/peripheral.class.php:59
 #: inc/profile.class.php:801 inc/profile.class.php:1554
 #: inc/transfer.class.php:3380
@@ -2516,7 +2515,7 @@ msgstr "รายชื่อของฮาร์ดแวร์ที่อย
 #: inc/rulecollection.class.php:509 inc/rulecollection.class.php:1168
 #: inc/rulecriteria.class.php:157 inc/ruledictionnaryprinter.class.php:75
 #: inc/ruledictionnaryprinter.class.php:97 inc/ruleright.class.php:76
-#: inc/search.class.php:4863 inc/search.class.php:4884 inc/sla.class.php:149
+#: inc/search.class.php:4866 inc/search.class.php:4887 inc/sla.class.php:149
 #: inc/sla.class.php:216 inc/slalevel.class.php:124 inc/slalevel.class.php:170
 #: inc/slalevel.class.php:284 inc/software.class.php:244
 #: inc/software.class.php:462 inc/software.class.php:964
@@ -3009,7 +3008,7 @@ msgstr[0] "ผู้จำหน่าย"
 #: inc/project.class.php:873 inc/reminder.class.php:1204
 #: inc/reservationitem.class.php:199 inc/rssfeed.class.php:1038
 #: inc/rulecollection.class.php:807 inc/rulemailcollector.class.php:133
-#: inc/ruleticket.class.php:538 inc/search.class.php:4914
+#: inc/ruleticket.class.php:538 inc/search.class.php:4917
 #: inc/software.class.php:286 inc/software.class.php:511
 #: inc/ticketfollowup.class.php:974 inc/user.class.php:59
 #: install/update_0713_072.php:553
@@ -3063,7 +3062,7 @@ msgstr "หมวดหมู่"
 #: inc/project.class.php:880 inc/reminder.class.php:1220
 #: inc/reservationitem.class.php:206 inc/rssfeed.class.php:1055
 #: inc/rulemailcollector.class.php:134 inc/ruleticket.class.php:544
-#: inc/search.class.php:4928 inc/software.class.php:294
+#: inc/search.class.php:4931 inc/software.class.php:294
 #: inc/software.class.php:517 inc/user.class.php:2562 inc/user.class.php:3533
 msgid "Group"
 msgid_plural "Groups"
@@ -3156,7 +3155,7 @@ msgstr "ถัดไป"
 #: inc/notificationtargetchange.class.php:261
 #: inc/notificationtargetproblem.class.php:207
 #: inc/notificationtargetprojecttask.class.php:506 inc/problem.class.php:465
-#: inc/search.class.php:4964
+#: inc/search.class.php:4967
 msgctxt "quantity"
 msgid "Number of tickets"
 msgstr "จำนวน Tickets"
@@ -3259,7 +3258,7 @@ msgstr "Location tree"
 #: inc/projectcost.class.php:126 inc/projecttask.class.php:565
 #: inc/queuedmail.class.php:173 inc/reminder.class.php:372
 #: inc/reservationitem.class.php:155 inc/rssfeed.class.php:389
-#: inc/search.class.php:4859 inc/search.class.php:4880 inc/sla.class.php:212
+#: inc/search.class.php:4862 inc/search.class.php:4883 inc/sla.class.php:212
 #: inc/software.class.php:458 inc/softwarelicense.class.php:378
 #: inc/softwareversion.class.php:156 inc/supplier.class.php:221
 #: inc/ticketfollowup.class.php:949 inc/transfer.class.php:79
@@ -3435,7 +3434,7 @@ msgstr "ในแต่ล่ะเดือน"
 #: inc/entity.class.php:1575 inc/entity.class.php:2142
 #: inc/entity.class.php:2227 inc/entity.class.php:2383
 #: inc/plugin.class.php:455 inc/ruleimportcomputer.class.php:164
-#: inc/search.class.php:3039
+#: inc/search.class.php:3042
 msgid "No"
 msgstr "ไม่"
 
@@ -3443,7 +3442,7 @@ msgstr "ไม่"
 #: inc/config.class.php:370 inc/config.class.php:910
 #: inc/dropdown.class.php:663 inc/dropdown.class.php:681
 #: inc/plugin.class.php:452 inc/rule.class.php:2128
-#: inc/ruleimportcomputer.class.php:190 inc/search.class.php:3041
+#: inc/ruleimportcomputer.class.php:190 inc/search.class.php:3044
 msgid "Yes"
 msgstr "ใช่"
 
@@ -3718,7 +3717,7 @@ msgstr "ค่าเริ่มต้น"
 #: inc/project.class.php:812 inc/projecttask.class.php:377
 #: inc/projecttask.class.php:617 inc/reminder.class.php:430
 #: inc/reservationitem.class.php:212 inc/rssfeed.class.php:455
-#: inc/search.class.php:4932 inc/sla.class.php:159 inc/software.class.php:486
+#: inc/search.class.php:4935 inc/sla.class.php:159 inc/software.class.php:486
 #: inc/softwarelicense.class.php:331 inc/ticket.class.php:3933
 #: inc/transfer.class.php:89 inc/transfer.class.php:3263
 #: inc/user.class.php:2614
@@ -3784,7 +3783,7 @@ msgstr "เคลียร์"
 msgid "Login field"
 msgstr "เข้าสู่ระบบไม่สำเร็จ"
 
-#: inc/authldap.class.php:433 inc/authldap.class.php:3056
+#: inc/authldap.class.php:433 inc/authldap.class.php:3057
 #: inc/entity.class.php:304 inc/entity.class.php:518
 msgid "Advanced information"
 msgstr "ข้อมูลขั้นสูง"
@@ -3814,7 +3813,7 @@ msgid "Maximum number of results"
 msgstr "จำนวนสูงสุดของผลลัพธ์"
 
 #: inc/authldap.class.php:465 inc/contract.class.php:262
-#: inc/search.class.php:4145 inc/softwarelicense.class.php:306
+#: inc/search.class.php:4148 inc/softwarelicense.class.php:306
 #: inc/softwarelicense.class.php:401 inc/softwarelicense.class.php:779
 #: inc/softwarelicense.class.php:805
 msgid "Unlimited"
@@ -3844,7 +3843,7 @@ msgstr "Dereferenced when locating (not during the search)"
 msgid "List of LDAP directory replicates"
 msgstr "รายการถ่ายโอน LDAP directory"
 
-#: inc/authldap.class.php:534 inc/authldap.class.php:3057
+#: inc/authldap.class.php:534 inc/authldap.class.php:3058
 msgid "Replicate"
 msgid_plural "Replicates"
 msgstr[0] "ถ่ายโอน"
@@ -4119,7 +4118,7 @@ msgstr "ตรวจสอบอัพเกรด"
 
 #: inc/blacklist.class.php:75 inc/blacklist.class.php:101
 #: inc/dropdowntranslation.class.php:378 inc/dropdowntranslation.class.php:484
-#: inc/fieldblacklist.class.php:67 inc/fieldblacklist.class.php:97
+#: inc/fieldblacklist.class.php:75 inc/fieldblacklist.class.php:105
 #: inc/ruleaction.class.php:168 inc/rule.class.php:1075
 #: inc/rule.class.php:2032 inc/rulecollection.class.php:1251
 #: inc/tickettemplatepredefinedfield.class.php:324
@@ -4174,7 +4173,7 @@ msgstr "ก่อน"
 #: inc/commontreedropdown.class.php:529
 #: inc/computer_softwarelicense.class.php:461
 #: inc/computer_softwareversion.class.php:456 inc/group.class.php:382
-#: inc/networkport.class.php:1133 inc/rule.class.php:623
+#: inc/networkport.class.php:1141 inc/rule.class.php:623
 msgctxt "button"
 msgid "Move"
 msgstr "ย้าย"
@@ -4266,9 +4265,9 @@ msgstr "หลัก"
 #: inc/contract_item.class.php:267 inc/contract_item.class.php:269
 #: inc/group.class.php:288 inc/group.class.php:473 inc/infocom.class.php:135
 #: inc/infocom.class.php:137 inc/ipaddress.class.php:243
-#: inc/ipaddress.class.php:998 inc/item_devices.class.php:310
-#: inc/item_devices.class.php:312 inc/item_devices.class.php:358
-#: inc/item_devices.class.php:960 inc/item_problem.class.php:274
+#: inc/ipaddress.class.php:998 inc/item_devices.class.php:309
+#: inc/item_devices.class.php:311 inc/item_devices.class.php:357
+#: inc/item_devices.class.php:972 inc/item_problem.class.php:274
 #: inc/item_project.class.php:271 inc/location.class.php:185
 #: inc/notificationtargetchange.class.php:326
 #: inc/notificationtargetchange.class.php:338
@@ -4283,7 +4282,7 @@ msgid "Item"
 msgid_plural "Items"
 msgstr[0] "รายการ"
 
-#: inc/budget.class.php:272 inc/item_devices.class.php:963
+#: inc/budget.class.php:272 inc/item_devices.class.php:975
 #: inc/supplier.class.php:395
 msgid "No associated item"
 msgstr "ไม่มีรายการที่เกี่ยวข้อง"
@@ -4349,8 +4348,8 @@ msgstr[0] "รายการที่เกี่ยวข้อง"
 #: inc/contact_supplier.class.php:373 inc/contractcost.class.php:364
 #: inc/contract_item.class.php:439 inc/document_item.class.php:765
 #: inc/group_user.class.php:218 inc/group_user.class.php:464
-#: inc/ipaddress.class.php:272 inc/item_devices.class.php:386
-#: inc/item_devices.class.php:403 inc/item_project.class.php:247
+#: inc/ipaddress.class.php:272 inc/item_devices.class.php:385
+#: inc/item_devices.class.php:402 inc/item_project.class.php:247
 #: inc/netpoint.class.php:351 inc/networkalias.class.php:407
 #: inc/networkname.class.php:750 inc/networkport.class.php:528
 #: inc/notificationtarget.class.php:1216
@@ -4688,7 +4687,7 @@ msgstr "อ้างอิง"
 #: inc/peripheral.class.php:199 inc/peripheral.class.php:455
 #: inc/phone.class.php:199 inc/phone.class.php:496 inc/printer.class.php:301
 #: inc/printer.class.php:684 inc/reservationitem.class.php:225
-#: inc/search.class.php:4943 inc/software.class.php:262
+#: inc/search.class.php:4946 inc/software.class.php:262
 #: inc/software.class.php:498
 msgid "Technician in charge of the hardware"
 msgstr "ผู้ที่เปลี่ยนฮาร์ดแวร์"
@@ -4768,7 +4767,7 @@ msgstr "เพิ่มรุ่นเครื่องพิมพ์ที่
 #: inc/networkalias.class.php:391 inc/notificationtarget.class.php:1242
 #: inc/profile_user.class.php:252 inc/projectcost.class.php:405
 #: inc/projecttask.class.php:847 inc/rule.class.php:2733
-#: inc/search.class.php:5380 inc/software.class.php:983
+#: inc/search.class.php:5383 inc/software.class.php:983
 #: inc/softwarelicense.class.php:820 inc/softwareversion.class.php:313
 #: inc/state.class.php:226 inc/tickettemplatehiddenfield.class.php:260
 #: inc/tickettemplatemandatoryfield.class.php:280
@@ -5023,8 +5022,8 @@ msgstr "วันที่ปิด"
 #: inc/problem.class.php:1095 inc/project.class.php:534
 #: inc/projecttask.class.php:716 inc/reminder.class.php:390
 #: inc/reminder.class.php:700 inc/report.class.php:103
-#: inc/ruleticket.class.php:524 inc/search.class.php:4874
-#: inc/search.class.php:4895 inc/slalevel.class.php:262
+#: inc/ruleticket.class.php:524 inc/search.class.php:4877
+#: inc/search.class.php:4898 inc/slalevel.class.php:262
 #: inc/software.class.php:576 inc/softwareversion.class.php:136
 #: inc/softwareversion.class.php:175 inc/softwareversion.class.php:286
 #: inc/state.class.php:149 inc/ticket.class.php:4057 inc/user.class.php:3414
@@ -5344,7 +5343,7 @@ msgstr "ชื่อที่สมบูรณ์"
 #: inc/notificationtargetticket.class.php:627 inc/peripheral.class.php:225
 #: inc/peripheral.class.php:416 inc/phone.class.php:225
 #: inc/phone.class.php:447 inc/printer.class.php:327 inc/printer.class.php:569
-#: inc/search.class.php:4923
+#: inc/search.class.php:4926
 msgid "Alternate username number"
 msgstr "หมายเลขติดต่อผู้ใช้งาน"
 
@@ -5377,7 +5376,7 @@ msgid "%1$s trying to add an item that already exists: %2$s"
 msgstr "%1$s พยายามที่จะเพิ่มรายการที่มีอยู่แล้ว: %2$s"
 
 #: inc/commondbtm.class.php:3868 inc/entity.class.php:1479
-#: inc/entity.class.php:1524 inc/search.class.php:4534 inc/user.class.php:2610
+#: inc/entity.class.php:1524 inc/search.class.php:4537 inc/user.class.php:2610
 msgid "Default value"
 msgstr "ค่าเริ่มต้น"
 
@@ -5397,7 +5396,7 @@ msgstr "แม่แบบ"
 msgid "Add a template..."
 msgstr "เพิ่มแม่แบบ"
 
-#: inc/commondbtm.class.php:4281 inc/item_devices.class.php:619
+#: inc/commondbtm.class.php:4281 inc/item_devices.class.php:631
 #: inc/ruleticket.class.php:81 inc/ruleticket.class.php:83
 #: inc/supplier.class.php:361 inc/ticket.class.php:4186
 msgid "Update"
@@ -6347,8 +6346,8 @@ msgstr "อัปเดตตำแหน่งรายการเชื่อ
 #: inc/profile_user.class.php:406 inc/profile_user.class.php:408
 #: inc/profile_user.class.php:557 inc/profile_user.class.php:560
 #: inc/profile_user.class.php:563 inc/profile_user.class.php:565
-#: inc/search.class.php:3867 inc/search.class.php:3871
-#: inc/search.class.php:3905 inc/search.class.php:3909
+#: inc/search.class.php:3870 inc/search.class.php:3874
+#: inc/search.class.php:3908 inc/search.class.php:3912
 #: inc/ticket.class.php:3153 inc/ticket.class.php:3160
 #: inc/ticket.class.php:3188 inc/ticket.class.php:3215
 #: inc/ticket.class.php:3231 inc/ticket.class.php:3261
@@ -6406,7 +6405,7 @@ msgstr "Serial No. ของระบบปฏิบัติการ"
 #: inc/computer_item.class.php:590 inc/computer_softwareversion.class.php:770
 #: inc/computervirtualmachine.class.php:149
 #: inc/computervirtualmachine.class.php:338 inc/ipaddress.class.php:1015
-#: inc/item_devices.class.php:365 inc/networkequipment.class.php:387
+#: inc/item_devices.class.php:364 inc/networkequipment.class.php:387
 #: inc/networkname.class.php:493 inc/networkport.class.php:431
 #: inc/networkport.class.php:616 inc/peripheral.class.php:314
 #: inc/phone.class.php:325 inc/printer.class.php:448
@@ -6961,7 +6960,7 @@ msgstr "เสมอ"
 #: inc/entity.class.php:687 inc/event.class.php:129 inc/html.class.php:1148
 #: inc/profile.class.php:92 inc/profile.class.php:97 inc/profile.class.php:648
 #: inc/profile.class.php:970 inc/profile.class.php:1882
-#: inc/search.class.php:4959
+#: inc/search.class.php:4962
 msgid "Assistance"
 msgstr "ความช่วยเหลือ"
 
@@ -8730,7 +8729,7 @@ msgid "Internet domain"
 msgid_plural "Internet domains"
 msgstr[0] "Internet domains"
 
-#: inc/dropdown.class.php:833 inc/wifinetwork.class.php:128
+#: inc/dropdown.class.php:833 inc/wifinetwork.class.php:50
 msgid "Wifi network"
 msgid_plural "Wifi networks"
 msgstr[0] "Wifi networks"
@@ -8900,7 +8899,7 @@ msgid "List of translations"
 msgstr ""
 
 #: inc/dropdowntranslation.class.php:377 inc/dropdowntranslation.class.php:472
-#: inc/fieldblacklist.class.php:64 inc/fieldblacklist.class.php:90
+#: inc/fieldblacklist.class.php:72 inc/fieldblacklist.class.php:98
 #: inc/log.class.php:284 inc/notificationtargetcommonitilobject.class.php:1125
 #: inc/notificationtargetproject.class.php:601
 #: inc/notificationtargetprojecttask.class.php:502
@@ -9250,7 +9249,7 @@ msgid "Security"
 msgstr "ความปลอดภัย"
 
 #: inc/event.class.php:140 inc/html.class.php:1160 inc/html.class.php:1999
-#: inc/plugin.class.php:60 inc/search.class.php:5020
+#: inc/plugin.class.php:60 inc/search.class.php:5023
 msgid "Plugin"
 msgid_plural "Plugins"
 msgstr[0] "ปลั๊กอิน"
@@ -9445,8 +9444,8 @@ msgstr "แบบไดนามิก"
 #. TRANS: D for Dynamic
 #: inc/group_user.class.php:240 inc/profile_user.class.php:234
 #: inc/profile_user.class.php:400 inc/profile_user.class.php:557
-#: inc/profile_user.class.php:905 inc/search.class.php:3871
-#: inc/search.class.php:3909 inc/useremail.class.php:166
+#: inc/profile_user.class.php:905 inc/search.class.php:3874
+#: inc/search.class.php:3912 inc/useremail.class.php:166
 msgid "D"
 msgstr "D"
 
@@ -9982,44 +9981,44 @@ msgid "Threads"
 msgstr ""
 
 #. TRANS: %s is the type of the component
-#: inc/item_devices.class.php:75
+#: inc/item_devices.class.php:74
 #, php-format
 msgid "Item - %s link"
 msgstr ""
 
-#: inc/item_devices.class.php:148
+#: inc/item_devices.class.php:147
 msgid "Position of the device on its bus"
 msgstr ""
 
-#: inc/item_devices.class.php:149
+#: inc/item_devices.class.php:148
 msgid "bus ID"
 msgstr ""
 
-#: inc/item_devices.class.php:358
+#: inc/item_devices.class.php:357
 msgid "Type of component"
 msgstr "ประเภทของส่วนประกอบ"
 
-#: inc/item_devices.class.php:360
+#: inc/item_devices.class.php:359
 msgid "Specificities"
 msgstr "รายละเอียด"
 
-#: inc/item_devices.class.php:413
+#: inc/item_devices.class.php:412
 msgid "Add a new component"
 msgstr "เพิ่มส่วนประกอบใหม่"
 
-#: inc/item_devices.class.php:491
+#: inc/item_devices.class.php:490
 msgid "Dissociated devices"
 msgstr ""
 
 #. TRANS : %1$s is the type of the device
 #. %2$s is the type of the item
 #. %3$s is the name of the item (used for headings of a list),
-#: inc/item_devices.class.php:506 inc/item_devices.class.php:519
+#: inc/item_devices.class.php:505 inc/item_devices.class.php:518
 #, php-format
 msgid "%1$s of %2$s: %3$s"
 msgstr "%1$s ของ %2$s: %3$s"
 
-#: inc/item_devices.class.php:621 inc/knowbaseitem.class.php:1549
+#: inc/item_devices.class.php:633 inc/knowbaseitem.class.php:1549
 msgid "View"
 msgid_plural "Views"
 msgstr[0] "มุมมอง"
@@ -10053,7 +10052,7 @@ msgid "Template for an incident"
 msgstr "แม่แบบเหตุการณ์ผิดปกติ"
 
 #: inc/itilcategory.class.php:173 inc/notificationtargetchange.class.php:262
-#: inc/notificationtargetticket.class.php:638 inc/search.class.php:4976
+#: inc/notificationtargetticket.class.php:638 inc/search.class.php:4979
 #: inc/ticket.class.php:2265
 msgctxt "quantity"
 msgid "Number of problems"
@@ -10213,7 +10212,7 @@ msgstr[0] "ผู้รับ"
 #: inc/reminder.class.php:1257 inc/reminder.class.php:1286
 #: inc/rssfeed.class.php:1067 inc/rssfeed.class.php:1092
 #: inc/rssfeed.class.php:1121 inc/rule.class.php:1846
-#: inc/search.class.php:3865 inc/search.class.php:3903
+#: inc/search.class.php:3868 inc/search.class.php:3906
 msgid "R"
 msgstr "R"
 
@@ -10241,7 +10240,7 @@ msgid "Read the FAQ"
 msgstr ""
 
 #: inc/link.class.php:47 inc/link.class.php:523 inc/profile.class.php:1438
-#: inc/profile.class.php:1715 inc/search.class.php:5012
+#: inc/profile.class.php:1715 inc/search.class.php:5015
 msgid "External link"
 msgid_plural "External links"
 msgstr[0] "ลิงก์ภายนอก"
@@ -11122,7 +11121,7 @@ msgid "Wifi protocol version"
 msgstr "Wifi protocol version"
 
 #: inc/networkportwifi.class.php:100 inc/networkportwifi.class.php:237
-#: inc/wifinetwork.class.php:94 inc/wifinetwork.class.php:120
+#: inc/wifinetwork.class.php:98 inc/wifinetwork.class.php:124
 msgid "ESSID"
 msgstr "ESSID"
 
@@ -12961,7 +12960,7 @@ msgstr "No reservation"
 
 #: inc/reservation.class.php:1089 inc/reservation.class.php:1137
 #: inc/reservation.class.php:1219 inc/reservation.class.php:1280
-#: inc/search.class.php:4291
+#: inc/search.class.php:4294
 msgid "See planning"
 msgstr "ดูแผน"
 
@@ -12999,8 +12998,8 @@ msgstr "That will remove all the reservations in progress."
 msgid "Authorize reservations"
 msgstr "Authorize reservations"
 
-#: inc/reservationitem.class.php:322 inc/search.class.php:4158
-#: inc/search.class.php:4162
+#: inc/reservationitem.class.php:322 inc/search.class.php:4161
+#: inc/search.class.php:4165
 msgid "Modify the comment"
 msgstr "ปรับเปลี่ยนความคิดเห็น"
 
@@ -13261,26 +13260,26 @@ msgstr "กฎระเบียบท้องถิ่น: %s"
 msgid "Rules applicable in the sub-entities"
 msgstr "กฎข้อบังคับในเอนทิตี้ย่อย"
 
-#: inc/rulecriteria.class.php:502 inc/search.class.php:5114
-#: inc/search.class.php:5150 inc/search.class.php:5162
-#: inc/search.class.php:5168 inc/search.class.php:5173
-#: inc/search.class.php:5180 inc/search.class.php:5198
-#: inc/search.class.php:5205
+#: inc/rulecriteria.class.php:502 inc/search.class.php:5117
+#: inc/search.class.php:5153 inc/search.class.php:5165
+#: inc/search.class.php:5171 inc/search.class.php:5176
+#: inc/search.class.php:5183 inc/search.class.php:5201
+#: inc/search.class.php:5208
 msgid "is"
 msgstr "เป็น"
 
-#: inc/rulecriteria.class.php:503 inc/search.class.php:5118
-#: inc/search.class.php:5151 inc/search.class.php:5163
-#: inc/search.class.php:5169 inc/search.class.php:5174
-#: inc/search.class.php:5181 inc/search.class.php:5199
-#: inc/search.class.php:5206
+#: inc/rulecriteria.class.php:503 inc/search.class.php:5121
+#: inc/search.class.php:5154 inc/search.class.php:5166
+#: inc/search.class.php:5172 inc/search.class.php:5177
+#: inc/search.class.php:5184 inc/search.class.php:5202
+#: inc/search.class.php:5209
 msgid "is not"
 msgstr "ไม่เป็น"
 
-#: inc/rulecriteria.class.php:504 inc/search.class.php:5097
-#: inc/search.class.php:5122 inc/search.class.php:5149
-#: inc/search.class.php:5164 inc/search.class.php:5184
-#: inc/search.class.php:5204
+#: inc/rulecriteria.class.php:504 inc/search.class.php:5100
+#: inc/search.class.php:5125 inc/search.class.php:5152
+#: inc/search.class.php:5167 inc/search.class.php:5187
+#: inc/search.class.php:5207
 msgid "contains"
 msgstr "ประกอบด้วย"
 
@@ -13313,14 +13312,14 @@ msgid "does not exist"
 msgstr "ไม่มีอยู่"
 
 #: inc/rulecriteria.class.php:528 inc/search.class.php:1509
-#: inc/search.class.php:1590 inc/search.class.php:5126
-#: inc/search.class.php:5213
+#: inc/search.class.php:1590 inc/search.class.php:5129
+#: inc/search.class.php:5216
 msgid "under"
 msgstr "ภายใต้"
 
 #: inc/rulecriteria.class.php:529 inc/search.class.php:1514
-#: inc/search.class.php:1596 inc/search.class.php:5130
-#: inc/search.class.php:5214
+#: inc/search.class.php:1596 inc/search.class.php:5133
+#: inc/search.class.php:5217
 msgid "not under"
 msgstr "ไม่อยู่ภายใต้"
 
@@ -13688,11 +13687,11 @@ msgstr "%1$s < %2$s"
 msgid "%1$s > %2$s"
 msgstr "%1$s > %2$s"
 
-#: inc/search.class.php:5134 inc/search.class.php:5182
+#: inc/search.class.php:5137 inc/search.class.php:5185
 msgid "before"
 msgstr "ก่อน"
 
-#: inc/search.class.php:5138 inc/search.class.php:5183
+#: inc/search.class.php:5141 inc/search.class.php:5186
 msgid "after"
 msgstr "หลัง"
 
@@ -15090,39 +15089,39 @@ msgstr "อีเมล์เริ่มต้น"
 msgid "Untagged"
 msgstr "Untagged"
 
-#: inc/wifinetwork.class.php:64
+#: inc/wifinetwork.class.php:67
 msgid "Ad-hoc"
 msgstr "Ad-hoc"
 
-#: inc/wifinetwork.class.php:65
+#: inc/wifinetwork.class.php:68
 msgid "Managed"
 msgstr "Managed"
 
-#: inc/wifinetwork.class.php:66
+#: inc/wifinetwork.class.php:69
 msgid "Master"
 msgstr "Master"
 
-#: inc/wifinetwork.class.php:67
+#: inc/wifinetwork.class.php:70
 msgid "Repeater"
 msgstr "ขยาย"
 
-#: inc/wifinetwork.class.php:68
+#: inc/wifinetwork.class.php:71
 msgid "Secondary"
 msgstr "อันดับที่ 2"
 
-#: inc/wifinetwork.class.php:70
+#: inc/wifinetwork.class.php:73
 msgid "Automatic"
 msgstr "Auto"
 
-#: inc/wifinetwork.class.php:77
+#: inc/wifinetwork.class.php:80
 msgid "Infrastructure (with access point)"
 msgstr "Infrastructure (with access point)"
 
-#: inc/wifinetwork.class.php:78
+#: inc/wifinetwork.class.php:81
 msgid "Ad-hoc (without access point)"
 msgstr "Ad-hoc (without access point)"
 
-#: inc/wifinetwork.class.php:98
+#: inc/wifinetwork.class.php:102
 msgid "Wifi network type"
 msgstr "Wifi network type"
 

@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-09 11:15+0100\n"
-"PO-Revision-Date: 2014-12-10 11:28+0000\n"
+"POT-Creation-Date: 2014-12-11 14:09+0100\n"
+"PO-Revision-Date: 2014-12-11 08:11+0000\n"
 "Last-Translator: Jokin Cengotitabengoa <jcengotitabengoa@olabide.com>\n"
 "Language-Team: Basque (Spain) (http://www.transifex.com/projects/p/GLPI/language/eu_ES/)\n"
 "MIME-Version: 1.0\n"
@@ -137,7 +137,7 @@ msgstr "Maiz egindako galderetara joan"
 #: inc/reservationitem.class.php:527 inc/reservationitem.class.php:614
 #: inc/ruleticket.class.php:536 inc/ruleticket.class.php:542
 #: inc/ruleticket.class.php:548 inc/search.class.php:1279
-#: inc/search.class.php:3860 inc/search.class.php:3898
+#: inc/search.class.php:3863 inc/search.class.php:3901
 #: inc/softwareversion.class.php:234 inc/stat.class.php:1275
 #: inc/stat.class.php:1278 inc/stat.class.php:1281 inc/stat.class.php:1482
 #: inc/state.class.php:286 inc/state.class.php:291 inc/state.class.php:297
@@ -224,8 +224,8 @@ msgstr "%1$s - %2$s sareko irteera"
 #: inc/profile_user.class.php:336 inc/profile_user.class.php:484
 #: inc/projectcost.class.php:374 inc/rule.class.php:2148
 #: inc/rulecollection.class.php:1195 inc/rulemailcollector.class.php:201
-#: inc/rulemailcollector.class.php:206 inc/search.class.php:4214
-#: inc/search.class.php:4346 inc/session.class.php:361
+#: inc/rulemailcollector.class.php:206 inc/search.class.php:4217
+#: inc/search.class.php:4349 inc/session.class.php:361
 #: inc/session.class.php:364 inc/softwareversion.class.php:231
 #: inc/supplier.class.php:485 inc/ticket.class.php:1562
 #: inc/ticket.class.php:2581 inc/ticket.class.php:2660
@@ -518,7 +518,7 @@ msgstr[1] "postak"
 #: inc/contract_supplier.class.php:190 inc/contract_supplier.class.php:333
 #: inc/displaypreference.class.php:334 inc/displaypreference.class.php:482
 #: inc/document_item.class.php:326 inc/group_user.class.php:173
-#: inc/group_user.class.php:316 inc/item_devices.class.php:427
+#: inc/group_user.class.php:316 inc/item_devices.class.php:426
 #: inc/item_problem.class.php:147 inc/item_project.class.php:143
 #: inc/link_itemtype.class.php:101 inc/netpoint.class.php:277
 #: inc/netpoint.class.php:300 inc/networkport.class.php:511
@@ -594,7 +594,7 @@ msgstr "Gehitu"
 #: inc/reservationitem.class.php:193 inc/reservationitem.class.php:328
 #: inc/rssfeed.class.php:435 inc/rssfeed.class.php:636 inc/rule.class.php:728
 #: inc/rule.class.php:857 inc/ruledictionnaryprinter.class.php:83
-#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:4909
+#: inc/rulesoftwarecategory.class.php:82 inc/search.class.php:4912
 #: inc/sla.class.php:152 inc/sla.class.php:247 inc/software.class.php:280
 #: inc/software.class.php:476 inc/softwarelicense.class.php:294
 #: inc/softwarelicense.class.php:434 inc/softwareversion.class.php:122
@@ -625,8 +625,8 @@ msgstr "Guztia"
 #: inc/commonitiltask.class.php:1277 inc/dbconnection.class.php:428
 #: inc/dropdown.class.php:1804 inc/group_user.class.php:177
 #: inc/group_user.class.php:264 inc/htmltablemain.class.php:240
-#: inc/item_devices.class.php:607 inc/planningrecall.class.php:248
-#: inc/profileright.class.php:304 inc/search.class.php:4160
+#: inc/item_devices.class.php:619 inc/planningrecall.class.php:248
+#: inc/profileright.class.php:304 inc/search.class.php:4163
 msgid "None"
 msgstr "Bat ere ez"
 
@@ -839,8 +839,7 @@ msgstr "Murrizketarik ez"
 
 #: ajax/subvisibility.php:63 front/report.contract.list.php:178
 #: front/report.infocom.php:123 front/report.year.list.php:134
-#: inc/authldap.class.php:3055 inc/budget.class.php:229
-#: inc/budget.class.php:279 inc/budget.class.php:594
+#: inc/budget.class.php:229 inc/budget.class.php:279 inc/budget.class.php:594
 #: inc/cartridgeitem.class.php:368 inc/change_item.class.php:170
 #: inc/commondbtm.class.php:3399 inc/commondevice.class.php:227
 #: inc/commondropdown.class.php:423 inc/commonitilcost.class.php:152
@@ -860,7 +859,7 @@ msgstr "Murrizketarik ez"
 #: inc/document_item.class.php:356 inc/document_item.class.php:525
 #: inc/entity.class.php:129 inc/fieldunicity.class.php:369
 #: inc/group.class.php:739 inc/infocom.class.php:1574
-#: inc/ipnetwork_vlan.class.php:168 inc/item_devices.class.php:120
+#: inc/ipnetwork_vlan.class.php:168 inc/item_devices.class.php:119
 #: inc/item_problem.class.php:173 inc/item_project.class.php:169
 #: inc/knowbaseitem.class.php:1578 inc/knowbaseitem.class.php:1727
 #: inc/link.class.php:188 inc/location.class.php:271 inc/monitor.class.php:534
@@ -899,7 +898,7 @@ msgstr "Murrizketarik ez"
 #: inc/ruleimportcomputer.class.php:434 inc/ruleimportentity.class.php:161
 #: inc/rulemailcollector.class.php:185 inc/ruleright.class.php:295
 #: inc/rulerightcollection.class.php:153 inc/ruleticket.class.php:419
-#: inc/search.class.php:4947 inc/sla.class.php:252 inc/software.class.php:534
+#: inc/search.class.php:4950 inc/sla.class.php:252 inc/software.class.php:534
 #: inc/software.class.php:965 inc/softwarelicense.class.php:625
 #: inc/softwarelicense.class.php:854 inc/stat.class.php:1461
 #: inc/supplier.class.php:311 inc/supplier.class.php:401
@@ -1216,7 +1215,7 @@ msgstr "Egungo datu basea %s backup fitxategiarekin ordezkatu?"
 msgid ""
 "Warning, your actual database will be totaly overwriten by the database you "
 "want to restore !!!"
-msgstr ""
+msgstr "Adi, zure datu basea guztiz ezabatuko da eta berrezarri nahi duzun datu basearengatik ordezkatuko da!!!"
 
 #: front/backup.php:669
 msgid "Restore"
@@ -1243,7 +1242,7 @@ msgstr "Ezarpenak"
 #: front/change.form.php:49 front/computer.form.php:52
 #: front/consumableitem.form.php:50 front/contact.form.php:57
 #: front/contract.form.php:55 front/document.form.php:50
-#: front/dropdown.common.form.php:57 front/dropdown.common.form.php:61
+#: front/dropdown.common.form.php:56 front/dropdown.common.form.php:60
 #: front/group.form.php:48 front/infocom.form.php:43
 #: front/knowbaseitem.form.php:57 front/link.form.php:49
 #: front/mailcollector.form.php:49 front/monitor.form.php:52
@@ -1298,7 +1297,7 @@ msgstr "%s elementu bat berrezartzen du"
 #: front/change.form.php:80 front/computer.form.php:85
 #: front/consumableitem.form.php:83 front/contact.form.php:90
 #: front/contract.form.php:89 front/document.form.php:85
-#: front/dropdown.common.form.php:82 front/group.form.php:68
+#: front/dropdown.common.form.php:81 front/group.form.php:68
 #: front/infocom.form.php:51 front/item_device.common.form.php:57
 #: front/knowbaseitem.form.php:80 front/link.form.php:57
 #: front/mailcollector.form.php:62 front/monitor.form.php:83
@@ -1323,7 +1322,7 @@ msgstr "%s elementu bat purgatzen du"
 #: front/change.form.php:89 front/computer.form.php:95
 #: front/consumableitem.form.php:93 front/contact.form.php:100
 #: front/contract.form.php:99 front/document.form.php:95
-#: front/dropdown.common.form.php:101 front/group.form.php:77
+#: front/dropdown.common.form.php:100 front/group.form.php:77
 #: front/infocom.form.php:60 front/item_device.common.form.php:68
 #: front/knowbaseitem.form.php:71 front/link.form.php:65
 #: front/mailcollector.form.php:71 front/monitor.form.php:92
@@ -1410,7 +1409,7 @@ msgstr "%s aktorea ezabatzen du"
 #: front/problem_user.form.php:60 front/ticket_user.form.php:62
 msgid ""
 "You have been redirected because you no longer have access to this item"
-msgstr ""
+msgstr "Berbideratua izan zara ez duzulako elementu honetarako sarbiderik"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:56 front/contractcost.form.php:53
@@ -1609,9 +1608,9 @@ msgstr ""
 #: inc/search.class.php:1538 inc/search.class.php:1542
 #: inc/search.class.php:1589 inc/search.class.php:1590
 #: inc/search.class.php:1595 inc/search.class.php:1596
-#: inc/search.class.php:3810 inc/search.class.php:3847
-#: inc/search.class.php:3874 inc/search.class.php:3912
-#: inc/search.class.php:4219 inc/search.class.php:4380
+#: inc/search.class.php:3813 inc/search.class.php:3850
+#: inc/search.class.php:3877 inc/search.class.php:3915
+#: inc/search.class.php:4222 inc/search.class.php:4383
 #: inc/ticket.class.php:2331 inc/ticket.class.php:5384
 #: inc/ticket.class.php:5440 inc/ticket_ticket.class.php:181
 #: inc/ticket_ticket.class.php:183 inc/toolbox.class.php:1058
@@ -1649,8 +1648,8 @@ msgstr ""
 #: front/device.php:38 front/device.php:42 inc/commondevice.class.php:56
 #: inc/commondevice.class.php:236 inc/computer.class.php:811
 #: inc/dropdown.class.php:706 inc/event.class.php:121
-#: inc/item_devices.class.php:295 inc/item_devices.class.php:297
-#: inc/item_devices.class.php:348 inc/lock.class.php:280
+#: inc/item_devices.class.php:294 inc/item_devices.class.php:296
+#: inc/item_devices.class.php:347 inc/lock.class.php:280
 #: inc/lock.class.php:489 inc/profile.class.php:1401
 #: inc/profile.class.php:1687 inc/transfer.class.php:3320
 #: install/update_0723_078.php:3889
@@ -1709,7 +1708,7 @@ msgstr[1] "Softwarea"
 #: inc/ruledictionnaryprinter.class.php:79
 #: inc/ruledictionnaryprinter.class.php:103
 #: inc/ruledictionnaryprintermodel.class.php:61
-#: inc/ruleimportcomputer.class.php:110 inc/search.class.php:4938
+#: inc/ruleimportcomputer.class.php:110 inc/search.class.php:4941
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] ""
@@ -1812,8 +1811,8 @@ msgstr[1] ""
 #: inc/devicememory.class.php:141 inc/devicesoundcard.class.php:54
 #: inc/devicesoundcard.class.php:71 inc/devicesoundcard.class.php:96
 #: inc/displaypreference.class.php:616 inc/document_item.class.php:354
-#: inc/dropdown.class.php:745 inc/fieldblacklist.class.php:61
-#: inc/fieldblacklist.class.php:83 inc/fieldunicity.class.php:76
+#: inc/dropdown.class.php:745 inc/fieldblacklist.class.php:69
+#: inc/fieldblacklist.class.php:91 inc/fieldunicity.class.php:76
 #: inc/fieldunicity.class.php:336 inc/group.class.php:684
 #: inc/group.class.php:739 inc/infocom.class.php:1557
 #: inc/item_problem.class.php:172 inc/item_project.class.php:168
@@ -1971,12 +1970,12 @@ msgid "Invalid filename"
 msgstr "Fitxategi-izena ez da egokia"
 
 #. TRANS: %s is the user login
-#: front/dropdown.common.form.php:92 front/group.form.php:91
+#: front/dropdown.common.form.php:91 front/group.form.php:91
 #, php-format
 msgid "%s replaces an item"
 msgstr ""
 
-#: front/dropdown.common.form.php:111 inc/profile_user.class.php:99
+#: front/dropdown.common.form.php:110 inc/profile_user.class.php:99
 #: inc/transfer.class.php:3525
 msgid "No selected element or badly defined operation"
 msgstr "Ez da elementurik aukeratu edo gaizki idatzitako operazioa"
@@ -2025,15 +2024,15 @@ msgstr ""
 
 #: front/fileupload.php:59
 msgid "File is too big"
-msgstr ""
+msgstr "Fitxategia handiegia da"
 
 #: front/fileupload.php:60
 msgid "File is too small"
-msgstr ""
+msgstr "Fitxategia txikiegia da"
 
 #: front/fileupload.php:61
 msgid "Filetype not allowed"
-msgstr ""
+msgstr "Fitxategi mota ez baimendua"
 
 #: front/fileupload.php:62
 msgid "Maximum number of files exceeded"
@@ -2077,7 +2076,7 @@ msgstr "Bilatu"
 #: inc/notificationtargetticket.class.php:626 inc/peripheral.class.php:235
 #: inc/peripheral.class.php:411 inc/phone.class.php:235
 #: inc/phone.class.php:442 inc/printer.class.php:337 inc/printer.class.php:564
-#: inc/search.class.php:4918
+#: inc/search.class.php:4921
 msgid "Alternate username"
 msgstr "Kontaktua"
 
@@ -2127,8 +2126,8 @@ msgstr "Lotutako elementua"
 #: inc/profile_user.class.php:849 inc/project.class.php:384
 #: inc/project.class.php:618 inc/projectcost.class.php:137
 #: inc/projecttask.class.php:575 inc/queuedmail.class.php:183
-#: inc/reservationitem.class.php:166 inc/search.class.php:4869
-#: inc/search.class.php:4890 inc/sla.class.php:222 inc/software.class.php:468
+#: inc/reservationitem.class.php:166 inc/search.class.php:4872
+#: inc/search.class.php:4893 inc/sla.class.php:222 inc/software.class.php:468
 #: inc/softwarelicense.class.php:852 inc/supplier.class.php:231
 #: inc/ticket.class.php:3767 inc/ticket.class.php:5374
 #: inc/ticket_ticket.class.php:65 inc/user.class.php:2516
@@ -2146,8 +2145,8 @@ msgstr "ID"
 #: inc/computer_softwareversion.class.php:1055
 #: inc/computervirtualmachine.class.php:268
 #: inc/computervirtualmachine.class.php:382 inc/contract_item.class.php:631
-#: inc/document_item.class.php:357 inc/item_devices.class.php:142
-#: inc/item_devices.class.php:143 inc/item_problem.class.php:175
+#: inc/document_item.class.php:357 inc/item_devices.class.php:141
+#: inc/item_devices.class.php:142 inc/item_problem.class.php:175
 #: inc/item_project.class.php:171 inc/location.class.php:273
 #: inc/monitor.class.php:236 inc/monitor.class.php:426
 #: inc/networkequipment.class.php:316 inc/networkequipment.class.php:479
@@ -2158,7 +2157,7 @@ msgstr "ID"
 #: inc/notificationtargetticket.class.php:620 inc/peripheral.class.php:229
 #: inc/peripheral.class.php:401 inc/phone.class.php:229
 #: inc/phone.class.php:432 inc/printer.class.php:331 inc/printer.class.php:554
-#: inc/ruleimportcomputer.class.php:104 inc/search.class.php:4901
+#: inc/ruleimportcomputer.class.php:104 inc/search.class.php:4904
 #: inc/softwarelicense.class.php:270 inc/softwarelicense.class.php:387
 #: inc/softwarelicense.class.php:626 inc/softwarelicense.class.php:853
 #: inc/supplier.class.php:403 inc/user.class.php:3412 inc/user.class.php:3492
@@ -2181,7 +2180,7 @@ msgstr "Serie zenbakia"
 #: inc/notificationtargetticket.class.php:621 inc/peripheral.class.php:239
 #: inc/peripheral.class.php:406 inc/phone.class.php:238
 #: inc/phone.class.php:437 inc/printer.class.php:341 inc/printer.class.php:559
-#: inc/reservationitem.class.php:188 inc/search.class.php:4905
+#: inc/reservationitem.class.php:188 inc/search.class.php:4908
 #: inc/softwarelicense.class.php:282 inc/softwarelicense.class.php:392
 #: inc/supplier.class.php:404 inc/user.class.php:3413 inc/user.class.php:3493
 msgid "Inventory number"
@@ -2205,13 +2204,13 @@ msgstr[1] ""
 
 #: front/find_num.php:102 inc/lock.class.php:481 inc/monitor.class.php:57
 #: inc/profile.class.php:780 inc/profile.class.php:1518
-#: inc/transfer.class.php:3360 inc/wifinetwork.class.php:69
+#: inc/transfer.class.php:3360 inc/wifinetwork.class.php:72
 msgid "Monitor"
 msgid_plural "Monitors"
 msgstr[0] "Monitorea"
 msgstr[1] "Monitoreak"
 
-#: front/find_num.php:103 inc/item_devices.class.php:969
+#: front/find_num.php:103 inc/item_devices.class.php:981
 #: inc/lock.class.php:482 inc/peripheral.class.php:59
 #: inc/profile.class.php:801 inc/profile.class.php:1554
 #: inc/transfer.class.php:3380
@@ -2549,7 +2548,7 @@ msgstr "Kontratupeko materialaren zerrenda"
 #: inc/rulecollection.class.php:509 inc/rulecollection.class.php:1168
 #: inc/rulecriteria.class.php:157 inc/ruledictionnaryprinter.class.php:75
 #: inc/ruledictionnaryprinter.class.php:97 inc/ruleright.class.php:76
-#: inc/search.class.php:4863 inc/search.class.php:4884 inc/sla.class.php:149
+#: inc/search.class.php:4866 inc/search.class.php:4887 inc/sla.class.php:149
 #: inc/sla.class.php:216 inc/slalevel.class.php:124 inc/slalevel.class.php:170
 #: inc/slalevel.class.php:284 inc/software.class.php:244
 #: inc/software.class.php:462 inc/software.class.php:964
@@ -2587,21 +2586,21 @@ msgstr "Izena"
 #: inc/user.class.php:2278
 msgid "Location"
 msgid_plural "Locations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kokalekua"
+msgstr[1] "Kokalekuak"
 
 #: front/report.contract.list.php:181 front/report.infocom.php:127
 #: front/report.year.list.php:137 inc/entity.class.php:742
 #: inc/entity.class.php:1205 inc/infocom.class.php:1024
 #: inc/infocom.class.php:1291 inc/infocom.class.php:1447
 msgid "Date of purchase"
-msgstr ""
+msgstr "Erosketa data"
 
 #: front/report.contract.list.php:182 front/report.infocom.php:128
 #: front/report.year.list.php:138 inc/commondbtm.class.php:2852
 #: inc/infocom.class.php:561 inc/infocom.class.php:1357
 msgid "Warranty expiration date"
-msgstr ""
+msgstr "Garantia amaiera data"
 
 #: front/report.contract.list.php:183 front/report.year.list.php:139
 #: inc/contract.class.php:176 inc/contract_item.class.php:428
@@ -2609,8 +2608,8 @@ msgstr ""
 #: inc/dropdown.class.php:758
 msgid "Contract type"
 msgid_plural "Contract types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kontratu mota"
+msgstr[1] "Kontratu motak"
 
 #: front/report.contract.php:47
 msgid "Hardware under contract"
@@ -2653,7 +2652,7 @@ msgstr ""
 #: inc/infocom.class.php:1519
 msgctxt "price"
 msgid "Value"
-msgstr ""
+msgstr "Salneurria"
 
 #. TRANS: %1$s and %2$s are values
 #: front/report.infocom.conso.php:257 front/report.infocom.php:193
@@ -2674,7 +2673,7 @@ msgstr ""
 #: inc/entity.class.php:1229 inc/infocom.class.php:1045
 #: inc/infocom.class.php:1298 inc/infocom.class.php:1452
 msgid "Startup date"
-msgstr ""
+msgstr "Abiaratze data"
 
 #: front/report.location.list.php:45
 #, php-format
@@ -2781,8 +2780,8 @@ msgstr "Kanpo autentikazioak"
 #: inc/ruleright.class.php:245 inc/user.class.php:3891
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "LDAP direktorioa"
+msgstr[1] "LDAP direktorioak"
 
 #: front/setup.auth.php:50 inc/authldap.class.php:416
 msgid "The LDAP extension of your PHP parser isn't installed"
@@ -2796,8 +2795,8 @@ msgstr ""
 #: inc/notificationmailsetting.class.php:181
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Posta zerbitzaria"
+msgstr[1] "Posta zerbitzariak"
 
 #: front/setup.auth.php:59 inc/authmail.class.php:204
 msgid "Impossible to use email server as external source of connection"
@@ -2816,8 +2815,8 @@ msgstr "Bestelako autentikatze moduak"
 #: inc/profile.class.php:1697
 msgid "Notification"
 msgid_plural "Notifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Jakinarazpena"
+msgstr[1] "Jakinarazpenak"
 
 #: front/setup.notification.php:52 inc/notificationmailsetting.class.php:129
 msgid "Enable followup via email"
@@ -2833,8 +2832,8 @@ msgstr ""
 #: inc/queuedmail.class.php:585
 msgid "Notification template"
 msgid_plural "Notification templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Jakinarazpen txantiloia"
+msgstr[1] "Jakinarazpen txantiloiak"
 
 #: front/setup.notification.php:77
 msgid ""
@@ -2908,15 +2907,15 @@ msgstr "Estatistikak"
 msgctxt "ticket"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Irekita"
+msgstr[1] "Irekita"
 
 #: front/stat.global.php:93 front/stat.graph.php:338 inc/stat.class.php:440
 msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
-msgstr[0] ""
-msgstr[1] "Bukatuta"
+msgstr[0] "Konponduta"
+msgstr[1] "Konponduta"
 
 #: front/stat.global.php:94 front/stat.graph.php:339
 #: inc/commonitilobject.class.php:2605 inc/stat.class.php:442
@@ -2941,7 +2940,7 @@ msgstr "Noiz itxia"
 #: front/stat.global.php:146 front/stat.graph.php:387
 #: inc/commonitilobject.class.php:4233 inc/stat.class.php:477
 msgid "Resolution"
-msgstr ""
+msgstr "Ebazpena"
 
 #: front/stat.global.php:147 front/stat.graph.php:388
 msgid "Real duration"
@@ -2961,22 +2960,22 @@ msgstr "Batez besteko denbora"
 #: inc/config.class.php:1073 inc/config.class.php:1090 inc/sla.class.php:178
 msgid "Hour"
 msgid_plural "Hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ordua"
+msgstr[1] "Orduak"
 
 #: front/stat.global.php:203 front/stat.graph.php:444 inc/stat.class.php:458
 msgctxt "survey"
 msgid "Opened"
 msgid_plural "Opened"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Irekita"
+msgstr[1] "Irekita"
 
 #: front/stat.global.php:204 front/stat.graph.php:445 inc/stat.class.php:460
 msgctxt "survey"
 msgid "Answered"
 msgid_plural "Answered"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Erantzunda"
+msgstr[1] "Erantzunda"
 
 #: front/stat.global.php:220 front/stat.graph.php:461
 #: front/stat.location.php:212 front/stat.location.php:213
@@ -3055,7 +3054,7 @@ msgstr[1] "Hornitzaileak"
 #: inc/project.class.php:873 inc/reminder.class.php:1204
 #: inc/reservationitem.class.php:199 inc/rssfeed.class.php:1038
 #: inc/rulecollection.class.php:807 inc/rulemailcollector.class.php:133
-#: inc/ruleticket.class.php:538 inc/search.class.php:4914
+#: inc/ruleticket.class.php:538 inc/search.class.php:4917
 #: inc/software.class.php:286 inc/software.class.php:511
 #: inc/ticketfollowup.class.php:974 inc/user.class.php:59
 #: install/update_0713_072.php:553
@@ -3110,7 +3109,7 @@ msgstr "Kategoria"
 #: inc/project.class.php:880 inc/reminder.class.php:1220
 #: inc/reservationitem.class.php:206 inc/rssfeed.class.php:1055
 #: inc/rulemailcollector.class.php:134 inc/ruleticket.class.php:544
-#: inc/search.class.php:4928 inc/software.class.php:294
+#: inc/search.class.php:4931 inc/software.class.php:294
 #: inc/software.class.php:517 inc/user.class.php:2562 inc/user.class.php:3533
 msgid "Group"
 msgid_plural "Groups"
@@ -3166,8 +3165,8 @@ msgstr "Izenburua"
 #: inc/solutiontype.class.php:43
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Konponbide mota"
+msgstr[1] "Konponbide motak"
 
 #: front/stat.graph.php:224 front/stat.tracking.php:93
 #: inc/dropdown.class.php:736 inc/notificationtargetticket.class.php:617
@@ -3177,8 +3176,8 @@ msgstr[1] ""
 #: inc/ticketfollowup.class.php:958
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Eskatu iturria"
+msgstr[1] "Eskatu iturriak"
 
 #: front/stat.graph.php:282 front/stat.graph.php:283
 #: inc/commonglpi.class.php:756 inc/commonglpi.class.php:757
@@ -3206,7 +3205,7 @@ msgstr "Hurrengoa"
 #: inc/notificationtargetchange.class.php:261
 #: inc/notificationtargetproblem.class.php:207
 #: inc/notificationtargetprojecttask.class.php:506 inc/problem.class.php:465
-#: inc/search.class.php:4964
+#: inc/search.class.php:4967
 msgctxt "quantity"
 msgid "Number of tickets"
 msgstr "Eleitutako intzidentziak"
@@ -3218,22 +3217,22 @@ msgstr "Grafikoak ikusi"
 #: front/stat.location.php:164 front/stat.location.php:165
 #: front/stat.tracking.php:173 front/stat.tracking.php:174
 msgid "Number opened"
-msgstr ""
+msgstr "Irekitako kopurua"
 
 #: front/stat.location.php:176 front/stat.location.php:177
 #: front/stat.tracking.php:185 front/stat.tracking.php:186
 msgid "Number solved"
-msgstr ""
+msgstr "Konpondutako kopurua"
 
 #: front/stat.location.php:188 front/stat.location.php:189
 #: front/stat.tracking.php:198 front/stat.tracking.php:199
 msgid "Number solved late"
-msgstr ""
+msgstr "Berandu konpondutako kopurua"
 
 #: front/stat.location.php:200 front/stat.location.php:201
 #: front/stat.tracking.php:211 front/stat.tracking.php:212
 msgid "Number closed"
-msgstr ""
+msgstr "Itxitako kopurua"
 
 #: front/stat.tracking.php:77 front/stat.tracking.php:99
 #: inc/commonitilobject.class.php:2424 inc/commonitilobject.class.php:2719
@@ -3310,7 +3309,7 @@ msgstr ""
 #: inc/projectcost.class.php:126 inc/projecttask.class.php:565
 #: inc/queuedmail.class.php:173 inc/reminder.class.php:372
 #: inc/reservationitem.class.php:155 inc/rssfeed.class.php:389
-#: inc/search.class.php:4859 inc/search.class.php:4880 inc/sla.class.php:212
+#: inc/search.class.php:4862 inc/search.class.php:4883 inc/sla.class.php:212
 #: inc/software.class.php:458 inc/softwarelicense.class.php:378
 #: inc/softwareversion.class.php:156 inc/supplier.class.php:221
 #: inc/ticketfollowup.class.php:949 inc/transfer.class.php:79
@@ -3364,7 +3363,7 @@ msgstr "Dagoeneko intzidentziarako baimenik ez duzula eta berzuzendua izan zara"
 
 #: front/ticket.form.php:180
 msgid "Save solution to the knowledge base"
-msgstr ""
+msgstr "Gorde konponbidea ezaguera basean"
 
 #. TRANS: %s is the user login
 #: front/tickettemplatehiddenfield.form.php:46
@@ -3398,7 +3397,7 @@ msgstr "Zure eskaera ondo gorde da.."
 #: inc/config.class.php:1750 inc/itilcategory.class.php:323
 #: inc/itilcategory.class.php:332
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: front/tracking.injector.php:84
 msgid "Thank you for using our automatic helpdesk system."
@@ -3419,7 +3418,7 @@ msgstr ""
 #: inc/ajax.class.php:263
 #, php-format
 msgid "Search (%s for all)"
-msgstr ""
+msgstr "Bilatu (%s guztientzako)"
 
 #: inc/ajax.class.php:323
 msgid "Loading..."
@@ -3466,17 +3465,17 @@ msgstr "Inoiz ez"
 #: inc/alert.class.php:124 inc/crontask.class.php:1652
 #: inc/entity.class.php:2242
 msgid "Each day"
-msgstr ""
+msgstr "Egun bakoitza"
 
 #: inc/alert.class.php:125 inc/crontask.class.php:1657
 #: inc/entity.class.php:2245
 msgid "Each week"
-msgstr ""
+msgstr "Aste bakoitza"
 
 #: inc/alert.class.php:126 inc/crontask.class.php:1658
 #: inc/entity.class.php:2248
 msgid "Each month"
-msgstr ""
+msgstr "Hilabeta bakoitza"
 
 #: inc/alert.class.php:152 inc/computerdisk.class.php:172
 #: inc/computervirtualmachine.class.php:154 inc/config.class.php:354
@@ -3486,7 +3485,7 @@ msgstr ""
 #: inc/entity.class.php:1575 inc/entity.class.php:2142
 #: inc/entity.class.php:2227 inc/entity.class.php:2383
 #: inc/plugin.class.php:455 inc/ruleimportcomputer.class.php:164
-#: inc/search.class.php:3039
+#: inc/search.class.php:3042
 msgid "No"
 msgstr "Ez"
 
@@ -3494,7 +3493,7 @@ msgstr "Ez"
 #: inc/config.class.php:370 inc/config.class.php:910
 #: inc/dropdown.class.php:663 inc/dropdown.class.php:681
 #: inc/plugin.class.php:452 inc/rule.class.php:2128
-#: inc/ruleimportcomputer.class.php:190 inc/search.class.php:3041
+#: inc/ruleimportcomputer.class.php:190 inc/search.class.php:3044
 msgid "Yes"
 msgstr "Bai"
 
@@ -3615,8 +3614,8 @@ msgstr ""
 #: inc/notificationmailsetting.class.php:196 inc/printer.class.php:424
 msgid "Port"
 msgid_plural "Ports"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Portua"
+msgstr[1] "Portuak"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1228
@@ -3707,7 +3706,7 @@ msgstr[1] "Telefonoak"
 #: inc/user.class.php:1941 inc/user.class.php:2063 inc/user.class.php:2248
 #: inc/user.class.php:2552
 msgid "Phone 2"
-msgstr ""
+msgstr "Telefonoa 2"
 
 #: inc/auth.class.php:1347 inc/authldap.class.php:732
 #: inc/authldap.class.php:877 inc/authldap.class.php:2751
@@ -3772,7 +3771,7 @@ msgstr "Lehenetsitako balioak"
 #: inc/project.class.php:812 inc/projecttask.class.php:377
 #: inc/projecttask.class.php:617 inc/reminder.class.php:430
 #: inc/reservationitem.class.php:212 inc/rssfeed.class.php:455
-#: inc/search.class.php:4932 inc/sla.class.php:159 inc/software.class.php:486
+#: inc/search.class.php:4935 inc/sla.class.php:159 inc/software.class.php:486
 #: inc/softwarelicense.class.php:331 inc/ticket.class.php:3933
 #: inc/transfer.class.php:89 inc/transfer.class.php:3263
 #: inc/user.class.php:2614
@@ -3808,7 +3807,7 @@ msgstr "Zerbitzaria"
 
 #: inc/authldap.class.php:357
 msgid "Port (default=389)"
-msgstr ""
+msgstr "Portua (berez=389)"
 
 #: inc/authldap.class.php:361 inc/authldap.class.php:836
 msgid "Connection filter"
@@ -3838,7 +3837,7 @@ msgstr ""
 msgid "Login field"
 msgstr "Erabiltzaile eremua"
 
-#: inc/authldap.class.php:433 inc/authldap.class.php:3056
+#: inc/authldap.class.php:433 inc/authldap.class.php:3057
 #: inc/entity.class.php:304 inc/entity.class.php:518
 msgid "Advanced information"
 msgstr "Informazio aurreratua"
@@ -3868,7 +3867,7 @@ msgid "Maximum number of results"
 msgstr ""
 
 #: inc/authldap.class.php:465 inc/contract.class.php:262
-#: inc/search.class.php:4145 inc/softwarelicense.class.php:306
+#: inc/search.class.php:4148 inc/softwarelicense.class.php:306
 #: inc/softwarelicense.class.php:401 inc/softwarelicense.class.php:779
 #: inc/softwarelicense.class.php:805
 msgid "Unlimited"
@@ -3898,7 +3897,7 @@ msgstr ""
 msgid "List of LDAP directory replicates"
 msgstr ""
 
-#: inc/authldap.class.php:534 inc/authldap.class.php:3057
+#: inc/authldap.class.php:534 inc/authldap.class.php:3058
 msgid "Replicate"
 msgid_plural "Replicates"
 msgstr[0] ""
@@ -4175,12 +4174,12 @@ msgstr ""
 
 #: inc/blacklist.class.php:75 inc/blacklist.class.php:101
 #: inc/dropdowntranslation.class.php:378 inc/dropdowntranslation.class.php:484
-#: inc/fieldblacklist.class.php:67 inc/fieldblacklist.class.php:97
+#: inc/fieldblacklist.class.php:75 inc/fieldblacklist.class.php:105
 #: inc/ruleaction.class.php:168 inc/rule.class.php:1075
 #: inc/rule.class.php:2032 inc/rulecollection.class.php:1251
 #: inc/tickettemplatepredefinedfield.class.php:324
 msgid "Value"
-msgstr ""
+msgstr "Salneurria"
 
 #: inc/blacklist.class.php:223 inc/networkname.class.php:207
 msgid "IP"
@@ -4230,7 +4229,7 @@ msgstr "lehen"
 #: inc/commontreedropdown.class.php:529
 #: inc/computer_softwarelicense.class.php:461
 #: inc/computer_softwareversion.class.php:456 inc/group.class.php:382
-#: inc/networkport.class.php:1133 inc/rule.class.php:623
+#: inc/networkport.class.php:1141 inc/rule.class.php:623
 msgctxt "button"
 msgid "Move"
 msgstr "Mugitu"
@@ -4324,9 +4323,9 @@ msgstr "Nagusia"
 #: inc/contract_item.class.php:267 inc/contract_item.class.php:269
 #: inc/group.class.php:288 inc/group.class.php:473 inc/infocom.class.php:135
 #: inc/infocom.class.php:137 inc/ipaddress.class.php:243
-#: inc/ipaddress.class.php:998 inc/item_devices.class.php:310
-#: inc/item_devices.class.php:312 inc/item_devices.class.php:358
-#: inc/item_devices.class.php:960 inc/item_problem.class.php:274
+#: inc/ipaddress.class.php:998 inc/item_devices.class.php:309
+#: inc/item_devices.class.php:311 inc/item_devices.class.php:357
+#: inc/item_devices.class.php:972 inc/item_problem.class.php:274
 #: inc/item_project.class.php:271 inc/location.class.php:185
 #: inc/notificationtargetchange.class.php:326
 #: inc/notificationtargetchange.class.php:338
@@ -4342,7 +4341,7 @@ msgid_plural "Items"
 msgstr[0] "Materiala"
 msgstr[1] "Materialak"
 
-#: inc/budget.class.php:272 inc/item_devices.class.php:963
+#: inc/budget.class.php:272 inc/item_devices.class.php:975
 #: inc/supplier.class.php:395
 msgid "No associated item"
 msgstr ""
@@ -4409,8 +4408,8 @@ msgstr[1] "Lotutako elementuak"
 #: inc/contact_supplier.class.php:373 inc/contractcost.class.php:364
 #: inc/contract_item.class.php:439 inc/document_item.class.php:765
 #: inc/group_user.class.php:218 inc/group_user.class.php:464
-#: inc/ipaddress.class.php:272 inc/item_devices.class.php:386
-#: inc/item_devices.class.php:403 inc/item_project.class.php:247
+#: inc/ipaddress.class.php:272 inc/item_devices.class.php:385
+#: inc/item_devices.class.php:402 inc/item_project.class.php:247
 #: inc/netpoint.class.php:351 inc/networkalias.class.php:407
 #: inc/networkname.class.php:750 inc/networkport.class.php:528
 #: inc/notificationtarget.class.php:1216
@@ -4760,7 +4759,7 @@ msgstr "Erreferentzia"
 #: inc/peripheral.class.php:199 inc/peripheral.class.php:455
 #: inc/phone.class.php:199 inc/phone.class.php:496 inc/printer.class.php:301
 #: inc/printer.class.php:684 inc/reservationitem.class.php:225
-#: inc/search.class.php:4943 inc/software.class.php:262
+#: inc/search.class.php:4946 inc/software.class.php:262
 #: inc/software.class.php:498
 msgid "Technician in charge of the hardware"
 msgstr "Arduradun teknikoa"
@@ -4840,7 +4839,7 @@ msgstr ""
 #: inc/networkalias.class.php:391 inc/notificationtarget.class.php:1242
 #: inc/profile_user.class.php:252 inc/projectcost.class.php:405
 #: inc/projecttask.class.php:847 inc/rule.class.php:2733
-#: inc/search.class.php:5380 inc/software.class.php:983
+#: inc/search.class.php:5383 inc/software.class.php:983
 #: inc/softwarelicense.class.php:820 inc/softwareversion.class.php:313
 #: inc/state.class.php:226 inc/tickettemplatehiddenfield.class.php:260
 #: inc/tickettemplatemandatoryfield.class.php:280
@@ -5100,8 +5099,8 @@ msgstr "Itxiera data"
 #: inc/problem.class.php:1095 inc/project.class.php:534
 #: inc/projecttask.class.php:716 inc/reminder.class.php:390
 #: inc/reminder.class.php:700 inc/report.class.php:103
-#: inc/ruleticket.class.php:524 inc/search.class.php:4874
-#: inc/search.class.php:4895 inc/slalevel.class.php:262
+#: inc/ruleticket.class.php:524 inc/search.class.php:4877
+#: inc/search.class.php:4898 inc/slalevel.class.php:262
 #: inc/software.class.php:576 inc/softwareversion.class.php:136
 #: inc/softwareversion.class.php:175 inc/softwareversion.class.php:286
 #: inc/state.class.php:149 inc/ticket.class.php:4057 inc/user.class.php:3414
@@ -5426,7 +5425,7 @@ msgstr "Izen osoa"
 #: inc/notificationtargetticket.class.php:627 inc/peripheral.class.php:225
 #: inc/peripheral.class.php:416 inc/phone.class.php:225
 #: inc/phone.class.php:447 inc/printer.class.php:327 inc/printer.class.php:569
-#: inc/search.class.php:4923
+#: inc/search.class.php:4926
 msgid "Alternate username number"
 msgstr ""
 
@@ -5459,7 +5458,7 @@ msgid "%1$s trying to add an item that already exists: %2$s"
 msgstr ""
 
 #: inc/commondbtm.class.php:3868 inc/entity.class.php:1479
-#: inc/entity.class.php:1524 inc/search.class.php:4534 inc/user.class.php:2610
+#: inc/entity.class.php:1524 inc/search.class.php:4537 inc/user.class.php:2610
 msgid "Default value"
 msgstr "Lehenetsitako balioa"
 
@@ -5479,7 +5478,7 @@ msgstr "Txantiloiak"
 msgid "Add a template..."
 msgstr "Txantilioia gehitu..."
 
-#: inc/commondbtm.class.php:4281 inc/item_devices.class.php:619
+#: inc/commondbtm.class.php:4281 inc/item_devices.class.php:631
 #: inc/ruleticket.class.php:81 inc/ruleticket.class.php:83
 #: inc/supplier.class.php:361 inc/ticket.class.php:4186
 msgid "Update"
@@ -6441,8 +6440,8 @@ msgstr ""
 #: inc/profile_user.class.php:406 inc/profile_user.class.php:408
 #: inc/profile_user.class.php:557 inc/profile_user.class.php:560
 #: inc/profile_user.class.php:563 inc/profile_user.class.php:565
-#: inc/search.class.php:3867 inc/search.class.php:3871
-#: inc/search.class.php:3905 inc/search.class.php:3909
+#: inc/search.class.php:3870 inc/search.class.php:3874
+#: inc/search.class.php:3908 inc/search.class.php:3912
 #: inc/ticket.class.php:3153 inc/ticket.class.php:3160
 #: inc/ticket.class.php:3188 inc/ticket.class.php:3215
 #: inc/ticket.class.php:3231 inc/ticket.class.php:3261
@@ -6503,7 +6502,7 @@ msgstr "S.E.aren serie zenbakia"
 #: inc/computer_item.class.php:590 inc/computer_softwareversion.class.php:770
 #: inc/computervirtualmachine.class.php:149
 #: inc/computervirtualmachine.class.php:338 inc/ipaddress.class.php:1015
-#: inc/item_devices.class.php:365 inc/networkequipment.class.php:387
+#: inc/item_devices.class.php:364 inc/networkequipment.class.php:387
 #: inc/networkname.class.php:493 inc/networkport.class.php:431
 #: inc/networkport.class.php:616 inc/peripheral.class.php:314
 #: inc/phone.class.php:325 inc/printer.class.php:448
@@ -7076,7 +7075,7 @@ msgstr "Beti"
 #: inc/entity.class.php:687 inc/event.class.php:129 inc/html.class.php:1148
 #: inc/profile.class.php:92 inc/profile.class.php:97 inc/profile.class.php:648
 #: inc/profile.class.php:970 inc/profile.class.php:1882
-#: inc/search.class.php:4959
+#: inc/search.class.php:4962
 msgid "Assistance"
 msgstr "Laguntza"
 
@@ -8898,7 +8897,7 @@ msgid_plural "Internet domains"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/dropdown.class.php:833 inc/wifinetwork.class.php:128
+#: inc/dropdown.class.php:833 inc/wifinetwork.class.php:50
 msgid "Wifi network"
 msgid_plural "Wifi networks"
 msgstr[0] ""
@@ -9080,7 +9079,7 @@ msgid "List of translations"
 msgstr ""
 
 #: inc/dropdowntranslation.class.php:377 inc/dropdowntranslation.class.php:472
-#: inc/fieldblacklist.class.php:64 inc/fieldblacklist.class.php:90
+#: inc/fieldblacklist.class.php:72 inc/fieldblacklist.class.php:98
 #: inc/log.class.php:284 inc/notificationtargetcommonitilobject.class.php:1125
 #: inc/notificationtargetproject.class.php:601
 #: inc/notificationtargetprojecttask.class.php:502
@@ -9434,7 +9433,7 @@ msgid "Security"
 msgstr "Segurtasuna"
 
 #: inc/event.class.php:140 inc/html.class.php:1160 inc/html.class.php:1999
-#: inc/plugin.class.php:60 inc/search.class.php:5020
+#: inc/plugin.class.php:60 inc/search.class.php:5023
 msgid "Plugin"
 msgid_plural "Plugins"
 msgstr[0] ""
@@ -9631,8 +9630,8 @@ msgstr "Dinamikoa"
 #. TRANS: D for Dynamic
 #: inc/group_user.class.php:240 inc/profile_user.class.php:234
 #: inc/profile_user.class.php:400 inc/profile_user.class.php:557
-#: inc/profile_user.class.php:905 inc/search.class.php:3871
-#: inc/search.class.php:3909 inc/useremail.class.php:166
+#: inc/profile_user.class.php:905 inc/search.class.php:3874
+#: inc/search.class.php:3912 inc/useremail.class.php:166
 msgid "D"
 msgstr ""
 
@@ -10176,51 +10175,51 @@ msgstr "Edukiera"
 
 #: inc/item_deviceprocessor.class.php:61
 msgid "Cores"
-msgstr ""
+msgstr "Nukleoak"
 
 #: inc/item_deviceprocessor.class.php:65
 msgid "Threads"
 msgstr ""
 
 #. TRANS: %s is the type of the component
-#: inc/item_devices.class.php:75
+#: inc/item_devices.class.php:74
 #, php-format
 msgid "Item - %s link"
 msgstr ""
 
-#: inc/item_devices.class.php:148
+#: inc/item_devices.class.php:147
 msgid "Position of the device on its bus"
 msgstr ""
 
-#: inc/item_devices.class.php:149
+#: inc/item_devices.class.php:148
 msgid "bus ID"
 msgstr ""
 
-#: inc/item_devices.class.php:358
+#: inc/item_devices.class.php:357
 msgid "Type of component"
 msgstr ""
 
-#: inc/item_devices.class.php:360
+#: inc/item_devices.class.php:359
 msgid "Specificities"
 msgstr ""
 
-#: inc/item_devices.class.php:413
+#: inc/item_devices.class.php:412
 msgid "Add a new component"
 msgstr "Osagai berria gehitu"
 
-#: inc/item_devices.class.php:491
+#: inc/item_devices.class.php:490
 msgid "Dissociated devices"
 msgstr ""
 
 #. TRANS : %1$s is the type of the device
 #. %2$s is the type of the item
 #. %3$s is the name of the item (used for headings of a list),
-#: inc/item_devices.class.php:506 inc/item_devices.class.php:519
+#: inc/item_devices.class.php:505 inc/item_devices.class.php:518
 #, php-format
 msgid "%1$s of %2$s: %3$s"
 msgstr ""
 
-#: inc/item_devices.class.php:621 inc/knowbaseitem.class.php:1549
+#: inc/item_devices.class.php:633 inc/knowbaseitem.class.php:1549
 msgid "View"
 msgid_plural "Views"
 msgstr[0] ""
@@ -10255,7 +10254,7 @@ msgid "Template for an incident"
 msgstr ""
 
 #: inc/itilcategory.class.php:173 inc/notificationtargetchange.class.php:262
-#: inc/notificationtargetticket.class.php:638 inc/search.class.php:4976
+#: inc/notificationtargetticket.class.php:638 inc/search.class.php:4979
 #: inc/ticket.class.php:2265
 msgctxt "quantity"
 msgid "Number of problems"
@@ -10302,7 +10301,7 @@ msgstr[1] ""
 
 #: inc/knowbaseitem.class.php:183 inc/user.class.php:2083
 msgid "Edit"
-msgstr ""
+msgstr "Editatu"
 
 #: inc/knowbaseitem.class.php:629
 msgid "Category name"
@@ -10418,7 +10417,7 @@ msgstr[1] "Hartzaileak"
 #: inc/reminder.class.php:1257 inc/reminder.class.php:1286
 #: inc/rssfeed.class.php:1067 inc/rssfeed.class.php:1092
 #: inc/rssfeed.class.php:1121 inc/rule.class.php:1846
-#: inc/search.class.php:3865 inc/search.class.php:3903
+#: inc/search.class.php:3868 inc/search.class.php:3906
 msgid "R"
 msgstr ""
 
@@ -10447,18 +10446,18 @@ msgid "Read the FAQ"
 msgstr ""
 
 #: inc/link.class.php:47 inc/link.class.php:523 inc/profile.class.php:1438
-#: inc/profile.class.php:1715 inc/search.class.php:5012
+#: inc/profile.class.php:1715 inc/search.class.php:5015
 msgid "External link"
 msgid_plural "External links"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kanpoko lotura"
+msgstr[1] "Kanpoko loturak"
 
 #: inc/link.class.php:55 inc/link.class.php:59
 #: inc/notificationtargetticket.class.php:771
 msgid "Link"
 msgid_plural "Links"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Lotura"
+msgstr[1] "Loturak"
 
 #: inc/link.class.php:128 inc/link.class.php:183
 msgid "Link or filename"
@@ -10466,7 +10465,7 @@ msgstr "Lotura edo Fitxategia"
 
 #: inc/link.class.php:133
 msgid "Open in a new window"
-msgstr ""
+msgstr "Ireki lehio berrian"
 
 #: inc/link.class.php:137
 msgid "File content"
@@ -10495,19 +10494,19 @@ msgstr "Bulego-kodea"
 #: inc/location.class.php:60 inc/location.class.php:101
 #: inc/location.class.php:131
 msgid "Room number"
-msgstr ""
+msgstr "Gela zenbakia"
 
 #: inc/location.class.php:64 inc/location.class.php:136
 msgid "Longitude"
-msgstr ""
+msgstr "Longitudea"
 
 #: inc/location.class.php:68 inc/location.class.php:142
 msgid "Latitude"
-msgstr ""
+msgstr "latitudea"
 
 #: inc/location.class.php:72 inc/location.class.php:148
 msgid "Altitude"
-msgstr ""
+msgstr "Altitudea"
 
 #: inc/location.class.php:107
 msgid "Location comments"
@@ -10516,12 +10515,12 @@ msgstr ""
 #: inc/lock.class.php:50
 msgid "Lock"
 msgid_plural "Locks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Blokeatu"
+msgstr[1] "Blokeatu"
 
 #: inc/lock.class.php:77
 msgid "Locked items"
-msgstr ""
+msgstr "Blokeatutako elementuak"
 
 #: inc/lock.class.php:310
 msgctxt "button"
@@ -10589,23 +10588,23 @@ msgstr "elementua gehitu"
 
 #: inc/log.class.php:357
 msgid "Delete the item"
-msgstr ""
+msgstr "Elementua ezabatu"
 
 #: inc/log.class.php:361
 msgid "Lock the item"
-msgstr ""
+msgstr "Elementua blokeatu"
 
 #: inc/log.class.php:365
 msgid "Unlock the item"
-msgstr ""
+msgstr "Elementua desblokeatu"
 
 #: inc/log.class.php:369
 msgid "Restore the item"
-msgstr ""
+msgstr "Elementua berrezarri"
 
 #: inc/log.class.php:378
 msgid "Add the component"
-msgstr ""
+msgstr "Osagaia gehitu"
 
 #. TRANS: %1$s is the old_value, %2$s is the new_value
 #: inc/log.class.php:396
@@ -10622,63 +10621,63 @@ msgstr ""
 
 #: inc/log.class.php:408
 msgid "Delete the component"
-msgstr ""
+msgstr "Osagaia ezabatu"
 
 #: inc/log.class.php:418
 msgid "Lock the component"
-msgstr ""
+msgstr "Osagaia blokeatu"
 
 #: inc/log.class.php:428
 msgid "Unlock the component"
-msgstr ""
+msgstr "Osagaia desblokeatu"
 
 #: inc/log.class.php:435
 msgid "Install the software"
-msgstr ""
+msgstr "Softwarea instalatu"
 
 #: inc/log.class.php:442
 msgid "Uninstall the software"
-msgstr ""
+msgstr "Softwarea desinstalatu"
 
 #: inc/log.class.php:452
 msgid "Disconnect the item"
-msgstr "itema deskonektatu"
+msgstr "Elementua deskonektatu"
 
 #: inc/log.class.php:462
 msgid "Connect the item"
-msgstr ""
+msgstr "Elementua konektatu"
 
 #: inc/log.class.php:476
 msgid "Add a link with an item"
-msgstr ""
+msgstr "Elementu batekin lotura gehitu"
 
 #: inc/log.class.php:485
 msgid "Delete a link with an item"
-msgstr ""
+msgstr "Elementu batekin lotura ezabatu"
 
 #: inc/log.class.php:494
 msgid "Lock a link with an item"
-msgstr ""
+msgstr "Elementu batekin lotura blokeatu"
 
 #: inc/log.class.php:503
 msgid "Unlock a link with an item"
-msgstr ""
+msgstr "Elementu batekin lotura desblokeatu"
 
 #: inc/log.class.php:523
 msgid "Update an item"
-msgstr ""
+msgstr "Elementu bat eguneratu"
 
 #: inc/log.class.php:533
 msgid "Delete an item"
-msgstr ""
+msgstr "Elementu bat ezabatu"
 
 #: inc/log.class.php:543
 msgid "Lock an item"
-msgstr ""
+msgstr "Elementu bat blokeatu"
 
 #: inc/log.class.php:553
 msgid "Unlock an item"
-msgstr ""
+msgstr "Elementu bat desblokeatu"
 
 #: inc/log.class.php:591
 msgid "Update of the field"
@@ -10700,11 +10699,11 @@ msgstr "Posta helbidea"
 #: inc/mailcollector.class.php:252 inc/mailcollector.class.php:394
 #: inc/notificationtargetmailcollector.class.php:85
 msgid "Connection errors"
-msgstr ""
+msgstr "Konexio erroreak"
 
 #: inc/mailcollector.class.php:275
 msgid "Use Kerberos authentication"
-msgstr ""
+msgstr "Erabili Kerberos autentikazioa"
 
 #: inc/mailcollector.class.php:283 inc/mailcollector.class.php:384
 msgid "Accepted mail archive folder (optional)"
@@ -10758,7 +10757,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:1362
 msgid "Too large attached file"
-msgstr ""
+msgstr "Erantsitako elementua handiegia da"
 
 #: inc/mailcollector.class.php:1370
 msgid "Invalid attached file"
@@ -11335,7 +11334,7 @@ msgid "Wifi protocol version"
 msgstr "Hari gabeko protokolo bertsioa"
 
 #: inc/networkportwifi.class.php:100 inc/networkportwifi.class.php:237
-#: inc/wifinetwork.class.php:94 inc/wifinetwork.class.php:120
+#: inc/wifinetwork.class.php:98 inc/wifinetwork.class.php:124
 msgid "ESSID"
 msgstr "ESSID"
 
@@ -13206,7 +13205,7 @@ msgstr ""
 
 #: inc/reservation.class.php:1089 inc/reservation.class.php:1137
 #: inc/reservation.class.php:1219 inc/reservation.class.php:1280
-#: inc/search.class.php:4291
+#: inc/search.class.php:4294
 msgid "See planning"
 msgstr "Erreserbak ikusi"
 
@@ -13245,8 +13244,8 @@ msgstr ""
 msgid "Authorize reservations"
 msgstr "Mailegua baimendu"
 
-#: inc/reservationitem.class.php:322 inc/search.class.php:4158
-#: inc/search.class.php:4162
+#: inc/reservationitem.class.php:322 inc/search.class.php:4161
+#: inc/search.class.php:4165
 msgid "Modify the comment"
 msgstr ""
 
@@ -13510,26 +13509,26 @@ msgstr "Arau lokalak: %s"
 msgid "Rules applicable in the sub-entities"
 msgstr ""
 
-#: inc/rulecriteria.class.php:502 inc/search.class.php:5114
-#: inc/search.class.php:5150 inc/search.class.php:5162
-#: inc/search.class.php:5168 inc/search.class.php:5173
-#: inc/search.class.php:5180 inc/search.class.php:5198
-#: inc/search.class.php:5205
+#: inc/rulecriteria.class.php:502 inc/search.class.php:5117
+#: inc/search.class.php:5153 inc/search.class.php:5165
+#: inc/search.class.php:5171 inc/search.class.php:5176
+#: inc/search.class.php:5183 inc/search.class.php:5201
+#: inc/search.class.php:5208
 msgid "is"
 msgstr ""
 
-#: inc/rulecriteria.class.php:503 inc/search.class.php:5118
-#: inc/search.class.php:5151 inc/search.class.php:5163
-#: inc/search.class.php:5169 inc/search.class.php:5174
-#: inc/search.class.php:5181 inc/search.class.php:5199
-#: inc/search.class.php:5206
+#: inc/rulecriteria.class.php:503 inc/search.class.php:5121
+#: inc/search.class.php:5154 inc/search.class.php:5166
+#: inc/search.class.php:5172 inc/search.class.php:5177
+#: inc/search.class.php:5184 inc/search.class.php:5202
+#: inc/search.class.php:5209
 msgid "is not"
 msgstr ""
 
-#: inc/rulecriteria.class.php:504 inc/search.class.php:5097
-#: inc/search.class.php:5122 inc/search.class.php:5149
-#: inc/search.class.php:5164 inc/search.class.php:5184
-#: inc/search.class.php:5204
+#: inc/rulecriteria.class.php:504 inc/search.class.php:5100
+#: inc/search.class.php:5125 inc/search.class.php:5152
+#: inc/search.class.php:5167 inc/search.class.php:5187
+#: inc/search.class.php:5207
 msgid "contains"
 msgstr "hau duena"
 
@@ -13562,14 +13561,14 @@ msgid "does not exist"
 msgstr ""
 
 #: inc/rulecriteria.class.php:528 inc/search.class.php:1509
-#: inc/search.class.php:1590 inc/search.class.php:5126
-#: inc/search.class.php:5213
+#: inc/search.class.php:1590 inc/search.class.php:5129
+#: inc/search.class.php:5216
 msgid "under"
 msgstr ""
 
 #: inc/rulecriteria.class.php:529 inc/search.class.php:1514
-#: inc/search.class.php:1596 inc/search.class.php:5130
-#: inc/search.class.php:5214
+#: inc/search.class.php:1596 inc/search.class.php:5133
+#: inc/search.class.php:5217
 msgid "not under"
 msgstr ""
 
@@ -13937,11 +13936,11 @@ msgstr ""
 msgid "%1$s > %2$s"
 msgstr ""
 
-#: inc/search.class.php:5134 inc/search.class.php:5182
+#: inc/search.class.php:5137 inc/search.class.php:5185
 msgid "before"
 msgstr "lehen"
 
-#: inc/search.class.php:5138 inc/search.class.php:5183
+#: inc/search.class.php:5141 inc/search.class.php:5186
 msgid "after"
 msgstr "honen ondoren"
 
@@ -15352,39 +15351,39 @@ msgstr ""
 msgid "Untagged"
 msgstr ""
 
-#: inc/wifinetwork.class.php:64
+#: inc/wifinetwork.class.php:67
 msgid "Ad-hoc"
 msgstr "Ad-hoc"
 
-#: inc/wifinetwork.class.php:65
+#: inc/wifinetwork.class.php:68
 msgid "Managed"
 msgstr "Gainbegiratua"
 
-#: inc/wifinetwork.class.php:66
+#: inc/wifinetwork.class.php:69
 msgid "Master"
 msgstr ""
 
-#: inc/wifinetwork.class.php:67
+#: inc/wifinetwork.class.php:70
 msgid "Repeater"
 msgstr ""
 
-#: inc/wifinetwork.class.php:68
+#: inc/wifinetwork.class.php:71
 msgid "Secondary"
 msgstr ""
 
-#: inc/wifinetwork.class.php:70
+#: inc/wifinetwork.class.php:73
 msgid "Automatic"
 msgstr "Automatikoa"
 
-#: inc/wifinetwork.class.php:77
+#: inc/wifinetwork.class.php:80
 msgid "Infrastructure (with access point)"
 msgstr ""
 
-#: inc/wifinetwork.class.php:78
+#: inc/wifinetwork.class.php:81
 msgid "Ad-hoc (without access point)"
 msgstr ""
 
-#: inc/wifinetwork.class.php:98
+#: inc/wifinetwork.class.php:102
 msgid "Wifi network type"
 msgstr "Hari gabeko sare mota"
 
