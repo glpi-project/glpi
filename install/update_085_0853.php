@@ -65,7 +65,11 @@ function update085to0853() {
                                  true);
    }
 
-   
+   // Increase cron_limit
+   $current_config = Config::getConfigurationValues('core');
+   if ($current_config['cron_limit'] = 1) {
+     Config::setConfigurationValues('core', array('cron_limit' => 5));
+   }
    
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
