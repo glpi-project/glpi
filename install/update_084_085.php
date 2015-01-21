@@ -1803,7 +1803,7 @@ function update084to085() {
    }
 
    Config::setConfigurationValues('core', array('keep_devices_when_purging_item' => 0));
-   $migration->addField("glpi_users", "keep_devices_when_purging_item", "tinyint(1) DEFAULT NULL");
+   $migration->addField("glpi_users", "keep_devices_when_purging_item", "int(11) DEFAULT NULL");
 
    Config::setConfigurationValues('core', array('maintenance_mode' => 0));
    Config::setConfigurationValues('core', array('maintenance_text' => ''));

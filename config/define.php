@@ -289,6 +289,6 @@ $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_forma
                                      'priority_2', 'priority_3', 'priority_4', 'priority_5',
                                      'priority_6', 'refresh_ticket_list', 'set_default_tech',
                                      'show_count_on_tabs', 'show_jobs_at_login', 'task_private',
-                                     'use_flat_dropdowntree');
+                                     'task_state', 'use_flat_dropdowntree');
 
 ?>

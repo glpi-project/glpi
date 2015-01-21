@@ -990,6 +990,10 @@ class Config extends CommonDBTM {
                                      'name'  => "default_requesttypes_id"));
          echo "</td></tr>";
 
+         echo "<tr class='tab_bg_2'><td>" . __('Tasks state by default') . "</td><td>";
+         Planning::dropdownState("task_state", $data["task_state"]);
+         echo "</td><td colspan='2'>&nbsp;</td></tr>";
+
          echo "<tr class='tab_bg_2'><td>".__('Pre-select me as a technician when creating a ticket').
               "</td><td>";
          if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {

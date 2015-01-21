@@ -794,7 +794,7 @@ CREATE TABLE `glpi_configs` (
   UNIQUE KEY `unicity` (`context`,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_configs` VALUES ('1','core','version','0.85.2');
+INSERT INTO `glpi_configs` VALUES ('1','core','version','0.85.3');
 INSERT INTO `glpi_configs` VALUES ('2','core','show_jobs_at_login','0');
 INSERT INTO `glpi_configs` VALUES ('3','core','cut','250');
 INSERT INTO `glpi_configs` VALUES ('4','core','list_limit','15');
@@ -942,6 +942,7 @@ INSERT INTO `glpi_configs` VALUES ('145','core','translate_kb','0');
 INSERT INTO `glpi_configs` VALUES ('146','core','translate_dropdowns','0');
 INSERT INTO `glpi_configs` VALUES ('152','core','attach_ticket_documents_to_mail','0');
 INSERT INTO `glpi_configs` VALUES ('153','core','backcreated','0');
+INSERT INTO `glpi_configs` VALUES ('154','core','task_state','1');
 
 ### Dump table glpi_consumableitems
 
@@ -6714,6 +6715,7 @@ CREATE TABLE `glpi_users` (
   `keep_devices_when_purging_item` tinyint(1) DEFAULT NULL,
   `privatebookmarkorder` longtext COLLATE utf8_unicode_ci,
   `backcreated` tinyint(1) DEFAULT NULL,
+  `task_state` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`name`),
   KEY `firstname` (`firstname`),
