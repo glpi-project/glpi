@@ -1840,7 +1840,7 @@ class User extends CommonDBTM {
          $full_picture .= "</div>";
 
          Html::showTooltip($full_picture, array('applyto' => "picture$rand"));
-         echo "<input type='file' name='picture' accept='image/gif, image/jpeg, image/png'>";
+         echo "<input type='file' name='picture' accept='image/*'>";
          echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
          echo "</td>";
       }
@@ -2154,7 +2154,7 @@ class User extends CommonDBTM {
             $full_picture .= "</div>";
 
             Html::showTooltip($full_picture, array('applyto' => "picture$rand"));
-            echo "<input type='file' name='picture' accept='image/gif, image/jpeg, image/png'>";
+            echo "<input type='file' name='picture' accept='image/*'>";
             echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
 
             echo "</td>";
