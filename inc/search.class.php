@@ -3805,20 +3805,29 @@ class Search {
                   }
 
                   for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
-                     if ($data[$num][$k]['name'] > 0) {
+                     if (($data[$num][$k]['name'] > 0)
+                         || ($data[$num][$k][2] != '')) { // for anonymous ticket
+
                         if ($count_display) {
                            $out .= self::LBBR;
                         }
                         $count_display++;
                         if ($itemtype == 'Ticket') {
-                           $userdata = getUserName($data[$num][$k]['name'],2);
-                           $tooltip  = "";
-                           if (Session::haveRight('user', READ)) {
-                              $tooltip = Html::showToolTip($userdata["comment"],
-                                                           array('link'    => $userdata["link"],
-                                                                 'display' => false));
+                           if ($data[$num][$k]['name'] > 0) {
+                              $userdata = getUserName($data[$num][$k]['name'],2);
+                              $tooltip  = "";
+                              if (Session::haveRight('user', READ)) {
+                                 $tooltip = Html::showToolTip($userdata["comment"],
+                                                              array('link'    => $userdata["link"],
+                                                                    'display' => false));
+                              }
+                              $out .= sprintf(__('%1$s %2$s'), $userdata['name'], $tooltip);
+                           // anonymous ticket - display alternative_email
+                           } else {
+                              $split         = explode(" ",$data[$num][$k][2]);
+                              $out .= $split[1];
                            }
-                           $out .= sprintf(__('%1$s %2$s'), $userdata['name'], $tooltip);
+
                         } else {
                            $out .= getUserName($data[$num][$k]['name'], $showuserlink);
                         }
