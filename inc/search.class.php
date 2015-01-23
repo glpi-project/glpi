@@ -5887,6 +5887,8 @@ class Search {
             header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
             header("Content-disposition: filename=glpi.csv");
             header('Content-type: application/octetstream');
+            // zero width no break space (for excel)
+            echo"\xEF\xBB\xBF";
             break;
 
          default :
