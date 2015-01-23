@@ -745,30 +745,5 @@ class Group_User extends CommonDBRelation{
    }
 
 
-   /**
-    * @since version 0.85
-   **/
-   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
-                                                       array $ids) {
-      global $CFG_GLPI;
-
-      $action = $ma->getAction();
-
-      switch ($action) {
-         case 'change_group_user' :
-            $groupuser = new self();
-            foreach ($ids as $key => $val) {
-               if ($groupuser->getFromDB($key)) {
-                  $user = $groupuser->getField('users_id');
-                  $inputcg = array('groups_id' => $ma->POST['groups_id'],
-                                   'users_id'  => $user,
-                                   'id'        => $key);
-                  $groupuser->update($inputcg);
-               }
-            }
-            break;
-      }
-   }
-
 }
 ?>

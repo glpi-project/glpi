@@ -2406,6 +2406,8 @@ class User extends CommonDBTM {
                                                          = __('Associate to a profile');
          $actions['Profile_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'remove']
                                                          = __('Dissociate from a profile');
+         $actions['Group_User'.MassiveAction::CLASS_ACTION_SEPARATOR.'change_group_user']
+                                                         = __("Move to group");
       }
 
       if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
