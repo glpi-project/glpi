@@ -707,43 +707,5 @@ class Group_User extends CommonDBRelation{
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::getSpecificMassiveActions()
-    **/
-   function getSpecificMassiveActions($checkitem=NULL) {
-
-      $isadmin = static::canUpdate();
-      $actions = parent::getSpecificMassiveActions($checkitem);
-      if ($isadmin) {
-         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'change_group_user']
-               = __("Move to group");
-      }
-
-      return $actions;
-   }
-
-
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBTM::showMassiveActionsSubForm()
-    **/
-   static function showMassiveActionsSubForm(MassiveAction $ma) {
-      global $CFG_GLPI;
-
-      $input = $ma->getInput();
-      switch ($ma->getAction()) {
-         case 'change_group_user' :
-            Group::dropdown(array('condition'  => '`is_usergroup`'));
-            echo "<br><br>";
-            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'))."</span>";
-            return true;
-      }
-      return parent::showMassiveActionsSubForm($ma);
-   }
-
-
 }
 ?>
