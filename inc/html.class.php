@@ -68,7 +68,12 @@ class Html {
                               );
 
       $value = preg_replace($search, '', $value);
+      
+      $search        = array('@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
+                              );
 
+      $value = preg_replace($search, '', $value);
+      
       include_once(GLPI_HTMLAWED);
 
       $value = htmLawed($value, array('elements' => 'none',
