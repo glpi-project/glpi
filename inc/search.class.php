@@ -3805,13 +3805,13 @@ class Search {
                   }
 
                   for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                     
                      if (($data[$num][$k]['name'] > 0)
-                         || ($data[$num][$k][2] != '')) { // for anonymous ticket
-
+                         || ($data[$num][$k][2] != '')) {
                         if ($count_display) {
                            $out .= self::LBBR;
                         }
-                        $count_display++;
+                        
                         if ($itemtype == 'Ticket') {
                            if ($data[$num][$k]['name'] > 0) {
                               $userdata = getUserName($data[$num][$k]['name'],2);
@@ -3822,34 +3822,31 @@ class Search {
                                                                     'display' => false));
                               }
                               $out .= sprintf(__('%1$s %2$s'), $userdata['name'], $tooltip);
-                           // anonymous ticket - display alternative_email
-                           } else {
-                              $split         = explode(" ",$data[$num][$k][2]);
-                              $out .= $split[1];
+                              $count_display++;
                            }
-
                         } else {
                            $out .= getUserName($data[$num][$k]['name'], $showuserlink);
-                        }
-                     }
-                  }
-
-                  // Manage alternative_email for tickets_users
-                  if (($itemtype == 'Ticket')
-                      && isset($data[$num][$k][2])) {
-                     $split = explode("$$$$", $data[$num][$k][2]);
-                     for ($k=0 ; $k<count($split) ; $k++) {
-                        $split2 = explode(" ",$split[$k]);
-                        if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
-                           if ($count_display) {
-                              $out .= self::LBBR;
-                           }
                            $count_display++;
-                           $out .= "<a href='mailto:".$split2[1]."'>".$split2[1]."</a>";
+                        }
+                     
+
+                        // Manage alternative_email for tickets_users
+                        if (($itemtype == 'Ticket')
+                            && isset($data[$num][$k][2])) {
+                           $split = explode("$$$$", $data[$num][$k][2]);
+                           for ($k=0 ; $k<count($split) ; $k++) {
+                              $split2 = explode(" ",$split[$k]);
+                              if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
+                                 if ($count_display) {
+                                    $out .= self::LBBR;
+                                 }
+                                 $count_display++;
+                                 $out .= "<a href='mailto:".$split2[1]."'>".$split2[1]."</a>";
+                              }
+                           }
                         }
                      }
                   }
-
                   return $out;
                }
                if ($itemtype != 'User') {
