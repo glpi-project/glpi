@@ -305,7 +305,7 @@ class SoftwareVersion extends CommonDBChild {
             }
 
             echo "<tr class='tab_bg_1 noHover'><td class='right b' colspan='3'>".__('Total')."</td>";
-            echo "<td class='numeric b'>$tot</td></tr>";
+            echo "<td class='numeric b'>$tot</td><td></td></tr>";
             echo "</table>\n";
 
          } else {

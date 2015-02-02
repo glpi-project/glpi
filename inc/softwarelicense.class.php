@@ -805,7 +805,7 @@ class SoftwareLicense extends CommonDBTM {
             echo "<td class='numeric'>".(($tot > 0)?$tot."":__('Unlimited')).
                  "</td>";
             $color = ($software->fields['is_valid']?'green':'red');
-            echo "<td class='numeric $color'>".$tot_assoc."</td>";
+            echo "<td class='numeric $color'>".$tot_assoc."</td><td></td><td></td><td></td><td></td>";
             echo "</tr>";
             echo "</table>\n";
 
