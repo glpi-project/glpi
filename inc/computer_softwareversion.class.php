@@ -988,7 +988,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          echo "</td>";
 
-         if (Plugin::haveImport()) {
+         if (isset($data['is_dynamic'])) {
             echo "<td class='center'>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
          }
 
