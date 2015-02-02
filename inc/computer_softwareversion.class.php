@@ -766,7 +766,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
          $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
          $header_end .= "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
-         if (isset($data['is_dynamic'])) {
+         if (Plugin::haveImport()) {
             $header_end .= "<th>".__('Automatic inventory')."</th>";
          }
          $header_end .= "<th>".SoftwareCategory::getTypeName(1)."</th>";
@@ -988,7 +988,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
          echo "</td>";
 
-         if (isset($data['is_dynamic'])) {
+         if (Plugin::haveImport()) {
             echo "<td class='center'>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
          }
 
