@@ -230,6 +230,10 @@ class Document extends CommonDBTM {
          $input['tag'] = array_shift($input["_tag_filename"]);
       }
 
+      if (!isset($input["tag"]) || empty($input["tag"])) {
+         $input['tag'] = Rule::getUuid();
+      }
+      
       // Upload failed : do not create document
       if ($create_from_item && !$upload_ok) {
          return false;
