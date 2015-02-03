@@ -6023,7 +6023,7 @@ class Ticket extends CommonITILObject {
 
       $tag  = '';
       $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
-                          html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
+                          html_entity_decode($content, ENT_QUOTES, 'UTF-8'));
 
       // If is html content
       if ($CFG_GLPI["use_rich_text"]) {
