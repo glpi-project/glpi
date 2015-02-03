@@ -64,6 +64,41 @@ class Item_Ticket extends CommonDBRelation{
    }
 
 
+   
+   function post_addItem() {
+
+      $ticket = new Ticket();
+      $input  = array('id'            => $this->fields['tickets_id'],
+                      'date_mod'      => $_SESSION["glpi_currenttime"],
+                      '_donotadddocs' => true);
+
+      if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
+         $input['_forcenotif'] = true;
+      }
+      if (isset($this->input['_disablenotif']) && $this->input['_disablenotif']) {
+         $input['_disablenotif'] = true;
+      }
+
+      $ticket->update($input);
+      parent::post_addItem();
+   }
+   
+   function post_purgeItem() {
+
+      $ticket = new Ticket();
+      $input = array('id'            => $this->fields['tickets_id'],
+                     'date_mod'      => $_SESSION["glpi_currenttime"],
+                     '_donotadddocs' => true);
+
+      if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
+         $input['_forcenotif'] = true;
+      }
+      $ticket->update($input);
+
+      parent::post_purgeItem();
+   }
+   
+   
    /**
     * @see CommonDBTM::prepareInputForAdd()
    **/
