@@ -1555,7 +1555,8 @@ class Ticket extends CommonITILObject {
          $item_ticket = new Item_Ticket();
          $item_ticket->add(array('items_id'   => $this->input['items_id'], 
                                  'itemtype'   => $this->input['itemtype'], 
-                                 'tickets_id' => $this->fields['id']));
+                                 'tickets_id' => $this->fields['id'],
+                                 '_disablenotif' => true));
       }
 
 
