@@ -265,7 +265,7 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='subheader'>".__('Can be notified')."</td>";
+      echo "<td>".__('Can be notified')."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_notify', $this->fields['is_notify']);
       echo "</td></tr>";
