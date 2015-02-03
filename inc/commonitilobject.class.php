@@ -5160,7 +5160,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $items[__('Requester')]          = "users_id";
       $items[__('Assigned')]           = "users_id_assign";
       if (static::getType() == 'Ticket') {
-         $items[_n('Associated element', 'Associated elements', Session::getPluralNumber()] = "";
+         $items[_n('Associated element', 'Associated elements', Session::getPluralNumber())] = "";
       }
       $items[__('Category')]           = "glpi_itilcategories.completename";
       $items[__('Title')]              = "name";

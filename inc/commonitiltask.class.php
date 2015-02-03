@@ -810,7 +810,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
                      $interv[$key]["name"]     = $parentitem->fields["name"];
                      $interv[$key]["content"]  = Html::resume_text($parentitem->fields["content"],
-                                                                   $CFG_GLPI["cut"]));
+                                                                   $CFG_GLPI["cut"]);
                      $interv[$key]["status"]   = $parentitem->fields["status"];
                      $interv[$key]["priority"] = $parentitem->fields["priority"];
 
