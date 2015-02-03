@@ -5830,7 +5830,6 @@ class Ticket extends CommonITILObject {
       global $CFG_GLPI;
 
       $matches = array();
-
       // If no doc data available we match all tags in content
       if (!count($doc_data)) {
          $doc = new Document();
@@ -5840,6 +5839,7 @@ class Ticket extends CommonITILObject {
             $doc_data = $doc->find("`tag` IN('".implode("','", array_unique($matches[1]))."')");
          }
       }
+      
 
       if (count($doc_data)) {
          foreach ($doc_data as $id => $image) {
@@ -5988,16 +5988,13 @@ class Ticket extends CommonITILObject {
       for ($i = 0; $i < $nodeListLength; $i ++) {
          $node = $nodes->item(0);
          $src  = $node->getAttribute('src');
-//          Toolbox::logDebug('DO '.$src);
          foreach ($files as $data => $filename) {
             if (preg_match("/".$data."/i", $src)) {
-            
                $p   = $dom->createElement('p');
                $tag = $dom->createTextNode(Document::getImageTag($tags[$filename]));
                $p->appendChild($tag);
 
                $node->parentNode->replaceChild($p, $node);
-//                Toolbox::logDebug('MATCH '.$data);
                break;
             }
          }

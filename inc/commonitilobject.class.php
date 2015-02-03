@@ -1510,12 +1510,15 @@ abstract class CommonITILObject extends CommonDBTM {
          return array();
       }
       $docadded  = array();
-      $doc       = new Document();
-      $docitem   = new Document_Item();
 
+      
       foreach ($this->input['_filename'] as $key => $file) {
+         $doc       = new Document();
+         $docitem   = new Document_Item();
+         
          $docID = 0;
          $filename = GLPI_DOC_DIR."/_tmp/".$file;
+         $input2         = array();
 
          // Crop/Resize image file if needed
          if (isset($this->input['_coordinates']) && !empty($this->input['_coordinates'][$key])) {
@@ -1544,7 +1547,6 @@ abstract class CommonITILObject extends CommonDBTM {
             if (!$doc->fields['is_blacklisted']) {
                $docID = $doc->fields["id"];
             }
-
             // File already exist, we replace the tag by the existing one
             if (isset($this->input['_tag'][$key])
                 && ($docID > 0)) {
@@ -1556,7 +1558,6 @@ abstract class CommonITILObject extends CommonDBTM {
             }
 
          } else {
-            $input2         = array();
             //TRANS: Default document to files attached to tickets : %d is the ticket id
             $input2["name"] = addslashes(sprintf(__('Document Ticket %d'), $this->getID()));
 
@@ -1593,11 +1594,13 @@ abstract class CommonITILObject extends CommonDBTM {
                if (isset($this->input['_coordinates'][$key])) {
                   unset($this->input['_coordinates'][$key]);
                }
+
             }
          }
          // Only notification for the first New doc
          $donotif = 0;
       }
+
 
       if ($CFG_GLPI["use_rich_text"]) {
          $this->input['content'] = $this->convertTagToImage($this->input['content'], true,
