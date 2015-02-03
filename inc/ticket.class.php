@@ -5983,14 +5983,16 @@ class Ticket extends CommonITILObject {
       // We replace each img by a compatible tag for tickets
       $nodes = $dom->getElementsByTagName('img');
       $nodeListLength = $nodes->length;
+      
       // If config display image
       for ($i = 0; $i < $nodeListLength; $i ++) {
          $node = $nodes->item(0);
          $src  = $node->getAttribute('src');
-         foreach ($files as $id => $data) {
+         
+         foreach ($files as $data => $filename) {
             if (preg_match("/".$data."/i", $src)) {
                $p   = $dom->createElement('p');
-               $tag = $dom->createTextNode(Document::getImageTag($tags[$id]));
+               $tag = $dom->createTextNode(Document::getImageTag($tags[$filename]));
                $p->appendChild($tag);
 
                $node->parentNode->replaceChild($p, $node);

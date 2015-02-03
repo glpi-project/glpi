@@ -58,6 +58,8 @@ class MailCollector  extends CommonDBTM {
    var $structure = false;
    /// structure used to store files attached to a mail
    var $files;
+   /// structure used to store alt files attached to a mail
+   var $altfiles;
    /// Tag used to recognize embedded images of a mail
    var $tags;
    /// Message to add to body to build ticket
@@ -752,10 +754,10 @@ class MailCollector  extends CommonDBTM {
           && ($tkt['content'] != strip_tags($tkt['content']))) {
 
          $tkt['content'] = Ticket::convertContentForTicket($tkt['content'],
-                                                           $this->files, $this->tags);
+                                                           array_merge($this->files, $this->altfiles), 
+                                                           $this->tags);
       }
-
-      $tkt['content'] = $this->cleanMailContent($tkt['content']);
+       $tkt['content'] = $this->cleanMailContent($tkt['content']);
 
       $tkt['_supplier_email'] = false;
       // Found ticket link
@@ -1372,7 +1374,7 @@ class MailCollector  extends CommonDBTM {
                                                        $this->get_mime_type($structure)));
             return false;
          }
-
+         
          if ($message = imap_fetchbody($this->marubox, $mid, $part)) {
             switch ($structure->encoding) {
                case 1 :
@@ -1393,12 +1395,22 @@ class MailCollector  extends CommonDBTM {
             }
 
             if (file_put_contents($path.$filename, $message)) {
-               $this->files[] = $filename;
+               $this->files[$filename] = $filename;
                // If embeded image, we add a tag
                if (($structure->type == 5)
                    && $structure->subtype) {
                   end($this->files);
-                  $this->tags[key($this->files)]  = Rule::getUuid();
+                  $tag = Rule::getUuid();
+                  $this->tags[$filename]  = $tag;
+                  
+                  // Link file based on id
+                  if (isset($structure->id)) {
+                    $clean = array('<' => '',
+                                    '>' => '');
+                  
+                    $this->altfiles[strtr($structure->id, $clean)] = $filename;
+                  }
+                  
                }
             }
          } // fetchbody
@@ -1419,6 +1431,7 @@ class MailCollector  extends CommonDBTM {
 
       $this->getStructure($mid);
       $this->files     = array();
+      $this->altfiles  = array();
       $this->addtobody = "";
       $this->getRecursiveAttached($mid, $path, $maxsize, $this->structure);
 
@@ -1457,7 +1470,7 @@ class MailCollector  extends CommonDBTM {
     * @return Boolean
    **/
    function deleteMails($mid, $folder='') {
-
+    return true;
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
          $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
