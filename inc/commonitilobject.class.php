@@ -1601,14 +1601,16 @@ abstract class CommonITILObject extends CommonDBTM {
          $donotif = 0;
       }
 
-
-      if ($CFG_GLPI["use_rich_text"]) {
-         $this->input['content'] = $this->convertTagToImage($this->input['content'], true,
-                                                            $docadded);
-         $this->input['_forcenotif'] = true;
-      } else {
-         $this->fields['content'] = $this->setSimpleTextContent($this->input['content']);
-         $this->updateInDB(array('content'));
+      // Ticket update
+      if (isset($this->input['content'])) {
+        if ($CFG_GLPI["use_rich_text"]) {
+            $this->input['content'] = $this->convertTagToImage($this->input['content'], true,
+                                                                $docadded);
+            $this->input['_forcenotif'] = true;
+        } else {
+            $this->fields['content'] = $this->setSimpleTextContent($this->input['content']);
+            $this->updateInDB(array('content'));
+        }
       }
 
       return $docadded;
