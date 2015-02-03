@@ -278,7 +278,7 @@ class NotificationTemplate extends CommonDBTM {
                $signature_html = Html::entities_deep($this->signature);
                $signature_html = Html::nl2br_deep($signature_html);
 
-               $template_datas['content_html'] = self::process(htmlspecialchars_decode(htmlentities($template_datas['content_html'], ENT_NOQUOTES, 'UTF-8')),
+               $template_datas['content_html'] = self::process($template_datas['content_html'],
                                                                $data_html);
                                                                
                if (get_class($target->obj) == 'Ticket' && isset($options['item'])) {
