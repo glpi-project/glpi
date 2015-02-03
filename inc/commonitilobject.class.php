@@ -1549,7 +1549,8 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             // File already exist, we replace the tag by the existing one
             if (isset($this->input['_tag'][$key])
-                && ($docID > 0)) {
+                && ($docID > 0)
+                && isset($this->input['content'])) {
 
                $this->input['content'] = preg_replace('/'.Document::getImageTag($this->input['_tag'][$key]).'/',
                                                       Document::getImageTag($doc->fields["tag"]),
