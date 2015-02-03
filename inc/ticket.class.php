@@ -5988,7 +5988,6 @@ class Ticket extends CommonITILObject {
       for ($i = 0; $i < $nodeListLength; $i ++) {
          $node = $nodes->item(0);
          $src  = $node->getAttribute('src');
-         
          foreach ($files as $data => $filename) {
             if (preg_match("/".$data."/i", $src)) {
                $p   = $dom->createElement('p');
@@ -5996,6 +5995,7 @@ class Ticket extends CommonITILObject {
                $p->appendChild($tag);
 
                $node->parentNode->replaceChild($p, $node);
+               break;
             }
          }
       }
