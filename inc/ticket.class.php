@@ -2059,7 +2059,7 @@ class Ticket extends CommonITILObject {
 
       $tab[13]['table']             = 'glpi_items_tickets';
       $tab[13]['field']             = 'items_id';
-      $tab[13]['name']              = _n('Associated element', 'Associated elements', 2);
+      $tab[13]['name']              = _n('Associated element', 'Associated elements', Session::getPluralNumber());
       $tab[13]['datatype']          = 'specific';
       $tab[13]['comments']          = true;
       $tab[13]['nosort']            = true;
@@ -2071,7 +2071,7 @@ class Ticket extends CommonITILObject {
 
       $tab[131]['table']            = 'glpi_items_tickets';
       $tab[131]['field']            = 'itemtype';
-      $tab[131]['name']             = _n('Associated item type', 'Associated item types',2);
+      $tab[131]['name']             = _n('Associated item type', 'Associated item types', Session::getPluralNumber());
       $tab[131]['datatype']         = 'itemtypename';
       $tab[131]['itemtype_list']    = 'ticket_types';
       $tab[131]['nosort']           = true;
@@ -3906,7 +3906,7 @@ class Ticket extends CommonITILObject {
 
       if (!$ID) {
          echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype');
-         printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', 2), $tt->getMandatoryMark('itemtype'));
+         printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()), $tt->getMandatoryMark('itemtype'));
          echo $tt->getEndHiddenFieldText('itemtype');
          echo "</th>";
          echo "<td rowspan='2'>";
@@ -4573,7 +4573,7 @@ class Ticket extends CommonITILObject {
          if ($number) {
             echo "<tr><th></th>";
             echo "<th>".__('Requester')."</th>";
-            echo "<th>"._n('Associated element', 'Associated elements', 2)."</th>";
+            echo "<th>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
             echo "<th>".__('Description')."</th></tr>";
             for ($i = 0 ; $i < $number ; $i++) {
                $ID = $DB->result($result, $i, "id");
