@@ -6024,10 +6024,8 @@ class Ticket extends CommonITILObject {
 
       $tag  = '';
       
-//       $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
-//                           html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
-//       $html = Html::entity_decode_deep($content);
-      $html = $content;
+       $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
+                           html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
       
       // If is html content
       if ($CFG_GLPI["use_rich_text"]) {
@@ -6043,7 +6041,9 @@ class Ticket extends CommonITILObject {
          // If config display image
          for ($i = 0; $i < $nodeListLength; $i++) {
             $node = $nodes->item($i);
+            
             if ($node->getAttribute('alt')) {
+                
                $tag =  Document::getImageTag($node->getAttribute('alt'));
                $img = $dom->createElement('img');
                $img->setAttribute('src', 'cid:'.$tag);
@@ -6051,7 +6051,7 @@ class Ticket extends CommonITILObject {
                $node->parentNode->replaceChild($img, $node);
             }
          }
-
+        
          // Get only body content
          $doc = new DOMDocument();
          $body = $dom->getElementsByTagName('body')->item(0);
