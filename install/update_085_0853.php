@@ -76,6 +76,45 @@ function update085to0853() {
    $migration->addField('glpi_projecttasks', 'is_milestone', 'bool');
    $migration->addKey('glpi_projecttasks', 'is_milestone');
    
+   
+   // Change Ticket items
+   // Add glpi_items_tickets table for associated elements
+   if (!TableExists('glpi_items_tickets')) {
+      $query = "CREATE TABLE `glpi_items_tickets` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `itemtype` varchar(255) DEFAULT NULL,
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`itemtype`, `items_id`, `tickets_id`),
+                  KEY `tickets_id` (`tickets_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.85 add table glpi_items_tickets");
+
+      $query = "SELECT `itemtype`, `items_id`, `id`
+                FROM `glpi_tickets`
+                WHERE `itemtype` IS NOT NULL
+                    AND `itemtype` <> ''
+                AND `items_id` != 0";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
+                $query = "INSERT INTO `glpi_items_tickets`
+                             (`id`, `items_id`, `itemtype`, `tickets_id`)
+                          VALUES (NULL, '".$data['items_id']."', '".$data['itemtype']."', '".$data['id']."')";
+                $DB->queryOrDie($query, "0.85 associated ticket sitems migration");
+            }
+            
+         }
+      }
+      // Delete old columns and keys
+      $migration->dropField("glpi_tickets", "itemtype");
+      $migration->dropField("glpi_tickets", "items_id");
+      $migration->dropKey("glpi_tickets", "item");
+      
+   }   
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
