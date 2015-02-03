@@ -748,17 +748,21 @@ class MailCollector  extends CommonDBTM {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
+      $is_html = false;
       //If files are present and content is html
       if (isset($this->files)
           && count($this->files)
           && ($tkt['content'] != strip_tags($tkt['content']))) {
-
+         $is_html = true;
          $tkt['content'] = Ticket::convertContentForTicket($tkt['content'],
                                                            array_merge($this->files, $this->altfiles), 
                                                            $this->tags);
       }
        $tkt['content'] = $this->cleanMailContent($tkt['content']);
 
+       if ($is_html) {
+          $tkt['content'] = nl2br($tkt['content']);
+       }
       $tkt['_supplier_email'] = false;
       // Found ticket link
       if (isset($tkt['tickets_id'])) {
