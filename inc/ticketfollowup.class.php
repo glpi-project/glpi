@@ -272,13 +272,16 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
-
+      global $CFG_GLPI;
+      
       $input["_job"] = new Ticket();
 
       if (!$input["_job"]->getFromDB($input["tickets_id"])) {
          return false;
       }
-      
+      if ($CFG_GLPI["use_rich_text"]) {
+         $input['content'] = $input["_job"]->setSimpleTextContent($input["content"]);
+      }
       // Manage File attached (from mailgate)
       // Pass filename if set to ticket
       if (isset($input['_filename'])) {
