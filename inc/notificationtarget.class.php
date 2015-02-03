@@ -574,7 +574,7 @@ class NotificationTarget extends CommonDBChild {
 
       if (!empty($this->target_object)) {
          foreach($this->target_object as $val){
-            if ($val['groups_id'] > 0) {
+            if ($val->fields['groups_id'] > 0) {
                $this->getAddressesByGroup(0, $val['groups_id']);
             }
          }
