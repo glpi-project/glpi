@@ -3521,8 +3521,8 @@ class Search {
             $totable = getTableForItemType($to_type);
             array_push($already_link_tables2,$totable);
             return " $LINK `$totable`
-                        ON (`$totable`.`id` = `glpi_tickets`.`items_id`
-                            AND `glpi_tickets`.`itemtype` = '$to_type')";
+                        ON (`$totable`.`id` = `glpi_items_tickets`.`items_id`
+                            AND `glpi_items_tickets`.`itemtype` = '$to_type')";
 
          case 'Computer' :
             switch ($to_type) {
@@ -4199,13 +4199,39 @@ class Search {
                return "<img src=\"".Ticket::getStatusIconURL($data[$num][0]['name'])."\"
                         alt=\"$status\" title=\"$status\">&nbsp;$status";
 
-            case 'glpi_tickets.items_id' :
-               if (!empty($data[$num][0]['itemtype'])
-                   && ($item = getItemForItemtype($data[$num][0]['itemtype']))) {
-                  if ($item->getFromDB($data[$num][0]['name'])) {
-                     return $item->getLink(array('comments' => true));
+            case 'glpi_items_tickets.items_id' :
+               if (!empty($data[$num])) {
+                  $items = array();
+                  foreach ($data[$num] as $key => $val) {
+                     if (is_numeric($key)) {
+                        if (!empty($val['itemtype'])
+                                && ($item = getItemForItemtype($val['itemtype']))) {
+                           if ($item->getFromDB($val['name'])) {
+                              $items[] = $item->getLink(array('comments' => true));
+                           }
+                        }
+                     }
+                  }
+                  if (!empty($items)) {
+                     return implode("<br>", $items);
                   }
                }
+               return '&nbsp;';
+            case 'glpi_items_tickets.itemtype' :
+               if (!empty($data[$num])) {
+                  $itemtypes = array();
+                  foreach ($data[$num] as $key => $val) {
+                     if (is_numeric($key)) {
+                        if (!empty($val['name'])) {
+                           $itemtypes[] = __($val['name']);
+                        }
+                     }
+                  }
+                  if (!empty($itemtypes)) {
+                     return implode("<br>", $itemtypes);
+                  }
+               }
+
                return '&nbsp;';
 
             case 'glpi_tickets.name' :

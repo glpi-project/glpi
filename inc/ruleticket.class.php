@@ -237,7 +237,7 @@ class RuleTicket extends Rule {
                   break;
 
                case 'fromitem' :
-                  if ($action->fields['field'] == 'locations_id') {
+                  if ($action->fields['field'] == 'locations_id' && isset($output['items_locations'])) {
                      $output['locations_id'] = $output['items_locations'];
                   }
                   break;
@@ -524,7 +524,7 @@ class RuleTicket extends Rule {
       $actions['status']['name']                            = __('Status');
       $actions['status']['type']                            = 'dropdown_status';
 
-      $actions['affectobject']['name']                      = __('Associated element');
+      $actions['affectobject']['name']                      = _n('Associated element', 'Associated elements', Session::getPluralNumber());
       $actions['affectobject']['type']                      = 'text';
       $actions['affectobject']['force_actions']             = array('affectbyip', 'affectbyfqdn',
                                                                     'affectbymac');

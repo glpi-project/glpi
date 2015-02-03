@@ -65,6 +65,10 @@ if ($item->isEntityAssign()) {
    $where = "WHERE 1";
 }
 
+if(isset($_GET['used']) && !empty($_GET['used'])){
+   $where .= " AND `id` NOT IN ('".implode("','" ,$_GET['used'])."') ";
+}
+
 if ($item->maybeDeleted()) {
    $where .= " AND `is_deleted` = '0' ";
 }

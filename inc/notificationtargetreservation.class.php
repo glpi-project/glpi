@@ -206,7 +206,7 @@ class NotificationTargetReservation extends NotificationTarget {
             if (($itemtype != NOT_AVAILABLE) && ($itemtype != '')
                 && ($item = getItemForItemtype($itemtype))) {
                $item->getFromDB($ri->getField('items_id'));
-               $this->target_object = $item;
+               $this->target_object[] = $item;
             }
          }
       }

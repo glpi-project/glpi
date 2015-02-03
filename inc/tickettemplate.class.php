@@ -87,7 +87,7 @@ class TicketTemplate extends CommonDropdown {
          if (isset($this->hidden['itemtype'])
              && !isset($this->hidden['items_id'])) {
             $this->hidden['items_id'] = $ticket->getSearchOptionIDByField('field', 'items_id',
-                                                                          'glpi_tickets');
+                                                                          'glpi_items_tickets');
          }
          // Always get all mandatory fields
          $ttm             = new TicketTemplateMandatoryField();
@@ -97,7 +97,7 @@ class TicketTemplate extends CommonDropdown {
          if (isset($this->mandatory['itemtype'])
              && !isset($this->mandatory['items_id'])) {
             $this->mandatory['items_id'] = $ticket->getSearchOptionIDByField('field', 'items_id',
-                                                                             'glpi_tickets');
+                                                                             'glpi_items_tickets');
          }
 
          $ttp              = new TicketTemplatePredefinedField();
@@ -175,7 +175,7 @@ class TicketTemplate extends CommonDropdown {
                      $ticket->getSearchOptionIDByField('field', 'actiontime',
                                                        'glpi_tickets')   => 'actiontime',
                      $ticket->getSearchOptionIDByField('field', 'itemtype',
-                                                       'glpi_tickets')   => 'itemtype',
+                                                       'glpi_items_tickets')   => 'itemtype',
                      $ticket->getSearchOptionIDByField('field', 'global_validation',
                                                        'glpi_tickets')   => 'global_validation',
 
@@ -202,7 +202,7 @@ class TicketTemplate extends CommonDropdown {
          if ($with_items_id) {
             $allowed_fields[$withtypeandcategory][$with_items_id]
                [$ticket->getSearchOptionIDByField('field', 'items_id',
-                                                  'glpi_tickets')] = 'items_id';
+                                                  'glpi_items_tickets')] = 'items_id';
          }
          // Add validation request
          $allowed_fields[$withtypeandcategory][$with_items_id][-2] = '_add_validation';

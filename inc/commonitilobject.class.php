@@ -5007,32 +5007,35 @@ abstract class CommonITILObject extends CommonDBTM {
          // Ticket : simple link to item
          $sixth_col  = "";
          $is_deleted = false;
+         $item_ticket = new Item_Ticket();
+         $data = $item_ticket->find("`tickets_id` = ".$item->fields['id']);
+         
          if ($item->getType() == 'Ticket') {
-            if (!empty($item->fields["itemtype"])
-               && ($item->fields["items_id"] > 0)) {
-               if ($object = getItemForItemtype($item->fields["itemtype"])) {
-                  if ($object->getFromDB($item->fields["items_id"])) {
-                     $is_deleted = $object->isDeleted();
+            if (!empty($data)) {
+               foreach ($data as $val) {
+                  if (!empty($val["itemtype"]) && ($val["items_id"] > 0)) {
+                     if ($object = getItemForItemtype($val["itemtype"])) {
+                        if ($object->getFromDB($val["items_id"])) {
+                           $is_deleted = $object->isDeleted();
 
-                     $sixth_col .= $object->getTypeName();
-                     $sixth_col .= "<br><span class='b'>";
-                     if ($item->canView()) {
-                        $sixth_col .= $object->getLink();
-                     } else {
-                        $sixth_col .= $object->getNameID();
+                           $sixth_col .= $object->getTypeName();
+                           $sixth_col .= " - <span class='b'>";
+                           if ($item->canView()) {
+                              $sixth_col .= $object->getLink();
+                           } else {
+                              $sixth_col .= $object->getNameID();
+                           }
+                           $sixth_col .= "</span><br>";
+                        }
                      }
-                     $sixth_col .= "</span>";
                   }
                }
-
-            } else if (empty($item->fields["itemtype"])) {
+            } else {
                $sixth_col = __('General');
             }
-            echo Search::showItem($p['output_type'], $sixth_col, $item_num, $p['row_num'],
-                                 ($is_deleted?" class='center deleted' ":$align));
+
+            echo Search::showItem($p['output_type'], $sixth_col, $item_num, $p['row_num'], ($is_deleted ? " class='center deleted' " : $align));
          }
-
-
 
          // Seventh column
          echo Search::showItem($p['output_type'],
@@ -5157,7 +5160,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $items[__('Requester')]          = "users_id";
       $items[__('Assigned')]           = "users_id_assign";
       if (static::getType() == 'Ticket') {
-         $items[__('Associated element')] = "";
+         $items[_n('Associated element', 'Associated elements', Session::getPluralNumber()] = "";
       }
       $items[__('Category')]           = "glpi_itilcategories.completename";
       $items[__('Title')]              = "name";

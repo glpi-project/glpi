@@ -44,8 +44,8 @@ if (!isset($_GET['id'])) {
 if (isset($_POST["add"])) {
    $track->check(-1, CREATE, $_POST);
 
-   if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
-      $splitter = explode("_",$_POST["_my_items"]);
+   if (isset($_POST["my_items"]) && !empty($_POST["my_items"])) {
+      $splitter = explode("_",$_POST["my_items"]);
       if (count($splitter) == 2) {
          $_POST["itemtype"] = $splitter[0];
          $_POST["items_id"] = $splitter[1];
@@ -61,13 +61,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['update'])) {
    $track->check($_POST['id'], UPDATE);
 
-   if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
-      $splitter = explode("_",$_POST["_my_items"]);
-      if (count($splitter) == 2) {
-         $_POST["itemtype"] = $splitter[0];
-         $_POST["items_id"] = $splitter[1];
-      }
-   }
+
    $track->update($_POST);
    Event::log($_POST["id"], "ticket", 4, "tracking",
               //TRANS: %s is the user login

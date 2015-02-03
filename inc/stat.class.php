@@ -1425,16 +1425,18 @@ class Stat extends CommonGLPI {
       }
       $date1 .= " 00:00:00";
 
-      $query = "SELECT `itemtype`,
-                       `items_id`,
+      $query = "SELECT `glpi_items_tickets`.`itemtype`,
+                       `glpi_items_tickets`.`items_id`,
                        COUNT(*) AS NB
                 FROM `glpi_tickets`
+                LEFT JOIN `glpi_items_tickets`
+                   ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)
                 WHERE `date` <= '$date2'
-                      AND `date` >= '$date1' ".
+                      AND `glpi_tickets`.`date` >= '$date1' ".
                       getEntitiesRestrictRequest("AND","glpi_tickets")."
-                      AND `itemtype` <> ''
-                      AND `items_id` > 0
-                GROUP BY `itemtype`, `items_id`
+                      AND `glpi_items_tickets`.`itemtype` <> ''
+                      AND `glpi_items_tickets`.`items_id` > 0
+                GROUP BY `glpi_items_tickets`.`itemtype`, `glpi_items_tickets`.`items_id`
                 ORDER BY NB DESC";
 
       $result  = $DB->query($query);
@@ -1456,7 +1458,7 @@ class Stat extends CommonGLPI {
          echo Search::showHeader($output_type, $end_display-$start+1, 2, 1);
          $header_num = 1;
          echo Search::showNewLine($output_type);
-         echo Search::showHeaderItem($output_type, __('Associated element'), $header_num);
+         echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', 2), $header_num);
          if ($view_entities) {
             echo Search::showHeaderItem($output_type, __('Entity'), $header_num);
          }

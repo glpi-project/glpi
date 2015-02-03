@@ -810,15 +810,18 @@ abstract class CommonITILTask  extends CommonDBTM {
 
                      $interv[$key]["name"]     = $parentitem->fields["name"];
                      $interv[$key]["content"]  = Html::resume_text($parentitem->fields["content"],
-                                                                   $CFG_GLPI["cut"]);
+                                                                   $CFG_GLPI["cut"]));
                      $interv[$key]["status"]   = $parentitem->fields["status"];
                      $interv[$key]["priority"] = $parentitem->fields["priority"];
 
                      /// Specific for tickets
                      $interv[$key]["device"] = '';
-                     if (isset($parentitem->hardwaredatas)) {
-                        $interv[$key]["device"] = ($parentitem->hardwaredatas
-                                                   ?$parentitem->hardwaredatas->getName() :'');
+                     if (isset($parentitem->hardwaredatas) && !empty($parentitem->hardwaredatas)) {
+                        foreach($parentitem->hardwaredatas as $hardwaredata){
+                           $interv[$key]["device"][$hardwaredata->fields['id']] = ($hardwaredata
+                                                      ? $hardwaredata->getName() :'');
+                        }
+                        $interv[$key]["device"] = implode("<br>", $interv[$key]["device"]);
                      }
 //                  }
                }
