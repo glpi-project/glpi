@@ -280,13 +280,6 @@ class NotificationTemplate extends CommonDBTM {
 
                $template_datas['content_html'] = self::process($template_datas['content_html'],
                                                                $data_html);
-                                                               
-               if (get_class($target->obj) == 'Ticket' && isset($options['item'])) {
-                  $Ticket = new Ticket();
-                  $template_datas['content_html']
-                          = $Ticket->convertContentForNotification($template_datas['content_html'],
-                                                                   $options['item']);
-               }
 
                $lang['content_html'] =
                      "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"

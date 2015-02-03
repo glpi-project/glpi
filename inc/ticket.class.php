@@ -6020,11 +6020,15 @@ class Ticket extends CommonITILObject {
    **/
    function convertContentForNotification($content, $item) {
       global $CFG_GLPI, $DB;
+//       return $content;
 
       $tag  = '';
-      $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
-                          html_entity_decode($content, ENT_QUOTES, 'UTF-8'));
-
+      
+//       $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
+//                           html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
+//       $html = Html::entity_decode_deep($content);
+      $html = $content;
+      
       // If is html content
       if ($CFG_GLPI["use_rich_text"]) {
          // We parse HTML with dom
@@ -6048,7 +6052,13 @@ class Ticket extends CommonITILObject {
             }
          }
 
-         $content = $dom->saveHTML();
+         // Get only body content
+         $doc = new DOMDocument();
+         $body = $dom->getElementsByTagName('body')->item(0);
+         foreach ($body->childNodes as $child)
+            $doc->appendChild($doc->importNode($child, true));
+
+         $content = utf8_decode(Html::entity_decode_deep($doc->saveHTML()));
       // If is text content
       } else {
          $doc = new Document();

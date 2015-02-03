@@ -56,7 +56,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     * @param $options   array
     */
    function __construct($entity='', $event='', $object=null, $options=array()) {
-
+      global $CFG_GLPI;
+      
       parent::__construct($entity, $event, $object, $options);
 
       $this->options['sendprivate'] = false;
@@ -67,6 +68,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       if (isset($options['task_id'])) {
          $this->options['sendprivate'] = $options['is_private'];
+      }
+      
+      if ($CFG_GLPI["use_rich_text"]) {
+         $this->html_tags[] = '##ticket.content##';
       }
    }
 
@@ -282,6 +287,17 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       // Common ITIL datas
       $datas            = parent::getDatasForObject($item, $options, $simple);
+      
+                                                                     
+     if (isset($options['item'])) {
+         $Ticket = new Ticket();
+//          echo $datas['##ticket.content##'];echo "<br><br>";
+         $datas['##ticket.content##']
+                 = $Ticket->convertContentForNotification($datas['##ticket.content##'],
+                                                        $options['item']);
+//          echo $datas['##ticket.content##'];
+//          exit();
+     }
 
       // Specific datas
       $datas['##ticket.urlvalidation##']

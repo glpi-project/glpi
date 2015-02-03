@@ -386,12 +386,12 @@ class QueuedMail extends CommonDBTM {
                   }
                }
             }
+            $mmail->Body   .= $this->fields['body_html'];
             if (count($link_doc)) {
                $mmail->Body .= '<p style="border:1px solid #cccccc;padding:5px">'.
                                 '<b>'._n('Associated item','Associated items', Session::getPluralNumber()).' : </b>'.
                                 implode(', ', $link_doc).'</p>';
             }
-            $mmail->Body   .= $this->fields['body_html'];
             $mmail->AltBody = $this->fields['body_text'];
          }
 
