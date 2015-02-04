@@ -630,14 +630,14 @@ class Ticket extends CommonITILObject {
     * @return nothing : set computerfound to 1 if founded
    **/
    function getAdditionalDatas() {
-      
+
       $this->hardwaredatas = array();
-      
+
 
       if (!empty($this->fields["id"])) {
          $item_ticket = new Item_Ticket();
          $data = $item_ticket->find("`tickets_id` = ".$this->fields["id"]);
-         
+
          foreach ($data as $val) {
             if (!empty($val["itemtype"]) && ($item = getItemForItemtype($val["itemtype"]))) {
                if ($item->getFromDB($val["items_id"])) {
@@ -688,7 +688,7 @@ class Ticket extends CommonITILObject {
 
       $ct = new Change_Ticket();
       $ct->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-      
+
 
       $ip = new Item_Ticket();
       $ip->cleanDBonItemDelete('Ticket', $this->fields['id']);
@@ -1061,12 +1061,12 @@ class Ticket extends CommonITILObject {
       if (isset($this->input['_forcenotif'])) {
          $donotif = true;
       }
-      
+
 
       if (!empty($this->input['itemtype']) && !empty($this->input['items_id'])) {
          $item_ticket = new Item_Ticket();
-         $item_ticket->add(array('items_id'   => $this->input['items_id'], 
-                                 'itemtype'   => $this->input['itemtype'], 
+         $item_ticket->add(array('items_id'   => $this->input['items_id'],
+                                 'itemtype'   => $this->input['itemtype'],
                                  'tickets_id' => $this->fields['id']));
       }
 
@@ -1264,11 +1264,11 @@ class Ticket extends CommonITILObject {
       $item = NULL;
       if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
          if ($item = getItemForItemtype($input["itemtype"])) {
-            $item->getFromDB($input["items_id"]); 
+            $item->getFromDB($input["items_id"]);
          }
       }
 
-      
+
       // Business Rules do not override manual SLA
       $manual_slas_id = 0;
       if (isset($input['slas_id']) && ($input['slas_id'] > 0)) {
@@ -1425,7 +1425,7 @@ class Ticket extends CommonITILObject {
          $input['type'] = Entity::getUsedConfig('tickettype', $input['entities_id'], '',
                                                 Ticket::INCIDENT_TYPE);
       }
-      
+
       return $input;
    }
 
@@ -1549,12 +1549,12 @@ class Ticket extends CommonITILObject {
                            /*'_no_notif'   => true*/));
          }
       }
-            
+
 
       if (!empty($this->input['itemtype']) && !empty($this->input['items_id'])) {
          $item_ticket = new Item_Ticket();
-         $item_ticket->add(array('items_id'   => $this->input['items_id'], 
-                                 'itemtype'   => $this->input['itemtype'], 
+         $item_ticket->add(array('items_id'   => $this->input['items_id'],
+                                 'itemtype'   => $this->input['itemtype'],
                                  'tickets_id' => $this->fields['id'],
                                  '_disablenotif' => true));
       }
@@ -1858,11 +1858,11 @@ class Ticket extends CommonITILObject {
                             array_merge($this->getSolvedStatusArray(),
                                         $this->getClosedStatusArray())
                             )."')";
-      
+
 
       $result = $DB->query($query);
       $ligne  = $DB->fetch_assoc($result);
-      
+
       return $ligne['cpt'];
    }
 
@@ -1880,7 +1880,7 @@ class Ticket extends CommonITILObject {
    **/
    function countSolvedTicketsForItemLastDays($itemtype, $items_id, $days) {
       global $DB;
-      
+
       $query = "SELECT COUNT(*) AS cpt
                 FROM `".$this->getTable()."`
                 LEFT JOIN `glpi_items_tickets`
@@ -1895,11 +1895,11 @@ class Ticket extends CommonITILObject {
                                     array_merge($this->getSolvedStatusArray(),
                                                 $this->getClosedStatusArray())
                                     )."')";
-      
+
 
       $result = $DB->query($query);
       $ligne  = $DB->fetch_assoc($result);
-      
+
       return $ligne['cpt'];
    }
 
@@ -2019,11 +2019,11 @@ class Ticket extends CommonITILObject {
             $actions['TicketValidation'.MassiveAction::CLASS_ACTION_SEPARATOR.'submit_validation']
                = __('Approval request');
          }
-         
+
          if (Item_Ticket::canCreate()) {
             $actions['Item_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add_item'] = _x('button', 'Add an item');
          }
-         
+
          if (Item_Ticket::canDelete()) {
             $actions['Item_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'delete_item'] = _x('button', 'Remove an item');
          }
@@ -2076,7 +2076,8 @@ class Ticket extends CommonITILObject {
       $tab[131]['datatype']         = 'itemtypename';
       $tab[131]['itemtype_list']    = 'ticket_types';
       $tab[131]['nosort']           = true;
-      $tab[131]['forcegroupby']     = true;
+      $tab[131]['additionalfields'] = array('itemtype');
+      $tab[131]['joinparams']       = array('jointype'   => 'child');
       $tab[131]['massiveaction']    = false;
 
       $tab[9]['table']              = 'glpi_requesttypes';
@@ -3871,7 +3872,7 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th>".sprintf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'))."</th>";
       echo "<td>";
@@ -3902,8 +3903,8 @@ class Ticket extends CommonITILObject {
                                        $CFG_GLPI["root_doc"]."/ajax/priority.php", $params);
       }
       echo "</td>";
-      
-      
+
+
 
       if (!$ID) {
          echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype');
@@ -3920,7 +3921,7 @@ class Ticket extends CommonITILObject {
             $dev_user_id = $values['_users_id_requester'];
             $dev_itemtype = $values["itemtype"];
             $dev_items_id = $values["items_id"];
-            
+
             if ($dev_user_id > 0) {
                Item_Ticket::dropdownMyDevices($dev_user_id, $this->fields["entities_id"], $dev_itemtype, $dev_items_id);
             }
@@ -3951,7 +3952,7 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldValue('actiontime',$this);
          echo "</td>";
       }
-      
+
       echo "</tr>";
 
       echo "</table>";
@@ -5036,7 +5037,7 @@ class Ticket extends CommonITILObject {
          }
 
          echo "</td>";
-         
+
 
          echo "<td class='center'>";
          if (!empty($job->hardwaredatas)) {
@@ -5054,7 +5055,7 @@ class Ticket extends CommonITILObject {
          }
          echo "<td>";
 
-         
+
          $link = "<a id='ticket".$job->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
                    "/front/ticket.form.php?id=".$job->fields["id"];
          if ($forcetab != '') {
@@ -5474,7 +5475,7 @@ class Ticket extends CommonITILObject {
             $doc_data = $doc->find("`tag` IN('".implode("','", array_unique($matches[1]))."')");
          }
       }
-      
+
 
       if (count($doc_data)) {
          foreach ($doc_data as $id => $image) {
@@ -5618,7 +5619,7 @@ class Ticket extends CommonITILObject {
       // We replace each img by a compatible tag for tickets
       $nodes = $dom->getElementsByTagName('img');
       $nodeListLength = $nodes->length;
-      
+
       // If config display image
       for ($i = 0; $i < $nodeListLength; $i ++) {
          $node = $nodes->item(0);
@@ -5660,10 +5661,10 @@ class Ticket extends CommonITILObject {
 //       return $content;
 
       $tag  = '';
-      
+
        $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
                            html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
-      
+
       // If is html content
       if ($CFG_GLPI["use_rich_text"]) {
          // We parse HTML with dom
@@ -5678,9 +5679,9 @@ class Ticket extends CommonITILObject {
          // If config display image
          for ($i = 0; $i < $nodeListLength; $i++) {
             $node = $nodes->item($i);
-            
+
             if ($node->getAttribute('alt')) {
-                
+
                $tag =  Document::getImageTag($node->getAttribute('alt'));
                $img = $dom->createElement('img');
                $img->setAttribute('src', 'cid:'.$tag);
@@ -5688,7 +5689,7 @@ class Ticket extends CommonITILObject {
                $node->parentNode->replaceChild($img, $node);
             }
          }
-        
+
          // Get only body content
          $doc = new DOMDocument();
          $body = $dom->getElementsByTagName('body')->item(0);
