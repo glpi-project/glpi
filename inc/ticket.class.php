@@ -2078,6 +2078,7 @@ class Ticket extends CommonITILObject {
       $tab[131]['nosort']           = true;
       $tab[131]['additionalfields'] = array('itemtype');
       $tab[131]['joinparams']       = array('jointype'   => 'child');
+      $tab[131]['forcegroupby']     = true;
       $tab[131]['massiveaction']    = false;
 
       $tab[9]['table']              = 'glpi_requesttypes';
