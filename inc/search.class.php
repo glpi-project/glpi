@@ -3520,7 +3520,9 @@ class Search {
          case 'Ticket' :
             $totable = getTableForItemType($to_type);
             array_push($already_link_tables2,$totable);
-            return " $LINK `$totable`
+            return " $LINK `glpi_items_tickets` 
+                        ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)
+                     $LINK `$totable`
                         ON (`$totable`.`id` = `glpi_items_tickets`.`items_id`
                             AND `glpi_items_tickets`.`itemtype` = '$to_type')";
 
@@ -5008,11 +5010,16 @@ class Search {
             $search[$itemtype][60]['forcegroupby']  = true;
             $search[$itemtype][60]['usehaving']     = true;
             $search[$itemtype][60]['massiveaction'] = false;
-            $search[$itemtype][60]['joinparams']    = array('jointype'
-                                                             => "itemtype_item",
-                                                            'condition'
-                                                             => getEntitiesRestrictRequest('AND',
-                                                                                           'NEWTABLE'));
+            $search[$itemtype][60]['joinparams']    = array('beforejoin'
+                                                              => array('table'
+                                                                        => 'glpi_items_tickets',
+                                                                       'joinparams'
+                                                                        => array('jointype'
+                                                                                  => 'itemtype_item')),
+                                                             'condition'
+                                                              => getEntitiesRestrictRequest('AND',
+                                                                                            'NEWTABLE'));
+                                                                                            
             $search[$itemtype][140]['table']         = 'glpi_problems';
             $search[$itemtype][140]['field']         = 'id';
             $search[$itemtype][140]['datatype']      = 'count';
