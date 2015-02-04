@@ -364,50 +364,50 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                $tmp = array();
                
                //Object type
-               $tmp['##ticket.itemtype##']  = $hardware->getTypeName().'<br>';
+               $tmp['##ticket.itemtype##']  = $hardware->getTypeName();
 
                //Object name
-               $tmp['##ticket.item.name##'] = $hardware->getField('name').'<br>';
+               $tmp['##ticket.item.name##'] = $hardware->getField('name');
 
                //Object serial
                if ($hardware->isField('serial')) {
-                  $tmp['##ticket.item.serial##'] = $hardware->getField('serial').'<br>';
+                  $tmp['##ticket.item.serial##'] = $hardware->getField('serial');
                }
 
                //Object contact
                if ($hardware->isField('contact')) {
-                  $tmp['##ticket.item.contact##'] = $hardware->getField('contact').'<br>';
+                  $tmp['##ticket.item.contact##'] = $hardware->getField('contact');
                }
 
                //Object contact num
                if ($hardware->isField('contact_num')) {
-                  $tmp['##ticket.item.contactnumber##'] = $hardware->getField('contact_num').'<br>';
+                  $tmp['##ticket.item.contactnumber##'] = $hardware->getField('contact_num');
                }
 
                //Object otherserial
                if ($hardware->isField('otherserial')) {
-                  $tmp['##ticket.item.otherserial##'] = $hardware->getField('otherserial').'<br>';
+                  $tmp['##ticket.item.otherserial##'] = $hardware->getField('otherserial');
                }
 
                //Object location
                if ($hardware->isField('locations_id')) {
                   $tmp['##ticket.item.location##']
                               = Dropdown::getDropdownName('glpi_locations',
-                                                          $hardware->getField('locations_id')).'<br>';
+                                                          $hardware->getField('locations_id'));
                }
 
                //Object user
                if ($hardware->getField('users_id')) {
                   $user_tmp = new User();
                   if ($user_tmp->getFromDB($hardware->getField('users_id'))) {
-                     $tmp['##ticket.item.user##'] = $user_tmp->getName().'<br>';
+                     $tmp['##ticket.item.user##'] = $user_tmp->getName();
                   }
                }
 
                //Object group
                if ($hardware->getField('groups_id')) {
                   $tmp['##ticket.item.group##']
-                              = Dropdown::getDropdownName('glpi_groups', $hardware->getField('groups_id')).'<br>';
+                              = Dropdown::getDropdownName('glpi_groups', $hardware->getField('groups_id'));
                }
 
                $modeltable = getSingular($hardware->getTable())."models";
@@ -415,7 +415,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
                if ($hardware->isField($modelfield)) {
                   $tmp['##ticket.item.model##']
-                              = Dropdown::getDropdownName($modeltable, $hardware->getField($modelfield)).'<br>';
+                              = Dropdown::getDropdownName($modeltable, $hardware->getField($modelfield));
                }
                
                $datas['items'][] = $tmp;
