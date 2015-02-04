@@ -579,30 +579,28 @@ class CommonDBTM extends CommonGLPI {
 
       // Clean ticket open against the item
       if (in_array($this->getType(),$CFG_GLPI["ticket_types"])) {
-         $job = new Ticket();
+         $job         = new Ticket();
+         $itemsticket = new Item_Ticket();
 
          $query = "SELECT *
-                   FROM `glpi_tickets`
+                   FROM `glpi_items_tickets`
                    WHERE `items_id` = '".$this->fields['id']."'
                          AND `itemtype`='".$this->getType()."'";
          $result = $DB->query($query);
 
          if ($DB->numrows($result)) {
             while ($data=$DB->fetch_assoc($result)) {
-
-               if ($CFG_GLPI["keep_tickets_on_delete"] == 1) {
-                  $input = array();
-                  $input['id']       = $data["id"];
-                  $input['items_id'] = 0;
-                  $input['itemtype'] = '';
-                  if ($data['status'] == 'closed') {
-                     $input['_disablenotif']= true;
+               $cnt = countElementsInTable('glpi_items_tickets', "`tickets_id`='".$data['tickets_id']."'");
+               $job->getFromDB($data['tickets_id']);
+               if ($cnt == 1) {
+                  if ($CFG_GLPI["keep_tickets_on_delete"] == 1) {
+                     $itemsticket->delete(array("id" => $data["id"]));
+                  } else {
+                     $job->delete(array("id" => $data["tickets_id"]));
                   }
-                  $job->update($input);
                } else {
-                  $job->delete(array("id" => $data["id"]));
+                  $itemsticket->delete(array("id" => $data["id"]));
                }
-
             }
          }
 
