@@ -163,6 +163,10 @@ $CFG_GLPI["state_types"]                  = array('Computer', 'Monitor', 'Networ
 $CFG_GLPI["asset_types"]                  = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer');
 
+$CFG_GLPI["project_asset_types"]          = array('Computer', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+
+                                                  
 $CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Change', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract',
                                                   'Document', 'Entity', 'KnowbaseItem', 'Monitor',

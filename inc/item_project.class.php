@@ -133,7 +133,7 @@ class Item_Project extends CommonDBRelation{
 
          echo "<tr class='tab_bg_1'><td>";
          Dropdown::showSelectItemFromItemtypes(array('itemtypes'
-                                                      => $CFG_GLPI["asset_types"],
+                                                      => $CFG_GLPI["project_asset_types"],
                                                      'entity_restrict'
                                                       => ($project->fields['is_recursive']
                                                           ?getSonsOf('glpi_entities',
