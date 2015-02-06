@@ -287,7 +287,8 @@ class TicketFollowup  extends CommonDBTM {
       if (isset($input['_filename'])) {
          $input["_job"]->input['_filename'] = $input['_filename'];
       }
-      $docadded = $input["_job"]->addFiles();
+      // Add docs without notif
+      $docadded = $input["_job"]->addFiles(0,1);
 
       if (count($docadded) > 0) {
          $input['content'] .= "\n";
@@ -398,7 +399,7 @@ class TicketFollowup  extends CommonDBTM {
          $options = array('followup_id' => $this->fields["id"],
                           'is_private'  => $this->fields['is_private']);
          NotificationEvent::raiseEvent("add_followup", $this->input["_job"], $options);
-      }
+      } 
 
       // Add log entry in the ticket
       $changes[0] = 0;
