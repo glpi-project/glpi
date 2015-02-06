@@ -36,7 +36,9 @@ define('GLPI_ROOT', realpath('..'));
 
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
+
 Config::detectRootDoc();
+
 
 //Print a correct  Html header for application
 function header_html($etape) {
@@ -599,6 +601,7 @@ if (!isset($_POST["install"])) {
          break;
 
       case "update_1" :
+         checkConfigFile();
          if (empty($_POST["databasename"])) {
             $_POST["databasename"] = "";
          }
