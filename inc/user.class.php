@@ -666,27 +666,34 @@ class User extends CommonDBTM {
                }
 
             } else {
-               // Unlink old picture (clean on changing format)
-               self::dropPictureFiles($this->fields['picture']);
-               // Move uploaded file
-               $filename     = $this->fields['id'];
-               $tmp          = explode(".", $_FILES['picture']['name']);
-               $extension    = array_pop($tmp);
-               $picture_path = GLPI_DOC_DIR."/_pictures/$filename.".$extension;
-               self::dropPictureFiles($filename.".".$extension);
+               $mime = mime_content_type($_FILES['picture']['tmp_name']);
+               if (strstr($mime,'image')!==false) {
 
-               if (Document::renameForce($_FILES['picture']['tmp_name'], $picture_path)) {
-                  Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
-                  // For display
-                  $input['picture'] = $filename.".".$extension;
+                  // Unlink old picture (clean on changing format)
+                  self::dropPictureFiles($this->fields['picture']);
+                  // Move uploaded file
+                  $filename     = $this->fields['id'];
+                  $tmp          = explode(".", $_FILES['picture']['name']);
+                  $extension    = array_pop($tmp);
+                  $picture_path = GLPI_DOC_DIR."/_pictures/$filename.".$extension;
+                  self::dropPictureFiles($filename.".".$extension);
+ 
+                  if (Document::renameForce($_FILES['picture']['tmp_name'], $picture_path)) {
+                     Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
+                     // For display
+                     $input['picture'] = $filename.".".$extension;
 
-                  //prepare a thumbnail
-                  $thumb_path = GLPI_DOC_DIR."/_pictures/".$filename."_min.".$extension;
-                  Toolbox::resizePicture($picture_path, $thumb_path);
-               } else {
-                  Session::addMessageAfterRedirect(__('Potential upload attack or file too large. Moving temporary file failed.'),
-                                                   false, ERROR);
-               }
+                     //prepare a thumbnail
+                     $thumb_path = GLPI_DOC_DIR."/_pictures/".$filename."_min.".$extension;
+                      Toolbox::resizePicture($picture_path, $thumb_path);
+                  } else {
+                     Session::addMessageAfterRedirect(__('Potential upload attack or file too large. Moving temporary file failed.'),
+                                                     false, ERROR);
+                 }
+              } else {
+                Session::addMessageAfterRedirect(__('Picture is not an image file.'),
+                                                false, ERROR);
+              }
             }
          } else {
             //ldap jpegphoto synchronisation.
