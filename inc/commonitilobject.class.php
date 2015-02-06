@@ -1202,7 +1202,7 @@ abstract class CommonITILObject extends CommonDBTM {
    function post_addItem() {
 
       // Add document if needed, without notification
-      $this->addFiles(0);
+      $this->addFiles(0, 1);
 
       // Add default document if set in template
       if (isset($this->input['_documents_id'])
