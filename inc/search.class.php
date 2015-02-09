@@ -3836,8 +3836,8 @@ class Search {
                         if (($itemtype == 'Ticket')
                             && isset($data[$num][$k][2])) {
                            $split = explode("$$$$", $data[$num][$k][2]);
-                           for ($k=0 ; $k<count($split) ; $k++) {
-                              $split2 = explode(" ",$split[$k]);
+                           for ($l=0 ; $l<count($split) ; $l++) {
+                              $split2 = explode(" ",$split[$l]);
                               if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
                                  if ($count_display) {
                                     $out .= self::LBBR;
