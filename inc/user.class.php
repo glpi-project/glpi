@@ -602,7 +602,9 @@ class User extends CommonDBTM {
       // Add default profile
       if (!$rulesplayed) {
          $affectation = array();
-         if (isset($this->input['_profiles_id']) && $this->input['_profiles_id']) {
+         if (isset($this->input['_profiles_id']) && $this->input['_profiles_id']
+            && Profile::currentUserHaveMoreRightThan(array($this->input['_profiles_id']))
+            ) {
             $profile                   = $this->input['_profiles_id'];
             // Choosen in form, so not dynamic
             $affectation['is_dynamic'] = 0;
