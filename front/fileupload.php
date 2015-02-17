@@ -66,24 +66,34 @@ $errors =  array(
         'min_height'          => __('Image requires a minimum height')
     );
 
-$upload_handler = new UploadHandler(array('upload_dir'        => GLPI_ROOT.'/files/_tmp/',
+$upload_dir = GLPI_ROOT.'/files/_tmp/';
+    
+$upload_handler = new UploadHandler(array('upload_dir'        => $upload_dir,
                                           'param_name'        => $_GET['name'],
                                           'orient_image'      => false,
                                           'image_versions'    => array()),
                                     false, $errors);
 $response = $upload_handler->post(false);
 
+
 // clean compute display filesize
 if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
+   
+
    foreach ($response[$_GET['name']] as $key => &$val) {
-      if (isset($val->name)) {
-         $val->display = $val->name;
-      }
-      if (isset($val->size)) {
-         $val->filesize = Toolbox::getSize($val->size);
-         if (isset($_GET['showfilesize']) && $_GET['showfilesize']) {
-            $val->display = sprintf('%1$s %2$s', $val->display, $val->filesize);
+      if (Document::isValidDoc($val->name)) {
+         if (isset($val->name)) {
+            $val->display = $val->name;
          }
+         if (isset($val->size)) {
+            $val->filesize = Toolbox::getSize($val->size);
+            if (isset($_GET['showfilesize']) && $_GET['showfilesize']) {
+               $val->display = sprintf('%1$s %2$s', $val->display, $val->filesize);
+            }
+         }
+      } else { // Unlink file
+         $val->error = $errors['accept_file_types'];
+         unlink($upload_dir.$val->name);
       }
       $val->id = 'doc'.$_GET['name'].mt_rand();
    }
