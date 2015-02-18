@@ -81,7 +81,7 @@ if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
    
 
    foreach ($response[$_GET['name']] as $key => &$val) {
-      if (Document::isValidDoc($val->name)) {
+      if (Document::isValidDoc(addslashes($val->name))) {
          if (isset($val->name)) {
             $val->display = $val->name;
          }
@@ -93,7 +93,9 @@ if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
          }
       } else { // Unlink file
          $val->error = $errors['accept_file_types'];
-         unlink($upload_dir.$val->name);
+	 if (file_exists($upload_dir.$val->name)) {
+            @unlink($upload_dir.$val->name);
+         }
       }
       $val->id = 'doc'.$_GET['name'].mt_rand();
    }
