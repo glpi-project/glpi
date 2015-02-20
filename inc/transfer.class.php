@@ -566,8 +566,10 @@ class Transfer extends CommonDBTM {
       if ($this->options['keep_ticket']) {
          foreach ($CFG_GLPI["ticket_types"] as $itemtype) {
             if (isset($this->item_search[$itemtype])) {
-               $query = "SELECT DISTINCT `id`
+               $query = "SELECT DISTINCT `glpi_tickets`.`id`
                          FROM `glpi_tickets`
+                         LEFT JOIN `glpi_items_tickets`
+                            ON `glpi_items_tickets`.`tickets_id` = `glpi_tickets`.`id`
                          WHERE `itemtype` = '$itemtype'
                                AND `items_id` IN ".$this->item_search[$itemtype];
 
@@ -2304,6 +2306,8 @@ class Transfer extends CommonDBTM {
       $job   = new Ticket();
       $query = "SELECT *
                 FROM `glpi_tickets`
+                LEFT JOIN `glpi_items_tickets`
+                   ON `glpi_items_tickets`.`tickets_id` = `glpi_tickets`.`id`
                 WHERE `items_id` = '$ID'
                       AND `itemtype` = '$itemtype'";
 
