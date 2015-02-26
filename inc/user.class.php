@@ -700,8 +700,9 @@ class User extends CommonDBTM {
          } else {
             //ldap jpegphoto synchronisation.
             if (isset($this->fields["authtype"])
-                && (($this->fields["authtype"] == Auth::LDAP))) {
-                $input['picture'] = $this->syncLdapPhoto();
+                && $this->fields["authtype"] == Auth::LDAP
+                && $picture = $this->syncLdapPhoto()) {
+               $input['picture'] = $picture;
             }
          }
       }
@@ -1079,7 +1080,7 @@ class User extends CommonDBTM {
                //get picture fields
                $picture_field = $config_ldap->fields['picture_field'];
                if (empty($picture_field)) {
-                  return "";
+                  return false;
                }
 
                //get picture content in ldap
@@ -1110,7 +1111,7 @@ class User extends CommonDBTM {
          }
       }
 
-      return "";
+      return false;
    }
 
 
