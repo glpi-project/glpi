@@ -66,7 +66,7 @@ $errors =  array(
         'min_height'          => __('Image requires a minimum height')
     );
 
-$upload_dir = GLPI_ROOT.'/files/_tmp/';
+$upload_dir = GLPI_TMP_DIR.'/';
     
 $upload_handler = new UploadHandler(array('upload_dir'        => $upload_dir,
                                           'param_name'        => $_GET['name'],

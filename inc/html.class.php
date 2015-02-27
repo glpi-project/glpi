@@ -5123,7 +5123,7 @@ class Html {
          && is_array($p['values']['filename']) && count($p['values']['filename'])) {
          foreach ($p['values']['filename'] as $key => $name) {
             if (isset($p['values']['tag'][$key])) {
-               $file = GLPI_ROOT.'/files/_tmp/'.$p['values']['filename'][$key];
+               $file = GLPI_TMP_DIR.'/'.$p['values']['filename'][$key];
                if (file_exists($file)) {
                   $display = sprintf('%1$s %2$s', $p['values']['filename'][$key],
                                                   Toolbox::getSize(filesize($file)));
