@@ -48,6 +48,16 @@ class Backup extends CommonGLPI {
 
    const CHECKUPDATE = 1024;
 
+
+
+   /**
+    * @since version 0.85.3
+    **/
+   static function canView() {
+      return Session::haveRight(self::$rightname, READ);
+   }
+
+
    static function getTypeName($nb=0) {
       return __('Maintenance');
    }
