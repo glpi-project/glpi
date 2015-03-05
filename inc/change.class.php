@@ -274,6 +274,9 @@ class Change extends CommonITILObject {
 //       $this->getFromDB($input['id']);
 
       $input = parent::prepareInputForUpdate($input);
+      if ($input['status'] = self::ASSIGNED) {
+         $input['status'] = self::ACCEPTED;
+      }
       return $input;
    }
 
@@ -322,6 +325,9 @@ class Change extends CommonITILObject {
    function prepareInputForAdd($input) {
 
       $input =  parent::prepareInputForAdd($input);
+      if ($input['status'] = self::ASSIGNED) {
+         $input['status'] = self::ACCEPTED;
+      }
       return $input;
    }
 
