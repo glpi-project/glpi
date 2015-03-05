@@ -72,11 +72,11 @@ function update085to0853() {
    }
    Config::setConfigurationValues('core', array('task_state' => Planning::TODO));
    $migration->addField("glpi_users", "task_state", "int(11) DEFAULT NULL");
-   
+
    $migration->addField('glpi_projecttasks', 'is_milestone', 'bool');
    $migration->addKey('glpi_projecttasks', 'is_milestone');
-   
-   
+
+
    // Change Ticket items
    // Add glpi_items_tickets table for associated elements
    if (!TableExists('glpi_items_tickets')) {
@@ -105,15 +105,21 @@ function update085to0853() {
                           VALUES (NULL, '".$data['items_id']."', '".$data['itemtype']."', '".$data['id']."')";
                 $DB->queryOrDie($query, "0.85 associated ticket sitems migration");
             }
-            
+
          }
       }
       // Delete old columns and keys
       $migration->dropField("glpi_tickets", "itemtype");
       $migration->dropField("glpi_tickets", "items_id");
       $migration->dropKey("glpi_tickets", "item");
-      
-   }   
+
+   }
+
+   // correct value of status for changes
+   $query = "UPDATE `glpi_changes`
+             SET `status` = 7
+             WHERE `status` = 2";
+   $DB->queryOrDie($query, "0.85.3 correct status for change");
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
