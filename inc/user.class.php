@@ -3497,7 +3497,7 @@ class User extends CommonDBTM {
       }
 
       echo "<br>";
-      echo "<a href='".$CFG_GLPI['root_doc']."'>".__('Back')."</a>";
+      echo "<a href='".$_SERVER['PHP_SELF']."'>".__('Back')."</a>";
       echo "</div>";
    }
 
