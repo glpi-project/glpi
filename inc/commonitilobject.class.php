@@ -723,7 +723,11 @@ abstract class CommonITILObject extends CommonDBTM {
                              && in_array($this->fields['status'], $this->getNewStatusArray()))
                             || (isset($input['status'])
                                 && in_array($input['status'], $this->getNewStatusArray()))) {
-                           $input['status'] = self::ASSIGNED;
+                           if ($this instanceof Change) {
+                              $input['status'] = self::ACCEPTED;
+                           } else {
+                              $input['status'] = self::ASSIGNED;
+                           }
                         }
                      }
                   }
@@ -743,7 +747,12 @@ abstract class CommonITILObject extends CommonDBTM {
                              && (in_array($this->fields['status'], $this->getNewStatusArray())))
                             || (isset($input['status'])
                                 && (in_array($input['status'], $this->getNewStatusArray())))) {
-                           $input['status'] = self::ASSIGNED;
+                           if ($this instanceof Change) {
+                              $input['status'] = self::ACCEPTED;
+                           } else {
+                              $input['status'] = self::ASSIGNED;
+                           }
+
                         }
                      }
                   }
@@ -762,7 +771,12 @@ abstract class CommonITILObject extends CommonDBTM {
                              && (in_array($this->fields['status'], $this->getNewStatusArray())))
                             || (isset($input['status'])
                                 && (in_array($input['status'], $this->getNewStatusArray())))) {
-                           $input['status'] = self::ASSIGNED;
+                           if ($this instanceof Change) {
+                              $input['status'] = self::ACCEPTED;
+                           } else {
+                              $input['status'] = self::ASSIGNED;
+                           }
+
                         }
                      }
                   }
@@ -1511,11 +1525,11 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       $docadded  = array();
 
-      
+
       foreach ($this->input['_filename'] as $key => $file) {
          $doc       = new Document();
          $docitem   = new Document_Item();
-         
+
          $docID = 0;
          $filename = GLPI_DOC_DIR."/_tmp/".$file;
          $input2         = array();
@@ -2105,7 +2119,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab = static::getAllStatusArray();
 
       return isset($tab[$status]);
-   }   
+   }
 
    /**
     * Dropdown of object status
@@ -4100,7 +4114,7 @@ abstract class CommonITILObject extends CommonDBTM {
             unset($ptypes[$itemtype]);
          }
       }
-      
+
       $types = array_merge($types, $ptypes);
       return $types;
    }
@@ -5009,7 +5023,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $is_deleted = false;
          $item_ticket = new Item_Ticket();
          $data = $item_ticket->find("`tickets_id` = ".$item->fields['id']);
-         
+
          if ($item->getType() == 'Ticket') {
             if (!empty($data)) {
                foreach ($data as $val) {

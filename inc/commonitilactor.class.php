@@ -351,7 +351,16 @@ abstract class CommonITILActor extends CommonDBRelation {
                                    'status' => CommonITILObject::ASSIGNED));
             }
          }
+      } else {
+         if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
+            if (($item->fields["status"] == CommonITILObject::INCOMING)
+                && $item instanceof Change) {
+               $item->update(array('id'     => $item->getID(),
+                                   'status' => CommonITILObject::ACCEPTED));
+            }
+         }
       }
+
       parent::post_addItem();
    }
 
