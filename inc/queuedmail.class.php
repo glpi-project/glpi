@@ -363,7 +363,7 @@ class QueuedMail extends CommonDBTM {
          } else {
             $mmail->isHTML(true);
             $mmail->Body = '';
-
+            $this->fields['body_html'] = Html::entity_decode_deep($this->fields['body_html']);
             $documents = importArrayFromDB($this->fields['documents']);
             $link_doc = array();
             if (is_array($documents) && count($documents)) {

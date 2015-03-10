@@ -291,11 +291,13 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       // Common ITIL datas
       $datas            = parent::getDatasForObject($item, $options, $simple);
-      
-      $datas['##ticket.content##']
-            = $item->convertContentForNotification($datas['##ticket.content##'],
-                                                   $item);
+      $datas['##ticket.description##'] = Html::clean($datas['##ticket.description##']);
 
+      $datas['##ticket.description##']
+            = $item->convertContentForNotification($datas['##ticket.description##'],
+                                                   $item);
+                                                   
+      $datas['##ticket.content##'] = $datas['##ticket.description##'];
       // Specific datas
       $datas['##ticket.urlvalidation##']
                         = $this->formatURL($options['additionnaloption']['usertype'],

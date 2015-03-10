@@ -5499,8 +5499,8 @@ class Ticket extends CommonITILObject {
                      break;
                }
             }
-            if (isset($image['tag'])
-                && ($ok || empty($mime))) {
+            if (isset($image['tag'])) {
+                if ($ok || empty($mime)) {
                // Replace tags by image in textarea
                $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
                        "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'/>";
@@ -5523,12 +5523,12 @@ class Ticket extends CommonITILObject {
 //                                       'itemtype'      => $this->getType(),
 //                                       'items_id'      => $this->fields['id']));
 //                }
-
-            } else {
-               // Remove tag
-               $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
-                                            '', $content_text);
-            }
+               } else {
+                  // Remove tag
+                  $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
+                                               '', $content_text);
+               }
+            } 
          }
       }
 
@@ -5608,42 +5608,23 @@ class Ticket extends CommonITILObject {
    static function convertContentForTicket($content_html, $files, $tags) {
 
       // We inject another meta tag
-      $contentType = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>';
-      $html = str_replace('<head>', '<head>'.$contentType, Html::entity_decode_deep($content_html));
+      $html = Html::entity_decode_deep($content_html);
+      preg_match_all("/src\s*=\s*['|\"](.+?)['|\"]/", $html, $matches, PREG_PATTERN_ORDER);
+      if (isset($matches[1]) && count($matches[1])) {
+         // Get all image src
 
-      // We parse HTML with dom
-      libxml_use_internal_errors(true);
-      $dom = new DOMDocument();
-      $dom->loadHTML($html);
-      $dom->preserveWhiteSpace = false;
-
-      // We replace each img by a compatible tag for tickets
-      $nodes = $dom->getElementsByTagName('img');
-      $nodeListLength = $nodes->length;
-
-      // If config display image
-      for ($i = 0; $i < $nodeListLength; $i ++) {
-         $node = $nodes->item(0);
-         $src  = $node->getAttribute('src');
-         foreach ($files as $data => $filename) {
-            if (preg_match("/".$data."/i", $src)) {
-               $p   = $dom->createElement('p');
-               $tag = $dom->createTextNode(Document::getImageTag($tags[$filename]));
-               $p->appendChild($tag);
-
-               $node->parentNode->replaceChild($p, $node);
-               break;
+         foreach ($matches[1] as $src) {
+            // Set tag if image matches
+            foreach ($files as $data => $filename) {
+               if (preg_match("/".$data."/i", $src)) {
+                  $html = preg_replace("/<img.*src=['|\"]".$src."['|\"][^>]*\>/", "<p>".Document::getImageTag($tags[$filename])."</p>", $html);
+               }
             }
          }
       }
 
-      // Get only body content
-      $doc  = new DOMDocument();
-      $body = $dom->getElementsByTagName('body')->item(0);
-      foreach ($body->childNodes as $child)
-         $doc->appendChild($doc->importNode($child, true));
+      return $html;
 
-      return Html::entity_decode_deep($doc->saveHTML());
    }
 
 
@@ -5659,45 +5640,30 @@ class Ticket extends CommonITILObject {
    **/
    function convertContentForNotification($content, $item) {
       global $CFG_GLPI, $DB;
-//       return $content;
 
-      $tag  = '';
-
-       $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
-                           html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
+      $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
+                           html_entity_decode($content, ENT_QUOTES, "UTF-8"));
 
       // If is html content
       if ($CFG_GLPI["use_rich_text"]) {
-         // We parse HTML with dom
-         libxml_use_internal_errors(true);
-         $dom = new DOMDocument();
-         $dom->loadHTML($html);
-         $dom->preserveWhiteSpace = false;
+         
+         preg_match_all('/img\s*alt=\'(([a-z0-9]+|[\.\-]?)+)/', $html,
+                        $matches, PREG_PATTERN_ORDER);
+         if (isset($matches[1]) && count($matches[1])) {
+            if (count($matches[1])) {
+               foreach ($matches[1] as $image) {
+                   //Replace tags by image in textarea
+                  $img = "img src='cid:".Document::getImageTag($image)."'";
 
-         // We replace each img by compatible embeded img for mail
-         $nodes          = $dom->getElementsByTagName('img');
-         $nodeListLength = $nodes->length;
-         // If config display image
-         for ($i = 0; $i < $nodeListLength; $i++) {
-            $node = $nodes->item($i);
-
-            if ($node->getAttribute('alt')) {
-
-               $tag =  Document::getImageTag($node->getAttribute('alt'));
-               $img = $dom->createElement('img');
-               $img->setAttribute('src', 'cid:'.$tag);
-
-               $node->parentNode->replaceChild($img, $node);
+                  //Replace tag by the image
+                  $html = preg_replace("/img alt='$image'.*src='(.+)'/", $img,
+                                          $html);
+               }
             }
          }
 
-         // Get only body content
-         $doc = new DOMDocument();
-         $body = $dom->getElementsByTagName('body')->item(0);
-         foreach ($body->childNodes as $child)
-            $doc->appendChild($doc->importNode($child, true));
+         $content = $html;
 
-         $content = utf8_decode(Html::entity_decode_deep($doc->saveHTML()));
       // If is text content
       } else {
          $doc = new Document();
