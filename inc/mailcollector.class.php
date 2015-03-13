@@ -758,11 +758,12 @@ class MailCollector  extends CommonDBTM {
                                                            array_merge($this->files, $this->altfiles), 
                                                            $this->tags);
       }
-       $tkt['content'] = $this->cleanMailContent($tkt['content']);
+      $tkt['content'] = $this->cleanMailContent($tkt['content']);
 
-       if ($is_html) {
-          $tkt['content'] = nl2br($tkt['content']);
-       }
+      if ($is_html) {
+         $tkt['content'] = nl2br($tkt['content']);
+      }
+      
       $tkt['_supplier_email'] = false;
       // Found ticket link
       if (isset($tkt['tickets_id'])) {

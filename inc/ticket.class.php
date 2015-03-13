@@ -1292,6 +1292,7 @@ class Ticket extends CommonITILObject {
       if (isset($input["content"])) {
          $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
          $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
+         $input["content"] = Toolbox::clean_cross_side_scripting_deep(Html::clean($input["content"]));
       }
 
       $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
