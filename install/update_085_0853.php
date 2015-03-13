@@ -170,6 +170,10 @@ function update085to0853() {
          }
       }
    }
+   // change type of field solution in ticket.change and problem
+   $migration->changeField('glpi_tickets', 'solution', 'solution', 'longtext');
+   $migration->changeField('glpi_changes', 'solution', 'solution', 'longtext');
+   $migration->changeField('glpi_problems', 'solution', 'solution', 'longtext');
 
    // must always be at the end
    $migration->executeMigration();
