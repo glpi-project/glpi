@@ -1386,7 +1386,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                      $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
                      $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                   }
-               } else {;
+               } else {
                   $link->getEmpty();
                   if (!$link->getFromDBForItems($item_1, $item_2)) {
                      if (($specificities['check_both_items_if_same_type'])
