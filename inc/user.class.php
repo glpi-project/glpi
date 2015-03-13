@@ -679,7 +679,7 @@ class User extends CommonDBTM {
                   $extension    = array_pop($tmp);
                   $picture_path = GLPI_DOC_DIR."/_pictures/$filename.".$extension;
                   self::dropPictureFiles($filename.".".$extension);
- 
+
                   if (Document::renameForce($_FILES['picture']['tmp_name'], $picture_path)) {
                      Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
                      // For display
@@ -3840,7 +3840,7 @@ class User extends CommonDBTM {
       }
 
       echo "<br>";
-      echo "<a href='".$CFG_GLPI['root_doc']."'>".__('Back')."</a>";
+      echo "<a href=\"".$CFG_GLPI['root_doc']."/index.php\">".__s('Back')."</a>";
       echo "</div>";
    }
 
