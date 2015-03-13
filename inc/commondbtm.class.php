@@ -1062,6 +1062,10 @@ class CommonDBTM extends CommonGLPI {
 
                         default :
                            $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                           if (is_numeric($val)
+                               && ($this->fields[$key] !== $this->input[$key])) {
+                              $ischanged = true;
+                           }
                            break;
                      }
                   } else {
