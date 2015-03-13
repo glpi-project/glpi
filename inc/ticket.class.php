@@ -3252,6 +3252,10 @@ class Ticket extends CommonITILObject {
 
          $values['content'] = str_replace($order,$replace,$values['content']);
       }
+      if (isset($values['name'])) {
+         $values['name'] = str_replace("\\", "", $values['name']);
+      }
+
       if (!$ID) {
          // Override defaut values from projecttask if needed
          if (isset($options['projecttasks_id'])) {
@@ -5528,7 +5532,7 @@ class Ticket extends CommonITILObject {
                   $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
                                                '', $content_text);
                }
-            } 
+            }
          }
       }
 
@@ -5646,7 +5650,7 @@ class Ticket extends CommonITILObject {
 
       // If is html content
       if ($CFG_GLPI["use_rich_text"]) {
-         
+
          preg_match_all('/img\s*alt=\'(([a-z0-9]+|[\.\-]?)+)/', $html,
                         $matches, PREG_PATTERN_ORDER);
          if (isset($matches[1]) && count($matches[1])) {
