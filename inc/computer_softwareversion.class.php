@@ -162,6 +162,31 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             }
             return;
+
+         case 'add' :
+            $itemtoadd = new Computer_SoftwareVersion();
+            if (isset($_POST['peer_softwareversions_id'])) {
+               foreach ($ids as $id) {
+                  if ($item->can($id, UPDATE)) {
+                     //Process rules
+                     if ($itemtoadd->add(array('computers_id' => $id,
+                                               'softwareversions_id'
+                                                              => $_POST['peer_softwareversions_id']))) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($itemtoadd->getErrorMessage(ERROR_ON_ACTION));
+                     }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($itemtoadd->getErrorMessage(ERROR_RIGHT));
+                  }
+               }
+            } else {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+            }
+            return;
+
       }
 
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
