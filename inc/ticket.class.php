@@ -1221,6 +1221,12 @@ class Ticket extends CommonITILObject {
                            $mandatory_missing[$key] = $fieldsname[$val];
                         }
                      }
+
+                     if (($key == '_add_validation')
+                         && !empty($input['users_id_validate'])) {
+                        unset($mandatory_missing['_add_validation']);
+                     }
+
                      // For due_date : check also slas_id
                      if (($key == 'due_date')
                          && isset($input['slas_id']) && ($input['slas_id'] > 0)
