@@ -1060,12 +1060,15 @@ class CommonDBTM extends CommonGLPI {
                                                 $this->input[$key]) != 0);
                            break;
 
+                        case 'itemlink' :
+                           if ($key == 'name') {
+                              $ischanged = (strcmp($DB->escape($this->fields[$key]),
+                                                               $this->input[$key]) != 0);
+                              break;
+                           } // else default
+
                         default :
                            $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
-                           if (is_numeric($val)
-                               && ($this->fields[$key] !== $this->input[$key])) {
-                              $ischanged = true;
-                           }
                            break;
                      }
                   } else {
