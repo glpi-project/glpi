@@ -485,12 +485,17 @@ class RSSFeed extends CommonDBTM {
       if (Session::haveRight("rssfeed_public","r")) {
          switch ($item->getType()) {
             case 'RSSFeed' :
+               $showtab = array(1 => self::getTypeName(1));
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return array(1 => self::getTypeName(1),
-                               2 => self::createTabEntry(__('Targets'),
-                                                         $item->countVisibilities()));
+                  if (Session::haveRight('rssfeed_public', 'w')) {
+                     $showtab[2] = self::createTabEntry(__('Targets'), $item->countVisibilities());
+                  }
+                  return $showtab;
                }
-               return array(2 => __('Targets'));
+               if (Session::haveRight('rssfeed_public', 'w')) {
+                  $showtab[2] =  __('Targets');
+               }
+               return $showtab;
          }
       }
       return '';
@@ -613,7 +618,7 @@ class RSSFeed extends CommonDBTM {
          echo "</div>";
          return false;
       }
-      
+
       $this->initForm($ID, $options);
 
       $canedit = $this->can($ID,'w');
