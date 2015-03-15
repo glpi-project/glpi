@@ -1565,6 +1565,7 @@ class Rule extends CommonDBTM {
     * @param &$input     the input data used to check criterias
    **/
    function checkCriteria(&$criteria, &$input) {
+
       $partial_regex_result = array();
       // Undefine criteria field : set to blank
       if (!isset($input[$criteria->fields["criteria"]])) {
@@ -1581,7 +1582,7 @@ class Rule extends CommonDBTM {
                                       $partial_regex_result);
       } else {
 
-         //If the value if, in fact, an array of values
+         //If the value is, in fact, an array of values
          // Negative condition : Need to match all condition (never be)
          if (in_array($criteria->fields["condition"], array(self::PATTERN_IS_NOT,
                                                             self::PATTERN_NOT_CONTAIN,
