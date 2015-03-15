@@ -468,13 +468,19 @@ class RSSFeed extends CommonDBTM {
       if (self::canView()) {
          switch ($item->getType()) {
             case 'RSSFeed' :
+               $showtab = array(1 => __('Content'));
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = $item->countVisibilities();
-                  return array(1 => __('Content'),
-                               2 => self::createTabEntry(_n('Target','Targets', $nb),
-                                                         $nb));
+                  if (session::haveRight('rssfeed_public', UPDATE)) {
+                     $showtab[2] = self::createTabEntry(_n('Target','Targets', $nb),
+                                                         $nb);
+                  }
+                  return $showtab;
                }
-               return array(2 => _n('Target','Targets', Session::getPluralNumber()));
+               if (session::haveRight('rssfeed_public', UPDATE)) {
+                  $showtab[2] = _n('Target','Targets', Session::getPluralNumber());
+               }
+               return $showtab;
          }
       }
       return '';
