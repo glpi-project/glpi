@@ -3099,6 +3099,7 @@ class Ticket extends CommonITILObject {
                     'due_date'                  => 'NULL',
                     'slas_id'                   => 0,
                     '_add_validation'           => 0,
+                    'users_id_validate'         => array(),
                     'type'                      => $type,
                     '_documents_id'             => array(),
                     '_filename'                 => array(),
@@ -3829,11 +3830,10 @@ class Ticket extends CommonITILObject {
          if (!empty($validation_right)) {
             echo "<input type='hidden' name='_add_validation' value='".
                    $values['_add_validation']."'>";
-            $users_id_validate = array();
             $params = array('name'                 => "users_id_validate",
                               'entity'             => $this->fields['entities_id'],
                               'right'              => $validation_right,
-                              'users_id_validate'  => $users_id_validate);
+                              'users_id_validate'  => $values['users_id_validate']);
             TicketValidation::dropdownValidator($params);
          }
          echo $tt->getEndHiddenFieldValue('_add_validation',$this);
