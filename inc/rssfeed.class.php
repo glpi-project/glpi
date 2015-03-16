@@ -910,8 +910,9 @@ class RSSFeed extends CommonDBTM {
       echo "<br><table class='tab_cadrehov'>";
       echo "<tr class='noHover'><th colspan='2'><div class='relative'><span>$titre</span>";
 
-      if (self::canCreate()) {
-         echo "<span class='rssfeed_right'>";
+      if (($personal && self::canCreate()) 
+            || (!$personal && Session::haveRight('rssfeed_public', CREATE))) {
+         echo "<span class='floatright'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/rssfeed.form.php'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"".
                 __s('Add')."\"></a></span>";

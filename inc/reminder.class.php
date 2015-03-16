@@ -1074,7 +1074,8 @@ class Reminder extends CommonDBTM {
       echo "<br><table class='tab_cadrehov'>";
       echo "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
 
-      if (self::canCreate()) {
+      if (($personal && self::canCreate()) 
+        || (!$personal && Session::haveRight(self::$rightname, CREATE))) {
          echo "<span class='floatright'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'
