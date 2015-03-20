@@ -5715,7 +5715,12 @@ class Ticket extends CommonITILObject {
                 WHERE `glpi_documents_items`.`items_id` = '".$item->fields['id']."'
                       AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
-      $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
+      if (Session::getLoginUserID()) {
+         $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
+      } else {
+        // Anonymous access from Crontask
+         $query .= " AND `glpi_documents`.`entities_id`= '0' ";
+      }
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
