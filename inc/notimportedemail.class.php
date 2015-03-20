@@ -107,7 +107,7 @@ class NotImportedEmail extends CommonDBTM {
       switch ($ma->getAction()) {
          case 'delete_email' :
          case 'import_email' :
-            if (!$item->canCreate()) {
+            if (!$item->canUpdate()) {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
             } else {
                $input = $ma->getInput();
