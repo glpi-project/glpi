@@ -110,6 +110,24 @@ class Reminder extends CommonDBTM {
    }
 
 
+   /**
+    * @since 0.85
+    * for personnal reminder
+   **/
+   static function canUpdate() {
+      return ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
+   }
+
+
+   /**
+    * @since 0.85
+    * for personnal reminder
+   **/
+   static function canPurge() {
+      return ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk');
+   }
+
+
    function post_getFromDB() {
 
       // Users
@@ -1074,7 +1092,7 @@ class Reminder extends CommonDBTM {
       echo "<br><table class='tab_cadrehov'>";
       echo "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
 
-      if (($personal && self::canCreate()) 
+      if (($personal && self::canCreate())
         || (!$personal && Session::haveRight(self::$rightname, CREATE))) {
          echo "<span class='floatright'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
