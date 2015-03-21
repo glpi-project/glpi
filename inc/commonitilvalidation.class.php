@@ -1226,17 +1226,16 @@ abstract class CommonITILValidation  extends CommonDBChild {
                      'user'  => __('User'),
                      'group' => __('Group'));
 
-      $type  = '__VALUE__';
-      if (!empty($params['users_id_validate'])) {
-         $type = 'list_users';
+      $type  = '';
+      if (isset($params['users_id_validate']['groups_id'])) {
+         $type = 'group';
+      } else if (!empty($params['users_id_validate'])) {
+         $type = 'user';
       }
 
-      if ($params['id'] > 0) {
-         unset($types['group']);
-      }
       $rand = Dropdown::showFromArray("validatortype", $types, array('value' => $type));
 
-      if ($params['id'] > 0) {
+      if ($type) {
          $params['validatortype'] = $type;
          Ajax::updateItem($params['applyto'], $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
                           $params);

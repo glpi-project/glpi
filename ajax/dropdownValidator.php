@@ -41,17 +41,24 @@ Html::header_nocache();
 if (isset($_POST["validatortype"])) {
    switch ($_POST["validatortype"]){
       case 'user' :
+         if (isset($_POST['users_id_validate']['groups_id'])) {
+            $_POST['users_id_validate'] = array();
+         }
+         $value = (isset($_POST['users_id_validate'][0]) ? $_POST['users_id_validate'][0] : 0);
          User::dropdown(array('name'   => !empty($_POST['name']) ? $_POST['name'].'[]'
                                                                  :'users_id_validate[]',
                               'entity' => $_POST['entity'],
+                              'value'  => $value,
                               'right'  => $_POST['right']));
          break;
 
       case 'group' :
          $name = !empty($_POST['name']) ? $_POST['name'].'[groups_id]':'groups_id';
+         $value = (isset($_POST['users_id_validate']['groups_id']) ? $_POST['users_id_validate']['groups_id'] : $_POST['groups_id']);
+
          $rand = Group::dropdown(array('name'      => $name,
-                                            'value'     => $_POST['groups_id'],
-                                            'entity'    => $_POST["entity"]));
+                                       'value'     => $value,
+                                       'entity'    => $_POST["entity"]));
 
          $param                        = array('validatortype' => 'list_users');
          $param['name']                = !empty($_POST['name']) ? $_POST['name'] : '';
@@ -63,21 +70,38 @@ if (isset($_POST["validatortype"])) {
          Ajax::updateItemOnSelectEvent("dropdown_$name$rand", "show_list_users",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
                                        $param);
-
+         if ($value) {
+            $param['validatortype'] = 'list_users';
+            $param['groups_id']     = $value;
+            unset($param['users_id_validate']['groups_id']);
+            Ajax::updateItem('show_list_users', $CFG_GLPI["root_doc"]."/ajax/dropdownValidator.php",
+            $param);
+         }
          echo "<br><span id='show_list_users'>&nbsp;</span>\n";
          break;
 
       case 'list_users' :
+         if (isset($_POST['users_id_validate']['groups_id'])) {
+            $_POST['users_id_validate'] = array();
+         }
          $opt             = array('groups_id' => $_POST["groups_id"],
                                   'right'     => $_POST['right'],
                                   'entity'    => $_POST["entity"]);
          $data_users      = TicketValidation::getGroupUserHaveRights($opt);
          $users           = array();
          $param['values'] = array();
+         $values          = array();
+         if (isset($_POST['users_id_validate']) && is_array($_POST['users_id_validate'])) {
+            $values = $_POST['users_id_validate'];
+         }
          foreach($data_users as $data){
             $users[$data['id']] = formatUserName($data['id'], $data['name'], $data['realname'],
                                                  $data['firstname']);
+            if (in_array($data['id'], $values)) {
+               $param['values'][] = $data['id'];
+            }
          }
+
          // Display all users
          if (isset($_POST['all_users'])
              && $_POST['all_users']) {

@@ -1185,6 +1185,7 @@ class Ticket extends CommonITILObject {
 
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
+
       // save value before clean;
       $title = ltrim($input['name']);
       // Standard clean datas
@@ -1223,7 +1224,10 @@ class Ticket extends CommonITILObject {
                      }
 
                      if (($key == '_add_validation')
-                         && !empty($input['users_id_validate'])) {
+                         && !empty($input['users_id_validate'])
+                         && isset($input['users_id_validate'][0])
+                         && ($input['users_id_validate'][0] > 0)) {
+
                         unset($mandatory_missing['_add_validation']);
                      }
 
@@ -3830,10 +3834,11 @@ class Ticket extends CommonITILObject {
          if (!empty($validation_right)) {
             echo "<input type='hidden' name='_add_validation' value='".
                    $values['_add_validation']."'>";
-            $params = array('name'                 => "users_id_validate",
-                              'entity'             => $this->fields['entities_id'],
-                              'right'              => $validation_right,
-                              'users_id_validate'  => $values['users_id_validate']);
+
+            $params = array('name'               => "users_id_validate",
+                            'entity'             => $this->fields['entities_id'],
+                            'right'              => $validation_right,
+                            'users_id_validate'  => $values['users_id_validate']);
             TicketValidation::dropdownValidator($params);
          }
          echo $tt->getEndHiddenFieldValue('_add_validation',$this);
