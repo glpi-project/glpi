@@ -3927,12 +3927,12 @@ class Ticket extends CommonITILObject {
 
 
 
+      echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype');
+      printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()), $tt->getMandatoryMark('itemtype'));
+      echo $tt->getEndHiddenFieldText('itemtype');
+      echo "</th>";
+      echo "<td rowspan='2'>";
       if (!$ID) {
-         echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype');
-         printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()), $tt->getMandatoryMark('itemtype'));
-         echo $tt->getEndHiddenFieldText('itemtype');
-         echo "</th>";
-         echo "<td rowspan='2'>";
          echo $tt->getBeginHiddenFieldValue('itemtype');
 
          // Select hardware on creation or if have update right
@@ -3951,11 +3951,27 @@ class Ticket extends CommonITILObject {
             echo "<span id='item_ticket_selection_information'></span>";
          }
          echo $tt->getEndHiddenFieldValue('itemtype', $this);
-
-         echo "</td>";
       } else {
-         echo "<td colspan='2'></td>";
+         // display associated elements
+         $item_tickets = getAllDatasFromTable(
+                           getTableForItemType('Item_Ticket'),
+                           "`tickets_id`='".$ID."'");
+         $i = 0;
+         foreach ($item_tickets as $itdata) {
+            if ($i >= 5) {
+               echo "<i><a href='".$this->getFormURL()."?id=".$ID.
+                       "&glpi_tab=Item_Ticket$1&itemtype=Ticket'>"
+               .__('Display all items')." (".count($item_tickets).")</a></i>";
+               break;
+            }
+            $item = new $itdata['itemtype'];
+            $item->getFromDB($itdata['items_id']);
+            echo $item->getTypeName(1).": ".$item->getLink(array('comments' => true))."<br/>";
+            $i++;
+         }
+
       }
+      echo "</td>";
       echo "</tr>";
 
 
