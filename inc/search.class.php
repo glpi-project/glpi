@@ -5315,9 +5315,9 @@ class Search {
             $out = "<th $options>";
             if ($issort) {
                if ($order=="DESC") {
-                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/templates/infotel/pics/puce-down.png\" alt='' title=''>";
+                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
                } else {
-                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/templates/infotel/pics/puce-up.png\" alt='' title=''>";
+                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
                }
             }
             if (!empty($linkto)) {
