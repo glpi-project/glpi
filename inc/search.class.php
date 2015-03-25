@@ -3807,15 +3807,17 @@ class Search {
                   }
 
                   for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
-                     
-                     if (($data[$num][$k]['name'] > 0)
-                         || ($data[$num][$k][2] != '')) {
+
+                     if (isset($data[$num][$k]['name']) 
+                           && ($data[$num][$k]['name'] > 0)
+                              || ($data[$num][$k][2] != '')) {
                         if ($count_display) {
                            $out .= self::LBBR;
                         }
                         
                         if ($itemtype == 'Ticket') {
-                           if ($data[$num][$k]['name'] > 0) {
+                           if (isset($data[$num][$k]['name']) 
+                                 && $data[$num][$k]['name'] > 0) {
                               $userdata = getUserName($data[$num][$k]['name'],2);
                               $tooltip  = "";
                               if (Session::haveRight('user', READ)) {
@@ -5313,9 +5315,9 @@ class Search {
             $out = "<th $options>";
             if ($issort) {
                if ($order=="DESC") {
-                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/templates/infotel/pics/puce-down.png\" alt='' title=''>";
                } else {
-                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/templates/infotel/pics/puce-up.png\" alt='' title=''>";
                }
             }
             if (!empty($linkto)) {
