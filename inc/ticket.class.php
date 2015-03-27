@@ -2952,6 +2952,7 @@ class Ticket extends CommonITILObject {
                        value=\"".$values['name']."\">";
          } else {
             echo $values['name'];
+            echo "<input type='hidden' name='name' value=\"".$values['name']."\">";
          }
          echo "</td></tr>";
       }
