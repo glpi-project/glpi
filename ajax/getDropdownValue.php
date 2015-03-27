@@ -142,9 +142,9 @@ if ($item instanceof CommonTreeDropdown) {
          }
          // Also search by id
          if ($displaywith && in_array('id', $_GET['displaywith'])) {
-            $where .= " OR `$table`.`id` ".$search;         
+            $where .= " OR `$table`.`id` ".$search;
          }
-         
+
          $where .= ")";
       }
    }
@@ -437,6 +437,8 @@ if ($item instanceof CommonTreeDropdown) {
    $field = "name";
    if ($item instanceof CommonDevice) {
       $field = "designation";
+   } else if ($item instanceof Item_Devices) {
+      $field = "itemtype";
    }
 
    if ($one_item >= 0) {
@@ -454,7 +456,7 @@ if ($item instanceof CommonTreeDropdown) {
          }
          // Also search by id
          if ($displaywith && in_array('id', $_GET['displaywith'])) {
-            $where .= " OR `$table`.`id` ".$search;         
+            $where .= " OR `$table`.`id` ".$search;
          }
 
          $where .= ')';
