@@ -569,6 +569,13 @@ if ($item instanceof CommonTreeDropdown) {
 
             if (isset($data['transname']) && !empty($data['transname'])) {
                $outputval = $data['transname'];
+            } else if ($field == 'itemtype' && class_exists($data['itemtype'])) {
+               $tmpitem = new $data[$field]();
+               if ($tmpitem->getFromDB($data['items_id'])) {
+                  $outputval = sprintf(__('%1s - %2s'), $tmpitem->getTypeName(),$tmpitem->getName());
+               } else {
+                  $outputval = $tmpitem->getTypeName();
+               }
             } else {
                $outputval = $data[$field];
             }
