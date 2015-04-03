@@ -2722,12 +2722,14 @@ class Ticket extends CommonITILObject {
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownDelegationUsers.php",
                                        $params);
 
+         $class = 'right';
          if ($CFG_GLPI['use_check_pref'] && $values['nodelegate']) {
             echo "</th><th>".__('Check your personnal information');
+            $class = 'center';
          }
 
          echo "</th></tr>";
-         echo "<tr class='tab_bg_1'><td colspan='2' class='center'>";
+         echo "<tr class='tab_bg_1'><td colspan='2' class='".$class."'>";
          echo "<div id='show_result$rand'>";
 
          $self = new self();
