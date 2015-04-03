@@ -4328,6 +4328,7 @@ class Ticket extends CommonITILObject {
             $query .= ")".
                       getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
+
          case "tovalidate" : // on affiche les tickets à valider
             $query .= " LEFT JOIN `glpi_ticketvalidations`
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
@@ -4357,6 +4358,17 @@ class Ticket extends CommonITILObject {
                              AND NOT ( $search_assign )
                              AND NOT ( $search_users_id ) ".
                              getEntitiesRestrictRequest("AND","glpi_tickets");
+            break;
+
+         case "survey" : // on affiche les tickets dont l'enquête de satisfaction n'est pas remplie
+            $query .= " INNER JOIN `glpi_ticketsatisfactions`
+                           ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                        WHERE $is_deleted
+                              AND ($search_users_id
+                                   OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."')
+                              AND `status` = '".self::CLOSED."'
+                              AND `date_answered`IS NULL ".
+                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "requestbyself" : // on affiche les tickets demandés le user qui sont planifiés ou assignés
@@ -4592,6 +4604,33 @@ class Ticket extends CommonITILObject {
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         Toolbox::append_params($options,'&amp;')."\">".
                         Html::makeTitle(__('Your observed tickets'), $number, $numrows)."</a>";
+                  break;
+
+               case "survey" :
+                  $options['criteria'][0]['field']      = 12; // status
+                  $options['criteria'][0]['searchtype'] = 'equals';
+                  $options['criteria'][0]['value']      = self::CLOSED;
+                  $options['criteria'][0]['link']       = 'AND';
+
+                  $options['criteria'][1]['field']      = 60; // enquete generee
+                  $options['criteria'][1]['searchtype'] = 'contains';
+                  $options['criteria'][1]['value']      = '^';
+                  $options['criteria'][1]['link']       = 'AND';
+
+                  $options['criteria'][2]['field']      = 61; // date_answered
+                  $options['criteria'][2]['searchtype'] = 'contains';
+                  $options['criteria'][2]['value']      = 'NULL';
+                  $options['criteria'][2]['link']       = 'AND';
+
+                  $options['criteria'][3]['field']      = 22; // auteur
+                  $options['criteria'][3]['searchtype'] = 'equals';
+                  $options['criteria'][3]['value']      = Session::getLoginUserID();
+                  $options['criteria'][3]['link']       = 'AND';
+                  $forcetab                 = 'Ticket$3';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         Html::makeTitle(__('Satisfaction survey'), $number, $numrows)."</a>";
                   break;
 
                case "requestbyself" :

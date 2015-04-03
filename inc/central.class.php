@@ -187,6 +187,8 @@ class Central extends CommonGLPI {
          Ticket::showCentralList(0,"tovalidate",false);
       }
       if ($showticket) {
+         Ticket::showCentralList(0, "survey", false);
+
          if (Ticket::isAllowedStatus(Ticket::SOLVED, Ticket::CLOSED)) {
             Ticket::showCentralList(0, "toapprove", false);
          }
