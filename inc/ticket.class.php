@@ -614,6 +614,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('TicketTask', $ong, $options);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('TicketCost', $ong, $options);
+      $this->addStandardTab('Projecttask_Ticket', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
