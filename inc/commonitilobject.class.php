@@ -1531,7 +1531,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $docitem   = new Document_Item();
 
          $docID = 0;
-         $filename = GLPI_DOC_DIR."/_tmp/".$file;
+         $filename = GLPI_TMP_DIR.$file;
          $input2         = array();
 
          // Crop/Resize image file if needed

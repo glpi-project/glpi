@@ -677,7 +677,7 @@ class User extends CommonDBTM {
                   $filename     = $this->fields['id'];
                   $tmp          = explode(".", $_FILES['picture']['name']);
                   $extension    = array_pop($tmp);
-                  $picture_path = GLPI_DOC_DIR."/_pictures/$filename.".$extension;
+                  $picture_path = GLPI_PICTURE_DIR."/$filename.".$extension;
                   self::dropPictureFiles($filename.".".$extension);
 
                   if (Document::renameForce($_FILES['picture']['tmp_name'], $picture_path)) {
@@ -686,7 +686,7 @@ class User extends CommonDBTM {
                      $input['picture'] = $filename.".".$extension;
 
                      //prepare a thumbnail
-                     $thumb_path = GLPI_DOC_DIR."/_pictures/".$filename."_min.".$extension;
+                     $thumb_path = GLPI_PICTURE_DIR."/".$filename."_min.".$extension;
                       Toolbox::resizePicture($picture_path, $thumb_path);
                   } else {
                      Session::addMessageAfterRedirect(__('Potential upload attack or file too large. Moving temporary file failed.'),
@@ -4100,14 +4100,14 @@ class User extends CommonDBTM {
 
       if (!empty($picture)) {
          // unlink main file
-         if (file_exists(GLPI_DOC_DIR."/_pictures/$picture")) {
+         if (file_exists(GLPI_PICTURE_DIR."/$picture")) {
             @unlink(GLPI_DOC_DIR."/_pictures/$picture");
          }
          // unlink Thunmnail
          $tmp = explode(".", $picture);
          if (count($tmp) == 2) {
-            if (file_exists(GLPI_DOC_DIR."/_pictures/".$tmp[0]."_min.".$tmp[1])) {
-               @unlink(GLPI_DOC_DIR."/_pictures/".$tmp[0]."_min.".$tmp[1]);
+            if (file_exists(GLPI_PICTURE_DIR."/".$tmp[0]."_min.".$tmp[1])) {
+               @unlink(GLPI_PICTURE_DIR."/".$tmp[0]."_min.".$tmp[1]);
             }
          }
       }

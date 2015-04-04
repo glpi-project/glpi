@@ -664,14 +664,12 @@ class MailCollector  extends CommonDBTM {
 
       // max size = 0 : no import attachments
       if ($this->fields['filesize_max'] > 0) {
-         if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
-            $tkt['_filename'] = $this->getAttached($i, GLPI_DOC_DIR."/_tmp/",
-                                                   $this->fields['filesize_max']);
+         if (is_writable(GLPI_TMP_DIR)) {
+            $tkt['_filename'] = $this->getAttached($i, GLPI_TMP_DIR, $this->fields['filesize_max']);
             $tkt['_tag']      = $this->tags;
          } else {
             //TRANS: %s is a directory
-            Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'),
-                                                   GLPI_DOC_DIR."/_tmp/"));
+            Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'), GLPI_TMP_DIR));
          }
       }
       //  Who is the user ?
@@ -755,7 +753,7 @@ class MailCollector  extends CommonDBTM {
           && ($tkt['content'] != strip_tags($tkt['content']))) {
          $is_html = true;
          $tkt['content'] = Ticket::convertContentForTicket($tkt['content'],
-                                                           array_merge($this->files, $this->altfiles), 
+                                                           array_merge($this->files, $this->altfiles),
                                                            $this->tags);
       }
       $tkt['content'] = $this->cleanMailContent($tkt['content']);
@@ -763,7 +761,7 @@ class MailCollector  extends CommonDBTM {
       if ($is_html) {
          $tkt['content'] = nl2br($tkt['content']);
       }
-      
+
       $tkt['_supplier_email'] = false;
       // Found ticket link
       if (isset($tkt['tickets_id'])) {
@@ -1379,7 +1377,7 @@ class MailCollector  extends CommonDBTM {
                                                        $this->get_mime_type($structure)));
             return false;
          }
-         
+
          if ($message = imap_fetchbody($this->marubox, $mid, $part)) {
             switch ($structure->encoding) {
                case 1 :
@@ -1407,15 +1405,15 @@ class MailCollector  extends CommonDBTM {
                   end($this->files);
                   $tag = Rule::getUuid();
                   $this->tags[$filename]  = $tag;
-                  
+
                   // Link file based on id
                   if (isset($structure->id)) {
                     $clean = array('<' => '',
                                     '>' => '');
-                  
+
                     $this->altfiles[strtr($structure->id, $clean)] = $filename;
                   }
-                  
+
                }
             }
          } // fetchbody

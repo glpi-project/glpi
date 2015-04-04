@@ -233,7 +233,7 @@ class Document extends CommonDBTM {
       if (!isset($input["tag"]) || empty($input["tag"])) {
          $input['tag'] = Rule::getUuid();
       }
-      
+
       // Upload failed : do not create document
       if ($create_from_item && !$upload_ok) {
          return false;
@@ -865,9 +865,9 @@ class Document extends CommonDBTM {
    static function moveUploadedDocument(array &$input, $filename) {
       global $CFG_GLPI;
 
-      $fullpath = GLPI_DOC_DIR."/_uploads/".$filename;
+      $fullpath = GLPI_UPLOAD_DIR.$filename;
 
-      if (!is_dir(GLPI_DOC_DIR."/_uploads")) {
+      if (!is_dir(GLPI_UPLOAD_DIR)) {
          Session::addMessageAfterRedirect(__("Upload directory doesn't exist"), false, ERROR);
          return false;
       }
@@ -915,7 +915,7 @@ class Document extends CommonDBTM {
          $input['mime'] = mime_content_type($fullpath);
       }
 
-      if (is_writable(GLPI_DOC_DIR."/_uploads/")
+      if (is_writable(GLPI_UPLOAD_DIR)
           && is_writable ($fullpath)) { // Move if allowed
 
          if (self::renameForce($fullpath, GLPI_DOC_DIR."/".$new_path)) {
@@ -954,8 +954,8 @@ class Document extends CommonDBTM {
    static function moveDocument(array &$input, $filename) {
       global $CFG_GLPI;
 
-      $fullpath = GLPI_DOC_DIR."/_tmp/".$filename;
-      if (!is_dir(GLPI_DOC_DIR."/_tmp")) {
+      $fullpath = GLPI_TMP_DIR.$filename;
+      if (!is_dir(GLPI_TMP_DIR)) {
          Session::addMessageAfterRedirect(__("Temporary directory doesn't exist"), false, ERROR);
          return false;
       }
@@ -1003,7 +1003,7 @@ class Document extends CommonDBTM {
          $input['mime'] = mime_content_type($fullpath);
       }
 
-      if (is_writable(GLPI_DOC_DIR."/_tmp/")
+      if (is_writable(GLPI_TMP_DIR)
           && is_writable ($fullpath)) { // Move if allowed
 
          if (self::renameForce($fullpath, GLPI_DOC_DIR."/".$new_path)) {
@@ -1164,10 +1164,10 @@ class Document extends CommonDBTM {
    static function showUploadedFilesDropdown($myname) {
       global $CFG_GLPI;
 
-      if (is_dir(GLPI_DOC_DIR."/_uploads")) {
+      if (is_dir(GLPI_UPLOAD_DIR)) {
          $uploaded_files = array('' => Dropdown::EMPTY_VALUE);
 
-         if ($handle = opendir(GLPI_DOC_DIR."/_uploads")) {
+         if ($handle = opendir(GLPI_UPLOAD_DIR)) {
             while (false !== ($file = readdir($handle))) {
                if (($file != ".") && ($file != "..")) {
                   $dir = self::isValidDoc($file);
