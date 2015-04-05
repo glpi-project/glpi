@@ -3520,7 +3520,7 @@ class Search {
          case 'Ticket' :
             $totable = getTableForItemType($to_type);
             array_push($already_link_tables2,$totable);
-            return " $LINK `glpi_items_tickets` 
+            return " $LINK `glpi_items_tickets`
                         ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)
                      $LINK `$totable`
                         ON (`$totable`.`id` = `glpi_items_tickets`.`items_id`
@@ -3716,6 +3716,7 @@ class Search {
       switch ($table.".".$field) {
          case "glpi_tickets.priority" :
          case "glpi_problems.priority" :
+         case "glpi_changes.priority" :
             return " style=\"background-color:".$_SESSION["glpipriority_".$data[$num][0]['name']].";\" ";
 
          case "glpi_tickets.due_date" :
@@ -3808,15 +3809,15 @@ class Search {
 
                   for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
 
-                     if (isset($data[$num][$k]['name']) 
+                     if (isset($data[$num][$k]['name'])
                            && ($data[$num][$k]['name'] > 0)
                               || ($data[$num][$k][2] != '')) {
                         if ($count_display) {
                            $out .= self::LBBR;
                         }
-                        
+
                         if ($itemtype == 'Ticket') {
-                           if (isset($data[$num][$k]['name']) 
+                           if (isset($data[$num][$k]['name'])
                                  && $data[$num][$k]['name'] > 0) {
                               $userdata = getUserName($data[$num][$k]['name'],2);
                               $tooltip  = "";
@@ -3832,7 +3833,7 @@ class Search {
                            $out .= getUserName($data[$num][$k]['name'], $showuserlink);
                            $count_display++;
                         }
-                     
+
 
                         // Manage alternative_email for tickets_users
                         if (($itemtype == 'Ticket')
@@ -5021,7 +5022,7 @@ class Search {
                                                              'condition'
                                                               => getEntitiesRestrictRequest('AND',
                                                                                             'NEWTABLE'));
-                                                                                            
+
             $search[$itemtype][140]['table']         = 'glpi_problems';
             $search[$itemtype][140]['field']         = 'id';
             $search[$itemtype][140]['datatype']      = 'count';
