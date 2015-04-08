@@ -102,8 +102,13 @@ if (isset($_GET['create_ticket'])) {
       echo "<tr class='noHover'><td class='top'>";
       Ticket::showCentralCount(true);
       echo "</td></tr>";
+      echo "<tr class='noHover'><td class='top'>";
+      Ticket::showCentralList(0, "survey", false);
+      echo "</td></tr>";
    }
 
+   
+   
    if (Session::haveRight("reminder_public", READ)) {
       echo "<tr class='noHover'><td class='top'>";
       Reminder::showListForCentral(false);

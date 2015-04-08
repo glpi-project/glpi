@@ -2340,7 +2340,7 @@ class Ticket extends CommonITILObject {
       if (!Session::isCron() // no filter for cron
           && (!isset($_SESSION['glpiactiveprofile']['interface'])
               || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
-         $tokeep = array('common', 'requester');
+         $tokeep = array('common', 'requester','satisfaction');
          if (Session::haveRightsOr('ticketvalidation',
                                    array_merge(TicketValidation::getValidateRights(),
                                                TicketValidation::getCreateRights()))) {
@@ -4366,8 +4366,8 @@ class Ticket extends CommonITILObject {
                         WHERE $is_deleted
                               AND ($search_users_id
                                    OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."')
-                              AND `status` = '".self::CLOSED."'
-                              AND `date_answered`IS NULL ".
+                              AND `glpi_tickets`.`status` = '".self::CLOSED."'
+                              AND `glpi_ticketsatisfactions`.`date_answered` IS NULL ".
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
