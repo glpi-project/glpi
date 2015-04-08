@@ -359,7 +359,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             echo "<table class='tab_cadre_fixehov'>";
-            echo "<tr><th colspan='9'>".ProjectTask::getTypeName($numrows)."</th>";
+            echo "<tr><th colspan='10'>".ProjectTask::getTypeName($numrows)."</th>";
             echo "</tr>";
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                           (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
