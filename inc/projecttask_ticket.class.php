@@ -271,41 +271,40 @@ class ProjectTask_Ticket extends CommonDBRelation{
          }
       }
 
-      if ($canedit) {
-         echo "<div class='firstbloc'>";
-         echo "<form name='projecttaskticket_form$rand' id='projecttaskticket_form$rand'
-                method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a project task')."</th></tr>";
-
-         echo "<tr class='tab_bg_2'><td class='right'>";
-         echo "<input type='hidden' name='tickets_id' value='$ID'>";
-         $condition = "`glpi_projecttasks`.`projectstates_id` <> 3";
-         ProjectTask::dropdown(array('used'        => $used,
-                                     'entity'      => $ticket->getEntityID(),
-                                     'entity_sons' => $ticket->isRecursive(),
-                                     'condition'   => $condition,
-                                     'displaywith' => array('id')));
-         echo "</td><td width='20%'>";
-         echo "<a href='".Toolbox::getItemTypeFormURL('ProjectTask')."?tickets_id=$ID'>";
-                _e('Create a project task from this ticket');
-         echo "</a>";
-         echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
-         echo "</td></tr>";
-
-         echo "</table>";
-         Html::closeForm();
-         echo "</div>";
-      }
+//       if ($canedit) {
+//          echo "<div class='firstbloc'>";
+//          echo "<form name='projecttaskticket_form$rand' id='projecttaskticket_form$rand'
+//                 method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+// 
+//          echo "<table class='tab_cadre_fixe'>";
+//          echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a project task')."</th></tr>";
+// 
+//          echo "<tr class='tab_bg_2'><td class='right'>";
+//          echo "<input type='hidden' name='tickets_id' value='$ID'>";
+//          $condition = "`glpi_projecttasks`.`projectstates_id` <> 3";
+//          ProjectTask::dropdown(array('used'        => $used,
+//                                      'entity'      => $ticket->getEntityID(),
+//                                      'entity_sons' => $ticket->isRecursive(),
+//                                      'condition'   => $condition,
+//                                      'displaywith' => array('id')));
+//          echo "</td><td width='20%'>";
+// //          echo "<a href='".Toolbox::getItemTypeFormURL('ProjectTask')."?tickets_id=$ID'>";
+// //                 _e('Create a project task from this ticket');
+// //          echo "</a>";
+//          echo "</td><td class='center'>";
+//          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
+//          echo "</td></tr>";
+// 
+//          echo "</table>";
+//          Html::closeForm();
+//          echo "</div>";
+//       }
 
       echo "<div class='spaced'>";
-      echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='12'>".ProjectTask::getTypeName($numrows)."</th>";
-      echo "</tr>";
+
       if ($numrows) {
-         $columns = array('name'             => ProjectTask::getTypeName(Session::getPluralNumber()),
+         $columns = array('projectname'      => Project::getTypeName(Session::getPluralNumber()),
+                          'name'             => ProjectTask::getTypeName(Session::getPluralNumber()),
                           'tname'            => __('Type'),
                           'sname'            => __('Status'),
                           'percent_done'     => __('Percent done'),
@@ -334,7 +333,9 @@ class ProjectTask_Ticket extends CommonDBRelation{
                        `glpi_projecttasktypes`.`name` AS tname,
                        `glpi_projectstates`.`name` AS sname,
                        `father`.`name` AS fname,
-                       `father`.`id` AS fID
+                       `father`.`id` AS fID,
+                       `glpi_projects`.`name` AS projectname,
+                       `glpi_projects`.`content` AS projectcontent
                 FROM `glpi_projecttasks`
                 LEFT JOIN `glpi_projecttasktypes`
                    ON (`glpi_projecttasktypes`.`id` = `glpi_projecttasks`.`projecttasktypes_id`)
@@ -344,6 +345,8 @@ class ProjectTask_Ticket extends CommonDBRelation{
                    ON (`father`.`id` = `glpi_projecttasks`.`projecttasks_id`)
                 LEFT JOIN `glpi_projecttasks_tickets`
                    ON (`glpi_projecttasks_tickets`.`projecttasks_id` = `glpi_projecttasks`.`id`)
+                LEFT JOIN `glpi_projects`
+                   ON (`glpi_projecttasks`.`projects_id` = `glpi_projects`.`id`)
                 WHERE `glpi_projecttasks_tickets`.`tickets_id` = '$ID'
                 ORDER BY $sort $order";
 
@@ -356,7 +359,8 @@ class ProjectTask_Ticket extends CommonDBRelation{
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             echo "<table class='tab_cadre_fixehov'>";
-
+            echo "<tr><th colspan='9'>".ProjectTask::getTypeName($numrows)."</th>";
+            echo "</tr>";
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                           (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
@@ -378,6 +382,15 @@ class ProjectTask_Ticket extends CommonDBRelation{
                Session::addToNavigateListItems('ProjectTask',$data['id']);
                $rand = mt_rand();
                echo "<tr class='tab_bg_2'>";
+               echo "<td>";
+               $link = "<a id='Project".$data["projects_id"].$rand."' href='project.form.php?id=".
+                         $data['projects_id']."'>".$data['projectname'].
+                         (empty($data['projectname'])?"(".$data['projects_id'].")":"")."</a>";
+               echo sprintf(__('%1$s %2$s'), $link,
+                            Html::showToolTip($data['projectcontent'],
+                                              array('display' => false,
+                                                    'applyto' => "Project".$data["projects_id"].$rand)));
+               echo "</td>";
                echo "<td>";
                $link = "<a id='ProjectTask".$data["id"].$rand."' href='projecttask.form.php?id=".
                          $data['id']."'>".$data['name'].
