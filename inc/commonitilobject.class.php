@@ -2454,6 +2454,13 @@ abstract class CommonITILObject extends CommonDBTM {
                                           $paramsmassaction);
             echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
             return true;
+         case 'update_notif' :
+         
+            Dropdown::showYesNo('use_notification');
+            echo "<br><br>";
+            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+            return true;
+            return true;
       }
       return parent::showMassiveActionsSubForm($ma);
    }
@@ -2496,6 +2503,33 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             return;
 
+         case 'update_notif' :
+            $input = $ma->getInput();
+            foreach ($ids as $id) {
+               if ($item->can($id, UPDATE)) {
+                  $linkclass = new $item->userlinkclass();
+                  foreach ($linkclass->getActors($id) as $type => $users) {
+                    foreach ($users as $data) {
+                        $data['use_notification'] = $input['use_notification'];
+                        $linkclass->update($data);
+                    }
+                  }
+                  $linkclass = new $item->supplierlinkclass();
+                  foreach ($linkclass->getActors($id) as $type => $users) {
+                    foreach ($users as $data) {
+                        $data['use_notification'] = $input['use_notification'];
+                        $linkclass->update($data);
+                    }
+                  }
+                  
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+               } else {
+                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               }
+            }
+            return;
+            
          case 'add_task' :
             if (!($task = getItemForItemtype($item->getType().'Task'))) {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);

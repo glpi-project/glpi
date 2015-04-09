@@ -398,8 +398,10 @@ class Problem extends CommonITILObject {
       if (ProblemTask::canCreate()) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task'] = __('Add a new task');
       }
-      if (Session::haveRight(self::$rightname, UPDATE)) {
+      if ($this->canAdminActors()) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_actor'] = __('Add an actor');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'update_notif']
+               = __('Set notifications for all actors');
       }
 
       if ($isadmin) {

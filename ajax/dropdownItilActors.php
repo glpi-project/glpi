@@ -65,7 +65,8 @@ if (isset($_POST["type"])
                $withemail     = (isset($_POST["allow_email"]) ? $_POST["allow_email"] : false);
                $paramscomment = array('value'       => '__VALUE__',
                                       'allow_email' => $withemail,
-                                      'field'       => "_itil_".$_POST["actortype"]);
+                                      'field'       => "_itil_".$_POST["actortype"],
+                                      'use_notification' => $_POST["use_notif"]);
                // Fix rand value
                $options['rand']     = $rand;
                $options['toupdate'] = array('value_fieldname' => 'value',
@@ -153,7 +154,8 @@ if (isset($_POST["type"])
                $paramscomment = array('value'       => '__VALUE__',
                                       'allow_email' => $withemail,
                                       'field'       => '_itil_'.$_POST["actortype"],
-                                      'typefield'   => "supplier");
+                                      'typefield'   => "supplier",
+                                      'use_notification' => $_POST["use_notif"]);
                // Fix rand value
                $options['rand']     = $rand;
                $options['toupdate'] = array('value_fieldname' => 'value',
