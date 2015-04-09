@@ -394,8 +394,14 @@ class Budget extends CommonDropdown{
                                   AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
                                   getEntitiesRestrictRequest(" AND", $item->getTable())."
                                   ".($item->maybeTemplate()?" AND NOT `".$item->getTable()."`.`is_template`":'')."
-                            ORDER BY `".$item->getTable()."`.`entities_id`,
-                                     `".$item->getTable()."`.`name`";
+                            ORDER BY `".$item->getTable()."`.`entities_id`,";
+                if ($item instanceof Item_Devices) {
+                   $query .= " `".$item->getTable()."`.`itemtype`";
+                } else {
+                   $query .= " `".$item->getTable()."`.`name`";
+                }
+
+
                break;
             }
 
