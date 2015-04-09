@@ -867,9 +867,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                    FROM `glpi_documents`
                    LEFT JOIN `glpi_documents_items`
                      ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
-                   WHERE `glpi_documents_items`.`itemtype` =  '$objettype'
+                   WHERE `glpi_documents_items`.`itemtype` =  '".$item->getType()."'
                          AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
-
 
          $datas["documents"] = array();
          $addtodownloadurl   = '';
