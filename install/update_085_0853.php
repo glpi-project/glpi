@@ -121,6 +121,18 @@ function update085to0853() {
              WHERE `status` = 2";
    $DB->queryOrDie($query, "0.85.3 correct status for change");
 
+   
+   if ($migration->addField("glpi_entities", "is_notif_enable_default", "integer",
+                            array('value' => -2))) {
+      $migration->migrationOneTable('glpi_entities');
+      // Set directly to root entity
+      $query = 'UPDATE `glpi_entities`
+                SET `is_notif_enable_default` = 1
+                WHERE `id` = 0';
+      $DB->queryOrDie($query, "0.85.3 default value for is_notif_enable_default for root entity");
+   }
+
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
