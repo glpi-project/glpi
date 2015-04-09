@@ -572,7 +572,7 @@ if ($item instanceof CommonTreeDropdown) {
             } else if ($field == 'itemtype' && class_exists($data['itemtype'])) {
                $tmpitem = new $data[$field]();
                if ($tmpitem->getFromDB($data['items_id'])) {
-                  $outputval = sprintf(__('%1s - %2s'), $tmpitem->getTypeName(),$tmpitem->getName());
+                  $outputval = sprintf(__('%1$s - %2$s'), $tmpitem->getTypeName(),$tmpitem->getName());
                } else {
                   $outputval = $tmpitem->getTypeName();
                }

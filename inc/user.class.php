@@ -693,7 +693,7 @@ class User extends CommonDBTM {
                                                      false, ERROR);
                  }
               } else {
-                Session::addMessageAfterRedirect(__('Picture is not an image file.'),
+                Session::addMessageAfterRedirect(__('The file is not an image file.'),
                                                 false, ERROR);
               }
             }
