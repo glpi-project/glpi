@@ -252,7 +252,7 @@ class DropdownTranslation extends CommonDBChild {
           && isset($input['language'])) {
          $item->getFromDB($input['items_id']);
          $foreignKey = $item->getForeignKeyField() ;
-
+         
          //Regenerate completename : look for item's ancestors
          $completename = "";
 
@@ -290,18 +290,17 @@ class DropdownTranslation extends CommonDBChild {
                 $translation->add($tmp);
             }
          }
-      }
         
-    $query = "SELECT `id`
-             FROM `".$item->getTable()."`
-             WHERE `$foreignKey` = '".$item->getID()."'";
-             
-    foreach ($DB->request($query) as $tmp) {
-        $input2 = $input;
-        $input2['items_id'] = $tmp['id'];
-        $this->generateCompletename($input2, $add);
-    }
-      
+        $query = "SELECT `id`
+                FROM `".$item->getTable()."`
+                WHERE `$foreignKey` = '".$item->getID()."'";
+                
+        foreach ($DB->request($query) as $tmp) {
+            $input2 = $input;
+            $input2['items_id'] = $tmp['id'];
+            $this->generateCompletename($input2, $add);
+        }
+     }
    }
 
 
