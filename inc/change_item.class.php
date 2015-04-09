@@ -268,6 +268,32 @@ class Change_Item extends CommonDBRelation{
                }
 
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+            case 'User' :
+               $nb = 0;
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                
+                  $nb = countDistinctElementsInTable('glpi_changes_users','changes_id',
+                                             "`users_id` = '".$item->getID()."'");
+               }
+
+               return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+            case 'Group' :
+               $nb = 0;
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countDistinctElementsInTable('glpi_changes_groups','changes_id',
+                                             "`groups_id` = '".$item->getID()."'");
+               }
+
+               return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+            case 'Supplier' :
+               $nb = 0;
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countDistinctElementsInTable('glpi_changes_suppliers','changes_id',
+                                             "`suppliers_id` = '".$item->getID()."'");
+               }
+
+               return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+               
             default :
                if (Session::haveRight("change", Change::READALL)) {
                   $nb = 0;

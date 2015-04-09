@@ -1257,6 +1257,8 @@ class Problem extends CommonITILObject {
                   ON (`glpi_problems`.`id` = `glpi_groups_problems`.`problems_id`)
                LEFT JOIN `glpi_problems_users`
                   ON (`glpi_problems`.`id` = `glpi_problems_users`.`problems_id`)
+               LEFT JOIN `glpi_problems_suppliers`
+                  ON (`glpi_problems`.`id` = `glpi_problems_suppliers`.`problems_id`)
                LEFT JOIN `glpi_itilcategories`
                   ON (`glpi_problems`.`itilcategories_id` = `glpi_itilcategories`.`id`)
                $FROM";
@@ -1288,19 +1290,28 @@ class Problem extends CommonITILObject {
 
       switch ($item->getType()) {
          case 'User' :
-            $restrict   = "(`glpi_problems_users`.`users_id` = '".$item->getID()."'
-                            AND `glpi_problems_users`.`type` = ".CommonITILActor::REQUESTER.")";
+            $restrict   = "(`glpi_problems_users`.`users_id` = '".$item->getID()."')";
             $order      = '`glpi_problems`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 4; // status
             $options['criteria'][0]['searchtype'] = 'equals';
             $options['criteria'][0]['value']      = $item->getID();
             $options['criteria'][0]['link']       = 'AND';
+
+            $options['criteria'][1]['field']      = 66; // status
+            $options['criteria'][1]['searchtype'] = 'equals';
+            $options['criteria'][1]['value']      = $item->getID();
+            $options['criteria'][1]['link']       = 'OR';
+            
+            $options['criteria'][5]['field']      = 5; // status
+            $options['criteria'][5]['searchtype'] = 'equals';
+            $options['criteria'][5]['value']      = $item->getID();
+            $options['criteria'][5]['link']       = 'OR';
+            
             break;
 
          case 'Supplier' :
-            $restrict   = "(`glpi_problems_suppliers`.`suppliers_id` = '".$item->getID()."'
-                            AND `glpi_problems_suppliers`.`type` = ".CommonITILActor::REQUESTER.")";
+            $restrict   = "(`glpi_problems_suppliers`.`suppliers_id` = '".$item->getID()."')";
             $order      = '`glpi_problems`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 6;
@@ -1329,8 +1340,7 @@ class Problem extends CommonITILObject {
             } else {
                $restrict = "='".$item->getID()."'";
             }
-            $restrict   = "(`glpi_groups_problems`.`groups_id` $restrict
-                            AND `glpi_groups_problems`.`type` = ".CommonITILActor::REQUESTER.")";
+            $restrict   = "(`glpi_groups_problems`.`groups_id` $restrict)";
             $order      = '`glpi_problems`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 71;

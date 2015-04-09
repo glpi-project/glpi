@@ -932,6 +932,8 @@ class Change extends CommonITILObject {
                   ON (`glpi_changes`.`id` = `glpi_changes_groups`.`changes_id`)
                LEFT JOIN `glpi_changes_users`
                   ON (`glpi_changes`.`id` = `glpi_changes_users`.`changes_id`)
+               LEFT JOIN `glpi_changes_suppliers`
+                  ON (`glpi_changes`.`id` = `glpi_changes_suppliers`.`changes_id`)
                LEFT JOIN `glpi_itilcategories`
                   ON (`glpi_changes`.`itilcategories_id` = `glpi_itilcategories`.`id`)
                $FROM";
@@ -963,19 +965,28 @@ class Change extends CommonITILObject {
 
       switch ($item->getType()) {
          case 'User' :
-            $restrict   = "(`glpi_changes_users`.`users_id` = '".$item->getID()."'
-                            AND `glpi_changes_users`.`type` = ".CommonITILActor::REQUESTER.")";
+            $restrict   = "(`glpi_changes_users`.`users_id` = '".$item->getID()."')";
             $order      = '`glpi_changes`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 4; // status
             $options['criteria'][0]['searchtype'] = 'equals';
             $options['criteria'][0]['value']      = $item->getID();
-            $options['criteria'][0]['link']       = 'AND';
+            $options['criteria'][0]['link']       = 'OR';
+
+            $options['criteria'][1]['field']      = 66; // status
+            $options['criteria'][1]['searchtype'] = 'equals';
+            $options['criteria'][1]['value']      = $item->getID();
+            $options['criteria'][1]['link']       = 'OR';
+            
+            $options['criteria'][5]['field']      = 5; // status
+            $options['criteria'][5]['searchtype'] = 'equals';
+            $options['criteria'][5]['value']      = $item->getID();
+            $options['criteria'][5]['link']       = 'OR';
+            
             break;
 
          case 'Supplier' :
-            $restrict   = "(`glpi_changes_suppliers`.`suppliers_id` = '".$item->getID()."'
-                            AND `glpi_changes_suppliers`.`type` = ".CommonITILActor::REQUESTER.")";
+            $restrict   = "(`glpi_changes_suppliers`.`suppliers_id` = '".$item->getID()."')";
             $order      = '`glpi_changes`.`date_mod` DESC';
 
             $options['criteria'][0]['field']      = 6;
