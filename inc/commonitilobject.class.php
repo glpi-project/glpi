@@ -723,9 +723,7 @@ abstract class CommonITILObject extends CommonDBTM {
                              && in_array($this->fields['status'], $this->getNewStatusArray()))
                             || (isset($input['status'])
                                 && in_array($input['status'], $this->getNewStatusArray()))) {
-                           if ($this instanceof Change) {
-                              $input['status'] = self::ACCEPTED;
-                           } else {
+                           if (in_array(self::ASSIGNED, $this->getAllStatusArray())) {
                               $input['status'] = self::ASSIGNED;
                            }
                         }
@@ -747,12 +745,9 @@ abstract class CommonITILObject extends CommonDBTM {
                              && (in_array($this->fields['status'], $this->getNewStatusArray())))
                             || (isset($input['status'])
                                 && (in_array($input['status'], $this->getNewStatusArray())))) {
-                           if ($this instanceof Change) {
-                              $input['status'] = self::ACCEPTED;
-                           } else {
+                           if (in_array(self::ASSIGNED, $this->getAllStatusArray())) {
                               $input['status'] = self::ASSIGNED;
                            }
-
                         }
                      }
                   }
@@ -771,9 +766,7 @@ abstract class CommonITILObject extends CommonDBTM {
                              && (in_array($this->fields['status'], $this->getNewStatusArray())))
                             || (isset($input['status'])
                                 && (in_array($input['status'], $this->getNewStatusArray())))) {
-                           if ($this instanceof Change) {
-                              $input['status'] = self::ACCEPTED;
-                           } else {
+                           if (in_array(self::ASSIGNED, $this->getAllStatusArray())) {
                               $input['status'] = self::ASSIGNED;
                            }
 
@@ -2514,7 +2507,7 @@ abstract class CommonITILObject extends CommonDBTM {
                         $linkclass->update($data);
                     }
                   }
-                  $linkclass = new $item->supplierlinkclass();
+                  $linkclass = new $this->supplierlinkclass();
                   foreach ($linkclass->getActors($id) as $type => $users) {
                     foreach ($users as $data) {
                         $data['use_notification'] = $input['use_notification'];

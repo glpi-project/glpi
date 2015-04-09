@@ -117,7 +117,7 @@ function update085to0853() {
 
    // correct value of status for changes
    $query = "UPDATE `glpi_changes`
-             SET `status` = 7
+             SET `status` = 1
              WHERE `status` = 2";
    $DB->queryOrDie($query, "0.85.3 correct status for change");
 
