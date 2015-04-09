@@ -2645,17 +2645,17 @@ class Ticket extends CommonITILObject {
 
 
       $email  = UserEmail::getDefaultForUser($ID);
-
+      $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
 
       // Set default values...
       $default_values = array('_users_id_requester_notif'
                                                     => array('use_notification'
-                                                              => (($email == "")?0:1)),
+                                                              => (($email == "")?0:$default_use_notif)),
                               'nodelegate'          => 1,
                               '_users_id_requester' => 0,
                               '_users_id_observer'  => 0,
                               '_users_id_observer_notif'
-                                                    => array('use_notification' => 1),
+                                                    => array('use_notification' => $default_use_notif),
                               'name'                => '',
                               'content'             => '',
                               'itilcategories_id'   => 0,
