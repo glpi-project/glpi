@@ -1013,6 +1013,7 @@ class Problem extends CommonITILObject {
                $options['urgency']             = $ticket->getField('urgency');
                $options['priority']            = $ticket->getField('priority');
                $options['itilcategories_id']   = $ticket->getField('itilcategories_id');
+               $options['due_date']            = $ticket->getField('due_date');
             }
          }
       }
