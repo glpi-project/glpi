@@ -1884,9 +1884,13 @@ class User extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Active')."</td><td>";
-      Dropdown::showYesNo('is_active',$this->fields['is_active']);
-      echo "</td>";
+      if (!GLPI_DEMO_MODE) {
+        echo "<td>".__('Active')."</td><td>";
+        Dropdown::showYesNo('is_active',$this->fields['is_active']);
+        echo "</td>";
+      } else {
+        echo "<td colspan='2'></td>";
+      }
       echo "<td>" . _n('Email','Emails', Session::getPluralNumber());
       UserEmail::showAddEmailButton($this);
       echo "</td><td>";
@@ -1894,20 +1898,22 @@ class User extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
+      if (!GLPI_DEMO_MODE) {
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Valid since')."</td><td>";
-      Html::showDateTimeField("begin_date", array('value'       => $this->fields["begin_date"],
-                                                  'timestep'    => 1,
-                                                  'maybeempty'  => true));
-      echo "</td>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>".__('Valid since')."</td><td>";
+        Html::showDateTimeField("begin_date", array('value'       => $this->fields["begin_date"],
+                                                    'timestep'    => 1,
+                                                    'maybeempty'  => true));
+        echo "</td>";
 
-      echo "<td>".__('Valid until')."</td><td>";
-      Html::showDateTimeField("end_date", array('value'       => $this->fields["end_date"],
-                                                'timestep'    => 1,
-                                                'maybeempty'  => true));
-      echo "</td></tr>";
-
+        echo "<td>".__('Valid until')."</td><td>";
+        Html::showDateTimeField("end_date", array('value'       => $this->fields["end_date"],
+                                                    'timestep'    => 1,
+                                                    'maybeempty'  => true));
+        echo "</td></tr>";
+      }
+      
       echo "<tr class='tab_bg_1'>";
       echo "<td>" .  __('Phone') . "</td><td>";
       Html::autocompletionTextField($this, "phone");
