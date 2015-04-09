@@ -3071,23 +3071,25 @@ class Ticket extends CommonITILObject {
 
       $type = Entity::getUsedConfig('tickettype', $entity, '', Ticket::INCIDENT_TYPE);
 
+      $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $entity, '', 1);
+
       // Set default values...
       return  array('_users_id_requester'       => $users_id_requester,
-                    '_users_id_requester_notif' => array('use_notification'  => 1,
+                    '_users_id_requester_notif' => array('use_notification'  => $default_use_notif,
                                                          'alternative_email' => ''),
                     '_groups_id_requester'      => 0,
                     '_users_id_assign'          => 0,
-                    '_users_id_assign_notif'    => array('use_notification'  => 1,
+                    '_users_id_assign_notif'    => array('use_notification'  => $default_use_notif,
                                                          'alternative_email' => ''),
                     '_groups_id_assign'         => 0,
                     '_users_id_observer'        => 0,
-                    '_users_id_observer_notif'  => array('use_notification'  => 1,
+                    '_users_id_observer_notif'  => array('use_notification'  => $default_use_notif,
                                                          'alternative_email' => ''),
                     '_groups_id_observer'       => 0,
                     '_link'                     => array('tickets_id_2' => '',
                                                          'link'         => ''),
                     '_suppliers_id_assign'      => 0,
-                    '_suppliers_id_assign_notif' => array('use_notification'  => 1,
+                    '_suppliers_id_assign_notif' => array('use_notification'  => $default_use_notif,
                                                           'alternative_email' => ''),
                     'name'                      => '',
                     'content'                   => '',

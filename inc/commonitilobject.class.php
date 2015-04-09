@@ -3134,6 +3134,7 @@ abstract class CommonITILObject extends CommonDBTM {
                              $withgroup=true, $withsupplier=false, $inobject=true) {
       global $CFG_GLPI;
 
+      
       $types = array(''      => Dropdown::EMPTY_VALUE,
                      'user'  => __('User'));
 
@@ -3190,7 +3191,8 @@ abstract class CommonITILObject extends CommonDBTM {
                       'itemtype'        => $this->getType(),
                       'allow_email'     => (($type == CommonITILActor::OBSERVER)
                                             || $type == CommonITILActor::REQUESTER),
-                      'entity_restrict' => $entities_id);
+                      'entity_restrict' => $entities_id,
+                      'use_notif'       => Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1));
 
       Ajax::updateItemOnSelectEvent("dropdown__itil_".$typename."[_type]$rand",
                                     "showitilactor".$typename."_$rand",
@@ -3445,7 +3447,12 @@ abstract class CommonITILObject extends CommonDBTM {
       if (User::canView()) {
          $showuserlink = 1;
       }
-
+      $options['_default_use_notification'] = 1;
+        
+      if (isset($options['entities_id'])) {
+         $options['_default_use_notification'] = Entity::getUsedConfig('is_notif_enable_default', $options['entities_id'], '', 1);
+      }
+      
       // check is_hidden fields
       foreach (array('_users_id_requester', '_groups_id_requester',
                      '_users_id_observer', '_groups_id_observer',

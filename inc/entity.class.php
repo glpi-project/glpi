@@ -81,6 +81,7 @@ class Entity extends CommonTreeDropdown {
                                        'notification'
                                           => array('admin_email', 'admin_reply', 'admin_email_name',
                                                    'admin_reply_name', 'delay_send_emails',
+                                                   'is_notif_enable_default',
                                                    'default_cartridges_alarm_threshold',
                                                    'default_consumables_alarm_threshold',
                                                    'default_contract_alert', 'default_infocom_alert',
@@ -561,6 +562,13 @@ class Entity extends CommonTreeDropdown {
       $tab[60]['unit']          = 'minute';
       $tab[60]['toadd']         = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
 
+      $tab[61]['table']         = $this->getTable();
+      $tab[61]['field']         = 'is_notif_enable_default';
+      $tab[61]['name']          = __('Enable notifications by default');
+      $tab[61]['massiveaction'] = false;
+      $tab[61]['nosearch']      = true;
+      $tab[61]['datatype']      = 'bool';
+      
       $tab[18]['table']         = $this->getTable();
       $tab[18]['field']         = 'admin_email';
       $tab[18]['name']          = __('Administrator email');
@@ -1366,6 +1374,27 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Enable notifications by default')."</td>";
+      echo "<td>";
+
+      Alert::dropdownYesNo(array('name'           => "is_notif_enable_default",
+                                 'value'          =>  $entity->getField('is_notif_enable_default'),
+                                 'inherit_parent' => (($ID > 0) ? 1 : 0)));
+      
+
+      if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
+         echo "<font class='green'><br>";
+         echo $entity->getValueToDisplay('is_notif_enable_default', $tid, array('html' => true));
+         echo "</font>";
+      }
+      echo "</td>";
+      echo "<td colspan='2'>&nbsp;</td>";
+      
+      echo "</tr>";
+      
+      
       echo "<tr class='tab_bg_1'>";
       echo "<td class='middle right'>" . __('Email signature') . "</td>";
       echo "<td colspan='3'>";

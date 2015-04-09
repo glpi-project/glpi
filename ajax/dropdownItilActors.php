@@ -104,7 +104,7 @@ if (isset($_POST["type"])
                echo "<br><span id='notif_user_$rand'>";
                if ($withemail) {
                   echo __('Email followup').'&nbsp;';
-                  $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', 1);
+                  $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', $_POST["use_notif"]);
                   echo '<br>';
                   printf(__('%1$s: %2$s'),__('Email'),
                          "<input type='text' size='25' name='_itil_".$_POST["actortype"].
@@ -186,7 +186,7 @@ if (isset($_POST["type"])
                echo "<br><span id='notif_supplier_$rand'>";
                if ($withemail) {
                   echo __('Email followup').'&nbsp;';
-                  $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', 1);
+                  $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', $_POST['use_notif']);
                   echo '<br>';
                    printf(__('%1$s: %2$s'),__('Email'),
                           "<input type='text' size='25' name='_itil_".$_POST["actortype"].
