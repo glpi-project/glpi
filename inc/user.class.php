@@ -3875,6 +3875,7 @@ class User extends CommonDBTM {
                $this->update($input);
                // Notication on root entity (glpi_users.entities_id is only a pref)
                NotificationEvent::raiseEvent('passwordforget', $this, array('entities_id' => 0));
+               QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
                _e('An email has been sent to your email address. The email contains information for reset your password.');
             } else {
                _e('Invalid email address');
