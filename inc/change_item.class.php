@@ -268,6 +268,30 @@ class Change_Item extends CommonDBRelation{
                }
 
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+            default :
+               if (Session::haveRight("change", Change::READALL)) {
+                  $nb = 0;
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     // Direct one
+                     $nb = countElementsInTable('glpi_changes_items',
+                                                " `itemtype` = '".$item->getType()."'
+                                                   AND `items_id` = '".$item->getID()."'");
+                     // Linked items
+                     $linkeditems = $item->getLinkedItems();
+
+                     if (count($linkeditems)) {
+                        foreach ($linkeditems as $type => $tab) {
+                           foreach ($tab as $ID) {
+                              $nb += countElementsInTable('glpi_changes_items',
+                                                          " `itemtype` = '$type'
+                                                            AND `items_id` = '$ID'");
+                           }
+                        }
+                     }
+                  }
+                  return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+               }
+               
          }
       }
       return '';
@@ -276,11 +300,17 @@ class Change_Item extends CommonDBRelation{
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType() == 'Change') {
-         self::showForChange($item);
+      switch ($item->getType()) {
+         case 'Change' :
+            self::showForChange($item);
+            break;
+
+         default :
+            Change::showListForItem($item);
       }
       return true;
-   }
+
+    }
 
 }
 ?>

@@ -906,5 +906,221 @@ class Change extends CommonITILObject {
 
       return $DB->result($result, 0, 0);
    }
+   
+   static function getCommonSelect() {
+
+      $SELECT = "";
+      if (count($_SESSION["glpiactiveentities"])>1) {
+         $SELECT .= ", `glpi_entities`.`completename` AS entityname,
+                       `glpi_changes`.`entities_id` AS entityID ";
+      }
+
+      return " DISTINCT `glpi_changes`.*,
+                        `glpi_itilcategories`.`completename` AS catname
+                        $SELECT";
+   }
+
+   static function getCommonLeftJoin() {
+
+      $FROM = "";
+      if (count($_SESSION["glpiactiveentities"])>1) {
+         $FROM .= " LEFT JOIN `glpi_entities`
+                        ON (`glpi_entities`.`id` = `glpi_changes`.`entities_id`) ";
+      }
+
+      return " LEFT JOIN `glpi_changes_groups`
+                  ON (`glpi_changes`.`id` = `glpi_changes_groups`.`changes_id`)
+               LEFT JOIN `glpi_changes_users`
+                  ON (`glpi_changes`.`id` = `glpi_changes_users`.`changes_id`)
+               LEFT JOIN `glpi_itilcategories`
+                  ON (`glpi_changes`.`itilcategories_id` = `glpi_itilcategories`.`id`)
+               $FROM";
+   }
+   
+   /**
+    * Display changes for an item
+    *
+    * Will also display changes of linked items
+    *
+    * @param $item CommonDBTM object
+    *
+    * @return nothing (display a table)
+   **/
+   static function showListForItem(CommonDBTM $item) {
+      global $DB, $CFG_GLPI;
+
+      if (!Session::haveRight(self::$rightname, self::READALL)) {
+         return false;
+      }
+
+      if ($item->isNewID($item->getID())) {
+         return false;
+      }
+
+      $restrict         = '';
+      $order            = '';
+      $options['reset'] = 'reset';
+
+      switch ($item->getType()) {
+         case 'User' :
+            $restrict   = "(`glpi_changes_users`.`users_id` = '".$item->getID()."'
+                            AND `glpi_changes_users`.`type` = ".CommonITILActor::REQUESTER.")";
+            $order      = '`glpi_changes`.`date_mod` DESC';
+
+            $options['criteria'][0]['field']      = 4; // status
+            $options['criteria'][0]['searchtype'] = 'equals';
+            $options['criteria'][0]['value']      = $item->getID();
+            $options['criteria'][0]['link']       = 'AND';
+            break;
+
+         case 'Supplier' :
+            $restrict   = "(`glpi_changes_suppliers`.`suppliers_id` = '".$item->getID()."'
+                            AND `glpi_changes_suppliers`.`type` = ".CommonITILActor::REQUESTER.")";
+            $order      = '`glpi_changes`.`date_mod` DESC';
+
+            $options['criteria'][0]['field']      = 6;
+            $options['criteria'][0]['searchtype'] = 'equals';
+            $options['criteria'][0]['value']      = $item->getID();
+            $options['criteria'][0]['link']       = 'AND';
+            break;
+
+         case 'Group' :
+            // Mini search engine
+            if ($item->haveChildren()) {
+               $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
+               echo "<table class='tab_cadre_fixe'>";
+               echo "<tr class='tab_bg_1'><th>".__('Last changes')."</th></tr>";
+               echo "<tr class='tab_bg_1'><td class='center'>";
+               _e('Child groups');
+               Dropdown::showYesNo('tree', $tree, -1,
+                                   array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
+            } else {
+               $tree = 0;
+            }
+            echo "</td></tr></table>";
+
+            if ($tree) {
+               $restrict = "IN (".implode(',', getSonsOf('glpi_groups', $item->getID())).")";
+            } else {
+               $restrict = "='".$item->getID()."'";
+            }
+            $restrict   = "(`glpi_changes_groups`.`groups_id` $restrict
+                            AND `glpi_changes_groups`.`type` = ".CommonITILActor::REQUESTER.")";
+            $order      = '`glpi_changes`.`date_mod` DESC';
+
+            $options['criteria'][0]['field']      = 71;
+            $options['criteria'][0]['searchtype'] = ($tree ? 'under' : 'equals');
+            $options['criteria'][0]['value']      = $item->getID();
+            $options['criteria'][0]['link']       = 'AND';
+            break;
+
+         default :
+            $restrict   = "(`items_id` = '".$item->getID()."'
+                            AND `itemtype` = '".$item->getType()."')";
+            $order      = '`glpi_changes`.`date_mod` DESC';
+            break;
+      }
+
+
+      $query = "SELECT ".self::getCommonSelect()."
+                FROM `glpi_changes`
+                LEFT JOIN `glpi_changes_items`
+                  ON (`glpi_changes`.`id` = `glpi_changes_items`.`changes_id`) ".
+                self::getCommonLeftJoin()."
+                WHERE $restrict ".
+                      getEntitiesRestrictRequest("AND","changes")."
+                ORDER BY $order
+                LIMIT ".intval($_SESSION['glpilist_limit']);
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+
+      // Ticket for the item
+      echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
+
+      $colspan = 11;
+      if (count($_SESSION["glpiactiveentities"]) > 1) {
+         $colspan++;
+      }
+      if ($number > 0) {
+
+         Session::initNavigateListItems('Change',
+               //TRANS : %1$s is the itemtype name,
+               //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
+                                                $item->getName()));
+
+         echo "<tr><th colspan='$colspan'>";
+
+         //TRANS : %d is the number of problems
+         echo sprintf(_n('Last %d change','Last %d changes',$number), $number);
+//             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+//                    Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
+
+         echo "</th></tr>";
+
+      } else {
+         echo "<tr><th>".__('No change found.')."</th></tr>";
+      }
+      // Ticket list
+      if ($number > 0) {
+         self::commonListHeader(Search::HTML_OUTPUT);
+
+         while ($data = $DB->fetch_assoc($result)) {
+            Session::addToNavigateListItems('Problem', $data["id"]);
+            self::showShort($data["id"]);
+         }
+         self::commonListHeader(Search::HTML_OUTPUT);
+      }
+
+      echo "</table></div>";
+
+      // Tickets for linked items
+      $linkeditems = $item->getLinkedItems();
+      $restrict = array();
+      if (count($linkeditems)) {
+         foreach ($linkeditems as $ltype => $tab) {
+            foreach ($tab as $lID) {
+               $restrict[] = "(`itemtype` = '$ltype' AND `items_id` = '$lID')";
+            }
+         }
+      }
+
+      if (count($restrict)) {
+
+         $query = "SELECT ".self::getCommonSelect()."
+                   FROM `glpi_changes`
+                   LEFT JOIN `glpi_changes_items`
+                        ON (`glpi_changes`.`id` = `glpi_changes_items`.`changes_id`) ".
+                   self::getCommonLeftJoin()."
+                   WHERE ".implode(' OR ', $restrict).
+                         getEntitiesRestrictRequest(' AND ', 'glpi_changes') . "
+                   ORDER BY `glpi_changes`.`date_mod` DESC
+                   LIMIT ".intval($_SESSION['glpilist_limit']);
+         $result = $DB->query($query);
+         $number = $DB->numrows($result);
+
+         echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='$colspan'>";
+         _e('Changes on linked items');
+
+         echo "</th></tr>";
+         if ($number > 0) {
+            self::commonListHeader(Search::HTML_OUTPUT);
+
+            while ($data = $DB->fetch_assoc($result)) {
+               // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
+               self::showShort($data["id"]);
+            }
+            self::commonListHeader(Search::HTML_OUTPUT);
+         } else {
+            echo "<tr><th>".__('No change found.')."</th></tr>";
+         }
+         echo "</table></div>";
+
+      } // Subquery for linked item
+
+   }
+
+   
 }
 ?>
