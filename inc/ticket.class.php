@@ -3417,7 +3417,8 @@ class Ticket extends CommonITILObject {
          echo "</td></tr>";
       }
 
-      if ($tt->isPredefinedField('name')) {
+      if (!$tt->isHiddenField('name')
+          || $tt->isPredefinedField('name')) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".sprintf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'))."<td>";
          if (!$tt->isHiddenField('name')) {
