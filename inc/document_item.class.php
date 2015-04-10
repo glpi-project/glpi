@@ -456,7 +456,12 @@ class Document_Item extends CommonDBRelation{
                          || empty($data["name"])) {
                         $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
                      }
-
+                     if ($item instanceof Item_Devices) {
+                        $tmpitem = new $item::$itemtype_2();
+                        if ($tmpitem->getFromDB($data[$item::$items_id_2])) {
+                           $linkname = $tmpitem->getLink();
+                        }
+                     }
                      $link = Toolbox::getItemTypeFormURL($itemtype);
                      $name = "<a href=\"".$link."?id=".$data["id"]."\">".$linkname."</a>";
 
