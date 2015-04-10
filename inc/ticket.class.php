@@ -2047,7 +2047,7 @@ class Ticket extends CommonITILObject {
                = __('Set notifications for all actors');
             $actions['Ticket_Ticket'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']
                = _x('button', 'Link tickets');
-               
+
          }
 
          if (Session::haveRight(self::$rightname, UPDATE)) {
@@ -2950,7 +2950,7 @@ class Ticket extends CommonITILObject {
          echo "</td></tr>";
       }
 
-      
+
       if (!$tt->isHiddenField('name')
           || $tt->isPredefinedField('name')) {
          echo "<tr class='tab_bg_1'>";
@@ -3285,9 +3285,9 @@ class Ticket extends CommonITILObject {
 
       if (!$ID) {
          // Override defaut values from projecttask if needed
-         if (isset($options['projecttasks_id'])) {
+         if (isset($options['_projecttasks_id'])) {
             $pt = new ProjectTask();
-            if ($pt->getFromDB($options['projecttasks_id'])) {
+            if ($pt->getFromDB($options['_projecttasks_id'])) {
                $values['name'] = $pt->getField('name');
                $values['content'] = $pt->getField('name');
             }
@@ -3459,8 +3459,8 @@ class Ticket extends CommonITILObject {
       if (!$options['template_preview']) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
                 $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
-         if (isset($options['projecttasks_id'])) {
-            echo "<input type='hidden' name='_projecttasks_id' value='".$options['projecttasks_id']."'>";
+         if (isset($options['_projecttasks_id'])) {
+            echo "<input type='hidden' name='_projecttasks_id' value='".$options['_projecttasks_id']."'>";
          }
       }
       echo "<div class='spaced' id='tabsbody'>";

@@ -186,7 +186,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
                                 'displaywith' => array('id')));
 
          echo "</td><td width='20%'>";
-         echo "<a href='".Toolbox::getItemTypeFormURL('Ticket')."?projecttasks_id=$ID'>";
+         echo "<a href='".Toolbox::getItemTypeFormURL('Ticket')."?_projecttasks_id=$ID'>";
          _e('Create a ticket from this task');
          echo "</a>";
          echo "</td><td class='center'>";
@@ -275,10 +275,10 @@ class ProjectTask_Ticket extends CommonDBRelation{
 //          echo "<div class='firstbloc'>";
 //          echo "<form name='projecttaskticket_form$rand' id='projecttaskticket_form$rand'
 //                 method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-// 
+//
 //          echo "<table class='tab_cadre_fixe'>";
 //          echo "<tr class='tab_bg_2'><th colspan='3'>".__('Add a project task')."</th></tr>";
-// 
+//
 //          echo "<tr class='tab_bg_2'><td class='right'>";
 //          echo "<input type='hidden' name='tickets_id' value='$ID'>";
 //          $condition = "`glpi_projecttasks`.`projectstates_id` <> 3";
@@ -294,7 +294,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
 //          echo "</td><td class='center'>";
 //          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
 //          echo "</td></tr>";
-// 
+//
 //          echo "</table>";
 //          Html::closeForm();
 //          echo "</div>";
