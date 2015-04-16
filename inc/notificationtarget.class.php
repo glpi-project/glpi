@@ -816,7 +816,7 @@ class NotificationTarget extends CommonDBChild {
 
       $id = array();
       if (!$search_in_object) {
-         $id = $this->obj->getField($field);
+         $id[] = $this->obj->getField($field);
 
       } else if (!empty($this->target_object)) {
          foreach ($this->target_object as $val) {
