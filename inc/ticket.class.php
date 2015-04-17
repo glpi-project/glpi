@@ -3940,6 +3940,11 @@ class Ticket extends CommonITILObject {
 
       echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype');
       printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()), $tt->getMandatoryMark('itemtype'));
+      if ($ID && $canupdate) {
+         echo "&nbsp;<a  href='".$this->getFormURL()."?id=".$ID.
+                       "&amp;forcetab=Item_Ticket$1'><img title='".__s('Update')."' alt='".__s('Update')."'
+                      class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'></a>";
+      }
       echo $tt->getEndHiddenFieldText('itemtype');
       echo "</th>";
       echo "<td rowspan='2'>";
@@ -3971,7 +3976,7 @@ class Ticket extends CommonITILObject {
          foreach ($item_tickets as $itdata) {
             if ($i >= 5) {
                echo "<i><a href='".$this->getFormURL()."?id=".$ID.
-                       "&glpi_tab=Item_Ticket$1&itemtype=Ticket'>"
+                       "&amp;forcetab=Item_Ticket$1'>"
                .__('Display all items')." (".count($item_tickets).")</a></i>";
                break;
             }
