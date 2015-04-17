@@ -1028,9 +1028,7 @@ class Ticket extends CommonITILObject {
       global $CFG_GLPI;
 
       // save value before clean;
-      if (isset($input['name'])) {
-         $title = ltrim($input['name']);
-      }
+      $title = ltrim($input['name']);
 
       // Standard clean datas
       $input =  parent::prepareInputForAdd($input);
@@ -3429,6 +3427,7 @@ class Ticket extends CommonITILObject {
                        value=\"".$values['name']."\">";
          } else {
             echo $values['name'];
+            echo "<input type='hidden' name='name' value=\"".$values['name']."\">";
          }
          echo "</td></tr>";
       }

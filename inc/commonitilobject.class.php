@@ -1054,28 +1054,18 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // No name set name
-      if (isset($input["name"])) {
-         $input["name"]    = ltrim($input["name"]);
-      }
+      $input["name"]    = ltrim($input["name"]);
       $input['content'] = ltrim($input['content']);
-      $tt = new TicketTemplate();
-      if ($tt->getFromDBWithDatas($input['_tickettemplates_id'])) {
-         foreach ($tt->predefined as $key => $val) {
-            if (!$tt->predefined['name']
-                && empty($input["name"])) {
-               $input["name"] = preg_replace('/\\r\\n/',' ',$input['content']);
-               $input["name"] = preg_replace('/\\n/',' ',$input['name']);
-               // For mailcollector
-               $input["name"] = preg_replace('/\\\\r\\\\n/',' ',$input['name']);
-               $input["name"] = preg_replace('/\\\\n/',' ',$input['name']);
-               $input["name"] = Toolbox::stripslashes_deep($input["name"]);
-               $input["name"] = Toolbox::substr($input['name'],0,70);
+      if (empty($input["name"])) {
+         $input["name"] = preg_replace('/\\r\\n/',' ',$input['content']);
+         $input["name"] = preg_replace('/\\n/',' ',$input['name']);
+         // For mailcollector
+         $input["name"] = preg_replace('/\\\\r\\\\n/',' ',$input['name']);
+         $input["name"] = preg_replace('/\\\\n/',' ',$input['name']);
+         $input["name"] = Toolbox::stripslashes_deep($input["name"]);
+         $input["name"] = Toolbox::substr($input['name'],0,70);
 
-               $input['name'] = Toolbox::addslashes_deep($input['name']);
-            } else {
-               $input["name"] = $tt->predefined['name'];
-            }
-         }
+         $input['name'] = Toolbox::addslashes_deep($input['name']);
       }
 
       // Set default dropdown
