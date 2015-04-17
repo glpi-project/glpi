@@ -865,9 +865,16 @@ class Stat extends CommonGLPI {
             $devtable = getTableForItemType('Computer_'.$value2);
             $fkname   = getForeignKeyFieldForTable(getTableForItemType($value2));
             //select computers IDs that are using this device;
-            $LEFTJOIN = " INNER JOIN `glpi_computers`
-                              ON (`glpi_computers`.`id` = `$table`.`items_id`
-                                  AND `$table`.`itemtype` = 'Computer')
+            $LEFTJOIN = '';
+            $linkdetable = $table;
+            if ($itemtype == 'Ticket') {
+               $linkedtable = 'glpi_items_tickets';
+               $LEFTJOIN .= " LEFT JOIN `glpi_items_tickets`
+                                 ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)";
+            }
+            $LEFTJOIN .= " INNER JOIN `glpi_computers`
+                              ON (`glpi_computers`.`id` = `$linkedtable`.`items_id`
+                                  AND `$linkedtable`.`itemtype` = 'Computer')
                           INNER JOIN `$devtable`
                               ON (`glpi_computers`.`id` = `$devtable`.`computers_id`
                                   AND `$devtable`.`$fkname` = '$value')";
@@ -877,9 +884,16 @@ class Stat extends CommonGLPI {
          case "comp_champ" :
             $ftable   = getTableForItemType($value2);
             $champ    = getForeignKeyFieldForTable($ftable);
-            $LEFTJOIN = " INNER JOIN `glpi_computers`
-                              ON (`glpi_computers`.`id` = `$table`.`items_id`
-                                  AND `$table`.`itemtype` = 'Computer')";
+                  $LEFTJOIN = '';
+            $linkdetable = $table;
+            if ($itemtype == 'Ticket') {
+               $linkedtable = 'glpi_items_tickets';
+               $LEFTJOIN .= " LEFT JOIN `glpi_items_tickets`
+                                 ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)";
+            }
+            $LEFTJOIN .= " INNER JOIN `glpi_computers`
+                              ON (`glpi_computers`.`id` = `$linkedtable`.`items_id`
+                                  AND `$linkedtable`.`itemtype` = 'Computer')";
             $WHERE   .= " AND `glpi_computers`.`$champ` = '$value'
                           AND `glpi_computers`.`is_template` <> '1'";
             break;
