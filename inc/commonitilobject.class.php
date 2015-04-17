@@ -2653,6 +2653,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[82]['datatype']            = 'bool';
       $tab[82]['massiveaction']       = false;
       $tab[82]['computation']         = "IF(TABLE.`due_date` IS NOT NULL
+                                            AND TABLE.`status` <> ".self::WAITING."
                                             AND (TABLE.`solvedate` > TABLE.`due_date`
                                                  OR (TABLE.`solvedate` IS NULL
                                                       AND TABLE.`due_date` < NOW())),
