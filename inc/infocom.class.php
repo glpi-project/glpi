@@ -332,25 +332,25 @@ class Infocom extends CommonDBChild {
                break;
 
              case self::COPY_WARRANTY_DATE :
-               if ($infocoms[$field] && isset($infocoms['warranty_date'])) {
+               if (isset($infocoms['warranty_date'])) {
                   $infocoms[$field] = $infocoms['warranty_date'];
                }
                break;
 
             case self::COPY_BUY_DATE :
-               if ($infocoms[$field] && isset($infocoms['buy_date'])) {
+               if (isset($infocoms['buy_date'])) {
                   $infocoms[$field] = $infocoms['buy_date'];
                }
                break;
 
             case self::COPY_ORDER_DATE :
-               if ($infocoms[$field] && isset($infocoms['order_date'])) {
+               if (isset($infocoms['order_date'])) {
                   $infocoms[$field] = $infocoms['order_date'];
                }
                break;
 
             case self::COPY_DELIVERY_DATE :
-               if ($infocoms[$field] && isset($infocoms['delivery_date'])) {
+               if (isset($infocoms['delivery_date'])) {
                   $infocoms[$field] = $infocoms['delivery_date'];
                }
                break;
