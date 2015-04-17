@@ -1028,7 +1028,10 @@ class Ticket extends CommonITILObject {
       global $CFG_GLPI;
 
       // save value before clean;
-      $title = ltrim($input['name']);
+      if (isset($input['name'])) {
+         $title = ltrim($input['name']);
+      }
+
       // Standard clean datas
       $input =  parent::prepareInputForAdd($input);
 

@@ -1054,18 +1054,28 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // No name set name
-      $input["name"]    = ltrim($input["name"]);
+      if (isset($input["name"])) {
+         $input["name"]    = ltrim($input["name"]);
+      }
       $input['content'] = ltrim($input['content']);
-      if (empty($input["name"])) {
-         $input["name"] = preg_replace('/\\r\\n/',' ',$input['content']);
-         $input["name"] = preg_replace('/\\n/',' ',$input['name']);
-         // For mailcollector
-         $input["name"] = preg_replace('/\\\\r\\\\n/',' ',$input['name']);
-         $input["name"] = preg_replace('/\\\\n/',' ',$input['name']);
-         $input["name"] = Toolbox::stripslashes_deep($input["name"]);
-         $input["name"] = Toolbox::substr($input['name'],0,70);
-         
-         $input['name'] = Toolbox::addslashes_deep($input['name']);
+      $tt = new TicketTemplate();
+      if ($tt->getFromDBWithDatas($input['_tickettemplates_id'])) {
+         foreach ($tt->predefined as $key => $val) {
+            if (!$tt->predefined['name']
+                && empty($input["name"])) {
+               $input["name"] = preg_replace('/\\r\\n/',' ',$input['content']);
+               $input["name"] = preg_replace('/\\n/',' ',$input['name']);
+               // For mailcollector
+               $input["name"] = preg_replace('/\\\\r\\\\n/',' ',$input['name']);
+               $input["name"] = preg_replace('/\\\\n/',' ',$input['name']);
+               $input["name"] = Toolbox::stripslashes_deep($input["name"]);
+               $input["name"] = Toolbox::substr($input['name'],0,70);
+
+               $input['name'] = Toolbox::addslashes_deep($input['name']);
+            } else {
+               $input["name"] = $tt->predefined['name'];
+            }
+         }
       }
 
       // Set default dropdown
@@ -2062,7 +2072,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return false;
       }
    }
-   
+
    /**
     * show groups asociated
     *
@@ -2135,7 +2145,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $itemtype = $this->getType();
       $typename = self::getActorFieldNameType($type);
-      
+
       $candelete = true;
       $mandatory = '';
       // For ticket templates : mandatories
@@ -2147,7 +2157,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $candelete = false;
          }
       }
-      
+
       if (isset($this->suppliers[$type]) && count($this->suppliers[$type])) {
          foreach ($this->suppliers[$type] as $d) {
             $k = $d['suppliers_id'];
@@ -2701,7 +2711,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $candelete = false;
          }
       }
-      
+
       if (isset($this->users[$type]) && count($this->users[$type])) {
          foreach ($this->users[$type] as $d) {
             $k                 = $d['users_id'];
@@ -2786,7 +2796,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $types = array(''      => Dropdown::EMPTY_VALUE,
                      'user'  => __('User'));
 
-      if ($withgroup) {    
+      if ($withgroup) {
          $types['group'] = __('Group');
       }
 
@@ -2795,7 +2805,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $types['supplier'] = __('Supplier');
       }
       $typename = self::getActorFieldNameType($type);
-      
+
       switch ($type) {
          case CommonITILActor::REQUESTER :
             if (isset($is_hidden['_users_id_requester']) && $is_hidden['_users_id_requester']) {
@@ -3024,7 +3034,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $can_admin      = $this->canAdminActors();
       $can_assign     = $this->canAssign();
       $can_assigntome = $this->canAssignToMe();
-      
+
       if (isset($options['_noupdate']) && $options['_noupdate']) {
          $can_admin       = false;
          $can_assign      = false;
