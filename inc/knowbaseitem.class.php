@@ -790,7 +790,8 @@ class KnowbaseItem extends CommonDBTM {
 
       $linkusers_id = true;
       // show item : question and answer
-      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
+      if (((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
+          || ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk")
           || !User::canView()) {
          $linkusers_id = false;
       }
