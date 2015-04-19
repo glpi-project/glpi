@@ -865,7 +865,7 @@ class Document extends CommonDBTM {
    static function moveUploadedDocument(array &$input, $filename) {
       global $CFG_GLPI;
 
-      $fullpath = GLPI_UPLOAD_DIR.$filename;
+      $fullpath = GLPI_UPLOAD_DIR."/".$filename;
 
       if (!is_dir(GLPI_UPLOAD_DIR)) {
          Session::addMessageAfterRedirect(__("Upload directory doesn't exist"), false, ERROR);
@@ -954,7 +954,7 @@ class Document extends CommonDBTM {
    static function moveDocument(array &$input, $filename) {
       global $CFG_GLPI;
 
-      $fullpath = GLPI_TMP_DIR.$filename;
+      $fullpath = GLPI_TMP_DIR."/".$filename;
       if (!is_dir(GLPI_TMP_DIR)) {
          Session::addMessageAfterRedirect(__("Temporary directory doesn't exist"), false, ERROR);
          return false;

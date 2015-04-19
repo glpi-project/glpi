@@ -665,11 +665,11 @@ class MailCollector  extends CommonDBTM {
       // max size = 0 : no import attachments
       if ($this->fields['filesize_max'] > 0) {
          if (is_writable(GLPI_TMP_DIR)) {
-            $tkt['_filename'] = $this->getAttached($i, GLPI_TMP_DIR, $this->fields['filesize_max']);
+            $tkt['_filename'] = $this->getAttached($i, GLPI_TMP_DIR."/", $this->fields['filesize_max']);
             $tkt['_tag']      = $this->tags;
          } else {
             //TRANS: %s is a directory
-            Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'), GLPI_TMP_DIR));
+            Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'), GLPI_TMP_DIR."/"));
          }
       }
       //  Who is the user ?

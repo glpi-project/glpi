@@ -1524,7 +1524,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $docitem   = new Document_Item();
 
          $docID = 0;
-         $filename = GLPI_TMP_DIR.$file;
+         $filename = GLPI_TMP_DIR."/".$file;
          $input2         = array();
 
          // Crop/Resize image file if needed
@@ -2448,7 +2448,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
             return true;
          case 'update_notif' :
-         
+
             Dropdown::showYesNo('use_notification');
             echo "<br><br>";
             echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
@@ -2514,7 +2514,7 @@ abstract class CommonITILObject extends CommonDBTM {
                         $linkclass->update($data);
                     }
                   }
-                  
+
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                } else {
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
@@ -2522,7 +2522,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
             }
             return;
-            
+
          case 'add_task' :
             if (!($task = getItemForItemtype($item->getType().'Task'))) {
                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
@@ -3162,7 +3162,7 @@ abstract class CommonITILObject extends CommonDBTM {
                              $withgroup=true, $withsupplier=false, $inobject=true) {
       global $CFG_GLPI;
 
-      
+
       $types = array(''      => Dropdown::EMPTY_VALUE,
                      'user'  => __('User'));
 
@@ -3476,11 +3476,11 @@ abstract class CommonITILObject extends CommonDBTM {
          $showuserlink = 1;
       }
       $options['_default_use_notification'] = 1;
-        
+
       if (isset($options['entities_id'])) {
          $options['_default_use_notification'] = Entity::getUsedConfig('is_notif_enable_default', $options['entities_id'], '', 1);
       }
-      
+
       // check is_hidden fields
       foreach (array('_users_id_requester', '_groups_id_requester',
                      '_users_id_observer', '_groups_id_observer',
