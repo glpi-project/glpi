@@ -79,7 +79,7 @@ class Phone extends CommonDBTM {
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
-      $this->addStandardTab('Change_Item', $ong, $options);      
+      $this->addStandardTab('Change_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Reservation', $ong, $options);
@@ -135,7 +135,7 @@ class Phone extends CommonDBTM {
       $ci = new Computer_Item();
       $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
-      
+
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
 
@@ -426,7 +426,7 @@ class Phone extends CommonDBTM {
       $tab[31]['field']          = 'completename';
       $tab[31]['name']           = __('Status');
       $tab[31]['datatype']       = 'dropdown';
-      $tab[31]['condition']      = "`is_visible_phone`='1'";
+      $tab[31]['condition']      = "`is_visible_phone`";
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';
@@ -533,7 +533,7 @@ class Phone extends CommonDBTM {
       $tab[82]['massiveaction']  = false;
 
       $tab += Notepad::getSearchOptionsToAdd();
-      
+
       return $tab;
    }
 
