@@ -346,8 +346,8 @@ abstract class CommonITILActor extends CommonDBRelation {
       // Check object status and update it if needed
       if (!isset($this->input['_from_object'])) {
          if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
-            if ($item->fields["status"] == CommonITILObject::INCOMING
-                && in_array(CommonITILObject::ASSIGNED, $item->getAllStatusArray())) {
+            if (($item->fields["status"] == CommonITILObject::INCOMING)
+                && in_array(CommonITILObject::ASSIGNED, array_keys($item->getAllStatusArray()))) {
                $item->update(array('id'     => $item->getID(),
                                    'status' => CommonITILObject::ASSIGNED));
             }
