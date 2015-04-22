@@ -2294,7 +2294,7 @@ class User extends CommonDBTM {
          } else {
             Html::autocompletionTextField($this, "registration_number");
          }
-         echo "</td></tr>";
+         echo "</td><td colspan='2'></td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('Location') . "</td><td>";
          $entities = Profile_User::getUserEntities($ID, true);
