@@ -579,6 +579,7 @@ if ($item instanceof CommonTreeDropdown) {
             } else {
                $outputval = $data[$field];
             }
+            $outputval = Toolbox::unclean_cross_side_scripting_deep($outputval);
 
             if ($displaywith) {
                foreach ($_GET['displaywith'] as $key) {

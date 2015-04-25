@@ -171,7 +171,10 @@ class Dropdown {
       if (!empty($params['condition'])) {
         $params['condition'] = static::addNewCondition($params['condition']);
       }
-      
+
+      if (!$item instanceof CommonTreeDropdown) {
+         $name = Toolbox::unclean_cross_side_scripting_deep($name);
+      }
       $p = array('value'                => $params['value'],
                  'valuename'            => $name,
                  'width'                => $params['width'],
@@ -263,7 +266,7 @@ class Dropdown {
         $_SESSION['glpicondition'][$sha1] = $condition;
         return $sha1;
     }
-    
+
    /**
     * Get the value of a dropdown
     *
@@ -402,7 +405,12 @@ class Dropdown {
       if (empty($name)) {
          $name = "&nbsp;";
       }
-
+/*
+      if (!$item instanceof CommonTreeDropdown) {
+         $search  = array("/\&lt;/","/\&gt;/");
+         $replace = array("<",">");
+         $name    = preg_replace($search, $replace, $name);
+      }*/
       if ($withcomment) {
          return array('name'     => $name,
                       'comment'  => $comment);
