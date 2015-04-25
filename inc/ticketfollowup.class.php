@@ -276,7 +276,9 @@ class TicketFollowup  extends CommonDBTM {
 
       $input["_job"] = new Ticket();
 
-      if (empty($input['content'])) {
+      if (empty($input['content'])
+          && (!isset($input['add_close'])
+              || !isset($input['add_reopen']))) {
          return false;
       }
       if (!$input["_job"]->getFromDB($input["tickets_id"])) {
@@ -324,6 +326,7 @@ class TicketFollowup  extends CommonDBTM {
       if (isset($input["add_close"])) {
          $input['_close'] = 1;
       }
+
       unset($input["add_close"]);
 
       if (!isset($input["is_private"])) {
