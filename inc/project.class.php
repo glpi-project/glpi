@@ -531,6 +531,7 @@ class Project extends CommonDBTM {
 
       $items                           = array();
       $items[(empty($mass_id) ? '&nbsp' : Html::getCheckAllAsCheckbox($mass_id))] = '';
+      $items[__('ID')]                 = "id";
       $items[__('Status')]             = "glpi_projectstates.name";
       $items[__('Date')]               = "date";
       $items[__('Last update')]        = "date_mod";
@@ -614,13 +615,13 @@ class Project extends CommonDBTM {
          }
          echo Search::showItem($p['output_type'], $check_col, $item_num, $p['row_num'], $align);
 
+         $id_col = $item->fields["id"];
+         echo Search::showItem($p['output_type'], $id_col, $item_num, $p['row_num'], $align);
          // First column
-         $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $item->fields["id"]);
+         $first_col = '';
          /// TODO add color of project state
          if ($item->fields["projectstates_id"]) {
-            $first_col = sprintf(__('%1$s - %2$s'), $first_col,
-                                 Dropdown::getDropdownName('glpi_projectstates',
-                                                           $item->fields["projectstates_id"]));
+            $first_col = Dropdown::getDropdownName('glpi_projectstates', $item->fields["projectstates_id"]);
          }
          echo Search::showItem($p['output_type'], $first_col, $item_num, $p['row_num'], $align);
 
