@@ -256,20 +256,39 @@ class Ticket_Ticket extends CommonDBRelation {
 
 
    function post_deleteFromDB() {
-
+      global $CFG_GLPI;
+      
       $t = new Ticket();
       $t->updateDateMod($this->fields['tickets_id_1']);
       $t->updateDateMod($this->fields['tickets_id_2']);
       parent::post_deleteFromDB();
+
+      $donotif = $CFG_GLPI["use_mailing"];
+      if ($donotif) {
+         $t->getFromDB($this->fields['tickets_id_1']);
+         NotificationEvent::raiseEvent("update", $t);
+         $t->getFromDB($this->fields['tickets_id_2']);
+         NotificationEvent::raiseEvent("update", $t);
+      }
    }
 
 
    function post_addItem() {
-
+      global $CFG_GLPI;
+      
       $t = new Ticket();
       $t->updateDateMod($this->fields['tickets_id_1']);
       $t->updateDateMod($this->fields['tickets_id_2']);
       parent::post_addItem();
+      
+      $donotif = $CFG_GLPI["use_mailing"];
+      if ($donotif) {
+         $t->getFromDB($this->fields['tickets_id_1']);
+         NotificationEvent::raiseEvent("update", $t);
+         $t->getFromDB($this->fields['tickets_id_2']);
+         NotificationEvent::raiseEvent("update", $t);
+      }
+      
    }
 
 
