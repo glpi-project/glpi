@@ -65,7 +65,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
       // Default values of parameters
       $params["knowbaseitemcategories_id"] = "0";
-      $params["target"]                    = $CFG_GLPI['root_doc'].'/front/knowbaseitem.php';
+      $params["target"]                    = KnowbaseItem::getSearchURL();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
