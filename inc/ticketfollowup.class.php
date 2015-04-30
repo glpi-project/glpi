@@ -277,8 +277,8 @@ class TicketFollowup  extends CommonDBTM {
       $input["_job"] = new Ticket();
 
       if (empty($input['content'])
-          && (!isset($input['add_close'])
-              || !isset($input['add_reopen']))) {
+          && !isset($input['add_close'])
+          && !isset($input['add_reopen'])) {
          return false;
       }
       if (!$input["_job"]->getFromDB($input["tickets_id"])) {
