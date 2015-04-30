@@ -770,6 +770,7 @@ function updateDbUpTo031() {
          update085to0853();
 
       case "0.85.3" :
+      case "0.85.4" :
       break;
 
       default :
@@ -800,7 +801,7 @@ function updateDbUpTo031() {
    }
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   Config::setConfigurationValues('core', array('version'             => '0.85.3',
+   Config::setConfigurationValues('core', array('version'             => '0.85.4',
                                                 'language'            => $glpilanguage,
                                                 'founded_new_version' => ''));
 
