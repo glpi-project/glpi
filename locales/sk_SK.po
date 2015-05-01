@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-17 14:12+0200\n"
-"PO-Revision-Date: 2015-04-17 12:13+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2015-04-24 21:33+0000\n"
+"Last-Translator: balucha <balucha@horizon.sk>\n"
 "Language-Team: Slovak (Slovakia) (http://www.transifex.com/projects/p/GLPI/language/sk_SK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -917,7 +917,7 @@ msgid "Entity"
 msgid_plural "Entities"
 msgstr[0] "Subjekt"
 msgstr[1] "Subjekty"
-msgstr[2] "Subjektov"
+msgstr[2] "Subjekty"
 
 #. TRANS: %d is number of objects for the user
 #: ajax/ticketassigninformation.php:63 ajax/ticketassigninformation.php:64
@@ -2127,9 +2127,9 @@ msgstr "Typ hardvéru"
 #: inc/ticket.class.php:4665
 msgid "Associated element"
 msgid_plural "Associated elements"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Priradená položka"
+msgstr[1] "Priradené položky"
+msgstr[2] "Priradené položky"
 
 #: front/find_num.php:94 inc/authldap.class.php:815 inc/authmail.class.php:106
 #: inc/budget.class.php:197 inc/cartridge.class.php:691
@@ -2253,7 +2253,7 @@ msgid "Monitor"
 msgid_plural "Monitors"
 msgstr[0] "Monitor"
 msgstr[1] "Monitory"
-msgstr[2] "Monitorov"
+msgstr[2] "Monitory"
 
 #: front/find_num.php:103 inc/item_devices.class.php:994
 #: inc/lock.class.php:482 inc/peripheral.class.php:59
@@ -3130,7 +3130,7 @@ msgid "User"
 msgid_plural "Users"
 msgstr[0] "Používateľ"
 msgstr[1] "Používatelia"
-msgstr[2] "Používateľov"
+msgstr[2] "Používatelia"
 
 #: front/stat.graph.php:126 front/stat.graph.php:216
 #: front/stat.tracking.php:82 front/stat.tracking.php:84
@@ -9378,7 +9378,7 @@ msgstr "Oneskorenie pre odoslanie notifikácií"
 
 #: inc/entity.class.php:567 inc/entity.class.php:1378
 msgid "Enable notifications by default"
-msgstr ""
+msgstr "Povoliť oznámenia"
 
 #: inc/entity.class.php:574 inc/entity.class.php:1335
 #: inc/notificationmailsetting.class.php:137
@@ -9410,7 +9410,7 @@ msgstr "Podpis emailu"
 
 #: inc/entity.class.php:606
 msgid "Alarms on cartridges"
-msgstr "Upozornenia o cartridgoch"
+msgstr "Upozornenia o náplniach"
 
 #: inc/entity.class.php:613
 msgid "Alarms on consumables"
@@ -11863,7 +11863,7 @@ msgid "Validation"
 msgid_plural "Validations"
 msgstr[0] "Schválenie"
 msgstr[1] "Schválenia"
-msgstr[2] "Schválení"
+msgstr[2] "Schválenia"
 
 #: inc/notificationtargetchange.class.php:293
 #: inc/notificationtargetticket.class.php:694
@@ -12767,11 +12767,11 @@ msgstr "Aktuálny stav počítadla stránok"
 
 #: inc/printer.class.php:428 inc/printer.class.php:598
 msgid "Serial"
-msgstr "Sériové"
+msgstr "Sériový"
 
 #: inc/printer.class.php:432 inc/printer.class.php:603
 msgid "Parallel"
-msgstr "Paralelné"
+msgstr "Paralelný"
 
 #: inc/printer.class.php:436 inc/printer.class.php:608
 #: inc/registeredid.class.php:56

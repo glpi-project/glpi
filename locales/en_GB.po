@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-17 14:12+0200\n"
-"PO-Revision-Date: 2015-04-17 12:13+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2015-04-30 15:52+0000\n"
+"Last-Translator: Andi Chandler <andi@gowling.com>\n"
 "Language-Team: English (United Kingdom) (http://www.transifex.com/projects/p/GLPI/language/en_GB/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -822,7 +822,7 @@ msgstr "Items seen"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:59
 msgid "Choose an existing device"
-msgstr ""
+msgstr "Choose an existing device"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:60
 msgid "and/or"
@@ -1219,7 +1219,7 @@ msgstr "Replace the current database with the backup file %s?"
 msgid ""
 "Warning, your actual database will be totaly overwriten by the database you "
 "want to restore !!!"
-msgstr ""
+msgstr "Warning, your actual database will be totaly overwriten by the database you want to restore !!!"
 
 #: front/backup.php:669
 msgid "Restore"
@@ -1279,7 +1279,7 @@ msgstr "%1$s adds the item %2$s"
 #: front/ticket.form.php:88 front/user.form.php:79
 #, php-format
 msgid "%s deletes an item"
-msgstr ""
+msgstr "%s deletes an item"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:75 front/cartridgeitem.form.php:72
@@ -1294,7 +1294,7 @@ msgstr ""
 #: front/ticket.form.php:107 front/user.form.php:87
 #, php-format
 msgid "%s restores an item"
-msgstr ""
+msgstr "%s restores an item"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:85 front/cartridgeitem.form.php:82
@@ -1319,7 +1319,7 @@ msgstr ""
 #: front/ticket.form.php:98 front/transfer.form.php:58 front/user.form.php:94
 #, php-format
 msgid "%s purges an item"
-msgstr ""
+msgstr "%s purges an item"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:95 front/cartridgeitem.form.php:92
@@ -1346,7 +1346,7 @@ msgstr ""
 #: front/user.form.php:111 inc/rulecollection.class.php:1374
 #, php-format
 msgid "%s updates an item"
-msgstr ""
+msgstr "%s updates an item"
 
 #. TRANS: %s is the user login
 #: front/calendar_holiday.form.php:46 front/calendarsegment.form.php:46
@@ -1371,7 +1371,7 @@ msgstr "%s adds cartridges"
 #: front/cartridge.form.php:59
 #, php-format
 msgid "%s purges a cartridge"
-msgstr ""
+msgstr "%s purges a cartridge"
 
 #. TRANS: %s is the user login
 #: front/cartridge.form.php:70
@@ -1383,7 +1383,7 @@ msgstr "%s installs a cartridge"
 #: front/cartridge.form.php:82
 #, php-format
 msgid "%s updates a cartridge"
-msgstr ""
+msgstr "%s updates a cartridge"
 
 #. TRANS: %s is the user login
 #: front/cartridgeitem_printermodel.form.php:43
@@ -1413,28 +1413,28 @@ msgstr "%s deletes an actor"
 #: front/problem_user.form.php:60 front/ticket_user.form.php:62
 msgid ""
 "You have been redirected because you no longer have access to this item"
-msgstr ""
+msgstr "You have been redirected because you no longer have access to this item"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:56 front/contractcost.form.php:53
 #: front/projectcost.form.php:53 front/ticketcost.form.php:46
 #, php-format
 msgid "%s adds a cost"
-msgstr ""
+msgstr "%s adds a cost"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:65 front/contractcost.form.php:63
 #: front/projectcost.form.php:63 front/ticketcost.form.php:55
 #, php-format
 msgid "%s purges a cost"
-msgstr ""
+msgstr "%s purges a cost"
 
 #. TRANS: %s is the user login
 #: front/commonitilcost.form.php:75 front/contractcost.form.php:76
 #: front/projectcost.form.php:74 front/ticketcost.form.php:65
 #, php-format
 msgid "%s updates a cost"
-msgstr ""
+msgstr "%s updates a cost"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:56 front/projecttask.form.php:53
@@ -1446,7 +1446,7 @@ msgstr "%s adds a task"
 #: front/commonitiltask.form.php:65 front/projecttask.form.php:62
 #, php-format
 msgid "%s purges a task"
-msgstr ""
+msgstr "%s purges a task"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:74 front/projecttask.form.php:71
@@ -1470,7 +1470,7 @@ msgstr "%s updates an approval"
 #: front/commonitilvalidation.form.php:82
 #, php-format
 msgid "%s purges an approval"
-msgstr ""
+msgstr "%s purges an approval"
 
 #. TRANS: %s is the user login
 #: front/computerdisk.form.php:53
@@ -1482,7 +1482,7 @@ msgstr "%s adds a volume"
 #: front/computerdisk.form.php:66
 #, php-format
 msgid "%s purges a volume"
-msgstr ""
+msgstr "%s purges a volume"
 
 #. TRANS: %s is the user login
 #: front/computerdisk.form.php:79
@@ -1524,7 +1524,7 @@ msgstr "%s adds a virtual machine"
 #: front/computervirtualmachine.form.php:66
 #, php-format
 msgid "%s purges a virtual machine"
-msgstr ""
+msgstr "%s purges a virtual machine"
 
 #. TRANS: %s is the user login
 #: front/computervirtualmachine.form.php:79

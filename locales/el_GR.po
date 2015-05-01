@@ -5,7 +5,7 @@
 # Translators:
 # greek translator <stergios.vradelis@dramahospital.gr>, 2013
 # Georgios Tsamis <gtsamis@yahoo.com>, 2013
-# Vasilis Lourdas <services@lourdas.name>, 2015
+# Vasilis Lourdas, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"

@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-04-17 14:12+0200\n"
-"PO-Revision-Date: 2015-04-17 12:13+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2015-04-17 12:52+0000\n"
+"Last-Translator: Luis A. Uriarte <luisuriarte@gmail.com>\n"
 "Language-Team: Spanish (Argentina) (http://www.transifex.com/projects/p/GLPI/language/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -65,7 +65,7 @@ msgstr "Contraseña"
 #: install/update.php:413 install/update.php:429
 msgctxt "button"
 msgid "Post"
-msgstr "Validar"
+msgstr "Entrar"
 
 #: index.php:130 front/lostpassword.php:45
 #: inc/notificationtargetuser.class.php:43 inc/user.class.php:3739
@@ -4960,7 +4960,7 @@ msgstr "Agregar un actor"
 #: inc/change.class.php:181 inc/problem.class.php:404
 #: inc/ticket.class.php:2047
 msgid "Set notifications for all actors"
-msgstr ""
+msgstr "Especificar notificaciones para todos"
 
 #: inc/change.class.php:197 inc/problem.class.php:175
 #: inc/problem.class.php:188 inc/problem.class.php:432
@@ -5236,7 +5236,7 @@ msgstr "Ver (autor)"
 
 #: inc/change.class.php:1003
 msgid "Last changes"
-msgstr ""
+msgstr "Últimos Cambio"
 
 #: inc/change.class.php:1005 inc/group.class.php:151 inc/group.class.php:695
 #: inc/group_user.class.php:441 inc/problem.class.php:1330
@@ -5249,16 +5249,16 @@ msgstr "Grupos hijos"
 #, php-format
 msgid "Last %d change"
 msgid_plural "Last %d changes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Último %d cambio"
+msgstr[1] "Últimos %d cambios"
 
 #: inc/change.class.php:1073 inc/change.class.php:1127
 msgid "No change found."
-msgstr ""
+msgstr "Sin cambios"
 
 #: inc/change.class.php:1115
 msgid "Changes on linked items"
-msgstr ""
+msgstr "Cambios en elementos vinculados"
 
 #: inc/change_item.class.php:128 inc/contract_item.class.php:589
 #: inc/document_item.class.php:313 inc/item_problem.class.php:132
@@ -9199,7 +9199,7 @@ msgstr "Retardo para enviar notificaciones por correo electrónico"
 
 #: inc/entity.class.php:567 inc/entity.class.php:1378
 msgid "Enable notifications by default"
-msgstr ""
+msgstr "Activar notificaciones por defecto"
 
 #: inc/entity.class.php:574 inc/entity.class.php:1335
 #: inc/notificationmailsetting.class.php:137
