@@ -347,13 +347,16 @@ class Item_Ticket extends CommonDBRelation{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Ticket' :
-               $nb = 0;
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_items_tickets',
-                                             "`tickets_id` = '".$item->getID()."'");
-               }
+               if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0
+                   && count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]) > 0) {
+                  $nb = 0;
+                  if ($_SESSION['glpishow_count_on_tabs']) {
+                     $nb = countElementsInTable('glpi_items_tickets',
+                                                "`tickets_id` = '".$item->getID()."'");
+                  }
 
-               return self::createTabEntry(_n('Item', 'Items', 2), $nb);
+                  return self::createTabEntry(_n('Item', 'Items', 2), $nb);
+               }
          }
       }
       return '';
