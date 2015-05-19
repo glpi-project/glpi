@@ -750,7 +750,8 @@ class MailCollector  extends CommonDBTM {
       //If files are present and content is html
       if (isset($this->files)
           && count($this->files)
-          && ($tkt['content'] != strip_tags($tkt['content']))) {
+          && ($tkt['content'] != strip_tags($tkt['content']))
+          && !isset($tkt['tickets_id'])) {
          $is_html = true;
          $tkt['content'] = Ticket::convertContentForTicket($tkt['content'],
                                                            array_merge($this->files, $this->altfiles),
@@ -758,7 +759,7 @@ class MailCollector  extends CommonDBTM {
       }
       $tkt['content'] = $this->cleanMailContent($tkt['content']);
 
-      if ($is_html) {
+      if ($is_html && !isset($tkt['tickets_id'])) {
          $tkt['content'] = nl2br($tkt['content']);
       }
 
@@ -926,6 +927,8 @@ class MailCollector  extends CommonDBTM {
 
       $rand   = mt_rand();
       // Move line breaks to special CHARS
+      $string = str_replace(array("<br>"),"==$rand==", $string);
+      
       $string = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $string);
 
       // Wrap content for blacklisted items
