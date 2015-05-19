@@ -313,6 +313,7 @@ if ($item instanceof CommonTreeDropdown) {
 
                      $work_level    = $level-1;
                      $work_parentID = $data[$item->getForeignKeyField()];
+                     //Yllen: why this because never used
                      $to_display    = '';
 
                      do {
@@ -330,7 +331,12 @@ if ($item instanceof CommonTreeDropdown) {
                                                                            $item->fields['comment']);
                                  $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                               }
-                              $output2 = $item->getName();
+                              $output2 = DropdownTranslation::getTranslatedValue($item->fields['id'],
+                                                                                 $_GET['itemtype'],
+                                                                                 'name',
+                                                                                 $_SESSION['glpilanguage'],
+                                                                                 $item->fields['name']);
+                           //   $output2 = $item->getName();
 
                               $temp = array('id'       => $ID,
                                             'text'     => $output2,
