@@ -187,7 +187,7 @@ class Change extends CommonITILObject {
 
       return $actions;
    }
-   
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
@@ -564,7 +564,7 @@ class Change extends CommonITILObject {
       $colsize2 = '37';
 
       $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
-      
+
       // Set default options
       if (!$ID) {
          $values = array('_users_id_requester'        => Session::getLoginUserID(),
@@ -906,7 +906,7 @@ class Change extends CommonITILObject {
 
       return $DB->result($result, 0, 0);
    }
-   
+
    static function getCommonSelect() {
 
       $SELECT = "";
@@ -938,7 +938,7 @@ class Change extends CommonITILObject {
                   ON (`glpi_changes`.`itilcategories_id` = `glpi_itilcategories`.`id`)
                $FROM";
    }
-   
+
    /**
     * Display changes for an item
     *
@@ -977,12 +977,12 @@ class Change extends CommonITILObject {
             $options['criteria'][1]['searchtype'] = 'equals';
             $options['criteria'][1]['value']      = $item->getID();
             $options['criteria'][1]['link']       = 'OR';
-            
+
             $options['criteria'][5]['field']      = 5; // status
             $options['criteria'][5]['searchtype'] = 'equals';
             $options['criteria'][5]['value']      = $item->getID();
             $options['criteria'][5]['link']       = 'OR';
-            
+
             break;
 
          case 'Supplier' :
@@ -1039,7 +1039,7 @@ class Change extends CommonITILObject {
                   ON (`glpi_changes`.`id` = `glpi_changes_items`.`changes_id`) ".
                 self::getCommonLeftJoin()."
                 WHERE $restrict ".
-                      getEntitiesRestrictRequest("AND","changes")."
+                      getEntitiesRestrictRequest("AND","glpi_changes")."
                 ORDER BY $order
                 LIMIT ".intval($_SESSION['glpilist_limit']);
       $result = $DB->query($query);
@@ -1132,6 +1132,6 @@ class Change extends CommonITILObject {
 
    }
 
-   
+
 }
 ?>
