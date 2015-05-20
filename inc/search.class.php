@@ -2455,7 +2455,7 @@ class Search {
 
          case 'Project' :
             $condition = '';
-            if (!Session::haveRight("project", Ticket::READALL)) {
+            if (!Session::haveRight("project", Project::READALL)) {
                $teamtable  = 'glpi_projectteams';
                $condition .= "(`glpi_projects`.users_id = '".Session::getLoginUserID()."'
                                OR (`$teamtable`.`itemtype` = 'User'
@@ -3162,7 +3162,7 @@ class Search {
          case 'Project' :
             // Same structure in addDefaultWhere
             $out = '';
-            if (!Session::haveRight("project", Ticket::READALL)) {
+            if (!Session::haveRight("project", Project::READALL)) {
                $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                           "glpi_projectteams", "projectteams_id", 0, 0,
                                           array('jointype' => 'child'));
