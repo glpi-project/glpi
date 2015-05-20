@@ -54,7 +54,7 @@ class Search {
 
    const LBBR = '#LBBR#';
    const LBHR = '#LBHR#';
-   
+
    const SHORTSEP = '$#$';
    const LONGSEP  = '$$##$$';
 
@@ -3809,9 +3809,8 @@ class Search {
 
                   for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
 
-                     if (isset($data[$num][$k]['name'])
-                           && ($data[$num][$k]['name'] > 0)
-                              || ($data[$num][$k][2] != '')) {
+                     if ((isset($data[$num][$k]['name']) && ($data[$num][$k]['name'] > 0))
+                         || (isset($data[$num][$k][2]) && ($data[$num][$k][2] != ''))) {
                         if ($count_display) {
                            $out .= self::LBBR;
                         }
@@ -4242,7 +4241,7 @@ class Search {
             case 'glpi_tickets.name' :
             case 'glpi_problems.name' :
             case 'glpi_changes.name' :
-            
+
                if (isset($data[$num][0]['content'])
                    && isset($data[$num][0]['id'])
                    && isset($data[$num][0]['status'])) {
