@@ -83,6 +83,9 @@ function isPluginItemType($classname) {
 function __($str, $domain='glpi') {
    global $TRANSLATE;
 
+   if (is_null($TRANSLATE)) { // before login
+      return $str;
+   }
    $trans = $TRANSLATE->translate($str, $domain);
    // Wrong call when plural defined
    if (is_array($trans)) {

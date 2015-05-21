@@ -105,17 +105,17 @@ class DBmysql {
       $hostport = explode(":", $host);
       if (count($hostport) < 2) {
          // Host
-         $this->dbh = new mysqli($host, $this->dbuser, rawurldecode($this->dbpassword),
-                                 $this->dbdefault);
+         $this->dbh = @new mysqli($host, $this->dbuser, rawurldecode($this->dbpassword),
+                                  $this->dbdefault);
 
       } else if (intval($hostport[1])>0) {
          // Host:port
-         $this->dbh = new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
-                                 $this->dbdefault, $hostport[1]);
+         $this->dbh = @new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
+                                  $this->dbdefault, $hostport[1]);
       } else {
          // :Socket
-         $this->dbh = new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
-                                 $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
+         $this->dbh = @new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
+                                  $this->dbdefault, ini_get('mysqli.default_port'), $hostport[1]);
       }
 
       if ($this->dbh->connect_error) {
