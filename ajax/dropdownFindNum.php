@@ -72,20 +72,11 @@ if ($item->maybeTemplate()) {
    $where .= " AND `is_template` = '0' ";
 }
 
-if (FieldExists($_POST['table'], 'completename')) {
-   $fieldname =  'completename';
-   $displayed = array();
-   $fkey      = getForeignKeyFieldForTable($_POST['table']);
-   $item      = getItemForItemtype(getItemTypeForTable($_POST['table']));
-} else {
-   $fieldname =  'name';
-}
-
 if ((strlen($_POST['searchText']) > 0)
     && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])) {
    $search = Search::makeTextSearch($_POST['searchText']);
 
-   $where .= " AND (`$fieldname` ".$search."
+   $where .= " AND (`name` ".$search."
                     OR `id` = '".$_POST['searchText']."'";
    
    if (FieldExists($_POST['table'],"contact")) {
@@ -116,9 +107,10 @@ if ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"]) {
 $query = "SELECT *
           FROM `".$_POST['table']."`
           $where
-          ORDER BY `$fieldname`
+          ORDER BY `name`
           $LIMIT";
 $result = $DB->query($query);
+
 echo "<select id='dropdown_find_num' name='".$_POST['myname']."' size='1'>";
 
 if (isset($_POST['searchText'])
@@ -129,35 +121,9 @@ if (isset($_POST['searchText'])
 
 echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
-
 if ($DB->numrows($result)) {
    while ($data = $DB->fetch_assoc($result)) {
-      if ($fieldname == 'completename') {
-         $id  = $data[$fkey];
-         $out = '';
-         /* Display parent is not already done */
-         while ($id && !isset($displayed[$id])) {
-            if ($item->getFromDB($id)) {
-               if ($item->fields['level']>1) {
-                  $tmp = str_repeat('&nbsp;&nbsp;', $item->fields['level'])."&raquo;".$item->fields['name'];
-               } else {
-                  $tmp = $item->fields['name'];
-               }
-               $out = "<option disabled value='".$item->fields['id']."'>".
-                      Toolbox::substr($tmp, 0, $_SESSION["glpidropdown_chars_limit"]).
-                      "</option>".
-                      $out;
-               $displayed[$id] = true;
-               $id = $item->fields[$fkey];   
-            } else {
-               $id = 0;
-            }
-         }
-         echo $out;
-         $output = str_repeat('&nbsp;&nbsp;', $data['level'])."&raquo;".$data['name'];
-      } else {
-         $output = $data[$fieldname];
-      }
+      $output = $data['name'];
 
       if (isset($data['contact']) && !empty($data['contact'])) {
          $output = sprintf(__('%1$s - %2$s'), $output, $data['contact']);
