@@ -871,7 +871,13 @@ abstract class CommonITILObject extends CommonDBTM {
                $this->oldvalues['status'] = $this->fields['status'];
                $this->updates[] = 'status';
             }
+
             $this->fields['status'] = self::INCOMING;
+            // Don't change status if it's a new status allow
+            if (in_array($this->oldvalues['status'], $this->getNewStatusArray())) {
+               $this->fields['status'] = $this->oldvalues['status'];
+
+            }
          }
 
          if (in_array("status", $this->updates)
