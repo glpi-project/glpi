@@ -418,14 +418,14 @@ class Problem extends CommonITILObject {
 
       $tab += $this->getSearchOptionsMain();
 
-      $tab[65]['table']         = 'glpi_items_problems';
-      $tab[65]['field']         = 'id';
-      $tab[65]['name']          = _x('quantity','Number of items');
-      $tab[65]['forcegroupby']  = true;
-      $tab[65]['usehaving']     = true;
-      $tab[65]['datatype']      = 'count';
-      $tab[65]['massiveaction'] = false;
-      $tab[65]['joinparams']    = array('jointype' => 'child');
+      $tab[63]['table']         = 'glpi_items_problems';
+      $tab[63]['field']         = 'id';
+      $tab[63]['name']          = _x('quantity','Number of items');
+      $tab[63]['forcegroupby']  = true;
+      $tab[63]['usehaving']     = true;
+      $tab[63]['datatype']      = 'count';
+      $tab[63]['massiveaction'] = false;
+      $tab[63]['joinparams']    = array('jointype' => 'child');
 
       $tab += $this->getSearchOptionsActors();
 
@@ -971,9 +971,9 @@ class Problem extends CommonITILObject {
       // In percent
       $colsize1 = '13';
       $colsize2 = '37';
-        
+
       $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
-    
+
       // Set default options
       if (!$ID) {
          $values = array('_users_id_requester'        => Session::getLoginUserID(),
@@ -1302,12 +1302,12 @@ class Problem extends CommonITILObject {
             $options['criteria'][1]['searchtype'] = 'equals';
             $options['criteria'][1]['value']      = $item->getID();
             $options['criteria'][1]['link']       = 'OR';
-            
+
             $options['criteria'][5]['field']      = 5; // status
             $options['criteria'][5]['searchtype'] = 'equals';
             $options['criteria'][5]['value']      = $item->getID();
             $options['criteria'][5]['link']       = 'OR';
-            
+
             break;
 
          case 'Supplier' :
