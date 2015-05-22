@@ -2551,38 +2551,48 @@ class Search {
             return $condition;
 
             case 'Change' :
+            case 'Problem':
+               if ($itemtype == 'Change') {
+                  $right       = 'change';
+                  $table       = 'changes';
+                  $groupetable = "`glpi_changes_groups_";
+               } else if ($itemtype == 'Problem') {
+                  $right       = 'problem';
+                  $table       = 'problems';
+                  $groupetable = "`glpi_groups_problems";
+               }
                // Same structure in addDefaultJoin
                $condition = '';
-               if (!Session::haveRight("change", Change::READALL)) {
+               if (!Session::haveRight("$right", $itemtype::READALL)) {
                   $searchopt       = &self::getOptions($itemtype);
-                  if (Session::haveRight("change", Change::READMY)) {
-                     $requester_table      = '`glpi_changes_users_'.
+                  if (Session::haveRight("$right", $itemtype::READMY)) {
+                     $requester_table      = '`glpi_'.$table.'_users_'.
                                              self::computeComplexJoinID($searchopt[4]['joinparams']
                                                                         ['beforejoin']['joinparams']).'`';
-                     $requestergroup_table = '`glpi_changes_groups_'.
+                     $requestergroup_table = $groupetable.
                                              self::computeComplexJoinID($searchopt[71]['joinparams']
                                                                         ['beforejoin']['joinparams']).'`';
 
-                     $observer_table       = '`glpi_changes_users_'.
+                     $observer_table       = '`glpi_'.$table.'_users_'.
                                              self::computeComplexJoinID($searchopt[66]['joinparams']
                                                                         ['beforejoin']['joinparams']).'`';
-                     $observergroup_table  = '`glpi_changes_groups_'.
+                     $observergroup_table  = $groupetable.
                                              self::computeComplexJoinID($searchopt[65]['joinparams']
                                                                        ['beforejoin']['joinparams']).'`';
 
-                     $assign_table         = '`glpi_changes_users_'.
+                     $assign_table         = '`glpi_'.$table.'_users_'.
                                              self::computeComplexJoinID($searchopt[5]['joinparams']
                                                                         ['beforejoin']['joinparams']).'`';
-                     $assigngroup_table    = '`glpi_changes_groups_'.
+                     $assigngroup_table    = $groupetable.
                                              self::computeComplexJoinID($searchopt[8]['joinparams']
                                                                         ['beforejoin']['joinparams']).'`';
                   }
                   $condition = "(";
 
-                  if (Session::haveRight("change", Change::READMY)) {
+                  if (Session::haveRight("$right", $itemtype::READMY)) {
                      $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
                                     OR $observer_table.users_id = '".Session::getLoginUserID()."'
-                                    OR `glpi_changes`.`users_id_recipient` = '".Session::getLoginUserID()."'";
+                                    OR `glpi_".$table."`.`users_id_recipient` = '".Session::getLoginUserID()."'";
                   } else {
                      $condition .= "0=1";
                   }
@@ -3271,40 +3281,52 @@ class Search {
             return $out;
 
             case 'Change' :
+            case 'Problem' :
+               if ($itemtype == 'Change') {
+                  $right       = 'change';
+                  $table       = 'changes';
+                  $groupetable = "glpi_changes_groups";
+                  $linkfield   = "changes_groups_id";
+               } else if ($itemtype == 'Problem') {
+                  $right       = 'problem';
+                  $table       = 'problems';
+                  $groupetable = "glpi_groups_problems";
+                  $linkfield   = "groups_problems_id";
+               }
+
                // Same structure in addDefaultWhere
                $out = '';
-               if (!Session::haveRight("change", Change::READALL)) {
+               if (!Session::haveRight("$right", $itemtype::READALL)) {
                   $searchopt = &self::getOptions($itemtype);
 
-                  if (Session::haveRight("change", Change::READMY)) {
+                  if (Session::haveRight("$right", $itemtype::READMY)) {
                      // show mine : requester
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                               "glpi_changes_users", "changes_users_id", 0, 0,
+                                               "glpi_".$table."_users", $table."_users_id", 0, 0,
                                                $searchopt[4]['joinparams']['beforejoin']['joinparams']);
-
                      if (count($_SESSION['glpigroups'])) {
                         $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                  "glpi_changes_groups", "changes_groups_id", 0, 0,
+                                                  $groupetable, $linkfield, 0, 0,
                                                   $searchopt[71]['joinparams']['beforejoin']['joinparams']);
                      }
 
                      // show mine : observer
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                               "glpi_changes_users", "changes_users_id", 0, 0,
+                                               "glpi_".$table."_users", $table."_users_id", 0, 0,
                                                $searchopt[66]['joinparams']['beforejoin']['joinparams']);
                      if (count($_SESSION['glpigroups'])) {
                         $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                  "glpi_changes_groups", "changes_groups_id", 0, 0,
+                                                  $groupetable, $linkfield, 0, 0,
                                                   $searchopt[65]['joinparams']['beforejoin']['joinparams']);
                      }
 
                      // show mine : assign
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                               "glpi_changes_users", "changes_users_id", 0, 0,
+                                               "glpi_".$table."_users", $table."_users_id", 0, 0,
                                                $searchopt[5]['joinparams']['beforejoin']['joinparams']);
                      if (count($_SESSION['glpigroups'])) {
                         $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                  "glpi_changes_groups", "changes_groups_id", 0, 0,
+                                                  $groupetable, $linkfield, 0, 0,
                                                   $searchopt[8]['joinparams']['beforejoin']['joinparams']);
                      }
                   }
