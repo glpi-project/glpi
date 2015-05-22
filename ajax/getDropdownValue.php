@@ -45,6 +45,13 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkLoginUser();
 
+if (isset($_GET["entity_restrict"]) 
+          && !is_array($_GET["entity_restrict"])
+          && substr($_GET["entity_restrict"], 0, 1) === '['
+          && substr($_GET["entity_restrict"], -1) === ']') {
+   $_GET["entity_restrict"] = json_decode($_GET["entity_restrict"]);
+}
+
 // Security
 if (!($item = getItemForItemtype($_GET['itemtype']))) {
    exit();
