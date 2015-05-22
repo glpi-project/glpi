@@ -817,7 +817,6 @@ class Search {
                                              "`$reftable`.`is_deleted`", $tmpquery);
                   }
 
-
                   $replace = "FROM `$reftable`"."
                               INNER JOIN `$ctable`"."
                                  ON (`$reftable`.`items_id`=`$ctable`.`id`"."
@@ -3614,6 +3613,7 @@ class Search {
    **/
    static function addMetaLeftJoin($from_type, $to_type, array &$already_link_tables2,
                                    $nullornott) {
+      global $CFG_GLPI;
 
       $LINK = " INNER JOIN ";
       if ($nullornott) {
@@ -3624,6 +3624,11 @@ class Search {
          case 'Ticket' :
             $totable = getTableForItemType($to_type);
             array_push($already_link_tables2,$totable);
+            if (in_array($to_type, $CFG_GLPI["asset_types"])) {
+               return " $LINK `$totable`
+                           ON (`$totable`.`id` = `glpi_items_tickets`.`items_id`
+                               AND `glpi_items_tickets`.`itemtype` = '$to_type')";
+            }
             return " $LINK `glpi_items_tickets`
                         ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)
                      $LINK `$totable`
