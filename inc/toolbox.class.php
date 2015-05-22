@@ -976,13 +976,28 @@ class Toolbox {
       }
       echo "</tr>";
 
+      // Test for fileinfo extension loaded or not
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('Test fileinfo extension')."</td>";
+
+      if (!class_exists('finfo')) {
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
+                    __("GLPI can't work correctly without the fileinfo extension")."</td>";
+         $error = 2;
+
+      } else {
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
+                    __s('The functionality is found - Perfect!')."\" title=\"".
+                    __s('The functionality is found - Perfect!')."\"></td>";
+      }
+      echo "</tr>";
+
       // Test for json_encode function.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Test json functions')."</td>";
 
       if (!function_exists('json_encode') || !function_exists('json_decode')) {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
                     __("GLPI can't work correctly without the json_encode and json_decode functions").
-                   "></td>";
+                   "</td>";
          $error = 2;
 
       } else {
@@ -2435,6 +2450,33 @@ class Toolbox {
       return false;
    }
 
+
+   /**
+    * Retrieve the mime type of a file
+    *
+    * @since version 0.85.5
+    *
+    * @param $file   string      path of the file
+    * @param $type   string      check if $file is the correct type (false by default)
+    *
+    * @return string (if $type not given) else boolean
+    *
+   **/
+   static function getMime($file, $type=false) {
+
+      static $finfo = NULL;
+
+      if (is_null($finfo)) {
+         $finfo = new finfo(FILEINFO_MIME_TYPE);
+      }
+      $mime = $finfo->file($file);
+      Toolbox::logdebug($file, $mime, explode('/', $mime, 2));
+      if ($type) {
+         $parts = explode('/', $mime, 2);
+         return ($parts[0] == $type);
+      }
+      return ($mime);
+   }
 
 }
 ?>

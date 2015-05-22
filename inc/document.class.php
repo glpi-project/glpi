@@ -906,14 +906,7 @@ class Document extends CommonDBTM {
       }
 
       // Local file : try to detect mime type
-      if (function_exists('finfo_open')
-          && ($finfo = finfo_open(FILEINFO_MIME))) {
-         $input['mime'] = finfo_file($finfo, $fullpath);
-         finfo_close($finfo);
-
-      } else if (function_exists('mime_content_type')) {
-         $input['mime'] = mime_content_type($fullpath);
-      }
+      $input['mime'] = Toolbox::getMime($fullpath);
 
       if (is_writable(GLPI_UPLOAD_DIR)
           && is_writable ($fullpath)) { // Move if allowed

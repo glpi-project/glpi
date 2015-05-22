@@ -670,9 +670,7 @@ class User extends CommonDBTM {
                }
 
             } else {
-               $mime = mime_content_type($_FILES['picture']['tmp_name']);
-               if (strstr($mime,'image')!==false) {
-
+               if (toolbox::getMime($_FILES['picture']['tmp_name'], 'image')) {
                   // Unlink old picture (clean on changing format)
                   self::dropPictureFiles($this->fields['picture']);
                   // Move uploaded file
@@ -1915,7 +1913,7 @@ class User extends CommonDBTM {
                                                     'maybeempty'  => true));
         echo "</td></tr>";
       }
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>" .  __('Phone') . "</td><td>";
       Html::autocompletionTextField($this, "phone");

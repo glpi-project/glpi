@@ -5576,19 +5576,8 @@ class Ticket extends CommonITILObject {
             $mime     = '';
             if (isset($image['filepath'])) {
                $fullpath = GLPI_DOC_DIR."/".$image['filepath'];
-               if (function_exists('finfo_open')
-                   && ($finfo = finfo_open(FILEINFO_MIME))) {
-                  $mime = finfo_file($finfo, $fullpath);
-                  finfo_close($finfo);
-
-               } else if (function_exists('mime_content_type')) {
-                  $mime = mime_content_type($fullpath);
-               }
-               switch (substr($mime, 0, strrpos($mime, ';'))) {
-                  case 'image/gif':case 'image/jpg':case 'image/jpeg':case 'image/png' :
-                     $ok = true;
-                     break;
-               }
+               $mime = Toolbox::getMime($fullpath);
+               $ok   = Toolbox::getMime($fullpath, 'image');
             }
             if (isset($image['tag'])) {
                 if ($ok || empty($mime)) {
