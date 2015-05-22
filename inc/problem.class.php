@@ -427,6 +427,29 @@ class Problem extends CommonITILObject {
       $tab[63]['massiveaction'] = false;
       $tab[63]['joinparams']    = array('jointype' => 'child');
 
+      $tab[13]['table']             = 'glpi_items_problems';
+      $tab[13]['field']             = 'items_id';
+      $tab[13]['name']              = _n('Associated element', 'Associated elements', Session::getPluralNumber());
+      $tab[13]['datatype']          = 'specific';
+      $tab[13]['comments']          = true;
+      $tab[13]['nosort']            = true;
+      $tab[13]['nosearch']          = true;
+      $tab[13]['additionalfields']  = array('itemtype');
+      $tab[13]['joinparams']        = array('jointype'   => 'child');
+      $tab[13]['forcegroupby']      = true;
+      $tab[13]['massiveaction']     = false;
+
+      $tab[131]['table']            = 'glpi_items_problems';
+      $tab[131]['field']            = 'itemtype';
+      $tab[131]['name']             = _n('Associated item type', 'Associated item types', Session::getPluralNumber());
+      $tab[131]['datatype']         = 'itemtypename';
+      $tab[131]['itemtype_list']    = 'ticket_types';
+      $tab[131]['nosort']           = true;
+      $tab[131]['additionalfields'] = array('itemtype');
+      $tab[131]['joinparams']       = array('jointype'   => 'child');
+      $tab[131]['forcegroupby']     = true;
+      $tab[131]['massiveaction']    = false;
+
       $tab += $this->getSearchOptionsActors();
 
       $tab['analysis']          = __('Analysis');

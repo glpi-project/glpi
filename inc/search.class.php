@@ -1632,6 +1632,12 @@ class Search {
             }
             break;
 
+         case 'Problem' :
+            if (Session::haveRight("problem", Problem::READALL)) {
+               $linked = array_keys(Problem::getAllTypesForHelpdesk());
+            }
+            break;
+
          case 'Printer' :
          case 'Monitor' :
          case "Peripheral" :
@@ -1651,7 +1657,7 @@ class Search {
    **/
    static function getMetaReferenceItemtype ($itemtype) {
 
-      $types = array('Computer', 'Ticket', 'Printer', 'Monitor', 'Peripheral',
+      $types = array('Computer', 'Problem', 'Ticket', 'Printer', 'Monitor', 'Peripheral',
                      'Software', 'Phone');
       foreach ($types as $type) {
          if (Toolbox::is_a($itemtype, $type)) {
@@ -3622,18 +3628,19 @@ class Search {
 
       switch (static::getMetaReferenceItemtype($from_type)) {
          case 'Ticket' :
+         case 'Problem' :
+            if ($from_type == 'Ticket') {
+               $table = 'tickets';
+            } else if ($from_type == 'Problem') {
+               $table = 'problems';
+            }
             $totable = getTableForItemType($to_type);
             array_push($already_link_tables2,$totable);
-            if (in_array($to_type, $CFG_GLPI["asset_types"])) {
-               return " $LINK `$totable`
-                           ON (`$totable`.`id` = `glpi_items_tickets`.`items_id`
-                               AND `glpi_items_tickets`.`itemtype` = '$to_type')";
-            }
-            return " $LINK `glpi_items_tickets`
-                        ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)
+            return " $LINK `glpi_items_".$table."` AS glpi_items_".$table."_to_$to_type
+                        ON (`glpi_".$table."`.`id` = `glpi_items_".$table."_to_$to_type`.`".$table."_id`)
                      $LINK `$totable`
-                        ON (`$totable`.`id` = `glpi_items_tickets`.`items_id`
-                            AND `glpi_items_tickets`.`itemtype` = '$to_type')";
+                        ON (`$totable`.`id` = `glpi_items_".$table."_to_$to_type`.`items_id`
+                     AND `glpi_items_".$table."_to_$to_type`.`itemtype` = '$to_type')";
 
          case 'Computer' :
             switch ($to_type) {
@@ -4099,6 +4106,18 @@ class Search {
                         $options['criteria'][0]['searchtype'] = 'equals';
                         $options['criteria'][0]['value']      = $data['id'];
                         $options['criteria'][0]['link']       = 'AND';
+                     } else {
+                        $options['criteria'][0]['field']       = 12;
+                        $options['criteria'][0]['searchtype']  = 'equals';
+                        $options['criteria'][0]['value']       = 'all';
+                        $options['criteria'][0]['link']        = 'AND';
+
+                        $options['metacriteria'][0]['itemtype']   = $itemtype;
+                        $options['metacriteria'][0]['field']      = self::getOptionNumber($itemtype,
+                              'name');
+                        $options['metacriteria'][0]['searchtype'] = 'equals';
+                        $options['metacriteria'][0]['value']      = $data['id'];
+                        $options['metacriteria'][0]['link']       = 'AND';
                      }
 
                      $options['reset'] = 'reset';
@@ -4313,6 +4332,7 @@ class Search {
                         alt=\"$status\" title=\"$status\">&nbsp;$status";
 
             case 'glpi_items_tickets.items_id' :
+            case 'glpi_items_problems.items_id' :
                if (!empty($data[$num])) {
                   $items = array();
                   foreach ($data[$num] as $key => $val) {
@@ -4330,7 +4350,9 @@ class Search {
                   }
                }
                return '&nbsp;';
+
             case 'glpi_items_tickets.itemtype' :
+            case 'glpi_items_problems.itemtype' :
                if (!empty($data[$num])) {
                   $itemtypes = array();
                   foreach ($data[$num] as $key => $val) {
