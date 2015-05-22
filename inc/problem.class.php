@@ -558,14 +558,14 @@ class Problem extends CommonITILObject {
       $tab[64]['datatype']      = 'dropdown';
       $tab[64]['right']         = 'all';
 
-      $tab[65]['table']         = 'glpi_items_problems';
-      $tab[65]['field']         = 'count';
-      $tab[65]['name']          = _x('quantity','Number of items');
-      $tab[65]['forcegroupby']  = true;
-      $tab[65]['usehaving']     = true;
-      $tab[65]['datatype']      = 'number';
-      $tab[65]['massiveaction'] = false;
-      $tab[65]['joinparams']    = array('jointype' => 'child');
+      $tab[63]['table']         = 'glpi_items_problems';
+      $tab[63]['field']         = 'count';
+      $tab[63]['name']          = _x('quantity','Number of items');
+      $tab[63]['forcegroupby']  = true;
+      $tab[63]['usehaving']     = true;
+      $tab[63]['datatype']      = 'number';
+      $tab[63]['massiveaction'] = false;
+      $tab[63]['joinparams']    = array('jointype' => 'child');
 
       $tab += $this->getSearchOptionsActors();
 
