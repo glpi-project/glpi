@@ -185,7 +185,7 @@ class Dropdown {
                  'condition'            => $params['condition'],
                  'used'                 => $params['used'],
                  'toadd'                => $params['toadd'],
-                 'entity_restrict'      => json_encode($params['entity']),
+                 'entity_restrict'      => (is_array($params['entity']) ? json_encode(array_values($params['entity'])) : $params['entity']),
                  'limit'                => $limit_length,
                  'on_change'            => $params['on_change'],
                  'permit_select_parent' => $params['permit_select_parent'],
