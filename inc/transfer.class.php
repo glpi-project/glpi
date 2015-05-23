@@ -2076,7 +2076,7 @@ class Transfer extends CommonDBTM {
       }
 
       if (!($link_item = getItemForItemtype($link_type))) {
-         continue;
+         return;
       }
 
       // Get connections
