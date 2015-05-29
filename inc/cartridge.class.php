@@ -865,9 +865,12 @@ class Cartridge extends CommonDBChild {
                        `glpi_cartridges`.`pages` AS pages,
                        `glpi_cartridges`.`date_use` AS date_use,
                        `glpi_cartridges`.`date_out` AS date_out,
-                       `glpi_cartridges`.`date_in` AS date_in
+                       `glpi_cartridges`.`date_in` AS date_in,
+                       `glpi_cartridgeitemtypes`.`name` AS typename
                 FROM `glpi_cartridges`,
                      `glpi_cartridgeitems`
+                LEFT JOIN `glpi_cartridgeitemtypes`
+                  on (`glpi_cartridgeitems`.`cartridgeitemtypes_id` = `glpi_cartridgeitemtypes`.`id`)
                 WHERE (`glpi_cartridges`.`date_out` IS ".($old?"NOT":"")." NULL
                        AND `glpi_cartridges`.`printers_id` = '$instID'
                        AND `glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`)
@@ -936,9 +939,9 @@ class Cartridge extends CommonDBChild {
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr class='noHover'>";
       if ($old == 0) {
-         echo "<th colspan='".($canedit?'5':'4')."'>".__('Used cartridges')."</th>";
+         echo "<th colspan='".($canedit?'6':'5')."'>".__('Used cartridges')."</th>";
       } else {
-         echo "<th colspan='".($canedit?'8':'7')."'>".__('Worn cartridges')."</th>";
+         echo "<th colspan='".($canedit?'9':'8')."'>".__('Worn cartridges')."</th>";
       }
       echo "</tr>";
 
@@ -954,6 +957,7 @@ class Cartridge extends CommonDBChild {
          $header_end    .= "</th>";
       }
       $header_end .= "<th>".__('ID')."</th><th>"._n('Cartridge model','Cartridge models',1)."</th>";
+      $header_end .= "<th>"._n('Cartridge type','Cartridge types',1)."</th>";
       $header_end .= "<th>".__('Add date')."</th>";
       $header_end .= "<th>".__('Use date')."</th>";
       if ($old != 0) {
@@ -971,6 +975,7 @@ class Cartridge extends CommonDBChild {
 
       while ($data = $DB->fetch_assoc($result)) {
          $cart_id    = $data["id"];
+         $typename   = $data["typename"];
          $date_in    = Html::convDate($data["date_in"]);
          $date_use   = Html::convDate($data["date_use"]);
          $date_out   = Html::convDate($data["date_out"]);
@@ -1000,6 +1005,7 @@ class Cartridge extends CommonDBChild {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php?id=".$data["tID"]."\">";
          printf(__('%1$s - %2$s'), $data["type"], $data["ref"]);
          echo "</a></td>";
+         echo "<td class='center' $viewitemjs>".$typename."</td>";
          echo "<td class='center' $viewitemjs>".$date_in."</td>";
          echo "<td class='center' $viewitemjs>".$date_use."</td>";
 
