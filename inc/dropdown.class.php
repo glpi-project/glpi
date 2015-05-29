@@ -568,7 +568,7 @@ class Dropdown {
                }
             }
             Dropdown::showFromArray($myname, $values,
-                                    array('value' => $file));
+                                    array('value' => $value));
 
          } else {
             //TRANS: %s is the store path
