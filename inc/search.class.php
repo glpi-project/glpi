@@ -1199,9 +1199,24 @@ class Search {
          } else {
             $showmassiveactions = true;
          }
+
+         $nbticket = 1;
+         if ($data['itemtype'] == 'Ticket') {
+            $ticket = new Ticket();
+            $nbticket = count($data['data']['items']);
+            foreach ($data['data']['items'] as $key => $val) {
+               $ticket->getFromDB($key);
+               if (in_array($ticket->fields['status'], Ticket::getClosedStatusArray())) {
+                  $nbticket --;
+               }
+            }
+         }
          $massformid = 'massform'.$data['itemtype'];
          if ($showmassiveactions
-             && ($data['display_type'] == self::HTML_OUTPUT)) {
+             && ($data['display_type'] == self::HTML_OUTPUT)
+             && (($data['itemtype'] != 'Ticket')
+                 || (($data['itemtype'] == 'Ticket')
+                     && $nbticket))) {
 
             Html::openMassiveActionsForm($massformid);
             $massiveactionparams                  = $data['search']['massiveactionparams'];
@@ -1217,7 +1232,11 @@ class Search {
          // Add toview elements
          $nbcols          = count($data['data']['cols']);
 
-         if ($data['display_type'] == self::HTML_OUTPUT && $showmassiveactions) { // HTML display - massive modif
+         if (($data['display_type'] == self::HTML_OUTPUT)
+             && $showmassiveactions
+             && (($data['itemtype'] != 'Ticket')
+                 || (($data['itemtype'] == 'Ticket')
+                     && $nbticket))) { // HTML display - massive modif
             $nbcols++;
          }
 
@@ -1238,16 +1257,22 @@ class Search {
          }
 
          $header_num = 1;
+         $displaycheck = '';
          if (($data['display_type'] == self::HTML_OUTPUT)
                && $showmassiveactions) { // HTML display - massive modif
+            if (($data['itemtype'] != 'Ticket')
+                || ($data['itemtype'] == 'Ticket')
+                    && $nbticket) {
+               $displaycheck = Html::getCheckAllAsCheckbox($massformid);
+            }
             $headers_line_top
                .= self::showHeaderItem($data['display_type'],
-                                       Html::getCheckAllAsCheckbox($massformid),
+                                       $displaycheck,
                                        $header_num, "", 0, $data['search']['order']);
             if ($data['display_type'] == self::HTML_OUTPUT) {
                $headers_line_bottom
                   .= self::showHeaderItem($data['display_type'],
-                                          Html::getCheckAllAsCheckbox($massformid),
+                                          $displaycheck,
                                           $header_num, "", 0, $data['search']['order']);
             }
          }
@@ -1344,9 +1369,9 @@ class Search {
             if (($data['display_type'] == self::HTML_OUTPUT)
                   && $showmassiveactions) { // HTML display - massive modif
                $tmpcheck = "";
+
                if (($data['itemtype'] == 'Entity')
                      && !in_array($val["id"], $_SESSION["glpiactiveentities"])) {
-
                   $tmpcheck = "&nbsp;";
 
                } else if (($data['item'] instanceof CommonDBTM)
@@ -1355,8 +1380,12 @@ class Search {
                   $tmpcheck = "&nbsp;";
 
                } else {
-                  $tmpcheck = Html::getMassiveActionCheckBox($massiveaction_type,
-                                                             $row[$massiveaction_field]);
+                  if (($data['itemtype'] != 'Ticket')
+                      || (($data['itemtype'] == 'Ticket')
+                          && !in_array($row['raw']['ITEM_1_status'], Ticket::getClosedStatusArray()))) {
+                         $tmpcheck = Html::getMassiveActionCheckBox($massiveaction_type,
+                                                                    $row[$massiveaction_field]);
+                  }
                }
                echo self::showItem($data['display_type'], $tmpcheck, $item_num, $row_num,
                                     "width='10'");
@@ -1404,7 +1433,10 @@ class Search {
 
          // Delete selected item
          if ($data['display_type'] == self::HTML_OUTPUT) {
-            if ($showmassiveactions) {
+            if ($showmassiveactions
+                && (($data['itemtype'] != 'Ticket')
+                    || (($data['itemtype'] == 'Ticket')
+                        && $nbticket))) {
                $massiveactionparams['ontop'] = false;
                Html::showMassiveActions($massiveactionparams);
                // End form for delete item
