@@ -895,13 +895,13 @@ class Cartridge extends CommonDBChild {
                                                  'min'   => 1,
                                                  'max'   => 5));
            $installok = true;
+           echo "</td><td><input type='submit' name='install' value=\""._sx('button','Install')."\"
+                         ".($installok?'':'disabled')." class='submit'>";
+
          } else {
             _e('No cartridge available');
          }
 
-
-         echo "</td><td><input type='submit' name='install' value=\""._sx('button','Install')."\"
-                         ".($installok?'':'disabled')." class='submit'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
