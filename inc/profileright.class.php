@@ -266,7 +266,8 @@ class ProfileRight extends CommonDBChild {
       // update current profile
       if (isset($_SESSION['glpiactiveprofile']['id'])
           && $_SESSION['glpiactiveprofile']['id'] == $this->fields['profiles_id']
-          && $_SESSION['glpiactiveprofile'][$this->fields['name']] != $this->fields['rights']) {
+          && (!isset($_SESSION['glpiactiveprofile'][$this->fields['name']])
+              || $_SESSION['glpiactiveprofile'][$this->fields['name']] != $this->fields['rights'])) {
 
          $_SESSION['glpiactiveprofile'][$this->fields['name']] = $this->fields['rights'];
          unset($_SESSION['glpimenu']);
