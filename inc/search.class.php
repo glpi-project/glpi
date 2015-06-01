@@ -1200,23 +1200,9 @@ class Search {
             $showmassiveactions = true;
          }
 
-         $nbticket = 1;
-         if ($data['itemtype'] == 'Ticket') {
-            $ticket = new Ticket();
-            $nbticket = count($data['data']['items']);
-            foreach ($data['data']['items'] as $key => $val) {
-               $ticket->getFromDB($key);
-               if (in_array($ticket->fields['status'], Ticket::getClosedStatusArray())) {
-                  $nbticket --;
-               }
-            }
-         }
          $massformid = 'massform'.$data['itemtype'];
          if ($showmassiveactions
-             && ($data['display_type'] == self::HTML_OUTPUT)
-             && (($data['itemtype'] != 'Ticket')
-                 || (($data['itemtype'] == 'Ticket')
-                     && $nbticket))) {
+             && ($data['display_type'] == self::HTML_OUTPUT)) {
 
             Html::openMassiveActionsForm($massformid);
             $massiveactionparams                  = $data['search']['massiveactionparams'];
@@ -1233,10 +1219,7 @@ class Search {
          $nbcols          = count($data['data']['cols']);
 
          if (($data['display_type'] == self::HTML_OUTPUT)
-             && $showmassiveactions
-             && (($data['itemtype'] != 'Ticket')
-                 || (($data['itemtype'] == 'Ticket')
-                     && $nbticket))) { // HTML display - massive modif
+             && $showmassiveactions) { // HTML display - massive modif
             $nbcols++;
          }
 
@@ -1257,22 +1240,17 @@ class Search {
          }
 
          $header_num = 1;
-         $displaycheck = '';
+         
          if (($data['display_type'] == self::HTML_OUTPUT)
                && $showmassiveactions) { // HTML display - massive modif
-            if (($data['itemtype'] != 'Ticket')
-                || ($data['itemtype'] == 'Ticket')
-                    && $nbticket) {
-               $displaycheck = Html::getCheckAllAsCheckbox($massformid);
-            }
             $headers_line_top
                .= self::showHeaderItem($data['display_type'],
-                                       $displaycheck,
+                                       Html::getCheckAllAsCheckbox($massformid),
                                        $header_num, "", 0, $data['search']['order']);
             if ($data['display_type'] == self::HTML_OUTPUT) {
                $headers_line_bottom
                   .= self::showHeaderItem($data['display_type'],
-                                          $displaycheck,
+                                          Html::getCheckAllAsCheckbox($massformid),
                                           $header_num, "", 0, $data['search']['order']);
             }
          }
@@ -1380,12 +1358,8 @@ class Search {
                   $tmpcheck = "&nbsp;";
 
                } else {
-                  if (($data['itemtype'] != 'Ticket')
-                      || (($data['itemtype'] == 'Ticket')
-                          && !in_array($row['raw']['ITEM_1_status'], Ticket::getClosedStatusArray()))) {
-                         $tmpcheck = Html::getMassiveActionCheckBox($massiveaction_type,
-                                                                    $row[$massiveaction_field]);
-                  }
+                  $tmpcheck = Html::getMassiveActionCheckBox($massiveaction_type,
+                                                             $row[$massiveaction_field]);
                }
                echo self::showItem($data['display_type'], $tmpcheck, $item_num, $row_num,
                                     "width='10'");
@@ -1433,10 +1407,7 @@ class Search {
 
          // Delete selected item
          if ($data['display_type'] == self::HTML_OUTPUT) {
-            if ($showmassiveactions
-                && (($data['itemtype'] != 'Ticket')
-                    || (($data['itemtype'] == 'Ticket')
-                        && $nbticket))) {
+            if ($showmassiveactions) {
                $massiveactionparams['ontop'] = false;
                Html::showMassiveActions($massiveactionparams);
                // End form for delete item
