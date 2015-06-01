@@ -2470,7 +2470,6 @@ class Toolbox {
          $finfo = new finfo(FILEINFO_MIME_TYPE);
       }
       $mime = $finfo->file($file);
-      Toolbox::logdebug($file, $mime, explode('/', $mime, 2));
       if ($type) {
          $parts = explode('/', $mime, 2);
          return ($parts[0] == $type);
