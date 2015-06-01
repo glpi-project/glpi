@@ -763,40 +763,47 @@ class Ticket extends CommonITILObject {
       $check_allowed_fields_for_template = false;
       $allowed_fields                    = array();
       if (!Session::isCron()
-          && !Session::haveRight(self::$rightname, UPDATE)) {
-
+          && (!Session::haveRight(self::$rightname, UPDATE)
+            // Closed tickets
+            || in_array($this->fields['status'],$this->getClosedStatusArray()))
+         ) {
+            
          $allowed_fields                    = array('id');
          $check_allowed_fields_for_template = true;
 
-         if ($this->canApprove()
-             && isset($input["status"])) {
+         if (in_array($this->fields['status'],$this->getClosedStatusArray())) {
             $allowed_fields[] = 'status';
-         }
-         // for post-only with validate right or validation created by rules
-         if (TicketValidation::canValidate($this->fields['id'])
-             || TicketValidation::canCreate()
-             || isset($input["_rule_process"])) {
-            $allowed_fields[] = 'global_validation';
-         }
-         // Manage assign and steal right
-         if (Session::haveRightsOr(self::$rightname, array(self::ASSIGN, self::STEAL))) {
-            $allowed_fields[] = '_itil_assign';
-         }
+         } else {
+            if ($this->canApprove()
+                && isset($input["status"])) {
+                $allowed_fields[] = 'status';
+            }
+            // for post-only with validate right or validation created by rules
+            if (TicketValidation::canValidate($this->fields['id'])
+                || TicketValidation::canCreate()
+                || isset($input["_rule_process"])) {
+                $allowed_fields[] = 'global_validation';
+            }
+            // Manage assign and steal right
+            if (Session::haveRightsOr(self::$rightname, array(self::ASSIGN, self::STEAL))) {
+                $allowed_fields[] = '_itil_assign';
+            }
 
-         // Can only update initial fields if no followup or task already added
-         if (($this->numberOfFollowups() == 0)
-             && ($this->numberOfTasks() == 0)
-             && $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
-            $allowed_fields[] = 'content';
-            $allowed_fields[] = 'urgency';
-            $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
-            $allowed_fields[] = 'itilcategories_id';
-            $allowed_fields[] = 'name';
-         }
+            // Can only update initial fields if no followup or task already added
+            if (($this->numberOfFollowups() == 0)
+                && ($this->numberOfTasks() == 0)
+                && $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
+                $allowed_fields[] = 'content';
+                $allowed_fields[] = 'urgency';
+                $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
+                $allowed_fields[] = 'itilcategories_id';
+                $allowed_fields[] = 'name';
+            }
 
-         if ($this->canSolve()) {
-            $allowed_fields[] = 'solutiontypes_id';
-            $allowed_fields[] = 'solution';
+            if ($this->canSolve()) {
+                $allowed_fields[] = 'solutiontypes_id';
+                $allowed_fields[] = 'solution';
+            }
          }
 
          foreach ($allowed_fields as $field) {
@@ -809,6 +816,7 @@ class Ticket extends CommonITILObject {
       }
 
 
+      
       //// check mandatory fields
       // First get ticket template associated : entity and type/category
       if (isset($input['entities_id'])) {
@@ -5410,6 +5418,8 @@ class Ticket extends CommonITILObject {
                          AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
                          AND `glpi_ticketsatisfactions`.`id` IS NULL
                    ORDER BY `closedate` ASC";
+          
+         Toolbox::logDebug($entity.' '.$rate.' '.$parent.' '.$delay.' '.$type.' '.$max_closedate);
 
          $nb            = 0;
          $max_closedate = '';
