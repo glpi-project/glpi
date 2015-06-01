@@ -320,8 +320,6 @@ if ($item instanceof CommonTreeDropdown) {
 
                      $work_level    = $level-1;
                      $work_parentID = $data[$item->getForeignKeyField()];
-                     //Yllen: why this because never used
-                     $to_display    = '';
 
                      do {
                         // Get parent
