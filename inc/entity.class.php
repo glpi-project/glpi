@@ -254,7 +254,7 @@ class Entity extends CommonTreeDropdown {
                || is_null($this->fields['max_closedate']))
            && ($input['inquest_rate'] != $this->fields['inquest_rate']))
           || (isset($input['inquest_config'])
-              && (($this->fields['inquest_config'] == 0)
+              && (($this->fields['inquest_config'] == self::CONFIG_PARENT)
                   || is_null($this->fields['max_closedate']))
               && ($input['inquest_config'] != $this->fields['inquest_config']))) {
 
