@@ -1472,6 +1472,11 @@ class Config extends CommonDBTM {
       include_once(GLPI_TCPDF_DIR.'/include/tcpdf_static.php');
       echo "TCPDF version " . TCPDF_STATIC::getTCPDFVersion() . " in (" . realpath(GLPI_TCPDF_DIR) . ")\n";
 
+      // password_compat
+      require_once GLPI_PASSWORD_COMPAT;
+      $check = (PasswordCompat\binary\check() ? "Ok" : "KO");
+      echo "ircmaxell/password-compat in (" . realpath(dirname(GLPI_PASSWORD_COMPAT)) . "). Compatitility: $check\n";
+      
       echo "\n</pre></td></tr>";
    }
 

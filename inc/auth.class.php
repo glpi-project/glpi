@@ -263,31 +263,6 @@ class Auth extends CommonGLPI {
 
 
    /**
-    * Check is new password functions works properly
-    *
-    * From https://raw.github.com/ircmaxell/password_compat/master/version-test.php
-    *
-    * @since version 0.85
-    *
-    * @return boolean
-   **/
-   static function isCryptOk() {
-      static $pass = NULL;
-
-      if (is_null($pass)) {
-         if (function_exists('crypt')) {
-            $hash = '$2y$04$usesomesillystringfore7hnbRJHxXVLeakoG8K30oukPsA.ztMG';
-            $test = crypt("password", $hash);
-            $pass = ($test == $hash);
-         } else {
-            $pass = false;
-         }
-      }
-      return $pass;
-   }
-
-
-   /**
     * Check is a password match the stored hash
     *
     * @since version 0.85
@@ -300,7 +275,7 @@ class Auth extends CommonGLPI {
    static function checkPassword($pass, $hash) {
 
       $tmp = NULL;
-      if (self::isCryptOk()) {
+      if (PasswordCompat\binary\check()) {
          $tmp = password_get_info($hash);
       }
 
@@ -333,7 +308,7 @@ class Auth extends CommonGLPI {
    **/
    static function needRehash($hash) {
 
-      if (self::isCryptOk()) {
+      if (PasswordCompat\binary\check()) {
          return password_needs_rehash($hash, PASSWORD_DEFAULT);
       }
       // sha1(40) + salt(8)
@@ -352,7 +327,7 @@ class Auth extends CommonGLPI {
    **/
    static function getPasswordHash($pass) {
 
-      if (self::isCryptOk()) {
+      if (PasswordCompat\binary\check()) {
          return password_hash($pass, PASSWORD_DEFAULT);
       }
       $salt = sprintf("%08x", mt_rand());
