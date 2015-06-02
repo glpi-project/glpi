@@ -175,7 +175,7 @@ if (!defined("GLPI_PHPCAS")) {
 
 // Default path to FreeSans.ttf
 if (!defined("GLPI_FONT_FREESANS")) {
-   define("GLPI_FONT_FREESANS", GLPI_ROOT . '/lib/ezcomponents/FreeSans.ttf');
+   define("GLPI_FONT_FREESANS", GLPI_ROOT . '/lib/FreeSans.ttf');
 
    # if FreeSans.ttf available in system, use (in config_path.php)
    # define("GLPI_FONT_FREESANS", '/usr/share/fonts/gnu-free/FreeSans.ttf');
