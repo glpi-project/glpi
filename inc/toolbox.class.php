@@ -1039,8 +1039,8 @@ class Toolbox {
 
       // Test for Cryptographic extension.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Cryptography test')."</td>";
-
-      if (Auth::isCryptOk()) {
+      require_once GLPI_PASSWORD_COMPAT;
+      if (PasswordCompat\binary\check()) {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
                      __s('The functionality is found - Perfect!'). "\" title=\"".
                      __s('The functionality is found - Perfect!')."\"></td>";
