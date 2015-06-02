@@ -767,7 +767,7 @@ class Ticket extends CommonITILObject {
             // Closed tickets
             || in_array($this->fields['status'],$this->getClosedStatusArray()))
          ) {
-            
+
          $allowed_fields                    = array('id');
          $check_allowed_fields_for_template = true;
 
@@ -816,7 +816,7 @@ class Ticket extends CommonITILObject {
       }
 
 
-      
+
       //// check mandatory fields
       // First get ticket template associated : entity and type/category
       if (isset($input['entities_id'])) {
@@ -3822,7 +3822,9 @@ class Ticket extends CommonITILObject {
          $idurgency = "value_urgency".mt_rand();
          echo "<input id='$idurgency' type='hidden' name='urgency' value='".
                 $this->fields["urgency"]."'>";
+         echo $tt->getBeginHiddenFieldValue('urgency');
          echo parent::getUrgencyName($this->fields["urgency"]);
+         echo $tt->getEndHiddenFieldValue('urgency', $this);
       }
       echo "</td>";
       // Display validation state
@@ -3914,7 +3916,9 @@ class Ticket extends CommonITILObject {
 
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".sprintf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'))."</th>";
+      echo "<th>".$tt->getBeginHiddenFieldText('priority');
+      printf(__('%1$s%2$s'), __('Priority'), $tt->getMandatoryMark('priority'));
+      echo $tt->getEndHiddenFieldText('priority')."</th>";
       echo "<td>";
       $idajax = 'change_priority_' . mt_rand();
 
@@ -5418,7 +5422,7 @@ class Ticket extends CommonITILObject {
                          AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
                          AND `glpi_ticketsatisfactions`.`id` IS NULL
                    ORDER BY `closedate` ASC";
-          
+
          Toolbox::logDebug($entity.' '.$rate.' '.$parent.' '.$delay.' '.$type.' '.$max_closedate);
 
          $nb            = 0;
