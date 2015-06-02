@@ -136,7 +136,8 @@ class TicketFollowup  extends CommonDBTM {
    function canCreateItem() {
 
       $ticket = new Ticket();
-      if (!$ticket->can($this->getField('tickets_id'), READ)) {
+      if (!$ticket->can($this->getField('tickets_id'), READ)
+        || in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
          return false;
       }
       return $ticket->canAddFollowups();
