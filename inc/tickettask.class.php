@@ -128,7 +128,8 @@ class TicketTask  extends CommonITILTask {
 
       $ticket = new Ticket();
 
-      if ($ticket->getFromDB($this->fields['tickets_id'])) {
+      if ($ticket->getFromDB($this->fields['tickets_id'])
+        && !in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
          return (Session::haveRight(self::$rightname, self::ADDALLTICKET)
                  || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])
