@@ -813,6 +813,11 @@ class Ticket extends CommonITILObject {
          }
 
          $input = $ret;
+         
+         // Only ID return false
+         if (count($input) == 1) {
+            return false;
+         }
       }
 
 
