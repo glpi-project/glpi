@@ -1458,7 +1458,8 @@ class Config extends CommonDBTM {
       echo "PHPMailer version " . $pm->Version . " in (" . realpath(GLPI_PHPMAILER_DIR) . ")\n";
 
       // EZ component
-      echo "eZ Graph componnent installed :  ".(class_exists('ezcGraph')?'OK':'KO'). "\n";
+      echo "ZetaComponent ezcGraph installed in (" . dirname(dirname(GLPI_EZC_BASE)) . 
+           "):  ".(class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
 
       // Zend
       $zv = new Zend\Version\Version;
