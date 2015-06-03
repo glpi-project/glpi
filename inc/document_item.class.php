@@ -64,6 +64,22 @@ class Document_Item extends CommonDBRelation{
    }
 
 
+   function canCreateItem() {
+   
+      if ($this->fields['itemtype'] == 'Ticket') {
+         $ticket = new Ticket();
+         // Not item linked for closed tickets
+         if ($ticket->getFromDB($this->fields['items_id'])
+         && in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
+           return false;   
+         }
+      }
+      
+      return parent::canCreateItem();
+   }
+   
+   
+   
    function prepareInputForAdd($input) {
 
       if ((empty($input['items_id']) || ($input['items_id'] == 0))

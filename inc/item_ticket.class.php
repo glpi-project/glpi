@@ -63,7 +63,16 @@ class Item_Ticket extends CommonDBRelation{
       return $forbidden;
    }
 
-
+   function canCreateItem() {
+      $ticket = new Ticket();
+      // Not item linked for closed tickets
+      if ($ticket->getFromDB($this->fields['tickets_id'])
+         && in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
+        return false;   
+      }
+      
+      return parent::canCreateItem();
+   }
    
    function post_addItem() {
 
