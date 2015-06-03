@@ -3777,7 +3777,7 @@ class Html {
               } else {// IE plugin
                   tinyMCE.imagePaste = $(document).IE_support_imagePaste(".json_encode($params).");
               }
-              uploadFile();";
+              uploadFile$rand();";
    }
 
 
@@ -4895,7 +4895,7 @@ class Html {
          $out .= "<div id='".$p['showfilecontainer']."'></div>";
       }
 
-      $script  = self::fileScript($p)."\n uploadFile();";
+      $script  = self::fileScript($p)."\n uploadFile".$p['rand']."();";
       $out    .= Html::scriptBlock($script);
       $out    .=  "<div id='progress$randupload' style='display:none'>".
                   "<div class='uploadbar' style='width: 0%;'></div></div>";
@@ -4988,7 +4988,7 @@ class Html {
       }
 
       $script = "fileindex".$p['rand']." = 0;
-         function uploadFile() {
+         function uploadFile".$p['rand']."() {
             $('#fileupload".$p['rand']."').fileupload({
                //forceIframeTransport: true,
                //replaceFileInput: false,
