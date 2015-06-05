@@ -43,15 +43,17 @@ $entity = new Entity();
 
 if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
    if ($entity->getFromDB($_POST['entities_id'])) {
-      $inquest_config = $entity->getfield('inquest_config');
-      $inquest_delay  = $entity->getfield('inquest_delay');
-      $inquest_rate   = $entity->getfield('inquest_rate');
-      $max_closedate  = $entity->getfield('max_closedate');
+      $inquest_config    = $entity->getfield('inquest_config');
+      $inquest_delay     = $entity->getfield('inquest_delay');
+      $inquest_rate      = $entity->getfield('inquest_rate');
+      $inquest_duration  = $entity->getfield('inquest_duration');
+      $max_closedate     = $entity->getfield('max_closedate');
    } else {
-      $inquest_config = $_POST['inquest_config'];
-      $inquest_delay  = -1;
-      $inquest_rate   = -1;
-      $max_closedate  = '';
+      $inquest_config    = $_POST['inquest_config'];
+      $inquest_delay     = -1;
+      $inquest_rate      = -1;
+      $inquest_duration  = -1;
+      $max_closedate     = '';
    }
 
    if ($_POST['inquest_config'] > 0) {
@@ -76,6 +78,17 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
                                                  'step'    => 10,
                                                  'toadd'   => array(0 => __('Disabled')),
                                                  'unit'    => '%'));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td width='50%'>".__('Duration of survey')."</td>";
+      echo "<td>";
+      Dropdown::showNumber('inquest_duration',
+                           array('value' => $inquest_duration,
+                                 'min'   => 1,
+                                 'max'   => 180,
+                                 'step'  => 1,
+                                 'toadd' => array('0' => __('Unspecified')),
+                                 'unit'  => 'day'));
       echo "</td></tr>";
 
       if ($max_closedate != '') {
