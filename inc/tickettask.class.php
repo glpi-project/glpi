@@ -129,8 +129,8 @@ class TicketTask  extends CommonITILTask {
       $ticket = new Ticket();
 
       if ($ticket->getFromDB($this->fields['tickets_id'])
-         // No validation for closed tickets
-        && !in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
+          // No validation for closed tickets
+          && !in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
          return (Session::haveRight(self::$rightname, self::ADDALLTICKET)
                  || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])

@@ -63,17 +63,24 @@ class Item_Ticket extends CommonDBRelation{
       return $forbidden;
    }
 
+
+   /**
+    * @since version 0.85.5
+    * @see CommonDBRelation::canCreateItem()
+   **/
    function canCreateItem() {
+
       $ticket = new Ticket();
       // Not item linked for closed tickets
       if ($ticket->getFromDB($this->fields['tickets_id'])
-         && in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
-        return false;   
+          && in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
+        return false;
       }
-      
+
       return parent::canCreateItem();
    }
-   
+
+
    function post_addItem() {
 
       $ticket = new Ticket();
@@ -91,7 +98,8 @@ class Item_Ticket extends CommonDBRelation{
       $ticket->update($input);
       parent::post_addItem();
    }
-   
+
+
    function post_purgeItem() {
 
       $ticket = new Ticket();
@@ -106,24 +114,24 @@ class Item_Ticket extends CommonDBRelation{
 
       parent::post_purgeItem();
    }
-   
-   
+
+
    /**
     * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
-      
+
       // Avoid duplicate entry
       $restrict = " `tickets_id` = '".$input['tickets_id']."'
                    AND `itemtype` = '".$input['itemtype']."'
                    AND `items_id` = '".$input['items_id']."'";
       if (countElementsInTable($this->getTable(), $restrict) > 0) {
          return false;
-      }      
-      
+      }
+
       $ticket = new Ticket();
       $ticket->getFromDB($input['tickets_id']);
-      
+
       // Get item location if location is not already set in ticket
       if (empty($ticket->fields['locations_id'])) {
          if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
@@ -131,14 +139,14 @@ class Item_Ticket extends CommonDBRelation{
                if ($item->getFromDB($input["items_id"])) {
                   if ($item->isField('locations_id')) {
                      $ticket->fields['items_locations'] = $item->fields['locations_id'];
-                     
+
                      // Process Business Rules
                      $rules = new RuleTicketCollection($ticket->fields['entities_id']);
 
                      $ticket->fields = $rules->processAllRules(Toolbox::stripslashes_deep($ticket->fields),
                                                 Toolbox::stripslashes_deep($ticket->fields),
                                                 array('recursive' => true));
-                     
+
                      unset($ticket->fields['items_locations']);
                      $ticket->updateInDB(array('locations_id'));
                   }
@@ -182,7 +190,7 @@ class Item_Ticket extends CommonDBRelation{
          return false;
       }
 
-      $canedit = ($ticket->canEdit($instID) 
+      $canedit = ($ticket->canEdit($instID)
                   && isset($_SESSION["glpiactiveprofile"])
                   && $_SESSION["glpiactiveprofile"]["interface"] == "central");
       $rand    = mt_rand();
@@ -219,7 +227,7 @@ class Item_Ticket extends CommonDBRelation{
          if ($dev_user_id > 0) {
             self::dropdownMyDevices($dev_user_id, $ticket->fields["entities_id"], null, 0, $instID);
          }
-         
+
          $data =  array_keys(getAllDatasFromTable('glpi_items_tickets'));
          $used = array();
          if (!empty($data)) {
@@ -227,7 +235,7 @@ class Item_Ticket extends CommonDBRelation{
                $used[$val['itemtype']] = $val['id'];
             }
          }
-         
+
          self::dropdownAllDevices("itemtype", null, 0, 1, $dev_user_id, $ticket->fields["entities_id"], $instID);
          echo "<span id='item_ticket_selection_information'></span>";
          echo "</td><td class='center' width='30%'>";
@@ -381,7 +389,7 @@ class Item_Ticket extends CommonDBRelation{
       }
       return true;
    }
-   
+
    /**
     * Make a select box for Tracking All Devices
     *
@@ -400,7 +408,7 @@ class Item_Ticket extends CommonDBRelation{
       global $CFG_GLPI, $DB;
 
       $used = self::getUsedItems($tickets_id);
-      
+
       $rand = mt_rand();
 
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] == 0) {
@@ -466,7 +474,7 @@ class Item_Ticket extends CommonDBRelation{
       }
       return $rand;
    }
-   
+
    /**
     * Make a select box for Ticket my devices
     *
@@ -482,7 +490,7 @@ class Item_Ticket extends CommonDBRelation{
       global $DB, $CFG_GLPI;
 
       $used = self::getUsedItems($tickets_id);
-      
+
       if ($userID == 0) {
          $userID = Session::getLoginUserID();
       }
@@ -495,7 +503,7 @@ class Item_Ticket extends CommonDBRelation{
          if($tickets_id > 0) {
             $my_devices = array('' => Dropdown::EMPTY_VALUE);
          }
-         
+
          $my_item    = $itemtype.'_'.$items_id;
          $devices    = array();
 
@@ -520,8 +528,8 @@ class Item_Ticket extends CommonDBRelation{
 
                $query .= getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict,
                                                     $item->maybeRecursive())."
-                                                       
-               
+
+
                          ORDER BY `name` ";
 
                $result  = $DB->query($query);
@@ -552,7 +560,7 @@ class Item_Ticket extends CommonDBRelation{
                }
             }
          }
-         
+
          if (count($devices)) {
             $my_devices[__('My devices')] = $devices;
          }
@@ -775,7 +783,7 @@ class Item_Ticket extends CommonDBRelation{
    **/
  static function dropdown($options = array()) {
       global $DB;
-      
+
       // Default values
       $p['name']           = 'items';
       $p['value']          = '';
@@ -789,15 +797,15 @@ class Item_Ticket extends CommonDBRelation{
       $p['toupdate']       = '';
       $p['rand']           = mt_rand();
       $p['display']        = true;
-      
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
          }
       }
-      
+
       $itemtypes = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer');
-      
+
       $query = "";
       foreach ($itemtypes as $type) {
          $table = getTableForItemType($type);
@@ -820,15 +828,15 @@ class Item_Ticket extends CommonDBRelation{
 
       return Dropdown::showFromArray($p['name'], $output, $p);
    }
-   
+
    /**
     * Return used items for a ticket
-    * 
+    *
     * @param type $tickets_id
     * @return type
     */
    static function getUsedItems($tickets_id) {
-      
+
       $data = getAllDatasFromTable('glpi_items_tickets', " `tickets_id` = ".$tickets_id);
       $used = array();
       if (!empty($data)) {
@@ -836,10 +844,10 @@ class Item_Ticket extends CommonDBRelation{
             $used[$val['itemtype']][] = $val['items_id'];
          }
       }
-      
+
       return $used;
    }
-   
+
    /**
     * Form for Followup on Massive action
    **/
@@ -852,7 +860,7 @@ class Item_Ticket extends CommonDBRelation{
                                        $CFG_GLPI["ticket_types"], false, true, 'item_itemtype');
             echo "<br><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
             break;
-         
+
          case 'delete_item' :
             Dropdown::showAllItems("items_id", 0, 0, $_SESSION['glpiactive_entity'],
                                        $CFG_GLPI["ticket_types"], false, true, 'item_itemtype');
@@ -861,7 +869,7 @@ class Item_Ticket extends CommonDBRelation{
       }
 
    }
-   
+
    /**
     * @since version 0.85
     *
@@ -873,7 +881,7 @@ class Item_Ticket extends CommonDBRelation{
          case 'add_item' :
             static::showFormMassiveAction($ma);
             return true;
-            
+
          case 'delete_item' :
             static::showFormMassiveAction($ma);
             return true;
@@ -900,13 +908,13 @@ class Item_Ticket extends CommonDBRelation{
                if ($item->getFromDB($id) && !empty($input['items_id'])) {
                   $input['tickets_id'] = $id;
                   $input['itemtype'] = $input['item_itemtype'];
-                  
+
                   if ($item_ticket->can(-1, CREATE, $input)) {
                      $ok = true;
                      if (!$item_ticket->add($input)) {
                         $ok = false;
                      }
-                    
+
                      if ($ok) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {
@@ -918,14 +926,14 @@ class Item_Ticket extends CommonDBRelation{
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                      $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                   }
-                  
+
                } else {
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                   $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                }
             }
             return;
-            
+
          case 'delete_item' :
             $input = $ma->getInput();
             $item_ticket = new static();
@@ -953,12 +961,12 @@ class Item_Ticket extends CommonDBRelation{
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                      }
-                     
+
                   } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                      $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                   }
-                  
+
                } else {
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                   $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
@@ -968,11 +976,11 @@ class Item_Ticket extends CommonDBRelation{
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
-   
+
    function getSearchOptions() {
 
       $tab                          = array();
-      
+
       $tab[13]['table']             = 'glpi_items_tickets';
       $tab[13]['field']             = 'items_id';
       $tab[13]['name']              = _n('Associated element', 'Associated elements', 2);
@@ -987,7 +995,7 @@ class Item_Ticket extends CommonDBRelation{
       $tab[131]['datatype']         = 'itemtypename';
       $tab[131]['itemtype_list']    = 'ticket_types';
       $tab[131]['nosort']           = true;
-      
+
       return $tab;
    }
 
@@ -1000,7 +1008,7 @@ class Item_Ticket extends CommonDBRelation{
     * @param $options   array
    **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
-      
+
       if (!is_array($values)) {
          $values = array($field => $values);
       }
@@ -1049,7 +1057,7 @@ class Item_Ticket extends CommonDBRelation{
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-   
+
    /**
     * Add a message on add action
    **/
@@ -1065,11 +1073,11 @@ class Item_Ticket extends CommonDBRelation{
           || !$this->auto_message_on_action) {
          $addMessAfterRedirect = false;
       }
-      
+
       if ($addMessAfterRedirect) {
          $item = getItemForItemtype($this->fields['itemtype']);
          $item->getFromDB($this->fields['items_id']);
-      
+
          $link = $item->getFormURL();
          if (!isset($link)) {
             return;
@@ -1090,7 +1098,7 @@ class Item_Ticket extends CommonDBRelation{
 
       }
    }
-   
+
    /**
     * Add a message on delete action
    **/
@@ -1099,7 +1107,7 @@ class Item_Ticket extends CommonDBRelation{
       if (!$this->maybeDeleted()) {
          return;
       }
-      
+
       $addMessAfterRedirect = false;
       if (isset($this->input['_delete'])) {
          $addMessAfterRedirect = true;
@@ -1113,7 +1121,7 @@ class Item_Ticket extends CommonDBRelation{
       if ($addMessAfterRedirect) {
          $item = getItemForItemtype($this->fields['itemtype']);
          $item->getFromDB($this->fields['items_id']);
-         
+
          $link = $item->getFormURL();
          if (!isset($link)) {
             return;
