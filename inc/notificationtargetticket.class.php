@@ -57,7 +57,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     */
    function __construct($entity='', $event='', $object=null, $options=array()) {
       global $CFG_GLPI;
-      
+
       parent::__construct($entity, $event, $object, $options);
 
       $this->options['sendprivate'] = false;
@@ -69,7 +69,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       if (isset($options['task_id'])) {
          $this->options['sendprivate'] = $options['is_private'];
       }
-      
+
       if ($CFG_GLPI["use_rich_text"]) {
          $this->html_tags[] = '##ticket.content##';
       }
@@ -184,10 +184,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $item_ticket = new Item_Ticket();
          $data = $item_ticket->find("`tickets_id` = ".$this->obj->fields['id']);
          foreach ($data as $val) {
-            if (($val['itemtype'] != NOT_AVAILABLE) 
-                    && ($val['itemtype'] != '') 
-                    && ($item = getItemForItemtype($val['itemtype']))) {
-               
+            if (($val['itemtype'] != NOT_AVAILABLE)
+                && ($val['itemtype'] != '')
+                && ($item = getItemForItemtype($val['itemtype']))) {
+
                $item->getFromDB($val['items_id']);
                $this->target_object[] = $item;
             }
@@ -229,6 +229,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $events = array('new'               => __('New ticket'),
                       'update'            => __('Update of a ticket'),
                       'solved'            => __('Ticket solved'),
+                      'replysolved'       => __('Ticket solved answer'),
                       'validation'        => __('Validation request'),
                       'validation_answer' => __('Validation request answer'),
                       'add_followup'      => __("New followup"),
@@ -296,7 +297,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas['##ticket.description##']
             = $item->convertContentForNotification($datas['##ticket.description##'],
                                                    $item);
-                                                   
+
       $datas['##ticket.content##'] = $datas['##ticket.description##'];
       // Specific datas
       $datas['##ticket.urlvalidation##']
@@ -362,9 +363,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                 && ($hardware = getItemForItemtype($val['itemtype']))
                 && isset($val["items_id"])
                 && $hardware->getFromDB($val["items_id"])) {
-               
+
                $tmp = array();
-               
+
                //Object type
                $tmp['##ticket.itemtype##']  = $hardware->getTypeName();
 
@@ -419,12 +420,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                   $tmp['##ticket.item.model##']
                               = Dropdown::getDropdownName($modeltable, $hardware->getField($modelfield));
                }
-               
+
                $datas['items'][] = $tmp;
             }
          }
       }
-      
+
       $datas['##ticket.numberofitems##'] = count($datas['items']);
 
       // Get followups, log, validation, satisfaction, linked tickets
@@ -518,7 +519,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
              || !$options['additionnaloption']['show_private']) {
             $restrict .= " AND `is_private` = '0'";
          }
-         
+
          $restrict .= " ORDER BY `date` DESC, `id` ASC";
 
          //Followup infos
@@ -537,6 +538,15 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          }
 
          $datas['##ticket.numberoffollowups##'] = count($datas['followups']);
+
+
+         // Approbation of solution
+         $restrict .= " LIMIT 1";
+         $replysolved = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
+         $data = current($replysolved);
+         $datas['##approve.description##'] = $data['content'];
+         $datas['##approve.date##']        = Html::convDateTime($data['date']);
+         $datas['##approve.author##']      = Html::clean(getUserName($data['users_id']));
 
          //Validation infos
          $restrict = "`tickets_id`='".$item->getField('id')."'";
@@ -674,6 +684,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
                     'ticket.location'              => __('Location'),
                     'ticket.globalvalidation'      => __('Global approval status'),
+                    'approve.description'          => __('Description'),
+                    'approve.date'                 => __('Satisfaction survey answer date'),
+                    'approve.author'               => __('Writer')
                   );
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,

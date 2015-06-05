@@ -1177,6 +1177,16 @@ class Ticket extends CommonITILObject {
 
             $mailtype = "closed";
          }
+         // to know if a solution is approved or not
+         if ((isset($this->input['solvedate']) && ($this->input['solvedate'] == 'NULL')
+              && isset($this->oldvalues['solvedate']) && $this->oldvalues['solvedate'])
+             && (isset($this->input['status'])
+                 && ($this->input['status'] != $this->oldvalues['status'])
+                 && ($this->oldvalues['status'] == self::SOLVED))) {
+
+            $mailtype = "replysolved";
+         }
+
          // Read again ticket to be sure that all data are up to date
          $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent($mailtype, $this);
