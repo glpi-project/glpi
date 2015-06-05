@@ -584,7 +584,15 @@ class Ticket extends CommonITILObject {
                   $satisfaction = new TicketSatisfaction();
                   if (($item->fields['status'] == self::CLOSED)
                       && $satisfaction->getFromDB($_GET["id"])) {
-                     $satisfaction->showForm($item);
+
+                     $duration = Entity::getUsedConfig('inquest_duration', $item->fields['entities_id']);
+                     $date2    = strtotime($satisfaction->fields['date_begin']);
+                     if ((strtotime("now") - $date2) <= $duration*DAY_TIMESTAMP) {
+                        $satisfaction->showForm($item);
+                     } else {
+                        echo "<p class='center b'>".__('Delay to reply to satisfaction survey pasted')."</p>";
+                     }
+
                   } else {
                      echo "<p class='center b'>".__('No generated survey')."</p>";
                   }
@@ -813,7 +821,7 @@ class Ticket extends CommonITILObject {
          }
 
          $input = $ret;
-         
+
          // Only ID return false
          if (count($input) == 1) {
             return false;
@@ -1180,6 +1188,8 @@ class Ticket extends CommonITILObject {
                                              'inquest_rate');
       $delay         = Entity::getUsedConfig('inquest_config', $this->fields['entities_id'],
                                              'inquest_delay');
+      $duration      = Entity::getUsedConfig('inquest_duration', $this->fields['entities_id'],
+                                             'inquest_duration');
       $type          = Entity::getUsedConfig('inquest_config', $this->fields['entities_id']);
       $max_closedate = $this->fields['closedate'];
 
@@ -5411,6 +5421,7 @@ class Ticket extends CommonITILObject {
       foreach ($tabentities as $entity => $rate) {
          $parent        = Entity::getUsedConfig('inquest_config', $entity, 'entities_id');
          $delay         = Entity::getUsedConfig('inquest_config', $entity, 'inquest_delay');
+         $duration      = Entity::getUsedConfig('inquest_config', $entity, 'inquest_duration');
          $type          = Entity::getUsedConfig('inquest_config', $entity);
          $max_closedate = Entity::getUsedConfig('inquest_config', $entity, 'max_closedate');
 
@@ -5420,11 +5431,14 @@ class Ticket extends CommonITILObject {
                    FROM `glpi_tickets`
                    LEFT JOIN `glpi_ticketsatisfactions`
                        ON `glpi_ticketsatisfactions`.`tickets_id` = `glpi_tickets`.`id`
+                   LEFT JOIN `glpi_entities`
+                       ON `glpi_tickets`.`entities_id` = `glpi_entities`.`id`
                    WHERE `glpi_tickets`.`entities_id` = '$entity'
                          AND `glpi_tickets`.`is_deleted` = 0
                          AND `glpi_tickets`.`status` = '".self::CLOSED."'
                          AND `glpi_tickets`.`closedate` > '$max_closedate'
                          AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
+                         AND ADDDATE(`glpi_entities`.`max_closedate`, INTERVAL $duration DAY)<=NOW()
                          AND `glpi_ticketsatisfactions`.`id` IS NULL
                    ORDER BY `closedate` ASC";
 

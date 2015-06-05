@@ -98,7 +98,8 @@ class Entity extends CommonTreeDropdown {
                                        'entity_helpdesk'
                                           => array('calendars_id', 'tickettype', 'auto_assign_mode',
                                                    'autoclose_delay', 'inquest_config',
-                                                   'inquest_rate', 'inquest_delay', 'inquest_URL',
+                                                   'inquest_rate', 'inquest_delay',
+                                                   'inquest_duration','inquest_URL',
                                                    'max_closedate', 'tickettemplates_id'));
 
 
@@ -568,7 +569,7 @@ class Entity extends CommonTreeDropdown {
       $tab[61]['massiveaction'] = false;
       $tab[61]['nosearch']      = true;
       $tab[61]['datatype']      = 'bool';
-      
+
       $tab[18]['table']         = $this->getTable();
       $tab[18]['field']         = 'admin_email';
       $tab[18]['name']          = __('Administrator email');
@@ -1381,7 +1382,7 @@ class Entity extends CommonTreeDropdown {
       Alert::dropdownYesNo(array('name'           => "is_notif_enable_default",
                                  'value'          =>  $entity->getField('is_notif_enable_default'),
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)));
-      
+
 
       if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
@@ -1391,10 +1392,10 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
-      
+
       echo "</tr>";
-      
-      
+
+
       echo "<tr class='tab_bg_1'>";
       echo "<td class='middle right'>" . __('Email signature') . "</td>";
       echo "<td colspan='3'>";
