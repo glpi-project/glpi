@@ -572,7 +572,7 @@ class Session {
       $TRANSLATE = new Zend\I18n\Translator\Translator;
       try {
          $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc'));
-
+         $TRANSLATE->setCache($cache);
       } catch (Zend\Cache\Exception\ExtensionNotLoadedException $e) {
          // ignore when APC not available
          // toolbox::logDebug($e->getMessage());
