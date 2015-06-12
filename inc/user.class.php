@@ -1853,6 +1853,9 @@ class User extends CommonDBTM {
          echo "<input type='file' name='picture' accept='image/*'>";
          echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
          echo "</td>";
+      } else {
+         echo "<td rowspan='3'></td>";
+         echo "<td rowspan='3'></td>";
       }
       echo "</tr>";
 
