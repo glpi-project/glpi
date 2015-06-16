@@ -229,7 +229,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $events = array('new'               => __('New ticket'),
                       'update'            => __('Update of a ticket'),
                       'solved'            => __('Ticket solved'),
-                      'replysolved'       => __('Ticket solved answer'),
+                      'rejectsolution'    => __('Ticket solution rejected'),
                       'validation'        => __('Validation request'),
                       'validation_answer' => __('Validation request answer'),
                       'add_followup'      => __("New followup"),
@@ -544,9 +544,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $restrict .= " LIMIT 1";
          $replysolved = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
          $data = current($replysolved);
-         $datas['##approve.description##'] = $data['content'];
-         $datas['##approve.date##']        = Html::convDateTime($data['date']);
-         $datas['##approve.author##']      = Html::clean(getUserName($data['users_id']));
+         $datas['##ticket.solution.approval.description##'] = $data['content'];
+         $datas['##ticket.solution.approval.date##']        = Html::convDateTime($data['date']);
+         $datas['##ticket.solution.approval.author##']      = Html::clean(getUserName($data['users_id']));
 
          //Validation infos
          $restrict = "`tickets_id`='".$item->getField('id')."'";
@@ -684,9 +684,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
                     'ticket.location'              => __('Location'),
                     'ticket.globalvalidation'      => __('Global approval status'),
-                    'approve.description'          => __('Description'),
-                    'approve.date'                 => __('Satisfaction survey answer date'),
-                    'approve.author'               => __('Writer')
+                    'ticket.solution.approval.description'  => __('Solution approval description'),
+                    'ticket.solution.approval.date'         => __('Solution approval answer date'),
+                    'ticket.solution.approval.author'       => __('Approver')
                   );
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,

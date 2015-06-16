@@ -327,6 +327,9 @@ class TicketFollowup  extends CommonDBTM {
 //      if ($input["_isadmin"] && $input["_type"]!="update") {
       if (isset($input["add_close"])) {
          $input['_close'] = 1;
+         if (empty($input['content'])) {
+            $input['content'] = __('Solution approved');
+         }
       }
 
       unset($input["add_close"]);

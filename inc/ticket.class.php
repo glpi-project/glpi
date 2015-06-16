@@ -1184,7 +1184,7 @@ class Ticket extends CommonITILObject {
                  && ($this->input['status'] != $this->oldvalues['status'])
                  && ($this->oldvalues['status'] == self::SOLVED))) {
 
-            $mailtype = "replysolved";
+            $mailtype = "rejectsolution";
          }
 
          // Read again ticket to be sure that all data are up to date
