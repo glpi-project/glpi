@@ -1036,6 +1036,21 @@ class Toolbox {
                      __s('The functionality is found - Perfect!')."\"></td>";
       }
       echo "</tr>";
+      
+      // Test for GD extension.
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('Zlib extension test')."</td>";
+
+      if (!extension_loaded('zlib')) {
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
+                     __('Zlib extension of your parser PHP is not installed')."></td>";
+         $error = 2;
+
+      } else {
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
+                     __s('The functionality is found - Perfect!'). "\" title=\"".
+                     __s('The functionality is found - Perfect!')."\"></td>";
+      }
+      echo "</tr>";      
 
       // Test for Cryptographic extension.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Cryptography test')."</td>";

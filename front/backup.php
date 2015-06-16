@@ -348,7 +348,12 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    // $dumpFile, fichier source
    // $duree=timeout pour changement de page (-1 = aucun)
 
-   $fileHandle = gzopen($dumpFile, "a");
+   if (function_exists('gzopen')) {
+      $fileHandle = gzopen($dumpFile, "a");
+   } else {
+      $fileHandle = gzopen64($dumpFile, "a");
+   }
+   
 
    if (!$fileHandle) {
       //TRANS: %s is the name of the file
