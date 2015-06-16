@@ -63,9 +63,10 @@ class NotificationTargetReservation extends NotificationTarget {
                           __('Group in charge of the hardware'));
          $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
          $this->addTarget(Notification::AUTHOR, __('Requester'));
-      } else if ($event == 'alert') {
-         $this->addTarget(Notification::ITEM_USER, __('User reserving equipment'));
       }
+      // else if ($event == 'alert') {
+      //   $this->addTarget(Notification::ITEM_USER, __('User reserving equipment'));
+      //}
    }
 
 
@@ -83,7 +84,7 @@ class NotificationTargetReservation extends NotificationTarget {
          $user_tmp                              = new User();
          if ($user_tmp->getFromDB($this->obj->getField('users_id'))) {
             $this->datas['##reservation.user##'] = $user_tmp->getName();
-            $this->datas['##reservation.for##']  = $user_tmp->getName();
+//            $this->datas['##reservation.for##']  = $user_tmp->getName();
          }
          $this->datas['##reservation.begin##']   = Html::convDateTime($this->obj->getField('begin'));
          $this->datas['##reservation.end##']     = Html::convDateTime($this->obj->getField('end'));
@@ -163,7 +164,8 @@ class NotificationTargetReservation extends NotificationTarget {
                                  'reservation.item.entity' => __('Entity'),
                                  'reservation.item.name'   => __('Associated item'),
                                  'reservation.item.tech'   => __('Technician in charge of the hardware'),
-                                 'reservation.for'         => __('User reserving equipmenet'),);
+                                // 'reservation.for'         => __('User reserving equipment'),
+                                );
 
       foreach ($tags_except_alert as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
