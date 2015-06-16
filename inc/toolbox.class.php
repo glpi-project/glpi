@@ -977,11 +977,11 @@ class Toolbox {
       echo "</tr>";
 
       // Test for fileinfo extension loaded or not
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Test fileinfo extension')."</td>";
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('Fileinfo extension test')."</td>";
 
       if (!class_exists('finfo')) {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'>".
-                    __("GLPI can't work correctly without the fileinfo extension")."</td>";
+                    __("Fileinfo extension of your parser PHP is not installed")."</td>";
          $error = 2;
 
       } else {

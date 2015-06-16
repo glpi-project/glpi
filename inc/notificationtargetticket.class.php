@@ -229,7 +229,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $events = array('new'               => __('New ticket'),
                       'update'            => __('Update of a ticket'),
                       'solved'            => __('Ticket solved'),
-                      'rejectsolution'    => __('Ticket solution rejected'),
+                      'rejectsolution'    => __('Solution rejected'),
                       'validation'        => __('Validation request'),
                       'validation_answer' => __('Validation request answer'),
                       'add_followup'      => __("New followup"),
@@ -684,8 +684,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
                     'ticket.location'              => __('Location'),
                     'ticket.globalvalidation'      => __('Global approval status'),
-                    'ticket.solution.approval.description'  => __('Solution approval description'),
-                    'ticket.solution.approval.date'         => __('Solution approval answer date'),
+                    'ticket.solution.approval.description'  => __('Solution rejection comment'),
+                    'ticket.solution.approval.date'         => __('Solution rejection date'),
                     'ticket.solution.approval.author'       => __('Approver')
                   );
       foreach ($tags as $tag => $label) {

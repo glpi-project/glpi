@@ -590,7 +590,7 @@ class Ticket extends CommonITILObject {
                      if ((strtotime("now") - $date2) <= $duration*DAY_TIMESTAMP) {
                         $satisfaction->showForm($item);
                      } else {
-                        echo "<p class='center b'>".__('Delay to reply to satisfaction survey pasted')."</p>";
+                        echo "<p class='center b'>".__('Satisfaction survey expired')."</p>";
                      }
 
                   } else {
