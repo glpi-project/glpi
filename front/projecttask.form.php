@@ -42,6 +42,9 @@ if (!isset($_GET["id"])) {
 if (!isset($_GET["projects_id"])) {
    $_GET["projects_id"] = "";
 }
+if (!isset($_GET["projecttasks_id"])) {
+   $_GET["projecttasks_id"] = "";
+}
 $task = new ProjectTask();
 
 if (isset($_POST["add"])) {
@@ -51,7 +54,11 @@ if (isset($_POST["add"])) {
    Event::log($task->fields['projects_id'], 'project', 4, "maintain",
               //TRANS: %s is the user login
               sprintf(__('%s adds a task'), $_SESSION["glpiname"]));
-   Html::redirect(Project::getFormURL()."?id=".$task->fields['projects_id']);
+   if ($_SESSION['glpibackcreated']) {
+      Html::redirect($task->getFormURL()."?id=".$newID);
+   } else {
+      Html::redirect(Project::getFormURL()."?id=".$task->fields['projects_id']);
+   }
 
 } else if (isset($_POST["purge"])) {
    $task->check($_POST['id'], PURGE);
@@ -72,8 +79,7 @@ if (isset($_POST["add"])) {
    Html::back();
 } else {
    Html::header(ProjectTask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "project");
-   $task->display(array('id'          => $_GET["id"],
-                        'projects_id' => $_GET["projects_id"]));
+   $task->display($_GET);
    Html::footer();
 }
 ?>

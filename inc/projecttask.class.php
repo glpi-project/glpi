@@ -259,11 +259,12 @@ class ProjectTask extends CommonDBChild {
 
 
    function prepareInputForUpdate($input) {
-      if (isset($input['is_milestone']) 
+
+      if (isset($input['is_milestone'])
             && $input['is_milestone']){
          $input['plan_end_date'] = $input['plan_start_date'];
          $input['real_end_date'] = $input['real_start_date'];
-      }   
+      }
       return Project::checkPlanAndRealDates($input);
    }
 
@@ -277,7 +278,7 @@ class ProjectTask extends CommonDBChild {
          $input['date'] = $_SESSION['glpi_currenttime'];
       }
 
-      if (isset($input['is_milestone']) 
+      if (isset($input['is_milestone'])
             && $input['is_milestone']){
          $input['plan_end_date'] = $input['plan_start_date'];
          $input['real_end_date'] = $input['real_start_date'];
@@ -347,9 +348,11 @@ class ProjectTask extends CommonDBChild {
 
       if ($ID > 0) {
          $this->check($ID, READ);
-         $projects_id = $this->fields['projects_id'];
+         $projects_id     = $this->fields['projects_id'];
+         $projecttasks_id = $this->fields['projecttasks-id'];
       } else {
-         $projects_id = $options['projects_id'];
+         $projects_id     = $options['projects_id'];
+         $projecttasks_id = $options['projecttasks_id'];
          $this->check(-1, CREATE, $options);
       }
 
@@ -366,7 +369,7 @@ class ProjectTask extends CommonDBChild {
       echo "<td>".__('As child of')."</td>";
       echo "<td>";
       $this->dropdown(array('entity'    => $this->fields['entities_id'],
-                            'value'     => $this->fields['projecttasks_id'],
+                            'value'     => $projecttasks_id,
                             'condition' => "`glpi_projecttasks`.`projects_id`='".
                                              $this->fields['projects_id']."'",
                             'used'      => array($this->fields['id'])));
@@ -421,7 +424,7 @@ class ProjectTask extends CommonDBChild {
       echo "</td>";
       echo "<td>";
       Dropdown::showYesNo("is_milestone", $this->fields["is_milestone"]);
-      echo "</td>";      
+      echo "</td>";
       echo "</tr>";
 
       echo "<tr><td colspan='4' class='subheader'>".__('Planning')."</td></tr>";
@@ -786,6 +789,21 @@ class ProjectTask extends CommonDBChild {
          echo "</div>";
       }
 
+      if (($item->getType() == 'ProjectTask')
+          && $item->can($ID, UPDATE)) {
+         $rand = mt_rand();
+         echo "<div class='firstbloc'>";
+         echo "<form name='projecttask_form$rand' id='projecttask_form$rand' method='post'
+                action='".Toolbox::getItemTypeFormURL('ProjectTask')."'>";
+         $projet = $item->fields['projects_id'];
+         echo "<a href='".Toolbox::getItemTypeFormURL('ProjectTask')."?projecttasks_id=$ID&amp;projects_id=$projet'>";
+         _e('Create a sub task from this task of project');
+         echo "</a>";
+         Html::closeForm();
+         echo "</div>";
+      }
+
+
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
                        `glpi_projectstates`.`name` AS sname,
@@ -1044,7 +1062,7 @@ class ProjectTask extends CommonDBChild {
                                                                 'real_start_date'))) as $data) {
             $subtasks += static::getDataToDisplayOnGantt($data['id']);
          }
-         
+
          $real_begin = NULL;
          $real_end   = NULL;
          // Use real if set
