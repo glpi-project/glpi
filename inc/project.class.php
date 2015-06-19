@@ -472,7 +472,7 @@ class Project extends CommonDBTM {
       $tab[17]['nosearch']        = true;
       $tab[17]['massiveaction']   = false;
       $tab[17]['nosort']          = true;
-      
+
       $tab[9]['table']           = $this->getTable();
       $tab[9]['field']           = 'real_start_date';
       $tab[9]['name']            = __('Real start date');
@@ -490,7 +490,7 @@ class Project extends CommonDBTM {
       $tab[18]['nosearch']        = true;
       $tab[18]['massiveaction']   = false;
       $tab[18]['nosort']          = true;
-      
+
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
@@ -683,7 +683,7 @@ class Project extends CommonDBTM {
          // Add link
          if ($item->canViewItem()) {
             $eigth_column = "<a id='".$item->getType().$item->fields["id"]."$rand' href=\"".
-                              $item->getLinkURL()."\">$eigth_column</a>";
+                              $item->getLinkURL()."&amp;forcetab=Project$\">$eigth_column</a>";
          }
 
          if ($p['output_type'] == Search::HTML_OUTPUT) {
