@@ -764,9 +764,9 @@ class Project extends CommonDBTM {
 
          echo "<a href='".Toolbox::getItemTypeFormURL('Project')."?projects_id=$ID'>";
          _e('Create a sub project from this project');
-            echo "</a>";
-               Html::closeForm();
-               echo "</div>";
+         echo "</a>";
+         Html::closeForm();
+         echo "</div>";
       }
 
       echo "<div class='spaced'>";
