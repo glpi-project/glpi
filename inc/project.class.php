@@ -757,6 +757,18 @@ class Project extends CommonDBTM {
          $numrows = $DB->numrows($result);
       }
 
+      if ($this->can($ID, UPDATE)) {
+         echo "<div class='firstbloc'>";
+         echo "<form name='project_form$rand' id='project_form$rand' method='post'
+         action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+
+         echo "<a href='".Toolbox::getItemTypeFormURL('Project')."?projects_id=$ID'>";
+         _e('Create a sub project from this project');
+            echo "</a>";
+               Html::closeForm();
+               echo "</div>";
+      }
+
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr class='noHover'><th colspan='12'>".Project::getTypeName($numrows)."</th></tr>";
