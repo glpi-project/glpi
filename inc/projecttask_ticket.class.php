@@ -332,6 +332,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
                        `glpi_projectstates`.`name` AS sname,
+                       `glpi_projectstates`.`color`,
                        `father`.`name` AS fname,
                        `father`.`id` AS fID,
                        `glpi_projects`.`name` AS projectname,
@@ -401,7 +402,9 @@ class ProjectTask_Ticket extends CommonDBRelation{
                                                     'applyto' => "ProjectTask".$data["id"].$rand)));
                echo "</td>";
                echo "<td>".$data['tname']."</td>";
-               echo "<td>".$data['sname']."</td>";
+               echo "<td";
+               echo " style=\"background-color:".$data['color']."\"";
+               echo ">".$data['sname']."</td>";
                echo "<td>";
                echo Dropdown::getValueWithUnit($data["percent_done"],"%");
                echo "</td>";
