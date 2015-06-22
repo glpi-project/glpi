@@ -860,7 +860,7 @@ class ProjectTask extends CommonDBChild {
                                                array('display' => false,
                                                      'applyto' => "ProjectTask".$data["id"].$rand)));
                echo "</td>";
-               echo "<td>".$data['sname']."</td>";
+               echo "<td>".$data['tname']."</td>";
                echo "<td";
                echo " style=\"background-color:".$data['color']."\"";
                echo ">".$data['sname']."</td>";
