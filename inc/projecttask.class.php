@@ -384,7 +384,6 @@ class ProjectTask extends CommonDBChild {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Creation date')."</td>";
          echo "<td>";
-         echo Html::convDateTime($this->fields["date"]);
          echo sprintf(__('%1$s by %2$s'), Html::convDateTime($this->fields["date"]),
                                        getUserName($this->fields["users_id"], $showuserlink));
          echo "</td>";
