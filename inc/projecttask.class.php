@@ -349,7 +349,7 @@ class ProjectTask extends CommonDBChild {
       if ($ID > 0) {
          $this->check($ID, READ);
          $projects_id     = $this->fields['projects_id'];
-         $projecttasks_id = $this->fields['projecttasks-id'];
+         $projecttasks_id = $this->fields['projecttasks_id'];
       } else {
          $projects_id     = $options['projects_id'];
          $projecttasks_id = $options['projecttasks_id'];
