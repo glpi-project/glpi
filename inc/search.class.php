@@ -3872,7 +3872,7 @@ class Search {
    **/
    static function giveItem($itemtype, $ID, array $data, $num, $meta=0,
                             array $addobjectparams=array()) {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       $searchopt = &self::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
@@ -4334,6 +4334,16 @@ class Search {
                $status = Ticket::getStatus($data[$num][0]['name']);
                return "<img src=\"".Ticket::getStatusIconURL($data[$num][0]['name'])."\"
                         alt=\"$status\" title=\"$status\">&nbsp;$status";
+
+            case 'glpi_projectstates.name':
+               $query = "SELECT `color`
+                         FROM `glpi_projectstates`
+                         WHERE `name` = '".$data[$num][0]['name']."'";
+               foreach ($DB->request($query) as $color) {
+                  $color = $color['color'];
+                  $out   = "<div style=\"background-color:".$color.";\">".$data[$num][0]['name'].'</div>';
+               }
+               return $out;
 
             case 'glpi_items_tickets.items_id' :
             case 'glpi_items_problems.items_id' :
