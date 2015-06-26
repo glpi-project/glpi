@@ -619,11 +619,18 @@ class Project extends CommonDBTM {
          echo Search::showItem($p['output_type'], $id_col, $item_num, $p['row_num'], $align);
          // First column
          $first_col = '';
-         /// TODO add color of project state
+         $color     = '';
          if ($item->fields["projectstates_id"]) {
+            $query = "SELECT `color`
+                      FROM `glpi_projectstates`
+                      WHERE `id` = '".$item->fields["projectstates_id"]."'";
+            foreach ($DB->request($query) as $color) {
+               $color = $color['color'];
+            }
             $first_col = Dropdown::getDropdownName('glpi_projectstates', $item->fields["projectstates_id"]);
          }
-         echo Search::showItem($p['output_type'], $first_col, $item_num, $p['row_num'], $align);
+         echo Search::showItem($p['output_type'], $first_col, $item_num, $p['row_num'],
+                               "$align bgcolor='$color'");
 
          // Second column
          $second_col = sprintf(__('Opened on %s'),
