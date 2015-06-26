@@ -300,8 +300,12 @@ abstract class CommonITILActor extends CommonDBRelation {
              && ($item->fields['status'] != CommonITILObject::CLOSED)
              && ($item->fields['status'] != CommonITILObject::SOLVED)) {
 
+            $status = CommonITILObject::INCOMING;
+            if (in_array($item->fields['status'], Change::getNewStatusArray())) {
+               $status = $item->fields['status'];
+            }
             $item->update(array('id'     => $this->fields[static::getItilObjectForeignKey()],
-                                'status' => CommonITILObject::INCOMING));
+                                'status' => $status));
          } else {
             $item->updateDateMod($this->fields[static::getItilObjectForeignKey()]);
 
