@@ -341,7 +341,7 @@ class RuleImportComputer extends Rule {
                if ($criteria->fields['condition'] == Rule::PATTERN_IS) {
                   $condition = " IN ";
                } else {
-                  $conditin = " NOT IN ";
+                  $condition = " NOT IN ";
                }
                $sql_where .= " AND `glpi_computers`.`states_id`
                                  $condition ('".$criteria->fields['pattern']."')";
