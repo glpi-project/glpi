@@ -587,7 +587,8 @@ class Ticket extends CommonITILObject {
 
                      $duration = Entity::getUsedConfig('inquest_duration', $item->fields['entities_id']);
                      $date2    = strtotime($satisfaction->fields['date_begin']);
-                     if ((strtotime("now") - $date2) <= $duration*DAY_TIMESTAMP) {
+                     if (($duration == 0)
+                         || (strtotime("now") - $date2) <= $duration*DAY_TIMESTAMP) {
                         $satisfaction->showForm($item);
                      } else {
                         echo "<p class='center b'>".__('Satisfaction survey expired')."</p>";
