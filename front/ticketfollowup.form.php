@@ -37,6 +37,13 @@ Session::checkLoginUser();
 
 $fup = new TicketFollowup();
 
+//change ticket status
+if (isset($_REQUEST['status']) && !empty($_REQUEST['status'])) {
+   $ticket = new Ticket;
+   $ticket->update(array('id'     => intval($_REQUEST['tickets_id']), 
+                         'status' => intval($_REQUEST['status'])));
+}
+
 if (isset($_POST["add"])) {
    $fup->check(-1, CREATE, $_POST);
    $fup->add($_POST);

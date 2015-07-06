@@ -36,5 +36,12 @@ include ('../inc/includes.php');
 
 $task = new TicketTask();
 
+//change ticket status
+if (isset($_REQUEST['status']) && !empty($_REQUEST['status'])) {
+   $ticket = new Ticket;
+   $ticket->update(array('id'     => intval($_REQUEST['tickets_id']), 
+                         'status' => intval($_REQUEST['status'])));
+}
+
 include (GLPI_ROOT . "/front/commonitiltask.form.php");
 ?>

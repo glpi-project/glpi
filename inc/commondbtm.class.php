@@ -2003,11 +2003,13 @@ class CommonDBTM extends CommonGLPI {
             $params['candel'] = false;
          }
 
+         if ($params['canedit'] && $this->can($ID, UPDATE)) {
+            echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
+            echo Html::submit(_x('button','Save'), array('name' => 'update'));
+         }
+
          if ($params['candel']) {
-            if ($params['canedit']
-                && $this->can($ID, UPDATE)) {
-               echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-               echo Html::submit(_x('button','Save'), array('name' => 'update'));
+            if ($params['canedit'] && $this->can($ID, UPDATE)) {
                echo "</td></tr><tr class='tab_bg_2'>\n";
             }
             if ($this->isDeleted()
@@ -2044,11 +2046,6 @@ class CommonDBTM extends CommonGLPI {
                }
             }
 
-         } else {
-            if ($this->can($ID, UPDATE)) {
-               echo "<td class='center' colspan='".($params['colspan']*2)."'>\n";
-               echo Html::submit(_x('button','Save'), array('name' => 'update'));
-            }
          }
          if ($this->isField('date_mod')) {
             echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
@@ -2166,7 +2163,7 @@ class CommonDBTM extends CommonGLPI {
 
       if ($this->canEdit($ID)) {
          echo "<form name='form' method='post' action='".$params['target']."' ".
-                $params['formoptions'].">";
+                $params['formoptions']." enctype=\"multipart/form-data\">";
 
          //Should add an hidden entities_id field ?
          //If the table has an entities_id field

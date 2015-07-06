@@ -522,7 +522,7 @@ class Document_Item extends CommonDBRelation{
 
    }
 
-      /**
+   /**
     * Show documents associated to an item
     *
     * @since version 0.84
@@ -531,126 +531,80 @@ class Document_Item extends CommonDBRelation{
     * @param $withtemplate    (default '')
    **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {
-      global $DB, $CFG_GLPI;
-
       $ID = $item->getField('id');
 
       if ($item->isNewID($ID)) {
          return false;
       }
+
       if (($item->getType() != 'Ticket')
           && ($item->getType() != 'KnowbaseItem')
           && ($item->getType() != 'Reminder')
           && !Document::canView()) {
          return false;
       }
+      
+      $params = array();
+      $params['rand'] = mt_rand();      
+
+      self::showAddFormForItem($item, $withtemplate, $params);
+      self::showListForItem($item, $withtemplate, $params);
+   }
+
+   static function showSimpleAddForItem(CommonDBTM $item, $withtemplate='') {
+
+      $entity   = $_SESSION["glpiactive_entity"];
+      if ($item->isEntityAssign()) {
+         /// Case of personal items : entity = -1 : create on active entity (Reminder case))
+         if ($item->getEntityID() >=0 ) {
+            $entity = $item->getEntityID();
+         }
+      }
+
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='center'>".__('Add a document')."</td>";
+      echo "<td>";
+
+      echo "<input type='hidden' name='entities_id' value='$entity'>";
+      echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
+      echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
+      echo "<input type='hidden' name='items_id' value='".$item->getID()."'>";
+      if ($item->getType() == 'Ticket') {
+         echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
+      }
+      echo Html::file();
+      echo "</td><td class='left'>";
+      echo "(".Document::getMaxUploadSize().")&nbsp;";
+      echo "</td>";
+      echo "</tr>";
+   }
+
+   static function showAddFormForItem(CommonDBTM $item, $withtemplate='', $options = array()) {
+      global $DB, $CFG_GLPI;
+
+      //default options
+      $params['rand'] = mt_rand();
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
 
       if (!$item->can($item->fields['id'], READ)) {
          return false;
       }
 
-
-      $columns = array('name'      => __('Name'),
-                       'entity'    => __('Entity'),
-                       'filename'  => __('File'),
-                       'link'      => __('Web link'),
-                       'headings'  => __('Heading'),
-                       'mime'      => __('MIME type'));
-      if ($CFG_GLPI['use_rich_text']) {
-         $columns['tag'] = __('Tag');
-      }
-      $columns['assocdate'] = __('Date');
-
-
       if (empty($withtemplate)) {
          $withtemplate = 0;
       }
-      $linkparam = '';
 
-      if (get_class($item) == 'Ticket') {
-         $linkparam = "&amp;tickets_id=".$item->fields['id'];
-      }
-
-      if (isset($_GET["order"]) && ($_GET["order"] == "ASC")) {
-         $order = "ASC";
-      } else {
-         $order = "DESC";
-      }
-
-      if ((isset($_GET["sort"]) && !empty($_GET["sort"]))
-         && isset($columns[$_GET["sort"]])) {
-         $sort = "`".$_GET["sort"]."`";
-      } else {
-         $sort = "`assocdate`";
-      }
-
-      $canedit       =  $item->canAddItem('Document') && Document::canView();
-
-      $rand          = mt_rand();
-      $is_recursive  = $item->isRecursive();
-
-      $query = "SELECT `glpi_documents_items`.`id` AS assocID,
-                       `glpi_documents_items`.`date_mod` AS assocdate,
-                       `glpi_entities`.`id` AS entityID,
-                       `glpi_entities`.`completename` AS entity,
-                       `glpi_documentcategories`.`completename` AS headings,
-                       `glpi_documents`.*
-                FROM `glpi_documents_items`
-                LEFT JOIN `glpi_documents`
-                          ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
-                LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
-                LEFT JOIN `glpi_documentcategories`
-                        ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
-                WHERE `glpi_documents_items`.`items_id` = '$ID'
-                      AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
-
-      if (Session::getLoginUserID()) {
-         $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
-      } else {
-         // Anonymous access from FAQ
-         $query .= " AND `glpi_documents`.`entities_id`= '0' ";
-      }
-
-      // Document : search links in both order using union
-      if ($item->getType() == 'Document') {
-         $query .= "UNION
-                    SELECT `glpi_documents_items`.`id` AS assocID,
-                           `glpi_documents_items`.`date_mod` AS assocdate,
-                           `glpi_entities`.`id` AS entityID,
-                           `glpi_entities`.`completename` AS entity,
-                           `glpi_documentcategories`.`completename` AS headings,
-                           `glpi_documents`.*
-                    FROM `glpi_documents_items`
-                    LEFT JOIN `glpi_documents`
-                        ON (`glpi_documents_items`.`items_id`=`glpi_documents`.`id`)
-                    LEFT JOIN `glpi_entities`
-                        ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
-                    LEFT JOIN `glpi_documentcategories`
-                        ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
-                    WHERE `glpi_documents_items`.`documents_id` = '$ID'
-                          AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
-
-         if (Session::getLoginUserID()) {
-            $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
-         } else {
-            // Anonymous access from FAQ
-            $query .= " AND `glpi_documents`.`entities_id`='0' ";
-         }
-      }
-      $query .= " ORDER BY $sort $order";
-
-      $result = $DB->query($query);
-      $number = $DB->numrows($result);
-      $i      = 0;
-
-      $documents = array();
-      $used      = array();
-      if ($numrows = $DB->numrows($result)) {
-         while ($data = $DB->fetch_assoc($result)) {
-            $documents[$data['assocID']] = $data;
-            $used[$data['id']]           = $data['id'];
-         }
-      }
+      // find documents already associated to the item
+      $doc_item = new self;
+      $used_found = $doc_item->find("`items_id` = '".$item->getID()."' 
+                                 AND `itemtype` = '".$item->getType()."'");
+      $used = array_keys($used_found);
+      $used = array_combine($used, $used);
 
       if ($item->canAddItem('Document')
           && ($withtemplate < 2)) {
@@ -681,12 +635,13 @@ class Document_Item extends CommonDBRelation{
 
 
          if ($item->getType() == 'Document') {
-            $used[$ID] = $ID;
+            $used[$item->getID()] = $item->getID();
          }
 
          echo "<div class='firstbloc'>";
-         echo "<form name='documentitem_form$rand' id='documentitem_form$rand' method='post'
-                action='".Toolbox::getItemTypeFormURL('Document')."' enctype=\"multipart/form-data\">";
+         echo "<form name='documentitem_form".$params['rand']."' id='documentitem_form".
+               $params['rand']."' method='post' action='".Toolbox::getItemTypeFormURL('Document').
+               "' enctype=\"multipart/form-data\">";
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2'><th colspan='5'>".__('Add a document')."</th></tr>";
@@ -699,11 +654,11 @@ class Document_Item extends CommonDBRelation{
          echo "</td>";
          echo "<td class='right'>";
          echo "<input type='hidden' name='entities_id' value='$entity'>";
-         echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
+         echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
          echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
-         echo "<input type='hidden' name='items_id' value='$ID'>";
+         echo "<input type='hidden' name='items_id' value='".$item->getID()."'>";
          if ($item->getType() == 'Ticket') {
-            echo "<input type='hidden' name='tickets_id' value='$ID'>";
+            echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
          }
          echo Html::file();
          echo "</td><td class='left'>";
@@ -718,15 +673,15 @@ class Document_Item extends CommonDBRelation{
 
          if (Document::canView()
              && ($nb > count($used))) {
-            echo "<form name='document_form$rand' id='document_form$rand' method='post'
-                   action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+            echo "<form name='document_form".$params['rand']."' id='document_form".$params['rand'].
+                  "' method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='4' class='center'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
-            echo "<input type='hidden' name='items_id' value='$ID'>";
+            echo "<input type='hidden' name='items_id' value='".$item->getID()."'>";
             if ($item->getType() == 'Ticket') {
-               echo "<input type='hidden' name='tickets_id' value='$ID'>";
+               echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
                echo "<input type='hidden' name='documentcategories_id' value='".
                       $CFG_GLPI["documentcategories_id_forticket"]."'>";
             }
@@ -744,14 +699,127 @@ class Document_Item extends CommonDBRelation{
 
          echo "</div>";
       }
+   }
 
+   static function showListForItem(CommonDBTM $item, $withtemplate='', $options = array()) {
+      global $DB, $CFG_GLPI;
+
+      //default options
+      $params['rand'] = mt_rand();
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      $canedit = $item->canAddItem('Document') && Document::canView();
+
+      $columns = array('name'      => __('Name'),
+                       'entity'    => __('Entity'),
+                       'filename'  => __('File'),
+                       'link'      => __('Web link'),
+                       'headings'  => __('Heading'),
+                       'mime'      => __('MIME type'));
+      if ($CFG_GLPI['use_rich_text']) {
+         $columns['tag'] = __('Tag');
+      }
+      $columns['assocdate'] = __('Date');
+
+      if (isset($_GET["order"]) && ($_GET["order"] == "ASC")) {
+         $order = "ASC";
+      } else {
+         $order = "DESC";
+      }
+
+      if ((isset($_GET["sort"]) && !empty($_GET["sort"]))
+         && isset($columns[$_GET["sort"]])) {
+         $sort = "`".$_GET["sort"]."`";
+      } else {
+         $sort = "`assocdate`";
+      }
+
+      if (empty($withtemplate)) {
+         $withtemplate = 0;
+      }
+      $linkparam = '';
+
+      if (get_class($item) == 'Ticket') {
+         $linkparam = "&amp;tickets_id=".$item->fields['id'];
+      }
+
+
+      $query = "SELECT `glpi_documents_items`.`id` AS assocID,
+                       `glpi_documents_items`.`date_mod` AS assocdate,
+                       `glpi_entities`.`id` AS entityID,
+                       `glpi_entities`.`completename` AS entity,
+                       `glpi_documentcategories`.`completename` AS headings,
+                       `glpi_documents`.*
+                FROM `glpi_documents_items`
+                LEFT JOIN `glpi_documents`
+                          ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
+                LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
+                LEFT JOIN `glpi_documentcategories`
+                        ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
+                WHERE `glpi_documents_items`.`items_id` = '".$item->getID()."'
+                      AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
+
+      if (Session::getLoginUserID()) {
+         $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
+      } else {
+         // Anonymous access from FAQ
+         $query .= " AND `glpi_documents`.`entities_id`= '0' ";
+      }
+
+      // Document : search links in both order using union
+      if ($item->getType() == 'Document') {
+         $query .= "UNION
+                    SELECT `glpi_documents_items`.`id` AS assocID,
+                           `glpi_documents_items`.`date_mod` AS assocdate,
+                           `glpi_entities`.`id` AS entityID,
+                           `glpi_entities`.`completename` AS entity,
+                           `glpi_documentcategories`.`completename` AS headings,
+                           `glpi_documents`.*
+                    FROM `glpi_documents_items`
+                    LEFT JOIN `glpi_documents`
+                        ON (`glpi_documents_items`.`items_id`=`glpi_documents`.`id`)
+                    LEFT JOIN `glpi_entities`
+                        ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
+                    LEFT JOIN `glpi_documentcategories`
+                        ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
+                    WHERE `glpi_documents_items`.`documents_id` = '".$item->getID()."'
+                          AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
+
+         if (Session::getLoginUserID()) {
+            $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
+         } else {
+            // Anonymous access from FAQ
+            $query .= " AND `glpi_documents`.`entities_id`='0' ";
+         }
+      }
+      $query .= " ORDER BY $sort $order";
+
+      $result = $DB->query($query);
+      $number = $DB->numrows($result);
+      $i      = 0;
+
+      $documents = array();
+      $used      = array();
+      if ($numrows = $DB->numrows($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $documents[$data['assocID']] = $data;
+            $used[$data['id']]           = $data['id'];
+         }
+      }
+
+      
       echo "<div class='spaced'>";
       if ($canedit
           && $number
           && ($withtemplate < 2)) {
-         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         Html::openMassiveActionsForm('mass'.__CLASS__.$params['rand']);
          $massiveactionparams = array('num_displayed'  => $number,
-                                      'container'      => 'mass'.__CLASS__.$rand);
+                                      'container'      => 'mass'.__CLASS__.$params['rand']);
          Html::showMassiveActions($massiveactionparams);
       }
 
@@ -767,9 +835,9 @@ class Document_Item extends CommonDBRelation{
       if ($canedit
           && $number
           && ($withtemplate < 2)) {
-         $header_top    .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_top    .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$params['rand']);
          $header_top    .= "</th>";
-         $header_bottom .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
+         $header_bottom .= "<th width='11'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$params['rand']);
          $header_bottom .= "</th>";
       }
 

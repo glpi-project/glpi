@@ -624,6 +624,8 @@ class TicketFollowup  extends CommonDBTM {
          Dropdown::showYesNo('is_private', $this->fields["is_private"]);
          echo "</td></tr>";
 
+         Document_Item::showSimpleAddForItem($this);
+
          $this->showFormButtons($options);
 
       } else {
@@ -645,9 +647,75 @@ class TicketFollowup  extends CommonDBTM {
 
          echo "</td></tr>\n";
 
+         Document_Item::showSimpleAddForItem($ticket);
+
          $this->showFormButtons($options);
       }
       return true;
+   }
+
+   function showFormButtons($options=array()) {
+      global $CFG_GLPI;
+
+      if (isset($_SESSION["glpiactiveprofile"])
+          && $_SESSION["glpiactiveprofile"]["interface"] != "central") {
+         return parent::showFormButtons($options);
+      }
+
+      // for single object like config
+      $ID = 1;
+      if (isset($this->fields['id'])) {
+         $ID = $this->fields['id'];
+      }
+
+      $params['colspan']      = 2;
+      $params['candel']       = true;
+      $params['canedit']      = true;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      if (!$this->isNewID($ID)) {
+         echo "<input type='hidden' name='id' value='$ID'>";
+      }
+      
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center' colspan='".($params['colspan']*2)."'>";
+
+      if ($this->isNewID($ID)) {
+         echo Ticket::getSplittedSubmitButtonHtml($this->fields['tickets_id'], 'add');
+         echo "<input type='hidden' name='id' value='$ID'>";
+      } else {
+         if ($params['candel']
+             && !$this->can($ID, DELETE)
+             && !$this->can($ID, PURGE)) {
+            $params['candel'] = false;
+         }
+
+         if ($params['canedit'] && $this->can($ID, UPDATE)) {
+            echo Ticket::getSplittedSubmitButtonHtml($this->fields['tickets_id'], 'update');
+            echo "</td></tr><tr class='tab_bg_2'>\n";
+         }
+
+         if ($params['candel']) {
+            echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
+            if ($this->can($ID, PURGE)) {
+               echo Html::submit(_x('button','Delete permanently'),
+                                 array('name'    => 'purge',
+                                       'confirm' => __('Confirm the final deletion?')));
+            }     
+         }
+
+         if ($this->isField('date_mod')) {
+            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
+         }
+      }
+
+      echo "</td></tr></table></div>";
+      Html::closeForm();
    }
 
 
