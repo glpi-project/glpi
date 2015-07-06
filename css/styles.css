@@ -33,7 +33,7 @@
 /* ################--------------- Default style  ---------------#################### */
 
 body {
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
    font-size: 12px;
    margin: 0;
    padding: 0;
@@ -1755,7 +1755,7 @@ a.icon_nav_move:hover img {
    height: 22px;
    width: 150px;
    padding: 0 3px;
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
    font-size: 12px;
    -moz-border-radius: 3px;
    -webkit-border-radius: 3px;
@@ -2204,7 +2204,7 @@ ul#menu ul.ssmenu {
    text-align: left;
    padding: 4px 8px;
    margin-top: -10px;
-   font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
+   font-family: 'Bitstream Vera Sans', Verdana, Tahoma, 'Sans serif';
 }
 
 .timeline_box .break {
@@ -2325,7 +2325,7 @@ ul#menu ul.ssmenu {
 .timeline_history .h_info {
    float: left;
    width: 25%;
-   max-width: 120px;
+   max-width: 140px;
    min-height: 120px;
 }
 .timeline_history .right .h_info {
@@ -2347,6 +2347,8 @@ ul#menu ul.ssmenu {
    background-image: url(../pics/timeline/history.png);
    white-space: nowrap;
    margin-bottom: 10px;
+   text-align: left;
+   line-height: 16px;
 }
 
 .timeline_history .h_user a {
