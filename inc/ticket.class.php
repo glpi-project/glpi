@@ -6477,6 +6477,9 @@ class Ticket extends CommonITILObject {
                       'parenttype' => 'Ticket',
                       'tickets_id' => $this->fields['id'],
                       'id'         => -1);
+      if (isset($_GET['load_kb_sol'])) {
+         $params['load_kb_sol'] = $_GET['load_kb_sol'];
+      }
       $out = Ajax::updateItemJsCode("viewitem" . $this->fields['id'] . "$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/timeline_viewsubitem.php", 
                                     $params, "", false);
@@ -6509,6 +6512,10 @@ class Ticket extends CommonITILObject {
             }
             o.className = o.className + ' talk_active';
       };";
+
+      if (isset($_GET['load_kb_sol'])) {
+         echo "viewAddSubitem" . $this->fields['id'] . "$rand('Solution');";
+      }
       echo "</script>\n";
       
       //check sub-items rights

@@ -26,7 +26,11 @@ if (($item = getItemForItemtype($_POST['type']))
 } else if ($_POST['type'] == "Solution") {
    $ticket = new Ticket;
    $ticket->getFromDB($_POST["tickets_id"]);
-   $ticket->showSolutionForm();
+
+   if (!isset($_REQUEST['load_kb_sol'])) {
+      $_REQUEST['load_kb_sol'] = 0;
+   }
+   $ticket->showSolutionForm($_REQUEST['load_kb_sol']);
 }
 Html::ajaxFooter();
 ?>
