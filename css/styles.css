@@ -405,6 +405,244 @@ a.vsubmit:hover {
    background-color:#eeeeee;
 }
 
+/* ################--------------- Layout  ---------------#################### */
+.layout_classic.form div.navigationheader,
+.layout_vsplit.form div.navigationheader {
+   margin: 0 auto 10px;
+   width: 90%;
+}
+
+.layout_classic.form .main_form,
+.layout_vsplit.form .main_form {
+   width: 950px;
+   margin: 0 auto;
+}
+
+.layout_classic.form div.ui-tabs,
+.layout_vsplit.form div.ui-tabs {
+   width: 950px;
+}
+
+.layout_classic.form div.ui-tabs-panel,
+.layout_vsplit.form div.ui-tabs-panel {
+  padding: 1px;
+}
+
+.ui-tabs-paging-disabled {
+   display: none;
+}
+
+.ui-tabs-paging-prev,
+.ui-tabs-paging-next {
+   height: 25px;
+   width: 12px;
+   padding: 0 !important;
+}
+
+.layout_classic.form div.ui-tabs-panel{
+   padding-top: 5px;
+}
+
+.layout_vsplit #BackToTop {
+   display: none;
+}
+
+.layout_lefttab .ui-tabs,
+.layout_classic .ui-tabs,
+.layout_vsplit .ui-tabs {
+   border: 0;
+}
+
+.ui-tabs {
+   background: #FFF repeat-x top left;
+   -moz-box-shadow: 0px 1px 1px #7F7979;
+   -webkit-box-shadow: 0px 1px 1px #7F7979;
+   box-shadow: 0px 1px 1px #7F7979;
+   width: 90% !important;
+}
+
+.ui-tabs sup.tab_nb {
+   border-radius: 50%;
+   background-color: #FFF;
+   height: 13px;
+   min-width: 16px;
+   text-align: center;
+   display: inline-block;
+   vertical-align: middle;
+   padding: 3px 2px;
+   margin-bottom: -7px;
+   margin-left: 5px;
+}
+
+.ui-tabs .ui-state-active sup.tab_nb {
+   background-color: #E6E6E6;
+}
+
+
+.layout_vsplit.form .ui-tabs {
+   height: 100%;
+   width: 100%;
+   padding: 0;
+   overflow: hidden;
+}
+
+.layout_lefttab .ui-tabs-nav {
+   margin: 5px !important;
+   box-sizing: border-box;
+}
+.layout_lefttab .ui-tabs-nav,
+.layout_classic .ui-tabs-nav,
+.layout_vsplit .ui-tabs-nav {
+   border: 0;
+   background: none;
+}
+
+.layout_classic.form .stNavMain li,
+.layout_vsplit.form .stNavMain li {
+   border: 1px solid #d3d3d3 !important;
+   border-bottom: none !important;
+}
+
+.main_form {
+   background-color: #FFF;
+   -moz-box-shadow: 0px 1px 2px 1px #D2D2D2;
+   -webkit-box-shadow: 0px 1px 2px 1px #D2D2D2;
+   box-shadow: 0px 1px 2px 1px #D2D2D2;
+}
+
+.main_form tr:not(.headerRow)  th:not(.actor-th) {
+   text-align: right !important;
+}
+
+.main_form tr.headerRow th {
+   border-bottom: 1px solid #EFEFEF;
+   font-size: 1.5em;
+   padding: 8px 0;
+}
+
+
+/* Vertical split layout */
+@media screen and (min-width: 1250px) {
+   html, body.layout_vsplit {
+      height:100%;
+   }
+   body.layout_vsplit {
+      overflow: hidden;
+   }
+
+   .layout_vsplit div.navigationheader,
+   .layout_vsplit.form table.tab_cadre_pager {
+      margin: 0;
+      border: 0;
+   }
+
+   .layout_vsplit .search_page {
+      height:100%;
+      overflow-y: auto;
+   }
+
+   .layout_vsplit #page {
+      max-width: inherit;
+      min-height: 0;
+      position: absolute;
+      top: 105px;
+      bottom: 15px;
+      width: 100%;
+      padding: 0;
+      overflow: auto;
+   }
+
+   .layout_vsplit #page .main_form.create_form {
+      width: 950px;
+      margin: 0 auto;
+   }
+
+   .layout_vsplit.form table.tab_cadre_pager,
+   .layout_vsplit.form table.tab_cadre_fixe,
+   .layout_vsplit.form table.tab_cadre_fixehov {
+      width: 100%;
+      margin: 0;
+   }
+
+   .layout_vsplit.form div.main_form:not(.no_tab) {
+      width: 46%;
+      float: left;
+      margin: 0 15px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: absolute;
+      top: 32px;
+      bottom: 0;
+   }
+
+   .layout_classic #tabspanel + div.ui-tabs:not(.horizontal),
+   .layout_vsplit #tabspanel + div.ui-tabs {
+      height: 100%;
+      box-sizing:border-box;
+      -moz-box-sizing:border-box;
+      -webkit-box-sizing:border-box;
+   }
+   .layout_vsplit.form #tabspanel + div.ui-tabs:not(.horizontal) {
+      width: 50% !important;
+      margin: 0 15px;
+      float: right;
+      border: none;
+      -moz-box-shadow: 0px 1px 2px 1px #D2D2D2;
+      -webkit-box-shadow: 0px 1px 2px 1px #D2D2D2;
+      box-shadow: 0px 1px 2px 1px #D2D2D2;
+   }
+
+   .layout_vsplit.form .ui-tabs {
+      position: absolute;
+      top: 32px;
+      bottom: 0;
+      width: 52%;
+      margin: 0;
+      right: 0;
+      height: inherit !important;
+   }
+
+   .layout_vsplit .ui-tabs-panel {
+      padding: 10px 0 0 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: absolute;
+      top: 32px;
+      bottom: 0;
+      width: 100%;
+      box-sizing: border-box;
+   }
+
+   .layout_vsplit .ui-tabs-panel .tab_cadre_fixehov th {
+      background-color: #E6E6E6;
+   }
+
+   .layout_vsplit.form .main_form input[type=text] {
+      width:74%;
+   }
+   .layout_vsplit.form .main_form textarea {
+      resize: vertical;
+      width:99%;
+      min-height: 125px;
+   }
+
+   .layout_vsplit.form input.submit, 
+   .layout_vsplit.form span.vsubmit, 
+   .layout_vsplit.form a.vsubmit {
+      white-space: nowrap;
+   }
+   .layout_vsplit.form .boxnote {
+      width: 100%;
+   }
+
+   .layout_vsplit #debug,
+   .layout_vsplit #footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+   }
+}
+
 
 /* ################--------------- Table  ---------------#################### */
 table {

@@ -223,7 +223,13 @@ class CommonGLPI {
     * @param $ong   array
    **/
    function addDefaultFormTab(array &$ong) {
-      $ong[$this->getType().'$main'] = $this->getTypeName(1);
+      global $CFG_GLPI;
+
+      if (in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])
+         || !in_array($_SESSION['glpilayout'], array('classic', 'vsplit')) 
+         || !method_exists($this, "showForm")) {
+         $ong[$this->getType().'$main'] = $this->getTypeName(1);
+      }
    }
 
 
@@ -552,6 +558,27 @@ class CommonGLPI {
    **/
    static function getFormURL($full=true) {
       return Toolbox::getItemTypeFormURL(get_called_class(), $full);
+   }
+
+
+   function showPrimaryForm($options = array()) {
+      if (!method_exists($this, "showForm")) {
+         return false;
+      }
+
+      $ong = $this->defineTabs();
+      $class = "main_form";
+      if (count($ong) == 0) {
+         $class.= " no_tab";
+      }
+      if (!isset($_GET['id']) || $_GET['id'] <= 0) {
+         $class.= " create_form";
+      } else {
+         $class.= " modify_form";
+      }
+      echo "<div class='$class'>";
+      $this->showForm($_REQUEST['id'], $_REQUEST);
+      echo "</div>";
    }
 
 
@@ -1005,6 +1032,7 @@ class CommonGLPI {
     * @param $options   array
    **/
    function display($options=array()) {
+      global $CFG_GLPI;
 
       if (isset($options['id'])
           && !$this->isNewID($options['id'])) {
@@ -1014,6 +1042,14 @@ class CommonGLPI {
       }
 
       $this->showNavigationHeader($options);
+      if (!in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])
+          && in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+
+         if (!isset($_REQUEST['id'])) {
+            $_REQUEST['id'] = "";
+         }
+         $this->showPrimaryForm($options);
+      }
       $this->showTabsContent($options);
    }
 

@@ -965,7 +965,36 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".__('Go to created item after creation')."</td>";
       echo "<td>";
       Dropdown::showYesNo("backcreated", $data["backcreated"]);
-      echo "</td><td colspan='2'></td></tr>";
+      echo "</td>";
+
+      echo "<td>" . __('Layout')."</td><td>";
+      $layout_options = array('lefttab' => __("Tabs on left"),
+                              'classic' => __("Classic view"),
+                              'vsplit'  => __("Vertical split"));
+
+      echo "<select name='layout' id='layout-selector'>";
+      foreach ($layout_options as $key => $name) {
+         $selected = "";
+         if ($data["layout"] == $key) {
+            $selected = "selected='selected'";
+         }
+         echo "<option value='$key' $selected>".ucfirst($name)."</option>";
+      
+      }
+      echo Html::scriptBlock("
+         function formatLayout(layout) {
+             return \"&nbsp;<img src='../pics/layout_\" + layout.id.toLowerCase() + \".png'/>\"
+                     + \"&nbsp;\" + layout.text;
+         }
+         $(\"#layout-selector\").select2({
+             formatResult: formatLayout,
+             formatSelection: formatLayout,
+             escapeMarkup: function(m) { return m; }
+         });
+      ");
+      echo "</select>";
+      echo "</td>";
+      echo "</tr>";
 
 
       echo "<tr class='tab_bg_2'><td>".__('Enable ticket timeline')."</td>";

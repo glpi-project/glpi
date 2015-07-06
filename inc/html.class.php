@@ -1068,6 +1068,13 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js");
 
+      // layout
+      if (in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+         echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/css/jquery.scrollabletab.css");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js");
+      }
+
       if (isset($_SESSION['glpilanguage'])) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
@@ -1135,8 +1142,18 @@ class Html {
       $item   = strtolower($item);
 
       self::includeHeader($title);
+
+      $body_class = "layout_".$_SESSION['glpilayout'];
+      if (strpos($_SERVER['REQUEST_URI'], "form.php") !== false
+          && isset($_GET['id']) && $_GET['id'] > 0) {
+         if (!in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])) {
+            $body_class.= " form";
+         } else {
+            $body_class = "";
+         }
+      }
       // Body
-      echo "<body>";
+      echo "<body class='$body_class'>";
       // Generate array for menu and check right
       if (!isset($_SESSION['glpimenu'])
           || !is_array($_SESSION['glpimenu'])
@@ -1897,7 +1914,16 @@ class Html {
       self::includeHeader($title);
 
       // Body
-      echo "<body>";
+      $body_class = "layout_".$_SESSION['glpilayout'];
+      if (strpos($_SERVER['REQUEST_URI'], "form.php") !== false
+          && isset($_GET['id']) && $_GET['id'] > 0) {
+         if (!in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])) {
+            $body_class.= " form";
+         } else {
+            $body_class = "";
+         }
+      }
+     echo "<body class='$body_class'>";
 
       // Main Headline
       echo "<div id='header'>";
