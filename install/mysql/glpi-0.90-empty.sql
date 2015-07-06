@@ -944,7 +944,7 @@ INSERT INTO `glpi_configs` VALUES ('152','core','attach_ticket_documents_to_mail
 INSERT INTO `glpi_configs` VALUES ('153','core','backcreated','0');
 INSERT INTO `glpi_configs` VALUES ('154','core','task_state','1');
 INSERT INTO `glpi_configs` VALUES ('155','core','layout','lefttab');
-INSERT INTO `glpi_configs` VALUES ('156','core','ticket_timeline', 0);
+INSERT INTO `glpi_configs` VALUES ('156','core','ticket_timeline', 1);
 INSERT INTO `glpi_configs` VALUES ('157','core','ticket_timeline_keep_replaced_tabs', 0);
 INSERT INTO `glpi_configs` VALUES ('158','core','palette', 'auror');
 
