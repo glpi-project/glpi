@@ -339,7 +339,7 @@ function step4 ($databasename, $newdatabasename) {
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
       $DB = new DB();
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.85.5-empty.sql")) {
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.90-empty.sql")) {
          echo "Errors occurred inserting default database";
       }
       // update default language
