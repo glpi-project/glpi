@@ -179,7 +179,7 @@ class Ticket extends CommonITILObject {
 
          $pic_validate = "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
                            __s('Ticket waiting for your approval')."\" src='".
-                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
+                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
 
          $links[$pic_validate] = '/front/ticket.php?'.Toolbox::append_params($opt, '&amp;');
       }
@@ -479,6 +479,10 @@ class Ticket extends CommonITILObject {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if ($item->isNewItem()) {
+         return;
+      }
 
       if (static::canView()) {
          $nb    = 0;

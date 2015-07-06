@@ -997,16 +997,19 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
 
+
       echo "<tr class='tab_bg_2'><td>".__('Enable ticket timeline')."</td>";
       echo "<td>";
       Dropdown::showYesNo('ticket_timeline',
                           $data['ticket_timeline']);
+
       echo "</td>";
+
       echo "<td>" . __('Keep tabs replaced by the ticket timeline')."</td><td>";
+
       Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
                           $data['ticket_timeline_keep_replaced_tabs']);
       echo "</td></tr>";
-      
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __("Color palette") . "</td><td>";
@@ -1036,6 +1039,9 @@ class Config extends CommonDBTM {
       ");
       echo "</select>";
       echo "</td></tr>";
+
+      
+
 
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
@@ -1789,11 +1795,11 @@ class Config extends CommonDBTM {
 
          if ($tmperror > 0) {
             if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'> ".
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'> ".
                      sprintf(__('Check permissions to the directory: %s'), $dir).
                      " ".$errors[$tmperror]."\n";
             } else {
-               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'><p class='red'>".
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'><p class='red'>".
                     $errors[$tmperror]."</p> ".
                     sprintf(__('Check permissions to the directory: %s'), $dir).
                     "'</td></tr>";
@@ -1801,10 +1807,10 @@ class Config extends CommonDBTM {
             $error = 2;
          } else {
             if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".__s('OK').
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK').
                     "\">$dir : OK\n";
             } else {
-               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
                           __s('A file and a directory have be created and deleted - Perfect!')."\"
                           title=\"".
                           __s('A file and a directory have be created and deleted - Perfect!')."\">".
@@ -1821,20 +1827,20 @@ class Config extends CommonDBTM {
 
       if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
          if ($fordebug) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".__s('OK')."\">".
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".__s('OK')."\">".
                    GLPI_LOG_DIR." : OK\n";
          } else {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
                        __s('A file was created - Perfect!')."\" title=\"".
                        __s('A file was created - Perfect!')."\"></td></tr>";
          }
 
       } else {
          if ($fordebug) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/orangebutton.png'>".
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
                   sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."\n";
          } else {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/orangebutton.png'>".
+            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
                  "<p class='red'>".__('The file could not be created.')."</p>".
                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
          }

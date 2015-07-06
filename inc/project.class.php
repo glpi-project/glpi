@@ -219,7 +219,7 @@ class Project extends CommonDBTM {
           || Session::haveRight('projecttask', ProjectTask::READMY)) {
          $pic_validate = "<img title=\""._sn('Task','Tasks',2)."\" alt=\"".
                            _sn('Task','Tasks',2)."\" src='".
-                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
+                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'>";
 
          $links[$pic_validate] = '/front/projecttask.php';
 

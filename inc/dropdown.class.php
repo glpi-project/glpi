@@ -672,6 +672,7 @@ class Dropdown {
       }
 
       $params['value'] = $value;
+      $params['width'] = "58px";
       return self::showFromArray($name, $options, $params);
    }
 
@@ -1879,7 +1880,7 @@ class Dropdown {
 
             echo "<img alt=\"".__s('Duplicate the element as many times as there are connections').
                  "\" title=\"".__s('Duplicate the element as many times as there are connections').
-                 "\" src='".$CFG_GLPI["root_doc"]."/pics/aide.png'>";
+                 "\" src='".$CFG_GLPI["root_doc"]."/pics/info-small.png' class='pointer'>";
          }
 
       } else {
@@ -1983,7 +1984,7 @@ class Dropdown {
       $values['-'.Search::CSV_OUTPUT]           = __('All pages in CSV');
 
       Dropdown::showFromArray('display_type', $values);
-      echo "<input type='image' name='export' src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png'
+      echo "<input type='image' name='export' class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/export.png'
              title=\""._sx('button', 'Export')."\" value=\""._sx('button', 'Export')."\">";
    }
 

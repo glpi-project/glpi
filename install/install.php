@@ -102,14 +102,20 @@ function acceptLicense() {
          __('Unofficial translations are also available')."</a>";
 
    echo "<form action='install.php' method='post'>";
-   echo "<p>";
-   echo "<input type='radio' name='install' id='agree' value='License'><label for= agree >";
-   echo __('I have read and ACCEPT the terms of the license written above.')." </label></p>";
+   echo "<p id='license'>";
+  
+   echo "<label for='agree' class='radio'>";
+   echo "<input type='radio' name='install' id='agree' value='License'>";
+   echo "<span class='outer'><span class='inner'></span></span>";
+   echo __('I have read and ACCEPT the terms of the license written above.');
+   echo " </label>";
 
-   echo "<br>";
+   echo "<label for='disagree' class='radio'>";
    echo "<input type='radio' name='install' value='lang_select' id='disagree' checked='checked'>";
-   echo " <label for='disagree'>";
-   echo __('I have read and DO NOT ACCEPT the terms of the license written above')." </label>";
+   echo "<span class='outer'><span class='inner'></span></span>";
+   echo __('I have read and DO NOT ACCEPT the terms of the license written above');
+   echo " </label>";
+
    echo "<p><input type='submit' name='submit' class='submit' value=\"".__s('Continue')."\"></p>";
    Html::closeForm();
    echo "</div>";
@@ -260,14 +266,25 @@ function step3($host, $user, $password, $update) {
             if (!in_array($row['Database'], array("information_schema",
                                                   "mysql",
                                                   "performance_schema") )) {
-               echo "<p><input type='radio' name='databasename' value='". $row['Database']."'>";
-               echo $row['Database'].".</p>";
+               echo "<p>";
+               echo "<label class='radio'>";
+               echo "<input type='radio' name='databasename' value='". $row['Database']."'>";
+
+               echo "<span class='outer'><span class='inner'></span></span>";
+               echo $row['Database'];
+               echo " </label>";
+               echo " </p>";
             }
          }
 
-         echo "<p><input type='radio' name='databasename' value='0'>";
+         echo "<p>";
+         echo "<label class='radio'>";
+         echo "<input type='radio' name='databasename' value='0'>";
          _e('Create a new database or use an existing one:');
-         echo "&nbsp;<input type='text' name='newdatabasename'></p>";
+         echo "<span class='outer'><span class='inner'></span></span>";
+         echo "&nbsp;<input type='text' name='newdatabasename'>";
+         echo " </label>";
+         echo "</p>";
          echo "<input type='hidden' name='install' value='Etape_3'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                __('Continue')."'></p>";
@@ -280,8 +297,13 @@ function step3($host, $user, $password, $update) {
 
          $DB_list = $link->query("SHOW DATABASES");
          while ($row = $DB_list->fetch_array()) {
-            echo "<p><input type='radio' name='databasename' value='". $row['Database']."'>";
-            echo $row['Database'].".</p>";
+            echo "<p>";
+            echo "<label class='radio'>";
+            echo "<input type='radio' name='databasename' value='". $row['Database']."'>";
+            echo "<span class='outer'><span class='inner'></span></span>";
+            echo $row['Database'];
+            echo " </label>";
+            echo "</p>";
          }
 
          echo "<input type='hidden' name='install' value='update_1'>";

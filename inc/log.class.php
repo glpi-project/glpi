@@ -280,8 +280,10 @@ class Log extends CommonDBTM {
       // Output events
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       
-      $header = "<tr><th>".__('ID')."</th><th>".__('Date')."</th>";
-      $header .= "<th>".__('User')."</th><th>".__('Field')."</th>";
+      $header = "<tr><th>".__('ID')."</th>";
+      $header .= "<th>".__('Date')."</th>";
+      $header .= "<th>".__('User')."</th>";
+      $header .= "<th>".__('Field')."</th>";
       //TRANS: a noun, modification, change
       $header .= "<th>"._x('name', 'Update')."</th></tr>";
       echo $header;
@@ -290,8 +292,10 @@ class Log extends CommonDBTM {
          if ($data['display_history']) {
             // show line
             echo "<tr class='tab_bg_2'>";
-            echo "<td>".$data['id']."</td><td>".$data['date_mod']."</td>".
-                 "<td>".$data['user_name']."</td><td>".$data['field']."</td>";
+            echo "<td>".$data['id']."</td>".
+                 "<td class='tab_date'>".$data['date_mod']."</td>".
+                 "<td>".$data['user_name']."</td>".
+                 "<td>".$data['field']."</td>";
             echo "<td width='60%'>".$data['change']."</td></tr>";
          }
       }

@@ -95,15 +95,6 @@ if (isset($_POST["itemtype"])
       }
       if ($item && $item->maybeDeleted()) {
          echo "<input type='hidden' id='is_deleted' name='is_deleted' value='".$p['is_deleted']."'>";
-         echo "<a href='#' onClick = \"toogle('is_deleted','','','');
-                  document.forms['searchform".$_POST["itemtype"]."'].submit();\">
-                  <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".
-                  (!$p['is_deleted']?'_no':'').".png\" name='img_deleted' alt=\"".
-                  (!$p['is_deleted']?__s('Show the dustbin'):__s("Don't show deleted items")).
-                  "\" title=\"".
-                  (!$p['is_deleted']?__s('Show the dustbin'):__s("Don't show deleted items")).
-                  "\"></a>";
-         echo '&nbsp;&nbsp;';
       }
    } else {
       echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title=\"".

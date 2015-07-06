@@ -722,12 +722,12 @@ class Bookmark extends CommonDBTM {
                   echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
                          "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".
                          __s('Not default search')."\" itle=\"".__s('Not default search')."\">".
-                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_grey.png\"></a>";
+                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_grey.png\" class='pointer'></a>";
                } else {
                   echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
                          "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".
                          __s('Default search')."\" title=\"".__s('Default search')."\">".
-                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark.png\"></a>";
+                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark.png\" class='pointer'></a>";
                }
             }
             echo "</td>";
@@ -882,8 +882,8 @@ class Bookmark extends CommonDBTM {
 
       echo " <a href='#' onClick=\"".Html::jsGetElementbyID('bookmarksave').".dialog('open');\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
-             title=\"".__s('Save as bookmark')."\" alt=\"".__s('Save as bookmark')."\"
-             class='calendrier'>";
+             title=\"".__s('Save as bookmark')."\" alt=\"".__s('Save as bookm²ark')."\"
+             class='calendrier pointer'>";
       echo "</a>";
       Ajax::createIframeModalWindow('bookmarksave',
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?type=$type".

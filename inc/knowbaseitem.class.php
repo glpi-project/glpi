@@ -805,10 +805,10 @@ class KnowbaseItem extends CommonDBTM {
       $tmp = "<a href='".$this->getSearchURL().
              "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_3'><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Category'), $tmp);
+      echo "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Category'), $tmp);
       echo "</th></tr>";
 
-      echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
+      echo "<tr><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
       if (KnowbaseItemTranslation::canBeTranslated($this)) {
          echo KnowbaseItemTranslation::getTranslatedValue($this, 'name');
       } else {
@@ -816,7 +816,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       echo "</td></tr>";
-      echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
+      echo "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
       echo "<div id='kbanswer'>";
       if (KnowbaseItemTranslation::canBeTranslated($this)) {

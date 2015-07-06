@@ -3175,6 +3175,11 @@ class User extends CommonDBTM {
          }
       }
 
+      // check default value (in case of multiple observers)
+      if (is_array($p['value'])) {
+         $p['value'] = $p['value'][0];
+      }
+
       // Check default value for dropdown : need to be a numeric
       if ((strlen($p['value']) == 0) || !is_numeric($p['value'])) {
          $p['value'] = 0;

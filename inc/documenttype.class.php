@@ -149,8 +149,8 @@ class DocumentType  extends CommonDropdown {
       global $CFG_GLPI;
 
       echo " <a href='#' onClick=\"".Html::jsGetElementbyID('documenttypelist').".dialog('open');\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' title=\"".__s('Help')."\"
-             alt=\"".__s('Help')."\" class='calendrier'>";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/info-small.png' title=\"".__s('Help')."\"
+             alt=\"".__s('Help')."\" class='calendrier pointer'>";
       echo "</a>";
       Ajax::createIframeModalWindow('documenttypelist',
                                     $CFG_GLPI["root_doc"]."/front/documenttype.list.php",

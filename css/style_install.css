@@ -29,7 +29,7 @@
 /*  ############# Definition des styles de l'install et de l'update ############# */
 
 body {
-   background-color:#ffffff;
+   background-color:#E7E7E7;
    font-family: Verdana;
    color:#000000;
 }
@@ -44,33 +44,18 @@ body {
    padding: 40px 40px 40px 40px;
 }
 
-
+a {
+   color: #837B68;
+   font-weight: bold;
+}
 
 #bloc {
-   
    width:760px;
    margin:0 auto;
    text-align:left;
-   
    position:relative;
    padding:10px;
-   background:#E9EDD0;
-	background:-moz-linear-gradient(360deg, #E9EDD0, #BBC972); /* Firefox */
-	background:-webkit-gradient(linear, left top, left bottom, from(#E9EDD0), to(#BBC972)); /* Webkit */
-   
-   /* For Internet Explorer 5.5 - 7 */
-   filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=#E9EDD0, endColorStr=#BBC972, GradientType=1);
-   /* For Internet Explorer 8 */
-   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#E9EDD0, endColorstr=#BBC972, GradientType=1)";
-   
-	border:1px solid #aaa;
-   border-radius:10px;
-	-moz-border-radius:10px;
-	-webkit-border-radius:10px;
-   box-shadow:0 0 15px #aaa;
-	-moz-box-shadow:0 0 15px #aaa;
-	-webkit-box-shadow:0 0 15px #aaa;
-   
+   background:#F2F2F2;
 }
 
 #logo_bloc {
@@ -80,9 +65,7 @@ body {
    margin:0;
    width: 107px;
    height: 43px;
-   
    background: url(../pics/login_logo_glpi.png)  no-repeat; 
-  
 }
 
 
@@ -128,8 +111,8 @@ th {
 .tab_bg_1 {  }
 
 .tab_check {
-   border: 1px solid #aaaaaa;
    padding:10px;
+   background-color: #FFF;
 }
 
 .tab_check th{
@@ -153,8 +136,8 @@ th {
 
 
 h2 {
-   color:#D09800;
    text-align:center;
+   color: #FEC95C
 }
 
 h3 {
@@ -169,9 +152,18 @@ input {
 fieldset {
    margin:40px;
    padding: 20px;
-   border: 2px solid  #D09800;
+   background: #FFF;
+   border: none;
    font-size: 12px;
    font-weight:200;
+   position: relative;
+}
+
+fieldset legend {
+   color: #000;
+   font-weight: bold;
+   position: absolute;
+   top: 5px;
 }
 
 .block {
@@ -179,96 +171,102 @@ fieldset {
    width:300px;
 }
 
+fieldset label {
+   text-align: right;
+   margin-right: 5px
+}
+
 .submit {
    text-align:center;
 }
 
-input.submit {
-   font-size: 11px;
+input.submit, 
+span.vsubmit, a.vsubmit {
+   padding: 5px;
    cursor:pointer;
    height: auto;
    font: bold 12px Arial, Helvetica;
    color: #8f5a0a;
-   background-color: #ffb94b;
-   background-image: -webkit-gradient(linear, left top, left bottom, from(#fddb6f), to(#ffb94b));
-   background-image: -webkit-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: -moz-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: -ms-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: -o-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: linear-gradient(top, #fddb6f, #ffb94b);
-   
-   /* For Internet Explorer 5.5 - 7 */
-   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b);
-   /* For Internet Explorer 8 */
-   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b)";
-   border-radius: 3px;
-   -moz-border-radius: 3px;
-   -webkit-border-radius: 3px;
-   text-shadow: 0 1px 0 rgba(255,255,255,0.5);
-   -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-   -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-   box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;    
-   border-width: 1px;
-   border-style: solid;
-   border-color: #d69e31 #e3a037 #d5982d #e3a037
-   
+   background-color: #FEC95C;
+   border: 0; 
 }
 
-input.submit:hover {
-  
-   border: 1px inset #888888;
+input.submit:hover, 
+a.vsubmit:hover {
    background-color: #fddb6f;
-   background-image: -webkit-gradient(linear, left top, left bottom, from(#ffb94b), to(#fddb6f));
-   background-image: -webkit-linear-gradient(top, #ffb94b, #fddb6f);
-   background-image: -moz-linear-gradient(top, #ffb94b, #fddb6f);
-   background-image: -ms-linear-gradient(top, #ffb94b, #fddb6f);
-   background-image: -o-linear-gradient(top, #ffb94b, #fddb6f);
-   background-image: linear-gradient(top, #ffb94b, #fddb6f);
+   -moz-box-shadow: 0px 1px 1px #999;
+   -webkit-box-shadow: 0px 1px 1px #999;
+   box-shadow: 0px 1px 1px #999;   
 
 }
 
-.vsubmit {
-   font-size: 11px;
-   cursor:pointer;
-   height: auto;
-   font: bold 12px Arial, Helvetica;
-   color: #8f5a0a;
-   background-color: #ffb94b;
-   background-image: -webkit-gradient(linear, left top, left bottom, from(#fddb6f), to(#ffb94b));
-   background-image: -webkit-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: -moz-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: -ms-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: -o-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: linear-gradient(top, #fddb6f, #ffb94b);
-   padding: 3px 9px;
-   text-decoration: none;
-   
-   /* For Internet Explorer 5.5 - 7 */
-   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b);
-   /* For Internet Explorer 8 */
-   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b)";
-   border-radius: 3px;
-   -moz-border-radius: 3px;
-   -webkit-border-radius: 3px;
-   text-shadow: 0 1px 0 rgba(255,255,255,0.5);
-   -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-   -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-   box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;    
-   border-width: 1px;
-   border-style: solid;
-   border-color: #d69e31 #e3a037 #d5982d #e3a037
-   
+
+#license {
+   text-align: left;
+   width: 520px;
+   margin: 20px auto;
 }
 
-.vsubmit:hover {
-  
-   border: 1px inset #888888;
-   background-color: #fddb6f;
-   background-image: -webkit-gradient(linear, left top, left bottom, from(#ffb94b), to(#fddb6f));
-   background-image: -webkit-linear-gradient(top, #ffb94b, #fddb6f);
-   background-image: -moz-linear-gradient(top, #ffb94b, #fddb6f);
-   background-image: -ms-linear-gradient(top, #ffb94b, #fddb6f);
-   background-image: -o-linear-gradient(top, #ffb94b, #fddb6f);
-   background-image: linear-gradient(top, #ffb94b, #fddb6f);
 
+.radio {
+   display: inline-block;
+   cursor: pointer;
+   line-height: 25px;
+   color: #000000;
+   font-weight: bold;
+}
+
+.radio:hover .inner {
+   -webkit-transform: scale(0.5);
+   -ms-transform: scale(0.5);
+   transform: scale(0.5);
+   opacity: .5;
+}
+
+.radio input[type=radio] {
+   width: 1px;
+   height: 1px;
+   opacity: 0;
+}
+
+.radio input:checked + .outer .inner {
+   -webkit-transform: scale(1);
+   -ms-transform: scale(1);
+   transform: scale(1);
+   opacity: 1;
+}
+
+.radio input:checked + .outer { border: 3px solid #f08b3b; }
+
+.radio input:focus + .outer .inner {
+   -webkit-transform: scale(1);
+   -ms-transform: scale(1);
+   transform: scale(1);
+   opacity: 1;
+   background-color: #FEC95C;
+}
+
+.radio .outer {
+   width: 20px;
+   height: 20px;
+   display: block;
+   float: left;
+   border: 3px solid #868686;
+   border-radius: 50%;
+   background-color: #fff;
+}
+
+.radio .inner {
+   -webkit-transition: all 0.25s ease-in-out;
+   transition: all 0.25s ease-in-out;
+   width: 16px;
+   height: 16px;
+   -webkit-transform: scale(0);
+   -ms-transform: scale(0);
+   transform: scale(0);
+   display: block;
+   margin: 2px;
+   border-radius: 50%;
+   background-color: #FEC95C;
+   opacity: 0;
 }

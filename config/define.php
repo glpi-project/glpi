@@ -297,5 +297,7 @@ $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_forma
                                      'ticket_timeline', 'ticket_timeline_keep_replaced_tabs', 
                                      'palette');
 
+
 $CFG_GLPI['layout_excluded_pages'] = array("profile.form.php", "knowbaseitem.form.php");
+
 ?>

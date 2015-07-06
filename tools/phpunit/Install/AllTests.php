@@ -221,7 +221,7 @@ class Install extends PHPUnit_Framework_TestCase {
 
       // Install a fresh 0.85 DB
       $DB  = new DB();
-      $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.85-empty.sql");
+      $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.90-empty.sql");
       $this->assertTrue($res, "Fail: SQL Error during install");
 
       // update default language

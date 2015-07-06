@@ -72,9 +72,10 @@ class Search {
    static function show($itemtype) {
 
       $params = self::manageParams($itemtype, $_GET);
+      echo "<div class='search_page'>";
       self::showGenericSearch($itemtype, $params);
-
       self::showList($itemtype, $params);
+      echo "</div>";
    }
 
 
@@ -1088,6 +1089,7 @@ class Search {
    static function displayDatas(array &$data) {
       global $CFG_GLPI;
 
+
       $rand = mt_rand();
       if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
          return false;
@@ -1142,7 +1144,7 @@ class Search {
                                                                 DisplayPreference::GENERAL))) {
 
                $search_config_top = $search_config_bottom
-                  = "<img alt=\"".__s('Select default items to show')."\" title=\"".
+                  = "<div class='pager_controls'><img alt=\"".__s('Select default items to show')."\" title=\"".
                         __s('Select default items to show')."\" src='".
                         $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
 
@@ -1152,6 +1154,19 @@ class Search {
                $search_config_bottom .= " class='pointer' onClick=\"";
                $search_config_bottom .= Html::jsGetElementbyID('search_config_bottom').
                                                       ".dialog('open');\">";
+
+               $delete_ctrl = "<a href='#' onClick = \"toogle('is_deleted','','','');
+                  document.forms['searchform".$_POST["itemtype"]."'].submit();\">
+                  <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".
+                  (!$data['search']['is_deleted']?'_no':'').".png\" name='img_deleted' alt=\"".
+                  (!$data['search']['is_deleted']?__s('Show the dustbin'):__s("Don't show deleted items")).
+                  "\" title=\"".
+                  (!$data['search']['is_deleted']?__s('Show the dustbin'):__s("Don't show deleted items")).
+                  "\" class='pointer'></a>";
+
+               $search_config_top .= $delete_ctrl;
+               $search_config_bottom .= $delete_ctrl;
+
                $search_config_top
                   .= Ajax::createIframeModalWindow('search_config_top',
                                                    $CFG_GLPI["root_doc"].
@@ -1179,6 +1194,9 @@ class Search {
             Html::printPager($data['search']['start'], $data['data']['totalcount'],
                              $data['search']['target'], $parameters, $data['itemtype'], 0,
                               $search_config_top);
+
+            $search_config_top .= "</div>";
+            $search_config_bottom .= "</div>";
          }
 
          // Define begin and end var for loop
@@ -1716,7 +1734,7 @@ class Search {
       foreach ($params as $key => $val) {
          $p[$key] = $val;
       }
-
+      
       echo "<form name='searchform$itemtype' method='get' action=\"".$p['target']."\">";
       echo "<div id='searchcriterias'>";
       $nbsearchcountvar      = 'nbcriteria'.strtolower($itemtype).mt_rand();
@@ -1790,7 +1808,7 @@ class Search {
                .(strpos($p['target'],'?') ? '&amp;' : '?')
                ."reset=reset' >";
             echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
-                  $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
+                  $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier pointer'></a>";
          }
          echo "</td>";
       }
@@ -5459,14 +5477,11 @@ class Search {
             break;
 
          default :
-            $out = "<th $options>";
+            $class = "";
             if ($issort) {
-               if ($order=="DESC") {
-                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-               } else {
-                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
-               }
+               $class = "order_$order";
             }
+            $out = "<th $options class='$class'>";               
             if (!empty($linkto)) {
                $out .= "<a href=\"$linkto\">";
             }

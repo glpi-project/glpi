@@ -1,6 +1,5 @@
 .ui-dialog { z-index: 1000 !important ;}
 
-.ui-widget-content a { color: #659900; }
 .ui-widget-content span.vsubmit, a.vsubmit {color: #8f5a0a;}
 /* css for timepicker */
 .ui-datepicker {z-index:10000 !important; }
@@ -33,7 +32,7 @@
    padding: .2em .1em .2em .2em;
    float: left;
    width: 170px;
-   background: #cccccc;
+   border: 1px solid #cccccc;
 }
 .ui-tabs-vertical .ui-tabs-nav li {
    clear: left;
@@ -153,53 +152,18 @@ html .ui-autocomplete {
 }
 
 #BackToTop {
-   float: left;
    display:none;
-   color: #8f5a0a;
-   margin: 0 5px;
-   padding: 3px;
-   text-decoration: none;
-   border: 1px solid #831608;
-   font: bold 12px Arial, Helvetica;
+   padding: 5px;
+   width: 17px;
+   height: 17px;
+   border-radius: 50%;
+   text-align: center;
+   font: bold 18px Arial, Helvetica;
    position:fixed;
-   bottom:10px;
+   bottom:35px;
    right:10px;
    z-index:9000;
-
-   /** Background gradient **/
-   background-color: #8f5a0a;
-   background-image: -moz-linear-gradient(#fddb6f, #ffb94b);
-   background-image: -webkit-gradient(linear, left top, left bottom, from(#fddb6f), to(#ffb94b));
-   background-image: -webkit-linear-gradient(#fddb6f, #ffb94b);
-   background-image: -o-linear-gradient(#fddb6f, #ffb94b);
-   background-image: -ms-linear-gradient(#fddb6f, #ffb94b);
-   background-image: linear-gradient(#fddb6f, #ffb94b);
-
-   border-radius: 3px;
-   -moz-border-radius: 3px;
-   -webkit-border-radius: 3px;
-   text-shadow: 0 1px 0 rgba(255,255,255,0.5);
-   -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-   -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-   box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-   border-width: 1px;
-   border-style: solid;
-   border-color: #d69e31 #e3a037 #d5982d #e3a037
-}
-
-#BackToTop span
-{
-   display: block;
    cursor: pointer;
-
-   /** Background gradient **/
-   background-color: #8f5a0a;
-   background-image: -moz-linear-gradient(#fddb6f, #ffb94b);
-   background-image: -webkit-gradient(linear, left top, left bottom, from(#fddb6f), to(#ffb94b));
-   background-image: -webkit-linear-gradient(#fddb6f, #ffb94b);
-   background-image: -o-linear-gradient(#fddb6f, #ffb94b);
-   background-image: -ms-linear-gradient(#fddb6f, #ffb94b);
-   background-image: linear-gradient(#fddb6f, #ffb94b);
 }
 
 input.submit {
