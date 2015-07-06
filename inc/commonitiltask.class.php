@@ -386,6 +386,14 @@ abstract class CommonITILTask  extends CommonDBTM {
          $input['is_private'] = 0;
       }
 
+      // Manage File attached (from mailgate)
+      // Pass filename if set to ticket
+      if (isset($input['_filename'])) {
+         $input["_job"]->input['_filename'] = $input['_filename'];
+      }
+      // Add docs without notif
+      $docadded = $input["_job"]->addFiles(0,1);
+
       return $input;
    }
 
@@ -1188,6 +1196,8 @@ abstract class CommonITILTask  extends CommonDBTM {
                                                   'toadd'           => $toadd));
 
       echo "</td></tr>\n";
+
+      Document_Item::showSimpleAddForItem($item);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('By');
