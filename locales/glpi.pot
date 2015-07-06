@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-07-06 15:05+0200\n"
+"POT-Creation-Date: 2015-07-06 17:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
@@ -524,7 +524,7 @@ msgstr[1] ""
 #: inc/reservation.class.php:748 inc/reservationitem.class.php:545
 #: inc/rule.class.php:2704 inc/ruleright.class.php:89
 #: inc/slalevel.class.php:142 inc/ticket.class.php:4274
-#: inc/ticket.class.php:6531 inc/ticket.class.php:6577
+#: inc/ticket.class.php:6538 inc/ticket.class.php:6584
 #: inc/ticketfollowup.class.php:502
 #: inc/tickettemplatehiddenfield.class.php:214
 #: inc/tickettemplatemandatoryfield.class.php:224
@@ -4323,10 +4323,6 @@ msgstr ""
 msgid "Save as bookmark"
 msgstr ""
 
-#: inc/bookmark.class.php:885
-msgid "Save as bookm²ark"
-msgstr ""
-
 #: inc/budget.class.php:53 inc/commonitilcost.class.php:147
 #: inc/commonitilcost.class.php:388 inc/commonitilcost.class.php:489
 #: inc/contract.class.php:780 inc/contractcost.class.php:163
@@ -4968,7 +4964,7 @@ msgstr ""
 #: inc/notificationtargetcommonitilobject.class.php:1032
 #: inc/problem.class.php:176 inc/problem.class.php:189
 #: inc/ticket.class.php:557 inc/ticket.class.php:6447
-#: inc/ticket.class.php:6552
+#: inc/ticket.class.php:6559
 msgid "Solution"
 msgid_plural "Solutions"
 msgstr[0] ""
@@ -5408,7 +5404,7 @@ msgstr ""
 #: inc/profile.class.php:1175 inc/profile.class.php:1270
 #: inc/profile.class.php:1364 inc/profile.class.php:1455
 #: inc/reservation.class.php:761 inc/reservationitem.class.php:333
-#: inc/ticket.class.php:4252 inc/ticket.class.php:6579 inc/user.class.php:2317
+#: inc/ticket.class.php:4252 inc/ticket.class.php:6586 inc/user.class.php:2317
 msgctxt "button"
 msgid "Save"
 msgstr ""
@@ -5614,6 +5610,7 @@ msgstr ""
 msgid "General"
 msgstr ""
 
+#. TRANSLATION_MODE] = __('Translation');
 #: inc/commonglpi.class.php:173 inc/user.class.php:2309
 msgid "Debug"
 msgstr ""
@@ -6156,7 +6153,7 @@ msgstr ""
 #: inc/profile.class.php:932 inc/profile.class.php:1013
 #: inc/profile.class.php:1015 inc/project.class.php:220
 #: inc/project.class.php:221 inc/ticket.class.php:6453
-#: inc/ticket.class.php:6542
+#: inc/ticket.class.php:6549
 msgid "Task"
 msgid_plural "Tasks"
 msgstr[0] ""
@@ -8598,7 +8595,7 @@ msgstr[1] ""
 #: inc/notificationtargetprojecttask.class.php:537
 #: inc/notificationtargetprojecttask.class.php:540 inc/profile.class.php:854
 #: inc/profile.class.php:1610 inc/ticket.class.php:2178
-#: inc/ticket.class.php:6451 inc/ticket.class.php:6547
+#: inc/ticket.class.php:6451 inc/ticket.class.php:6554
 #: inc/transfer.class.php:3427
 msgid "Document"
 msgid_plural "Documents"
@@ -9823,10 +9820,6 @@ msgstr ""
 #: inc/html.class.php:1982 inc/html.class.php:1985 inc/html.class.php:1986
 #: inc/html.class.php:2148 inc/html.class.php:2151 inc/html.class.php:2152
 msgid "Load a bookmark"
-msgstr ""
-
-#: inc/html.class.php:1738
-msgid "^"
 msgstr ""
 
 #: inc/html.class.php:1790 inc/toolbox.class.php:1428
@@ -12248,7 +12241,7 @@ msgstr ""
 #: inc/notificationtargetticket.class.php:769 inc/profile.class.php:639
 #: inc/profile.class.php:1010 inc/profile.class.php:1015
 #: inc/ticket.class.php:2250 inc/ticket.class.php:6455
-#: inc/ticket.class.php:6537 inc/ticketfollowup.class.php:66
+#: inc/ticket.class.php:6544 inc/ticketfollowup.class.php:66
 msgid "Followup"
 msgid_plural "Followups"
 msgstr[0] ""
