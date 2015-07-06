@@ -1,0 +1,34 @@
+{
+    "name": "zendframework/zend-stdlib",
+    "description": " ",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "zf2",
+        "stdlib"
+    ],
+    "autoload": {
+        "psr-0": {
+            "Zend\\Stdlib\\": ""
+        }
+    },
+    "target-dir": "Zend/Stdlib",
+    "require": {
+        "php": ">=5.3.23"
+    },
+    "require-dev": {
+        "zendframework/zend-eventmanager": "self.version",
+        "zendframework/zend-serializer": "self.version",
+        "zendframework/zend-servicemanager": "self.version"
+    },
+    "suggest": {
+        "zendframework/zend-eventmanager": "To support aggregate hydrator usage",
+        "zendframework/zend-serializer": "Zend\\Serializer component",
+        "zendframework/zend-servicemanager": "To support hydrator plugin manager usage"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.2-dev",
+            "dev-develop": "2.3-dev"
+        }
+    }
+}

@@ -1,0 +1,58 @@
+#!/bin/bash
+#
+# Launcher for the GLPI regression test suite
+#
+# Simple way, use command : 
+#	phpunit AllTests
+#
+# If you prefer not run test in your dev DB, create a 	
+# dedicated fresh DB :
+# - save your config_db.php
+# - install a new GLPI database instance (glpiphpunit, p.e.)
+# - copy generated config_db.php here
+# - restore config_db.php
+#
+# PHPunit will use this new database without altering others
+#
+
+testdir=$(dirname $0)
+conf=../../config/config_path.php
+
+cd $testdir
+
+if [ ! -f config_db.php ]
+then
+	echo "no config_db.php (must have a specific one, with a PHPUnit dedicated DB)"
+	echo "or simply run : phpunit AllTests"
+	exit 1;
+fi
+if [ -f $conf ]
+then
+	echo "Modifying temporary $conf"
+	sed -iold -e "/GLPI_CONFIG_DIR/s@.GLPI_CONFIG_DIR.*;@'GLPI_CONFIG_DIR','$PWD');@" $conf
+else
+	echo "Creating temporary $conf"
+	cat <<EOF >$conf
+<?php
+define('GLPI_CONFIG_DIR','$PWD');
+?>
+EOF
+fi
+
+if [ $# -ge 1 ]; then
+   echo "running $*" 
+   phpunit $*
+else
+   echo "running Framework AllTests"
+   phpunit Framework/AllTests.php
+fi
+
+if [ -f ${conf}old ]
+then
+	echo "Restoring $conf"
+	mv ${conf}old ${conf}
+else
+	echo "Removing $conf"
+	rm -f $conf
+fi
+

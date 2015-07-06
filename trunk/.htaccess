@@ -1,0 +1,2 @@
+# If you have problem with session.auto_start on install you need to set this value to 0 on php.ini or uncomment this line
+#php_value session.auto_start 0

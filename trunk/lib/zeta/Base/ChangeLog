@@ -1,0 +1,348 @@
+1.9 - Friday 12 September 2014
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Adjusted source headers of Base to Apache license.
+- Updated: Moving copyright information to NOTICE files.
+- Use ezc_autoload() instead of __autoload(). (tests)
+- Use assertInternalType() instead of assertType() where appropriate. (tests)
+- Use assertInstanceOf() instead of assertType(). (tests)
+- Fixed #ZETACOMP-39: ezcBaseOptions implements Iterator.
+- Fixed #ZETACOMP-59: ezcBaseFileFindRecursiveTest::testRecursive1|2|4() now work.
+- Fixed #ZETACOMP-33: Many dead links (404).
+- Remove custom test runner.
+- Fix ezcBaseTest.
+- Added composer.json and test dependencies.
+- Added Travis configuration.
+
+1.8 - Monday 21 December 2009
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #15896: Autoload not working for all lowercase class names.
+
+
+1.7 - Monday 29 June 2009
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- No changes
+
+
+1.7rc1 - Monday 22 June 2009
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed an issue with the PEAR reader as sometimes the returned structure is
+  different.
+
+
+1.7beta1 - Monday 08 June 2009
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Made sure that we (try) to load the PEAR Registry class so that PEAR doesn't
+  have to be in autoload.
+
+
+1.7alpha1 - Tuesday 26 May 2009
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added 'SunOS' to the list of Unices to make finding binaries work on Solaris
+  as well.
+- Implemented issue #13718: Include metadata about installed components that
+  can be queried to figure out required PHP versions, dependencies and
+  component versions.
+
+
+1.6.1 - Monday 09 February 2009
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #14402: Auto detection of external programs (binaries) does not
+  throw warnings anymore.
+
+
+1.6 - Monday 05 January 2009
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added a workaround for a segfault in call_user_func() in PHP 5.2.x.
+
+
+1.6rc1 - Monday 15 December 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Implemented issue #12542: Refactored the ezcBaseFile::findRecursive() method
+  into the ezcBase::walkRecursive() method so that you can setup your own
+  callbacks to "do things". The findRecursive() method is now implemented
+  through this.
+- Fixed issue #14091: Incorrect documentation for
+  ezcBaseConfigurationInitializer.
+
+
+1.6beta1 - Monday 01 December 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added the exception class ezcBaseFunctionalityNotSupportedException.
+
+
+1.5.2 - Monday 06 October 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed an issue in ezcBaseFile::removeRecursive, where the parent directory
+  could not be written to. We now make sure nothing is deleted until we're sure
+  everything can be deleted.
+
+
+1.5.1 - Monday 04 August 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #13370: Infinitive loop in ezcBaseFile::calculateRelativePath().
+- Implemented issue #11865: Different development modes.
+
+
+1.5 - Monday 16 June 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- No changes.
+
+
+1.5rc1 - Tuesday 10 June 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- No changes
+
+
+1.5beta1 - Tuesday 27 May 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added the ezcBasePersistable interface that can be used to ensure that the
+  object implementing this interface can be used with PersistentObject and
+  Search.
+
+
+1.5alpha2 - Tuesday 13 May 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed a bug in ezcBaseFile::findRecursive that prevented you from passing an
+  empty array to collect statistics.
+- Changed ezcBase::getInstallationPath() so that it always returns a trailing
+  directory separator.
+
+
+1.5alpha1 - Monday 07 April 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Implemented issue #8529: Added a by-reference argument to
+  ezcBaseFile::findRecursive that returns statistsics (count and total size)
+  of all files that are returned by this function.
+- Implemented issue #11506: Added the static method
+  ezcBase::getInstallationPath().
+- Implemented issue #12694: replace reflection test for class type with spl
+  function.
+
+
+1.4.1 - Monday 14 January 2008
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #11448: ezc_bootsrap.php uses relative paths. 
+- Fixed issue #12316: Numbers in own component prefix not possible.
+- Fixed issue #12329: ezcBaseFeatures::findExecutableInPath's return value
+  does not include the extension to the executable at the end on Windows.
+- Added an optional argument to the ezcBaseValueException constructor to allow
+  the exception to be used for non-property/setting type violations as well.
+
+
+1.4 - Monday 17 December 2007
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- No changes.
+
+
+1.4rc1 - Wednesday 05 December 2007
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- No changes.
+
+
+1.4beta1 - Wednesday 28 November 2007
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- No changes.
+
+
+1.4alpha2 - Monday 29 October 2007
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added the ezcBaseFile::copyRecursive() method, to recursively copy files or
+  directories
+- Fixed issue #11540: Problems with ezcFile::findRecursive and
+  ezcFile::calculateRelativePath on systems where DIRECTORY_SEPERATOR is not
+  //.
+
+
+1.4alpha1 - Tuesday 18 September 2007
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added the ezcBaseFile class, which was moved from the File component.
+- Added the ezcBaseFile::isAbsolutePath() method, which returns whether a path
+  is absolute or relative.
+
+
+1.3.1 - Monday 30 July 2007
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #11057: The ezcBaseConfigurationInitializer inteface is not
+  enforced for callback classes.
+
+
+1.3 - Monday 02 July 2007
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Documentation fixes and updates.
+
+
+1.3rc1 - Monday 25 June 2007
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Documentation fixes and updates.
+
+
+1.3beta2 - Thursday 31 May 2007
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #10704: Autoload fails on class not found. The exception is now
+  off by default, but can be turned on through the "debug" property of the
+  ezcBaseAutoloadOptions class. This option class can be set with
+  ezcBase::setOptions().
+
+
+1.3beta1 - Monday 07 May 2007
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #8433: ezcBase::getRepositoryDirectories() problems.
+- Fixed issue #10583: ezcBaseOptions misses __isset().
+- Fixed issue #10666: ezc_bootstrap.php fails on Windows.
+- Implemented issue #9569: Add "autoload.php" as 3rd fallback autoload file to
+  search for.
+- Implemented issue #9988: Implement component preloading for better opcode
+  cache performance.
+- Added exception class ezcBaseExtensionNotFoundException to be thrown when an
+  extension is required but is not found.
+- Changed the ezcBaseInit::fetchConfig() method to return the value that was 
+  returned from the callback function. 
+
+
+1.2 - Monday 18 December 2006
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #9658: Checking if $_ENV['PATH'] is set before using it in
+  ezcBaseFeatures.
+- Fixed issue #9780: ezcBaseFeatures throws notice about non-existing array
+  key "PATH".
+- Fixed issue #9819: Let all components deal with the ezcBaseAutoloadException
+  properly.
+- Fixed the exception name for 'ezcBaseDoubleClassRepositoryPrefix' - it was
+  missing "Exception".
+- Implemented issue #9811: If a file for a class can not be found through
+  autoloading, we now throw the ezcBaseAutoloadException which makes debugging
+  easier.
+- Added the static method ezcBaseFeatures::findExecutableInPath() that searches the
+  path for the given executable.
+- Added the static method ezcBaseFeatures::os() that returns a sanitized
+  version of the current OS' name.
+
+
+1.2beta2 - Monday 20 November 2006
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed issue #8507: Two autoload directories with the same basepath don't
+  work.
+- Fixed issue #9390: Classes in external repositories that map to the same
+  autoload filename of an internal component were added to the external
+  autoload cache array as well.
+
+
+1.2beta1 - Tuesday 24 October 2006
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added the ezcBaseFeatures class to check whether the current PHP
+  installation and environment provides features that can be used in the
+  components.
+- Added the ezcBaseInit class that assists you by setting up on-demand
+  configurations for objects (most notable useful for singleton classes).
+- Implemented FR #8508: Display search paths for the autoload files in case of
+  a missing class.
+- Implemented FR #8753: Added the 'Base/ezc_bootstrap.php' file which sets up
+  the autoload environment for you to facilitate an easier way of starting to
+  use the eZ components.
+
+
+1.1.1 - Monday 28 August 2006
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added the ezcBaseStruct class from which all structs in all components
+  should inherit from.
+
+
+1.1 - Friday 09 June 2006
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed bug #8434: ezcBase autoload system does not handle classes without a
+  prefix.
+- Fixed bug #8435: ezcBase::addClassRepository assumes the ezc way of
+  structuring files. From now on the path specifying the autoload directory is
+  *not* relative to the repository directory anymore.
+	
+	
+1.1rc1 - Monday 29 May 2006
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Fixed bug #8252: Autoloading for external repositories only works for the
+  first such class.
+
+
+1.1beta2 - Tuesday 09 May 2006
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added support for external class repositories. You can now add a class
+  repository to the autoload mechanism by using the addClassRepository()
+  method.
+- Added a method to return all configured class repositories.
+- Added the REMOVE constant to the ezcBaseFileException.
+- Added the ezcBaseOptions class that serves as base class for all option
+  classes in the components.
+
+
+1.1beta1 - Wednesday 19 April 2006
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Changed the way how files are included when the SVN checkout of the eZ
+  components was used. This does not affect normal use of the components.
+- Fixed class descriptions for the exceptions in the documentation.
+
+
+1.0 - Monday 30 January 2006
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added HTML escaping of exception messages so that they show up correctly in 
+  a browser. The original message is stored in the originalMessage property
+  in the exception object.
+
+
+1.0rc1 - Monday 16 January 2006
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added the ezcBaseException that all exceptions in the components library
+  should descent from.
+- Added generic File and IO exceptions that all other components can use
+  instead of having to reimplement them.
+- Added ezcBase::checkDependency() method that allows components to specify
+  dependencies on either a PHP version or a PHP extension.
+
+
+1.0beta2 - Wednesday 21 December 2005
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Added the ezcBasePropertyException that can be used by components to signal
+  that an property was assigned a value which it does not allows.
+
+
+1.0beta1 - Tuesday 22 November 2005
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Initial release of this package.
