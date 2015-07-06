@@ -1,0 +1,91 @@
+
+/* ===== LOGIN ===== */
+
+#firstboxlogin  {
+   background-color: #8EC547;
+}
+
+#logo_login {
+   background: url(../../pics/login_logo_glpi.png) center no-repeat, #459436; 
+}
+
+#text-login {
+   background-color: #459436;
+   color: #FFF;
+}
+
+
+#boxlogin #forget, 
+#footer-login a  {
+   color: #459436;
+}
+
+
+/* ====== GENERAL ====== */
+
+a, a:link {
+    color: #459436;
+}
+
+.main_form tr.headerRow th {
+   color: #93CC4A;
+}
+
+
+/* ====== HEADER ====== */
+
+#header_top {
+   background-color: #459436;
+}
+
+#c_preference a {
+   color: #D9FFA8;
+}
+
+#c_recherche form #champRecherche input {
+   background-color: #365731;
+   color: #D9FFA8;
+}
+
+#c_menu {
+   background-color: #8EC547;
+}
+
+ul#menu a.itemP, ul#menu a.itemP1 {
+   color: #fff;
+}
+
+ul#menu > li.active,
+ul.ssmenu li.active {
+   background-color: #459436;
+}
+ul#menu > li.active > a,
+ul#menu ul.ssmenu li.active > a {
+   color: #D9FFA8;
+}
+
+ul#menu > li:hover {
+   background-color: #93CC4A;
+}
+
+ul#menu ul li a:hover {
+   background: #93CC4A;
+   color: #D9FFA8;
+}
+
+ul#menu ul li a {
+   color: #459436;
+}
+
+/* ====== BUTTONS ====== */
+a.vsubmit, 
+.vsubmit a {
+   color: #c1e6ba;
+}
+
+/* ====== PANEL COMPONENTS ====== */
+
+.ui-widget-content span.vsubmit {
+   background-color: #8ec547;
+   color: #fff;
+}

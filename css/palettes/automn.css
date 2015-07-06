@@ -1,0 +1,104 @@
+
+/* ===== LOGIN ===== */
+
+#firstboxlogin  {
+   background-color: #19BEC0;
+}
+
+#logo_login {
+   background: url(../../pics/login_logo_glpi.png) center no-repeat, #113F59; 
+}
+
+#text-login {
+   background-color: #113F59;
+   color: #FFF;
+}
+
+
+/* ====== GENERAL ====== */
+
+a, a:link {
+    color : #113E58;
+}
+
+.main_form tr.headerRow th {
+   color: #19BEC0;
+}
+
+/* ====== HEADER ====== */
+
+#header_top {
+   background-color: #8B4D34;
+}
+
+#c_preference a {
+   color: #F2B265;
+}
+
+#c_recherche form #champRecherche input {
+   background-color: #58372E;
+   color: #F2B265;
+}
+
+#c_menu {
+   background-color: #C06F3D;
+}
+
+ul#menu a.itemP, ul#menu a.itemP1 {
+   color: #F2B265;
+}
+
+ul#menu > li.active,
+ul.ssmenu li.active {
+   background-color: #8B4D34;
+}
+
+ul#menu > li.active > a,
+ul#menu ul.ssmenu li.active > a {
+   color: #F2B265;
+}
+
+ul#menu > li:hover {
+   background-color: #F29542;
+}
+
+ul#menu ul li a:hover {
+   background: #F29542;
+   color: #8B4D34;
+}
+
+ul#menu ul li a {
+   color: #8B4D34;
+}
+
+/* ====== BUTTONS ====== */
+
+input.submit, 
+span.vsubmit, a.vsubmit,
+.ui-widget-content span.vsubmit, a.vsubmit, 
+#BackToTop {
+   color: #F2B265;
+   background-color: #8B4D34;
+}
+.vsubmit a {
+   color: #F2B265;
+   text-decoration: underline;
+}
+
+input.submit:hover, 
+a.vsubmit:hover, 
+#BackToTop:hover {
+   background-color: #8B4D34;
+}
+
+/* ====== Breadcrumb ====== */
+
+.breadcrumb_item:nth-of-type(3) {
+   background-color: #8B4D34;
+}
+.breadcrumb_item:nth-of-type(3) a {
+   color: #F2B265 !important;
+}
+.breadcrumb_item:nth-of-type(3):after {
+   border-left-color: #8B4D34;
+}

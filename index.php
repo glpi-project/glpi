@@ -75,6 +75,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // Appel CSS
    echo '<link rel="stylesheet" href="'.$CFG_GLPI["root_doc"].'/css/styles.css" type="text/css" '.
          'media="screen" />';
+   // CSS theme link
+      echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$CFG_GLPI["palette"].".css");
    // surcharge CSS hack for IE
    echo "<!--[if lte IE 6]>" ;
    echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' ".

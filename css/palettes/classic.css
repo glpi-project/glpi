@@ -1,0 +1,81 @@
+
+/* ===== LOGIN ===== */
+
+#firstboxlogin  {
+   background-color: #C0CC7B;
+}
+
+#logo_login {
+   background: url(../../pics/login_logo_glpi.png) center no-repeat, #E1D39E; 
+}
+
+#text-login {
+   background-color: #E1D39E;
+   color: #FFF;
+}
+
+
+/* ====== GENERAL ====== */
+
+a, a:link {
+    color: #659900;
+}
+
+.main_form tr.headerRow th {
+   color: #659900;
+}
+
+
+/* ====== HEADER ====== */
+
+#header_top {
+   background-color: #E1D39E;
+}
+
+#c_preference a {
+   color: #000;
+}
+
+#c_preference #logout_icon {      background: url("../../pics/logout_black.png"); }
+#c_preference #bookmark_icon {    background: url("../../pics/bookmark_black.png"); }
+#c_preference #help_icon {        background: url("../../pics/help_black.png"); }
+#c_preference #preferences_icon { background: url("../../pics/preferences_black.png"); }
+#menu_all_button {                background: url("../../pics/menu_all_black.png"); }
+
+
+#c_recherche form #champRecherche input {
+   background-color: #877C52;
+   color: #FFF;
+}
+
+#c_menu {
+   background-color: #C0CC7B;
+}
+
+ul#menu a.itemP, ul#menu a.itemP1 {
+   color: #000;
+}
+
+ul#menu > li.active,
+ul.ssmenu li.active {
+   background-color: #98A458;
+}
+
+ul#menu > li:hover {
+   background-color: #828D41;
+}
+
+ul#menu ul li a:hover {
+   background: #98A458;
+   color: #FFF;
+}
+
+ul#menu ul li a {
+   color: #659900;
+}
+
+/* ====== BUTTONS ====== */
+a.vsubmit, 
+.vsubmit a {
+   color: #8f5a0a;
+}

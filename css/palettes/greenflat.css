@@ -1,0 +1,73 @@
+
+/* ===== LOGIN ===== */
+
+#firstboxlogin  {
+   background-color: #54BD90;
+}
+
+#logo_login {
+   background: url(../../pics/login_logo_glpi.png) center no-repeat, #09A071; 
+}
+
+#text-login {
+   background-color: #09A071;
+   color: #FFF;
+}
+
+
+/* ====== GENERAL ====== */
+
+a, a:link {
+    color : #007A58;
+}
+
+.main_form tr.headerRow th {
+   color: #007A58;
+}
+
+/* ====== HEADER ====== */
+
+#header_top {
+   background-color: #09A071;
+}
+
+#c_preference a {
+   color: #FFF;
+}
+
+#c_recherche form #champRecherche input {
+   background-color: #004630;
+   color: #FFF;
+}
+
+#c_menu {
+   background-color: #54BD90;
+}
+
+ul#menu a.itemP, ul#menu a.itemP1 {
+   color: #FFF;
+}
+
+ul#menu > li.active,
+ul.ssmenu li.active {
+   background-color: #007A58;
+}
+
+ul#menu > li:hover {
+   background-color: #09A071;
+}
+
+ul#menu ul li a:hover {
+   background: #54BD90;
+}
+
+ul#menu ul li a {
+   color: #004A33;
+}
+
+
+/* ====== BUTTONS ====== */
+a.vsubmit, 
+.vsubmit a {
+   color: #8f5a0a;
+}
