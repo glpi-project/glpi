@@ -223,13 +223,7 @@ class CommonGLPI {
     * @param $ong   array
    **/
    function addDefaultFormTab(array &$ong) {
-      global $CFG_GLPI;
-
-      if (in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])
-         || !in_array($_SESSION['glpilayout'], array('classic', 'vsplit')) 
-         || !method_exists($this, "showForm")) {
-         $ong[$this->getType().'$main'] = $this->getTypeName(1);
-      }
+      $ong[$this->getType().'$main'] = $this->getTypeName(1);
    }
 
 
@@ -479,7 +473,7 @@ class CommonGLPI {
 
       if ($nb) {
          //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
-         $text = sprintf(__('%1$s %2$s'), $text, "<sup class='tab_nb'>$nb</sup>");
+         $text = sprintf(__('%1$s %2$s'), $text, "<sup>($nb)</sup>");
       }
       return $text;
    }
@@ -558,27 +552,6 @@ class CommonGLPI {
    **/
    static function getFormURL($full=true) {
       return Toolbox::getItemTypeFormURL(get_called_class(), $full);
-   }
-
-
-   function showPrimaryForm($options = array()) {
-      if (!method_exists($this, "showForm")) {
-         return false;
-      }
-
-      $ong = $this->defineTabs();
-      $class = "main_form";
-      if (count($ong) == 0) {
-         $class.= " no_tab";
-      }
-      if (!isset($_GET['id']) || $_GET['id'] <= 0) {
-         $class.= " create_form";
-      } else {
-         $class.= " modify_form";
-      }
-      echo "<div class='$class'>";
-      $this->showForm($_REQUEST['id'], $_REQUEST);
-      echo "</div>";
    }
 
 
@@ -770,18 +743,18 @@ class CommonGLPI {
          echo "<tr class='tab_bg_2'>";
 
          if ($first >= 0) {
-            echo "<td class='left' width='16px'><a href='$cleantarget?id=$first$extraparamhtml'>".
+            echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'>".
                   "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
-                    "\" title=\"".__s('First')."\" class='pointer'></a></td>";
+                    "\" title=\"".__s('First')."\"></a></td>";
          } else {
-            echo "<td class='left' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
+            echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
                                     __s('First')."\" title=\"".__s('First')."\"></td>";
          }
 
          if ($prev >= 0) {
-            echo "<td class='left' width='16px'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>".
+            echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>".
                   "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                    "\" title=\"".__s('Previous')."\" class='pointer'></a></td>";
+                    "\" title=\"".__s('Previous')."\"></a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 37 && e.ctrlKey) {
@@ -791,11 +764,11 @@ class CommonGLPI {
                   });';
             echo Html::scriptBlock($js);
          } else {
-            echo "<td class='left' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
+            echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
                                     __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
          }
 
-         echo "<td width='200px'><a href=\"".$glpilisturl."\">";
+         echo "<td><a href=\"".$glpilisturl."\">";
          if ($glpilisttitle) {
             if (Toolbox::strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
                $glpilisttitle = Toolbox::substr($glpilisttitle, 0,
@@ -826,20 +799,16 @@ class CommonGLPI {
             $name = sprintf(__('%1$s (%2$s)'), $name, $entname);
 
          }
-         echo "<td class='b big'>";
-         if (!in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
-            echo $name;
-         }
-         echo "</td>";
+         echo "<td class='b big'>".$name."</td>";
 
          if ($current !== false) {
-            echo "<td width='40px'>".($current+1) . "/" . count($glpilistitems)."</td>";
+            echo "<td>".($current+1) . "/" . count($glpilistitems)."</td>";
          }
 
          if ($next >= 0) {
-            echo "<td class='right' width='16px'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>".
+            echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>".
                   "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                    "\" title=\"".__s('Next')."\" class='pointer'></a></td>";
+                    "\" title=\"".__s('Next')."\"></a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 39 && e.ctrlKey) {
@@ -849,16 +818,16 @@ class CommonGLPI {
                   });';
             echo Html::scriptBlock($js);
          } else {
-            echo "<td class='right' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
+            echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
                                      __s('Next')."\" title=\"".__s('Next')."\"></td>";
          }
 
          if ($last >= 0) {
-            echo "<td class='right' width='16px'><a href='$cleantarget?id=$last$extraparamhtml'>".
+            echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'>".
                   "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
-                    "\" title=\"".__s('Last')."\" class='pointer'></a></td>";
+                    "\" title=\"".__s('Last')."\"></a></td>";
          } else {
-            echo "<td class='right' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
+            echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
                                      __s('Last')."\" title=\"".__s('Last')."\"></td>";
          }
 
@@ -956,7 +925,7 @@ class CommonGLPI {
          echo "<li><a href=\"javascript:toggleTableDisplay('mainformtable','tabsbodyimg','".
                     $CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"].
                     "/pics/deplier_up.png')\">";
-         echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" class='pointer'>";
+         echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
          echo "</a></li>";
 
          echo "<li><a href=\"".$glpilisturl."\">";
@@ -977,19 +946,19 @@ class CommonGLPI {
          if ($first >= 0) {
             echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
                        $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
-                       "\" title=\"".__s('First')."\" class='pointer'></a></li>";
+                       "\" title=\"".__s('First')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
-                       __s('First')."\" title=\"".__s('First')."\" class='pointer'></li>";
+                       __s('First')."\" title=\"".__s('First')."\"></li>";
          }
 
          if ($prev >= 0) {
             echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src='".
                        $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                       "\" title=\"".__s('Previous')."\" class='pointer'></a></li>";
+                       "\" title=\"".__s('Previous')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
-                       __s('Previous')."\" title=\"".__s('Previous')."\" class='pointer'></li>";
+                       __s('Previous')."\" title=\"".__s('Previous')."\"></li>";
          }
 
          if ($current !== false) {
@@ -999,19 +968,19 @@ class CommonGLPI {
          if ($next >= 0) {
             echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
                        $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                       "\" title=\"".__s('Next')."\" class='pointer'></a></li>";
+                       "\" title=\"".__s('Next')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
-                       __s('Next')."\" title=\"".__s('Next')."\" class='pointer'></li>";
+                       __s('Next')."\" title=\"".__s('Next')."\"></li>";
          }
 
          if ($last >= 0) {
             echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
                        $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
-                       "\" title=\"".__s('Last')."\" class='pointer'></a></li>";
+                       "\" title=\"".__s('Last')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
-                       __s('Last')."\" title=\"".__s('Last')."\" class='pointer'></li>";
+                       __s('Last')."\" title=\"".__s('Last')."\"></li>";
          }
          echo "</ul></div>";
          echo "<div class='sep'></div>";
@@ -1036,7 +1005,6 @@ class CommonGLPI {
     * @param $options   array
    **/
    function display($options=array()) {
-      global $CFG_GLPI;
 
       if (isset($options['id'])
           && !$this->isNewID($options['id'])) {
@@ -1046,14 +1014,6 @@ class CommonGLPI {
       }
 
       $this->showNavigationHeader($options);
-      if (!in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])
-          && in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
-
-         if (!isset($_REQUEST['id'])) {
-            $_REQUEST['id'] = "";
-         }
-         $this->showPrimaryForm($options);
-      }
       $this->showTabsContent($options);
    }
 

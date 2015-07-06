@@ -1265,32 +1265,22 @@ abstract class CommonITILObject extends CommonDBTM {
             $useractors->add($input2);
          }
 
-         if (isset($this->input["_users_id_observer"])) {
-         
-            if (is_array($this->input["_users_id_observer"])) {
-               $tab_observer = array_unique($this->input["_users_id_observer"]);
-            } else {
-               $tab_observer = array();
-               $tab_observer[] = $this->input["_users_id_observer"];
-            }
-            $input2['_from_object'] = true;
+         if (isset($this->input["_users_id_observer"])
+             && (($this->input["_users_id_observer"] > 0)
+                 || (isset($this->input["_users_id_observer_notif"]['alternative_email'])
+                     && !empty($this->input["_users_id_observer_notif"]['alternative_email'])))) {
+            $input2 = array($useractors->getItilObjectForeignKey()
+                                       => $this->fields['id'],
+                           'users_id'  => $this->input["_users_id_observer"],
+                           'type'      => CommonITILActor::OBSERVER);
 
-            foreach ($tab_observer as $observer) {
-               if ($observer >0
-                       || (isset($this->input["_users_id_observer_notif"]['alternative_email'])
-                           && !empty($this->input["_users_id_observer_notif"]['alternative_email']))) {
-                  $input2 = array($useractors->getItilObjectForeignKey()
-                                             => $this->fields['id'],
-                                 'users_id'  => $observer,
-                                 'type'      => CommonITILActor::OBSERVER);
-                  if (isset($this->input["_users_id_observer_notif"])) {
-                     foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
-                        $input2[$key] = $val;
-                     }
-                  }
-                  $useractors->add($input2);
+            if (isset($this->input["_users_id_observer_notif"])) {
+               foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
+                  $input2[$key] = $val;
                }
             }
+            $input2['_from_object'] = true;
+            $useractors->add($input2);
          }
 
          if (isset($this->input["_users_id_assign"]) && ($this->input["_users_id_assign"] > 0)) {
@@ -2249,7 +2239,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($this->groups[$type]) && count($this->groups[$type])) {
          foreach ($this->groups[$type] as $d) {
-            echo "<div class='actor_row'>";
             $k = $d['groups_id'];
             echo "$mandatory$groupicon&nbsp;";
             if ($group->getFromDB($k)) {
@@ -2262,7 +2251,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                     array('id' => $d['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
-            echo "</div>";
+            echo '<br>';
          }
       }
    }
@@ -2308,7 +2297,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($this->suppliers[$type]) && count($this->suppliers[$type])) {
          foreach ($this->suppliers[$type] as $d) {
-            echo "<div class='actor_row'>";
             $k = $d['suppliers_id'];
             echo "$mandatory$suppliericon&nbsp;";
             if ($supplier->getFromDB($k)) {
@@ -2345,7 +2333,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                     array('id' => $d['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
-            echo '</div>';
+            echo '<br>';
          }
       }
    }
@@ -3035,7 +3023,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   $icontitle = __s('Technician');
                   break;
             }
-            return "<img src='".$CFG_GLPI['root_doc']."/pics/user.png'
+            return "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'
                      alt=\"$icontitle\" title=\"$icontitle\">";
 
          case 'group' :
@@ -3053,12 +3041,12 @@ abstract class CommonITILObject extends CommonDBTM {
                   $icontitle = __('Group in charge of the ticket');
                   break;
             }
-            return  "<img src='".$CFG_GLPI['root_doc']."/pics/group.png'
+            return  "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/groupes.png'
                       alt=\"$icontitle\" title=\"$icontitle\">";
 
          case 'supplier' :
             $icontitle = __('Supplier');
-            return  "<img src='".$CFG_GLPI['root_doc']."/pics/supplier.png'
+            return  "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/supplier.png'
                       alt=\"$icontitle\" title=\"$icontitle\">";
 
       }
@@ -3104,7 +3092,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($this->users[$type]) && count($this->users[$type])) {
          foreach ($this->users[$type] as $d) {
-            echo "<div class='actor_row'>";
             $k = $d['users_id'];
 
             echo "$mandatory$usericon&nbsp;";
@@ -3157,7 +3144,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                     array('id' => $d['id']),
                                     $CFG_GLPI["root_doc"]."/pics/delete.png");
             }
-            echo "</div>";
+            echo "<br>";
          }
       }
    }
@@ -3286,11 +3273,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $options["_users_id_".$typename] = $this->getDefaultActor($type);
       }
       $rand   = mt_rand();
-      $actor_name = '_users_id_'.$typename;
-      if ($type == CommonITILActor::OBSERVER) {
-         $actor_name = '_users_id_'.$typename.'[]';
-      }
-      $params = array('name'        => $actor_name,
+      $params = array('name'        => '_users_id_'.$typename,
                       'value'       => $options["_users_id_".$typename],
                       'right'       => $right,
                       'rand'        => $rand,
@@ -3391,11 +3374,9 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<script type='text/javascript'>";
          Ajax::updateItemJsCode("notif_".$typename."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
-                                "dropdown_".$actor_name.$rand);
+                                "dropdown__users_id_".$typename.$rand);
          echo "</script>";
       }
-
-      return $rand;
    }
 
 
@@ -3531,7 +3512,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<table class='tab_cadre_fixe' id='mainformtable5'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2' width='13%'>".__('Actor')."</th>";
-      echo "<th width='29%' class='actor-th'><div class='actor_head'>";
+      echo "<th width='29%'>";
       if (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester']) {
          _e('Requester');
       }
@@ -3548,9 +3529,9 @@ abstract class CommonITILObject extends CommonDBTM {
                 class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          $candeleterequester = true;
       }
-      echo "</div></th>";
+      echo "</th>";
 
-      echo "<th width='29%' class='actor-th'><div class='actor_head'>";
+      echo "<th width='29%'>";
       if (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer']) {
          _e('Watcher');
       }
@@ -3581,9 +3562,9 @@ abstract class CommonITILObject extends CommonDBTM {
                               $CFG_GLPI["root_doc"]."/pics/addme.png");
       }
 
-      echo "</div></th>";
+      echo "</th>";
 
-      echo "<th width='29%' class='actor-th'><div class='actor_head'>";
+      echo "<th width='29%'>";
       if (!$is_hidden['_users_id_assign']
           || !$is_hidden['_groups_id_assign']
           || !$is_hidden['_suppliers_id_assign']) {
@@ -3618,7 +3599,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && $can_assign) {
          $candeleteassign = true;
       }
-      echo "</div></th></tr>";
+      echo "</th></tr>";
 
       echo "<tr class='tab_bg_1 top'>";
       echo "<td>";
