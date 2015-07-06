@@ -882,7 +882,7 @@ class Bookmark extends CommonDBTM {
 
       echo " <a href='#' onClick=\"".Html::jsGetElementbyID('bookmarksave').".dialog('open');\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
-             title=\"".__s('Save as bookmark')."\" alt=\"".__s('Save as bookm²ark')."\"
+             title=\"".__s('Save as bookmark')."\" alt=\"".__s('Save as bookmark')."\"
              class='calendrier pointer'>";
       echo "</a>";
       Ajax::createIframeModalWindow('bookmarksave',

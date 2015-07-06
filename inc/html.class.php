@@ -1735,7 +1735,7 @@ class Html {
       Html::scriptStart();
       echo "$(document).ready(function(){
                BackToTop({
-               text : '".__s("^")."',
+               text : '^',
                class: 'vsubmit',
                autoShow : true,
                timeEffect : 100,
