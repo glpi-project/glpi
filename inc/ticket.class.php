@@ -2989,10 +2989,20 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'><td>".__('Watcher')."</td>";
          echo "<td>";
          $values['_right'] = "groups";
-         // Observer
-         if (!$tt->isHiddenField('_users_id_observer')) {
-           $this->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $values);
-           echo '<hr>';
+
+         if (!$tt->isHiddenField('_users_id_observer')) {   
+            // Observer
+            $ticket = new Ticket;
+            $rand_observer = $ticket->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $values);
+            echo '<hr>';
+
+            echo "<span id='observer_$rand_observer'></span>";
+            Ajax::updateItemOnSelectEvent("dropdown__users_id_observer[]$rand_observer", 
+                                          "observer_$rand_observer",
+                                          $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php", 
+                                          $values);
+        
+            echo "</td></tr>";
          } else { // predefined value
            if (isset($values["_users_id_observer"]) && $values["_users_id_observer"]) {
                echo self::getActorIcon('user', CommonITILActor::OBSERVER)."&nbsp;";
