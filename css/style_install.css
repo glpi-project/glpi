@@ -29,9 +29,9 @@
 /*  ############# Definition des styles de l'install et de l'update ############# */
 
 body {
-   background-color:#E7E7E7;
+   background-color:#1B2F62;
    font-family: Verdana;
-   color:#000000;
+   color:#FFF;
 }
 
 
@@ -45,7 +45,7 @@ body {
 }
 
 a {
-   color: #837B68;
+   color: #FEC95C;
    font-weight: bold;
 }
 
@@ -55,7 +55,7 @@ a {
    text-align:left;
    position:relative;
    padding:10px;
-   background:#F2F2F2;
+   background:#3A5693;
 }
 
 #logo_bloc {
@@ -113,6 +113,7 @@ th {
 .tab_check {
    padding:10px;
    background-color: #FFF;
+   color: #000;
 }
 
 .tab_check th{
@@ -169,6 +170,7 @@ fieldset legend {
 .block {
    display: inline-block;
    width:300px;
+   color: #000;
 }
 
 fieldset label {
@@ -212,8 +214,8 @@ a.vsubmit:hover {
    display: inline-block;
    cursor: pointer;
    line-height: 25px;
-   color: #000000;
    font-weight: bold;
+   margin-bottom: 5px;
 }
 
 .radio:hover .inner {
@@ -251,9 +253,9 @@ a.vsubmit:hover {
    height: 20px;
    display: block;
    float: left;
-   border: 3px solid #868686;
+   border: 3px solid #1B2F62;
    border-radius: 50%;
-   background-color: #fff;
+   /*background-color: #fff;*/
 }
 
 .radio .inner {
