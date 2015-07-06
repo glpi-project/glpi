@@ -764,3 +764,98 @@ jQuery.datepicker._gotoToday = function(a){
    jQuery.datepicker._selectDate(a, jQuery.datepicker._formatDate(inst,inst.selectedDay, inst.selectedMonth, inst.selectedYear));
 };
 
+
+
+/* TImeline for itiobjects */
+
+filter_timeline = function() {
+   $(document).on("click", '.filter_timeline li a', function(event) {
+      //hide all elements in timeline
+      $('.h_item').addClass('h_hidden');
+
+      //reset all elements
+      if ($(this).hasClass('reset')) {
+         $('.filter_timeline li a img').each(function(el2) {
+            $(this).attr('src', $(this).attr('src').replace('_active', ''));
+         })
+         $('.h_item').removeClass('h_hidden');
+         return;
+      }
+
+      //activate clicked element
+      var current_el = $(this).children('img');
+      $(this).toggleClass('h_active');
+      if (current_el.attr('src').indexOf('active') > 0) {
+         current_el.attr('src',  current_el.attr('src').replace('_active', ''));
+      } else {
+         current_el.attr('src', current_el.attr('src').replace(/\.(png)$/, '_active.$1'));
+      }
+
+      //find active classname
+      active_classnames = [];
+      $('.filter_timeline .h_active').each(function(index) {
+         active_classnames.push(".h_content."+$(this).attr('class').replace(' h_active', ''));
+      })
+
+      $(active_classnames.join(', ')).each(function(index){
+         $(this).parent().removeClass('h_hidden');
+      })
+
+      //show all items when no active filter 
+      if (active_classnames.length == 0) {
+         $('.h_item').removeClass('h_hidden');
+      }
+   });
+}
+
+
+read_more = function() {
+   $(document).on("click", ".long_text .read_more a", function(event) {
+      $(this).parents('.long_text').removeClass('long_text');
+      $(this).parent('.read_more').remove();
+      return false;
+   });
+}
+
+
+
+split_button = function() {
+   var splitBtn = $('#x-split-button');
+
+   // unfold status list
+   $(document).on("click", '.x-button-drop', function(event) {
+      splitBtn.toggleClass('open');
+   });
+
+   $(document).on("click", '.x-split-button', function(event) {
+      event.stopPropagation();
+   });
+
+   //click on an element of status list
+   $(document).on("click", '.x-button-drop-menu li', function(event) {
+      if (event.target.children.length) {
+         //clean old status class
+         current_class = $('.x-button-drop').attr('class');
+         current_class = current_class.replace('x-button x-button-drop', ''); // don't remove native classes
+         current_class_arr = current_class.split(" ");
+         $('.x-button-drop').removeClass(current_class_arr);
+
+         //find status
+         match = event.target.children[0].src.match(/.*\/(.*)\.png/);
+         cstatus = match[1];
+
+         //add status to dropdown button
+         $('.x-button-drop').addClass(cstatus);
+
+         //fold status list
+         splitBtn.removeClass('open');
+      }
+   });
+
+   //fold status list on click on document
+   $(document).on("click", function(event) {
+      if (splitBtn.hasClass('open')) {
+         splitBtn.removeClass('open');
+      }
+   });
+}
