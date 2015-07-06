@@ -195,6 +195,20 @@ if (($ok_master || $ok_slave )
       echo "No mail collector\n";
    }
 
+   // Check crontask
+   $crontasks = getAllDatasFromTable('glpi_crontasks', "`state`=".CronTask::STATE_RUNNING."
+                                      AND ((unix_timestamp(`lastrun`) + 2 * `frequency` < unix_timestamp(now()))
+                                           OR (unix_timestamp(`lastrun`) + 2*".HOUR_TIMESTAMP." < unix_timestamp(now())))");
+   if (count($crontasks)) {
+      echo "Check crontasks:";
+      foreach ($crontasks as $ct) {
+         echo " ".$ct['name']."_PROBLEM\n";
+         $ok = false;
+      }
+   } else {
+      echo "Crontasks_OK\n";
+   }
+
    // hook for plugin
    $param = array('ok' => $ok);
    Plugin::doHook("status", $param);
