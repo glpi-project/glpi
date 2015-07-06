@@ -290,8 +290,10 @@ class Ajax {
 
       $rand = mt_rand();
       if (count($tabs) > 0) {
-
-         echo "<div id='tabs$rand' class='center'>";
+         echo "<div id='tabs$rand' class='center $orientation'>";
+         if (in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+            $orientation = 'horizontal';
+         }
          echo "<ul>";
          $current = 0;
          $selected_tab = 0;
@@ -334,10 +336,16 @@ class Ajax {
             $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
             { itemtype: '$type', id: '$ID', tab: newIndex });
             }});";
+
          if ($orientation=='vertical') {
             $js .=  "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
          }
-         $js .=  "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
+
+         if (in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+            $js .=  "$('#tabs$rand').scrollabletabs();";
+         } else {
+            $js .=  "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
+         }
 
          $js .=  "// force reload
             function reloadTab(add) {
