@@ -6366,7 +6366,7 @@ class Ticket extends CommonITILObject {
                echo "</div>";
             echo "</div>";
             echo "<div class='h_content TicketContent'>";
-               echo "<div class='b_right'>".__("Ticket recall", 'talk')."</div>";
+               echo "<div class='b_right'>".__("Ticket recall")."</div>";
                echo "<div class='ticket_title'>";
                echo html_entity_decode($this->fields['name']);
                echo "</div>";
