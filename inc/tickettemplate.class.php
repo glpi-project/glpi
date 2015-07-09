@@ -266,7 +266,7 @@ class TicketTemplate extends CommonDropdown {
    function defineTabs($options=array()) {
 
       $ong          = array();
-      $ong['empty'] = $this->getTypeName(1);
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('TicketTemplateMandatoryField', $ong, $options);
       $this->addStandardTab('TicketTemplatePredefinedField', $ong, $options);
       $this->addStandardTab('TicketTemplateHiddenField', $ong, $options);
