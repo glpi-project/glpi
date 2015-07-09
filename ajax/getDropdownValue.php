@@ -320,7 +320,8 @@ if ($item instanceof CommonTreeDropdown) {
 
                      $work_level    = $level-1;
                      $work_parentID = $data[$item->getForeignKeyField()];
-
+                     $parent_datas  = array();
+                     
                      do {
                         // Get parent
                         if ($item->getFromDB($work_parentID)) {
@@ -350,8 +351,9 @@ if ($item instanceof CommonTreeDropdown) {
                               if ($_GET['permit_select_parent']) {
                                  unset($temp['disabled']);
                               }
-                              array_push($datastoadd, $temp);
+                              array_unshift($parent_datas, $temp);
                            }
+                           
                            $last_level_displayed[$work_level] = $item->fields['id'];
                            $work_level--;
                            $work_parentID = $item->fields[$item->getForeignKeyField()];
@@ -364,6 +366,10 @@ if ($item instanceof CommonTreeDropdown) {
                               && (!isset($last_level_displayed[$work_level])
                                   || ($last_level_displayed[$work_level] != $work_parentID)));
 
+                     // Add parents
+                     foreach($parent_datas as $val){
+                        array_push($datastoadd, $val);
+                     }
                   }
                }
                $last_level_displayed[$level] = $data['id'];
@@ -414,7 +420,7 @@ if ($item instanceof CommonTreeDropdown) {
          $datas = array_merge($datas, $datastoadd);
       }
    }
-
+   
 
 } else { // Not a dropdowntree
    $multi = false;
