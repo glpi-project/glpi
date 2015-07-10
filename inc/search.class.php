@@ -4228,7 +4228,7 @@ class Search {
                   }
                   if (($data[$num][0]['status'] == Ticket::SOLVED)
                       || ($data[$num][0]['status'] == Ticket::CLOSED)) {
-                     return $data[$num][0]['name'];
+                     return $out;
                   }
                   $itemtype = getItemTypeForTable($table);
                   $item = new $itemtype();
