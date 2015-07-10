@@ -89,6 +89,7 @@ class Calendar extends CommonDropdown {
 
       if ($isadmin) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'duplicate'] = _x('button', 'Duplicate');
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'addholiday'] = __('Add a close time');
       }
       return $actions;
    }
@@ -106,6 +107,12 @@ class Calendar extends CommonDropdown {
             Entity::dropdown();
             echo "<br><br>";
             echo Html::submit(_x('button', 'Duplicate'), array('name' => 'massiveaction'))."</span>";
+            return true;
+
+         case 'addholiday' :
+            Holiday::dropdown();
+            echo "<br><br>";
+            echo Html::submit(_x('button', 'Add'), array('name' => 'massiveaction'))."</span>";
             return true;
       }
 
@@ -151,6 +158,43 @@ class Calendar extends CommonDropdown {
                   } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                      $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                  }
+               }
+            } else {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+            }
+            return;
+
+         case 'addholiday' : // add an holiday with massive action
+            $input = $ma->getInput();
+            if ($input['holidays_id'] > 0) {
+               $holiday = new Holiday();
+               $calendar_holiday = new Calendar_Holiday();
+
+               $holiday->getFromDB($input['holidays_id']);
+               $entities = array(
+                  $holiday->getEntityID() => $holiday->getEntityID()
+               );
+               if ($holiday->isRecursive()) {
+                  $entities = getSonsOf("glpi_entities", $holiday->getEntityID());
+               }
+
+               foreach ($ids as $id) {
+                  $entities_id = CommonDBTM::getItemEntity('Calendar', $id);
+                  if (isset($entities[$entities_id])) {
+                     $input = array(
+                        'calendars_id' => $id,
+                        'holidays_id'  => $input['holidays_id']
+                     );
+                     if ($calendar_holiday->add($input)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                   }
                }
             } else {
