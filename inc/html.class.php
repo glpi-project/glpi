@@ -4495,7 +4495,7 @@ class Html {
                   closeOnSelect: false,
                   quietMillis: 100,
                   minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
-                  formatSelection(object, container) {
+                  formatSelection: function(object, container) {
                      text = object.text;
                      if (object.element[0].parentElement.nodeName == 'OPTGROUP') {
                         text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
