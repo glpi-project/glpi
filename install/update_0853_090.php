@@ -1,11 +1,15 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: HEADER 22656 2014-02-12 16:15:25Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ Copyright (C) 2015 Teclib'.
 
- http://indepnet.net/   http://glpi-project.org
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2014 by the INDEPNET Development Team.
+ 
  -------------------------------------------------------------------------
 
  LICENSE
