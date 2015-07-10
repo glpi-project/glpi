@@ -185,7 +185,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "GLPI version ".(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"")." Copyright (C) ".
         "2015".
         //"-".date("Y").
-        "By Teclib'.";
+        " By Teclib'.";
    echo "</a></div>";
 
 }

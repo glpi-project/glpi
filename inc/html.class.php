@@ -2190,8 +2190,11 @@ class Html {
       echo "<div id='footer'>";
       echo "<table width='100%'><tr><td class='right'>";
       echo "<a href='http://glpi-project.org/'>";
-      echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"]." Copyright (C) 2003-".date("Y").
-             " by the INDEPNET Development Team.</span>";
+      echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"].
+           " Copyright (C) ".
+           "2015-".
+           //date("Y").
+           " by Teclib.</span>";
       echo "</a></td></tr></table></div>";
 
       if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE) { // debug mode traduction
@@ -2266,9 +2269,12 @@ class Html {
          echo "</div></div>";
 
          echo "<div id='footer-login'>";
-         echo "<a href='http://glpi-project.org/' title='Powered By Indepnet'>";
-         echo 'GLPI version '.(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"").
-              ' Copyright (C) 2003-'.date("Y").' INDEPNET Development Team.';
+         echo "<a href='http://glpi-project.org/' title='Powered By Teclib'>";
+         echo "GLPI version ".(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"").
+              " Copyright (C) ".
+              "2015-".
+              //date("Y").
+              " By Teclib'.";
          echo "</a></div>";
 
          echo "</body></html>";
