@@ -573,6 +573,10 @@ class RuleTicket extends Rule {
       $actions['locations_id']['table']                     = 'glpi_locations';
       $actions['locations_id']['force_actions']             = array('assign', 'fromuser', 'fromitem');
 
+      $actions['requesttypes_id']['name']                 = __('Request source');
+      $actions['requesttypes_id']['type']                 = 'dropdown';
+      $actions['requesttypes_id']['table']                = 'glpi_requesttypes';
+      
       return $actions;
    }
 
