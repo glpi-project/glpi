@@ -178,8 +178,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
    echo "<div id='footer-login'>";
    echo "<a href='http://glpi-project.org/' title='Powered By Indepnet'>";
-   echo 'GLPI version '.(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"").
-        ' Copyright (C) 2003-'.date("Y").' INDEPNET Development Team.';
+   echo "GLPI version ".(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"")." Copyright (C) ".
+        "2015".
+        //"-".date("Y").
+        "By Teclib'.";
    echo "</a></div>";
 
 }

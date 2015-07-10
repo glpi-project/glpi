@@ -1795,8 +1795,10 @@ class Html {
       }
       echo "<td class='right'>";
       echo "<a href='http://glpi-project.org/'>";
-      echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"]." Copyright (C) 2003-".date("Y").
-             " by the INDEPNET Development Team.</span>";
+      echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"]." Copyright (C)".
+           " 2015".
+           /*"-".date("Y").*/ // TODO, decomment this in 2016
+           " by Teclib'.</span>";
       echo "</a></td>";
       echo "</tr></table></div>";
 
