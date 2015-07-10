@@ -1875,8 +1875,8 @@ ul#menu ul.ssmenu {
 #header #c_logo {
    position: absolute;
    z-index: 1000;
-   width: 64px;
-   height: 41px;
+   width: 100px;
+   height: 55px;
    float: left;
    background: url("../pics/fd_logo.png") 0 0 repeat-x;
 }
