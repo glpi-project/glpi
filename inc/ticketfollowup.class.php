@@ -691,7 +691,7 @@ class TicketFollowup  extends CommonDBTM {
 
       if ($this->isNewID($ID)) {
          echo Ticket::getSplittedSubmitButtonHtml($this->fields['tickets_id'], 'add');
-         echo "<input type='hidden' name='id' value='$ID'>";
+//         echo "<input type='hidden' name='id' value='$ID'>";
       } else {
          if ($params['candel']
              && !$this->can($ID, DELETE)
