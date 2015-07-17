@@ -1476,7 +1476,10 @@ class Html {
             // list menu item
             foreach ($data['content'] as $key => $val) {
                $menu_class = "";
-               if (isset($menu[$sector]['content']) && $menu[$sector]['content'][$item]['title'] == $val['title']) {
+               $tmp_active_item  = explode("/", $item);
+               $active_item  = array_pop($tmp_active_item);
+               if (isset($menu[$sector]['content']) 
+                  && $menu[$sector]['content'][$active_item]['title'] == $val['title']) {
                   $menu_class = "active";
                }
                if (isset($val['page'])
