@@ -536,7 +536,7 @@ class CommonGLPI {
 
 
    /**
-    * Get the search page URL for the current classe
+    * Get the search page URL for the current class
     *
     * @param $full path or relative one (true by default)
    **/
@@ -546,12 +546,24 @@ class CommonGLPI {
 
 
    /**
-    * Get the search page URL for the current classe
+    * Get the form page URL for the current class
     *
     * @param $full path or relative one (true by default)
    **/
    static function getFormURL($full=true) {
       return Toolbox::getItemTypeFormURL(get_called_class(), $full);
+   }
+
+   /**
+    * Get the form page URL for the current class and point to a specific ID
+    *
+    * @param $full path or relative one (true by default)
+   **/
+   static function getFormURLWithID($id=0, $full=true) {
+      $itemtype = get_called_class();
+      $link     = $itemtype::getFormURL($full);
+      $link    .= (strpos($link,'?') ? '&amp;':'?').'id=' . $id;
+      return $link;
    }
 
 
