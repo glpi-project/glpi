@@ -1158,6 +1158,42 @@ class Html {
    }
 
 
+   static function getMenuInfos() {
+         $menu['assets']['title']       = __('Assets');
+         $menu['assets']['types']       = array('Computer', 'Monitor', 'Software',
+                                                'NetworkEquipment', 'Peripheral', 'Printer',
+                                                'CartridgeItem', 'ConsumableItem', 'Phone' );
+
+         $menu['helpdesk']['title']     = __('Assistance');
+         $menu['helpdesk']['types']     = array('Ticket', 'Problem', 'Change',
+                                                'Planning', 'Stat', 'TicketRecurrent');
+
+         $menu['management']['title']   = __('Management');
+         $menu['management']['types']   = array('Budget', 'Supplier', 'Contact', 'Contract',
+                                                'Document');
+
+         $menu['tools']['title']        = __('Tools');
+         $menu['tools']['types']        = array('Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
+                                                'ReservationItem', 'Report', 'MigrationCleaner');
+
+         $menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
+         $menu['plugins']['types']      = array();
+
+         $menu['admin']['title']        = __('Administration');
+         $menu['admin']['types']        = array('User', 'Group', 'Entity', 'Rule',
+                                                'Profile', 'QueuedMail', 'Backup', 'Event');
+
+         $menu['config']['title']       = __('Setup');
+         $menu['config']['types']       = array('CommonDropdown', 'CommonDevice', 'Notification',
+                                                'SLA', 'Config', 'Control', 'Crontask', 'Auth',
+                                                'MailCollector', 'Link', 'Plugin');
+
+         // Special items
+         $menu['preference']['title']   = __('My settings');
+         $menu['preference']['default'] = '/front/preference.php';
+
+         return $menu;
+   }
    /**
     * Print a nice HTML head for every page
     *
@@ -1204,38 +1240,7 @@ class Html {
          // INVENTORY
          //don't change order in array
          $showallassets                 = false;
-         $menu['assets']['title']       = __('Assets');
-         $menu['assets']['types']       = array('Computer', 'Monitor', 'Software',
-                                                'NetworkEquipment', 'Peripheral', 'Printer',
-                                                'CartridgeItem', 'ConsumableItem', 'Phone' );
-
-         $menu['helpdesk']['title']     = __('Assistance');
-         $menu['helpdesk']['types']     = array('Ticket', 'Problem', 'Change',
-                                                'Planning', 'Stat', 'TicketRecurrent');
-
-         $menu['management']['title']   = __('Management');
-         $menu['management']['types']   = array('Budget', 'Supplier', 'Contact', 'Contract',
-                                                'Document');
-
-         $menu['tools']['title']        = __('Tools');
-         $menu['tools']['types']        = array('Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
-                                                'ReservationItem', 'Report', 'MigrationCleaner');
-
-         $menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
-         $menu['plugins']['types']      = array();
-
-         $menu['admin']['title']        = __('Administration');
-         $menu['admin']['types']        = array('User', 'Group', 'Entity', 'Rule',
-                                                'Profile', 'QueuedMail', 'Backup', 'Event');
-
-         $menu['config']['title']       = __('Setup');
-         $menu['config']['types']       = array('CommonDropdown', 'CommonDevice', 'Notification',
-                                                'SLA', 'Config', 'Control', 'Crontask', 'Auth',
-                                                'MailCollector', 'Link', 'Plugin');
-
-         // Special items
-         $menu['preference']['title']   = __('My settings');
-         $menu['preference']['default'] = '/front/preference.php';
+         $menu = self::getMenuInfos();
 
          // Permit to plugins to add entry to others sector !
          if (isset($PLUGIN_HOOKS["menu_toadd"]) && count($PLUGIN_HOOKS["menu_toadd"])) {
