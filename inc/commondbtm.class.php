@@ -919,10 +919,7 @@ class CommonDBTM extends CommonGLPI {
          return '';
       }
 
-      $link_item = $this->getFormURL();
-
-      $link  = $link_item;
-      $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
+      $link  = $this->getFormURLWithID($this->getID());
       $link .= ($this->isTemplate() ? "&amp;withtemplate=1" : "");
 
       return $link;

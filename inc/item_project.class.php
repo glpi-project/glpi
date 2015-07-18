@@ -217,8 +217,8 @@ class Item_Project extends CommonDBRelation{
                    || empty($data["name"])) {
                   $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                }
-               $link     = Toolbox::getItemTypeFormURL($itemtype);
-               $namelink = "<a href=\"".$link."?id=".$data["id"]."\">".$name."</a>";
+               $link     = $item::getFormURLWithID($data['id']);
+               $namelink = "<a href=\"".$link."\">".$name."</a>";
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
