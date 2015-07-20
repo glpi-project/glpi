@@ -1162,7 +1162,6 @@ class Search {
                $delete_ctrl = self::isDeletedSwitch($data['search']['is_deleted']);
 
                $search_config_top .= $delete_ctrl;
-               $search_config_bottom .= $delete_ctrl;
 
                $search_config_top
                   .= Ajax::createIframeModalWindow('search_config_top',
