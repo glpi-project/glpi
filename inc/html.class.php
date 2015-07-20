@@ -3536,19 +3536,6 @@ class Html {
    static function showProfileSelecter($target) {
       global $CFG_GLPI;
 
-      if (Session::isMultiEntitiesMode()) {
-         echo "<li class='profile-selector'>";
-         Ajax::createModalWindow('entity_window', $CFG_GLPI['root_doc']."/ajax/entitytree.php",
-                                 array('title'       => __('Select the desired entity'),
-                                       'extraparams' => array('target' => $target)));
-         echo "<a onclick='entity_window.dialog(\"open\");' href='#modal_entity_content' title=\"".
-                addslashes($_SESSION["glpiactive_entity_name"]).
-                "\" class='entity_select' id='global_entity_select'>".
-                $_SESSION["glpiactive_entity_shortname"]."</a>";
-
-         echo "</li>";
-      }
-
       if (count($_SESSION["glpiprofiles"])>1) {
          echo '<li class="profile-selector"><form name="form" method="post" action="'.$target.'">';
          $values = array();
@@ -3562,6 +3549,19 @@ class Html {
                                        'on_change' => 'submit()'));
          Html::closeForm();
          echo '</li>';
+      }
+
+      if (Session::isMultiEntitiesMode()) {
+         echo "<li class='profile-selector'>";
+         Ajax::createModalWindow('entity_window', $CFG_GLPI['root_doc']."/ajax/entitytree.php",
+                                 array('title'       => __('Select the desired entity'),
+                                       'extraparams' => array('target' => $target)));
+         echo "<a onclick='entity_window.dialog(\"open\");' href='#modal_entity_content' title=\"".
+                addslashes($_SESSION["glpiactive_entity_name"]).
+                "\" class='entity_select' id='global_entity_select'>".
+                $_SESSION["glpiactive_entity_shortname"]."</a>";
+
+         echo "</li>";
       }
    }
 
