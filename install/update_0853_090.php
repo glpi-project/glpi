@@ -36,7 +36,7 @@
 */
 
 /**
- * Update from 0.85 to 0.85.3
+ * Update from 0.85.3 to 0.90
  *
  * @return bool for success (will die for most error)
 **/
@@ -67,6 +67,14 @@ function update0853to090() {
       $migration->displayWarning("You can delete backup tables if you have no need of them.",
                                  true);
    }
+
+   $migration->addField("glpi_entities", 'inquest_duration', "integer", array('value' => 0));
+
+   $migration->addKey('glpi_users', 'begin_date');
+   $migration->addKey('glpi_users', 'end_date');
+
+   $migration->addKey('glpi_knowbaseitems', 'begin_date');
+   $migration->addKey('glpi_knowbaseitems', 'end_date');
 
    // Add Color selector
    Config::setConfigurationValues('core', array('palette' => 'auror'));
