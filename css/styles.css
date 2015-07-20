@@ -1790,6 +1790,7 @@ a.icon_nav_move:hover img {
 #c_menu {
    height: 30px;
    text-align: center;
+   padding-left: 95px;
 }
 
 #c_menu ul#menu {
@@ -1799,7 +1800,7 @@ a.icon_nav_move:hover img {
    font-size: 13px;
    box-sizing: border-box;
    margin: 0 auto;
-   width: 1000px;
+   /*width: 1000px;*/
    display: inline-block;
 }
 
@@ -1850,21 +1851,24 @@ ul#menu ul li a {
 }
 
 /* hide menu on small screen */
-@media screen and (max-width: 420px) {
+@media screen and (max-width: 1025px) {
    #c_menu ul#menu, 
    #language_link,
    #help_link, 
    #myname {
       display: none;
    }
+}
 
-   #menu_all_button {
+@media screen and (max-width: 490px) {
+
+   #show_all_menu .top {
+      display: block;
       float: left;
-      margin-right: 0;
-      margin-left: 20px;
+      height: 370px;
+      border-bottom: 2px solid #DDD;
+      margin-bottom: 15px;
    }
-
-
 }
 
 .button-icon:hover {
@@ -1881,7 +1885,7 @@ ul#menu > li {
 
 ul#menu ul.ssmenu {
    position: relative;
-   width: 130px;
+   width: 145px;
    z-index: 200;
 }
 
