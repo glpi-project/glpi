@@ -178,6 +178,15 @@ class Central extends CommonGLPI {
          }
       }
 
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+         if (!DBMysql::isMySQLStrictMode()) {
+            echo "<tr><th colspan='2'>";
+            $message = __('MySQL strict mode is not enabled');
+            Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
+            echo "</th></tr>";
+         }
+      }
+
       if ($DB->isSlave()
           && !$DB->first_connection) {
          echo "<tr><th colspan='2'>";

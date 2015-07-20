@@ -595,7 +595,7 @@ class DBmysql {
 
       // No translation, used in sysinfo
       $ret = array();
-      $req = $this->request("SELECT @@version AS vers, @@version_comment AS stype");
+      $req = $this->request("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
       if (($data = $req->next())) {
          if ($data['stype']) {
@@ -606,11 +606,26 @@ class DBmysql {
          } else {
             $ret['Server Version'] = $this->dbh->server_info;
          }
+         if ($data['mode']) {
+            $ret['Server SQL Mode'] = $data['mode'];
+         } else {
+            $ret['Server SQL Mode'] = '';
+         }
       }
       $ret['Parameters'] = $this->dbuser."@".$this->dbhost."/".$this->dbdefault;
       $ret['Host info']  = $this->dbh->host_info;
 
       return $ret;
+   }
+
+   static function isMySQLStrictMode() {
+      global $DB;
+      $req = $DB->request("SELECT @@sql_mode as mode");
+      if (($data = $req->next())) {
+        return (preg_match("/STRICT/", $data['mode']));
+      } else {
+        return false;
+      }
    }
 
    /**

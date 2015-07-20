@@ -1512,7 +1512,18 @@ class Config extends CommonDBTM {
       echo "</table></div>\n";
    }
 
+   static function getSQLMode() {
+      global $DB;
 
+      $query   = "SELECT @@GLOBAL.sql_mode;";
+      $results = $DB->query($query);
+      if ($DB->numrows($results) > 0) {
+         return $DB->results($result, 0);
+      } else {
+        return '';
+      }
+   }
+   
    /**
     * show Libraries information in system information
     *
