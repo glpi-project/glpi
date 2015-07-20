@@ -991,6 +991,14 @@ td.rotate {
    background-color: inherit;
 }
 
+#searchcriterias .switch {
+   opacity: .7;
+}
+
+#searchcriterias .switch:hover {
+   opacity: 1;
+}
+
 
 .tab_cadre_pager select, .tab_cadre_pager span, .tab_cadre_pager form {
    font-size:10px;
@@ -1016,7 +1024,8 @@ td.rotate {
 }
 
 .tab_cadre_pager .pager_controls img {
-   padding: 0 15px;
+   padding-right: 10px;
+   vertical-align: middle;
 }
 
 
@@ -2800,3 +2809,96 @@ ul#menu ul.ssmenu {
 .x-button-drop-menu li input[type="radio"]:checked + label {  
    background-color: #FEC95C;
 } 
+
+
+/** SWITCHS **/
+/* Adadpted from http://materializecss.com/ */
+
+.switch, .switch * {
+   -webkit-user-select: none;
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   -ms-user-select: none; 
+}
+
+.switch {
+   padding: 4px;
+   display: inline-block;
+}
+
+.switch img {
+   padding-right: 10px;
+}
+
+.grey_border {
+   border: 1px dotted #E2E2E2 ;
+}
+
+.switch label {
+   cursor: pointer; 
+}
+
+.switch label input[type=checkbox] {
+   opacity: 0;
+   width: 0;
+   height: 0; 
+}
+
+.switch label input[type=checkbox]:checked + .lever {
+   background-color: #E8AEAE; 
+}
+
+.switch label input[type=checkbox]:checked + .lever:after {
+   background-color: #cf9b9b; 
+}
+
+.switch label .lever {
+   content: "";
+   display: inline-block;
+   position: relative;
+   width: 15px;
+   height: 10px;
+   background-color: #B8B8B8;
+   border-radius: 15px;
+   margin-right: 5px;
+   transition: background 0.3s ease;
+   vertical-align: middle;
+}
+.switch label img {
+   vertical-align: middle;
+}
+
+.switch label .lever:after {
+   content: "";
+   position: absolute;
+   display: inline-block;
+   width: 14px;
+   height: 14px;
+   background-color: #F1F1F1;
+   border-radius: 21px;
+   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4);
+   left: -7px;
+   top: -2px;
+   transition: left 0.3s ease, background .3s ease, box-shadow 0.3s ease; 
+}
+
+input[type=checkbox]:checked:not(:disabled) ~ .lever:active:after {
+   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(89, 89, 89, 0.08627450980392157); 
+}
+
+input[type=checkbox]:not(:disabled) ~ .lever:active:after {
+   box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.4), 0 0 0 15px rgba(0, 0, 0, 0.08); 
+}
+
+.switch label input[type=checkbox]:checked + .lever:after {
+   left: 8px; 
+}
+
+.switch input[type=checkbox][disabled] + .lever {
+   cursor: default; 
+}
+
+.switch label input[type=checkbox][disabled] + .lever:after, 
+.switch label input[type=checkbox][disabled]:checked + .lever:after {
+   background-color: #BDBDBD; 
+}

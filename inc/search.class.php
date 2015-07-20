@@ -1159,14 +1159,7 @@ class Search {
                $search_config_bottom .= Html::jsGetElementbyID('search_config_bottom').
                                                       ".dialog('open');\">";
 
-               $delete_ctrl = "<a href='#' onClick = \"toogle('is_deleted','','','');
-                  document.forms['searchform".$_POST["itemtype"]."'].submit();\">
-                  <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".
-                  (!$data['search']['is_deleted']?'_no':'').".png\" name='img_deleted' alt=\"".
-                  (!$data['search']['is_deleted']?__s('Show the dustbin'):__s("Don't show deleted items")).
-                  "\" title=\"".
-                  (!$data['search']['is_deleted']?__s('Show the dustbin'):__s("Don't show deleted items")).
-                  "\" class='pointer'></a>";
+               $delete_ctrl = self::isDeletedSwitch($data['search']['is_deleted']);
 
                $search_config_top .= $delete_ctrl;
                $search_config_bottom .= $delete_ctrl;
@@ -1445,8 +1438,26 @@ class Search {
 
          }
       } else {
+         echo "<div class='center'>".self::isDeletedSwitch($data['search']['is_deleted'])."</div><br/>";
          echo self::showError($data['display_type']);
       }
+   }
+
+   static function isDeletedSwitch($is_deleted) {
+      global $CFG_GLPI;
+
+      return "<div class='switch grey_border'>".
+             "<label>".
+                "<img src='".$CFG_GLPI["root_doc"]."/pics/showdeleted.png' ".
+                "name='img_deleted' alt='".__s('Show the dustbin')."' class='pointer' />".
+                "<input type='hidden' name='is_deleted' value='0' /> ".
+                "<input type='checkbox' name='is_deleted' value='1' ".
+                ($is_deleted?"checked='checked'":"").
+                " onClick = \"toogle('is_deleted','','',''); 
+                              document.forms['searchform".$_POST["itemtype"]."'].submit();\" />".
+                "<span class='lever' />".
+             "</label>".
+             "</div>";
    }
 
    /**
