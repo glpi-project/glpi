@@ -1158,10 +1158,11 @@ class Search {
                $search_config_bottom .= " class='pointer' onClick=\"";
                $search_config_bottom .= Html::jsGetElementbyID('search_config_bottom').
                                                       ".dialog('open');\">";
-
-               $delete_ctrl = self::isDeletedSwitch($data['search']['is_deleted']);
-
-               $search_config_top .= $delete_ctrl;
+               $item = new $data['itemtype'];
+               if ($item->maybeDeleted()) {
+                  $delete_ctrl = self::isDeletedSwitch($data['search']['is_deleted']);
+                  $search_config_top .= $delete_ctrl;
+               }
 
                $search_config_top
                   .= Ajax::createIframeModalWindow('search_config_top',
@@ -1437,7 +1438,11 @@ class Search {
 
          }
       } else {
-         echo "<div class='center'>".self::isDeletedSwitch($data['search']['is_deleted'])."</div><br/>";
+         if ($item->maybeDeleted()) {
+            echo "<div class='center'>".
+                 self::isDeletedSwitch($data['search']['is_deleted']).
+                 "</div><br/>";
+         }
          echo self::showError($data['display_type']);
       }
    }
