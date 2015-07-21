@@ -115,7 +115,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['sla_delete'])) {
    $track->check($_POST["id"], UPDATE);
 
-   $track->deleteSLA($_POST["id"]);
+   $track->deleteSLA($_POST["id"], $_POST['delete_due_date']);
    Event::log($_POST["id"], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));

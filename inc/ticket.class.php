@@ -357,14 +357,16 @@ class Ticket extends CommonITILObject {
     *
     * @return boolean
    **/
-   function deleteSLA($id) {
-      global $DB;
+   function deleteSLA($id, $delete_due_date=0) {
 
       $input['slas_id']               = 0;
       $input['slalevels_id']          = 0;
       $input['sla_waiting_duration']  = 0;
       $input['id']                    = $id;
-
+      if ($delete_due_date) {
+         $input['due_date'] = '';
+      }
+      
       SlaLevel_Ticket::deleteForTicket($id);
 
       return $this->update($input);
@@ -3632,9 +3634,19 @@ class Ticket extends CommonITILObject {
             Html::showToolTip($commentsla,$slaoptions);
             if ($canupdate) {
                echo "&nbsp;";
-               Html::showSimpleForm($this->getFormURL(), 'sla_delete',
-                                    _x('button', 'Delete permanently'),
-                                    array('id' => $this->getID()));
+               $fields = array('sla_delete'        => 'sla_delete',
+                               'id'                => $this->getID(),
+                               '_glpi_csrf_token'  => Session::getNewCSRFToken(),
+                               '_glpi_simple_form' => 1);
+               $JS = "  function delete_due_date(){
+                           if (confirm('".__('Delete due date too ?')."')) {
+                              submitGetLink('".$this->getFormURL()."', ".json_encode(array_merge($fields, array('delete_due_date' => 1))).");
+                           } else {
+                              submitGetLink('".$this->getFormURL()."', ".json_encode(array_merge($fields, array('delete_due_date' => 0))).");
+                           }
+                        }";
+               echo Html::scriptBlock($JS);
+               echo "<a class='vsubmit' onclick='delete_due_date();'>"._x('button', 'Delete permanently')."</a>";
             }
             echo "</td>";
             echo "</tr></table>";
