@@ -165,15 +165,16 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
    echo "</div>";
 
-
-   echo "</div>"; // end contenu login
-
-      // Display FAQ is enable
+   // Display FAQ is enable
    if ($CFG_GLPI["use_public_faq"]) {
       echo '<div id="box-faq">'.
             '<a href="front/helpdesk.faq.php">[ '.__('Access to the Frequently Asked Questions').' ]';
       echo '</a></div>';
    }
+
+   echo "</div>"; // end contenu login
+
+
 
    if (GLPI_DEMO_MODE) {
       echo "<div class='center'>";

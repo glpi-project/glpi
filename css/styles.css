@@ -1627,8 +1627,11 @@ a.icon_nav_move:hover img {
 #box-faq {
    padding-top:30px;
    text-align:center;
-   position:relative;
    margin:auto;
+}
+
+#box-faq a{
+   color: #CFCFCF;
 }
 
 .sous_logo {
