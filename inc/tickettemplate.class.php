@@ -423,7 +423,7 @@ class TicketTemplate extends CommonDropdown {
             if ($num = array_search($field, $this->getAllowedFields())) {
                $display_options = array('comments' => true,
                                         'html'     => true);
-               $output .= $ticket->getValueToDisplay($num, $ticket->fields, $display_options);
+               $output .= $ticket->getValueToDisplay($num, $ticket->fields[$field], $display_options);
 
                /// Display items_id
                if ($field == 'itemtype') {
