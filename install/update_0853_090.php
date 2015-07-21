@@ -68,11 +68,14 @@ function update0853to090() {
                                  true);
    }
 
+   // Add duration for inquest (entity configuration)
    $migration->addField("glpi_entities", 'inquest_duration', "integer", array('value' => 0));
 
+   // add validity period for users
    $migration->addKey('glpi_users', 'begin_date');
    $migration->addKey('glpi_users', 'end_date');
 
+   // add validity period for kb items
    $migration->addKey('glpi_knowbaseitems', 'begin_date');
    $migration->addKey('glpi_knowbaseitems', 'end_date');
 
