@@ -1135,7 +1135,7 @@ class Search {
                $function = 'plugin_'.$plug['plugin'].'_addParamFordynamicReport';
 
                if (function_exists($function)) {
-                  $out = $function($itemtype);
+                  $out = $function($data['itemtype']);
                   if (is_array($out) && count($out)) {
                      $parameters .= Toolbox::append_params($out, '&amp;');
                   }
