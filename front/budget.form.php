@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    $budget->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $budget->check($_POST["id"], PURGE);
+   $budget->check($_POST["id"], DELETE);
 
    if ($budget->restore($_POST)) {
       Event::log($_POST["id"], "budget", 4, "financial",

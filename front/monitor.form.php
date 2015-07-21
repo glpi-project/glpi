@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    $monitor->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $monitor->check($_POST["id"], PURGE);
+   $monitor->check($_POST["id"], DELETE);
 
    $monitor->restore($_POST);
    Event::log($_POST["id"], "monitors", 4, "inventory",

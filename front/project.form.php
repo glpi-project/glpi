@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    $project->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $project->check($_POST["id"], PURGE);
+   $project->check($_POST["id"], DELETE);
 
    $project->restore($_POST);
    Event::log($_POST["id"], "project", 4, "maintain",

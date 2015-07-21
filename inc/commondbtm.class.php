@@ -2013,23 +2013,26 @@ class CommonDBTM extends CommonGLPI {
             if ($params['canedit'] && $this->can($ID, UPDATE)) {
                echo "</td></tr><tr class='tab_bg_2'>\n";
             }
-            if ($this->isDeleted()
-                && $this->can($ID, PURGE)) {
-               echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
-               echo Html::submit(_x('button','Restore'), array('name' => 'restore'));
-
-               echo "<span class='very_small_space'>";
-               if (in_array($this->getType(), Item_Devices::getConcernedItems())) {
-                  Html::showToolTip(__('Check to keep the devices while deleting this item'));
-                  echo "&nbsp;";
-                  echo "<input type='checkbox' name='keep_devices' value='1'";
-                  if (!empty($_SESSION['glpikeep_devices_when_purging_item'])) {
-                     echo " checked";
-                  }
-                  echo ">&nbsp;";
+            if ($this->isDeleted()) {
+               if ($this->can($ID, DELETE)) {
+                  echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
+                  echo Html::submit(_x('button','Restore'), array('name' => 'restore'));
                }
-               echo Html::submit(_x('button','Delete permanently'), array('name' => 'purge'));
-               echo "</span>";
+
+               if ($this->can($ID, PURGE)) {
+                  echo "<span class='very_small_space'>";
+                  if (in_array($this->getType(), Item_Devices::getConcernedItems())) {
+                     Html::showToolTip(__('Check to keep the devices while deleting this item'));
+                     echo "&nbsp;";
+                     echo "<input type='checkbox' name='keep_devices' value='1'";
+                     if (!empty($_SESSION['glpikeep_devices_when_purging_item'])) {
+                        echo " checked";
+                     }
+                     echo ">&nbsp;";
+                  }
+                  echo Html::submit(_x('button','Delete permanently'), array('name' => 'purge'));
+                  echo "</span>";
+               }
 
             } else {
                echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";

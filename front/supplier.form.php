@@ -67,7 +67,7 @@ if (isset($_POST["add"])) {
    $ent->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $ent->check($_POST["id"], PURGE);
+   $ent->check($_POST["id"], DELETE);
    $ent->restore($_POST);
    Event::log($_POST["id"], "suppliers", 4, "financial",
                //TRANS: %s is the user login

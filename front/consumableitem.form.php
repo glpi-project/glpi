@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
    $constype->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $constype->check($_POST["id"], PURGE);
+   $constype->check($_POST["id"], DELETE);
 
    if ($constype->restore($_POST)) {
       Event::log($_POST["id"], "consumableitems", 4, "inventory",

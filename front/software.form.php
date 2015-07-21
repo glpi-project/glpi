@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    $soft->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $soft->check($_POST["id"], PURGE);
+   $soft->check($_POST["id"], DELETE);
 
    $soft->restore($_POST);
    Event::log($_POST["id"], "software", 4, "inventory",

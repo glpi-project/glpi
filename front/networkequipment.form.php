@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    $netdevice->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $netdevice->check($_POST["id"], PURGE);
+   $netdevice->check($_POST["id"], DELETE);
 
    $netdevice->restore($_POST);
    Event::log($_POST["id"], "networkequipment", 4, "inventory",

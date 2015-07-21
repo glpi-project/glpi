@@ -76,7 +76,7 @@ if (isset($_GET['getvcard'])) {
    $contact->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $contact->check($_POST["id"], PURGE);
+   $contact->check($_POST["id"], DELETE);
 
    if ($contact->restore($_POST)) {
       Event::log($_POST["id"], "contacts", 4, "financial",

@@ -73,7 +73,7 @@ if (isset($_POST["add"])) {
    $computer->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $computer->check($_POST['id'], PURGE);
+   $computer->check($_POST['id'], DELETE);
    if ($computer->restore($_POST)) {
       Event::log($_POST["id"],"computers", 4, "inventory",
                  //TRANS: %s is the user login

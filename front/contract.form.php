@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
    $contract->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $contract->check($_POST['id'], PURGE);
+   $contract->check($_POST['id'], DELETE);
 
    if ($contract->restore($_POST)) {
       Event::log($_POST["id"], "contracts", 4, "financial",

@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
    $problem->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $problem->check($_POST["id"], PURGE);
+   $problem->check($_POST["id"], DELETE);
 
    $problem->restore($_POST);
    Event::log($_POST["id"], "problem", 4, "maintain",

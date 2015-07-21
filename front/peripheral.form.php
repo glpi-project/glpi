@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    $peripheral->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $peripheral->check($_POST["id"], PURGE);
+   $peripheral->check($_POST["id"], DELETE);
 
    $peripheral->restore($_POST);
    Event::log($_POST["id"], "peripherals", 4, "inventory",

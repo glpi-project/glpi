@@ -84,7 +84,7 @@ if (isset($_GET['getvcard'])) {
    $user->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $user->check($_POST['id'], PURGE);
+   $user->check($_POST['id'], DELETE);
    $user->restore($_POST);
    Event::log($_POST["id"], "users", 4, "setup",
               //TRANS: %s is the user login

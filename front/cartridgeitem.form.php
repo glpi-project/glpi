@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    $cartype->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $cartype->check($_POST["id"], PURGE);
+   $cartype->check($_POST["id"], DELETE);
 
    if ($cartype->restore($_POST)) {
       Event::log($_POST["id"], "cartridgeitems", 4, "inventory",

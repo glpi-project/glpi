@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    $phone->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $phone->check($_POST["id"], PURGE);
+   $phone->check($_POST["id"], DELETE);
 
    $phone->restore($_POST);
    Event::log($_POST["id"], "phones", 4, "inventory",

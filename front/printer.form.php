@@ -69,7 +69,7 @@ if (isset($_POST["add"])) {
    $print->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $print->check($_POST["id"], PURGE);
+   $print->check($_POST["id"], DELETE);
 
    $print->restore($_POST);
    Event::log($_POST["id"], "printers", 4, "inventory",

@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
    $doc->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $doc->check($_POST["id"], PURGE);
+   $doc->check($_POST["id"], DELETE);
 
    if ($doc->restore($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document",

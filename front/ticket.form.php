@@ -104,7 +104,7 @@ if (isset($_POST["add"])) {
    $track->redirectToList();
 
 } else if (isset($_POST["restore"])) {
-   $track->check($_POST['id'], PURGE);
+   $track->check($_POST['id'], DELETE);
    if ($track->restore($_POST)) {
       Event::log($_POST["id"], "ticket", 4, "tracking",
                  //TRANS: %s is the user login
