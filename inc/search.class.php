@@ -1093,6 +1093,7 @@ class Search {
    static function displayDatas(array &$data) {
       global $CFG_GLPI;
 
+      $item = new $data['itemtype'];
 
       $rand = mt_rand();
       if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
@@ -1158,7 +1159,6 @@ class Search {
                $search_config_bottom .= " class='pointer' onClick=\"";
                $search_config_bottom .= Html::jsGetElementbyID('search_config_bottom').
                                                       ".dialog('open');\">";
-               $item = new $data['itemtype'];
                if ($item->maybeDeleted()) {
                   $delete_ctrl = self::isDeletedSwitch($data['search']['is_deleted']);
                   $search_config_top .= $delete_ctrl;
