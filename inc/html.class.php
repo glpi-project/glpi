@@ -1811,7 +1811,9 @@ class Html {
       echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"]." Copyright (C)".
            " 2015".
            /*"-".date("Y").*/ // TODO, decomment this in 2016
-           " by Teclib'.</span>";
+           " by Teclib'".
+           " - Copyright (C) 2003-2015 INDEPNET Development Team".
+           "</span>";
       echo "</a></td>";
       echo "</tr></table></div>";
 
@@ -2202,8 +2204,10 @@ class Html {
       echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"].
            " Copyright (C) ".
            "2015-".
-           //date("Y").
-           " by Teclib.</span>";
+           //date("Y"). // TODO, decomment this in 2016
+           " by Teclib'".
+           " - Copyright (C) 2003-2015 INDEPNET Development Team".
+           "</span>";
       echo "</a></td></tr></table></div>";
 
       if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE) { // debug mode traduction
@@ -2282,8 +2286,9 @@ class Html {
          echo "GLPI version ".(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"").
               " Copyright (C) ".
               "2015-".
-              //date("Y").
-              " By Teclib'.";
+              //date("Y"). // TODO, decomment this in 2016
+              " By Teclib'".
+              " - Copyright (C) 2003-2015 INDEPNET Development Team";
          echo "</a></div>";
 
          echo "</body></html>";
