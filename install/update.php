@@ -775,6 +775,7 @@ function updateDbUpTo031() {
 
       case "0.85.3" :
       case "0.85.4" :
+      case "0.85.5" :
          include("update_0853_090.php");
          update0853to090();
       case "0.90" :
