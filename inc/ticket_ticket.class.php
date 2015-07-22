@@ -183,7 +183,7 @@ class Ticket_Ticket extends CommonDBRelation {
                                                          $CFG_GLPI["root_doc"]."/pics/delete.png");
                }
                $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link']),
-                               $ticket->getLink());
+                               $ticket->getLink(array('forceid'=>true)));
                printf(__('%1$s %2$s'), $text, $icons);
 
             }
