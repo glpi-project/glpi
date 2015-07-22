@@ -1483,7 +1483,8 @@ class Html {
                $menu_class = "";
                $tmp_active_item  = explode("/", $item);
                $active_item  = array_pop($tmp_active_item);
-               if (isset($menu[$sector]['content']) 
+               if (isset($menu[$sector]['content'])
+                  &&  isset($menu[$sector]['content'][$active_item])
                   && $menu[$sector]['content'][$active_item]['title'] == $val['title']) {
                   $menu_class = "active";
                }
