@@ -745,28 +745,39 @@ abstract class CommonDropdown extends CommonDBTM {
                      }
                   } else {
                      $input2 = $item->fields;
-                     // Remove keys (and name, tree dropdown will use completename)
-                     if ($item instanceof CommonTreeDropdown) {
-                        unset($input2['id'], $input2['name'], $input2[$fk]);
-                     } else {
-                        unset($input2['id']);
-                     }
                      // Change entity
                      $input2['entities_id']  = $_SESSION['glpiactive_entity'];
                      $input2['is_recursive'] = 1;
                      $input2 = Toolbox::addslashes_deep($input2);
-                     // Import new
-                     if ($newid = $item->import($input2)) {
-                        // Delete old
-                        if ($newid > 0) {
-                           // delete with purge for dropdown with dustbin (Budget)
-                           $item->delete(array('id'          => $key,
-                                               '_replace_by' => $newid), 1);
+
+                     if ($item->getType() == 'TicketTemplate') {
+                        if(!$item->update($input2)){
+                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        } else {
+                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                         }
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        
                      } else {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
-                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        // Remove keys (and name, tree dropdown will use completename)
+                        if ($item instanceof CommonTreeDropdown) {
+                           unset($input2['id'], $input2['name'], $input2[$fk]);
+                        } else {
+                           unset($input2['id']);
+                        }
+                        // Import new
+                        if ($newid = $item->import($input2)) {
+                           // Delete old
+                           if ($newid > 0) {
+                              // delete with purge for dropdown with dustbin (Budget)
+                              $item->delete(array('id'          => $key,
+                                                  '_replace_by' => $newid), 1);
+                           }
+                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        } else {
+                           $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
                      }
                   }
                } else {
