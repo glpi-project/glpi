@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -378,6 +378,7 @@ class CartridgeItem extends CommonDBTM {
       $tab[40]['datatype']          = 'dropdown';
       $tab[40]['name']              = _n('Printer model', 'Printer models', Session::getPluralNumber());
       $tab[40]['forcegroupby']      = true;
+      $tab[40]['massiveaction']     = false;
       $tab[40]['joinparams']        = array('beforejoin'
                                              => array('table'
                                                          => 'glpi_cartridgeitems_printermodels',
@@ -557,6 +558,6 @@ class CartridgeItem extends CommonDBTM {
       $options['items']       = array($item);
       NotificationEvent::debugEvent($this, $options);
    }
-   
+
 }
 ?>
