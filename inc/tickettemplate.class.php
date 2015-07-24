@@ -755,17 +755,11 @@ class TicketTemplate extends CommonDropdown {
 
          // Update destination with source input
          $input['id'] = $ID;
-         $this->update($input);
-
-         return true;
-
-      } else {
-         $this->update($input);
-
-         return true;
       }
 
-      return false;
+      $this->update($input);
+      return true;
+
    }
 
 
