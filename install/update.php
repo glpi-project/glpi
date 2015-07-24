@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -778,8 +778,9 @@ function updateDbUpTo031() {
       case "0.85.5" :
          include("update_0853_090.php");
          update0853to090();
+
       case "0.90" :
-      break;
+         break;
 
       default :
          include("update_031_04.php");

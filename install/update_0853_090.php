@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -68,16 +68,19 @@ function update0853to090() {
                                  true);
    }
 
-   // Add duration for inquest (entity configuration)
-   $migration->addField("glpi_entities", 'inquest_duration', "integer", array('value' => 0));
+   // For 0.85 svn
+   if (!FieldExists("glpi_entities", 'inquest_duration')) {
+      // Add duration for inquest (entity configuration)
+      $migration->addField("glpi_entities", 'inquest_duration', "integer", array('value' => 0));
 
-   // add validity period for users
-   $migration->addKey('glpi_users', 'begin_date');
-   $migration->addKey('glpi_users', 'end_date');
+      // add validity period for users
+      $migration->addKey('glpi_users', 'begin_date');
+      $migration->addKey('glpi_users', 'end_date');
 
-   // add validity period for kb items
-   $migration->addKey('glpi_knowbaseitems', 'begin_date');
-   $migration->addKey('glpi_knowbaseitems', 'end_date');
+      // add validity period for kb items
+      $migration->addKey('glpi_knowbaseitems', 'begin_date');
+      $migration->addKey('glpi_knowbaseitems', 'end_date');
+   }
 
    // Add Color selector
    Config::setConfigurationValues('core', array('palette' => 'auror'));
@@ -90,9 +93,11 @@ function update0853to090() {
    // add timeline config
    Config::setConfigurationValues('core', array('ticket_timeline' => 1));
    Config::setConfigurationValues('core', array('ticket_timeline_keep_replaced_tabs' => 0));
-   $migration->addField("glpi_users", "ticket_timeline", "tinyint(1) DEFAULT NULL");
-   $migration->addField("glpi_users", "ticket_timeline_keep_replaced_tabs", "tinyint(1) DEFAULT NULL");
-   
+   $migration->addField("glpi_users", "ticket_timeline", 'bool', array('value' => 0));
+   $migration->addField("glpi_users", "ticket_timeline_keep_replaced_tabs", 'bool',
+                        array('value' => 0));
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
@@ -119,8 +124,8 @@ function update0853to090() {
                             WHERE `users_id` = '".$data['users_id']."'
                                   AND `num` = '$newval'
                                   AND `itemtype` = '$type'";
-                  if ($result2=$DB->query($query)) {
-                     if ($DB->numrows($result2)==0) {
+                  if ($result2 = $DB->query($query)) {
+                     if ($DB->numrows($result2) == 0) {
                         $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '".$rank++."',
@@ -152,5 +157,4 @@ function update0853to090() {
 
    return $updateresult;
 }
-
 ?>
