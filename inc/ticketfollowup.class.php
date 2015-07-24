@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -658,11 +658,17 @@ class TicketFollowup  extends CommonDBTM {
       return true;
    }
 
+
+   /**
+    * @since version 0.90
+    *
+    * @see CommonDBTM::showFormButtons()
+   **/
    function showFormButtons($options=array()) {
       global $CFG_GLPI;
 
       if (isset($_SESSION["glpiactiveprofile"])
-          && $_SESSION["glpiactiveprofile"]["interface"] != "central") {
+          && ($_SESSION["glpiactiveprofile"]["interface"] != "central")) {
          return parent::showFormButtons($options);
       }
 
@@ -672,9 +678,9 @@ class TicketFollowup  extends CommonDBTM {
          $ID = $this->fields['id'];
       }
 
-      $params['colspan']      = 2;
-      $params['candel']       = true;
-      $params['canedit']      = true;
+      $params['colspan']  = 2;
+      $params['candel']   = true;
+      $params['canedit']  = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -685,7 +691,7 @@ class TicketFollowup  extends CommonDBTM {
       if (!$this->isNewID($ID)) {
          echo "<input type='hidden' name='id' value='$ID'>";
       }
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='".($params['colspan']*2)."'>";
 
@@ -710,7 +716,7 @@ class TicketFollowup  extends CommonDBTM {
                echo Html::submit(_x('button','Delete permanently'),
                                  array('name'    => 'purge',
                                        'confirm' => __('Confirm the final deletion?')));
-            }     
+            }
          }
 
          if ($this->isField('date_mod')) {

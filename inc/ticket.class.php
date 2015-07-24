@@ -3001,7 +3001,7 @@ class Ticket extends CommonITILObject {
 
          if (!$tt->isHiddenField('_users_id_observer')) {
             // Observer
-            $ticket = new Ticket;
+            $ticket        = new self();
             $rand_observer = $ticket->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $values);
             echo '<hr>';
 
@@ -3011,7 +3011,6 @@ class Ticket extends CommonITILObject {
                                           $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php",
                                           $values);
 
-            echo "</td></tr>";
          } else { // predefined value
            if (isset($values["_users_id_observer"]) && $values["_users_id_observer"]) {
                echo self::getActorIcon('user', CommonITILActor::OBSERVER)."&nbsp;";
@@ -6102,7 +6101,7 @@ class Ticket extends CommonITILObject {
             $data_solution = $DB->fetch_assoc($res_solution);
             if (!empty($data_solution['solution_date'])) {
                 $solution_date = $data_solution['solution_date'];
-
+            }
             // find user
             if (!empty($data_solution['user_name'])) {
                $users_id = addslashes(trim(preg_replace("/.*\(([0-9]+)\)/", "$1",

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -243,6 +243,12 @@ class TicketTask  extends CommonITILTask {
       return $values;
    }
 
+
+   /**
+    * @since version 0.90
+    *
+    * @see CommonDBTM::showFormButtons()
+   **/
    function showFormButtons($options=array()) {
       global $CFG_GLPI;
 
@@ -270,7 +276,7 @@ class TicketTask  extends CommonITILTask {
       if (!$this->isNewID($ID)) {
          echo "<input type='hidden' name='id' value='$ID'>";
       }
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='".($params['colspan']*2)."'>";
 
@@ -295,7 +301,7 @@ class TicketTask  extends CommonITILTask {
                echo Html::submit(_x('button','Delete permanently'),
                                  array('name'    => 'purge',
                                        'confirm' => __('Confirm the final deletion?')));
-            }     
+            }
          }
 
          if ($this->isField('date_mod')) {

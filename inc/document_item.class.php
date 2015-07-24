@@ -617,7 +617,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       // find documents already associated to the item
-      $doc_item   = new self;
+      $doc_item   = new self();
       $used_found = $doc_item->find("`items_id` = '".$item->getID()."'
                                     AND `itemtype` = '".$item->getType()."'");
       $used       = array_keys($used_found);
