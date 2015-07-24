@@ -534,6 +534,229 @@ class TicketTemplate extends CommonDropdown {
          $ticket->showFormHelpdesk(Session::getLoginUserID(), $tt->getID());
       }
    }
+   
+   /**
+    * @see CommonDBTM::getSpecificMassiveActions()
+    **/
+   function getSpecificMassiveActions($checkitem=NULL) {
 
+      $isadmin = static::canUpdate();
+      $actions = parent::getSpecificMassiveActions($checkitem);
+
+      if ($isadmin
+          &&  $this->maybeRecursive()
+          && (count($_SESSION['glpiactiveentities']) > 1)) {
+         $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge'] = __('Transfer and merge');
+      }
+
+      return $actions;
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::showMassiveActionsSubForm()
+   **/
+   static function showMassiveActionsSubForm(MassiveAction $ma) {
+
+      switch ($ma->getAction()) {
+         case 'merge' :
+            echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
+            echo "<br><br>".Html::submit(_x('button', 'Merge'), array('name' => 'massiveaction'));
+            return true;
+      }
+
+      return parent::showMassiveActionsSubForm($ma);
+   }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see CommonDBTM::processMassiveActionsForOneItemtype()
+   **/
+   static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
+                                                       array $ids) {
+      switch ($ma->getAction()) {
+         case 'merge' :
+            foreach ($ids as $key) {
+               if ($item->can($key, UPDATE)) {
+                  if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
+                     if ($item->update(array('id'           => $key,
+                                             'is_recursive' => 1))) {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                     } else {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     }
+                  } else {
+                     $input2 = $item->fields;
+                     // Change entity
+                     $input2['entities_id']  = $_SESSION['glpiactive_entity'];
+                     $input2['is_recursive'] = 1;
+                     $input2 = Toolbox::addslashes_deep($input2);
+
+                     if(!$item->import($input2)){
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                     } else {
+                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                     }
+                  }
+                  
+               } else {
+                  $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+               }
+            }
+            return;
+      }
+      parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
+   }
+   
+   /**
+    * Merge fields linked to template
+    * 
+    * @global type $DB
+    * @param type $target_id
+    * @param type $source_id
+    */
+   function mergeTemplateFields($target_id, $source_id){
+      global $DB;
+      
+      // Tables linked to ticket template
+      $to_merge = array('predefinedfields', 'mandatoryfields', 'hiddenfields');
+
+      // Source fields
+      $source = array();
+      foreach ($to_merge as $merge) {
+         $source[$merge] = $this->formatFieldsToMerge(getAllDatasFromTable('glpi_tickettemplate'.$merge, "tickettemplates_id='".$source_id."'"));
+      }
+
+      // Target fields
+      $target = array();
+      foreach ($to_merge as $merge) {
+         $target[$merge] = $this->formatFieldsToMerge(getAllDatasFromTable('glpi_tickettemplate'.$merge, "tickettemplates_id='".$target_id."'"));
+      }
+      
+      // Merge  
+      foreach ($source as $merge => $data) {
+         foreach ($data as $key => $val) {
+            if (!array_key_exists($key, $target[$merge])) {
+               $DB->query("UPDATE `glpi_tickettemplate".$merge."` SET `tickettemplates_id` = '".$target_id."' WHERE `id` = '".$val['id']."'");
+            }
+         }
+      }
+   }
+   
+   /**
+    * Merge Itilcategories linked to template
+    * 
+    * @global type $DB
+    * @param type $target_id
+    * @param type $source_id
+    */
+   function mergeTemplateITILCategories($target_id, $source_id){
+      global $DB;
+
+      $to_merge = array('tickettemplates_id_incident', 'tickettemplates_id_demand');
+      
+      // Source categories
+      $source = array();
+      foreach ($to_merge as $merge) {
+         $source[$merge] = getAllDatasFromTable('glpi_itilcategories', "$merge='".$source_id."'");
+      }
+
+      // Target categories
+      $target = array();
+      foreach ($to_merge as $merge) {
+         $target[$merge] = getAllDatasFromTable('glpi_itilcategories', "$merge='".$target_id."'");
+      }
+      
+      // Merge
+      $temtplate = new TicketTemplate();
+      foreach ($source as $merge => $data) {
+         foreach ($data as $key => $val) {
+            $temtplate->getFromDB($target_id);
+            if (!array_key_exists($key, $target[$merge]) && in_array($val['entities_id'], $_SESSION['glpiactiveentities'])) {
+               $DB->query("UPDATE `glpi_itilcategories` SET `$merge` = '".$target_id."' WHERE `id` = '".$val['id']."'");
+            }
+         }
+      }
+   }
+   
+   /**
+    * Format template fields to merge
+    * 
+    * @param type $data
+    * @return type
+    */
+   function formatFieldsToMerge($data){
+      $output = array();
+      foreach($data as $val){
+         $output[$val['num']] = $val;
+      }
+      
+      return $output;
+   }
+   
+  /**
+    * Import a dropdown - check if already exists
+    *
+    * @param $input  array of value to import (name, ...)
+    *
+    * @return the ID of the new or existing dropdown
+   **/
+   function import(array $input) {
+      
+      if (!isset($input['name'])) {
+         return -1;
+      }
+      // Clean datas
+      $input['name'] = trim($input['name']);
+
+      if (empty($input['name'])) {
+         return -1;
+      }
+
+      // Check twin
+      $ID = $this->findID($input);
+      if ($ID > 0) {
+         // Merge data
+         $this->mergeTemplateFields($ID, $input['id']);
+         $this->mergeTemplateITILCategories($ID, $input['id']);
+
+         // Delete source
+         $this->delete($input, 1);
+
+         // Update destination with source input
+         $input['id'] = $ID;
+         $this->update($input);
+
+         return true;
+         
+      } else {
+         $this->update($input);
+         
+         return true;
+      }
+      
+      return false;
+   }
+   
+   /**
+    * Forbidden massive action
+    *
+    * @see CommonDBTM::getForbiddenStandardMassiveAction()
+   **/
+   function getForbiddenStandardMassiveAction() {
+
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+
+      $forbidden[] = 'merge';
+
+      return $forbidden;
+   }
 }
 ?>
