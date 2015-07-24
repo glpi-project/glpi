@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -230,8 +230,8 @@ class CommonGLPI {
       global $CFG_GLPI;
 
       if (in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])
-         || !in_array($_SESSION['glpilayout'], array('classic', 'vsplit')) 
-         || !method_exists($this, "showForm")) {
+          || !in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))
+          || !method_exists($this, "showForm")) {
          $ong[$this->getType().'$main'] = $this->getTypeName(1);
       }
    }
@@ -577,20 +577,28 @@ class CommonGLPI {
    }
 
 
-   function showPrimaryForm($options = array()) {
+   /**
+    * @since version 0.90
+    *
+    * @param $options   array
+    *
+    * @return boolean
+   **/
+   function showPrimaryForm($options=array()) {
+
       if (!method_exists($this, "showForm")) {
          return false;
       }
 
-      $ong = $this->defineTabs();
+      $ong   = $this->defineTabs();
       $class = "main_form";
       if (count($ong) == 0) {
-         $class.= " no_tab";
+         $class .= " no_tab";
       }
-      if (!isset($_GET['id']) || $_GET['id'] <= 0) {
-         $class.= " create_form";
+      if (!isset($_GET['id']) || ($_GET['id'] <= 0)) {
+         $class .= " create_form";
       } else {
-         $class.= " modify_form";
+         $class .= " modify_form";
       }
       echo "<div class='$class'>";
       $this->showForm($_REQUEST['id'], $_REQUEST);

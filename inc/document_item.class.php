@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -547,17 +547,24 @@ class Document_Item extends CommonDBRelation{
           && !Document::canView()) {
          return false;
       }
-      
-      $params = array();
-      $params['rand'] = mt_rand();      
+
+      $params         = array();
+      $params['rand'] = mt_rand();
 
       self::showAddFormForItem($item, $withtemplate, $params);
       self::showListForItem($item, $withtemplate, $params);
    }
 
+
+   /**
+    * @since version 0.90
+    *
+    * @param $item
+    * @param $withtemplate   (default '')
+   */
    static function showSimpleAddForItem(CommonDBTM $item, $withtemplate='') {
 
-      $entity   = $_SESSION["glpiactive_entity"];
+      $entity = $_SESSION["glpiactive_entity"];
       if ($item->isEntityAssign()) {
          /// Case of personal items : entity = -1 : create on active entity (Reminder case))
          if ($item->getEntityID() >=0 ) {
@@ -565,11 +572,9 @@ class Document_Item extends CommonDBRelation{
          }
       }
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'>".__('Add a document')."</td>";
       echo "<td>";
-
       echo "<input type='hidden' name='entities_id' value='$entity'>";
       echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
       echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
@@ -578,13 +583,21 @@ class Document_Item extends CommonDBRelation{
          echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
       }
       echo Html::file();
-      echo "</td><td class='left'>";
-      echo "(".Document::getMaxUploadSize().")&nbsp;";
-      echo "</td>";
+      echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
       echo "</tr>";
    }
 
-   static function showAddFormForItem(CommonDBTM $item, $withtemplate='', $options = array()) {
+
+   /**
+    * @since version 0.90
+    *
+    * @param $item
+    * @param $withtemplate    (default '')
+    * @param $options         array
+    *
+    * @return boolean
+   **/
+   static function showAddFormForItem(CommonDBTM $item, $withtemplate='', $options=array()) {
       global $DB, $CFG_GLPI;
 
       //default options
@@ -604,11 +617,11 @@ class Document_Item extends CommonDBRelation{
       }
 
       // find documents already associated to the item
-      $doc_item = new self;
-      $used_found = $doc_item->find("`items_id` = '".$item->getID()."' 
-                                 AND `itemtype` = '".$item->getType()."'");
-      $used = array_keys($used_found);
-      $used = array_combine($used, $used);
+      $doc_item   = new self;
+      $used_found = $doc_item->find("`items_id` = '".$item->getID()."'
+                                    AND `itemtype` = '".$item->getType()."'");
+      $used       = array_keys($used_found);
+      $used       = array_combine($used, $used);
 
       if ($item->canAddItem('Document')
           && ($withtemplate < 2)) {
@@ -629,6 +642,7 @@ class Document_Item extends CommonDBRelation{
             }
          }
          $limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
+
          $q = "SELECT COUNT(*)
                FROM `glpi_documents`
                WHERE `is_deleted` = '0'
@@ -665,9 +679,7 @@ class Document_Item extends CommonDBRelation{
             echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
          }
          echo Html::file();
-         echo "</td><td class='left'>";
-         echo "(".Document::getMaxUploadSize().")&nbsp;";
-         echo "</td>";
+         echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
          echo "<td class='center' width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add a new file')."\"
                 class='submit'>";
@@ -705,7 +717,15 @@ class Document_Item extends CommonDBRelation{
       }
    }
 
-   static function showListForItem(CommonDBTM $item, $withtemplate='', $options = array()) {
+
+   /**
+    * @since version 0.90
+    *
+    * @param $item
+    * @param $withtemplate   (default '')
+    * @param $options        array
+    */
+   static function showListForItem(CommonDBTM $item, $withtemplate='', $options=array()) {
       global $DB, $CFG_GLPI;
 
       //default options
@@ -751,7 +771,6 @@ class Document_Item extends CommonDBRelation{
       if (get_class($item) == 'Ticket') {
          $linkparam = "&amp;tickets_id=".$item->fields['id'];
       }
-
 
       $query = "SELECT `glpi_documents_items`.`id` AS assocID,
                        `glpi_documents_items`.`date_mod` AS assocdate,
@@ -816,7 +835,7 @@ class Document_Item extends CommonDBRelation{
          }
       }
 
-      
+
       echo "<div class='spaced'>";
       if ($canedit
           && $number
@@ -917,7 +936,6 @@ class Document_Item extends CommonDBRelation{
          }
          echo $header_begin.$header_bottom.$header_end;
       }
-
 
       echo "</table>";
       if ($canedit && $number && ($withtemplate < 2)) {

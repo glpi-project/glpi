@@ -552,14 +552,13 @@ class Ticket extends CommonITILObject {
             $ong    = array();
 
             if ($_SESSION['glpiticket_timeline']) {
-               $timeline = $item->getTimelineItems();
+               $timeline    = $item->getTimelineItems();
                $nb_elements = count($timeline);
-
-               $ong[1] = __("Processing ticket")." <sup class='tab_nb'>$nb_elements</sup>";
+               $ong[1]      = __("Processing ticket")." <sup class='tab_nb'>$nb_elements</sup>";
             }
 
             if (!$_SESSION['glpiticket_timeline']
-               || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
+                || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
                $ong[2] = _n('Solution', 'Solutions', 1);
             }
             // enquete si statut clos
@@ -597,15 +596,15 @@ class Ticket extends CommonITILObject {
                   break;
 
                case 2 :
-                     if (!isset($_GET['load_kb_sol'])) {
-                        $_GET['load_kb_sol'] = 0;
-                     }
-                     $item->showSolutionForm($_GET['load_kb_sol']);
+                  if (!isset($_GET['load_kb_sol'])) {
+                     $_GET['load_kb_sol'] = 0;
+                  }
+                  $item->showSolutionForm($_GET['load_kb_sol']);
 
-                     if ($item->canApprove()) {
-                        $fup = new TicketFollowup();
-                        $fup->showApprobationForm($item);
-                     }
+                  if ($item->canApprove()) {
+                     $fup = new TicketFollowup();
+                     $fup->showApprobationForm($item);
+                  }
                   break;
 
                case 3 :
@@ -647,7 +646,7 @@ class Ticket extends CommonITILObject {
       $ong = array();
       $this->addDefaultFormTab($ong);
       if (!$_SESSION['glpiticket_timeline']
-         || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
+          || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
          $this->addStandardTab('TicketFollowup',$ong, $options);
          $this->addStandardTab('TicketTask', $ong, $options);
       }
@@ -4275,7 +4274,6 @@ class Ticket extends CommonITILObject {
                             Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                   }
                } else {
-                  toolbox::logdebug("dans else", self::canDelete());
                   if (self::canDelete()) {
                      echo "<input type='submit' class='submit' name='delete' value='".
                             _sx('button', 'Put in dustbin')."'>";
@@ -4284,7 +4282,6 @@ class Ticket extends CommonITILObject {
                echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
                echo "</td>";
             }
-
 
          } else {
             echo "<td class='tab_bg_2 center' colspan='4'>";
@@ -6022,33 +6019,37 @@ class Ticket extends CommonITILObject {
       return $content;
    }
 
+
+   /**
+    * @since version 0.90
+    *
+   **/
    function getTimelineItems() {
       global $DB, $CFG_GLPI;
 
       $timeline = array();
 
-      $user                  = new User;
-      $group                 = new Group;
-      $followup_obj          = new TicketFollowup;
-      $task_obj              = new TicketTask;
-      $document_item_obj     = new Document_Item;
-      $ticket_valitation_obj = new TicketValidation;
+      $user                  = new User();
+      $group                 = new Group();
+      $followup_obj          = new TicketFollowup();
+      $task_obj              = new TicketTask();
+      $document_item_obj     = new Document_Item();
+      $ticket_valitation_obj = new TicketValidation();
 
       //checks rights
       $showpublic = Session::haveRightsOr("followup", array(TicketFollowup::SEEPUBLIC,
                                                             TicketFollowup::SEEPRIVATE))
-                 || Session::haveRightsOr("task",     array(TicketTask::SEEPUBLIC,
-                                                            TicketTask::SEEPRIVATE));
+                    || Session::haveRightsOr("task", array(TicketTask::SEEPUBLIC,
+                                                           TicketTask::SEEPRIVATE));
       $restrict_fup = $restrict_task = "";
       if (!Session::haveRight("ticket", TicketFollowup::SEEPRIVATE)) {
          $restrict_fup = " AND (`is_private` = '0'
-                            OR `users_id` ='" . Session::getLoginUserID() . "') ";
+                                OR `users_id` ='" . Session::getLoginUserID() . "') ";
       }
       if (!Session::haveRight("ticket", TicketTask::SEEPRIVATE)) {
          $restrict_task = " AND (`is_private` = '0'
-                            OR `users_id` ='" . Session::getLoginUserID() . "') ";
+                                 OR `users_id` ='" . Session::getLoginUserID() . "') ";
       }
-
 
       if (!$showpublic) {
          $restrict = " AND 1 = 0";
@@ -6058,9 +6059,10 @@ class Ticket extends CommonITILObject {
       $followups = $followup_obj->find("tickets_id = ".$this->getID()." $restrict_fup", 'date DESC');
       foreach ($followups as $followups_id => $followup) {
          $followup_obj->getFromDB($followups_id);
-         $can_edit = $followup_obj->canUpdateItem();
-         $followup['can_edit'] = $can_edit;
-         $timeline[$followup['date']."_followup_".$followups_id] = array('type' => 'TicketFollowup', 'item' => $followup);
+         $can_edit                                               = $followup_obj->canUpdateItem();
+         $followup['can_edit']                                   = $can_edit;
+         $timeline[$followup['date']."_followup_".$followups_id] = array('type' => 'TicketFollowup',
+                                                                         'item' => $followup);
       }
 
 
@@ -6068,14 +6070,15 @@ class Ticket extends CommonITILObject {
       $tasks = $task_obj->find("tickets_id = ".$this->getID()." $restrict_task", 'date DESC');
       foreach ($tasks as $tasks_id => $task) {
          $task_obj->getFromDB($tasks_id);
-         $can_edit = $task_obj->canUpdateItem();
-         $task['can_edit'] = $can_edit;
-         $timeline[$task['date']."_task_".$tasks_id] = array('type' => 'TicketTask', 'item' => $task);
+         $can_edit                                   = $task_obj->canUpdateItem();
+         $task['can_edit']                           = $can_edit;
+         $timeline[$task['date']."_task_".$tasks_id] = array('type' => 'TicketTask',
+                                                             'item' => $task);
       }
 
 
       //add ticket documents to timeline
-      $document_obj = new Document;
+      $document_obj   = new Document();
       $document_items = $document_item_obj->find("itemtype = 'Ticket' AND items_id = ".$this->getID());
       foreach ($document_items as $document_item) {
          $document_obj->getFromDB($document_item['documents_id']);
@@ -6085,22 +6088,25 @@ class Ticket extends CommonITILObject {
 
       //add existing solution
       if (!empty($this->fields['solution'])) {
-         $users_id = 0;
+         $users_id      = 0;
          $solution_date = $this->fields['solvedate'];
 
          //search date and user of last solution in glpi_logs
-         if ($res_solution = $DB->query("SELECT date_mod AS solution_date, user_name FROM glpi_logs
-                                     WHERE itemtype = 'Ticket'
-                                     AND items_id = ".$this->getID()."
-                                     AND id_search_option = 24
-                                     ORDER BY id DESC
-                                     LIMIT 1")) {
+         if ($res_solution = $DB->query("SELECT `date_mod` AS solution_date, `user_name`, `id`
+                                         FROM `glpi_logs`
+                                         WHERE `itemtype` = 'Ticket'
+                                               AND `items_id` = ".$this->getID()."
+                                               AND `id_search_option` = 24
+                                         ORDER BY `id` DESC
+                                         LIMIT 1")) {
             $data_solution = $DB->fetch_assoc($res_solution);
-            if (!empty($data_solution['solution_date'])) $solution_date = $data_solution['solution_date'];
+            if (!empty($data_solution['solution_date'])) {
+                $solution_date = $data_solution['solution_date'];
 
             // find user
             if (!empty($data_solution['user_name'])) {
-               $users_id = addslashes(trim(preg_replace("/.*\(([0-9]+)\)/", "$1", $data_solution['user_name'])));
+               $users_id = addslashes(trim(preg_replace("/.*\(([0-9]+)\)/", "$1",
+                                                        $data_solution['user_name'])));
             }
          }
 
@@ -6110,50 +6116,48 @@ class Ticket extends CommonITILObject {
          }, $this->fields['solution']);
 
          $timeline[$solution_date."_solution"]
-            = array('type' => 'Solution', 'item' => array('id'               => 0,
-                                                          'content'          => Html::clean(html_entity_decode($solution_content)),
-                                                          'date'             => $solution_date,
-                                                          'users_id'         => $users_id,
-                                                          'solutiontypes_id' => $this->fields['solutiontypes_id'],
-                                                          'can_edit'         => Ticket::canUpdate() && $this->canSolve()));
+            = array('type' => 'Solution',
+                    'item' => array('id'               => 0,
+                                    'content'          => Html::clean(html_entity_decode($solution_content)),
+                                    'date'             => $solution_date,
+                                    'users_id'         => $users_id,
+                                    'solutiontypes_id' => $this->fields['solutiontypes_id'],
+                                    'can_edit'         => Ticket::canUpdate() && $this->canSolve()));
       }
 
       // add ticket validation to timeline
-       if ($this->fields['type'] == Ticket::DEMAND_TYPE &&
-            (Session::haveRight('ticketvalidation', TicketValidation::VALIDATEREQUEST)
-          || Session::haveRight('ticketvalidation', TicketValidation::CREATEREQUEST))
-       || $this->fields['type'] == Ticket::INCIDENT_TYPE &&
-            (Session::haveRight('ticketvalidation', TicketValidation::VALIDATEINCIDENT)
-          || Session::haveRight('ticketvalidation', TicketValidation::CREATEINCIDENT))
-          ) {
+       if ((($this->fields['type'] == Ticket::DEMAND_TYPE)
+            && (Session::haveRight('ticketvalidation', TicketValidation::VALIDATEREQUEST)
+                || Session::haveRight('ticketvalidation', TicketValidation::CREATEREQUEST)))
+           || (($this->fields['type'] == Ticket::INCIDENT_TYPE)
+               && (Session::haveRight('ticketvalidation', TicketValidation::VALIDATEINCIDENT)
+                   || Session::haveRight('ticketvalidation', TicketValidation::CREATEINCIDENT)))) {
 
          $ticket_validations = $ticket_valitation_obj->find('tickets_id = '.$this->getID());
          foreach ($ticket_validations as $validations_id => $validation) {
             $canedit = $ticket_valitation_obj->can($validations_id, UPDATE);
             $user->getFromDB($validation['users_id_validate']);
             $timeline[$validation['submission_date']."_validation_".$validations_id]
-               = array('type' => 'TicketValidation', 'item' => array(
-                  'id'        => $validations_id,
-                  'date'      => $validation['submission_date'],
-                  'content'   => __('Validation request')." => ".$user->getlink().
-                                 "<br>".$validation['comment_submission'],
-                  'users_id'  => $validation['users_id'],
-                  'can_edit'  => $canedit
-               ));
+               = array('type' => 'TicketValidation',
+                       'item' => array('id'        => $validations_id,
+                                       'date'      => $validation['submission_date'],
+                                       'content'   => __('Validation request')." => ".$user->getlink().
+                                                      "<br>".$validation['comment_submission'],
+                                       'users_id'  => $validation['users_id'],
+                                       'can_edit'  => $canedit));
 
             if (!empty($validation['validation_date'])) {
                $timeline[$validation['validation_date']."_validation_".$validations_id]
-               = array('type' => 'TicketValidation', 'item' => array(
-                  'id'        => $validations_id,
-                  'date'      => $validation['validation_date'],
-                  'content'   => __('Validation request answer')." : ".
-                                 _sx('status',
-                                     ucfirst(TicketValidation::getStatus($validation['status'])))."<br>".
-                                 $validation['comment_validation'],
-                  'users_id'  => $validation['users_id_validate'],
-                  'status'    => "status_".$validation['status'],
-                  'can_edit'  => $canedit
-               ));
+                  = array('type' => 'TicketValidation',
+                          'item' => array('id'        => $validations_id,
+                                          'date'      => $validation['validation_date'],
+                                          'content'   => __('Validation request answer')." : ".
+                                                         _sx('status',
+                                                             ucfirst(TicketValidation::getStatus($validation['status'])))
+                                                         ."<br>".$validation['comment_validation'],
+                                          'users_id'  => $validation['users_id_validate'],
+                                          'status'    => "status_".$validation['status'],
+                                          'can_edit'  => $canedit));
             }
          }
       }
@@ -6164,17 +6168,23 @@ class Ticket extends CommonITILObject {
       return $timeline;
    }
 
+
+   /**
+    * @since version 0.90
+    *
+    * @param $rand
+   **/
    function showTimeline($rand) {
       global $CFG_GLPI, $DB;
 
       //get ticket actors
       $ticket_users_keys = $this->getTicketActors();
 
-      $user = new User;
-      $followup_obj = new TicketFollowup;
-      $pics_url = $CFG_GLPI['root_doc']."/pics/timeline";
+      $user              = new User();
+      $followup_obj      = new TicketFollowup();
+      $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
 
-      $timeline = $this->getTimelineItems();
+      $timeline          = $this->getTimelineItems();
 
       //include lib for parsing url
       require GLPI_ROOT."/lib/urllinker/urllinker.php";
@@ -6182,12 +6192,12 @@ class Ticket extends CommonITILObject {
       //display timeline
       echo "<div class='timeline_history'>";
 
-      $tmp = array_values($timeline);
+      $tmp        = array_values($timeline);
       $first_item = array_shift($tmp);
 
       //don't display title on solution approbation
-      if ($first_item['type'] != 'Solution'
-         || $this->fields["status"] != CommonITILObject::SOLVED) {
+      if (($first_item['type'] != 'Solution')
+          || ($this->fields["status"] != CommonITILObject::SOLVED)) {
          self::showTimelineHeader();
       }
 
@@ -6197,55 +6207,69 @@ class Ticket extends CommonITILObject {
          $item_i = $item['item'];
 
          // don't display empty followup (ex : solution approbation)
-         if ($item['type'] == 'TicketFollowup' && empty($item_i['content'])) {
+         if (($item['type'] == 'TicketFollowup')
+             && empty($item_i['content'])) {
             continue;
          }
 
          $date = "";
-         if (isset($item_i['date'])) $date = $item_i['date'];
-         if (isset($item_i['date_mod'])) $date = $item_i['date_mod'];
+         if (isset($item_i['date'])) {
+            $date = $item_i['date'];
+         }
+         if (isset($item_i['date_mod'])) {
+            $date = $item_i['date_mod'];
+         }
 
          // check if curent item user is assignee or requester
          $user_position = 'left';
-         if (isset($ticket_users_keys[$item_i['users_id']])
-            && $ticket_users_keys[$item_i['users_id']] == CommonItilActor::ASSIGN
-            || $item['type'] == 'Assign') {
+         if ((isset($ticket_users_keys[$item_i['users_id']])
+              && ($ticket_users_keys[$item_i['users_id']] == CommonItilActor::ASSIGN))
+             || ($item['type'] == 'Assign')) {
             $user_position = 'right';
          }
 
          //display solution in middle
-         if ($timeline_index == 0 && $item['type'] == "Solution"
-            && $this->fields["status"] == CommonITILObject::SOLVED) {
+         if (($timeline_index == 0)
+             && ($item['type'] == "Solution")
+             && ($this->fields["status"] == CommonITILObject::SOLVED)) {
             $user_position.= ' middle';
          }
 
          echo "<div class='h_item $user_position'>";
 
          echo "<div class='h_info'>";
+
          echo "<div class='h_date'>".Html::convDateTime($date)."</div>";
          if ($item_i['users_id'] !== false) {
+
             echo "<div class='h_user'>";
-            if (isset($item_i['users_id']) && $item_i['users_id'] != 0) {
+            if (isset($item_i['users_id']) && ($item_i['users_id'] != 0)) {
                $user->getFromDB($item_i['users_id']);
+
                echo "<div class='tooltip_picture_border'>";
                echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-                  User::getThumbnailURLForPicture($user->fields['picture'])."'>";
+                      User::getThumbnailURLForPicture($user->fields['picture'])."'>";
                echo "</div>";
+
                echo $user->getLink();
-            } else echo __("Requester");
-            echo "</div>";
+            } else {
+               _e("Requester");
+            }
+
+            echo "</div>"; // h_user
          }
-         echo "</div>";
+
+         echo "</div>"; //h_date
 
          echo "<div class='h_content ".$item['type'].
-              ((isset($item_i['status'])) ? " ".$item_i['status'] : "").
-              "'";
-         if (!in_array($item['type'], array('Document_Item', 'Assign')) && $item_i['can_edit']) {
+               ((isset($item_i['status'])) ? " ".$item_i['status'] : "")."'";
+         if (!in_array($item['type'], array('Document_Item', 'Assign'))
+             && $item_i['can_edit']) {
             echo " ondblclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this)'";
          }
          echo ">";
          if (isset($item_i['requesttypes_id'])
-               && file_exists("$pics_url/".$item_i['requesttypes_id'].".png")) {
+             && file_exists("$pics_url/".$item_i['requesttypes_id'].".png")) {
             echo "<img src='$pics_url/".$item_i['requesttypes_id'].".png' title='' class='h_requesttype' />";
          }
 
@@ -6255,14 +6279,12 @@ class Ticket extends CommonITILObject {
             //$content = nl2br($content);
 
             $long_text = "";
-            if(substr_count($content, "<br") > 30 || strlen($content) > 2000) {
+            if ((substr_count($content, "<br") > 30) || (strlen($content) > 2000)) {
                $long_text = "long_text";
             }
 
             echo "<div class='item_content $long_text'>";
-            echo "<p>";
-            echo $content;
-            echo "</p>";
+            echo "<p>.$content.</p>";
             if (!empty($long_text)) {
                echo "<p class='read_more'>";
                echo "<a class='read_more_button'>.....</a>";
@@ -6296,28 +6318,30 @@ class Ticket extends CommonITILObject {
                echo "</span>";
             }
             if (isset($item_i['users_id_tech'])) {
+
                echo "<div class='users_id_tech'>";
                $user->getFromDB($item_i['users_id_tech']);
+
                echo "<div class='tooltip_picture_border'>";
                echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-                  User::getThumbnailURLForPicture($user->fields['picture'])."'>";
+                      User::getThumbnailURLForPicture($user->fields['picture'])."'>";
                echo "</div>";
+
                echo $user->getLink();
+
                echo "</div>";
             }
 
             // show "is_private" icon
             if (isset($item_i['is_private']) && $item_i['is_private']) {
-               echo "<div class='private'>";
-               echo __('Private');
-               echo "</div>";
+               echo "<div class='private'>".__('Private')."</div>";
             }
 
-         echo "</div>";
+         echo "</div>"; // b_right
 
          if ($item['type'] == 'Document_Item') {
             $filename = $item_i['filename'];
-            $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+            $ext      = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
             echo "<img src='";
             if (empty($filename)) {
                $filename = $item_i['name'];
@@ -6329,116 +6353,130 @@ class Ticket extends CommonITILObject {
             }
             echo "' title='file' />&nbsp;";
             echo "<a href='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
-                ."&tickets_id=".$this->getID()
-                ."' target='_blank'>$filename";
+                   ."&tickets_id=".$this->getID()."' target='_blank'>$filename";
             if (in_array($ext, array('jpg', 'jpeg', 'png', 'bmp'))) {
+
                echo "<div class='timeline_img_preview'>";
                echo "<img src='".$CFG_GLPI['root_doc']."/front/document.send.php?docid=".$item_i['id']
-                ."&tickets_id=".$this->getID()
-                ."'/>";
+                      ."&tickets_id=".$this->getID()."'/>";
                echo "</div>";
             }
-
             echo "</a>";
-            if (!empty($item_i['mime'])) echo "&nbsp;(".$item_i['mime'].")";
+            if (!empty($item_i['mime'])) {
+               echo "&nbsp;(".$item_i['mime'].")";
+            }
             echo "<a href='".$CFG_GLPI['root_doc'].
-                 "/front/document.form.php?id=".$item_i['id']."' class='edit_document' title='".
-                 _sx("button", "Update")."'>";
+                   "/front/document.form.php?id=".$item_i['id']."' class='edit_document' title='".
+                   _sx("button", "Update")."'>";
             echo "<img src='$pics_url/edit.png' /></a>";
             echo "<a href='".$CFG_GLPI['root_doc'].
-                 "/plugins/talk/front/item.form.php?delete_document&documents_id=".$item_i['id'].
-                 "&tickets_id=".$this->getID()."' class='delete_document' title='".
-                 _sx("button", "Delete permanently")."'>";
+                   "/plugins/talk/front/item.form.php?delete_document&documents_id=".$item_i['id'].
+                   "&tickets_id=".$this->getID()."' class='delete_document' title='".
+                   _sx("button", "Delete permanently")."'>";
             echo "<img src='$pics_url/delete.png' /></a>";
          }
+
          echo "</div>"; //end h_content
 
-         echo "</div>"; //end  h_item
+         echo "</div>"; //end  h_info
 
-         if ($timeline_index == 0 && $item['type'] == "Solution"
-            && $this->fields["status"] == CommonITILObject::SOLVED) {
+         if (($timeline_index == 0)
+             && ($item['type'] == "Solution")
+             && ($this->fields["status"] == CommonITILObject::SOLVED)) {
+
             echo "<div class='break'></div>";
+
             echo "<div class='approbation_form'>";
             $followup_obj->showApprobationForm($this);
             echo "</div>";
+
             echo "<hr class='approbation_separator' />";
             self::showTimelineHeader();
          }
          $timeline_index++;
       } // end foreach timeline
+
       echo "<div class='break'></div>";
 
       // recall ticket content (not needed in classic and splitted layout)
       if ($_SESSION['glpilayout'] == 'lefttab') {
+
          echo "<div class='h_item middle'>";
-            echo "<div class='h_info'>";
-            echo "<div class='h_date'>".Html::convDateTime($this->fields['date'])."</div>";
-               echo "<div class='h_user'>";
-                  $user->getFromDB($this->fields['users_id_recipient']);
-                  echo "<div class='tooltip_picture_border'>";
-                  echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-                     User::getThumbnailURLForPicture($user->fields['picture'])."'>";
-                  echo "</div>";
-                  echo $user->getLink();
-               echo "</div>";
-            echo "</div>";
-            echo "<div class='h_content TicketContent'>";
-               echo "<div class='b_right'>".__("Ticket recall")."</div>";
-               echo "<div class='ticket_title'>";
-               echo html_entity_decode($this->fields['name']);
-               echo "</div>";
-               echo "<div class='ticket_description'>";
-               echo html_entity_decode($this->fields['content']);
-               echo "</div>";
-            echo "</div>";
+
+         echo "<div class='h_info'>";
+
+         echo "<div class='h_date'>".Html::convDateTime($this->fields['date'])."</div>";
+
+         echo "<div class='h_user'>";
+         $user->getFromDB($this->fields['users_id_recipient']);
+
+         echo "<div class='tooltip_picture_border'>";
+         echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+         User::getThumbnailURLForPicture($user->fields['picture'])."'>";
          echo "</div>";
+
+         echo $user->getLink();
+
+         echo "</div>"; // h_user
+
+         echo "</div>"; //h_info
+
+         echo "<div class='h_content TicketContent'>";
+
+         echo "<div class='b_right'>".__("Ticket recall")."</div>";
+
+         echo "<div class='ticket_title'>";
+         echo html_entity_decode($this->fields['name']);
+         echo "</div>";
+
+         echo "<div class='ticket_description'>";
+         echo html_entity_decode($this->fields['content']);
+         echo "</div>";
+
+         echo "</div>"; // h_content TicketContent
+
+         echo "</div>"; // h_item middle
+
          echo "<div class='break'></div>";
       }
 
       // end timeline
-      echo "</div>";
+      echo "</div>"; // h_item $user_position
       echo "<script type='text/javascript'>read_more();</script>";
    }
 
+
+   /**
+    * @since version 0.90
+   **/
    function getTicketActors() {
       global $DB;
 
-      $query = "SELECT
-            DISTINCT users_id, type
-         FROM (
-            SELECT usr.id as users_id, tu.type as type
-            FROM `glpi_tickets_users` tu
-            LEFT JOIN glpi_users usr
-               ON tu.users_id = usr.id
-            WHERE tu.`tickets_id` = ".$this->getId()."
+      $query = "SELECT DISTINCT `users_id`, `type`
+                FROM (SELECT usr.`id` AS users_id, tu.`type` AS type
+                      FROM `glpi_tickets_users` tu
+                      LEFT JOIN `glpi_users` usr ON t`.`users_id` = usr.`id`
+                      WHERE tu.`tickets_id` = ".$this->getId()."
+                      UNION
+                      SELECT usr.`id` AS users_id, gt.`type` AS type
+                      FROM `glpi_groups_tickets` gt
+                      LEFT JOIN `glpi_groups_users` gu ON gu.`groups_id` = gt.`groups_id`
+                      LEFT JOIN `glpi_users` usr ON gu.`users_id` = usr.`id`
+                      WHERE gt.`tickets_id` = ".$this->getId()."
+                      UNION
+                      SELECT usr.`id` AS users_id, '2' AS type
+                      FROM `glpi_profiles` prof
+                      LEFT JOIN `glpi_profiles_users` pu ON pu.`profiles_id` = prof.`id`
+                      LEFT JOIN `glpi_users` usr ON usr.`id` = pu.`users_id`
+                      LEFT JOIN `glpi_profilerights` pr ON pr.`profiles_id` = prof.`id`
+                      WHERE pr.`name` = 'ticket'
+                            AND pr.`rights` & ".Ticket::OWN." = ".Ticket::OWN."
+                     ) AS allactors
+                WHERE `type` != ".CommonItilActor::OBSERVER."
+                GROUP BY `users_id`
+                ORDER BY `type` DESC";
 
-            UNION
-
-            SELECT usr.id as users_id, gt.type as type
-            FROM glpi_groups_tickets gt
-            LEFT JOIN glpi_groups_users gu
-               ON gu.groups_id = gt.groups_id
-            LEFT JOIN glpi_users usr
-               ON gu.users_id = usr.id
-            WHERE gt.tickets_id = ".$this->getId()."
-
-            UNION
-
-            SELECT usr.id as users_id, '2' as type
-            FROM glpi_profiles prof
-            LEFT JOIN glpi_profiles_users pu
-               ON pu.profiles_id = prof.id
-            LEFT JOIN glpi_users usr
-               ON usr.id = pu.users_id
-            LEFT JOIN glpi_profilerights pr
-               ON pr.profiles_id = prof.id
-            WHERE pr.name = 'ticket'
-               AND pr.rights & ".Ticket::OWN." = ".Ticket::OWN."
-         ) AS allactors
-         WHERE type != ".CommonItilActor::OBSERVER."
-         GROUP BY users_id
-         ORDER BY type DESC";
-      $res = $DB->query($query);
+      $res               = $DB->query($query);
       $ticket_users_keys = array();
       while ($current_tu = $DB->fetch_assoc($res)) {
          $ticket_users_keys[$current_tu['users_id']] = $current_tu['type'];
@@ -6447,11 +6485,20 @@ class Ticket extends CommonITILObject {
       return $ticket_users_keys;
    }
 
+
+   /**
+    * @since version 0.90
+   **/
    function showTimelineHeader() {
+
       echo "<h2>".__("Actions historical")." : </h2>";
       $this->filterTimeline();
    }
 
+
+   /**
+    * @since version 0.90
+    */
    function filterTimeline() {
       global $CFG_GLPI;
 
@@ -6477,6 +6524,11 @@ class Ticket extends CommonITILObject {
       echo "<script type='text/javascript'>filter_timeline();</script>";
    }
 
+   /**
+    * @since version 0.90
+    *
+    * @param $rand
+   **/
    function showTimelineForm($rand) {
       global $CFG_GLPI;
 
@@ -6577,6 +6629,7 @@ class Ticket extends CommonITILObject {
          }
          echo "</ul>"; // timeline_choices
          echo "<div class='clear'>&nbsp;</div>";
+
          echo "</div>"; //end timeline_form
       }
 
@@ -6584,55 +6637,69 @@ class Ticket extends CommonITILObject {
 
    }
 
+
+   /**
+    * @since version 0.90
+    *
+    * @param $item
+    * @param $id
+    * @param $params
+   **/
    static function showSubForm(CommonDBTM $item, $id, $params) {
+
       if ($item instanceof Document_Item) {
-         $ticket = new Ticket;
+         $ticket = new self();
          $ticket->getFromDB($params['tickets_id']);
          Document_Item::showAddFormForItem($ticket, '');
 
       } else if (method_exists($item, "showForm")) {
          $item->showForm($id, $params);
-
       }
    }
 
 
-   static function getSplittedSubmitButtonHtml($tickets_id, $action = "add") {
+   /**
+    * @since version 0.90
+    *
+    * @param $tickets_id
+    * @param $action         (default 'add')
+   **/
+   static function getSplittedSubmitButtonHtml($tickets_id, $action="add") {
+
       $locale = _sx('button', 'Add');
       if ($action == 'update') {
          $locale = _x('button','Save');
       }
-      $ticket = new Ticket;
+      $ticket       = new self();
       $ticket->getFromDB($tickets_id);
       $ticket_users = $ticket->getTicketActors();
-      $actor_type = $ticket_users[Session::getLoginUserID()];
+      $actor_type   = $ticket_users[Session::getLoginUserID()];
 
-      $all_status = Ticket::getAllowedStatusArray($ticket->fields['status']);
+      $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
 
       if ($actor_type == CommonITILActor::REQUESTER) {
          $ticket->fields['status'] = CommonITILObject::ASSIGNED;
       }
 
       $html = "<div class='x-split-button' id='x-split-button'>
-      <input type='submit' value='$locale' name='$action' class='x-button x-button-main'>
-         <span class='x-button x-button-drop'>&nbsp;</span>
-         <ul class='x-button-drop-menu'>";
+               <input type='submit' value='$locale' name='$action' class='x-button x-button-main'>
+               <span class='x-button x-button-drop'>&nbsp;</span>
+               <ul class='x-button-drop-menu'>";
       foreach ($all_status as $status_key => $status_label) {
          $checked = "";
          if ($status_key == $ticket->fields['status']) {
             $checked = "checked='checked'";
          }
-         $html.= "<li>";
-         $html.= "<input type='radio' id='status_radio_$status_key' name='status'
-                  $checked value='$status_key'>";
-         $html.= "<label for='status_radio_$status_key'>";
-         $html.= "<img src='".Ticket::getStatusIconURL($status_key)."' />&nbsp;";
-         $html.= $status_label;
-         $html.= "</label>";
-         $html.= "</li>";
+         $html .= "<li>";
+         $html .= "<input type='radio' id='status_radio_$status_key' name='status'
+                    $checked value='$status_key'>";
+         $html .= "<label for='status_radio_$status_key'>";
+         $html .= "<img src='".Ticket::getStatusIconURL($status_key)."' />&nbsp;";
+         $html .= $status_label;
+         $html .= "</label>";
+         $html .= "</li>";
       }
-      $html.= "</ul>
-      </div>";
+      $html .= "</ul></div>";
 
       $html.= "<script type='text/javascript'>split_button();</script>";
       return $html;

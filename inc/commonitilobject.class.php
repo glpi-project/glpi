@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -1270,23 +1270,22 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          if (isset($this->input["_users_id_observer"])) {
-         
+
             if (is_array($this->input["_users_id_observer"])) {
                $tab_observer = array_unique($this->input["_users_id_observer"]);
             } else {
-               $tab_observer = array();
+               $tab_observer   = array();
                $tab_observer[] = $this->input["_users_id_observer"];
             }
             $input2['_from_object'] = true;
 
             foreach ($tab_observer as $observer) {
-               if ($observer >0
-                       || (isset($this->input["_users_id_observer_notif"]['alternative_email'])
-                           && !empty($this->input["_users_id_observer_notif"]['alternative_email']))) {
-                  $input2 = array($useractors->getItilObjectForeignKey()
-                                             => $this->fields['id'],
-                                 'users_id'  => $observer,
-                                 'type'      => CommonITILActor::OBSERVER);
+               if (($observer > 0)
+                   || (isset($this->input["_users_id_observer_notif"]['alternative_email'])
+                             && !empty($this->input["_users_id_observer_notif"]['alternative_email']))) {
+                  $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
+                                 'users_id'                              => $observer,
+                                 'type'                                  => CommonITILActor::OBSERVER);
                   if (isset($this->input["_users_id_observer_notif"])) {
                      foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
                         $input2[$key] = $val;

@@ -93,7 +93,7 @@ function update0853to090() {
    // add timeline config
    Config::setConfigurationValues('core', array('ticket_timeline' => 1));
    Config::setConfigurationValues('core', array('ticket_timeline_keep_replaced_tabs' => 0));
-   $migration->addField("glpi_users", "ticket_timeline", 'bool', array('value' => 0));
+   $migration->addField("glpi_users", "ticket_timeline", "tinyint(1) DEFAULT NULL");
    $migration->addField("glpi_users", "ticket_timeline_keep_replaced_tabs", 'bool',
                         array('value' => 0));
 

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -983,7 +983,7 @@ class Config extends CommonDBTM {
             $selected = "selected='selected'";
          }
          echo "<option value='$key' $selected>".ucfirst($name)."</option>";
-      
+
       }
       echo Html::scriptBlock("
          function formatLayout(layout) {
@@ -1000,17 +1000,11 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-
-
       echo "<tr class='tab_bg_2'><td>".__('Enable ticket timeline')."</td>";
       echo "<td>";
-      Dropdown::showYesNo('ticket_timeline',
-                          $data['ticket_timeline']);
-
+      Dropdown::showYesNo('ticket_timeline', $data['ticket_timeline']);
       echo "</td>";
-
       echo "<td>" . __('Keep tabs replaced by the ticket timeline')."</td><td>";
-
       Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
                           $data['ticket_timeline_keep_replaced_tabs']);
       echo "</td></tr>";
@@ -1044,7 +1038,7 @@ class Config extends CommonDBTM {
       echo "</select>";
       echo "</td></tr>";
 
-      
+
 
 
       if ($oncentral) {
@@ -1523,7 +1517,7 @@ class Config extends CommonDBTM {
         return '';
       }
    }
-   
+
    /**
     * show Libraries information in system information
     *
@@ -1548,7 +1542,7 @@ class Config extends CommonDBTM {
       echo "PHPMailer version " . $pm->Version . " in (" . realpath(GLPI_PHPMAILER_DIR) . ")\n";
 
       // EZ component
-      echo "ZetaComponent ezcGraph installed in (" . dirname(dirname(GLPI_EZC_BASE)) . 
+      echo "ZetaComponent ezcGraph installed in (" . dirname(dirname(GLPI_EZC_BASE)) .
            "):  ".(class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
 
       // Zend
@@ -1567,7 +1561,7 @@ class Config extends CommonDBTM {
       require_once GLPI_PASSWORD_COMPAT;
       $check = (PasswordCompat\binary\check() ? "Ok" : "KO");
       echo "ircmaxell/password-compat in (" . realpath(dirname(GLPI_PASSWORD_COMPAT)) . "). Compatitility: $check\n";
-      
+
       echo "\n</pre></td></tr>";
    }
 
