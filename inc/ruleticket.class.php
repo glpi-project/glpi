@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -235,7 +235,8 @@ class RuleTicket extends Rule {
                   break;
 
                case 'fromuser' :
-                  if ($action->fields['field'] == 'locations_id') {
+                  if (($action->fields['field'] == 'locations_id')
+                      &&  isset($output['users_locations'])) {
                      $output['locations_id'] = $output['users_locations'];
                   }
                   break;
@@ -266,7 +267,7 @@ class RuleTicket extends Rule {
                   } else {
                      $regexvalue = $action->fields["value"];
                   }
-                  
+
                   switch ($action->fields["action_type"]) {
                      case "affectbyip" :
                         $result = IPAddress::getUniqueItemByIPAddress($regexvalue,
@@ -576,7 +577,7 @@ class RuleTicket extends Rule {
       $actions['requesttypes_id']['name']                 = __('Request source');
       $actions['requesttypes_id']['type']                 = 'dropdown';
       $actions['requesttypes_id']['table']                = 'glpi_requesttypes';
-      
+
       return $actions;
    }
 
