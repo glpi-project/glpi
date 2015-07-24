@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -3473,11 +3473,11 @@ class User extends CommonDBTM {
                   $cansee = $item->can($data["id"], READ);
                   $link   = $data["name"];
                   if ($cansee) {
-                     $link_item = $itemtype::getFormURL($itemtype);
+                     $link_item = $item::getFormURLWithID($data['id']);
                      if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
                         $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
                      }
-                     $link = "<a href='".$link_item."?id=".$data["id"]."'>".$link."</a>";
+                     $link = "<a href='".$link_item."'>".$link."</a>";
                   }
                   $linktype = "";
                   if ($data[$field_user] == $ID) {
@@ -3555,11 +3555,11 @@ class User extends CommonDBTM {
                      $cansee = $item->can($data["id"], READ);
                      $link   = $data["name"];
                      if ($cansee) {
-                        $link_item = $itemtype::getFormURL($itemtype);
+                        $link_item = $item::getFormURLWithID($data['id']);
                         if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
                            $link = sprintf(__('%1$s (%2$s)'), $link, $data["id"]);
                         }
-                        $link = "<a href='".$link_item."?id=".$data["id"]."'>".$link."</a>";
+                        $link = "<a href='".$link_item."'>".$link."</a>";
                      }
                      $linktype = "";
                      if (isset($groups[$data[$field_group]])) {
