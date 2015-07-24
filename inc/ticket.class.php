@@ -4196,7 +4196,7 @@ class Ticket extends CommonITILObject {
       if ((!$ID
            || $canupdate
            || $canupdate_descr
-           || Session::haveRightsOr(self::$rightname, array(self::ASSIGN, self::STEAL)))
+           || Session::haveRightsOr(self::$rightname, array(self::ASSIGN, self::STEAL, DELETE, PURGE)))
           && !$options['template_preview']) {
 
          echo "<tr class='tab_bg_1'>";
