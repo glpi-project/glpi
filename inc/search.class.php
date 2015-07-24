@@ -4336,6 +4336,7 @@ class Search {
                         alt=\"$status\" title=\"$status\">&nbsp;$status";
 
             case 'glpi_projectstates.name':
+               $out = '';
                $query = "SELECT `color`
                          FROM `glpi_projectstates`
                          WHERE `name` = '".$data[$num][0]['name']."'";
