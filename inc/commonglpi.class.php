@@ -564,12 +564,17 @@ class CommonGLPI {
       return Toolbox::getItemTypeFormURL(get_called_class(), $full);
    }
 
+
    /**
     * Get the form page URL for the current class and point to a specific ID
     *
-    * @param $full path or relative one (true by default)
+    * @param $id      (default 0)
+    * @param $full    path or relative one (true by default)
+    *
+    * @since version 0.90
    **/
    static function getFormURLWithID($id=0, $full=true) {
+
       $itemtype = get_called_class();
       $link     = $itemtype::getFormURL($full);
       $link    .= (strpos($link,'?') ? '&amp;':'?').'id=' . $id;

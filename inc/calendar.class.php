@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -168,13 +168,11 @@ class Calendar extends CommonDropdown {
          case 'addholiday' : // add an holiday with massive action
             $input = $ma->getInput();
             if ($input['holidays_id'] > 0) {
-               $holiday = new Holiday();
+               $holiday          = new Holiday();
                $calendar_holiday = new Calendar_Holiday();
 
                $holiday->getFromDB($input['holidays_id']);
-               $entities = array(
-                  $holiday->getEntityID() => $holiday->getEntityID()
-               );
+               $entities = array($holiday->getEntityID() => $holiday->getEntityID());
                if ($holiday->isRecursive()) {
                   $entities = getSonsOf("glpi_entities", $holiday->getEntityID());
                }
@@ -182,10 +180,8 @@ class Calendar extends CommonDropdown {
                foreach ($ids as $id) {
                   $entities_id = CommonDBTM::getItemEntity('Calendar', $id);
                   if (isset($entities[$entities_id])) {
-                     $input = array(
-                        'calendars_id' => $id,
-                        'holidays_id'  => $input['holidays_id']
-                     );
+                     $input = array('calendars_id' => $id,
+                                    'holidays_id'  => $input['holidays_id']);
                      if ($calendar_holiday->add($input)) {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                      } else {

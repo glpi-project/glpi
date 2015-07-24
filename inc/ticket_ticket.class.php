@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -183,7 +183,7 @@ class Ticket_Ticket extends CommonDBRelation {
                                                          $CFG_GLPI["root_doc"]."/pics/delete.png");
                }
                $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link']),
-                               $ticket->getLink(array('forceid'=>true)));
+                               $ticket->getLink(array('forceid' => true)));
                printf(__('%1$s %2$s'), $text, $icons);
 
             }
@@ -261,7 +261,7 @@ class Ticket_Ticket extends CommonDBRelation {
 
    function post_deleteFromDB() {
       global $CFG_GLPI;
-      
+
       $t = new Ticket();
       $t->updateDateMod($this->fields['tickets_id_1']);
       $t->updateDateMod($this->fields['tickets_id_2']);
@@ -279,12 +279,12 @@ class Ticket_Ticket extends CommonDBRelation {
 
    function post_addItem() {
       global $CFG_GLPI;
-      
+
       $t = new Ticket();
       $t->updateDateMod($this->fields['tickets_id_1']);
       $t->updateDateMod($this->fields['tickets_id_2']);
       parent::post_addItem();
-      
+
       $donotif = $CFG_GLPI["use_mailing"];
       if ($donotif) {
          $t->getFromDB($this->fields['tickets_id_1']);
@@ -292,7 +292,7 @@ class Ticket_Ticket extends CommonDBRelation {
          $t->getFromDB($this->fields['tickets_id_2']);
          NotificationEvent::raiseEvent("update", $t);
       }
-      
+
    }
 
 

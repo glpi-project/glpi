@@ -1158,42 +1158,50 @@ class Html {
    }
 
 
+   /**
+    * @since version 0.90
+    *
+    * @return string
+   **/
    static function getMenuInfos() {
-         $menu['assets']['title']       = __('Assets');
-         $menu['assets']['types']       = array('Computer', 'Monitor', 'Software',
-                                                'NetworkEquipment', 'Peripheral', 'Printer',
-                                                'CartridgeItem', 'ConsumableItem', 'Phone' );
 
-         $menu['helpdesk']['title']     = __('Assistance');
-         $menu['helpdesk']['types']     = array('Ticket', 'Problem', 'Change',
-                                                'Planning', 'Stat', 'TicketRecurrent');
+      $menu['assets']['title']       = __('Assets');
+      $menu['assets']['types']       = array('Computer', 'Monitor', 'Software',
+                                             'NetworkEquipment', 'Peripheral', 'Printer',
+                                             'CartridgeItem', 'ConsumableItem', 'Phone' );
 
-         $menu['management']['title']   = __('Management');
-         $menu['management']['types']   = array('Budget', 'Supplier', 'Contact', 'Contract',
+      $menu['helpdesk']['title']     = __('Assistance');
+      $menu['helpdesk']['types']     = array('Ticket', 'Problem', 'Change',
+                                             'Planning', 'Stat', 'TicketRecurrent');
+
+      $menu['management']['title']   = __('Management');
+      $menu['management']['types']   = array('Budget', 'Supplier', 'Contact', 'Contract',
                                                 'Document');
 
-         $menu['tools']['title']        = __('Tools');
-         $menu['tools']['types']        = array('Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
-                                                'ReservationItem', 'Report', 'MigrationCleaner');
+      $menu['tools']['title']        = __('Tools');
+      $menu['tools']['types']        = array('Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
+                                             'ReservationItem', 'Report', 'MigrationCleaner');
 
-         $menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
-         $menu['plugins']['types']      = array();
+      $menu['plugins']['title']      = _n('Plugin', 'Plugins', Session::getPluralNumber());
+      $menu['plugins']['types']      = array();
 
-         $menu['admin']['title']        = __('Administration');
-         $menu['admin']['types']        = array('User', 'Group', 'Entity', 'Rule',
-                                                'Profile', 'QueuedMail', 'Backup', 'Event');
+      $menu['admin']['title']        = __('Administration');
+      $menu['admin']['types']        = array('User', 'Group', 'Entity', 'Rule',
+                                             'Profile', 'QueuedMail', 'Backup', 'Event');
 
-         $menu['config']['title']       = __('Setup');
-         $menu['config']['types']       = array('CommonDropdown', 'CommonDevice', 'Notification',
-                                                'SLA', 'Config', 'Control', 'Crontask', 'Auth',
-                                                'MailCollector', 'Link', 'Plugin');
+      $menu['config']['title']       = __('Setup');
+      $menu['config']['types']       = array('CommonDropdown', 'CommonDevice', 'Notification',
+                                             'SLA', 'Config', 'Control', 'Crontask', 'Auth',
+                                             'MailCollector', 'Link', 'Plugin');
 
-         // Special items
-         $menu['preference']['title']   = __('My settings');
-         $menu['preference']['default'] = '/front/preference.php';
+      // Special items
+      $menu['preference']['title']   = __('My settings');
+      $menu['preference']['default'] = '/front/preference.php';
 
-         return $menu;
+      return $menu;
    }
+
+
    /**
     * Print a nice HTML head for every page
     *
@@ -1477,15 +1485,14 @@ class Html {
             echo "<ul class='ssmenu'>";
 
 
-
             // list menu item
             foreach ($data['content'] as $key => $val) {
-               $menu_class = "";
+               $menu_class       = "";
                $tmp_active_item  = explode("/", $item);
-               $active_item  = array_pop($tmp_active_item);
+               $active_item      = array_pop($tmp_active_item);
                if (isset($menu[$sector]['content'])
-                  &&  isset($menu[$sector]['content'][$active_item])
-                  && $menu[$sector]['content'][$active_item]['title'] == $val['title']) {
+                   && isset($menu[$sector]['content'][$active_item])
+                   && ($menu[$sector]['content'][$active_item]['title'] == $val['title'])) {
                   $menu_class = "active";
                }
                if (isset($val['page'])

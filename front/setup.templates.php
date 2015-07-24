@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -44,13 +44,13 @@ Session::checkCentralAccess();
 
 if (isset($_GET["itemtype"])) {
    $itemtype = $_GET['itemtype'];
-   $link = $itemtype::getFormURL();
+   $link     = $itemtype::getFormURL();
 
    // Get right sector
-   $sector = 'assets';
+   $sector   = 'assets';
 
    //Get sectors from the menu
-   $menu = Html::getMenuInfos();
+   $menu     = Html::getMenuInfos();
 
    //Try to find to which sector the itemtype belongs
    foreach ($menu as $menusector => $infos) {
@@ -59,7 +59,7 @@ if (isset($_GET["itemtype"])) {
          break;
       }
    }
-   
+
    Html::header(__('Manage templates...'), $_SERVER['PHP_SELF'], $sector, $itemtype);
 
    CommonDBTM::listTemplates($itemtype, $link, $_GET["add"]);

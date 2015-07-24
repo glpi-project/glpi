@@ -511,7 +511,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_observer']['table']              = 'glpi_groups';
       $actions['_groups_id_observer']['name']               = __('Watcher group');
       $actions['_groups_id_observer']['type']               = 'dropdown';
-      $actions['_groups_id_observer']['condition']         = '`is_requester`';
+      $actions['_groups_id_observer']['condition']          = '`is_requester`';
       $actions['_groups_id_observer']['force_actions']      = array('assign', 'append');
       $actions['_groups_id_observer']['permitseveral']      = array('append');
       $actions['_groups_id_observer']['appendto']           = '_additional_groups_observers';
@@ -574,9 +574,9 @@ class RuleTicket extends Rule {
       $actions['locations_id']['table']                     = 'glpi_locations';
       $actions['locations_id']['force_actions']             = array('assign', 'fromuser', 'fromitem');
 
-      $actions['requesttypes_id']['name']                 = __('Request source');
-      $actions['requesttypes_id']['type']                 = 'dropdown';
-      $actions['requesttypes_id']['table']                = 'glpi_requesttypes';
+      $actions['requesttypes_id']['name']                   = __('Request source');
+      $actions['requesttypes_id']['type']                   = 'dropdown';
+      $actions['requesttypes_id']['table']                  = 'glpi_requesttypes';
 
       return $actions;
    }

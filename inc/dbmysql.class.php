@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -618,15 +618,21 @@ class DBmysql {
       return $ret;
    }
 
+
+   /**
+    * @since version 0.90
+    *
+   **/
    static function isMySQLStrictMode() {
       global $DB;
+
       $req = $DB->request("SELECT @@sql_mode as mode");
       if (($data = $req->next())) {
-        return (preg_match("/STRICT/", $data['mode']));
-      } else {
-        return false;
+         return (preg_match("/STRICT/", $data['mode']));
       }
+      return false;
    }
+
 
    /**
     * Get a global DB lock
@@ -770,7 +776,7 @@ class DBmysqlIterator  implements Iterator {
                }
                $cleanorderby[] = $new;
             }
-            
+
             $this->sql .= " ORDER BY ".implode(", ",$cleanorderby);
          } else if (!empty($orderby)) {
             $this->sql .= " ORDER BY ";

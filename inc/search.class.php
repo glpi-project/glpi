@@ -1093,7 +1093,7 @@ class Search {
    static function displayDatas(array &$data) {
       global $CFG_GLPI;
 
-      $item = new $data['itemtype'];
+      $item = new $data['itemtype']();
 
       $rand = mt_rand();
       if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
@@ -1160,7 +1160,7 @@ class Search {
                $search_config_bottom .= Html::jsGetElementbyID('search_config_bottom').
                                                       ".dialog('open');\">";
                if ($item->maybeDeleted()) {
-                  $delete_ctrl = self::isDeletedSwitch($data['search']['is_deleted']);
+                  $delete_ctrl        = self::isDeletedSwitch($data['search']['is_deleted']);
                   $search_config_top .= $delete_ctrl;
                }
 
@@ -1440,29 +1440,38 @@ class Search {
       } else {
          if ($item->maybeDeleted()) {
             echo "<div class='center'>".
-                 self::isDeletedSwitch($data['search']['is_deleted']).
+                   self::isDeletedSwitch($data['search']['is_deleted']).
                  "</div><br/>";
          }
          echo self::showError($data['display_type']);
       }
    }
 
+
+   /**
+    * @since version 0.90
+    *
+    * @param $is_deleted
+    *
+    * @return string
+   */
    static function isDeletedSwitch($is_deleted) {
       global $CFG_GLPI;
 
       return "<div class='switch grey_border'>".
              "<label>".
                 "<img src='".$CFG_GLPI["root_doc"]."/pics/showdeleted.png' ".
-                "name='img_deleted' alt='".__s('Show the dustbin')."' class='pointer' />".
+                  "name='img_deleted' alt='".__s('Show the dustbin')."' class='pointer' />".
                 "<input type='hidden' name='is_deleted' value='0' /> ".
                 "<input type='checkbox' name='is_deleted' value='1' ".
-                ($is_deleted?"checked='checked'":"").
-                " onClick = \"toogle('is_deleted','','','');
+                  ($is_deleted?"checked='checked'":"").
+                  " onClick = \"toogle('is_deleted','','','');
                               document.forms['searchform".$_POST["itemtype"]."'].submit();\" />".
                 "<span class='lever' />".
              "</label>".
              "</div>";
    }
+
 
    /**
     * Compute title (use case of PDF OUTPUT)

@@ -353,7 +353,8 @@ class Ticket extends CommonITILObject {
    /**
     * Delete SLA for the ticket
     *
-    * @param $id ID of the ticket
+    * @param $id                ID of the ticket
+    * @param $delete_due_date   1 to delete due_date (default 0)
     *
     * @return boolean
    **/
@@ -3637,10 +3638,14 @@ class Ticket extends CommonITILObject {
                                '_glpi_csrf_token'  => Session::getNewCSRFToken(),
                                '_glpi_simple_form' => 1);
                $JS = "  function delete_due_date(){
-                           if (confirm('".addslashes(__('Delete due date too ?'))."')) {
-                              submitGetLink('".$this->getFormURL()."', ".json_encode(array_merge($fields, array('delete_due_date' => 1))).");
+                           if (confirm('".addslashes(__('Delete due date too?'))."')) {
+                              submitGetLink('".$this->getFormURL()."',
+                                            ".json_encode(array_merge($fields,
+                                                                      array('delete_due_date' => 1))).");
                            } else {
-                              submitGetLink('".$this->getFormURL()."', ".json_encode(array_merge($fields, array('delete_due_date' => 0))).");
+                              submitGetLink('".$this->getFormURL()."',
+                                            ".json_encode(array_merge($fields,
+                                                                      array('delete_due_date' => 0))).");
                            }
                         }";
                echo Html::scriptBlock($JS);

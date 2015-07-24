@@ -1504,6 +1504,12 @@ class Config extends CommonDBTM {
       echo "</table></div>\n";
    }
 
+
+   /**
+    * @since version 0.90
+    *
+    * @return string
+   **/
    static function getSQLMode() {
       global $DB;
 
@@ -1511,10 +1517,10 @@ class Config extends CommonDBTM {
       $results = $DB->query($query);
       if ($DB->numrows($results) > 0) {
          return $DB->results($result, 0);
-      } else {
-        return '';
       }
+      return '';
    }
+
 
    /**
     * show Libraries information in system information
