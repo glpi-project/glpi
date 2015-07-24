@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -200,7 +200,8 @@ if (($ok_master || $ok_slave )
    }
 
    // Check crontask
-   $crontasks = getAllDatasFromTable('glpi_crontasks', "`state`=".CronTask::STATE_RUNNING."
+   $crontasks = getAllDatasFromTable('glpi_crontasks',
+                                     "`state`=".CronTask::STATE_RUNNING."
                                       AND ((unix_timestamp(`lastrun`) + 2 * `frequency` < unix_timestamp(now()))
                                            OR (unix_timestamp(`lastrun`) + 2*".HOUR_TIMESTAMP." < unix_timestamp(now())))");
    if (count($crontasks)) {

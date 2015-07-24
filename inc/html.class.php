@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -72,12 +72,12 @@ class Html {
                               );
 
       $value = preg_replace($search, '', $value);
-      
+
       $search        = array('@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
                               );
 
       $value = preg_replace($search, '', $value);
-      
+
       include_once(GLPI_HTMLAWED);
 
       $value = htmLawed($value, array('elements' => 'none',
@@ -562,18 +562,18 @@ class Html {
             $(document).ready(function() {
                $('#message_after_redirect').dialog({
                   dialogClass: 'message_after_redirect',
-                  minHeight: 40, 
-                  minWidth: 200, 
-                  position: { 
+                  minHeight: 40,
+                  minWidth: 200,
+                  position: {
                      my: 'right-5 top+5',
                      at: 'right top',
-                     of: '#page', 
+                     of: '#page',
                      collision: 'none'
-                  }, 
+                  },
                   autoOpen: false,
                   show: {
                     effect: 'slide',
-                    direction: 'up', 
+                    direction: 'up',
                     'duration': 1600
                   }
                })
@@ -1222,8 +1222,8 @@ class Html {
       self::includeHeader($title);
 
       $body_class = "layout_".$_SESSION['glpilayout'];
-      if (strpos($_SERVER['REQUEST_URI'], "form.php") !== false
-          && isset($_GET['id']) && $_GET['id'] > 0) {
+      if ((strpos($_SERVER['REQUEST_URI'], "form.php") !== false)
+          && isset($_GET['id']) && ($_GET['id'] > 0)) {
          if (!in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])) {
             $body_class.= " form";
          } else {
@@ -1395,7 +1395,7 @@ class Html {
                               $_SESSION["glpifirstname"], 0, 20);
          echo "</span>";
       }
-      
+
       echo "<span id='logout_icon' title=\"".__s('Logout').
              "\"  alt=\"".__s('Logout')."\" class='button-icon' />";
       echo "</a>";
@@ -1446,7 +1446,7 @@ class Html {
       echo "</ul>";
       echo "</div>\n";
 
-      
+
 
       echo "</div>";
 
@@ -1462,7 +1462,7 @@ class Html {
             if (isset($menu[$sector]) && $menu[$sector]['title'] == $data['title']) {
                $menu_class = "active";
             }
-            
+
             echo "<li id='menu$i' class='$menu_class' onmouseover=\"javascript:menuAff('menu$i','menu');\" >";
             $link = "#";
 
@@ -1570,7 +1570,7 @@ class Html {
 
 
       /// MENU ALL
-      echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open');\" 
+      echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open');\"
             id='menu_all_button' class='button-icon'>";
       echo "</a>";
 
@@ -1721,9 +1721,9 @@ class Html {
       }
 
       // Add common items
-      
 
-      
+
+
 
       // Profile selector
       // check user id : header used for display messages when session logout
@@ -1949,8 +1949,8 @@ class Html {
 
       // Body
       $body_class = "layout_".$_SESSION['glpilayout'];
-      if (strpos($_SERVER['REQUEST_URI'], "form.php") !== false
-          && isset($_GET['id']) && $_GET['id'] > 0) {
+      if ((strpos($_SERVER['REQUEST_URI'], "form.php") !== false)
+          && isset($_GET['id']) && ($_GET['id'] > 0)) {
          if (!in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])) {
             $body_class.= " form";
          } else {
@@ -1987,7 +1987,7 @@ class Html {
                               $_SESSION["glpifirstname"], 0, 20);
          echo "</span>";
       }
-      
+
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/logout.png' title=\"".__s('Logout').
              "\"  alt=\"".__s('Logout')."\" class='button-icon'>";
       echo "</a>";
@@ -2003,16 +2003,16 @@ class Html {
              "\"  alt=\"".__s('Load a bookmark')."\" class='button-icon'>";
       echo "</a></li>";
 
-      echo "<li id='help_link'><a href='".
-                 (empty($CFG_GLPI["helpdesk_doc_url"])
-                   ? "http://glpi-project.org/help-helpdesk"
-                   : $CFG_GLPI["helpdesk_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
-                  "<img src='".$CFG_GLPI["root_doc"]."/pics/help.png' title=\"".__s('Help').
+      echo "<li id='help_link'>".
+            "<a href='".(empty($CFG_GLPI["helpdesk_doc_url"])
+                        ? "http://glpi-project.org/help-helpdesk"
+                        : $CFG_GLPI["helpdesk_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
+           "<img src='".$CFG_GLPI["root_doc"]."/pics/help.png' title=\"".__s('Help').
                   "\"  alt=\"".__s('Help')."\" class='button-icon'>";
            "</a></li>";
 
-      echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                 __s('My settings')."\">";
+      echo "<li id='preferences_link'>".
+           "<a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".__s('My settings')."\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/preferences.png' title=\"".__s('My settings').
              "\"  alt=\"".__s('My settings')."\" class='button-icon'>";
       echo "</a></li>";
@@ -2021,8 +2021,7 @@ class Html {
       echo "</div>";
 
       //-- Le moteur de recherche --
-      echo "<div id='c_recherche'>";
-      echo "</div>";
+      echo "<div id='c_recherche'></div>";
 
 
       echo "</div>";
@@ -2120,13 +2119,13 @@ class Html {
       //  Le fil d ariane
       echo "<div id='c_ssmenu2'>";
       echo "<ul>";
-      echo "<li class='breadcrumb_item'><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
-                 __s('Home')."\">".__('Home')."</a></li>";
+      echo "<li class='breadcrumb_item'>".
+           "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"". __s('Home')."\">".
+             __('Home')."</a></li>";
 
-      if (Session::haveRightsOr('ticketvalidation', array(TicketValidation::VALIDATEREQUEST,
-                                                    TicketValidation::VALIDATEINCIDENT))) {
-         $opt                  = array();
-         $opt['reset']         = 'reset';
+      if (TicketValidation::getValidateRights()) {
+         $opt                              = array();
+         $opt['reset']                     = 'reset';
          $opt['criteria'][0]['field']      = 55; // validation status
          $opt['criteria'][0]['searchtype'] = 'equals';
          $opt['criteria'][0]['value']      = TicketValidation::WAITING;
@@ -2459,14 +2458,14 @@ class Html {
       }
 
       $out  = "<div class='form-group-checkbox'>
-                  <input title='".__s('Check all as')."' type='checkbox' class='new_checkbox' name='_checkall_$rand' ".
-                   "id='checkall_$rand' ".
-                   "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))
+               <input title='".__s('Check all as')."' type='checkbox' class='new_checkbox' ".
+                "name='_checkall_$rand' id='checkall_$rand' ".
+                 "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))
                                                 {return true;}\">
-                  <label class='label-checkbox' for='checkall_$rand'>
-                     <span class='check'></span>
-                     <span class='box'></span>
-                  </label>
+               <label class='label-checkbox' for='checkall_$rand'>
+               <span class='check'></span>
+               <span class='box'></span>
+               </label>
                <div class='form-group'>";
 
       return $out;
@@ -2608,12 +2607,12 @@ class Html {
       }
 
       $out .= ">";
-      $out.= "<label class='label-checkbox' for='".$params['id']."'>";
-      $out.= " <span class='check'></span>";
-      $out.= " <span class='box'></span>";
+      $out .= "<label class='label-checkbox' for='".$params['id']."'>";
+      $out .= " <span class='check'></span>";
+      $out .= " <span class='box'></span>";
       $out .= "</label>";
       $out .= "</div>";
-      
+
       return $out;
    }
 

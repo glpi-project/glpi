@@ -1015,7 +1015,7 @@ class Config extends CommonDBTM {
       echo "<select name='palette' id='theme-selector'>";
       foreach ($themes_files as $key => $file) {
          if (strpos($file, ".css") !== false) {
-            $name = substr($file, 0, -4);
+            $name     = substr($file, 0, -4);
             $selected = "";
             if ($data["palette"] == $name) {
                $selected = "selected='selected'";
@@ -1037,8 +1037,6 @@ class Config extends CommonDBTM {
       ");
       echo "</select>";
       echo "</td></tr>";
-
-
 
 
       if ($oncentral) {

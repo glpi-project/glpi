@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -107,11 +107,11 @@ function acceptLicense() {
 
    echo "<form action='install.php' method='post'>";
    echo "<p id='license'>";
-  
+
    echo "<label for='agree' class='radio'>";
    echo "<input type='radio' name='install' id='agree' value='License'>";
    echo "<span class='outer'><span class='inner'></span></span>";
-   echo __('I have read and ACCEPT the terms of the license written above.');
+   _e('I have read and ACCEPT the terms of the license written above.');
    echo " </label>";
 
    echo "<label for='disagree' class='radio'>";
@@ -227,7 +227,7 @@ function step3($host, $user, $password, $update) {
 
    error_reporting(16);
    echo "<h3>".__('Test of the connection at the database')."</h3>";
-   
+
    //Check if the port is in url
    $hostport = explode(":", $host);
    if (count($hostport) < 2) {

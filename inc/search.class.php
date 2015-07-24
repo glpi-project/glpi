@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -1192,7 +1192,7 @@ class Search {
                              $data['search']['target'], $parameters, $data['itemtype'], 0,
                               $search_config_top);
 
-            $search_config_top .= "</div>";
+            $search_config_top    .= "</div>";
             $search_config_bottom .= "</div>";
          }
 
@@ -1457,7 +1457,7 @@ class Search {
                 "<input type='hidden' name='is_deleted' value='0' /> ".
                 "<input type='checkbox' name='is_deleted' value='1' ".
                 ($is_deleted?"checked='checked'":"").
-                " onClick = \"toogle('is_deleted','','',''); 
+                " onClick = \"toogle('is_deleted','','','');
                               document.forms['searchform".$_POST["itemtype"]."'].submit();\" />".
                 "<span class='lever' />".
              "</label>".
@@ -1753,7 +1753,7 @@ class Search {
       foreach ($params as $key => $val) {
          $p[$key] = $val;
       }
-      
+
       echo "<form name='searchform$itemtype' method='get' action=\"".$p['target']."\">";
       echo "<div id='searchcriterias'>";
       $nbsearchcountvar      = 'nbcriteria'.strtolower($itemtype).mt_rand();
@@ -5500,7 +5500,7 @@ class Search {
             if ($issort) {
                $class = "order_$order";
             }
-            $out = "<th $options class='$class'>";               
+            $out = "<th $options class='$class'>";
             if (!empty($linkto)) {
                $out .= "<a href=\"$linkto\">";
             }
