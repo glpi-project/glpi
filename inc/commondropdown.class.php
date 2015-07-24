@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -693,13 +693,14 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
-      
+
       // Manage forbidden actions
       $forbidden_actions = $this->getForbiddenStandardMassiveAction();
-      
+
       if ($isadmin
           &&  $this->maybeRecursive()
-          && (count($_SESSION['glpiactiveentities']) > 1) && !in_array('merge', $forbidden_actions)) {
+          && (count($_SESSION['glpiactiveentities']) > 1)
+          && !in_array('merge', $forbidden_actions)) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'merge'] = __('Transfer and merge');
       }
 

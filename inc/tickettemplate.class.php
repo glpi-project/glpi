@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -534,10 +534,13 @@ class TicketTemplate extends CommonDropdown {
          $ticket->showFormHelpdesk(Session::getLoginUserID(), $tt->getID());
       }
    }
-   
+
+
    /**
+    * @since version 0.90
+    *
     * @see CommonDBTM::getSpecificMassiveActions()
-    **/
+   **/
    function getSpecificMassiveActions($checkitem=NULL) {
 
       $isadmin = static::canUpdate();
@@ -554,7 +557,7 @@ class TicketTemplate extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since version 0.90
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
    **/
@@ -572,12 +575,13 @@ class TicketTemplate extends CommonDropdown {
 
 
    /**
-    * @since version 0.85
+    * @since version 0.90
     *
     * @see CommonDBTM::processMassiveActionsForOneItemtype()
    **/
    static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item,
                                                        array $ids) {
+
       switch ($ma->getAction()) {
          case 'merge' :
             foreach ($ids as $key) {
@@ -597,14 +601,14 @@ class TicketTemplate extends CommonDropdown {
                      $input2['is_recursive'] = 1;
                      $input2 = Toolbox::addslashes_deep($input2);
 
-                     if(!$item->import($input2)){
+                     if (!$item->import($input2)){
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      } else {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      }
                   }
-                  
+
                } else {
                   $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
                   $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
@@ -614,54 +618,64 @@ class TicketTemplate extends CommonDropdown {
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
-   
+
+
    /**
     * Merge fields linked to template
-    * 
-    * @global type $DB
-    * @param type $target_id
-    * @param type $source_id
-    */
-   function mergeTemplateFields($target_id, $source_id){
+    *
+    * @since version 0.90
+    *
+    * @param $target_id
+    * @param  $source_id
+   **/
+   function mergeTemplateFields($target_id, $source_id) {
       global $DB;
-      
+
       // Tables linked to ticket template
       $to_merge = array('predefinedfields', 'mandatoryfields', 'hiddenfields');
 
       // Source fields
       $source = array();
       foreach ($to_merge as $merge) {
-         $source[$merge] = $this->formatFieldsToMerge(getAllDatasFromTable('glpi_tickettemplate'.$merge, "tickettemplates_id='".$source_id."'"));
+         $source[$merge]
+            = $this->formatFieldsToMerge(getAllDatasFromTable('glpi_tickettemplate'.$merge,
+                                                              "tickettemplates_id='".$source_id."'"));
       }
 
       // Target fields
       $target = array();
       foreach ($to_merge as $merge) {
-         $target[$merge] = $this->formatFieldsToMerge(getAllDatasFromTable('glpi_tickettemplate'.$merge, "tickettemplates_id='".$target_id."'"));
+         $target[$merge]
+            = $this->formatFieldsToMerge(getAllDatasFromTable('glpi_tickettemplate'.$merge,
+                                                              "tickettemplates_id='".$target_id."'"));
       }
-      
-      // Merge  
+
+      // Merge
       foreach ($source as $merge => $data) {
          foreach ($data as $key => $val) {
             if (!array_key_exists($key, $target[$merge])) {
-               $DB->query("UPDATE `glpi_tickettemplate".$merge."` SET `tickettemplates_id` = '".$target_id."' WHERE `id` = '".$val['id']."'");
+               $DB->query("UPDATE `glpi_tickettemplate".$merge."`
+                           SET `tickettemplates_id` = '".$target_id."'
+                           WHERE `id` = '".$val['id']."'");
             }
          }
       }
    }
-   
+
+
    /**
     * Merge Itilcategories linked to template
-    * 
-    * @global type $DB
-    * @param type $target_id
-    * @param type $source_id
+    *
+    * @since version 0.90
+    *
+    * @param $target_id
+    * @param $source_id
     */
-   function mergeTemplateITILCategories($target_id, $source_id){
+   function mergeTemplateITILCategories($target_id, $source_id) {
       global $DB;
 
       $to_merge = array('tickettemplates_id_incident', 'tickettemplates_id_demand');
-      
+
       // Source categories
       $source = array();
       foreach ($to_merge as $merge) {
@@ -673,43 +687,52 @@ class TicketTemplate extends CommonDropdown {
       foreach ($to_merge as $merge) {
          $target[$merge] = getAllDatasFromTable('glpi_itilcategories', "$merge='".$target_id."'");
       }
-      
+
       // Merge
-      $temtplate = new TicketTemplate();
+      $temtplate = new self();
       foreach ($source as $merge => $data) {
          foreach ($data as $key => $val) {
             $temtplate->getFromDB($target_id);
-            if (!array_key_exists($key, $target[$merge]) && in_array($val['entities_id'], $_SESSION['glpiactiveentities'])) {
-               $DB->query("UPDATE `glpi_itilcategories` SET `$merge` = '".$target_id."' WHERE `id` = '".$val['id']."'");
+            if (!array_key_exists($key, $target[$merge])
+                && in_array($val['entities_id'], $_SESSION['glpiactiveentities'])) {
+               $DB->query("UPDATE `glpi_itilcategories`
+                           SET `$merge` = '".$target_id."'
+                           WHERE `id` = '".$val['id']."'");
             }
          }
       }
    }
-   
+
+
    /**
     * Format template fields to merge
-    * 
-    * @param type $data
-    * @return type
-    */
-   function formatFieldsToMerge($data){
+    *
+    * @since version 0.90
+    *
+    * @param $data
+   **/
+   function formatFieldsToMerge($data) {
+
       $output = array();
       foreach($data as $val){
          $output[$val['num']] = $val;
       }
-      
+
       return $output;
    }
-   
+
+
   /**
     * Import a dropdown - check if already exists
+    *
+    * @since version 0.90
     *
     * @param $input  array of value to import (name, ...)
     *
     * @return the ID of the new or existing dropdown
    **/
    function import(array $input) {
-      
+
       if (!isset($input['name'])) {
          return -1;
       }
@@ -735,25 +758,27 @@ class TicketTemplate extends CommonDropdown {
          $this->update($input);
 
          return true;
-         
+
       } else {
          $this->update($input);
-         
+
          return true;
       }
-      
+
       return false;
    }
-   
+
+
    /**
     * Forbidden massive action
+    *
+    * @since version 0.90
     *
     * @see CommonDBTM::getForbiddenStandardMassiveAction()
    **/
    function getForbiddenStandardMassiveAction() {
 
-      $forbidden = parent::getForbiddenStandardMassiveAction();
-
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'merge';
 
       return $forbidden;
