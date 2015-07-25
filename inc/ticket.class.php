@@ -6459,7 +6459,7 @@ class Ticket extends CommonITILObject {
       $query = "SELECT DISTINCT `users_id`, `type`
                 FROM (SELECT usr.`id` AS users_id, tu.`type` AS type
                       FROM `glpi_tickets_users` tu
-                      LEFT JOIN `glpi_users` usr ON t`.`users_id` = usr.`id`
+                      LEFT JOIN `glpi_users` usr ON tu.`users_id` = usr.`id`
                       WHERE tu.`tickets_id` = ".$this->getId()."
                       UNION
                       SELECT usr.`id` AS users_id, gt.`type` AS type
