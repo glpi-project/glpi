@@ -1894,6 +1894,8 @@ class Html {
 
       // Main Headline
       echo "<div id='header'>";
+      echo "<div id='header_top'>";
+
       echo "<div id='c_logo'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/' accesskey='1' title=\"".__s('Home')."\">".
            "<span class='invisible'>Logo</span></a></div>";
@@ -1907,6 +1909,8 @@ class Html {
       echo "<div id='c_recherche'>";
       echo "<div class='sep'></div>";
       echo "</div>";
+
+      echo "</div>"; // end #header_top
 
       //-- Le menu principal --
       echo "<div id='c_menu'>";
