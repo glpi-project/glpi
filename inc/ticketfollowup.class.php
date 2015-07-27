@@ -410,6 +410,13 @@ class TicketFollowup  extends CommonDBTM {
          $donotif      = false; // Done for ticket update (new status)
       }
 
+      //change ticket status
+      if (isset($_REQUEST['_status']) && !empty($_REQUEST['_status'])) {
+         $ticket = new Ticket();
+         $ticket->update(array('id'     => intval($_REQUEST['tickets_id']), 
+                               'status' => intval($_REQUEST['_status'])));
+      }
+
       if ($donotif) {
          $options = array('followup_id' => $this->fields["id"],
                           'is_private'  => $this->fields['is_private']);

@@ -444,6 +444,13 @@ abstract class CommonITILTask  extends CommonDBTM {
          $this->input["_job"]->updateActionTime($this->input[$this->input["_job"]->getForeignKeyField()]);
       }
 
+      //change ticket status
+      if (isset($_REQUEST['_status']) && !empty($_REQUEST['_status'])) {
+         $ticket = new Ticket();
+         $ticket->update(array('id'     => intval($_REQUEST['tickets_id']), 
+                               'status' => intval($_REQUEST['_status'])));
+      }
+
       if (!empty($this->fields['begin'])
           && $this->input["_job"]->isStatusExists(CommonITILObject::PLANNED)
           && (($this->input["_job"]->fields["status"] == CommonITILObject::INCOMING)
