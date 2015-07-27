@@ -305,7 +305,8 @@ class Ajax {
             if ($key == $active_tabs) {
                $selected_tab = $current;
             }
-            echo "<li><a title=\"".str_replace(array('<sup>', '</sup>'),'',$val['title'])."\" ";
+            echo "<li><a title=\"".
+                 str_replace(array("<sup class='tab_nb'>", '</sup>'),'',$val['title'])."\" ";
             echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
             // extract sup information
 //             $title = '';
