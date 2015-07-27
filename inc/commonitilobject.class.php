@@ -2557,6 +2557,7 @@ abstract class CommonITILObject extends CommonDBTM {
                if ($item->getFromDB($id)) {
                   $input2 = array($field              => $id,
                                   'taskcategories_id' => $input['taskcategories_id'],
+                                  'actiontime'        => $input['actiontime'],
                                   'content'           => $input['content']);
                   if ($task->can(-1, CREATE, $input2)) {
                      if ($task->add($input2)) {

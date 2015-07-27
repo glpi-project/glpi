@@ -1415,6 +1415,20 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($this->maybePrivate()) {
          echo "<input type='hidden' name='is_private' value='".$_SESSION['glpitask_private']."'>";
       }
+      
+       echo "<br>".__('Duration');
+
+      $toadd = array();
+      for ($i=9 ; $i<=100 ; $i++) {
+         $toadd[] = $i*HOUR_TIMESTAMP;
+      }
+
+      Dropdown::showTimeStamp("actiontime", array('min'             => 0,
+                                                  'max'             => 8*HOUR_TIMESTAMP,
+                                                  'addfirstminutes' => true,
+                                                  'inhours'         => true,
+                                                  'toadd'           => $toadd));
+      
       echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
    }
 
