@@ -2346,7 +2346,6 @@ ul#menu ul.ssmenu {
    float: left;
    width: 25%;
    max-width: 140px;
-   min-height: 120px;
 }
 .timeline_history .right .h_info {
    float: right;
@@ -2358,7 +2357,6 @@ ul#menu ul.ssmenu {
    background-repeat: no-repeat;
    padding-left: 24px;
    padding-top: 1px;
-   height: 22px;
    text-transform: capitalize;
    text-align: center;
 }
@@ -2368,11 +2366,12 @@ ul#menu ul.ssmenu {
    white-space: nowrap;
    margin-bottom: 10px;
    text-align: left;
-   line-height: 16px;
+   line-height: 20px;
 }
 
 .timeline_history .h_user a {
    display: inline-block;
+   margin-bottom: 5px;
    vertical-align: middle;
    width: 100%;
    text-align: center;
