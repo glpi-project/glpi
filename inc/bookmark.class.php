@@ -726,12 +726,12 @@ class Bookmark extends CommonDBTM {
                   echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
                          "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".
                          __s('Not default search')."\" itle=\"".__s('Not default search')."\">".
-                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_grey.png\" class='pointer'></a>";
+                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_record.png\" class='pointer'></a>";
                } else {
                   echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
                          "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".
                          __s('Default search')."\" title=\"".__s('Default search')."\">".
-                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark.png\" class='pointer'></a>";
+                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_default.png\" class='pointer'></a>";
                }
             }
             echo "</td>";
