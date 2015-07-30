@@ -1,4 +1,5 @@
 config/config_db*
+config/config_path.php
 plugins/
 files/
 .buildpath
