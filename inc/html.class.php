@@ -1905,11 +1905,6 @@ class Html {
       echo "<div class='sep'></div>";
       echo "</div>";
 
-      //-- Le moteur de recherche --
-      echo "<div id='c_recherche'>";
-      echo "<div class='sep'></div>";
-      echo "</div>";
-
       echo "</div>"; // end #header_top
 
       //-- Le menu principal --
