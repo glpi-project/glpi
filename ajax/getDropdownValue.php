@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -49,10 +49,10 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkLoginUser();
 
-if (isset($_GET["entity_restrict"]) 
-          && !is_array($_GET["entity_restrict"])
-          && substr($_GET["entity_restrict"], 0, 1) === '['
-          && substr($_GET["entity_restrict"], -1) === ']') {
+if (isset($_GET["entity_restrict"])
+    && !is_array($_GET["entity_restrict"])
+    && (substr($_GET["entity_restrict"], 0, 1) === '[')
+    && (substr($_GET["entity_restrict"], -1) === ']')) {
    $_GET["entity_restrict"] = json_decode($_GET["entity_restrict"]);
 }
 
