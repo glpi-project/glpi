@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -17,7 +17,7 @@
  This file is part of GLPI.
 
  GLPI is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
+ it under the terms of the GNU General Public License as published by$tab[61]
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 
@@ -572,7 +572,7 @@ class Entity extends CommonTreeDropdown {
       $tab[61]['name']          = __('Enable notifications by default');
       $tab[61]['massiveaction'] = false;
       $tab[61]['nosearch']      = true;
-      $tab[61]['datatype']      = 'bool';
+      $tab[61]['datatype']      = 'string';
 
       $tab[18]['table']         = $this->getTable();
       $tab[18]['field']         = 'admin_email';
@@ -1391,7 +1391,7 @@ class Entity extends CommonTreeDropdown {
       if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
          echo "<font class='green'><br>";
-         echo $entity->getValueToDisplay('is_notif_enable_default', $tid, array('html' => true));
+         echo self::getSpecificValueToDisplay('is_notif_enable_default', $tid);
          echo "</font>";
       }
       echo "</td>";
@@ -2224,6 +2224,7 @@ class Entity extends CommonTreeDropdown {
          case 'use_licenses_alert' :
          case 'use_contracts_alert' :
          case 'use_infocoms_alert' :
+         case 'is_notif_enable_default' :
             if ($values[$field] == self::CONFIG_PARENT) {
                return __('Inheritance of the parent entity');
             }
