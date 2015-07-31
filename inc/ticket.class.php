@@ -3327,9 +3327,10 @@ class Ticket extends CommonITILObject {
 
       // Get default values from posted values on reload form
       // On get because of tabs
+      // we use REQUEST because method differ with layout (lefttab : GET, vsplit: POST)
       if (!isset($options['template_preview'])) {
-         if (isset($_GET)) {
-            $values = Html::cleanPostForTextArea($_GET);
+         if (isset($_REQUEST)) {
+            $values = Html::cleanPostForTextArea($_REQUEST);
          }
       }
 
