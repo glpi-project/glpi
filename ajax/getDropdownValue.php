@@ -45,10 +45,10 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkLoginUser();
 
-if (isset($_GET["entity_restrict"]) 
-          && !is_array($_GET["entity_restrict"])
-          && substr($_GET["entity_restrict"], 0, 1) === '['
-          && substr($_GET["entity_restrict"], -1) === ']') {
+if (isset($_GET["entity_restrict"])
+    && !is_array($_GET["entity_restrict"])
+    && (substr($_GET["entity_restrict"], 0, 1) === '[')
+    && (substr($_GET["entity_restrict"], -1) === ']')) {
    $_GET["entity_restrict"] = json_decode($_GET["entity_restrict"]);
 }
 
@@ -321,7 +321,7 @@ if ($item instanceof CommonTreeDropdown) {
                      $work_level    = $level-1;
                      $work_parentID = $data[$item->getForeignKeyField()];
                      $parent_datas  = array();
-                     
+
                      do {
                         // Get parent
                         if ($item->getFromDB($work_parentID)) {
@@ -353,7 +353,7 @@ if ($item instanceof CommonTreeDropdown) {
                               }
                               array_unshift($parent_datas, $temp);
                            }
-                           
+
                            $last_level_displayed[$work_level] = $item->fields['id'];
                            $work_level--;
                            $work_parentID = $item->fields[$item->getForeignKeyField()];
@@ -420,7 +420,7 @@ if ($item instanceof CommonTreeDropdown) {
          $datas = array_merge($datas, $datastoadd);
       }
    }
-   
+
 
 } else { // Not a dropdowntree
    $multi = false;
