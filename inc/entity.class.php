@@ -568,7 +568,7 @@ class Entity extends CommonTreeDropdown {
       $tab[61]['name']          = __('Enable notifications by default');
       $tab[61]['massiveaction'] = false;
       $tab[61]['nosearch']      = true;
-      $tab[61]['datatype']      = 'bool';
+      $tab[61]['datatype']      = 'string';
 
       $tab[18]['table']         = $this->getTable();
       $tab[18]['field']         = 'admin_email';
@@ -1387,9 +1387,10 @@ class Entity extends CommonTreeDropdown {
       if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
          echo "<font class='green'><br>";
-         echo $entity->getValueToDisplay('is_notif_enable_default', $tid, array('html' => true));
+         echo self::getSpecificValueToDisplay('is_notif_enable_default', $tid);
          echo "</font>";
       }
+
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
 
@@ -2220,6 +2221,7 @@ class Entity extends CommonTreeDropdown {
          case 'use_licenses_alert' :
          case 'use_contracts_alert' :
          case 'use_infocoms_alert' :
+         case 'is_notif_enable_default' :
             if ($values[$field] == self::CONFIG_PARENT) {
                return __('Inheritance of the parent entity');
             }
