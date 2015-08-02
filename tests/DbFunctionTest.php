@@ -31,6 +31,8 @@
 class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
    protected function setUp() {
+      global $CFG_GLPI;
+
       // Clean the cache
       unset($CFG_GLPI['glpiitemtypetables']);
       unset($CFG_GLPI['glpitablesitemtype']);
@@ -43,6 +45,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       return array(
          array('foo', ''),
          array('glpi_computers', 'computers_id'),
+         array('glpi_events', 'events_id'),
          array('glpi_users', 'users_id'),
          array('glpi_plugin_foo_bars', 'plugin_foo_bars_id'),
       );
@@ -70,6 +73,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       return array(
          array('glpi_computers', 'Computer', true),
          array('glpi_users', 'User', true),
+         array('glpi_events', 'Glpi\\Event', true),
          array('glpi_plugin_foo_bars', 'PluginFooBar', true),
          array('glpi_plugin_foo_bazs', 'PluginFooBaz', false),
       );
