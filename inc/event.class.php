@@ -76,13 +76,14 @@ class Event extends CommonDBTM {
     * @param $event
    **/
    static function log($items_id, $type, $level, $service, $event) {
+      global $DB;
 
       $input = array('items_id' => intval($items_id),
-                     'type'     => addslashes($type),
+                     'type'     => $DB->escape($type),
                      'date'     => $_SESSION["glpi_currenttime"],
-                     'service'  => addslashes($service),
+                     'service'  => $DB->escape($service),
                      'level'    => intval($level),
-                     'message'  => addslashes($event));
+                     'message'  => $DB->escape($event));
       $tmp = new self();
       return $tmp->add($input);
    }
