@@ -139,8 +139,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix'],
                                                           true);
       }
-      // Path for icon of document type
-      $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
+      // Path for icon of document type (web mode only)
+      if (isset($CFG_GLPI["root_doc"])) {
+         $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
+      }
 
    } else {
       echo "Error accessing config table";
