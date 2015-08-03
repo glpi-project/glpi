@@ -186,17 +186,60 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       $this->assertGreaterThan(100, countElementsInTable('glpi_configs'));
       $this->assertGreaterThan(100, countElementsInTable(array('glpi_configs', 'glpi_users')));
       $this->assertGreaterThan(100, countElementsInTable('glpi_configs', "context = 'core'"));
-      $this->assertEquals(1, countElementsInTable('glpi_configs', "context = 'core' AND `name` = 'version'"));
+      $this->assertEquals(1, countElementsInTable('glpi_configs', "context = 'core'
+                                                   AND `name` = 'version'"));
       $this->assertEquals(0, countElementsInTable('glpi_configs', "context = 'fakecontext'"));
    }
-   
+
+
+   /*
+    * @covers countDistinctElementsInTable
+    */
+   public function testCountDistinctElementsInTable(){
+   global $DB;
+      //the case of using an element that is not a table is not handle in the function :
+      //testCountElementsInTable($table, $condition="")
+      $this->assertGreaterThan(0, countDistinctElementsInTable('glpi_configs','id'));
+      $this->assertGreaterThan(0, countDistinctElementsInTable('glpi_configs','context'));
+      $this->assertEquals(1, countDistinctElementsInTable('glpi_configs','context',"name = 'version'"));
+      $this->assertEquals(0, countDistinctElementsInTable('glpi_configs', 'id', "context ='fakecontext'"));
+   }
+
 
 /*
 TODO :
-countDistinctElementsInTable
-countElementsInTableForMyEntities
-countElementsInTableForEntity
-getAllDatasFromTable
+   countElementsInTableForMyEntitie
+   countElementsInTableForEntity
+*/
+
+
+   /*
+    *@covers getAllDatasFromTable
+    *
+    */
+   public function testGetAllDatasFromTable(){
+      $data = getAllDatasFromTable('glpi_configs');
+      $this->assertTrue(is_array($data));
+      $this->assertGreaterThan(100,count($data));
+      foreach($data as $key => $array){
+         $this->assertTrue(is_array($array));
+         $this->assertTrue($key == $array['id']);
+      }
+
+      $data = getAllDatasFromTable('glpi_configs',"context = 'core'
+                                          AND `name` = 'version'");
+      $this->assertEquals(1, count($data));
+
+      $data = getAllDatasFromTable('glpi_configs',"", false,'name');
+      $previousArrayName = "";
+      foreach($data as $key => $array) {
+         $this->assertTrue($previousArrayName <= $previousArrayName = $array['name']);
+      }
+   }
+
+
+/*
+TODO :
 getTreeLeafValueName
 getTreeValueCompleteName
 getTreeValueName
@@ -206,16 +249,52 @@ contructTreeFromList
 contructListFromTree
 getRealQueryForTreeItem
 regenerateTreeCompleteName
- getNextItem
- getPreviousItem
- formatUserName
- getUserName
- TableExists
- FieldExists
- isIndex
- autoName
- closeDBConnections
+getNextItem
+getPreviousItem
+formatUserName
+getUserName
 */
+
+
+   /*
+    *@covers TableExists
+    */
+   public function testTableExist(){
+      $this->assertTrue(TableExists('glpi_configs'));
+      $this->assertFalse(TableExists('fakeTable'));
+   }
+
+
+   /*
+    *@covers FieldExists
+    */
+   public function testFieldExist(){
+      $this->assertTrue(FieldExists('glpi_configs','id'));
+      $this->assertFalse(FieldExists('glpi_configs','fakeField'));
+      $this->assertFalse(FieldExists('fakeTable','id'));
+      $this->assertFalse(FieldExists('fakeTable','fakeField'));
+   }
+
+
+   /*
+    * @covers isIndex
+    */
+   public function testIsIndex(){
+      $this->assertFalse(isIndex('glpi_configs','fakeField'));
+      $this->assertFalse(isIndex('fakeTable','id'));
+      $this->assertFalse(isIndex('glpi_configs','name'));
+      $this->assertTrue(isIndex('glpi_users','locations_id'));
+      $this->assertTrue(isIndex('glpi_users','unicity'));
+   }
+
+
+ /*
+ TODO :
+    autoName
+    closeDBConnections
+*/
+
+
    /*
     * @covers formatOutputWebLink
     */
@@ -228,12 +307,12 @@ regenerateTreeCompleteName
 
 /*
 TODO :
-getDateRequest
-exportArrayToDB
-importArrayFromDB
-get_hour_from_sql
-getDbRelations
-getEntitiesRestrictRequest
+   getDateRequest
+   exportArrayToDB
+   importArrayFromDB
+   get_hour_from_sql
+   getDbRelations
+   getEntitiesRestrictRequest
 */
 
 }
