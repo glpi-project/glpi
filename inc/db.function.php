@@ -323,18 +323,19 @@ function countElementsInTable($table, $condition="") {
  * Count the number of elements in a table.
  *
  * @param $table        string/array   table names
+ * @param $field        string         field name
  * @param $condition    string         condition to use (default '')
  *
  * @return int nb of elements in table
 **/
-function countDistinctElementsInTable($table, $field='*', $condition="") {
+function countDistinctElementsInTable($table, $field, $condition="") {
    global $DB;
 
    if (is_array($table)) {
       $table = implode('`,`',$table);
    }
 
-   $query = "SELECT COUNT(DISTINCT $field) AS cpt
+   $query = "SELECT COUNT(DISTINCT `$field`) AS cpt
              FROM `$table`";
 
    if (!empty($condition)) {
