@@ -1,13 +1,13 @@
 <?php
 //============================================================+
 // File name   : tcpdf_images.php
-// Version     : 1.0.000
+// Version     : 1.0.005
 // Begin       : 2002-08-03
-// Last Update : 2013-03-16
+// Last Update : 2014-11-15
 // Author      : Nicola Asuni - Tecnick.com LTD - www.tecnick.com - info@tecnick.com
 // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
 // -------------------------------------------------------------------
-// Copyright (C) 2002-2013 Nicola Asuni - Tecnick.com LTD
+// Copyright (C) 2002-2014 Nicola Asuni - Tecnick.com LTD
 //
 // This file is part of TCPDF software library.
 //
@@ -38,7 +38,7 @@
  * This is a PHP class that contains static image methods for the TCPDF class.<br>
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
- * @version 1.0.000
+ * @version 1.0.005
  */
 
 /**
@@ -46,7 +46,7 @@
  * Static image methods used by the TCPDF class.
  * @package com.tecnick.tcpdf
  * @brief PHP class for generating PDF documents without requiring external extensions.
- * @version 1.0.000
+ * @version 1.0.005
  * @author Nicola Asuni - info@tecnick.com
  */
 class TCPDF_IMAGES {
@@ -56,7 +56,7 @@ class TCPDF_IMAGES {
 	 * @since 5.0.000 (2010-05-02)
 	 * @public static
 	 */
-	public static $svginheritprop = array('clip-rule', 'color', 'color-interpolation', 'color-interpolation-filters', 'color-profile', 'color-rendering', 'cursor', 'direction', 'fill', 'fill-opacity', 'fill-rule', 'font', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style', 'font-variant', 'font-weight', 'glyph-orientation-horizontal', 'glyph-orientation-vertical', 'image-rendering', 'kerning', 'letter-spacing', 'marker', 'marker-end', 'marker-mid', 'marker-start', 'pointer-events', 'shape-rendering', 'stroke', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'stroke-width', 'text-anchor', 'text-rendering', 'visibility', 'word-spacing', 'writing-mode');
+	public static $svginheritprop = array('clip-rule', 'color', 'color-interpolation', 'color-interpolation-filters', 'color-profile', 'color-rendering', 'cursor', 'direction', 'display', 'fill', 'fill-opacity', 'fill-rule', 'font', 'font-family', 'font-size', 'font-size-adjust', 'font-stretch', 'font-style', 'font-variant', 'font-weight', 'glyph-orientation-horizontal', 'glyph-orientation-vertical', 'image-rendering', 'kerning', 'letter-spacing', 'marker', 'marker-end', 'marker-mid', 'marker-start', 'pointer-events', 'shape-rendering', 'stroke', 'stroke-dasharray', 'stroke-dashoffset', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-opacity', 'stroke-width', 'text-anchor', 'text-rendering', 'visibility', 'word-spacing', 'writing-mode');
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -97,11 +97,12 @@ class TCPDF_IMAGES {
 	 * @public static
 	 */
 	public static function setGDImageTransparency($new_image, $image) {
+		// default transparency color (white)
+		$tcol = array('red' => 255, 'green' => 255, 'blue' => 255);
 		// transparency index
 		$tid = imagecolortransparent($image);
-		// default transparency color
-		$tcol = array('red' => 255, 'green' => 255, 'blue' => 255);
-		if ($tid >= 0) {
+		$palletsize = imagecolorstotal($image);
+		if (($tid >= 0) AND ($tid < $palletsize)) {
 			// get the colors for the transparency index
 			$tcol = imagecolorsforindex($image, $tid);
 		}
@@ -115,23 +116,22 @@ class TCPDF_IMAGES {
 	 * Convert the loaded image to a PNG and then return a structure for the PDF creator.
 	 * This function requires GD library and write access to the directory defined on K_PATH_CACHE constant.
 	 * @param $image (image) Image object.
+	 * @param $tempfile (string) Temporary file name.
 	 * return image PNG image object.
 	 * @since 4.9.016 (2010-04-20)
 	 * @public static
 	 */
-	public static function _toPNG($image) {
-		// set temporary image file name
-		$tempname = TCPDF_STATIC::getObjFilename('png');
+	public static function _toPNG($image, $tempfile) {
 		// turn off interlaced mode
 		imageinterlace($image, 0);
 		// create temporary PNG image
-		imagepng($image, $tempname);
+		imagepng($image, $tempfile);
 		// remove image from memory
 		imagedestroy($image);
 		// get PNG image data
-		$retvars = self::_parsepng($tempname);
+		$retvars = self::_parsepng($tempfile);
 		// tidy up by removing temporary image
-		unlink($tempname);
+		unlink($tempfile);
 		return $retvars;
 	}
 
@@ -140,16 +140,16 @@ class TCPDF_IMAGES {
 	 * This function requires GD library and write access to the directory defined on K_PATH_CACHE constant.
 	 * @param $image (image) Image object.
 	 * @param $quality (int) JPEG quality.
+	 * @param $tempfile (string) Temporary file name.
 	 * return image JPEG image object.
 	 * @public static
 	 */
-	public static function _toJPEG($image, $quality) {
-		$tempname = TCPDF_STATIC::getObjFilename('jpg');
-		imagejpeg($image, $tempname, $quality);
+	public static function _toJPEG($image, $quality, $tempfile) {
+		imagejpeg($image, $tempfile, $quality);
 		imagedestroy($image);
-		$retvars = self::_parsejpeg($tempname);
+		$retvars = self::_parsejpeg($tempfile);
 		// tidy up by removing temporary image
-		unlink($tempname);
+		unlink($tempfile);
 		return $retvars;
 	}
 
@@ -160,6 +160,14 @@ class TCPDF_IMAGES {
 	 * @public static
 	 */
 	public static function _parsejpeg($file) {
+		// check if is a local file
+		if (!@file_exists($file)) {
+			// try to encode spaces on filename
+			$tfile = str_replace(' ', '%20', $file);
+			if (@file_exists($tfile)) {
+				$file = $tfile;
+			}
+		}
 		$a = getimagesize($file);
 		if (empty($a)) {
 			//Missing or incorrect image file
@@ -218,7 +226,7 @@ class TCPDF_IMAGES {
 		if (count($icc) > 0) {
 			ksort($icc);
 			$icc = implode('', $icc);
-			if ((ord($icc{36}) != 0x61) OR (ord($icc{37}) != 0x63) OR (ord($icc{38}) != 0x73) OR (ord($icc{39}) != 0x70)) {
+			if ((ord($icc[36]) != 0x61) OR (ord($icc[37]) != 0x63) OR (ord($icc[38]) != 0x73) OR (ord($icc[39]) != 0x70)) {
 				// invalid ICC profile
 				$icc = false;
 			}
@@ -235,7 +243,7 @@ class TCPDF_IMAGES {
 	 * @public static
 	 */
 	public static function _parsepng($file) {
-		$f = fopen($file, 'rb');
+		$f = @fopen($file, 'rb');
 		if ($f === false) {
 			// Can't open image file
 			return false;
@@ -254,11 +262,6 @@ class TCPDF_IMAGES {
 		$w = TCPDF_STATIC::_freadint($f);
 		$h = TCPDF_STATIC::_freadint($f);
 		$bpc = ord(fread($f, 1));
-		if ($bpc > 8) {
-			// 16-bit depth not supported
-			fclose($f);
-			return false;
-		}
 		$ct = ord(fread($f, 1));
 		if ($ct == 0) {
 			$colspace = 'DeviceGray';
@@ -294,8 +297,8 @@ class TCPDF_IMAGES {
 		$trns = '';
 		$data = '';
 		$icc = false;
+		$n = TCPDF_STATIC::_freadint($f);
 		do {
-			$n = TCPDF_STATIC::_freadint($f);
 			$type = fread($f, 4);
 			if ($type == 'PLTE') {
 				// read palette
@@ -304,14 +307,16 @@ class TCPDF_IMAGES {
 			} elseif ($type == 'tRNS') {
 				// read transparency info
 				$t = TCPDF_STATIC::rfread($f, $n);
-				if ($ct == 0) {
-					$trns = array(ord($t{1}));
-				} elseif ($ct == 2) {
-					$trns = array(ord($t{1}), ord($t{3}), ord($t{5}));
-				} else {
-					$pos = strpos($t, chr(0));
-					if ($pos !== false) {
-						$trns = array($pos);
+				if ($ct == 0) { // DeviceGray
+					$trns = array(ord($t[1]));
+				} elseif ($ct == 2) { // DeviceRGB
+					$trns = array(ord($t[1]), ord($t[3]), ord($t[5]));
+				} else { // Indexed
+					if ($n > 0) {
+						$trns = array();
+						for ($i = 0; $i < $n; ++ $i) {
+							$trns[] = ord($t{$i});
+						}
 					}
 				}
 				fread($f, 4);
@@ -322,11 +327,9 @@ class TCPDF_IMAGES {
 			} elseif ($type == 'iCCP') {
 				// skip profile name
 				$len = 0;
-				while ((ord(fread($f, 1)) > 0) AND ($len < 80)) {
+				while ((ord(fread($f, 1)) != 0) AND ($len < 80)) {
 					++$len;
 				}
-				// skip null separator
-				fread($f, 1);
 				// get compression method
 				if (ord(fread($f, 1)) != 0) {
 					// Unknown filter method
@@ -343,6 +346,7 @@ class TCPDF_IMAGES {
 			} else {
 				TCPDF_STATIC::rfread($f, $n + 4);
 			}
+			$n = TCPDF_STATIC::_freadint($f);
 		} while ($n);
 		if (($colspace == 'Indexed') AND (empty($pal))) {
 			// Missing palette
@@ -353,7 +357,7 @@ class TCPDF_IMAGES {
 		return array('w' => $w, 'h' => $h, 'ch' => $channels, 'icc' => $icc, 'cs' => $colspace, 'bpc' => $bpc, 'f' => 'FlateDecode', 'parms' => $parms, 'pal' => $pal, 'trns' => $trns, 'data' => $data);
 	}
 
-} // END OF TCPDF_STATIC CLASS
+} // END OF TCPDF_IMAGES CLASS
 
 //============================================================+
 // END OF FILE
