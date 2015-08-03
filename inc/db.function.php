@@ -293,21 +293,6 @@ function getSingular($string) {
 
 
 /**
- * Is a table used for devices
- *
- * @param $tablename table name
- *
- * @return bool
-**/
-function isDeviceTable($tablename) {
-
-   // begin by glpi_devices but Not types tables (end = types)
-   return (preg_match('/^glpi_devices', $tablename)
-           && !preg_match('/types$', $tablename));
-}
-
-
-/**
  * Count the number of elements in a table.
  *
  * @param $table        string/array   table names
