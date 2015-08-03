@@ -28,6 +28,7 @@
 
 /* Test for inc/db.function.php */
 
+
 class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
    protected function setUp() {
@@ -41,6 +42,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       require_once 'fixtures/pluginfoobar.php';
    }
 
+
    public function dataTableKey() {
       return array(
          array('foo', ''),
@@ -51,6 +53,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       );
    }
 
+
    /**
     * @covers getForeignKeyFieldForTable
     * @dataProvider dataTableKey
@@ -58,6 +61,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
    public function testGetForeignKeyFieldForTable($table, $key) {
       $this->assertEquals($key, getForeignKeyFieldForTable($table));
    }
+
 
    /**
     * @covers isForeignKeyField
@@ -69,15 +73,18 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
          $this->assertTrue(isForeignKeyField($key));
       }
    }
+
+
    /**
     * @covers isForeignKeyField
     *
     */
    public function testIsForeignKeyFieldMore() {
-      $this->assertFalse(isForeignKeyField("FakeId"));
-      $this->assertFalse(isForeignKeyField("id_Another_Fake_Id"));
-      $this->assertTrue(isForeignKeyField("users_id_tech"));
+      $this->assertFalse(isForeignKeyField('FakeId'));
+      $this->assertFalse(isForeignKeyField('id_Another_Fake_Id'));
+      $this->assertTrue(isForeignKeyField('users_id_tech'));
    }
+
 
    /**
     * @covers getTableNameForForeignKeyField
@@ -89,6 +96,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       }
    }
 
+
    public function dataTableType() {
       return array(
          array('glpi_computers', 'Computer', true),
@@ -99,6 +107,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       );
    }
 
+
    /**
     * @covers getTableForItemType
     * @dataProvider dataTableType
@@ -106,6 +115,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
    public function testGetTableForItemType($table, $type, $classexists) {
       $this->assertEquals($table, getTableForItemType($type));
    }
+
 
    /**
     * @covers getItemTypeForTable
@@ -118,4 +128,117 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
          $this->assertEquals('UNKNOWN', getItemTypeForTable($table));
       }
    }
+
+
+   /**
+    * @covers getItemForItemtype
+    * @dataProvider dataTableType
+    */
+   public function testGetItemForItemtype($table, $itemtype, $classexists) {
+      if ($classexists) {
+         $this->assertInstanceOf($itemtype, getItemForItemtype($itemtype));
+      } else {
+         $this->assertFalse(getItemForItemtype($itemtype));
+      }
+   }
+
+
+   public function dataPlural() {
+      return array(
+         array('model', 'models'),
+         array('address', 'addresses'),
+         array('computer', 'computers'),
+         array('thing', 'things'),
+         array('criteria', 'criterias'),
+         array('version', 'versions'),
+         array('config', 'configs'),
+         array('machine', 'machines'),
+         array('memory', 'memories'),
+         array('licence', 'licences'),
+      );
+   }
+
+
+    /**
+    * @covers getPlural
+    * @dataProvider dataPlural
+    */
+   public function testGetPlural($singular, $plural) {
+      $this->assertEquals($plural, getPlural($singular));
+      $this->assertEquals($plural, getPlural(getPlural($singular)));
+   }
+
+
+   /**
+    * @covers getSingular
+    * @dataProvider dataPlural
+    */
+   public function testGetSingular($singular, $plural) {
+      $this->assertEquals($singular, getSingular($plural));
+      $this->assertEquals($singular, getSingular(getSingular($plural)));
+   }
+
+
+   /*
+    * @covers countElementsInTable
+    *
+    */ /*  TO DO LATER
+   public function testCountElementsInTable() {
+   global $DB;
+      //the case of using an element that is not a table is not handle in the function :
+      //testCountElementsInTable($table, $condition="")
+      toolbox::logdebug("Avant", $DB);
+      $this->assertEquals(1, countElementsInTable('glpi_configs', "`name` = 'version'"));
+      toolbox::logdebug("Entre");
+      $this->assertGreaterThan(100, countElementsInTable('glpi_configs',"context = 'core'"));
+      toolbox::logdebug("Apres");
+   }
+   
+*/
+
+/*
+TODO :
+countDistinctElementsInTable
+countElementsInTableForMyEntities
+countElementsInTableForEntity
+getAllDatasFromTable
+getTreeLeafValueName
+getTreeValueCompleteName
+getTreeValueName
+getAncestorsOf
+getTreeForItem
+contructTreeFromList
+contructListFromTree
+getRealQueryForTreeItem
+regenerateTreeCompleteName
+ getNextItem
+ getPreviousItem
+ formatUserName
+ getUserName
+ TableExists
+ FieldExists
+ isIndex
+ autoName
+ closeDBConnections
+*/
+   /*
+    * @covers formatOutputWebLink
+    */
+   public function testFormatOutputWebLink(){
+      $this->assertEquals('http://www.glpi-project.org/',
+                           formatOutputWebLink('www.glpi-project.org/'));
+      $this->assertEquals('http://www.glpi-project.org/',
+                           formatOutputWebLink('http://www.glpi-project.org/'));
+   }
+
+/*
+TODO :
+getDateRequest
+exportArrayToDB
+importArrayFromDB
+get_hour_from_sql
+getDbRelations
+getEntitiesRestrictRequest
+*/
+
 }
