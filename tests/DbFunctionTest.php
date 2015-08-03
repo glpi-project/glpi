@@ -173,4 +173,68 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals($singular, getSingular($plural));
       $this->assertEquals($singular, getSingular(getSingular($plural)));
    }
+
+
+   /*
+    * @covers countElementsInTable
+    *
+    */ /*  TO DO LATER
+   public function testCountElementsInTable() {
+   global $DB;
+      //the case of using an element that is not a table is not handle in the function :
+      //testCountElementsInTable($table, $condition="")
+      toolbox::logdebug("Avant", $DB);
+      $this->assertEquals(1, countElementsInTable('glpi_configs', "`name` = 'version'"));
+      toolbox::logdebug("Entre");
+      $this->assertGreaterThan(100, countElementsInTable('glpi_configs',"context = 'core'"));
+      toolbox::logdebug("Apres");
+   }
+   
+*/
+
+/*
+TODO :
+countDistinctElementsInTable
+countElementsInTableForMyEntities
+countElementsInTableForEntity
+getAllDatasFromTable
+getTreeLeafValueName
+getTreeValueCompleteName
+getTreeValueName
+getAncestorsOf
+getTreeForItem
+contructTreeFromList
+contructListFromTree
+getRealQueryForTreeItem
+regenerateTreeCompleteName
+ getNextItem
+ getPreviousItem
+ formatUserName
+ getUserName
+ TableExists
+ FieldExists
+ isIndex
+ autoName
+ closeDBConnections
+*/
+   /*
+    * @covers formatOutputWebLink
+    */
+   public function testFormatOutputWebLink(){
+      $this->assertEquals('http://www.glpi-project.org/',
+                           formatOutputWebLink('www.glpi-project.org/'));
+      $this->assertEquals('http://www.glpi-project.org/',
+                           formatOutputWebLink('http://www.glpi-project.org/'));
+   }
+
+/*
+TODO :
+getDateRequest
+exportArrayToDB
+importArrayFromDB
+get_hour_from_sql
+getDbRelations
+getEntitiesRestrictRequest
+*/
+
 }
