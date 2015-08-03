@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -37,7 +37,7 @@ interface EventManagerInterface extends SharedEventManagerAwareInterface
     public function trigger($event, $target = null, $argv = array(), $callback = null);
 
     /**
-     * Trigger an event until the given callback returns a boolean false
+     * Trigger an event until the given callback returns a boolean true
      *
      * Should allow handling the following scenarios:
      * - Passing Event object and callback only

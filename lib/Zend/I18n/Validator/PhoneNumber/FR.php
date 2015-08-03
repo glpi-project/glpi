@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -13,7 +13,7 @@ return array(
         'national' => array(
             'general' => '/^[124-9]\\d{8}|3\\d{3}(?:\\d{5})?$/',
             'fixed' => '/^[1-5]\\d{8}$/',
-            'mobile' => '/^6\\d{8}|7[5-9]\\d{7}$/',
+            'mobile' => '/^[6-7]\\d{8}|7[5-9]\\d{7}$/',
             'tollfree' => '/^80\\d{7}$/',
             'premium' => '/^3\\d{3}|89[1-37-9]\\d{6}$/',
             'shared' => '/^8(?:1[019]|2[0156]|84|90)\\d{6}$/',

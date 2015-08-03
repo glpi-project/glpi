@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -80,9 +80,9 @@ class NumberFormat extends AbstractHelper
     public function __invoke(
         $number,
         $formatStyle = null,
-        $formatType  = null,
-        $locale      = null,
-        $decimals    = null
+        $formatType = null,
+        $locale = null,
+        $decimals = null
     ) {
         if (null === $locale) {
             $locale = $this->getLocale();

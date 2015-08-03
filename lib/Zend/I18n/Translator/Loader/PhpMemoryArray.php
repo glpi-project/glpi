@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -14,7 +14,7 @@ use Zend\I18n\Translator\Plural\Rule as PluralRule;
 use Zend\I18n\Translator\TextDomain;
 
 /**
- * PHP array loader.
+ * PHP Memory array loader.
  */
 class PhpMemoryArray implements RemoteLoaderInterface
 {
@@ -40,23 +40,20 @@ class PhpMemoryArray implements RemoteLoaderInterface
     public function load($locale, $textDomain)
     {
         if (!is_array($this->messages)) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'Expected an array, but received %s',
-                gettype($this->messages)
-            ));
+            throw new Exception\InvalidArgumentException(
+                sprintf('Expected an array, but received %s', gettype($this->messages))
+            );
         }
 
         if (!isset($this->messages[$textDomain])) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'Expected textdomain "%s" to be an array, but it is not set',
-                $textDomain)
+            throw new Exception\InvalidArgumentException(
+                sprintf('Expected textdomain "%s" to be an array, but it is not set', $textDomain)
             );
         }
 
         if (!isset($this->messages[$textDomain][$locale])) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'Expected locale "%s" to be an array, but it is not set',
-                $locale)
+            throw new Exception\InvalidArgumentException(
+                sprintf('Expected locale "%s" to be an array, but it is not set', $locale)
             );
         }
 

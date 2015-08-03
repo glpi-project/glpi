@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -20,7 +20,6 @@ use Zend\Stdlib\ArrayUtils;
  */
 class RedisResourceManager
 {
-
     /**
      * Registered resources
      *
@@ -37,6 +36,69 @@ class RedisResourceManager
     public function hasResource($id)
     {
         return isset($this->resources[$id]);
+    }
+
+    /**
+     * Get redis server version
+     *
+     * @param string $id
+     * @return int
+     * @throws Exception\RuntimeException
+     */
+    public function getMajorVersion($id)
+    {
+        if (!$this->hasResource($id)) {
+            throw new Exception\RuntimeException("No resource with id '{$id}'");
+        }
+
+        $resource = & $this->resources[$id];
+        return (int) $resource['version'];
+    }
+
+    /**
+     * Get redis server version
+     *
+     * @deprecated 2.2.2 Use getMajorVersion instead
+     *
+     * @param string $id
+     * @return int
+     * @throws Exception\RuntimeException
+     */
+    public function getMayorVersion($id)
+    {
+        return $this->getMajorVersion($id);
+    }
+
+    /**
+     * Get redis resource database
+     *
+     * @param string $id
+     * @return string
+     */
+    public function getDatabase($id)
+    {
+        if (!$this->hasResource($id)) {
+            throw new Exception\RuntimeException("No resource with id '{$id}'");
+        }
+
+        $resource = & $this->resources[$id];
+        return $resource['database'];
+    }
+
+    /**
+     * Get redis resource password
+     *
+     * @param string $id
+     * @return string
+     */
+    public function getPassword($id)
+    {
+        if (!$this->hasResource($id)) {
+            throw new Exception\RuntimeException("No resource with id '{$id}'");
+        }
+
+        $resource = & $this->resources[$id];
+        return $resource['password'];
     }
 
     /**
@@ -76,6 +138,115 @@ class RedisResourceManager
         $resource['version'] = $info['redis_version'];
         $this->resources[$id]['resource'] = $redis;
         return $redis;
+    }
+
+    /**
+     * Get server
+     * @param string $id
+     * @throws Exception\RuntimeException
+     * @return array array('host' => <host>[, 'port' => <port>[, 'timeout' => <timeout>]])
+     */
+    public function getServer($id)
+    {
+        if (!$this->hasResource($id)) {
+            throw new Exception\RuntimeException("No resource with id '{$id}'");
+        }
+
+        $resource = & $this->resources[$id];
+        return $resource['server'];
+    }
+
+    /**
+     * Normalize one server into the following format:
+     * array('host' => <host>[, 'port' => <port>[, 'timeout' => <timeout>]])
+     *
+     * @param string|array $server
+     *
+     * @throws Exception\InvalidArgumentException
+     */
+    protected function normalizeServer(&$server)
+    {
+        $host    = null;
+        $port    = null;
+        $timeout = 0;
+
+        // convert a single server into an array
+        if ($server instanceof Traversable) {
+            $server = ArrayUtils::iteratorToArray($server);
+        }
+
+        if (is_array($server)) {
+            // array(<host>[, <port>[, <timeout>]])
+            if (isset($server[0])) {
+                $host    = (string) $server[0];
+                $port    = isset($server[1]) ? (int) $server[1] : $port;
+                $timeout = isset($server[2]) ? (int) $server[2] : $timeout;
+            }
+
+            // array('host' => <host>[, 'port' => <port>, ['timeout' => <timeout>]])
+            if (!isset($server[0]) && isset($server['host'])) {
+                $host    = (string) $server['host'];
+                $port    = isset($server['port'])    ? (int) $server['port']    : $port;
+                $timeout = isset($server['timeout']) ? (int) $server['timeout'] : $timeout;
+            }
+        } else {
+            // parse server from URI host{:?port}
+            $server = trim($server);
+            if (strpos($server, '/') !== 0) {
+                //non unix domain socket connection
+                $server = parse_url($server);
+            } else {
+                $server = array('host' => $server);
+            }
+            if (!$server) {
+                throw new Exception\InvalidArgumentException("Invalid server given");
+            }
+
+            $host    = $server['host'];
+            $port    = isset($server['port'])    ? (int) $server['port']    : $port;
+            $timeout = isset($server['timeout']) ? (int) $server['timeout'] : $timeout;
+        }
+
+        if (!$host) {
+            throw new Exception\InvalidArgumentException('Missing required server host');
+        }
+
+        $server = array(
+            'host'    => $host,
+            'port'    => $port,
+            'timeout' => $timeout,
+        );
+    }
+
+    /**
+     * Extract password to be used on connection
+     *
+     * @param mixed $resource
+     * @param mixed $serverUri
+     *
+     * @return string|null
+     */
+    protected function extractPassword($resource, $serverUri)
+    {
+        if (! empty($resource['password'])) {
+            return $resource['password'];
+        }
+
+        if (! is_string($serverUri)) {
+            return null;
+        }
+
+        // parse server from URI host{:?port}
+        $server = trim($serverUri);
+
+        if (strpos($server, '/') === 0) {
+            return null;
+        }
+
+        //non unix domain socket connection
+        $server = parse_url($server);
+
+        return isset($server['pass']) ? $server['pass'] : null;
     }
 
     /**
@@ -148,14 +319,21 @@ class RedisResourceManager
             // normalize and validate params
             $this->normalizePersistentId($resource['persistent_id']);
             $this->normalizeLibOptions($resource['lib_options']);
+
+            // #6495 note: order is important here, as `normalizeServer` applies destructive
+            // transformations on $resource['server']
+            $resource['password'] = $this->extractPassword($resource, $resource['server']);
+
             $this->normalizeServer($resource['server']);
         } else {
             //there are two ways of determining if redis is already initialized
             //with connect function:
             //1) pinging server
-            //2) checking undocummented property socket which is available only
-            //after successfull connect
-            $resource = array_merge($defaults, array(
+            //2) checking undocumented property socket which is available only
+            //after successful connect
+            $resource = array_merge(
+                $defaults,
+                array(
                     'resource' => $resource,
                     'initialized' => isset($resource->socket),
                 )
@@ -405,29 +583,22 @@ class RedisResourceManager
 
         $this->normalizeServer($server);
 
-        $resource = & $this->resources[$id];
+        $resource             = & $this->resources[$id];
+        $resource['password'] = $this->extractPassword($resource, $server);
+
         if ($resource['resource'] instanceof RedisResource) {
-            $this->setResource($id, array('server' => $server));
+            $resourceParams = array('server' => $server);
+
+            if (! empty($resource['password'])) {
+                $resourceParams['password'] = $resource['password'];
+            }
+
+            $this->setResource($id, $resourceParams);
         } else {
             $resource['server'] = $server;
         }
+
         return $this;
-    }
-
-    /**
-     * Get server
-     * @param string $id
-     * @throws Exception\RuntimeException
-     * @return array array('host' => <host>[, 'port' => <port>[, 'timeout' => <timeout>]])
-     */
-    public function getServer($id)
-    {
-        if (!$this->hasResource($id)) {
-            throw new Exception\RuntimeException("No resource with id '{$id}'");
-        }
-
-        $resource = & $this->resources[$id];
-        return $resource['server'];
     }
 
     /**
@@ -452,22 +623,6 @@ class RedisResourceManager
     }
 
     /**
-     * Get redis resource password
-     *
-     * @param string $id
-     * @return string
-     */
-    public function getPassword($id)
-    {
-        if (!$this->hasResource($id)) {
-            throw new Exception\RuntimeException("No resource with id '{$id}'");
-        }
-
-        $resource = & $this->resources[$id];
-        return $resource['password'];
-    }
-
-    /**
      * Set redis database number
      *
      * @param string $id
@@ -486,113 +641,5 @@ class RedisResourceManager
         $resource['database']    = $database;
         $resource['initialized'] = false;
         return $this;
-    }
-
-    /**
-     * Get redis resource database
-     *
-     * @param string $id
-     * @return string
-     */
-    public function getDatabase($id)
-    {
-        if (!$this->hasResource($id)) {
-            throw new Exception\RuntimeException("No resource with id '{$id}'");
-        }
-
-        $resource = & $this->resources[$id];
-        return $resource['database'];
-    }
-
-    /**
-     * Get redis server version
-     *
-     * @deprecated 2.2.2 Use getMajorVersion instead
-     *
-     * @param string $id
-     * @return int
-     * @throws Exception\RuntimeException
-     */
-    public function getMayorVersion($id)
-    {
-        return $this->getMajorVersion($id);
-    }
-
-    /**
-     * Get redis server version
-     *
-     * @param string $id
-     * @return int
-     * @throws Exception\RuntimeException
-     */
-    public function getMajorVersion($id)
-    {
-        if (!$this->hasResource($id)) {
-            throw new Exception\RuntimeException("No resource with id '{$id}'");
-        }
-
-        $resource = & $this->resources[$id];
-        return (int) $resource['version'];
-    }
-
-    /**
-     * Normalize one server into the following format:
-     * array('host' => <host>[, 'port' => <port>[, 'timeout' => <timeout>]])
-     *
-     * @param string|array $server
-     * @throws Exception\InvalidArgumentException
-     */
-    protected function normalizeServer(& $server)
-    {
-        $host    = null;
-        $port    = null;
-        $timeout = 0;
-        // convert a single server into an array
-        if ($server instanceof Traversable) {
-            $server = ArrayUtils::iteratorToArray($server);
-        }
-
-        if (is_array($server)) {
-            // array(<host>[, <port>[, <timeout>]])
-            if (isset($server[0])) {
-                $host    = (string) $server[0];
-                $port    = isset($server[1]) ? (int) $server[1] : $port;
-                $timeout = isset($server[2]) ? (int) $server[2] : $timeout;
-            }
-
-            // array('host' => <host>[, 'port' => <port>, ['timeout' => <timeout>]])
-            if (!isset($server[0]) && isset($server['host'])) {
-                $host    = (string) $server['host'];
-                $port    = isset($server['port'])    ? (int) $server['port']    : $port;
-                $timeout = isset($server['timeout']) ? (int) $server['timeout'] : $timeout;
-            }
-
-        } else {
-            // parse server from URI host{:?port}
-            $server = trim($server);
-            if (!strpos($server, '/') === 0) {
-                //non unix domain socket connection
-                $server = parse_url($server);
-            } else {
-                $server = array('host' => $server);
-            }
-            if (!$server) {
-                throw new Exception\InvalidArgumentException("Invalid server given");
-            }
-
-            $host    = $server['host'];
-            $port    = isset($server['port'])    ? (int) $server['port']    : $port;
-            $timeout = isset($server['timeout']) ? (int) $server['timeout'] : $timeout;
-        }
-
-        if (!$host) {
-            throw new Exception\InvalidArgumentException('Missing required server host');
-        }
-
-        $server = array(
-            'host'    => $host,
-            'port'    => $port,
-            'timeout' => $timeout,
-        );
     }
 }

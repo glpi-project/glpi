@@ -3,17 +3,14 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\ServiceManager;
 
-use ReflectionClass;
-
 class ServiceManager implements ServiceLocatorInterface
 {
-
     /**@#+
      * Constants
      */
@@ -427,6 +424,30 @@ class ServiceManager implements ServiceLocatorInterface
 
         $this->shared[$cName] = (bool) $isShared;
         return $this;
+    }
+
+    /**
+     * @param  string $name
+     * @return bool
+     * @throws Exception\ServiceNotFoundException
+     */
+    public function isShared($name)
+    {
+        $cName = $this->canonicalizeName($name);
+
+        if (!$this->has($name)) {
+            throw new Exception\ServiceNotFoundException(sprintf(
+                '%s: A service by the name "%s" was not found',
+                get_class($this) . '::' . __FUNCTION__,
+                $name
+            ));
+        }
+
+        if (!isset($this->shared[$cName])) {
+            return $this->shareByDefault();
+        }
+        
+        return $this->shared[$cName];
     }
 
     /**
@@ -968,6 +989,7 @@ class ServiceManager implements ServiceLocatorInterface
     {
         foreach ($this->peeringServiceManagers as $peeringServiceManager) {
             if ($peeringServiceManager->has($name)) {
+                $this->shared[$name] = $peeringServiceManager->isShared($name);
                 return $peeringServiceManager->get($name);
             }
         }
@@ -982,6 +1004,7 @@ class ServiceManager implements ServiceLocatorInterface
 
         foreach ($this->peeringServiceManagers as $peeringServiceManager) {
             if ($peeringServiceManager->has($name)) {
+                $this->shared[$name] = $peeringServiceManager->isShared($name);
                 return $peeringServiceManager->get($name);
             }
         }
@@ -1130,7 +1153,6 @@ class ServiceManager implements ServiceLocatorInterface
         };
 
         for ($i = 0; $i < $delegatorsCount; $i += 1) {
-
             $delegatorFactory = $this->delegators[$canonicalName][$i];
 
             if (is_string($delegatorFactory)) {
@@ -1165,6 +1187,8 @@ class ServiceManager implements ServiceLocatorInterface
      * @see https://bugs.php.net/bug.php?id=53727
      * @see https://github.com/zendframework/zf2/pull/1807
      *
+     * @deprecated since zf 2.3 requires PHP >= 5.3.23
+     *
      * @param string $className
      * @param string $type
      * @return bool
@@ -1173,17 +1197,7 @@ class ServiceManager implements ServiceLocatorInterface
      */
     protected static function isSubclassOf($className, $type)
     {
-        if (is_subclass_of($className, $type)) {
-            return true;
-        }
-        if (PHP_VERSION_ID >= 50307) {
-            return false;
-        }
-        if (!interface_exists($type)) {
-            return false;
-        }
-        $r = new ReflectionClass($className);
-        return $r->implementsInterface($type);
+        return is_subclass_of($className, $type);
     }
 
     /**

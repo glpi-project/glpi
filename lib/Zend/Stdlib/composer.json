@@ -6,6 +6,7 @@
         "zf2",
         "stdlib"
     ],
+    "homepage": "https://github.com/zendframework/zf2",
     "autoload": {
         "psr-0": {
             "Zend\\Stdlib\\": ""
@@ -18,17 +19,19 @@
     "require-dev": {
         "zendframework/zend-eventmanager": "self.version",
         "zendframework/zend-serializer": "self.version",
-        "zendframework/zend-servicemanager": "self.version"
+        "zendframework/zend-servicemanager": "self.version",
+        "zendframework/zend-filter": "self.version"
     },
     "suggest": {
         "zendframework/zend-eventmanager": "To support aggregate hydrator usage",
         "zendframework/zend-serializer": "Zend\\Serializer component",
-        "zendframework/zend-servicemanager": "To support hydrator plugin manager usage"
+        "zendframework/zend-servicemanager": "To support hydrator plugin manager usage",
+        "zendframework/zend-filter": "To support naming strategy hydrator usage"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.2-dev",
-            "dev-develop": "2.3-dev"
+            "dev-master": "2.3-dev",
+            "dev-develop": "2.4-dev"
         }
     }
 }

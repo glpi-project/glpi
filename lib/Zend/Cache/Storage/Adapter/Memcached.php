@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -222,7 +222,7 @@ class Memcached extends AbstractAdapter implements
         }
 
         $success = true;
-        if ($result === false || $result === null) {
+        if ($result === false) {
             $rsCode = $memc->getResultCode();
             if ($rsCode == MemcachedResource::RES_NOTFOUND) {
                 $result = null;
@@ -280,7 +280,7 @@ class Memcached extends AbstractAdapter implements
     {
         $memc  = $this->getMemcachedResource();
         $value = $memc->get($this->namespacePrefix . $normalizedKey);
-        if ($value === false || $value === null) {
+        if ($value === false) {
             $rsCode = $memc->getResultCode();
             if ($rsCode == MemcachedResource::RES_SUCCESS) {
                 return true;
@@ -478,7 +478,6 @@ class Memcached extends AbstractAdapter implements
                 throw $this->getExceptionByResultCode($rsCode);
             }
         }
-
 
         return $result;
     }

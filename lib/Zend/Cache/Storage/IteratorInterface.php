@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -13,7 +13,6 @@ use Iterator;
 
 interface IteratorInterface extends Iterator
 {
-
     const CURRENT_AS_SELF     = 0;
     const CURRENT_AS_KEY      = 1;
     const CURRENT_AS_VALUE    = 2;

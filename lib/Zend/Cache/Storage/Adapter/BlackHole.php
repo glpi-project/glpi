@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -58,7 +58,7 @@ class BlackHole implements
     /**
      * Constructor
      *
-     * @param  null|array|Traversable|AdapterOptions $options
+     * @param  null|array|\Traversable|AdapterOptions $options
      */
     public function __construct($options = null)
     {
@@ -70,7 +70,7 @@ class BlackHole implements
     /**
      * Set options.
      *
-     * @param array|Traversable|Adapter\AdapterOptions $options
+     * @param array|\Traversable|AdapterOptions $options
      * @return StorageInterface Fluent interface
      */
     public function setOptions($options)
@@ -92,7 +92,7 @@ class BlackHole implements
     /**
      * Get options
      *
-     * @return Adapter\AdapterOptions
+     * @return AdapterOptions
      */
     public function getOptions()
     {
@@ -428,7 +428,7 @@ class BlackHole implements
     /**
      * Get the storage iterator
      *
-     * @return KeyIterator
+     * @return KeyListIterator
      */
     public function getIterator()
     {

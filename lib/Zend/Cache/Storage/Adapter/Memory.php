@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -227,17 +227,12 @@ class Memory extends AbstractAdapter implements
     public function setTags($key, array $tags)
     {
         $ns = $this->getOptions()->getNamespace();
-        if (!$this->data[$ns]) {
+        if (!isset($this->data[$ns][$key])) {
             return false;
         }
 
-        $data = & $this->data[$ns];
-        if (isset($data[$key])) {
-            $data[$key]['tags'] = $tags;
-            return true;
-        }
-
-        return false;
+        $this->data[$ns][$key]['tags'] = $tags;
+        return true;
     }
 
     /**
@@ -249,16 +244,11 @@ class Memory extends AbstractAdapter implements
     public function getTags($key)
     {
         $ns = $this->getOptions()->getNamespace();
-        if (!$this->data[$ns]) {
+        if (!isset($this->data[$ns][$key])) {
             return false;
         }
 
-        $data = & $this->data[$ns];
-        if (!isset($data[$key])) {
-            return false;
-        }
-
-        return isset($data[$key]['tags']) ? $data[$key]['tags'] : array();
+        return isset($this->data[$ns][$key]['tags']) ? $this->data[$ns][$key]['tags'] : array();
     }
 
     /**
@@ -274,7 +264,7 @@ class Memory extends AbstractAdapter implements
     public function clearByTags(array $tags, $disjunction = false)
     {
         $ns = $this->getOptions()->getNamespace();
-        if (!$this->data[$ns]) {
+        if (!isset($this->data[$ns])) {
             return true;
         }
 
@@ -654,16 +644,16 @@ class Memory extends AbstractAdapter implements
      */
     protected function internalIncrementItem(& $normalizedKey, & $value)
     {
-        $ns   = $this->getOptions()->getNamespace();
-        $data = & $this->data[$ns];
-        if (isset($data[$normalizedKey])) {
-            $data[$normalizedKey][0]+= $value;
-            $data[$normalizedKey][1] = microtime(true);
-            $newValue = $data[$normalizedKey][0];
+        $ns = $this->getOptions()->getNamespace();
+        if (isset($this->data[$ns][$normalizedKey])) {
+            $data = & $this->data[$ns][$normalizedKey];
+            $data[0]+= $value;
+            $data[1] = microtime(true);
+            $newValue = $data[0];
         } else {
             // initial value
-            $newValue             = $value;
-            $data[$normalizedKey] = array($newValue, microtime(true));
+            $newValue                        = $value;
+            $this->data[$ns][$normalizedKey] = array($newValue, microtime(true));
         }
 
         return $newValue;
@@ -679,16 +669,16 @@ class Memory extends AbstractAdapter implements
      */
     protected function internalDecrementItem(& $normalizedKey, & $value)
     {
-        $ns   = $this->getOptions()->getNamespace();
-        $data = & $this->data[$ns];
-        if (isset($data[$normalizedKey])) {
-            $data[$normalizedKey][0]-= $value;
-            $data[$normalizedKey][1] = microtime(true);
-            $newValue = $data[$normalizedKey][0];
+        $ns = $this->getOptions()->getNamespace();
+        if (isset($this->data[$ns][$normalizedKey])) {
+            $data = & $this->data[$ns][$normalizedKey];
+            $data[0]-= $value;
+            $data[1] = microtime(true);
+            $newValue = $data[0];
         } else {
             // initial value
-            $newValue             = -$value;
-            $data[$normalizedKey] = array($newValue, microtime(true));
+            $newValue                        = -$value;
+            $this->data[$ns][$normalizedKey] = array($newValue, microtime(true));
         }
 
         return $newValue;
@@ -705,7 +695,7 @@ class Memory extends AbstractAdapter implements
     {
         if ($this->capabilities === null) {
             $this->capabilityMarker = new stdClass();
-                $this->capabilities = new Capabilities(
+            $this->capabilities = new Capabilities(
                 $this,
                 $this->capabilityMarker,
                 array(

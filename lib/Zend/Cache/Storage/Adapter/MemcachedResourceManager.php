@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -20,13 +20,99 @@ use Zend\Stdlib\ArrayUtils;
  */
 class MemcachedResourceManager
 {
-
     /**
      * Registered resources
      *
      * @var array
      */
     protected $resources = array();
+
+    /**
+     * Get servers
+     * @param string $id
+     * @throws Exception\RuntimeException
+     * @return array array('host' => <host>, 'port' => <port>, 'weight' => <weight>)
+     */
+    public function getServers($id)
+    {
+        if (!$this->hasResource($id)) {
+            throw new Exception\RuntimeException("No resource with id '{$id}'");
+        }
+
+        $resource = & $this->resources[$id];
+
+        if ($resource instanceof MemcachedResource) {
+            return $resource->getServerList();
+        }
+        return $resource['servers'];
+    }
+
+    /**
+     * Normalize one server into the following format:
+     * array('host' => <host>, 'port' => <port>, 'weight' => <weight>)
+     *
+     * @param string|array &$server
+     * @throws Exception\InvalidArgumentException
+     */
+    protected function normalizeServer(&$server)
+    {
+        $host   = null;
+        $port   = 11211;
+        $weight = 0;
+
+        // convert a single server into an array
+        if ($server instanceof Traversable) {
+            $server = ArrayUtils::iteratorToArray($server);
+        }
+
+        if (is_array($server)) {
+            // array(<host>[, <port>[, <weight>]])
+            if (isset($server[0])) {
+                $host   = (string) $server[0];
+                $port   = isset($server[1]) ? (int) $server[1] : $port;
+                $weight = isset($server[2]) ? (int) $server[2] : $weight;
+            }
+
+            // array('host' => <host>[, 'port' => <port>[, 'weight' => <weight>]])
+            if (!isset($server[0]) && isset($server['host'])) {
+                $host   = (string) $server['host'];
+                $port   = isset($server['port'])   ? (int) $server['port']   : $port;
+                $weight = isset($server['weight']) ? (int) $server['weight'] : $weight;
+            }
+        } else {
+            // parse server from URI host{:?port}{?weight}
+            $server = trim($server);
+            if (strpos($server, '://') === false) {
+                $server = 'tcp://' . $server;
+            }
+
+            $server = parse_url($server);
+            if (!$server) {
+                throw new Exception\InvalidArgumentException("Invalid server given");
+            }
+
+            $host = $server['host'];
+            $port = isset($server['port']) ? (int) $server['port'] : $port;
+
+            if (isset($server['query'])) {
+                $query = null;
+                parse_str($server['query'], $query);
+                if (isset($query['weight'])) {
+                    $weight = (int) $query['weight'];
+                }
+            }
+        }
+
+        if (!$host) {
+            throw new Exception\InvalidArgumentException('Missing required server host');
+        }
+
+        $server = array(
+            'host'   => $host,
+            'port'   => $port,
+            'weight' => $weight,
+        );
+    }
 
     /**
      * Check if a resource exists
@@ -373,26 +459,6 @@ class MemcachedResourceManager
     }
 
     /**
-     * Get servers
-     * @param string $id
-     * @throws Exception\RuntimeException
-     * @return array array('host' => <host>, 'port' => <port>, 'weight' => <weight>)
-     */
-    public function getServers($id)
-    {
-        if (!$this->hasResource($id)) {
-            throw new Exception\RuntimeException("No resource with id '{$id}'");
-        }
-
-        $resource = & $this->resources[$id];
-
-        if ($resource instanceof MemcachedResource) {
-            return $resource->getServerList();
-        }
-        return $resource['servers'];
-    }
-
-    /**
      * Add servers
      *
      * @param string       $id
@@ -459,74 +525,6 @@ class MemcachedResourceManager
         }
 
         $servers = array_values($result);
-    }
-
-    /**
-     * Normalize one server into the following format:
-     * array('host' => <host>, 'port' => <port>, 'weight' => <weight>)
-     *
-     * @param string|array $server
-     * @throws Exception\InvalidArgumentException
-     */
-    protected function normalizeServer(& $server)
-    {
-        $host   = null;
-        $port   = 11211;
-        $weight = 0;
-
-        // convert a single server into an array
-        if ($server instanceof Traversable) {
-            $server = ArrayUtils::iteratorToArray($server);
-        }
-
-        if (is_array($server)) {
-            // array(<host>[, <port>[, <weight>]])
-            if (isset($server[0])) {
-                $host   = (string) $server[0];
-                $port   = isset($server[1]) ? (int) $server[1] : $port;
-                $weight = isset($server[2]) ? (int) $server[2] : $weight;
-            }
-
-            // array('host' => <host>[, 'port' => <port>[, 'weight' => <weight>]])
-            if (!isset($server[0]) && isset($server['host'])) {
-                $host   = (string) $server['host'];
-                $port   = isset($server['port'])   ? (int) $server['port']   : $port;
-                $weight = isset($server['weight']) ? (int) $server['weight'] : $weight;
-            }
-
-        } else {
-            // parse server from URI host{:?port}{?weight}
-            $server = trim($server);
-            if (strpos($server, '://') === false) {
-                $server = 'tcp://' . $server;
-            }
-
-            $server = parse_url($server);
-            if (!$server) {
-                throw new Exception\InvalidArgumentException("Invalid server given");
-            }
-
-            $host = $server['host'];
-            $port = isset($server['port']) ? (int) $server['port'] : $port;
-
-            if (isset($server['query'])) {
-                $query = null;
-                parse_str($server['query'], $query);
-                if (isset($query['weight'])) {
-                    $weight = (int) $query['weight'];
-                }
-            }
-        }
-
-        if (!$host) {
-            throw new Exception\InvalidArgumentException('Missing required server host');
-        }
-
-        $server = array(
-            'host'   => $host,
-            'port'   => $port,
-            'weight' => $weight,
-        );
     }
 
     /**

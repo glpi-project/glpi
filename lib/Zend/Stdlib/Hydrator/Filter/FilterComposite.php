@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link           http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright      Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright      Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license        http://framework.zend.com/license/new-bsd New BSD License
  */
 namespace Zend\Stdlib\Hydrator\Filter;
@@ -40,12 +40,10 @@ class FilterComposite implements FilterInterface
      */
     public function __construct($orFilter = array(), $andFilter = array())
     {
-        array_walk($orFilter,
+        array_walk(
+            $orFilter,
             function ($value, $key) {
-                if (
-                    !is_callable($value)
-                    && !$value instanceof FilterInterface
-                ) {
+                if (!is_callable($value) && !$value instanceof FilterInterface) {
                     throw new InvalidArgumentException(
                         'The value of ' . $key . ' should be either a callable or ' .
                         'an instance of Zend\Stdlib\Hydrator\Filter\FilterInterface'
@@ -54,12 +52,10 @@ class FilterComposite implements FilterInterface
             }
         );
 
-        array_walk($andFilter,
+        array_walk(
+            $andFilter,
             function ($value, $key) {
-                if (
-                    !is_callable($value)
-                    && !$value instanceof FilterInterface
-                ) {
+                if (!is_callable($value) && !$value instanceof FilterInterface) {
                     throw new InvalidArgumentException(
                         'The value of ' . $key . '  should be either a callable or ' .
                         'an instance of Zend\Stdlib\Hydrator\Filter\FilterInterface'

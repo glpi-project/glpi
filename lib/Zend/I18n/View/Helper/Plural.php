@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -17,7 +17,7 @@ use Zend\View\Helper\AbstractHelper;
  * Helper for rendering text based on a count number (like the I18n plural translation helper, but when translation
  * is not needed).
  *
- * Please note that we did not write any hard-coded rules for languages, as languages can evolve, we prefered to
+ * Please note that we did not write any hard-coded rules for languages, as languages can evolve, we preferred to
  * let the developer define the rules himself, instead of potentially break applications if we change rules in the
  * future.
  *

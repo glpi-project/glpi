@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -189,7 +189,6 @@ class Dba extends AbstractAdapter implements
         }
 
         if (file_exists($pathname)) {
-
             // close the dba file before delete
             // and reopen (create) on next use
             $this->_close();
@@ -226,7 +225,8 @@ class Dba extends AbstractAdapter implements
 
         $this->_open();
 
-        do { // Workaround for PHP-Bug #62491 & #62492
+        do {
+            // Workaround for PHP-Bug #62491 & #62492
             $recheck     = false;
             $internalKey = dba_firstkey($this->handle);
             while ($internalKey !== false && $internalKey !== null) {
@@ -516,7 +516,9 @@ class Dba extends AbstractAdapter implements
             $err = ErrorHandler::stop();
             if (!$dba) {
                 throw new Exception\RuntimeException(
-                    "dba_open('{$pathname}', '{$mode}', '{$handler}') failed", 0, $err
+                    "dba_open('{$pathname}', '{$mode}', '{$handler}') failed",
+                    0,
+                    $err
                 );
             }
             $this->handle = $dba;
