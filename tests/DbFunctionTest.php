@@ -57,10 +57,10 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
    }
 
    /**
-    * @covers getForeignKeyFieldForTable
+    * @covers getTableNameForForeignKeyField
     * @dataProvider dataTableKey
     */
-   public function testGgetTableNameForForeignKeyField($table, $key) {
+   public function testGetTableNameForForeignKeyField($table, $key) {
       if ($key) {
          $this->assertEquals($table, getTableNameForForeignKeyField($key));
       }
