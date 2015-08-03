@@ -60,10 +60,30 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
    }
 
    /**
-    * @covers getForeignKeyFieldForTable
+    * @covers isForeignKeyField
+    * @dataProvider dataTableKey
+    *
+    */
+   public function testIsForeignKeyFieldBase($table, $key) {
+      if ($key) {
+         $this->assertTrue(isForeignKeyField($key));
+      }
+   }
+   /**
+    * @covers isForeignKeyField
+    *
+    */
+   public function testIsForeignKeyFieldMore() {
+      $this->assertFalse(isForeignKeyField("FakeId"));
+      $this->assertFalse(isForeignKeyField("id_Another_Fake_Id"));
+      $this->assertTrue(isForeignKeyField("users_id_tech"));
+   }
+
+   /**
+    * @covers getTableNameForForeignKeyField
     * @dataProvider dataTableKey
     */
-   public function testGgetTableNameForForeignKeyField($table, $key) {
+   public function testGetTableNameForForeignKeyField($table, $key) {
       if ($key) {
          $this->assertEquals($table, getTableNameForForeignKeyField($key));
       }
