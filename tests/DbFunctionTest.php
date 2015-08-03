@@ -178,19 +178,18 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
    /*
     * @covers countElementsInTable
     *
-    */ /*  TO DO LATER
+    */
    public function testCountElementsInTable() {
    global $DB;
       //the case of using an element that is not a table is not handle in the function :
       //testCountElementsInTable($table, $condition="")
-      toolbox::logdebug("Avant", $DB);
-      $this->assertEquals(1, countElementsInTable('glpi_configs', "`name` = 'version'"));
-      toolbox::logdebug("Entre");
-      $this->assertGreaterThan(100, countElementsInTable('glpi_configs',"context = 'core'"));
-      toolbox::logdebug("Apres");
+      $this->assertGreaterThan(100, countElementsInTable('glpi_configs'));
+      $this->assertGreaterThan(100, countElementsInTable(array('glpi_configs', 'glpi_users')));
+      $this->assertGreaterThan(100, countElementsInTable('glpi_configs', "context = 'core'"));
+      $this->assertEquals(1, countElementsInTable('glpi_configs', "context = 'core' AND `name` = 'version'"));
+      $this->assertEquals(0, countElementsInTable('glpi_configs', "context = 'fakecontext'"));
    }
    
-*/
 
 /*
 TODO :
