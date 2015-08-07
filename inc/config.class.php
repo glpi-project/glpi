@@ -1448,7 +1448,7 @@ class Config extends CommonDBTM {
       // Try to compute a better version for .git
       if (is_dir(GLPI_ROOT."/.git")) {
          $dir = getcwd();
-         chdir($path);
+         chdir(GLPI_ROOT);
          $returnCode = 1;
          $result     = @exec('git describe --tags 2>&1', $output, $returnCode);
          chdir($dir);
@@ -1457,8 +1457,7 @@ class Config extends CommonDBTM {
          $ver = $CFG_GLPI['version'];
       }
       echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
-      echo "GLPI $ver (".$CFG_GLPI['root_doc']." => ".
-            dirname(dirname($_SERVER["SCRIPT_FILENAME"])).")\n";
+      echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
       echo "\n</pre></td></tr>";
 
 
