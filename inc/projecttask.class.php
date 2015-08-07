@@ -5,7 +5,10 @@
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
 
+<<<<<<< HEAD
  http://indepnet.net/   http://glpi-project.org
+=======
+>>>>>>> efc9c24... fixed translation - fixed #46
  -------------------------------------------------------------------------
 
  LICENSE
@@ -53,6 +56,8 @@ class ProjectTask extends CommonDBChild {
    protected $team             = array();
    static $rightname           = 'project';
    protected $usenotepadrights = true;
+
+   var $can_be_translated      = true;
 
    const READMY      = 1;
    const UPDATEMY    = 1024;
@@ -802,6 +807,17 @@ class ProjectTask extends CommonDBChild {
          echo "</div>";
       }
 
+      $addselect = '';
+      $addjoin = '';
+      if (Session::haveTranslations('ProjectTaskType', 'name')) {
+         $addselect .= ", `namet2`.`value` AS transname";
+         $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet2
+                           ON (`namet2`.`itemtype` = 'ProjectTaskType'
+                               AND `namet2`.`items_id` = `glpi_projecttasks`.`id`
+                               AND `namet2`.`language` = '".$_SESSION['glpilanguage']."'
+                               AND `namet2`.`field` = 'name')";
+      }
+
 
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
@@ -809,7 +825,9 @@ class ProjectTask extends CommonDBChild {
                        `glpi_projectstates`.`color`,
                        `father`.`name` AS fname,
                        `father`.`id` AS fID
+                       $addselect
                 FROM `glpi_projecttasks`
+                $addjoin
                 LEFT JOIN `glpi_projecttasktypes`
                    ON (`glpi_projecttasktypes`.`id` = `glpi_projecttasks`.`projecttasktypes_id`)
                 LEFT JOIN `glpi_projectstates`
@@ -859,7 +877,8 @@ class ProjectTask extends CommonDBChild {
                                                array('display' => false,
                                                      'applyto' => "ProjectTask".$data["id"].$rand)));
                echo "</td>";
-               echo "<td>".$data['tname']."</td>";
+               $name = !empty($data['transname'])?$data['transname']:$data['tname'];
+               echo "<td>".$name."</td>";
                echo "<td";
                echo " style=\"background-color:".$data['color']."\"";
                echo ">".$data['sname']."</td>";
