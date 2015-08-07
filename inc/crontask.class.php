@@ -1469,8 +1469,10 @@ class CronTask extends CommonDBTM{
       $maxlifetime = HOUR_TIMESTAMP;
       $nb          = 0;
       foreach (glob(GLPI_GRAPH_DIR."/*") as $filename) {
+         if (basename($filename) == "remove.txt" && is_dir(GLPI_ROOT.'/.git')) {
+            continue;
+         }
          if ((filemtime($filename) + $maxlifetime) < time()) {
-            // Delete session file if not delete before
             if (@unlink($filename)) {
                $nb++;
             }
@@ -1501,8 +1503,10 @@ class CronTask extends CommonDBTM{
       $maxlifetime = HOUR_TIMESTAMP;
       $nb          = 0;
       foreach (glob(GLPI_TMP_DIR."/*") as $filename) {
+         if (basename($filename) == "remove.txt" && is_dir(GLPI_ROOT.'/.git')) {
+            continue;
+         }
          if ((filemtime($filename) + $maxlifetime) < time()) {
-            // Delete session file if not delete before
             if (@unlink($filename)) {
                $nb++;
             }
