@@ -2365,7 +2365,7 @@ class Toolbox {
     *
     * @return boolean
    **/
-   function writeConfig($name, $content) {
+   static function writeConfig($name, $content) {
 
       $name = GLPI_CONFIG_DIR . '/'.$name;
       $fp   = fopen($name, 'wt');
