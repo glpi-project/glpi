@@ -1173,7 +1173,9 @@ class Session {
       $requestToken = $data['_glpi_csrf_token'];
       if (isset($_SESSION['glpicsrftokens'][$requestToken])
           && ($_SESSION['glpicsrftokens'][$requestToken] >= time())) {
-         unset($_SESSION['glpicsrftokens'][$requestToken]);
+         if (!defined('GLPI_KEEP_CSRF_TOKEN')) { /* When post open a new windows */
+            unset($_SESSION['glpicsrftokens'][$requestToken]);
+         }
          Session::cleanCSRFTokens();
          return true;
       }
