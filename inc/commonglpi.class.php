@@ -230,7 +230,7 @@ class CommonGLPI {
       global $CFG_GLPI;
 
       if (in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])
-          || !in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))
+          || !self::isLayoutWithMain()
           || !method_exists($this, "showForm")) {
          $ong[$this->getType().'$main'] = $this->getTypeName(1);
       }
@@ -856,7 +856,7 @@ class CommonGLPI {
 
          }
          echo "<td class='b big'>";
-         if (!in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+         if (!self::isLayoutWithMain()) {
             echo $name;
          }
          echo "</td>";
@@ -1058,6 +1058,18 @@ class CommonGLPI {
    }
 
 
+   /**
+    * check if main is always display in current Layout
+    *
+    * @since version 0.90
+    *
+    * @return bool
+    */
+   public static function isLayoutWithMain() {
+      return in_array($_SESSION['glpilayout'], array('classic', 'vsplit'));
+   }
+
+
    /** Display item with tabs
     *
     * @since version 0.85
@@ -1076,7 +1088,7 @@ class CommonGLPI {
 
       $this->showNavigationHeader($options);
       if (!in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])
-          && in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+          && self::isLayoutWithMain()) {
 
          if (!isset($_REQUEST['id'])) {
             $_REQUEST['id'] = "";

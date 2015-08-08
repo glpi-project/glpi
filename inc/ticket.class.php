@@ -6405,7 +6405,7 @@ class Ticket extends CommonITILObject {
       echo "<div class='break'></div>";
 
       // recall ticket content (not needed in classic and splitted layout)
-      if ($_SESSION['glpilayout'] == 'lefttab') {
+      if (!CommonGLPI::isLayoutWithMain()) {
 
          echo "<div class='h_item middle'>";
 

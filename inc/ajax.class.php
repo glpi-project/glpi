@@ -295,7 +295,7 @@ class Ajax {
       $rand = mt_rand();
       if (count($tabs) > 0) {
          echo "<div id='tabs$rand' class='center $orientation'>";
-         if (in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+         if (CommonGLPI::isLayoutWithMain()) {
             $orientation = 'horizontal';
          }
          echo "<ul>";
@@ -346,7 +346,7 @@ class Ajax {
             $js .=  "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
          }
 
-         if (in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+         if (CommonGLPI::isLayoutWithMain()) {
             $js .=  "$('#tabs$rand').scrollabletabs();";
          } else {
             $js .=  "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
