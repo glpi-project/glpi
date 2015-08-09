@@ -481,7 +481,7 @@ class Config extends CommonDBTM {
       echo "<th>" . __('Status') . "</th>";
       echo "</tr>";
 
-      $fields = array("contact", "group", "location", "user");
+      $fields = array("contact", "user", "group", "location");
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('When connecting or updating') . "</td>";
       $values[0] = __('Do not copy');
