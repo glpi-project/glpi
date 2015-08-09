@@ -477,7 +477,7 @@ class Config extends CommonDBTM {
       echo "<th>" . __('Status') . "</th>";
       echo "</tr>";
 
-      $fields = array("contact", "group", "location", "user");
+      $fields = array("contact", "user", "group", "location");
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('When connecting or updating') . "</td>";
       $values[0] = __('Do not copy');
@@ -1458,7 +1458,7 @@ class Config extends CommonDBTM {
       echo "PHPMailer version " . $pm->Version . " in (" . realpath(GLPI_PHPMAILER_DIR) . ")\n";
 
       // EZ component
-      echo "ZetaComponent ezcGraph installed in (" . dirname(dirname(GLPI_EZC_BASE)) . 
+      echo "ZetaComponent ezcGraph installed in (" . dirname(dirname(GLPI_EZC_BASE)) .
            "):  ".(class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
 
       // Zend
@@ -1477,7 +1477,7 @@ class Config extends CommonDBTM {
       require_once GLPI_PASSWORD_COMPAT;
       $check = (PasswordCompat\binary\check() ? "Ok" : "KO");
       echo "ircmaxell/password-compat in (" . realpath(dirname(GLPI_PASSWORD_COMPAT)) . "). Compatitility: $check\n";
-      
+
       echo "\n</pre></td></tr>";
    }
 
