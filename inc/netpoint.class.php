@@ -143,9 +143,11 @@ class Netpoint extends CommonDropdown {
 
          $item = new self();
          if ($item->canCreate()) {
-            echo "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
-                  "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;' ".
-                  "onClick=\"".Html::jsGetElementbyID('netpoint'.$rand).".dialog('open');\">";
+            echo Html::sprite_img('add_dropdown', array(
+                'title' => __s('Add'),
+                'style' => 'cursor:pointer; margin-left:2px;',
+                'onClick' => Html::jsGetElementbyID('netpoint'.$rand).".dialog('open');"
+            ));
             Ajax::createIframeModalWindow('netpoint'.$rand,
                                           $item->getFormURL());
 

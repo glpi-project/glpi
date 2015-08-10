@@ -43,10 +43,10 @@ if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
                    Html::getSimpleForm($crontask->getFormURL(),
                                        array('execute' => $crontask->fields['name']),
                                              __('Execute')));
-   Html::displayTitle($CFG_GLPI['root_doc'].'/pics/warning.png', __('Next run'),
+   Html::displayTitle('warning', __('Next run'),
                       sprintf(__('Next task to run: %s'), $name));
 } else {
-   Html::displayTitle($CFG_GLPI['root_doc'].'/pics/ok.png', __('No action pending'),
+   Html::displayTitle('ok', __('No action pending'),
                       __('No action pending'));
 }
 

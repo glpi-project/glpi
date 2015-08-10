@@ -158,7 +158,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_central'>";
          echo "<tr><td colspan='3'><a href='".$params['target']."?knowbaseitemcategories_id=0$parameters'>";
-         echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png' class='bottom'></a>";
+         echo Html::sprite_img('folder-open', array('addclass' => 'bottom'))."</a>";
 
          // Display Category
          if ($params["knowbaseitemcategories_id"]!=0) {

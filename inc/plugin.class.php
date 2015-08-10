@@ -439,8 +439,8 @@ class Plugin extends CommonDBTM {
             echo "<td>";
             if (!empty($weblink)) {
                echo "<a href='".formatOutputWebLink($weblink)."' target='_blank'>";
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt=\"".
-                      __s('Web')."\" title=\"".__s('Web')."\" ></a>";
+               echo Html::sprite_img('web', array('title' => __s('Web'), 'addclass' => 'middle')).
+                       "</a>";
             } else {
                echo "&nbsp;";
             }

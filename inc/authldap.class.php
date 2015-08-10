@@ -1198,8 +1198,8 @@ class AuthLDAP extends CommonDBTM {
       if ($limitexceeded) {
          echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
          echo "<tr><th class='red'>";
-         echo "<img class='center' src='".$CFG_GLPI["root_doc"]."/pics/warning.png'
-                alt='".__('Warning')."'>&nbsp;".
+         echo Html::sprite_img('warning', array('title' => __('Warning')));
+         echo "&nbsp;".
              __('Warning: The request exceeds the limit of the directory. The results are only partial.');
          echo "</th></tr></table><div>";
       }
@@ -3052,7 +3052,7 @@ class AuthLDAP extends CommonDBTM {
          $ong[1]  = _sx('button','Test');                     // test connexion
          $ong[2]  = _n('User', 'Users', Session::getPluralNumber());
          $ong[3]  = _n('Group', 'Groups', Session::getPluralNumber());
-/// TODO clean fields entity_XXX if not used         
+/// TODO clean fields entity_XXX if not used
 //          $ong[4]  = __('Entity');                  // params for entity config
          $ong[5]  = __('Advanced information');   // params for entity advanced config
          $ong[6]  = _n('Replicate', 'Replicates', Session::getPluralNumber());

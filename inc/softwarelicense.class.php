@@ -721,12 +721,7 @@ class SoftwareLicense extends CommonDBTM {
 
                Html::showMassiveActions($massiveactionparams);
             }
-            $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                        (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
-
-
-            $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                          (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
+            $sort_img = Html::sprite_img((($order == "DESC") ? "puce-down" : "puce-up"));
 
             echo "<table class='tab_cadre_fixehov'>";
 

@@ -81,7 +81,8 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       echo "<tr><th colspan='2' class='b'>" .
             __('Warning before running rename based on the dictionary rules') . "</th</tr>\n";
       echo "<tr><td class='tab_bg_2 center'>";
-      echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\"></td>";
+      echo Html::sprite_img('warning');
+      echo "</td>";
       echo "<td class='tab_bg_2 center'>" .
             __('Warning! This operation can put merged software in the dustbin.<br>Sure to notify your users.').
            "</td></tr>\n";

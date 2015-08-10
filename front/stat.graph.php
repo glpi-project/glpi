@@ -278,9 +278,9 @@ echo "<table class='tab_cadre'>";
 echo "<tr><td>";
 if ($prev > 0) {
    echo "<a href=\"".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
-          $_POST["date2"]."&amp;id=$prev\">
-          <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous')."\"
-           title=\"".__s('Previous')."\"></a>";
+          $_POST["date2"]."&amp;id=$prev\">".
+          Html::sprite_img('left', array('title' => __s('Previous'))).
+          "</a>";
 }
 echo "</td>";
 
@@ -288,9 +288,9 @@ echo "<td width='400' class='center b'>$title</td>";
 echo "<td>";
 if ($next > 0) {
    echo "<a href=\"".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".
-          $_POST["date2"]."&amp;id=$next\">
-          <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next')."\"
-           title=\"".__s('Next')."\"></a>";
+          $_POST["date2"]."&amp;id=$next\">".
+          Html::sprite_img('right', array('title' => __s('Next'))).
+          "</a>";
 }
 echo "</td>";
 echo "</tr>";

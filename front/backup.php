@@ -353,7 +353,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    } else {
       $fileHandle = gzopen64($dumpFile, "a");
    }
-   
+
 
    if (!$fileHandle) {
       //TRANS: %s is the name of the file
@@ -611,7 +611,7 @@ if (Session::haveRight('backup', Backup::CHECKUPDATE)) {
 echo "<div class='center'>";
 if (Session::haveRight('backup', CREATE)) {
    echo "<table class='tab_glpi'><tr><td>".
-         "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
+         Html::sprite_img('sauvegardes', array('title' => __s('Deleted'))).
          "</td>";
    echo "<td><a class='vsubmit'
               href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),

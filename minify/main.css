@@ -1,0 +1,643 @@
+.glpimg {
+  background-image: url("../minify/main.png");
+}
+.glpimg-l {
+  background-position: -0px -0px;
+  width: 4px;
+  height: 1px;
+}
+.glpimg-r {
+  background-position: -0px -1px;
+  width: 4px;
+  height: 1px;
+}
+.glpimg-deplier_down {
+  background-position: -0px -2px;
+  width: 8px;
+  height: 8px;
+}
+.glpimg-entity_all {
+  background-position: -0px -10px;
+  width: 8px;
+  height: 8px;
+}
+.glpimg-deplier_up {
+  background-position: -0px -18px;
+  width: 8px;
+  height: 8px;
+}
+.glpimg-treeroot {
+  background-position: -0px -26px;
+  width: 9px;
+  height: 8px;
+}
+.glpimg-collapse {
+  background-position: -0px -34px;
+  width: 9px;
+  height: 9px;
+}
+.glpimg-puce-up {
+  background-position: -0px -43px;
+  width: 12px;
+  height: 9px;
+}
+.glpimg-expand {
+  background-position: -0px -52px;
+  width: 9px;
+  height: 9px;
+}
+.glpimg-puce-down {
+  background-position: -0px -61px;
+  width: 12px;
+  height: 9px;
+}
+.glpimg-first {
+  background-position: -0px -70px;
+  width: 12px;
+  height: 10px;
+}
+.glpimg-rightsearch {
+  background-position: -0px -80px;
+  width: 20px;
+  height: 10px;
+}
+.glpimg-right_off {
+  background-position: -0px -90px;
+  width: 10px;
+  height: 10px;
+}
+.glpimg-right {
+  background-position: -0px -100px;
+  width: 10px;
+  height: 10px;
+}
+.glpimg-left_off {
+  background-position: -0px -110px;
+  width: 10px;
+  height: 10px;
+}
+.glpimg-first_off {
+  background-position: -0px -120px;
+  width: 12px;
+  height: 10px;
+}
+.glpimg-redbutton {
+  background-position: -0px -130px;
+  width: 10px;
+  height: 10px;
+}
+.glpimg-left {
+  background-position: -0px -140px;
+  width: 10px;
+  height: 10px;
+}
+.glpimg-orangebutton {
+  background-position: -0px -150px;
+  width: 10px;
+  height: 10px;
+}
+.glpimg-greenbutton {
+  background-position: -0px -160px;
+  width: 10px;
+  height: 10px;
+}
+.glpimg-leftsearch {
+  background-position: -0px -170px;
+  width: 20px;
+  height: 10px;
+}
+.glpimg-last {
+  background-position: -0px -180px;
+  width: 12px;
+  height: 10px;
+}
+.glpimg-last_off {
+  background-position: -0px -190px;
+  width: 12px;
+  height: 10px;
+}
+.glpimg-add_dropdown {
+  background-position: -0px -200px;
+  width: 11px;
+  height: 11px;
+}
+.glpimg-aide {
+  background-position: -0px -211px;
+  width: 11px;
+  height: 11px;
+}
+.glpimg-delete {
+  background-position: -0px -222px;
+  width: 11px;
+  height: 11px;
+}
+.glpimg-showselect {
+  background-position: -0px -233px;
+  width: 11px;
+  height: 11px;
+}
+.glpimg-sub_dropdown {
+  background-position: -0px -244px;
+  width: 11px;
+  height: 11px;
+}
+.glpimg-rdv_private {
+  background-position: -0px -255px;
+  width: 20px;
+  height: 12px;
+}
+.glpimg-approbation {
+  background-position: -0px -267px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-qualification {
+  background-position: -0px -279px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-closed {
+  background-position: -0px -291px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-observe {
+  background-position: -0px -303px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-waiting {
+  background-position: -0px -315px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-test {
+  background-position: -0px -327px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-accepted {
+  background-position: -0px -339px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-solved {
+  background-position: -0px -351px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-assign {
+  background-position: -0px -363px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-rdv_public {
+  background-position: -0px -375px;
+  width: 20px;
+  height: 12px;
+}
+.glpimg-loader {
+  background-position: -0px -387px;
+  width: 120px;
+  height: 12px;
+}
+.glpimg-moins {
+  background-position: -0px -399px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-evaluation {
+  background-position: -0px -411px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-rdv_interv {
+  background-position: -0px -423px;
+  width: 20px;
+  height: 12px;
+}
+.glpimg-plus {
+  background-position: -0px -435px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-plan {
+  background-position: -0px -447px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-rdv {
+  background-position: -0px -459px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-meta_plus {
+  background-position: -0px -471px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-meta_moins {
+  background-position: -0px -483px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-new {
+  background-position: -0px -495px;
+  width: 12px;
+  height: 12px;
+}
+.glpimg-ok2 {
+  background-position: -0px -507px;
+  width: 14px;
+  height: 14px;
+}
+.glpimg-lock {
+  background-position: -0px -521px;
+  width: 14px;
+  height: 14px;
+}
+.glpimg-puce {
+  background-position: -0px -535px;
+  width: 16px;
+  height: 14px;
+}
+.glpimg-bookmark_record {
+  background-position: -0px -549px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-addresa {
+  background-position: -0px -565px;
+  width: 15px;
+  height: 16px;
+}
+.glpimg-reset {
+  background-position: -0px -581px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-dollar {
+  background-position: -0px -597px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-dollaradd {
+  background-position: -0px -613px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-folder-open {
+  background-position: -0px -629px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-folder {
+  background-position: -0px -645px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-puce-up2 {
+  background-position: -0px -661px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-remove {
+  background-position: -0px -677px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-puce-down2 {
+  background-position: -0px -693px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-edit {
+  background-position: -0px -709px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-puce-delete2 {
+  background-position: -0px -725px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-add {
+  background-position: -0px -741px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-web {
+  background-position: -0px -757px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-bookmark {
+  background-position: -0px -773px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-pdf {
+  background-position: -0px -789px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-showdeleted_no {
+  background-position: -0px -805px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-options_search {
+  background-position: -0px -821px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-faqadd {
+  background-position: -0px -837px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-faqdelete {
+  background-position: -0px -853px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-faqedit {
+  background-position: -0px -869px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-faqremove {
+  background-position: -0px -885px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-showdeleted {
+  background-position: -0px -901px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-bookmark_grey {
+  background-position: -0px -917px;
+  width: 16px;
+  height: 16px;
+}
+.glpimg-menu_addtemplate {
+  background-position: -0px -933px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-menu_all {
+  background-position: -0px -951px;
+  width: 36px;
+  height: 18px;
+}
+.glpimg-menu_showall {
+  background-position: -0px -969px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-menu_show {
+  background-position: -0px -987px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-menu_search_off {
+  background-position: -0px -1005px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-menu_search {
+  background-position: -0px -1023px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-reservation-3 {
+  background-position: -0px -1041px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-search {
+  background-position: -0px -1059px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-calendar {
+  background-position: -0px -1077px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-menu_config {
+  background-position: -0px -1095px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-menu_calendar {
+  background-position: -0px -1113px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-menu_add {
+  background-position: -0px -1131px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-menu_add_off {
+  background-position: -0px -1149px;
+  width: 18px;
+  height: 18px;
+}
+.glpimg-addme {
+  background-position: -0px -1167px;
+  width: 20px;
+  height: 20px;
+}
+.glpimg-users_20 {
+  background-position: -0px -1187px;
+  width: 20px;
+  height: 20px;
+}
+.glpimg-wait {
+  background-position: -0px -1207px;
+  width: 12px;
+  height: 20px;
+}
+.glpimg-fond_form_on {
+  background-position: -0px -1227px;
+  width: 1px;
+  height: 20px;
+}
+.glpimg-fond_form {
+  background-position: -0px -1247px;
+  width: 1px;
+  height: 20px;
+}
+.glpimg-arrow-left {
+  background-position: -0px -1267px;
+  width: 38px;
+  height: 22px;
+}
+.glpimg-arrow-right-top {
+  background-position: -0px -1289px;
+  width: 38px;
+  height: 22px;
+}
+.glpimg-stats_item {
+  background-position: -0px -1311px;
+  width: 22px;
+  height: 22px;
+}
+.glpimg-arrow-right {
+  background-position: -0px -1333px;
+  width: 38px;
+  height: 22px;
+}
+.glpimg-arrow-left-top {
+  background-position: -0px -1355px;
+  width: 38px;
+  height: 22px;
+}
+.glpimg-rien {
+  background-position: -0px -1377px;
+  width: 24px;
+  height: 24px;
+}
+.glpimg-noir {
+  background-position: -0px -1401px;
+  width: 24px;
+  height: 24px;
+}
+.glpimg-moyenne {
+  background-position: -0px -1425px;
+  width: 24px;
+  height: 24px;
+}
+.glpimg-fond_ico_cons {
+  background-position: -0px -1449px;
+  width: 1px;
+  height: 31px;
+}
+.glpimg-fond_ico_cons_on {
+  background-position: -0px -1480px;
+  width: 1px;
+  height: 31px;
+}
+.glpimg-fond_onglet {
+  background-position: -0px -1511px;
+  width: 1px;
+  height: 31px;
+}
+.glpimg-warning {
+  background-position: -0px -1542px;
+  width: 32px;
+  height: 32px;
+}
+.glpimg-tb {
+  background-position: -0px -1574px;
+  width: 1px;
+  height: 32px;
+}
+.glpimg-ok {
+  background-position: -0px -1606px;
+  width: 32px;
+  height: 32px;
+}
+.glpimg-corners {
+  background-position: -0px -1638px;
+  width: 8px;
+  height: 32px;
+}
+.glpimg-favicon {
+  background-position: -0px -1670px;
+  width: 32px;
+  height: 32px;
+}
+.glpimg-fd_footer {
+  background-position: -0px -1702px;
+  width: 170px;
+  height: 40px;
+}
+.glpimg-fd_nav3 {
+  background-position: -0px -1742px;
+  width: 1px;
+  height: 40px;
+}
+.glpimg-fd_logo {
+  background-position: -0px -1782px;
+  width: 64px;
+  height: 41px;
+}
+.glpimg-login_logo_glpi {
+  background-position: -0px -1823px;
+  width: 107px;
+  height: 43px;
+}
+.glpimg-groupes {
+  background-position: -0px -1866px;
+  width: 48px;
+  height: 48px;
+}
+.glpimg-rapports {
+  background-position: -0px -1914px;
+  width: 48px;
+  height: 48px;
+}
+.glpimg-supplier {
+  background-position: -0px -1962px;
+  width: 48px;
+  height: 48px;
+}
+.glpimg-sauvegardes {
+  background-position: -0px -2010px;
+  width: 48px;
+  height: 48px;
+}
+.glpimg-reservation {
+  background-position: -0px -2058px;
+  width: 48px;
+  height: 48px;
+}
+.glpimg-periph {
+  background-position: -0px -2106px;
+  width: 48px;
+  height: 48px;
+}
+.glpimg-users {
+  background-position: -0px -2154px;
+  width: 48px;
+  height: 48px;
+}
+.glpimg-fd_nav1 {
+  background-position: -0px -2202px;
+  width: 170px;
+  height: 60px;
+}
+.glpimg-picture_min {
+  background-position: -0px -2262px;
+  width: 71px;
+  height: 71px;
+}
+.glpimg-fond_th {
+  background-position: -0px -2333px;
+  width: 1px;
+  height: 80px;
+}
+.glpimg-logo-glpi-login {
+  background-position: -0px -2413px;
+  width: 168px;
+  height: 81px;
+}
+.glpimg-picture {
+  background-position: -0px -2494px;
+  width: 128px;
+  height: 128px;
+}
+.glpimg-fond {
+  background-position: -0px -2622px;
+  width: 2px;
+  height: 219px;
+}
+.glpimg-fond-central {
+  background-position: -0px -2841px;
+  width: 4px;
+  height: 400px;
+}

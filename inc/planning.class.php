@@ -321,8 +321,7 @@ class Planning extends CommonGLPI {
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
              "&amp;date=$prev&amp;usertype=$usertype&amp;gID=$gID&amp;limititemtype=$limititemtype\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous')."\"
-             title=\"".__s('Previous')."\"></a>";
+      echo Html::sprite_img('left', array('title' => __s('Previous')))."</a>";
       echo "</td>";
 
       switch ($usertype) {
@@ -402,8 +401,7 @@ class Planning extends CommonGLPI {
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
             "&amp;date=$next&amp;usertype=$usertype&amp;gID=$gID&amp;limititemtype=$limititemtype\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next')."\"
-             title=\"".__s('Next')."\"></a>";
+      echo Html::sprite_img('right', array('title' => __s('Next')))."</a>";
       echo "</td>";
       echo "</tr>";
       echo "</table>";

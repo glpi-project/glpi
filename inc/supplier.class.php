@@ -104,7 +104,7 @@ class Supplier extends CommonDBTM {
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
-      $this->addStandardTab('Change_Item', $ong, $options);      
+      $this->addStandardTab('Change_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -330,7 +330,7 @@ class Supplier extends CommonDBTM {
                                                       'joinparams' => array('jointype' => 'child')));
 
       $tab += Notepad::getSearchOptionsToAdd();
-      
+
       return $tab;
    }
 
@@ -351,16 +351,16 @@ class Supplier extends CommonDBTM {
       }
 
       if (!empty($this->fields['website'])) {
-         $ret .= "<a href='".formatOutputWebLink($this->fields['website'])."' target='_blank'>
-                  <img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt=\"".
-                   __s('Web')."\" title=\"".__s('Web')."\"></a>&nbsp;&nbsp;";
+         $ret .= "<a href='".formatOutputWebLink($this->fields['website'])."' target='_blank'>".
+                 Html::sprite_img('web', array('title' => __s('Web'), 'addclass' => 'middle')).
+                 "</a>&nbsp;&nbsp;";
       }
 
       if ($this->can($this->fields['id'], READ)) {
          $ret .= "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".
-                   $this->fields['id']."'>
-                  <img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt=\"".
-                   __s('Update')."\" title=\"".__s('Update')."\"></a>";
+                   $this->fields['id']."'>".
+                 Html::sprite_img('edit', array('title' => __s('Update'), 'addclass' => 'middle')).
+                 "</a>";
       }
       return $ret;
    }

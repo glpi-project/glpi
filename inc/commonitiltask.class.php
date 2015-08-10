@@ -890,11 +890,10 @@ abstract class CommonITILTask  extends CommonDBTM {
          return;
       }
 
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title=\"".
-             Html::entities_deep($parent->getTypeName(1))."\">&nbsp;&nbsp;";
-      echo "<img src='".$parent->getStatusIconURL($val["status"])."' alt='".
-             Html::entities_deep($parent->getStatus($val["status"]))."' title=\"".
-             Html::entities_deep($parent->getStatus($val["status"]))."\">";
+      echo Html::sprite_img('rdv_interv', array('title' => Html::entities_deep($parent->getTypeName(1)))).
+              "&nbsp;&nbsp;";
+      echo Html::sprite_img($parent->getStatusIconURL($val["status"]),
+              array('title' => Html::entities_deep($parent->getStatus($val["status"]))));
       echo "&nbsp;<a id='content_tracking_".$val["id"].$rand."'
                    href='".Toolbox::getItemTypeFormURL($parenttype)."?id=".$val[$parenttype_fk]."'
                    style='$styleText'>";
@@ -1000,22 +999,22 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<td>";
       switch ($this->fields['state']) {
          case Planning::INFO :
-            echo Html::image($CFG_GLPI['root_doc']."/pics/faqedit.png",
+            echo Html::sprite_img("faqedit",
                              array('title' =>_n('Information', 'Information', 1)));
             break;
 
          case Planning::TODO :
             if (empty($this->fields['begin'])) {
-               echo Html::image($CFG_GLPI['root_doc']."/pics/redbutton.png",
+               echo Html::sprite_img("redbutton",
                                 array('title' => __('To do')));
             } else {
-               echo Html::image($CFG_GLPI['root_doc']."/pics/rdv.png",
+               echo Html::sprite_img("rdv",
                                 array('title' => __('Planned')));
             }
             break;
 
          case Planning::DONE :
-            echo Html::image($CFG_GLPI['root_doc']."/pics/greenbutton.png",
+            echo Html::sprite_img("greenbutton",
                              array('title' => __('Done')));
             break;
       }
@@ -1192,9 +1191,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('By');
       echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open');\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png'
-             title=\"".__s('Availability')."\" alt=\"".__s('Availability')."\"
-             class='calendrier'>";
+      echo Html::sprite_img('reservation-3',
+              array('title'    => __s('Availability'),
+                    'addclass' => 'calendrier'));
       echo "</a>";
       Ajax::createIframeModalWindow('planningcheck'.$rand,
                                     $CFG_GLPI["root_doc"].

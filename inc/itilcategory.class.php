@@ -154,7 +154,7 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[85]['field']          = 'is_change';
       $tab[85]['name']           = __('Visible for a change');
       $tab[85]['datatype']       = 'bool';
-      
+
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'is_helpdeskvisible';
       $tab[3]['name']            = __('Visible in the simplified interface');
@@ -234,8 +234,8 @@ class ITILCategory extends CommonTreeDropdown {
          $ret .= "<a href='".$CFG_GLPI["root_doc"].
                    "/front/knowbaseitem.php?knowbaseitemcategories_id=".
                    $this->fields['knowbaseitemcategories_id']."'>".
-                 "<img src='".$CFG_GLPI["root_doc"]."/pics/faqadd.png' class='middle'
-                   alt=\"$title\" title=\"$title\"></a>";
+                 Html::sprite_img('faqadd', array('title' => $title, 'addclass' => 'middle')).
+                 "</a>";
       }
       return $ret;
    }

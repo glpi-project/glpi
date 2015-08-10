@@ -415,7 +415,7 @@ class NetworkName extends FQDNLabel {
          echo "<input type='hidden' name='NetworkName_id' value='".$name->getID()."'>&nbsp;\n";
          Html::showSimpleForm($name->getFormURL(), 'unaffect', _sx('button', 'Dissociate'),
                               array('id' => $name->getID()),
-                              $CFG_GLPI["root_doc"].'/pics/sub_dropdown.png');
+                              'sub_dropdown');
       } else {
          echo self::getTypeName(1);
       }

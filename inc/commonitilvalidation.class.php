@@ -1421,7 +1421,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          case 'solution' :
             if (!in_array($item->fields['status'], $status)
                 && $item->fields['global_validation'] == self::WAITING) {
-               Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
+               Html::displayTitle("warning", $message, $message);
             }
             break;
       }
