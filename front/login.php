@@ -95,6 +95,7 @@ if ($auth->Login($_POST['login_name'], $_POST['login_password'],
 
 } else {
    // we have done at least a good login? No, we exit.
+   error_log('GLPI error : Incorrect username or password', 0);
    Html::nullHeader("Login", $CFG_GLPI["root_doc"] . '/index.php');
    echo '<div class="center b">' . $auth->getErr() . '<br><br>';
    // Logout whit noAUto to manage auto_login with errors
