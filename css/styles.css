@@ -45,6 +45,11 @@ body {
    
 }
 
+body.iframed {
+   overflow-x: hidden;
+   background: inherit;
+}
+
 ul, li, dt, dl, dd, form, img, input {
    margin: 0;
    padding: 0;

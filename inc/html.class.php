@@ -2305,10 +2305,11 @@ class Html {
    /**
     * Print a nice HTML head for modal window (nothing to display)
     *
-    * @param $title  title of the page
-    * @param $url    not used anymore (default '')
+    * @param $title   title of the page
+    * @param $url     not used anymore (default '')
+    * @param $iframed indicate if page loaded in iframe - css target (default false)
    **/
-   static function popHeader($title, $url='') {
+   static function popHeader($title, $url='', $iframed = false) {
       global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED;
 
       // Print a nice HTML-head for every page
@@ -2318,7 +2319,7 @@ class Html {
       $HEADER_LOADED = true;
 
       self::includeHeader($title); // Body
-      echo "<body>";
+      echo "<body class='".($iframed? "iframed": "")."'>";
       self::displayMessageAfterRedirect();
    }
 
