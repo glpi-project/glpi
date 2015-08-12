@@ -1335,8 +1335,8 @@ a.knowbase {
 }
 
 a.pubfaq {
-   padding-left:8px;
-   border-left: 5px solid #c9993C !important;
+   margin-left:8px;
+   color: #c9993C;
 }
 
 a.pubfaq:hover {
