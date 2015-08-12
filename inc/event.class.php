@@ -62,6 +62,21 @@ class Event extends CommonDBTM {
       return false;
    }
 
+   function post_addItem() {
+      $message_type = "";
+      if (isset($this->fields['type']) && $this->fields['type'] != 'system') {
+         $message_type = "[".$this->fields['type']." ".$this->fields['id']."] ";
+      }
+
+      $full_message = "[".$this->fields['date']."] ".
+                      "[".$this->fields['service']."] ".
+                      $message_type.
+                      $this->fields['level'].": ".
+                      Toolbox::stripslashes_deep($this->fields['message']);
+
+      Toolbox::logInFile("event", $full_message);
+   }
+
 
    /**
     * Log an event.
