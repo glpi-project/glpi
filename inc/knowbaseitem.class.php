@@ -1342,7 +1342,9 @@ class KnowbaseItem extends CommonDBTM {
 
                   echo Search::showItem($output_type,
                                         "<div class='kb'>$toadd<a ".
-                                          ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
+                                          ($data['is_faq']?" class='pubfaq' title='"
+                                                           .__("This item is part of the FAQ")."' "
+                                                           :" class='knowbase' ").
                                           " $href>".Html::resume_text($name, 80)."</a></div>
                                           <div class='kb_resume'>".
                                           Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($answer)),
@@ -1501,7 +1503,10 @@ class KnowbaseItem extends CommonDBTM {
                $name = $data['transname'];
             }
             echo "<tr class='tab_bg_2'><td class='left'>";
-            echo "<a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
+            echo "<a ".
+                  ($data['is_faq']?" class='pubfaq' title='"
+                                   .__("This item is part of the FAQ")."' "
+                                   :" class='knowbase' ")." href=\"".
                   $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$data["id"]."\">".
                   Html::resume_text($name,80)."</a></td></tr>";
          }
