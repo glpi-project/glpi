@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -88,7 +88,6 @@ class NotificationTargetReservation extends NotificationTarget {
          $user_tmp                              = new User();
          if ($user_tmp->getFromDB($this->obj->getField('users_id'))) {
             $this->datas['##reservation.user##'] = $user_tmp->getName();
-//            $this->datas['##reservation.for##']  = $user_tmp->getName();
          }
          $this->datas['##reservation.begin##']   = Html::convDateTime($this->obj->getField('begin'));
          $this->datas['##reservation.end##']     = Html::convDateTime($this->obj->getField('end'));
@@ -113,10 +112,15 @@ class NotificationTargetReservation extends NotificationTarget {
                                  = Dropdown::getDropdownName('glpi_users',
                                                              $item->getField('users_id_tech'));
             }
+
+            $this->datas['##reservation.itemurl##']
+                                 = $this->formatURL($options['additionnaloption']['usertype'],
+                                                    $itemtype."_".$item->getField('id'));
+
             $this->datas['##reservation.url##']
                                  = $this->formatURL($options['additionnaloption']['usertype'],
-                                                    $itemtype."_".$reservationitem->getField('id'));
-         }
+                                                    "ReservationItem_".$reservationitem->getField('id'));
+                     }
 
       } else {
          $this->datas['##reservation.entity##'] = Dropdown::getDropdownName('glpi_entities',
@@ -153,6 +157,7 @@ class NotificationTargetReservation extends NotificationTarget {
       $tags_all = array('reservation.item'     => __('Associated item'),
                         'reservation.itemtype' => __('Item type'),
                         'reservation.url'      => __('URL'),
+                        'reservation.itemurl'  => __('URL of item reserved'),
                         'reservation.action'   => _n('Event', 'Events', 1));
 
       foreach ($tags_all as $tag => $label) {
@@ -167,9 +172,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                  'reservation.comment'     => __('Comments'),
                                  'reservation.item.entity' => __('Entity'),
                                  'reservation.item.name'   => __('Associated item'),
-                                 'reservation.item.tech'   => __('Technician in charge of the hardware'),
-                                // 'reservation.for'         => __('User reserving equipment'),
-                                );
+                                 'reservation.item.tech'   => __('Technician in charge of the hardware'));
 
       foreach ($tags_except_alert as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
