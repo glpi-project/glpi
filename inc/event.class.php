@@ -51,7 +51,7 @@ class Event extends CommonDBTM {
 
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
-
+toolbox::logdebug("input", $input);
       if (isset($input['level']) && ($input['level'] <= $CFG_GLPI["event_loglevel"])) {
          return $input;
       }
