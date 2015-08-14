@@ -928,7 +928,7 @@ class MailCollector  extends CommonDBTM {
       $rand   = mt_rand();
       // Move line breaks to special CHARS
       $string = str_replace(array("<br>"),"==$rand==", $string);
-      
+
       $string = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $string);
 
       // Wrap content for blacklisted items
@@ -1145,9 +1145,14 @@ class MailCollector  extends CommonDBTM {
          // Construct to and cc arrays
          $tos = array();
          $ccs = array();
+
          if (count($mail_header->to)) {
             foreach ($mail_header->to as $data) {
-               $tos[] = Toolbox::strtolower($data->mailbox).'@'.$data->host;
+               $mailto = Toolbox::strtolower($data->mailbox).'@'.$data->host;
+               if ($mailto === $this->fields['name']) {
+                  $to = $this->fields['name'];
+               }
+               $tos[] = $mailto;
             }
          }
          if (isset($mail_header->cc) && count($mail_header->cc)) {
@@ -1163,7 +1168,7 @@ class MailCollector  extends CommonDBTM {
 
          $mail_details = array('from'       => Toolbox::strtolower($sender->mailbox).'@'.$sender->host,
                                'subject'    => $mail_header->subject,
-                               'to'         => Toolbox::strtolower($to->mailbox).'@'.$to->host,
+                               'to'         => $to,
                                'message_id' => $mail_header->message_id,
                                'tos'        => $tos,
                                'ccs'        => $ccs,
