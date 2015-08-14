@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -447,7 +447,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       //change ticket status
       if (isset($_REQUEST['_status']) && !empty($_REQUEST['_status'])) {
          $ticket = new Ticket();
-         $ticket->update(array('id'     => intval($_REQUEST['tickets_id']), 
+         $ticket->update(array('id'     => intval($_REQUEST['tickets_id']),
                                'status' => intval($_REQUEST['_status'])));
       }
 
@@ -1363,6 +1363,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($caneditall || $canadd) {
          echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
       }
+
       if ($canadd) {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddTask" . $item->fields['id'] . "$rand() {\n";
@@ -1372,13 +1373,16 @@ abstract class CommonITILTask  extends CommonDBTM {
                          'id'                        => -1);
          Ajax::updateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+         echo Html::jsHide('addbutton'.$item->fields['id'] . "$rand");
          echo "};";
          echo "</script>\n";
-         if (($item->fields["status"] != CommonITILObject::SOLVED)
-             && ($item->fields["status"] != CommonITILObject::CLOSED)) {
-            echo "<div class='center'>".
+         if (!in_array($item->fields["status"],
+               array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
+//         if (($item->fields["status"] != CommonITILObject::SOLVED)
+//             && ($item->fields["status"] != CommonITILObject::CLOSED)) {
+            echo "<div id='addbutton".$item->fields['id'] . "$rand' class='center firstbloc'>".
                  "<a class='vsubmit' href='javascript:viewAddTask".$item->fields['id']."$rand();'>";
-            echo __('Add a new task')."</a></div><br>\n";
+            echo __('Add a new task')."</a></div>\n";
          }
       }
 
@@ -1422,7 +1426,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($this->maybePrivate()) {
          echo "<input type='hidden' name='is_private' value='".$_SESSION['glpitask_private']."'>";
       }
-      
+
        echo "<br>".__('Duration');
 
       $toadd = array();
@@ -1435,7 +1439,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                                   'addfirstminutes' => true,
                                                   'inhours'         => true,
                                                   'toadd'           => $toadd));
-      
+
       echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
    }
 
