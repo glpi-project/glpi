@@ -1378,8 +1378,6 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "</script>\n";
          if (!in_array($item->fields["status"],
                array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
-//         if (($item->fields["status"] != CommonITILObject::SOLVED)
-//             && ($item->fields["status"] != CommonITILObject::CLOSED)) {
             echo "<div id='addbutton".$item->fields['id'] . "$rand' class='center firstbloc'>".
                  "<a class='vsubmit' href='javascript:viewAddTask".$item->fields['id']."$rand();'>";
             echo __('Add a new task')."</a></div>\n";
