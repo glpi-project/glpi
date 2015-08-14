@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -801,11 +801,11 @@ class Auth extends CommonGLPI {
 
          } else {
             if (GLPI_DEMO_MODE) {
-               Event::log(-1, "system", 3, "login", "login",
+               Event::log(-1, "system", 1, "login", "login",
                           "Connection failed for " . $login_name . " ($ip)");
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
-               Event::log(-1, "system", 3, "login", sprintf(__('Failed login for %1$s from IP %2$s'),
+               Event::log(-1, "system", 1, "login", sprintf(__('Failed login for %1$s from IP %2$s'),
                                                             $login_name, $ip));
             }
          }
