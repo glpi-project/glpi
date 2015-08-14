@@ -298,7 +298,7 @@ class CalendarSegment extends CommonDBChild {
                       AND `day` = '$day'
                       AND `begin` <= '$hour'
                       AND `end` >= '$hour'";
- //     Toolbox::logDebug($query);
+
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             return true;
