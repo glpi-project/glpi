@@ -1057,7 +1057,7 @@ class Html {
          foreach ($js_lib as $js_file) {
             if (strstr($js_file, '[LANG]')) {
                if (isset($_SESSION['glpilanguage'])) {
-                  $js_file = str_replace("[LANG]", $lang, $js_file);
+                  $js_file = str_replace("[LANG]", $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2], $js_file);
                   if (file_exists($CFG_GLPI["root_doc"]."/".$js_file)) {
                      echo Html::script($CFG_GLPI["root_doc"]."/".$js_file);
                   }
