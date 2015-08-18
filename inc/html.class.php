@@ -2129,6 +2129,8 @@ class Html {
            "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"". __s('Home')."\">".
              __('Home')."</a></li>";
 
+      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
+
       if (TicketValidation::getValidateRights()) {
          $opt                              = array();
          $opt['reset']                     = 'reset';
@@ -2149,11 +2151,8 @@ class Html {
                          "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
                            __s('Ticket waiting for your approval')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'></a>";
-         echo "<li class='breadcrumb_item'>$pic_validate</li>\n";
-
+         echo "<li>$pic_validate</li>\n";
       }
-
-      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
       if (Session::haveRight('ticket', CREATE)
           && strpos($_SERVER['PHP_SELF'],"ticket")) {
