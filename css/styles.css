@@ -2186,7 +2186,7 @@ ul#menu ul.ssmenu {
 }
 
 
-#debug a[name=see_debug] {
+#see_debug {
    position: fixed;
    bottom: 20px;
    left: 20px;

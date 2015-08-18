@@ -654,7 +654,7 @@ class Html {
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
          echo "<div id='debug'>";
-         echo "<h1><a id='see_debug' name='see_debug'>See GLPI DEBUG</a></h1>";
+         echo "<h1 id='see_debug'><a name='see_debug'>See GLPI DEBUG</a></h1>";
 
 
          echo "<div id='debugtabs$rand'><ul>";
