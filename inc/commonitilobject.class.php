@@ -1250,23 +1250,34 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if (!is_null($useractors)) {
-         if (isset($this->input["_users_id_requester"])
-             && (($this->input["_users_id_requester"] > 0)
-                 || (isset($this->input["_users_id_requester_notif"]['alternative_email'])
-                     && !empty($this->input["_users_id_requester_notif"]['alternative_email'])))) {
+         if (isset($this->input["_users_id_requester"])) {
 
-            $input2 = array($useractors->getItilObjectForeignKey()
-                                       => $this->fields['id'],
-                           'users_id'  => $this->input["_users_id_requester"],
-                           'type'      => CommonITILActor::REQUESTER);
-
-            if (isset($this->input["_users_id_requester_notif"])) {
-               foreach ($this->input["_users_id_requester_notif"] as $key => $val) {
-                  $input2[$key] = $val;
-               }
+            if (is_array($this->input["_users_id_requester"])) {
+               $tab_requester = array_unique($this->input["_users_id_requester"]);
+            } else {
+               $tab_requester   = array();
+               $tab_requester[] = $this->input["_users_id_requester"];
             }
             $input2['_from_object'] = true;
-            $useractors->add($input2);
+
+            foreach ($tab_requester as $key_requester => $requester) {
+               $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
+                              'users_id'                              => $requester,
+                              'type'                                  => CommonITILActor::REQUESTER);
+
+               if (isset($this->input["_users_id_requester_notif"])) {
+                  foreach ($this->input["_users_id_requester_notif"] as $key => $val) {
+                     $input2[$key] = $val[$key_requester];
+                  }
+               }
+
+               //empty actor
+               if ($input2['users_id'] == 0 && !isset($input2['alternative_email'])) {
+                  continue;
+               }
+
+               $useractors->add($input2);
+            }
          }
 
          if (isset($this->input["_users_id_observer"])) {
@@ -1279,36 +1290,54 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             $input2['_from_object'] = true;
 
-            foreach ($tab_observer as $observer) {
-               if (($observer > 0)
-                   || (isset($this->input["_users_id_observer_notif"]['alternative_email'])
-                             && !empty($this->input["_users_id_observer_notif"]['alternative_email']))) {
-                  $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
-                                 'users_id'                              => $observer,
-                                 'type'                                  => CommonITILActor::OBSERVER);
-                  if (isset($this->input["_users_id_observer_notif"])) {
-                     foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
-                        $input2[$key] = $val;
-                     }
+            foreach ($tab_observer as $key_observer => $observer) {
+               $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
+                              'users_id'                              => $observer,
+                              'type'                                  => CommonITILActor::OBSERVER);
+
+               if (isset($this->input["_users_id_observer_notif"])) {
+                  foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
+                     $input2[$key] = $val[$key_observer];
                   }
-                  $useractors->add($input2);
                }
+
+               //empty actor
+               if ($input2['users_id'] == 0 && !isset($input2['alternative_email'])) {
+                  continue;
+               }
+
+               $useractors->add($input2);
             }
          }
 
-         if (isset($this->input["_users_id_assign"]) && ($this->input["_users_id_assign"] > 0)) {
-            $input2 = array($useractors->getItilObjectForeignKey()
-                                       => $this->fields['id'],
-                           'users_id'  => $this->input["_users_id_assign"],
-                           'type'      => CommonITILActor::ASSIGN);
+         if (isset($this->input["_users_id_assign"])) {
 
-            if (isset($this->input["_users_id_assign_notif"])) {
-               foreach ($this->input["_users_id_assign_notif"] as $key => $val) {
-                  $input2[$key] = $val;
-               }
+            if (is_array($this->input["_users_id_assign"])) {
+               $tab_assign = array_unique($this->input["_users_id_assign"]);
+            } else {
+               $tab_assign   = array();
+               $tab_assign[] = $this->input["_users_id_assign"];
             }
             $input2['_from_object'] = true;
-            $useractors->add($input2);
+
+            foreach ($tab_assign as $key_assign => $assign) {
+               $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
+                              'users_id'                              => $assign,
+                              'type'                                  => CommonITILActor::ASSIGN);
+
+               if (isset($this->input["_users_id_assign_notif"])) {
+                  foreach ($this->input["_users_id_assign_notif"] as $key => $val) {
+                     $input2[$key] = $val[$key_assign];
+                  }
+               }
+
+               //empty actor
+               if ($input2['users_id'] == 0 && !isset($input2['alternative_email'])) {
+                  continue;
+               }
+
+               $useractors->add($input2);
+            }
          }
       }
 
@@ -3307,11 +3336,17 @@ abstract class CommonITILObject extends CommonDBTM {
          $params['entity'] = $options['entities_id'];
       }
 
+      $params['_user_index'] = 0;
+      if (isset($options['_user_index'])) {
+         $params['_user_index'] = $options['_user_index'];
+      }
 
       if ($CFG_GLPI['use_mailing']) {
          $paramscomment
             = array('value' => '__VALUE__',
                     'field' => "_users_id_".$typename."_notif",
+                    '_user_index' 
+                            => $params['_user_index'],
                     'allow_email'
                             => (($type == CommonITILActor::REQUESTER)
                                 || ($type == CommonITILActor::OBSERVER)),

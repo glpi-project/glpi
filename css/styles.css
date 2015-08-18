@@ -1005,6 +1005,18 @@ td.rotate {
 .tab_actors hr {
    border: 0;
 }
+.add-observer {
+   display: block;
+}
+.actor_single {
+   border-top: 1px dashed #AAA;
+   padding: 15px 0 8px 0;
+   margin-top: 8px;
+   background-color: #F5F5F5;
+} 
+.actor_single.first-actor {
+   padding-left: 10px;
+}
 
 /* ################--------------- Pager  ---------------#################### */
 
