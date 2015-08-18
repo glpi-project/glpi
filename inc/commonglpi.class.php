@@ -1091,7 +1091,7 @@ class CommonGLPI {
           && self::isLayoutWithMain()) {
 
          if (!isset($_REQUEST['id'])) {
-            $_REQUEST['id'] = "";
+            $_REQUEST['id'] = 0;
          }
          $this->showPrimaryForm($options);
       }
