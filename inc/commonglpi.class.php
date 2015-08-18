@@ -229,7 +229,7 @@ class CommonGLPI {
    function addDefaultFormTab(array &$ong) {
       global $CFG_GLPI;
 
-      if (!self::isLayoutExcludedPage()
+      if (self::isLayoutExcludedPage()
           || !self::isLayoutWithMain()
           || !method_exists($this, "showForm")) {
          $ong[$this->getType().'$main'] = $this->getTypeName(1);
