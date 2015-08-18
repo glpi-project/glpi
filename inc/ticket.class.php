@@ -3627,7 +3627,7 @@ class Ticket extends CommonITILObject {
                }
             }
             $slaoptions = array();
-            if (Session::haveRight('config', READ)) {
+            if (Session::haveRight('sla', READ)) {
                $slaoptions['link'] = Toolbox::getItemTypeFormURL('SLA').
                                           "?id=".$this->fields["slas_id"];
             }
