@@ -229,7 +229,7 @@ class CommonGLPI {
    function addDefaultFormTab(array &$ong) {
       global $CFG_GLPI;
 
-      if (in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])
+      if (!self::isLayoutExcludedPage()
           || !self::isLayoutWithMain()
           || !method_exists($this, "showForm")) {
          $ong[$this->getType().'$main'] = $this->getTypeName(1);
@@ -1070,6 +1070,20 @@ class CommonGLPI {
    }
 
 
+   /**
+    * check if page is excluded for splitted layouts
+    *
+    * @since version 0.90
+    *
+    * @return bool
+    */
+   public static function isLayoutExcludedPage() {
+      global $CFG_GLPI;
+
+      return in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages']);
+   }
+
+
    /** Display item with tabs
     *
     * @since version 0.85
@@ -1087,8 +1101,7 @@ class CommonGLPI {
       }
 
       $this->showNavigationHeader($options);
-      if (!in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])
-          && self::isLayoutWithMain()) {
+      if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
 
          if (!isset($_REQUEST['id'])) {
             $_REQUEST['id'] = 0;

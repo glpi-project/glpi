@@ -1232,7 +1232,7 @@ class Html {
       $body_class = "layout_".$_SESSION['glpilayout'];
       if ((strpos($_SERVER['REQUEST_URI'], "form.php") !== false)
           && isset($_GET['id']) && ($_GET['id'] > 0)) {
-         if (!in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])) {
+         if (!CommonGLPI::isLayoutExcludedPage()) {
             $body_class.= " form";
          } else {
             $body_class = "";
@@ -1957,7 +1957,7 @@ class Html {
       $body_class = "layout_".$_SESSION['glpilayout'];
       if ((strpos($_SERVER['REQUEST_URI'], "form.php") !== false)
           && isset($_GET['id']) && ($_GET['id'] > 0)) {
-         if (!in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])) {
+         if (!CommonGLPI::isLayoutExcludedPage()) {
             $body_class.= " form";
          } else {
             $body_class = "";
