@@ -89,5 +89,9 @@ if (isset($_GET["dictionnary"])) {
    echo "RuleDictionnaryPrinterType : printers\n";
    echo "RuleDictionnaryPhoneType : phones\n";
 
+   echo "--- Operating System ---\n";
+   echo "RuleDictionnaryOperatingSystem : OS\n";
+   echo "RuleDictionnaryOperatingSystemVersion : OS Version\n";
+   echo "RuleDictionnaryOperatingSystemServicePack : OS Service Pack\n";
 }
 ?>
