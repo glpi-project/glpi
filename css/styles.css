@@ -645,7 +645,7 @@ input.save {
       width: 100%;
    }
 
-   .layout_vsplit #debug,
+   .layout_vsplit .debug,
    .layout_vsplit #footer {
       position: absolute;
       bottom: 0;
@@ -2159,41 +2159,41 @@ ul#menu ul.ssmenu {
    text-align:center;
 }
 
-#debug {
-   background-color:#F0F0F0;
+.debug .ui-tabs {
+   border: 10px solid #dadada !important;
 }
 
-#debug h1, #debugajax h1 {
+.debug h1, #debugajax h1 {
    font-size:18px; 
    text-align:center; 
    /*background-color:#efefe7;*/
    padding: 5px;
 }
 
-#debug h2, #debugajax h2 {
+.debug h2, #debugajax h2 {
    font-size:14px; 
    padding-left: 10px;
    border-left: 4px solid #FFC65D;
    border-bottom: 2px solid #FFC65D;
 }
 
-#debug table, #debugajax table {
+.debug table, #debugajax table {
    margin:0;
 }
 
-#debug .ui-tabs .close {
+.debug .ui-tabs .close {
    float: right;
 }
 
 
-#see_debug {
+.see_debug {
    position: fixed;
    bottom: 20px;
    left: 20px;
    cursor: pointer;
 }
 
-#debug .ui-tabs {
+.debug .ui-tabs {
    display: none;
    position: fixed;
    bottom: 0;
@@ -2203,12 +2203,23 @@ ul#menu ul.ssmenu {
    z-index: 100;
 }
 
-#debug .ui-tabs-panel {
-   height: 100%;
-   overflow: auto;
+.ui-tabs .debug .see_debug{
+   display: none;
+}
+.ui-tabs .debug .ui-tabs {
+   display: block;
+   position: inherit;
 }
 
-#debug  .tab_cadre {
+.debug .ui-tabs-panel {
+   height: 235px;
+   overflow: auto;
+}
+.ui-tabs .debug .ui-tabs-panel {
+   height: 275px;
+}
+
+.debug .tab_cadre {
    -moz-box-shadow: none;
    -webkit-box-shadow: none;
    box-shadow: none; 

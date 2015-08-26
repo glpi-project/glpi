@@ -653,9 +653,8 @@ class Html {
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
-         echo "<div id='debug'>";
-         echo "<h1 id='see_debug'><a name='see_debug'>See GLPI DEBUG</a></h1>";
-
+         echo "<div class='debug'>";
+         echo "<h1 id='see_debug$rand' class='see_debug'><a name='see_debug'>See GLPI DEBUG</a></h1>";
 
          echo "<div id='debugtabs$rand'><ul>";
          if ($CFG_GLPI["debug_sql"]) {
@@ -718,24 +717,23 @@ class Html {
 
          echo Html::scriptBlock("
             $('#debugtabs$rand').tabs({
-               collapsible: true,
-               active: false
+               collapsible: true
             });
 
-            $('<li class=\"close\"><button id= \"close_debug\">close debug</button></li>')
+            $('<li class=\"close\"><button id= \"close_debug$rand\">close debug</button></li>')
                .appendTo('#debugtabs$rand ul');
 
-            $('#close_debug').button({
+            $('#close_debug$rand').button({
                icons: {
                   primary: 'ui-icon-close'
                },
                text: false
             }).click(function() {
-                $('#debugtabs$rand').hide();
+                $('#debugtabs$rand').css('display', 'none');
             });
 
-            $('#see_debug').click(function() {
-               $('#debugtabs$rand').show();
+            $('#see_debug$rand').click(function() {
+               $('#debugtabs$rand').css('display', 'block');
             });
          ");
 
