@@ -496,10 +496,12 @@ input.save {
    overflow: hidden;
 }
 
+.debug .ui-tabs-nav, 
 .layout_lefttab .ui-tabs-nav {
    margin: 5px !important;
    box-sizing: border-box;
 }
+.debug .ui-tabs-nav,
 .layout_lefttab .ui-tabs-nav,
 .layout_classic .ui-tabs-nav,
 .layout_vsplit .ui-tabs-nav {
@@ -612,7 +614,7 @@ input.save {
       height: inherit !important;
    }
 
-   .layout_vsplit .ui-tabs-panel {
+   .layout_vsplit > .page > .ui-tabs > .ui-tabs-panel {
       padding: 10px 0 0 0;
       overflow-x: hidden;
       overflow-y: auto;
@@ -2182,9 +2184,19 @@ ul#menu ul.ssmenu {
 }
 
 .debug .ui-tabs .close {
-   float: right;
+   right: 14px;
+   position: absolute;
+   width: 20px;
+   top: 1px;
 }
 
+.debug .ui-tabs .tab_cadre {
+   width: 100%;
+}
+
+.debug .ui-tabs .tab_cadre td:nth-child(2) {
+   word-break: break-all;
+}
 
 .see_debug {
    position: fixed;
@@ -2208,15 +2220,12 @@ ul#menu ul.ssmenu {
 }
 .ui-tabs .debug .ui-tabs {
    display: block;
-   position: inherit;
+   position: relative;
 }
 
 .debug .ui-tabs-panel {
-   height: 235px;
+   height: 273px;
    overflow: auto;
-}
-.ui-tabs .debug .ui-tabs-panel {
-   height: 275px;
 }
 
 .debug .tab_cadre {

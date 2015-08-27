@@ -718,7 +718,7 @@ class Html {
          echo Html::scriptBlock("
             $('#debugtabs$rand').tabs({
                collapsible: true
-            });
+            }).addClass( 'ui-tabs-vertical ui-helper-clearfix' );
 
             $('<li class=\"close\"><button id= \"close_debug$rand\">close debug</button></li>')
                .appendTo('#debugtabs$rand ul');
