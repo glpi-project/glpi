@@ -952,12 +952,18 @@ td.rotate {
 
 .order_DESC:before {
    content: "\25bc";
-   color: #000;
+   color: #B3B3B3;
+   font-size: 0.8em;
+   padding-right: 5px;
+   vertical-align: 1px;
 }
 
 .order_ASC:before {
-    content: "\25b2";
-   color: #000;
+   content: "\25b2";
+   color: #B3B3B3;
+   font-size: 0.8em;
+   padding-right: 5px;
+   vertical-align: 1px;
 }
 
 .actor_head {
