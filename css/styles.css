@@ -257,7 +257,7 @@ select {
 }
 
 
-textarea, input[type=text] {
+textarea, input[type=text], input[type=password] {
    background-color:#FCFCFC;
    color: black;
    border: 1px solid #D3D3D3;
