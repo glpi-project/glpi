@@ -2178,7 +2178,10 @@ class User extends CommonDBTM {
 
             Html::showTooltip($full_picture, array('applyto' => "picture$rand"));
             echo "<input type='file' name='picture' accept='image/*'>";
-            echo "<input type='checkbox' name='_blank_picture'>&nbsp;".__('Clear');
+
+            echo "&nbsp;";
+            Html::showCheckbox(array('name' => '_blank_picture', 'title' => __('Clear')));
+            echo "&nbsp;".__('Clear');
 
             echo "</td>";
             echo "</tr>";

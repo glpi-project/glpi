@@ -2569,7 +2569,7 @@ class Html {
          }
       }
 
-      $out = "<div class='form-group-checkbox'>";
+      $out = "<span class='form-group-checkbox'>";
       $out.= "<input type='checkbox' class='new_checkbox' ";
 
       foreach (array('id', 'name', 'title', 'value') as $field) {
@@ -2614,8 +2614,9 @@ class Html {
       $out .= "<label class='label-checkbox' for='".$params['id']."'>";
       $out .= " <span class='check'></span>";
       $out .= " <span class='box'></span>";
+      $out .= "&nbsp;";
       $out .= "</label>";
-      $out .= "</div>";
+      $out .= "</span>";
 
       return $out;
    }
