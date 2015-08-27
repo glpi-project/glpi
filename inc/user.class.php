@@ -2244,7 +2244,7 @@ class User extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "&nbsp;</td><td>";
 
          if ($extauth
              && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])) {
