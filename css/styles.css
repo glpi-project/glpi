@@ -590,7 +590,8 @@ input.save {
 
    .layout_classic #tabspanel + div.ui-tabs:not(.horizontal),
    .layout_vsplit #tabspanel + div.ui-tabs {
-      bottom: 10px;
+      height: 100%;
+      /*bottom: 10px;*/
       box-sizing:border-box;
       -moz-box-sizing:border-box;
       -webkit-box-sizing:border-box;
