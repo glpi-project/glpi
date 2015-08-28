@@ -518,11 +518,13 @@ class MailCollector  extends CommonDBTM {
 
                $rejinput                      = array();
                $rejinput['mailcollectors_id'] = $mailgateID;
-               $rejinput['from']              = $tkt['_head']['from'];
-               $rejinput['to']                = $tkt['_head']['to'];
-               $rejinput['users_id']          = $tkt['_users_id_requester'];
-               $rejinput['subject']           = $this->textCleaner($tkt['_head']['subject']);
-               $rejinput['messageid']         = $tkt['_head']['message_id'];
+               if (!$tkt['_blacklisted']) {
+                  $rejinput['from']              = $tkt['_head']['from'];
+                  $rejinput['to']                = $tkt['_head']['to'];
+                  $rejinput['users_id']          = $tkt['_users_id_requester'];
+                  $rejinput['subject']           = $this->textCleaner($tkt['_head']['subject']);
+                  $rejinput['messageid']         = $tkt['_head']['message_id'];
+               }
                $rejinput['date']              = $_SESSION["glpi_currenttime"];
 
                // Manage blacklisted emails
