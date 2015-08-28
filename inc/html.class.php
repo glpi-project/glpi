@@ -2466,7 +2466,7 @@ class Html {
                 "name='_checkall_$rand' id='checkall_$rand' ".
                  "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))
                                                 {return true;}\">
-               <label class='label-checkbox' for='checkall_$rand'>
+               <label class='label-checkbox' for='checkall_$rand' title='".__s('Check all as')."'>
                <span class='check'></span>
                <span class='box'></span>
                </label>
@@ -2611,7 +2611,7 @@ class Html {
       }
 
       $out .= ">";
-      $out .= "<label class='label-checkbox' for='".$params['id']."'>";
+      $out .= "<label class='label-checkbox' title='".$params['title']."' for='".$params['id']."'>";
       $out .= " <span class='check'></span>";
       $out .= " <span class='box'></span>";
       $out .= "&nbsp;";
