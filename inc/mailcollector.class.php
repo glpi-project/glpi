@@ -509,7 +509,7 @@ class MailCollector  extends CommonDBTM {
             for ($i=1 ; ($i <= $tot) && ($this->fetch_emails < $this->maxfetch_emails) ; $i++) {
                $tkt = $this->buildTicket($i, array('mailgates_id' => $mailgateID,
                                                    'play_rules'   => true));
-
+toolbox::logdebug("tkt", $tkt);
                //Indicates that the mail must be deleted from the mailbox
                $delete_mail = false;
 
@@ -522,11 +522,13 @@ class MailCollector  extends CommonDBTM {
 
                $rejinput                      = array();
                $rejinput['mailcollectors_id'] = $mailgateID;
-               $rejinput['from']              = $tkt['_head']['from'];
-               $rejinput['to']                = $tkt['_head']['to'];
-               $rejinput['users_id']          = $tkt['_users_id_requester'];
-               $rejinput['subject']           = $this->textCleaner($tkt['_head']['subject']);
-               $rejinput['messageid']         = $tkt['_head']['message_id'];
+               if (!$tkt['_blacklisted']) {
+                  $rejinput['from']              = $tkt['_head']['from'];
+                  $rejinput['to']                = $tkt['_head']['to'];
+                  $rejinput['users_id']          = $tkt['_users_id_requester'];
+                  $rejinput['subject']           = $this->textCleaner($tkt['_head']['subject']);
+                  $rejinput['messageid']         = $tkt['_head']['message_id'];
+               }
                $rejinput['date']              = $_SESSION["glpi_currenttime"];
 
                // Manage blacklisted emails
