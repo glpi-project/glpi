@@ -3521,7 +3521,12 @@ abstract class CommonITILObject extends CommonDBTM {
             $is_hidden[$f] = true;
          }
       }
-      $can_admin      = $this->canAdminActors();
+      $can_admin = $this->canAdminActors();
+      // on creation can select actor
+      if (!$ID) {
+         $can_admin = true;
+      }
+
       $can_assign     = $this->canAssign();
       $can_assigntome = $this->canAssignToMe();
 
