@@ -335,7 +335,6 @@ class Search {
       foreach ($data['toview'] as $key => $val) {
          $SELECT .= self::addSelect($data['itemtype'], $val, $key, 0);
       }
-      toolbox::logdebug("select", $SELECT);
 
       //// 2 - FROM AND LEFT JOIN
       // Set reference table
