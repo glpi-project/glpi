@@ -335,6 +335,7 @@ class Search {
       foreach ($data['toview'] as $key => $val) {
          $SELECT .= self::addSelect($data['itemtype'], $val, $key, 0);
       }
+      toolbox::logdebug("select", $SELECT);
 
       //// 2 - FROM AND LEFT JOIN
       // Set reference table
@@ -2237,7 +2238,6 @@ class Search {
          }
       }
 
-
       // Virtual display no select : only get additional fields
       if (strpos($field, '_virtual') === 0) {
          return $ADDITONALFIELDS;
@@ -2395,7 +2395,7 @@ class Search {
          $tocompute = str_replace("TABLE", "`$table$addtable`", $tocompute);
       }
       // Preformat items
-      if (isset($searchopt[$ID]["datatype"])) {
+       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "count" :
                return " COUNT(DISTINCT `$table$addtable`.`$field`) AS `".$NAME."_".$num."`,
@@ -2439,6 +2439,7 @@ class Search {
                         $ADDITONALFIELDS";
          }
       }
+
       // Default case
       if ($meta
           || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]
@@ -4518,8 +4519,11 @@ class Search {
 
             case 'glpi_links._virtual' :
                $out = '';
+               $link = new Link();
                if (($item = getItemForItemtype($itemtype))
-                   && $item->getFromDB($data['id'])) {
+                   && $item->getFromDB($data['id'])
+                   && $link->getfromDB($data[$num][0]['id'])
+                   && ($item->fields['entities_id'] == $link->fields['entities_id'])) {
                   if (count($data[$num])) {
                      $count_display = 0;
                      foreach ($data[$num] as$val) {
