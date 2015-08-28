@@ -1092,7 +1092,7 @@ class CommonGLPI {
    **/
    function display($options=array()) {
       global $CFG_GLPI;
-
+toolbox::logdebug("opt", $options);
       if (isset($options['id'])
           && !$this->isNewID($options['id'])) {
          if (!$this->getFromDB($options['id'])) {
@@ -1109,9 +1109,9 @@ class CommonGLPI {
          $this->showPrimaryForm($options);
       }
 
-      // in case of lefttab layout, we couldn't see "right error" message 
+      // in case of lefttab layout, we couldn't see "right error" message
       if ($this->get_item_to_display_tab) {
-         if (!$this->can($_GET["id"], READ)) {
+         if (isset($_GET["id"]) && !$this->can($_GET["id"], READ)) {
             html::displayRightError();
          }
       }
