@@ -819,6 +819,15 @@ class ProjectTask extends CommonDBChild {
                                AND `namet2`.`field` = 'name')";
       }
 
+      if (Session::haveTranslations('ProjectState', 'name')) {
+         $addselect .= ", `namet3`.`value` AS transname";
+         $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet3
+                           ON (`namet3`.`itemtype` = 'ProjectState'
+                               AND `namet3`.`items_id` = `glpi_projecttasks`.`id`
+                               AND `namet3`.`language` = '".$_SESSION['glpilanguage']."'
+                               AND `namet3`.`field` = 'name')";
+      }
+
 
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
@@ -881,8 +890,9 @@ class ProjectTask extends CommonDBChild {
                $name = !empty($data['transname'])?$data['transname']:$data['tname'];
                echo "<td>".$name."</td>";
                echo "<td";
+               $statename = !empty($data['transname'])?$data['transname']:$data['sname'];
                echo " style=\"background-color:".$data['color']."\"";
-               echo ">".$data['sname']."</td>";
+               echo ">".$statename."</td>";
                echo "<td>";
                echo Dropdown::getValueWithUnit($data["percent_done"],"%");
                echo "</td>";
