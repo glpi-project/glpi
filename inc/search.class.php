@@ -1461,6 +1461,10 @@ class Search {
    static function isDeletedSwitch($is_deleted) {
       global $CFG_GLPI;
 
+      if (!isset($_POST["itemtype"])) {
+         return;
+      }
+
       return "<div class='switch grey_border'>".
              "<label>".
                 "<img src='".$CFG_GLPI["root_doc"]."/pics/showdeleted.png' ".
