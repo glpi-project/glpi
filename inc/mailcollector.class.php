@@ -1150,7 +1150,7 @@ class MailCollector  extends CommonDBTM {
             foreach ($mail_header->to as $data) {
                $mailto = Toolbox::strtolower($data->mailbox).'@'.$data->host;
                if ($mailto === $this->fields['name']) {
-                  $to = $this->fields['name'];
+                  $to = $data;
                }
                $tos[] = $mailto;
             }
@@ -1168,7 +1168,7 @@ class MailCollector  extends CommonDBTM {
 
          $mail_details = array('from'       => Toolbox::strtolower($sender->mailbox).'@'.$sender->host,
                                'subject'    => $mail_header->subject,
-                               'to'         => $to,
+                               'to'         =>  Toolbox::strtolower($to->mailbox).'@'.$to->host,
                                'message_id' => $mail_header->message_id,
                                'tos'        => $tos,
                                'ccs'        => $ccs,
