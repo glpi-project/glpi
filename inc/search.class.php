@@ -4342,7 +4342,17 @@ class Search {
                          WHERE `name` = '".$data[$num][0]['name']."'";
                foreach ($DB->request($query) as $color) {
                   $color = $color['color'];
-                  $out   = "<div style=\"background-color:".$color.";\">".$data[$num][0]['name'].'</div>';
+                  $out   = "<div style=\"background-color:".$color.";\">";
+                  $name = $data[$num][0]['name'];
+                  if (isset($data[$num][0]['trans'])) {
+                     $name = $data[$num][0]['trans'];
+                  }
+                  if ($itemtype == 'ProjectState') {
+                     $out .=   "<a href='".$CFG_GLPI["root_doc"]."/front/projectstate.form.php?id=".
+                                 $data[$num][0]["id"]."'>". $name."</a></div>";
+                  } else {
+                     $out .= $name."</div>";
+                     }
                }
                return $out;
 
