@@ -3985,7 +3985,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('locations_id')."</th>";
       echo "<td>";
       echo $tt->getBeginHiddenFieldValue('locations_id');
-      if ($canupdate) {
+      if ($canupdate || !$ID) {
          Location::dropdown(array('value'  => $this->fields['locations_id'],
                                   'entity' => $this->fields['entities_id']));
       } else {
@@ -6092,7 +6092,7 @@ class Ticket extends CommonITILObject {
       }
 
       //add existing solution
-      if (!empty($this->fields['solution']) 
+      if (!empty($this->fields['solution'])
          || !empty($this->fields['solutiontypes_id'])) {
          $users_id      = 0;
          $solution_date = $this->fields['solvedate'];
