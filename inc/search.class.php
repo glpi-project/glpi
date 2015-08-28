@@ -3912,7 +3912,6 @@ class Search {
 
 
          /// TODO try to clean all specific cases using SpecificToDisplay
-
          switch ($table.'.'.$field) {
             case "glpi_users.name" :
                // USER search case
@@ -4469,8 +4468,11 @@ class Search {
 
             case 'glpi_links._virtual' :
                $out = '';
+               $link = new Link();
                if (($item = getItemForItemtype($itemtype))
-                   && $item->getFromDB($data['id'])) {
+                   && $item->getFromDB($data['id'])
+                   && $link->getfromDB($data[$num][0]['id'])
+                   && ($item->fields['entities_id'] == $link->fields['entities_id'])) {
                   if (count($data[$num])) {
                      $count_display = 0;
                      foreach ($data[$num] as$val) {
