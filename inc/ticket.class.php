@@ -3930,7 +3930,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('locations_id')."</th>";
       echo "<td>";
       echo $tt->getBeginHiddenFieldValue('locations_id');
-      if ($canupdate) {
+      if ($canupdate || !$ID) {
          Location::dropdown(array('value'  => $this->fields['locations_id'],
                                   'entity' => $this->fields['entities_id']));
       } else {
