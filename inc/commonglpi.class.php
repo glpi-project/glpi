@@ -1092,7 +1092,7 @@ class CommonGLPI {
    **/
    function display($options=array()) {
       global $CFG_GLPI;
-toolbox::logdebug("opt", $options);
+
       if (isset($options['id'])
           && !$this->isNewID($options['id'])) {
          if (!$this->getFromDB($options['id'])) {
