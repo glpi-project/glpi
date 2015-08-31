@@ -275,6 +275,21 @@ input {
    vertical-align: middle;
 }
 
+.ui-datepicker-trigger {
+   cursor: pointer;
+}
+
+.ui-datepicker {
+   background: #F3F3F3;
+}
+
+.ui-datepicker .ui-state-default  {
+   background: #FFF;
+}
+
+.ui-datepicker .ui-state-active  {
+   background: #CCC;
+}
 
 .form-group-checkbox {
    position:relative;
