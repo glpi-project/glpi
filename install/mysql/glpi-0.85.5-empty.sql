@@ -4317,7 +4317,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('22','22','','##proj
 ##lang.projecttask.description##
 
 ##lang.projecttask.name## : ##projecttask.name##
-##lang.projecttask.project## : ##projecttask.name##
+##lang.projecttask.project## : ##projecttask.project##
 ##lang.projecttask.creationdate## : ##projecttask.creationdate##
 ##lang.projecttask.state## : ##projecttask.state##
 ##lang.projecttask.type## : ##projecttask.type##
@@ -4338,7 +4338,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('22','22','','##proj
 
 ##ENDFOREACHtasks##','&lt;p&gt;##lang.projecttask.url## : &lt;a href=\"##projecttask.url##\"&gt;##projecttask.url##&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;##lang.projecttask.description##&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;##lang.projecttask.name## : ##projecttask.name##&lt;br /&gt;##lang.projecttask.project## : &lt;a href=\"##projecttask.projecturl##\"&gt;##projecttask.name##&lt;/a&gt;&lt;br /&gt;##lang.projecttask.creationdate## : ##projecttask.creationdate##&lt;br /&gt;##lang.projecttask.state## : ##projecttask.state##&lt;br /&gt;##lang.projecttask.type## : ##projecttask.type##&lt;br /&gt;##lang.projecttask.description## : ##projecttask.description##&lt;/p&gt
+&lt;p&gt;##lang.projecttask.name## : ##projecttask.name##&lt;br /&gt;##lang.projecttask.project## : &lt;a href=\"##projecttask.projecturl##\"&gt;##projecttask.project##&lt;/a&gt;&lt;br /&gt;##lang.projecttask.creationdate## : ##projecttask.creationdate##&lt;br /&gt;##lang.projecttask.state## : ##projecttask.state##&lt;br /&gt;##lang.projecttask.type## : ##projecttask.type##&lt;br /&gt;##lang.projecttask.description## : ##projecttask.description##&lt;/p&gt;
 &lt;p&gt;##lang.projecttask.numberoftasks## : ##projecttask.numberoftasks##&lt;/p&gt;
 &lt;div&gt;
 &lt;p&gt;##FOREACHtasks##&lt;/p&gt;
