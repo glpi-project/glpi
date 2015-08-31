@@ -565,7 +565,7 @@ class Html {
                   minHeight: 40,
                   minWidth: 200,
                   position: {
-                     my: 'right-5 top+5',
+                     my: 'right-20 top+40',
                      at: 'right top',
                      of: '#page',
                      collision: 'none'
@@ -574,10 +574,14 @@ class Html {
                   show: {
                     effect: 'slide',
                     direction: 'up',
-                    'duration': 1600
+                    'duration': 1000
                   }
                })
                .dialog('open');
+
+               $(document.body).on('click', function(e){
+                 $('#message_after_redirect').dialog('close');
+               });
             });
          ");
       }
