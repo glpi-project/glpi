@@ -986,12 +986,17 @@ td.rotate {
 .actor_head {
    background-color: #ECECEC;
    margin: 0 5px;
+   padding: 4px 0;
    height: 16px;
 }
 
 .actor_row {
    margin-bottom: 8px;
 } 
+
+.tab_actors hr {
+   border: 0;
+}
 
 /* ################--------------- Pager  ---------------#################### */
 
