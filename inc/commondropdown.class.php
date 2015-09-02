@@ -235,7 +235,8 @@ abstract class CommonDropdown extends CommonDBTM {
 
       foreach ($fields as $field) {
          if (($field['name'] == 'entities_id')
-             && ($ID == 0)) {
+             && ($ID == 0)
+             && !$this->isNewID($ID)) {
             // No display for root entity
             echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
             break;
