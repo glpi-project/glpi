@@ -565,15 +565,15 @@ class Html {
                   minHeight: 40,
                   minWidth: 200,
                   position: {
-                     my: 'right-20 top+40',
-                     at: 'right top',
+                     my: 'right-20 bottom-20',
+                     at: 'right bottom',
                      of: '#page',
                      collision: 'none'
                   },
                   autoOpen: false,
                   show: {
                     effect: 'slide',
-                    direction: 'up',
+                    direction: 'down',
                     'duration': 1000
                   }
                })
