@@ -6290,7 +6290,7 @@ class Ticket extends CommonITILObject {
             }
 
             echo "<div class='item_content $long_text'>";
-            echo "<p>.$content.</p>";
+            echo "<p>$content</p>";
             if (!empty($long_text)) {
                echo "<p class='read_more'>";
                echo "<a class='read_more_button'>.....</a>";
