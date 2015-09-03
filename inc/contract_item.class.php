@@ -378,7 +378,7 @@ class Contract_Item extends CommonDBRelation{
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $contracts[$data['id']] = $data;
-            $used[$data['id']]      = $data['id'];
+            $used[$data['contracts_id']] = $data['contracts_id'];
          }
       }
 
