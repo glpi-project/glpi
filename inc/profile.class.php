@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -184,10 +184,10 @@ class Profile extends CommonDBTM {
    function post_addItem() {
       global $DB;
 
-         $profile_right = new ProfileRight();
-         $rights = ProfileRight::getAllPossibleRights();
-         $profile_right->updateProfileRights($this->fields['id'], $rights);
-         unset($this->profileRight);
+      $profile_right = new ProfileRight();
+      $rights = ProfileRight::getAllPossibleRights();
+      $profile_right->updateProfileRights($this->fields['id'], $rights);
+      unset($this->profileRight);
 
       if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
          $query = "UPDATE ". $this->getTable()."
