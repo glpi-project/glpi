@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -177,7 +177,8 @@ abstract class CommonDBConnexity extends CommonDBTM {
       } else {
          $type = $itemtype;
       }
-      $item = getItemForItemtype($type);
+      $item = ($type ? getItemForItemtype($type) : false);
+
       if ($item !== false) {
          if ($getFromDB
              || $getFromDBOrEmpty) {
