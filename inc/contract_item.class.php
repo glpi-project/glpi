@@ -377,7 +377,7 @@ class Contract_Item extends CommonDBRelation{
       $used      = array();
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $contracts[$data['id']] = $data;
+            $contracts[$data['id']]      = $data;
             $used[$data['contracts_id']] = $data['contracts_id'];
          }
       }
@@ -523,8 +523,9 @@ class Contract_Item extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      $data = array();
+      $data    = array();
       $totalnb = 0;
+      $used    = array();
       for ($i=0 ; $i<$number ; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
          if (!($item = getItemForItemtype($itemtype))) {
@@ -575,8 +576,6 @@ class Contract_Item extends CommonDBRelation{
                                         'link'     => $link);
             } else if ($nb > 0) {
                $data = array();
-               $used  = array();
-
                while ($objdata = $DB->fetch_assoc($result_linked)) {
                   $data[$itemtype][$objdata['id']] = $objdata;
                   $used[$itemtype][$objdata['id']] = $objdata['id'];
