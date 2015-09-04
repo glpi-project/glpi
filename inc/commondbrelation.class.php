@@ -1222,6 +1222,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                   }
                } else {
                   $options['name'] = 'peer_'.$peers_id;
+                  if ($normalized_action == 'remove') {
+                     $options['nochecklimit'] = true;
+                  }
                   $dropdown_method = $specificities['dropdown_method_'.$peer_number];
                   $peertype::$dropdown_method($options);
                }
