@@ -1254,7 +1254,7 @@ class Dropdown {
 
          // manage condition
          if ($params['onlyglobal']) {
-            $p['condition'] = static::addNewCondition("`is_global` = 1");  ;
+            $p['condition'] = static::addNewCondition("`is_global` = 1");
          }
 
          $field_id = Html::cleanId("dropdown_".$params['itemtype_name'].$rand);
