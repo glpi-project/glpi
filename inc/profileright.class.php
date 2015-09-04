@@ -236,18 +236,20 @@ class ProfileRight extends CommonDBChild {
    function updateProfileRights($profiles_id, array $rights=array()) {
 
       foreach ($rights as $name => $right) {
-         if ($this->getFromDBByQuery("WHERE `profiles_id` = '$profiles_id'
-                                            AND `name` = '$name'")) {
+         if ($right) {
+            if ($this->getFromDBByQuery("WHERE `profiles_id` = '$profiles_id'
+                                               AND `name` = '$name'")) {
 
-            $input = array('id'          => $this->getID(),
-                           'rights'      => $right);
-            $this->update($input);
+               $input = array('id'          => $this->getID(),
+                              'rights'      => $right);
+               $this->update($input);
 
-         } else {
-            $input = array('profiles_id' => $profiles_id,
-                           'name'        => $name,
-                           'rights'      => $right);
-            $this->add($input);
+            } else {
+               $input = array('profiles_id' => $profiles_id,
+                              'name'        => $name,
+                              'rights'      => $right);
+               $this->add($input);
+            }
          }
       }
 
