@@ -805,10 +805,10 @@ class ProjectTask extends CommonDBChild {
       $addselect = '';
       $addjoin = '';
       if (Session::haveTranslations('ProjectTaskType', 'name')) {
-         $addselect .= ", `namet2`.`value` AS transname";
+         $addselect .= ", `namet2`.`value` AS transname2";
          $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet2
                            ON (`namet2`.`itemtype` = 'ProjectTaskType'
-                               AND `namet2`.`items_id` = `glpi_projecttasks`.`id`
+                               AND `namet2`.`items_id` = `glpi_projecttasks`.`projecttasktypes_id`
                                AND `namet2`.`language` = '".$_SESSION['glpilanguage']."'
                                AND `namet2`.`field` = 'name')";
       }
@@ -817,9 +817,9 @@ class ProjectTask extends CommonDBChild {
          $addselect .= ", `namet3`.`value` AS transname3";
          $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet3
                            ON (`namet3`.`itemtype` = 'ProjectState'
-                               AND `namet3`.`items_id` = `glpi_projecttasks`.`id`
                                AND `namet3`.`language` = '".$_SESSION['glpilanguage']."'
                                AND `namet3`.`field` = 'name')";
+         $where     .= " AND `namet3`.`items_id` = `glpi_projectstates`.`id` ";
       }
 
 
@@ -881,7 +881,7 @@ class ProjectTask extends CommonDBChild {
                                                array('display' => false,
                                                      'applyto' => "ProjectTask".$data["id"].$rand)));
                echo "</td>";
-               $name = !empty($data['transname'])?$data['transname']:$data['tname'];
+               $name = !empty($data['transname2'])?$data['transname2']:$data['tname'];
                echo "<td>".$name."</td>";
                echo "<td";
                $statename = !empty($data['transname3'])?$data['transname3']:$data['sname'];
