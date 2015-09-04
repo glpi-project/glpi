@@ -373,8 +373,8 @@ class Contract_Item extends CommonDBRelation{
       $used      = array();
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $contracts[$data['id']] = $data;
-            $used[$data['id']]      = $data['id'];
+            $contracts[$data['id']]      = $data;
+            $used[$data['contracts_id']] = $data['contracts_id'];
          }
       }
 
@@ -570,9 +570,14 @@ class Contract_Item extends CommonDBRelation{
                                                               $item->getTypeName($nb), $nb),
                                         'link'     => $link);
             } else if ($nb > 0) {
-               for ($prem=true ; $objdata=$DB->fetch_assoc($result_linked) ; $prem=false) {
+               $data = array();
+               $used  = array();
+
+               while ($objdata = $DB->fetch_assoc($result_linked)) {
                   $data[$itemtype][$objdata['id']] = $objdata;
+                  $used[$itemtype][$objdata['id']] = $objdata['id'];
                }
+
             }
             $totalnb += $nb;
          }
@@ -597,7 +602,9 @@ class Contract_Item extends CommonDBRelation{
                                                                       $contract->fields['entities_id'])
                                                            :$contract->fields['entities_id']),
                                                      'checkright'
-                                                       => true));
+                                                       => true,
+                                                     'used'
+                                                       => $used));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='contracts_id' value='$instID'>";
