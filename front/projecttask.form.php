@@ -53,7 +53,7 @@ $task = new ProjectTask();
 
 if (isset($_POST["add"])) {
    $task->check(-1, CREATE, $_POST);
-   $task->add($_POST);
+   $newID = $task->add($_POST);
 
    Event::log($task->fields['projects_id'], 'project', 4, "maintain",
               //TRANS: %s is the user login
@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    if ($_SESSION['glpibackcreated']) {
       Html::redirect($task->getFormURL()."?id=".$newID);
    } else {
-      Html::redirect(Project::getFormURL()."?id=".$task->fields['projects_id']);
+      Html::redirect(Project::getFormURL()."?projects_id=".$task->fields['projects_id']);
    }
 
 } else if (isset($_POST["purge"])) {

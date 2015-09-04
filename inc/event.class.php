@@ -346,15 +346,11 @@ class Event extends CommonDBTM {
       echo "<tr>";
 
       foreach ($items as $field => $args) {
-         echo "<th ".$args[1].">";
+         echo "<th ".$args[1]."";
          if ($sort == $field) {
-            if ($order == "DESC") {
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-            } else {
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
-            }
+            echo " class='order_$order' ";
          }
-         echo "<a href='$target?sort=$field&amp;order=".(($order=="ASC")?"DESC":"ASC")."'>".$args[0].
+         echo "><a href='$target?sort=$field&amp;order=".(($order=="ASC")?"DESC":"ASC")."'>".$args[0].
               "</a></th>";
       }
       echo "</tr>";

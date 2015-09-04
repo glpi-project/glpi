@@ -3537,7 +3537,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Manage actors : requester and assign
-      echo "<table class='tab_cadre_fixe' id='mainformtable5'>";
+      echo "<table class='tab_cadre_fixe tab_actors' id='mainformtable5'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2' width='13%'>".__('Actor')."</th>";
       echo "<th width='29%' class='actor-th'><div class='actor_head'>";

@@ -565,19 +565,23 @@ class Html {
                   minHeight: 40,
                   minWidth: 200,
                   position: {
-                     my: 'right-5 top+5',
-                     at: 'right top',
+                     my: 'right-20 bottom-20',
+                     at: 'right bottom',
                      of: '#page',
                      collision: 'none'
                   },
                   autoOpen: false,
                   show: {
                     effect: 'slide',
-                    direction: 'up',
-                    'duration': 1600
+                    direction: 'down',
+                    'duration': 1000
                   }
                })
                .dialog('open');
+
+               $(document.body).on('click', function(e){
+                 $('#message_after_redirect').dialog('close');
+               });
             });
          ");
       }
@@ -1040,16 +1044,6 @@ class Html {
       echo "<meta http-equiv='Pragma' content='no-cache'>\n";
       echo "<meta http-equiv='Cache-Control' content='no-cache'>\n";
       echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
-      //  CSS link
-      echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
-
-      // surcharge CSS hack for IE
-      echo "<!--[if lte IE 6]>" ;
-      echo Html::css($CFG_GLPI["root_doc"]."/css/styles_ie.css");
-      echo "<![endif]-->";
-      echo Html::css($CFG_GLPI["root_doc"]."/css/print.css", array('media' => 'print'));
-      echo "<link rel='shortcut icon' type='images/x-icon' href='".
-             $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/css/jstree/style.css");
@@ -1064,6 +1058,17 @@ class Html {
 
       // CSS theme link
       echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$_SESSION["glpipalette"].".css");
+
+      //  CSS link
+      echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
+
+      // surcharge CSS hack for IE
+      echo "<!--[if lte IE 6]>" ;
+      echo Html::css($CFG_GLPI["root_doc"]."/css/styles_ie.css");
+      echo "<![endif]-->";
+      echo Html::css($CFG_GLPI["root_doc"]."/css/print.css", array('media' => 'print'));
+      echo "<link rel='shortcut icon' type='images/x-icon' href='".
+             $CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
       // Add specific css for plugins
       if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
@@ -3182,6 +3187,7 @@ class Html {
                   altFieldTimeOnly: false,
                   firstDay: 1,
                   parse: 'loose',
+                  showAnim: '',
                   stepMinute: ".$p['timestep'].",
                   showSecond: false,
                   showOtherMonths: true,
