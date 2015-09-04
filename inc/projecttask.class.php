@@ -814,7 +814,7 @@ class ProjectTask extends CommonDBChild {
          $addselect .= ", `namet2`.`value` AS transname2";
          $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet2
                            ON (`namet2`.`itemtype` = 'ProjectTaskType'
-                               AND `namet2`.`items_id` = `glpi_projecttasks`.`id`
+                               AND `namet2`.`items_id` = `glpi_projecttasks`.`projecttasktypes_id`
                                AND `namet2`.`language` = '".$_SESSION['glpilanguage']."'
                                AND `namet2`.`field` = 'name')";
       }
