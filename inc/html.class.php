@@ -565,22 +565,27 @@ class Html {
                   minHeight: 40,
                   minWidth: 200,
                   position: {
-                     my: 'right-20 bottom-20',
-                     at: 'right bottom',
-                     of: '#page',
+                     my: 'right bottom',
+                     at: 'right-20 bottom-20',
+                     of: window,
                      collision: 'none'
                   },
                   autoOpen: false,
                   show: {
                     effect: 'slide',
                     direction: 'down',
-                    'duration': 1000
+                    'duration': 800
                   }
                })
                .dialog('open');
 
+               // close dialog on outside click 
                $(document.body).on('click', function(e){
-                 $('#message_after_redirect').dialog('close');
+                  if ($('#message_after_redirect').dialog('isOpen')
+                      && !$(e.target).is('.ui-dialog, a')
+                      && !$(e.target).closest('.ui-dialog').length) {
+                     $('#message_after_redirect').dialog('close');
+                  }
                });
             });
          ");
