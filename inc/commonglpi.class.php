@@ -600,8 +600,8 @@ class CommonGLPI {
       if (count($ong) == 0) {
          $class .= " no_tab";
       }
-      if (!isset($_GET['id']) 
-          || ($_GET['id'] <= 0 && !$this instanceof Entity )) {
+      if (!isset($_GET['id'])
+          || (($_GET['id'] <= 0) && !$this instanceof Entity )) {
          $class .= " create_form";
       } else {
          $class .= " modify_form";
