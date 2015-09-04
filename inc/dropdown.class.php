@@ -1223,7 +1223,8 @@ class Dropdown {
     *    - showItemSpecificity : given an item, the AJAX file to open if there is special
     *                            treatment. For instance, select a Item_Device* for CommonDevice
     *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
-   *
+    *    - used                : array / Already used items ID: not to display in dropdown (default empty)
+    *
     * @return randomized value used to generate HTML IDs
    **/
    static function showSelectItemFromItemtypes(array $options=array()) {
@@ -1239,6 +1240,7 @@ class Dropdown {
       $params['checkright']          = false;
       $params['showItemSpecificity'] = '';
       $params['emptylabel']          = self::EMPTY_VALUE;
+      $params['used']                = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1260,6 +1262,9 @@ class Dropdown {
          // manage condition
          if ($params['onlyglobal']) {
             $p['condition'] = static::addNewCondition("`is_global` = 1");
+         }
+         if ($params['used']) {
+            $p['used'] = $params['used'];
          }
 
          $field_id = Html::cleanId("dropdown_".$params['itemtype_name'].$rand);
