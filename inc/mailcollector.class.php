@@ -509,7 +509,7 @@ class MailCollector  extends CommonDBTM {
             for ($i=1 ; ($i <= $tot) && ($this->fetch_emails < $this->maxfetch_emails) ; $i++) {
                $tkt = $this->buildTicket($i, array('mailgates_id' => $mailgateID,
                                                    'play_rules'   => true));
-toolbox::logdebug("tkt", $tkt);
+
                //Indicates that the mail must be deleted from the mailbox
                $delete_mail = false;
 
