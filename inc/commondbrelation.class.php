@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -1226,6 +1226,9 @@ abstract class CommonDBRelation extends CommonDBConnexity {
                   }
                } else {
                   $options['name'] = 'peer_'.$peers_id;
+                  if ($normalized_action == 'remove') {
+                     $options['nochecklimit'] = true;
+                  }
                   $dropdown_method = $specificities['dropdown_method_'.$peer_number];
                   $peertype::$dropdown_method($options);
                }
