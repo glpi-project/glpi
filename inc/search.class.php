@@ -5238,7 +5238,9 @@ class Search {
          if (is_null($item)) { // Special union type
             $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
          } else {
-            $itemtable = $item->getTable();
+            if ($item = getItemForItemtype($itemtype)) {
+               $itemtable = $item->getTable();
+            }
          }
 
          foreach ($search[$itemtype] as $key => $val) {
