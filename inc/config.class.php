@@ -867,7 +867,6 @@ class Config extends CommonDBTM {
                                                'max'   => $CFG_GLPI['list_limit_max'],
                                                'step'  => 5));
       echo "</td>";
-
       echo "<td>" .__('Number format') . "</td>";
       $values = array(0 => '1 234.56',
                       1 => '1,234.56',
@@ -879,21 +878,39 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      if ($oncentral) {
-         echo "<td>" . __('Default characters limit in dropdowns') . "</td><td>";
-         Dropdown::showNumber('dropdown_chars_limit',
-                              array('value' => $data["dropdown_chars_limit"],
-                                    'min'   => 20,
-                                    'max'   => 100));
-         echo "</td>";
-       } else {
-        echo "<td colspan='2'>&nbsp;</td>";
-      }
       echo "<td>".__('Display order of surnames firstnames')."</td><td>";
       $values = array(User::REALNAME_BEFORE  => __('Surname, First name'),
                       User::FIRSTNAME_BEFORE => __('First name, Surname'));
       Dropdown::showFromArray('names_format', $values, array('value' => $data["names_format"]));
+      echo "</td>";
+      echo "<td>" . __("Color palette") . "</td><td>";
+      $themes_files = scandir(GLPI_ROOT."/css/palettes/");
+      echo "<select name='palette' id='theme-selector'>";
+      foreach ($themes_files as $key => $file) {
+         if (strpos($file, ".css") !== false) {
+            $name     = substr($file, 0, -4);
+            $selected = "";
+            if ($data["palette"] == $name) {
+               $selected = "selected='selected'";
+            }
+            echo "<option value='$name' $selected>".ucfirst($name)."</option>";
+         }
+      }
+      echo Html::scriptBlock("
+         function formatThemes(theme) {
+             return \"&nbsp;<img src='../css/palettes/previews/\" + theme.text.toLowerCase() + \".png'/>\"
+                     + \"&nbsp;\" + theme.text;
+         }
+         $(\"#theme-selector\").select2({
+             formatResult: formatThemes,
+             formatSelection: formatThemes,
+             width: '100%',
+             escapeMarkup: function(m) { return m; }
+         });
+      ");
+      echo "</select>";
       echo "</td></tr>";
+
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
@@ -1007,35 +1024,6 @@ class Config extends CommonDBTM {
       echo "<td>" . __('Keep tabs replaced by the ticket timeline')."</td><td>";
       Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
                           $data['ticket_timeline_keep_replaced_tabs']);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __("Color palette") . "</td><td>";
-      $themes_files = scandir(GLPI_ROOT."/css/palettes/");
-      echo "<select name='palette' id='theme-selector'>";
-      foreach ($themes_files as $key => $file) {
-         if (strpos($file, ".css") !== false) {
-            $name     = substr($file, 0, -4);
-            $selected = "";
-            if ($data["palette"] == $name) {
-               $selected = "selected='selected'";
-            }
-            echo "<option value='$name' $selected>".ucfirst($name)."</option>";
-         }
-      }
-      echo Html::scriptBlock("
-         function formatThemes(theme) {
-             return \"&nbsp;<img src='../css/palettes/previews/\" + theme.text.toLowerCase() + \".png'/>\"
-                     + \"&nbsp;\" + theme.text;
-         }
-         $(\"#theme-selector\").select2({
-             formatResult: formatThemes,
-             formatSelection: formatThemes,
-             width: '100%',
-             escapeMarkup: function(m) { return m; }
-         });
-      ");
-      echo "</select>";
       echo "</td></tr>";
 
 

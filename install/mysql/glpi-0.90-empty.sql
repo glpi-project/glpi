@@ -842,7 +842,6 @@ INSERT INTO `glpi_configs` VALUES ('45','core','date_format','0');
 INSERT INTO `glpi_configs` VALUES ('46','core','number_format','0');
 INSERT INTO `glpi_configs` VALUES ('47','core','csv_delimiter',';');
 INSERT INTO `glpi_configs` VALUES ('48','core','is_ids_visible','0');
-INSERT INTO `glpi_configs` VALUES ('49','core','dropdown_chars_limit','50');
 INSERT INTO `glpi_configs` VALUES ('50','core','smtp_mode','0');
 INSERT INTO `glpi_configs` VALUES ('51','core','smtp_host','');
 INSERT INTO `glpi_configs` VALUES ('52','core','smtp_port','25');
@@ -6710,7 +6709,6 @@ CREATE TABLE `glpi_users` (
   `names_format` int(11) DEFAULT NULL,
   `csv_delimiter` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_ids_visible` tinyint(1) DEFAULT NULL,
-  `dropdown_chars_limit` int(11) DEFAULT NULL,
   `use_flat_dropdowntree` tinyint(1) DEFAULT NULL,
   `show_jobs_at_login` tinyint(1) DEFAULT NULL,
   `priority_1` char(20) COLLATE utf8_unicode_ci DEFAULT NULL,

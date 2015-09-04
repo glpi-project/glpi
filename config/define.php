@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -106,7 +106,7 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |jquery| tinymc
             'zh_TW' => array('繁體中文',              'zh_TW.mo','zh-TW', 'zh','chinese'    , 2),);
 
 $DEFAULT_PLURAL_NUMBER = 2;
-            
+
 // Init to store glpi itemtype / tables link
 $CFG_GLPI['glpitables'] = array();
 
@@ -170,7 +170,7 @@ $CFG_GLPI["asset_types"]                  = array('Computer', 'Monitor', 'Networ
 $CFG_GLPI["project_asset_types"]          = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software');
 
-                                                  
+
 $CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Change', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract',
                                                   'Document', 'Entity', 'KnowbaseItem', 'Monitor',
@@ -286,7 +286,7 @@ $CFG_GLPI["debug_sql"] = $CFG_GLPI["debug_vars"] = $CFG_GLPI["debug_lang"] = 1;
 // User Prefs fields which override $CFG_GLPI config
 $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_format',
                                      'default_requesttypes_id', 'display_count_on_home',
-                                     'dropdown_chars_limit', 'duedatecritical_color',
+                                     'duedatecritical_color',
                                      'duedatecritical_less', 'duedatecritical_unit',
                                      'duedateok_color', 'duedatewarning_color',
                                      'duedatewarning_less', 'duedatewarning_unit',
@@ -297,14 +297,14 @@ $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_forma
                                      'priority_2', 'priority_3', 'priority_4', 'priority_5',
                                      'priority_6', 'refresh_ticket_list', 'set_default_tech',
                                      'show_count_on_tabs', 'show_jobs_at_login', 'task_private',
-                                     'task_state', 'use_flat_dropdowntree', 'layout', 
-                                     'ticket_timeline', 'ticket_timeline_keep_replaced_tabs', 
+                                     'task_state', 'use_flat_dropdowntree', 'layout',
+                                     'ticket_timeline', 'ticket_timeline_keep_replaced_tabs',
                                      'palette');
 
 
-$CFG_GLPI['layout_excluded_pages'] = array("profile.form.php", 
-                                           "knowbaseitem.form.php", 
-                                           "bookmark.php", 
+$CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
+                                           "knowbaseitem.form.php",
+                                           "bookmark.php",
                                            "entity.form.php");
 
 ?>

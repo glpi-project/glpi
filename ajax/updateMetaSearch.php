@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -53,7 +53,7 @@ echo "<table width='100%'><tr><td width='40%'>";
 foreach ($searchopt as $key => $val) {
 
    // print groups
-   $str_limit   = 28; // not use $_SESSION['glpidropdown_chars_limit'] because it came to too short
+   $str_limit   = 28;
    if (!is_array($val)) {
       $group = $val;
    } else {

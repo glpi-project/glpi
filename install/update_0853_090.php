@@ -96,6 +96,9 @@ function update0853to090() {
    $migration->addField("glpi_users", "ticket_timeline", "tinyint(1) DEFAULT NULL");
    $migration->addField("glpi_users", "ticket_timeline_keep_replaced_tabs", "tinyint(1) DEFAULT NULL");
 
+   // clean unused parameter
+   $migration->dropField("glpi_users", "dropdown_chars_limit");
+   Config::deleteConfigurationValues('core', array(-'name' => 'dropdown_chars_limit'));
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

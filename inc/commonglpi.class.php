@@ -827,13 +827,7 @@ class CommonGLPI {
 
          echo "<td width='200px'><a href=\"".$glpilisturl."\">";
          if ($glpilisttitle) {
-            if (Toolbox::strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
-               $glpilisttitle = Toolbox::substr($glpilisttitle, 0,
-                                                $_SESSION['glpidropdown_chars_limit'])
-                                . "&hellip;";
-            }
             echo $glpilisttitle;
-
          } else {
             _e('List');
          }
@@ -992,13 +986,7 @@ class CommonGLPI {
          echo "<li><a href=\"".$glpilisturl."\">";
 
          if ($glpilisttitle) {
-            if (Toolbox::strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
-               $glpilisttitle = Toolbox::substr($glpilisttitle, 0,
-                                                $_SESSION['glpidropdown_chars_limit'])
-                                . "&hellip;";
-            }
             echo $glpilisttitle;
-
          } else {
             _e('List');
          }

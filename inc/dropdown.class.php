@@ -119,7 +119,6 @@ class Dropdown {
       $output       = '';
       $name         = $params['emptylabel'];
       $comment      = "";
-      $limit_length = $_SESSION["glpidropdown_chars_limit"];
 
       // Check default value for dropdown : need to be a numeric
       if ((strlen($params['value']) == 0) || !is_numeric($params['value']) && $params['value'] != 'mygroups') {
@@ -136,24 +135,6 @@ class Dropdown {
          if ($tmpname["name"] != "&nbsp;") {
             $name    = $tmpname["name"];
             $comment = $tmpname["comment"];
-
-            if (Toolbox::strlen($name) > $_SESSION["glpidropdown_chars_limit"]) {
-               if ($item instanceof CommonTreeDropdown) {
-                  $pos          = strrpos($name, ">");
-                  $limit_length = max(Toolbox::strlen($name) - $pos,
-                                      $_SESSION["glpidropdown_chars_limit"]);
-
-                  if (Toolbox::strlen($name) > $limit_length) {
-                     $name = "...".Toolbox::substr($name, -$limit_length);
-                  }
-
-               } else {
-                  $limit_length = Toolbox::strlen($name);
-               }
-
-            } else {
-               $limit_length = $_SESSION["glpidropdown_chars_limit"];
-            }
          }
       }
 
@@ -190,7 +171,6 @@ class Dropdown {
                  'used'                 => $params['used'],
                  'toadd'                => $params['toadd'],
                  'entity_restrict'      => (is_array($params['entity']) ? json_encode(array_values($params['entity'])) : $params['entity']),
-                 'limit'                => $limit_length,
                  'on_change'            => $params['on_change'],
                  'permit_select_parent' => $params['permit_select_parent'],
                  'specific_tags'        => $params['specific_tags'],
