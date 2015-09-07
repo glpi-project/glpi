@@ -2996,7 +2996,8 @@ class Ticket extends CommonITILObject {
 
       if (!$tt->isHiddenField('_users_id_observer')
           || $tt->isPredefinedField('_users_id_observer')) {
-         echo "<tr class='tab_bg_1'><td>".__('Watcher')."</td>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".sprintf(__('%1$s%2$s'), __('Watcher'), $tt->getMandatoryMark('_users_id_observer'))."</td>";
          echo "<td>";
          $values['_right'] = "groups";
 
