@@ -4522,6 +4522,7 @@ class Html {
       $js = "$('#$id').select2({
                   width: '$width',
                   closeOnSelect: false,
+                  dropdownAutoWidth: true,
                   quietMillis: 100,
                   minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
                   formatSelection: function(object, container) {
@@ -4595,6 +4596,7 @@ class Html {
                         width: '$width',
                         minimumInputLength: 0,
                         quietMillis: 100,
+                        dropdownAutoWidth: true,
                         minimumResultsForSearch: ".$CFG_GLPI['ajax_limit_count'].",
                         closeOnSelect: false,
                         ajax: {
