@@ -789,7 +789,7 @@ td { }
 .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th {
    font-size: 12px;
    font-weight: bold;
-   text-align: right;
+   text-align: center;
    -moz-border-radius: 4px;
    -webkit-border-radius: 4px;
    -o-border-radius: 4px;
