@@ -467,10 +467,11 @@ class QueuedMail extends CommonDBTM {
       $cron_status = 0;
 
       // Send mail at least 1 minute after adding in queue to be sure that process on it is finished
+      $send_time = date("Y-m-d H:i:s", strtotime("+1 minutes"));
       $query       = "SELECT `glpi_queuedmails`.*
                       FROM `glpi_queuedmails`
                       WHERE NOT `glpi_queuedmails`.`is_deleted`
-                            AND `glpi_queuedmails`.`send_time` < DATE_ADD(NOW(),INTERVAL 1 MINUTE)
+                            AND `glpi_queuedmails`.`send_time` < '".$send_time."'
                       ORDER BY `glpi_queuedmails`.`send_time` ASC
                       LIMIT 0, ".$task->fields['param'];
 
@@ -500,10 +501,11 @@ class QueuedMail extends CommonDBTM {
       // Expire mails in queue
       if ($task->fields['param'] > 0) {
          $secs      = $task->fields['param'] * DAY_TIMESTAMP;
+         $send_time = date("U") - $secs;
          $query_exp = "DELETE
                        FROM `glpi_queuedmails`
                        WHERE `glpi_queuedmails`.`is_deleted`
-                             AND UNIX_TIMESTAMP(send_time) < UNIX_TIMESTAMP()-$secs";
+                             AND UNIX_TIMESTAMP(send_time) < '".$send_time."'";
 
          $DB->query($query_exp);
          $vol = $DB->affected_rows();
