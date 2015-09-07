@@ -255,6 +255,10 @@ select {
    background: #FCFCFC !important;
    border: 0 !important;
 }
+.select2-container .select2-choice > .select2-chosen {
+   max-width: 270px;
+   direction: rtl; /* "..." elipsis is on the left */
+}
 
 
 textarea, input[type=text], input[type=password] {
