@@ -1284,7 +1284,10 @@ class Ticket extends CommonITILObject {
                            }
                         }
 
-                        if (empty($input[$key]) || ($input[$key] == 'NULL')) {
+                        if (empty($input[$key]) 
+                            || $input[$key] == 'NULL'
+                            || (is_array($input[$key])
+                                && $input[$key] === array(0 => "0"))) {
                            $mandatory_missing[$key] = $fieldsname[$val];
                         }
                      }
