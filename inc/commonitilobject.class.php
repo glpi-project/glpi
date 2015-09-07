@@ -1272,7 +1272,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
 
                //empty actor
-               if ($input2['users_id'] == 0 && !isset($input2['alternative_email'])) {
+               if ($input2['users_id'] == 0 && empty($input2['alternative_email'])) {
                   continue;
                }
 
@@ -1302,7 +1302,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
 
                //empty actor
-               if ($input2['users_id'] == 0 && !isset($input2['alternative_email'])) {
+               if ($input2['users_id'] == 0 && empty($input2['alternative_email'])) {
                   continue;
                }
 
@@ -1332,7 +1332,7 @@ abstract class CommonITILObject extends CommonDBTM {
                }
 
                //empty actor
-               if ($input2['users_id'] == 0 && !isset($input2['alternative_email'])) {
+               if ($input2['users_id'] == 0 && empty($input2['alternative_email'])) {
                   continue;
                }
 
