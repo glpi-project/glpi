@@ -706,8 +706,10 @@ class CommonGLPI {
                               'params' => "_target=$target&amp;_itemtype=".$this->getType().
                                           "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml");
          }
+         echo "<div class='".($this->isNewID($ID)?"new_form_tabs":"")."'>";
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID,
                           $this->taborientation);
+         echo "</div>";
       }
    }
 
