@@ -789,7 +789,7 @@ td { }
 .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th {
    font-size: 12px;
    font-weight: bold;
-   text-align: center;
+   text-align: right;
    -moz-border-radius: 4px;
    -webkit-border-radius: 4px;
    -o-border-radius: 4px;
@@ -799,10 +799,6 @@ td { }
    font-size: 1.1em;
    color: #000;
    padding: 10px 5px;
-}
-
-.tab_cadre_fixe th {
-   text-align: right;
 }
 
 .tab_cadre_fixehov th, .tab_cadrehov th {
