@@ -595,7 +595,9 @@ class Transfer extends CommonDBTM {
          foreach ($CFG_GLPI["contract_types"] as $itemtype) {
             if (isset($this->item_search[$itemtype])) {
                $itemtable = getTableForItemType($itemtype);
-
+               $this->item_search[$itemtype]
+                     = $this->createSearchConditionUsingArray($this->needtobe_transfer[$itemtype]);
+                     
                // Clean DB
                $query = "SELECT `glpi_contracts_items`.`id`
                          FROM `glpi_contracts_items`
