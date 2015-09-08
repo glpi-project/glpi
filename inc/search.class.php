@@ -4337,7 +4337,7 @@ class Search {
 
                   //Calculate bar progress
                   $out .= "<div class='center' style='background-color: #ffffff; width: 100%;
-                            border: 1px solid #9BA563;' >";
+                            border: 1px solid #9BA563; position: relative;' >";
                   $out .= "<div style='position:absolute;'>&nbsp;".$percentage_text."%</div>";
                   $out .= "<div class='center' style='background-color: ".$color.";
                             width: ".$percentage."%; height: 12px' ></div>";
