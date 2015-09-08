@@ -854,7 +854,7 @@ class CommonGLPI {
 
          }
          echo "<td class='b big'>";
-         if (!self::isLayoutWithMain()) {
+         if (!self::isLayoutWithMain() || self::isLayoutExcludedPage()) {
             echo $name;
          }
          echo "</td>";
