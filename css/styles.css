@@ -589,6 +589,10 @@ input.save {
       overflow: auto;
    }
 
+   .layout_vsplit #page .glpi_tabs {
+      height: 100%;
+   }
+
    .layout_vsplit #page .main_form.create_form {
       width: 950px;
       margin: 0 auto;
