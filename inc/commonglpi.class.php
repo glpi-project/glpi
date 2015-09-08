@@ -677,6 +677,7 @@ class CommonGLPI {
          $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options,'&amp;');
          $extraparam     = "&".Toolbox::append_params($cleaned_options);
       }
+      echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";
       echo "<div id='tabspanel' class='center-h'></div>";
       $current_tab = 0;
       $onglets     = $this->defineAllTabs($options);
@@ -706,11 +707,11 @@ class CommonGLPI {
                               'params' => "_target=$target&amp;_itemtype=".$this->getType().
                                           "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml");
          }
-         echo "<div class='".($this->isNewID($ID)?"new_form_tabs":"")."'>";
+
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID,
                           $this->taborientation);
-         echo "</div>";
       }
+      echo "</div>";
    }
 
 
