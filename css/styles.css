@@ -205,10 +205,8 @@ hr {
 /* ################--------------- Page ---------------#################### */
 
 #page {
-    /* margin: 25px 10px; */
    padding: 8px 8px 20px 8px;
    min-height: 80%;
-   max-width: 1400px;
    margin: 15px auto;
 }
 
@@ -217,6 +215,10 @@ hr {
    margin:0;
    margin-bottom:5px;
    padding:0; 
+}#page
+
+.form #page {
+   max-width: 1400px;
 }
 
 /*#page {
