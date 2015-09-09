@@ -656,7 +656,7 @@ class Dropdown {
       }
 
       $params['value'] = $value;
-      $params['width'] = "58px";
+      $params['width'] = "60px";
       return self::showFromArray($name, $options, $params);
    }
 
