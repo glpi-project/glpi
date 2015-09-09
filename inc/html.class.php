@@ -2816,7 +2816,7 @@ class Html {
       if ($p['fixed']) {
          $width= '950px';
       } else {
-         $width= '80%';
+         $width= '95%';
       }
 
       $identifier = md5($url.serialize($p['extraparams']).$p['rand']);
