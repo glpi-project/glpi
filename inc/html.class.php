@@ -4514,7 +4514,7 @@ class Html {
    static function jsAdaptDropdown($id, $params=array()) {
       global $CFG_GLPI;
 
-      $width = '80%';
+      $width = '';
       if (isset($params["width"]) && !empty($params["width"])) {
          $width = $params["width"];
          unset($params["width"]);
