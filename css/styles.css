@@ -2589,6 +2589,7 @@ ul#menu ul.ssmenu {
    color: #A2A2A2;
    font-size: 0.8em;
    text-align: center;
+   white-space: nowrap;
 }
 .timeline_history .right .private {
    float: left;
