@@ -979,6 +979,30 @@ class Search {
             }
          }
 
+         // search group (corresponding of dropdown optgroup) of current col
+         foreach($data['data']['cols'] as $num => $col) {
+            // search current col in searchoptions ()
+            while (key($searchopt) !== null 
+                   && key($searchopt) != $col['id']) {
+               next($searchopt);
+            }
+            if (key($searchopt) !== null) {
+               //search optgroup (non array option)
+               while (key($searchopt) !== null 
+                      && is_numeric(key($searchopt))
+                      && is_array(current($searchopt))) {
+                  prev($searchopt);
+               }
+               if (key($searchopt) !== null 
+                   && key($searchopt) !== "common") {
+                  $data['data']['cols'][$num]['groupname'] = current($searchopt);
+               } 
+
+            }
+            //reset 
+            reset($searchopt);
+         }
+
          // Get rows
 
          // if real search seek to begin of items to display (because of complete search)
@@ -1289,6 +1313,12 @@ class Search {
             }
 
             $name = $val["name"];
+
+            // prefix by group name (corresponding to optgroup in dropdown) if exists
+            if (isset($val['groupname'])) {
+               $name  = $val['groupname']." - ".$name;
+            }
+
             // Not main itemtype add itemtype to display
             if ($data['itemtype'] != $val['itemtype']) {
                if (!isset($metanames[$val['itemtype']])) {
