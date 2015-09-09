@@ -817,8 +817,8 @@ td { }
 
 .tab_cadre_fixehov th, .tab_cadrehov th {
    background-color: #F8F8F8;
-   color: #000;
-   font-size: 14px;
+   color: #2E2E2E;
+   font-size: 11px;
    border-bottom: 1px solid #EEE;
 }
 
