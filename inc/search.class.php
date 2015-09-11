@@ -982,24 +982,24 @@ class Search {
          // search group (corresponding of dropdown optgroup) of current col
          foreach($data['data']['cols'] as $num => $col) {
             // search current col in searchoptions ()
-            while (key($searchopt) !== null 
+            while (key($searchopt) !== null
                    && key($searchopt) != $col['id']) {
                next($searchopt);
             }
             if (key($searchopt) !== null) {
                //search optgroup (non array option)
-               while (key($searchopt) !== null 
+               while (key($searchopt) !== null
                       && is_numeric(key($searchopt))
                       && is_array(current($searchopt))) {
                   prev($searchopt);
                }
-               if (key($searchopt) !== null 
+               if (key($searchopt) !== null
                    && key($searchopt) !== "common") {
                   $data['data']['cols'][$num]['groupname'] = current($searchopt);
-               } 
+               }
 
             }
-            //reset 
+            //reset
             reset($searchopt);
          }
 
@@ -4467,7 +4467,13 @@ class Search {
                   foreach ($data[$num] as $key => $val) {
                      if (is_numeric($key)) {
                         if (!empty($val['name'])) {
-                           $itemtypes[] = __($val['name']);
+                           if (substr($val['name'],0, 6) == 'Plugin') {
+                              $plug = new $val['name']();
+                              $name = $plug->getTypeName();
+                              $itemtypes[] = __($name);
+                           } else {
+                              $itemtypes[] = __($val['name']);
+                           }
                         }
                      }
                   }
