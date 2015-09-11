@@ -186,10 +186,32 @@ class Contract_Item extends CommonDBRelation{
     * @param $item   Contract object
    **/
    static function countForContract(Contract $item) {
+      global $DB;
 
-      $restrict = "`glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'";
+      $sql = "SELECT  DISTINCT `itemtype`
+              FROM `glpi_contracts_items`
+              WHERE `glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'";
 
-      return countElementsInTable(array('glpi_contracts_items'), $restrict);
+      $nb = 0;
+
+      foreach ($DB->request($sql) as $data) {
+         $itemt = getItemForItemtype($data['itemtype']);
+
+         $query = "SELECT COUNT(*) AS cpt
+                   FROM `glpi_contracts_items`, `".$itemt->getTable()."`
+                   WHERE `glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'
+                         AND `glpi_contracts_items`.`itemtype` = '".$data['itemtype']."'
+                         AND `".$itemt->getTable()."`.`id` = `glpi_contracts_items`.`items_id`";
+
+         if ($itemt->maybeTemplate()) {
+            $query .= " AND NOT `".$itemt->getTable()."`.`is_template`";
+         }
+
+         foreach($DB->request($query) as $row) {
+            $nb += $row['cpt'];
+         }
+      }
+      return $nb;
    }
 
 
@@ -572,7 +594,7 @@ class Contract_Item extends CommonDBRelation{
                                                               $item->getTypeName($nb), $nb),
                                         'link'     => $link);
             } else if ($nb > 0) {
-               $data = array();
+               $data[$itemtype] = array();
                while ($objdata = $DB->fetch_assoc($result_linked)) {
                   $data[$itemtype][$objdata['id']] = $objdata;
                   $used[$itemtype][$objdata['id']] = $objdata['id'];
