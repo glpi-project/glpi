@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -50,7 +50,7 @@ class Project extends CommonDBTM {
    public $dohistory                   = true;
    static protected $forward_entity_to = array('ProjectTask');
    static $rightname                   = 'project';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
    const READMY                        = 1;
    const READALL                       = 1024;

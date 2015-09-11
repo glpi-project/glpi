@@ -51,7 +51,7 @@ class Entity extends CommonTreeDropdown {
    public $second_level_menu            = "entity";
 
    static $rightname                    = 'entity';
-   protected $usenotepadrights          = true;
+   protected $usenotepad                = true;
 
    const READHELPDESK                   = 1024;
    const UPDATEHELPDESK                 = 2048;

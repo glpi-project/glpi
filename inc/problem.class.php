@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -53,7 +53,7 @@ class Problem extends CommonITILObject {
    public $supplierlinkclass    = 'Problem_Supplier';
 
    static $rightname            = 'problem';
-   protected $usenotepadrights  = true;
+   protected $usenotepad        = true;
 
    static protected $forward_entity_to = array('ProblemCost');
 

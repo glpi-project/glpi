@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -48,7 +48,7 @@ class Budget extends CommonDropdown{
    public $dohistory           = true;
 
    static $rightname           = 'budget';
-   protected $usenotepadrights = true;
+   protected $usenotepad       = true;
 
    var $can_be_translated = false;
 

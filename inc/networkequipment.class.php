@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -50,7 +50,7 @@ class NetworkEquipment extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
    static $rightname                   = 'networking';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
 
 
@@ -106,7 +106,7 @@ class NetworkEquipment extends CommonDBTM {
 
       $ip = new Item_Project();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-      
+
       Item_Devices::cleanItemDeviceDBOnItemDelete($this->getType(), $this->fields['id'],
                                                   (!empty($this->input['keep_devices'])));
    }

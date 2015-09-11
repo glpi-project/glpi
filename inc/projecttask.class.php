@@ -56,7 +56,7 @@ class ProjectTask extends CommonDBChild {
 
    protected $team             = array();
    static $rightname           = 'project';
-   protected $usenotepadrights = true;
+   protected $usenotepad       = true;
 
    var $can_be_translated      = true;
 
