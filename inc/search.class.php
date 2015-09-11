@@ -4382,7 +4382,13 @@ class Search {
                   foreach ($data[$num] as $key => $val) {
                      if (is_numeric($key)) {
                         if (!empty($val['name'])) {
-                           $itemtypes[] = __($val['name']);
+                           if (substr($val['name'],0, 6) == 'Plugin') {
+                              $plug = new $val['name']();
+                              $name = $plug->getTypeName();
+                              $itemtypes[] = __($name);
+                           } else {
+                              $itemtypes[] = __($val['name']);
+                           }
                         }
                      }
                   }
