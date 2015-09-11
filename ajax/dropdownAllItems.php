@@ -71,7 +71,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    if (isset($_POST['condition'])) {
       $p['condition'] = $_POST['condition'];
    }
-   if (isset($_POST['used'])) {
+   if (isset($_POST['used'][$_POST['idtable']])) {
       $p['used'] = $_POST['used'][$_POST['idtable']];
    }
 
