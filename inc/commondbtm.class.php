@@ -691,6 +691,13 @@ class CommonDBTM extends CommonGLPI {
          $di = new Document_Item();
          $di->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
+
+      // If this type have NOTEPAD, clean one associated to purged item
+      if ($this->usenotepadrights) {
+         $note = new Notepad();
+         $note->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      }
+
    }
 
 
