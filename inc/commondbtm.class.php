@@ -3606,13 +3606,16 @@ class CommonDBTM extends CommonGLPI {
                         $result = false;
                      }
                      if ($fields['action_notify']) {
-                        $params = array('message'     => Html::clean($message_text),
+                        $params = array(//'message'     => Html::clean($message_text),
                                         'action_type' => $add,
                                         'action_user' => getUserName(Session::getLoginUserID()),
                                         'entities_id' => $entities_id,
                                         'itemtype'    => get_class($this),
                                         'date'        => $_SESSION['glpi_currenttime'],
-                                        'refuse'      => $fields['action_refuse']);
+                                        'refuse'      => $fields['action_refuse'],
+                                        'label'       => $message,
+                                        'field'       => $fields,
+                                        'double'      => $doubles);
                         NotificationEvent::raiseEvent('refuse', new FieldUnicity(), $params);
                      }
                   }

@@ -56,11 +56,14 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
       $action = ($options['action_user'] ?__('Add the item') :__('Update the item'));
       $this->datas['##unicity.action_type##'] = $action;
       $this->datas['##unicity.action_user##'] = $options['action_user'];
-      $this->datas['##unicity.message##']     = $options['message'];
+      //$this->datas['##unicity.message##']     = $options['message'];
       $this->datas['##unicity.date##']        = Html::convDateTime($options['date']);
 
       if ($item = getItemForItemtype($options['itemtype'])) {
          $this->datas['##unicity.itemtype##'] = $item->getTypeName(1);
+         $this->datas['##unicity.message##']  = Html::clean($item->getUnicityErrorMessage($options['label'],
+                                                                                          $options['field'],
+                                                                                          $options['double']));
       }
       $this->datas['##unicity.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                           $options['entities_id']);
