@@ -697,7 +697,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // If this type have NOTEPAD, clean one associated to purged item
-      if ($this->$usenotepad) {
+      if ($this->usenotepad) {
          $note = new Notepad();
          $note->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
@@ -4299,7 +4299,7 @@ class CommonDBTM extends CommonGLPI {
          $values[DELETE] = array('short' => __('Delete'),
                                  'long'  => _x('button', 'Put in dustbin'));
       }
-      if ($this->$usenotepad) {
+      if ($this->usenotepad) {
          $values[READNOTE] = array('short' => __('Read notes'),
                                    'long' => __("Read the item's notes"));
          $values[UPDATENOTE] = array('short' => __('Update notes'),
