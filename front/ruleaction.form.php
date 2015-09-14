@@ -38,21 +38,21 @@
 include ('../inc/includes.php');
 
 
-$criteria = new RuleAction();
+$action = new RuleAction();
 
 if (isset($_POST["add"])) {
-   $criteria->check(-1, CREATE, $_POST);
-   $criteria->add($_POST);
+   $action->check(-1, CREATE, $_POST);
+   $action->add($_POST);
 
    Html::back();
 } else if (isset($_POST["update"])) {
-   $criteria->check($_POST['id'], UPDATE);
-   $criteria->update($_POST);
+   $action->check($_POST['id'], UPDATE);
+   $action->update($_POST);
 
    Html::back();
 } else if (isset($_POST["purge"])) {
-   $criteria->check($_POST['id'], PURGE);
-   $criteria->delete($_POST, 1);
+   $action->check($_POST['id'], PURGE);
+   $action->delete($_POST, 1);
 
    Html::back();
 }
