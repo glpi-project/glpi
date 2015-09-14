@@ -837,8 +837,10 @@ class Entity extends CommonTreeDropdown {
              __s('Show all')."\">".str_replace(" ","&nbsp;",__('Show all'))."</a></div>";
 
       echo "<div class='left' style='width:100%'>";
+      echo "<form id='entsearchform'>";
       echo Html::input('entsearchtext', array('id' => 'entsearchtext'));
       echo Html::submit(__('Search'), array('id' => 'entsearch'));
+      echo "</form>";
 
       echo "<script type='text/javascript'>";
       echo Html::jsGetElementbyID("tree_projectcategory$rand")."
@@ -893,12 +895,15 @@ class Entity extends CommonTreeDropdown {
         function (e, data) {
             document.location.href = data.rslt.obj.children('a').attr('href');
         });
-         $('#entsearch').click(function () {
+
+         $('#entsearchform').submit(function( event ) {
+            // cancel submit of entity search form
+            event.preventDefault();
+
             ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
             ".Html::jsGetElementbyID("tree_projectcategory$rand").
             ".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
          });
-
         ";
 
 
