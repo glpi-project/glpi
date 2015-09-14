@@ -1502,6 +1502,7 @@ class Html {
                $active_item      = array_pop($tmp_active_item);
                if (isset($menu[$sector]['content'])
                    && isset($menu[$sector]['content'][$active_item])
+                   && isset($val['title'])
                    && ($menu[$sector]['content'][$active_item]['title'] == $val['title'])) {
                   $menu_class = "active";
                }
