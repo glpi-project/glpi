@@ -37,8 +37,10 @@
 */
 include ('../inc/includes.php');
 
+$rule = new Rule;
+$rule->getFromDB(intval($_POST['rules_id']));
 
-$action = new RuleAction();
+$action = new RuleAction($rule->fields['sub_type']);
 
 if (isset($_POST["add"])) {
    $action->check(-1, CREATE, $_POST);

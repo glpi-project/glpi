@@ -649,6 +649,10 @@ class RuleAction extends CommonDBChild {
       } else {
          // Create item
          $options[static::$items_id] = $rule->getField('id');
+
+         //force itemtype of parent
+         static::$itemtype = get_class($rule);
+
          $this->check(-1, CREATE, $options);
       }
       $this->showFormHeader($options);
