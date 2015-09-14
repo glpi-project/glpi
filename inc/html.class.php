@@ -1404,6 +1404,17 @@ class Html {
       }
 
       echo "' title=\"".__s('Logout')."\">";
+      echo "<span id='logout_icon' title=\"".__s('Logout').
+             "\"  alt=\"".__s('Logout')."\" class='button-icon' />";
+      echo "</a>";
+      echo "</li>\n";
+
+
+      echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
+                 __s('My settings')."\">";
+      echo "<span id='preferences_icon' title=\"".__s('My settings').
+             "\"  alt=\"".__s('My settings')."\" class='button-icon' /></span>";
+
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
          echo "<span id='myname'>";
@@ -1411,25 +1422,10 @@ class Html {
                               $_SESSION["glpifirstname"], 0, 20);
          echo "</span>";
       }
-
-      echo "<span id='logout_icon' title=\"".__s('Logout').
-             "\"  alt=\"".__s('Logout')."\" class='button-icon' />";
-      echo "</a>";
-      echo "</li>\n";
-
-      /// Search engine
-      echo "<li id='c_recherche'>\n";
-      if ($CFG_GLPI['allow_search_global']) {
-         echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
-         echo "<span id='champRecherche'><input size='15' type='text' name='globalsearch'
-                                         placeholder='". __s('Search')."'>";
-         echo "</span>";
-         Html::closeForm();
-      }
-      echo "</li>";
+      echo "</a></li>";  
 
       /// Bookmark load
-      echo "<li>";
+      echo "<li id='bookmark_link'>";
       Ajax::createIframeModalWindow('loadbookmark',
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
                                     array('title'         => __('Load a bookmark'),
@@ -1448,17 +1444,23 @@ class Html {
            "</a></li>";
 
 
-      echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                 __s('My settings')."\">";
-      echo "<span id='preferences_icon' title=\"".__s('My settings').
-             "\"  alt=\"".__s('My settings')."\" class='button-icon' />";
-      echo "</a></li>";
-
-
       echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                  addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
                  Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
 
+
+      /// Search engine
+      echo "<li id='c_recherche'>\n";
+      if ($CFG_GLPI['allow_search_global']) {
+         echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
+         echo "<span id='champRecherche'><input size='15' type='text' name='globalsearch'
+                                         placeholder='". __s('Search')."'>";
+         echo "</span>";
+         Html::closeForm();
+      }
+      echo "</li>";
+
+      
       echo "</ul>";
       echo "</div>\n";
 

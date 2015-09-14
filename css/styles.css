@@ -1763,9 +1763,6 @@ a.icon_nav_move:hover img {
    margin: 0 10px;
 }
 
-#c_preference ul li#deconnexion {
-   margin-left: 25px;
-}
 #c_preference #logout_icon {
    background: url("../pics/logout.png");
    display: inline-block;
@@ -1832,11 +1829,13 @@ a.icon_nav_move:hover img {
 }
 
 #myname {
-   margin: 0 3px 10px;
+   margin: 0 0 10px 3px;
    display: inline-block;
    vertical-align: middle;
-   font-weight: bold;
-   font-size: 12px;   
+}
+
+#preferences_link:hover #myname {
+   text-decoration: underline;
 }
 
 #c_menu {
