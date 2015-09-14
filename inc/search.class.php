@@ -1497,7 +1497,7 @@ class Search {
 
       $rand = mt_rand();
       return "<div class='switch grey_border'>".
-             "<label for='is_deletedswitch$rand'>".
+             "<label for='is_deletedswitch$rand' title='".__s('Show the dustbin')."' >".
                 "<img src='".$CFG_GLPI["root_doc"]."/pics/showdeleted.png' ".
                   "name='img_deleted' alt='".__s('Show the dustbin')."' class='pointer' />".
                 "<input type='hidden' name='is_deleted' value='0' /> ".
