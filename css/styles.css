@@ -414,9 +414,13 @@ input.save {
    border-bottom:1px solid #C0CAD4;
 }
 
+.jstree.jstree-classic ins {
+    background-image: url("../pics/d.png");
+}
+
 .treeroot {
    width:100%;
-   background: url("..pics/treeroot.png") 0 2px no-repeat;
+   background: url("../pics/treeroot.png") 0 2px no-repeat;
    border:0;
    /*margin-top:5px;*/
    font-weight:bold;
