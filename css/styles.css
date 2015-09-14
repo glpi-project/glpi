@@ -579,11 +579,6 @@ input.save {
       border: 0;
    }
 
-   .layout_vsplit .search_page {
-      height:100%;
-      overflow-y: auto;
-   }
-
    .layout_vsplit #page {
       max-width: inherit;
       min-height: 0;
