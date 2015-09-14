@@ -1318,6 +1318,9 @@ class MailCollector  extends CommonDBTM {
          }
 
       } else {
+         // fix monoparted mail
+         if ($part == "") $part = 1;
+
          $filename = '';
 
          if ($structure->ifdparameters) {
