@@ -14900,11 +14900,11 @@ msgid ""
 msgstr ""
 
 #: inc/toolbox.class.php:871 inc/toolbox.class.php:872
-msgid "PHP version is at least 5.3.0 - Perfect!"
+msgid "PHP version is at least 5.4.0 - Perfect!"
 msgstr ""
 
 #: inc/toolbox.class.php:879
-msgid "You must install at least PHP 5.3.0."
+msgid "You must install at least PHP 5.4.0."
 msgstr ""
 
 #: inc/toolbox.class.php:884
