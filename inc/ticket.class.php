@@ -6576,7 +6576,8 @@ class Ticket extends CommonITILObject {
       echo $out;
 
       //scroll to edit form
-      echo "document.getElementsByClassName('ui-tabs-panel')[0].scrollTop = 0;";
+      echo "$('body').scrollTop(0);";
+      echo "$('.ui-tabs-panel').scrollTop(0);";
 
       // add a mark to currently edited element
       echo "var found_active = $('.talk_active');
