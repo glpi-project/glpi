@@ -1060,11 +1060,11 @@ class Html {
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/css/style.css");
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
 
-      // CSS theme link
-      echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$_SESSION["glpipalette"].".css");
-
       //  CSS link
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
+
+      // CSS theme link
+      echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$_SESSION["glpipalette"].".css");
 
       // surcharge CSS hack for IE
       echo "<!--[if lte IE 6]>" ;
