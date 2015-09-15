@@ -1994,17 +1994,24 @@ class Html {
 
       echo "' title=\"".__s('Logout')."\">";
       // check user id : header used for display messages when session logout
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/logout.png' title=\"".__s('Logout').
+             "\"  alt=\"".__s('Logout')."\" class='button-icon'>";
+      echo "</a>";
+      echo "</li>\n";
+
+      echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
+                 __s('My settings')."\">";
+      echo "<span id='preferences_icon' title=\"".__s('My settings').
+             "\"  alt=\"".__s('My settings')."\" class='button-icon' /></span>";
+
+      // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
          echo "<span id='myname'>";
          echo formatUserName (0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
                               $_SESSION["glpifirstname"], 0, 20);
          echo "</span>";
       }
-
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/logout.png' title=\"".__s('Logout').
-             "\"  alt=\"".__s('Logout')."\" class='button-icon'>";
-      echo "</a>";
-      echo "</li>\n";
+      echo "</a></li>";  
 
       echo "<li>";
       Ajax::createIframeModalWindow('loadbookmark',
@@ -2023,12 +2030,6 @@ class Html {
            "<img src='".$CFG_GLPI["root_doc"]."/pics/help.png' title=\"".__s('Help').
                   "\"  alt=\"".__s('Help')."\" class='button-icon'>";
            "</a></li>";
-
-      echo "<li id='preferences_link'>".
-           "<a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".__s('My settings')."\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/preferences.png' title=\"".__s('My settings').
-             "\"  alt=\"".__s('My settings')."\" class='button-icon'>";
-      echo "</a></li>";
 
       echo "</ul>";
       echo "</div>";
