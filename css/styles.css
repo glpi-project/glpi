@@ -3015,3 +3015,8 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
 .switch label input[type=checkbox][disabled]:checked + .lever:after {
    background-color: #BDBDBD; 
 }
+
+/** QUEUEMAIL **/
+.queuemail_preview .tab_cadre {
+   width: inherit !important;
+}
