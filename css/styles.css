@@ -2096,7 +2096,7 @@ ul#menu ul.ssmenu {
 }
 .breadcrumb_item:nth-of-type(3) {
    background-color: #FEC95C;
-   margin-right: 20px;
+   margin-right: 10px;
 }
 .breadcrumb_item:nth-of-type(3):after {
    border-left-color: #FEC95C;
