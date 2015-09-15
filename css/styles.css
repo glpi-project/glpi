@@ -1587,8 +1587,8 @@ a.icon_nav_move:hover img {
 }
 
 #logo_login {
-   padding:0;
-   margin:0 auto 0;
+   padding: 70px 0 0;
+   margin: 0 auto 0;
    width: 100%;
    height: 76px;
 }
