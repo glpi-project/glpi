@@ -1873,7 +1873,6 @@ ul#menu a.itemP, ul#menu a.itemP1 {
 }
 
 ul#menu ul.ssmenu {
-   margin-top: -8px;
    background: rgba(255, 255, 255, 0.9);
    display: none;
    -moz-box-shadow: 0px 2px 2px 1px #BCB6B3;
