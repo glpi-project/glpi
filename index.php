@@ -76,6 +76,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo '<link rel="shortcut icon" type="images/x-icon" href="'.$CFG_GLPI["root_doc"].
           '/pics/favicon.ico" />';
 
+   // auto desktop / mobile viewport
+   echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
+
    // Appel CSS
    echo '<link rel="stylesheet" href="'.$CFG_GLPI["root_doc"].'/css/styles.css" type="text/css" '.
          'media="screen" />';

@@ -1050,6 +1050,9 @@ class Html {
       echo "<meta http-equiv='Cache-Control' content='no-cache'>\n";
       echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
 
+      // auto desktop / mobile viewport
+      echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
+
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/css/jstree/style.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.css");
@@ -1532,15 +1535,10 @@ class Html {
       echo "<div id='show_all_menu' class='invisible'>";
       $items_per_columns = 15;
       $i                 = -1;
-      echo "<table><tr><td class='top'><table>";
 
       foreach ($menu as $part => $data) {
          if (isset($data['content']) && count($data['content'])) {
-
-            if ($i > $items_per_columns) {
-               $i = 0;
-               echo "</table></td><td class='top'><table>";
-            }
+            echo "<table class='all_menu_block'>";
             $link = "#";
 
             if (isset($data['default']) && !empty($data['default'])) {
@@ -1555,10 +1553,10 @@ class Html {
             // list menu item
             foreach ($data['content'] as $key => $val) {
 
-               if ($i > $items_per_columns) {
+               /*if ($i > $items_per_columns) {
                   $i = 0;
                   echo "</table></td><td class='top'><table>";
-               }
+               }*/
 
                if (isset($val['page'])
                    && isset($val['title'])) {
@@ -1571,9 +1569,9 @@ class Html {
                   $i++;
                }
             }
+            echo "</table>";
          }
       }
-      echo "</table></td></tr></table>";
 
       echo "</div>";
 
@@ -1645,8 +1643,6 @@ class Html {
             echo "</a></li>";
          }
 
-         echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
-
          $links = array();
          // Item with Option case
          if (!empty($option)
@@ -1662,7 +1658,8 @@ class Html {
          }
 
          // Add item
-         echo "<li>";
+         echo "<li class='icons_block'>";
+         echo "<span>";
          if (isset($links['add'])) {
             echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_add.png",
                              array('alt' => __('Add'),
@@ -1671,10 +1668,10 @@ class Html {
             echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_add_off.png",
                              array('alt' => __('Add')));
          }
-         echo "</li>";
+         echo "</span>";
 
          // Search Item
-         echo "<li>";
+         echo "<span>";
          if (isset($links['search'])) {
             echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search.png",
                              array('alt' => __('Search'),
@@ -1683,7 +1680,7 @@ class Html {
             echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search_off.png",
                              array('alt' => __('Search')));
          }
-         echo "</li>";
+         echo "</span>";
         // Links
          if (count($links) > 0) {
             foreach ($links as $key => $val) {
@@ -1694,48 +1691,47 @@ class Html {
                      break;
 
                   case "template" :
-                     echo "<li>";
+                     echo "<span>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_addtemplate.png",
                                       array('alt' => __('Manage templates...'),
                                             'url' => $CFG_GLPI["root_doc"].$val));
-                     echo "</li>";
+                     echo "</span>";
                      break;
 
                   case "showall" :
-                     echo "<li>";
+                     echo "<span>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_showall.png",
                                       array('alt' => __('Show all'),
                                             'url' => $CFG_GLPI["root_doc"].$val));
-                     echo "</li>";
+                     echo "</span>";
                      break;
 
                   case "summary" :
-                     echo "<li>";
+                     echo "<span>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_show.png",
                                       array('alt' => __('Summary'),
                                             'url' => $CFG_GLPI["root_doc"].$val));
-                     echo "</li>";
+                     echo "</span>";
                      break;
 
                   case "config" :
-                     echo "<li>";
+                     echo "<span>";
                      echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_config.png",
                                       array('alt' => __('Setup'),
                                             'url' => $CFG_GLPI["root_doc"].$val));
-                     echo "</li>";
+                     echo "</span>";
                      break;
 
                   default :
-                     echo "<li>".Html::link($key, $CFG_GLPI["root_doc"].$val)."</li>";
+                     echo "<span>".Html::link($key, $CFG_GLPI["root_doc"].$val)."</span>";
                      break;
                }
             }
          }
+         echo "</li>";
 
       } else {
-         echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
-         echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".
-               "&nbsp;&nbsp;&nbsp;&nbsp;</li>";
+         echo "<li>&nbsp;</li>";
       }
 
       // Add common items
