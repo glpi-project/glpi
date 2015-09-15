@@ -6682,12 +6682,11 @@ class Ticket extends CommonITILObject {
       $ticket_users = $ticket->getTicketActors();
       $actor_type   = $ticket_users[Session::getLoginUserID()];
 
-      $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
-
       if ($actor_type == CommonITILActor::REQUESTER) {
          $ticket->fields['status'] = CommonITILObject::ASSIGNED;
       }
-
+      $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
+      
       $html = "<div class='x-split-button' id='x-split-button'>
                <input type='submit' value='$locale' name='$action' class='x-button x-button-main'>
                <span class='x-button x-button-drop'>&nbsp;</span>

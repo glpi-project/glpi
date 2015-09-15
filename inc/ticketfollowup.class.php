@@ -674,11 +674,6 @@ class TicketFollowup  extends CommonDBTM {
    function showFormButtons($options=array()) {
       global $CFG_GLPI;
 
-      if (isset($_SESSION["glpiactiveprofile"])
-          && ($_SESSION["glpiactiveprofile"]["interface"] != "central")) {
-         return parent::showFormButtons($options);
-      }
-
       // for single object like config
       $ID = 1;
       if (isset($this->fields['id'])) {
