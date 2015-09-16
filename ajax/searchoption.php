@@ -87,8 +87,7 @@ if (isset($_POST["itemtype"])
       }
       $randsearch = Dropdown::showFromArray($fieldname."[".$_POST["num"]."][searchtype]",
                                             $actions,
-                                            array('value'  => $_POST["searchtype"],
-                                                  'width'  => '100%'));
+                                            array('value'  => $_POST["searchtype"]));
       $fieldsearch_id = Html::cleanId("dropdown_".$fieldname."[".$_POST["num"]."][searchtype]$randsearch");
    }
    echo "</td><td width='80%'>";

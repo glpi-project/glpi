@@ -2107,8 +2107,7 @@ class Toolbox {
       $svalue = (!empty($tab['type'])?'/'.$tab['type']:'');
 
       Dropdown::showFromArray('server_type', $values,
-                              array('value' => $svalue,
-                                    'width' => '10%'));
+                              array('value' => $svalue));
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/ssl' => __('SSL'));
@@ -2116,8 +2115,7 @@ class Toolbox {
       $svalue = ($tab['ssl']?'/ssl':'');
 
       Dropdown::showFromArray('server_ssl', $values,
-                              array('value' => $svalue,
-                                    'width' => '10%'));
+                              array('value' => $svalue));
 
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2152,8 +2150,7 @@ class Toolbox {
       }
 
       Dropdown::showFromArray('server_cert', $values,
-                              array('value' => $svalue,
-                                    'width' => '20%'));
+                              array('value' => $svalue));
 
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2162,8 +2159,7 @@ class Toolbox {
       $svalue = ($tab['norsh'] === true?'/norsh':'');
 
       Dropdown::showFromArray('server_rsh', $values,
-                              array('value' => $svalue,
-                                    'width' => '12%'));
+                              array('value' => $svalue));
 
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2172,8 +2168,7 @@ class Toolbox {
       $svalue = ($tab['secure'] === true?'/secure':'');
 
       Dropdown::showFromArray('server_secure', $values,
-                              array('value' => $svalue,
-                                    'width' => '12%'));
+                              array('value' => $svalue));
 
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php

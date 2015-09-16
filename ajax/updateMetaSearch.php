@@ -64,8 +64,7 @@ foreach ($searchopt as $key => $val) {
    }
 }
 $rand     = Dropdown::showFromArray("metacriteria[".$_POST["num"]."][field]", $values,
-                                    array('value' => $_POST["field"],
-                                          'width' => '100%'));
+                                    array('value' => $_POST["field"]));
 $field_id = Html::cleanId("dropdown_metacriteria[".$_POST["num"]."][field]".$rand);
 
 echo "</td><td class='left'>";

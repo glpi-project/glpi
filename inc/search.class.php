@@ -1140,6 +1140,7 @@ class Search {
          $parameters .= "&amp;_in_modal=1";
       }
 
+
       // Global search header
       if ($data['display_type'] == self::GLOBAL_SEARCH) {
          if ($data['item']) {
