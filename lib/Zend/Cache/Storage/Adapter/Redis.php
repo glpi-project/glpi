@@ -13,12 +13,14 @@ use Redis as RedisResource;
 use RedisException as RedisResourceException;
 use stdClass;
 use Traversable;
+use Zend\Cache\Storage\ClearByPrefixInterface;
 use Zend\Cache\Exception;
 use Zend\Cache\Storage\Capabilities;
 use Zend\Cache\Storage\FlushableInterface;
 use Zend\Cache\Storage\TotalSpaceCapableInterface;
 
 class Redis extends AbstractAdapter implements
+    ClearByPrefixInterface,
     FlushableInterface,
     TotalSpaceCapableInterface
 {
@@ -66,7 +68,7 @@ class Redis extends AbstractAdapter implements
 
         // reset initialized flag on update option(s)
         $initialized = & $this->initialized;
-        $this->getEventManager()->attach('option', function ($event) use (& $initialized) {
+        $this->getEventManager()->attach('option', function () use (& $initialized) {
             $initialized = false;
         });
     }
@@ -151,7 +153,7 @@ class Redis extends AbstractAdapter implements
 
         if ($value === false) {
             $success = false;
-            return null;
+            return;
         }
 
         $success = true;
@@ -366,6 +368,32 @@ class Redis extends AbstractAdapter implements
         } catch (RedisResourceException $e) {
             throw new Exception\RuntimeException($redis->getLastError(), $e->getCode(), $e);
         }
+    }
+
+    /* ClearByPrefixInterface */
+
+    /**
+     * Remove items matching given prefix
+     *
+     * @param string $prefix
+     * @return bool
+     */
+    public function clearByPrefix($prefix)
+    {
+        $redis = $this->getRedisResource();
+
+        $prefix = (string) $prefix;
+        if ($prefix === '') {
+            throw new Exception\InvalidArgumentException('No prefix given');
+        }
+
+        $options   = $this->getOptions();
+        $namespace = $options->getNamespace();
+        $prefix    = ($namespace === '') ? '' : $namespace . $options->getNamespaceSeparator() . $prefix;
+
+        $redis->delete($redis->keys($prefix.'*'));
+
+        return true;
     }
 
     /* TotalSpaceCapableInterface */

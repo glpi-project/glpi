@@ -64,7 +64,7 @@ abstract class AbstractTranslatorHelper extends AbstractHelper implements
     public function getTranslator()
     {
         if (! $this->isTranslatorEnabled()) {
-            return null;
+            return;
         }
 
         return $this->translator;

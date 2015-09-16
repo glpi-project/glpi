@@ -117,6 +117,12 @@ class DbaOptions extends AdapterOptions
             throw new Exception\ExtensionNotLoadedException("DBA-Handler '{$handler}' not supported");
         }
 
+        if ($handler === 'inifile') {
+            throw new Exception\ExtensionNotLoadedException(
+                "DBA-Handler 'inifile' does not reliably support write operations"
+            );
+        }
+
         $this->triggerOptionEvent('handler', $handler);
         $this->handler = $handler;
         return $this;

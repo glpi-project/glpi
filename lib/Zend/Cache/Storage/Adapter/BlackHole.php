@@ -113,7 +113,7 @@ class BlackHole implements
     public function getItem($key, & $success = null, & $casToken = null)
     {
         $success = false;
-        return null;
+        return;
     }
 
     /**

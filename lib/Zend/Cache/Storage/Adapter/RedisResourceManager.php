@@ -105,7 +105,7 @@ class RedisResourceManager
      * Gets a redis resource
      *
      * @param string $id
-     * @return RedisResource
+     * @return RedisResourceManager
      * @throws Exception\RuntimeException
      */
     public function getResource($id)
@@ -233,14 +233,14 @@ class RedisResourceManager
         }
 
         if (! is_string($serverUri)) {
-            return null;
+            return;
         }
 
         // parse server from URI host{:?port}
         $server = trim($serverUri);
 
         if (strpos($server, '/') === 0) {
-            return null;
+            return;
         }
 
         //non unix domain socket connection
@@ -627,7 +627,7 @@ class RedisResourceManager
      *
      * @param string $id
      * @param int $database
-     * @return RedisResource
+     * @return RedisResourceManager
      */
     public function setDatabase($id, $database)
     {

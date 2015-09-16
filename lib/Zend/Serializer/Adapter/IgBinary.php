@@ -69,7 +69,7 @@ class IgBinary extends AbstractAdapter
     public function unserialize($serialized)
     {
         if ($serialized === static::$serializedNull) {
-            return null;
+            return;
         }
 
         ErrorHandler::start();

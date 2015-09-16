@@ -167,7 +167,7 @@ class CallbackHandler
         if (array_key_exists($name, $this->metadata)) {
             return $this->metadata[$name];
         }
-        return null;
+        return;
     }
 
     /**

@@ -9,6 +9,8 @@
 
 namespace Zend\ServiceManager;
 
+use Exception as BaseException;
+
 /**
  * ServiceManager implementation for managing plugins
  *
@@ -55,7 +57,7 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
      * Add a default initializer to ensure the plugin is valid after instance
      * creation.
      *
-     * @param  null|ConfigInterface $configuration
+     * @param null|ConfigInterface $configuration
      */
     public function __construct(ConfigInterface $configuration = null)
     {
@@ -74,7 +76,7 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
      * Checks that the filter loaded is either a valid callback or an instance
      * of FilterInterface.
      *
-     * @param  mixed $plugin
+     * @param  mixed                      $plugin
      * @return void
      * @throws Exception\RuntimeException if invalid
      */
@@ -88,21 +90,44 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
      * constructor if not null and a non-empty array.
      *
      * @param  string $name
-     * @param  array $options
-     * @param  bool $usePeeringServiceManagers
+     * @param  array  $options
+     * @param  bool   $usePeeringServiceManagers
+     *
      * @return object
+     *
+     * @throws Exception\ServiceNotFoundException
+     * @throws Exception\ServiceNotCreatedException
+     * @throws Exception\RuntimeException
      */
     public function get($name, $options = array(), $usePeeringServiceManagers = true)
     {
+        $isAutoInvokable = false;
+
         // Allow specifying a class name directly; registers as an invokable class
         if (!$this->has($name) && $this->autoAddInvokableClass && class_exists($name)) {
+            $isAutoInvokable = true;
+
             $this->setInvokableClass($name, $name);
         }
 
         $this->creationOptions = $options;
-        $instance = parent::get($name, $usePeeringServiceManagers);
+
+        try {
+            $instance = parent::get($name, $usePeeringServiceManagers);
+        } catch (Exception\ServiceNotFoundException $exception) {
+            $this->tryThrowingServiceLocatorUsageException($name, $isAutoInvokable, $exception);
+        } catch (Exception\ServiceNotCreatedException $exception) {
+            $this->tryThrowingServiceLocatorUsageException($name, $isAutoInvokable, $exception);
+        }
+
         $this->creationOptions = null;
-        $this->validatePlugin($instance);
+
+        try {
+            $this->validatePlugin($instance);
+        } catch (Exception\RuntimeException $exception) {
+            $this->tryThrowingServiceLocatorUsageException($name, $isAutoInvokable, $exception);
+        }
+
         return $instance;
     }
 
@@ -112,9 +137,9 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
      * Validates that the service object via validatePlugin() prior to
      * attempting to register it.
      *
-     * @param  string $name
-     * @param  mixed $service
-     * @param  bool $shared
+     * @param  string                                $name
+     * @param  mixed                                 $service
+     * @param  bool                                  $shared
      * @return AbstractPluginManager
      * @throws Exception\InvalidServiceNameException
      */
@@ -124,18 +149,20 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
             $this->validatePlugin($service);
         }
         parent::setService($name, $service, $shared);
+
         return $this;
     }
 
     /**
      * Set the main service locator so factories can have access to it to pull deps
      *
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param  ServiceLocatorInterface $serviceLocator
      * @return AbstractPluginManager
      */
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
         $this->serviceLocator = $serviceLocator;
+
         return $this;
     }
 
@@ -155,8 +182,8 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
      * Overrides parent implementation by passing $creationOptions to the
      * constructor, if non-null.
      *
-     * @param  string $canonicalName
-     * @param  string $requestedName
+     * @param  string                               $canonicalName
+     * @param  string                               $requestedName
      * @return null|\stdClass
      * @throws Exception\ServiceNotCreatedException If resolved class does not exist
      */
@@ -191,8 +218,8 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
      * Overrides parent implementation by passing $creationOptions to the
      * constructor, if non-null.
      *
-     * @param  string $canonicalName
-     * @param  string $requestedName
+     * @param  string                               $canonicalName
+     * @param  string                               $requestedName
      * @return mixed
      * @throws Exception\ServiceNotCreatedException If factory is not callable
      */
@@ -216,13 +243,11 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
         } elseif (is_callable($factory)) {
             $instance = $this->createServiceViaCallback($factory, $canonicalName, $requestedName);
         } else {
-            throw new Exception\ServiceNotCreatedException(
-                sprintf(
-                    'While attempting to create %s%s an invalid factory was registered for this instance type.',
-                    $canonicalName,
-                    ($requestedName ? '(alias: ' . $requestedName . ')' : '')
-                )
-            );
+            throw new Exception\ServiceNotCreatedException(sprintf(
+                'While attempting to create %s%s an invalid factory was registered for this instance type.',
+                $canonicalName,
+                ($requestedName ? '(alias: ' . $requestedName . ')' : '')
+            ));
         }
 
         return $instance;
@@ -231,9 +256,9 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
     /**
      * Create service via callback
      *
-     * @param  callable $callable
-     * @param  string   $cName
-     * @param  string   $rName
+     * @param  callable                                   $callable
+     * @param  string                                     $cName
+     * @param  string                                     $rName
      * @throws Exception\ServiceNotCreatedException
      * @throws Exception\ServiceNotFoundException
      * @throws Exception\CircularDependencyFoundException
@@ -257,5 +282,36 @@ abstract class AbstractPluginManager extends ServiceManager implements ServiceLo
         }
 
         return parent::createServiceViaCallback($callable, $cName, $rName);
+    }
+
+    /**
+     * @param string        $serviceName
+     * @param bool          $isAutoInvokable
+     * @param BaseException $exception
+     *
+     * @throws BaseException
+     * @throws Exception\ServiceLocatorUsageException
+     */
+    private function tryThrowingServiceLocatorUsageException(
+        $serviceName,
+        $isAutoInvokable,
+        BaseException $exception
+    ) {
+        if ($isAutoInvokable) {
+            $this->unregisterService($this->canonicalizeName($serviceName));
+        }
+
+        $serviceLocator = $this->getServiceLocator();
+
+        if ($serviceLocator && $serviceLocator->has($serviceName)) {
+            throw Exception\ServiceLocatorUsageException::fromInvalidPluginManagerRequestedServiceName(
+                $this,
+                $serviceLocator,
+                $serviceName,
+                $exception
+            );
+        }
+
+        throw $exception;
     }
 }

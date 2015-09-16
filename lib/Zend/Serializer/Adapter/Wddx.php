@@ -125,7 +125,7 @@ class Wddx extends AbstractAdapter
                 //$simpleXml = new \SimpleXMLElement($wddx);
                 libxml_disable_entity_loader($oldLibxmlDisableEntityLoader);
                 if (isset($simpleXml->data[0]->null[0])) {
-                    return null; // valid null
+                    return; // valid null
                 }
                 throw new Exception\RuntimeException('Unserialization failed: Invalid wddx packet');
             } catch (\Exception $e) {

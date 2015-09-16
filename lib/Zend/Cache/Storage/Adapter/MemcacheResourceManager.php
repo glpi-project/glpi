@@ -95,6 +95,8 @@ class MemcacheResourceManager
      *
      * @param string $id
      * @param array|Traversable|MemcacheResource $resource
+     * @param callable $failureCallback
+     * @param array|Traversable $serverDefaults
      * @return MemcacheResourceManager
      */
     public function setResource($id, $resource, $failureCallback = null, $serverDefaults = array())
@@ -184,7 +186,8 @@ class MemcacheResourceManager
      * Set compress threshold on a Memcache resource
      *
      * @param MemcacheResource $resource
-     * @param array $libOptions
+     * @param int $threshold
+     * @param float $minSavings
      */
     protected function setResourceAutoCompressThreshold(MemcacheResource $resource, $threshold, $minSavings)
     {
@@ -396,7 +399,7 @@ class MemcacheResourceManager
      * Get callback for server connection failures
      *
      * @param string $id
-     * @return callable|null
+     * @return callable
      * @throws Exception\RuntimeException
      */
     public function getFailureCallback($id)

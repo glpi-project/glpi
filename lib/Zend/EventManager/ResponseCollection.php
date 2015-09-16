@@ -61,7 +61,7 @@ class ResponseCollection extends SplStack
     public function last()
     {
         if (count($this) === 0) {
-            return null;
+            return;
         }
         return parent::top();
     }

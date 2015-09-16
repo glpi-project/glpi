@@ -26,7 +26,7 @@ class PluginOptions extends AbstractOptions
     /**
      * Used by:
      * - ExceptionHandler
-     * @var callable
+     * @var null|callable
      */
     protected $exceptionCallback;
 
@@ -99,7 +99,7 @@ class PluginOptions extends AbstractOptions
      * Used by:
      * - ExceptionHandler
      *
-     * @param  callable $exceptionCallback
+     * @param  null|callable $exceptionCallback
      * @throws Exception\InvalidArgumentException
      * @return PluginOptions
      */
@@ -118,7 +118,7 @@ class PluginOptions extends AbstractOptions
      * Used by:
      * - ExceptionHandler
      *
-     * @return callable
+     * @return null|callable
      */
     public function getExceptionCallback()
     {

@@ -401,6 +401,8 @@ class Translator implements TranslatorInterface
             }
 
             return ($number == 1 ? $singular : $plural);
+        } elseif (is_string($translation)) {
+            $translation = array($translation);
         }
 
         $index = $this->messages[$textDomain][$locale]
@@ -461,7 +463,7 @@ class Translator implements TranslatorInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**

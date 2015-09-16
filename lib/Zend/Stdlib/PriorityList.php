@@ -62,8 +62,11 @@ class PriorityList implements Iterator, Countable
      */
     public function insert($name, $value, $priority = 0)
     {
+        if (!isset($this->items[$name])) {
+            $this->count++;
+        }
+
         $this->sorted = false;
-        $this->count++;
 
         $this->items[$name] = array(
             'data'     => $value,
@@ -129,7 +132,7 @@ class PriorityList implements Iterator, Countable
     public function get($name)
     {
         if (!isset($this->items[$name])) {
-            return null;
+            return;
         }
 
         return $this->items[$name]['data'];
@@ -197,6 +200,7 @@ class PriorityList implements Iterator, Countable
      */
     public function current()
     {
+        $this->sorted || $this->sort();
         $node = current($this->items);
 
         return $node ? $node['data'] : false;
@@ -207,6 +211,7 @@ class PriorityList implements Iterator, Countable
      */
     public function key()
     {
+        $this->sorted || $this->sort();
         return key($this->items);
     }
 
@@ -226,6 +231,14 @@ class PriorityList implements Iterator, Countable
     public function valid()
     {
         return current($this->items) !== false;
+    }
+
+    /**
+     * @return self
+     */
+    public function getIterator()
+    {
+        return clone $this;
     }
 
     /**

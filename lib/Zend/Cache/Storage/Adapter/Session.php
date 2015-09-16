@@ -152,13 +152,13 @@ class Session extends AbstractAdapter implements
 
         if (!$cntr->offsetExists($ns)) {
             $success = false;
-            return null;
+            return;
         }
 
         $data    = $cntr->offsetGet($ns);
         $success = array_key_exists($normalizedKey, $data);
         if (!$success) {
-            return null;
+            return;
         }
 
         $casToken = $value = $data[$normalizedKey];

@@ -353,7 +353,6 @@ class Parser
                     'Found invalid character "%s" in input stream',
                     $result
                 ));
-                break;
         }
 
         $token = $this->getSymbol($id);
