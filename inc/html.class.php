@@ -1119,6 +1119,7 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/imagepaste/jquery.image_paste.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum-min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js");
 
       // layout
       if (CommonGLPI::isLayoutWithMain() 

@@ -606,10 +606,13 @@ class TicketFollowup  extends CommonDBTM {
       if ($tech) {
          $this->showFormHeader($options);
 
+         $rand = mt_rand();
+
          echo "<tr class='tab_bg_1'>";
          echo "<td rowspan='3' class='middle right'>".__('Description')."</td>";
          echo "<td class='center middle' rowspan='3'>";
-         echo "<textarea name='content' cols='70' rows='6'>".$this->fields["content"]."</textarea>";
+         echo "<textarea id='content$rand' name='content' cols='70' rows='6'>".$this->fields["content"]."</textarea>";
+         echo Html::scriptBlock("$(document).ready(function() { $('#content$rand').autogrow(); });");
          if ($this->fields["date"]) {
             echo "</td><td>".__('Date')."</td>";
             echo "<td>".Html::convDateTime($this->fields["date"]);
