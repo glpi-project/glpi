@@ -5732,44 +5732,18 @@ class Ticket extends CommonITILObject {
     * @return htlm content
    **/
    function convertImageToTag($content_html, $force_update=false) {
-
-      $html = str_replace('&', '&amp;', $content_html);
-      if (!empty($html)) {
-         // We parse HTML with dom
-         libxml_use_internal_errors(true);
-         $dom = new DOMDocument();
-         $dom->loadHTML($html);
-         $dom->preserveWhiteSpace = false;
-
-         // We replace each html element by its tag
-         $htmlTags = array('img', 'object');
-         foreach ($htmlTags as $htmlTag) {
-            $nodes          = $dom->getElementsByTagName($htmlTag);
-            $nodeListLength = $nodes->length;
-            // If config display image
-            for ($i = 0; $i < $nodeListLength; $i ++) {
-               $node = $nodes->item(0);
-               if ($node->getAttribute('alt')) {
-                  $tag = $dom->createTextNode(Document::getImageTag($node->getAttribute('alt')));
-               }
-               $p = $dom->createElement('p');
-               $p->appendChild($tag);
-               $node->parentNode->replaceChild($p, $node);
+      
+      if (!empty($content_html)) {
+         preg_match_all("/alt\s*=\s*['|\"](.+?)['|\"]/", $content_html, $matches, PREG_PATTERN_ORDER);
+         if (isset($matches[1]) && count($matches[1])) {
+            // Get all image src
+            foreach ($matches[1] as $src) {
+               // Set tag if image matches
+               $content_html = preg_replace(array("/<img.*alt=['|\"]".$src."['|\"][^>]*\>/", "/<object.*alt=['|\"]".$src."['|\"][^>]*\>/"), Document::getImageTag($src), $content_html); 
             }
          }
 
-         // Get only body content
-         $doc = new DOMDocument();
-         $body = $dom->getElementsByTagName('body')->item(0);
-         foreach ($body->childNodes as $child)
-            $doc->appendChild($doc->importNode($child, true));
-
-         if ($force_update) {
-            $this->fields['content'] = utf8_decode(Html::entity_decode_deep($doc->saveHTML()));
-            $this->updateInDB(array('content'));
-         }
-
-         return utf8_decode(Html::entity_decode_deep($doc->saveHTML()));
+         return $content_html;
       }
    }
 
@@ -5980,12 +5954,12 @@ class Ticket extends CommonITILObject {
     * @return $content
    **/
    function setSimpleTextContent($content) {
-
-      $content = Html::entity_decode_deep($content);
+      
+     $text = Html::entity_decode_deep($content);
 
       // If is html content
-      if ($content != strip_tags($content)) {
-         $content = Html::clean($this->convertImageToTag($content));
+      if ($text != strip_tags($text)) {
+         $content = Html::clean($this->convertImageToTag($text));
       }
 
       return $content;
@@ -6004,8 +5978,6 @@ class Ticket extends CommonITILObject {
     * @return $content
    **/
    function setRichTextContent($name, $content, $rand) {
-
-      $content = Html::entity_decode_deep($content);
 
       // Init html editor
       Html::initEditorSystem($name, $rand);
