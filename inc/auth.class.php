@@ -278,10 +278,7 @@ class Auth extends CommonGLPI {
    **/
    static function checkPassword($pass, $hash) {
 
-      $tmp = NULL;
-      if (PasswordCompat\binary\check()) {
-         $tmp = password_get_info($hash);
-      }
+      $tmp = password_get_info($hash);
 
       if (isset($tmp['algo']) && $tmp['algo']) {
          $ok = password_verify($pass, $hash);
@@ -312,11 +309,7 @@ class Auth extends CommonGLPI {
    **/
    static function needRehash($hash) {
 
-      if (PasswordCompat\binary\check()) {
-         return password_needs_rehash($hash, PASSWORD_DEFAULT);
-      }
-      // sha1(40) + salt(8)
-      return (strlen($hash) < 48);
+      return password_needs_rehash($hash, PASSWORD_DEFAULT);
    }
 
 
@@ -331,11 +324,7 @@ class Auth extends CommonGLPI {
    **/
    static function getPasswordHash($pass) {
 
-      if (PasswordCompat\binary\check()) {
-         return password_hash($pass, PASSWORD_DEFAULT);
-      }
-      $salt = sprintf("%08x", mt_rand());
-      return $salt.sha1($salt.$pass);
+      return password_hash($pass, PASSWORD_DEFAULT);
    }
 
 
