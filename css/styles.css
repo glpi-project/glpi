@@ -2089,7 +2089,7 @@ ul#menu ul.ssmenu {
    }
 
    .ui-dialog {
-      max-width: 100%
+      max-width: 100%;
    }
 }
 
@@ -2140,13 +2140,13 @@ ul#menu ul.ssmenu {
 }
 .breadcrumb_item:nth-of-type(3) {
    background-color: #FEC95C;
-   margin-right: 10px;
 }
 .breadcrumb_item:nth-of-type(3):after {
    border-left-color: #FEC95C;
 }
 
 .icons_block {
+   margin-left: 20px;
    height: 28px;
    float: inherit !important;
    box-sizing: border-box;
