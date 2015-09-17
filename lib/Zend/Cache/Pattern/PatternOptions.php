@@ -375,7 +375,7 @@ class PatternOptions extends AbstractOptions
             }
 
             // normalize
-            $umask = $umask & 0777;
+            $umask = $umask & ~0002;
         }
 
         $this->umask = $umask;
