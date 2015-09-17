@@ -595,7 +595,7 @@ class CommonGLPI {
          return false;
       }
 
-      $ong   = $this->defineTabs();
+      $ong   = $this->defineAllTabs();
       $class = "main_form";
       if (count($ong) == 0) {
          $class .= " no_tab";
@@ -606,8 +606,10 @@ class CommonGLPI {
       } else {
          $class .= " modify_form";
       }
+      echo "<div class='form_content'>";
       echo "<div class='$class'>";
       $this->showForm($_REQUEST['id'], $_REQUEST);
+      echo "</div>";
       echo "</div>";
    }
 

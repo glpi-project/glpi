@@ -640,7 +640,9 @@ input.save {
    }
 
    .layout_vsplit #page .glpi_tabs {
-      height: 100%;
+      height: 96%;
+      position: relative;
+      z-index:1;
    }
 
    .layout_vsplit #page .main_form.create_form {
@@ -655,14 +657,21 @@ input.save {
       margin: 0;
    }
 
-   .layout_vsplit.form div.main_form:not(.no_tab) {
+   .layout_vsplit.form .form_content {
+      position: relative;
       width: 46%;
       float: left;
+      height: 96%;
+      z-index:2;
+   }
+
+   .layout_vsplit.form div.main_form:not(.no_tab) {
+      width: 100%;
       margin: 0 15px;
       overflow-x: hidden;
       overflow-y: auto;
       position: absolute;
-      top: 32px;
+      top: 0;
       bottom: 0;
    }
 
@@ -686,21 +695,21 @@ input.save {
 
    .layout_vsplit.form .ui-tabs {
       position: absolute;
-      top: 32px;
+      top: 0;
       bottom: 0;
       width: 52%;
       margin: 0;
       right: 0;
-      height: inherit !important;
+      /*height: inherit !important;*/
    }
 
    .layout_vsplit > #page > div > .ui-tabs > .ui-tabs-panel {
-      padding: 10px 0 0 0;
+      /*padding: 10px 0 0 0;*/
       overflow-x: hidden;
       overflow-y: auto;
       position: absolute;
       top: 32px;
-      bottom: 30px;
+      bottom: 2px;
       width: 100%;
       box-sizing: border-box;
    }
@@ -732,6 +741,7 @@ input.save {
       position: absolute;
       bottom: 0;
       width: 100%;
+      z-index: 3;
    }
 }
 
@@ -2337,12 +2347,11 @@ ul#menu ul.ssmenu {
 
 .debug .ui-tabs {
    display: none;
-   position: fixed;
-   bottom: 0;
-   left: 0;
-   right: 0;
-   height: 300px;
-   z-index: 100;
+   position: fixed !important;
+   bottom: 0 !important;
+   top: inherit !important;
+   height: 300px !important;
+   z-index: 100 !important;
 }
 
 .ui-tabs .debug .see_debug{

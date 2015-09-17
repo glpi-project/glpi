@@ -742,6 +742,7 @@ class Html {
             });
 
             $('#see_debug$rand').click(function() {
+               console.log('see_debug #debugtabs$rand');
                $('#debugtabs$rand').css('display', 'block');
             });
          ");
