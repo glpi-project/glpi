@@ -710,7 +710,7 @@ input.save {
    }
    .layout_vsplit.form .main_form textarea {
       resize: vertical;
-      width:99%;
+      width:98%;
       min-height: 125px;
    }
 
