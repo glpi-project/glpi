@@ -27,6 +27,21 @@ rsync -a -del $SRC/zend-servicemanager/src/ $DST/ServiceManager/
 rsync -a -del $SRC/zend-stdlib/src/         $DST/Stdlib/
 rsync -a -del $SRC/zend-version/src/        $DST/Version/
 
+echo "+ zetacomponents/**"
+
+SRC=vendor/zetacomponents
+DST=../lib/zeta
+rsync -a -del $SRC/base/src/         $DST/Base/src/
+rsync -a -del $SRC/graph/src/        $DST/Graph/src/
+mv $DST/Base/src/base_autoload.php   $DST/autoload/
+for fic in $DST/Base/*
+do [ $(basename $fic) == src ] || cp $SRC/base/$(basename $fic) $fic
+done
+mv $DST/Graph/src/graph_autoload.php $DST/autoload/
+for fic in $DST/Graph/*
+do [ $(basename $fic) == src ] ||  cp $SRC/graph/$(basename $fic) $fic
+done
+
 git status
 
 echo -e "\nDone: you can now review the changes and commit\n"
