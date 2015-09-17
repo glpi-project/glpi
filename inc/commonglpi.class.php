@@ -1072,6 +1072,13 @@ class CommonGLPI {
    public static function isLayoutExcludedPage() {
       global $CFG_GLPI;
 
+      if (basename($_SERVER['SCRIPT_NAME']) == "updatecurrenttab.php") {
+         $base_referer = basename($_SERVER['HTTP_REFERER']);
+         $base_referer = explode("?", $base_referer);
+         $base_referer = $base_referer[0];
+         return in_array($base_referer, $CFG_GLPI['layout_excluded_pages']);
+      }
+
       return in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages']);
    }
 
