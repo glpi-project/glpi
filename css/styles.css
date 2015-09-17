@@ -632,6 +632,10 @@ input.save {
       bottom: 15px;
       width: 100%;
       padding: 0;
+      overflow: auto;
+   }
+
+   .layout_vsplit.form #page {
       overflow: hidden;
    }
 
