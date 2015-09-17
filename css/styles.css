@@ -632,7 +632,7 @@ input.save {
       bottom: 15px;
       width: 100%;
       padding: 0;
-      overflow: auto;
+      overflow: hidden;
    }
 
    .layout_vsplit #page .glpi_tabs {
@@ -696,7 +696,7 @@ input.save {
       overflow-y: auto;
       position: absolute;
       top: 32px;
-      bottom: 0;
+      bottom: 30px;
       width: 100%;
       box-sizing: border-box;
    }
