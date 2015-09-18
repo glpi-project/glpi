@@ -301,7 +301,7 @@ select {
   display: inline-block;
   width: 1em;
   background-color: inherit;
-  z-index: 200;
+  z-index: 2;
   left: -.5em;
   height: 26px;
   margin-top: -2px;
