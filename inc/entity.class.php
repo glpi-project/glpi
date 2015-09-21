@@ -929,7 +929,8 @@ class Entity extends CommonTreeDropdown {
                   searchTree();
                }
             }, 500);
-         });
+         })
+         .focus();
      ";
 
 
