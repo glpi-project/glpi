@@ -898,13 +898,37 @@ class Entity extends CommonTreeDropdown {
             document.location.href = data.rslt.obj.children('a').attr('href');
          });
 
+         var searchTree = function() {
+            ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
+            ".Html::jsGetElementbyID("tree_projectcategory$rand").
+            ".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
+         }
+
          $('#entsearchform').submit(function( event ) {
             // cancel submit of entity search form
             event.preventDefault();
 
-            ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
-            ".Html::jsGetElementbyID("tree_projectcategory$rand").
-            ".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
+            // search
+            searchTree();
+         });
+
+         // delay function who reinit timer on each call
+         var typewatch = (function(){
+            var timer = 0;
+            return function(callback, ms){
+               clearTimeout (timer);
+               timer = setTimeout(callback, ms);
+            };
+         })();
+
+         // autosearch on keypress (delayed and with min length)
+         $('#entsearchtext').keyup(function () {
+            var inputsearch = $(this);
+            typewatch(function () {
+               if (inputsearch.val().length >= 3) {
+                  searchTree();
+               }
+            }, 500);
          });
      ";
 
