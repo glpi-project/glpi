@@ -5,3 +5,5 @@ files/
 .buildpath
 .project
 .settings/
+tools/composer.lock
+tools/vendor/

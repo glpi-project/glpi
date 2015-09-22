@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')) {
 class ConsumableItem extends CommonDBTM {
    // From CommonDBTM
    static protected $forward_entity_to = array('Consumable', 'Infocom');
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
    static $rightname                   = 'consumable';
 

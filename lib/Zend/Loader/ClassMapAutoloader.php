@@ -91,7 +91,7 @@ class ClassMapAutoloader implements SplAutoloader
             ));
         }
 
-        $this->map = array_merge($this->map, $map);
+        $this->map = $map + $this->map;
 
         if (isset($location)) {
             $this->mapsLoaded[] = $location;

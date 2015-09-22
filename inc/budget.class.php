@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -48,7 +48,7 @@ class Budget extends CommonDropdown{
    public $dohistory           = true;
 
    static $rightname           = 'budget';
-   protected $usenotepadrights = true;
+   protected $usenotepad       = true;
 
    var $can_be_translated = false;
 
@@ -525,6 +525,7 @@ class Budget extends CommonDropdown{
       $itemtypes[] = 'Contract';
       $itemtypes[] = 'Ticket';
       $itemtypes[] = 'Problem';
+      $itemtypes[] = 'Project';
       $itemtypes[] = 'Change';
 
       foreach ($itemtypes as $itemtype) {
@@ -545,7 +546,17 @@ class Budget extends CommonDropdown{
                                       AND `$table`.`is_template` = '0'
                                 GROUP BY `$table`.`entities_id`";
                break;
-
+            case 'Project' :
+               $costtable = getTableForItemType($item->getType().'Cost');
+               $query_infos = "SELECT SUM(`glpi_projectcosts`.`cost`) AS `sumvalue`,
+                                       `$table`.`entities_id`
+                                FROM `glpi_projectcosts`
+                                INNER JOIN `$table`
+                                    ON (`glpi_projectcosts`.`projects_id` = `$table`.`id`)
+                                WHERE `glpi_projectcosts`.`budgets_id` = '$budgets_id' ".
+                                      getEntitiesRestrictRequest(" AND", $table, "entities_id")."
+                                GROUP BY `$table`.`entities_id`";
+               break;
             case 'Ticket' :
             case 'Problem' :
             case 'Change' :

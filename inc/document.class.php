@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -51,7 +51,7 @@ class Document extends CommonDBTM {
 
    static $rightname                   = 'document';
    static $tag_prefix                  = '#';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
 
    static function getTypeName($nb=0) {

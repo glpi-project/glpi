@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -83,7 +83,7 @@ class CommonDBTM extends CommonGLPI {
    static $rightname                        = '';
 
    /// Is this item use notepad ?
-   protected $usenotepadrights              = false;
+   protected $usenotepad                    = false;
 
    /// FLush mail queue for
    public $mailqueueonaction = false;
@@ -695,6 +695,13 @@ class CommonDBTM extends CommonGLPI {
          $di = new Document_Item();
          $di->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
+
+      // If this type have NOTEPAD, clean one associated to purged item
+      if ($this->usenotepad) {
+         $note = new Notepad();
+         $note->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      }
+
    }
 
 
@@ -4292,7 +4299,7 @@ class CommonDBTM extends CommonGLPI {
          $values[DELETE] = array('short' => __('Delete'),
                                  'long'  => _x('button', 'Put in dustbin'));
       }
-      if ($this->usenotepadrights) {
+      if ($this->usenotepad) {
          $values[READNOTE] = array('short' => __('Read notes'),
                                    'long' => __("Read the item's notes"));
          $values[UPDATENOTE] = array('short' => __('Update notes'),

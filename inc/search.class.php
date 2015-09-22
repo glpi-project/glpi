@@ -979,6 +979,30 @@ class Search {
             }
          }
 
+         // search group (corresponding of dropdown optgroup) of current col
+         foreach($data['data']['cols'] as $num => $col) {
+            // search current col in searchoptions ()
+            while (key($searchopt) !== null
+                   && key($searchopt) != $col['id']) {
+               next($searchopt);
+            }
+            if (key($searchopt) !== null) {
+               //search optgroup (non array option)
+               while (key($searchopt) !== null
+                      && is_numeric(key($searchopt))
+                      && is_array(current($searchopt))) {
+                  prev($searchopt);
+               }
+               if (key($searchopt) !== null
+                   && key($searchopt) !== "common") {
+                  $data['data']['cols'][$num]['groupname'] = current($searchopt);
+               }
+
+            }
+            //reset
+            reset($searchopt);
+         }
+
          // Get rows
 
          // if real search seek to begin of items to display (because of complete search)
@@ -1115,6 +1139,7 @@ class Search {
       if (isset($_GET['_in_modal'])) {
          $parameters .= "&amp;_in_modal=1";
       }
+
 
       // Global search header
       if ($data['display_type'] == self::GLOBAL_SEARCH) {
@@ -1289,6 +1314,12 @@ class Search {
             }
 
             $name = $val["name"];
+
+            // prefix by group name (corresponding to optgroup in dropdown) if exists
+            if (isset($val['groupname'])) {
+               $name  = $val['groupname']." - ".$name;
+            }
+
             // Not main itemtype add itemtype to display
             if ($data['itemtype'] != $val['itemtype']) {
                if (!isset($metanames[$val['itemtype']])) {
@@ -1465,12 +1496,13 @@ class Search {
          return;
       }
 
+      $rand = mt_rand();
       return "<div class='switch grey_border'>".
-             "<label>".
+             "<label for='is_deletedswitch$rand' title='".__s('Show the dustbin')."' >".
                 "<img src='".$CFG_GLPI["root_doc"]."/pics/showdeleted.png' ".
                   "name='img_deleted' alt='".__s('Show the dustbin')."' class='pointer' />".
                 "<input type='hidden' name='is_deleted' value='0' /> ".
-                "<input type='checkbox' name='is_deleted' value='1' ".
+                "<input type='checkbox' id='is_deletedswitch$rand' name='is_deleted' value='1' ".
                   ($is_deleted?"checked='checked'":"").
                   " onClick = \"toogle('is_deleted','','','');
                               document.forms['searchform".$_POST["itemtype"]."'].submit();\" />".
@@ -4337,7 +4369,7 @@ class Search {
 
                   //Calculate bar progress
                   $out .= "<div class='center' style='background-color: #ffffff; width: 100%;
-                            border: 1px solid #9BA563;' >";
+                            border: 1px solid #9BA563; position: relative;' >";
                   $out .= "<div style='position:absolute;'>&nbsp;".$percentage_text."%</div>";
                   $out .= "<div class='center' style='background-color: ".$color.";
                             width: ".$percentage."%; height: 12px' ></div>";
@@ -4436,7 +4468,13 @@ class Search {
                   foreach ($data[$num] as $key => $val) {
                      if (is_numeric($key)) {
                         if (!empty($val['name'])) {
-                           $itemtypes[] = __($val['name']);
+                           if (substr($val['name'],0, 6) == 'Plugin') {
+                              $plug = new $val['name']();
+                              $name = $plug->getTypeName();
+                              $itemtypes[] = __($name);
+                           } else {
+                              $itemtypes[] = __($val['name']);
+                           }
                         }
                      }
                   }

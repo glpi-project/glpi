@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -51,7 +51,7 @@ class Phone extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
    static $rightname                   = 'phone';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
 
 

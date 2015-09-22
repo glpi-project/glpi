@@ -858,8 +858,8 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td class='b left'>".__('Testing PHP Parser')."</td>";
 
       // PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
-      if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
-         // PHP > 5.3 ok, now check PHP zend.ze1_compatibility_mode
+      if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
+         // PHP > 5.4 ok, now check PHP zend.ze1_compatibility_mode
          if (ini_get("zend.ze1_compatibility_mode") == 1) {
             $error = 2;
             echo "<td class='red'>
@@ -868,15 +868,15 @@ class Toolbox {
                  "</td>";
          } else {
             echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                       __s('PHP version is at least 5.3.0 - Perfect!')."\"
-                       title=\"".__s('PHP version is at least 5.3.0 - Perfect!')."\"></td>";
+                       __s('PHP version is at least 5.4.0 - Perfect!')."\"
+                       title=\"".__s('PHP version is at least 5.4.0 - Perfect!')."\"></td>";
          }
 
       } else { // PHP <5
          $error = 2;
          echo "<td class='red'>
                <img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                __('You must install at least PHP 5.3.0.')."</td>";
+                __('You must install at least PHP 5.4.0.')."</td>";
       }
       echo "</tr>";
 
@@ -2107,8 +2107,7 @@ class Toolbox {
       $svalue = (!empty($tab['type'])?'/'.$tab['type']:'');
 
       Dropdown::showFromArray('server_type', $values,
-                              array('value' => $svalue,
-                                    'width' => '10%'));
+                              array('value' => $svalue));
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/ssl' => __('SSL'));
@@ -2116,8 +2115,7 @@ class Toolbox {
       $svalue = ($tab['ssl']?'/ssl':'');
 
       Dropdown::showFromArray('server_ssl', $values,
-                              array('value' => $svalue,
-                                    'width' => '10%'));
+                              array('value' => $svalue));
 
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2152,8 +2150,7 @@ class Toolbox {
       }
 
       Dropdown::showFromArray('server_cert', $values,
-                              array('value' => $svalue,
-                                    'width' => '20%'));
+                              array('value' => $svalue));
 
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2162,8 +2159,7 @@ class Toolbox {
       $svalue = ($tab['norsh'] === true?'/norsh':'');
 
       Dropdown::showFromArray('server_rsh', $values,
-                              array('value' => $svalue,
-                                    'width' => '12%'));
+                              array('value' => $svalue));
 
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2172,8 +2168,7 @@ class Toolbox {
       $svalue = ($tab['secure'] === true?'/secure':'');
 
       Dropdown::showFromArray('server_secure', $values,
-                              array('value' => $svalue,
-                                    'width' => '12%'));
+                              array('value' => $svalue));
 
       $values = array('' => '',
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php

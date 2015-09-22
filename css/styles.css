@@ -108,7 +108,7 @@ sup {
 }
 
 .right {
-   text-align:right;
+   text-align:right !important;
 }
 
 .floatright {
@@ -205,10 +205,8 @@ hr {
 /* ################--------------- Page ---------------#################### */
 
 #page {
-    /* margin: 25px 10px; */
    padding: 8px 8px 20px 8px;
    min-height: 80%;
-   max-width: 1400px;
    margin: 15px auto;
 }
 
@@ -217,6 +215,10 @@ hr {
    margin:0;
    margin-bottom:5px;
    padding:0; 
+}#page
+
+.form #page {
+   max-width: 1400px;
 }
 
 /*#page {
@@ -254,6 +256,55 @@ select {
 .select2-arrow {
    background: #FCFCFC !important;
    border: 0 !important;
+}
+
+.select2-container .select2-choice {
+   position: relative;
+   text-overflow: clip;
+   background-color: #FFF;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   padding-left: 1em;
+   max-width: 270px;
+}
+
+.select2-container .select2-choice:before {
+   content: '\02026';
+   position: absolute;
+   z-index: 1;
+   left: -1em;
+   background-color: inherit;
+   padding-left: 1em;
+   margin-left: .5em;
+   background-color: inherit;
+   line-height: 26px;
+   margin-top: -2px;
+}
+
+.select2-container .select2-choice > .select2-chosen {
+   min-width: 100%;
+   position: relative;
+   display: inline-block;
+   float: right;
+   overflow: visible;
+   text-indent: .5em;
+   background-color: inherit;
+   margin-right: 0;
+   padding-right: 26px;
+   box-sizing: border-box;
+}
+
+.select2-container .select2-choice > .select2-chosen:before {
+  content: '';
+  position: absolute;
+  display: inline-block;
+  width: 1em;
+  background-color: inherit;
+  z-index: 2;
+  left: -.5em;
+  height: 26px;
+  margin-top: -2px;
 }
 
 
@@ -408,9 +459,13 @@ input.save {
    border-bottom:1px solid #C0CAD4;
 }
 
+.jstree.jstree-classic ins {
+    background-image: url("../pics/d.png");
+}
+
 .treeroot {
    width:100%;
-   background: url("..pics/treeroot.png") 0 2px no-repeat;
+   background: url("../pics/treeroot.png") 0 2px no-repeat;
    border:0;
    /*margin-top:5px;*/
    font-weight:bold;
@@ -549,6 +604,10 @@ input.save {
    padding: 8px 0;
 }
 
+.layout_lefttab #page .new_form_tabs .ui-tabs-panel {
+   margin: 0;
+}
+
 
 /* Vertical split layout */
 @media screen and (min-width: 1250px) {
@@ -565,11 +624,6 @@ input.save {
       border: 0;
    }
 
-   .layout_vsplit .search_page {
-      height:100%;
-      overflow-y: auto;
-   }
-
    .layout_vsplit #page {
       max-width: inherit;
       min-height: 0;
@@ -579,6 +633,16 @@ input.save {
       width: 100%;
       padding: 0;
       overflow: auto;
+   }
+
+   .layout_vsplit.form #page {
+      overflow: hidden;
+   }
+
+   .layout_vsplit #page .glpi_tabs {
+      height: 96%;
+      position: relative;
+      z-index:1;
    }
 
    .layout_vsplit #page .main_form.create_form {
@@ -593,14 +657,21 @@ input.save {
       margin: 0;
    }
 
-   .layout_vsplit.form div.main_form:not(.no_tab) {
+   .layout_vsplit.form .form_content {
+      position: relative;
       width: 46%;
       float: left;
+      height: 96%;
+      z-index:2;
+   }
+
+   .layout_vsplit.form div.main_form:not(.no_tab) {
+      width: 100%;
       margin: 0 15px;
       overflow-x: hidden;
       overflow-y: auto;
       position: absolute;
-      top: 32px;
+      top: 0;
       bottom: 0;
    }
 
@@ -624,21 +695,21 @@ input.save {
 
    .layout_vsplit.form .ui-tabs {
       position: absolute;
-      top: 32px;
+      top: 0;
       bottom: 0;
       width: 52%;
       margin: 0;
       right: 0;
-      height: inherit !important;
+      /*height: inherit !important;*/
    }
 
-   .layout_vsplit > #page > .ui-tabs > .ui-tabs-panel {
-      padding: 10px 0 0 0;
+   .layout_vsplit > #page > div > .ui-tabs > .ui-tabs-panel {
+      /*padding: 10px 0 0 0;*/
       overflow-x: hidden;
       overflow-y: auto;
       position: absolute;
       top: 32px;
-      bottom: 0;
+      bottom: 2px;
       width: 100%;
       box-sizing: border-box;
    }
@@ -652,7 +723,7 @@ input.save {
    }
    .layout_vsplit.form .main_form textarea {
       resize: vertical;
-      width:99%;
+      width:98%;
       min-height: 125px;
    }
 
@@ -670,6 +741,7 @@ input.save {
       position: absolute;
       bottom: 0;
       width: 100%;
+      z-index: 3;
    }
 }
 
@@ -718,6 +790,14 @@ td { }
    -webkit-box-shadow: 0px 2px 5px #666;
    box-shadow: 0px 2px 5px #666;*/
 }
+
+@media screen and (max-width: 600px) {
+   .tab_cadre_central .top {
+      display: block;
+   }
+}  
+
+
 
 .tab_cadre_postonly {
    margin: 0 auto;
@@ -778,7 +858,7 @@ td { }
    border: 0;
    text-align: left;
    font-size: 11px;
-   width: 80%;
+   width: 95%;
    background-color: #ffffff;
    -moz-box-shadow: 0px 1px 2px 1px #D2D2D2;
    -webkit-box-shadow: 0px 1px 2px 1px #D2D2D2;
@@ -789,7 +869,7 @@ td { }
 .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th {
    font-size: 12px;
    font-weight: bold;
-   text-align: right;
+   text-align: center;
    -moz-border-radius: 4px;
    -webkit-border-radius: 4px;
    -o-border-radius: 4px;
@@ -803,8 +883,8 @@ td { }
 
 .tab_cadre_fixehov th, .tab_cadrehov th {
    background-color: #F8F8F8;
-   color: #000;
-   font-size: 14px;
+   color: #2E2E2E;
+   font-size: 11px;
    border-bottom: 1px solid #EEE;
 }
 
@@ -988,7 +1068,6 @@ td.rotate {
    margin: 0 5px;
    padding: 4px 0;
    height: 16px;
-   text-align: center;
 }
 
 .actor_row {
@@ -1567,8 +1646,8 @@ a.icon_nav_move:hover img {
 }
 
 #logo_login {
-   padding:0;
-   margin:0 auto 0;
+   padding: 70px 0 0;
+   margin: 0 auto 0;
    width: 100%;
    height: 76px;
 }
@@ -1751,9 +1830,6 @@ a.icon_nav_move:hover img {
    margin: 0 10px;
 }
 
-#c_preference ul li#deconnexion {
-   margin-left: 25px;
-}
 #c_preference #logout_icon {
    background: url("../pics/logout.png");
    display: inline-block;
@@ -1820,11 +1896,13 @@ a.icon_nav_move:hover img {
 }
 
 #myname {
-   margin: 0 3px 10px;
+   margin: 0 0 10px 3px;
    display: inline-block;
    vertical-align: middle;
-   font-weight: bold;
-   font-size: 12px;   
+}
+
+#preferences_link:hover #myname {
+   text-decoration: underline;
 }
 
 #c_menu {
@@ -1854,7 +1932,6 @@ ul#menu a.itemP, ul#menu a.itemP1 {
 }
 
 ul#menu ul.ssmenu {
-   margin-top: -8px;
    background: rgba(255, 255, 255, 0.9);
    display: none;
    -moz-box-shadow: 0px 2px 2px 1px #BCB6B3;
@@ -1921,6 +1998,7 @@ ul#menu > li {
    height: 30px;
    margin-top: -8px;
    padding-top: 8px;
+   box-sizing: border-box;
 }
 
 ul#menu ul.ssmenu {
@@ -1974,23 +2052,18 @@ ul#menu ul.ssmenu {
 }
 
 #c_ssmenu2 {
-   height: 34px;
+   min-height: 34px;
    padding: 3px 0;
    box-sizing: border-box;
    background-color: #FFF;
-   position: absolute;
-   left: 0;
-   right: 0;
 }
 
 #c_ssmenu2 ul {
-   position: relative;
    left: 0px;
    list-style: none;
 }
 
 #c_ssmenu2 ul li {
-   position:relative;
    float: left;
    padding: 5px 10px 0 10px;
 }
@@ -2011,6 +2084,27 @@ ul#menu ul.ssmenu {
 
 .profile-selector {
    float: right !important;
+   height: 28px;
+   line-height: 24px;
+}
+
+@media screen and (max-width: 600px) {
+   .profile-selector {
+      padding: 4px 2px !important;
+      max-width: 95px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      line-height: 23px;
+   }
+
+   .profile-selector .select2-container {
+      max-width: 90px;
+   }
+
+   .ui-dialog {
+      max-width: 100%;
+   }
 }
 
 .breadcrumb_item:before {
@@ -2065,15 +2159,31 @@ ul#menu ul.ssmenu {
    border-left-color: #FEC95C;
 }
 
+.icons_block {
+   margin-left: 20px;
+   height: 28px;
+   float: inherit !important;
+   box-sizing: border-box;
+   display: inline-block;
+}
+
+.icons_block span {
+   padding: 0 8px;
+   min-width: 20px;
+   display: inline-block;
+   line-height: 23px;
+}
+
 #show_all_menu {
-/*   display: none;*/
-/*   position: absolute;*/
-/*   top:20px;*/ 
-/*   left:5px;*/
-/*   padding: 5px;*/
    font-size: 11px;
    text-align: left;
-/*   z-index:1000;*/
+   min-width: 150px;
+}
+
+#show_all_menu .all_menu_block {
+   float: left;
+   min-width: 150px;
+   margin-bottom: 20px;
 }
 
 #show_all_menu .tab_bg_1 {
@@ -2237,12 +2347,11 @@ ul#menu ul.ssmenu {
 
 .debug .ui-tabs {
    display: none;
-   position: fixed;
-   bottom: 0;
-   left: 0;
-   right: 0;
-   height: 300px;
-   z-index: 100;
+   position: fixed !important;
+   bottom: 0 !important;
+   top: inherit !important;
+   height: 300px !important;
+   z-index: 100 !important;
 }
 
 .ui-tabs .debug .see_debug{
@@ -2576,6 +2685,7 @@ ul#menu ul.ssmenu {
    color: #A2A2A2;
    font-size: 0.8em;
    text-align: center;
+   white-space: nowrap;
 }
 .timeline_history .right .private {
    float: left;
@@ -2962,4 +3072,9 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
 .switch label input[type=checkbox][disabled] + .lever:after, 
 .switch label input[type=checkbox][disabled]:checked + .lever:after {
    background-color: #BDBDBD; 
+}
+
+/** QUEUEMAIL **/
+.queuemail_preview .tab_cadre {
+   width: inherit !important;
 }

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -54,7 +54,7 @@ class Change extends CommonITILObject {
    public $supplierlinkclass           = 'Change_Supplier';
 
    static $rightname                   = 'change';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
    const MATRIX_FIELD                  = 'priority_matrix';
    const URGENCY_MASK_FIELD            = 'urgency_mask';

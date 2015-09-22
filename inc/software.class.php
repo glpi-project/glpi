@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -50,7 +50,7 @@ class Software extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom', 'ReservationItem', 'SoftwareVersion');
 
    static $rightname                   = 'software';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
 
 

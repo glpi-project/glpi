@@ -37,8 +37,8 @@
 */
 
 // Check PHP version not to have trouble
-if (version_compare(PHP_VERSION, "5.3.0") < 0) {
-   die("PHP >= 5.3.0 required");
+if (version_compare(PHP_VERSION, "5.4.0") < 0) {
+   die("PHP >= 5.4.0 required");
 }
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
@@ -75,6 +75,9 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo '<meta http-equiv="Content-Script-Type" content="text/javascript"/>'."\n";
    echo '<link rel="shortcut icon" type="images/x-icon" href="'.$CFG_GLPI["root_doc"].
           '/pics/favicon.ico" />';
+
+   // auto desktop / mobile viewport
+   echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
 
    // Appel CSS
    echo '<link rel="stylesheet" href="'.$CFG_GLPI["root_doc"].'/css/styles.css" type="text/css" '.

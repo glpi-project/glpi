@@ -677,11 +677,9 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "<td width='30%'>" .__('Limit of the schedules for planning') . "</td>";
       echo "<td width='20%'>";
-      Dropdown::showHours('planning_begin', array('value' => $CFG_GLPI["planning_begin"],
-                                                  'width' => '40%'));
+      Dropdown::showHours('planning_begin', array('value' => $CFG_GLPI["planning_begin"]));
       echo "&nbsp;->&nbsp;";
-      Dropdown::showHours('planning_end', array('value' => $CFG_GLPI["planning_end"],
-                                                'width' => '40%'));
+      Dropdown::showHours('planning_end', array('value' => $CFG_GLPI["planning_end"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";

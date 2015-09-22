@@ -4161,6 +4161,7 @@ class Ticket extends CommonITILObject {
          echo "<div id='content$rand_text'>";
          echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'>".
                 $this->fields["content"]."</textarea></div>";
+         echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
          echo $tt->getEndHiddenFieldValue('content', $this);
 
       } else {
@@ -5797,7 +5798,7 @@ class Ticket extends CommonITILObject {
             // Set tag if image matches
             foreach ($files as $data => $filename) {
                if (preg_match("/".$data."/i", $src)) {
-                  $html = preg_replace("/<img.*src=['|\"]".$src."['|\"][^>]*\>/", "<p>".Document::getImageTag($tags[$filename])."</p>", $html);
+                  $html = preg_replace("`<img.*src=['|\"]".$src."['|\"][^>]*\>`", "<p>".Document::getImageTag($tags[$filename])."</p>", $html);
                }
             }
          }
@@ -6576,7 +6577,8 @@ class Ticket extends CommonITILObject {
       echo $out;
 
       //scroll to edit form
-      echo "document.getElementsByClassName('ui-tabs-panel')[0].scrollTop = 0;";
+      echo "$('body').scrollTop(0);";
+      echo "$('.ui-tabs-panel').scrollTop(0);";
 
       // add a mark to currently edited element
       echo "var found_active = $('.talk_active');
@@ -6681,12 +6683,11 @@ class Ticket extends CommonITILObject {
       $ticket_users = $ticket->getTicketActors();
       $actor_type   = $ticket_users[Session::getLoginUserID()];
 
-      $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
-
       if ($actor_type == CommonITILActor::REQUESTER) {
          $ticket->fields['status'] = CommonITILObject::ASSIGNED;
       }
-
+      $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
+      
       $html = "<div class='x-split-button' id='x-split-button'>
                <input type='submit' value='$locale' name='$action' class='x-button x-button-main'>
                <span class='x-button x-button-drop'>&nbsp;</span>

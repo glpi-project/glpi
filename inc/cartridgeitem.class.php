@@ -51,7 +51,7 @@ class CartridgeItem extends CommonDBTM {
    // From CommonDBTM
    static protected $forward_entity_to = array('Cartridge', 'Infocom');
    public $dohistory                   = true;
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
    static $rightname                   = 'cartridge';
 

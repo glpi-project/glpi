@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -48,7 +48,7 @@ class Contact extends CommonDBTM{
    public $dohistory           = true;
 
    static $rightname           = 'contact_enterprise';
-   protected $usenotepadrights = true;
+   protected $usenotepad       = true;
 
 
 

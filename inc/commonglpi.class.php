@@ -595,7 +595,7 @@ class CommonGLPI {
          return false;
       }
 
-      $ong   = $this->defineTabs();
+      $ong   = $this->defineAllTabs();
       $class = "main_form";
       if (count($ong) == 0) {
          $class .= " no_tab";
@@ -606,8 +606,10 @@ class CommonGLPI {
       } else {
          $class .= " modify_form";
       }
+      echo "<div class='form_content'>";
       echo "<div class='$class'>";
       $this->showForm($_REQUEST['id'], $_REQUEST);
+      echo "</div>";
       echo "</div>";
    }
 
@@ -677,6 +679,7 @@ class CommonGLPI {
          $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options,'&amp;');
          $extraparam     = "&".Toolbox::append_params($cleaned_options);
       }
+      echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";
       echo "<div id='tabspanel' class='center-h'></div>";
       $current_tab = 0;
       $onglets     = $this->defineAllTabs($options);
@@ -706,9 +709,11 @@ class CommonGLPI {
                               'params' => "_target=$target&amp;_itemtype=".$this->getType().
                                           "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml");
          }
+
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID,
                           $this->taborientation);
       }
+      echo "</div>";
    }
 
 
@@ -851,7 +856,7 @@ class CommonGLPI {
 
          }
          echo "<td class='b big'>";
-         if (!self::isLayoutWithMain()) {
+         if (!self::isLayoutWithMain() || self::isLayoutExcludedPage()) {
             echo $name;
          }
          echo "</td>";
@@ -1068,6 +1073,13 @@ class CommonGLPI {
     */
    public static function isLayoutExcludedPage() {
       global $CFG_GLPI;
+
+      if (basename($_SERVER['SCRIPT_NAME']) == "updatecurrenttab.php") {
+         $base_referer = basename($_SERVER['HTTP_REFERER']);
+         $base_referer = explode("?", $base_referer);
+         $base_referer = $base_referer[0];
+         return in_array($base_referer, $CFG_GLPI['layout_excluded_pages']);
+      }
 
       return in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages']);
    }

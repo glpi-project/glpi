@@ -100,7 +100,7 @@ abstract class AbstractOptions implements ParameterObjectInterface
     {
         $setter = 'set' . str_replace('_', '', $key);
 
-        if (method_exists($this, $setter)) {
+        if (is_callable(array($this, $setter))) {
             $this->{$setter}($value);
 
             return;
@@ -108,7 +108,7 @@ abstract class AbstractOptions implements ParameterObjectInterface
 
         if ($this->__strictMode__) {
             throw new Exception\BadMethodCallException(sprintf(
-                'The option "%s" does not have a matching "%s" ("%s") setter method which must be defined',
+                'The option "%s" does not have a callable "%s" ("%s") setter method which must be defined',
                 $key,
                 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key))),
                 $setter
@@ -128,12 +128,12 @@ abstract class AbstractOptions implements ParameterObjectInterface
     {
         $getter = 'get' . str_replace('_', '', $key);
 
-        if (method_exists($this, $getter)) {
+        if (is_callable(array($this, $getter))) {
             return $this->{$getter}();
         }
 
         throw new Exception\BadMethodCallException(sprintf(
-            'The option "%s" does not have a matching "%s" getter method which must be defined',
+            'The option "%s" does not have a callable "%s" getter method which must be defined',
             $key,
             'get' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)))
         ));
@@ -147,7 +147,9 @@ abstract class AbstractOptions implements ParameterObjectInterface
      */
     public function __isset($key)
     {
-        return null !== $this->__get($key);
+        $getter = 'get' . str_replace('_', '', $key);
+
+        return method_exists($this, $getter) && null !== $this->__get($key);
     }
 
     /**

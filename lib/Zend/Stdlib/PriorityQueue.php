@@ -208,7 +208,6 @@ class PriorityQueue implements Countable, IteratorAggregate, Serializable
         switch ($flag) {
             case self::EXTR_BOTH:
                 return $this->items;
-                break;
             case self::EXTR_PRIORITY:
                 return array_map(function ($item) {
                     return $item['priority'];

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -48,7 +48,7 @@ class Supplier extends CommonDBTM {
    public $dohistory           = true;
 
    static $rightname           = 'contact_enterprise';
-   protected $usenotepadrights = true;
+   protected $usenotepad       = true;
 
 
 
@@ -108,7 +108,7 @@ class Supplier extends CommonDBTM {
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
-      $this->addStandardTab('Change_Item', $ong, $options);      
+      $this->addStandardTab('Change_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -334,7 +334,7 @@ class Supplier extends CommonDBTM {
                                                       'joinparams' => array('jointype' => 'child')));
 
       $tab += Notepad::getSearchOptionsToAdd();
-      
+
       return $tab;
    }
 

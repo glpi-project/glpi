@@ -71,7 +71,7 @@ class Dropdown {
     *    - emptylabel           : Empty choice's label (default self::EMPTY_VALUE)
     *    - display_emptychoice  : Display emptychoice ? (default true)
     *    - display              : boolean / display or get string (default true)
-    *    - width                : specific width needed (default 80%)
+    *    - width                : specific width needed (default auto adaptive)
     *    - permit_select_parent : boolean / for tree dropdown permit to see parent items
     *                                       not available by default (default false)
     *    - specific_tags        : array of HTML5 tags to add the the field
@@ -93,7 +93,7 @@ class Dropdown {
       $params['entity']               = -1;
       $params['entity_sons']          = false;
       $params['toupdate']             = '';
-      $params['width']                = '80%';
+      $params['width']                = '';
       $params['used']                 = array();
       $params['toadd']                = array();
       $params['on_change']            = '';
@@ -656,7 +656,7 @@ class Dropdown {
       }
 
       $params['value'] = $value;
-      $params['width'] = "58px";
+      $params['width'] = "65px";
       return self::showFromArray($name, $options, $params);
    }
 
@@ -1009,7 +1009,7 @@ class Dropdown {
     *     - value              default value (default '')
     *     - limit_planning     limit planning to the configuration range (default false)
     *     - display   boolean  if false get string
-    *     - width              specific width needed (default 80%)
+    *     - width              specific width needed (default auto adaptive)
     *     - step               step time (defaut config GLPI)
     *
     * @since 0.85 update prototype
@@ -1021,7 +1021,7 @@ class Dropdown {
       $p['value']          = '';
       $p['limit_planning'] = false;
       $p['display']        = true;
-      $p['width']          = '80%';
+      $p['width']          = '';
       $p['step']           = $CFG_GLPI["time_step"];
 
       if (is_array($options) && count($options)) {
@@ -1300,7 +1300,7 @@ class Dropdown {
       $p['toadd']     = array();
       $p['unit']      = '';
       $p['display']   = true;
-      $p['width']     = '80%';
+      $p['width']     = '';
       $p['on_change'] = '';
       $p['used']      = array();
 
@@ -2023,8 +2023,7 @@ class Dropdown {
       ksort($values);
       return self::showFromArray('glpilist_limit', $values,
                                  array('on_change' => $onchange,
-                                       'value'     => $list_limit,
-                                       'width'     => '20%'));
+                                       'value'     => $list_limit));
    }
 
 }

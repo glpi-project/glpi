@@ -652,7 +652,7 @@ class QueuedMail extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1 top' >";
-      echo "<td colspan='2'>".self::cleanHtml($this->fields['body_html'])."</td>";
+      echo "<td colspan='2' class='queuemail_preview'>".self::cleanHtml($this->fields['body_html'])."</td>";
       echo "<td colspan='2'>".nl2br($this->fields['body_text'], false)."</td>";
       echo "</tr>";
 

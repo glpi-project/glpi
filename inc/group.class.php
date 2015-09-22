@@ -206,13 +206,16 @@ class Group extends CommonTreeDropdown {
 
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Group', $ong, $options);
-      if ($this->fields['is_usergroup']) {
+      if (isset($this->fields['is_usergroup']) 
+          && $this->fields['is_usergroup']) {
          $this->addStandardTab('Group_User', $ong, $options);
       }
-      if ($this->fields['is_notify']) {
+      if (isset($this->fields['is_notify']) 
+          && $this->fields['is_notify']) {
          $this->addStandardTab('NotificationTarget', $ong, $options);
       }
-      if ($this->fields['is_requester']) {
+      if (isset($this->fields['is_requester']) 
+          && $this->fields['is_requester']) {
          $this->addStandardTab('Ticket', $ong, $options);
       }
       $this->addStandardTab('Item_Problem', $ong, $options);

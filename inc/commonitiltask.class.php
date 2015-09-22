@@ -1155,8 +1155,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='$rowspan' class='middle'>".__('Description')."</td>";
       echo "<td class='center middle' rowspan='$rowspan'>".
-           "<textarea name='content' cols='50' rows='$rowspan'>".$this->fields["content"].
-           "</textarea></td>";
+           "<textarea id ='content$rand' name='content' cols='50' rows='$rowspan'>"
+           .$this->fields["content"].
+           "</textarea>";
+      echo Html::scriptBlock("$(document).ready(function() { $('#content$rand').autogrow(); });");
+      echo "</td>";
       if ($ID > 0) {
          echo "<td>".__('Date')."</td>";
          echo "<td>";

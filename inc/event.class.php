@@ -62,6 +62,23 @@ class Event extends CommonDBTM {
       return false;
    }
 
+   function post_addItem() {
+      //only log in file, important events (connections and critical events; TODO : we need to add a general option to filter this in 0.91)
+      if (isset($this->fields['level']) && $this->fields['level'] <= 3) {
+         $message_type = "";
+         if (isset($this->fields['type']) && $this->fields['type'] != 'system') {
+            $message_type = "[".$this->fields['type']." ".$this->fields['id']."] ";
+         }
+
+         $full_message = "[".$this->fields['service']."] ".
+                         $message_type.
+                         $this->fields['level'].": ".
+                         Toolbox::stripslashes_deep($this->fields['message'])."\n";
+
+         Toolbox::logInFile("event", $full_message);
+      }
+   }
+
 
    /**
     * Log an event.
