@@ -460,6 +460,13 @@ class Consumable extends CommonDBChild {
       if (!$consitem->can($tID, READ)) {
          return false;
       }
+
+      if (isset($_GET["start"])) {
+         $start = $_GET["start"];
+      } else {
+         $start = 0;
+      }
+     
       $canedit = $consitem->can($tID, UPDATE);
       $rand = mt_rand();
       $where = "";
@@ -472,14 +479,21 @@ class Consumable extends CommonDBChild {
                            `date_in`,
                            `id`";
       }
+
+      $number = countElementsInTable("glpi_consumables", "`consumableitems_id` = '$tID' $where");
+
       $query = "SELECT `glpi_consumables`.*
                 FROM `glpi_consumables`
                 WHERE `consumableitems_id` = '$tID'
-                      $where";
+                      $where 
+                LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
       $result = $DB->query($query);
-      $number = $DB->numrows($result);
 
       echo "<div class='spaced'>";
+
+      // Display the pager
+      Html::printAjaxPager(Consumable::getTypeName(Session::getPluralNumber()), $start, $number);
+
       if ($canedit && $number) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $actions = array('delete' => _x('button', 'Delete permanently'),
@@ -571,6 +585,7 @@ class Consumable extends CommonDBChild {
          Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
+    
       echo "</div>";
    }
 
