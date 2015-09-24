@@ -58,6 +58,11 @@ function header_html($etape) {
    echo "<meta name='DC.Language' content='fr' scheme='RFC1766'>";
    echo "<title>Setup GLPI</title>";
 
+   // LIBS
+   echo Html::script("../lib/jquery/js/jquery-1.10.2.min.js");
+   echo Html::script("../lib/jqueryplugins/select2/select2.min.js");
+   echo Html::css("../lib/jqueryplugins/select2/select2.css");
+
    // CSS
    echo "<link rel='stylesheet' href='../css/style_install.css' type='text/css' media='screen'>";
    echo "</head>";
@@ -78,9 +83,13 @@ function footer_html() {
 
 // choose language
 function choose_language() {
+   global $CFG_GLPI;
 
    echo "<form action='install.php' method='post'>";
    echo "<p class='center'>";
+
+   // fix missing param for js drodpown
+   $CFG_GLPI['ajax_limit_count'] = 15;
 
    Dropdown::showLanguages("language", array('value' => "en_GB"));
    echo "</p>";
