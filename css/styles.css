@@ -718,7 +718,7 @@ input.save {
       background-color: #E6E6E6;
    }
 
-   .layout_vsplit.form .main_form input[type=text] {
+   .layout_vsplit.form .main_form input[type=text]:not([size]) {
       width:74%;
    }
    .layout_vsplit.form .main_form textarea {
