@@ -1005,7 +1005,6 @@ class CommonGLPI {
     * @param $options   array
    **/
    function display($options=array()) {
-      global $CFG_GLPI;
       if (isset($options['id'])
           && !$this->isNewID($options['id'])) {
          if (!$this->getFromDB($options['id'])) {
