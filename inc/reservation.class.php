@@ -766,12 +766,13 @@ class Reservation extends CommonDBChild {
                              __s('Delete all rehearsals');
                }
                echo "</td>";
+            }
             if (($resa->fields["users_id"] == Session::getLoginUserID())
                 || Session::haveRight(static::$rightname, UPDATE)) {
               echo "<td class='top center'>";
               echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
                      class='submit'>";
-            echo "</td>";
+               echo "</td>";
             }
             echo "</tr>\n";
          }
