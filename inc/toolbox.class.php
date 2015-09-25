@@ -1056,22 +1056,6 @@ class Toolbox {
       }
       echo "</tr>";      
 
-      // Test for Cryptographic extension.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Cryptography test')."</td>";
-      require_once GLPI_PASSWORD_COMPAT;
-      if (PasswordCompat\binary\check()) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                     __s('The functionality is found - Perfect!'). "\" title=\"".
-                     __s('The functionality is found - Perfect!')."\"></td>";
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png' alt=\"".
-                     __s('PHP >= 5.3.7 recommended, with crypt extension'). "\" title=\"".
-                     __s('PHP >= 5.3.7 recommended, with crypt extension')."\"></td>";
-         $error = 1;
-
-      }
-      echo "</tr>";
-
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
 
