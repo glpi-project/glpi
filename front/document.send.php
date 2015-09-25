@@ -73,7 +73,11 @@ if (isset($_GET['docid'])) { // docid for document
       }
 
       if ($splitter[0] == "_pictures") {
-         $send = true;
+         $filename = explode(".", $splitter[1]);
+         //check extension
+         if (in_array($filename[1], array('jpg', 'jpeg', 'png', 'bmp', 'gif'))) {
+            $send = true;
+         }
       }
 
       if ($send && file_exists(GLPI_DOC_DIR."/".$_GET["file"])) {
