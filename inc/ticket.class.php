@@ -6377,7 +6377,7 @@ class Ticket extends CommonITILObject {
                    _sx("button", "Update")."'>";
             echo "<img src='$pics_url/edit.png' /></a>";
             echo "<a href='".$CFG_GLPI['root_doc'].
-                   "/plugins/talk/front/item.form.php?delete_document&documents_id=".$item_i['id'].
+                   "/front/ticket.form.php?delete_document&documents_id=".$item_i['id'].
                    "&tickets_id=".$this->getID()."' class='delete_document' title='".
                    _sx("button", "Delete permanently")."'>";
             echo "<img src='$pics_url/delete.png' /></a>";
