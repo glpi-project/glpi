@@ -232,7 +232,8 @@ class Change_Ticket extends CommonDBRelation{
          echo "<input type='hidden' name='changes_id' value='$ID'>";
          Ticket::dropdown(array('used'        => $used,
                                 'entity'      => $change->getEntityID(),
-                                'entity_sons' => $change->isRecursive()));
+                                'entity_sons' => $change->isRecursive(),
+                                'displaywith' => array('id')));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
