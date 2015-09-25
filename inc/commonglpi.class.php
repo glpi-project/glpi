@@ -1012,14 +1012,15 @@ class CommonGLPI {
          }
       }
 
-      $this->showNavigationHeader($options);
-
       // in case of lefttab layout, we couldn't see "right error" message
       if ($this->get_item_to_display_tab) {
          if (isset($_GET["id"]) && $_GET["id"] && !$this->can($_GET["id"], READ)) {
             html::displayRightError();
          }
       }
+      
+      $this->showNavigationHeader($options);
+
       $this->showTabsContent($options);
    }
 
