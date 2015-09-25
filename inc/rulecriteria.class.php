@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -578,9 +578,8 @@ class RuleCriteria extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (isset($options['parent']) && !empty($options['parent'])) {
-         $rule = $options['parent'];
-      }
+      // Yllen: you always have parent for criteria
+      $rule = $options['parent'];
 
       if ($ID > 0) {
          $this->check($ID, READ);
