@@ -679,19 +679,21 @@ class User extends CommonDBTM {
                   self::dropPictureFiles($this->fields['picture']);
                   // Move uploaded file
                   $filename     = uniqid($this->fields['id'].'_');
+                  $sub          = substr($filename, -2); /* 2 hex digit */
                   $tmp          = explode(".", $_FILES['picture']['name']);
                   $extension    = array_pop($tmp);
-                  $picture_path = GLPI_PICTURE_DIR."/$filename.".$extension;
+                  @mkdir(GLPI_PICTURE_DIR . "/$sub");
+                  $picture_path = GLPI_PICTURE_DIR  . "/$sub/${filename}.$extension";
                   self::dropPictureFiles($filename.".".$extension);
 
                   if (in_array($extension, array('jpg', 'jpeg', 'png', 'bmp', 'gif'))
                       && Document::renameForce($_FILES['picture']['tmp_name'], $picture_path)) {
                      Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
                      // For display
-                     $input['picture'] = $filename.".".$extension;
+                     $input['picture'] = "$sub/${filename}.$extension";
 
                      //prepare a thumbnail
-                     $thumb_path = GLPI_PICTURE_DIR."/".$filename."_min.".$extension;
+                     $thumb_path = GLPI_PICTURE_DIR . "/$sub/${filename}_min.$extension";
                       Toolbox::resizePicture($picture_path, $thumb_path);
                   } else {
                      Session::addMessageAfterRedirect(__('Potential upload attack or file too large. Moving temporary file failed.'),
@@ -1100,7 +1102,9 @@ class User extends CommonDBTM {
                //prepare paths
                $img       = array_pop($info[$picture_field]);
                $filename  = uniqid($this->fields['id'].'_');
-               $file      = GLPI_PICTURE_DIR . "/" . $filename . '.jpg';
+               $sub       = substr($filename, -2); /* 2 hex digit */
+               $file      = GLPI_PICTURE_DIR . "/$sub/${filename}.jpg";
+               @mkdir(GLPI_PICTURE_DIR . "/$sub");
 
                //save picture
                $outjpeg = fopen($file, 'wb');
@@ -1108,10 +1112,10 @@ class User extends CommonDBTM {
                fclose ($outjpeg);
 
                //save thumbnail
-               $thumb = GLPI_PICTURE_DIR . "/" . $filename . '_min.jpg';
+               $thumb = GLPI_PICTURE_DIR . "/$sub/${filename}_min.jpg";
                Toolbox::resizePicture($file, $thumb);
 
-               return $filename . ".jpg";
+               return "$sub/${filename}.jpg";
             }
          }
       }
