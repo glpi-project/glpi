@@ -1539,7 +1539,7 @@ class Profile extends CommonDBTM {
       $tab[23]['field']          = 'rights';
       $tab[23]['name']           = _n('Network', 'Networks', Session::getPluralNumber());
       $tab[23]['datatype']       = 'right';
-      $tab[23]['rightclass']     = 'Networking';
+      $tab[23]['rightclass']     = 'Network';
       $tab[23]['rightname']      = 'networking';
       $tab[23]['joinparams']     = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'networking'");
@@ -1974,7 +1974,7 @@ class Profile extends CommonDBTM {
       $tab[110]['massiveaction'] = false;
 
       $tab[112]['table']         = 'glpi_profilerights';
-      $tab[112]['field']         = 'right';
+      $tab[112]['field']         = 'rights';
       $tab[112]['name']          = _n('Problem', 'Problems', Session::getPluralNumber());
       $tab[112]['datatype']      = 'right';
       $tab[112]['rightclass']    = 'Problem';
@@ -1991,7 +1991,7 @@ class Profile extends CommonDBTM {
       $tab[111]['massiveaction'] = false;
 
       $tab[115]['table']         = 'glpi_profilerights';
-      $tab[115]['field']         = 'right';
+      $tab[115]['field']         = 'rights';
       $tab[115]['name']          =_n('Change', 'Changes', Session::getPluralNumber());
       $tab[115]['datatype']      = 'right';
       $tab[115]['rightclass']    = 'Change';
