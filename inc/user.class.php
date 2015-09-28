@@ -678,7 +678,7 @@ class User extends CommonDBTM {
                   // Unlink old picture (clean on changing format)
                   self::dropPictureFiles($this->fields['picture']);
                   // Move uploaded file
-                  $filename     = $this->fields['id'];
+                  $filename     = uniqid($this->fields['id'].'_');
                   $tmp          = explode(".", $_FILES['picture']['name']);
                   $extension    = array_pop($tmp);
                   $picture_path = GLPI_PICTURE_DIR."/$filename.".$extension;
@@ -1099,7 +1099,7 @@ class User extends CommonDBTM {
                }
                //prepare paths
                $img       = array_pop($info[$picture_field]);
-               $filename  = $this->fields["id"];
+               $filename  = uniqid($this->fields['id'].'_');
                $file      = GLPI_PICTURE_DIR . "/" . $filename . '.jpg';
 
                //save picture
