@@ -1978,23 +1978,12 @@ class User extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Location') . "</td><td>";
-      if (!empty($ID)) {
-         $entities = Profile_User::getUserEntities($ID, true);
-         if (count($entities) > 0) {
-            Location::dropdown(array('value'  => $this->fields["locations_id"],
-                                     'entity' => $entities));
-         } else {
-            echo "&nbsp;";
-         }
-
-      } else {
-         if (!Session::isMultiEntitiesMode()) {
-            // Display all locations : only one entity
-            Location::dropdown(array('value' => $this->fields["locations_id"]));
-         } else {
-            echo "&nbsp;";
-         }
+      $entities = Profile_User::getUserEntities($ID, true);
+      if (count($entities) <= 0) {
+         $entities = -1;
       }
+      Location::dropdown(array('value'  => $this->fields["locations_id"],
+                                     'entity' => $entities));
       echo "</td></tr>";
 
       if (empty($ID)) {
