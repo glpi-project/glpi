@@ -532,9 +532,11 @@ class Link extends CommonDBTM {
       $tab[145]['joinparams']        = array('beforejoin'
                                               => array('table'      => 'glpi_links_itemtypes',
                                                        'joinparams' => array('jointype'
-                                                                              => 'itemtypeonly')),
-                                             'condition'
-                                              => getEntitiesRestrictRequest('AND', 'NEWTABLE'));
+                                                                              => 'itemtypeonly')));
+      if (!Session::isCron()
+          && !isCommandLine()) {
+         $tab[145]['joinparams']['condition'] = getEntitiesRestrictRequest('AND', 'NEWTABLE');
+      }
 
       return $tab;
    }
