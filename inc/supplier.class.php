@@ -457,6 +457,7 @@ class Supplier extends CommonDBTM {
                $linktype  = 'Software';
                $linkfield = 'softwares_id';
             }
+            $link_item = new $linktype();
 
             if ($nb > $_SESSION['glpilist_limit']) {
                echo "<tr class='tab_bg_1'>";
@@ -474,8 +475,10 @@ class Supplier extends CommonDBTM {
                             'criteria'   => array(0 => array('value'      => '$$$$'.$instID,
                                                              'searchtype' => 'contains',
                                                              'field'      => 53)));
+              $link = $linktype::getSearchURL();
+              $link.= (strpos($link,'?') ? '&amp;':'?');
 
-               echo "<a href='". Toolbox::getItemTypeSearchURL($linktype) . "?" .
+               echo "<a href='$link" .
                      Toolbox::append_params($opt). "'>" . __('Device list')."</a></td>";
 
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
@@ -486,8 +489,8 @@ class Supplier extends CommonDBTM {
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                   }
-                  $link = Toolbox::getItemTypeFormURL($linktype);
-                  $name = "<a href=\"".$link."?id=".$data[$linkfield]."\">".$name."</a>";
+                  $link = $link_item->getFormURLWithID($data[$linkfield]);
+                  $name = "<a href='$link'>".$name."</a>";
 
                   echo "<tr class='tab_bg_1'>";
                   if ($prem) {
