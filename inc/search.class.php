@@ -889,13 +889,24 @@ class Search {
       $DBread = DBConnection::getReadConnection();
       $DBread->query("SET SESSION group_concat_max_len = 16384;");
 
+      // directly increase group_concat_max_len to avoid double query
+      if (count($data['search']['metacriteria'])) {
+         foreach($data['search']['metacriteria'] as $metacriterion) {
+            if ($metacriterion['link'] == 'AND NOT'
+                || $metacriterion['link'] == 'OR NOT') {
+               $DBread->query("SET SESSION group_concat_max_len = 4194304;");
+               break;
+            }
+         }
+      }
+
       $result = $DBread->query($data['sql']['search']);
       /// Check group concat limit : if warning : increase limit
       if ($result2 = $DBread->query('SHOW WARNINGS')) {
          if ($DBread->numrows($result2) > 0) {
             $res = $DBread->fetch_assoc($result2);
             if ($res['Code'] == 1260) {
-               $DBread->query("SET SESSION group_concat_max_len = 4194304;");
+               $DBread->query("SET SESSION group_concat_max_len = 8194304;");
                $result = $DBread->query($data['sql']['search']);
             }
          }
