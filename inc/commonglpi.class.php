@@ -577,7 +577,7 @@ class CommonGLPI {
 
       $itemtype = get_called_class();
       $link     = $itemtype::getFormURL($full);
-      $link    .= (strpos($link,'?') ? '&amp;':'?').'id=' . $id;
+      $link    .= (strpos($link,'?') ? '&':'?').'id=' . $id;
       return $link;
    }
 
