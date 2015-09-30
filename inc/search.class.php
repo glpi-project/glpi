@@ -896,7 +896,7 @@ class Search {
             $res = $DBread->fetch_assoc($result2);
             if ($res['Code'] == 1260) {
                $DBread->query("SET SESSION group_concat_max_len = 4194304;");
-               $result = $DBread->query($data['sql']['search']);
+               //$result = $DBread->query($data['sql']['search']);
             }
          }
       }
