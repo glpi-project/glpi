@@ -30,8 +30,6 @@
 /** @file
 * @brief
 */
-
-
 if (!($dropdown instanceof CommonDropdown)) {
    Html::displayErrorAndDie('');
 }
@@ -61,7 +59,11 @@ if (isset($_POST["add"])) {
                     sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       }
       if ($_SESSION['glpibackcreated']) {
-         Html::redirect(Toolbox::getItemTypeFormURL($dropdown->getType())."?id=".$newID);
+        $url = $dropdown->getFormURLWithID($newID);
+        if (isset($_REQUEST['_in_modal'])) {
+          $url.="&_in_modal=1";
+        }
+        Html::redirect($url);
       }
    }
    Html::back();
