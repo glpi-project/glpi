@@ -2348,6 +2348,7 @@ ul#menu ul.ssmenu {
 .debug .ui-tabs {
    display: none;
    position: fixed !important;
+   left: 0 !important;
    bottom: 0 !important;
    top: inherit !important;
    height: 300px !important;
