@@ -1977,14 +1977,18 @@ class User extends CommonDBTM {
       UserTitle::dropdown(array('value' => $this->fields["usertitles_id"]));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Location') . "</td><td>";
-      $entities = Profile_User::getUserEntities($ID, true);
-      if (count($entities) <= 0) {
-         $entities = -1;
+      echo "<tr class='tab_bg_1'>";
+      if (!empty($ID)) {
+         echo "<td>" . __('Location') . "</td><td>";
+         $entities = Profile_User::getUserEntities($ID, true);
+         if (count($entities) <= 0) {
+            $entities = -1;
+         }
+         Location::dropdown(array('value'  => $this->fields["locations_id"],
+                                  'entity' => $entities));
+         echo "</td>";
       }
-      Location::dropdown(array('value'  => $this->fields["locations_id"],
-                                     'entity' => $entities));
-      echo "</td></tr>";
+      echo "</tr>";
 
       if (empty($ID)) {
          echo "<tr class='tab_bg_1'>";
