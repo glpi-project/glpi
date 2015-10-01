@@ -69,11 +69,8 @@ class Html {
 
 
       $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                              );
-
-      $value = preg_replace($search, '', $value);
-
-      $search        = array('@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
+                             '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
+                             '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
                               );
 
       $value = preg_replace($search, '', $value);
