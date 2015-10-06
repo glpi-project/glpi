@@ -1774,8 +1774,6 @@ class Config extends CommonDBTM {
                                     => __('Checking write permissions for session files'),
                             GLPI_CRON_DIR
                                     => __('Checking write permissions for automatic actions files'),
-                            GLPI_CACHE_DIR
-                                    => __('Checking write permissions for cache files'),
                             GLPI_GRAPH_DIR
                                     => __('Checking write permissions for graphic files'),
                             GLPI_LOCK_DIR

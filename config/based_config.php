@@ -69,12 +69,6 @@ if (!defined("GLPI_DOC_DIR")) {
    define("GLPI_DOC_DIR",GLPI_ROOT . "/files");
 }
 
-// Path for cache storage
-if (!defined("GLPI_CACHE_DIR")) {
-   // Need / at the end for Cache Lite compatibility
-   define("GLPI_CACHE_DIR",GLPI_ROOT . "/files/_cache/");
-}
-
 // Path for cron storage
 if (!defined("GLPI_CRON_DIR")) {
    define("GLPI_CRON_DIR",GLPI_ROOT . "/files/_cron");
