@@ -582,8 +582,7 @@ class NetworkPort extends CommonDBChild {
             }
          }
 
-         $c_network = $table->addHeader('Internet', _n(__('Internet information'),
-                                                       __('Internet information'), Session::getPluralNumber()));
+         $c_network = $table->addHeader('Internet', __('Internet information'));
          $c_network->setHTMLClass('center');
 
       } else {
