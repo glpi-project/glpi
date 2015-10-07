@@ -2,7 +2,7 @@
 
 .ui-widget-content span.vsubmit, a.vsubmit {color: #8f5a0a;}
 /* css for timepicker */
-.ui-datepicker {z-index:10000 !important; }
+.ui-datepicker {width:20em; z-index:10000 !important;}
 .ui-timepicker-div .ui-widget-header {margin-bottom: 8px; }
 .ui-timepicker-div dl { text-align: left; }
 .ui-timepicker-div dl dt { height: 25px; margin-bottom: -25px; }
