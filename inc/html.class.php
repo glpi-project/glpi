@@ -3044,7 +3044,7 @@ class Html {
       }
       $field_id = Html::cleanId("color_".$name.$p['rand']);
       $output   = "<input type='text' id='$field_id' name='$name' value='".$p['value']."'>";
-      $js       = "$('#$field_id').spectrum();";
+      $js       = "$('#$field_id').spectrum({preferredFormat: 'hex'});";
       $output  .= Html::scriptBlock($js);
 
       if ($p['display']) {
