@@ -1065,7 +1065,9 @@ class Html {
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
 
       // CSS theme link
-      echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$_SESSION["glpipalette"].".css");
+      if (isset($_SESSION["glpipalette"])) {
+         echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$_SESSION["glpipalette"].".css");
+      }
 
       // surcharge CSS hack for IE
       echo "<!--[if lte IE 6]>" ;

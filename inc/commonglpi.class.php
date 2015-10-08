@@ -1060,7 +1060,7 @@ class CommonGLPI {
     * @return bool
     */
    public static function isLayoutWithMain() {
-      return in_array($_SESSION['glpilayout'], array('classic', 'vsplit'));
+      return (isset($_SESSION['glpilayout']) && in_array($_SESSION['glpilayout'], array('classic', 'vsplit')));
    }
 
 
