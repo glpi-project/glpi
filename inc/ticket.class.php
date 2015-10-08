@@ -5801,9 +5801,9 @@ class Ticket extends CommonITILObject {
 
       // If is html content
       if ($CFG_GLPI["use_rich_text"]) {
-
-         preg_match_all('/img\s*alt=\'(([a-z0-9]+|[\.\-]?)+)/', $html,
+         preg_match_all('/img\s*alt=[\'|"](([a-z0-9]+|[\.\-]?)+)[\'|"]/', $html,
                         $matches, PREG_PATTERN_ORDER);
+
          if (isset($matches[1]) && count($matches[1])) {
             if (count($matches[1])) {
                foreach ($matches[1] as $image) {
@@ -5811,7 +5811,7 @@ class Ticket extends CommonITILObject {
                   $img = "img src='cid:".Document::getImageTag($image)."'";
 
                   //Replace tag by the image
-                  $html = preg_replace("/img alt='$image'.*src='(.+)'/", $img,
+                  $html = preg_replace("/img alt=['|\"]".$image."['|\"].*src=['|\"](.+)['|\"]/", $img,
                                           $html);
                }
             }
@@ -5891,59 +5891,26 @@ class Ticket extends CommonITILObject {
     *
     * @return htlm content
    **/
-   function cleanTagOrImage($content, $tags){
+ function cleanTagOrImage($content, $tags) {
       global $CFG_GLPI;
 
       // RICH TEXT : delete img tag
       if ($CFG_GLPI["use_rich_text"]) {
-         $html = str_replace(array('&','&amp;nbsp;'), array('&amp;',' '),
-                             html_entity_decode($content, ENT_QUOTES, "ISO-8859-1"));
+         $content = Html::entity_decode_deep($content);
 
-         // We parse HTML with dom
-         libxml_use_internal_errors(true);
-         $dom                     = new DOMDocument();
-         $dom->loadHTML('<html>'.$html.'</html>');
-         $dom->preserveWhiteSpace = false;
-
-         // We replace each <img> by a <p>
-         $nodes          = $dom->getElementsByTagName('img');
-         $nodeListLength = $nodes->length;
-
-         $nodesToDelete = array();
-         for ($i=0 ; $i<$nodeListLength ; $i++) {
-            $node = $nodes->item($i);
-            if ($id = $node->getAttribute('alt')) {
-               foreach ($tags as $tag) {
-                  if (preg_match("/".$tag."/i", $id)) {
-                     $nodesToDelete[] = $node;
-                  }
-               }
-            }
+         foreach ($tags as $tag) {
+            $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
          }
-
-         foreach($nodesToDelete as $node){
-            $p = $dom->createElement('p');
-            $node->parentNode->replaceChild($p, $node);
-         }
-
-         // Get only body content
-         $doc  = new DOMDocument();
-         $body = $dom->getElementsByTagName('body')->item(0);
-         foreach ($body->childNodes as $child)
-            $doc->appendChild($doc->importNode($child, true));
-
-         return utf8_decode(Html::entity_decode_deep($doc->saveHTML()));
 
       // SIMPLE TEXT : delete tag
       } else {
          foreach ($tags as $tag) {
             $content = preg_replace('/'.Document::getImageTag($tag).'/', '\r\n', $content);
          }
-
-         return $content;
       }
-   }
 
+      return $content;
+   }
 
    /**
     * Convert rich text content to simple text content

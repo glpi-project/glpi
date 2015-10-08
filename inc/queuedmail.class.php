@@ -369,7 +369,6 @@ class QueuedMail extends CommonDBTM {
             $mmail->Body = '';
             $this->fields['body_html'] = Html::entity_decode_deep($this->fields['body_html']);
             $documents = importArrayFromDB($this->fields['documents']);
-            $link_doc = array();
             if (is_array($documents) && count($documents)) {
                $doc = new Document();
                foreach ($documents as $docID) {
@@ -382,20 +381,10 @@ class QueuedMail extends CommonDBTM {
                                               $doc->fields['filename'],
                                               'base64',
                                               $doc->fields['mime']);
-                  // Else Add link to the document
-                  } else {
-                     $link_doc[] = "<a href='".rtrim($CFG_GLPI["url_base"], '/').
-                                     "/front/document.send.php?docid=".$doc->fields['id']."' >".
-                                    $doc->fields['name']."</a>";
                   }
                }
             }
             $mmail->Body   .= $this->fields['body_html'];
-            if (count($link_doc)) {
-               $mmail->Body .= '<p style="border:1px solid #cccccc;padding:5px">'.
-                                '<b>'._n('Associated item','Associated items', Session::getPluralNumber()).' : </b>'.
-                                implode(', ', $link_doc).'</p>';
-            }
             $mmail->AltBody = $this->fields['body_text'];
          }
 
