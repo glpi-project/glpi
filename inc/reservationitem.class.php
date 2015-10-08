@@ -489,7 +489,7 @@ class ReservationItem extends CommonDBChild {
                           `$itemtable`.`name` AS name,
                           `$itemtable`.`entities_id` AS entities_id,
                           $otherserial,
-                          `glpi_locations`.`completename` AS location,
+                          `glpi_locations`.`id` AS location,
                           `glpi_reservationitems`.`items_id` AS items_id
                    FROM `glpi_reservationitems`
                    $left
@@ -525,7 +525,7 @@ class ReservationItem extends CommonDBChild {
                }
                echo "<td><a href='reservation.php?reservationitems_id=".$row['id']."'>".
                           sprintf(__('%1$s - %2$s'), $typename, $row["name"])."</a></td>";
-               echo "<td>".$row["location"]."</td>";
+               echo "<td>".Dropdown::getDropdownName("glpi_locations", $row["location"])."</td>";
                echo "<td>".nl2br($row["comment"])."</td>";
                if ($showentity) {
                   echo "<td>".Dropdown::getDropdownName("glpi_entities", $row["entities_id"]).
