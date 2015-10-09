@@ -90,6 +90,7 @@ class GLPIPDF extends TCPDF {
       foreach (glob($path.'/*.php') as $font) {
          unset($name, $type);
          include $font;
+         unset($cbbox, $cidinfo, $cw, $dw);
          $font = basename($font, '.php');
 
          // skip subfonts
