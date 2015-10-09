@@ -36,11 +36,11 @@
 */
 
 /**
- * Update from 0.85.3 to 0.90
+ * Update from 0.85.5 to 0.90
  *
  * @return bool for success (will die for most error)
 **/
-function update0853to090() {
+function update0855to090() {
    global $DB, $migration;
 
    $updateresult     = true;
@@ -66,20 +66,6 @@ function update0853to090() {
    if ($backup_tables) {
       $migration->displayWarning("You can delete backup tables if you have no need of them.",
                                  true);
-   }
-
-   // For 0.85 svn
-   if (!FieldExists("glpi_entities", 'inquest_duration')) {
-      // Add duration for inquest (entity configuration)
-      $migration->addField("glpi_entities", 'inquest_duration', "integer", array('value' => 0));
-
-      // add validity period for users
-      $migration->addKey('glpi_users', 'begin_date');
-      $migration->addKey('glpi_users', 'end_date');
-
-      // add validity period for kb items
-      $migration->addKey('glpi_knowbaseitems', 'begin_date');
-      $migration->addKey('glpi_knowbaseitems', 'end_date');
    }
 
    // Add Color selector
