@@ -236,7 +236,7 @@ class ProfileRight extends CommonDBChild {
    function updateProfileRights($profiles_id, array $rights=array()) {
 
       foreach ($rights as $name => $right) {
-         if ($right !== false) {
+         if (isset($right) && $right) {
             if ($this->getFromDBByQuery("WHERE `profiles_id` = '$profiles_id'
                                                AND `name` = '$name'")) {
 
