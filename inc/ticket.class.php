@@ -3415,7 +3415,6 @@ class Ticket extends CommonITILObject {
       // Only manage predefined values on ticket creation
       $predefined_fields = array();
       if (!$ID) {
-
          if (isset($tt->predefined) && count($tt->predefined)) {
             foreach ($tt->predefined as $predeffield => $predefvalue) {
                if (isset($default_values[$predeffield])) {
@@ -3427,7 +3426,12 @@ class Ticket extends CommonITILObject {
                       || (isset($values['_predefined_fields'][$predeffield])
                           && ($values[$predeffield] == $values['_predefined_fields'][$predeffield]))
                       || (isset($values['_tickettemplates_id'])
-                          && ($values['_tickettemplates_id'] != $tt->getID()))) {
+                          && ($values['_tickettemplates_id'] != $tt->getID()))
+                      // user pref for requestype can't overwrite requestype from template
+                      // when change category
+                      || (($predeffield == 'requesttypes_id')
+                         && empty($saved))) {
+
                      // Load template data
                      $values[$predeffield]            = $predefvalue;
                      $this->fields[$predeffield]      = $predefvalue;
