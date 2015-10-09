@@ -3468,7 +3468,12 @@ class Ticket extends CommonITILObject {
                       || (isset($values['_predefined_fields'][$predeffield])
                           && ($values[$predeffield] == $values['_predefined_fields'][$predeffield]))
                       || (isset($values['_tickettemplates_id'])
-                          && ($values['_tickettemplates_id'] != $tt->getID()))) {
+                          && ($values['_tickettemplates_id'] != $tt->getID()))
+                      // user pref for requestype can't overwrite requestype from template
+                      // when change category
+                      || (($predeffield == 'requesttypes_id')
+                          && empty($saved))) {
+
                      // Load template data
                      $values[$predeffield]            = $predefvalue;
                      $this->fields[$predeffield]      = $predefvalue;
@@ -5733,14 +5738,14 @@ class Ticket extends CommonITILObject {
     * @return htlm content
    **/
    function convertImageToTag($content_html, $force_update=false) {
-      
+
       if (!empty($content_html)) {
          preg_match_all("/alt\s*=\s*['|\"](.+?)['|\"]/", $content_html, $matches, PREG_PATTERN_ORDER);
          if (isset($matches[1]) && count($matches[1])) {
             // Get all image src
             foreach ($matches[1] as $src) {
                // Set tag if image matches
-               $content_html = preg_replace(array("/<img.*alt=['|\"]".$src."['|\"][^>]*\>/", "/<object.*alt=['|\"]".$src."['|\"][^>]*\>/"), Document::getImageTag($src), $content_html); 
+               $content_html = preg_replace(array("/<img.*alt=['|\"]".$src."['|\"][^>]*\>/", "/<object.*alt=['|\"]".$src."['|\"][^>]*\>/"), Document::getImageTag($src), $content_html);
             }
          }
 
@@ -5922,7 +5927,7 @@ class Ticket extends CommonITILObject {
     * @return $content
    **/
    function setSimpleTextContent($content) {
-      
+
      $text = Html::entity_decode_deep($content);
 
       // If is html content
@@ -6626,7 +6631,7 @@ class Ticket extends CommonITILObject {
          $ticket->fields['status'] = CommonITILObject::ASSIGNED;
       }
       $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
-      
+
       $html = "<div class='x-split-button' id='x-split-button'>
                <input type='submit' value='$locale' name='$action' class='x-button x-button-main'>
                <span class='x-button x-button-drop'>&nbsp;</span>
