@@ -1,3 +1,6 @@
+6.2.12 (2015-09-12)
+	- fix composer package name to tecnickcom/tcpdf
+
 6.2.11 (2015-08-02)
 	- Bug #1070 "PNG regression in 6.2.9 (they appear as their alpha channel)" was fixed.
 	- Bug #1069 "Encoded SRC URLs in <img> tags don't work anymore" was fixed.
