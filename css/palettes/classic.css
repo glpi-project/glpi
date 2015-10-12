@@ -17,7 +17,7 @@
 
 /* ====== GENERAL ====== */
 
-a, a:link {
+a, a:link, .ui-widget-content a {
     color: #659900;
 }
 

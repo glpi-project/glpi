@@ -22,7 +22,7 @@
 
 /* ====== GENERAL ====== */
 
-a, a:link {
+a, a:link, .ui-widget-content a {
     color: #8E21A1;
 }
 
