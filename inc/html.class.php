@@ -1104,7 +1104,8 @@ class Html {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.min.js");
       }
 
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/tinymce/tinymce.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/tinymce/jquery.tinymce.min.js");
 
       // PLugins jquery
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js");
@@ -3807,7 +3808,20 @@ class Html {
          }
       }
 
-      tinyMCE.init({
+      $(function() {
+         $('#$name').tinymce({
+            language : '".$_SESSION['glpilanguage']."',
+            theme:              'modern',
+            skin:               'light', 
+            menubar:            false,
+            toolbar_items_size: 'small',
+            browser_spellcheck: true,
+            plugins:            'paste,autoresize',
+            paste_data_images:  true
+         });
+      });
+
+      /*tinyMCE.init({
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
          mode : 'exact',
          browser_spellcheck : true,
@@ -3863,7 +3877,7 @@ class Html {
                }
             });
          }
-      });
+      });*/
    ";
 
 //         invalid_elements : 'script',
