@@ -3805,9 +3805,9 @@ class Html {
                setTimeout(that.callself,20);
             }
          }
-      }";
-      $js .= "
-         tinyMCE.init({
+      }
+
+      tinyMCE.init({
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
          mode : 'exact',
          browser_spellcheck : true,
@@ -3841,30 +3841,30 @@ class Html {
          theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
          theme_advanced_buttons3 : '',
          setup : function(ed) {
-         ed.onInit.add(function(ed) {";
+            ed.onInit.add(function(ed) {";
       $js .= (!empty($rand))?self::initImagePasteSystem($name, $rand):'';
       $js .= "
-            // wake up the autoresize plugin
-            setTimeout(
-               function(){
+               // wake up the autoresize plugin
+               setTimeout(function(){
                   ed.execCommand('mceAutoResize');
                }, 1);
-            if (tinymce.isIE) {
-               tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
-                  return tinymce.dom.Event.cancel(e);
-               });
-            } else {
-               tinymce.dom.Event.add(ed.getBody().parentNode, 'drop', function(e) {
-                  tinymce.dom.Event.cancel(e);
-                  tinymce.dom.Event.stop(e);
-               });
-               tinymce.dom.Event.add(ed.getBody().parentNode, 'paste', function(e) {
-                  waitforpastedata(ed.getBody());
-               });
-            }
-         });
-      }";
-      $js .= "});";
+               if (tinymce.isIE) {
+                  tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
+                     return tinymce.dom.Event.cancel(e);
+                  });
+               } else {
+                  tinymce.dom.Event.add(ed.getBody().parentNode, 'drop', function(e) {
+                     tinymce.dom.Event.cancel(e);
+                     tinymce.dom.Event.stop(e);
+                  });
+                  tinymce.dom.Event.add(ed.getBody().parentNode, 'paste', function(e) {
+                     waitforpastedata(ed.getBody());
+                  });
+               }
+            });
+         }
+      });
+   ";
 
 //         invalid_elements : 'script',
       if ($display) {
