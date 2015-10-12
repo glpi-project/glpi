@@ -3830,17 +3830,17 @@ class Html {
             }
          },
          theme : 'advanced',
-         entity_encoding : 'raw', ";
+         entity_encoding : 'raw', 
          // directionality + search replace plugin
-      $js .= "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
-      $js .= "theme_advanced_toolbar_location : 'top',
-            theme_advanced_toolbar_align : 'left',
-            theme_advanced_statusbar_location : 'none',
-            theme_advanced_resizing : 'true',
-            theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
-            theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
-            theme_advanced_buttons3 : '',";
-      $js .= "setup : function(ed) {
+         theme_advanced_buttons1_add : 'ltr,rtl,search,replace',
+         theme_advanced_toolbar_location : 'top',
+         theme_advanced_toolbar_align : 'left',
+         theme_advanced_statusbar_location : 'none',
+         theme_advanced_resizing : 'true',
+         theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
+         theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
+         theme_advanced_buttons3 : '',
+         setup : function(ed) {
          ed.onInit.add(function(ed) {";
       $js .= (!empty($rand))?self::initImagePasteSystem($name, $rand):'';
       $js .= "
