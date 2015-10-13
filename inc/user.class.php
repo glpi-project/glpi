@@ -1106,18 +1106,23 @@ class User extends CommonDBTM {
                $filename  = uniqid($this->fields['id'].'_');
                $sub       = substr($filename, -2); /* 2 hex digit */
                $file      = GLPI_PICTURE_DIR . "/$sub/${filename}.jpg";
-               if (!file_exists(GLPI_PICTURE_DIR . "/$sub")) {
-                  @mkdir(GLPI_PICTURE_DIR . "/$sub");
+               $oldfile   = GLPI_PICTURE_DIR . "/".$this->fields["picture"];
+
+               // update picture if not exist or changed
+               if (!file_exists($oldfile) || sha1_file($oldfile) !== sha1($img)) {
+                  if (!is_dir(GLPI_PICTURE_DIR . "/$sub")) {
+                     mkdir(GLPI_PICTURE_DIR . "/$sub");
+                  }
+
+                  //save picture
+                  $outjpeg = fopen($file, 'wb');
+                  fwrite($outjpeg, $img);
+                  fclose ($outjpeg);
+
+                  //save thumbnail
+                  $thumb = GLPI_PICTURE_DIR . "/$sub/${filename}_min.jpg";
+                  Toolbox::resizePicture($file, $thumb);
                }
-
-               //save picture
-               $outjpeg = fopen($file, 'wb');
-               fwrite($outjpeg, $img);
-               fclose ($outjpeg);
-
-               //save thumbnail
-               $thumb = GLPI_PICTURE_DIR . "/$sub/${filename}_min.jpg";
-               Toolbox::resizePicture($file, $thumb);
 
                return "$sub/${filename}.jpg";
             }
