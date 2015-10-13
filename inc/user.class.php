@@ -2154,7 +2154,7 @@ class User extends CommonDBTM {
          $CFG_GLPI["use_ajax_autocompletion"] = false;
 
          echo "<div class='center'>";
-         echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='".$target."'>";
+         echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='".$target."' autocomplete='off'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Login'), $this->fields["name"]);
          echo "<input type='hidden' name='name' value='" . $this->fields["name"] . "'>";
