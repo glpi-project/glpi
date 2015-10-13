@@ -1106,7 +1106,9 @@ class User extends CommonDBTM {
                $filename  = uniqid($this->fields['id'].'_');
                $sub       = substr($filename, -2); /* 2 hex digit */
                $file      = GLPI_PICTURE_DIR . "/$sub/${filename}.jpg";
-               @mkdir(GLPI_PICTURE_DIR . "/$sub");
+               if (!file_exists(GLPI_PICTURE_DIR . "/$sub")) {
+                  @mkdir(GLPI_PICTURE_DIR . "/$sub");
+               }
 
                //save picture
                $outjpeg = fopen($file, 'wb');
