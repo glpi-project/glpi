@@ -1350,8 +1350,17 @@ class Toolbox {
          echo "<br>";
       }
 
+      //parse github releases
       $error          = "";
-      $latest_version = self::getURLContent("http://glpi-project.org/latest_version", $error);
+      $json_gh_tags = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/tags", $error);
+      $all_gh_tags = json_decode($json_gh_tags, true);
+      $released_tags = array();
+      foreach ($all_gh_tags as $tag) {
+         if (!preg_match("/[beta|rc]/i", $tag['name'])) {
+            $released_tags[] =  $tag['name'];
+         }
+      }
+      $latest_version = array_shift($released_tags);
 
       if (strlen(trim($latest_version)) == 0) {
          if (!$auto) {
