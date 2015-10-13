@@ -1375,45 +1375,7 @@ class Toolbox {
          }
 
       } else {
-         $splitted = explode(".", trim($CFG_GLPI["version"]));
-
-         if ($splitted[0] < 10) {
-            $splitted[0] .= "0";
-         }
-
-         if ($splitted[1] < 10) {
-            $splitted[1] .= "0";
-         }
-
-         $cur_version = ($splitted[0]*10000) + ($splitted[1]*100);
-
-         if (isset($splitted[2])) {
-            if ($splitted[2] < 10) {
-               $splitted[2] .= "0";
-            }
-            $cur_version += $splitted[2];
-         }
-
-         $splitted = explode(".", trim($latest_version));
-
-         if ($splitted[0] < 10) {
-            $splitted[0] .= "0";
-         }
-
-         if ($splitted[1] < 10) {
-            $splitted[1] .= "0";
-         }
-
-         $lat_version = ($splitted[0]*10000) + ($splitted[1]*100);
-
-         if (isset($splitted[2])) {
-            if ($splitted[2] < 10) {
-               $splitted[2] .= "0";
-            }
-            $lat_version += $splitted[2];
-         }
-
-         if ($cur_version < $lat_version) {
+         if (version_compare($CFG_GLPI["version"], $latest_version, '<')) {
             $config_object                = new Config();
             $input["id"]                  = 1;
             $input["founded_new_version"] = $latest_version;
