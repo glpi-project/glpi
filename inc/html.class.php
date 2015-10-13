@@ -3839,9 +3839,7 @@ class Html {
             theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
             theme_advanced_buttons3 : '',";
       $js .= "setup : function(ed) {
-         ed.onInit.add(function(ed) {";
-      $js .= (!empty($rand))?self::initImagePasteSystem($name, $rand):'';
-      $js .= "
+         ed.onInit.add(function(ed) {
             // wake up the autoresize plugin
             setTimeout(
                function(){
@@ -3884,6 +3882,8 @@ class Html {
    **/
    static function initImagePasteSystem($name, $rand) {
       global $CFG_GLPI;
+      
+      echo Html::imagePaste(array('rand' => $rand));
 
       $params = array('name'         => $name,
                       'filename'     => self::generateImageName(),
@@ -3897,12 +3897,12 @@ class Html {
                                               'save'         => _sx('button', 'Save'),
                                               'cancel'       => _sx('button', 'Cancel')));
 
-      return "if (!tinyMCE.isIE) { // Chrome, Firefox plugin
+      return html::scriptBlock("if (!tinyMCE.isIE) { // Chrome, Firefox plugin
                   tinyMCE.imagePaste = $(document).imagePaste(".json_encode($params).");
-              } else {// IE plugin
+              } else { // IE plugin
                   tinyMCE.imagePaste = $(document).IE_support_imagePaste(".json_encode($params).");
               }
-              uploadFile$rand();";
+              uploadFile$rand();");
    }
 
 
