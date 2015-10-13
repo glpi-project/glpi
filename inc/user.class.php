@@ -1122,9 +1122,11 @@ class User extends CommonDBTM {
                   //save thumbnail
                   $thumb = GLPI_PICTURE_DIR . "/$sub/${filename}_min.jpg";
                   Toolbox::resizePicture($file, $thumb);
-               }
 
-               return "$sub/${filename}.jpg";
+                  return "$sub/${filename}.jpg";
+               } else {
+                  return $this->fields["picture"];
+               }
             }
          }
       }
