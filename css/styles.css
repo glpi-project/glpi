@@ -2413,11 +2413,10 @@ ul#menu ul.ssmenu {
 
 .timeline_choices li {
    float: left;
-   width: 90px;
+   min-width: 90px;
    text-align: center;
-   padding: 5px 0;
+   padding: 5px 5px 5px 25px;
    margin-right: 3%;
-   padding-left: 15px;
    cursor: pointer;
    font-weight: bold;
 }
