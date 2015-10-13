@@ -3095,7 +3095,7 @@ class Ticket extends CommonITILObject {
          if (!isset($rand)) {
             $rand = mt_rand();
          }
-         echo Html::imagePaste(array('rand' => $rand));
+         echo Html::initImagePasteSystem($content_id, $rand);
          echo "</td>";
       }
       echo "</tr></table>";
@@ -4327,7 +4327,7 @@ class Ticket extends CommonITILObject {
          if (!isset($rand)) {
             $rand = mt_rand();
          }
-         echo Html::imagePaste(array('rand' => $rand));
+         echo Html::initImagePasteSystem($content_id, $rand);
          echo "</td>";
       }
       echo "</tr>";
