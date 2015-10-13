@@ -6362,8 +6362,12 @@ class Ticket extends CommonITILObject {
          $user->getFromDB($this->fields['users_id_recipient']);
 
          echo "<div class='tooltip_picture_border'>";
+         $picture = "";
+         if (isset($user->fields['picture'])) {
+            $picture = $user->fields['picture'];
+         }
          echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-         User::getThumbnailURLForPicture($user->fields['picture'])."'>";
+         User::getThumbnailURLForPicture($picture)."'>";
          echo "</div>";
 
          echo $user->getLink();
