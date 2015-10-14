@@ -2242,7 +2242,7 @@ class CommonDBTM extends CommonGLPI {
       } else {
          if ($this->maybeRecursive()) {
             if (Session::isMultiEntitiesMode()) {
-               echo "<table class='tab_format'><tr class='headerRow'><th>".$entityname."</th>";
+               echo "<table class='tab_format'><tr class='headerRow responsive_hidden'><th>".$entityname."</th>";
                echo "<th class='right'>".__('Child entities')."</th><th>";
                if ($params['canedit']) {
                   if ( $this instanceof CommonDBChild) {

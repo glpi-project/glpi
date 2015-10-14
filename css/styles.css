@@ -608,7 +608,6 @@ input.save {
    margin: 0;
 }
 
-
 /* Vertical split layout */
 @media screen and (min-width: 1250px) {
    html, body.layout_vsplit {
@@ -790,13 +789,6 @@ td { }
    -webkit-box-shadow: 0px 2px 5px #666;
    box-shadow: 0px 2px 5px #666;*/
 }
-
-@media screen and (max-width: 600px) {
-   .tab_cadre_central .top {
-      display: block;
-   }
-}  
-
 
 
 .tab_cadre_postonly {
@@ -2086,25 +2078,8 @@ ul#menu ul.ssmenu {
    float: right !important;
    height: 28px;
    line-height: 24px;
-}
-
-@media screen and (max-width: 600px) {
-   .profile-selector {
-      padding: 4px 2px !important;
-      max-width: 95px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      line-height: 23px;
-   }
-
-   .profile-selector .select2-container {
-      max-width: 90px;
-   }
-
-   .ui-dialog {
-      max-width: 100%;
-   }
+   z-index: 40;
+   position: relative;
 }
 
 .breadcrumb_item:before {
@@ -2160,11 +2135,13 @@ ul#menu ul.ssmenu {
 }
 
 .icons_block {
-   margin-left: 20px;
+   margin-left: 10px;
    height: 28px;
    float: inherit !important;
    box-sizing: border-box;
    display: inline-block;
+   position: relative;
+   z-index: 40;
 }
 
 .icons_block span {
@@ -2463,6 +2440,7 @@ ul#menu ul.ssmenu {
    border-top: 1px dashed #3C5874;
    overflow: hidden;
    font-size: 12px; /*fix jqueryui ui-widget size*/
+   width: 100%;
 }
 
 .timeline_history h2 {
@@ -3078,3 +3056,135 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
 .queuemail_preview .tab_cadre {
    width: inherit !important;
 }
+
+
+/* ################--------------- Responsive  ---------------#################### */
+
+@media screen and (max-width: 600px) {
+   .icons_block {
+      margin-left: 0;
+   }
+
+   .profile-selector {
+      padding: 4px 2px !important;
+      max-width: 95px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: inline-block;
+   }
+
+   .profile-selector .select2-container {
+      max-width: 90px;
+   }
+
+   .ui-dialog {
+      max-width: 100%;
+   }
+
+   .responsive_hidden {
+      display: none !important;
+   }
+
+   .ui-tabs {
+      width: 100% !important;
+   }
+
+   .ui-tabs-vertical .ui-tabs-nav {
+      padding: .2em .2em 0;
+      float: inherit;
+      width: inherit;
+   }
+
+   .ui-tabs-vertical .ui-tabs-nav li {
+      clear: none;
+      width: initial;
+      border-bottom-width: 1px !important;
+      border-right-width: 0 !important;
+      margin:1px .2em 0 0;
+   }
+
+   .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+      padding-bottom: 1px;
+   }
+
+   .ui-tabs-vertical .ui-tabs-nav li a {
+      width: inherit;
+   }
+
+   .ui-tabs-panel,
+   .ui-tabs .ui-tabs-panel
+   .ui-tabs-vertical .ui-tabs-panel {
+      padding: 2px !important;
+   }
+
+   .ui-tabs-vertical .ui-tabs-panel {
+      margin-left: 0;
+   }
+
+   .tab_cadre_pager {
+      width: 100%;
+   }
+   .tab_cadre_pager .big {
+      display: none;
+   }
+
+   .tab_cadre_fixe:not(.tab_actors),
+   .tab_cadre_fixe:not(.tab_actors) > tbody > tr,
+   .tab_cadre_fixe:not(.tab_actors) > tbody > tr > th,
+   .tab_cadre_fixe:not(.tab_actors) > tbody > tr > td,
+   .tab_actors tr,
+   .tab_actors tr:first-child th:first-child {
+      display: block;
+      width: 100%;
+      text-align: left;
+   }
+
+   .tab_cadre_fixe input[type=text],
+   .tab_cadre_fixe textarea {
+     max-width: 100%;
+   }
+
+   .tab_cadrehov {
+      margin: 0; 
+      width: 100%;
+   }
+
+   table.central,
+   table.central > tbody > tr,
+   table.central > tbody > tr > th,
+   table.central > tbody > tr > td,
+   table.central > tbody > tr > td > .tab_cadrehov {
+      display: block;
+      width: 100%;
+   }
+
+   #searchcriterias .tab_cadre_fixe  {
+      width: 100%;
+   }
+
+   #searchcriterias .normalcriteria, 
+   #searchcriterias .normalcriteria td {
+      display: block;
+      width: 100%;
+      text-align: right;
+   }
+   #searchcriterias .normalcriteria {
+      border-bottom: 1px solid #EEE;
+      margin-bottom: 7px;
+   }
+
+   .timeline_history .h_date {
+      background-image: none;
+      padding-left: 0;
+   }
+
+   .timeline_history .h_info {
+      font-size: .7em;
+   }
+
+   .tab_cadre_central .top {
+      display: block;
+   }
+}
+

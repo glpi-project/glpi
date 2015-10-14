@@ -3548,7 +3548,7 @@ class Ticket extends CommonITILObject {
 
       // Optional line
       $ismultientities = Session::isMultiEntitiesMode();
-      echo "<tr class='headerRow'>";
+      echo "<tr class='headerRow responsive_hidden'>";
       echo "<th colspan='4'>";
 
       if ($ID) {

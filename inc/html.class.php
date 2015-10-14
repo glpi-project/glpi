@@ -3846,7 +3846,7 @@ class Html {
             setTimeout(
                function(){
                   ed.execCommand('mceAutoResize');
-               }, 1);
+               }, 1);4204
                if (tinymce.isIE) {
                   tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
                      return tinymce.dom.Event.cancel(e);
@@ -4140,7 +4140,7 @@ class Html {
           && isset($_SESSION["glpiactiveprofile"])
           && ($_SESSION["glpiactiveprofile"]["interface"] == "central")) {
 
-         echo "<td class='tab_bg_2' width='30%'>";
+         echo "<td class='tab_bg_2 responsive_hidden' width='30%'>";
          echo "<form method='GET' action='".$CFG_GLPI["root_doc"]."/front/report.dynamic.php'
                 target='_blank'>";
          echo Html::hidden('item_type', array('value' => $item_type_output));
@@ -4199,12 +4199,12 @@ class Html {
 
       if ($action) {
          echo "<form method='POST' action=\"$action\">";
-         echo "<span>".__('Display (number of items)')."</span>&nbsp;";
+         echo "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
          Dropdown::showListLimit("submit()");
 
       } else {
          echo "<form method='POST' action =''>\n";
-         echo "<span>".__('Display (number of items)')."</span>&nbsp;";
+         echo "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
          Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value)");
       }
       Html::closeForm();
