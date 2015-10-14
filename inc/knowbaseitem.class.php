@@ -130,7 +130,8 @@ class KnowbaseItem extends CommonDBTM {
 
       // Personal knowbase or visibility and write access
       return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
-              || ($this->fields['users_id'] == Session::getLoginUserID())
+              || ($_SESSION["glpiactiveprofile"]["interface"] == "central" && 
+                     $this->fields['users_id'] == Session::getLoginUserID())
               || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
                    || (!$this->fields["is_faq"]
                        && Session::haveRight(self::$rightname, UPDATE)))
