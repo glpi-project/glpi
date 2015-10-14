@@ -3000,7 +3000,8 @@ class Ticket extends CommonITILObject {
       if (!$tt->isHiddenField('_users_id_observer')
           || $tt->isPredefinedField('_users_id_observer')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".sprintf(__('%1$s%2$s'), __('Watcher'), $tt->getMandatoryMark('_users_id_observer'))."</td>";
+         echo "<td>".sprintf(__('%1$s%2$s'), _n('Watcher', 'Watchers', 2), 
+                             $tt->getMandatoryMark('_users_id_observer'))."</td>";
          echo "<td>";
          $values['_right'] = "groups";
 
@@ -3156,8 +3157,7 @@ class Ticket extends CommonITILObject {
       $params['_users_id_observer_notif']['use_notification'] = true;
       $params['_users_id_observer']                           = 0;
       $params['entities_id']                                  = $_SESSION["glpiactive_entity"];
-
-
+      $values['_right']                                       = "groups";
 
       // overide default value by function parameters
       if (is_array($options) && count($options)) {
@@ -3172,7 +3172,8 @@ class Ticket extends CommonITILObject {
       // add an additionnal observer on user selection
       Ajax::updateItemOnSelectEvent("dropdown__users_id_observer[]$rand_observer",
                                     "observer_$rand_observer",
-                                    $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php");
+                                    $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php", 
+                                    $params);
 
       //remove 'new observer' anchor on user selection
       echo Html::scriptBlock("
@@ -3189,7 +3190,7 @@ class Ticket extends CommonITILObject {
       Ajax::updateItemOnEvent("addObserver$rand_observer",
                               "observer_$rand_observer",
                               $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php", 
-                              array(), array('click'));
+                              $params, array('click'));
 
       // div for an additionnal observer
       echo "<div class='actor_single' id='observer_$rand_observer'></div>";
