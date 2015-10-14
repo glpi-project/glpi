@@ -3184,6 +3184,7 @@ class User extends CommonDBTM {
       $p['toupdate']       = '';
       $p['rand']           = mt_rand();
       $p['display']        = true;
+      $p['_user_index']   = 0;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -3193,7 +3194,7 @@ class User extends CommonDBTM {
 
       // check default value (in case of multiple observers)
       if (is_array($p['value'])) {
-         $p['value'] = $p['value'][0];
+         $p['value'] = $p['value'][$p['_user_index']];
       }
 
       // Check default value for dropdown : need to be a numeric

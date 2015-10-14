@@ -1284,7 +1284,10 @@ class Ticket extends CommonITILObject {
                            }
                         }
 
-                        if (empty($input[$key]) || ($input[$key] == 'NULL')) {
+                        if (empty($input[$key]) 
+                            || $input[$key] == 'NULL'
+                            || (is_array($input[$key])
+                                && $input[$key] === array(0 => "0"))) {
                            $mandatory_missing[$key] = $fieldsname[$val];
                         }
                      }
@@ -2721,7 +2724,7 @@ class Ticket extends CommonITILObject {
                                                               => (($email == "")?0:$default_use_notif)),
                               'nodelegate'          => 1,
                               '_users_id_requester' => 0,
-                              '_users_id_observer'  => 0,
+                              '_users_id_observer'  => array(0),
                               '_users_id_observer_notif'
                                                     => array('use_notification' => $default_use_notif),
                               'name'                => '',
@@ -2996,21 +2999,38 @@ class Ticket extends CommonITILObject {
 
       if (!$tt->isHiddenField('_users_id_observer')
           || $tt->isPredefinedField('_users_id_observer')) {
-         echo "<tr class='tab_bg_1'><td>".__('Watcher')."</td>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".sprintf(__('%1$s%2$s'), __('Watcher'), $tt->getMandatoryMark('_users_id_observer'))."</td>";
          echo "<td>";
          $values['_right'] = "groups";
 
          if (!$tt->isHiddenField('_users_id_observer')) {
             // Observer
-            $ticket        = new self();
-            $rand_observer = $ticket->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $values);
-            echo '<hr>';
 
-            echo "<span id='observer_$rand_observer'></span>";
-            Ajax::updateItemOnSelectEvent("dropdown__users_id_observer[]$rand_observer",
-                                          "observer_$rand_observer",
-                                          $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php",
-                                          $values);
+            if($tt->isPredefinedField('_users_id_observer') 
+               && !is_array($values['_users_id_observer'])) {
+
+               //convert predefined value to array
+               $values['_users_id_observer'] = array($values['_users_id_observer']);
+               $values['_users_id_observer_notif']['use_notification'] = 
+                  array($values['_users_id_observer_notif']['use_notification']);
+
+               // add new line to permit adding more observers
+               $values['_users_id_observer'][1] = 0;
+               $values['_users_id_observer_notif']['use_notification'][1] = 1;
+            }
+            
+
+            echo "<div class='actor_single first-actor'>";
+            if (isset($values['_users_id_observer'])) {
+               $observers = $values['_users_id_observer'];
+               foreach($observers as $index_observer => $observer) {
+                  $options = array_merge($values, array('_user_index' => $index_observer));
+                  self::showFormHelpdeskObserver($options);
+               }
+            }
+            echo "</div>";
+
 
          } else { // predefined value
            if (isset($values["_users_id_observer"]) && $values["_users_id_observer"]) {
@@ -3018,7 +3038,6 @@ class Ticket extends CommonITILObject {
                echo Dropdown::getDropdownName("glpi_users", $values["_users_id_observer"]);
                echo "<input type='hidden' name='_users_id_observer' value=\"".
                       $values["_users_id_observer"]."\">";
-               echo '<hr>';
            }
          }
          echo "</td></tr>";
@@ -3122,6 +3141,59 @@ class Ticket extends CommonITILObject {
       if (!$ticket_template) {
          Html::closeForm();
       }
+   }
+
+   /**
+    * Display a single oberver selector
+    *
+    *  * @param $options array options for default values ($options of showActorAddFormOnCreate)
+   **/
+   static function showFormHelpdeskObserver($options = array()) {
+      global $CFG_GLPI;
+
+      //default values
+      $ticket = new Ticket();
+      $params['_users_id_observer_notif']['use_notification'] = true;
+      $params['_users_id_observer']                           = 0;
+      $params['entities_id']                                  = $_SESSION["glpiactive_entity"];
+
+
+
+      // overide default value by function parameters
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      // add a user selector
+      $rand_observer = $ticket->showActorAddFormOnCreate(CommonITILActor::OBSERVER, $params);
+
+      // add an additionnal observer on user selection
+      Ajax::updateItemOnSelectEvent("dropdown__users_id_observer[]$rand_observer",
+                                    "observer_$rand_observer",
+                                    $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php");
+
+      //remove 'new observer' anchor on user selection
+      echo Html::scriptBlock("
+      $('#dropdown__users_id_observer__$rand_observer').on('change', function(event) {
+         $('#addObserver$rand_observer').remove();
+      });");
+
+      // add "new observer" anchor
+      echo "<a id='addObserver$rand_observer' class='add-observer' onclick='this.remove()'>";
+      echo Html::image($CFG_GLPI['root_doc']."/pics/meta_plus.png", array('alt' => __('add')));
+      echo "</a>";
+
+      // add an additionnal observer on anchor click 
+      Ajax::updateItemOnEvent("addObserver$rand_observer",
+                              "observer_$rand_observer",
+                              $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php", 
+                              array(), array('click'));
+
+      // div for an additionnal observer
+      echo "<div class='actor_single' id='observer_$rand_observer'></div>";
+      
    }
 
 
