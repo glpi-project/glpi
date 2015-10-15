@@ -440,8 +440,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__('Preview')."</th></tr>";
 
-      $oktypes = array('CartridgeItem', 'ConsumableItem', 'Contract', 'Crontask',
-                       'Problem', 'Ticket', 'User');
+      $oktypes = array('CartridgeItem', 'Change', 'ConsumableItem', 'Contract', 'Crontask',
+                       'Problem', 'Project', 'Ticket', 'User');
 
       if (!in_array($itemtype, $oktypes)) {
          // this itemtype doesn't work, need to be fixed
