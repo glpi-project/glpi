@@ -6704,7 +6704,7 @@ class Ticket extends CommonITILObject {
       $ticket_users = $ticket->getTicketActors();
       $actor_type   = $ticket_users[Session::getLoginUserID()];
 
-      // stupid control: assign a status id requester?
+      // stupid control: assign a status if requester? done by commonitilactor
 //      if ($actor_type == CommonITILActor::REQUESTER) {
 ///         $ticket->fields['status'] = CommonITILObject::ASSIGNED;
 //      }
