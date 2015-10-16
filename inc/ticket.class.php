@@ -1284,7 +1284,7 @@ class Ticket extends CommonITILObject {
                            }
                         }
 
-                        if (empty($input[$key]) 
+                        if (empty($input[$key])
                             || $input[$key] == 'NULL'
                             || (is_array($input[$key])
                                 && $input[$key] === array(0 => "0"))) {
@@ -3000,7 +3000,7 @@ class Ticket extends CommonITILObject {
       if (!$tt->isHiddenField('_users_id_observer')
           || $tt->isPredefinedField('_users_id_observer')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".sprintf(__('%1$s%2$s'), _n('Watcher', 'Watchers', 2), 
+         echo "<td>".sprintf(__('%1$s%2$s'), _n('Watcher', 'Watchers', 2),
                              $tt->getMandatoryMark('_users_id_observer'))."</td>";
          echo "<td>";
          $values['_right'] = "groups";
@@ -3008,19 +3008,19 @@ class Ticket extends CommonITILObject {
          if (!$tt->isHiddenField('_users_id_observer')) {
             // Observer
 
-            if($tt->isPredefinedField('_users_id_observer') 
+            if($tt->isPredefinedField('_users_id_observer')
                && !is_array($values['_users_id_observer'])) {
 
                //convert predefined value to array
                $values['_users_id_observer'] = array($values['_users_id_observer']);
-               $values['_users_id_observer_notif']['use_notification'] = 
+               $values['_users_id_observer_notif']['use_notification'] =
                   array($values['_users_id_observer_notif']['use_notification']);
 
                // add new line to permit adding more observers
                $values['_users_id_observer'][1] = 0;
                $values['_users_id_observer_notif']['use_notification'][1] = 1;
             }
-            
+
 
             echo "<div class='actor_single first-actor'>";
             if (isset($values['_users_id_observer'])) {
@@ -3172,7 +3172,7 @@ class Ticket extends CommonITILObject {
       // add an additionnal observer on user selection
       Ajax::updateItemOnSelectEvent("dropdown__users_id_observer[]$rand_observer",
                                     "observer_$rand_observer",
-                                    $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php", 
+                                    $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php",
                                     $params);
 
       //remove 'new observer' anchor on user selection
@@ -3186,15 +3186,15 @@ class Ticket extends CommonITILObject {
       echo Html::image($CFG_GLPI['root_doc']."/pics/meta_plus.png", array('alt' => __('add')));
       echo "</a>";
 
-      // add an additionnal observer on anchor click 
+      // add an additionnal observer on anchor click
       Ajax::updateItemOnEvent("addObserver$rand_observer",
                               "observer_$rand_observer",
-                              $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php", 
+                              $CFG_GLPI["root_doc"]."/ajax/helpdesk_observer.php",
                               $params, array('click'));
 
       // div for an additionnal observer
       echo "<div class='actor_single' id='observer_$rand_observer'></div>";
-      
+
    }
 
 
@@ -6704,9 +6704,10 @@ class Ticket extends CommonITILObject {
       $ticket_users = $ticket->getTicketActors();
       $actor_type   = $ticket_users[Session::getLoginUserID()];
 
-      if ($actor_type == CommonITILActor::REQUESTER) {
-         $ticket->fields['status'] = CommonITILObject::ASSIGNED;
-      }
+      // stupid control: assign a status id requester?
+//      if ($actor_type == CommonITILActor::REQUESTER) {
+///         $ticket->fields['status'] = CommonITILObject::ASSIGNED;
+//      }
       $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
 
       $html = "<div class='x-split-button' id='x-split-button'>
