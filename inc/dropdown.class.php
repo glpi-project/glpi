@@ -728,6 +728,7 @@ class Dropdown {
                     __('Assistance')
                         => array('ITILCategory'     => _n('Ticket category', 'Ticket categories', Session::getPluralNumber()),
                                  'TaskCategory'     => _n('Task category','Task categories', Session::getPluralNumber()),
+                                 'TaskTemplate'     => _n('Task template','Task templates', Session::getPluralNumber()),
                                  'SolutionType'     => _n('Solution type', 'Solution types', Session::getPluralNumber()),
                                  'RequestType'      => _n('Request source', 'Request sources', Session::getPluralNumber()),
                                  'SolutionTemplate' => _n('Solution template',
@@ -1450,6 +1451,7 @@ class Dropdown {
       global $CFG_GLPI;
 
       $params['value']               = 0;
+      $params['rand']                = mt_rand();
       $params['min']                 = 0;
       $params['max']                 = DAY_TIMESTAMP;
       $params['step']                = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
@@ -1551,6 +1553,7 @@ class Dropdown {
       }
       return Dropdown::showFromArray($myname, $values, array('value'   => $params['value'],
                                                              'display' => $params['display'],
+                                                             'rand'    => $params['rand'],
                                                              'width'   => $params['width'],));
    }
 
