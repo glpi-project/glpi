@@ -4097,6 +4097,7 @@ class Ticket extends CommonITILObject {
          $cols       = 90;
          $rows       = 6;
          $content_id = "content$rand";
+
          if ($CFG_GLPI["use_rich_text"]) {
             $this->fields["content"] = $this->setRichTextContent($content_id,
                                                                  $this->fields["content"],
@@ -4109,7 +4110,8 @@ class Ticket extends CommonITILObject {
 
          echo "<div id='content$rand_text'>";
          echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'>".
-                $this->fields["content"]."</textarea></div>";
+               $this->fields['content']."</textarea></div>";
+
          echo $tt->getEndHiddenFieldValue('content', $this);
 
       } else {
@@ -5965,11 +5967,11 @@ class Ticket extends CommonITILObject {
 
       // If content does not contain <br> or <p> html tag, use nl2br
       $content = Html::entity_decode_deep($content);
+
       if (!preg_match("/<br\s?\/?>/", $content) && !preg_match("/<p>/", $content)) {
          $content = nl2br($content);
       }
-
-      return $content;
+      return Toolbox::clean_cross_side_scripting_deep($content);
    }
 
 }
