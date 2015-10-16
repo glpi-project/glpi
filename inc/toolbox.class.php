@@ -1036,7 +1036,7 @@ class Toolbox {
                      __s('The functionality is found - Perfect!')."\"></td>";
       }
       echo "</tr>";
-      
+
       // Test for GD extension.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Zlib extension test')."</td>";
 
@@ -1050,7 +1050,7 @@ class Toolbox {
                      __s('The functionality is found - Perfect!'). "\" title=\"".
                      __s('The functionality is found - Perfect!')."\"></td>";
       }
-      echo "</tr>";      
+      echo "</tr>";
 
       // Test for Cryptographic extension.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Cryptography test')."</td>";
@@ -2094,7 +2094,7 @@ class Toolbox {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/imap' => __('IMAP'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2105,7 +2105,7 @@ class Toolbox {
       Dropdown::showFromArray('server_type', $values,
                               array('value' => $svalue,
                                     'width' => '10%'));
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/ssl' => __('SSL'));
 
@@ -2115,7 +2115,7 @@ class Toolbox {
                               array('value' => $svalue,
                                     'width' => '10%'));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/tls' => __('TLS'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2133,7 +2133,7 @@ class Toolbox {
                               array('value' => $svalue,
                                     'width' => '14%'));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/novalidate-cert' => __('NO-VALIDATE-CERT'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2151,7 +2151,7 @@ class Toolbox {
                               array('value' => $svalue,
                                     'width' => '20%'));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/norsh' => __('NORSH'));
 
@@ -2161,7 +2161,7 @@ class Toolbox {
                               array('value' => $svalue,
                                     'width' => '12%'));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/secure' => __('SECURE'));
 
@@ -2171,7 +2171,7 @@ class Toolbox {
                               array('value' => $svalue,
                                     'width' => '12%'));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/debug' => __('DEBUG'));
 
