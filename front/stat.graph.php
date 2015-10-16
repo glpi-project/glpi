@@ -314,7 +314,7 @@ echo "</table></div>";
 
 
 $show_all = false;
-if (!isset($_GET['graph']) || (count($_GET['graph']) == 0)) {
+if (!isset($_POST['graph']) || (count($_POST['graph']) == 0)) {
    $show_all = true;
 }
 
@@ -342,13 +342,13 @@ echo "<div class='center'>";
 
 foreach ($available as $key => $name) {
    echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
-          ($show_all||isset($_GET['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
+          ($show_all||isset($_POST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
 }
 echo "</div>";
 
 $toprint = array();
 foreach ($available as $key => $name) {
-   if ($show_all || isset($_GET['graph'][$key])) {
+   if ($show_all || isset($_POST['graph'][$key])) {
       $toprint[$name] = $values[$key];
    }
 }
@@ -447,13 +447,13 @@ if ($_GET['itemtype'] == 'Ticket') {
 
    foreach ($available as $key => $name) {
       echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
-            ($show_all||isset($_GET['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
+            ($show_all||isset($_POST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
    }
    echo "</div>";
 
    $toprint = array();
    foreach ($available as $key => $name) {
-      if ($show_all || isset($_GET['graph'][$key])) {
+      if ($show_all || isset($_POST['graph'][$key])) {
          $toprint[$name] = $values[$key];
       }
    }
@@ -472,13 +472,13 @@ if ($_GET['itemtype'] == 'Ticket') {
 
    foreach ($available as $key => $name) {
       echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
-            ($show_all||isset($_GET['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
+            ($show_all||isset($_POST['graph'][$key])?"checked":"")."> ".$name."&nbsp;";
    }
    echo "</div>";
 
    $toprint = array();
    foreach ($available as $key => $name) {
-      if ($show_all || isset($_GET['graph'][$key])) {
+      if ($show_all || isset($_POST['graph'][$key])) {
          $toprint[$name] = $values[$key];
       }
    }
@@ -487,6 +487,6 @@ if ($_GET['itemtype'] == 'Ticket') {
 
 }
 // form using GET method : CRSF not needed
-echo "</form>";
+Html::closeForm();
 Html::footer();
 ?>
