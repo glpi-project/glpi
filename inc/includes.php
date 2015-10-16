@@ -35,9 +35,7 @@
 * @brief
 */
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', dirname(__DIR__));
-}
+define('GLPI_ROOT', dirname(__DIR__));
 
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
 
