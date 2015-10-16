@@ -30,9 +30,8 @@ You should have received a copy of the GNU General Public License
 along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 --------------------------------------------------------------------------
 */
-define('GLPI_ROOT','..');
 $AJAX_INCLUDE = 1;
-include (GLPI_ROOT."/inc/includes.php");
+include ("../inc/includes.php");
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
