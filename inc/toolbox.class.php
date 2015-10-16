@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -1040,7 +1040,7 @@ class Toolbox {
                      __s('The functionality is found - Perfect!')."\"></td>";
       }
       echo "</tr>";
-      
+
       // Test for GD extension.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Zlib extension test')."</td>";
 
@@ -1054,7 +1054,7 @@ class Toolbox {
                      __s('The functionality is found - Perfect!'). "\" title=\"".
                      __s('The functionality is found - Perfect!')."\"></td>";
       }
-      echo "</tr>";      
+      echo "</tr>";
 
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
@@ -1360,7 +1360,7 @@ class Toolbox {
             $released_tags[] =  $release['tag_name'];
          }
       }
-      usort($released_tags, 'version_compare'); 
+      usort($released_tags, 'version_compare');
       $latest_version = array_pop($released_tags);
 
       if (strlen(trim($latest_version)) == 0) {
@@ -2054,7 +2054,7 @@ class Toolbox {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/imap' => __('IMAP'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2064,7 +2064,7 @@ class Toolbox {
 
       Dropdown::showFromArray('server_type', $values,
                               array('value' => $svalue));
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/ssl' => __('SSL'));
 
@@ -2073,7 +2073,7 @@ class Toolbox {
       Dropdown::showFromArray('server_ssl', $values,
                               array('value' => $svalue));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/tls' => __('TLS'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2091,7 +2091,7 @@ class Toolbox {
                               array('value' => $svalue,
                                     'width' => '14%'));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/novalidate-cert' => __('NO-VALIDATE-CERT'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2108,7 +2108,7 @@ class Toolbox {
       Dropdown::showFromArray('server_cert', $values,
                               array('value' => $svalue));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/norsh' => __('NORSH'));
 
@@ -2117,7 +2117,7 @@ class Toolbox {
       Dropdown::showFromArray('server_rsh', $values,
                               array('value' => $svalue));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/secure' => __('SECURE'));
 
@@ -2126,7 +2126,7 @@ class Toolbox {
       Dropdown::showFromArray('server_secure', $values,
                               array('value' => $svalue));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/debug' => __('DEBUG'));
 
