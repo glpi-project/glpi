@@ -44,7 +44,7 @@ if (!$CFG_GLPI['allow_search_global']) {
    Html::displayRightError();
 }
 if (isset($_GET["globalsearch"])) {
-   $searchtext=$_GET["globalsearch"];
+   $searchtext=trim($_GET["globalsearch"]);
 
    foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
       if (($item = getItemForItemtype($itemtype))
