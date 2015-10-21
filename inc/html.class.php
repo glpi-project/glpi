@@ -2460,15 +2460,15 @@ class Html {
       }
 
       $out  = "<div class='form-group-checkbox'>
-               <input title='".__s('Check all as')."' type='checkbox' class='new_checkbox' ".
-                "name='_checkall_$rand' id='checkall_$rand' ".
-                 "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))
-                                                {return true;}\">
-               <label class='label-checkbox' for='checkall_$rand' title='".__s('Check all as')."'>
-               <span class='check'></span>
-               <span class='box'></span>
-               </label>
-               <div class='form-group'>";
+                  <input title='".__s('Check all as')."' type='checkbox' class='new_checkbox' ".
+                   "name='_checkall_$rand' id='checkall_$rand' ".
+                    "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))
+                                                   {return true;}\">
+                  <label class='label-checkbox' for='checkall_$rand' title='".__s('Check all as')."'>
+                     <span class='check'></span>
+                     <span class='box'></span>
+                  </label>
+               </div>";
 
       return $out;
    }
