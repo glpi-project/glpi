@@ -610,7 +610,8 @@ class Software extends CommonDBTM {
       $licjoin       = array();
       $licjoinexpire = array();
 
-      if (!Session::isCron()) { // no filter for cron
+      if (!Session::isCron()
+          && !isCommandLine()) { // no filter for cron
          $licjoin       = array('jointype'  => 'child',
                                 'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
                                                                            '', '', true));

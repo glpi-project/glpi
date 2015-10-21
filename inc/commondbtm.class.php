@@ -230,7 +230,7 @@ class CommonDBTM extends CommonGLPI {
     * @param $order        order field if needed (default '')
     * @param $limit        limit retrieved datas if needed (default '')
     *
-    * @return true if succeed else false
+    * @return all retrieved data in a associative array by id
    **/
    function find($condition="", $order="", $limit="") {
       global $DB;
@@ -369,7 +369,7 @@ class CommonDBTM extends CommonGLPI {
 
       }
 
-      if (count($oldvalues)) {
+      if (count($oldvalues) && isset($_SESSION['glpiactiveentities_string'])) {
          Log::constructHistory($this, $oldvalues, $this->fields);
       }
 

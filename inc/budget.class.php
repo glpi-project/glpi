@@ -546,21 +546,23 @@ class Budget extends CommonDropdown{
                                       AND `$table`.`is_template` = '0'
                                 GROUP BY `$table`.`entities_id`";
                break;
+
             case 'Project' :
-               $costtable = getTableForItemType($item->getType().'Cost');
+               $costtable   = getTableForItemType($item->getType().'Cost');
                $query_infos = "SELECT SUM(`glpi_projectcosts`.`cost`) AS `sumvalue`,
                                        `$table`.`entities_id`
-                                FROM `glpi_projectcosts`
-                                INNER JOIN `$table`
+                               FROM `glpi_projectcosts`
+                               INNER JOIN `$table`
                                     ON (`glpi_projectcosts`.`projects_id` = `$table`.`id`)
-                                WHERE `glpi_projectcosts`.`budgets_id` = '$budgets_id' ".
+                               WHERE `glpi_projectcosts`.`budgets_id` = '$budgets_id' ".
                                       getEntitiesRestrictRequest(" AND", $table, "entities_id")."
                                 GROUP BY `$table`.`entities_id`";
                break;
+
             case 'Ticket' :
             case 'Problem' :
             case 'Change' :
-               $costtable = getTableForItemType($item->getType().'Cost');
+               $costtable   = getTableForItemType($item->getType().'Cost');
                $query_infos = "SELECT SUM(`$costtable`.`actiontime`*`$costtable`.`cost_time`/".HOUR_TIMESTAMP."
                                           + `$costtable`.`cost_fixed`
                                           + `$costtable`.`cost_material`) AS `sumvalue`,

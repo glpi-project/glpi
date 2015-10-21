@@ -929,7 +929,7 @@ class MailCollector  extends CommonDBTM {
       global $DB;
 
       // First clean HTML and XSS
-      $string = Toolbox::clean_cross_side_scripting_deep(Html::clean($string));
+      $string = Toolbox::clean_cross_side_scripting_deep($string);
 
       $rand   = mt_rand();
       // Move line breaks to special CHARS
@@ -1319,7 +1319,9 @@ class MailCollector  extends CommonDBTM {
 
       } else {
          // fix monoparted mail
-         if ($part == "") $part = 1;
+         if ($part == "") {
+            $part = 1;
+         }
 
          $filename = '';
 

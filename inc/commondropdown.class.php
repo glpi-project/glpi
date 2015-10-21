@@ -376,6 +376,10 @@ abstract class CommonDropdown extends CommonDBTM {
       if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {
          $options['candel'] = false;
       }
+
+      if (isset($_REQUEST['_in_modal'])) {
+        echo "<input type='hidden' name='_in_modal' value='1'>";
+      }
       $this->showFormButtons($options);
 
       return true;

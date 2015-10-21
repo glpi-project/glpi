@@ -347,7 +347,8 @@ class Ajax {
             $js .=  "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
          }
 
-         if (CommonGLPI::isLayoutWithMain()) {
+         if (CommonGLPI::isLayoutWithMain() 
+             && !CommonGLPI::isLayoutExcludedPage()) {
             $js .=  "$('#tabs$rand').scrollabletabs();";
          } else {
             $js .=  "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";

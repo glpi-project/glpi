@@ -1855,6 +1855,43 @@ class Config extends CommonDBTM {
          }
          $error = 1;
       }
+
+      $oldhand = set_error_handler(NULL);
+      $oldlevel = error_reporting(0);
+      /* TODO: could be improved, only default vhost checked */
+      if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php', 'r')) {
+         fclose($fic);
+         if (!$fordebug) {
+            echo "<tr class='tab_bg_1'><td class='b left'>".
+               __('Web access to files directory is protected')."</td>";
+         }
+         if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/files/_log/php-errors.log', 'r')) {
+            fclose($fic);
+            if ($fordebug) {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                     __('Web access to the files directory, should not be allowed')."\n".
+                     __('Check the .htaccess file and the web server configuration.')."\n";
+            } else {
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                    "<p class='red'>".__('Web access to the files directory, should not be allowed')."<br/>".
+                    __('Check the .htaccess file and the web server configuration.')."</p></td></tr>";
+            }
+            $error = 1;
+         } else {
+            if ($fordebug) {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                     __s('Web access to files directory is protected')."\">".
+                     __s('Web access to files directory is protected')." : OK\n";
+            } else {
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                     __s('Web access to files directory is protected')."\" title=\"".
+                     __s('Web access to files directory is protected')."\"></td></tr>";
+            }
+         }
+      }
+      error_reporting($oldlevel);
+      set_error_handler($oldhand);
+
       return $error;
    }
 

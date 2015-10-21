@@ -308,7 +308,7 @@ select {
 }
 
 
-textarea, input[type=text], input[type=password] {
+textarea, input[type=text], input[type=password], input[type=number] {
    background-color:#FCFCFC;
    color: black;
    border: 1px solid #D3D3D3;
@@ -718,7 +718,7 @@ input.save {
       background-color: #E6E6E6;
    }
 
-   .layout_vsplit.form .main_form input[type=text] {
+   .layout_vsplit.form .main_form input[type=text]:not([size]) {
       width:74%;
    }
    .layout_vsplit.form .main_form textarea {
@@ -2348,6 +2348,7 @@ ul#menu ul.ssmenu {
 .debug .ui-tabs {
    display: none;
    position: fixed !important;
+   left: 0 !important;
    bottom: 0 !important;
    top: inherit !important;
    height: 300px !important;
