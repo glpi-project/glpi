@@ -3285,7 +3285,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return false;
       }
 
-      echo "<div ".($inobject?"style='display:none'":'')." id='itilactor$rand_type'>";
+      echo "<div ".($inobject?"style='display:none'":'')." id='itilactor$rand_type' class='actor-dropdown'>";
       $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
       $params = array('type'            => '__VALUE__',
                       'actortype'       => $typename,
@@ -3299,7 +3299,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                     "showitilactor".$typename."_$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/dropdownItilActors.php",
                                     $params);
-      echo "<span id='showitilactor".$typename."_$rand'>&nbsp;</span>";
+      echo "<span id='showitilactor".$typename."_$rand' class='actor-dropdown'>&nbsp;</span>";
       if ($inobject) {
          echo "<hr>";
       }
@@ -3592,11 +3592,16 @@ abstract class CommonITILObject extends CommonDBTM {
          $can_assigntome  = false;
       }
 
-      // Manage actors : requester and assign
-      echo "<table class='tab_cadre_fixe tab_actors' id='mainformtable5'>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<th rowspan='2' width='13%'>".__('Actor')."</th>";
-      echo "<th width='29%' class='actor-th'><div class='actor_head'>";
+      // Manage actors
+      echo "<div class='tab_actors' id='mainformtable5'>";
+      echo "<div class='responsive_hidden actor_title'>".__('Actor')."</div>";
+
+
+      // ====== Requesters BLOC ======
+      // 
+      // 
+      echo "<span class='actor-bloc'>";
+      echo "<div class='actor-head'>";
       if (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester']) {
          _e('Requester');
       }
@@ -3613,80 +3618,9 @@ abstract class CommonITILObject extends CommonDBTM {
                 class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          $candeleterequester = true;
       }
-      echo "</div></th>";
+      echo "</div>"; // end .actor-head
 
-      echo "<th width='29%' class='actor-th'><div class='actor_head'>";
-      if (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer']) {
-         _e('Watcher');
-      }
-      $rand_observer       = -1;
-      $candeleteobserver   = false;
-
-      if ($ID
-          && $can_admin
-          && (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer'])) {
-         $rand_observer = mt_rand();
-
-         echo "&nbsp;&nbsp;";
-         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                onClick=\"".Html::jsShow("itilactor$rand_observer")."\"
-                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
-
-         $candeleteobserver = true;
-
-      } else if (($ID > 0)
-                 && !in_array($this->fields['status'], $this->getClosedStatusArray())
-                 && !$is_hidden['_users_id_observer']
-                 && !$this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
-                 && !$this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
-         echo "&nbsp;&nbsp;&nbsp;&nbsp;";
-         Html::showSimpleForm($this->getFormURL(), 'addme_observer',
-                              __('Associate myself'),
-                              array($this->getForeignKeyField() => $this->fields['id']),
-                              $CFG_GLPI["root_doc"]."/pics/addme.png");
-      }
-
-      echo "</div></th>";
-
-      echo "<th width='29%' class='actor-th'><div class='actor_head'>";
-      if (!$is_hidden['_users_id_assign']
-          || !$is_hidden['_groups_id_assign']
-          || !$is_hidden['_suppliers_id_assign']) {
-         _e('Assigned to');
-      }
-      $rand_assign      = -1;
-      $candeleteassign  = false;
-      if ($ID
-          && ($can_assign || $can_assigntome)
-          && (!$is_hidden['_users_id_assign']
-              || !$is_hidden['_groups_id_assign']
-              || !$is_hidden['_suppliers_id_assign'])
-          && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
-         $rand_assign = mt_rand();
-
-         echo "&nbsp;&nbsp;";
-         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                onClick=\"".Html::jsShow("itilactor$rand_assign")."\"
-                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
-      }
-      if ($ID
-          && $can_assigntome
-          && !in_array($this->fields['status'], $this->getClosedStatusArray())
-          && !$is_hidden['_users_id_assign']
-          && !$this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-          && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
-         Html::showSimpleForm($this->getFormURL(), 'addme_assign', __('Associate myself'),
-                              array($this->getForeignKeyField() => $this->fields['id']),
-                              $CFG_GLPI["root_doc"]."/pics/addme.png");
-      }
-      if ($ID
-          && $can_assign) {
-         $candeleteassign = true;
-      }
-      echo "</div></th></tr>";
-
-      echo "<tr class='tab_bg_1 top'>";
-      echo "<td>";
+      echo "<div class='actor-content'>";
       if ($rand_requester >= 0) {
          $this->showActorAddForm(CommonITILActor::REQUESTER, $rand_requester,
                                  $this->fields['entities_id'], $is_hidden);
@@ -3767,9 +3701,47 @@ abstract class CommonITILObject extends CommonDBTM {
       } else if (!$is_hidden['_groups_id_requester']) {
          $this->showGroupsAssociated(CommonITILActor::REQUESTER, $candeleterequester, $options);
       }
-      echo "</td>";
+      echo "</div>"; // end .actor-content
+      echo "</span>"; // end .actor-bloc
 
-      echo "<td>";
+
+
+      // ====== Observers BLOC ======
+
+      echo "<span class='actor-bloc'>";
+      echo "<div class='actor-head'>";
+      if (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer']) {
+         _e('Watcher');
+      }
+      $rand_observer       = -1;
+      $candeleteobserver   = false;
+
+      if ($ID
+          && $can_admin
+          && (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer'])) {
+         $rand_observer = mt_rand();
+
+         echo "&nbsp;&nbsp;";
+         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
+                onClick=\"".Html::jsShow("itilactor$rand_observer")."\"
+                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+
+         $candeleteobserver = true;
+
+      } else if (($ID > 0)
+                 && !in_array($this->fields['status'], $this->getClosedStatusArray())
+                 && !$is_hidden['_users_id_observer']
+                 && !$this->isUser(CommonITILActor::OBSERVER, Session::getLoginUserID())
+                 && !$this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())) {
+         echo "&nbsp;&nbsp;&nbsp;&nbsp;";
+         Html::showSimpleForm($this->getFormURL(), 'addme_observer',
+                              __('Associate myself'),
+                              array($this->getForeignKeyField() => $this->fields['id']),
+                              $CFG_GLPI["root_doc"]."/pics/addme.png");
+      }
+
+      echo "</div>"; // end .actor-head
+      echo "<div class='actor-content'>";
       if ($rand_observer >= 0) {
          $this->showActorAddForm(CommonITILActor::OBSERVER, $rand_observer,
                                  $this->fields['entities_id'], $is_hidden);
@@ -3821,9 +3793,53 @@ abstract class CommonITILObject extends CommonDBTM {
       } else if (!$is_hidden['_groups_id_observer']) {
          $this->showGroupsAssociated(CommonITILActor::OBSERVER, $candeleteobserver, $options);
       }
-      echo "</td>";
+      echo "</div>"; // end .actor-content
+      echo "</span>"; // end .actor-bloc
 
-      echo "<td>";
+
+
+
+      // ====== Assign BLOC ======
+
+      echo "<span class='actor-bloc'>";
+      echo "<div class='actor-head'>";
+      if (!$is_hidden['_users_id_assign']
+          || !$is_hidden['_groups_id_assign']
+          || !$is_hidden['_suppliers_id_assign']) {
+         _e('Assigned to');
+      }
+      $rand_assign      = -1;
+      $candeleteassign  = false;
+      if ($ID
+          && ($can_assign || $can_assigntome)
+          && (!$is_hidden['_users_id_assign']
+              || !$is_hidden['_groups_id_assign']
+              || !$is_hidden['_suppliers_id_assign'])
+          && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
+         $rand_assign = mt_rand();
+
+         echo "&nbsp;&nbsp;";
+         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
+                onClick=\"".Html::jsShow("itilactor$rand_assign")."\"
+                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+      }
+      if ($ID
+          && $can_assigntome
+          && !in_array($this->fields['status'], $this->getClosedStatusArray())
+          && !$is_hidden['_users_id_assign']
+          && !$this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+          && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
+         Html::showSimpleForm($this->getFormURL(), 'addme_assign', __('Associate myself'),
+                              array($this->getForeignKeyField() => $this->fields['id']),
+                              $CFG_GLPI["root_doc"]."/pics/addme.png");
+      }
+      if ($ID
+          && $can_assign) {
+         $candeleteassign = true;
+      }
+      echo "</div>"; // end .actor-head
+
+      echo "<div class='actor-content'>";
       if ($rand_assign >= 0) {
          $this->showActorAddForm(CommonITILActor::ASSIGN, $rand_assign, $this->fields['entities_id'],
                                  $is_hidden, $this->canAssign(), $this->canAssign());
@@ -3939,9 +3955,12 @@ abstract class CommonITILObject extends CommonDBTM {
          $this->showSuppliersAssociated(CommonITILActor::ASSIGN, $candeleteassign, $options);
       }
 
-      echo "</td>";
-      echo "</tr>";
-      echo "</table>";
+      echo "</div>"; // end .actor-content
+      echo "</span>"; // end .actor-bloc
+
+      
+      
+      echo "</div>";
    }
 
 

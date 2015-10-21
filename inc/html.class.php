@@ -2138,7 +2138,6 @@ class Html {
            "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"". __s('Home')."\">".
              __('Home')."</a></li>";
 
-      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
       if (TicketValidation::getValidateRights()) {
          $opt                              = array();
@@ -2160,7 +2159,7 @@ class Html {
                          "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
                            __s('Ticket waiting for your approval')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'></a>";
-         echo "<li>$pic_validate</li>\n";
+         echo "<li class='icons_block'>$pic_validate</li>\n";
       }
 
       if (Session::haveRight('ticket', CREATE)
@@ -2169,18 +2168,6 @@ class Html {
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".__s('Add').
                 "\" alt=\"".__s('Add')."\" class='pointer'></a></li>";
       }
-
-
-      /// Bookmark load
-      echo "<li>";
-      Ajax::createIframeModalWindow('loadbookmark',
-                                    $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
-                                    array('title'         => __('Load a bookmark'),
-                                          'reloadonclose' => true));
-      echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\"\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
-             "\" alt=\"".__s('Load a bookmark')."\" class='pointer'>";
-      echo "</a></li>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {

@@ -595,7 +595,7 @@ input.save {
 }
 
 .main_form tr:not(.headerRow)  th:not(.actor-th) {
-   text-align: right !important;
+   text-align: right;
 }
 
 .main_form tr.headerRow th {
@@ -1055,11 +1055,32 @@ td.rotate {
    vertical-align: 1px;
 }
 
-.actor_head {
+.actor_title {
+   width: 11.5%;
+   float: left;
+   font-weight: bold;
+   text-align: right;
+   padding-top: 30px;
+   margin-right: 5px;
+}
+
+.actor-bloc {
+   width: 29%;
+   float: left;
+}
+
+.actor-head {
    background-color: #ECECEC;
-   margin: 0 5px;
+   margin: 10px 15px;
    padding: 4px 0;
    height: 16px;
+   font-weight: bold;
+   text-align: center;
+}
+
+.actor-content {
+   margin: 10px 15px;
+   padding: 4px 0;
 }
 
 .actor_row {
@@ -3094,6 +3115,14 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
       max-width: 100%;
    }
 
+   #page .pointer {
+      zoom: 1.1;
+   }
+
+   .layout_classic.form .main_form, .layout_vsplit.form .main_form {
+      width: 100%;
+   }
+
    .responsive_hidden {
       display: none !important;
    }
@@ -3141,7 +3170,9 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
       display: none;
    }
 
+   .main_form tr:not(.headerRow) th:not(.actor-th),
    .tab_cadre_fixe:not(.tab_actors),
+   .tab_cadre_fixe:not(.tab_actors) > tbody,
    .tab_cadre_fixe:not(.tab_actors) > tbody > tr,
    .tab_cadre_fixe:not(.tab_actors) > tbody > tr > th,
    .tab_cadre_fixe:not(.tab_actors) > tbody > tr > td,
@@ -3154,7 +3185,7 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
 
    .tab_cadre_fixe input[type=text],
    .tab_cadre_fixe textarea {
-     max-width: 100%;
+     max-width: 95%;
    }
 
    .tab_cadrehov {
@@ -3162,24 +3193,44 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
       width: 100%;
    }
 
+   table.tab_cadre_postonly,
+   table.tab_cadre_postonly > tbody,
+   table.tab_cadre_postonly > tbody > tr,
+   table.tab_cadre_postonly > tbody > tr > td,
+   table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr,
+   table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr:first-child > th,
    table.central,
+   table.central > tbody ,
    table.central > tbody > tr,
    table.central > tbody > tr > th,
    table.central > tbody > tr > td,
-   table.central > tbody > tr > td > .tab_cadrehov {
-      display: block;
+   table.central > tbody > tr > td > .tab_cadrehov,
+   table.central > tbody > tr > td > .tab_cadrehov > tbody {
+      display: inline-block;
       width: 100%;
+   }
+
+   table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr > th,
+   table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr > td {
+      display: inline-block;
+      width: 50%;
+      box-sizing: border-box;
    }
 
    #searchcriterias .tab_cadre_fixe  {
       width: 100%;
    }
 
+   .mceToolbar,
+   #image_paste {
+      display: none;
+   }
+
+
    #searchcriterias .normalcriteria, 
-   #searchcriterias .normalcriteria td {
+   #searchcriterias .normalcriteria > td {
       display: block;
-      width: 100%;
-      text-align: right;
+      min-width: 49%;
    }
    #searchcriterias .normalcriteria {
       border-bottom: 1px solid #EEE;
@@ -3197,6 +3248,22 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
 
    .tab_cadre_central .top {
       display: block;
+      width: 100%;
+   }
+
+   .actor-bloc {
+      width: initial;
+      float: none;
+   }
+
+   .actor-dropdown {
+      display: block;
+   }
+
+   .select2-focusser,
+   .select2-search,
+   .select2-search input {
+       display: none !important;
    }
 }
 
