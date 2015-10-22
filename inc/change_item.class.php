@@ -212,13 +212,13 @@ class Change_Item extends CommonDBRelation{
             $nb            = $DB->numrows($result_linked);
 
             for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-               $link     = Toolbox::getItemTypeFormURL($itemtype);
+               $link     = $itemtype::getFormURLWithID($data['id']);
                $linkname = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data["name"])) {
                   $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
                }
-               $name = "<a href=\"".$link."?id=".$data["id"]."\">".$linkname."</a>";
+               $name = "<a href=\"".$link."\">".$linkname."</a>";
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
