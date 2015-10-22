@@ -1448,7 +1448,8 @@ class Html {
            "</a></li>";
 
 
-      echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
+      echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
+                 "/front/preference.php?forcetab=User\$1' title=\"".
                  addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
                  Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
 
