@@ -3593,7 +3593,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Manage actors
-      echo "<div class='tab_actors' id='mainformtable5'>";
+      echo "<div class='tab_actors tab_cadre_fixe' id='mainformtable5'>";
       echo "<div class='responsive_hidden actor_title'>".__('Actor')."</div>";
 
 
@@ -3960,7 +3960,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
       
       
-      echo "</div>";
+      echo "</div>"; // tab_actors
+
+      echo "<div class='actor_clear'></div>";
    }
 
 

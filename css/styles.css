@@ -568,6 +568,7 @@ input.save {
    overflow: hidden;
 }
 
+
 .debug .ui-tabs-nav, 
 .layout_lefttab .ui-tabs-nav {
    margin: 5px !important;
@@ -602,6 +603,10 @@ input.save {
    border-bottom: 1px solid #EFEFEF;
    font-size: 1.5em;
    padding: 8px 0;
+}
+
+.layout_lefttab #page .new_form_tabs .ui-tabs-nav {
+   display: none;
 }
 
 .layout_lefttab #page .new_form_tabs .ui-tabs-panel {
@@ -1056,12 +1061,12 @@ td.rotate {
 }
 
 .actor_title {
-   width: 11.5%;
+   width: 13%;
    float: left;
    font-weight: bold;
-   text-align: right;
+   text-align: center;
    padding-top: 30px;
-   margin-right: 5px;
+   font-size: 1.1em;
 }
 
 .actor-bloc {
@@ -1076,6 +1081,7 @@ td.rotate {
    height: 16px;
    font-weight: bold;
    text-align: center;
+   font-size: 1.1em;
 }
 
 .actor-content {
@@ -1101,6 +1107,10 @@ td.rotate {
 } 
 .actor_single.first-actor {
    padding-left: 10px;
+}
+
+.actor_clear {
+   clear: both;
 }
 
 /* ################--------------- Pager  ---------------#################### */
