@@ -3261,6 +3261,11 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
       width: 100%;
    }
 
+   #page .tab_actors, 
+   #page .actor-bloc {
+      display: block;
+   }
+
    .actor-bloc {
       width: initial;
       float: none;
