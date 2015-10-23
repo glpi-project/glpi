@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -130,8 +130,8 @@ class KnowbaseItem extends CommonDBTM {
 
       // Personal knowbase or visibility and write access
       return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
-              || ($_SESSION["glpiactiveprofile"]["interface"] == "central" && 
-                     $this->fields['users_id'] == Session::getLoginUserID())
+              || (($_SESSION["glpiactiveprofile"]["interface"] == "central")
+                  && ($this->fields['users_id'] == Session::getLoginUserID()))
               || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
                    || (!$this->fields["is_faq"]
                        && Session::haveRight(self::$rightname, UPDATE)))

@@ -222,7 +222,7 @@ class Document extends CommonDBTM {
       }
 
       $upload_ok = false;
-      if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
+      if (isset($input["_filename"]) && !(empty($input["_filename"]) == 1)) {
          $upload_ok = $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
       } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
          // Move doc from upload dir

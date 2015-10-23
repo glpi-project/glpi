@@ -5990,6 +5990,7 @@ class Ticket extends CommonITILObject {
       return $content;
    }
 
+
    /**
     * Convert rich text content to simple text content
     *
