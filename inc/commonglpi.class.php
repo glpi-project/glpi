@@ -608,7 +608,7 @@ class CommonGLPI {
       }
       echo "<div class='form_content'>";
       echo "<div class='$class'>";
-      $this->showForm($_REQUEST['id'], $_REQUEST);
+      $this->showForm($_REQUEST['id'], $options);
       echo "</div>";
       echo "</div>";
    }
