@@ -608,7 +608,7 @@ class CommonGLPI {
       }
       echo "<div class='form_content'>";
       echo "<div class='$class'>";
-      $this->showForm($_REQUEST['id'], $options);
+      $this->showForm($options['id'], $options);
       echo "</div>";
       echo "</div>";
    }
@@ -1100,7 +1100,7 @@ class CommonGLPI {
             Html::displayNotFoundError();
          }
       }
-      
+
       // in case of lefttab layout, we couldn't see "right error" message
       if ($this->get_item_to_display_tab) {
          if (isset($_GET["id"]) && $_GET["id"] && !$this->can($_GET["id"], READ)) {
@@ -1111,8 +1111,8 @@ class CommonGLPI {
       $this->showNavigationHeader($options);
       if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
 
-         if (!isset($_REQUEST['id'])) {
-            $_REQUEST['id'] = 0;
+         if (!isset($options['id'])) {
+            $options['id'] = 0;
          }
          $this->showPrimaryForm($options);
       }
