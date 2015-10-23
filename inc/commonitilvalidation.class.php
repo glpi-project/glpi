@@ -438,19 +438,21 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $name          select name
     * @param $options array of possible options:
-    *      - value   : default value (default waiting)
-    *      - all     : boolean display all (default false)
-    *      - global  : for global validation (default false)
-    *      - display : boolean display or get string ? (default true)
+    *      - value    : default value (default waiting)
+    *      - all      : boolean display all (default false)
+    *      - global   : for global validation (default false)
+    *      - display  : boolean display or get string ? (default true)
+    *      - readonly : boolean / used as a readonly item (default false)
     *
     * @return nothing (display)
    **/
    static function dropdownStatus($name, $options=array()) {
 
-      $p['value']   = self::WAITING;
-      $p['global']  = false;
-      $p['all']     = false;
-      $p['display'] = true;
+      $p['value']    = self::WAITING;
+      $p['global']   = false;
+      $p['all']      = false;
+      $p['display']  = true;
+      $p['readonly'] = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -740,7 +742,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
       echo "<td>".__('Global approval status')."</td>";
       echo "<td colspan='2'>";
       self::dropdownStatus("global_validation",
-                           array('value' => $item->fields["global_validation"]));
+                              array('value'    => $item->fields["global_validation"], 
+                                    'readonly' => !$canadd));
       echo "</td></tr>";
 
       echo "<tr>";
