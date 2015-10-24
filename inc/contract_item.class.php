@@ -589,8 +589,10 @@ class Contract_Item extends CommonDBRelation{
                                                              'searchtype' => 'contains',
                                                              'field'      => 29)));
 
-               $link = "<a href='". $itemtype::getSearchURL() . "?" .
-                                 Toolbox::append_params($opt)."'>" . __('Device list')."</a>";
+               $url  = $item::getSearchURL();
+               $url .= (strpos($url,'?') ? '&':'?');
+               $url .= Toolbox::append_params($opt); 
+               $link = "<a href='$url'>" . __('Device list')."</a>";
 
                $data[$itemtype] = array('longlist' => true,
                                         'name'     => sprintf(__('%1$s: %2$s'),
