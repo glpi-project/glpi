@@ -359,7 +359,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas['##ticket.item.model##']         = '';
 
       $item_ticket = new Item_Ticket();
-      $items = $item_ticket->find("`tickets_id` = ".$this->obj->fields['id']);
+      $items = $item_ticket->find("`tickets_id` = '".$item->getField('id')."'");
       $datas['items'] = array();
       if (count($items)) {
          foreach ($items as $val) {
