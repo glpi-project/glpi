@@ -100,8 +100,6 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_GET['popup'])) {
-   $doc->showImagePaste($_GET["name"]);
 } else {
    Html::header(Document::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management","document");
    $doc->display(array('id' =>$_GET["id"]));
