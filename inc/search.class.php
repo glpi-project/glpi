@@ -210,9 +210,8 @@ class Search {
       // If no research limit research to display item and compute number of item using simple request
       $data['search']['no_search']   = true;
 
-      $data['toview'] = array();
+      $data['toview'] = self::addDefaultToView($itemtype);
       if (!$forcetoview) {
-         $data['toview'] = self::addDefaultToView($itemtype);
 
          // Add items to display depending of personal prefs
          $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
@@ -269,7 +268,6 @@ class Search {
 
       // Force item to display
       if ($forcetoview) {
-         $data['toview'] = $forcedisplay;
          foreach ($data['toview'] as $val) {
             if (!in_array($val, $data['tocompute'])) {
                 array_push($data['tocompute'], $val);
