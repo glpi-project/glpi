@@ -1328,7 +1328,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Set additional default dropdown
-      $dropdown_fields = array('items_id', 'users_locations');
+      $dropdown_fields = array('items_id', 'users_locations', 'items_locations');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
@@ -1344,6 +1344,8 @@ class Ticket extends CommonITILObject {
       if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
          if ($item = getItemForItemtype($input["itemtype"])) {
             $item->getFromDB($input["items_id"]);
+
+            $input['items_locations'] = $item->fields['locations_id'];
          }
       }
 
