@@ -3183,7 +3183,7 @@ class Ticket extends CommonITILObject {
 
       // add "new observer" anchor
       echo "<a id='addObserver$rand_observer' class='add-observer' onclick='this.remove()'>";
-      echo Html::image($CFG_GLPI['root_doc']."/pics/meta_plus.png", array('alt' => __('add')));
+      echo Html::image($CFG_GLPI['root_doc']."/pics/meta_plus.png", array('alt' => __('Add')));
       echo "</a>";
 
       // add an additionnal observer on anchor click
