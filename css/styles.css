@@ -554,6 +554,10 @@ input.save {
    padding: 3px 2px;
    margin-bottom: -7px;
    margin-left: 5px;
+   position: absolute;
+   right: 3px;
+   top: 3px;
+
 }
 
 .ui-tabs .ui-state-active sup.tab_nb {
