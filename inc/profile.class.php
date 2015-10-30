@@ -410,11 +410,11 @@ class Profile extends CommonDBTM {
    static function getUnderActiveProfileRestrictRequest($separator="AND") {
 
       if (in_array('reservation', self::$helpdesk_rights)
-          & !ReservationItem::RESERVEANITEM) {
+          && !Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
          return false;
       }
       if (in_array('ticket', self::$helpdesk_rights)
-          & !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
+          && !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
          return false;
       }
       if (in_array('followup', self::$helpdesk_rights)
