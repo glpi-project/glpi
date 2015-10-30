@@ -1015,7 +1015,7 @@ class Project extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $ID      = $project->fields['id'];
-      $canedit = $project->canEdit($ID);
+      $canedit = $project->can($ID, UPDATE);
 
       echo "<div class='center'>";
 
