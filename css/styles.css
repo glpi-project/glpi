@@ -609,9 +609,6 @@ input.save {
    padding: 8px 0;
 }
 
-.layout_lefttab #page .new_form_tabs .ui-tabs-nav {
-   display: none;
-}
 
 .layout_lefttab #page .new_form_tabs .ui-tabs-panel {
    margin: 0;
