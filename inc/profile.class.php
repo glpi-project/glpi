@@ -481,7 +481,7 @@ class Profile extends CommonDBTM {
                     FROM `glpi_profilerights`
                     WHERE `glpi_profilerights`.`profiles_id` = `glpi_profiles`.`id`
                      AND (".implode(' OR ', $right_subqueries).")))";
-      toolbox::logdebug("query", $query);
+
       return $query;
    }
 
