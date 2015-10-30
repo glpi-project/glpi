@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
-
+ 
  -------------------------------------------------------------------------
 
  LICENSE
@@ -1265,90 +1265,60 @@ class Infocom extends CommonDBChild {
       $tab[25]['table']                = 'glpi_infocoms';
       $tab[25]['field']                = 'immo_number';
       $tab[25]['name']                 = __('Immobilization number');
-      if ($specific_itemtype) {
-         $tab[25]['forcegroupby']      = true;
-      }
       $tab[25]['joinparams']           = $joinparams;
       $tab[25]['datatype']             = 'string';
 
       $tab[26]['table']                = 'glpi_infocoms';
       $tab[26]['field']                = 'order_number';
       $tab[26]['name']                 = __('Order number');
-      if ($specific_itemtype) {
-         $tab[26]['forcegroupby']      = true;
-      }
       $tab[26]['joinparams']           = $joinparams;
       $tab[26]['datatype']             = 'string';
 
       $tab[27]['table']                = 'glpi_infocoms';
       $tab[27]['field']                = 'delivery_number';
       $tab[27]['name']                 = __('Delivery form');
-      if ($specific_itemtype) {
-         $tab[27]['forcegroupby']      = true;
-      }
       $tab[27]['joinparams']           = $joinparams;
       $tab[27]['datatype']             = 'string';
 
       $tab[28]['table']                = 'glpi_infocoms';
       $tab[28]['field']                = 'bill';
       $tab[28]['name']                 = __('Invoice number');
-      if ($specific_itemtype) {
-         $tab[28]['forcegroupby']      = true;
-      }
       $tab[28]['joinparams']           = $joinparams;
       $tab[28]['datatype']             = 'string';
 
       $tab[37]['table']                = 'glpi_infocoms';
       $tab[37]['field']                = 'buy_date';
       $tab[37]['name']                 = __('Date of purchase');
-      if ($specific_itemtype) {
-         $tab[37]['forcegroupby']      = true;
-      }
       $tab[37]['datatype']             = 'date';
       $tab[37]['joinparams']           = $joinparams;
 
       $tab[38]['table']                = 'glpi_infocoms';
       $tab[38]['field']                = 'use_date';
       $tab[38]['name']                 = __('Startup date');
-      if ($specific_itemtype) {
-         $tab[38]['forcegroupby']      = true;
-      }
       $tab[38]['datatype']             = 'date';
       $tab[38]['joinparams']           = $joinparams;
 
       $tab[121]['table']               = 'glpi_infocoms';
       $tab[121]['field']               = 'delivery_date';
       $tab[121]['name']                = __('Delivery date');
-      if ($specific_itemtype) {
-         $tab[121]['forcegroupby']     = true;
-      }
       $tab[121]['datatype']            = 'date';
       $tab[121]['joinparams']          = $joinparams;
 
       $tab[124]['table']               = 'glpi_infocoms';
       $tab[124]['field']               = 'order_date';
       $tab[124]['name']                = __('Order date');
-      if ($specific_itemtype) {
-         $tab[124]['forcegroupby']     = true;
-      }
       $tab[124]['datatype']            = 'date';
       $tab[124]['joinparams']          = $joinparams;
 
       $tab[123]['table']               = 'glpi_infocoms';
       $tab[123]['field']               = 'warranty_date';
       $tab[123]['name']                = __('Start date of warranty');
-      if ($specific_itemtype) {
-         $tab[123]['forcegroupby']     = true;
-      }
       $tab[123]['datatype']            = 'date';
       $tab[123]['joinparams']          = $joinparams;
 
       $tab[125]['table']               = 'glpi_infocoms';
       $tab[125]['field']               = 'inventory_date';
       $tab[125]['name']                = __('Date of last physical inventory');
-      if ($specific_itemtype) {
-         $tab[125]['forcegroupby']     = true;
-      }
       $tab[125]['datatype']            = 'date';
       $tab[125]['joinparams']          = $joinparams;
 
@@ -1356,17 +1326,11 @@ class Infocom extends CommonDBChild {
       $tab[50]['field']                = 'name';
       $tab[50]['datatype']             = 'dropdown';
       $tab[50]['name']                 = __('Budget');
-      if ($specific_itemtype) {
-         $tab[50]['forcegroupby']      = true;
-      }
       $tab[50]['joinparams']           = $complexjoinparams;
 
       $tab[51]['table']                = 'glpi_infocoms';
       $tab[51]['field']                = 'warranty_duration';
       $tab[51]['name']                 = __('Warranty duration');
-      if ($specific_itemtype) {
-         $tab[51]['forcegroupby']      = true;
-      }
       $tab[51]['joinparams']           = $joinparams;
       $tab[51]['datatype']             = 'number';
       $tab[51]['unit']                 = 'month';
@@ -1376,9 +1340,6 @@ class Infocom extends CommonDBChild {
       $tab[52]['table']                = 'glpi_infocoms';
       $tab[52]['field']                = 'warranty_info';
       $tab[52]['name']                 = __('Warranty information');
-      if ($specific_itemtype) {
-         $tab[52]['forcegroupby']      = true;
-      }
       $tab[52]['joinparams']           = $joinparams;
       $tab[52]['datatype']             = 'string';
 
@@ -1390,9 +1351,6 @@ class Infocom extends CommonDBChild {
       $tab[120]['datafields'][2]       = 'warranty_duration';
       $tab[120]['searchunit']          = 'MONTH';
       $tab[120]['delayunit']           = 'MONTH';
-      if ($specific_itemtype) {
-         $tab[120]['forcegroupby']     = true;
-      }
       $tab[120]['massiveaction']       = false;
       $tab[120]['joinparams']          = $joinparams;
 
@@ -1400,9 +1358,6 @@ class Infocom extends CommonDBChild {
       $tab[53]['field']                = 'name';
       $tab[53]['datatype']             = 'dropdown';
       $tab[53]['name']                 = __('Supplier');
-      if ($specific_itemtype) {
-         $tab[53]['forcegroupby']      = true;
-      }
       $tab[53]['joinparams']           = $complexjoinparams;
 
       $tab[54]['table']                = 'glpi_infocoms';
@@ -1410,9 +1365,6 @@ class Infocom extends CommonDBChild {
       $tab[54]['name']                 = _x('price', 'Value');
       $tab[54]['datatype']             = 'decimal';
       $tab[54]['width']                = 100;
-      if ($specific_itemtype) {
-         $tab[54]['forcegroupby']      = true;
-      }
       $tab[54]['joinparams']           = $joinparams;
 
       $tab[55]['table']                = 'glpi_infocoms';
@@ -1420,17 +1372,11 @@ class Infocom extends CommonDBChild {
       $tab[55]['name']                 = __('Warranty extension value');
       $tab[55]['datatype']             = 'decimal';
       $tab[55]['width']                = 100;
-      if ($specific_itemtype) {
-         $tab[55]['forcegroupby']      = true;
-      }
       $tab[55]['joinparams']           = $joinparams;
 
       $tab[56]['table']                = 'glpi_infocoms';
       $tab[56]['field']                = 'sink_time';
       $tab[56]['name']                 = __('Amortization duration');
-      if ($specific_itemtype) {
-         $tab[56]['forcegroupby']      = true;
-      }
       $tab[56]['joinparams']           = $joinparams;
       $tab[56]['datatype']             = 'number';
       $tab[56]['max']                  = 15;
@@ -1439,9 +1385,6 @@ class Infocom extends CommonDBChild {
       $tab[57]['table']                = 'glpi_infocoms';
       $tab[57]['field']                = 'sink_type';
       $tab[57]['name']                 = __('Amortization type');
-      if ($specific_itemtype) {
-         $tab[57]['forcegroupby']      = true;
-      }
       $tab[57]['joinparams']           = $joinparams;
       $tab[57]['datatype']             = 'specific';
       $tab[57]['searchequalsonfield']  = 'specific';
@@ -1450,18 +1393,13 @@ class Infocom extends CommonDBChild {
       $tab[58]['table']                = 'glpi_infocoms';
       $tab[58]['field']                = 'sink_coeff';
       $tab[58]['name']                 = __('Amortization coefficient');
-      if ($specific_itemtype) {
-         $tab[58]['forcegroupby']      = true;
-      }
       $tab[58]['joinparams']           = $joinparams;
       $tab[58]['datatype']             = 'decimal';
+
 
       $tab[59]['table']                = 'glpi_infocoms';
       $tab[59]['field']                = 'alert';
       $tab[59]['name']                 = __('Email alarms');
-      if ($specific_itemtype) {
-         $tab[59]['forcegroupby']      = true;
-      }
       $tab[59]['joinparams']           = $joinparams;
       $tab[59]['datatype']             = 'specific';
 
@@ -1469,9 +1407,6 @@ class Infocom extends CommonDBChild {
       $tab[122]['field']               = 'comment';
       $tab[122]['name']                = __('Comments on financial and administrative information');
       $tab[122]['datatype']            = 'text';
-      if ($specific_itemtype) {
-         $tab[122]['forcegroupby']     = true;
-      }
       $tab[122]['joinparams']          = $joinparams;
 
       return $tab;
