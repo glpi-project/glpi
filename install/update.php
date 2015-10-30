@@ -783,6 +783,10 @@ function updateDbUpTo031() {
          update0855to090();
 
       case "0.90" :
+         include("update_090_0901.php");
+         update090to0901();
+
+      case "0.90.1" :
          break;
 
       default :
