@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -442,7 +442,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *      - all      : boolean display all (default false)
     *      - global   : for global validation (default false)
     *      - display  : boolean display or get string ? (default true)
-    *      - readonly : boolean / used as a readonly item (default false)
     *
     * @return nothing (display)
    **/
@@ -452,7 +451,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $p['global']   = false;
       $p['all']      = false;
       $p['display']  = true;
-      $p['readonly'] = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -741,9 +739,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Global approval status')."</td>";
       echo "<td colspan='2'>";
-      self::dropdownStatus("global_validation",
-                              array('value'    => $item->fields["global_validation"], 
-                                    'readonly' => !$canadd));
+      if (Session::haveRightsOr(static::$rightname, TicketValidation::getCreateRights())) {
+         self::dropdownStatus("global_validation",
+                              array('value'    => $item->fields["global_validation"]));
+      } else {
+         echo TicketValidation::getStatus($item->fields["global_validation"]);
+      }
       echo "</td></tr>";
 
       echo "<tr>";

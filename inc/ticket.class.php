@@ -4031,7 +4031,7 @@ class Ticket extends CommonITILObject {
       } else {
          echo $tt->getBeginHiddenFieldValue('global_validation');
 
-         if ($canupdate) {
+         if (Session::haveRightsOr('ticketvalidation', TicketValidation::getCreateRights())) {
             TicketValidation::dropdownStatus('global_validation',
                                              array('global' => true,
                                                    'value'  => $this->fields['global_validation']));
