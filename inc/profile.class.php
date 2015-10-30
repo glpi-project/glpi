@@ -409,7 +409,8 @@ class Profile extends CommonDBTM {
    **/
    static function getUnderActiveProfileRestrictRequest($separator="AND") {
 
-      if (in_array('reservation', self::$helpdesk_rights)
+      // i don't understand usefull of this code (yllen)
+/*      if (in_array('reservation', self::$helpdesk_rights)
           && !Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
          return false;
       }
@@ -435,7 +436,7 @@ class Profile extends CommonDBTM {
                                             TicketValidation::VALIDATEINCIDENT))) {
          return false;
       }
-
+*/
 
       $query = $separator ." ";
 
