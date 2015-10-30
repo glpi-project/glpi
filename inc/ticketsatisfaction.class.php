@@ -184,6 +184,21 @@ class TicketSatisfaction extends CommonDBTM {
 
 
    /**
+    * @since version 0.85
+    **/
+   function post_UpdateItem() {
+      global $CFG_GLPI;
+
+      if ($CFG_GLPI["use_mailing"]) {
+         $ticket = new Ticket();
+         if ($ticket->getFromDB($this->fields['tickets_id'])) {
+            NotificationEvent::raiseEvent("replysatisfaction", $ticket);
+         }
+      }
+   }
+
+
+   /**
     * display satisfaction value
     *
     * @param $value decimal between 0 and 5
