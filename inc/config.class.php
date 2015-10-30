@@ -1854,9 +1854,7 @@ class Config extends CommonDBTM {
          $error = 1;
       }
 
-      if (PHP_VERSION_ID > 50500) {
-         $oldhand = set_error_handler(NULL);
-      }
+      $oldhand = set_error_handler(function($errno, $errmsg, $filename, $linenum, $vars){return true;});
       $oldlevel = error_reporting(0);
       /* TODO: could be improved, only default vhost checked */
       if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php', 'r')) {
@@ -1890,9 +1888,7 @@ class Config extends CommonDBTM {
          }
       }
       error_reporting($oldlevel);
-      if (PHP_VERSION_ID > 50500) {
-         set_error_handler($oldhand);
-      }
+      set_error_handler($oldhand);
 
       return $error;
    }

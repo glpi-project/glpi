@@ -531,7 +531,7 @@ class CommonGLPI {
     * @return boolean
    **/
    static function isNewID($ID) {
-      return false;
+      return true;
    }
 
 

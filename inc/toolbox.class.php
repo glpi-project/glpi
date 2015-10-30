@@ -327,8 +327,8 @@ class Toolbox {
    **/
    static function clean_cross_side_scripting_deep($value) {
 
-      $in  = array('<', '>');
-      $out = array('&lt;', '&gt;');
+      $in  = array('&lt;', '&gt;', '<', '>');
+      $out = array('&amp;lt;', '&amp;gt;', '&lt;', '&gt;');
 
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'), $value)
@@ -351,8 +351,8 @@ class Toolbox {
    **/
    static function unclean_cross_side_scripting_deep($value) {
 
-      $in  = array('<', '>');
-      $out = array('&lt;', '&gt;');
+      $in  = array('&lt;', '&gt;', '<', '>');
+      $out = array('&amp;lt;', '&amp;gt;', '&lt;', '&gt;');
 
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'), $value)
