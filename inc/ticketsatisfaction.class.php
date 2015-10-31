@@ -186,7 +186,7 @@ class TicketSatisfaction extends CommonDBTM {
    /**
     * @since version 0.85
     **/
-   function post_UpdateItem() {
+   function post_UpdateItem($history=1) {
       global $CFG_GLPI;
 
       if ($CFG_GLPI["use_mailing"]) {
