@@ -60,18 +60,15 @@ class Toolbox {
 
 
    /**
-    * Wrapper for get_magic_quotes_gpc
+    * Wrapper for get_magic_quotes_gpc - deprecated
     *
     * @since version 0.83
+    * @deprecated in 0.90.1
     *
     * @return boolean
    **/
    static function get_magic_quotes_gpc() {
 
-      // Deprecated function(8192): Function get_magic_quotes_gpc() is deprecated
-      if (PHP_VERSION_ID < 50400) {
-         return get_magic_quotes_gpc();
-      }
       return 0;
    }
 
