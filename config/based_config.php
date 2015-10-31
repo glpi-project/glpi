@@ -40,13 +40,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Notice problem  for date function :
-if (function_exists('date_default_timezone_set')) {
-   $tz = ini_get('date.timezone');
-   if (!empty($tz)) {
-      date_default_timezone_set($tz);
-   } else {
-      date_default_timezone_set(@date_default_timezone_get());
-   }
+$tz = ini_get('date.timezone');
+if (!empty($tz)) {
+   date_default_timezone_set($tz);
+} else {
+   date_default_timezone_set(@date_default_timezone_get());
 }
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
