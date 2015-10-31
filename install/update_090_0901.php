@@ -52,7 +52,7 @@ function update090to0901() {
 
 
    $backup_tables = false;
-   $newtables     = array("glpi_entities");
+   $newtables     = array();
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
