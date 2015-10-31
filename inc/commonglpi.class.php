@@ -192,7 +192,7 @@ class CommonGLPI {
     * @param &$ong       array defined tab array
     * @param $options    array of options (for withtemplate)
     *
-    *  @return nothing (set the tab array)
+    * @return $this
    **/
    function addStandardTab($itemtype, array &$ong, array $options) {
 
@@ -218,6 +218,7 @@ class CommonGLPI {
             }
             break;
       }
+      return $this;
    }
 
 
@@ -225,6 +226,8 @@ class CommonGLPI {
     * @since version 0.85
     *
     * @param $ong   array
+    *
+    * @return $this
    **/
    function addDefaultFormTab(array &$ong) {
       global $CFG_GLPI;
@@ -234,6 +237,7 @@ class CommonGLPI {
           || !method_exists($this, "showForm")) {
          $ong[$this->getType().'$main'] = $this->getTypeName(1);
       }
+      return $this;
    }
 
 

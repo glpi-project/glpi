@@ -95,24 +95,24 @@ class Computer extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Item_Devices', $ong, $options);
-      $this->addStandardTab('ComputerDisk', $ong, $options);
-      $this->addStandardTab('Computer_SoftwareVersion', $ong, $options);
-      $this->addStandardTab('Computer_Item', $ong, $options);
-      $this->addStandardTab('NetworkPort', $ong, $options);
-      $this->addStandardTab('Infocom', $ong, $options);
-      $this->addStandardTab('Contract_Item', $ong, $options);
-      $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('ComputerVirtualMachine', $ong, $options);
-      $this->addStandardTab('Ticket', $ong, $options);
-      $this->addStandardTab('Item_Problem', $ong, $options);
-      $this->addStandardTab('Change_Item', $ong, $options);
-      $this->addStandardTab('Link', $ong, $options);
-      $this->addStandardTab('Lock', $ong, $options);
-      $this->addStandardTab('Notepad', $ong, $options);
-      $this->addStandardTab('Reservation', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
+      $this->addDefaultFormTab($ong)
+         ->addStandardTab('Item_Devices', $ong, $options)
+         ->addStandardTab('ComputerDisk', $ong, $options)
+         ->addStandardTab('Computer_SoftwareVersion', $ong, $options)
+         ->addStandardTab('Computer_Item', $ong, $options)
+         ->addStandardTab('NetworkPort', $ong, $options)
+         ->addStandardTab('Infocom', $ong, $options)
+         ->addStandardTab('Contract_Item', $ong, $options)
+         ->addStandardTab('Document_Item', $ong, $options)
+         ->addStandardTab('ComputerVirtualMachine', $ong, $options)
+         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Problem', $ong, $options)
+         ->addStandardTab('Change_Item', $ong, $options)
+         ->addStandardTab('Link', $ong, $options)
+         ->addStandardTab('Lock', $ong, $options)
+         ->addStandardTab('Notepad', $ong, $options)
+         ->addStandardTab('Reservation', $ong, $options)
+         ->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
