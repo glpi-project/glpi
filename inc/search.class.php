@@ -6032,10 +6032,6 @@ class Search {
    **/
    static function csv_clean($value) {
 
-      if (Toolbox::get_magic_quotes_runtime()) {
-         $value = stripslashes($value);
-      }
-
       $value = str_replace("\"", "''", $value);
       $value = Html::clean($value);
 
@@ -6051,10 +6047,6 @@ class Search {
     * @return clean value
    **/
    static function sylk_clean($value) {
-
-      if (Toolbox::get_magic_quotes_runtime()) {
-         $value = stripslashes($value);
-      }
 
       $value = preg_replace('/\x0A/', ' ', $value);
       $value = preg_replace('/\x0D/', NULL, $value);

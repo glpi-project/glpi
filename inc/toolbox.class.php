@@ -46,18 +46,15 @@ if (!defined('GLPI_ROOT')) {
 class Toolbox {
 
    /**
-    * Wrapper for get_magic_quotes_runtime
+    * Wrapper for get_magic_quotes_runtime - deprecated
     *
     * @since version 0.83
+    * @deprecated in 0.90.1
     *
     * @return boolean
    **/
    static function get_magic_quotes_runtime() {
 
-      // Deprecated function(8192): Function get_magic_quotes_runtime() is deprecated
-      if (PHP_VERSION_ID < 50400) {
-         return get_magic_quotes_runtime();
-      }
       return 0;
    }
 
