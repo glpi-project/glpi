@@ -277,12 +277,10 @@ class MailCollector  extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      if (version_compare(PHP_VERSION, '5.3.2', '>=')) {
-         echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
-         echo "<td>";
-         Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
-         echo "</td></tr>\n";
-      }
+      echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
+      echo "</td></tr>\n";
 
 
       if ($type != "pop") {
@@ -1052,8 +1050,7 @@ class MailCollector  extends CommonDBTM {
    **/
    function connect() {
 
-      if (version_compare(PHP_VERSION, '5.3.2', '<')
-          || $this->fields['use_kerberos']) {
+      if ($this->fields['use_kerberos']) {
          $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
                                      Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                      CL_EXPUNGE, 1);
