@@ -599,6 +599,7 @@ input.save {
    box-shadow: 0px 1px 2px 1px #D2D2D2;
 }
 
+.main_form .actor_title, 
 .main_form tr:not(.headerRow)  th:not(.actor-th) {
    text-align: right;
 }
@@ -877,6 +878,7 @@ td { }
    font-size: 1.1em;
    color: #000;
    padding: 10px 5px;
+   background-color: #F1F1F1;
 }
 
 .tab_cadre_fixehov th, .tab_cadrehov th {
@@ -1061,6 +1063,10 @@ td.rotate {
    vertical-align: 1px;
 }
 
+.tab_actors {
+   display: table;
+}
+
 .actor_title {
    width: 13%;
    float: left;
@@ -1068,6 +1074,8 @@ td.rotate {
    text-align: center;
    padding-top: 30px;
    font-size: 1.1em;
+   padding: 3px 5px;
+   background-color:#F1F1F1;
 }
 
 .actor-bloc {
@@ -1075,9 +1083,15 @@ td.rotate {
    float: left;
 }
 
+.actor_title, .actor-bloc {
+   display: table-cell;
+   float: none;
+   vertical-align: top;
+}
+
 .actor-head {
-   background-color: #ECECEC;
-   margin: 10px 15px;
+   background-color: #F1F1F1;
+   margin: 0 0 0 5px;
    padding: 4px 0;
    height: 16px;
    font-weight: bold;
