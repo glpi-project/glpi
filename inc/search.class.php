@@ -1196,11 +1196,6 @@ class Search {
                $search_config_bottom .= " class='pointer' onClick=\"";
                $search_config_bottom .= Html::jsGetElementbyID('search_config_bottom').
                                                       ".dialog('open');\">";
-               if ($item !== null && $item->maybeDeleted()) {
-                  $delete_ctrl        = self::isDeletedSwitch($data['search']['is_deleted']);
-                  $search_config_top .= $delete_ctrl;
-               }
-
                $search_config_top
                   .= Ajax::createIframeModalWindow('search_config_top',
                                                    $CFG_GLPI["root_doc"].
@@ -1223,6 +1218,11 @@ class Search {
                                                             => true,
                                                          'display'
                                                             => false));
+            }
+
+            if ($item !== null && $item->maybeDeleted()) {
+               $delete_ctrl        = self::isDeletedSwitch($data['search']['is_deleted']);
+               $search_config_top .= $delete_ctrl;
             }
 
             Html::printPager($data['search']['start'], $data['data']['totalcount'],
