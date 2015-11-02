@@ -6069,11 +6069,11 @@ class Ticket extends CommonITILObject {
                     || Session::haveRightsOr("task", array(TicketTask::SEEPUBLIC,
                                                            TicketTask::SEEPRIVATE));
       $restrict_fup = $restrict_task = "";
-      if (!Session::haveRight("ticket", TicketFollowup::SEEPRIVATE)) {
+      if (!Session::haveRight("followup", TicketFollowup::SEEPRIVATE)) {
          $restrict_fup = " AND (`is_private` = '0'
                                 OR `users_id` ='" . Session::getLoginUserID() . "') ";
       }
-      if (!Session::haveRight("ticket", TicketTask::SEEPRIVATE)) {
+      if (!Session::haveRight("task", TicketTask::SEEPRIVATE)) {
          $restrict_task = " AND (`is_private` = '0'
                                  OR `users_id` ='" . Session::getLoginUserID() . "') ";
       }
