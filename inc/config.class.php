@@ -611,7 +611,7 @@ class Config extends CommonDBTM {
       echo "<td><input type='text' name='_dbreplicate_dbuser' value='".$DBslave->dbuser."'></td>";
       echo "<td>" . __('Mysql password') . "</td>";
       echo "<td><input type='password' name='_dbreplicate_dbpassword' value='".
-                 rawurldecode($DBSlave->dbpassword)."'>";
+                 rawurldecode($DBslave->dbpassword)."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
