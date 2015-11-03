@@ -333,6 +333,13 @@ abstract class CommonITILTask  extends CommonDBTM {
 
          }
       }
+      
+      //change ticket status
+      if (isset($_REQUEST['_status']) && !empty($_REQUEST['_status'])) {
+         $ticket = new Ticket();
+         $ticket->update(array('id'     => intval($_REQUEST['tickets_id']),
+                               'status' => intval($_REQUEST['_status'])));
+      }
 
       if ($update_done) {
          // Add log entry in the ITIL object
