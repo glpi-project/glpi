@@ -605,7 +605,7 @@ input.save {
 }
 
 .layout_lefttab #page .new_form_tabs .ui-tabs-panel {
-   margin: 0;
+   /*margin: 0;*/
 }
 
 

@@ -31,7 +31,7 @@
 .ui-tabs-vertical .ui-tabs-nav {
    padding: .2em .1em .2em .2em;
    float: left;
-   width: 180px;
+   width: 10%;
    border: 1px solid #cccccc;
 }
 .ui-tabs-vertical .ui-tabs-nav li {
@@ -57,10 +57,11 @@
 }
 .ui-tabs-vertical .ui-tabs-panel {
    padding: 1em;
-   margin-left: 180px;
+   /*margin-left: 180px;*/
 /*   position: relative;*/
-   float: center;
-   /*width: 40em;*/
+   /*float: center;*/
+   width: 75%;
+   margin: 0 auto;
 }
 
 /* css styles for progress bar */
