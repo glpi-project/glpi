@@ -554,6 +554,10 @@ input.save {
    padding: 3px 2px;
    margin-bottom: -7px;
    margin-left: 5px;
+   position: absolute;
+   right: 3px;
+   top: 3px;
+
 }
 
 .ui-tabs .ui-state-active sup.tab_nb {
@@ -567,6 +571,7 @@ input.save {
    padding: 0;
    overflow: hidden;
 }
+
 
 .debug .ui-tabs-nav, 
 .layout_lefttab .ui-tabs-nav {
@@ -594,8 +599,9 @@ input.save {
    box-shadow: 0px 1px 2px 1px #D2D2D2;
 }
 
+.main_form .actor_title, 
 .main_form tr:not(.headerRow)  th:not(.actor-th) {
-   text-align: right !important;
+   text-align: right;
 }
 
 .main_form tr.headerRow th {
@@ -604,10 +610,10 @@ input.save {
    padding: 8px 0;
 }
 
-.layout_lefttab #page .new_form_tabs .ui-tabs-panel {
-   margin: 0;
-}
 
+.layout_lefttab #page .new_form_tabs .ui-tabs-panel {
+   /*margin: 0;*/
+}
 
 /* Vertical split layout */
 @media screen and (min-width: 1250px) {
@@ -791,13 +797,6 @@ td { }
    box-shadow: 0px 2px 5px #666;*/
 }
 
-@media screen and (max-width: 600px) {
-   .tab_cadre_central .top {
-      display: block;
-   }
-}  
-
-
 
 .tab_cadre_postonly {
    margin: 0 auto;
@@ -879,6 +878,7 @@ td { }
    font-size: 1.1em;
    color: #000;
    padding: 10px 5px;
+   background-color: #F1F1F1;
 }
 
 .tab_cadre_fixehov th, .tab_cadrehov th {
@@ -1063,11 +1063,45 @@ td.rotate {
    vertical-align: 1px;
 }
 
-.actor_head {
-   background-color: #ECECEC;
-   margin: 0 5px;
+.tab_actors {
+   display: table;
+}
+
+.actor_title {
+   width: 13%;
+   float: left;
+   font-weight: bold;
+   text-align: center;
+   padding-top: 30px;
+   font-size: 1.1em;
+   padding: 3px 5px;
+   background-color:#F1F1F1;
+}
+
+.actor-bloc {
+   width: 29%;
+   float: left;
+}
+
+.actor_title, .actor-bloc {
+   display: table-cell;
+   float: none;
+   vertical-align: top;
+}
+
+.actor-head {
+   background-color: #F1F1F1;
+   margin: 0 0 0 5px;
    padding: 4px 0;
    height: 16px;
+   font-weight: bold;
+   text-align: center;
+   font-size: 1.1em;
+}
+
+.actor-content {
+   margin: 10px 15px;
+   padding: 4px 0;
 }
 
 .actor_row {
@@ -1076,6 +1110,22 @@ td.rotate {
 
 .tab_actors hr {
    border: 0;
+}
+.add-observer {
+   display: block;
+}
+.actor_single {
+   border-top: 1px dashed #AAA;
+   padding: 15px 0 8px 0;
+   margin-top: 8px;
+   background-color: #F5F5F5;
+} 
+.actor_single.first-actor {
+   padding-left: 10px;
+}
+
+.actor_clear {
+   clear: both;
 }
 
 /* ################--------------- Pager  ---------------#################### */
@@ -2086,25 +2136,8 @@ ul#menu ul.ssmenu {
    float: right !important;
    height: 28px;
    line-height: 24px;
-}
-
-@media screen and (max-width: 600px) {
-   .profile-selector {
-      padding: 4px 2px !important;
-      max-width: 95px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      line-height: 23px;
-   }
-
-   .profile-selector .select2-container {
-      max-width: 90px;
-   }
-
-   .ui-dialog {
-      max-width: 100%;
-   }
+   z-index: 40;
+   position: relative;
 }
 
 .breadcrumb_item:before {
@@ -2160,11 +2193,13 @@ ul#menu ul.ssmenu {
 }
 
 .icons_block {
-   margin-left: 20px;
+   margin-left: 10px;
    height: 28px;
    float: inherit !important;
    box-sizing: border-box;
    display: inline-block;
+   position: relative;
+   z-index: 40;
 }
 
 .icons_block span {
@@ -2413,11 +2448,10 @@ ul#menu ul.ssmenu {
 
 .timeline_choices li {
    float: left;
-   width: 90px;
+   min-width: 90px;
    text-align: center;
-   padding: 5px 0;
+   padding: 5px 5px 5px 25px;
    margin-right: 3%;
-   padding-left: 15px;
    cursor: pointer;
    font-weight: bold;
 }
@@ -2464,6 +2498,7 @@ ul#menu ul.ssmenu {
    border-top: 1px dashed #3C5874;
    overflow: hidden;
    font-size: 12px; /*fix jqueryui ui-widget size*/
+   width: 100%;
 }
 
 .timeline_history h2 {
@@ -3079,3 +3114,186 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
 .queuemail_preview .tab_cadre {
    width: inherit !important;
 }
+
+
+/* ################--------------- Responsive  ---------------#################### */
+
+@media screen and (max-width: 600px) {
+   .icons_block {
+      margin-left: 0;
+   }
+
+   .profile-selector {
+      padding: 4px 2px !important;
+      max-width: 95px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: inline-block;
+   }
+
+   .profile-selector .select2-container {
+      max-width: 90px;
+   }
+
+   .ui-dialog {
+      max-width: 100%;
+   }
+
+   #page .pointer {
+      zoom: 1.1;
+   }
+
+   .layout_classic.form .main_form, .layout_vsplit.form .main_form {
+      width: 100%;
+   }
+
+   .responsive_hidden {
+      display: none !important;
+   }
+
+   .ui-tabs {
+      width: 100% !important;
+   }
+
+   .ui-tabs-vertical .ui-tabs-nav {
+      padding: .2em .2em 0;
+      float: inherit;
+      width: inherit;
+   }
+
+   .ui-tabs-vertical .ui-tabs-nav li {
+      clear: none;
+      width: initial;
+      border-bottom-width: 1px !important;
+      border-right-width: 0 !important;
+      margin:1px .2em 0 0;
+   }
+
+   .ui-tabs-vertical .ui-tabs-nav li.ui-tabs-active {
+      padding-bottom: 1px;
+   }
+
+   .ui-tabs-vertical .ui-tabs-nav li a {
+      width: inherit;
+   }
+
+   .ui-tabs-panel,
+   .ui-tabs .ui-tabs-panel
+   .ui-tabs-vertical .ui-tabs-panel {
+      padding: 2px !important;
+   }
+
+   .ui-tabs-vertical .ui-tabs-panel {
+      margin-left: 0;
+   }
+
+   .tab_cadre_pager {
+      width: 100%;
+   }
+   .tab_cadre_pager .big {
+      display: none;
+   }
+
+   .main_form tr:not(.headerRow) th:not(.actor-th),
+   .tab_cadre_fixe:not(.tab_actors),
+   .tab_cadre_fixe:not(.tab_actors) > tbody,
+   .tab_cadre_fixe:not(.tab_actors) > tbody > tr,
+   .tab_cadre_fixe:not(.tab_actors) > tbody > tr > th,
+   .tab_cadre_fixe:not(.tab_actors) > tbody > tr > td,
+   .tab_actors tr,
+   .tab_actors tr:first-child th:first-child {
+      display: block;
+      width: 100%;
+      text-align: left;
+   }
+
+   .tab_cadre_fixe input[type=text],
+   .tab_cadre_fixe textarea {
+     max-width: 95%;
+   }
+
+   .tab_cadrehov {
+      margin: 0; 
+      width: 100%;
+   }
+
+   table.tab_cadre_postonly,
+   table.tab_cadre_postonly > tbody,
+   table.tab_cadre_postonly > tbody > tr,
+   table.tab_cadre_postonly > tbody > tr > td,
+   table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr,
+   table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr:first-child > th,
+   table.central,
+   table.central > tbody ,
+   table.central > tbody > tr,
+   table.central > tbody > tr > th,
+   table.central > tbody > tr > td,
+   table.central > tbody > tr > td > .tab_cadrehov,
+   table.central > tbody > tr > td > .tab_cadrehov > tbody {
+      display: inline-block;
+      width: 100%;
+   }
+
+   table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr > th,
+   table.tab_cadre_postonly table.central .tab_cadrehov > tbody > tr > td {
+      display: inline-block;
+      width: 50%;
+      box-sizing: border-box;
+   }
+
+   #searchcriterias .tab_cadre_fixe  {
+      width: 100%;
+   }
+
+   .mceToolbar,
+   #image_paste {
+      display: none;
+   }
+
+
+   #searchcriterias .normalcriteria, 
+   #searchcriterias .normalcriteria > td {
+      display: block;
+      min-width: 49%;
+   }
+   #searchcriterias .normalcriteria {
+      border-bottom: 1px solid #EEE;
+      margin-bottom: 7px;
+   }
+
+   .timeline_history .h_date {
+      background-image: none;
+      padding-left: 0;
+   }
+
+   .timeline_history .h_info {
+      font-size: .7em;
+   }
+
+   .tab_cadre_central .top {
+      display: block;
+      width: 100%;
+   }
+
+   #page .tab_actors, 
+   #page .actor-bloc {
+      display: block;
+   }
+
+   .actor-bloc {
+      width: initial;
+      float: none;
+   }
+
+   .actor-dropdown {
+      display: block;
+   }
+
+   .select2-focusser,
+   .select2-search,
+   .select2-search input {
+       display: none !important;
+   }
+}
+
