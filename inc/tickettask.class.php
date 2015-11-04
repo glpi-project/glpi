@@ -307,5 +307,29 @@ class TicketTask  extends CommonITILTask {
       echo "</td></tr></table></div>";
       Html::closeForm();
    }
+
+   function post_updateItem($history = 1) {
+      $this->updateTicketStatus();
+      parent::post_updateItem($history);
+   }
+
+   function post_addItem() {
+      $this->updateTicketStatus();
+      parent::post_addItem();
+   }
+   
+   /**
+    * Change ticket status
+    */
+   function updateTicketStatus() {
+      // Change ticket status
+      if (isset($this->input['_status']) && !empty($this->input['_status'])) {
+         $updates['id']     = $this->input['tickets_id'];
+         $updates['status'] = $this->input['_status'];
+         $ticket            = new Ticket();
+         $ticket->update($updates);
+      }
+   }
+
 }
 ?>
