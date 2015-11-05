@@ -219,11 +219,15 @@ class Document_Item extends CommonDBRelation{
                $nb_items = self::countForDocument($item);
                $ong[1] = self::createTabEntry(_n('Associated item', 'Associated items', $nb_items), 
                                               $nb_items);
+            } else {
+               $ong[1] = _n('Associated item', 'Associated items', Session::getPluralNumber());
             }
 
             if ($_SESSION['glpishow_count_on_tabs']) {
                $ong[2] = self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
                                                   self::countForItem($item));
+            } else {
+               $ong[2] = Document::getTypeName(Session::getPluralNumber());
             }
             return $ong;
 
