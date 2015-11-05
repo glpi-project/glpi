@@ -2066,6 +2066,10 @@ class AuthLDAP extends CommonDBTM {
                   if ($display) {
                      $input['add'] = 1;
                   }
+
+                  //clean picture  from input (picture managed in User::post_addItem)
+                  unset($input['picture']);
+
                   $user->fields["id"] = $user->add($input);
                   return array('action' => self::USER_IMPORTED,
                                'id'     => $user->fields["id"]);
