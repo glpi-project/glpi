@@ -611,7 +611,10 @@ input.save {
 }
 
 
-.layout_lefttab #page .new_form_tabs .ui-tabs-panel {
+.layout_lefttab .new_form_tabs .ui-tabs-nav {
+   width: 100%;
+}
+.layout_lefttab .new_form_tabs .ui-tabs-panel {
    margin: 0;
 }
 
