@@ -65,7 +65,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    } else {
       echo "Error: GLPI seems to not be configured properly.\n";
       echo "config_db.php file is missing.\n";
-      echo "Please connect to GLPI web insterface to complete the install process.\n";
+      echo "Please connect to GLPI web interface to complete the install process.\n";
    }
    die();
 
