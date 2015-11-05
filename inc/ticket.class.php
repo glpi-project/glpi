@@ -5591,8 +5591,6 @@ class Ticket extends CommonITILObject {
                          AND `glpi_ticketsatisfactions`.`id` IS NULL
                    ORDER BY `closedate` ASC";
 
-         Toolbox::logDebug($entity.' '.$rate.' '.$parent.' '.$delay.' '.$type.' '.$max_closedate);
-
          $nb            = 0;
          $max_closedate = '';
 
