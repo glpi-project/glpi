@@ -587,7 +587,7 @@ class Document_Item extends CommonDBRelation{
       }
       echo Html::file();
       echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
-      echo "</tr>";
+      echo "<td></td></tr>";
    }
 
 
