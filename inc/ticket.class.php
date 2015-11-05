@@ -4403,7 +4403,9 @@ class Ticket extends CommonITILObject {
          if (!isset($rand)) {
             $rand = mt_rand();
          }
-         echo Html::initImagePasteSystem($content_id, $rand);
+         if ($canupdate_descr) {
+            echo Html::initImagePasteSystem($content_id, $rand);
+         }
          echo "</td>";
       }
       echo "</tr>";
