@@ -7,3 +7,4 @@ files/
 .settings/
 tools/composer.lock
 tools/vendor/
+tools/api/
