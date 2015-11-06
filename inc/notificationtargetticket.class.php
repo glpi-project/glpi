@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -775,7 +775,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                    'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
                    'problems'      => _n('Problem', 'Problems', Session::getPluralNumber()),
                    'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),
-                   'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()));
+                   'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()),
+                   'documents'     => _n('Document', 'Documents', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
