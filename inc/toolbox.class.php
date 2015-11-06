@@ -1816,9 +1816,6 @@ class Toolbox {
             $data = explode("_", $where);
             $forcetab = '';
             // forcetab for simple items
-            if (isset($data[1])) {
-               $forcetab = 'forcetab='.$data[1];
-            }
             if (isset($data[2])) {
                $forcetab = 'forcetab='.$data[2];
             }
