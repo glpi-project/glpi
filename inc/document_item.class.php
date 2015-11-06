@@ -213,15 +213,18 @@ class Document_Item extends CommonDBRelation{
             $ong = array();
             if ($_SESSION['glpishow_count_on_tabs']) {
                $ong[1] = self::createTabEntry(_n('Associated item', 'Associated items',
-                                              self::countForDocument($item)));
+                                                 self::countForDocument($item)),
+                                              self::countForDocument($item));
+            } else {
+               $ong[1] = _n('Associated item', 'Associated items', Session::getPluralNumber());
             }
-            $ong[1] = _n('Associated item', 'Associated items', Session::getPluralNumber());
 
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $ong[2] = self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
-                                                  self::countForItem($item));
+               $ong[2] = self::createTabEntry(Document::getTypeName( self::countForItem($item)),
+                                              self::countForItem($item));
+            } else {
+               $ong[2] = Document::getTypeName(Session::getPluralNumber());
             }
-            $ong[2] = Document::getTypeName(Session::getPluralNumber());
             return $ong;
 
          default :
@@ -232,7 +235,7 @@ class Document_Item extends CommonDBRelation{
                 || ($item->getType() == 'KnowbaseItem')) {
 
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
+                  return self::createTabEntry(Document::getTypeName(self::countForItem($item)),
                                               self::countForItem($item));
                }
                return Document::getTypeName(Session::getPluralNumber());
