@@ -707,7 +707,8 @@ class User extends CommonDBTM {
          } else {
             //ldap jpegphoto synchronisation.
             if (isset($this->fields["authtype"])
-                && $this->fields["authtype"] == Auth::LDAP
+                && ($this->fields["authtype"] == Auth::LDAP 
+                     || Auth::isAlternateAuth($this->fields['authtype']))
                 && $picture = $this->syncLdapPhoto()) {
                if (!empty($picture)) {
                   $input['picture'] = $picture;
@@ -1074,7 +1075,8 @@ class User extends CommonDBTM {
    function syncLdapPhoto() {
 
       if (isset($this->fields["authtype"])
-          && (($this->fields["authtype"] == Auth::LDAP))) {
+          && (($this->fields["authtype"] == Auth::LDAP) 
+               || Auth::isAlternateAuth($this->fields['authtype']))) {
 
          if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
             $config_ldap = new AuthLDAP();
