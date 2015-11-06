@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -76,7 +76,7 @@ class Change_Problem extends CommonDBRelation{
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
-         $nb = 0;
+         $nb = 1;
          switch ($item->getType()) {
             case 'Change' :
                if ($_SESSION['glpishow_count_on_tabs']) {

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -1180,21 +1180,21 @@ class Cartridge extends CommonDBChild {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate
-          && self::canView())
+      if (!$withtemplate && self::canView()) {
+         $nb = 1;
          switch ($item->getType()) {
             case 'Printer' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), self::countForPrinter($item));
+                  $nb = self::countForPrinter($item);
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'CartridgeItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              self::countForCartridgeItem($item));
+                  $nb = self::countForCartridgeItem($item);
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+         }
       }
       return '';
    }

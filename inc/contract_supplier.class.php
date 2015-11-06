@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -93,24 +93,24 @@ class Contract_Supplier extends CommonDBRelation {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 1;
          switch ($item->getType()) {
             case 'Supplier' :
                if (Contract::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()),
-                                                 self::countForSupplier($item));
+                     $nb =  self::countForSupplier($item);
                   }
-                  return Contract::getTypeName(Session::getPluralNumber());
+                  return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()),
+                                              $nb);
                }
                break;
 
             case 'Contract' :
                if (Session::haveRight("contact_enterprise", READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()),
-                                                 self::countForContract($item));
+                     $nb = self::countForContract($item);
                   }
-                  return Supplier::getTypeName(Session::getPluralNumber());
+                  return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb);
                }
                break;
          }

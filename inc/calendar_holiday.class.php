@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -204,14 +204,13 @@ class Calendar_Holiday extends CommonDBRelation {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Calendar' :
+               $nb = 1;
                if ($_SESSION['glpishow_count_on_tabs']) {
-
-                  return self::createTabEntry(_n('Close time','Close times', Session::getPluralNumber()),
-                                              countElementsInTable($this->getTable(),
-                                                                   "calendars_id
-                                                                        = '".$item->getID()."'"));
+                  $nb = countElementsInTable($this->getTable(),
+                                             "calendars_id = '".$item->getID()."'");
                }
-               return _n('Close time','Close times', Session::getPluralNumber());
+               return self::createTabEntry(_n('Close time','Close times', Session::getPluralNumber()),
+                                            $nb);
          }
       }
       return '';

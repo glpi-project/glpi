@@ -174,6 +174,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if (($item->getType() == $this->getItilObjectItemType())
           && $this->canView()) {
+         $nb = 1;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`".$item->getForeignKeyField()."` = '".$item->getID()."'";
 
@@ -182,11 +183,9 @@ abstract class CommonITILTask  extends CommonDBTM {
                $restrict .= " AND (`is_private` = '0'
                                    OR `users_id` = '" . Session::getLoginUserID() . "') ";
             }
-
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                        countElementsInTable($this->getTable(), $restrict));
+            $nb = countElementsInTable($this->getTable(), $restrict);
          }
-         return self::getTypeName(Session::getPluralNumber());
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }

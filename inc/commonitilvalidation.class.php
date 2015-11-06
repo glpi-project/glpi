@@ -198,6 +198,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
 
       if (!$hidetab) {
+         $nb = 1;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`".static::$items_id."` = '".$item->getID()."'";
             // No rights for create only count asign ones
@@ -205,9 +206,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
               $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."'";
             }
             $nb = countElementsInTable(static::getTable(),$restrict);
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
-         return self::getTypeName(Session::getPluralNumber());
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -81,15 +81,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate) {
-         if ($item->getType()==$this->getType()) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               $nb = countElementsInTable($this->getTable(),
-                                          "`".$this->getForeignKeyField()."` = '".$item->getID()."'");
-               return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
-           }
-           return $this->getTypeName(Session::getPluralNumber());
+      if (!$withtemplate
+          && ($item->getType() == $this->getType())) {
+         $nb = 1;
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            $nb = countElementsInTable($this->getTable(),
+                                       "`".$this->getForeignKeyField()."` = '".$item->getID()."'");
          }
+         return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }
@@ -224,7 +223,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
         if (Session::haveTranslations($this->getType(), 'completename')) {
             DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $ID);
         }
-                   
+
          foreach ($DB->request($query) as $data) {
             $query = "UPDATE `".$this->getTable()."`
                       SET ";
@@ -252,7 +251,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             if (Session::haveTranslations($this->getType(), 'completename')) {
                 DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $data['id']);
             }
-            
+
             $this->regenerateTreeUnderID($data["id"], $updateName, $changeParent);
          }
       }
