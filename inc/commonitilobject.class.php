@@ -3366,7 +3366,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $paramscomment
             = array('value' => '__VALUE__',
                     'field' => "_users_id_".$typename."_notif",
-                    '_user_index' 
+                    '_user_index'
                             => $params['_user_index'],
                     'allow_email'
                             => (($type == CommonITILActor::REQUESTER)
@@ -3598,8 +3598,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
       // ====== Requesters BLOC ======
-      // 
-      // 
+      //
+      //
       echo "<span class='actor-bloc'>";
       echo "<div class='actor-head'>";
       if (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester']) {
@@ -3849,13 +3849,13 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!$ID) {
          if ($can_assign
              && !$is_hidden['_users_id_assign']
-             && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
+             && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
             $this->showActorAddFormOnCreate(CommonITILActor::ASSIGN, $options);
             echo '<hr>';
 
          } else if ($can_assigntome
                     && !$is_hidden['_users_id_assign']
-                    && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
+                    && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
             echo self::getActorIcon('user', CommonITILActor::ASSIGN)."&nbsp;";
             User::dropdown(array('name'        => '_users_id_assign',
                                  'value'       => $options["_users_id_assign"],
@@ -3865,7 +3865,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          } else { // predefined value
             if (isset($options["_users_id_assign"]) && $options["_users_id_assign"]
-                && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
+                && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
                echo self::getActorIcon('user', CommonITILActor::ASSIGN)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_users", $options["_users_id_assign"]);
                echo "<input type='hidden' name='_users_id_assign' value=\"".
@@ -3882,7 +3882,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!$ID) {
          if ($can_assign
              && !$is_hidden['_groups_id_assign']
-             && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
+             && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
             echo self::getActorIcon('group', CommonITILActor::ASSIGN);
             /// For ticket templates : mandatories
             if (isset($options['_tickettemplate'])) {
@@ -3920,7 +3920,7 @@ abstract class CommonITILObject extends CommonDBTM {
          } else { // predefined value
             if (isset($options["_groups_id_assign"])
                 && $options["_groups_id_assign"]
-                && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
+                && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
                echo self::getActorIcon('group', CommonITILActor::ASSIGN)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_groups", $options["_groups_id_assign"]);
                echo "<input type='hidden' name='_groups_id_assign' value=\"".
@@ -3937,12 +3937,12 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!$ID) {
          if ($can_assign
              && !$is_hidden['_suppliers_id_assign']
-             && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
+             && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
             $this->showSupplierAddFormOnCreate($options);
          } else { // predefined value
             if (isset($options["_suppliers_id_assign"])
                 && $options["_suppliers_id_assign"]
-                && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
+                && $this->isAllowedStatus(CommonITILObject::INCOMING, CommonITILObject::ASSIGNED)) {
                echo self::getActorIcon('supplier', CommonITILActor::ASSIGN)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_suppliers", $options["_suppliers_id_assign"]);
                echo "<input type='hidden' name='_suppliers_id_assign' value=\"".
@@ -3958,8 +3958,8 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</div>"; // end .actor-content
       echo "</span>"; // end .actor-bloc
 
-      
-      
+
+
       echo "</div>"; // tab_actors
 
       echo "<div class='actor_clear'></div>";
