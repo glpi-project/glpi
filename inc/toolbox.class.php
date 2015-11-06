@@ -2166,31 +2166,31 @@ class Toolbox {
       if (isset($input['server_port']) && !empty($input['server_port'])) {
          $out .= ":" . $input['server_port'];
       }
-      if (isset($input['server_type'])) {
+      if (isset($input['server_type']) && !empty($input['server_type'])) {
          $out .= $input['server_type'];
       }
-      if (isset($input['server_ssl'])) {
+      if (isset($input['server_ssl']) && !empty($input['server_ssl'])) {
          $out .= $input['server_ssl'];
       }
       if (isset($input['server_cert'])
           && (!empty($input['server_ssl']) || !empty($input['server_tls']))) {
          $out .= $input['server_cert'];
       }
-      if (isset($input['server_tls'])) {
+      if (isset($input['server_tls']) && !empty($input['server_tls'])) {
          $out .= $input['server_tls'];
       }
 
-      if (isset($input['server_rsh'])) {
+      if (isset($input['server_rsh']) && !empty($input['server_rsh'])) {
          $out .= $input['server_rsh'];
       }
-      if (isset($input['server_secure'])) {
+      if (isset($input['server_secure']) && !empty($input['server_secure'])) {
          $out .= $input['server_secure'];
       }
-      if (isset($input['server_debug'])) {
+      if (isset($input['server_debug']) && !empty($input['server_debug'])) {
          $out .= $input['server_debug'];
       }
       $out .= "}";
-      if (isset($input['server_mailbox'])) {
+      if (isset($input['server_mailbox']) && !empty($input['server_mailbox'])) {
          $out .= $input['server_mailbox'];
       }
 
