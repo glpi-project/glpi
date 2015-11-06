@@ -6432,25 +6432,27 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_item middle'>";
 
          echo "<div class='h_info'>";
-
          echo "<div class='h_date'>".Html::convDateTime($this->fields['date'])."</div>";
-
          echo "<div class='h_user'>";
-         $user->getFromDB($this->fields['users_id_recipient']);
+         if (isset($item_i['users_id_recipient']) 
+             && ($item_i['users_id_recipient'] != 0)) {
+            $user->getFromDB($this->fields['users_id_recipient']);
 
-         echo "<div class='tooltip_picture_border'>";
-         $picture = "";
-         if (isset($user->fields['picture'])) {
-            $picture = $user->fields['picture'];
+            echo "<div class='tooltip_picture_border'>";
+            $picture = "";
+            if (isset($user->fields['picture'])) {
+               $picture = $user->fields['picture'];
+            }
+            echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+            User::getThumbnailURLForPicture($picture)."'>";
+            echo "</div>";
+
+            echo $user->getLink();
+         } else {
+            _e("Requester");
          }
-         echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-         User::getThumbnailURLForPicture($picture)."'>";
-         echo "</div>";
-
-         echo $user->getLink();
 
          echo "</div>"; // h_user
-
          echo "</div>"; //h_info
 
          echo "<div class='h_content TicketContent'>";
@@ -6462,7 +6464,7 @@ class Ticket extends CommonITILObject {
          echo "</div>";
 
          echo "<div class='ticket_description'>";
-         echo html_entity_decode($this->fields['content']);
+         echo Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
          echo "</div>";
 
          echo "</div>"; // h_content TicketContent

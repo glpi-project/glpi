@@ -2782,6 +2782,10 @@ ul#menu ul.ssmenu {
    margin-bottom: 5px;
 }
 
+.timeline_history .h_content.TicketContent img {
+   max-width: 100%;
+}
+
 
 .edit_document,
 .delete_document {
