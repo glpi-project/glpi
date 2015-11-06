@@ -677,11 +677,11 @@ class MailCollector  extends CommonDBTM {
          }
       }
       //  Who is the user ?
-      $tkt['_users_id_requester']                           = User::getOrImportByEmail($head['from']);
-      $tkt["_users_id_requester_notif"]['use_notification'] = 1;
+      $tkt['_users_id_requester']                              = User::getOrImportByEmail($head['from']);
+      $tkt["_users_id_requester_notif"]['use_notification'][0] = 1;
       // Set alternative email if user not found / used if anonymous mail creation is enable
       if (!$tkt['_users_id_requester']) {
-         $tkt["_users_id_requester_notif"]['alternative_email'] = $head['from'];
+         $tkt["_users_id_requester_notif"]['alternative_email'][0] = $head['from'];
       }
 
       // Add to and cc as additional observer if user found
