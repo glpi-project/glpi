@@ -6027,7 +6027,7 @@ msgstr[1] "Observateurs"
 
 #: inc/commonitilobject.class.php:2716
 msgid "Due date + Progress"
-msgstr "Date d'échéance + Progression"
+msgstr "Date d'échéance"
 
 #: inc/commonitilobject.class.php:2737 inc/commonitilobject.class.php:4376
 #: inc/ticket.class.php:3825
