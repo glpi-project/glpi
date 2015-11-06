@@ -303,9 +303,14 @@ $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_forma
 
 
 $CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
+                                           "knowbaseitem.php",
                                            "knowbaseitem.form.php",
                                            "bookmark.php",
+                                           "displaypreference.form.php",
                                            "central.php",
+                                           "preference.php",
+                                           "config.form.php",
+                                           "common.tabs.php",
                                            "entity.form.php");
 
 ?>
