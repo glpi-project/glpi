@@ -2711,12 +2711,6 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      $query = "SELECT `realname`, `firstname`, `name`
-                FROM `glpi_users`
-                WHERE `id` = '$ID'";
-      $result = $DB->query($query);
-
-
       $email  = UserEmail::getDefaultForUser($ID);
       $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
 
@@ -6434,7 +6428,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_info'>";
          echo "<div class='h_date'>".Html::convDateTime($this->fields['date'])."</div>";
          echo "<div class='h_user'>";
-         if (isset($item_i['users_id_recipient']) 
+         if (isset($item_i['users_id_recipient'])
              && ($item_i['users_id_recipient'] != 0)) {
             $user->getFromDB($this->fields['users_id_recipient']);
 
