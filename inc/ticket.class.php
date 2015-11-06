@@ -2675,12 +2675,6 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      $query = "SELECT `realname`, `firstname`, `name`
-                FROM `glpi_users`
-                WHERE `id` = '$ID'";
-      $result = $DB->query($query);
-
-
       $email  = UserEmail::getDefaultForUser($ID);
       $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
 
