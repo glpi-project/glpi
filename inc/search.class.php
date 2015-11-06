@@ -2491,13 +2491,13 @@ class Search {
          $TRANS = '';
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $TRANS = "IFNULL(GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
-                                                   '".self::SHORTSEP."',$tocomputeid) SEPARATOR '".self::LONGSEP."'), 
+                                                   '".self::SHORTSEP."',$tocomputeid) SEPARATOR '".self::LONGSEP."'),
                                                    '".self::NULLVALUE.self::SHORTSEP."')
                                   AS `".$NAME."_".$num."_trans`, ";
 
          }
          return " IFNULL(GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
-                                               '".self::SHORTSEP."',$tocomputeid) SEPARATOR '".self::LONGSEP."'), 
+                                               '".self::SHORTSEP."',$tocomputeid) SEPARATOR '".self::LONGSEP."'),
                                                '".self::NULLVALUE.self::SHORTSEP."')
                               AS `".$NAME."_$num`,
                   $TRANS
@@ -3116,7 +3116,7 @@ class Search {
                break;
 
             case "itemlink" :
-               if (in_array($searchtype, array('equals', 'notequals'))) {
+               if (in_array($searchtype, array('equals', 'notequals', 'under', 'notunder'))) {
                   return " $link (`$table`.`id`".$SEARCH.') ';
                }
                break;
