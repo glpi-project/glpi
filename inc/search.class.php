@@ -3020,7 +3020,7 @@ class Search {
                break;
 
             case "itemlink" :
-               if (in_array($searchtype, array('equals', 'notequals'))) {
+               if (in_array($searchtype, array('equals', 'notequals', 'under', 'notunder'))) {
                   return " $link (`$table`.`id`".$SEARCH.') ';
                }
                break;
