@@ -153,7 +153,7 @@ class KnowbaseItem extends CommonDBTM {
 
       if (isset($_SESSION['glpiactiveprofile'])
           && ($_SESSION['glpiactiveprofile']['interface'] == "central")) {
-         return "$dir/front/knowbaseitem.php";
+         return "$dir/front/knowbaseitem.php?forcetab=Knowbase$2";
       }
       return "$dir/front/helpdesk.faq.php";
    }
