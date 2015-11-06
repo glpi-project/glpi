@@ -444,13 +444,13 @@ abstract class CommonITILTask  extends CommonDBTM {
          $this->input["_job"]->updateActionTime($this->input[$this->input["_job"]->getForeignKeyField()]);
       }
 
-     //change ticket status only if imput change
+     //change status only if input change
      if (isset($this->input['_status'])
          && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
          $update['status'] = $this->input['_status'];
          $update['id']     = $this->input['_job']->fields['id'];
          $this->input['_job']->update($update);
-         $donotif      = false; // Done for ticket update
+         $donotif          = false; // Done by item update
       }
 
       if (!empty($this->fields['begin'])
