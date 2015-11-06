@@ -217,15 +217,15 @@ class Document_Item extends CommonDBRelation{
             $ong = array();
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb_items = self::countForDocument($item);
-               $ong[1] = self::createTabEntry(_n('Associated item', 'Associated items', $nb_items), 
-                                              $nb_items);
+               $ong[1]   = self::createTabEntry(_n('Associated item', 'Associated items', $nb_items),
+                                                $nb_items);
             } else {
                $ong[1] = _n('Associated item', 'Associated items', Session::getPluralNumber());
             }
 
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $ong[2] = self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
-                                                  self::countForItem($item));
+               $ong[2] = self::createTabEntry(Document::getTypeName(self::countForItem($item)),
+                                              self::countForItem($item));
             } else {
                $ong[2] = Document::getTypeName(Session::getPluralNumber());
             }
@@ -239,7 +239,7 @@ class Document_Item extends CommonDBRelation{
                 || ($item->getType() == 'KnowbaseItem')) {
 
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
+                  return self::createTabEntry(Document::getTypeName(self::countForItem($item)),
                                               self::countForItem($item));
                }
                return Document::getTypeName(Session::getPluralNumber());
