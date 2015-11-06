@@ -167,8 +167,7 @@ class Profile extends CommonDBTM {
       global $DB;
 
       if (count($this->profileRight) > 0) {
-         $profile_right = new ProfileRight();
-         $profile_right->updateProfileRights($this->getID(), $this->profileRight);
+         ProfileRight::updateProfileRights($this->getID(), $this->profileRight);
          unset($this->profileRight);
       }
 
@@ -184,9 +183,8 @@ class Profile extends CommonDBTM {
    function post_addItem() {
       global $DB;
 
-      $profile_right = new ProfileRight();
       $rights = ProfileRight::getAllPossibleRights();
-      $profile_right->updateProfileRights($this->fields['id'], $rights);
+      ProfileRight::updateProfileRights($this->fields['id'], $rights);
       unset($this->profileRight);
 
       if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
