@@ -177,7 +177,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "</div>"; // end contenu login
 
-
+   Plugin::doHook('display_login');
 
    if (GLPI_DEMO_MODE) {
       echo "<div class='center'>";

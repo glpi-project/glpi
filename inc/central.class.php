@@ -153,6 +153,8 @@ class Central extends CommonGLPI {
 
       echo "<table class='tab_cadre_central'>";
 
+      Plugin::doHook('display_central');
+
       if (Session::haveRight("config", UPDATE)) {
          $logins = User::checkDefaultPasswords();
          $user   = new User();
@@ -206,7 +208,7 @@ class Central extends CommonGLPI {
          }
 
          Ticket::showCentralList(0, "survey", false);
-         
+
          Ticket::showCentralList(0, "rejected", false);
          Ticket::showCentralList(0, "requestbyself", false);
          Ticket::showCentralList(0, "observed", false);
