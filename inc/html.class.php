@@ -1039,7 +1039,7 @@ class Html {
       // Start the page
       echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"
              \"http://www.w3.org/TR/html4/loose.dtd\">";
-      echo "\n<html><head><title>GLPI - ".$title."</title>";
+      echo "\n<html><head><title>ASSISTANCE - ".$title."</title>";
       echo "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
 
       // Send extra expires header

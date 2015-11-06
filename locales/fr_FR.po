@@ -29,7 +29,7 @@ msgstr ""
 
 #: index.php:73
 msgid "GLPI - Authentication"
-msgstr "GLPI - Authentification"
+msgstr "ASSISTANCE - Authentification"
 
 #: index.php:119 inc/authldap.class.php:2743 inc/authmail.class.php:224
 #: inc/config.class.php:1408 inc/db.function.php:1277
