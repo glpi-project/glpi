@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -88,7 +88,6 @@ class ProjectTask_Ticket extends CommonDBRelation{
                                              "`tickets_id` = '".$item->getID()."'");
                }
                return self::createTabEntry(ProjectTask::getTypeName(Session::getPluralNumber()), $nb);
-
          }
       }
       return '';

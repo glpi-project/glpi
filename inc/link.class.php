@@ -55,6 +55,7 @@ class Link extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (self::canView()) {
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`glpi_links_itemtypes`.`links_id` = `glpi_links`.`id`
                          AND `glpi_links_itemtypes`.`itemtype` = '".$item->getType()."'".

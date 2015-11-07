@@ -93,7 +93,7 @@ class Contract_Supplier extends CommonDBRelation {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
-         $nb = 1;
+         $nb = 0;
          switch ($item->getType()) {
             case 'Supplier' :
                if (Contract::canView()) {

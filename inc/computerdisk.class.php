@@ -69,7 +69,7 @@ class ComputerDisk extends CommonDBChild {
       // can exists for template
       if (($item->getType() == 'Computer')
           && Computer::canView()) {
-         $nb =1;
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable('glpi_computerdisks',
                                        "computers_id = '".$item->getID()."' AND `is_deleted`='0'");

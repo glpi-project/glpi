@@ -764,7 +764,7 @@ class Computer_Item extends CommonDBRelation{
 
       // can exists for Template
       if ($item->can($item->getField('id'), READ)) {
-         $nb = 1;
+         $nb = 0;
          switch ($item->getType()) {
             case 'Phone' :
             case 'Printer' :

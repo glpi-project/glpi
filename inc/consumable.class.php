@@ -718,9 +718,9 @@ class Consumable extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate && Consumable::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'ConsumableItem' :
-               $nb = 1;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb =  self::countForConsumableItem($item);
                }

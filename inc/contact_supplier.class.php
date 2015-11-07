@@ -74,7 +74,7 @@ class Contact_Supplier extends CommonDBRelation{
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate && Session::haveRight("contact_enterprise", READ)) {
-         $nb = 1;
+         $nb = 0;
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {

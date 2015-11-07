@@ -76,7 +76,7 @@ class Change_Problem extends CommonDBRelation{
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
-         $nb = 1;
+         $nb = 0;
          switch ($item->getType()) {
             case 'Change' :
                if ($_SESSION['glpishow_count_on_tabs']) {

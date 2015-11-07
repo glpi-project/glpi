@@ -174,7 +174,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if (($item->getType() == $this->getItilObjectItemType())
           && $this->canView()) {
-         $nb = 1;
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`".$item->getForeignKeyField()."` = '".$item->getID()."'";
 

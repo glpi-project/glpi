@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -76,20 +76,17 @@ class CronTaskLog extends CommonDBTM{
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'CronTask' :
                $ong    = array();
                $ong[1] = __('Statistics');
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()),
-                                                 countElementsInTable($this->getTable(),
-                                                                      "crontasks_id
-                                                                        = '".$item->getID()."'
-                                                                       AND `state`
-                                                                        = '".self::STATE_STOP."' "));
-               } else {
-                    $ong[2] = _n('Log', 'Logs', Session::getPluralNumber());
+                  $nb =  countElementsInTable($this->getTable(),
+                                              "crontasks_id = '".$item->getID()."'
+                                                 AND `state` = '".self::STATE_STOP."' ");
                }
+               $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb);
                return $ong;
          }
       }

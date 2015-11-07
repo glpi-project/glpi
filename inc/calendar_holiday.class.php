@@ -202,9 +202,9 @@ class Calendar_Holiday extends CommonDBRelation {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Calendar' :
-               $nb = 1;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
                                              "calendars_id = '".$item->getID()."'");

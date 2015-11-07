@@ -83,7 +83,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       if (!$withtemplate
           && ($item->getType() == $this->getType())) {
-         $nb = 1;
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable($this->getTable(),
                                        "`".$this->getForeignKeyField()."` = '".$item->getID()."'");

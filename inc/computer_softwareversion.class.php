@@ -1138,7 +1138,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    **/
   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-     $nb = 1;
+     $nb = 0;
       switch ($item->getType()) {
          case 'Software' :
             if (!$withtemplate) {

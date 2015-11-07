@@ -287,7 +287,7 @@ class Contract_Item extends CommonDBRelation{
 
       // Can exists on template
       if (Contract::canView()) {
-         $nb = 1;
+         $nb = 0;
          switch ($item->getType()) {
             case 'Contract' :
                if ($_SESSION['glpishow_count_on_tabs']) {

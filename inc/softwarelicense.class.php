@@ -863,14 +863,14 @@ class SoftwareLicense extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Software' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $count = self::countForSoftware($item->getID());
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              (($count >= 0) ? $count : '&infin;'));
+                  $nb = self::countForSoftware($item->getID());
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
+                                           (($nb >= 0) ? $nb : '&infin;'));
          }
       }
       return '';

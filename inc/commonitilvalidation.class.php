@@ -198,7 +198,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
 
       if (!$hidetab) {
-         $nb = 1;
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`".static::$items_id."` = '".$item->getID()."'";
             // No rights for create only count asign ones

@@ -127,6 +127,7 @@ class Project extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case __CLASS__ :
                $ong    = array();
@@ -134,10 +135,8 @@ class Project extends CommonDBTM {
                   $nb = countElementsInTable($this->getTable(),
                                              "`".$this->getForeignKeyField()."` = '".
                                                 $item->getID()."'");
-                  $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
-               } else {
-                  $ong[1] = $this->getTypeName(Session::getPluralNumber());
                }
+               $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
                $ong[2] = __('GANTT');
                return $ong;
          }

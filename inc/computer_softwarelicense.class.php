@@ -658,10 +658,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    **/
   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
+     $nb = 0;
       switch ($item->getType()) {
          case 'SoftwareLicense' :
             if (!$withtemplate) {
-               $nb = 1;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = self::countForLicense($item->getID());
                }

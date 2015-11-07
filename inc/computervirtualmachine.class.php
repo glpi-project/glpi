@@ -65,7 +65,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       if (!$withtemplate
           && ($item->getType() == 'Computer')
           && Computer::canView()) {
-         $nb = 1;
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable('glpi_computervirtualmachines',
                                        "computers_id = '".$item->getID()."' AND `is_deleted`='0'");

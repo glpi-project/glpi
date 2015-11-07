@@ -67,7 +67,7 @@ abstract class CommonITILCost extends CommonDBChild {
       // can exists for template
       if (($item->getType() == static::$itemtype)
           && static::canView()) {
-         $nb = 1;
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable($this->getTable(),
                                        "`".$item->getForeignKeyField()."` = '".$item->getID()."'");
