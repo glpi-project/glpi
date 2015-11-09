@@ -617,6 +617,7 @@ input.save {
 }
 .layout_lefttab .new_form_tabs .ui-tabs-panel {
    margin: 0;
+   clear: both;
 }
 
 /* Vertical split layout */
