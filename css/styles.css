@@ -627,12 +627,6 @@ input.save {
       overflow: hidden;
    }
 
-   .layout_vsplit div.navigationheader,
-   .layout_vsplit.form table.tab_cadre_pager {
-      margin: 0;
-      border: 0;
-   }
-
    .layout_vsplit #page {
       max-width: inherit;
       min-height: 0;
@@ -666,7 +660,14 @@ input.save {
       margin: 0;
    }
 
-   .layout_vsplit.form .form_content {
+   .layout_vsplit div.navigationheader,
+   .layout_vsplit.form table.tab_cadre_pager {
+      margin: 0;
+      border: 0;
+      width: 150px;
+   }
+
+  .layout_vsplit.form .form_content {
       position: relative;
       width: 46%;
       float: left;
