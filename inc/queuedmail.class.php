@@ -351,8 +351,8 @@ class QueuedMail extends CommonDBTM {
          }
 
          // Add custom header for mail grouping in reader
-         $mmail->AddCustomHeader("In-Reply-To: GLPI-".$this->fields["itemtype"]."-".
-                                 $this->fields["items_id"]);
+         $mmail->AddCustomHeader("In-Reply-To: <GLPI-".$this->fields["itemtype"]."-".
+                                 $this->fields["items_id"].">");
 
       $mmail->SetFrom($this->fields['sender'], $this->fields['sendername']);
 
