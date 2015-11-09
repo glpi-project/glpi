@@ -1039,7 +1039,7 @@ class Html {
       // Start the page
       echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"
              \"http://www.w3.org/TR/html4/loose.dtd\">";
-      echo "\n<html><head><title>GLPI - ".$title."</title>";
+      echo "\n<html><head><title>ASSISTANCE - ".$title."</title>";
       echo "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
 
       // Send extra expires header
@@ -3801,7 +3801,8 @@ class Html {
          browser_spellcheck : true,
          elements: '$name',
          valid_elements: '*[*]',
-         plugins : 'table,directionality,searchreplace,paste,tabfocus,autoresize',
+         plugins : 'table,media,advimage,searchreplace,paste,tabfocus,autoresize',
+      	 file_browser_callback : 'fileBrowserCallBack',
          paste_use_dialog : false,
          paste_auto_cleanup_on_paste : true,
          paste_convert_headers_to_strong : false,
@@ -3825,7 +3826,7 @@ class Html {
          theme_advanced_toolbar_align : 'left',
          theme_advanced_statusbar_location : 'none',
          theme_advanced_resizing : 'true',
-         theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
+         theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent,separator,image,media',
          theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
          theme_advanced_buttons3 : '',
          setup : function(ed) {
@@ -3856,6 +3857,7 @@ class Html {
 //         invalid_elements : 'script',
       if ($display) {
          echo  Html::scriptBlock($js);
+         echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/lib/tiny_mce/callback.js'></script>\n";
       } else {
          return  Html::scriptBlock($js);
       }

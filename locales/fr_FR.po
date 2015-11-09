@@ -29,7 +29,7 @@ msgstr ""
 
 #: index.php:73
 msgid "GLPI - Authentication"
-msgstr "GLPI - Authentification"
+msgstr "ASSISTANCE - Authentification"
 
 #: index.php:119 inc/authldap.class.php:2743 inc/authmail.class.php:224
 #: inc/config.class.php:1408 inc/db.function.php:1277
@@ -6027,7 +6027,7 @@ msgstr[1] "Observateurs"
 
 #: inc/commonitilobject.class.php:2716
 msgid "Due date + Progress"
-msgstr "Date d'échéance + Progression"
+msgstr "Date d'échéance"
 
 #: inc/commonitilobject.class.php:2737 inc/commonitilobject.class.php:4376
 #: inc/ticket.class.php:3825
