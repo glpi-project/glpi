@@ -430,6 +430,7 @@ span.vsubmit, a.vsubmit,
    color: #8f5a0a;
    background-color: #FEC95C;
    border: 0; 
+   white-space: nowrap;
 }
 
 input.submit:hover, 
