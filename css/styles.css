@@ -619,7 +619,7 @@ input.save {
 }
 
 /* Vertical split layout */
-@media screen and (min-width: 1250px) {
+@media screen and (min-width: 1300px) {
    html, body.layout_vsplit {
       height:100%;
    }
