@@ -4082,6 +4082,7 @@ class Ticket extends CommonITILObject {
           && !$tt->isHiddenField('priority')) {
          $idpriority = parent::dropdownPriority(array('value'     => $this->fields["priority"],
                                                       'withmajor' => true));
+         $idpriority = 'dropdown_priority'.$idpriority;
          echo "&nbsp;<span id='$idajax' style='display:none'></span>";
 
       } else {
@@ -4095,7 +4096,7 @@ class Ticket extends CommonITILObject {
           || $canupdate_descr) {
          $params = array('urgency'  => '__VALUE0__',
                          'impact'   => '__VALUE1__',
-                         'priority' => 'dropdown_priority'.$idpriority);
+                         'priority' => $idpriority);
          Ajax::updateItemOnSelectEvent(array('dropdown_urgency'.$idurgency,
                                              'dropdown_impact'.$idimpact),
                                        $idajax,
