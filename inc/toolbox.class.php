@@ -1101,10 +1101,11 @@ class Toolbox {
     * Check SELinux configuration
     *
     * @since version 0.84
+    * @param $fordebug    Boolean true is displayed in system information
     *
     *  @return integer 0: OK, 1:Warning, 2:Error
    **/
-   static function checkSELinux() {
+   static function checkSELinux($fordebug=false) {
       global $CFG_GLPI;
 
       if ((DIRECTORY_SEPARATOR != '/')
@@ -1116,9 +1117,13 @@ class Toolbox {
       $mode = exec("/usr/sbin/getenforce");
       //TRANS: %s is mode name (Permissive, Enforcing of Disabled)
       $msg  = sprintf(__('SELinux mode is %s'), $mode);
-      echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
-      // All modes should be ok
-      echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$mode' title='$mode'></td></tr>";
+      if ($fordebug) {
+         echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"" . __s('OK') . "\">$msg\n";
+      } else {
+         echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
+         // All modes should be ok
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$mode' title='$msg'></td></tr>";
+      }
       if (!strcasecmp($mode, 'Disabled')) {
          // Other test are not useful
          return 0;
@@ -1133,20 +1138,32 @@ class Toolbox {
 
       $bools = array('httpd_can_network_connect', 'httpd_can_network_connect_db',
                      'httpd_can_sendmail');
+      $msg2 = __s('Some features may require this to be on');
       foreach ($bools as $bool) {
          $state = exec('/usr/sbin/getsebool '.$bool);
          //TRANS: %s is an option name
          $msg = sprintf(__('SELinux boolean configuration for %s'), $state);
-         echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
-         if (substr($state, -2) == 'on') {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$state' title='$state'>".
-                 "</td>";
+         if ($fordebug) {
+            if (substr($state, -2) == 'on') {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"". __s('OK') .
+               "\" title=\"" . __s('OK') . "\">$msg\n";
+            } else {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png' alt=\"". $msg2 .
+               "\" title=\"$msg2\">$msg ($msg2)\n";
+            }
          } else {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png' alt='$state' title='$state'>".
-                 "</td>";
-            $err = 1;
+            if (substr($state, -2) == 'on') {
+               echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$state' title='$state'>".
+                    "</td>";
+            } else {
+               echo "<tr class='tab_bg_1'><td class='left b'>$msg ($msg2)</td>";
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png' alt='$msg2' title='$msg2'>".
+                    "</td>";
+               $err = 1;
+            }
+            echo "</tr>";
          }
-         echo "</tr>";
       }
 
       return $err;
