@@ -2264,7 +2264,7 @@ class Search {
       $tocompute      = "`$table$addtable`.`$field`";
       $tocomputeid    = "`$table$addtable`.`id`";
 
-      $tocomputetrans = "IFNULL(`$table".$addtable."_trans`.`value`,'".self::NULLVALUE."') ";
+      $tocomputetrans = "IFNULL(`$table".$addtable."_".$field."_trans`.`value`,'".self::NULLVALUE."') ";
 
       $ADDITONALFIELDS = '';
       if (isset($searchopt[$ID]["additionalfields"])
@@ -2478,8 +2478,15 @@ class Search {
                                        AS `".$NAME."_$num`,
                            $ADDITONALFIELDS";
                }
+               $TRANS = '';
+               if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+                   $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
+                                                   '".self::SHORTSEP."',$tocomputeid) SEPARATOR '".self::LONGSEP."')
+                                  AS `".$NAME."_".$num."_trans`, ";
+               }
                return " $tocompute AS `".$NAME."_$num`,
-                        `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
+                        `$table$addtable`.`id` AS `".$NAME."_".$num."_id`, 
+                        $TRANS
                         $ADDITONALFIELDS";
          }
       }
@@ -3100,7 +3107,7 @@ class Search {
       }
 
       $tocompute      = "`$table`.`$field`";
-      $tocomputetrans = "`".$table."_trans`.`value`";
+      $tocomputetrans = "`".$table."_".$field."_trans`.`value`";
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
          $tocompute = str_replace("TABLE", "`$table`", $tocompute);
@@ -3514,7 +3521,8 @@ class Search {
 
       // Auto link
       if (($ref_table == $new_table)
-          && empty($complexjoin)) {
+          && empty($complexjoin)
+          && ($field == '' || !Session::haveTranslations(getItemTypeForTable($new_table), $field))) {
          return "";
       }
 
@@ -3689,10 +3697,13 @@ class Search {
                                               $addcondition)";
                   $transitemtype = getItemTypeForTable($new_table);
                   if (Session::haveTranslations($transitemtype, $field)) {
-                     $transAS            = $nt.'_trans';
+                     if( strstr( $nt, $field ) )
+                          $transAS = $nt.'_trans';
+                     else 
+                          $transAS = $nt."_$field".'_trans';
                      $specific_leftjoin .= "LEFT JOIN `glpi_dropdowntranslations` AS `$transAS`
                                              ON (`$transAS`.`itemtype` = '$transitemtype'
-                                                 AND `$transAS`.`items_id` = `$nt`.`id`
+                                                 AND `$transAS`.`items_id` = `$new_table`.`id`
                                                  AND `$transAS`.`language` = '".
                                                        $_SESSION['glpilanguage']."'
                                                  AND `$transAS`.`field` = '$field')";
