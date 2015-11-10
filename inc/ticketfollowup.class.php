@@ -640,7 +640,9 @@ class TicketFollowup  extends CommonDBTM {
          Dropdown::showYesNo('is_private', $this->fields["is_private"]);
          echo "</td></tr>";
 
-         Document_Item::showSimpleAddForItem($this);
+         if ($ID <= 0) {
+            Document_Item::showSimpleAddForItem($this);
+         }
 
          $this->showFormButtons($options);
 
@@ -663,7 +665,9 @@ class TicketFollowup  extends CommonDBTM {
 
          echo "</td></tr>\n";
 
-         Document_Item::showSimpleAddForItem($ticket);
+         if ($ID <= 0) {
+            Document_Item::showSimpleAddForItem($ticket);
+         }
 
          $this->showFormButtons($options);
       }

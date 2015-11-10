@@ -1212,7 +1212,9 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "</td></tr>\n";
 
-      Document_Item::showSimpleAddForItem($item);
+      if ($ID <= 0) {
+         Document_Item::showSimpleAddForItem($item);
+      }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('By');
