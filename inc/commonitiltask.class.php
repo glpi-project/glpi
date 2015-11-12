@@ -539,7 +539,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[2]['table']        = 'glpi_taskcategories';
       $tab[2]['field']        = 'name';
-      $tab[2]['name']         = _n('Tasks category', 'Tasks categories', 1);
+      $tab[2]['name']         = _n('Task category', 'Task categories', 1);
       $tab[2]['forcegroupby'] = true;
       $tab[2]['datatype']     = 'dropdown';
 
