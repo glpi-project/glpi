@@ -1786,7 +1786,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($p['showtype'] == 'search') {
          $values[0]  = static::getUrgencyName(0);
-         $values[-5] = static::getUrgencyName(-1);
+         $values[-5] = static::getUrgencyName(-5);
          $values[-4] = static::getUrgencyName(-4);
          $values[-3] = static::getUrgencyName(-3);
          $values[-2] = static::getUrgencyName(-2);
