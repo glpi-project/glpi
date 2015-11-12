@@ -1096,7 +1096,8 @@ class Html {
       }
 
       // AJAX library
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+      if (isset($_SESSION['glpi_use_mode']) 
+            && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.js");
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.js");
       } else {
