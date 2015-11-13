@@ -623,10 +623,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_requester']['_type']) {
                case "user" :
-                  if (is_array($input['_itil_requester']['use_notification'])) {
+                  if (isset($input['_itil_requester']['use_notification']) 
+                      && is_array($input['_itil_requester']['use_notification'])) {
                      $input['_itil_requester']['use_notification'] = $input['_itil_requester']['use_notification'][0];
                   }
-                  if (is_array($input['_itil_requester']['alternative_email'])) {
+                  if (isset($input['_itil_requester']['alternative_email']) 
+                      && is_array($input['_itil_requester']['alternative_email'])) {
                      $input['_itil_requester']['alternative_email'] = $input['_itil_requester']['alternative_email'][0];
                   }
 
