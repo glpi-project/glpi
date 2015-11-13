@@ -1243,7 +1243,7 @@ class Html {
       self::includeHeader($title);
 
       $body_class = "layout_".$_SESSION['glpilayout'];
-      if ((strpos($_SERVER['REQUEST_URI'], "form.php") !== false)
+      if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
           && isset($_GET['id']) && ($_GET['id'] > 0)) {
          if (!CommonGLPI::isLayoutExcludedPage()) {
             $body_class.= " form";
