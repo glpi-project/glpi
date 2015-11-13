@@ -304,7 +304,8 @@ class TicketFollowup  extends CommonDBTM {
          $input['content'] .= "\n";
          foreach ($docadded as $name) {
             //TRANS: %s is tha document name
-            $input['content'] .= "\n".sprintf(__('Added document: %s'), $name['data']);
+            $input['content'] .= "\n".sprintf(__('Added document: %s'), 
+                                              Toolbox::addslashes_deep($name['data']));
          }
       }
 
