@@ -679,10 +679,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_observer']['_type']) {
                case "user" :
-                  if (is_array($input['_itil_observer']['use_notification'])) {
+                  if (isset($input['_itil_observer']['use_notification']) 
+                      && is_array($input['_itil_observer']['use_notification'])) {
                      $input['_itil_observer']['use_notification'] = $input['_itil_observer']['use_notification'][0];
                   }
-                  if (is_array($input['_itil_observer']['alternative_email'])) {
+                  if (isset($input['_itil_observer']['alternative_email']) 
+                      && is_array($input['_itil_observer']['alternative_email'])) {
                      $input['_itil_observer']['alternative_email'] = $input['_itil_observer']['alternative_email'][0];
                   }
 
@@ -731,10 +733,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_assign']['_type']) {
                case "user" :
-                  if (is_array($input['_itil_assign']['use_notification'])) {
+                  if (isset($input['_itil_assign']['use_notification']) 
+                      && is_array($input['_itil_assign']['use_notification'])) {
                      $input['_itil_assign']['use_notification'] = $input['_itil_assign']['use_notification'][0];
                   }
-                  if (is_array($input['_itil_assign']['alternative_email'])) {
+                  if (isset($input['_itil_assign']['alternative_email']) 
+                      && is_array($input['_itil_assign']['alternative_email'])) {
                      $input['_itil_assign']['alternative_email'] = $input['_itil_assign']['alternative_email'][0];
                   }
 
