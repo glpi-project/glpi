@@ -690,7 +690,7 @@ class Auth extends CommonGLPI {
                      if (Toolbox::canUseLdap()) {
                         AuthLdap::tryLdapAuth($this, $login_name, $login_password,
                                               $this->user->fields["auths_id"],
-                                              $this->user->fields["user_dn"]);
+                                              toolbox::addslashes_deep($this->user->fields["user_dn"]));
                         if (!$this->auth_succeded && $this->user_deleted_ldap) {
                            $user_deleted_ldap = true;
                         }
