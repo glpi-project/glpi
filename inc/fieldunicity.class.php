@@ -589,13 +589,16 @@ class FieldUnicity extends CommonDropdown {
    **/
    function showDebug() {
 
-      $params = array('message'     => '',
+      $params = array(//'message'     => '',
                       'action_type' => true,
                       'action_user' => getUserName(Session::getLoginUserID()),
                       'entities_id' => $_SESSION['glpiactive_entity'],
                       'itemtype'    => get_class($this),
                       'date'        => $_SESSION['glpi_currenttime'],
-                      'refuse'      => true);
+                      'refuse'      => true,
+                      'label'       => array('name' => 'test'),
+                      'field'       => array('action_refuse' => true),
+                      'double'      => array());
 
       NotificationEvent::debugEvent($this, $params);
    }
