@@ -2474,18 +2474,19 @@ class Search {
                if ($meta
                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   return " GROUP_CONCAT(DISTINCT CONCAT($tocompute, '".self::SHORTSEP."' ,
-                                                        `$table$addtable`.`id`) SEPARATOR '".self::LONGSEP."')
-                                       AS `".$NAME."_$num`,
+                                                        `$table$addtable`.`id`)
+                                        SEPARATOR '".self::LONGSEP."') AS `".$NAME."_$num`,
                            $ADDITONALFIELDS";
                }
                $TRANS = '';
                if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
                    $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
-                                                   '".self::SHORTSEP."',$tocomputeid) SEPARATOR '".self::LONGSEP."')
+                                                          '".self::SHORTSEP."',$tocomputeid)
+                                          SEPARATOR '".self::LONGSEP."')
                                   AS `".$NAME."_".$num."_trans`, ";
                }
                return " $tocompute AS `".$NAME."_$num`,
-                        `$table$addtable`.`id` AS `".$NAME."_".$num."_id`, 
+                        `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
                         $TRANS
                         $ADDITONALFIELDS";
          }
@@ -3522,7 +3523,8 @@ class Search {
       // Auto link
       if (($ref_table == $new_table)
           && empty($complexjoin)
-          && ($field == '' || !Session::haveTranslations(getItemTypeForTable($new_table), $field))) {
+          && (($field == '')
+              || !Session::haveTranslations(getItemTypeForTable($new_table), $field))) {
          return "";
       }
 
@@ -3697,10 +3699,11 @@ class Search {
                                               $addcondition)";
                   $transitemtype = getItemTypeForTable($new_table);
                   if (Session::haveTranslations($transitemtype, $field)) {
-                     if( strstr( $nt, $field ) )
-                          $transAS = $nt.'_trans';
-                     else 
-                          $transAS = $nt."_$field".'_trans';
+                     if (strstr($nt, $field)) {
+                        $transAS = $nt.'_trans';
+                     } else {
+                        $transAS = $nt."_$field".'_trans';
+                     }
                      $specific_leftjoin .= "LEFT JOIN `glpi_dropdowntranslations` AS `$transAS`
                                              ON (`$transAS`.`itemtype` = '$transitemtype'
                                                  AND `$transAS`.`items_id` = `$new_table`.`id`
