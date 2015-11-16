@@ -396,7 +396,8 @@ class TicketFollowup  extends CommonDBTM {
       if (!isset($this->input['_status'])) {
          $this->input['_status'] = $this->input["_job"]->fields["status"];
       }
-      // if reopen set (from followup form) and status is reopenable and not changed in form
+      // if reopen set (from followup form or mailcollector)
+      // and status is reopenable and not changed in form
       if (isset($this->input["_reopen"])
           && $this->input["_reopen"]
           && in_array($this->input["_job"]->fields["status"], Ticket::getReopenableStatusArray())
