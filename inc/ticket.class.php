@@ -2638,6 +2638,17 @@ class Ticket extends CommonITILObject {
    }
 
    /**
+    * Get the ITIL object closed, solved or waiting status list
+    *
+    * @since version 0.90.1
+    *
+    * @return an array
+   **/
+   static function getReopenableStatusArray() {
+      return array(self::CLOSED, self::SOLVED, self::WAITING);
+   }
+
+   /**
     * Calculate Ticket TCO for an item
     *
     *@param $item CommonDBTM object of the item
@@ -6704,11 +6715,6 @@ class Ticket extends CommonITILObject {
       $ticket->getFromDB($tickets_id);
       $ticket_users = $ticket->getTicketActors();
       $actor_type   = $ticket_users[Session::getLoginUserID()];
-
-      // stupid control: assign a status if requester? done by commonitilactor
-//      if ($actor_type == CommonITILActor::REQUESTER) {
-///         $ticket->fields['status'] = CommonITILObject::ASSIGNED;
-//      }
       $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
 
       $html = "<div class='x-split-button' id='x-split-button'>

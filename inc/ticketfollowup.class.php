@@ -391,10 +391,16 @@ class TicketFollowup  extends CommonDBTM {
          $donotif = false; // Done for ticket update (new status)
       }
 
+      //manage reopening of ticket
+      $reopened = false;
+      if (!isset($this->input['_status'])) {
+         $this->input['_status'] = $this->input["_job"]->fields["status"];
+      }
+      // if reopen set (from followup form) and status is reopenable and not changed in form
       if (isset($this->input["_reopen"])
           && $this->input["_reopen"]
-          && in_array($this->input["_job"]->fields["status"],
-                      array(CommonITILObject::CLOSED, CommonITILObject::SOLVED, CommonITILObject::WAITING))) {
+          && in_array($this->input["_job"]->fields["status"], Ticket::getReopenableStatusArray())
+          && $this->input['_status'] == $this->input["_job"]->fields["status"]) {
 
          if (($this->input["_job"]->countUsers(CommonITILActor::ASSIGN) > 0)
              || ($this->input["_job"]->countGroups(CommonITILActor::ASSIGN) > 0)
@@ -408,11 +414,12 @@ class TicketFollowup  extends CommonDBTM {
          // Use update method for history
          $this->input["_job"]->update($update);
          $donotif      = false; // Done for ticket update (new status)
+         $reopened     = true;
       }
 
       //change ticket status only if imput change
-      if (isset($this->input['_status'])
-          && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
+      if (!$reopened
+          && $this->input['_status'] != $this->input['_job']->fields['status']) {
 
          $update['status'] = $this->input['_status'];
          $update['id']     = $this->input['_job']->fields['id'];
@@ -598,12 +605,20 @@ class TicketFollowup  extends CommonDBTM {
                || (isset($_SESSION["glpigroups"])
                    && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
 
+      $requester = ($ticket->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+                    || (isset($_SESSION["glpigroups"])
+                        && $ticket->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])));
+
       $reopen_case = false;
       if ($this->isNewID($ID)
-          && in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
-          && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
+          && (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
+              && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)
+              || ($requester && !$tech)
+              && in_array($ticket->fields['status'], Ticket::getReopenableStatusArray()))) {
          $reopen_case = true;
-         echo "<div class='center b'>".__('If you want to reopen the ticket, you must specify a reason')."</div>";
+         if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())) {
+            echo "<div class='center b'>".__('If you want to reopen the ticket, you must specify a reason')."</div>";
+         }
       }
 
       if ($tech) {
