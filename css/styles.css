@@ -250,6 +250,10 @@ select {
    background: #FCFCFC !important;
    border: 1px solid #D3D3D3 !important;
 }
+.select2-drop {
+   max-width: 500px;
+   word-break: break-all;
+}
 .select2-dropdown-open .select2-choice {
    border: 1px solid #D3D3D3 !important;
 }
