@@ -46,6 +46,7 @@ echo "+ phpCas"
 
 SRC="vendor/jasig/phpcas"
 DST="../lib/phpcas"
+find $SRC -type f -exec chmod -x {} \;
 rsync -a -del $SRC/source/         $DST/
 for fic in LICENSE NOTICE README.md
 do cp $SRC/$fic $DST/$fic
