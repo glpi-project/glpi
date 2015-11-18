@@ -189,7 +189,7 @@ class CronTask extends CommonDBTM{
 
       $query = "UPDATE `".$this->getTable()."`
                 SET `state` = '".self::STATE_RUNNING."',
-                    `lastrun` = NOW()
+                    `lastrun` = DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:00')
                 WHERE `id` = '".$this->fields['id']."'
                       AND `state` != '".self::STATE_RUNNING."'";
       $result = $DB->query($query);
@@ -250,8 +250,7 @@ class CronTask extends CommonDBTM{
          return false;
       }
       $query = "UPDATE `".$this->getTable()."`
-                SET `state` = '".$this->fields['state']."',
-                    `lastrun` = DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:00')
+                SET `state` = '".$this->fields['state']."'
                 WHERE `id` = '".$this->fields['id']."'
                       AND `state` = '".self::STATE_RUNNING."'";
       $result = $DB->query($query);
