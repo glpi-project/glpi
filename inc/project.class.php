@@ -1314,11 +1314,11 @@ class Project extends CommonDBTM {
          $months = array(__('January'), __('February'), __('March'), __('April'), __('May'),
                          __('June'), __('July'), __('August'), __('September'),
                          __('October'), __('November'), __('December'));
-         mb_internal_encoding("UTF-8");
-         $dow    = array(mb_substr(__('Sunday'),0,1), mb_substr(__('Monday'),0,1),
-                         mb_substr(__('Tuesday'),0,1), mb_substr(__('Wednesday'),0,1),
-                         mb_substr(__('Thursday'),0,1), mb_substr(__('Friday'),0,1),
-                         mb_substr(__('Saturday'),0,1)
+
+         $dow    = array(Toolbox::substr(__('Sunday'),0,1), Toolbox::substr(__('Monday'),0,1),
+                         Toolbox::substr(__('Tuesday'),0,1), Toolbox::substr(__('Wednesday'),0,1),
+                         Toolbox::substr(__('Thursday'),0,1), Toolbox::substr(__('Friday'),0,1),
+                         Toolbox::substr(__('Saturday'),0,1)
                      );
 
          echo "<div class='gantt'></div>";
