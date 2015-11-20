@@ -6231,7 +6231,7 @@ class Ticket extends CommonITILObject {
 
       // show approbation form on top when ticket is solved
       if ($this->fields["status"] == CommonITILObject::SOLVED) {
-         echo "<div class='approbation_form'>";
+         echo "<div class='approbation_form' id='approbation_form$rand'>";
          $followup_obj->showApprobationForm($this);
          echo "</div>";
       }
@@ -6583,6 +6583,7 @@ class Ticket extends CommonITILObject {
                                     $CFG_GLPI["root_doc"]."/ajax/timeline_viewsubitem.php",
                                     $params, "", false);
       echo str_replace("\"itemtype\"", "itemtype", $out);
+      echo "$('#approbation_form$rand').remove()";
       echo "};";
       $out = "function viewEditSubitem" . $this->fields['id'] . "$rand(e, itemtype, items_id, o) {\n
                var target = e.target || window.event.srcElement;
@@ -6611,6 +6612,8 @@ class Ticket extends CommonITILObject {
                found_active[i].className = classes;
             }
             o.className = o.className + ' talk_active';
+
+            $('#approbation_form$rand').remove();
       };";
 
       if (isset($_GET['load_kb_sol'])) {
