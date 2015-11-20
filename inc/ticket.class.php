@@ -4477,7 +4477,7 @@ class Ticket extends CommonITILObject {
          $search_assign   = " 0 = 1 ";
 
          if (count($_SESSION['glpigroups'])) {
-            $groups        = implode(",",toolbox::addslashes_deep($_SESSION['glpigroups']));
+            $groups        = implode("','",$_SESSION['glpigroups']);
             $search_assign = " (`glpi_groups_tickets`.`groups_id` IN ('".$groups."')
                                 AND `glpi_groups_tickets`.`type` = '".CommonITILActor::ASSIGN."')";
 
