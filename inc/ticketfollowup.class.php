@@ -142,7 +142,8 @@ class TicketFollowup  extends CommonDBTM {
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'), READ)
         // No validation for closed tickets
-        || in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
+        || (in_array($ticket->fields['status'],$ticket->getClosedStatusArray())
+            && !$ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING))) {
          return false;
       }
       return $ticket->canAddFollowups();
@@ -304,7 +305,7 @@ class TicketFollowup  extends CommonDBTM {
          $input['content'] .= "\n";
          foreach ($docadded as $name) {
             //TRANS: %s is tha document name
-            $input['content'] .= "\n".sprintf(__('Added document: %s'), 
+            $input['content'] .= "\n".sprintf(__('Added document: %s'),
                                               Toolbox::addslashes_deep($name['data']));
          }
       }
