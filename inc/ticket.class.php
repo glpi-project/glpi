@@ -1096,11 +1096,11 @@ class Ticket extends CommonITILObject {
 
          // Using calendar
          if (($calendars_id > 0) && $calendar->getFromDB($calendars_id)) {
-            return max(0, $calendar->getActiveTimeBetween($this->fields['date'],
+            return max(1, $calendar->getActiveTimeBetween($this->fields['date'],
                                                           $_SESSION["glpi_currenttime"]));
          }
          // Not calendar defined
-         return max(0, strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date']));
+         return max(1, strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date']));
       }
       return 0;
    }
@@ -2007,7 +2007,8 @@ class Ticket extends CommonITILObject {
                                                 TicketFollowup::ADDGROUPTICKET))
                  || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])
-                     && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])))) {
+                     && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups']))
+                 || isCommandLine())) {
 
             if ($this->fields['takeintoaccount_delay_stat'] == 0) {
                return $this->update(array('id'            => $ID,
