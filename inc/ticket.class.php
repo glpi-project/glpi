@@ -6632,10 +6632,11 @@ class Ticket extends CommonITILObject {
       $tmp = array('tickets_id' => $this->getID());
       $fup             = new TicketFollowup;
       $ttask           = new TicketTask;
+      $doc             = new Document;
 
-      $canadd_fup      = TicketFollowup::canCreate() && $fup->can(-1, UPDATE, $tmp);
-      $canadd_task     = TicketTask::canCreate() && $ttask->can(-1, UPDATE, $tmp);
-      $canadd_document = Document::canCreate();
+      $canadd_fup      = $fup->can(-1, CREATE, $tmp);
+      $canadd_task     = $ttask->can(-1, CREATE, $tmp);
+      $canadd_document = $doc->can(-1, CREATE, $tmp) && $this->canAddItem('Document');
       $canadd_solution = Ticket::canUpdate() && $this->canSolve();
 
       if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution ) {
@@ -6643,36 +6644,36 @@ class Ticket extends CommonITILObject {
       }
 
       //show choices
-      if ($this->fields["status"] != CommonITILObject::SOLVED
-         && $this->fields["status"] != CommonITILObject::CLOSED) {
-         echo "<h2>"._sx('button', 'Add')." : </h2>";
-         echo "<div class='timeline_form'>";
-         echo "<ul class='timeline_choices'>";
-         if ($canadd_fup) {
-            echo "<li class='followup' onclick='".
-                 "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketFollowup\");'>"
-                 .__("Followup")."</li>";
-         }
-         if ($canadd_task) {
-            echo "<li class='task' onclick='".
-                 "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketTask\");'>"
-                 .__("Task")."</li>";
-         }
-         if ($canadd_document) {
-            echo "<li class='document' onclick='".
-                 "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Document_Item\");'>"
-                 .__("Document")."</li>";
-         }
-         if ($canadd_solution) {
-            echo "<li class='solution' onclick='".
-                 "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Solution\");'>"
-                 .__("Solution")."</li>";
-         }
-         echo "</ul>"; // timeline_choices
-         echo "<div class='clear'>&nbsp;</div>";
+      echo "<h2>"._sx('button', 'Add')." : </h2>";
+      echo "<div class='timeline_form'>";
+      echo "<ul class='timeline_choices'>";
 
-         echo "</div>"; //end timeline_form
+      if ($canadd_fup) {
+         echo "<li class='followup' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketFollowup\");'>"
+              .__("Followup")."</li>";
       }
+
+      if ($canadd_task) {
+         echo "<li class='task' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketTask\");'>"
+              .__("Task")."</li>";
+      }
+      if ($canadd_document) {
+         echo "<li class='document' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Document_Item\");'>"
+              .__("Document")."</li>";
+      }
+      if ($canadd_solution) {
+         echo "<li class='solution' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Solution\");'>"
+              .__("Solution")."</li>";
+      }
+
+      echo "</ul>"; // timeline_choices
+      echo "<div class='clear'>&nbsp;</div>";
+
+      echo "</div>"; //end timeline_form
 
       echo "<div class='ajax_box' id='viewitem" . $this->fields['id'] . "$rand'></div>\n";
 
