@@ -75,6 +75,8 @@ class Dropdown {
     *    - permit_select_parent : boolean / for tree dropdown permit to see parent items
     *                                       not available by default (default false)
     *    - specific_tags        : array of HTML5 tags to add the the field
+    *    - url                  : url of the ajax php code which should return the json data to show in
+    *                                       the dropdown
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -109,6 +111,7 @@ class Dropdown {
       $params['permit_select_parent'] = false;
       $params['addicon']              = true;
       $params['specific_tags']        = array();
+      $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php" ;
 
 
       if (is_array($options) && count($options)) {
@@ -177,7 +180,7 @@ class Dropdown {
                 );
 
       $output = Html::jsAjaxDropdown($params['name'], $field_id,
-                                     $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",
+                                     $params['url'],
                                      $p);
       // Display comment
       if ($params['comments']) {
