@@ -99,7 +99,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<div id='logo_login'></div>";
    echo "<div id='text-login'>";
    echo nl2br(Toolbox::unclean_html_cross_side_scripting_deep($CFG_GLPI['text_login']));
-   Plugin::doHook('display_login');
    echo "</div>";
 
    echo "<div id='boxlogin'>";
@@ -175,6 +174,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             '<a href="front/helpdesk.faq.php">[ '.__('Access to the Frequently Asked Questions').' ]';
       echo '</a></div>';
    }
+
+   echo "<div id='display-login'>";
+   echo "test";
+   Plugin::doHook('display_login');
+   echo "</div>";
+   
 
    echo "</div>"; // end contenu login
 

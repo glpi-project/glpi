@@ -1713,6 +1713,7 @@ a.icon_nav_move:hover img {
    height: 76px;
 }
 
+#display-login,
 #text-login {
    width: 100%;
    margin: 0 auto;
@@ -1835,7 +1836,7 @@ a.icon_nav_move:hover img {
 }
 
 #footer-login a {
-   color: #FFF
+   color: #FFF;
 }
 
 
