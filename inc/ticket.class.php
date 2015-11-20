@@ -6229,12 +6229,15 @@ class Ticket extends CommonITILObject {
       $tmp        = array_values($timeline);
       $first_item = array_shift($tmp);
 
-      //don't display title on solution approbation
-      if (($first_item['type'] != 'Solution')
-          || ($this->fields["status"] != CommonITILObject::SOLVED)) {
-         self::showTimelineHeader();
+      // show approbation form on top when ticket is solved
+      if ($this->fields["status"] == CommonITILObject::SOLVED) {
+         echo "<div class='approbation_form'>";
+         $followup_obj->showApprobationForm($this);
+         echo "</div>";
       }
 
+      // show title for timeline
+      self::showTimelineHeader();
 
       $timeline_index = 0;
       foreach ($timeline as $item) {
@@ -6414,19 +6417,6 @@ class Ticket extends CommonITILObject {
 
          echo "</div>"; //end  h_info
 
-         if (($timeline_index == 0)
-             && ($item['type'] == "Solution")
-             && ($this->fields["status"] == CommonITILObject::SOLVED)) {
-
-            echo "<div class='break'></div>";
-
-            echo "<div class='approbation_form'>";
-            $followup_obj->showApprobationForm($this);
-            echo "</div>";
-
-            echo "<hr class='approbation_separator' />";
-            self::showTimelineHeader();
-         }
          $timeline_index++;
       } // end foreach timeline
 
