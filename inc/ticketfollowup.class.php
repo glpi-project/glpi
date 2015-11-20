@@ -412,9 +412,12 @@ class TicketFollowup  extends CommonDBTM {
          }
 
          $update['id'] = $this->input["_job"]->fields['id'];
-         // Use update method for history
+         
+         // don't notify on Ticket - update event
+         $update['_disablenotif'] = true;
+         
+         // Use update method for history 
          $this->input["_job"]->update($update);
-         $donotif      = false; // Done for ticket update (new status)
          $reopened     = true;
       }
 
@@ -424,8 +427,12 @@ class TicketFollowup  extends CommonDBTM {
 
          $update['status'] = $this->input['_status'];
          $update['id']     = $this->input['_job']->fields['id'];
+         
+         // don't notify on Ticket - update event
+         $update['_disablenotif'] = true;
+
+         // Use update method for history 
          $this->input['_job']->update($update);
-         $donotif      = false; // Done for ticket update
       }
 
       if ($donotif) {
@@ -612,10 +619,8 @@ class TicketFollowup  extends CommonDBTM {
 
       $reopen_case = false;
       if ($this->isNewID($ID)
-          && (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
-              && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)
-              || ($requester && !$tech)
-              && in_array($ticket->fields['status'], Ticket::getReopenableStatusArray()))) {
+          && in_array($ticket->fields['status'], Ticket::getReopenableStatusArray())
+          && ($requester || $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING))) {
          $reopen_case = true;
          if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())) {
             echo "<div class='center b'>".__('If you want to reopen the ticket, you must specify a reason')."</div>";

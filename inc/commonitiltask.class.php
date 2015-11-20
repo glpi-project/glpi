@@ -446,10 +446,10 @@ abstract class CommonITILTask  extends CommonDBTM {
      //change status only if input change
      if (isset($this->input['_status'])
          && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
-         $update['status'] = $this->input['_status'];
-         $update['id']     = $this->input['_job']->fields['id'];
+         $update['status']        = $this->input['_status'];
+         $update['id']            = $this->input['_job']->fields['id'];
+         $update['_disablenotif'] = true;
          $this->input['_job']->update($update);
-         $donotif          = false; // Done by item update
       }
 
       if (!empty($this->fields['begin'])
