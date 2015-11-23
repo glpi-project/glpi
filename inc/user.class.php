@@ -3186,7 +3186,9 @@ class User extends CommonDBTM {
       $p['rand']           = mt_rand();
       $p['display']        = true;
       $p['_user_index']   = 0;
-
+      $p['specific_tags']  = array();
+      $p['url']            = $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php" ;
+      
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
@@ -3234,10 +3236,11 @@ class User extends CommonDBTM {
                         'right'               => $p['right'],
                         'on_change'           => $p['on_change'],
                         'used'                => $p['used'],
-                        'entity_restrict'     => $p['entity']);
+                        'entity_restrict'     => $p['entity'],
+                        'specific_tags'       => $p['specific_tags']);
 
       $output   = Html::jsAjaxDropdown($p['name'], $field_id,
-                                       $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php",
+                                       $p['url'],
                                        $param);
 
       // Display comment
