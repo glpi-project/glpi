@@ -5501,6 +5501,9 @@ class Html {
                                              > ($nb_cb_per_row['total'] / 2));
             echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>\n";
          }
+         if ($nb_cb_per_row['total'] == 1) {
+            echo "\t\t<td class='center'></td>\n";
+         }
          echo "\t</tr>\n";
       }
 
