@@ -619,12 +619,17 @@ class TicketFollowup  extends CommonDBTM {
                         && $ticket->haveAGroup(CommonITILActor::REQUESTER, $_SESSION['glpigroups'])));
 
       $reopen_case = false;
-      if ($this->isNewID($ID)
-          && in_array($ticket->fields['status'], Ticket::getReopenableStatusArray())
-          && ($requester || $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING))) {
-         $reopen_case = true;
-         if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())) {
+      if ($this->isNewID($ID)) {
+          if (in_array($ticket->fields["status"], $ticket->getClosedStatusArray())
+             && $ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING)) {
+            $reopen_case = true;
             echo "<div class='center b'>".__('If you want to reopen the ticket, you must specify a reason')."</div>";
+         }
+
+         // the reqester triggers the reopening on close/solve/waiting status
+         if ($requester
+             && in_array($ticket->fields['status'], Ticket::getReopenableStatusArray())) {
+            $reopen_case = true;
          }
       }
 
