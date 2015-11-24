@@ -1535,65 +1535,7 @@ class Html {
       echo "</ul>"; // #menu
 
       // Display MENU ALL
-      echo "<div id='show_all_menu' class='invisible'>";
-      $items_per_columns = 15;
-      $i                 = -1;
-
-      foreach ($menu as $part => $data) {
-         if (isset($data['content']) && count($data['content'])) {
-            echo "<table class='all_menu_block'>";
-            $link = "#";
-
-            if (isset($data['default']) && !empty($data['default'])) {
-               $link = $CFG_GLPI["root_doc"].$data['default'];
-            }
-
-            echo "<tr><td class='tab_bg_1 b'>";
-            echo "<a href='$link' title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>";
-            echo "</td></tr>";
-            $i++;
-
-            // list menu item
-            foreach ($data['content'] as $key => $val) {
-
-               /*if ($i > $items_per_columns) {
-                  $i = 0;
-                  echo "</table></td><td class='top'><table>";
-               }*/
-
-               if (isset($val['page'])
-                   && isset($val['title'])) {
-                  echo "<tr><td><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
-
-                  if (isset($data['shortcut']) && !empty($data['shortcut'])) {
-                     echo " accesskey='".$val['shortcut']."'";
-                  }
-                  echo ">".$val['title']."</a></td></tr>\n";
-                  $i++;
-               }
-            }
-            echo "</table>";
-         }
-      }
-
-      echo "</div>";
-
-      Html::scriptStart();
-      echo self::jsGetElementbyID('show_all_menu').".dialog({
-         height: 'auto',
-         width: 'auto',
-         modal: true,
-         autoOpen: false
-         });";
-      echo Html::scriptEnd();
-
-
-      /// MENU ALL
-      echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open');\"
-            id='menu_all_button' class='button-icon'>";
-      echo "</a>";
-
-      echo "</div>";
+      self::displayMenuAll($menu);
 
       // End navigation bar
       // End headline
@@ -2045,88 +1987,103 @@ class Html {
 
       //-- Le menu principal --
       echo "<div id='c_menu'>";
-      echo "<ul id='menu'>";
 
       // Build the navigation-elements
+      $menu = array();
 
-      // Home
+      //  Create ticket
+      if (Session::haveRight("ticket", CREATE)) {
+         $menu['create_ticket']['id']      = "menu1";
+         $menu['create_ticket']['default'] = '/front/helpdesk.public.php?create_ticket=1';
+         $menu['create_ticket']['title']   = __s('Create a ticket');
+         $menu['create_ticket']['content'] = array(true);
+      }
+      
+      //  Tickets
+      if (Session::haveRight("ticket", CREATE) 
+          || Session::haveRight("ticket", Ticket::READMY)
+          || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
+         $menu['tickets']['id']      = "menu2";
+         $menu['tickets']['default'] = '/front/ticket.php';
+         $menu['tickets']['title']   = _n('Ticket','Tickets', Session::getPluralNumber());
+         $menu['tickets']['content'] = array(true);
+      }
+      
+      // Reservation
+      if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+         $menu['reservation']['id']      = "menu3";
+         $menu['reservation']['default'] = '/front/reservationitem.php';
+         $menu['reservation']['title']   = _n('Reservation', 'Reservations', Session::getPluralNumber());
+         $menu['reservation']['content'] = array(true);
+      }
+      
+      // FAQ
+      if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+         $menu['faq']['id']      = "menu4";
+         $menu['faq']['default'] = '/front/helpdesk.faq.php';
+         $menu['faq']['title']   = __s('FAQ');
+         $menu['faq']['content'] = array(true);
+      }
+
+      echo "<ul id='menu'>";
+
+      // Display Home menu
       echo "<li id='menu1'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
              __s('Home')."\" class='itemP'>".__('Home')."</a>";
       echo "</li>";
 
-      //  Create ticket
-      if (Session::haveRight("ticket", CREATE)) {
-         echo "<li id='menu2'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1' ".
-                "title=\"".__s('Create a ticket')."\" class='itemP'>".__('Create a ticket')."</a>";
+      // display menu items
+      foreach ($menu as $menu_item) {
+         echo "<li id='".$menu_item['id']."'>";
+         echo "<a href='".$CFG_GLPI["root_doc"].$menu_item['default']."' ".
+                "title=\"".$menu_item['title']."\" class='itemP'>".$menu_item['title']."</a>";
          echo "</li>";
       }
 
-      //  Suivi ticket
-      if (Session::haveRight("ticket", Ticket::READMY)
-          || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
-         echo "<li id='menu3'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php' title=\"".
-                __s('Ticket followup')."\" class='itemP'>"._n('Ticket','Tickets', Session::getPluralNumber())."</a>";
-         echo "</li>";
-      }
-
-      // Reservation
-      if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
-         echo "<li id='menu4'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php' title=\"".
-                _sn('Reservation', 'Reservations', Session::getPluralNumber())."\" class='itemP'>".
-                _n('Reservation', 'Reservations', Session::getPluralNumber())."</a>";
-         echo "</li>";
-      }
-
-      // FAQ
-      if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-         echo "<li id='menu5' >";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php' title=\"".
-                __s('FAQ')."\" class='itemP'>".__('FAQ')."</a>";
-         echo "</li>";
-      }
-
-      // PLUGINS
-      $plugins = array();
+      // Plugins
+      $menu['plugins']['id']      = "menu5";
+      $menu['plugins']['default'] = "#";
+      $menu['plugins']['title']   = _sn('Plugin', 'Plugins', Session::getPluralNumber());
+      $menu['plugins']['content'] = array();
       if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"])
           && count($PLUGIN_HOOKS["helpdesk_menu_entry"])) {
 
          foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
             if ($active) {
-               $plugins[$plugin] = Plugin::getInfo($plugin);
+               $infos = Plugin::getInfo($plugin);
+               $link = "";
+               if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
+                  $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
+               }
+               $infos['page'] = $link;
+               $infos['title'] = $infos['name'];
+               $menu['plugins']['content'][$plugin] = $infos;
             }
          }
       }
 
-      if (isset($plugins) && (count($plugins) > 0)) {
-         $list = array();
-
-         foreach ($plugins as $key => $val) {
-            $list[$key] = $val["name"];
-         }
-
-         asort($list);
+      // Display plugins
+      if (isset($menu['plugins']['content']) && count($menu['plugins']['content']) > 0) {
+         asort($menu['plugins']['content']);
          echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\">";
-         echo "<a href='#' title=\""._sn('Plugin', 'Plugins', Session::getPluralNumber())."\" class='itemP'>".
-                __('Plugins')."</a>";  // default none
+         echo "<a href='#' title=\"".
+                _sn('Plugin', 'Plugins', Session::getPluralNumber())."\" class='itemP'>".
+                __('Plugins')."</a>"; // default none
          echo "<ul class='ssmenu'>";
 
          // list menu item
-         foreach ($list as $key => $val) {
-            $link = "";
-
-            if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
-               $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$key];
-            }
-            echo "<li><a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$link."'>".
-                       $plugins[$key]["name"]."</a></li>\n";
+         foreach ($menu['plugins']['content'] as $key => $val) {
+            echo "<li><a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$val['page']."'>".
+                       $val["title"]."</a></li>";
          }
          echo "</ul></li>";
       }
       echo "</ul>";
+
+      // Display MENU ALL
+      self::displayMenuAll($menu);
+
       echo "</div>";
 
 
@@ -2334,6 +2291,83 @@ class Html {
 
       // Print foot
       echo "</body></html>";
+   }
+
+
+
+   /**
+    * Display responsive menu
+    * @since 0.90.1
+    * @param $menu array of menu items
+    *    - key   : plugin system name
+    *    - value : array of options 
+    *       * id      : html id attribute
+    *       * default : defaul url
+    *       * title   : displayed label
+    *       * content : menu sub items, array with theses options : 
+    *          - page     : url
+    *          - title    : displayed label
+    *          - shortcut : keyboard shortcut letter
+    */
+   static function displayMenuAll($menu = array()) {
+      global $CFG_GLPI;
+
+      // Display MENU ALL
+      echo "<div id='show_all_menu' class='invisible'>";
+      $items_per_columns = 15;
+      $i                 = -1;
+
+      foreach ($menu as $part => $data) {
+         if (isset($data['content']) && count($data['content'])) {
+            echo "<table class='all_menu_block'>";
+            $link = "#";
+
+            if (isset($data['default']) && !empty($data['default'])) {
+               $link = $CFG_GLPI["root_doc"].$data['default'];
+            }
+
+            echo "<tr><td class='tab_bg_1 b'>";
+            echo "<a href='$link' title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>";
+            echo "</td></tr>";
+            $i++;
+
+            // list menu item
+            foreach ($data['content'] as $key => $val) {
+
+               if (isset($val['page'])
+                   && isset($val['title'])) {
+                  echo "<tr><td><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
+
+                  if (isset($data['shortcut']) && !empty($data['shortcut'])) {
+                     echo " accesskey='".$val['shortcut']."'";
+                  }
+                  echo ">".$val['title']."</a></td></tr>\n";
+                  $i++;
+               }
+            }
+            echo "</table>";
+         }
+      }
+
+      echo "</div>";
+
+      // init menu in jquery dialog
+      Html::scriptStart();
+      echo self::jsGetElementbyID('show_all_menu').".dialog({
+         height: 'auto',
+         width: 'auto',
+         modal: true,
+         autoOpen: false
+         });";
+      echo Html::scriptEnd();
+
+
+      /// Button to toggle responsive menu
+      echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open');\"
+            id='menu_all_button' class='button-icon'>";
+      echo "</a>";
+
+      echo "</div>";
    }
 
 
@@ -5466,6 +5500,9 @@ class Html {
             $cb_options['checked']      = ($nb_cb_per_row['checked']
                                              > ($nb_cb_per_row['total'] / 2));
             echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>\n";
+         }
+         if ($nb_cb_per_row['total'] == 1) {
+            echo "\t\t<td class='center'></td>\n";
          }
          echo "\t</tr>\n";
       }
