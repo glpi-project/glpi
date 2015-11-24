@@ -2010,8 +2010,7 @@ class Html {
       }
       
       // Reservation
-      if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM) 
-          || Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+      if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
          $menu['reservation']['id']      = "menu3";
          $menu['reservation']['default'] = '/front/reservationitem.php';
          $menu['reservation']['title']   = _n('Reservation', 'Reservations', Session::getPluralNumber());
