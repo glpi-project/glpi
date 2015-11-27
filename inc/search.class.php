@@ -1349,7 +1349,7 @@ class Search {
                $tmpcheck = "";
 
                if (($data['itemtype'] == 'Entity')
-                     && !in_array($val["id"], $_SESSION["glpiactiveentities"])) {
+                     && !in_array($row["id"], $_SESSION["glpiactiveentities"])) {
                   $tmpcheck = "&nbsp;";
 
                } else if (($data['item'] instanceof CommonDBTM)
