@@ -3700,6 +3700,7 @@ class Html {
       }
       $js = "";
       $js .= Html::jsGetElementbyID($param['applyto']).".qtip({
+         position: { viewport: $(window) },
          content: {text: ".Html::jsGetElementbyID($param['contentid']);
          if (!$param['autoclose']) {
             $js .=", title: {text: ' ',button: true}";
