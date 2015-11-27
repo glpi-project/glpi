@@ -287,6 +287,7 @@ $CFG_GLPI["rulecollections_types"]        = array('RuleImportEntityCollection',
 // Items which can planned something
 $CFG_GLPI['planning_types']               = array('ChangeTask', 'ProblemTask', 'Reminder',
                                                   'TicketTask', 'ProjectTask');
+$CFG_GLPI['planning_add_types']           = array('Reminder');
 
 $CFG_GLPI["globalsearch_types"]           = array('Computer', 'Contact', 'Document',  'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
