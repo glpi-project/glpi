@@ -943,7 +943,6 @@ class Computer extends CommonDBTM {
       $tab[34]['computation']    = "(SUM(TABLE.`capacity`) / COUNT(TABLE.`id`))
                                        * COUNT(DISTINCT TABLE.`id`)";
 
-
       $tab[39]['table']          = 'glpi_devicepowersupplies';
       $tab[39]['field']          = 'designation';
       $tab[39]['name']           = __('Power supply');
@@ -953,6 +952,17 @@ class Computer extends CommonDBTM {
       $tab[39]['datatype']       = 'string';
       $tab[39]['joinparams']     = array('beforejoin'
                                           => array('table'      => 'glpi_items_devicepowersupplies',
+                                                   'joinparams' => $items_device_joinparams));
+
+      $tab[95]['table']          = 'glpi_devicepcis';
+      $tab[95]['field']          = 'designation';
+      $tab[95]['name']           = __('Other component');
+      $tab[95]['forcegroupby']   = true;
+      $tab[95]['usehaving']      = true;
+      $tab[95]['massiveaction']  = false;
+      $tab[95]['datatype']       = 'string';
+      $tab[95]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_items_devicepcis',
                                                    'joinparams' => $items_device_joinparams));
 
       $tab['disk']               = _n('Volume', 'Volumes', Session::getPluralNumber());

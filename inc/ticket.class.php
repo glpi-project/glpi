@@ -5474,7 +5474,7 @@ class Ticket extends CommonITILObject {
                             AND `is_deleted` = 0";
 
             if ($delay > 0) {
-               $query .= " AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < CURDATE()";
+               $query .= " AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < NOW()";
             }
 
             $nb = 0;

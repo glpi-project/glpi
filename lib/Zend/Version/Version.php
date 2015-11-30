@@ -20,7 +20,7 @@ final class Version
     /**
      * Zend Framework version identification - see compareVersion()
      */
-    const VERSION = '2.4.8';
+    const VERSION = '2.4.9';
 
     /**
      * Github Service Identifier for version information is retrieved from
