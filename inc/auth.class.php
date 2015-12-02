@@ -1137,7 +1137,7 @@ class Auth extends CommonGLPI {
      * @return boolean
     **/
     static function isValidLogin($login) {
-       return preg_match( "/^[[:alnum:]@.\-_ ]+$/i", $login);
+       return preg_match( "/^[[:alnum:]@.\-_ ]+$/iu", $login);
     }
 
 
