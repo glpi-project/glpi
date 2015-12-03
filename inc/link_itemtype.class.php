@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -160,14 +160,15 @@ class Link_Itemtype extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Link' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Associated item type', 'Associated item types', Session::getPluralNumber()),
-                                              countElementsInTable($this->getTable(),
-                                                                   "links_id = '".$item->getID()."'"));
+                  $nb = countElementsInTable($this->getTable(),
+                                             "links_id = '".$item->getID()."'");
                }
-               return _n('Associated item type', 'Associated item types', Session::getPluralNumber());
+               return self::createTabEntry(_n('Associated item type', 'Associated item types',
+                                              Session::getPluralNumber()), $nb);
          }
       }
       return '';

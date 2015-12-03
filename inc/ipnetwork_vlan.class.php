@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -229,15 +229,14 @@ class IPNetwork_Vlan extends CommonDBRelation {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'IPNetwork' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(Vlan::getTypeName(),
-                                              countElementsInTable($this->getTable(),
-                                                                   "ipnetworks_id
-                                                                        = '".$item->getID()."'"));
+                  $nb =  countElementsInTable($this->getTable(),
+                                              "ipnetworks_id = '".$item->getID()."'");
                }
-               return Vlan::getTypeName();
+               return self::createTabEntry(Vlan::getTypeName(), $nb);
          }
       }
       return '';

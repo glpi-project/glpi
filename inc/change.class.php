@@ -195,7 +195,6 @@ class Change extends CommonITILObject {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
-         $nb = 0;
          switch ($item->getType()) {
             case __CLASS__ :
                $ong = array(1 => __('Analysis'),

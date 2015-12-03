@@ -78,9 +78,6 @@ if (isset($_SESSION['glpi_use_mode'])
 
 // Security system
 if (isset($_POST)) {
-   if (Toolbox::get_magic_quotes_gpc()) {
-      $_POST = array_map(array('Toolbox', 'stripslashes_deep'), $_POST);
-   }
    if (isset($_POST['_glpi_simple_form'])) {
       $_POST = array_map('urldecode', $_POST);
    }
@@ -88,24 +85,14 @@ if (isset($_POST)) {
    $_POST = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_POST);
 }
 if (isset($_GET)) {
-   if (Toolbox::get_magic_quotes_gpc()) {
-      $_GET = array_map(array('Toolbox', 'stripslashes_deep'), $_GET);
-   }
    $_GET = array_map(array('Toolbox','addslashes_deep'), $_GET);
    $_GET = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_GET);
 }
 if (isset($_REQUEST)) {
-   if (Toolbox::get_magic_quotes_gpc()) {
-      $_REQUEST = array_map(array('Toolbox', 'stripslashes_deep'), $_REQUEST);
-   }
    $_REQUEST = array_map(array('Toolbox','addslashes_deep'), $_REQUEST);
    $_REQUEST = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_REQUEST);
 }
 if (isset($_FILES)) {
-   // GPC do not filter $_FILES
-//    if (Toolbox::get_magic_quotes_gpc()) {
-//       $_FILES = array_map(array('Toolbox', 'stripslashes_deep'), $_FILES);
-//    }
    $_FILES = array_map(array('Toolbox','addslashes_deep'), $_FILES);
    $_FILES = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_FILES);
 }

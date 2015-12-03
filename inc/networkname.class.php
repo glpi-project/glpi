@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -831,10 +831,11 @@ class NetworkName extends FQDNLabel {
 
       if ($item->getID()
           && $item->can($item->getField('id'), READ)) {
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), self::countForItem($item));
+            $nb = self::countForItem($item);
          }
-         return self::getTypeName(Session::getPluralNumber());
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }

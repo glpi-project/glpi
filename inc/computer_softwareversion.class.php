@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -1138,25 +1138,25 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    **/
   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
+     $nb = 0;
       switch ($item->getType()) {
          case 'Software' :
             if (!$withtemplate) {
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              self::countForSoftware($item->getID()));
+                  $nb = self::countForSoftware($item->getID());
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
             }
             break;
 
          case 'SoftwareVersion' :
             if (!$withtemplate) {
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = self::countForVersion($item->getID());
                }
                return array(1 => __('Summary'),
-                            2 => self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb));
+                            2 => self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
+                                                      $nb));
             }
             break;
 
@@ -1164,12 +1164,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             // Installation allowed for template
             if (Software::canView()) {
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()),
-                                              countElementsInTable('glpi_computers_softwareversions',
-                                                                   "computers_id = '".$item->getID()."'
-                                                                      AND `is_deleted`='0'"));
+                  $nb = countElementsInTable('glpi_computers_softwareversions',
+                                             "computers_id = '".$item->getID()."'
+                                                  AND `is_deleted`='0'");
                }
-               return Software::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()), $nb);
             }
             break;
       }

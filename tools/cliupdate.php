@@ -159,6 +159,8 @@ class CliMigration extends Migration {
       echo "\n".str_pad(" $title ", 100, '=', STR_PAD_BOTH)."\n";
    }
 
+   function addNewMessageArea($id) {
+   }
 
    function displayWarning($msg, $red=false) {
 
@@ -308,9 +310,22 @@ switch ($current_version) {
 
    case "0.85.3" :
    case "0.85.4" :
+      include("../install/update_0853_0855.php");
+      update0853to0855();
+
    case "0.85.5" :
-      include("../install/update_0853_090.php");
-      update0853to090();
+      include("../install/update_0855_090.php");
+      update0855to090();
+
+   case "0.90" :
+      include("../install/update_090_0901.php");
+      update090to0901();
+
+   case "0.91" :
+      include("../install/update_0901_091.php");
+      update0901to091();
+
+   /* remember to also change --force below for last version */
 
    case GLPI_VERSION :
       break;
@@ -333,8 +348,8 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
 } else if (in_array('--force', $_SERVER['argv'])) {
 
-   include("../install/update_084_085.php");
-   update084to085();
+   include("../install/update_0901_091.php");
+   update0901to091();
 
    $migration->displayWarning("\nForced migration Done.");
 

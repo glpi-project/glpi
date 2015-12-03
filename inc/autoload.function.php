@@ -348,7 +348,7 @@ spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
  *
  * @since version 0.84
  *
- * @package SimplePie
+ * From package SimplePie
 **/
 class SimplePie_Autoloader {
 

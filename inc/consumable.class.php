@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -466,7 +466,7 @@ class Consumable extends CommonDBChild {
       } else {
          $start = 0;
       }
-     
+
       $canedit = $consitem->can($tID, UPDATE);
       $rand = mt_rand();
       $where = "";
@@ -485,7 +485,7 @@ class Consumable extends CommonDBChild {
       $query = "SELECT `glpi_consumables`.*
                 FROM `glpi_consumables`
                 WHERE `consumableitems_id` = '$tID'
-                      $where 
+                      $where
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
       $result = $DB->query($query);
 
@@ -585,7 +585,7 @@ class Consumable extends CommonDBChild {
          Html::showMassiveActions($massiveactionparams);
          Html::closeForm();
       }
-    
+
       echo "</div>";
    }
 
@@ -718,13 +718,13 @@ class Consumable extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate && Consumable::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'ConsumableItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              self::countForConsumableItem($item));
+                  $nb =  self::countForConsumableItem($item);
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';
@@ -756,6 +756,6 @@ class Consumable extends CommonDBChild {
    function getRights($interface='central') {
       $ci = new ConsumableItem();
       return $ci->getRights($interface);
-   }   
+   }
 }
 ?>

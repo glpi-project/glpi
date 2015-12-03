@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -930,7 +930,7 @@ class Profile_User extends CommonDBRelation {
                      $nb = countElementsInTable($this->getTable(),
                                                 "entities_id = '".$item->getID()."'");
                   }
-                  return self::createTabEntry(_n('User', 'Users', Session::getPluralNumber()), $nb);
+                  return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                }
                break;
 
@@ -946,7 +946,7 @@ class Profile_User extends CommonDBRelation {
                                                                             $_SESSION['glpiactiveentities'],
                                                                             true));
                   }
-                  return self::createTabEntry(_n('User', 'Users', Session::getPluralNumber()), $nb);
+                  return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                }
                break;
 
@@ -955,8 +955,8 @@ class Profile_User extends CommonDBRelation {
                   $nb = countElementsInTable($this->getTable(),
                                              "users_id = '".$item->getID()."'");
                }
-               return self::createTabEntry(_n('Authorization','Authorizations', Session::getPluralNumber()), $nb);
-
+               return self::createTabEntry(_n('Authorization','Authorizations',
+                                           Session::getPluralNumber()), $nb);
          }
       }
       return '';

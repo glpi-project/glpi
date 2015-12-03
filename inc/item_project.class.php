@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -264,20 +264,18 @@ class Item_Project extends CommonDBRelation{
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Project' :
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_items_projects',
                                              "`projects_id` = '".$item->getID()."'");
                }
-
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
             default :
                // Not used now
                if (Session::haveRight("project", Project::READALL)) {
-                  $nb = 0;
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Direct one
                      $nb = countElementsInTable('glpi_items_projects',

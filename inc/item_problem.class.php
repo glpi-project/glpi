@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -267,46 +267,38 @@ class Item_Problem extends CommonDBRelation{
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Problem' :
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_items_problems',
                                              "`problems_id` = '".$item->getID()."'");
                }
-
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
             case 'User' :
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countDistinctElementsInTable('glpi_problems_users', 'problems_id',
                                              "`users_id` = '".$item->getID()."'");
                }
-
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
+
             case 'Group' :
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countDistinctElementsInTable('glpi_groups_problems', 'problems_id',
                                              "`groups_id` = '".$item->getID()."'");
                }
-
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
-               
+
             case 'Supplier' :
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countDistinctElementsInTable('glpi_problems_suppliers','problems_id',
                                              "`suppliers_id` = '".$item->getID()."'");
                }
-
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
-               
-               
+
             default :
                if (Session::haveRight("problem", Problem::READALL)) {
-                  $nb = 0;
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Direct one
                      $nb = countElementsInTable('glpi_items_problems',

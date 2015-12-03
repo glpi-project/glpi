@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -351,8 +351,8 @@ class QueuedMail extends CommonDBTM {
          }
 
          // Add custom header for mail grouping in reader
-         $mmail->AddCustomHeader("In-Reply-To: GLPI-".$this->fields["itemtype"]."-".
-                                 $this->fields["items_id"]);
+         $mmail->AddCustomHeader("In-Reply-To: <GLPI-".$this->fields["itemtype"]."-".
+                                 $this->fields["items_id"].">");
 
       $mmail->SetFrom($this->fields['sender'], $this->fields['sendername']);
 
@@ -366,9 +366,9 @@ class QueuedMail extends CommonDBTM {
             $mmail->Body = $this->fields['body_text'];
          } else {
             $mmail->isHTML(true);
-            $mmail->Body = '';
+            $mmail->Body               = '';
             $this->fields['body_html'] = Html::entity_decode_deep($this->fields['body_html']);
-            $documents = importArrayFromDB($this->fields['documents']);
+            $documents                 = importArrayFromDB($this->fields['documents']);
             if (is_array($documents) && count($documents)) {
                $doc = new Document();
                foreach ($documents as $docID) {

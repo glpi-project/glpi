@@ -707,9 +707,12 @@ class User extends CommonDBTM {
          } else {
             //ldap jpegphoto synchronisation.
             if (isset($this->fields["authtype"])
-                && $this->fields["authtype"] == Auth::LDAP
+                && ($this->fields["authtype"] == Auth::LDAP 
+                     || Auth::isAlternateAuth($this->fields['authtype']))
                 && $picture = $this->syncLdapPhoto()) {
-               $input['picture'] = $picture;
+               if (!empty($picture)) {
+                  $input['picture'] = $picture;
+               }
             }
          }
       }
@@ -1072,7 +1075,8 @@ class User extends CommonDBTM {
    function syncLdapPhoto() {
 
       if (isset($this->fields["authtype"])
-          && (($this->fields["authtype"] == Auth::LDAP))) {
+          && (($this->fields["authtype"] == Auth::LDAP) 
+               || Auth::isAlternateAuth($this->fields['authtype']))) {
 
          if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
             $config_ldap = new AuthLDAP();
@@ -1104,18 +1108,26 @@ class User extends CommonDBTM {
                $filename  = uniqid($this->fields['id'].'_');
                $sub       = substr($filename, -2); /* 2 hex digit */
                $file      = GLPI_PICTURE_DIR . "/$sub/${filename}.jpg";
-               @mkdir(GLPI_PICTURE_DIR . "/$sub");
+               $oldfile   = GLPI_PICTURE_DIR . "/".$this->fields["picture"];
 
-               //save picture
-               $outjpeg = fopen($file, 'wb');
-               fwrite($outjpeg, $img);
-               fclose ($outjpeg);
+               // update picture if not exist or changed
+               if (!file_exists($oldfile) || (sha1_file($oldfile) !== sha1($img))) {
+                  if (!is_dir(GLPI_PICTURE_DIR . "/$sub")) {
+                     mkdir(GLPI_PICTURE_DIR . "/$sub");
+                  }
 
-               //save thumbnail
-               $thumb = GLPI_PICTURE_DIR . "/$sub/${filename}_min.jpg";
-               Toolbox::resizePicture($file, $thumb);
+                  //save picture
+                  $outjpeg = fopen($file, 'wb');
+                  fwrite($outjpeg, $img);
+                  fclose ($outjpeg);
 
-               return "$sub/${filename}.jpg";
+                  //save thumbnail
+                  $thumb = GLPI_PICTURE_DIR . "/$sub/${filename}_min.jpg";
+                  Toolbox::resizePicture($file, $thumb);
+
+                  return "$sub/${filename}.jpg";
+               }
+               return $this->fields["picture"];
             }
          }
       }
@@ -2143,7 +2155,7 @@ class User extends CommonDBTM {
          $CFG_GLPI["use_ajax_autocompletion"] = false;
 
          echo "<div class='center'>";
-         echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='".$target."'>";
+         echo "<form method='post' name='user_manager' enctype='multipart/form-data' action='".$target."' autocomplete='off'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Login'), $this->fields["name"]);
          echo "<input type='hidden' name='name' value='" . $this->fields["name"] . "'>";
@@ -3173,6 +3185,7 @@ class User extends CommonDBTM {
       $p['toupdate']       = '';
       $p['rand']           = mt_rand();
       $p['display']        = true;
+      $p['_user_index']   = 0;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -3182,7 +3195,7 @@ class User extends CommonDBTM {
 
       // check default value (in case of multiple observers)
       if (is_array($p['value'])) {
-         $p['value'] = $p['value'][0];
+         $p['value'] = $p['value'][$p['_user_index']];
       }
 
       // Check default value for dropdown : need to be a numeric

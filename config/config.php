@@ -55,17 +55,17 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    if (!isCommandLine()) {
       Html::nullHeader("DB Error",$CFG_GLPI["root_doc"]);
       echo "<div class='center'>";
-      echo "<p>Error: GLPI seems to not be installed properly.</p>";
-      echo "<p> config_db.php file is missing.</p>";
+      echo "<p>Error: GLPI seems to not be configured properly.</p>";
+      echo "<p>config_db.php file is missing.</p>";
       echo "<p>Please restart the install process.</p>";
       echo "<p><a class='red' href='".$CFG_GLPI['root_doc']."'>Click here to proceed</a></p>";
       echo "</div>";
       Html::nullFooter();
 
    } else {
-      echo "Error: GLPI seems to not be installed properly.\n";
+      echo "Error: GLPI seems to not be configured properly.\n";
       echo "config_db.php file is missing.\n";
-      echo "Please restart the install process.\n";
+      echo "Please connect to GLPI web interface to complete the install process.\n";
    }
    die();
 

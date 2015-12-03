@@ -167,8 +167,7 @@ class Profile extends CommonDBTM {
       global $DB;
 
       if (count($this->profileRight) > 0) {
-         $profile_right = new ProfileRight();
-         $profile_right->updateProfileRights($this->getID(), $this->profileRight);
+         ProfileRight::updateProfileRights($this->getID(), $this->profileRight);
          unset($this->profileRight);
       }
 
@@ -184,9 +183,8 @@ class Profile extends CommonDBTM {
    function post_addItem() {
       global $DB;
 
-      $profile_right = new ProfileRight();
       $rights = ProfileRight::getAllPossibleRights();
-      $profile_right->updateProfileRights($this->fields['id'], $rights);
+      ProfileRight::updateProfileRights($this->fields['id'], $rights);
       unset($this->profileRight);
 
       if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
@@ -413,12 +411,15 @@ class Profile extends CommonDBTM {
    **/
    static function getUnderActiveProfileRestrictRequest($separator="AND") {
 
-      if (in_array('reservation', self::$helpdesk_rights)
-          & !ReservationItem::RESERVEANITEM) {
+
+      // I don't understand usefull of this code (yllen)
+/*      if (in_array('reservation', self::$helpdesk_rights)
+          && !Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
          return false;
       }
+
       if (in_array('ticket', self::$helpdesk_rights)
-          & !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
+          && !Session::haveRightsOr("ticket", array(CREATE, Ticket::READGROUP))) {
          return false;
       }
       if (in_array('followup', self::$helpdesk_rights)
@@ -439,7 +440,7 @@ class Profile extends CommonDBTM {
                                             TicketValidation::VALIDATEINCIDENT))) {
          return false;
       }
-
+*/
 
       $query = $separator ." ";
 
@@ -478,6 +479,7 @@ class Profile extends CommonDBTM {
                     FROM `glpi_profilerights`
                     WHERE `glpi_profilerights`.`profiles_id` = `glpi_profiles`.`id`
                      AND (".implode(' OR ', $right_subqueries).")))";
+
       return $query;
    }
 

@@ -174,6 +174,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if (($item->getType() == $this->getItilObjectItemType())
           && $this->canView()) {
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`".$item->getForeignKeyField()."` = '".$item->getID()."'";
 
@@ -182,11 +183,9 @@ abstract class CommonITILTask  extends CommonDBTM {
                $restrict .= " AND (`is_private` = '0'
                                    OR `users_id` = '" . Session::getLoginUserID() . "') ";
             }
-
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                        countElementsInTable($this->getTable(), $restrict));
+            $nb = countElementsInTable($this->getTable(), $restrict);
          }
-         return self::getTypeName(Session::getPluralNumber());
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }
@@ -444,11 +443,13 @@ abstract class CommonITILTask  extends CommonDBTM {
          $this->input["_job"]->updateActionTime($this->input[$this->input["_job"]->getForeignKeyField()]);
       }
 
-      //change ticket status
-      if (isset($_REQUEST['_status']) && !empty($_REQUEST['_status'])) {
-         $ticket = new Ticket();
-         $ticket->update(array('id'     => intval($_REQUEST['tickets_id']),
-                               'status' => intval($_REQUEST['_status'])));
+     //change status only if input change
+     if (isset($this->input['_status'])
+         && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
+         $update['status']        = $this->input['_status'];
+         $update['id']            = $this->input['_job']->fields['id'];
+         $update['_disablenotif'] = true;
+         $this->input['_job']->update($update);
       }
 
       if (!empty($this->fields['begin'])
@@ -538,7 +539,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[2]['table']        = 'glpi_taskcategories';
       $tab[2]['field']        = 'name';
-      $tab[2]['name']         = _n('Tasks category', 'Tasks categories', 1);
+      $tab[2]['name']         = _n('Task category', 'Task categories', 1);
       $tab[2]['forcegroupby'] = true;
       $tab[2]['datatype']     = 'dropdown';
 
@@ -1211,7 +1212,9 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "</td></tr>\n";
 
-      Document_Item::showSimpleAddForItem($item);
+      if ($ID <= 0) {
+         Document_Item::showSimpleAddForItem($item);
+      }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('By');

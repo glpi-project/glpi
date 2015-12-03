@@ -100,7 +100,7 @@ class Html {
    // Problem with this regex : may crash
    //   $value = preg_replace("/ +/u", " ", $value);
       // Revert back htmlawed &amp; -> &
-      $value = str_replace("&amp;", "&", $value);
+      //$value = str_replace("&amp;", "&", $value);
       $value = str_replace(array("\r\n", "\r"), "\n", $value);
       $value = preg_replace("/(\n[ ]*){2,}/", "\n\n", $value, -1);
 
@@ -1065,7 +1065,9 @@ class Html {
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
 
       // CSS theme link
-      echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$_SESSION["glpipalette"].".css");
+      if (isset($_SESSION["glpipalette"])) {
+         echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$_SESSION["glpipalette"].".css");
+      }
 
       // surcharge CSS hack for IE
       echo "<!--[if lte IE 6]>" ;
@@ -1094,7 +1096,8 @@ class Html {
       }
 
       // AJAX library
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+      if (isset($_SESSION['glpi_use_mode']) 
+            && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.js");
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.js");
       } else {
@@ -1240,7 +1243,7 @@ class Html {
       self::includeHeader($title);
 
       $body_class = "layout_".$_SESSION['glpilayout'];
-      if ((strpos($_SERVER['REQUEST_URI'], "form.php") !== false)
+      if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
           && isset($_GET['id']) && ($_GET['id'] > 0)) {
          if (!CommonGLPI::isLayoutExcludedPage()) {
             $body_class.= " form";
@@ -1446,7 +1449,8 @@ class Html {
            "</a></li>";
 
 
-      echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
+      echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
+                 "/front/preference.php?forcetab=User\$1' title=\"".
                  addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
                  Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
 
@@ -1531,65 +1535,7 @@ class Html {
       echo "</ul>"; // #menu
 
       // Display MENU ALL
-      echo "<div id='show_all_menu' class='invisible'>";
-      $items_per_columns = 15;
-      $i                 = -1;
-
-      foreach ($menu as $part => $data) {
-         if (isset($data['content']) && count($data['content'])) {
-            echo "<table class='all_menu_block'>";
-            $link = "#";
-
-            if (isset($data['default']) && !empty($data['default'])) {
-               $link = $CFG_GLPI["root_doc"].$data['default'];
-            }
-
-            echo "<tr><td class='tab_bg_1 b'>";
-            echo "<a href='$link' title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>";
-            echo "</td></tr>";
-            $i++;
-
-            // list menu item
-            foreach ($data['content'] as $key => $val) {
-
-               /*if ($i > $items_per_columns) {
-                  $i = 0;
-                  echo "</table></td><td class='top'><table>";
-               }*/
-
-               if (isset($val['page'])
-                   && isset($val['title'])) {
-                  echo "<tr><td><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
-
-                  if (isset($data['shortcut']) && !empty($data['shortcut'])) {
-                     echo " accesskey='".$val['shortcut']."'";
-                  }
-                  echo ">".$val['title']."</a></td></tr>\n";
-                  $i++;
-               }
-            }
-            echo "</table>";
-         }
-      }
-
-      echo "</div>";
-
-      Html::scriptStart();
-      echo self::jsGetElementbyID('show_all_menu').".dialog({
-         height: 'auto',
-         width: 'auto',
-         modal: true,
-         autoOpen: false
-         });";
-      echo Html::scriptEnd();
-
-
-      /// MENU ALL
-      echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open');\"
-            id='menu_all_button' class='button-icon'>";
-      echo "</a>";
-
-      echo "</div>";
+      self::displayMenuAll($menu);
 
       // End navigation bar
       // End headline
@@ -2041,88 +1987,103 @@ class Html {
 
       //-- Le menu principal --
       echo "<div id='c_menu'>";
-      echo "<ul id='menu'>";
 
       // Build the navigation-elements
+      $menu = array();
 
-      // Home
+      //  Create ticket
+      if (Session::haveRight("ticket", CREATE)) {
+         $menu['create_ticket']['id']      = "menu1";
+         $menu['create_ticket']['default'] = '/front/helpdesk.public.php?create_ticket=1';
+         $menu['create_ticket']['title']   = __s('Create a ticket');
+         $menu['create_ticket']['content'] = array(true);
+      }
+      
+      //  Tickets
+      if (Session::haveRight("ticket", CREATE) 
+          || Session::haveRight("ticket", Ticket::READMY)
+          || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
+         $menu['tickets']['id']      = "menu2";
+         $menu['tickets']['default'] = '/front/ticket.php';
+         $menu['tickets']['title']   = _n('Ticket','Tickets', Session::getPluralNumber());
+         $menu['tickets']['content'] = array(true);
+      }
+      
+      // Reservation
+      if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+         $menu['reservation']['id']      = "menu3";
+         $menu['reservation']['default'] = '/front/reservationitem.php';
+         $menu['reservation']['title']   = _n('Reservation', 'Reservations', Session::getPluralNumber());
+         $menu['reservation']['content'] = array(true);
+      }
+      
+      // FAQ
+      if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+         $menu['faq']['id']      = "menu4";
+         $menu['faq']['default'] = '/front/helpdesk.faq.php';
+         $menu['faq']['title']   = __s('FAQ');
+         $menu['faq']['content'] = array(true);
+      }
+
+      echo "<ul id='menu'>";
+
+      // Display Home menu
       echo "<li id='menu1'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
              __s('Home')."\" class='itemP'>".__('Home')."</a>";
       echo "</li>";
 
-      //  Create ticket
-      if (Session::haveRight("ticket", CREATE)) {
-         echo "<li id='menu2'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1' ".
-                "title=\"".__s('Create a ticket')."\" class='itemP'>".__('Create a ticket')."</a>";
+      // display menu items
+      foreach ($menu as $menu_item) {
+         echo "<li id='".$menu_item['id']."'>";
+         echo "<a href='".$CFG_GLPI["root_doc"].$menu_item['default']."' ".
+                "title=\"".$menu_item['title']."\" class='itemP'>".$menu_item['title']."</a>";
          echo "</li>";
       }
 
-      //  Suivi ticket
-      if (Session::haveRight("ticket", Ticket::READMY)
-          || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
-         echo "<li id='menu3'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php' title=\"".
-                __s('Ticket followup')."\" class='itemP'>"._n('Ticket','Tickets', Session::getPluralNumber())."</a>";
-         echo "</li>";
-      }
-
-      // Reservation
-      if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
-         echo "<li id='menu4'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php' title=\"".
-                _sn('Reservation', 'Reservations', Session::getPluralNumber())."\" class='itemP'>".
-                _n('Reservation', 'Reservations', Session::getPluralNumber())."</a>";
-         echo "</li>";
-      }
-
-      // FAQ
-      if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-         echo "<li id='menu5' >";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php' title=\"".
-                __s('FAQ')."\" class='itemP'>".__('FAQ')."</a>";
-         echo "</li>";
-      }
-
-      // PLUGINS
-      $plugins = array();
+      // Plugins
+      $menu['plugins']['id']      = "menu5";
+      $menu['plugins']['default'] = "#";
+      $menu['plugins']['title']   = _sn('Plugin', 'Plugins', Session::getPluralNumber());
+      $menu['plugins']['content'] = array();
       if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"])
           && count($PLUGIN_HOOKS["helpdesk_menu_entry"])) {
 
          foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
             if ($active) {
-               $plugins[$plugin] = Plugin::getInfo($plugin);
+               $infos = Plugin::getInfo($plugin);
+               $link = "";
+               if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin])) {
+                  $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$plugin];
+               }
+               $infos['page'] = $link;
+               $infos['title'] = $infos['name'];
+               $menu['plugins']['content'][$plugin] = $infos;
             }
          }
       }
 
-      if (isset($plugins) && (count($plugins) > 0)) {
-         $list = array();
-
-         foreach ($plugins as $key => $val) {
-            $list[$key] = $val["name"];
-         }
-
-         asort($list);
+      // Display plugins
+      if (isset($menu['plugins']['content']) && count($menu['plugins']['content']) > 0) {
+         asort($menu['plugins']['content']);
          echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\">";
-         echo "<a href='#' title=\""._sn('Plugin', 'Plugins', Session::getPluralNumber())."\" class='itemP'>".
-                __('Plugins')."</a>";  // default none
+         echo "<a href='#' title=\"".
+                _sn('Plugin', 'Plugins', Session::getPluralNumber())."\" class='itemP'>".
+                __('Plugins')."</a>"; // default none
          echo "<ul class='ssmenu'>";
 
          // list menu item
-         foreach ($list as $key => $val) {
-            $link = "";
-
-            if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
-               $link = $PLUGIN_HOOKS["helpdesk_menu_entry"][$key];
-            }
-            echo "<li><a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$link."'>".
-                       $plugins[$key]["name"]."</a></li>\n";
+         foreach ($menu['plugins']['content'] as $key => $val) {
+            echo "<li><a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$val['page']."'>".
+                       $val["title"]."</a></li>";
          }
          echo "</ul></li>";
       }
       echo "</ul>";
+
+      // Display MENU ALL
+      self::displayMenuAll($menu);
+
       echo "</div>";
 
 
@@ -2136,7 +2097,6 @@ class Html {
            "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"". __s('Home')."\">".
              __('Home')."</a></li>";
 
-      echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
       if (TicketValidation::getValidateRights()) {
          $opt                              = array();
@@ -2158,27 +2118,15 @@ class Html {
                          "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
                            __s('Ticket waiting for your approval')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png' class='pointer'></a>";
-         echo "<li>$pic_validate</li>\n";
+         echo "<li class='icons_block'>$pic_validate</li>\n";
       }
 
       if (Session::haveRight('ticket', CREATE)
           && strpos($_SERVER['PHP_SELF'],"ticket")) {
-         echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
+         echo "<li class='icons_block'><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".__s('Add').
                 "\" alt=\"".__s('Add')."\" class='pointer'></a></li>";
       }
-
-
-      /// Bookmark load
-      echo "<li>";
-      Ajax::createIframeModalWindow('loadbookmark',
-                                    $CFG_GLPI["root_doc"]."/front/bookmark.php?action=load",
-                                    array('title'         => __('Load a bookmark'),
-                                          'reloadonclose' => true));
-      echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\"\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
-             "\" alt=\"".__s('Load a bookmark')."\" class='pointer'>";
-      echo "</a></li>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -2346,6 +2294,83 @@ class Html {
    }
 
 
+
+   /**
+    * Display responsive menu
+    * @since 0.90.1
+    * @param $menu array of menu items
+    *    - key   : plugin system name
+    *    - value : array of options 
+    *       * id      : html id attribute
+    *       * default : defaul url
+    *       * title   : displayed label
+    *       * content : menu sub items, array with theses options : 
+    *          - page     : url
+    *          - title    : displayed label
+    *          - shortcut : keyboard shortcut letter
+    */
+   static function displayMenuAll($menu = array()) {
+      global $CFG_GLPI;
+
+      // Display MENU ALL
+      echo "<div id='show_all_menu' class='invisible'>";
+      $items_per_columns = 15;
+      $i                 = -1;
+
+      foreach ($menu as $part => $data) {
+         if (isset($data['content']) && count($data['content'])) {
+            echo "<table class='all_menu_block'>";
+            $link = "#";
+
+            if (isset($data['default']) && !empty($data['default'])) {
+               $link = $CFG_GLPI["root_doc"].$data['default'];
+            }
+
+            echo "<tr><td class='tab_bg_1 b'>";
+            echo "<a href='$link' title=\"".$data['title']."\" class='itemP'>".$data['title']."</a>";
+            echo "</td></tr>";
+            $i++;
+
+            // list menu item
+            foreach ($data['content'] as $key => $val) {
+
+               if (isset($val['page'])
+                   && isset($val['title'])) {
+                  echo "<tr><td><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
+
+                  if (isset($data['shortcut']) && !empty($data['shortcut'])) {
+                     echo " accesskey='".$val['shortcut']."'";
+                  }
+                  echo ">".$val['title']."</a></td></tr>\n";
+                  $i++;
+               }
+            }
+            echo "</table>";
+         }
+      }
+
+      echo "</div>";
+
+      // init menu in jquery dialog
+      Html::scriptStart();
+      echo self::jsGetElementbyID('show_all_menu').".dialog({
+         height: 'auto',
+         width: 'auto',
+         modal: true,
+         autoOpen: false
+         });";
+      echo Html::scriptEnd();
+
+
+      /// Button to toggle responsive menu
+      echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open');\"
+            id='menu_all_button' class='button-icon'>";
+      echo "</a>";
+
+      echo "</div>";
+   }
+
+
    /**
     * Flush the current displayed items (do not works really fine)
    **/
@@ -2471,15 +2496,15 @@ class Html {
       }
 
       $out  = "<div class='form-group-checkbox'>
-               <input title='".__s('Check all as')."' type='checkbox' class='new_checkbox' ".
-                "name='_checkall_$rand' id='checkall_$rand' ".
-                 "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))
-                                                {return true;}\">
-               <label class='label-checkbox' for='checkall_$rand' title='".__s('Check all as')."'>
-               <span class='check'></span>
-               <span class='box'></span>
-               </label>
-               <div class='form-group'>";
+                  <input title='".__s('Check all as')."' type='checkbox' class='new_checkbox' ".
+                   "name='_checkall_$rand' id='checkall_$rand' ".
+                    "onclick= \"if ( checkAsCheckboxes('checkall_$rand', '$container_id'))
+                                                   {return true;}\">
+                  <label class='label-checkbox' for='checkall_$rand' title='".__s('Check all as')."'>
+                     <span class='check'></span>
+                     <span class='box'></span>
+                  </label>
+               </div>";
 
       return $out;
    }
@@ -3042,7 +3067,7 @@ class Html {
       }
       $field_id = Html::cleanId("color_".$name.$p['rand']);
       $output   = "<input type='text' id='$field_id' name='$name' value='".$p['value']."'>";
-      $js       = "$('#$field_id').spectrum();";
+      $js       = "$('#$field_id').spectrum({preferredFormat: 'hex'});";
       $output  .= Html::scriptBlock($js);
 
       if ($p['display']) {
@@ -3675,6 +3700,7 @@ class Html {
       }
       $js = "";
       $js .= Html::jsGetElementbyID($param['applyto']).".qtip({
+         position: { viewport: $(window) },
          content: {text: ".Html::jsGetElementbyID($param['contentid']);
          if (!$param['autoclose']) {
             $js .=", title: {text: ' ',button: true}";
@@ -3803,9 +3829,9 @@ class Html {
                setTimeout(that.callself,20);
             }
          }
-      }";
-      $js .= "
-         tinyMCE.init({
+      }
+
+      tinyMCE.init({
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
          mode : 'exact',
          browser_spellcheck : true,
@@ -3828,39 +3854,40 @@ class Html {
             }
          },
          theme : 'advanced',
-         entity_encoding : 'raw', ";
+         entity_encoding : 'raw', 
          // directionality + search replace plugin
-      $js .= "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
-      $js .= "theme_advanced_toolbar_location : 'top',
-            theme_advanced_toolbar_align : 'left',
-            theme_advanced_statusbar_location : 'none',
-            theme_advanced_resizing : 'true',
-            theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
-            theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
-            theme_advanced_buttons3 : '',";
-      $js .= "setup : function(ed) {
+         theme_advanced_buttons1_add : 'ltr,rtl,search,replace',
+         theme_advanced_toolbar_location : 'top',
+         theme_advanced_toolbar_align : 'left',
+         theme_advanced_statusbar_location : 'none',
+         theme_advanced_resizing : 'true',
+         theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
+         theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
+         theme_advanced_buttons3 : '',
+         setup : function(ed) {
          ed.onInit.add(function(ed) {
             // wake up the autoresize plugin
             setTimeout(
                function(){
                   ed.execCommand('mceAutoResize');
-               }, 1);
-            if (tinymce.isIE) {
-               tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
-                  return tinymce.dom.Event.cancel(e);
-               });
-            } else {
-               tinymce.dom.Event.add(ed.getBody().parentNode, 'drop', function(e) {
-                  tinymce.dom.Event.cancel(e);
-                  tinymce.dom.Event.stop(e);
-               });
-               tinymce.dom.Event.add(ed.getBody().parentNode, 'paste', function(e) {
-                  waitforpastedata(ed.getBody());
-               });
-            }
-         });
-      }";
-      $js .= "});";
+               }, 1);4204
+               if (tinymce.isIE) {
+                  tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
+                     return tinymce.dom.Event.cancel(e);
+                  });
+               } else {
+                  tinymce.dom.Event.add(ed.getBody().parentNode, 'drop', function(e) {
+                     tinymce.dom.Event.cancel(e);
+                     tinymce.dom.Event.stop(e);
+                  });
+                  tinymce.dom.Event.add(ed.getBody().parentNode, 'paste', function(e) {
+                     waitforpastedata(ed.getBody());
+                  });
+               }
+            });
+         }
+      });
+   ";
 
 //         invalid_elements : 'script',
       if ($display) {
@@ -4137,7 +4164,7 @@ class Html {
           && isset($_SESSION["glpiactiveprofile"])
           && ($_SESSION["glpiactiveprofile"]["interface"] == "central")) {
 
-         echo "<td class='tab_bg_2' width='30%'>";
+         echo "<td class='tab_bg_2 responsive_hidden' width='30%'>";
          echo "<form method='GET' action='".$CFG_GLPI["root_doc"]."/front/report.dynamic.php'
                 target='_blank'>";
          echo Html::hidden('item_type', array('value' => $item_type_output));
@@ -4196,12 +4223,12 @@ class Html {
 
       if ($action) {
          echo "<form method='POST' action=\"$action\">";
-         echo "<span>".__('Display (number of items)')."</span>&nbsp;";
+         echo "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
          Dropdown::showListLimit("submit()");
 
       } else {
          echo "<form method='POST' action =''>\n";
-         echo "<span>".__('Display (number of items)')."</span>&nbsp;";
+         echo "<span class='responsive_hidden'>".__('Display (number of items)')."</span>&nbsp;";
          Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value)");
       }
       Html::closeForm();
@@ -5474,6 +5501,9 @@ class Html {
             $cb_options['checked']      = ($nb_cb_per_row['checked']
                                              > ($nb_cb_per_row['total'] / 2));
             echo "\t\t<td class='center'>".Html::getCheckbox($cb_options)."</td>\n";
+         }
+         if ($nb_cb_per_row['total'] == 1) {
+            echo "\t\t<td class='center'></td>\n";
          }
          echo "\t</tr>\n";
       }

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -46,35 +46,29 @@ if (!defined('GLPI_ROOT')) {
 class Toolbox {
 
    /**
-    * Wrapper for get_magic_quotes_runtime
+    * Wrapper for get_magic_quotes_runtime - deprecated
     *
     * @since version 0.83
+    * @deprecated in 0.90.1
     *
     * @return boolean
    **/
    static function get_magic_quotes_runtime() {
 
-      // Deprecated function(8192): Function get_magic_quotes_runtime() is deprecated
-      if (PHP_VERSION_ID < 50400) {
-         return get_magic_quotes_runtime();
-      }
       return 0;
    }
 
 
    /**
-    * Wrapper for get_magic_quotes_gpc
+    * Wrapper for get_magic_quotes_gpc - deprecated
     *
     * @since version 0.83
+    * @deprecated in 0.90.1
     *
     * @return boolean
    **/
    static function get_magic_quotes_gpc() {
 
-      // Deprecated function(8192): Function get_magic_quotes_gpc() is deprecated
-      if (PHP_VERSION_ID < 50400) {
-         return get_magic_quotes_gpc();
-      }
       return 0;
    }
 
@@ -327,8 +321,8 @@ class Toolbox {
    **/
    static function clean_cross_side_scripting_deep($value) {
 
-      $in  = array('<', '>');
-      $out = array('&lt;', '&gt;');
+      $in  = array('&lt;', '&gt;', '<', '>');
+      $out = array('&amp;lt;', '&amp;gt;', '&lt;', '&gt;');
 
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'), $value)
@@ -351,8 +345,8 @@ class Toolbox {
    **/
    static function unclean_cross_side_scripting_deep($value) {
 
-      $in  = array('<', '>');
-      $out = array('&lt;', '&gt;');
+      $in  = array('&lt;', '&gt;', '<', '>');
+      $out = array('&amp;lt;', '&amp;gt;', '&lt;', '&gt;');
 
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'), $value)
@@ -599,7 +593,7 @@ class Toolbox {
 
       // Display
       if (!isCommandLine()) {
-         echo '<div style="position:fload-left; background-color:red; z-index:10000">'.
+         echo '<div style="position:float-left; background-color:red; z-index:10000">'.
               '<span class="b">PHP '.$type.': </span>';
          echo $errmsg.' in '.$filename.' at line '.$linenum.'</div>';
       } else {
@@ -1040,7 +1034,7 @@ class Toolbox {
                      __s('The functionality is found - Perfect!')."\"></td>";
       }
       echo "</tr>";
-      
+
       // Test for GD extension.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Zlib extension test')."</td>";
 
@@ -1054,7 +1048,7 @@ class Toolbox {
                      __s('The functionality is found - Perfect!'). "\" title=\"".
                      __s('The functionality is found - Perfect!')."\"></td>";
       }
-      echo "</tr>";      
+      echo "</tr>";
 
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
@@ -1107,10 +1101,11 @@ class Toolbox {
     * Check SELinux configuration
     *
     * @since version 0.84
+    * @param $fordebug    Boolean true is displayed in system information
     *
     *  @return integer 0: OK, 1:Warning, 2:Error
    **/
-   static function checkSELinux() {
+   static function checkSELinux($fordebug=false) {
       global $CFG_GLPI;
 
       if ((DIRECTORY_SEPARATOR != '/')
@@ -1122,9 +1117,13 @@ class Toolbox {
       $mode = exec("/usr/sbin/getenforce");
       //TRANS: %s is mode name (Permissive, Enforcing of Disabled)
       $msg  = sprintf(__('SELinux mode is %s'), $mode);
-      echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
-      // All modes should be ok
-      echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$mode' title='$mode'></td></tr>";
+      if ($fordebug) {
+         echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"" . __s('OK') . "\">$msg\n";
+      } else {
+         echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
+         // All modes should be ok
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$mode' title='$msg'></td></tr>";
+      }
       if (!strcasecmp($mode, 'Disabled')) {
          // Other test are not useful
          return 0;
@@ -1139,20 +1138,32 @@ class Toolbox {
 
       $bools = array('httpd_can_network_connect', 'httpd_can_network_connect_db',
                      'httpd_can_sendmail');
+      $msg2 = __s('Some features may require this to be on');
       foreach ($bools as $bool) {
          $state = exec('/usr/sbin/getsebool '.$bool);
          //TRANS: %s is an option name
          $msg = sprintf(__('SELinux boolean configuration for %s'), $state);
-         echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
-         if (substr($state, -2) == 'on') {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$state' title='$state'>".
-                 "</td>";
+         if ($fordebug) {
+            if (substr($state, -2) == 'on') {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"". __s('OK') .
+               "\" title=\"" . __s('OK') . "\">$msg\n";
+            } else {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png' alt=\"". $msg2 .
+               "\" title=\"$msg2\">$msg ($msg2)\n";
+            }
          } else {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png' alt='$state' title='$state'>".
-                 "</td>";
-            $err = 1;
+            if (substr($state, -2) == 'on') {
+               echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$state' title='$state'>".
+                    "</td>";
+            } else {
+               echo "<tr class='tab_bg_1'><td class='left b'>$msg ($msg2)</td>";
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png' alt='$msg2' title='$msg2'>".
+                    "</td>";
+               $err = 1;
+            }
+            echo "</tr>";
          }
-         echo "</tr>";
       }
 
       return $err;
@@ -1350,8 +1361,18 @@ class Toolbox {
          echo "<br>";
       }
 
-      $error          = "";
-      $latest_version = self::getURLContent("http://glpi-project.org/latest_version", $error);
+      //parse github releases (get last version number)
+      $error = "";
+      $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error);
+      $all_gh_releases = json_decode($json_gh_releases, true);
+      $released_tags = array();
+      foreach ($all_gh_releases as $release) {
+         if ($release['prerelease'] == false) {
+            $released_tags[] =  $release['tag_name'];
+         }
+      }
+      usort($released_tags, 'version_compare');
+      $latest_version = array_pop($released_tags);
 
       if (strlen(trim($latest_version)) == 0) {
          if (!$auto) {
@@ -1365,45 +1386,7 @@ class Toolbox {
          }
 
       } else {
-         $splitted = explode(".", trim($CFG_GLPI["version"]));
-
-         if ($splitted[0] < 10) {
-            $splitted[0] .= "0";
-         }
-
-         if ($splitted[1] < 10) {
-            $splitted[1] .= "0";
-         }
-
-         $cur_version = ($splitted[0]*10000) + ($splitted[1]*100);
-
-         if (isset($splitted[2])) {
-            if ($splitted[2] < 10) {
-               $splitted[2] .= "0";
-            }
-            $cur_version += $splitted[2];
-         }
-
-         $splitted = explode(".", trim($latest_version));
-
-         if ($splitted[0] < 10) {
-            $splitted[0] .= "0";
-         }
-
-         if ($splitted[1] < 10) {
-            $splitted[1] .= "0";
-         }
-
-         $lat_version = ($splitted[0]*10000) + ($splitted[1]*100);
-
-         if (isset($splitted[2])) {
-            if ($splitted[2] < 10) {
-               $splitted[2] .= "0";
-            }
-            $lat_version += $splitted[2];
-         }
-
-         if ($cur_version < $lat_version) {
+         if (version_compare($CFG_GLPI["version"], $latest_version, '<')) {
             $config_object                = new Config();
             $input["id"]                  = 1;
             $input["founded_new_version"] = $latest_version;
@@ -1850,9 +1833,6 @@ class Toolbox {
             $data = explode("_", $where);
             $forcetab = '';
             // forcetab for simple items
-            if (isset($data[1])) {
-               $forcetab = 'forcetab='.$data[1];
-            }
             if (isset($data[2])) {
                $forcetab = 'forcetab='.$data[2];
             }
@@ -2082,7 +2062,7 @@ class Toolbox {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/imap' => __('IMAP'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2092,7 +2072,7 @@ class Toolbox {
 
       Dropdown::showFromArray('server_type', $values,
                               array('value' => $svalue));
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/ssl' => __('SSL'));
 
@@ -2101,7 +2081,7 @@ class Toolbox {
       Dropdown::showFromArray('server_ssl', $values,
                               array('value' => $svalue));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/tls' => __('TLS'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2119,7 +2099,7 @@ class Toolbox {
                               array('value' => $svalue,
                                     'width' => '14%'));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/novalidate-cert' => __('NO-VALIDATE-CERT'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
@@ -2136,7 +2116,7 @@ class Toolbox {
       Dropdown::showFromArray('server_cert', $values,
                               array('value' => $svalue));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/norsh' => __('NORSH'));
 
@@ -2145,7 +2125,7 @@ class Toolbox {
       Dropdown::showFromArray('server_rsh', $values,
                               array('value' => $svalue));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/secure' => __('SECURE'));
 
@@ -2154,7 +2134,7 @@ class Toolbox {
       Dropdown::showFromArray('server_secure', $values,
                               array('value' => $svalue));
 
-      $values = array('' => '',
+      $values = array(Dropdown::EMPTY_VALUE,
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/debug' => __('DEBUG'));
 
@@ -2200,31 +2180,31 @@ class Toolbox {
       if (isset($input['server_port']) && !empty($input['server_port'])) {
          $out .= ":" . $input['server_port'];
       }
-      if (isset($input['server_type'])) {
+      if (isset($input['server_type']) && !empty($input['server_type'])) {
          $out .= $input['server_type'];
       }
-      if (isset($input['server_ssl'])) {
+      if (isset($input['server_ssl']) && !empty($input['server_ssl'])) {
          $out .= $input['server_ssl'];
       }
       if (isset($input['server_cert'])
           && (!empty($input['server_ssl']) || !empty($input['server_tls']))) {
          $out .= $input['server_cert'];
       }
-      if (isset($input['server_tls'])) {
+      if (isset($input['server_tls']) && !empty($input['server_tls'])) {
          $out .= $input['server_tls'];
       }
 
-      if (isset($input['server_rsh'])) {
+      if (isset($input['server_rsh']) && !empty($input['server_rsh'])) {
          $out .= $input['server_rsh'];
       }
-      if (isset($input['server_secure'])) {
+      if (isset($input['server_secure']) && !empty($input['server_secure'])) {
          $out .= $input['server_secure'];
       }
-      if (isset($input['server_debug'])) {
+      if (isset($input['server_debug']) && !empty($input['server_debug'])) {
          $out .= $input['server_debug'];
       }
       $out .= "}";
-      if (isset($input['server_mailbox'])) {
+      if (isset($input['server_mailbox']) && !empty($input['server_mailbox'])) {
          $out .= $input['server_mailbox'];
       }
 

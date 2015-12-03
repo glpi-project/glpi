@@ -14,7 +14,7 @@ https://wiki.jasig.org/display/CASC/phpCAS
 LICENSE
 -------
 
-Copyright 2007-2011, JA-SIG, Inc.
+Copyright 2007-2015, JA-SIG, Inc.
 This project includes software developed by Jasig.
 http://www.jasig.org/
 

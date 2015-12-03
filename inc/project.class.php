@@ -127,6 +127,7 @@ class Project extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case __CLASS__ :
                $ong    = array();
@@ -134,10 +135,8 @@ class Project extends CommonDBTM {
                   $nb = countElementsInTable($this->getTable(),
                                              "`".$this->getForeignKeyField()."` = '".
                                                 $item->getID()."'");
-                  $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
-               } else {
-                  $ong[1] = $this->getTypeName(Session::getPluralNumber());
                }
+               $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
                $ong[2] = __('GANTT');
                return $ong;
          }
@@ -1015,7 +1014,7 @@ class Project extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $ID      = $project->fields['id'];
-      $canedit = $project->canEdit($ID);
+      $canedit = $project->can($ID, UPDATE);
 
       echo "<div class='center'>";
 
@@ -1315,10 +1314,11 @@ class Project extends CommonDBTM {
          $months = array(__('January'), __('February'), __('March'), __('April'), __('May'),
                          __('June'), __('July'), __('August'), __('September'),
                          __('October'), __('November'), __('December'));
-         $dow    = array(substr(__('Sunday'),0,1), substr(__('Monday'),0,1),
-                         substr(__('Tuesday'),0,1), substr(__('Wednesday'),0,1),
-                         substr(__('Thursday'),0,1), substr(__('Friday'),0,1),
-                         substr(__('Saturday'),0,1)
+
+         $dow    = array(Toolbox::substr(__('Sunday'),0,1), Toolbox::substr(__('Monday'),0,1),
+                         Toolbox::substr(__('Tuesday'),0,1), Toolbox::substr(__('Wednesday'),0,1),
+                         Toolbox::substr(__('Thursday'),0,1), Toolbox::substr(__('Friday'),0,1),
+                         Toolbox::substr(__('Saturday'),0,1)
                      );
 
          echo "<div class='gantt'></div>";

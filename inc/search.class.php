@@ -210,9 +210,8 @@ class Search {
       // If no research limit research to display item and compute number of item using simple request
       $data['search']['no_search']   = true;
 
-      $data['toview'] = array();
+      $data['toview'] = self::addDefaultToView($itemtype);
       if (!$forcetoview) {
-         $data['toview'] = self::addDefaultToView($itemtype);
 
          // Add items to display depending of personal prefs
          $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
@@ -269,7 +268,6 @@ class Search {
 
       // Force item to display
       if ($forcetoview) {
-         $data['toview'] = $forcedisplay;
          foreach ($data['toview'] as $val) {
             if (!in_array($val, $data['tocompute'])) {
                 array_push($data['tocompute'], $val);
@@ -1198,11 +1196,6 @@ class Search {
                $search_config_bottom .= " class='pointer' onClick=\"";
                $search_config_bottom .= Html::jsGetElementbyID('search_config_bottom').
                                                       ".dialog('open');\">";
-               if ($item !== null && $item->maybeDeleted()) {
-                  $delete_ctrl        = self::isDeletedSwitch($data['search']['is_deleted']);
-                  $search_config_top .= $delete_ctrl;
-               }
-
                $search_config_top
                   .= Ajax::createIframeModalWindow('search_config_top',
                                                    $CFG_GLPI["root_doc"].
@@ -1225,6 +1218,11 @@ class Search {
                                                             => true,
                                                          'display'
                                                             => false));
+            }
+
+            if ($item !== null && $item->maybeDeleted()) {
+               $delete_ctrl        = self::isDeletedSwitch($data['search']['is_deleted']);
+               $search_config_top .= $delete_ctrl;
             }
 
             Html::printPager($data['search']['start'], $data['data']['totalcount'],
@@ -1409,7 +1407,7 @@ class Search {
                $tmpcheck = "";
 
                if (($data['itemtype'] == 'Entity')
-                     && !in_array($val["id"], $_SESSION["glpiactiveentities"])) {
+                     && !in_array($row["id"], $_SESSION["glpiactiveentities"])) {
                   $tmpcheck = "&nbsp;";
 
                } else if (($data['item'] instanceof CommonDBTM)
@@ -2266,7 +2264,7 @@ class Search {
       $tocompute      = "`$table$addtable`.`$field`";
       $tocomputeid    = "`$table$addtable`.`id`";
 
-      $tocomputetrans = "IFNULL(`$table".$addtable."_trans`.`value`,'".self::NULLVALUE."') ";
+      $tocomputetrans = "IFNULL(`$table".$addtable."_".$field."_trans`.`value`,'".self::NULLVALUE."') ";
 
       $ADDITONALFIELDS = '';
       if (isset($searchopt[$ID]["additionalfields"])
@@ -2274,9 +2272,9 @@ class Search {
          foreach ($searchopt[$ID]["additionalfields"] as $key) {
             if ($meta
                 || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-               $ADDITONALFIELDS .= " GROUP_CONCAT(DISTINCT CONCAT(IFNULL(`$table$addtable`.`$key`,
+               $ADDITONALFIELDS .= " IFNULL(GROUP_CONCAT(DISTINCT CONCAT(IFNULL(`$table$addtable`.`$key`,
                                                                          '".self::NULLVALUE."'),
-                                                   '".self::SHORTSEP."', $tocomputeid) SEPARATOR '".self::LONGSEP."')
+                                                   '".self::SHORTSEP."', $tocomputeid) SEPARATOR '".self::LONGSEP."'), '".self::NULLVALUE.self::SHORTSEP."')
                                     AS `".$NAME."_".$num."_$key`, ";
             } else {
                $ADDITONALFIELDS .= "`$table$addtable`.`$key` AS `".$NAME."_".$num."_$key`, ";
@@ -2476,12 +2474,20 @@ class Search {
                if ($meta
                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                   return " GROUP_CONCAT(DISTINCT CONCAT($tocompute, '".self::SHORTSEP."' ,
-                                                        `$table$addtable`.`id`) SEPARATOR '".self::LONGSEP."')
-                                       AS `".$NAME."_$num`,
+                                                        `$table$addtable`.`id`)
+                                        SEPARATOR '".self::LONGSEP."') AS `".$NAME."_$num`,
                            $ADDITONALFIELDS";
+               }
+               $TRANS = '';
+               if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+                   $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
+                                                          '".self::SHORTSEP."',$tocomputeid)
+                                          SEPARATOR '".self::LONGSEP."')
+                                  AS `".$NAME."_".$num."_trans`, ";
                }
                return " $tocompute AS `".$NAME."_$num`,
                         `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
+                        $TRANS
                         $ADDITONALFIELDS";
          }
       }
@@ -2492,13 +2498,15 @@ class Search {
               && !isset($searchopt[$ID]["computation"]))) { // Not specific computation
          $TRANS = '';
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-            $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
-                                                   '".self::SHORTSEP."',$tocomputeid) SEPARATOR '".self::LONGSEP."')
+            $TRANS = "IFNULL(GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
+                                                   '".self::SHORTSEP."',$tocomputeid) SEPARATOR '".self::LONGSEP."'),
+                                                   '".self::NULLVALUE.self::SHORTSEP."')
                                   AS `".$NAME."_".$num."_trans`, ";
 
          }
-         return " GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
-                                               '".self::SHORTSEP."',$tocomputeid) SEPARATOR '".self::LONGSEP."')
+         return " IFNULL(GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocompute, '".self::NULLVALUE."'),
+                                               '".self::SHORTSEP."',$tocomputeid) SEPARATOR '".self::LONGSEP."'),
+                                               '".self::NULLVALUE.self::SHORTSEP."')
                               AS `".$NAME."_$num`,
                   $TRANS
                   $ADDITONALFIELDS";
@@ -3100,7 +3108,7 @@ class Search {
       }
 
       $tocompute      = "`$table`.`$field`";
-      $tocomputetrans = "`".$table."_trans`.`value`";
+      $tocomputetrans = "`".$table."_".$field."_trans`.`value`";
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
          $tocompute = str_replace("TABLE", "`$table`", $tocompute);
@@ -3116,7 +3124,7 @@ class Search {
                break;
 
             case "itemlink" :
-               if (in_array($searchtype, array('equals', 'notequals'))) {
+               if (in_array($searchtype, array('equals', 'notequals', 'under', 'notunder'))) {
                   return " $link (`$table`.`id`".$SEARCH.') ';
                }
                break;
@@ -3514,7 +3522,9 @@ class Search {
 
       // Auto link
       if (($ref_table == $new_table)
-          && empty($complexjoin)) {
+          && empty($complexjoin)
+          && (($field == '')
+              || !Session::haveTranslations(getItemTypeForTable($new_table), $field))) {
          return "";
       }
 
@@ -3689,10 +3699,14 @@ class Search {
                                               $addcondition)";
                   $transitemtype = getItemTypeForTable($new_table);
                   if (Session::haveTranslations($transitemtype, $field)) {
-                     $transAS            = $nt.'_trans';
+                     if (strstr($nt, $field)) {
+                        $transAS = $nt.'_trans';
+                     } else {
+                        $transAS = $nt."_$field".'_trans';
+                     }
                      $specific_leftjoin .= "LEFT JOIN `glpi_dropdowntranslations` AS `$transAS`
                                              ON (`$transAS`.`itemtype` = '$transitemtype'
-                                                 AND `$transAS`.`items_id` = `$nt`.`id`
+                                                 AND `$transAS`.`items_id` = `$new_table`.`id`
                                                  AND `$transAS`.`language` = '".
                                                        $_SESSION['glpilanguage']."'
                                                  AND `$transAS`.`field` = '$field')";
@@ -6032,10 +6046,6 @@ class Search {
    **/
    static function csv_clean($value) {
 
-      if (Toolbox::get_magic_quotes_runtime()) {
-         $value = stripslashes($value);
-      }
-
       $value = str_replace("\"", "''", $value);
       $value = Html::clean($value);
 
@@ -6051,10 +6061,6 @@ class Search {
     * @return clean value
    **/
    static function sylk_clean($value) {
-
-      if (Toolbox::get_magic_quotes_runtime()) {
-         $value = stripslashes($value);
-      }
 
       $value = preg_replace('/\x0A/', ' ', $value);
       $value = preg_replace('/\x0D/', NULL, $value);

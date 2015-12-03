@@ -611,7 +611,7 @@ class Config extends CommonDBTM {
       echo "<td><input type='text' name='_dbreplicate_dbuser' value='".$DBslave->dbuser."'></td>";
       echo "<td>" . __('Mysql password') . "</td>";
       echo "<td><input type='password' name='_dbreplicate_dbpassword' value='".
-                 rawurldecode($DBSlave->dbpassword)."'>";
+                 rawurldecode($DBslave->dbpassword)."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -1481,6 +1481,7 @@ class Config extends CommonDBTM {
       echo "\n";
 
       self::checkWriteAccessToDirs(true);
+      toolbox::checkSELinux(true);
 
       echo "\n</pre></td></tr>";
 
@@ -1854,7 +1855,7 @@ class Config extends CommonDBTM {
          $error = 1;
       }
 
-      $oldhand = set_error_handler(NULL);
+      $oldhand = set_error_handler(function($errno, $errmsg, $filename, $linenum, $vars){return true;});
       $oldlevel = error_reporting(0);
       /* TODO: could be improved, only default vhost checked */
       if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php', 'r')) {
