@@ -3138,32 +3138,35 @@ class User extends CommonDBTM {
     * Make a select box with all glpi users where select key = name
     *
     * @param $options array of possible options:
-    *    - name         : string / name of the select (default is users_id)
-    *    - value
-    *    - right        : string / limit user who have specific right :
-    *                         id -> only current user (default case);
-    *                         interface -> central ;
-    *                         all -> all users ;
-    *                         specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
-    *    - comments     : boolean / is the comments displayed near the dropdown (default true)
-    *    - entity       : integer or array / restrict to a defined entity or array of entities
-    *                      (default -1 : no restriction)
-    *    - entity_sons  : boolean / if entity restrict specified auto select its sons
-    *                      only available if entity is a single value not an array(default false)
-    *    - all          : Nobody or All display for none selected
-    *                         all=0 (default) -> Nobody
-    *                         all=1 -> All
-    *                         all=-1-> nothing
-    *    - rand         : integer / already computed rand value
-    *    - toupdate     : array / Update a specific item on select change on dropdown
-    *                      (need value_fieldname, to_update, url
-    *                      (see Ajax::updateItemOnSelectEvent for information)
-    *                      and may have moreparams)
-    *    - used         : array / Already used items ID: not to display in dropdown (default empty)
-    *    - ldap_import
-    *    - on_change    : string / value to transmit to "onChange"
-    *    - display      : boolean / display or get string (default true)
-    *    - width        : specific width needed (default 80%)
+    *    - name           : string / name of the select (default is users_id)
+    *    - value         
+    *    - right          : string / limit user who have specific right :
+    *                           id -> only current user (default case);
+    *                           interface -> central ;
+    *                           all -> all users ;
+    *                           specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
+    *    - comments       : boolean / is the comments displayed near the dropdown (default true)
+    *    - entity         : integer or array / restrict to a defined entity or array of entities
+    *                        (default -1 : no restriction)
+    *    - entity_sons    : boolean / if entity restrict specified auto select its sons
+    *                        only available if entity is a single value not an array(default false)
+    *    - all            : Nobody or All display for none selected
+    *                           all=0 (default) -> Nobody
+    *                           all=1 -> All
+    *                           all=-1-> nothing
+    *    - rand           : integer / already computed rand value
+    *    - toupdate       : array / Update a specific item on select change on dropdown
+    *                        (need value_fieldname, to_update, url
+    *                        (see Ajax::updateItemOnSelectEvent for information)
+    *                        and may have moreparams)
+    *    - used           : array / Already used items ID: not to display in dropdown (default empty)
+    *    - ldap_import   
+    *    - on_change      : string / value to transmit to "onChange"
+    *    - display        : boolean / display or get string (default true)
+    *    - width          : specific width needed (default 80%)
+    *    - specific_tags  : array of HTML5 tags to add the the field
+    *    - url            : url of the ajax php code which should return the json data to show in
+    *                        the dropdown (default /ajax/getDropdownUsers.php)
     *
     * @return rand value if displayed / string if not
    **/
