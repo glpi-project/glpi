@@ -180,13 +180,13 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[78]['massiveaction']  = false;
       $tab[78]['joinparams']     = array('jointype' => 'child');
 
-      $tab[80]['table']          = 'glpi_changes';
-      $tab[80]['field']          = 'id';
-      $tab[80]['name']           = _x('quantity', 'Number of changes');
-      $tab[80]['datatype']       = 'count';
-      $tab[80]['forcegroupby']   = true;
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['joinparams']     = array('jointype' => 'child');
+      $tab[98]['table']          = 'glpi_changes';
+      $tab[98]['field']          = 'id';
+      $tab[98]['name']           = _x('quantity', 'Number of changes');
+      $tab[98]['datatype']       = 'count';
+      $tab[98]['forcegroupby']   = true;
+      $tab[98]['massiveaction']  = false;
+      $tab[98]['joinparams']     = array('jointype' => 'child');
 
       $tab[79]['table']          = 'glpi_knowbaseitemcategories';
       $tab[79]['field']          = 'completename';

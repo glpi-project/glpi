@@ -44,9 +44,11 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Group extends CommonTreeDropdown {
 
-   public $dohistory = true;
+   public $dohistory       = true;
 
-   static $rightname = 'group';
+   static $rightname       = 'group';
+
+   protected $usenotepad  = true;
 
 
    static function getTypeName($nb=0) {
@@ -218,7 +220,7 @@ class Group extends CommonTreeDropdown {
       }
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
-
+      $this->addStandardTab('Notepad',$ong, $options);
       $this->addStandardTab('Log',$ong, $options);
       return $ong;
    }
@@ -296,7 +298,7 @@ class Group extends CommonTreeDropdown {
       echo "<td>"._n('Item', 'Items', Session::getPluralNumber())."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
-      echo "</td></tr>";
+      echo "</td><td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('User', 'Users', Session::getPluralNumber())."</td><td>";

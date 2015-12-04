@@ -9,6 +9,10 @@
    background: url(../../pics/login_logo_glpi.png) center no-repeat, #E1D39E; 
 }
 
+#display-login {
+   color: #FFF;
+}
+
 #text-login {
    background-color: #E1D39E;
    color: #FFF;

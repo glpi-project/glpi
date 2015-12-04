@@ -1381,9 +1381,15 @@ class KnowbaseItem extends CommonDBTM {
                    && isset($options['item_items_id'])
                    && ($output_type == Search::HTML_OUTPUT)) {
 
+                  $forcetab = $options['item_itemtype'];
+                  if (!$_SESSION['glpiticket_timeline'] || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
+                     $forcetab .= '$2'; //Solution tab
+                  } else {
+                     $forcetab .= '$1'; //Timeline tab
+                  }
                   $content = "<a href='".Toolbox::getItemTypeFormURL($options['item_itemtype']).
                                "?load_kb_sol=".$data['id']."&amp;id=".$options['item_items_id'].
-                               "&amp;forcetab=".$options['item_itemtype']."$2'>".
+                               "&amp;forcetab=".$forcetab."'>".
                                __('Use as a solution')."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
                }

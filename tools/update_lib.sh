@@ -42,6 +42,16 @@ for fic in $DST/Graph/*
 do [ $(basename $fic) == src ] ||  cp $SRC/graph/$(basename $fic) $fic
 done
 
+echo "+ phpCas"
+
+SRC="vendor/jasig/phpcas"
+DST="../lib/phpcas"
+find $SRC -type f -exec chmod -x {} \;
+rsync -a -del $SRC/source/         $DST/
+for fic in LICENSE NOTICE README.md
+do cp $SRC/$fic $DST/$fic
+done
+
 git status
 
 echo -e "\nDone: you can now review the changes and commit\n"

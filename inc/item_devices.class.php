@@ -308,6 +308,8 @@ class Item_Devices extends CommonDBRelation {
          }
          if ($item instanceof CommonDevice) {
             if ($_SESSION['glpishow_count_on_tabs']) {
+               $deviceClass     = $item->getType();
+               $linkClass       = $deviceClass::getItem_DeviceType();
                $table           = $linkClass::getTable();
                $foreignkeyField = $deviceClass::getForeignKeyField();
                $nb = countElementsInTable($table,

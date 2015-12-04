@@ -3421,11 +3421,21 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Build an unicity error message
     *
-    * @param $message   the string to be display on the screen, or to be sent in a notification
+    * @param $msgs      the string not transleted to be display on the screen, or to be sent in a notification
     * @param $unicity   the unicity criterion that failed to match
     * @param $doubles   the items that are already present in DB
    **/
-   function getUnicityErrorMessage($message, $unicity, $doubles) {
+   function getUnicityErrorMessage($msgs, $unicity, $doubles) {
+
+      foreach($msgs as $field => $value) {
+         $table = getTableNameForForeignKeyField($field);
+         if ($table != '') {
+            $searchOption = $this->getSearchOptionByField('field', 'name', $table);
+         } else {
+            $searchOption = $this->getSearchOptionByField('field', $field);
+         }
+         $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'], $value);
+      }
 
       if ($unicity['action_refuse']) {
          $message_text = sprintf(__('Impossible record for %s'),
@@ -3571,15 +3581,7 @@ class CommonDBTM extends CommonGLPI {
                          || $p['add_event_on_duplicate']) {
                         $message = array();
                         foreach (explode(',',$fields['fields']) as $field) {
-                           $table = getTableNameForForeignKeyField($field);
-                           if ($table != '') {
-                              $searchOption = $this->getSearchOptionByField('field', 'name',
-                                                                            $table);
-                           } else {
-                              $searchOption = $this->getSearchOptionByField('field', $field);
-                           }
-                           $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'],
-                                                $this->input[$field]);
+                           $message[$fiels] = $this->input[$field];
                         }
 
                         $doubles      = getAllDatasFromTable($this->gettable(),
@@ -3607,13 +3609,15 @@ class CommonDBTM extends CommonGLPI {
                         $result = false;
                      }
                      if ($fields['action_notify']) {
-                        $params = array('message'     => Html::clean($message_text),
-                                        'action_type' => $add,
+                        $params = array('action_type' => $add,
                                         'action_user' => getUserName(Session::getLoginUserID()),
                                         'entities_id' => $entities_id,
                                         'itemtype'    => get_class($this),
                                         'date'        => $_SESSION['glpi_currenttime'],
-                                        'refuse'      => $fields['action_refuse']);
+                                        'refuse'      => $fields['action_refuse'],
+                                        'label'       => $message,
+                                        'field'       => $fields,
+                                        'double'      => $doubles);
                         NotificationEvent::raiseEvent('refuse', new FieldUnicity(), $params);
                      }
                   }

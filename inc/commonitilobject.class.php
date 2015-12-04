@@ -623,10 +623,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_requester']['_type']) {
                case "user" :
-                  if (is_array($input['_itil_requester']['use_notification'])) {
+                  if (isset($input['_itil_requester']['use_notification']) 
+                      && is_array($input['_itil_requester']['use_notification'])) {
                      $input['_itil_requester']['use_notification'] = $input['_itil_requester']['use_notification'][0];
                   }
-                  if (is_array($input['_itil_requester']['alternative_email'])) {
+                  if (isset($input['_itil_requester']['alternative_email']) 
+                      && is_array($input['_itil_requester']['alternative_email'])) {
                      $input['_itil_requester']['alternative_email'] = $input['_itil_requester']['alternative_email'][0];
                   }
 
@@ -677,10 +679,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_observer']['_type']) {
                case "user" :
-                  if (is_array($input['_itil_observer']['use_notification'])) {
+                  if (isset($input['_itil_observer']['use_notification']) 
+                      && is_array($input['_itil_observer']['use_notification'])) {
                      $input['_itil_observer']['use_notification'] = $input['_itil_observer']['use_notification'][0];
                   }
-                  if (is_array($input['_itil_observer']['alternative_email'])) {
+                  if (isset($input['_itil_observer']['alternative_email']) 
+                      && is_array($input['_itil_observer']['alternative_email'])) {
                      $input['_itil_observer']['alternative_email'] = $input['_itil_observer']['alternative_email'][0];
                   }
 
@@ -729,10 +733,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_assign']['_type']) {
                case "user" :
-                  if (is_array($input['_itil_assign']['use_notification'])) {
+                  if (isset($input['_itil_assign']['use_notification']) 
+                      && is_array($input['_itil_assign']['use_notification'])) {
                      $input['_itil_assign']['use_notification'] = $input['_itil_assign']['use_notification'][0];
                   }
-                  if (is_array($input['_itil_assign']['alternative_email'])) {
+                  if (isset($input['_itil_assign']['alternative_email']) 
+                      && is_array($input['_itil_assign']['alternative_email'])) {
                      $input['_itil_assign']['alternative_email'] = $input['_itil_assign']['alternative_email'][0];
                   }
 
@@ -1279,7 +1285,6 @@ abstract class CommonITILObject extends CommonDBTM {
                $tab_requester   = array();
                $tab_requester[] = $this->input["_users_id_requester"];
             }
-            $input2['_from_object'] = true;
 
             foreach ($tab_requester as $key_requester => $requester) {
                $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
@@ -1293,10 +1298,13 @@ abstract class CommonITILObject extends CommonDBTM {
                }
 
                //empty actor
-               if ($input2['users_id'] == 0 && empty($input2['alternative_email'])) {
+               if ($input2['users_id'] == 0
+                   && (!isset($input2['alternative_email'])
+                       || empty($input2['alternative_email']))) {
                   continue;
                }
 
+               $input2['_from_object'] = true;
                $useractors->add($input2);
             }
          }
@@ -1309,7 +1317,6 @@ abstract class CommonITILObject extends CommonDBTM {
                $tab_observer   = array();
                $tab_observer[] = $this->input["_users_id_observer"];
             }
-            $input2['_from_object'] = true;
 
             foreach ($tab_observer as $key_observer => $observer) {
                $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
@@ -1323,10 +1330,13 @@ abstract class CommonITILObject extends CommonDBTM {
                }
 
                //empty actor
-               if ($input2['users_id'] == 0 && empty($input2['alternative_email'])) {
+               if ($input2['users_id'] == 0
+                   && (!isset($input2['alternative_email'])
+                       || empty($input2['alternative_email']))) {
                   continue;
                }
 
+               $input2['_from_object'] = true;
                $useractors->add($input2);
             }
          }
@@ -1339,7 +1349,6 @@ abstract class CommonITILObject extends CommonDBTM {
                $tab_assign   = array();
                $tab_assign[] = $this->input["_users_id_assign"];
             }
-            $input2['_from_object'] = true;
 
             foreach ($tab_assign as $key_assign => $assign) {
                $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
@@ -1353,10 +1362,13 @@ abstract class CommonITILObject extends CommonDBTM {
                }
 
                //empty actor
-               if ($input2['users_id'] == 0 && empty($input2['alternative_email'])) {
+               if ($input2['users_id'] == 0
+                   && (!isset($input2['alternative_email'])
+                       || empty($input2['alternative_email']))) {
                   continue;
                }
 
+               $input2['_from_object'] = true;
                $useractors->add($input2);
             }
          }

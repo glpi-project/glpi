@@ -1481,6 +1481,7 @@ class Config extends CommonDBTM {
       echo "\n";
 
       self::checkWriteAccessToDirs(true);
+      toolbox::checkSELinux(true);
 
       echo "\n</pre></td></tr>";
 

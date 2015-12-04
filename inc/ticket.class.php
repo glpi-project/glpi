@@ -1096,11 +1096,11 @@ class Ticket extends CommonITILObject {
 
          // Using calendar
          if (($calendars_id > 0) && $calendar->getFromDB($calendars_id)) {
-            return max(0, $calendar->getActiveTimeBetween($this->fields['date'],
+            return max(1, $calendar->getActiveTimeBetween($this->fields['date'],
                                                           $_SESSION["glpi_currenttime"]));
          }
          // Not calendar defined
-         return max(0, strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date']));
+         return max(1, strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date']));
       }
       return 0;
    }
@@ -1373,7 +1373,7 @@ class Ticket extends CommonITILObject {
       if (isset($input["content"])) {
          $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
          $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
-         $input["content"] = Toolbox::clean_cross_side_scripting_deep(Html::clean($input["content"]));
+         $input["content"] = Html::clean($input["content"]);
       }
 
       $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
@@ -2007,7 +2007,8 @@ class Ticket extends CommonITILObject {
                                                 TicketFollowup::ADDGROUPTICKET))
                  || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])
-                     && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])))) {
+                     && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups']))
+                 || isCommandLine())) {
 
             if ($this->fields['takeintoaccount_delay_stat'] == 0) {
                return $this->update(array('id'            => $ID,
@@ -2635,6 +2636,17 @@ class Ticket extends CommonITILObject {
    **/
    static function getProcessStatusArray() {
       return array(self::ASSIGNED, self::PLANNED);
+   }
+
+   /**
+    * Get the ITIL object closed, solved or waiting status list
+    *
+    * @since version 0.90.1
+    *
+    * @return an array
+   **/
+   static function getReopenableStatusArray() {
+      return array(self::CLOSED, self::SOLVED, self::WAITING);
    }
 
    /**
@@ -4466,15 +4478,15 @@ class Ticket extends CommonITILObject {
          $search_assign   = " 0 = 1 ";
 
          if (count($_SESSION['glpigroups'])) {
-            $groups        = implode(",",$_SESSION['glpigroups']);
-            $search_assign = " (`glpi_groups_tickets`.`groups_id` IN (".$groups.")
+            $groups        = implode("','",$_SESSION['glpigroups']);
+            $search_assign = " (`glpi_groups_tickets`.`groups_id` IN ('".$groups."')
                                 AND `glpi_groups_tickets`.`type` = '".CommonITILActor::ASSIGN."')";
 
             if (Session::haveRight(self::$rightname, self::READGROUP)) {
-               $search_users_id = " (`glpi_groups_tickets`.`groups_id` IN ('$groups')
+               $search_users_id = " (`glpi_groups_tickets`.`groups_id` IN ('".$groups."')
                                      AND `glpi_groups_tickets`.`type`
                                            = '".CommonITILActor::REQUESTER."') ";
-               $search_observer = " (`glpi_groups_tickets`.`groups_id` IN ('$groups')
+               $search_observer = " (`glpi_groups_tickets`.`groups_id` IN ('".$groups."')
                                      AND `glpi_groups_tickets`.`type`
                                            = '".CommonITILActor::OBSERVER."') ";
             }
@@ -5462,7 +5474,7 @@ class Ticket extends CommonITILObject {
                             AND `is_deleted` = 0";
 
             if ($delay > 0) {
-               $query .= " AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < CURDATE()";
+               $query .= " AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < NOW()";
             }
 
             $nb = 0;
@@ -6218,12 +6230,15 @@ class Ticket extends CommonITILObject {
       $tmp        = array_values($timeline);
       $first_item = array_shift($tmp);
 
-      //don't display title on solution approbation
-      if (($first_item['type'] != 'Solution')
-          || ($this->fields["status"] != CommonITILObject::SOLVED)) {
-         self::showTimelineHeader();
+      // show approbation form on top when ticket is solved
+      if ($this->fields["status"] == CommonITILObject::SOLVED) {
+         echo "<div class='approbation_form' id='approbation_form$rand'>";
+         $followup_obj->showApprobationForm($this);
+         echo "</div>";
       }
 
+      // show title for timeline
+      self::showTimelineHeader();
 
       $timeline_index = 0;
       foreach ($timeline as $item) {
@@ -6403,19 +6418,6 @@ class Ticket extends CommonITILObject {
 
          echo "</div>"; //end  h_info
 
-         if (($timeline_index == 0)
-             && ($item['type'] == "Solution")
-             && ($this->fields["status"] == CommonITILObject::SOLVED)) {
-
-            echo "<div class='break'></div>";
-
-            echo "<div class='approbation_form'>";
-            $followup_obj->showApprobationForm($this);
-            echo "</div>";
-
-            echo "<hr class='approbation_separator' />";
-            self::showTimelineHeader();
-         }
          $timeline_index++;
       } // end foreach timeline
 
@@ -6582,6 +6584,7 @@ class Ticket extends CommonITILObject {
                                     $CFG_GLPI["root_doc"]."/ajax/timeline_viewsubitem.php",
                                     $params, "", false);
       echo str_replace("\"itemtype\"", "itemtype", $out);
+      echo "$('#approbation_form$rand').remove()";
       echo "};";
       $out = "function viewEditSubitem" . $this->fields['id'] . "$rand(e, itemtype, items_id, o) {\n
                var target = e.target || window.event.srcElement;
@@ -6610,6 +6613,8 @@ class Ticket extends CommonITILObject {
                found_active[i].className = classes;
             }
             o.className = o.className + ' talk_active';
+
+            $('#approbation_form$rand').remove();
       };";
 
       if (isset($_GET['load_kb_sol'])) {
@@ -6621,10 +6626,11 @@ class Ticket extends CommonITILObject {
       $tmp = array('tickets_id' => $this->getID());
       $fup             = new TicketFollowup;
       $ttask           = new TicketTask;
+      $doc             = new Document;
 
-      $canadd_fup      = TicketFollowup::canCreate() && $fup->can(-1, UPDATE, $tmp);
-      $canadd_task     = TicketTask::canCreate() && $ttask->can(-1, UPDATE, $tmp);
-      $canadd_document = Document::canCreate();
+      $canadd_fup      = $fup->can(-1, CREATE, $tmp);
+      $canadd_task     = $ttask->can(-1, CREATE, $tmp);
+      $canadd_document = $doc->can(-1, CREATE, $tmp) && $this->canAddItem('Document');
       $canadd_solution = Ticket::canUpdate() && $this->canSolve();
 
       if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution ) {
@@ -6632,36 +6638,36 @@ class Ticket extends CommonITILObject {
       }
 
       //show choices
-      if ($this->fields["status"] != CommonITILObject::SOLVED
-         && $this->fields["status"] != CommonITILObject::CLOSED) {
-         echo "<h2>"._sx('button', 'Add')." : </h2>";
-         echo "<div class='timeline_form'>";
-         echo "<ul class='timeline_choices'>";
-         if ($canadd_fup) {
-            echo "<li class='followup' onclick='".
-                 "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketFollowup\");'>"
-                 .__("Followup")."</li>";
-         }
-         if ($canadd_task) {
-            echo "<li class='task' onclick='".
-                 "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketTask\");'>"
-                 .__("Task")."</li>";
-         }
-         if ($canadd_document) {
-            echo "<li class='document' onclick='".
-                 "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Document_Item\");'>"
-                 .__("Document")."</li>";
-         }
-         if ($canadd_solution) {
-            echo "<li class='solution' onclick='".
-                 "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Solution\");'>"
-                 .__("Solution")."</li>";
-         }
-         echo "</ul>"; // timeline_choices
-         echo "<div class='clear'>&nbsp;</div>";
+      echo "<h2>"._sx('button', 'Add')." : </h2>";
+      echo "<div class='timeline_form'>";
+      echo "<ul class='timeline_choices'>";
 
-         echo "</div>"; //end timeline_form
+      if ($canadd_fup) {
+         echo "<li class='followup' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketFollowup\");'>"
+              .__("Followup")."</li>";
       }
+
+      if ($canadd_task) {
+         echo "<li class='task' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"TicketTask\");'>"
+              .__("Task")."</li>";
+      }
+      if ($canadd_document) {
+         echo "<li class='document' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Document_Item\");'>"
+              .__("Document")."</li>";
+      }
+      if ($canadd_solution) {
+         echo "<li class='solution' onclick='".
+              "javascript:viewAddSubitem".$this->fields['id']."$rand(\"Solution\");'>"
+              .__("Solution")."</li>";
+      }
+
+      echo "</ul>"; // timeline_choices
+      echo "<div class='clear'>&nbsp;</div>";
+
+      echo "</div>"; //end timeline_form
 
       echo "<div class='ajax_box' id='viewitem" . $this->fields['id'] . "$rand'></div>\n";
 
@@ -6704,11 +6710,6 @@ class Ticket extends CommonITILObject {
       $ticket->getFromDB($tickets_id);
       $ticket_users = $ticket->getTicketActors();
       $actor_type   = $ticket_users[Session::getLoginUserID()];
-
-      // stupid control: assign a status if requester? done by commonitilactor
-//      if ($actor_type == CommonITILActor::REQUESTER) {
-///         $ticket->fields['status'] = CommonITILObject::ASSIGNED;
-//      }
       $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
 
       $html = "<div class='x-split-button' id='x-split-button'>
