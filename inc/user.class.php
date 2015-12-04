@@ -2962,7 +2962,7 @@ class User extends CommonDBTM {
 
 
          case "all" :
-            $where = " `glpi_users`.`id` > '1' ".
+            $where = " `glpi_users`.`id` > '0' ".
                      getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
             break;
 
