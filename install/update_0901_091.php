@@ -1,9 +1,6 @@
 <?php
 /*
-<<<<<<< HEAD
-=======
  * @version $Id: $
->>>>>>> 1c354bc5351964cd8ebe421475c3d8cfbe602149
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2015 Teclib'.
@@ -39,11 +36,7 @@
 */
 
 /**
-<<<<<<< HEAD
  * Update from 0.90.1 to 0.91
-=======
- * Update from 0.90 to 0.90.1
->>>>>>> 1c354bc5351964cd8ebe421475c3d8cfbe602149
  *
  * @return bool for success (will die for most error)
 **/
@@ -77,10 +70,6 @@ function update0901to091() {
    }
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 1c354bc5351964cd8ebe421475c3d8cfbe602149
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
