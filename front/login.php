@@ -51,11 +51,15 @@ $_POST = array_map('stripslashes', $_POST);
 
 //Do login and checks
 //$user_present = 1;
-if (!isset($_POST['login_name'])) {
+if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
+   $_POST['login_name'] = $_POST[$_SESSION['namfield']];
+} else if (!isset($_POST['login_name'])) {
    $_POST['login_name'] = '';
 }
 
-if (isset($_POST['login_password'])) {
+if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
+   $_POST['login_password'] = Toolbox::unclean_cross_side_scripting_deep($_POST[$_SESSION['pwdfield']]);
+} else if (isset($_POST['login_password'])) {
    $_POST['login_password'] = Toolbox::unclean_cross_side_scripting_deep($_POST['login_password']);
 } else {
    $_POST['login_password'] = '';

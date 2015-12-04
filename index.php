@@ -109,18 +109,21 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    if (isset($_GET["noAUTO"])) {
       echo "<input type='hidden' name='noAUTO' value='1' />";
    }
+   $_SESSION['namfield'] = $namfield = 'field'.uniqid();
+   $_SESSION['pwdfield'] = $pwdfield = 'field'.uniqid();
+
    // redirect to ticket
    if (isset($_GET["redirect"])) {
       Toolbox::manageRedirect($_GET["redirect"]);
       echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'"/>';
    }
    echo '<p class="login_input">
-         <input type="text" name="login_name" id="login_name" required="required" 
+         <input type="text" name="'.$namfield.'" id="login_name" required="required"
                 placeholder="'.__('Login').'" />
          <span class="login_img"></span>
          </p>';
    echo '<p class="login_input">
-         <input type="password" name="login_password" id="login_password" required="required" 
+         <input type="password" name="'.$pwdfield.'" id="login_password" required="required"
                 placeholder="'.__('Password').'"  />
          <span class="login_img"></span>
          </p>';
