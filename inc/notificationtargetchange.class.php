@@ -88,6 +88,12 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       $datas['##change.globalvalidation##']
                      = ChangeValidation::getStatus($item->getField('global_validation'));
 
+      $datas['##change.impactcontent##']      = $item->getField("impactcontent");
+      $datas['##change.controlistcontent##']  = $item->getField("controlistcontent");
+      $datas['##change.rolloutplancontent##'] = $item->getField("rolloutplancontent");
+      $datas['##change.backoutplancontent##'] = $item->getField("backoutplancontent");
+      $datas['##change.checklistcontent##']   = $item->getField("checklistcontent");
+
 //       $datas["##problem.impacts##"]  = $item->getField('impactcontent');
 //       $datas["##problem.causes##"]   = $item->getField('causecontent');
 //       $datas["##problem.symptoms##"] = $item->getField('symptomcontent');
@@ -262,8 +268,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       parent::getTags();
 
       //Locales
-      $tags = array('change.numberoftickets'   => _x('quantity', 'Number of tickets'),
-                    'change.numberofproblems'  => _x('quantity', 'Number of problems'),
+      $tags = array('change.numberoftickets'    => _x('quantity', 'Number of tickets'),
+                    'change.numberofproblems'   => _x('quantity', 'Number of problems'),
+                    'change.impactcontent'      => __('Impact'),
+                    'change.controlistcontent'  => __('Control list'),
+                    'change.rolloutplancontent' => __('Deployment plan'),
+                    'change.backoutplancontent' => __('Backup plan'),
+                    'change.checklistcontent'   => __('Checklist'),
 //                     'problem.impacts'           => __('Impacts'),
 //                     'problem.causes'            => __('Causes'),
 //                     'problem.symptoms'          => __('Symptoms'),
