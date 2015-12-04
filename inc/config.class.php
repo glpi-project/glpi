@@ -1049,7 +1049,13 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td>" . __('Tasks state by default') . "</td><td>";
          Planning::dropdownState("task_state", $data["task_state"]);
-         echo "</td><td colspan='2'>&nbsp;</td></tr>";
+         echo "</td><td>" . __('Automatically refresh the list of tickets (minutes)') . "</td><td>";
+         Dropdown::showNumber('refresh_ticket_list', array('value' => $data["refresh_ticket_list"],
+                                                           'min'   => 1,
+                                                           'max'   => 30,
+                                                           'step'  => 1,
+                                                           'toadd' => array(0 => __('Never'))));
+         echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td>".__('Pre-select me as a technician when creating a ticket').
               "</td><td>";
@@ -1058,14 +1064,13 @@ class Config extends CommonDBTM {
          } else {
             echo Dropdown::getYesNo(0);
          }
-         echo "</td><td>" . __('Automatically refresh the list of tickets (minutes)') . "</td><td>";
-         Dropdown::showNumber('refresh_ticket_list', array('value' => $data["refresh_ticket_list"],
-                                                           'min'   => 1,
-                                                           'max'   => 30,
-                                                           'step'  => 1,
-                                                           'toadd' => array(0 => __('Never'))));
-         echo "</td>";
-         echo "</tr>";
+         echo "</td><td>" . __('Pre-select me as a requester when creating a ticket') . "</td><td>";
+         if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {
+            Dropdown::showYesNo("set_default_requester", $data["set_default_requester"]);
+         } else {
+            echo Dropdown::getYesNo(0);
+         }
+         echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Priority colors') . "</td>";

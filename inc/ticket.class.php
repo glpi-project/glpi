@@ -458,6 +458,12 @@ class Ticket extends CommonITILObject {
             return Session::getLoginUserID();
          }
       }
+      if ($type == CommonITILActor::REQUESTER) {
+         if (Session::haveRight(self::$rightname, CREATE)
+             && $_SESSION['glpiset_default_requester']) {
+            return Session::getLoginUserID();
+         }
+      }
       return 0;
    }
 
