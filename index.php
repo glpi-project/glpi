@@ -143,7 +143,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    _e('You must activate the JavaScript function of your browser');
    echo "</p></noscript>";
 
-   if (isset($_GET['error'])) {
+   if (isset($_GET['error']) && isset($_GET['redirect'])) {
       switch ($_GET['error']) {
          case 1 : // cookie error
             _e('You must accept cookies to reach this application');
