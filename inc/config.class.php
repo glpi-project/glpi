@@ -1065,7 +1065,7 @@ class Config extends CommonDBTM {
             echo Dropdown::getYesNo(0);
          }
          echo "</td><td>" . __('Pre-select me as a requester when creating a ticket') . "</td><td>";
-         if (!$userpref || Session::haveRight('ticket', Ticket::OWN)) {
+         if (!$userpref || Session::haveRight('ticket', CREATE)) {
             Dropdown::showYesNo("set_default_requester", $data["set_default_requester"]);
          } else {
             echo Dropdown::getYesNo(0);
