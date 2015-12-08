@@ -72,6 +72,9 @@ function update0901to091() {
    Config::setConfigurationValues('core', array('set_default_requester' => 1));
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
+   $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
+   $migration->addKey("glpi_computers_softwareversions", "date_install");
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
