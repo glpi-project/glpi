@@ -258,12 +258,6 @@ class SoftwareLicense extends CommonDBTM {
          echo "<a href='software.form.php?id=".$softwares_id."'>".
                 Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
       } else {
-         //echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
-         Toolbox::logDebug(array('condition'   => "`is_template`='0' AND `is_deleted`='0'",
-               'entity'      => $_SESSION['glpiactive_entity'],
-               'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
-               'on_change'   => 'this.form.submit()',
-               'value'       => $softwares_id));
          Dropdown::show('Software',
                         array('condition'   => "`is_template`='0' AND `is_deleted`='0'",
                               'entity'      => $_SESSION['glpiactive_entity'],
