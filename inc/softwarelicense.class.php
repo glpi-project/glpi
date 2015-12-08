@@ -50,7 +50,7 @@ class SoftwareLicense extends CommonDBTM {
 
    static protected $forward_entity_to = array('Infocom');
 
-   static $rightname                   = 'software';
+   static $rightname                   = 'license';
    protected $usenotepad               = true;
 
 
@@ -255,11 +255,23 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>";
       if ($ID > 0) {
          $softwares_id = $this->fields["softwares_id"];
+         echo "<a href='software.form.php?id=".$softwares_id."'>".
+                Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
       } else {
-         echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
+         //echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
+         Toolbox::logDebug(array('condition'   => "`is_template`='0' AND `is_deleted`='0'",
+               'entity'      => $_SESSION['glpiactive_entity'],
+               'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
+               'on_change'   => 'this.form.submit()',
+               'value'       => $softwares_id));
+         Dropdown::show('Software',
+                        array('condition'   => "`is_template`='0' AND `is_deleted`='0'",
+                              'entity'      => $_SESSION['glpiactive_entity'],
+                              'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
+                              'on_change'   => 'this.form.submit()',
+                              'value'       => $softwares_id));
       }
-      echo "<a href='software.form.php?id=".$softwares_id."'>".
-             Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
+
       echo "</td>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
@@ -381,10 +393,17 @@ class SoftwareLicense extends CommonDBTM {
       $tab                       = array();
       $tab['common']             = __('Characteristics');
 
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['massiveaction']   = false;
+
       $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'name';
-      $tab[2]['name']            = __('Name');
-      $tab[2]['datatype']        = 'itemlink';
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'serial';
@@ -438,10 +457,109 @@ class SoftwareLicense extends CommonDBTM {
       $tab[16]['name']           = __('Comments');
       $tab[16]['datatype']       = 'text';
 
+      $tab[10]['table']           = 'glpi_softwares';
+      $tab[10]['field']           = 'name';
+      $tab[10]['name']            = __('Software');
+      $tab[10]['datatype']        = 'itemlink';
+
       return $tab;
    }
 
+   static function getSearchOptionsToAdd() {
+      $tab = array();
 
+      if (!self::canView()) {
+         return $tab;
+      }
+
+      $tab['license']            = _n('License', 'Licenses', Session::getPluralNumber());
+
+      $licjoin       = array();
+      $licjoinexpire = array();
+
+      if (!Session::isCron()
+          && !isCommandLine()) { // no filter for cron
+         $licjoin       = array('jointype'  => 'child',
+                                'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
+                                                                           '', '', true));
+
+         $licjoinexpire = array('jointype'  => 'child',
+                                 'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
+                                                                           '', '', true).
+                                                " AND (NEWTABLE.`expire` IS NULL
+                                                      OR NEWTABLE.`expire` > NOW())");
+      }
+
+      $tab[160]['table']         = 'glpi_softwarelicenses';
+      $tab[160]['field']         = 'name';
+      $tab[160]['name']          = __('License name');
+      $tab[160]['datatype']      = 'dropdown';
+      $tab[160]['forcegroupby']  = true;
+      $tab[160]['massiveaction'] = false;
+      $tab[160]['joinparams']    = $licjoinexpire;
+
+      $tab[161]['table']         = 'glpi_softwarelicenses';
+      $tab[161]['field']         = 'serial';
+      $tab[161]['datatype']      = 'string';
+      $tab[161]['name']          = __('License serial number');
+      $tab[161]['forcegroupby']  = true;
+      $tab[161]['massiveaction'] = false;
+      $tab[161]['joinparams']    = $licjoinexpire;
+
+      $tab[162]['table']         = 'glpi_softwarelicenses';
+      $tab[162]['field']         = 'otherserial';
+      $tab[162]['datatype']      = 'string';
+      $tab[162]['name']          = __('License inventory number');
+      $tab[162]['forcegroupby']  = true;
+      $tab[162]['massiveaction'] = false;
+      $tab[162]['joinparams']    = $licjoinexpire;
+
+      $tab[163]['table']         = 'glpi_softwarelicenses';
+      $tab[163]['field']         = 'number';
+      $tab[163]['name']          = _x('phone', 'Number of licenses');
+      $tab[163]['forcegroupby']  = true;
+      $tab[163]['usehaving']     = true;
+      $tab[163]['datatype']      = 'number';
+      $tab[163]['massiveaction'] = false;
+      $tab[163]['joinparams']    = $licjoinexpire;
+
+      $tab[164]['table']         = 'glpi_softwarelicensetypes';
+      $tab[164]['field']         = 'name';
+      $tab[164]['datatype']      = 'dropdown';
+      $tab[164]['name']          = _n('License type', 'License types', Session::getPluralNumber());
+      $tab[164]['forcegroupby']  = true;
+      $tab[164]['massiveaction'] = false;
+      $tab[164]['joinparams']    = array('beforejoin'
+                                           => array('table'      => 'glpi_softwarelicenses',
+                                                    'joinparams' => $licjoinexpire));
+
+      $tab[165]['table']         = 'glpi_softwarelicenses';
+      $tab[165]['field']         = 'comment';
+      $tab[165]['name']          = __('License comments');
+      $tab[165]['forcegroupby']  = true;
+      $tab[165]['datatype']      = 'text';
+      $tab[165]['massiveaction'] = false;
+      $tab[165]['joinparams']    = $licjoinexpire;
+
+      $tab[166]['table']         = 'glpi_softwarelicenses';
+      $tab[166]['field']         =  'expire';
+      $tab[166]['name']          = __('Expiration');
+      $tab[166]['forcegroupby']  = true;
+      $tab[166]['datatype']      = 'date';
+      $tab[166]['emptylabel']    = __('Never expire');
+      $tab[166]['massiveaction'] = false;
+      $tab[166]['joinparams']    = $licjoinexpire;
+
+      $tab[167]['table']         = 'glpi_softwarelicenses';
+      $tab[167]['field']         =  'is_valid';
+      $tab[167]['name']          = _x('adjective', 'Valid');
+      $tab[167]['forcegroupby']  = true;
+      $tab[167]['datatype']      = 'bool';
+      $tab[167]['massiveaction'] = false;
+      $tab[167]['joinparams']    = $licjoinexpire;
+
+      return $tab;
+   }
    /**
     * Give cron information
     *
@@ -866,6 +984,9 @@ class SoftwareLicense extends CommonDBTM {
          $nb = 0;
          switch ($item->getType()) {
             case 'Software' :
+               if (!self::canView()) {
+                  return '';
+               }
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = self::countForSoftware($item->getID());
                }
@@ -879,7 +1000,7 @@ class SoftwareLicense extends CommonDBTM {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='Software') {
+      if ($item->getType()=='Software' && self::canView()) {
          self::showForSoftware($item);
       }
       return true;
