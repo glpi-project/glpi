@@ -347,7 +347,18 @@ function update0901to091() {
       }
    }
 
-
+   $migration->addField("glpi_softwarelicenses", "locations_id", "integer");
+   $migration->addField("glpi_softwarelicenses", "users_id_tech", "integer");
+   $migration->addField("glpi_softwarelicenses", "users_id", "integer");
+   $migration->addField("glpi_softwarelicenses", "groups_id_tech", "integer");
+   $migration->addField("glpi_softwarelicenses", "groups_id", "integer");
+   $migration->addField("glpi_softwarelicenses", "is_helpdesk_visible", "bool");
+   $migration->addKey("glpi_softwarelicenses", "locations_id");
+   $migration->addKey("glpi_softwarelicenses", "users_id_tech");
+   $migration->addKey("glpi_softwarelicenses", "users_id");
+   $migration->addKey("glpi_softwarelicenses", "groups_id_tech");
+   $migration->addKey("glpi_softwarelicenses", "groups_id");
+   $migration->addKey("glpi_softwarelicenses", "is_helpdesk_visible");
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

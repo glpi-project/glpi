@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -37,14 +37,19 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", READ);
-
+Session::checkRight("license", READ);
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
 }
-if (!isset($_GET["softwares_id"])) {
+if (!isset($_REQUEST["softwares_id"])) {
    $_GET["softwares_id"] = "";
+} else {
+   $_GET['softwares_id'] = $_REQUEST['softwares_id'];
 }
+if (!isset($_GET["withtemplate"])) {
+   $_GET["withtemplate"] = "";
+}
+
 $license = new SoftwareLicense();
 
 if (isset($_POST["add"])) {
@@ -78,9 +83,10 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(SoftwareLicense::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "software");
+   Html::header(SoftwareLicense::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "softwarelicense");
    $license->display(array('id'           => $_GET["id"],
-                           'softwares_id' => $_GET["softwares_id"]));
+                           'softwares_id' => $_GET["softwares_id"],
+                           'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
 ?>
