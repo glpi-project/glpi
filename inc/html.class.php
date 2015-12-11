@@ -4557,6 +4557,9 @@ class Html {
                         text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
                      }
                      return text;
+                  },
+                  formatResult: function (object, container) {
+                     container.attr('title', result.title);
                   }
 
              });";
@@ -4676,6 +4679,7 @@ class Html {
 
                         },
                         formatResult: function(result, container, query, escapeMarkup) {
+                           container.attr('title', result.title);
                            var markup=[];
                            window.Select2.util.markMatch(result.text, query.term, markup, escapeMarkup);
                            if (result.level) {

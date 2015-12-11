@@ -399,7 +399,8 @@ if ($item instanceof CommonTreeDropdown) {
                }
                array_push($datastoadd, array('id'    => $ID,
                                              'text'  => $outputval,
-                                             'level' => $level));
+                                             'level' => $level, 
+                                             'title' => $title));
                $count++;
             }
             $firstitem = false;
