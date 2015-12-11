@@ -4558,8 +4558,8 @@ class Html {
                      }
                      return text;
                   },
-                  formatResult: function (object, container) {
-                     container.attr('title', result.title);
+                  formatResult: function (result, container) {
+                     return $('<div>', {title: result.title}).text(result.text);
                   }
 
              });";
