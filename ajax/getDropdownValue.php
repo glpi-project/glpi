@@ -632,7 +632,8 @@ if ($item instanceof CommonTreeDropdown) {
                $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
             }
             array_push($datastoadd, array('id'    => $ID,
-                                          'text'  => $outputval));
+                                          'text'  => $outputval, 
+                                          'title' => $title));
             $count++;
          }
          if ($multi) {
