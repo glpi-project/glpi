@@ -1350,6 +1350,36 @@ class MailCollector  extends CommonDBTM {
              && $structure->subtype) {
             // Embeded image come without filename - generate trivial one
             $filename = "image_$part.".$structure->subtype;
+         } elseif (empty($filename) && $structure->type==2 && $structure->subtype) {
+             // Embeded email comes without filename - try to get "Subject:" or generate trivial one
+             if ($message=imap_fetchbody($this->marubox, $mid, $part)) {
+                 switch ($structure->encoding) {
+                     case 1 :
+                         $message = imap_8bit($message);
+                         break;
+
+                     case 2 :
+                         $message = imap_binary($message);
+                         break;
+
+                     case 3 :
+                         $message = imap_base64($message);
+                         break;
+
+                     case 4 :
+                         $message = quoted_printable_decode($message);
+                         break;
+                 }
+
+                 if( preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches)  ) {
+                     $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";  
+                     $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;                    
+                 }
+                 else
+                     $filename = "msg_$part.EML";
+             }
+             else
+                 $filename = "msg_$part.EML";
          }
 
          // if no filename found, ignore this part
@@ -1388,7 +1418,7 @@ class MailCollector  extends CommonDBTM {
             return false;
          }
 
-         if ($message = imap_fetchbody($this->marubox, $mid, $part)) {
+         if (($structure->type==2 && $structure->subtype) || $message = imap_fetchbody($this->marubox, $mid, $part)) {
             switch ($structure->encoding) {
                case 1 :
                   $message = imap_8bit($message);
