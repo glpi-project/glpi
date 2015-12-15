@@ -229,8 +229,9 @@ class Item_Ticket extends CommonDBRelation{
       // Show associated item dropdowns
       if ($canedit) {
          echo "<div style='float:left'>";
-         $p = array('used'     => $params['items_id'], 
-                    'rand'     => $rand);
+         $p = array('used'       => $params['items_id'], 
+                    'rand'       => $rand, 
+                    'tickets_id' => $params['id']);
          // My items
          if ($params['_users_id_requester'] > 0) {
             Item_Ticket::dropdownMyDevices($params['_users_id_requester'], $ticket->fields["entities_id"], $params['itemtype'], 0, $p);
@@ -243,7 +244,7 @@ class Item_Ticket extends CommonDBRelation{
          // Add button
          echo "<a href='javascript:itemAdd$rand();' class='vsubmit' style='float:left'>"._sx('button', 'Add')."</a>";
       }
-      Toolbox::logDebug($params);
+
       // Display list
       echo "<div id='itemList$rand' style='clear:both;margin-top:10px'>";
       // Predefined values
