@@ -369,7 +369,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       $macItemWithItems = array();
 
-      foreach (array('NetworkPort', 'NetworkEquipment') as $netporttype) {
+      foreach (array('NetworkPort') as $netporttype) {
          $netport = new $netporttype();
 
          $query = "SELECT `id`
