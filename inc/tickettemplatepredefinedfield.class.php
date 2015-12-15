@@ -180,7 +180,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             if (in_array($rule['num'], $multiple)) {
                if ($allowed_fields[$rule['num']] == 'items_id') {
                   $item_itemtype = explode("_", $rule['value']);
-                  $fields[$allowed_fields[$rule['num']]][$item_itemtype[0]][] = $item_itemtype[1];
+                  $fields[$allowed_fields[$rule['num']]][$item_itemtype[0]][$item_itemtype[1]] = $item_itemtype[1];
                } else {
                   $fields[$allowed_fields[$rule['num']]][] = $rule['value'];
                }

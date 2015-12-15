@@ -1116,15 +1116,6 @@ class Ticket extends CommonITILObject {
          $donotif = true;
       }
 
-
-      if (!empty($this->input['itemtype']) && !empty($this->input['items_id'])) {
-         $item_ticket = new Item_Ticket();
-         $item_ticket->add(array('items_id'   => $this->input['items_id'],
-                                 'itemtype'   => $this->input['itemtype'],
-                                 'tickets_id' => $this->fields['id']));
-      }
-
-
       // Manage SLA Level : add actions
       if (in_array("slas_id", $this->updates)
           && ($this->fields["slas_id"] > 0)) {
@@ -1152,25 +1143,20 @@ class Ticket extends CommonITILObject {
              || in_array("cost_fixed", $this->updates)
              || in_array("cost_material", $this->updates)) {
 
-
-            $item_ticket = new Item_Ticket();
-            $linked_items = $item_ticket->find("`tickets_id` = ".$this->fields['id']);
-
-            if (!empty($linked_items)) {
-               foreach($linked_items as $data){
-                  if ($data["itemtype"]
-                          && ($item = getItemForItemtype($data["itemtype"]))) {
-
-                     if ($item->getFromDB($data["items_id"])) {
-                        $newinput = array();
-                        $newinput['id'] = $data["items_id"];
-                        $newinput['ticket_tco'] = self::computeTco($item);
-                        $item->update($newinput);
+            if (!empty($this->input["items_id"])) {
+               foreach ($this->input["items_id"] as $itemtype => $items) {
+                  foreach ($items as $items_id) {
+                     if ($itemtype && ($item = getItemForItemtype($itemtype))) {
+                        if ($item->getFromDB($items_id)) {
+                           $newinput               = array();
+                           $newinput['id']         = $items_id;
+                           $newinput['ticket_tco'] = self::computeTco($item);
+                           $item->update($newinput);
+                        }
                      }
                   }
                }
             }
-
          }
 
          // Setting a solution type means the ticket is solved
@@ -1630,7 +1616,7 @@ class Ticket extends CommonITILObject {
                            /*'_no_notif'   => true*/));
          }
       }
-      Toolbox::logDebug($this->input);
+
       if (!empty($this->input['items_id'])) {
          $item_ticket = new Item_Ticket();
          foreach ($this->input['items_id'] as $itemype => $items) {

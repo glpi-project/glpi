@@ -225,6 +225,8 @@ class Item_Ticket extends CommonDBRelation{
       
       $rand  = mt_rand();
       $count = 0;
+      
+      echo "<div id='itemAddForm$rand'>";
 
       // Show associated item dropdowns
       if ($canedit) {
@@ -242,16 +244,16 @@ class Item_Ticket extends CommonDBRelation{
          echo "</div>";
          
          // Add button
-         echo "<a href='javascript:itemAdd$rand();' class='vsubmit' style='float:left'>"._sx('button', 'Add')."</a>";
+         echo "<a href='javascript:itemAction$rand(\"add\");' class='vsubmit' style='float:left'>"._sx('button', 'Add')."</a>";
       }
 
       // Display list
-      echo "<div id='itemList$rand' style='clear:both;margin-top:10px'>";
+      echo "<div style='clear:both;'>";
       // Predefined values
       if (!empty($params['items_id'])) {
          foreach ($params['items_id'] as $itemtype => $items) {
             foreach ($items as $items_id) {
-               if ($count < 5) {
+               if (($count < 5 && $params['id']) || $params['id'] == 0) {
                   echo Item_Ticket::showItemToAdd($params['id'], $itemtype, $items_id, array('rand' => $rand));
                }
                $count++;
@@ -264,28 +266,28 @@ class Item_Ticket extends CommonDBRelation{
       }
       echo "</div>";
       
-      $js = "function itemAdd$rand() {";
-      $js .= "   $.ajax({
-                  url: '".$CFG_GLPI['root_doc']."/ajax/itemTicket.php',
-                  dataType: 'json',
-                  data: {'action'     : 'addItem', 
-                         'rand'       : $rand,
-                         'tickets_id' : ".$params['id'].",
-                         'my_items'   : $('#dropdown_my_items$rand').val(),
-                         'itemtype'   : $('#dropdown_itemtype$rand').val(), 
-                         'items_id'   : $('#dropdown_add_items_id$rand').val()},
-                  success: function(json) {";
-      $js .= "         if ($(\"#\"+json.itemtype+\"_\"+json.items_id).length == 0 && json.result != null) {";        
-      $js .= "            $(\"#itemList$rand\").append(json.result);";
-      $js .= "         }";
-      $js .= "      }";
-      $js .= "   });";
-      $js .= "}";
-      
-      $js .= "function itemDelete$rand(items_id, itemtype) {";
-      $js .= "   $(\"#\"+itemtype+\"_\"+items_id).remove();";
-      $js .= "}";
+      $opt = array();
+      foreach (array('id', '_users_id_requester', 'items_id', 'itemtype') as $key) {
+         $opt[$key] = $params[$key];
+      }
+
+      $js  = " function itemAction$rand(action, itemtype, items_id) {";
+      $js .= "    $.ajax({
+                     url: '".$CFG_GLPI['root_doc']."/ajax/itemTicket.php',
+                     dataType: 'html',
+                     data: {'action'     : action, 
+                            'rand'       : $rand,
+                            'params'     : ".json_encode($opt).",
+                            'my_items'   : $('#dropdown_my_items$rand').val(),
+                            'itemtype'   : (itemtype === undefined) ? $('#dropdown_itemtype$rand').val() : itemtype, 
+                            'items_id'   : (items_id === undefined) ? $('#dropdown_add_items_id$rand').val() : items_id},
+                     success: function(response) {";        
+      $js .= "          $(\"#itemAddForm$rand\").html(response);";
+      $js .= "       }";
+      $js .= "    });";
+      $js .= " }";
       echo Html::scriptBlock($js);
+      echo "</div>";
    }
    
       
@@ -302,9 +304,9 @@ class Item_Ticket extends CommonDBRelation{
       $result =  "<div id='".$itemtype."_".$items_id."'>";
       $result .=   $item->getTypeName(1)." : ".$item->getLink(array('comments' => true));
       $result .=   "<input type='hidden' value='$items_id' name='items_id[$itemtype][$items_id]'>";
-      if ($tickets_id == 0) {
-         $result .=   " <img src=\"../pics/delete.png\" onclick=\"itemDelete".$params['rand']."('$items_id', '$itemtype');\">";
-      }
+//      if ($tickets_id == 0) {
+         $result .=   " <img src=\"../pics/delete.png\" onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\">";
+//      }
       $result .=   "</div>";
       
       return $result;

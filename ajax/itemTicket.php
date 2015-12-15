@@ -34,38 +34,44 @@
 $AJAX_INCLUDE = 1;
 include ('../inc/includes.php');
 
-header('Content-Type: application/json; charset=UTF-8"');
+header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 $item_ticket = new Item_Ticket();
-Toolbox::logDebug($_GET);
+
 switch ($_GET['action']) {
-   case 'addItem':
+   case 'add':
       if (isset($_GET['my_items']) && !empty($_GET['my_items'])) {
          list($_GET['itemtype'], $_GET['items_id']) = explode('_', $_GET['my_items']);
       }
-      if (isset($_GET['items_id']) && !empty($_GET['items_id'])) {
+      if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
          $added = true;
-         if ($_GET['tickets_id'] > 0) {
-            $added = $item_ticket->add($_GET);
+         if ($_GET['params']['id'] > 0) {
+            $added = $item_ticket->add(array('tickets_id' => $_GET['params']['id'], 
+                                             'items_id'   => $_GET['items_id'], 
+                                             'itemtype'   => $_GET['itemtype']));
          }
-         $result = null;
          if ($added) {
-            $result = Item_Ticket::showItemToAdd($_GET['tickets_id'], $_GET['itemtype'], $_GET['items_id'], array('rand' => $_GET['rand']));
+            $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
          }
-
-         echo json_encode(array('itemtype' => $_GET['itemtype'], 'items_id' => $_GET['items_id'], 'result' => $result));
       }
+      Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
       break;
       
-//   case 'deleteItem':
-//      $result = false;
-//      if (isset($_GET['items_id']) && !empty($_GET['items_id'])) {
-//         $result = $item_ticket->deleteByCriteria(array('items_id' => $_GET['items_id'], 'itemtype' => $_GET['itemtype']));
-//      }
-//      echo json_encode(array('itemtype' => $_GET['itemtype'], 'items_id' => $_GET['items_id'], 'result' => $result));
-//      break;
+   case 'delete':
+      if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
+         $deleted = true;
+         if ($_GET['params']['id'] > 0) {
+            $deleted = $item_ticket->deleteByCriteria(array('items_id' => $_GET['items_id'], 
+                                                            'itemtype' => $_GET['itemtype']));
+         }
+         if ($deleted) {
+            unset($_GET['params']['items_id'][$_GET['itemtype']][array_search($_GET['items_id'], $_GET['params']['items_id'][$_GET['itemtype']])]);
+         }
+      }
+      Item_Ticket::itemAddForm(new Ticket(), $_GET['params']);
+      break;
 }
 
 ?>
