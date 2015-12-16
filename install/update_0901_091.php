@@ -36,7 +36,7 @@
 */
 
 /**
- * Update from 0.90 to 0.90.1
+ * Update from 0.90.1 to 0.91
  *
  * @return bool for success (will die for most error)
 **/
@@ -68,7 +68,10 @@ function update0901to091() {
       $migration->displayWarning("You can delete backup tables if you have no need of them.",
                                  true);
    }
-   
+
+   Config::setConfigurationValues('core', array('set_default_requester' => 1));
+   $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
+
    // TEMPLATE UPDATE
    if (isIndex('glpi_tickettemplatepredefinedfields', 'unicity')) {
       $DB->queryOrDie("ALTER TABLE `glpi_tickettemplatepredefinedfields`
