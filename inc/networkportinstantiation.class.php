@@ -369,7 +369,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       $macItemWithItems = array();
 
-      foreach (array('NetworkPort', 'NetworkEquipment') as $netporttype) {
+      foreach (array('NetworkPort') as $netporttype) {
          $netport = new $netporttype();
 
          $query = "SELECT `id`
@@ -416,16 +416,20 @@ class NetworkPortInstantiation extends CommonDBChild {
             }
          }
       }
-
-      if (count($macs_with_items) == 1) {
-         $mac_with_items = $macs_with_items[0];
-         $item           = $mac_with_items[0];
-         $result         = array("id"       => $item->getID(),
-                                 "itemtype" => $item->getType());
-         unset($macs_with_items);
-         return $result;
+      
+      if (count($macs_with_items)) {
+         // Get the first item that is matching entity
+         foreach ($macs_with_items as $items) {
+            foreach ($items as $item) {
+               if ($item->getEntityID() == $entity) {
+                  $result = array("id"       => $item->getID(),
+                                  "itemtype" => $item->getType());
+                  unset($macs_with_items);
+                  return $result;
+               }
+            }
+         }
       }
-
       return array();
    }
 

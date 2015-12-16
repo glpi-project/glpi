@@ -462,6 +462,7 @@ class Dropdown {
       $params['emptylabel']   = self::EMPTY_VALUE;
       $params['display']      = true;
       $params['width']        = '80%';
+      $params['rand']         = mt_rand();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -482,7 +483,8 @@ class Dropdown {
       return self::showFromArray($name, $options, array('value'   => $params['value'],
                                                         'used'    => $params['used'],
                                                         'width'   => $params['width'],
-                                                        'display' => $params['display']));
+                                                        'display' => $params['display'],
+                                                        'rand'    => $params['rand']));
    }
 
 

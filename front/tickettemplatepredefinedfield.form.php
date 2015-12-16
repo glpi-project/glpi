@@ -44,7 +44,9 @@ $item = new TicketTemplatePredefinedField();
 // Use masiveaction system to manage add value
 if (isset($_POST["massiveaction"])) {
    $item->check(-1, UPDATE, $_POST);
-
+   if (isset($_POST['items_tickets_id']) && isset($_POST['add_items_id'])) {
+      $_POST['items_tickets_id'] = $_POST['items_tickets_id']."_".$_POST['add_items_id'];
+   }
    if ($item->add($_POST)) {
       Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
                  //TRANS: %s is the user login

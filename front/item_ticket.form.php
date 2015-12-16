@@ -45,6 +45,10 @@ if (isset($_POST["add"])) {
    if (isset($_POST['my_items']) && !empty($_POST['my_items'])) {
       list($_POST['itemtype'], $_POST['items_id']) = explode('_', $_POST['my_items']);
    }
+   
+   if (isset($_POST['add_items_id'])) {
+      $_POST['items_id'] = $_POST['add_items_id'];
+   }
 
    if(!isset($_POST['items_id']) || empty($_POST['items_id'])){
       $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
