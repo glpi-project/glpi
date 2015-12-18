@@ -1260,6 +1260,7 @@ class Document extends CommonDBTM {
                 ORDER BY `name`";
       $result = $DB->query($query);
 
+      $values = array();
       while ($data = $DB->fetch_assoc($result)) {
          $values[$data['id']] = $data['name'];
       }
