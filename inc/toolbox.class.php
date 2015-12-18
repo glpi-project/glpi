@@ -2062,8 +2062,7 @@ class Toolbox {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
-      $values = array(Dropdown::EMPTY_VALUE,
-                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/imap' => __('IMAP'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/pop' => __('POP'),);
@@ -2071,18 +2070,18 @@ class Toolbox {
       $svalue = (!empty($tab['type'])?'/'.$tab['type']:'');
 
       Dropdown::showFromArray('server_type', $values,
-                              array('value' => $svalue));
-      $values = array(Dropdown::EMPTY_VALUE,
-                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+                              array('value'               => $svalue,
+                                    'display_emptychoice' => true));
+      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/ssl' => __('SSL'));
 
       $svalue = ($tab['ssl']?'/ssl':'');
 
       Dropdown::showFromArray('server_ssl', $values,
-                              array('value' => $svalue));
+                              array('value'               => $svalue,
+                                    'display_emptychoice' => true));
 
-      $values = array(Dropdown::EMPTY_VALUE,
-                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/tls' => __('TLS'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/notls' => __('NO-TLS'),);
@@ -2096,11 +2095,11 @@ class Toolbox {
       }
 
       Dropdown::showFromArray('server_tls', $values,
-                              array('value' => $svalue,
-                                    'width' => '14%'));
+                              array('value'               => $svalue,
+                                    'width'               => '14%',
+                                    'display_emptychoice' => true));
 
-      $values = array(Dropdown::EMPTY_VALUE,
-                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/novalidate-cert' => __('NO-VALIDATE-CERT'),
                      //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/validate-cert' => __('VALIDATE-CERT'),);
@@ -2114,35 +2113,36 @@ class Toolbox {
       }
 
       Dropdown::showFromArray('server_cert', $values,
-                              array('value' => $svalue));
+                              array('value'               => $svalue,
+                                    'display_emptychoice' => true));
 
-      $values = array(Dropdown::EMPTY_VALUE,
-                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/norsh' => __('NORSH'));
 
       $svalue = ($tab['norsh'] === true?'/norsh':'');
 
       Dropdown::showFromArray('server_rsh', $values,
-                              array('value' => $svalue));
+                              array('value'               => $svalue,
+                                    'display_emptychoice' => true));
 
-      $values = array(Dropdown::EMPTY_VALUE,
-                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/secure' => __('SECURE'));
 
       $svalue = ($tab['secure'] === true?'/secure':'');
 
       Dropdown::showFromArray('server_secure', $values,
-                              array('value' => $svalue));
+                              array('value'               => $svalue,
+                                    'display_emptychoice' => true));
 
-      $values = array(Dropdown::EMPTY_VALUE,
-                     //TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
+      $values = array(//TRANS: imap_open option see http://www.php.net/manual/en/function.imap-open.php
                      '/debug' => __('DEBUG'));
 
       $svalue = ($tab['debug'] === true?'/debug':'');
 
       Dropdown::showFromArray('server_debug', $values,
-                              array('value' => $svalue,
-                                    'width' => '12%'));
+                              array('value'               => $svalue,
+                                    'width'               => '12%',
+                                    'display_emptychoice' => true));
 
 
       echo "<input type=hidden name=imap_string value='".$value."'>";

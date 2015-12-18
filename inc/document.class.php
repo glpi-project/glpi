@@ -1155,7 +1155,6 @@ class Document extends CommonDBTM {
       global $CFG_GLPI;
 
       if (is_dir(GLPI_UPLOAD_DIR)) {
-         $uploaded_files = array('' => Dropdown::EMPTY_VALUE);
 
          if ($handle = opendir(GLPI_UPLOAD_DIR)) {
             while (false !== ($file = readdir($handle))) {
@@ -1169,8 +1168,8 @@ class Document extends CommonDBTM {
             closedir($handle);
          }
 
-         if (count($uploaded_files) >1) {
-            Dropdown::showFromArray($myname, $uploaded_files);
+         if (count($uploaded_files) > 1) {
+            Dropdown::showFromArray($myname, $uploaded_files, array('display_emptychoice' => true));
          } else {
            _e('No file available');
          }
@@ -1261,15 +1260,14 @@ class Document extends CommonDBTM {
                 ORDER BY `name`";
       $result = $DB->query($query);
 
-      $values = array(0 => Dropdown::EMPTY_VALUE);
-
       while ($data = $DB->fetch_assoc($result)) {
          $values[$data['id']] = $data['name'];
       }
       $rand = mt_rand();
-      $out  = Dropdown::showFromArray('_rubdoc', $values, array('width'   => '30%',
-                                                                'rand'    => $rand,
-                                                                'display' => false));
+      $out  = Dropdown::showFromArray('_rubdoc', $values, array('width'               => '30%',
+                                                                'rand'                => $rand,
+                                                                'display'             => false,
+                                                                'display_emptychoice' => true));
       $field_id = Html::cleanId("dropdown__rubdoc$rand");
 
       $params   = array('rubdoc' => '__VALUE__',

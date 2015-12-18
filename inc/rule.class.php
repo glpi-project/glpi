@@ -1217,9 +1217,10 @@ class Rule extends CommonDBTM {
    function dropdownCriteria($options=array()) {
       global $CFG_GLPI;
 
-      $p['name']    = 'criteria';
-      $p['display'] = true;
-      $p['value']   = '';
+      $p['name']                = 'criteria';
+      $p['display']             = true;
+      $p['value']               = '';
+      $p['display_emptychoice'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1227,7 +1228,6 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $items      = array('' => Dropdown::EMPTY_VALUE);
       $group      = array();
       $groupname  = _n('Criterion', 'Criteria', Session::getPluralNumber());
       foreach ($this->getAllCriteria() as $ID => $crit) {
@@ -1261,10 +1261,11 @@ class Rule extends CommonDBTM {
    function dropdownActions($options=array()) {
       global $CFG_GLPI;
 
-      $p['name']    = 'field';
-      $p['display'] = true;
-      $p['used']    = array();
-      $p['value']   = '';
+      $p['name']                = 'field';
+      $p['display']             = true;
+      $p['used']                = array();
+      $p['value']               = '';
+      $p['display_emptychoice'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1298,7 +1299,6 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $items = array('' => Dropdown::EMPTY_VALUE);
       $value = '';
 
       foreach ($actions as $ID => $act) {
