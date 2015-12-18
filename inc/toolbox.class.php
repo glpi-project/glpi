@@ -1113,8 +1113,10 @@ class Toolbox {
          // This is not a SELinux system
          return 0;
       }
-
       $mode = exec("/usr/sbin/getenforce");
+      if (empty($mode)) {
+         $mode = "Unknown";
+      }
       //TRANS: %s is mode name (Permissive, Enforcing of Disabled)
       $msg  = sprintf(__('SELinux mode is %s'), $mode);
       if ($fordebug) {
@@ -1136,11 +1138,18 @@ class Toolbox {
       // Enforcing mode will block some feature (notif, ...)
       // Permissive mode will write lot of stuff in audit.log
 
+      if (!file_exists('/usr/sbin/getenforce')) {
+         // should always be there
+         return 0;
+      }
       $bools = array('httpd_can_network_connect', 'httpd_can_network_connect_db',
                      'httpd_can_sendmail');
       $msg2 = __s('Some features may require this to be on');
       foreach ($bools as $bool) {
          $state = exec('/usr/sbin/getsebool '.$bool);
+         if (empty($state)) {
+            $state = "$bool --> unkwown";
+         }
          //TRANS: %s is an option name
          $msg = sprintf(__('SELinux boolean configuration for %s'), $state);
          if ($fordebug) {
