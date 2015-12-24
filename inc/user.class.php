@@ -707,7 +707,7 @@ class User extends CommonDBTM {
          } else {
             //ldap jpegphoto synchronisation.
             if (isset($this->fields["authtype"])
-                && ($this->fields["authtype"] == Auth::LDAP 
+                && ($this->fields["authtype"] == Auth::LDAP
                      || Auth::isAlternateAuth($this->fields['authtype']))
                 && $picture = $this->syncLdapPhoto()) {
                if (!empty($picture)) {
@@ -1075,7 +1075,7 @@ class User extends CommonDBTM {
    function syncLdapPhoto() {
 
       if (isset($this->fields["authtype"])
-          && (($this->fields["authtype"] == Auth::LDAP) 
+          && (($this->fields["authtype"] == Auth::LDAP)
                || Auth::isAlternateAuth($this->fields['authtype']))) {
 
          if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
@@ -2031,12 +2031,12 @@ class User extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>" .  __('Default profile') . "</td><td>";
 
-            $options = array(0 => Dropdown::EMPTY_VALUE);
-            $options   += Dropdown::getDropdownArrayNames('glpi_profiles',
-                                                          Profile_User::getUserProfiles($this->fields['id']));
+            $options   = Dropdown::getDropdownArrayNames('glpi_profiles',
+                                                         Profile_User::getUserProfiles($this->fields['id']));
 
             Dropdown::showFromArray("profiles_id", $options,
-                                    array('value' => $this->fields["profiles_id"]));
+                                    array('value'               => $this->fields["profiles_id"],
+                                          'display_emptychoice' => true));
 
             echo "</td><td>" .  __('Default entity') . "</td><td>";
             $entities = Profile_User::getUserEntities($this->fields['id'],1);
@@ -2270,11 +2270,11 @@ class User extends CommonDBTM {
          if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . __('Default profile') . "</td><td>";
 
-            $options  = array(0 => Dropdown::EMPTY_VALUE);
-            $options += Dropdown::getDropdownArrayNames('glpi_profiles',
-                                                        Profile_User::getUserProfiles($this->fields['id']));
+            $options = Dropdown::getDropdownArrayNames('glpi_profiles',
+                                                       Profile_User::getUserProfiles($this->fields['id']));
             Dropdown::showFromArray("profiles_id", $options,
-                                    array('value' => $this->fields["profiles_id"]));
+                                    array('value'               => $this->fields["profiles_id"],
+                                          'display_emptychoice' => true));
             echo "</td>";
 
          } else {
@@ -3138,32 +3138,35 @@ class User extends CommonDBTM {
     * Make a select box with all glpi users where select key = name
     *
     * @param $options array of possible options:
-    *    - name         : string / name of the select (default is users_id)
+    *    - name           : string / name of the select (default is users_id)
     *    - value
-    *    - right        : string / limit user who have specific right :
-    *                         id -> only current user (default case);
-    *                         interface -> central ;
-    *                         all -> all users ;
-    *                         specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
-    *    - comments     : boolean / is the comments displayed near the dropdown (default true)
-    *    - entity       : integer or array / restrict to a defined entity or array of entities
-    *                      (default -1 : no restriction)
-    *    - entity_sons  : boolean / if entity restrict specified auto select its sons
-    *                      only available if entity is a single value not an array(default false)
-    *    - all          : Nobody or All display for none selected
-    *                         all=0 (default) -> Nobody
-    *                         all=1 -> All
-    *                         all=-1-> nothing
-    *    - rand         : integer / already computed rand value
-    *    - toupdate     : array / Update a specific item on select change on dropdown
-    *                      (need value_fieldname, to_update, url
-    *                      (see Ajax::updateItemOnSelectEvent for information)
-    *                      and may have moreparams)
-    *    - used         : array / Already used items ID: not to display in dropdown (default empty)
+    *    - right          : string / limit user who have specific right :
+    *                           id -> only current user (default case);
+    *                           interface -> central ;
+    *                           all -> all users ;
+    *                           specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
+    *    - comments       : boolean / is the comments displayed near the dropdown (default true)
+    *    - entity         : integer or array / restrict to a defined entity or array of entities
+    *                        (default -1 : no restriction)
+    *    - entity_sons    : boolean / if entity restrict specified auto select its sons
+    *                        only available if entity is a single value not an array(default false)
+    *    - all            : Nobody or All display for none selected
+    *                           all=0 (default) -> Nobody
+    *                           all=1 -> All
+    *                           all=-1-> nothing
+    *    - rand           : integer / already computed rand value
+    *    - toupdate       : array / Update a specific item on select change on dropdown
+    *                        (need value_fieldname, to_update, url
+    *                        (see Ajax::updateItemOnSelectEvent for information)
+    *                        and may have moreparams)
+    *    - used           : array / Already used items ID: not to display in dropdown (default empty)
     *    - ldap_import
-    *    - on_change    : string / value to transmit to "onChange"
-    *    - display      : boolean / display or get string (default true)
-    *    - width        : specific width needed (default 80%)
+    *    - on_change      : string / value to transmit to "onChange"
+    *    - display        : boolean / display or get string (default true)
+    *    - width          : specific width needed (default 80%)
+    *    - specific_tags  : array of HTML5 tags to add the the field
+    *    - url            : url of the ajax php code which should return the json data to show in
+    *                        the dropdown (default /ajax/getDropdownUsers.php)
     *
     * @return rand value if displayed / string if not
    **/
@@ -3186,6 +3189,8 @@ class User extends CommonDBTM {
       $p['rand']           = mt_rand();
       $p['display']        = true;
       $p['_user_index']   = 0;
+      $p['specific_tags']  = array();
+      $p['url']            = $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php" ;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -3234,10 +3239,11 @@ class User extends CommonDBTM {
                         'right'               => $p['right'],
                         'on_change'           => $p['on_change'],
                         'used'                => $p['used'],
-                        'entity_restrict'     => $p['entity']);
+                        'entity_restrict'     => $p['entity'],
+                        'specific_tags'       => $p['specific_tags']);
 
       $output   = Html::jsAjaxDropdown($p['name'], $field_id,
-                                       $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php",
+                                       $p['url'],
                                        $param);
 
       // Display comment

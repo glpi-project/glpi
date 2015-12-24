@@ -751,15 +751,13 @@ class Software extends CommonDBTM {
                 ORDER BY `glpi_softwares`.`name`";
       $result = $DB->query($query);
 
-      $values = array(0 => Dropdown::EMPTY_VALUE);
-
       if ($DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $softwares_id          = $data["id"];
             $values[$softwares_id] = $data["name"];
          }
       }
-      $rand = Dropdown::showFromArray('softwares_id', $values);
+      $rand = Dropdown::showFromArray('softwares_id', $values, array('display_emptychoice' => true));
 
       $paramsselsoft = array('softwares_id'    => '__VALUE__',
                              'entity_restrict' => $entity_restrict,

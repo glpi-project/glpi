@@ -75,6 +75,8 @@ class Dropdown {
     *    - permit_select_parent : boolean / for tree dropdown permit to see parent items
     *                                       not available by default (default false)
     *    - specific_tags        : array of HTML5 tags to add the the field
+    *    - url                  : url of the ajax php code which should return the json data to show in
+    *                                       the dropdown
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -109,6 +111,7 @@ class Dropdown {
       $params['permit_select_parent'] = false;
       $params['addicon']              = true;
       $params['specific_tags']        = array();
+      $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php" ;
 
 
       if (is_array($options) && count($options)) {
@@ -177,7 +180,7 @@ class Dropdown {
                 );
 
       $output = Html::jsAjaxDropdown($params['name'], $field_id,
-                                     $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",
+                                     $params['url'],
                                      $p);
       // Display comment
       if ($params['comments']) {
@@ -470,8 +473,6 @@ class Dropdown {
          }
       }
 
-      $options = array('' => $params['emptylabel']);
-
       if (count($types)) {
          foreach ($types as $type) {
             if ($item = getItemForItemtype($type)) {
@@ -480,11 +481,12 @@ class Dropdown {
          }
       }
       asort($options);
-      return self::showFromArray($name, $options, array('value'   => $params['value'],
-                                                        'used'    => $params['used'],
-                                                        'width'   => $params['width'],
-                                                        'display' => $params['display'],
-                                                        'rand'    => $params['rand']));
+      return self::showFromArray($name, $options, array('value'      => $params['value'],
+                                                        'used'       => $params['used'],
+                                                        'width'      => $params['width'],
+                                                        'display'    => $params['display'],
+                                                        'rand'       => $params['rand'],
+                                                        'emptylabel' => $params['emptylabel']));
    }
 
 
@@ -547,14 +549,14 @@ class Dropdown {
             closedir($dh);
             sort($files);
 
-            $values = array('' => self::EMPTY_VALUE);
             foreach ($files as $file) {
                if (preg_match("/\.png$/i",$file)) {
                   $values[$file] = $file;
                }
             }
             Dropdown::showFromArray($myname, $values,
-                                    array('value' => $value));
+                                    array('value'               => $value,
+                                          'display_emptychoice' => true));
 
          } else {
             //TRANS: %s is the store path
@@ -895,7 +897,6 @@ class Dropdown {
 
       echo "<table class='tab_cadre' width='50%'>";
       echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$title."&nbsp; ";
-      $values   = array('' => self::EMPTY_VALUE);
       $selected = '';
 
       foreach ($optgroup as $label => $dp) {
@@ -910,7 +911,8 @@ class Dropdown {
       }
       Dropdown::showFromArray('dpmenu', $values,
                               array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
-                                    'value'     => $selected));
+                                    'value'               => $selected,
+                                    'display_emptychoice' => true));
 
       echo "</td></tr>";
       echo "</table><br>";
@@ -967,15 +969,6 @@ class Dropdown {
    **/
    static function showLanguages($myname, $options=array()) {
       global $CFG_GLPI;
-
-      $values = array();
-      if (isset($options['display_emptychoice']) && ($options['display_emptychoice'])) {
-         if (isset($options['emptylabel'])) {
-            $values[''] = $options['emptylabel'];
-         } else {
-            $values[''] = self::EMPTY_VALUE;
-         }
-      }
 
       foreach ($CFG_GLPI["languages"] as $key => $val) {
          if (isset($val[1]) && is_file(GLPI_ROOT ."/locales/".$val[1])) {
@@ -1139,15 +1132,14 @@ class Dropdown {
          }
       }
       asort($options);
-      if ($params['display_emptychoice']) {
-         $options = array_merge(array(0=>$params['emptylabel']), $options);
-      }
 
       if (count($options)) {
          return Dropdown::showFromArray($params['name'], $options,
-                                        array('value'     => $params['value'],
-                                              'on_change' => $params['on_change'],
-                                              'toupdate'  => $params['toupdate'],));
+                                        array('value'               => $params['value'],
+                                              'on_change'           => $params['on_change'],
+                                              'toupdate'            => $params['toupdate'],
+                                              'display_emptychoice' => $params['display_emptychoice'],
+                                              'emptylabel'          => $params['emptylabel']));
       }
       return 0;
    }
@@ -1485,9 +1477,6 @@ class Dropdown {
       }
 
       $values = array();
-      if ($params['display_emptychoice']) {
-         $values = array(0 => $params['emptylabel']);
-      }
 
       if ($params['value']) {
          $values[$params['value']] = '';
@@ -1548,9 +1537,12 @@ class Dropdown {
             }
          }
       }
-      return Dropdown::showFromArray($myname, $values, array('value'   => $params['value'],
-                                                             'display' => $params['display'],
-                                                             'width'   => $params['width'],));
+      return Dropdown::showFromArray($myname, $values,
+                                     array('value'                => $params['value'],
+                                            'display'             => $params['display'],
+                                            'width'               => $params['width'],
+                                            'display_emptychoice' => $params['display_emptychoice'],
+                                            'emptylabel'          => $params['emptylabel']));
    }
 
 
@@ -1658,17 +1650,19 @@ class Dropdown {
    **/
    static function showFromArray($name, array $elements, $options=array()) {
 
-      $param['value']           = '';
-      $param['values']          = array('');
-      $param['used']            = array();
-      $param['readonly']        = false;
-      $param['on_change']       = '';
-      $param['width']           = '';
-      $param['multiple']        = false;
-      $param['size']            = 1;
-      $param['display']         = true;
-      $param['other']           = false;
-      $param['rand']            = mt_rand();
+      $param['value']               = '';
+      $param['values']              = array('');
+      $param['used']                = array();
+      $param['readonly']            = false;
+      $param['on_change']           = '';
+      $param['width']               = '';
+      $param['multiple']            = false;
+      $param['size']                = 1;
+      $param['display']             = true;
+      $param['other']               = false;
+      $param['rand']                = mt_rand();
+      $param['emptylabel']          = self::EMPTY_VALUE;
+      $param['display_emptychoice'] = false;
 
       if (is_array($options) && count($options)) {
          if (isset($options['value']) && strlen($options['value'])) {
@@ -1694,6 +1688,10 @@ class Dropdown {
          }
       }
 
+      if ($param["display_emptychoice"]) {
+         array_unshift($elements, $param['emptylabel']);
+      }
+
       if ($param["multiple"]) {
          $field_name = $name."[]";
       } else {
@@ -1713,7 +1711,6 @@ class Dropdown {
          }
          $output .= implode('<br>',$to_display);
       } else {
-
 
          $output  .= "<select name='$field_name' id='$field_id'";
 
@@ -1739,7 +1736,6 @@ class Dropdown {
                   $max_option_size = strlen($opt_goup);
                }
                $output .= "<optgroup label=\"$opt_goup\">";
-
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
                      $output .= "<option value='".$key2."'";

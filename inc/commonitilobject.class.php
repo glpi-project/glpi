@@ -623,11 +623,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_requester']['_type']) {
                case "user" :
-                  if (isset($input['_itil_requester']['use_notification']) 
+                  if (isset($input['_itil_requester']['use_notification'])
                       && is_array($input['_itil_requester']['use_notification'])) {
                      $input['_itil_requester']['use_notification'] = $input['_itil_requester']['use_notification'][0];
                   }
-                  if (isset($input['_itil_requester']['alternative_email']) 
+                  if (isset($input['_itil_requester']['alternative_email'])
                       && is_array($input['_itil_requester']['alternative_email'])) {
                      $input['_itil_requester']['alternative_email'] = $input['_itil_requester']['alternative_email'][0];
                   }
@@ -679,11 +679,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_observer']['_type']) {
                case "user" :
-                  if (isset($input['_itil_observer']['use_notification']) 
+                  if (isset($input['_itil_observer']['use_notification'])
                       && is_array($input['_itil_observer']['use_notification'])) {
                      $input['_itil_observer']['use_notification'] = $input['_itil_observer']['use_notification'][0];
                   }
-                  if (isset($input['_itil_observer']['alternative_email']) 
+                  if (isset($input['_itil_observer']['alternative_email'])
                       && is_array($input['_itil_observer']['alternative_email'])) {
                      $input['_itil_observer']['alternative_email'] = $input['_itil_observer']['alternative_email'][0];
                   }
@@ -733,11 +733,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_assign']['_type']) {
                case "user" :
-                  if (isset($input['_itil_assign']['use_notification']) 
+                  if (isset($input['_itil_assign']['use_notification'])
                       && is_array($input['_itil_assign']['use_notification'])) {
                      $input['_itil_assign']['use_notification'] = $input['_itil_assign']['use_notification'][0];
                   }
-                  if (isset($input['_itil_assign']['alternative_email']) 
+                  if (isset($input['_itil_assign']['alternative_email'])
                       && is_array($input['_itil_assign']['alternative_email'])) {
                      $input['_itil_assign']['alternative_email'] = $input['_itil_assign']['alternative_email'][0];
                   }
@@ -3248,8 +3248,7 @@ abstract class CommonITILObject extends CommonDBTM {
       global $CFG_GLPI;
 
 
-      $types = array(''      => Dropdown::EMPTY_VALUE,
-                     'user'  => __('User'));
+      $types = array('user'  => __('User'));
 
       if ($withgroup) {
          $types['group'] = __('Group');
@@ -3298,7 +3297,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       echo "<div ".($inobject?"style='display:none'":'')." id='itilactor$rand_type' class='actor-dropdown'>";
-      $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
+      $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types,
+                                        array('display_emptychoice' => true));
       $params = array('type'            => '__VALUE__',
                       'actortype'       => $typename,
                       'itemtype'        => $this->getType(),
