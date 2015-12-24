@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -703,7 +703,6 @@ class MassiveAction {
                }
 
                if (count($itemtypes) > 1) {
-                  $options        = array(0 => Dropdown::EMPTY_VALUE);
                   $common_options = array();
                   foreach ($options_count as $field => $users) {
                      if (count($users) > 1) {
@@ -730,8 +729,7 @@ class MassiveAction {
                      $itemtype_choices[$itemtype] = $itemtype::getTypeName(Session::getPluralNumber());
                   }
                } else {
-                  $options         = array(0 => Dropdown::EMPTY_VALUE);
-                  $options        += $options_per_type[$itemtypes[0]];
+                  $options        = $options_per_type[$itemtypes[0]];
                   $common_options  = false;
                   $choose_itemtype = false;
                }
@@ -764,7 +762,8 @@ class MassiveAction {
                echo "</tr><tr>";
                if ($choose_field) {
                   echo "<td>";
-                  $field_rand = Dropdown::showFromArray('id_field', $options);
+                  $field_rand = Dropdown::showFromArray('id_field', $options,
+                                                        array('display_emptychoice' => true));
                   echo "</td>";
                }
                if ($choose_itemtype) {

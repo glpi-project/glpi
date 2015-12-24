@@ -1242,7 +1242,6 @@ class Contract extends CommonDBTM {
       $result = $DB->query($query);
 
 
-      $values = array(0 => Dropdown::EMPTY_VALUE);
       $group  = '';
       $prev   = -1;
       while ($data = $DB->fetch_assoc($result)) {
@@ -1268,9 +1267,10 @@ class Contract extends CommonDBTM {
          }
       }
       return Dropdown::showFromArray($p['name'], $values,
-                                     array('value'     => $p['value'],
-                                           'on_change' => $p['on_change'],
-                                           'display'   => $p['display']));
+                                     array('value'               => $p['value'],
+                                           'on_change'           => $p['on_change'],
+                                           'display'             => $p['display'],
+                                           'display_emptychoice' => true));
    }
 
 

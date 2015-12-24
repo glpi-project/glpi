@@ -199,10 +199,11 @@ class SoftwareVersion extends CommonDBChild {
       global $CFG_GLPI, $DB;
 
       //$softwares_id,$value=0
-      $p['softwares_id'] = 0;
-      $p['value']        = 0;
-      $p['name']         = 'softwareversions_id';
-      $p['used']         = array();
+      $p['softwares_id']          = 0;
+      $p['value']                 = 0;
+      $p['name']                  = 'softwareversions_id';
+      $p['used']                  = array();
+      $p['display_emptychoice']   = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -225,7 +226,6 @@ class SoftwareVersion extends CommonDBChild {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      $values = array(0 => Dropdown::EMPTY_VALUE);
       if ($number) {
          while ($data = $DB->fetch_assoc($result)) {
             $ID     = $data['id'];
