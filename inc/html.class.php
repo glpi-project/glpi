@@ -2310,7 +2310,7 @@ class Html {
     *          - shortcut : keyboard shortcut letter
     */
    static function displayMenuAll($menu = array()) {
-      global $CFG_GLPI;
+      global $CFG_GLPI,$PLUGIN_HOOKS;
 
       // Display MENU ALL
       echo "<div id='show_all_menu' class='invisible'>";
@@ -2336,12 +2336,19 @@ class Html {
 
                if (isset($val['page'])
                    && isset($val['title'])) {
-                  echo "<tr><td><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
-
+                  echo "<tr><td>";
+                  
+                  if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
+                     echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$val['page']."'";
+                  } else {
+                     echo "<a href='".$CFG_GLPI["root_doc"].$val['page']."'";
+                  }
                   if (isset($data['shortcut']) && !empty($data['shortcut'])) {
                      echo " accesskey='".$val['shortcut']."'";
                   }
-                  echo ">".$val['title']."</a></td></tr>\n";
+                  echo ">";
+ 
+                  echo $val['title']."</a></td></tr>\n";
                   $i++;
                }
             }
