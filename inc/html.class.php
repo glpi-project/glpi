@@ -2338,7 +2338,8 @@ class Html {
                    && isset($val['title'])) {
                   echo "<tr><td>";
                   
-                  if (is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
+                  if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])
+                        && is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
                      echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$val['page']."'";
                   } else {
                      echo "<a href='".$CFG_GLPI["root_doc"].$val['page']."'";
