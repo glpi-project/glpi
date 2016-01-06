@@ -4305,7 +4305,8 @@ abstract class CommonITILObject extends CommonDBTM {
 //             return true;
 //          }
 //       }
-      if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+      if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+          && $itemtype::canView()) {
          return true;
       }
       return false;
