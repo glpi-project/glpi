@@ -932,7 +932,7 @@ class Profile_User extends CommonDBRelation {
             case 'Entity' :
                if (Session::haveRight('user', READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     $query_nb.= "AND entities_id = '".$item->getID()."'";
+                     $query_nb.= "AND `glpi_profiles_users`.`entities_id` = '".$item->getID()."'";
                      $result_nb = $DB->query($query_nb);
                      $data_nb   = $DB->fetch_assoc($result_nb);
                      $nb        = $data_nb['cpt'];
