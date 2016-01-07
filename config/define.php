@@ -52,6 +52,7 @@ define("PURGE",      16);
 define("ALLSTANDARDRIGHT", 31);
 define("READNOTE",   32);
 define("UPDATENOTE", 64);
+define("UNLOCK",     128);
 
 // dictionnaries
 // 0 Name - 1 lang file - 2 extjs - 3 tiny_mce - 4 english lang name
@@ -249,7 +250,7 @@ $CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'Co
                                                   'MailCollector', 'PlanningRecall',
                                                   'Problem', 'Project', 'ProjectTask',
                                                   'Reservation', 'SoftwareLicense',
-                                                  'Ticket', 'User');
+                                                  'Ticket', 'User', 'ObjectLock');
 
 $CFG_GLPI["notificationmethods_types"]    = array('NotificationMail');
 
@@ -296,10 +297,12 @@ $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_forma
                                      'number_format', 'pdffont', 'priority_1',
                                      'priority_2', 'priority_3', 'priority_4', 'priority_5',
                                      'priority_6', 'refresh_ticket_list', 'set_default_tech',
-                                     'show_count_on_tabs', 'show_jobs_at_login', 'task_private',
-                                     'task_state', 'use_flat_dropdowntree', 'layout',
-                                     'ticket_timeline', 'ticket_timeline_keep_replaced_tabs',
-                                     'palette');
+                                     'set_default_requester', 'show_count_on_tabs',
+                                     'show_jobs_at_login', 'task_private', 'task_state',
+                                     'use_flat_dropdowntree', 'layout', 'ticket_timeline',
+                                     'ticket_timeline_keep_replaced_tabs', 'palette',
+                                     'lock_autolock_mode',
+                                     'lock_directunlock_notification');
 
 
 $CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
