@@ -519,6 +519,9 @@ class Entity extends CommonTreeDropdown {
       $tab[16]['name']          = __('Comments');
       $tab[16]['datatype']      = 'text';
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       $tab += Notepad::getSearchOptionsToAdd();
 
       $tab['advanced']         = __('Advanced information');

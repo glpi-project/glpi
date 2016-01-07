@@ -2777,6 +2777,9 @@ class User extends CommonDBTM {
                                                                   'condition'
                                                                    => 'AND NEWTABLE.`type`
                                                                         = '.CommonITILActor::ASSIGN)));
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       return $tab;
    }
 
