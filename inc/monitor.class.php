@@ -546,6 +546,9 @@ class Monitor extends CommonDBTM {
       $tab[82]['datatype']       = 'bool';
       $tab[82]['massiveaction']  = false;
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       $tab += Notepad::getSearchOptionsToAdd();
 
       return $tab;

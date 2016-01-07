@@ -208,6 +208,12 @@ class Config extends CommonDBTM {
             }
          }
       }
+
+      // lock mechanism update
+      if( isset( $input['lock_use_lock_item'] ) ) { 
+          $input['lock_item_list'] = exportArrayToDB( $input['lock_item_list'] ) ;
+      } 
+      
       // Beware : with new management system, we must update each value
       unset($input['id']);
       unset($input['_glpi_csrf_token']);
@@ -375,6 +381,34 @@ class Config extends CommonDBTM {
       Dropdown::showFromArray('allow_search_all', $values,
                               array('value' => $CFG_GLPI['allow_search_all']));
       echo "</td><td colspan='2'></td></tr>";
+
+      echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>".__('Item locks')."</th></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('Use locks') . "</td><td>";
+      Dropdown::showYesNo("lock_use_lock_item", $CFG_GLPI["lock_use_lock_item"]);
+      
+      echo "</td><td>". __('Profile to be used when locking items')."</td><td>";
+      //$values = array(0 => Dropdown::EMPTY_VALUE);
+      $values = array();
+      foreach( getAllDatasFromTable('glpi_profiles' ) as $key => $prof ){
+          $values[$key] = $prof['name'] ;
+      }
+      Dropdown::showFromArray('lock_lockprofile_id', $values,
+                            array('value'             => $CFG_GLPI['lock_lockprofile_id'],
+                                'readonly'            => !$CFG_GLPI["lock_use_lock_item"],
+                                'display_emptychoice' => true
+                                ));
+      echo "</td></tr>";
+  
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('List of items to lock') . "</td>";
+      echo "<td  colspan=3>";
+      Dropdown::showFromArray('lock_item_list', ObjectLock::getLockableObjects(), 
+          array('values' => $CFG_GLPI['lock_item_list'], 
+                'width' => '50%', 
+                'multiple' => true,
+                'readonly'  => !$CFG_GLPI["lock_use_lock_item"]));
+      echo "</td></tr>";
 
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
@@ -1156,6 +1190,17 @@ class Config extends CommonDBTM {
                               array('value' => $data['duedatecritical_unit']));
       echo "</td></tr>";
 
+      if( $oncentral && $CFG_GLPI["lock_use_lock_item"] ) {
+         echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>".__('Item locks')."</th></tr>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>" . __('Auto-lock Mode') . "</td><td>";
+         Dropdown::showYesNo("lock_autolock_mode", $data["lock_autolock_mode"]);
+         echo "</td><td>". __('Direct Notification (requester for unlock will be the notification sender)') . "</td><td>";
+         Dropdown::showYesNo("lock_directunlock_notification", $data["lock_directunlock_notification"]);         
+         echo "</td></tr>";
+      }
+
+
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
          echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
@@ -1895,7 +1940,6 @@ class Config extends CommonDBTM {
       }
       error_reporting($oldlevel);
       set_error_handler($oldhand);
-
       return $error;
    }
 
