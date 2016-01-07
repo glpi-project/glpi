@@ -815,9 +815,6 @@ class Computer extends CommonDBTM {
       $tab[80]['name']           = __('Entity');
       $tab[80]['datatype']       = 'dropdown';
 
-      // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
-
       $tab += Notepad::getSearchOptionsToAdd();
 
       $tab['periph']             = _n('Component', 'Components', Session::getPluralNumber());

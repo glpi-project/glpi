@@ -572,9 +572,6 @@ class NetworkEquipment extends CommonDBTM {
       $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
 
-      // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
-
       $tab += Notepad::getSearchOptionsToAdd();
 
       return $tab;
