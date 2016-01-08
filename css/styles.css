@@ -2666,7 +2666,7 @@ ul#menu ul.ssmenu {
    margin-right: 0;
    margin-left: 20px;
    word-wrap: break-word;
-   white-space: pre-wrap;
+   white-space: pre-line;
 }
 
 .timeline_history .right .h_content {
@@ -2679,6 +2679,11 @@ ul#menu ul.ssmenu {
 .timeline_history .middle .h_content {
    max-width: inherit;
    width: 69%;
+}
+
+.timeline_history .TicketContent .ticket_description p{
+   margin-top: 0px;
+   margin-bottom: 0px;
 }
 
 .timeline_history .h_content:after, .timeline_history .h_content:before {

@@ -3071,7 +3071,7 @@ class Ticket extends CommonITILObject {
          $content_id = "content$rand";
 
          if ($CFG_GLPI["use_rich_text"]) {
-            $values["content"] = $this->setRichTextContent($content_id, $values["content"], $rand);
+            $values["content"] = $this->setRichTextContent($values["content"], $rand, array('rand' => $rand, 'content_id' => $content_id));
             $cols              = 100;
             $rows              = 10;
          } else {
@@ -3419,13 +3419,11 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      // Clean new lines to be fix encoding
       if (isset($values['content'])) {
-         // Clean new lines to be fix encoding
-         $order            = array('\\r', '\\n', "\\");
-         $replace          = array("", "", "");
-
-         $values['content'] = str_replace($order,$replace,$values['content']);
+         $values['content'] = str_replace(array('\\r', '\\n', "\\"),"",$values['content']);
       }
+      
       if (isset($values['name'])) {
          $values['name'] = str_replace("\\", "", $values['name']);
       }
@@ -4189,7 +4187,7 @@ class Ticket extends CommonITILObject {
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
       if (!$ID
           || $canupdate_descr) {
-         $content = Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
+         $content = Html::entity_decode_deep($this->fields['content']);
          Html::showTooltip(nl2br(Html::Clean($content)));
       }
       echo $tt->getEndHiddenFieldText('content')."</th>";
@@ -4204,9 +4202,10 @@ class Ticket extends CommonITILObject {
          $content_id = "content$rand";
 
          if ($CFG_GLPI["use_rich_text"]) {
-            $this->fields["content"] = $this->setRichTextContent($content_id,
-                                                                 $this->fields["content"],
-                                                                 $rand);
+            Toolbox::logDebug($this->fields["content"]);
+            $this->fields["content"] = $this->setRichTextContent($this->fields["content"], 
+                                                                 array('rand'       => $rand, 
+                                                                       'content_id' => $content_id));
             $cols = 100;
             $rows = 10;
          } else {
@@ -5994,17 +5993,23 @@ class Ticket extends CommonITILObject {
     * Convert simple text content to rich text content, init html editor
     *
     * @since version 0.85
-    *
-    * @param $name       name of textarea
-    * @param $content    content to convert in html
-    * @param $rand
-    *
-    * @return $content
-   **/
-   function setRichTextContent($name, $content, $rand) {
+    * 
+    * @param type $content
+    * @param type $options
+    * @return type
+    */
+   function setRichTextContent($content, $options=array()) {
+      $params = array('rand'       => mt_rand(), 
+                      'content_id' => null);
+      
+      foreach ($options as $key => $val) {
+         $params[$key] = $val;
+      }
 
       // Init html editor
-      Html::initEditorSystem($name, $rand);
+      if ($params['content_id'] != null) {
+         Html::initEditorSystem($params['content_id'], $params['rand']);
+      }
 
       // If no html
       if ($content == strip_tags($content)) {
@@ -6016,6 +6021,7 @@ class Ticket extends CommonITILObject {
 
       if (!preg_match("/<br\s?\/?>/", $content) && !preg_match("/<p>/", $content)) {
          $content = nl2br($content);
+         $content = str_replace(array("\n", "\r", "\r\n"), "",$content);
       }
       return Toolbox::clean_cross_side_scripting_deep($content);
    }
@@ -6426,10 +6432,12 @@ class Ticket extends CommonITILObject {
          echo "<div class='ticket_title'>";
          echo html_entity_decode($this->fields['name']);
          echo "</div>";
+         
+         Html::loadRichText(array('content_id' => 'ticket_description',
+                                  'items_id'   => $this->fields['id'],
+                                  'itemtype'   => $this->getType(),
+                                  'field'      => 'content'));
 
-         echo "<div class='ticket_description'>";
-         echo Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
-         echo "</div>";
 
          echo "</div>"; // h_content TicketContent
 

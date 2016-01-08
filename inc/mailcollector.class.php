@@ -750,24 +750,23 @@ class MailCollector  extends CommonDBTM {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
-      $is_html = false;
       //If files are present and content is html
       if (isset($this->files)
           && count($this->files)
           && ($tkt['content'] != strip_tags($tkt['content']))
           && !isset($tkt['tickets_id'])) {
-         $is_html = true;
          $tkt['content'] = Ticket::convertContentForTicket($tkt['content'],
                                                            array_merge($this->files, $this->altfiles),
                                                            $this->tags);
       }
+
       $striptags = true;
       if ($CFG_GLPI["use_rich_text"] && !isset($tkt['tickets_id'])) {
          $striptags = false;
       }
       $tkt['content'] = $this->cleanMailContent($tkt['content'], $striptags);
 
-      if ($is_html && !isset($tkt['tickets_id'])) {
+      if (!$striptags && !isset($tkt['tickets_id'])) {
          $tkt['content'] = nl2br($tkt['content']);
       }
 
@@ -914,7 +913,6 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-      $tkt = Toolbox::addslashes_deep($tkt);
       return $tkt;
    }
 
@@ -930,6 +928,8 @@ class MailCollector  extends CommonDBTM {
    **/
    function cleanMailContent($string, $striptags = true) {
       global $DB;
+      
+      $string = html::cleanWordTags($string);
 
       // delete html tags
       if ($striptags) {
@@ -958,6 +958,7 @@ class MailCollector  extends CommonDBTM {
          $string = str_replace($itemstoclean, '', $string);
       }
       $string = str_replace("==$rand==", "\n", $string);
+
       return $string;
    }
 

@@ -107,6 +107,19 @@ class Html {
       return trim($value);
    }
 
+   /**
+    * Clean MS Word tags
+    * 
+    * @param type $string
+    * @return type
+    */
+   static function cleanWordTags($string) {
+      $string = str_replace(array("<![if !supportLists]>", "<![endif]>", "<o:p>", "</o:p>"), "", $string);
+      $string = preg_replace("/<(\/)?(font|span|del|ins)[^>]*>/", "", $string);
+      $string = preg_replace("/<([^>]*)(class|lang|style|size|face)=(\"[^\"]*\"|'[^']*'|[^>]+)([^>]*)>/", "<\\1>", $string);
+
+      return $string;
+   }
 
    /**
     * Recursivly execute html_entity_decode on an Array
@@ -3847,7 +3860,7 @@ class Html {
          paste_retain_style_properties : '',
          paste_block_drop : true,
          paste_preprocess : function(pl, o) {
-            _html = o.content;
+            _html = o.content;console.log(_html);
             if (_html.match(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g)){
                _html = _html.replace(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g, '');
                o.content = _html;
@@ -3870,7 +3883,7 @@ class Html {
             setTimeout(
                function(){
                   ed.execCommand('mceAutoResize');
-               }, 1);4204
+               }, 1);
                if (tinymce.isIE) {
                   tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
                      return tinymce.dom.Event.cancel(e);
@@ -3930,6 +3943,29 @@ class Html {
                   tinyMCE.imagePaste = $(document).IE_support_imagePaste(".json_encode($params).");
               }
               uploadFile$rand();");
+   }
+   
+   /**
+    * Load iframe to set html content safety
+    *
+    * @param $options   array of possible options:
+    *    - content_id : ID of the iframe
+    *    - items_id   : ID of the item
+    *    - itemtype   : Type of item
+    *    - field      : Field to display
+    * 
+    */
+   static function loadRichText($options=array()) {
+      global $CFG_GLPI;
+      
+      $urlParams = array();
+      foreach ($options as $key => $val) {
+         $urlParams[] = $key."=".$val;
+      }
+
+      echo "<div><iframe id='ticket_description' 
+            src='".$CFG_GLPI['root_doc']."/front/loadRichText.php?".implode('&', $urlParams)."' 
+            width='100%' marginWidth='0' marginHeight='0' frameBorder='0'></iframe>";
    }
 
 
