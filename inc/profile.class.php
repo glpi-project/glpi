@@ -1396,7 +1396,6 @@ class Profile extends CommonDBTM {
 
       $dropdown_rights = CommonDBTM::getRights();
       unset($dropdown_rights[DELETE]);
-      unset($dropdown_rights[UNLOCK]);
 
       $rights = array(array('itemtype'  => 'Config',
                             'label'     => __('General setup'),
@@ -1508,9 +1507,6 @@ class Profile extends CommonDBTM {
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
       $tab[16]['datatype']       = 'text';
-
-      // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab['inventory']          = __('Assets');
 

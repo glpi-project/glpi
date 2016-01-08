@@ -323,9 +323,6 @@ class ConsumableItem extends CommonDBTM {
       $tab[80]['massiveaction']     = false;
       $tab[80]['datatype']          = 'dropdown';
 
-      // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
-
       $tab += Notepad::getSearchOptionsToAdd();
 
       return $tab;

@@ -38,7 +38,7 @@
 include ('../inc/includes.php');
 
 Session::checkLoginUser();
-// not used $fup   = new TicketFollowup();
+$fup   = new TicketFollowup();
 $track = new Ticket();
 
 if (!isset($_GET['id'])) {

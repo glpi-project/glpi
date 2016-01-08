@@ -2787,9 +2787,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[64]['datatype']            = 'dropdown';
       $tab[64]['right']               = 'all';
 
-      // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
-
       return $tab;
    }
 

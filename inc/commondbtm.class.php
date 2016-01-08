@@ -3090,9 +3090,6 @@ class CommonDBTM extends CommonGLPI {
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['massiveaction'] = false;
 
-      // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
-
       return $tab;
    }
 
@@ -3170,13 +3167,7 @@ class CommonDBTM extends CommonGLPI {
     * @return an array of massive actions
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
-      // test if current profile has rights to unlock current item type
-      if( Session::haveRight( static::$rightname, UNLOCK) ) {
-         return array( 'ObjectLock'.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock' => _x('button', 'Unlock items'));
-      } else {
-         return array();
-      }
-
+      return array();
    }
 
 
@@ -4307,8 +4298,6 @@ class CommonDBTM extends CommonGLPI {
                       UPDATE  => __('Update'),
                       PURGE   => array('short' => __('Purge'),
                                        'long'  => _x('button', 'Delete permanently')));
-
-      $values += ObjectLock::getRightsToAdd( get_class($this), $interface ) ;
 
       if ($this->maybeDeleted()) {
          $values[DELETE] = array('short' => __('Delete'),
