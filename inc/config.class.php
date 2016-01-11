@@ -211,7 +211,7 @@ class Config extends CommonDBTM {
 
       // lock mechanism update
       if( isset( $input['lock_use_lock_item'] ) ) { 
-          $input['lock_item_list'] = exportArrayToDB( $input['lock_item_list'] ) ;
+          $input['lock_item_list'] = exportArrayToDB( (isset($input['lock_item_list']) ?  $input['lock_item_list'] : array() ) );
       } 
       
       // Beware : with new management system, we must update each value

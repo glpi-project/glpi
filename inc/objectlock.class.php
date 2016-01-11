@@ -43,47 +43,13 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Itemlock is dedicated to manage real-time lock of items in GLPI.
  *
- * Item locks are used to lock items like Ticket, Computer, Reminder, ..., see list in ObjectLock::$lockableObjects
+ * Item locks are used to lock items like Ticket, Computer, Reminder, ..., see list in $CFG_GLPI['lock_lockable_objects']
  * 
  * @author Olivier Moron
  * @since version 0.91
  *
  */
 class ObjectLock extends CommonDBTM {
-
-   static private $lockableObjects = array(
-                                      'Ticket'
-                                    , 'Problem'
-                                    , 'Change'
-
-                                    , 'Budget'
-                                    , 'Supplier'
-                                    , 'Contact'
-                                    , 'Contract'
-                                    , 'Document'
-
-                                    , 'Project'
-                                    , 'Reminder'
-                                    , 'RSSFeed'
-                                    , 'KnowbaseItem'
-
-                                    , 'Computer'
-                                    , 'Monitor'
-                                    , 'Software'
-                                    , 'NetworkEquipment'
-                                    , 'Peripheral'
-                                    , 'Printer'
-                                    , 'CartridgeItem'
-                                    , 'ConsumableItem'
-                                    , 'Phone'
-                                    , 'Link'
-                                    , 'NetworkName'
-
-                                    , 'User'
-                                    , 'Group'
-                                    , 'Entity'
-                                    , 'Profile'
-                                     ) ;
 
    private $itemtype = "";
    private $itemtypename = "";
@@ -124,8 +90,9 @@ class ObjectLock extends CommonDBTM {
     * Returns an array of lockable objects 'itemtype' => 'plural itemtype'
     */
    static function getLockableObjects( ) {
+      global $CFG_GLPI ;
       $ret = array() ;
-      foreach( self::$lockableObjects as $lo ){
+      foreach( $CFG_GLPI['lock_lockable_objects'] as $lo ){
          $ret[$lo] = $lo::getTypeName(Session::getPluralNumber()) ;
       }
       asort($ret, SORT_STRING) ;
@@ -255,12 +222,12 @@ class ObjectLock extends CommonDBTM {
     * If lock can't be set (i.e.: someone has already locked it), LockedBy message is shown accordingly, and read-only profile is set
     * @return bool: true if locked
     */
-   function lockObject( ) {
+   private function lockObject( ) {
       global $CFG_GLPI;
       $ret = false ;
-      if( $CFG_GLPI["lock_use_lock_item"] &&
-          $CFG_GLPI["lock_lockprofile_id"] > 0 &&
-          in_array($this->itemtype, $CFG_GLPI['lock_item_list']) ) {
+      //if( $CFG_GLPI["lock_use_lock_item"] &&
+      //    $CFG_GLPI["lock_lockprofile_id"] > 0 &&
+      //    in_array($this->itemtype, $CFG_GLPI['lock_item_list']) ) {
          if( !($gotIt = $this->getFromDBByQuery( "WHERE itemtype = '".$this->itemtype."' AND items_id = ".$this->itemid." " )) &&
             $id = $this->add( array( 'itemtype' => $this->itemtype, 'items_id' => $this->itemid, 'users_id' => Session::getLoginUserID() ) ) ) {
             // add a script to unlock the Object
@@ -289,7 +256,7 @@ class ObjectLock extends CommonDBTM {
             // and if autolock was set for this item then unset it
             unset($_SESSION['glpilock_autolock_items'][ $this->itemtype ][ $this->itemid ] ) ;
          }
-      }
+     // }
       return $ret ;
    }
 
@@ -343,7 +310,9 @@ class ObjectLock extends CommonDBTM {
             // this mask is mandatory to prevent read of information that are not permitted to view by active profile
             ProfileRight::getAllPossibleRights( ) ;
             foreach( $_SESSION['glpi_all_possible_rights'] as $key => $val ){
-               $_SESSION['glpiactiveprofile'][$key] = intval($_SESSION['glpilocksavedprofile'][$key]) & (isset($CFG_GLPI['lock_lockprofile'][$key])?intval($CFG_GLPI['lock_lockprofile'][$key]):0) ;
+               if( isset( $_SESSION['glpilocksavedprofile'][$key] ) ) {
+                  $_SESSION['glpiactiveprofile'][$key] = intval($_SESSION['glpilocksavedprofile'][$key]) & (isset($CFG_GLPI['lock_lockprofile'][$key])?intval($CFG_GLPI['lock_lockprofile'][$key]):0) ;
+               }
             }
             // don't forget entities
             $_SESSION['glpiactiveprofile']['entities'] = $_SESSION['glpilocksavedprofile']['entities'] ;
@@ -373,10 +342,18 @@ class ObjectLock extends CommonDBTM {
       global $CFG_GLPI, $_SESSION ;
       if( isset( $options['id']  ) && $options['id'] > 0 ) {
          $ol = new self( $itemtype, $options['id'] ) ;
+         $template = (isset( $options['withtemplate'] ) && $options['withtemplate'] > 0 ? true : false ) ;
+        if( $itemtype == 'Contact' || $itemtype == 'Supplier' ) {
+           $module = 'contact_enterprise' ;
+        } else {
+         $module = strtolower($itemtype) ;
+        }
          if( $_SESSION["glpiactiveprofile"]["interface"] == "central" &&
             $CFG_GLPI["lock_use_lock_item"] &&
             $CFG_GLPI["lock_lockprofile_id"] > 0 &&
-            in_array($ol->itemtype, $CFG_GLPI['lock_item_list'])) {
+            in_array($itemtype, $CFG_GLPI['lock_item_list']) &&
+            Session::haveRightsOr( $module, array( UPDATE, DELETE, PURGE, UPDATENOTE )) &&
+            !$template) {
 
             if( !$ol->autoLockMode( ) || !$ol->lockObject( $options['id'] ) ) {
                $options['locked'] = 1 ;
@@ -422,7 +399,6 @@ class ObjectLock extends CommonDBTM {
                   $('.ui-dialog-titlebar-close', ui.dialog | ui).hide();                  
                },
                show: {
-                  delay: 250,
                   effect: 'slide',
                   direction: 'up',
                   duration: 800
@@ -502,7 +478,7 @@ class ObjectLock extends CommonDBTM {
       if( $interface == "central" &&
          $CFG_GLPI["lock_use_lock_item"] &&
          $CFG_GLPI["lock_lockprofile_id"] > 0 &&
-         in_array( $itemtype, self::$lockableObjects) ) {
+         in_array( $itemtype, $CFG_GLPI['lock_lockable_objects']) ) {
          $ret = array(UNLOCK  => __('Unlock') ) ;
       }
       return $ret ;

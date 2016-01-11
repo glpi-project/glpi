@@ -316,4 +316,9 @@ $CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
                                            "common.tabs.php",
                                            "entity.form.php");
 
+$CFG_GLPI['lock_lockable_objects'] = array( 'Ticket', 'Problem', 'Change', 
+                                            'Budget', 'Supplier', 'Contact', 'Contract', 'Document',
+                                            'Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
+                                            'Computer', 'Monitor', 'Software', 'NetworkEquipment', 'Peripheral', 'Printer', 'CartridgeItem', 'ConsumableItem', 'Phone', 'Link', 'NetworkName',
+                                            'User', 'Group', 'Entity', 'Profile') ;
 ?>

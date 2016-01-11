@@ -169,8 +169,40 @@ function update0901to091() {
                            'typedoc' => '1',
                            'user' => '2177') ) ;
 
-   Config::setConfigurationValues('core', array('lock_autolock_mode'   => 1,
+   // updates rights for Super-Admin profile
+   ProfileRight::updateProfileRights(4,
+               array( 'budget' => '255',
+                           'cartridge' => '255',
+                           'change' => '1279',
+                           'computer' => '255',
+                           'consumable' => '255',
+                           'contact_enterprise' => '255',
+                           'contract' => '255',
+                           'document' => '255',
+                           'entity' => '3319',
+                           'group' => '151',
+                           'internet' => '159',
+                           'knowbase' => '7319',
+                           'link' => '151',
+                           'monitor' => '255',
+                           'networking' => '255',
+                           'peripheral' => '255',
+                           'phone' => '255',
+                           'printer' => '255',
+                           'problem' => '1279',
+                           'profile' => '151',
+                           'project' => '1279',
+                           'reminder_public' => '151',
+                           'rssfeed_public' => '151',
+                           'software' => '255',
+                           'ticket' => '128159',
+                           'user' => '7327' ) ) ;
+
+
+   Config::setConfigurationValues('core', array( 'lock_use_lock_item' => 0,
+                                             'lock_autolock_mode'   => 1,
                                              'lock_directunlock_notification' => 0,
+                                             'lock_item_list' => '[]',
                                              'lock_lockprofile_id' => $ret));
 
    // cron task
