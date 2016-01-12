@@ -212,6 +212,10 @@ class SoftwareLicense extends CommonDBTM {
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('Item_Problem', $ong, $options);
+      $this->addStandardTab('Change_Item', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
       return $ong;
    }
@@ -283,6 +287,36 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+
+      echo "<td>" . __('Technician in charge of the hardware') . "</td><td>";
+      User::dropdown(array('name'   => 'users_id_tech',
+                           'value'  => $this->fields["users_id_tech"],
+                           'right'  => 'own_ticket',
+                           'entity' => $this->fields["entities_id"]));
+      echo "</td>";
+
+      echo "<td>".__('Group in charge of the hardware')."</td>";
+      echo "<td>";
+      Group::dropdown(array('name'      => 'groups_id_tech',
+                            'value'     => $this->fields['groups_id_tech'],
+                            'entity'    => $this->fields['entities_id'],
+                            'condition' => '`is_assign`'));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td >" . __('User') . "</td>";
+      echo "<td >";
+      User::dropdown(array('value'  => $this->fields["users_id"],
+                           'entity' => $this->fields["entities_id"],
+                           'right'  => 'all'));
+      echo "</td>";
+      echo "<td>" . __('Group') . "</td><td>";
+      Group::dropdown(array('value'     => $this->fields["groups_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => '`is_itemgroup`'));
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Purchase version')."</td>";
       echo "<td>";
       SoftwareVersion::dropdown(array('name'         => "softwareversions_id_buy",
@@ -304,6 +338,13 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td rowspan='".(($ID > 0) ?'4':'3')."' class='middle'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='".(($ID > 0) ?'4':'3')."'>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Location') . "</td><td>";
+      Location::dropdown(array('value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]));
+      echo "</td>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -334,6 +375,11 @@ class SoftwareLicense extends CommonDBTM {
          Html::showToolTip(__('On search engine, use "Expiration contains NULL" to search licenses with no expiration date'));
       }
       Alert::displayLastAlert('SoftwareLicense', $ID);
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Associable to a ticket') . "</td><td>";
+      Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
       echo "</td></tr>\n";
 
       if ($ID > 0) {
@@ -399,6 +445,8 @@ class SoftwareLicense extends CommonDBTM {
       $tab[2]['massiveaction']   = false;
       $tab[2]['datatype']        = 'number';
 
+      $tab+=Location::getSearchOptionsToAdd();
+
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'serial';
       $tab[3]['name']            = __('Serial number');
@@ -455,6 +503,34 @@ class SoftwareLicense extends CommonDBTM {
       $tab[10]['field']           = 'name';
       $tab[10]['name']            = __('Software');
       $tab[10]['datatype']        = 'itemlink';
+
+      $tab[24]['table']          = 'glpi_users';
+      $tab[24]['field']          = 'name';
+      $tab[24]['linkfield']      = 'users_id_tech';
+      $tab[24]['name']           = __('Technician in charge of the hardware');
+      $tab[24]['datatype']       = 'dropdown';
+      $tab[24]['right']          = 'own_ticket';
+
+      $tab[49]['table']          = 'glpi_groups';
+      $tab[49]['field']          = 'completename';
+      $tab[49]['linkfield']      = 'groups_id_tech';
+      $tab[49]['name']           = __('Group in charge of the hardware');
+      $tab[49]['condition']      = '`is_assign`';
+      $tab[49]['datatype']       = 'dropdown';
+
+      $tab[70]['table']          = 'glpi_users';
+      $tab[70]['field']          = 'name';
+      $tab[70]['name']           = __('User');
+      $tab[70]['datatype']       = 'dropdown';
+      $tab[70]['right']          = 'all';
+
+      $tab[71]['table']          = 'glpi_groups';
+      $tab[71]['field']          = 'completename';
+      $tab[71]['name']           = __('Group');
+      $tab[71]['condition']      = '`is_itemgroup`';
+      $tab[71]['datatype']       = 'dropdown';
+
+      $tab += Notepad::getSearchOptionsToAdd();
 
       return $tab;
    }

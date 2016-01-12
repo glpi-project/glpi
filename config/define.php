@@ -196,24 +196,29 @@ $CFG_GLPI["reservation_types"]            = array('Computer', 'Monitor', 'Networ
                                                   'Peripheral', 'Phone', 'Printer', 'Software');
 
 $CFG_GLPI["linkuser_types"]               = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense');
 
 $CFG_GLPI["linkgroup_types"]              = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense');
 
 $CFG_GLPI["linkuser_tech_types"]          = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense');
 
 $CFG_GLPI["linkgroup_tech_types"]         = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense');
 
 $CFG_GLPI["location_types"]               = array('CartridgeItem', 'ConsumableItem', 'Computer',
                                                   'Monitor', 'Netpoint',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'User');
+                                                  'Printer', 'Software', 'User', 'SoftwareLicense');
 
 $CFG_GLPI["ticket_types"]                 = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense');
 
 $CFG_GLPI["link_types"]                   = array('Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
@@ -272,7 +277,8 @@ $CFG_GLPI['planning_types']               = array('ChangeTask', 'ProblemTask', '
 
 $CFG_GLPI["globalsearch_types"]           = array('Computer', 'Contact', 'Document',  'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'Supplier', 'Ticket');
+                                                  'Printer', 'Software', 'Supplier', 'Ticket',
+                                                  'SoftwareLicense');
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;
