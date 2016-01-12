@@ -388,16 +388,13 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("lock_use_lock_item", $CFG_GLPI["lock_use_lock_item"]);
       
       echo "</td><td>". __('Profile to be used when locking items')."</td><td>";
-      //$values = array(0 => Dropdown::EMPTY_VALUE);
-      $values = array();
-      foreach( getAllDatasFromTable('glpi_profiles' ) as $key => $prof ){
-          $values[$key] = $prof['name'] ;
+      if( $CFG_GLPI["lock_use_lock_item"] ) {
+         Profile::dropdown(array('name'                  => 'lock_lockprofile_id', 
+                                 'display_emptychoice'   => true,
+                                 'value'                 => $CFG_GLPI['lock_lockprofile_id']));
+      } else {
+         echo dropdown::getDropdownName( Profile::getTable(), $CFG_GLPI['lock_lockprofile_id']) ;
       }
-      Dropdown::showFromArray('lock_lockprofile_id', $values,
-                            array('value'             => $CFG_GLPI['lock_lockprofile_id'],
-                                'readonly'            => !$CFG_GLPI["lock_use_lock_item"],
-                                'display_emptychoice' => true
-                                ));
       echo "</td></tr>";
   
       echo "<tr class='tab_bg_2'>";
