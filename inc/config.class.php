@@ -402,7 +402,7 @@ class Config extends CommonDBTM {
       echo "<td  colspan=3>";
       Dropdown::showFromArray('lock_item_list', ObjectLock::getLockableObjects(), 
           array('values' => $CFG_GLPI['lock_item_list'], 
-                'width' => '50%', 
+                'width' => '100%', 
                 'multiple' => true,
                 'readonly'  => !$CFG_GLPI["lock_use_lock_item"]));
       echo "</td></tr>";
