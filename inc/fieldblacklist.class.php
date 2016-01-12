@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -253,7 +253,6 @@ class Fieldblacklist extends CommonDropdown {
 
       } else {
          //Add criteria : display dropdown
-         $options[0] = Dropdown::EMPTY_VALUE;
          foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
                if ($item->can(-1, READ)) {
@@ -263,7 +262,8 @@ class Fieldblacklist extends CommonDropdown {
          }
          asort($options);
          $rand = Dropdown::showFromArray('itemtype', $options,
-                                         array('value' => $this->fields['value']));
+                                         array('value'               => $this->fields['value'],
+                                               'display_emptychoice' => true));
 
          $params = array('itemtype' => '__VALUE__',
                          'id'       => $this->fields['id']);

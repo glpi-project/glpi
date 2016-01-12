@@ -282,71 +282,71 @@ class Item_Ticket extends CommonDBRelation{
             continue;
          }
 
-         if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-            $itemtable = getTableForItemType($itemtype);
-            $query = "SELECT `$itemtable`.*,
-                             `glpi_items_tickets`.`id` AS IDD,
-                             `glpi_entities`.`id` AS entity
-                      FROM `glpi_items_tickets`,
-                           `$itemtable`";
+         $itemtable = getTableForItemType($itemtype);
+         $query = "SELECT `$itemtable`.*,
+                          `glpi_items_tickets`.`id` AS IDD,
+                          `glpi_entities`.`id` AS entity
+                   FROM `glpi_items_tickets`,
+                        `$itemtable`";
 
-            if ($itemtype != 'Entity') {
-               $query .= " LEFT JOIN `glpi_entities`
-                                 ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
-            }
-
-            $query .= " WHERE `$itemtable`.`id` = `glpi_items_tickets`.`items_id`
-                              AND `glpi_items_tickets`.`itemtype` = '$itemtype'
-                              AND `glpi_items_tickets`.`tickets_id` = '$instID'";
-
-            if ($item->maybeTemplate()) {
-               $query .= " AND `$itemtable`.`is_template` = '0'";
-            }
-
-            $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',
-                                                 $item->maybeRecursive())."
-                      ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
-
-            $result_linked = $DB->query($query);
-            $nb            = $DB->numrows($result_linked);
-
-            for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-               $name = $data["name"];
-               if ($_SESSION["glpiis_ids_visible"]
-                   || empty($data["name"])) {
-                  $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
-               }
-               if($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
-                  $link     = $itemtype::getFormURLWithID($data['id']);
-                  $namelink = "<a href=\"".$link."\">".$name."</a>";
-               } else {
-                  $namelink = $name;
-               }
-
-               echo "<tr class='tab_bg_1'>";
-               if ($canedit) {
-                  echo "<td width='10'>";
-                  Html::showMassiveActionCheckBox(__CLASS__, $data["IDD"]);
-                  echo "</td>";
-               }
-               if ($prem) {
-                  $typename = $item->getTypeName($nb);
-                  echo "<td class='center top' rowspan='$nb'>".
-                         (($nb > 1) ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename)."</td>";
-               }
-               echo "<td class='center'>";
-               echo Dropdown::getDropdownName("glpi_entities", $data['entity'])."</td>";
-               echo "<td class='center".
-                        (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
-               echo ">".$namelink."</td>";
-               echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-").
-                    "</td>";
-               echo "<td class='center'>".
-                      (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
-               echo "</tr>";
-            }
-            $totalnb += $nb;
+         if ($itemtype != 'Entity') {
+            $query .= " LEFT JOIN `glpi_entities`
+                              ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
          }
+
+         $query .= " WHERE `$itemtable`.`id` = `glpi_items_tickets`.`items_id`
+                           AND `glpi_items_tickets`.`itemtype` = '$itemtype'
+                           AND `glpi_items_tickets`.`tickets_id` = '$instID'";
+
+         if ($item->maybeTemplate()) {
+            $query .= " AND `$itemtable`.`is_template` = '0'";
+         }
+
+         $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',
+                                              $item->maybeRecursive())."
+                   ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
+
+         $result_linked = $DB->query($query);
+         $nb            = $DB->numrows($result_linked);
+
+         for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
+            $name = $data["name"];
+            if ($_SESSION["glpiis_ids_visible"]
+                || empty($data["name"])) {
+               $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
+            }
+            if($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk'
+               && $itemtype::canView()) {
+               $link     = $itemtype::getFormURLWithID($data['id']);
+               $namelink = "<a href=\"".$link."\">".$name."</a>";
+            } else {
+               $namelink = $name;
+            }
+
+            echo "<tr class='tab_bg_1'>";
+            if ($canedit) {
+               echo "<td width='10'>";
+               Html::showMassiveActionCheckBox(__CLASS__, $data["IDD"]);
+               echo "</td>";
+            }
+            if ($prem) {
+               $typename = $item->getTypeName($nb);
+               echo "<td class='center top' rowspan='$nb'>".
+                      (($nb > 1) ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename)."</td>";
+            }
+            echo "<td class='center'>";
+            echo Dropdown::getDropdownName("glpi_entities", $data['entity'])."</td>";
+            echo "<td class='center".
+                     (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
+            echo ">".$namelink."</td>";
+            echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-").
+                 "</td>";
+            echo "<td class='center'>".
+                   (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
+            echo "</tr>";
+         }
+         $totalnb += $nb;
+         
       }
 
       if ($number) {

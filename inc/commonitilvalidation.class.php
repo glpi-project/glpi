@@ -619,11 +619,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       global $CFG_GLPI;
 
-      $types            = array(0       => Dropdown::EMPTY_VALUE,
-                                'user'  => __('User'),
+      $types            = array('user'  => __('User'),
                                 'group' => __('Group'));
 
-      $rand             = Dropdown::showFromArray("validatortype", $types);
+      $rand             = Dropdown::showFromArray("validatortype", $types,
+                                                  array('display_emptychoice' => true));
 
       $paramsmassaction = array('validatortype' => '__VALUE__',
                                 'entity'        => $_SESSION['glpiactive_entity'],
@@ -1230,8 +1230,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $params[$key] = $val;
       }
 
-      $types = array(0       => Dropdown::EMPTY_VALUE,
-                     'user'  => __('User'),
+      $types = array('user'  => __('User'),
                      'group' => __('Group'));
 
       $type  = '';
@@ -1241,7 +1240,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $type = 'user';
       }
 
-      $rand = Dropdown::showFromArray("validatortype", $types, array('value' => $type));
+      $rand = Dropdown::showFromArray("validatortype", $types,
+                                      array('value'               => $type,
+                                            'display_emptychoice' => true));
 
       if ($type) {
          $params['validatortype'] = $type;

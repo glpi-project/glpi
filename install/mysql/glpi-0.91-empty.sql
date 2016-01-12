@@ -6754,6 +6754,7 @@ CREATE TABLE `glpi_users` (
   `palette` char(20) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ticket_timeline` tinyint(1) DEFAULT NULL,
   `ticket_timeline_keep_replaced_tabs` tinyint(1) DEFAULT NULL,
+  `set_default_requester` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`name`),
   KEY `firstname` (`firstname`),

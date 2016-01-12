@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -86,7 +86,6 @@ if (class_exists($_POST["itemtype"])
    $result = $DB->query($query);
 
    echo "<br>";
-   $values = array(0 => Dropdown::EMPTY_VALUE);
 
    if ($DB->numrows($result)) {
       while ($data = $DB->fetch_assoc($result)) {
@@ -114,6 +113,6 @@ if (class_exists($_POST["itemtype"])
          $values[$ID] = $output_long;
       }
    }
-   Dropdown::showFromArray($_POST['myname'], $values);
+   Dropdown::showFromArray($_POST['myname'], $values, array('display_emptychoice' => true));
 }
 ?>

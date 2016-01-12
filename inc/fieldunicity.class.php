@@ -167,7 +167,6 @@ class FieldUnicity extends CommonDropdown {
 
       } else {
          //Add criteria : display dropdown
-         $options[0] = Dropdown::EMPTY_VALUE;
          foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
                if ($item->canCreate()) {
@@ -176,8 +175,7 @@ class FieldUnicity extends CommonDropdown {
             }
          }
          asort($options);
-//          print_r($options);
-         $rand = Dropdown::showFromArray('itemtype', $options);
+         $rand = Dropdown::showFromArray('itemtype', $options, array('display_emptychoice' => true));
 
          $params = array('itemtype' => '__VALUE__',
                          'id'       => $ID);

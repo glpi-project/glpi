@@ -1993,7 +1993,7 @@ class Html {
 
       //  Create ticket
       if (Session::haveRight("ticket", CREATE)) {
-         $menu['create_ticket']['id']      = "menu1";
+         $menu['create_ticket']['id']      = "menu2";
          $menu['create_ticket']['default'] = '/front/helpdesk.public.php?create_ticket=1';
          $menu['create_ticket']['title']   = __s('Create a ticket');
          $menu['create_ticket']['content'] = array(true);
@@ -2003,7 +2003,7 @@ class Html {
       if (Session::haveRight("ticket", CREATE) 
           || Session::haveRight("ticket", Ticket::READMY)
           || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
-         $menu['tickets']['id']      = "menu2";
+         $menu['tickets']['id']      = "menu3";
          $menu['tickets']['default'] = '/front/ticket.php';
          $menu['tickets']['title']   = _n('Ticket','Tickets', Session::getPluralNumber());
          $menu['tickets']['content'] = array(true);
@@ -2011,7 +2011,7 @@ class Html {
       
       // Reservation
       if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
-         $menu['reservation']['id']      = "menu3";
+         $menu['reservation']['id']      = "menu4";
          $menu['reservation']['default'] = '/front/reservationitem.php';
          $menu['reservation']['title']   = _n('Reservation', 'Reservations', Session::getPluralNumber());
          $menu['reservation']['content'] = array(true);
@@ -2019,7 +2019,7 @@ class Html {
       
       // FAQ
       if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-         $menu['faq']['id']      = "menu4";
+         $menu['faq']['id']      = "menu5";
          $menu['faq']['default'] = '/front/helpdesk.faq.php';
          $menu['faq']['title']   = __s('FAQ');
          $menu['faq']['content'] = array(true);
@@ -2310,7 +2310,7 @@ class Html {
     *          - shortcut : keyboard shortcut letter
     */
    static function displayMenuAll($menu = array()) {
-      global $CFG_GLPI;
+      global $CFG_GLPI,$PLUGIN_HOOKS;
 
       // Display MENU ALL
       echo "<div id='show_all_menu' class='invisible'>";
@@ -2336,12 +2336,20 @@ class Html {
 
                if (isset($val['page'])
                    && isset($val['title'])) {
-                  echo "<tr><td><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
-
+                  echo "<tr><td>";
+                  
+                  if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])
+                        && is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
+                     echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$val['page']."'";
+                  } else {
+                     echo "<a href='".$CFG_GLPI["root_doc"].$val['page']."'";
+                  }
                   if (isset($data['shortcut']) && !empty($data['shortcut'])) {
                      echo " accesskey='".$val['shortcut']."'";
                   }
-                  echo ">".$val['title']."</a></td></tr>\n";
+                  echo ">";
+ 
+                  echo $val['title']."</a></td></tr>\n";
                   $i++;
                }
             }
@@ -4557,6 +4565,9 @@ class Html {
                         text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
                      }
                      return text;
+                  },
+                  formatResult: function (result, container) {
+                     return $('<div>', {title: result.title}).text(result.text);
                   }
 
              });";
@@ -4676,6 +4687,7 @@ class Html {
 
                         },
                         formatResult: function(result, container, query, escapeMarkup) {
+                           container.attr('title', result.title);
                            var markup=[];
                            window.Select2.util.markMatch(result.text, query.term, markup, escapeMarkup);
                            if (result.level) {

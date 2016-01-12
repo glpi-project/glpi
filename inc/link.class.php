@@ -62,7 +62,7 @@ class Link extends CommonDBTM {
                           getEntitiesRestrictRequest(" AND ", "glpi_links", '', '', false);
             $nb = countElementsInTable(array('glpi_links_itemtypes','glpi_links'), $restrict);
          }
-         return self::createTabEntry(self::getTypeName(),Session::getPluralNumber(), $nb);
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }

@@ -3581,7 +3581,7 @@ class CommonDBTM extends CommonGLPI {
                          || $p['add_event_on_duplicate']) {
                         $message = array();
                         foreach (explode(',',$fields['fields']) as $field) {
-                           $message[$fiels] = $this->input[$field];
+                           $message[$fields] = $this->input[$field];
                         }
 
                         $doubles      = getAllDatasFromTable($this->gettable(),

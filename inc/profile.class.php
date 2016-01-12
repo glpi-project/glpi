@@ -2245,8 +2245,6 @@ class Profile extends CommonDBTM {
          }
       }
 
-      $profiles[0] = Dropdown::EMPTY_VALUE;
-
       $query = "SELECT *
                 FROM `glpi_profiles` ".
                 self::getUnderActiveProfileRestrictRequest("WHERE")."
@@ -2259,7 +2257,9 @@ class Profile extends CommonDBTM {
             $profiles[$data['id']] = $data['name'];
          }
       }
-      Dropdown::showFromArray($p['name'], $profiles, array('value' => $p['value']));
+      Dropdown::showFromArray($p['name'], $profiles,
+                              array('value'               => $p['value'],
+                                    'display_emptychoice' => true));
    }
 
 

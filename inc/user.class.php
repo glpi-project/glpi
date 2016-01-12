@@ -707,7 +707,7 @@ class User extends CommonDBTM {
          } else {
             //ldap jpegphoto synchronisation.
             if (isset($this->fields["authtype"])
-                && ($this->fields["authtype"] == Auth::LDAP 
+                && ($this->fields["authtype"] == Auth::LDAP
                      || Auth::isAlternateAuth($this->fields['authtype']))
                 && $picture = $this->syncLdapPhoto()) {
                if (!empty($picture)) {
@@ -1075,7 +1075,7 @@ class User extends CommonDBTM {
    function syncLdapPhoto() {
 
       if (isset($this->fields["authtype"])
-          && (($this->fields["authtype"] == Auth::LDAP) 
+          && (($this->fields["authtype"] == Auth::LDAP)
                || Auth::isAlternateAuth($this->fields['authtype']))) {
 
          if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
@@ -2031,12 +2031,12 @@ class User extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>" .  __('Default profile') . "</td><td>";
 
-            $options = array(0 => Dropdown::EMPTY_VALUE);
-            $options   += Dropdown::getDropdownArrayNames('glpi_profiles',
-                                                          Profile_User::getUserProfiles($this->fields['id']));
+            $options   = Dropdown::getDropdownArrayNames('glpi_profiles',
+                                                         Profile_User::getUserProfiles($this->fields['id']));
 
             Dropdown::showFromArray("profiles_id", $options,
-                                    array('value' => $this->fields["profiles_id"]));
+                                    array('value'               => $this->fields["profiles_id"],
+                                          'display_emptychoice' => true));
 
             echo "</td><td>" .  __('Default entity') . "</td><td>";
             $entities = Profile_User::getUserEntities($this->fields['id'],1);
@@ -2270,11 +2270,11 @@ class User extends CommonDBTM {
          if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . __('Default profile') . "</td><td>";
 
-            $options  = array(0 => Dropdown::EMPTY_VALUE);
-            $options += Dropdown::getDropdownArrayNames('glpi_profiles',
-                                                        Profile_User::getUserProfiles($this->fields['id']));
+            $options = Dropdown::getDropdownArrayNames('glpi_profiles',
+                                                       Profile_User::getUserProfiles($this->fields['id']));
             Dropdown::showFromArray("profiles_id", $options,
-                                    array('value' => $this->fields["profiles_id"]));
+                                    array('value'               => $this->fields["profiles_id"],
+                                          'display_emptychoice' => true));
             echo "</td>";
 
          } else {
@@ -3139,7 +3139,7 @@ class User extends CommonDBTM {
     *
     * @param $options array of possible options:
     *    - name           : string / name of the select (default is users_id)
-    *    - value         
+    *    - value
     *    - right          : string / limit user who have specific right :
     *                           id -> only current user (default case);
     *                           interface -> central ;
@@ -3160,7 +3160,7 @@ class User extends CommonDBTM {
     *                        (see Ajax::updateItemOnSelectEvent for information)
     *                        and may have moreparams)
     *    - used           : array / Already used items ID: not to display in dropdown (default empty)
-    *    - ldap_import   
+    *    - ldap_import
     *    - on_change      : string / value to transmit to "onChange"
     *    - display        : boolean / display or get string (default true)
     *    - width          : specific width needed (default 80%)
@@ -3191,7 +3191,7 @@ class User extends CommonDBTM {
       $p['_user_index']   = 0;
       $p['specific_tags']  = array();
       $p['url']            = $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php" ;
-      
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
