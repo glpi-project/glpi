@@ -438,7 +438,7 @@ class ObjectLock extends CommonDBTM {
       $tab                            = array();
 
       if( isset($_SESSION["glpiactiveprofile"]["interface"]) && $_SESSION["glpiactiveprofile"]["interface"] == "central" &&
-            $CFG_GLPI["lock_use_lock_item"] &&
+            isset( $CFG_GLPI["lock_use_lock_item"] ) && $CFG_GLPI["lock_use_lock_item"] &&
             $CFG_GLPI["lock_lockprofile_id"] > 0 &&
             in_array($itemtype, $CFG_GLPI['lock_item_list'])) {
 
