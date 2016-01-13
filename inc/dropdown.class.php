@@ -1688,7 +1688,8 @@ class Dropdown {
       }
 
       if ($param["display_emptychoice"]) {
-         array_unshift($elements, $param['emptylabel']);
+         //array_unshift($elements, $param['emptylabel']); // cannot be used as it doesn't preserve keys when they are numbers
+         $elements = array( 0 => $param['emptylabel'] ) + $elements ;
       }
 
       if ($param["multiple"]) {
