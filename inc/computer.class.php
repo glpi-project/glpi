@@ -526,19 +526,19 @@ class Computer extends CommonDBTM {
       echo "</td>";
 
       // Display auto inventory informations
-      $rowspan        = 10;
+      $rowspan        = 8;
       $inventory_show = false;
 
       if (!empty($ID)
           && Plugin::haveImport()
           && $this->fields["is_dynamic"]) {
          $inventory_show = true;
-         $rowspan       -= 4;
+         $rowspan       -= 5;
       }
 
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
-      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
+      echo "<textarea cols='45' rows='".($rowspan+5)."' name='comment' >".$this->fields["comment"];
       echo "</textarea></td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -552,20 +552,57 @@ class Computer extends CommonDBTM {
       echo "<td>".__('Operating system')."</td>";
       echo "<td>";
       OperatingSystem::dropdown(array('value' => $this->fields["operatingsystems_id"]));
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Service pack')."</td>";
-      echo "<td >";
-      OperatingSystemServicePack::dropdown(array('value'
-                                                 => $this->fields["operatingsystemservicepacks_id"]));
-      echo "</td></tr>\n";
+      echo "<br /><a href='#' id='toggle_os_information'>".__("More information")."</a>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Version of the operating system')."</td>";
       echo "<td >";
       OperatingSystemVersion::dropdown(array('value' => $this->fields["operatingsystemversions_id"]));
-      echo "</td></tr>\n";
+      echo "</td>";
+      if ($inventory_show) {
+         echo "<td rowspan='5'>".__('Automatic inventory')."</td>";
+         echo "<td rowspan='5'>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td>";
+      }
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td colspan='2'>";
+      echo Html::scriptBlock("
+      $(document).ready(function(){
+         $('#os_information').dialog({
+            autoOpen: false,
+            width:'auto',
+            resizable: false,
+            position: {
+               my : 'left top',
+               at : 'left bottom',
+               of: $('#toggle_os_information')
+            }
+         });
+
+         $('#toggle_os_information').on('click',function() {
+            $('#os_information').dialog('open');
+         })
+      });");
+
+      // group os advanced information in a single bloc (who can be toggled)
+      echo "<div style='display:none;' id='os_information' title=\"".__('Operating system')."\">";
+      echo "<table>";
+      echo "<tr class='tab_bg_1'>";
+
+      echo "<td>".__('Service pack')."</td>";
+      echo "<td >";
+      OperatingSystemServicePack::dropdown(array('value'
+                                                 => $this->fields["operatingsystemservicepacks_id"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Kernel version of the operating system')."</td>";
+      echo "<td >";
+      Html::autocompletionTextField($this, 'os_kernel_version');
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Product ID of the operating system')."</td>";
@@ -579,13 +616,10 @@ class Computer extends CommonDBTM {
       Html::autocompletionTextField($this, 'os_license_number');
       echo "</td>";
 
-      if ($inventory_show) {
-         echo "<td rowspan='4'>".__('Automatic inventory')."</td>";
-         echo "<td rowspan='4'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td>";
-      }
-      echo "</tr>\n";
+
+      echo "</table></div>";
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('UUID')."</td>";
