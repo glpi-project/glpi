@@ -821,6 +821,11 @@ class Document extends CommonDBTM {
       $tab[20]['massiveaction']  = false;
       $tab[20]['datatype']       = 'string';
 
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
+
       $tab[72]['table']          = 'glpi_documents_items';
       $tab[72]['field']          = 'id';
       $tab[72]['name']           = _x('quantity', 'Number of associated items');
