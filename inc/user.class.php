@@ -1782,7 +1782,8 @@ class User extends CommonDBTM {
             $buttons["user.form.php?new=1&amp;ext_auth=1"] = __('... From an external source');
          }
       }
-      if (Session::haveRight("user", self::IMPORTEXTAUTHUSERS)) {
+      if (Session::haveRight("user", self::IMPORTEXTAUTHUSERS)
+         && (static::canCreate() || static::canUpdate())) {
          if (AuthLdap::useAuthLdap()) {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
