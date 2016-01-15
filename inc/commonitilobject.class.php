@@ -731,17 +731,17 @@ abstract class CommonITILObject extends CommonDBTM {
             $input['_itil_assign']['type']                      = CommonITILActor::ASSIGN;
             $input['_itil_assign'][$this->getForeignKeyField()] = $input['id'];
 
+            if (isset($input['_itil_assign']['use_notification'])
+                  && is_array($input['_itil_assign']['use_notification'])) {
+               $input['_itil_assign']['use_notification'] = $input['_itil_assign']['use_notification'][0];
+            }
+            if (isset($input['_itil_assign']['alternative_email'])
+                  && is_array($input['_itil_assign']['alternative_email'])) {
+               $input['_itil_assign']['alternative_email'] = $input['_itil_assign']['alternative_email'][0];
+            }
+
             switch ($input['_itil_assign']['_type']) {
                case "user" :
-                  if (isset($input['_itil_assign']['use_notification'])
-                      && is_array($input['_itil_assign']['use_notification'])) {
-                     $input['_itil_assign']['use_notification'] = $input['_itil_assign']['use_notification'][0];
-                  }
-                  if (isset($input['_itil_assign']['alternative_email'])
-                      && is_array($input['_itil_assign']['alternative_email'])) {
-                     $input['_itil_assign']['alternative_email'] = $input['_itil_assign']['alternative_email'][0];
-                  }
-
                   if (!empty($this->userlinkclass)
                       && ($input['_itil_assign']['users_id'] > 0)) {
                      $useractors = new $this->userlinkclass();
