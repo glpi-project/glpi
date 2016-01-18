@@ -85,6 +85,12 @@ if (DBConnection::establishDBConnection(false, true, false)) {
    $ok_master = false;
 }
 
+if (!empty(DBMysql::checkForCrashedTables())) {
+   echo "GLPI_TABLES_KO\n";
+} else {
+   echo "GLPI_TABLES_OK\n";
+}
+
 // Slave and master ok;
 $ok = $ok_slave && $ok_master;
 
