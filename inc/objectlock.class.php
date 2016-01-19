@@ -389,8 +389,8 @@ class ObjectLock extends CommonDBTM {
                height: 'auto',
                position: {
                   my: 'left top',
-                  at: 'left+20 top+1',
-                  of: window,
+                  at: 'left+20 top-30',
+                  of: $('#page'),
                   collision: 'none'
                },
                autoOpen: false,
