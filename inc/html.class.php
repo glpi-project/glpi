@@ -5568,20 +5568,19 @@ class Html {
          caption = caption || '".__("Information")."';
          $('<div>').html(message).dialog({
             title: caption,
-            .dialog({
-               buttons: {
-                  ".__('OK').": function() {
-                     $(this).dialog('close');
-                  }
-               },
-               close: function(){
-                  $(this).remove();
-               },
-               draggable: true,
-               modal: true,
-               resizable: false,
-               width: 'auto'
-            });
+            buttons: {
+               ".__('OK').": function() {
+                  $(this).dialog('close');
+               }
+            },
+            close: function(){
+               $(this).remove();
+            },
+            draggable: true,
+            modal: true,
+            resizable: false,
+            width: 'auto'
+         });
       };");
    }
 
