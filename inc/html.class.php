@@ -5563,18 +5563,11 @@ class Html {
    static function redefineAlert() {
       echo self::scriptBlock("
       window.old_alert = window.alert;
-      window.alert = function(message, fallback) {
-         if (fallback) {
-            old_alert(message);
-            return;
-         }
+      window.alert = function(message, caption) {
          message = message.replace('\\n', '<br>');
-         $(document.createElement('div'))
-            .attr({
-               title: '".__("Information")."',
-               class: 'alert'
-            })
-            .html(message)
+         caption = caption || '".__("Information")."';
+         $('<div>').html(message).dialog({
+            title: caption,
             .dialog({
                buttons: {
                   ".__('OK').": function() {
@@ -5611,11 +5604,12 @@ class Html {
       });
 
       // asynchronous confirm dialog with jquery ui
-      var newConfirm = function(message, clickedObject) {
+      var newConfirm = function(message, caption) {
          message = message.replace('\\n', '<br>');
+         caption = caption || '';
 
          $('<div>').html(message).dialog({
-            position: ['center', 100],
+            title: caption,
             dialogClass: 'fixed',
             buttons: {
                '"._sx('button', 'Confirm')."': function () {
@@ -5637,7 +5631,7 @@ class Html {
             close: function () {
                 $(this).remove();
             },
-            draggable: false,
+            draggable: true,
             modal: true,
             resizable: false,
             width: 'auto'
@@ -5645,11 +5639,11 @@ class Html {
       };
 
       // redefine native 'confirm' function
-      window.confirm = function (message, elem) {
+      window.confirm = function (message, caption) {
          // if watched var isn't true, we can display dialog
          if(!confirmed) {
             // call asynchronous dialog
-            newConfirm(message);
+            newConfirm(message, caption);
          }
 
          // return early
