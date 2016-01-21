@@ -1053,7 +1053,6 @@ class Ticket extends CommonITILObject {
       if (isset($input['content'])) {
          if (isset($input['_stock_image'])) {
             $this->addImagePaste();
-            $input['content']       = $input['content'];
             $input['_disablenotif'] = true;
          } else if ($CFG_GLPI["use_rich_text"]) {
             $input['content'] = $this->convertTagToImage($input['content']);
@@ -1061,6 +1060,12 @@ class Ticket extends CommonITILObject {
                $input['_donotadddocs'] = true;
             }
          }
+      }
+      
+      // Clean non html tags
+      if ($CFG_GLPI["use_rich_text"] && isset($input["content"])) {
+         $input["content"] = Html::clean($input["content"], false);
+         $input["content"] = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $input["content"]);
       }
 
       $input = parent::prepareInputForUpdate($input);
@@ -1364,7 +1369,6 @@ class Ticket extends CommonITILObject {
       if (isset($input["content"])) {
          $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
          $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
-         $input["content"] = Html::clean($input["content"]);
       }
 
       $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
@@ -1497,6 +1501,12 @@ class Ticket extends CommonITILObject {
       if (!isset($input["type"])) {
          $input['type'] = Entity::getUsedConfig('tickettype', $input['entities_id'], '',
                                                 Ticket::INCIDENT_TYPE);
+      }
+      
+      // Clean non html tags
+      if ($CFG_GLPI["use_rich_text"] && isset($input["content"])) {
+         $input["content"] = Html::clean($input["content"], false);
+         $input["content"] = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $input["content"]);
       }
 
       return $input;
@@ -4200,9 +4210,7 @@ class Ticket extends CommonITILObject {
          $cols       = 90;
          $rows       = 6;
          $content_id = "content$rand";
-
          if ($CFG_GLPI["use_rich_text"]) {
-            Toolbox::logDebug($this->fields["content"]);
             $this->fields["content"] = $this->setRichTextContent($this->fields["content"], 
                                                                  array('rand'       => $rand, 
                                                                        'content_id' => $content_id));
@@ -4215,6 +4223,7 @@ class Ticket extends CommonITILObject {
          echo "<div id='content$rand_text'>";
          echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'>".
                 $this->fields["content"]."</textarea></div>";
+
          echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
          echo $tt->getEndHiddenFieldValue('content', $this);
 
@@ -5977,7 +5986,6 @@ class Ticket extends CommonITILObject {
     * @return $content
    **/
    function setSimpleTextContent($content) {
-
      $text = Html::entity_decode_deep($content);
 
       // If is html content
@@ -6005,6 +6013,9 @@ class Ticket extends CommonITILObject {
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
+      
+      $content = Html::clean($content, false);
+      $content = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $content);
 
       // Init html editor
       if ($params['content_id'] != null) {
@@ -6017,13 +6028,12 @@ class Ticket extends CommonITILObject {
       }
 
       // If content does not contain <br> or <p> html tag, use nl2br
-      $content = Html::entity_decode_deep($content);
-
       if (!preg_match("/<br\s?\/?>/", $content) && !preg_match("/<p>/", $content)) {
          $content = nl2br($content);
          $content = str_replace(array("\n", "\r", "\r\n"), "",$content);
       }
-      return Toolbox::clean_cross_side_scripting_deep($content);
+  
+      return $content;
    }
 
 

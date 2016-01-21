@@ -8,3 +8,4 @@
 /tools/composer.lock
 /tools/vendor/
 /tools/api/
+/nbproject/private/

@@ -931,10 +931,9 @@ class MailCollector  extends CommonDBTM {
       
       $string = html::cleanWordTags($string);
 
-      // delete html tags
-      if ($striptags) {
-         $string = Html::clean($string);
-      }
+      // Clean html tags
+      $string = Html::clean($string, $striptags);
+      
 
       // First clean HTML and XSS
       $string = Toolbox::clean_cross_side_scripting_deep($string);

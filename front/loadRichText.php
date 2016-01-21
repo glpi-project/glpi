@@ -44,7 +44,7 @@ if (isset($_GET['items_id']) && isset($_GET['itemtype']) && isset($_GET['field']
       $item->getFromDB($_GET['items_id']);
       Html::popHeader(__('Availability'), '', true);
       echo "<div>";
-      echo Toolbox::unclean_cross_side_scripting_deep($item->setRichTextContent($item->fields[$_GET['field']]));
+      echo Html::entity_decode_deep($item->setRichTextContent($item->fields[$_GET['field']]));
       echo "</div>";
       $JS = "";
       if (isset($_GET['content_id'])) {

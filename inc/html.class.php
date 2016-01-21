@@ -53,56 +53,46 @@ class Html {
     *
     * @return clean value
    **/
-   static function clean($value) {
-
-      $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-
-      $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
-      $value = preg_replace("/(&nbsp;| )+/", " ", $value);
-
-
-      $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                             '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
-                             '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
-                              );
-
-      $value = preg_replace($search, '', $value);
+   static function clean($value, $striptags=true) {
 
       include_once(GLPI_HTMLAWED);
+      $value = htmLawed(Html::entity_decode_deep($value), array('elements' => '*+body+html+head+meta+style',
+                                                                'keep_bad' => 1,// Convert non valid html tags to htmlentities
+                                                                'comment' => 1, // DROP
+                                                                'cdata'   => 1, // DROP
+                                                               ));
 
-      $value = htmLawed($value, array('elements' => 'none',
-                                      'keep_bad' => 2, // remove tag / neutralize content
-                                      'comment' => 1, // DROP
-                                      'cdata'   => 1, // DROP
-                                      ));
+      $value = preg_replace(array('@&lt;\/?html&gt;@si',
+                                  '@&lt;\/?head&gt;@si',
+                                  '@&lt;\/?meta&gt;@si',
+                                  '@&lt;\/?style&gt;@si',
+                                  '@&lt;\/?body&gt;@si'), '', $value); // Delete cleaned remaining tags
+      
+      if ($striptags) {
+         $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
 
-/*
-      $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, ' ', $value);
+         $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
+         $value = preg_replace("/(&nbsp;| )+/", " ", $value);
 
-      $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                             '@<style[^>]*?>.*?</style[^>]*?>@si',   // Strip style tags properly
-                             '@<[\/\!]*?[^<>]*?>@si',                // Strip out HTML tags
-                             '@<![\s\S]*?--[ \t\n\r]*>@');           // Strip multi-line comments including CDATA
 
-      $value = preg_replace($search, ' ', $value);
+         $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
+                                '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
+                                '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
+                                '@<[\/\!]*?[^<>]*?>@si',// Strip out HTML tags
+                                 );
 
-      // nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
-      $value = str_replace("&#8217;", "'", $value);
-*/
-   // Problem with this regex : may crash
-   //   $value = preg_replace("/ +/u", " ", $value);
-      // Revert back htmlawed &amp; -> &
-      //$value = str_replace("&amp;", "&", $value);
-      $value = str_replace(array("\r\n", "\r"), "\n", $value);
-      $value = preg_replace("/(\n[ ]*){2,}/", "\n\n", $value, -1);
+         $value = preg_replace($search, '', $value);
+
+         $value = str_replace(array("\r\n", "\r"), "\n", $value);
+         $value = preg_replace("/(\n[ ]*){2,}/", "\n\n", $value, -1);
+      }
 
       return trim($value);
    }
@@ -3964,7 +3954,7 @@ class Html {
       }
 
       echo "<div><iframe id='ticket_description' 
-            src='".$CFG_GLPI['root_doc']."/front/loadRichText.php?".implode('&', $urlParams)."' 
+            src='".$CFG_GLPI['root_doc']."/front/loadrichtext.php?".implode('&', $urlParams)."' 
             width='100%' marginWidth='0' marginHeight='0' frameBorder='0'></iframe>";
    }
 
