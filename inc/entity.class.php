@@ -2119,6 +2119,7 @@ class Entity extends CommonTreeDropdown {
          $url = str_replace("[TICKET_PRIORITYNAME]",
                             urlencode(CommonITILObject::getPriorityName($ticket->fields['priority'])),
                             $url);
+      }
 
       if (strstr($url,"[TICKETCATEGORY_ID]")) {
          $url = str_replace("[TICKETCATEGORY_ID]", $ticket->fields['itilcategories_id'], $url);
