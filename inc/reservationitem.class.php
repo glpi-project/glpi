@@ -421,7 +421,6 @@ class ReservationItem extends CommonDBChild {
 
       $result = $DB->query($sql);
 
-      $values[0] = Dropdown::EMPTY_VALUE;
       while ($data = $DB->fetch_assoc($result)) {
          $values[$data['itemtype']] = $data['itemtype']::getTypeName();
       }
@@ -445,7 +444,8 @@ class ReservationItem extends CommonDBChild {
       }
 
       Dropdown::showFromArray("reservation_types", $values,
-                              array('value' => $_POST['reservation_types']));
+                              array('value'               => $_POST['reservation_types'],
+                                    'display_emptychoice' => true));
 
       echo "</td></tr>";
       echo "</table>";

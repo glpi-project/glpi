@@ -821,6 +821,11 @@ class Document extends CommonDBTM {
       $tab[20]['massiveaction']  = false;
       $tab[20]['datatype']       = 'string';
 
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
+
       $tab[72]['table']          = 'glpi_documents_items';
       $tab[72]['field']          = 'id';
       $tab[72]['name']           = _x('quantity', 'Number of associated items');
@@ -1155,7 +1160,6 @@ class Document extends CommonDBTM {
       global $CFG_GLPI;
 
       if (is_dir(GLPI_UPLOAD_DIR)) {
-         $uploaded_files = array('' => Dropdown::EMPTY_VALUE);
 
          if ($handle = opendir(GLPI_UPLOAD_DIR)) {
             while (false !== ($file = readdir($handle))) {
@@ -1169,8 +1173,8 @@ class Document extends CommonDBTM {
             closedir($handle);
          }
 
-         if (count($uploaded_files) >1) {
-            Dropdown::showFromArray($myname, $uploaded_files);
+         if (count($uploaded_files) > 1) {
+            Dropdown::showFromArray($myname, $uploaded_files, array('display_emptychoice' => true));
          } else {
            _e('No file available');
          }
@@ -1261,15 +1265,15 @@ class Document extends CommonDBTM {
                 ORDER BY `name`";
       $result = $DB->query($query);
 
-      $values = array(0 => Dropdown::EMPTY_VALUE);
-
+      $values = array();
       while ($data = $DB->fetch_assoc($result)) {
          $values[$data['id']] = $data['name'];
       }
       $rand = mt_rand();
-      $out  = Dropdown::showFromArray('_rubdoc', $values, array('width'   => '30%',
-                                                                'rand'    => $rand,
-                                                                'display' => false));
+      $out  = Dropdown::showFromArray('_rubdoc', $values, array('width'               => '30%',
+                                                                'rand'                => $rand,
+                                                                'display'             => false,
+                                                                'display_emptychoice' => true));
       $field_id = Html::cleanId("dropdown__rubdoc$rand");
 
       $params   = array('rubdoc' => '__VALUE__',

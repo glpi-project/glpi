@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -115,12 +115,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'"/>';
    }
    echo '<p class="login_input">
-         <input type="text" name="login_name" id="login_name" required="required" 
+         <input type="text" name="login_name" id="login_name" required="required"
                 placeholder="'.__('Login').'" />
          <span class="login_img"></span>
          </p>';
    echo '<p class="login_input">
-         <input type="password" name="login_password" id="login_password" required="required" 
+         <input type="password" name="login_password" id="login_password" required="required"
                 placeholder="'.__('Password').'"  />
          <span class="login_img"></span>
          </p>';
@@ -150,7 +150,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    _e('You must activate the JavaScript function of your browser');
    echo "</p></noscript>";
 
-   if (isset($_GET['error'])) {
+   if (isset($_GET['error']) && isset($_GET['redirect'])) {
       switch ($_GET['error']) {
          case 1 : // cookie error
             _e('You must accept cookies to reach this application');
@@ -178,7 +178,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<div id='display-login'>";
    Plugin::doHook('display_login');
    echo "</div>";
-   
+
 
    echo "</div>"; // end contenu login
 

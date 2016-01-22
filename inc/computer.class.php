@@ -580,8 +580,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
 
       if ($inventory_show) {
-         echo "<td rowspan='4'>".__('Automatic inventory')."</td>";
-         echo "<td rowspan='4'>";
+         echo "<td rowspan='4' colspan='2'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
       }

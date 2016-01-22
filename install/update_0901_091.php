@@ -36,7 +36,7 @@
 */
 
 /**
- * Update from 0.90 to 0.90.1
+ * Update from 0.90.1 to 0.91
  *
  * @return bool for success (will die for most error)
 **/
@@ -69,6 +69,8 @@ function update0901to091() {
                                  true);
    }
 
+   Config::setConfigurationValues('core', array('set_default_requester' => 1));
+   $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

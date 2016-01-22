@@ -220,6 +220,8 @@ class Search {
                array_push($data['toview'],$val);
             }
          }
+      } else {
+         $data['toview'] = array_merge($data['toview'], $forcedisplay);
       }
 
       if (count($p['criteria']) > 0) {
