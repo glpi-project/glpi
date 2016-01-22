@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -303,7 +303,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
          $this->addTagToList(array('tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
-                                   'events' => array('validation', 'validation')));
+                                   'events' => array('validation', 'validation_answer')));
       }
 
       //Tags without lang for validation
@@ -320,14 +320,16 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                                    'label' => $label,
                                    'value' => true,
                                    'lang'  => false,
-                                   'events' => array('validation', 'validation')));
+                                   'events' => array('validation', 'validation_answer')));
       }
 
 
       //Foreach global tags
-      $tags = array('tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-                    'problems' => _n('Problem', 'Problems', Session::getPluralNumber()),
-                    'items'    => _n('Item', 'Items', Session::getPluralNumber()));
+      $tags = array('tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+                    'problems'    => _n('Problem', 'Problems', Session::getPluralNumber()),
+                    'items'       => _n('Item', 'Items', Session::getPluralNumber()),
+                    'validations' => _n('Validation','Validations', Session::getPluralNumber()),
+                    'documents'   => _n('Document', 'Documents', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
