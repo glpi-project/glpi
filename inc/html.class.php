@@ -1147,6 +1147,8 @@ class Html {
 
       // Some Javascript-Functions which we may need later
       echo Html::script($CFG_GLPI["root_doc"].'/script.js');
+      self::redefineAlert();
+      self::redefineConfirm();
 
       // Add specific javascript for plugins
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
@@ -5554,6 +5556,98 @@ class Html {
       return $param['rand'];
    }
 
+   /**
+    * In this function, we redefine 'window.alert' javascript function
+    * by a jquery-ui dialog equivalent (but prettier).
+    */
+   static function redefineAlert() {
+      echo self::scriptBlock("
+      window.old_alert = window.alert;
+      window.alert = function(message, caption) {
+         message = message.replace('\\n', '<br>');
+         caption = caption || '".__("Information")."';
+         $('<div>').html(message).dialog({
+            title: caption,
+            buttons: {
+               ".__('OK').": function() {
+                  $(this).dialog('close');
+               }
+            },
+            close: function(){
+               $(this).remove();
+            },
+            draggable: true,
+            modal: true,
+            resizable: false,
+            width: 'auto'
+         });
+      };");
+   }
 
+
+   /**
+    * In this function, we redefine 'window.confirm' javascript function
+    * by a jquery-ui dialog equivalent (but prettier).
+    * This dialog is normally asynchronous and can't return a boolean like naive window.confirm.
+    * We manage this behavior with a global variable 'confirmed' who watchs the acceptation of dialog.
+    * In this case, we trigger a new click on element to return the value (and without display dialog)
+    */
+   static function redefineConfirm() {
+      echo self::scriptBlock("
+      var confirmed = false;
+      var lastClickedElement;
+
+      // store last clicked element on dom
+      $(document).click(function(event) {
+          lastClickedElement = $(event.target);
+      });
+
+      // asynchronous confirm dialog with jquery ui
+      var newConfirm = function(message, caption) {
+         message = message.replace('\\n', '<br>');
+         caption = caption || '';
+
+         $('<div>').html(message).dialog({
+            title: caption,
+            dialogClass: 'fixed',
+            buttons: {
+               '"._sx('button', 'Confirm')."': function () {
+                  $(this).dialog('close');
+                  confirmed = true;
+
+                  //trigger click on the same element (to return true value)
+                  lastClickedElement.click();
+
+                  // re-init confirmed (to permit usage of 'confirm' function again in the page)
+                  // maybe timeout is not essential ...
+                  setTimeout(function(){  confirmed = false; }, 100);
+               },
+               '"._sx('button', 'Cancel')."': function () {
+                  $(this).dialog('close');
+                  confirmed = false;
+               }
+            },
+            close: function () {
+                $(this).remove();
+            },
+            draggable: true,
+            modal: true,
+            resizable: false,
+            width: 'auto'
+         });
+      };
+
+      // redefine native 'confirm' function
+      window.confirm = function (message, caption) {
+         // if watched var isn't true, we can display dialog
+         if(!confirmed) {
+            // call asynchronous dialog
+            newConfirm(message, caption);
+         }
+
+         // return early
+         return confirmed;
+      };");
+   }
 }
 ?>
