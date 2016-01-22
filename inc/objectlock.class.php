@@ -124,6 +124,7 @@ class ObjectLock extends CommonDBTM {
       return $ret || $locked;
    }
 
+
    /**
     * Summary of setLockedByYouMessage
     * Shows 'Locked by You!' message and proposes to unlock it 
@@ -133,15 +134,16 @@ class ObjectLock extends CommonDBTM {
       echo Html::scriptBlock("
          function unlockIt() {
             if( confirm('".__('Unlock this item: ').$this->itemtypename." #".$this->itemid."?') ){
-               $.ajax({
+        $.ajax({
                   url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
                   cache: false,
-                  data: 'unlock=1&id=".$this->fields['id']."',
+                  data: 'unlock=1&force=1&id=".$this->fields['id']."',
                   success: function() { if( confirm('".__('Item unlocked!\\r\\n\\r\\nReload page?')."') ) window.location.reload(true); },
                   error: function() { alert('".__('Item NOT unlocked! Contact your GLPI admin!')."'); }
                   });
-               }
-            }
+    }
+}
+
          ") ;
 
       $msg = "<table><tr><td class=red>" ;
@@ -421,6 +423,7 @@ class ObjectLock extends CommonDBTM {
          $lo = new self( $itemtype, $items_id ) ;
          if( $lo->getLockedObjectInfo( ) ) {
             $lo->deleteFromDB( ) ;
+            Log::history($items_id, $itemtype, array(0, '', ''), 0, Log::HISTORY_UNLOCK_ITEM);
             $ma->itemDone($itemtype, $items_id, MassiveAction::ACTION_OK);
          }
 

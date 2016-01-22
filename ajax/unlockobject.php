@@ -37,7 +37,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  */
 
 // here we are going to try to unlock the given object
-// url should be of the form: 'http://.../.../unlockobject.php?unlock=1&id=xxxxxx'
+// url should be of the form: 'http://.../.../unlockobject.php?unlock=1[&force=1]&id=xxxxxx'
 // or url should be of the form 'http://.../.../unlockobject.php?requestunlock=1&id=xxxxxx'
 // to send notification to locker of object
 
@@ -53,7 +53,9 @@ if (isset($_GET['unlock']) && isset($_GET["id"])  ) {
    // then we may have something to unlock
    $ol = new ObjectLock( ) ;   
    if( $ol->getFromDB( $_GET["id"] ) && $ol->deleteFromDB( 1 ) ) {
-      Log::history($ol->fields['items_id'], $ol->fields['itemtype'], array(0, '', ''), 0, Log::HISTORY_UNLOCK_ITEM); 
+      if( isset( $_GET['force'] ) ) {
+         Log::history($ol->fields['items_id'], $ol->fields['itemtype'], array(0, '', ''), 0, Log::HISTORY_UNLOCK_ITEM); 
+      }
       $ret = 1 ;
    }
 
