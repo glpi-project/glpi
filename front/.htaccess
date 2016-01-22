@@ -3,6 +3,6 @@
 		Require all granted
 	</IfModule>
 	<IfModule !mod_authz_core.c>
-		Satisfy Any
+#		Satisfy Any
 	</IfModule>
 </Files>
