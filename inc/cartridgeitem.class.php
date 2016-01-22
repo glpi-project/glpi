@@ -385,6 +385,9 @@ class CartridgeItem extends CommonDBTM {
                                                       'joinparams'
                                                          => array('jointype' => 'child')));
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       $tab += Notepad::getSearchOptionsToAdd();
 
       return $tab;

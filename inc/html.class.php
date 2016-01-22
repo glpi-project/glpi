@@ -143,7 +143,7 @@ class Html {
     *
     * @return $time or $date
    **/
-   static function convDate($time) {
+   static function convDate($time, $format=null) {
 
       if (is_null($time) || ($time == 'NULL')) {
          return NULL;
@@ -152,8 +152,11 @@ class Html {
       if (!isset($_SESSION["glpidate_format"])) {
          $_SESSION["glpidate_format"] = 0;
       }
+      if( !$format ) {
+         $format = $_SESSION["glpidate_format"];
+      } 
 
-      switch ($_SESSION['glpidate_format']) {
+      switch ($format) {
          case 1 : // DD-MM-YYYY
             $date  = substr($time, 8, 2)."-";  // day
             $date .= substr($time, 5, 2)."-"; // month
@@ -182,13 +185,13 @@ class Html {
     *
     * @return $time or $date
    **/
-   static function convDateTime($time) {
+   static function convDateTime($time, $format=null) {
 
       if (is_null($time) || ($time == 'NULL')) {
          return NULL;
       }
 
-      return self::convDate($time).' '. substr($time, 11, 5);
+      return self::convDate($time, $format).' '. substr($time, 11, 5);
    }
 
 
@@ -3880,7 +3883,7 @@ class Html {
             setTimeout(
                function(){
                   ed.execCommand('mceAutoResize');
-               }, 1);4204
+               }, 1);
                if (tinymce.isIE) {
                   tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
                      return tinymce.dom.Event.cancel(e);

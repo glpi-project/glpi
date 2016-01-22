@@ -48,7 +48,13 @@ if (($item = getItemForItemtype($_POST['type']))
    if (isset($_POST[$parent->getForeignKeyField()])
        && isset($_POST["id"])
        && $parent->getFromDB($_POST[$parent->getForeignKeyField()])) {
-         Ticket::showSubForm($item, $_POST["id"], array('parent' => $parent, 
+      
+      $ol = ObjectLock::isLocked( $_POST['parenttype'], $parent->getID() ) ;
+      if( $ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
+         ObjectLock::setReadOnlyProfile( ) ;
+      }
+
+      Ticket::showSubForm($item, $_POST["id"], array('parent' => $parent, 
                                                                   'tickets_id' => $_POST["tickets_id"]));
    } else {
       _e('Access denied');

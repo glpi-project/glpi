@@ -1112,6 +1112,10 @@ class CommonGLPI {
          }
       }
 
+      // try to lock object
+      // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
+      ObjectLock::manageObjectLock( get_class( $this ), $options ) ;
+
       $this->showNavigationHeader($options);
       if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
 
