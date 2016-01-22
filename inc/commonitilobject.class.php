@@ -1165,7 +1165,8 @@ abstract class CommonITILObject extends CommonDBTM {
       if (($uid = Session::getLoginUserID())
           && !isset($input['_auto_import'])) {
          $input["users_id_recipient"] = $uid;
-      } else if (isset($input["_users_id_requester"]) && $input["_users_id_requester"] && !isset($input["users_id_recipient"])) {
+      } else if (isset($input["_users_id_requester"]) && $input["_users_id_requester"]
+                 && !isset($input["users_id_recipient"])) {
          $input["users_id_recipient"] = $input["_users_id_requester"];
       }
 

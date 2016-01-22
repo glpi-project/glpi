@@ -576,7 +576,7 @@ class Html {
                })
                .dialog('open');
 
-               // close dialog on outside click 
+               // close dialog on outside click
                $(document.body).on('click', function(e){
                   if ($('#message_after_redirect').dialog('isOpen')
                       && !$(e.target).is('.ui-dialog, a')
@@ -1096,7 +1096,7 @@ class Html {
       }
 
       // AJAX library
-      if (isset($_SESSION['glpi_use_mode']) 
+      if (isset($_SESSION['glpi_use_mode'])
             && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.js");
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.js");
@@ -1123,7 +1123,7 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js");
 
       // layout
-      if (CommonGLPI::isLayoutWithMain() 
+      if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
          echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/css/jquery.scrollabletab.css");
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.js");
@@ -1429,7 +1429,7 @@ class Html {
                               $_SESSION["glpifirstname"], 0, 20);
          echo "</span>";
       }
-      echo "</a></li>";  
+      echo "</a></li>";
 
       /// Bookmark load
       echo "<li id='bookmark_link'>";
@@ -1468,7 +1468,7 @@ class Html {
       }
       echo "</li>";
 
-      
+
       echo "</ul>";
       echo "</div>\n";
 
@@ -1958,7 +1958,7 @@ class Html {
                               $_SESSION["glpifirstname"], 0, 20);
          echo "</span>";
       }
-      echo "</a></li>";  
+      echo "</a></li>";
 
       echo "<li>";
       Ajax::createIframeModalWindow('loadbookmark',
@@ -2000,9 +2000,9 @@ class Html {
          $menu['create_ticket']['title']   = __s('Create a ticket');
          $menu['create_ticket']['content'] = array(true);
       }
-      
+
       //  Tickets
-      if (Session::haveRight("ticket", CREATE) 
+      if (Session::haveRight("ticket", CREATE)
           || Session::haveRight("ticket", Ticket::READMY)
           || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
          $menu['tickets']['id']      = "menu3";
@@ -2010,7 +2010,7 @@ class Html {
          $menu['tickets']['title']   = _n('Ticket','Tickets', Session::getPluralNumber());
          $menu['tickets']['content'] = array(true);
       }
-      
+
       // Reservation
       if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
          $menu['reservation']['id']      = "menu4";
@@ -2018,7 +2018,7 @@ class Html {
          $menu['reservation']['title']   = _n('Reservation', 'Reservations', Session::getPluralNumber());
          $menu['reservation']['content'] = array(true);
       }
-      
+
       // FAQ
       if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
          $menu['faq']['id']      = "menu5";
@@ -2302,11 +2302,11 @@ class Html {
     * @since 0.90.1
     * @param $menu array of menu items
     *    - key   : plugin system name
-    *    - value : array of options 
+    *    - value : array of options
     *       * id      : html id attribute
     *       * default : defaul url
     *       * title   : displayed label
-    *       * content : menu sub items, array with theses options : 
+    *       * content : menu sub items, array with theses options :
     *          - page     : url
     *          - title    : displayed label
     *          - shortcut : keyboard shortcut letter
@@ -2339,7 +2339,7 @@ class Html {
                if (isset($val['page'])
                    && isset($val['title'])) {
                   echo "<tr><td>";
-                  
+
                   if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])
                         && is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
                      echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$val['page']."'";
@@ -2350,7 +2350,7 @@ class Html {
                      echo " accesskey='".$val['shortcut']."'";
                   }
                   echo ">";
- 
+
                   echo $val['title']."</a></td></tr>\n";
                   $i++;
                }
@@ -3864,7 +3864,7 @@ class Html {
             }
          },
          theme : 'advanced',
-         entity_encoding : 'raw', 
+         entity_encoding : 'raw',
          // directionality + search replace plugin
          theme_advanced_buttons1_add : 'ltr,rtl,search,replace',
          theme_advanced_toolbar_location : 'top',
@@ -3919,7 +3919,7 @@ class Html {
    **/
    static function initImagePasteSystem($name, $rand) {
       global $CFG_GLPI;
-      
+
       echo Html::imagePaste(array('rand' => $rand));
 
       $params = array('name'         => $name,
@@ -5556,11 +5556,15 @@ class Html {
       return $param['rand'];
    }
 
+
    /**
     * In this function, we redefine 'window.alert' javascript function
     * by a jquery-ui dialog equivalent (but prettier).
-    */
+    *
+    * @since version 0.91
+   **/
    static function redefineAlert() {
+
       echo self::scriptBlock("
       window.old_alert = window.alert;
       window.alert = function(message, caption) {
@@ -5591,8 +5595,11 @@ class Html {
     * This dialog is normally asynchronous and can't return a boolean like naive window.confirm.
     * We manage this behavior with a global variable 'confirmed' who watchs the acceptation of dialog.
     * In this case, we trigger a new click on element to return the value (and without display dialog)
-    */
+    *
+    * @since version 0.91
+   */
    static function redefineConfirm() {
+
       echo self::scriptBlock("
       var confirmed = false;
       var lastClickedElement;
