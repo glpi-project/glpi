@@ -2480,16 +2480,19 @@ class Search {
                                         SEPARATOR '".self::LONGSEP."') AS `".$NAME."_$num`,
                            $ADDITONALFIELDS";
                }
-               $TRANS = '';
-               if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-                   $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
-                                                          '".self::SHORTSEP."',$tocomputeid)
-                                          SEPARATOR '".self::LONGSEP."')
-                                  AS `".$NAME."_".$num."_trans`, ";
-               }
+//               $TRANS = '';
+//               if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+//                   $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
+//                                                          '".self::SHORTSEP."',$tocomputeid)
+//                                          SEPARATOR '".self::LONGSEP."')
+//                                  AS `".$NAME."_".$num."_trans`, ";
+//               }
+//               return " $tocompute AS `".$NAME."_$num`,
+//                        `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
+//                        $TRANS
+//                        $ADDITONALFIELDS";
                return " $tocompute AS `".$NAME."_$num`,
                         `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
-                        $TRANS
                         $ADDITONALFIELDS";
          }
       }
