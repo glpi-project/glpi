@@ -1,4 +1,4 @@
-#GLPI Dump database on 2014-06-18 08:02
+#GLPI Dump database on 2016-01-12 09:05
 
 ### Dump table glpi_alerts
 
@@ -943,9 +943,9 @@ INSERT INTO `glpi_configs` VALUES ('152','core','attach_ticket_documents_to_mail
 INSERT INTO `glpi_configs` VALUES ('153','core','backcreated','0');
 INSERT INTO `glpi_configs` VALUES ('154','core','task_state','1');
 INSERT INTO `glpi_configs` VALUES ('155','core','layout','lefttab');
-INSERT INTO `glpi_configs` VALUES ('156','core','ticket_timeline', 1);
-INSERT INTO `glpi_configs` VALUES ('157','core','ticket_timeline_keep_replaced_tabs', 0);
-INSERT INTO `glpi_configs` VALUES ('158','core','palette', 'auror');
+INSERT INTO `glpi_configs` VALUES ('156','core','ticket_timeline','1');
+INSERT INTO `glpi_configs` VALUES ('157','core','ticket_timeline_keep_replaced_tabs','0');
+INSERT INTO `glpi_configs` VALUES ('158','core','palette','auror');
 INSERT INTO `glpi_configs` VALUES ('159','core','set_default_requester','1');
 
 ### Dump table glpi_consumableitems
@@ -1193,6 +1193,8 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+INSERT INTO `glpi_crontasklogs` VALUES ('1','18','0','2016-01-12 09:05:15','0','0','0','Run mode: GLPI');
+INSERT INTO `glpi_crontasklogs` VALUES ('2','18','1','2016-01-12 09:05:15','2','0.00486398','0','Action completed, no processing required');
 
 ### Dump table glpi_crontasks
 
@@ -1233,7 +1235,7 @@ INSERT INTO `glpi_crontasks` VALUES ('14','ReservationItem','reservation','3600'
 INSERT INTO `glpi_crontasks` VALUES ('15','Ticket','closeticket','43200',NULL,'1','1','3','0','24','30','2014-01-15 14:35:00',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('16','Ticket','alertnotclosed','43200',NULL,'1','1','3','0','24','30','2014-04-16 15:32:00',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('17','SlaLevel_Ticket','slaticket','300',NULL,'1','1','3','0','24','30','2014-06-18 08:02:00',NULL,NULL);
-INSERT INTO `glpi_crontasks` VALUES ('18','Ticket','createinquest','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
+INSERT INTO `glpi_crontasks` VALUES ('18','Ticket','createinquest','86400',NULL,'1','1','3','0','24','30','2016-01-12 09:05:00',NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('19','Crontask','watcher','86400',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('20','TicketRecurrent','ticketrecurrent','3600',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
 INSERT INTO `glpi_crontasks` VALUES ('21','PlanningRecall','planningrecall','300',NULL,'1','1','3','0','24','30',NULL,NULL,NULL);
@@ -2083,6 +2085,7 @@ CREATE TABLE `glpi_events` (
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+INSERT INTO `glpi_events` VALUES ('1','-1','system','2016-01-12 09:05:17','login','3','glpi logged in from IP 127.0.0.1');
 
 ### Dump table glpi_fieldblacklists
 
@@ -2844,7 +2847,7 @@ CREATE TABLE `glpi_items_projects` (
 
 
 ### Dump table glpi_items_tickets
- 
+
 DROP TABLE IF EXISTS `glpi_items_tickets`;
 CREATE TABLE `glpi_items_tickets` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -3801,15 +3804,15 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('2','2','','##reserv
 ======================================================================
 ','&lt;!-- description{ color: inherit; background: #ebebeb;border-style: solid;border-color: #8d8d8d; border-width: 0px 1px 1px 0px; } --&gt;
 &lt;p&gt;&lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.user##:&lt;/span&gt;##reservation.user##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.item.name##:&lt;/span&gt;##reservation.itemtype## - ##reservation.item.name##&lt;br /&gt;##IFreservation.tech## ##lang.reservation.tech## ##reservation.tech####ENDIFreservation.tech##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.begin##:&lt;/span&gt; ##reservation.begin##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.end##:&lt;/span&gt;##reservation.end##&lt;br /&gt; &lt;span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;##lang.reservation.comment##:&lt;/span&gt; ##reservation.comment##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','##reservation.action##  ##reservation.entity##','##lang.reservation.entity## : ##reservation.entity## 
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('3','3','','##reservation.action##  ##reservation.entity##','##lang.reservation.entity## : ##reservation.entity##
 
- 
-##FOREACHreservations## 
+
+##FOREACHreservations##
 ##lang.reservation.itemtype## : ##reservation.itemtype##
 
  ##lang.reservation.item## : ##reservation.item##
- 
- ##reservation.url## 
+
+ ##reservation.url##
 
  ##ENDFOREACHreservations##','&lt;p&gt;##lang.reservation.entity## : ##reservation.entity## &lt;br /&gt; &lt;br /&gt;
 ##FOREACHreservations## &lt;br /&gt;##lang.reservation.itemtype## :  ##reservation.itemtype##&lt;br /&gt;
@@ -3831,15 +3834,15 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','4','','##ticket
  ##lang.ticket.creationdate## : ##ticket.creationdate##
  ##lang.ticket.closedate## : ##ticket.closedate##
  ##lang.ticket.requesttype## : ##ticket.requesttype##
-##lang.ticket.item.name## : 
+##lang.ticket.item.name## :
 
 ##FOREACHitems##
 
- ##IFticket.itemtype## 
-  ##ticket.itemtype## - ##ticket.item.name## 
-  ##IFticket.item.model## ##lang.ticket.item.model## : ##ticket.item.model## ##ENDIFticket.item.model## 
-  ##IFticket.item.serial## ##lang.ticket.item.serial## : ##ticket.item.serial## ##ENDIFticket.item.serial##  
-  ##IFticket.item.otherserial## ##lang.ticket.item.otherserial## : ##ticket.item.otherserial## ##ENDIFticket.item.otherserial## 
+ ##IFticket.itemtype##
+  ##ticket.itemtype## - ##ticket.item.name##
+  ##IFticket.item.model## ##lang.ticket.item.model## : ##ticket.item.model## ##ENDIFticket.item.model##
+  ##IFticket.item.serial## ##lang.ticket.item.serial## : ##ticket.item.serial## ##ENDIFticket.item.serial##
+  ##IFticket.item.otherserial## ##lang.ticket.item.otherserial## : ##ticket.item.otherserial## ##ENDIFticket.item.otherserial##
  ##ENDIFticket.itemtype##
 
 ##ENDFOREACHitems##
@@ -3887,7 +3890,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('4','4','','##ticket
 <div>##ELSEticket.storestatus## ##lang.ticket.url## : <a href=\"##ticket.url##\">##ticket.url##</a> ##ENDELSEticket.storestatus##</div>
 <p class=\"description b\"><strong>##lang.ticket.description##</strong></p>
 <p><span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.title##</span>&#160;:##ticket.title## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.authors##</span>&#160;:##IFticket.authors## ##ticket.authors## ##ENDIFticket.authors##    ##ELSEticket.authors##--##ENDELSEticket.authors## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.creationdate##</span>&#160;:##ticket.creationdate## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.closedate##</span>&#160;:##ticket.closedate## <br /> <span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.requesttype##</span>&#160;:##ticket.requesttype##<br />
-<br /><span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.item.name##</span>&#160;: 
+<br /><span style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"> ##lang.ticket.item.name##</span>&#160;:
 <p>##FOREACHitems##</p>
 <div class=\"description b\">##IFticket.itemtype## ##ticket.itemtype##&#160;- ##ticket.item.name## ##IFticket.item.model## ##lang.ticket.item.model## : ##ticket.item.model## ##ENDIFticket.item.model## ##IFticket.item.serial## ##lang.ticket.item.serial## : ##ticket.item.serial## ##ENDIFticket.item.serial## ##IFticket.item.otherserial## ##lang.ticket.item.otherserial## : ##ticket.item.otherserial## ##ENDIFticket.item.otherserial## ##ENDIFticket.itemtype## </div><br />
 <p>##ENDFOREACHitems##</p>
@@ -3919,16 +3922,16 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('5','12','','##contr
 &lt;a href=\"##contract.url##\"&gt;
 ##contract.url##&lt;/a&gt;&lt;br /&gt;
 ##ENDFOREACHcontracts##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('6','5','','##ticket.action## ##ticket.title##','##lang.ticket.url## : ##ticket.url## 
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('6','5','','##ticket.action## ##ticket.title##','##lang.ticket.url## : ##ticket.url##
 
-##lang.ticket.description## 
+##lang.ticket.description##
 
 
-##lang.ticket.title##  :##ticket.title## 
+##lang.ticket.title##  :##ticket.title##
 
 ##lang.ticket.authors##  :##IFticket.authors##
 ##ticket.authors## ##ENDIFticket.authors##
-##ELSEticket.authors##--##ENDELSEticket.authors##   
+##ELSEticket.authors##--##ENDELSEticket.authors##  
 
 ##IFticket.category## ##lang.ticket.category##  :##ticket.category##
 ##ENDIFticket.category## ##ELSEticket.category##
@@ -3962,15 +3965,15 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 ##lang.ticket.item.name##&lt;/span&gt;&#160;:
 ##ticket.itemtype## - ##ticket.item.name##
 ##ENDIFticket.itemtype##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('15','15','','##lang.unicity.action##','##lang.unicity.entity## : ##unicity.entity## 
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('15','15','','##lang.unicity.action##','##lang.unicity.entity## : ##unicity.entity##
 
-##lang.unicity.itemtype## : ##unicity.itemtype## 
+##lang.unicity.itemtype## : ##unicity.itemtype##
 
-##lang.unicity.message## : ##unicity.message## 
+##lang.unicity.message## : ##unicity.message##
 
-##lang.unicity.action_user## : ##unicity.action_user## 
+##lang.unicity.action_user## : ##unicity.action_user##
 
-##lang.unicity.action_type## : ##unicity.action_type## 
+##lang.unicity.action_type## : ##unicity.action_type##
 
 ##lang.unicity.date## : ##unicity.date##','&lt;p&gt;##lang.unicity.entity## : ##unicity.entity##&lt;/p&gt;
 &lt;p&gt;##lang.unicity.itemtype## : ##unicity.itemtype##&lt;/p&gt;
@@ -4007,13 +4010,13 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('7','7','','##ticket
 &#160; ##validation.commentvalidation##&lt;br /&gt; ##ENDIFvalidation.commentvalidation##
 &lt;br /&gt;##ENDFOREACHvalidations##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','','##ticket.action## ##ticket.entity##','##lang.ticket.entity## : ##ticket.entity##
- 
+
 ##FOREACHtickets##
 
 ##lang.ticket.title## : ##ticket.title##
  ##lang.ticket.status## : ##ticket.status##
 
- ##ticket.url## 
+ ##ticket.url##
  ##ENDFOREACHtickets##','&lt;table class=\"tab_cadre\" border=\"1\" cellspacing=\"2\" cellpadding=\"3\"&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
@@ -4025,7 +4028,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','','##ticket
 &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.creationdate##&lt;/span&gt;&lt;/td&gt;
 &lt;td style=\"text-align: left;\" width=\"auto\" bgcolor=\"#cccccc\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##lang.ticket.content##&lt;/span&gt;&lt;/td&gt;
 &lt;/tr&gt;
-##FOREACHtickets##                   
+##FOREACHtickets##
 &lt;tr&gt;
 &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;##ticket.authors##&lt;/span&gt;&lt;/td&gt;
 &lt;td width=\"auto\"&gt;&lt;span style=\"font-size: 11px; text-align: left;\"&gt;&lt;a href=\"##ticket.url##\"&gt;##ticket.title##&lt;/a&gt;&lt;/span&gt;&lt;/td&gt;
@@ -4039,17 +4042,17 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('8','6','','##ticket
 &lt;/tbody&gt;
 &lt;/table&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','9','','##consumable.action##  ##consumable.entity##','##lang.consumable.entity## : ##consumable.entity##
- 
+
 
 ##FOREACHconsumables##
 ##lang.consumable.item## : ##consumable.item##
- 
+
 
 ##lang.consumable.reference## : ##consumable.reference##
 
 ##lang.consumable.remaining## : ##consumable.remaining##
 
-##consumable.url## 
+##consumable.url##
 
 ##ENDFOREACHconsumables##','&lt;p&gt;
 ##lang.consumable.entity## : ##consumable.entity##
@@ -4060,17 +4063,17 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('9','9','','##consum
 &lt;a href=\"##consumable.url##\"&gt; ##consumable.url##&lt;/a&gt;&lt;br /&gt;
    ##ENDFOREACHconsumables##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('10','8','','##cartridge.action##  ##cartridge.entity##','##lang.cartridge.entity## : ##cartridge.entity##
- 
+
 
 ##FOREACHcartridges##
 ##lang.cartridge.item## : ##cartridge.item##
- 
+
 
 ##lang.cartridge.reference## : ##cartridge.reference##
 
 ##lang.cartridge.remaining## : ##cartridge.remaining##
 
-##cartridge.url## 
+##cartridge.url##
  ##ENDFOREACHcartridges##','&lt;p&gt;##lang.cartridge.entity## : ##cartridge.entity##
 &lt;br /&gt; &lt;br /&gt;##FOREACHcartridges##
 &lt;br /&gt;##lang.cartridge.item## :
@@ -4082,19 +4085,19 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('10','8','','##cartr
 &lt;a href=\"##cartridge.url##\"&gt;
 ##cartridge.url##&lt;/a&gt;&lt;br /&gt;
 ##ENDFOREACHcartridges##&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('11','10','','##infocom.action##  ##infocom.entity##','##lang.infocom.entity## : ##infocom.entity## 
- 
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('11','10','','##infocom.action##  ##infocom.entity##','##lang.infocom.entity## : ##infocom.entity##
 
-##FOREACHinfocoms## 
+
+##FOREACHinfocoms##
 
 ##lang.infocom.itemtype## : ##infocom.itemtype##
 
 ##lang.infocom.item## : ##infocom.item##
- 
+
 
 ##lang.infocom.expirationdate## : ##infocom.expirationdate##
 
-##infocom.url## 
+##infocom.url##
  ##ENDFOREACHinfocoms##','&lt;p&gt;##lang.infocom.entity## : ##infocom.entity##
 &lt;br /&gt; &lt;br /&gt;##FOREACHinfocoms##
 &lt;br /&gt;##lang.infocom.itemtype## : ##infocom.itemtype##&lt;br /&gt;
@@ -4105,7 +4108,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('11','10','','##info
 ##ENDFOREACHinfocoms##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('12','11','','##license.action##  ##license.entity##','##lang.license.entity## : ##license.entity##
 
-##FOREACHlicenses## 
+##FOREACHlicenses##
 
 ##lang.license.item## : ##license.item##
 
@@ -4113,7 +4116,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('12','11','','##lice
 
 ##lang.license.expirationdate## : ##license.expirationdate##
 
-##license.url## 
+##license.url##
  ##ENDFOREACHlicenses##','&lt;p&gt;
 ##lang.license.entity## : ##license.entity##&lt;br /&gt;
 ##FOREACHlicenses##
@@ -4136,11 +4139,11 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('14','14','','##tick
 ##lang.satisfaction.text## ##ticket.urlsatisfaction##','&lt;p&gt;##lang.ticket.title## : ##ticket.title##&lt;/p&gt;
 &lt;p&gt;##lang.ticket.closedate## : ##ticket.closedate##&lt;/p&gt;
 &lt;p&gt;##lang.satisfaction.text## &lt;a href=\"##ticket.urlsatisfaction##\"&gt;##ticket.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;');
-INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('16','16','','##crontask.action##','##lang.crontask.warning## 
+INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('16','16','','##crontask.action##','##lang.crontask.warning##
 
-##FOREACHcrontasks## 
+##FOREACHcrontasks##
  ##crontask.name## : ##crontask.description##
- 
+
 ##ENDFOREACHcrontasks##','&lt;p&gt;##lang.crontask.warning##&lt;/p&gt;
 &lt;p&gt;##FOREACHcrontasks## &lt;br /&gt;&lt;a href=\"##crontask.url##\"&gt;##crontask.name##&lt;/a&gt; : ##crontask.description##&lt;br /&gt; &lt;br /&gt;##ENDFOREACHcrontasks##&lt;/p&gt;');
 INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('17','17','','##problem.action## ##problem.title##','##IFproblem.storestatus=5##
@@ -4604,8 +4607,23 @@ CREATE TABLE `glpi_plugins` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`directory`),
   KEY `state` (`state`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+INSERT INTO `glpi_plugins` VALUES ('1','fields','Additionnal fields','0.90-1.1','2','Teclib\', Olivier Moron','teclib.com','GPLv2+');
+INSERT INTO `glpi_plugins` VALUES ('2','behaviors','Behaviours','0.85','2','Remi Collet, Nelly Mahu-Lasson','https://forge.indepnet.net/projects/behaviors','AGPLv3+');
+INSERT INTO `glpi_plugins` VALUES ('3','datainjection','File injection','2.4.1','2','Walid Nouh, Remi Collet, Nelly Mahu-Lasson, Xavier Caillaud','https://forge.indepnet.net/projects/datainjection','GPLv2+');
+INSERT INTO `glpi_plugins` VALUES ('4','uninstall','Item\'s uninstallation','0.85+1.0','2','Walid Nouh, François Legastelois, Remi Collet','https://github.com/pluginsGLPI/uninstall','<a href=\"../plugins/uninstall/LICENSE\" target=\"_blank\">GPLv2+</a>');
+INSERT INTO `glpi_plugins` VALUES ('5','purgelogs','Purge history','0.85+1.1','2','<a href=\'www.teclib.com\'>TECLIB\'</a>','https://forge.indepnet.net/projects/show/purgelogs',NULL);
+INSERT INTO `glpi_plugins` VALUES ('6','pdf','Print to pdf','0.86','2','Remi Collet, Nelly Mahu-Lasson','https://forge.indepnet.net/projects/pdf','GPLv3+');
+INSERT INTO `glpi_plugins` VALUES ('7','genericobject','Objects management','0.85-1.0','2','<a href=\"mailto:contact@teclib.com\">Teclib\'</a> & <a href=\'http://www.siprossii.com/\'>siprossii</a>','https://github.com/teclib/genericobject','GPLv2+');
+INSERT INTO `glpi_plugins` VALUES ('8','mreporting','More Reporting','2.3.1','2','<a href=\'http://www.teclib.com\'>Teclib\'</a>
+                                       & <a href=\'http://www.infotel.com\'>Infotel</a>','https://forge.indepnet.net/projects/mreporting','GPLv2+');
+INSERT INTO `glpi_plugins` VALUES ('9','fusioninventory','FusionInventory','0.90+1.0+TECLIB_12','0','<a href=\"mailto:d.durieux@siprossii.com\">David DURIEUX</a>
+                                    & FusionInventory team','http://forge.fusioninventory.org/projects/fusioninventory-for-glpi/','AGPLv3+');
+INSERT INTO `glpi_plugins` VALUES ('10','fpsoftware','FP Software','1.1.0','2','Future Processing','http://www.future-processing.com','GPLv2+');
+INSERT INTO `glpi_plugins` VALUES ('11','order','Orders management','0.85+1.1','2','The plugin order team','https://github.com/pluginsGLPI/order','GPLv2+');
+INSERT INTO `glpi_plugins` VALUES ('12','reports','Reports','1.9.0','2','Nelly Mahu-Lasson, Remi Collet','https://forge.glpi-project.org/projects/reports','GPLv3+');
+INSERT INTO `glpi_plugins` VALUES ('13','dicos','Extended dictionnaries','0.90+1.0','2','<a href=\'http://www.teclib.com\'>Teclib\'</a>','https://github.com/teclib/dicos','GPLv2');
 
 ### Dump table glpi_printermodels
 
@@ -6058,8 +6076,17 @@ CREATE TABLE `glpi_softwarelicenses` (
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` datetime DEFAULT NULL,
   `is_valid` tinyint(1) NOT NULL DEFAULT '1',
+  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `locations_id` int(11) NOT NULL DEFAULT '0',
+  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `is_helpdesk_visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
+  KEY `is_template` (`is_template`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `expire` (`expire`),
@@ -6068,7 +6095,13 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `softwarelicensetypes_id` (`softwarelicensetypes_id`),
   KEY `softwareversions_id_use` (`softwareversions_id_use`),
   KEY `date_mod` (`date_mod`),
-  KEY `softwares_id_expire` (`softwares_id`,`expire`)
+  KEY `softwares_id_expire` (`softwares_id`,`expire`),
+  KEY `locations_id` (`locations_id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `users_id` (`users_id`),
+  KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `groups_id` (`groups_id`),
+  KEY `is_helpdesk_visible` (`is_helpdesk_visible`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -6771,7 +6804,7 @@ CREATE TABLE `glpi_users` (
   KEY `is_deleted_ldap` (`is_deleted_ldap`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','0915bd0a5c6e56d8f38ca2b390857d4949073f41','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2014-06-18 08:02:24','2014-06-18 08:02:24',NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','$2y$10$GJChdkfZ4Ngfby1qUnAubewI4GDxUazwSttjCGnnN/dbAGLeqUhpS','','','','',NULL,'0',NULL,'0','20','1',NULL,'0','1','2016-01-12 09:05:17','2016-01-12 09:05:17',NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','3177926a7314de24680a9938aaa97703','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','d9f9133fb120cd6096870bc2b496805b','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','fea087517c26fadd409bd4b9dc642555','','','','',NULL,'0','en_GB','0','20','1',NULL,'0','0',NULL,NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
@@ -6854,4 +6887,3 @@ CREATE TABLE `glpi_wifinetworks` (
   KEY `essid` (`essid`),
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-

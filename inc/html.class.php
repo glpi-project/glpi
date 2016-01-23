@@ -1190,7 +1190,7 @@ class Html {
                                              'Planning', 'Stat', 'TicketRecurrent');
 
       $menu['management']['title']   = __('Management');
-      $menu['management']['types']   = array('Budget', 'Supplier', 'Contact', 'Contract',
+      $menu['management']['types']   = array('SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
                                                 'Document');
 
       $menu['tools']['title']        = __('Tools');
