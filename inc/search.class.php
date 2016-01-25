@@ -2480,16 +2480,19 @@ class Search {
                                         SEPARATOR '".self::LONGSEP."') AS `".$NAME."_$num`,
                            $ADDITONALFIELDS";
                }
-               $TRANS = '';
-               if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-                   $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
-                                                          '".self::SHORTSEP."',$tocomputeid)
-                                          SEPARATOR '".self::LONGSEP."')
-                                  AS `".$NAME."_".$num."_trans`, ";
-               }
+//               $TRANS = '';
+//               if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+//                   $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
+//                                                          '".self::SHORTSEP."',$tocomputeid)
+//                                          SEPARATOR '".self::LONGSEP."')
+//                                  AS `".$NAME."_".$num."_trans`, ";
+//               }
+//               return " $tocompute AS `".$NAME."_$num`,
+//                        `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
+//                        $TRANS
+//                        $ADDITONALFIELDS";
                return " $tocompute AS `".$NAME."_$num`,
                         `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
-                        $TRANS
                         $ADDITONALFIELDS";
          }
       }
@@ -2867,7 +2870,8 @@ class Search {
 
             if (in_array($searchtype, array('equals', 'notequals'))) {
                return " $link (`$table`.`id`".$SEARCH.
-                               (($val == 0)?" OR `$table`.`id` IS NULL":'').') ';
+                               (($val == 0)?" OR `$table`.`id` IS".
+                                   (($searchtype == "notequals")?" NOT":"")." NULL":'').') ';
             }
             $toadd   = '';
 
