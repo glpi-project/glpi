@@ -1068,7 +1068,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
       //else echo "--no--";
       echo Html::convDateTime($this->fields["date"]) . "</td>";
-      echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
+      echo "<td class='left'>" . nl2br(html_entity_decode($this->fields["content"])) . "</td>";
       echo "<td>";
       echo Html::timestampToString($this->fields["actiontime"], 0);
 
@@ -1126,6 +1126,11 @@ abstract class CommonITILTask  extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $DB, $CFG_GLPI;
 
+      $rand_template = mt_rand();
+      $rand_text     = mt_rand();
+      $rand_type     = mt_rand();
+      $rand_time     = mt_rand();
+
       if (isset($options['parent']) && !empty($options['parent'])) {
          $item = $options['parent'];
       }
@@ -1146,7 +1151,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $canplan = (!$item->isStatusExists(CommonITILObject::PLANNED)
                   || $item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED));
 
-      $rowspan = 3 ;
+      $rowspan = 4;
       if ($this->maybePrivate()) {
          $rowspan++;
       }
@@ -1155,12 +1160,42 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='$rowspan' class='middle'>".__('Description')."</td>";
-      echo "<td class='center middle' rowspan='$rowspan'>".
-           "<textarea id ='content$rand' name='content' cols='50' rows='$rowspan'>"
-           .$this->fields["content"].
+      echo "<td class='center middle' rowspan='$rowspan' id='content$rand_text'>".
+           "<textarea name='content' cols='50' rows='15' id='task$rand_text'>".$this->fields["content"].
            "</textarea>";
       echo Html::scriptBlock("$(document).ready(function() { $('#content$rand').autogrow(); });");
       echo "</td>";
+
+      echo "<td>"._n('Task template', 'Task templates', 1)."</td><td>";
+
+      TaskTemplate::dropdown(array(
+         'value'     => 0,
+         'entity'    => $this->getEntityID(),
+         'rand'      => $rand_template,
+         'on_change' => 'tasktemplate_update(this.value)',
+      ));
+      echo "</td>";
+
+      echo Html::scriptBlock('
+         function tasktemplate_update(value) {
+            jQuery.ajax({
+               url: "' . $CFG_GLPI["root_doc"] . '/ajax/task.php",
+               type: "POST",
+               data: {
+                  tasktemplates_id: value
+               }
+            }).done(function(datas) {
+               datas.taskcategories_id = isNaN(parseInt(datas.taskcategories_id)) ? 0 : parseInt(datas.taskcategories_id);
+               datas.actiontime = isNaN(parseInt(datas.actiontime)) ? 0 : parseInt(datas.actiontime);
+
+               $("#task' . $rand_text . '").html(datas.content);
+               $("#dropdown_taskcategories_id' . $rand_type . '").select2("val", parseInt(datas.taskcategories_id));
+               $("#dropdown_actiontime' . $rand_time . '").select2("val", parseInt(datas.actiontime));
+            });
+         }
+      ');
+
+
       if ($ID > 0) {
          echo "<td>".__('Date')."</td>";
          echo "<td>";
@@ -1176,7 +1211,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Category')."</td><td>";
       TaskCategory::dropdown(array('value'  => $this->fields["taskcategories_id"],
+                                   'rand'   => $rand_type,
                                    'entity' => $item->fields["entities_id"]));
+
       echo "</td></tr>\n";
 
       if (isset($this->fields["state"])) {
@@ -1206,6 +1243,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       Dropdown::showTimeStamp("actiontime", array('min'             => 0,
                                                   'max'             => 8*HOUR_TIMESTAMP,
                                                   'value'           => $this->fields["actiontime"],
+                                                  'rand'            => $rand_time,
                                                   'addfirstminutes' => true,
                                                   'inhours'         => true,
                                                   'toadd'           => $toadd));
