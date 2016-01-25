@@ -2867,7 +2867,8 @@ class Search {
 
             if (in_array($searchtype, array('equals', 'notequals'))) {
                return " $link (`$table`.`id`".$SEARCH.
-                               (($val == 0)?" OR `$table`.`id` IS NULL":'').') ';
+                               (($val == 0)?" OR `$table`.`id` IS".
+                                   (($searchtype == "notequals")?" NOT":"")." NULL":'').') ';
             }
             $toadd   = '';
 
