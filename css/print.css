@@ -132,7 +132,7 @@ small {
 a, a:link {
    font-weight: bold;
    text-decoration: none;
-   color : #659900;
+   color : #3A5693;
    font-size : 11px;
 }
 
@@ -467,7 +467,7 @@ li.auto_comp {
 .showplan {
    font-weight: bold;
    text-decoration: none; 
-   color : #659900; 
+   color : #3A5693; 
    cursor:pointer;
 }
 
@@ -708,7 +708,7 @@ ul#onglet li {
 }
 
 ul#onglet li.actif {
-   border-bottom: 1px ridge #659900;
+   border-bottom: 1px ridge #3A5693;
    background-color: #fff;
 }
 
@@ -736,7 +736,7 @@ ul#onglet li.actif a {
 }
 
 #onglet a:hover {
-   color : #659900;
+   color : #3A5693;
 }
 
 ul#onglet span.fake {
@@ -891,7 +891,7 @@ ul#onglet span.fake {
    background:url("../pics/login_glpi.png")  no-repeat;
    font-family : Verdana,Arial,Helvetica,sans-serif;
    font-size : 12px;
-   color :#659900;
+   color :#3A5693;
    font-weight: bold;
 }
 
@@ -960,11 +960,11 @@ ul#onglet span.fake {
    font-size: 15px;
    font-weight: 700;
    background-color: transparent;
-   color :#659900;
+   color :#3A5693;
 }
 
 #boxlogin input {
-   border: 1px solid #659900;
+   border: 1px solid #3A5693;
 }
 
 
@@ -981,7 +981,7 @@ ul#onglet span.fake {
 }
 
 #logo-login a:hover {
-   color :#659900;
+   color :#3A5693;
    text-decoration: underline;
 }
 
