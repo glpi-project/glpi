@@ -5062,9 +5062,11 @@ class Search {
          }
       }
 
+      $saved_params = $params;
       foreach ($default_values as $key => $val) {
          if (!isset($params[$key])) {
             if ($usesession
+                && !isset($saved_params['criteria']) // retrieve session only if not a new request
                 && isset($_SESSION['glpisearch'][$itemtype][$key])) {
                $params[$key] = $_SESSION['glpisearch'][$itemtype][$key];
             } else {
