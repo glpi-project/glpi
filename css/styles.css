@@ -674,6 +674,10 @@ input.save {
       width: 150px;
    }
 
+   .layout_vsplit.form .ui-tabs-panel table.tab_cadre_pager {
+      width: 100%;
+   }
+
   .layout_vsplit.form .form_content {
       position: relative;
       width: 46%;
