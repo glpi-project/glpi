@@ -47,7 +47,6 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 Session::checkLoginUser();
 
-
 $ret = 0 ;
 if (isset($_GET['unlock']) && isset($_GET["id"])  ) {
    // then we may have something to unlock
@@ -59,7 +58,6 @@ if (isset($_GET['unlock']) && isset($_GET["id"])  ) {
       $ret = 1 ;
    }
 
-   echo $ret ;
 } elseif ( isset($_GET['requestunlock']) && isset($_GET["id"]) ) {
    // the we must ask for unlock
    $ol = new ObjectLock( ) ;   
@@ -68,6 +66,7 @@ if (isset($_GET['unlock']) && isset($_GET["id"])  ) {
       $ret = 1 ;
    }
 }
+
 echo $ret ;
 
 ?>

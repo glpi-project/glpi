@@ -131,24 +131,37 @@ class ObjectLock extends CommonDBTM {
     */
    private function setLockedByYouMessage ( ) {
       global $CFG_GLPI ;
+
       echo Html::scriptBlock("
-         function unlockIt() {
-            if( confirm('".__('Unlock this item: ').$this->itemtypename." #".$this->itemid."?') ){
-        $.ajax({
-                  url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
-                  cache: false,
-                  data: 'unlock=1&force=1&id=".$this->fields['id']."',
-                  success: function() { if( confirm('".__('Item unlocked!\\r\\n\\r\\nReload page?')."') ) window.location.reload(true); },
-                  error: function() { alert('".__('Item NOT unlocked! Contact your GLPI admin!')."'); }
-                  });
-    }
-}
+         function unlockIt(obj) {
+            //debugger;
+            $('#message_after_lock').fadeToggle() ;
+            lockConfirm('".__('Unlock this item?')."', '".$this->itemtypename." #".$this->itemid."', function() {
+                  $.ajax({
+                     url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
+                     cache: false,
+                     data: 'unlock=1&force=1&id=".$this->fields['id']."',
+                     success: function() {
+                           lockConfirm('".__('Reload page?')."', '".__('Item unlocked!')."', function() {
+                                 //debugger;
+                                 window.location.reload(true);
+                              }, function() {
+                                 $('#message_after_lock').fadeToggle() ;
+                              }) ;
+                        },
+                     error: function() { lockAlert('".__('Contact your GLPI admin!')."','".__('Item NOT unlocked!')."'); $('#message_after_lock').fadeToggle() ; }
+                     });
+               }, function() {
+                  $('#message_after_lock').fadeToggle() ;
+               }
+            ) ;
+         }
 
          ") ;
 
       $msg = "<table><tr><td class=red>" ;
       $msg .= __("Locked by you!")."</td>";
-      $msg .= "<td><a class='vsubmit' onclick='javascript:unlockIt();'>".__('Unlock ').$this->itemtypename." #".$this->itemid."</a>";
+      $msg .= "<td><a class='vsubmit' onclick='javascript:unlockIt(this);'>".__('Unlock ').$this->itemtypename." #".$this->itemid."</a>";
       $msg .="</td></tr></table>";
 
       $this->displayLockMessage( $msg ) ;
@@ -173,15 +186,20 @@ class ObjectLock extends CommonDBTM {
       if( $showAskUnlock ) {
          echo Html::scriptBlock("
          function askUnlock() {
-            if( confirm('".__('Ask for unlock this item: ').$this->itemtypename." #".$this->itemid."?') ){
-               $.ajax({
-                  url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
-                  cache: false,
-                  data: 'requestunlock=1&id=".$this->fields['id']."',
-                  success: function( jqXHR, textStatus ) { alert('".__('Request sent to ').$completeUserName."');}
-                  });
+            $('#message_after_lock').fadeToggle() ;
+            lockConfirm( '".__('Ask for unlock item?')."', '".$this->itemtypename." #".$this->itemid."', function() {
+                  $.ajax({
+                     url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
+                     cache: false,
+                     data: 'requestunlock=1&id=".$this->fields['id']."',
+                     success: function( jqXHR, textStatus ) { lockAlert('".$completeUserName."', '".__('Request sent to')."', function() { $('#message_after_lock').fadeToggle() ; } );}
+                     });
+               }, function() {
+                  $('#message_after_lock').fadeToggle() ;
                }
-            }
+            ) ;
+         }
+
          ") ;
       }
 
@@ -373,6 +391,59 @@ class ObjectLock extends CommonDBTM {
     */
    private function displayLockMessage( $msg, $title='' ) {
 
+      echo "<div id='dialog-confirm'></div>" ;
+      echo "<div id='dialog-alert'></div>" ;
+      echo Html::scriptBlock("
+         function lockConfirm(locMsg, locTitle, yesCallback, noCallback) {
+            $('#dialog-confirm').html(locMsg);
+            // Define the Dialog and its properties.
+            $('#dialog-confirm').dialog({
+               open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
+               resizable: false,
+               modal: true,
+               title: locTitle,
+               buttons: {
+                  'Yes': function () {
+                        $(this).dialog('close');
+                        if( $.isFunction( yesCallback )) {
+                           yesCallback() ;
+                        }
+                     },
+                  'No': function () {
+                        $(this).dialog('close');
+                        if( $.isFunction( noCallback ) ) {
+                           noCallback() ;
+                        }
+                     }
+               }
+            });
+
+         }
+
+
+         function lockAlert( locMsg, locTitle, okCallback) {
+            $('#dialog-alert').html(locMsg);
+
+            // Define the Dialog and its properties.
+            $('#dialog-alert').dialog({
+               open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
+               resizable: false,
+               modal: true,
+               title: locTitle,
+               buttons: {
+                  'Ok': function () {
+                        $(this).dialog('close');
+                        if( $.isFunction( okCallback )) {
+                           okCallback() ;
+                        }
+                     }
+               }
+            });
+
+         }
+         ");
+
+
       $hideTitle = '' ;
       if( $title == '' ) {
          $hideTitle = "$('.ui-dialog-titlebar', ui.dialog | ui).hide();" ;
@@ -518,12 +589,13 @@ class ObjectLock extends CommonDBTM {
       $actionCode = 0; // by default
       $task->setVolume(0); // start with zero
 
-      $lockedItems = getAllDatasFromTable( getTableForItemType( __CLASS__ ), "`date_mod` < '" . date("Y-m-d H:i:s", time() - ($task->fields['param'] * 60 * 60)) . "'" ) ;
+      $lockedItems = getAllDatasFromTable( getTableForItemType( __CLASS__ ), "`date_mod` < '" . date("Y-m-d H:i:s", time() - ($task->fields['param'] * HOUR_TIMESTAMP)) . "'" ) ;
 
       foreach( $lockedItems as $row ) {
          $ol = new self ;
          if( $ol->delete( $row ) ) {
             $actionCode++;
+            $task->log( $row['items_id']." ". $row['itemtype'] );
             $task->addVolume(1);
             Log::history($row['items_id'], $row['itemtype'], array(0, '', ''), 0, Log::HISTORY_UNLOCK_ITEM); 
          } else {
@@ -535,4 +607,4 @@ class ObjectLock extends CommonDBTM {
    }
 
 }
-
+?>
