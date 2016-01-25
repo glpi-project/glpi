@@ -72,6 +72,26 @@ function update0901to091() {
    Config::setConfigurationValues('core', array('set_default_requester' => 1));
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
+   // Add task template
+   if (!TableExists('glpi_tasktemplates')) {
+      $query = "CREATE TABLE `glpi_tasktemplates` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `content` text COLLATE utf8_unicode_ci,
+                  `taskcategories_id` int(11) NOT NULL DEFAULT '0',
+                  `actiontime` int(11) NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `taskcategories_id` (`taskcategories_id`),
+                  KEY `entities_id` (`entities_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "0.84 add table glpi_tasktemplates");
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
