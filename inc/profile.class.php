@@ -464,7 +464,7 @@ class Profile extends CommonDBTM {
       // First, get all possible rights
       $right_subqueries = array();
       foreach (ProfileRight::getAllPossibleRights() as $key => $default) {
-         $val = $_SESSION['glpiactiveprofile'][$key];
+         $val = isset($_SESSION['glpiactiveprofile'][$key])?$_SESSION['glpiactiveprofile'][$key]:0;
 
          if (!is_array($val) // Do not include entities field added by login
              && (($_SESSION['glpiactiveprofile']['interface'] == 'central')
