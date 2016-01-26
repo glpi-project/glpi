@@ -143,7 +143,7 @@ class Html {
     *
     * @return $time or $date
    **/
-   static function convDate($time) {
+   static function convDate($time, $format=null) {
 
       if (is_null($time) || ($time == 'NULL')) {
          return NULL;
@@ -152,8 +152,11 @@ class Html {
       if (!isset($_SESSION["glpidate_format"])) {
          $_SESSION["glpidate_format"] = 0;
       }
+      if( !$format ) {
+         $format = $_SESSION["glpidate_format"];
+      } 
 
-      switch ($_SESSION['glpidate_format']) {
+      switch ($format) {
          case 1 : // DD-MM-YYYY
             $date  = substr($time, 8, 2)."-";  // day
             $date .= substr($time, 5, 2)."-"; // month
@@ -182,13 +185,13 @@ class Html {
     *
     * @return $time or $date
    **/
-   static function convDateTime($time) {
+   static function convDateTime($time, $format=null) {
 
       if (is_null($time) || ($time == 'NULL')) {
          return NULL;
       }
 
-      return self::convDate($time).' '. substr($time, 11, 5);
+      return self::convDate($time, $format).' '. substr($time, 11, 5);
    }
 
 
@@ -2399,7 +2402,7 @@ class Html {
    **/
    static function header_nocache() {
 
-      header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+      header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
       header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passe
    }
 
@@ -3880,7 +3883,7 @@ class Html {
             setTimeout(
                function(){
                   ed.execCommand('mceAutoResize');
-               }, 1);4204
+               }, 1);
                if (tinymce.isIE) {
                   tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
                      return tinymce.dom.Event.cancel(e);
@@ -5588,6 +5591,41 @@ class Html {
       };");
    }
 
+   /**
+    * Summary of confirmCallback
+    * Is a replacement for Javascript native confirm function
+    * Beware that native confirm is synchronous by nature (will block
+    * browser waiting an answer from user, but that this is emulating the confirm behaviour
+    * by using callbacks functions when user presses 'Yes' or 'No' buttons.
+    * @param string $msg: message to be shown
+    * @param string $title: title for dialog box
+    * @param string $yesCallback: function that will be called when 'Yes' is pressed
+    * @param string $noCallback: function that will be called when 'No' is pressed
+    * */
+   static function jsConfirmCallback( $msg, $title, $yesCallback=null, $noCallback=null ) {
+
+      return "
+         // the Dialog and its properties.
+         $('<div></div>').dialog({
+            open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
+            close: function(event, ui) { $(this).remove(); },
+            resizable: false,
+            modal: true,
+            title: '$title',
+            buttons: {
+               'Yes': function () {
+                     $(this).dialog('close');
+                     ".($yesCallback!==null?'('.$yesCallback.')()':'')."
+                  },
+               'No': function () {
+                     $(this).dialog('close');
+                     ".($noCallback!==null?'('.$noCallback.')()':'')."
+                  }
+            }
+         }).text('$msg');
+      ";
+   }
+
 
    /**
     * In this function, we redefine 'window.confirm' javascript function
@@ -5656,5 +5694,36 @@ class Html {
          return confirmed;
       };");
    }
+
+   /**
+    * Summary of jsAlertCallback
+    * Is a replacement for Javascript native alert function
+    * Beware that native alert is synchronous by nature (will block
+    * browser waiting an answer from user, but that this is emulating the alert behaviour
+    * by using a callback function when user presses 'Ok' button.
+    * @param string $msg: message to be shown
+    * @param string $title: title for dialog box
+    * @param string $okCallback: function that will be called when 'Ok' is pressed
+    */
+   static function jsAlertCallback( $msg, $title, $okCallback=null) {
+
+      return "
+         // Dialog and its properties.
+         $('<div></div>').dialog({
+            open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
+            close: function(event, ui) { $(this).remove(); },
+            resizable: false,
+            modal: true,
+            title: '$title',
+            buttons: {
+               'Ok': function () {
+                     $(this).dialog('close');
+                     ".($okCallback!==null?'('.$okCallback.')()':'')."
+                  }
+            }
+         }).text('$msg');
+         " ;
+   }
+
 }
 ?>

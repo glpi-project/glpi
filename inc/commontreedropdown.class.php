@@ -650,6 +650,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $tab[19]['massiveaction']  = false;
       }
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       return $tab;
    }
 
