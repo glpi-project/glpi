@@ -291,6 +291,8 @@ Regards,
    $migration->addField("glpi_users", "lock_autolock_mode", "tinyint(1) NULL DEFAULT NULL");
    $migration->addField("glpi_users", "lock_directunlock_notification", "tinyint(1) NULL DEFAULT NULL");
 
+
+   // ************ Keep it at the end **************
    $migration->executeMigration();
 
    return $updateresult;
