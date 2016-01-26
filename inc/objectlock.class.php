@@ -595,7 +595,9 @@ class ObjectLock extends CommonDBTM {
          $ol = new self ;
          if( $ol->delete( $row ) ) {
             $actionCode++;
-            $task->log( $row['items_id']." ". $row['itemtype'] );
+            $item = new $row['itemtype'] ;
+            $item->getFromDB( $row['items_id'] ) ;
+            $task->log( $row['itemtype']." #".$row['items_id'].": ".$item->getLink() );
             $task->addVolume(1);
             Log::history($row['items_id'], $row['itemtype'], array(0, '', ''), 0, Log::HISTORY_UNLOCK_ITEM); 
          } else {
