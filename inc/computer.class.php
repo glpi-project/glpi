@@ -571,24 +571,23 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td colspan='2'>";
       echo Html::scriptBlock("
       $(document).ready(function(){
-         $('#os_information').dialog({
-            autoOpen: false,
-            width:'auto',
-            resizable: false,
-            position: {
-               my : 'left top',
-               at : 'left bottom',
-               of: $('#toggle_os_information')
-            }
-         });
+         $('#os_information').hide();
 
          $('#toggle_os_information').on('click',function() {
-            $('#os_information').dialog('open');
+            $('#os_information').dialog({
+               width:'auto',
+               resizable: false,
+               position: {
+                  my : 'left top',
+                  at : 'left bottom',
+                  of: $('#toggle_os_information')
+               }
+            })
          })
       });");
 
       // group os advanced information in a single bloc (who can be toggled)
-      echo "<div style='display:none;' id='os_information' title=\"".__('Operating system')."\">";
+      echo "<div id='os_information' title=\"".__('Operating system')."\">";
       echo "<table>";
       echo "<tr class='tab_bg_1'>";
 
