@@ -771,6 +771,11 @@ class Computer extends CommonDBTM {
       $tab[47]['name']           = __('UUID');
       $tab[47]['datatype']       = 'string';
 
+      $tab[48]['table']          = $this->getTable();
+      $tab[48]['field']          = 'os_kernel_version';
+      $tab[48]['name']           = __('Kernel version of the operating system');
+      $tab[48]['datatype']       = 'string';
+
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';
       $tab[5]['name']            = __('Serial number');
