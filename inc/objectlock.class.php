@@ -132,32 +132,36 @@ class ObjectLock extends CommonDBTM {
    private function setLockedByYouMessage ( ) {
       global $CFG_GLPI ;
 
-      echo Html::scriptBlock("
+      $ret = Html::scriptBlock("
          function unlockIt(obj) {
-            //debugger;
             $('#message_after_lock').fadeToggle() ;
-            lockConfirm('".__('Unlock this item?')."', '".$this->itemtypename." #".$this->itemid."', function() {
-                  $.ajax({
-                     url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
-                     cache: false,
-                     data: 'unlock=1&force=1&id=".$this->fields['id']."',
-                     success: function() {
-                           lockConfirm('".__('Reload page?')."', '".__('Item unlocked!')."', function() {
-                                 //debugger;
-                                 window.location.reload(true);
-                              }, function() {
-                                 $('#message_after_lock').fadeToggle() ;
-                              }) ;
-                        },
-                     error: function() { lockAlert('".__('Contact your GLPI admin!')."','".__('Item NOT unlocked!')."'); $('#message_after_lock').fadeToggle() ; }
-                     });
-               }, function() {
+
+            function callUnlock( ) {
+               $.ajax({
+                  url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
+                  cache: false,
+                  data: 'unlock=1&force=1&id=".$this->fields['id']."',
+                  success: function( jqXHR, textStatus ) { ".
+                        Html::jsConfirmCallback(__('Reload page?'), __('Item unlocked!'), "function() {
+                              window.location.reload(true);
+                           }", "function() {
+                              $('#message_after_lock').fadeToggle() ;
+                           }") ."
+                     },
+                  error: function() { ".
+                        Html::jsAlertCallback(__('Contact your GLPI admin!'),__('Item NOT unlocked!'), 'function(){$(\'#message_after_lock\').fadeToggle()}')."
+                     }
+               });
+            }".
+            Html::jsConfirmCallback(__('Unlock this item?'), $this->itemtypename." #".$this->itemid, "callUnlock", "function() {
                   $('#message_after_lock').fadeToggle() ;
-               }
-            ) ;
+               }"
+            )." 
          }
 
          ") ;
+
+      echo $ret ;
 
       $msg = "<table><tr><td class=red>" ;
       $msg .= __("Locked by you!")."</td>";
@@ -184,23 +188,26 @@ class ObjectLock extends CommonDBTM {
       $completeUserName = formatUserName(0, $user->fields['name'], $user->fields['realname'], $user->fields['firstname']) ;
 
       if( $showAskUnlock ) {
-         echo Html::scriptBlock("
+         $ret = Html::scriptBlock("
          function askUnlock() {
             $('#message_after_lock').fadeToggle() ;
-            lockConfirm( '".__('Ask for unlock item?')."', '".$this->itemtypename." #".$this->itemid."', function() {
+            ". Html::jsConfirmCallback( __('Ask for unlock item?'), $this->itemtypename." #".$this->itemid, "function() {
                   $.ajax({
                      url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
                      cache: false,
                      data: 'requestunlock=1&id=".$this->fields['id']."',
-                     success: function( jqXHR, textStatus ) { lockAlert('".$completeUserName."', '".__('Request sent to')."', function() { $('#message_after_lock').fadeToggle() ; } );}
+                     success: function( jqXHR, textStatus ) { 
+                           ".Html::jsAlertCallback($completeUserName, __('Request sent to'), "function() { $('#message_after_lock').fadeToggle() ; }" )."
+                        }
                      });
-               }, function() {
+               }", "function() {
                   $('#message_after_lock').fadeToggle() ;
-               }
-            ) ;
+               }"
+            ) ."
          }
 
          ") ;
+         echo $ret ;
       }
 
       $msg = "<table><tr><td class=red nowrap>" ;
@@ -390,59 +397,6 @@ class ObjectLock extends CommonDBTM {
     * @param mixed $title: if $title is '' then title bar it is not shown
     */
    private function displayLockMessage( $msg, $title='' ) {
-
-      echo "<div id='dialog-confirm'></div>" ;
-      echo "<div id='dialog-alert'></div>" ;
-      echo Html::scriptBlock("
-         function lockConfirm(locMsg, locTitle, yesCallback, noCallback) {
-            $('#dialog-confirm').html(locMsg);
-            // Define the Dialog and its properties.
-            $('#dialog-confirm').dialog({
-               open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
-               resizable: false,
-               modal: true,
-               title: locTitle,
-               buttons: {
-                  'Yes': function () {
-                        $(this).dialog('close');
-                        if( $.isFunction( yesCallback )) {
-                           yesCallback() ;
-                        }
-                     },
-                  'No': function () {
-                        $(this).dialog('close');
-                        if( $.isFunction( noCallback ) ) {
-                           noCallback() ;
-                        }
-                     }
-               }
-            });
-
-         }
-
-
-         function lockAlert( locMsg, locTitle, okCallback) {
-            $('#dialog-alert').html(locMsg);
-
-            // Define the Dialog and its properties.
-            $('#dialog-alert').dialog({
-               open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
-               resizable: false,
-               modal: true,
-               title: locTitle,
-               buttons: {
-                  'Ok': function () {
-                        $(this).dialog('close');
-                        if( $.isFunction( okCallback )) {
-                           okCallback() ;
-                        }
-                     }
-               }
-            });
-
-         }
-         ");
-
 
       $hideTitle = '' ;
       if( $title == '' ) {

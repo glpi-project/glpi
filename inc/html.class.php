@@ -5550,5 +5550,71 @@ class Html {
    }
 
 
+   /**
+    * Summary of confirmCallback
+    * Is a replacement for Javascript native confirm function 
+    * Beware that native confirm is synchronous by nature (will block 
+    * browser waiting an answer from user, but that this is emulating the confirm behaviour
+    * by using callbacks functions when user presses 'Yes' or 'No' buttons.
+    * @param string $msg: message to be shown
+    * @param string $title: title for dialog box
+    * @param string $yesCallback: function that will be called when 'Yes' is pressed
+    * @param string $noCallback: function that will be called when 'No' is pressed
+    * */
+   static function jsConfirmCallback( $msg, $title, $yesCallback=null, $noCallback=null ) {
+
+      return "
+         // the Dialog and its properties.
+         $('<div></div>').dialog({
+            open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
+            close: function(event, ui) { $(this).remove(); },
+            resizable: false,
+            modal: true,
+            title: '$title',
+            buttons: {
+               'Yes': function () {
+                     $(this).dialog('close');
+                     ".($yesCallback!==null?'('.$yesCallback.')()':'')." 
+                  },
+               'No': function () {
+                     $(this).dialog('close');
+                     ".($noCallback!==null?'('.$noCallback.')()':'')."
+                  }
+            }
+         }).text('$msg');
+      ";
+   }
+
+
+   /**
+    * Summary of jsAlertCallback
+    * Is a replacement for Javascript native alert function
+    * Beware that native alert is synchronous by nature (will block
+    * browser waiting an answer from user, but that this is emulating the alert behaviour
+    * by using a callback function when user presses 'Ok' button.
+    * @param string $msg: message to be shown
+    * @param string $title: title for dialog box
+    * @param string $okCallback: function that will be called when 'Ok' is pressed
+    */
+   static function jsAlertCallback( $msg, $title, $okCallback=null) {
+
+      return "
+         // Dialog and its properties.
+         $('<div></div>').dialog({
+            open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
+            close: function(event, ui) { $(this).remove(); },
+            resizable: false,
+            modal: true,
+            title: '$title',
+            buttons: {
+               'Ok': function () {
+                     $(this).dialog('close');
+                     ".($okCallback!==null?'('.$okCallback.')()':'')."
+                  }
+            }
+         }).text('$msg');
+         " ;
+   }
+
 }
 ?>
