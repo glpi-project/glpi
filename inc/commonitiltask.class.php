@@ -313,6 +313,20 @@ abstract class CommonITILTask  extends CommonDBTM {
                $item->updateActionTime($this->input[$item->getForeignKeyField()]);
             }
 
+            // change ticket status (from splitted button)
+            $itemtype = $this->getItilObjectItemType();
+            $this->input['_job'] = new $itemtype();
+            if (!$this->input['_job']->getFromDB($this->input[$this->input['_job']->getForeignKeyField()])) {
+               return false;
+            }
+            if (isset($this->input['_status'])
+                && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
+                $update['status']        = $this->input['_status'];
+                $update['id']            = $this->input['_job']->fields['id'];
+                $update['_disablenotif'] = true;
+                $this->input['_job']->update($update);
+             }
+
             if (!empty($this->fields['begin'])
                 && $item->isStatusExists(CommonITILObject::PLANNED)
                 && (($item->fields["status"] == CommonITILObject::INCOMING)
