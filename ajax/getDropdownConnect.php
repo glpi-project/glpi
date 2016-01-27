@@ -43,7 +43,7 @@ if (strpos($_SERVER['PHP_SELF'],"getDropdownConnect.php")) {
 }
 
 if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+   die("Cannot access this file directly");
 }
 
 if (!isset($_GET['fromtype']) || !($fromitem = getItemForItemtype($_GET['fromtype']))) {

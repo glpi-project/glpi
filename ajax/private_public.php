@@ -42,7 +42,7 @@ if (strpos($_SERVER['PHP_SELF'],"private_public.php")) {
 }
 
 if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+   die("Cannot access this file directly");
 }
 
 if (isset($_POST['is_private'])) {

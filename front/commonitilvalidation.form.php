@@ -38,7 +38,7 @@
 
 // autoload include in objecttask.form (ticketvalidation, changevalidation,...)
 if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+   die("Cannot access this file directly");
 }
 
 Session::checkLoginUser();
