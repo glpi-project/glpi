@@ -4323,6 +4323,19 @@ class CommonDBTM extends CommonGLPI {
 
       return $values;
    }
-
+   
+   /**
+    * Generate link
+    *
+    * @since version 0.91
+    *
+    * @param $link    string   original string content
+    * @param $item             CommonDBTM object: item used to make replacements
+    *
+    * @return array of link contents (may have several when item have several IP / MAC cases)
+   **/
+   static function generateLinkContents($link, CommonDBTM $item) {
+      return array($link);
+   }
 }
 ?>
