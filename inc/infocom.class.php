@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -133,23 +133,21 @@ class Infocom extends CommonDBChild {
 
       // Can exists on template
       if (Session::haveRight(self::$rightname, READ)) {
+         $nn = 0;
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), self::countForSupplier($item));
+                  $nb = self::countForSupplier($item);
                }
-               return _n('Item', 'Items', Session::getPluralNumber());
+               return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
             default :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(__('Management'),
-                                              countElementsInTable('glpi_infocoms',
-                                                                   "`itemtype`
-                                                                           = '".$item->getType()."'
-                                                                      AND `items_id`
-                                                                           = '".$item->getID()."'"));
+                  $nb = countElementsInTable('glpi_infocoms',
+                                             "`itemtype` = '".$item->getType()."'
+                                               AND `items_id` = '".$item->getID()."'");
                }
-               return __('Management');
+               return self::createTabEntry(__('Management'), $nb);
          }
       }
       return '';
@@ -617,12 +615,13 @@ class Infocom extends CommonDBChild {
    **/
    static function dropdownAmortType($name, $value=0, $display=true) {
 
-      $values = array(0 => Dropdown::EMPTY_VALUE,
-                      2 => __('Linear'),
+      $values = array(2 => __('Linear'),
                       1 => __('Decreasing'));
 
-      return Dropdown::showFromArray($name, $values, array('value'   => $value,
-                                                           'display' => $display));
+      return Dropdown::showFromArray($name, $values,
+                                     array('value'               => $value,
+                                           'display'             => $display,
+                                           'display_emptychoice' => true));
    }
 
 

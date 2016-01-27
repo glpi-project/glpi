@@ -444,6 +444,12 @@ class RuleTicket extends Rule {
       $criterias['_x-priority']['table']                    = '';
       $criterias['_x-priority']['type']                     = 'text';
 
+      $criterias['slas_id']['table']                        = 'glpi_slas';
+      $criterias['slas_id']['field']                        = 'name';
+      $criterias['slas_id']['name']                         = __('SLA');
+      $criterias['slas_id']['linkfield']                    = 'slas_id';
+      $criterias['slas_id']['type']                         = 'dropdown';
+
       return $criterias;
    }
 

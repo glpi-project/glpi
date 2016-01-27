@@ -287,20 +287,20 @@ class Contract_Item extends CommonDBRelation{
 
       // Can exists on template
       if (Contract::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Contract' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), self::countForContract($item));
+                  $nb = self::countForContract($item);
                }
-               return _n('Item', 'Items', Session::getPluralNumber());
+               return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
             default :
                if ($_SESSION['glpishow_count_on_tabs']
                    && in_array($item->getType(), $CFG_GLPI["contract_types"])) {
-                  return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), self::countForItem($item));
+                   $nb = self::countForItem($item);
                }
-               return _n('Contract', 'Contracts', Session::getPluralNumber());
-
+               return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';
@@ -589,8 +589,10 @@ class Contract_Item extends CommonDBRelation{
                                                              'searchtype' => 'contains',
                                                              'field'      => 29)));
 
-               $link = "<a href='". Toolbox::getItemTypeSearchURL($itemtype) . "?" .
-                                 Toolbox::append_params($opt)."'>" . __('Device list')."</a>";
+               $url  = $item::getSearchURL();
+               $url .= (strpos($url,'?') ? '&':'?');
+               $url .= Toolbox::append_params($opt);
+               $link = "<a href='$url'>" . __('Device list')."</a>";
 
                $data[$itemtype] = array('longlist' => true,
                                         'name'     => sprintf(__('%1$s: %2$s'),

@@ -221,7 +221,7 @@ class Apc extends AbstractAdapter implements
         $result      = apc_fetch($internalKey, $success);
 
         if (!$success) {
-            return null;
+            return;
         }
 
         $casToken = $result;
@@ -361,16 +361,19 @@ class Apc extends AbstractAdapter implements
 
         $options   = $this->getOptions();
         $namespace = $options->getNamespace();
+        $prefixL   = 0;
+
         if ($namespace === '') {
             $pattern = '/^(' . implode('|', $keysRegExp) . ')' . '$/';
         } else {
             $prefix  = $namespace . $options->getNamespaceSeparator();
+            $prefixL = strlen($prefix);
             $pattern = '/^' . preg_quote($prefix, '/') . '(' . implode('|', $keysRegExp) . ')' . '$/';
         }
+
         $format  = APC_ITER_ALL ^ APC_ITER_VALUE ^ APC_ITER_TYPE ^ APC_ITER_REFCOUNT;
         $it      = new BaseApcIterator('user', $pattern, $format, 100, APC_LIST_ACTIVE);
         $result  = array();
-        $prefixL = strlen($prefix);
         foreach ($it as $internalKey => $metadata) {
             // @see http://pecl.php.net/bugs/bug.php?id=22564
             if (!apc_exists($internalKey)) {
@@ -378,7 +381,7 @@ class Apc extends AbstractAdapter implements
             }
 
             $this->normalizeMetadata($metadata);
-            $result[substr($internalKey, $prefixL)] = & $metadata;
+            $result[substr($internalKey, $prefixL)] = $metadata;
         }
 
         return $result;

@@ -434,7 +434,7 @@ class FilesystemOptions extends AdapterOptions
             }
 
             // normalize
-            $umask = $umask & 0777;
+            $umask = $umask & ~0002;
         }
 
         if ($this->umask !== $umask) {

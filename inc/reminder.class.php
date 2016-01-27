@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -453,6 +453,9 @@ class Reminder extends CommonDBTM {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       return $tab;
    }
 
@@ -506,15 +509,15 @@ class Reminder extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (self::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Reminder' :
                if ($item->canUpdate()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = $item->countVisibilities();
-                     return array(1 => self::createTabEntry(_n('Target','Targets',$nb),
-                                                            $nb));
                   }
-                  return array(1 => _n('Target','Targets', Session::getPluralNumber()));
+                  return array(1 => self::createTabEntry(_n('Target','Targets',
+                                                            Session::getPluralNumber()), $nb));
                }
          }
       }

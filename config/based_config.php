@@ -40,13 +40,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Notice problem  for date function :
-if (function_exists('date_default_timezone_set')) {
-   $tz = ini_get('date.timezone');
-   if (!empty($tz)) {
-      date_default_timezone_set($tz);
-   } else {
-      date_default_timezone_set(@date_default_timezone_get());
-   }
+$tz = ini_get('date.timezone');
+if (!empty($tz)) {
+   date_default_timezone_set($tz);
+} else {
+   date_default_timezone_set(@date_default_timezone_get());
 }
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
@@ -67,12 +65,6 @@ if (!defined("GLPI_DUMP_DIR")) {
 // Path for documents storage
 if (!defined("GLPI_DOC_DIR")) {
    define("GLPI_DOC_DIR",GLPI_ROOT . "/files");
-}
-
-// Path for cache storage
-if (!defined("GLPI_CACHE_DIR")) {
-   // Need / at the end for Cache Lite compatibility
-   define("GLPI_CACHE_DIR",GLPI_ROOT . "/files/_cache/");
 }
 
 // Path for cron storage

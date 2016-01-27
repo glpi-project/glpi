@@ -27,6 +27,15 @@ class HydratorPluginManager extends AbstractPluginManager
     protected $shareByDefault = false;
 
     /**
+     * Default aliases
+     *
+     * @var array
+     */
+    protected $aliases = array(
+        'delegatinghydrator' => 'Zend\Stdlib\Hydrator\DelegatingHydrator',
+    );
+
+    /**
      * Default set of adapters
      *
      * @var array
@@ -36,6 +45,15 @@ class HydratorPluginManager extends AbstractPluginManager
         'classmethods'      => 'Zend\Stdlib\Hydrator\ClassMethods',
         'objectproperty'    => 'Zend\Stdlib\Hydrator\ObjectProperty',
         'reflection'        => 'Zend\Stdlib\Hydrator\Reflection'
+    );
+
+    /**
+     * Default factory-based adapters
+     *
+     * @var array
+     */
+    protected $factories = array(
+        'Zend\Stdlib\Hydrator\DelegatingHydrator' => 'Zend\Stdlib\Hydrator\DelegatingHydratorFactory',
     );
 
     /**

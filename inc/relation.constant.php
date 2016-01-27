@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -229,6 +229,8 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_softwares'                       => 'entities_id',
                                  'glpi_solutiontemplates'               => 'entities_id',
                                  'glpi_solutiontypes'                   => 'entities_id',
+                                 'glpi_tasktemplates'                   => 'entities_id',
+                                 'glpi_tasktypes'                       => 'entities_id',
                                  'glpi_suppliers'                       => 'entities_id',
                                  'glpi_taskcategories'                  => 'entities_id',
                                  'glpi_ticketrecurrents'                => 'entities_id',
@@ -530,6 +532,10 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_problemtasks'   => 'taskcategories_id',
                                  'glpi_taskcategories' => 'taskcategories_id',
                                  'glpi_tickettasks'    => 'taskcategories_id'),
+
+                  "glpi_tasktypes"
+                        => array(
+                                 'glpi_tasktemplates'     => 'tasktypes_id'),
 
                   "glpi_itilcategories"
                         => array(

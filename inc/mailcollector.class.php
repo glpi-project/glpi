@@ -277,12 +277,10 @@ class MailCollector  extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      if (version_compare(PHP_VERSION, '5.3.2', '>=')) {
-         echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
-         echo "<td>";
-         Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
-         echo "</td></tr>\n";
-      }
+      echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
+      echo "</td></tr>\n";
 
 
       if ($type != "pop") {
@@ -679,11 +677,11 @@ class MailCollector  extends CommonDBTM {
          }
       }
       //  Who is the user ?
-      $tkt['_users_id_requester']                           = User::getOrImportByEmail($head['from']);
-      $tkt["_users_id_requester_notif"]['use_notification'] = 1;
+      $tkt['_users_id_requester']                              = User::getOrImportByEmail($head['from']);
+      $tkt["_users_id_requester_notif"]['use_notification'][0] = 1;
       // Set alternative email if user not found / used if anonymous mail creation is enable
       if (!$tkt['_users_id_requester']) {
-         $tkt["_users_id_requester_notif"]['alternative_email'] = $head['from'];
+         $tkt["_users_id_requester_notif"]['alternative_email'][0] = $head['from'];
       }
 
       // Add to and cc as additional observer if user found
@@ -763,7 +761,11 @@ class MailCollector  extends CommonDBTM {
                                                            array_merge($this->files, $this->altfiles),
                                                            $this->tags);
       }
-      $tkt['content'] = $this->cleanMailContent($tkt['content']);
+      $striptags = true;
+      if ($CFG_GLPI["use_rich_text"] && !isset($tkt['tickets_id'])) {
+         $striptags = false;
+      }
+      $tkt['content'] = $this->cleanMailContent($tkt['content'], $striptags);
 
       if ($is_html && !isset($tkt['tickets_id'])) {
          $tkt['content'] = nl2br($tkt['content']);
@@ -922,11 +924,17 @@ class MailCollector  extends CommonDBTM {
     * @since version 0.85
     *
     * @param $string text to clean
+    * @param $striptags remove html tags
     *
     * @return cleaned text
    **/
-   function cleanMailContent($string) {
+   function cleanMailContent($string, $striptags = true) {
       global $DB;
+
+      // delete html tags
+      if ($striptags) {
+         $string = Html::clean($string);
+      }
 
       // First clean HTML and XSS
       $string = Toolbox::clean_cross_side_scripting_deep($string);
@@ -1042,8 +1050,7 @@ class MailCollector  extends CommonDBTM {
    **/
    function connect() {
 
-      if (version_compare(PHP_VERSION, '5.3.2', '<')
-          || $this->fields['use_kerberos']) {
+      if ($this->fields['use_kerberos']) {
          $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
                                      Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                      CL_EXPUNGE, 1);
@@ -1319,7 +1326,9 @@ class MailCollector  extends CommonDBTM {
 
       } else {
          // fix monoparted mail
-         if ($part == "") $part = 1;
+         if ($part == "") {
+            $part = 1;
+         }
 
          $filename = '';
 

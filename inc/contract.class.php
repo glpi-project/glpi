@@ -732,6 +732,9 @@ class Contract extends CommonDBTM {
                                              => array('table'      => 'glpi_contracts_suppliers',
                                                       'joinparams' => array('jointype' => 'child')));
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       $tab += Notepad::getSearchOptionsToAdd();
 
       $tab['cost']                  = __('Cost');
@@ -1242,7 +1245,6 @@ class Contract extends CommonDBTM {
       $result = $DB->query($query);
 
 
-      $values = array(0 => Dropdown::EMPTY_VALUE);
       $group  = '';
       $prev   = -1;
       while ($data = $DB->fetch_assoc($result)) {
@@ -1268,9 +1270,10 @@ class Contract extends CommonDBTM {
          }
       }
       return Dropdown::showFromArray($p['name'], $values,
-                                     array('value'     => $p['value'],
-                                           'on_change' => $p['on_change'],
-                                           'display'   => $p['display']));
+                                     array('value'               => $p['value'],
+                                           'on_change'           => $p['on_change'],
+                                           'display'             => $p['display'],
+                                           'display_emptychoice' => true));
    }
 
 

@@ -9,8 +9,8 @@ or via PayPal at paypal@tecnick.com
 ------------------------------------------------------------
 
 Name: TCPDF
-Version: 6.2.11
-Release date: 2015-08-02
+Version: 6.2.12
+Release date: 2015-09-12
 Author:	Nicola Asuni
 
 Copyright (c) 2002-2015:

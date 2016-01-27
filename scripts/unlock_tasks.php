@@ -58,7 +58,7 @@ if (isset($_GET['only_tasks'])) {
 
 $crontask = new Crontask();
 $query    = "SELECT `id`, `name`
-             FROM `glpi_crontasks
+             FROM `glpi_crontasks`
              WHERE `state` = '".Crontask::STATE_RUNNING."'
                    AND unix_timestamp(`lastrun`) + $cycle * `frequency` < unix_timestamp(now())";
 

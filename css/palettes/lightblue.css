@@ -2,22 +2,26 @@
 /* ===== LOGIN ===== */
 
 #firstboxlogin  {
-   background-color: #006573;
+   background-color: #1A7AB2;
 }
 
 #logo_login {
-   background: url(../../pics/login_logo_glpi.png) center no-repeat, #008B8D; 
+   background: url(../../pics/login_logo_glpi.png) center no-repeat, #5ABCFF; 
+}
+
+#display-login {
+   color: #FFF;
 }
 
 #text-login {
-   background-color: #008B8D;
+   background-color: #5ABCFF;
    color: #FFF;
 }
 
 
 /* ====== GENERAL ====== */
 
-a, a:link {
+a, a:link, .ui-widget-content a {
     color : #006573;
 }
 

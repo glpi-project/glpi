@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -199,10 +199,11 @@ class SoftwareVersion extends CommonDBChild {
       global $CFG_GLPI, $DB;
 
       //$softwares_id,$value=0
-      $p['softwares_id'] = 0;
-      $p['value']        = 0;
-      $p['name']         = 'softwareversions_id';
-      $p['used']         = array();
+      $p['softwares_id']          = 0;
+      $p['value']                 = 0;
+      $p['name']                  = 'softwareversions_id';
+      $p['used']                  = array();
+      $p['display_emptychoice']   = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -225,7 +226,6 @@ class SoftwareVersion extends CommonDBChild {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      $values = array(0 => Dropdown::EMPTY_VALUE);
       if ($number) {
          while ($data = $DB->fetch_assoc($result)) {
             $ID     = $data['id'];
@@ -326,15 +326,13 @@ class SoftwareVersion extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Software' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              countElementsInTable($this->getTable(),
-                                                                   "softwares_id
-                                                                        = '".$item->getID()."'"));
+                  $nb = countElementsInTable($this->getTable(), "softwares_id = '".$item->getID()."'");
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';

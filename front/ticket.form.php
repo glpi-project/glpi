@@ -38,7 +38,7 @@
 include ('../inc/includes.php');
 
 Session::checkLoginUser();
-$fup   = new TicketFollowup();
+// not used $fup   = new TicketFollowup();
 $track = new Ticket();
 
 if (!isset($_GET['id'])) {
@@ -149,6 +149,16 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST['tickets_id']);
+} else if (isset($_REQUEST['delete_document'])) {
+   $document_item = new Document_Item;
+   $found_document_items = $document_item->find("itemtype = 'Ticket' ".
+                                                " AND items_id = ".intval($_REQUEST['tickets_id']).
+                                                " AND documents_id = ".intval($_REQUEST['documents_id']));
+   foreach ($found_document_items  as $item) {
+      $document_item->delete($item, true);
+   }
+
+   Html::back();
 }
 
 if (isset($_GET["id"]) && ($_GET["id"] > 0)) {

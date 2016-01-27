@@ -59,7 +59,7 @@ class CallbackCache extends AbstractPattern
         $cacheOutput = $options->getCacheOutput();
         if ($cacheOutput) {
             ob_start();
-            ob_implicit_flush(false);
+            ob_implicit_flush(0);
         }
 
         // TODO: do not cache on errors using [set|restore]_error_handler
@@ -137,9 +137,11 @@ class CallbackCache extends AbstractPattern
         $callbackKey = strtolower($callbackKey);
 
         // generate a unique key of object callbacks
-        if (is_object($callback)) { // Closures & __invoke
+        if (is_object($callback)) {
+            // Closures & __invoke
             $object = $callback;
-        } elseif (isset($callback[0])) { // array($object, 'method')
+        } elseif (isset($callback[0])) {
+            // array($object, 'method')
             $object = $callback[0];
         }
         if (isset($object)) {

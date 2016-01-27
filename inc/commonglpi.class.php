@@ -192,7 +192,7 @@ class CommonGLPI {
     * @param &$ong       array defined tab array
     * @param $options    array of options (for withtemplate)
     *
-    *  @return nothing (set the tab array)
+    * @return $this
    **/
    function addStandardTab($itemtype, array &$ong, array $options) {
 
@@ -218,6 +218,7 @@ class CommonGLPI {
             }
             break;
       }
+      return $this;
    }
 
 
@@ -225,6 +226,8 @@ class CommonGLPI {
     * @since version 0.85
     *
     * @param $ong   array
+    *
+    * @return $this
    **/
    function addDefaultFormTab(array &$ong) {
       global $CFG_GLPI;
@@ -234,6 +237,7 @@ class CommonGLPI {
           || !method_exists($this, "showForm")) {
          $ong[$this->getType().'$main'] = $this->getTypeName(1);
       }
+      return $this;
    }
 
 
@@ -577,7 +581,7 @@ class CommonGLPI {
 
       $itemtype = get_called_class();
       $link     = $itemtype::getFormURL($full);
-      $link    .= (strpos($link,'?') ? '&amp;':'?').'id=' . $id;
+      $link    .= (strpos($link,'?') ? '&':'?').'id=' . $id;
       return $link;
    }
 
@@ -595,7 +599,7 @@ class CommonGLPI {
          return false;
       }
 
-      $ong   = $this->defineTabs();
+      $ong   = $this->defineAllTabs();
       $class = "main_form";
       if (count($ong) == 0) {
          $class .= " no_tab";
@@ -606,8 +610,10 @@ class CommonGLPI {
       } else {
          $class .= " modify_form";
       }
+      echo "<div class='form_content'>";
       echo "<div class='$class'>";
-      $this->showForm($_REQUEST['id'], $_REQUEST);
+      $this->showForm($options['id'], $options);
+      echo "</div>";
       echo "</div>";
    }
 
@@ -1058,7 +1064,7 @@ class CommonGLPI {
     * @return bool
     */
    public static function isLayoutWithMain() {
-      return in_array($_SESSION['glpilayout'], array('classic', 'vsplit'));
+      return (isset($_SESSION['glpilayout']) && in_array($_SESSION['glpilayout'], array('classic', 'vsplit')));
    }
 
 
@@ -1071,6 +1077,13 @@ class CommonGLPI {
     */
    public static function isLayoutExcludedPage() {
       global $CFG_GLPI;
+
+      if (basename($_SERVER['SCRIPT_NAME']) == "updatecurrenttab.php") {
+         $base_referer = basename($_SERVER['HTTP_REFERER']);
+         $base_referer = explode("?", $base_referer);
+         $base_referer = $base_referer[0];
+         return in_array($base_referer, $CFG_GLPI['layout_excluded_pages']);
+      }
 
       return in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages']);
    }
@@ -1092,20 +1105,24 @@ class CommonGLPI {
          }
       }
 
-      $this->showNavigationHeader($options);
-     if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
-
-         if (!isset($_REQUEST['id'])) {
-            $_REQUEST['id'] = 0;
-         }
-         $this->showPrimaryForm($options);
-      }
-
       // in case of lefttab layout, we couldn't see "right error" message
       if ($this->get_item_to_display_tab) {
          if (isset($_GET["id"]) && $_GET["id"] && !$this->can($_GET["id"], READ)) {
             html::displayRightError();
          }
+      }
+
+      // try to lock object
+      // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
+      ObjectLock::manageObjectLock( get_class( $this ), $options ) ;
+
+      $this->showNavigationHeader($options);
+      if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
+
+         if (!isset($options['id'])) {
+            $options['id'] = 0;
+         }
+         $this->showPrimaryForm($options);
       }
 
       $this->showTabsContent($options);

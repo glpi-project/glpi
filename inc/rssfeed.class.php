@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -482,6 +482,9 @@ class RSSFeed extends CommonDBTM {
       $tab[19]['datatype']            = 'datetime';
       $tab[19]['massiveaction']       = false;
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       return $tab;
    }
 
@@ -492,17 +495,16 @@ class RSSFeed extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (self::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'RSSFeed' :
                $showtab = array(1 => __('Content'));
                if (session::haveRight('rssfeed_public', UPDATE)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = $item->countVisibilities();
-                     $showtab[2] = self::createTabEntry(_n('Target','Targets', $nb),
-                                                         $nb);
-                     return $showtab;
                   }
-                  $showtab[2] = _n('Target','Targets', Session::getPluralNumber());
+                  $showtab[2] = self::createTabEntry(_n('Target','Targets',
+                                                        Session::getPluralNumber()), $nb);
                }
                return $showtab;
          }

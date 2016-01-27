@@ -102,6 +102,7 @@ if ($DB->numrows($result)) {
    }
 }
 
+/*
 if (!function_exists('dpuser_cmp')) {
    function dpuser_cmp($a, $b) {
       return strcasecmp($a, $b);
@@ -110,6 +111,7 @@ if (!function_exists('dpuser_cmp')) {
 
 // Sort non case sensitive
 uasort($users, 'dpuser_cmp');
+*/
 
 $datas = array();
 

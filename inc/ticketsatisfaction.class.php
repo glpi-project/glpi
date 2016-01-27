@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -182,6 +182,21 @@ class TicketSatisfaction extends CommonDBTM {
          $ticket = new Ticket();
          if ($ticket->getFromDB($this->fields['tickets_id'])) {
             NotificationEvent::raiseEvent("satisfaction", $ticket);
+         }
+      }
+   }
+
+
+   /**
+    * @since version 0.85
+   **/
+   function post_UpdateItem($history=1) {
+      global $CFG_GLPI;
+
+      if ($CFG_GLPI["use_mailing"]) {
+         $ticket = new Ticket();
+         if ($ticket->getFromDB($this->fields['tickets_id'])) {
+            NotificationEvent::raiseEvent("replysatisfaction", $ticket);
          }
       }
    }

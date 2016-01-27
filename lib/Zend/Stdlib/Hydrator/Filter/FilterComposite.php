@@ -36,6 +36,8 @@ class FilterComposite implements FilterInterface
     /**
      * Define default Filter
      *
+     * @param  array $orFilter
+     * @param  array $andFilter
      * @throws InvalidArgumentException
      */
     public function __construct($orFilter = array(), $andFilter = array())

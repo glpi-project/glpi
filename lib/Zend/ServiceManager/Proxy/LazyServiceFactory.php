@@ -10,7 +10,6 @@
 namespace Zend\ServiceManager\Proxy;
 
 use ProxyManager\Factory\LazyLoadingValueHolderFactory;
-
 use ProxyManager\Proxy\LazyLoadingInterface;
 use Zend\ServiceManager\DelegatorFactoryInterface;
 use Zend\ServiceManager\Exception;

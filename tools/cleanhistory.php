@@ -71,16 +71,21 @@ Usage : php cleanhistory.php [ --item=# ] [ --type=# ] [ --old=<regex> ] [ --new
       Peripheral
       Phone                   Others : see inc/*.class.php
    With type integer value in (optionnal):
-      1 : Add device
-      2 : Update device          11 : OCS Link
-      3 : Delete device          12 : Other (often from plugin)
-      4 : Install software       13 : Delete item (put in dustbin)
-      5 : Uninstall software     14 : Restore item from dustbin
-      6 : Disconnect device      15 : Add relation
-      7 : Connect device         16 : Delete relation
-      8 : OCS Import             17 : Add sub item
-      9 : OCS Delete             18 : Update sub item
-     10 : OCS ID Changed         19 : Delete sub item
+      1 : Add device                     15 : Add relation
+      2 : Update device                  16 : Delete relation
+      3 : Delete device                  17 : Add sub item
+      4 : Install software               18 : Update sub item
+      5 : Uninstall software             19 : Delete sub item
+      6 : Disconnect device              20 : Add the item
+      7 : Connect device                 21 : Update a link with an item
+      8 : OCS Import                     22 : Lock a link with an item
+      9 : OCS Delete                     23 : Lock an sub item
+     10 : OCS ID Changed                 24 : Unlock a link with an item
+     11 : OCS Link                       25 : Unlock an sub item
+     12 : Other (often from plugin)      26 : Lock an sub item
+     13 : Delete item (put in dustbin)   27 : Unlock an item
+     14 : Restore item from dustbin
+
    With old an optional regex pattern on old_value
    With new an optional regex pattern on new_value
    With delay in month (mandatory).\n\n";

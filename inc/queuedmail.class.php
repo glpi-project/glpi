@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -351,8 +351,8 @@ class QueuedMail extends CommonDBTM {
          }
 
          // Add custom header for mail grouping in reader
-         $mmail->AddCustomHeader("In-Reply-To: GLPI-".$this->fields["itemtype"]."-".
-                                 $this->fields["items_id"]);
+         $mmail->AddCustomHeader("In-Reply-To: <GLPI-".$this->fields["itemtype"]."-".
+                                 $this->fields["items_id"].">");
 
       $mmail->SetFrom($this->fields['sender'], $this->fields['sendername']);
 
@@ -366,10 +366,9 @@ class QueuedMail extends CommonDBTM {
             $mmail->Body = $this->fields['body_text'];
          } else {
             $mmail->isHTML(true);
-            $mmail->Body = '';
+            $mmail->Body               = '';
             $this->fields['body_html'] = Html::entity_decode_deep($this->fields['body_html']);
-            $documents = importArrayFromDB($this->fields['documents']);
-            $link_doc = array();
+            $documents                 = importArrayFromDB($this->fields['documents']);
             if (is_array($documents) && count($documents)) {
                $doc = new Document();
                foreach ($documents as $docID) {
@@ -382,20 +381,10 @@ class QueuedMail extends CommonDBTM {
                                               $doc->fields['filename'],
                                               'base64',
                                               $doc->fields['mime']);
-                  // Else Add link to the document
-                  } else {
-                     $link_doc[] = "<a href='".rtrim($CFG_GLPI["url_base"], '/').
-                                     "/front/document.send.php?docid=".$doc->fields['id']."' >".
-                                    $doc->fields['name']."</a>";
                   }
                }
             }
             $mmail->Body   .= $this->fields['body_html'];
-            if (count($link_doc)) {
-               $mmail->Body .= '<p style="border:1px solid #cccccc;padding:5px">'.
-                                '<b>'._n('Associated item','Associated items', Session::getPluralNumber()).' : </b>'.
-                                implode(', ', $link_doc).'</p>';
-            }
             $mmail->AltBody = $this->fields['body_text'];
          }
 

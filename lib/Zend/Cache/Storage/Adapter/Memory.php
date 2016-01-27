@@ -84,7 +84,7 @@ class Memory extends AbstractAdapter implements
     /**
      * Get total space in bytes
      *
-     * @return int|float
+     * @return int
      */
     public function getTotalSpace()
     {
@@ -307,7 +307,7 @@ class Memory extends AbstractAdapter implements
         }
 
         if (!$success) {
-            return null;
+            return;
         }
 
         $casToken = $data[0];

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -167,7 +167,6 @@ class FieldUnicity extends CommonDropdown {
 
       } else {
          //Add criteria : display dropdown
-         $options[0] = Dropdown::EMPTY_VALUE;
          foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
                if ($item->canCreate()) {
@@ -176,8 +175,7 @@ class FieldUnicity extends CommonDropdown {
             }
          }
          asort($options);
-//          print_r($options);
-         $rand = Dropdown::showFromArray('itemtype', $options);
+         $rand = Dropdown::showFromArray('itemtype', $options, array('display_emptychoice' => true));
 
          $params = array('itemtype' => '__VALUE__',
                          'id'       => $ID);
@@ -593,13 +591,15 @@ class FieldUnicity extends CommonDropdown {
    **/
    function showDebug() {
 
-      $params = array('message'     => '',
-                      'action_type' => true,
+      $params = array('action_type' => true,
                       'action_user' => getUserName(Session::getLoginUserID()),
                       'entities_id' => $_SESSION['glpiactive_entity'],
                       'itemtype'    => get_class($this),
                       'date'        => $_SESSION['glpi_currenttime'],
-                      'refuse'      => true);
+                      'refuse'      => true,
+                      'label'       => array('name' => 'test'),
+                      'field'       => array('action_refuse' => true),
+                      'double'      => array());
 
       NotificationEvent::debugEvent($this, $params);
    }

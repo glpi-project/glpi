@@ -176,7 +176,7 @@ class Supplier extends CommonDBTM {
       echo "<textarea cols='37' rows='3' name='address'>".$this->fields["address"]."</textarea>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1' style='white-space: nowrap'>";
       echo "<td>".__('Postal code')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "postcode", array('size' => 10));
@@ -333,6 +333,9 @@ class Supplier extends CommonDBTM {
                                              => array('table'      => 'glpi_contracts_suppliers',
                                                       'joinparams' => array('jointype' => 'child')));
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       $tab += Notepad::getSearchOptionsToAdd();
 
       return $tab;
@@ -461,6 +464,7 @@ class Supplier extends CommonDBTM {
                $linktype  = 'Software';
                $linkfield = 'softwares_id';
             }
+            $link_item = new $linktype();
 
             if ($nb > $_SESSION['glpilist_limit']) {
                echo "<tr class='tab_bg_1'>";
@@ -478,8 +482,10 @@ class Supplier extends CommonDBTM {
                             'criteria'   => array(0 => array('value'      => '$$$$'.$instID,
                                                              'searchtype' => 'contains',
                                                              'field'      => 53)));
+              $link = $linktype::getSearchURL();
+              $link.= (strpos($link,'?') ? '&amp;':'?');
 
-               echo "<a href='". Toolbox::getItemTypeSearchURL($linktype) . "?" .
+               echo "<a href='$link" .
                      Toolbox::append_params($opt). "'>" . __('Device list')."</a></td>";
 
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
@@ -490,8 +496,8 @@ class Supplier extends CommonDBTM {
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                   }
-                  $link = Toolbox::getItemTypeFormURL($linktype);
-                  $name = "<a href=\"".$link."?id=".$data[$linkfield]."\">".$name."</a>";
+                  $link = $link_item->getFormURLWithID($data[$linkfield]);
+                  $name = "<a href='$link'>".$name."</a>";
 
                   echo "<tr class='tab_bg_1'>";
                   if ($prem) {

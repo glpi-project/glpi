@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -1217,9 +1217,10 @@ class Rule extends CommonDBTM {
    function dropdownCriteria($options=array()) {
       global $CFG_GLPI;
 
-      $p['name']    = 'criteria';
-      $p['display'] = true;
-      $p['value']   = '';
+      $p['name']                = 'criteria';
+      $p['display']             = true;
+      $p['value']               = '';
+      $p['display_emptychoice'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1227,7 +1228,6 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $items      = array('' => Dropdown::EMPTY_VALUE);
       $group      = array();
       $groupname  = _n('Criterion', 'Criteria', Session::getPluralNumber());
       foreach ($this->getAllCriteria() as $ID => $crit) {
@@ -1261,10 +1261,11 @@ class Rule extends CommonDBTM {
    function dropdownActions($options=array()) {
       global $CFG_GLPI;
 
-      $p['name']    = 'field';
-      $p['display'] = true;
-      $p['used']    = array();
-      $p['value']   = '';
+      $p['name']                = 'field';
+      $p['display']             = true;
+      $p['used']                = array();
+      $p['value']               = '';
+      $p['display_emptychoice'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1298,7 +1299,6 @@ class Rule extends CommonDBTM {
          }
       }
 
-      $items = array('' => Dropdown::EMPTY_VALUE);
       $value = '';
 
       foreach ($actions as $ID => $act) {
@@ -2944,6 +2944,7 @@ class Rule extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Entity' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -2960,7 +2961,6 @@ class Rule extends CommonDBTM {
                   if ($collection->canList()) {
                      $types[] = 'RuleMailCollector';
                   }
-                  $nb = 0;
                   if (count($types)) {
                      $nb = countElementsInTable(array('glpi_rules', 'glpi_ruleactions'),
                                                 "`glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
@@ -2970,20 +2970,16 @@ class Rule extends CommonDBTM {
                                                   AND `glpi_ruleactions`.`value`
                                                             = '".$item->getID()."'");
                   }
-
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
                }
-               return $this->getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'SLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              countElementsInTable('glpi_ruleactions',
-                                                                   "`field` = 'slas_id'
-                                                                     AND `value`
-                                                                        = '".$item->getID()."'"));
+                  $nb = countElementsInTable('glpi_ruleactions',
+                                             "`field` = 'slas_id'
+                                                AND `value` = '".$item->getID()."'");
                }
-               return $this->getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
             default:
                if ($item instanceof Rule) {
@@ -2998,8 +2994,10 @@ class Rule extends CommonDBTM {
 
                   }
 
-                  $ong[1] = self::createTabEntry(_n('Criterion', 'Criteria', $nbcriteria), $nbcriteria);
-                  $ong[2] = self::createTabEntry(_n('Action', 'Actions', $nbaction), $nbaction);
+                  $ong[1] = self::createTabEntry(RuleCriteria::getTypeName(Session::getPluralNumber()),
+                                                 $nbcriteria);
+                  $ong[2] = self::createTabEntry(RuleAction::getTypeName(Session::getPluralNumber()),
+                                                 $nbaction);
                   return $ong;
                }
          }

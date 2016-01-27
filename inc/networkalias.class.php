@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -461,20 +461,20 @@ class NetworkAlias extends FQDNLabel {
 
       if ($item->getID()
           && $item->can($item->getField('id'), READ)) {
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             switch ($item->getType()) {
                case 'NetworkName' :
-                  $numberElements = countElementsInTable($this->getTable(),
-                                                         "networknames_id='".$item->getID()."'");
+                  $nb = countElementsInTable($this->getTable(),
+                                             "networknames_id='".$item->getID()."'");
                   break;
 
                case 'FQDN' :
-                  $numberElements = countElementsInTable($this->getTable(),
-                                                         "fqdns_id='".$item->getID()."'");
+                  $nb = countElementsInTable($this->getTable(),
+                                             "fqdns_id='".$item->getID()."'");
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $numberElements);
          }
-         return self::getTypeName(Session::getPluralNumber());
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }

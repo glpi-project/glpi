@@ -519,6 +519,9 @@ class Entity extends CommonTreeDropdown {
       $tab[16]['name']          = __('Comments');
       $tab[16]['datatype']      = 'text';
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       $tab += Notepad::getSearchOptionsToAdd();
 
       $tab['advanced']         = __('Advanced information');
@@ -898,14 +901,39 @@ class Entity extends CommonTreeDropdown {
             document.location.href = data.rslt.obj.children('a').attr('href');
          });
 
+         var searchTree = function() {
+            ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
+            ".Html::jsGetElementbyID("tree_projectcategory$rand").
+            ".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
+         }
+
          $('#entsearchform').submit(function( event ) {
             // cancel submit of entity search form
             event.preventDefault();
 
-            ".Html::jsGetElementbyID("tree_projectcategory$rand").".jstree('close_all');;
-            ".Html::jsGetElementbyID("tree_projectcategory$rand").
-            ".jstree('search',".Html::jsGetDropdownValue('entsearchtext').");
+            // search
+            searchTree();
          });
+
+         // delay function who reinit timer on each call
+         var typewatch = (function(){
+            var timer = 0;
+            return function(callback, ms){
+               clearTimeout (timer);
+               timer = setTimeout(callback, ms);
+            };
+         })();
+
+         // autosearch on keypress (delayed and with min length)
+         $('#entsearchtext').keyup(function () {
+            var inputsearch = $(this);
+            typewatch(function () {
+               if (inputsearch.val().length >= 3) {
+                  searchTree();
+               }
+            }, 500);
+         })
+         .focus();
      ";
 
 
@@ -2086,26 +2114,14 @@ class Entity extends CommonTreeDropdown {
                             $url);
       }
 
-      if (strstr($url,"[ITEMTYPE]")
-          && $ticket->fields['itemtype']
-          && ($objet = getItemForItemtype($ticket->fields['itemtype']))) {
-         $url = str_replace("[ITEMTYPE]", urlencode($objet->getTypeName(1)), $url);
-      }
-
-      if (strstr($url,"[ITEM_ID]")) {
-         $url = str_replace("[ITEM_ID]", $ticket->fields['items_id'], $url);
-      }
-
-      if (strstr($url,"[ITEM_NAME]")
-          && $ticket->fields['itemtype']
-          && ($objet = getItemForItemtype($ticket->fields['itemtype']))) {
-         if ($objet->getFromDB($ticket->fields['items_id'])) {
-            $url = str_replace("[ITEM_NAME]", urlencode($objet->getName()), $url);
-         }
-      }
-
       if (strstr($url,"[TICKET_PRIORITY]")) {
          $url = str_replace("[TICKET_PRIORITY]", $ticket->fields['priority'], $url);
+      }
+
+      if (strstr($url,"[TICKET_PRIORITYNAME]")) {
+         $url = str_replace("[TICKET_PRIORITYNAME]",
+               urlencode(CommonITILObject::getPriorityName($ticket->fields['priority'])),
+               $url);
       }
 
       if (strstr($url,"[TICKETCATEGORY_ID]")) {

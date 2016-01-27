@@ -9,6 +9,10 @@
    background: url(../../pics/login_logo_glpi.png) center no-repeat, #A2291F; 
 }
 
+#display-login {
+   color: #FFF;
+}
+
 #text-login {
    background-color: #A2291F;
    color: #FFF;
@@ -17,7 +21,7 @@
 
 /* ====== GENERAL ====== */
 
-a, a:link {
+a, a:link, .ui-widget-content a {
    color: #C83226;
 }
 

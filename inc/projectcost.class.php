@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -92,15 +92,12 @@ class ProjectCost extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       // can exists for template
-      if (($item->getType() == 'Project')
-          && Project::canView()) {
-
+      if (($item->getType() == 'Project') && Project::canView()) {
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                        countElementsInTable('glpi_projectcosts',
-                                                             "projects_id = '".$item->getID()."'"));
+            $nb = countElementsInTable('glpi_projectcosts', "projects_id = '".$item->getID()."'");
          }
-         return self::getTypeName(Session::getPluralNumber());
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }

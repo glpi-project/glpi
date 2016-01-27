@@ -115,6 +115,6 @@ class FilterChain implements Filter\FilterInterface
      */
     public function getResponses()
     {
-        return null;
+        return;
     }
 }

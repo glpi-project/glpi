@@ -927,23 +927,21 @@ class ProjectTask extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Project' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              countElementsInTable($this->getTable(),
-                                                                   "projects_id
-                                                                        = '".$item->getID()."'"));
+                  $nb = countElementsInTable($this->getTable(),
+                                             "projects_id = '".$item->getID()."'");
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+
             case __CLASS__ :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              countElementsInTable($this->getTable(),
-                                                                   "projecttasks_id
-                                                                        = '".$item->getID()."'"));
+                  $nb = countElementsInTable($this->getTable(),
+                                             "projecttasks_id = '".$item->getID()."'");
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';

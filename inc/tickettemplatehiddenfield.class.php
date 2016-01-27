@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -88,13 +88,12 @@ class TicketTemplateHiddenField extends CommonDBChild {
       // can exists for template
       if (($item->getType() == 'TicketTemplate')
           && Session::haveRight("tickettemplate", READ)) {
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                        countElementsInTable($this->getTable(),
-                                                             "`tickettemplates_id`
-                                                               = '".$item->getID()."'"));
+            $nb = countElementsInTable($this->getTable(),
+                                       "`tickettemplates_id` = '".$item->getID()."'");
          }
-         return self::getTypeName(Session::getPluralNumber());
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }

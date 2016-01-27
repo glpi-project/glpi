@@ -208,6 +208,12 @@ class Config extends CommonDBTM {
             }
          }
       }
+
+      // lock mechanism update
+      if( isset( $input['lock_use_lock_item'] ) ) { 
+          $input['lock_item_list'] = exportArrayToDB( (isset($input['lock_item_list']) ?  $input['lock_item_list'] : array() ) );
+      } 
+      
       // Beware : with new management system, we must update each value
       unset($input['id']);
       unset($input['_glpi_csrf_token']);
@@ -375,6 +381,31 @@ class Config extends CommonDBTM {
       Dropdown::showFromArray('allow_search_all', $values,
                               array('value' => $CFG_GLPI['allow_search_all']));
       echo "</td><td colspan='2'></td></tr>";
+
+      echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>".__('Item locks')."</th></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('Use locks') . "</td><td>";
+      Dropdown::showYesNo("lock_use_lock_item", $CFG_GLPI["lock_use_lock_item"]);
+      
+      echo "</td><td>". __('Profile to be used when locking items')."</td><td>";
+      if( $CFG_GLPI["lock_use_lock_item"] ) {
+         Profile::dropdown(array('name'                  => 'lock_lockprofile_id', 
+                                 'display_emptychoice'   => true,
+                                 'value'                 => $CFG_GLPI['lock_lockprofile_id']));
+      } else {
+         echo dropdown::getDropdownName( Profile::getTable(), $CFG_GLPI['lock_lockprofile_id']) ;
+      }
+      echo "</td></tr>";
+  
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('List of items to lock') . "</td>";
+      echo "<td  colspan=3>";
+      Dropdown::showFromArray('lock_item_list', ObjectLock::getLockableObjects(), 
+          array('values' => $CFG_GLPI['lock_item_list'], 
+                'width' => '100%', 
+                'multiple' => true,
+                'readonly'  => !$CFG_GLPI["lock_use_lock_item"]));
+      echo "</td></tr>";
 
       if ($canedit) {
          echo "<tr class='tab_bg_2'>";
@@ -611,7 +642,7 @@ class Config extends CommonDBTM {
       echo "<td><input type='text' name='_dbreplicate_dbuser' value='".$DBslave->dbuser."'></td>";
       echo "<td>" . __('Mysql password') . "</td>";
       echo "<td><input type='password' name='_dbreplicate_dbpassword' value='".
-                 rawurldecode($DBSlave->dbpassword)."'>";
+                 rawurldecode($DBslave->dbpassword)."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -677,11 +708,9 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "<td width='30%'>" .__('Limit of the schedules for planning') . "</td>";
       echo "<td width='20%'>";
-      Dropdown::showHours('planning_begin', array('value' => $CFG_GLPI["planning_begin"],
-                                                  'width' => '40%'));
+      Dropdown::showHours('planning_begin', array('value' => $CFG_GLPI["planning_begin"]));
       echo "&nbsp;->&nbsp;";
-      Dropdown::showHours('planning_end', array('value' => $CFG_GLPI["planning_end"],
-                                                'width' => '40%'));
+      Dropdown::showHours('planning_end', array('value' => $CFG_GLPI["planning_end"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -868,9 +897,9 @@ class Config extends CommonDBTM {
                                                'step'  => 5));
       echo "</td>";
       echo "<td>" .__('Number format') . "</td>";
-      $values = array(0 => '1&nbsp;234.56',
+      $values = array(0 => '1 234.56',
                       1 => '1,234.56',
-                      2 => '1&nbsp;234,56',
+                      2 => '1 234,56',
                       3 => '1234.56',
                       4 => '1234,56');
       echo "<td>";
@@ -1051,7 +1080,13 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td>" . __('Tasks state by default') . "</td><td>";
          Planning::dropdownState("task_state", $data["task_state"]);
-         echo "</td><td colspan='2'>&nbsp;</td></tr>";
+         echo "</td><td>" . __('Automatically refresh the list of tickets (minutes)') . "</td><td>";
+         Dropdown::showNumber('refresh_ticket_list', array('value' => $data["refresh_ticket_list"],
+                                                           'min'   => 1,
+                                                           'max'   => 30,
+                                                           'step'  => 1,
+                                                           'toadd' => array(0 => __('Never'))));
+         echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td>".__('Pre-select me as a technician when creating a ticket').
               "</td><td>";
@@ -1060,14 +1095,13 @@ class Config extends CommonDBTM {
          } else {
             echo Dropdown::getYesNo(0);
          }
-         echo "</td><td>" . __('Automatically refresh the list of tickets (minutes)') . "</td><td>";
-         Dropdown::showNumber('refresh_ticket_list', array('value' => $data["refresh_ticket_list"],
-                                                           'min'   => 1,
-                                                           'max'   => 30,
-                                                           'step'  => 1,
-                                                           'toadd' => array(0 => __('Never'))));
-         echo "</td>";
-         echo "</tr>";
+         echo "</td><td>" . __('Pre-select me as a requester when creating a ticket') . "</td><td>";
+         if (!$userpref || Session::haveRight('ticket', CREATE)) {
+            Dropdown::showYesNo("set_default_requester", $data["set_default_requester"]);
+         } else {
+            echo Dropdown::getYesNo(0);
+         }
+         echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Priority colors') . "</td>";
@@ -1152,6 +1186,17 @@ class Config extends CommonDBTM {
       Dropdown::showFromArray("duedatecritical_unit", $elements,
                               array('value' => $data['duedatecritical_unit']));
       echo "</td></tr>";
+
+      if( $oncentral && $CFG_GLPI["lock_use_lock_item"] ) {
+         echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>".__('Item locks')."</th></tr>";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>" . __('Auto-lock Mode') . "</td><td>";
+         Dropdown::showYesNo("lock_autolock_mode", $data["lock_autolock_mode"]);
+         echo "</td><td>". __('Direct Notification (requester for unlock will be the notification sender)') . "</td><td>";
+         Dropdown::showYesNo("lock_directunlock_notification", $data["lock_directunlock_notification"]);         
+         echo "</td></tr>";
+      }
+
 
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>";
@@ -1483,6 +1528,7 @@ class Config extends CommonDBTM {
       echo "\n";
 
       self::checkWriteAccessToDirs(true);
+      toolbox::checkSELinux(true);
 
       echo "\n</pre></td></tr>";
 
@@ -1776,8 +1822,6 @@ class Config extends CommonDBTM {
                                     => __('Checking write permissions for session files'),
                             GLPI_CRON_DIR
                                     => __('Checking write permissions for automatic actions files'),
-                            GLPI_CACHE_DIR
-                                    => __('Checking write permissions for cache files'),
                             GLPI_GRAPH_DIR
                                     => __('Checking write permissions for graphic files'),
                             GLPI_LOCK_DIR
@@ -1857,6 +1901,42 @@ class Config extends CommonDBTM {
          }
          $error = 1;
       }
+
+      $oldhand = set_error_handler(function($errno, $errmsg, $filename, $linenum, $vars){return true;});
+      $oldlevel = error_reporting(0);
+      /* TODO: could be improved, only default vhost checked */
+      if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/index.php', 'r')) {
+         fclose($fic);
+         if (!$fordebug) {
+            echo "<tr class='tab_bg_1'><td class='b left'>".
+               __('Web access to files directory is protected')."</td>";
+         }
+         if ($fic = fopen('http://localhost'.$CFG_GLPI['root_doc'].'/files/_log/php-errors.log', 'r')) {
+            fclose($fic);
+            if ($fordebug) {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                     __('Web access to the files directory, should not be allowed')."\n".
+                     __('Check the .htaccess file and the web server configuration.')."\n";
+            } else {
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
+                    "<p class='red'>".__('Web access to the files directory, should not be allowed')."<br/>".
+                    __('Check the .htaccess file and the web server configuration.')."</p></td></tr>";
+            }
+            $error = 1;
+         } else {
+            if ($fordebug) {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                     __s('Web access to files directory is protected')."\">".
+                     __s('Web access to files directory is protected')." : OK\n";
+            } else {
+               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                     __s('Web access to files directory is protected')."\" title=\"".
+                     __s('Web access to files directory is protected')."\"></td></tr>";
+            }
+         }
+      }
+      error_reporting($oldlevel);
+      set_error_handler($oldhand);
       return $error;
    }
 

@@ -10,7 +10,6 @@
 namespace Zend\ServiceManager\Di;
 
 use Zend\Di\Di;
-use Zend\ServiceManager\Exception;
 use Zend\ServiceManager\InitializerInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

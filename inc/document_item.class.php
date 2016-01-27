@@ -212,20 +212,18 @@ class Document_Item extends CommonDBRelation{
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
+      $nbdoc = $nbitem = 0;
       switch ($item->getType()) {
          case 'Document' :
             $ong = array();
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $ong[1] = self::createTabEntry(_n('Associated item', 'Associated items',
-                                              self::countForDocument($item)));
+               $nbdoc  = self::countForDocument($item);
+               $nbitem = self::countForItem($item);
             }
-            $ong[1] = _n('Associated item', 'Associated items', Session::getPluralNumber());
-
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               $ong[2] = self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
-                                                  self::countForItem($item));
-            }
-            $ong[2] = Document::getTypeName(Session::getPluralNumber());
+            $ong[1] = self::createTabEntry(_n('Associated item', 'Associated items',
+                                              Session::getPluralNumber()), $nbdoc);
+            $ong[2] = self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
+                                           $nbitem);
             return $ong;
 
          default :
@@ -236,10 +234,10 @@ class Document_Item extends CommonDBRelation{
                 || ($item->getType() == 'KnowbaseItem')) {
 
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
-                                              self::countForItem($item));
+                  $nbitem = self::countForItem($item);
                }
-               return Document::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
+                                           $nbitem);
             }
       }
       return '';
@@ -582,9 +580,9 @@ class Document_Item extends CommonDBRelation{
       if ($item->getType() == 'Ticket') {
          echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
       }
-      echo Html::file();
+      echo Html::file(array('multiple' => true));
       echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
-      echo "</tr>";
+      echo "<td></td></tr>";
    }
 
 
@@ -678,7 +676,7 @@ class Document_Item extends CommonDBRelation{
          if ($item->getType() == 'Ticket') {
             echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
          }
-         echo Html::file();
+         echo Html::file(array('multiple' => true));
          echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
          echo "<td class='center' width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add a new file')."\"

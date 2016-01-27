@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -393,15 +393,14 @@ class NotificationTemplateTranslation extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'NotificationTemplate' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Translation', 'Translations', Session::getPluralNumber()),
-                                              countElementsInTable($this->getTable(),
-                                                                   "notificationtemplates_id
-                                                                        = '".$item->getID()."'"));
+                  $nb = countElementsInTable($this->getTable(),
+                                             "notificationtemplates_id = '".$item->getID()."'");
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';
@@ -440,8 +439,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__('Preview')."</th></tr>";
 
-      $oktypes = array('CartridgeItem', 'ConsumableItem', 'Contract', 'Crontask',
-                       'Problem', 'Ticket', 'User');
+      $oktypes = array('CartridgeItem', 'Change', 'ConsumableItem', 'Contract', 'Crontask',
+                       'Problem', 'Project', 'Ticket', 'User');
 
       if (!in_array($itemtype, $oktypes)) {
          // this itemtype doesn't work, need to be fixed

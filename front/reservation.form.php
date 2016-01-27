@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -67,7 +67,8 @@ if (isset($_POST["update"])) {
    if ($rr->delete($_POST, 1)) {
       Event::log($_POST["id"], "reservation", 4, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
+                 sprintf(__('%1$s purges the reservation for item %2$s'), $_SESSION["glpiname"],
+                         $reservationitems_id));
    }
 
    list($begin_year,$begin_month,$begin_day) = explode("-",$rr->fields["begin"]);
@@ -105,7 +106,7 @@ if (isset($_POST["update"])) {
          $input                        = array();
          $input['reservationitems_id'] = $reservationitems_id;
          $input['comment']             = $_POST['comment'];
-         
+
          if (count($dates_to_add)) {
             $input['group'] = $rr->getUniqueGroupFor($reservationitems_id);
          }
@@ -119,7 +120,8 @@ if (isset($_POST["update"])) {
                unset($rr->fields["id"]);
                if ($newID = $rr->add($input)) {
                   Event::log($reservationitems_id, "reservation", 4, "inventory",
-                           sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
+                           sprintf(__('%1$s adds the reservation %2$s for item %3$s'),
+                                   $_SESSION["glpiname"], $newID, $reservationitems_id));
                } else {
                   $all_ok = false;
                }

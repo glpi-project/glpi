@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -764,6 +764,7 @@ class Computer_Item extends CommonDBRelation{
 
       // can exists for Template
       if ($item->can($item->getField('id'), READ)) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Phone' :
             case 'Printer' :
@@ -771,10 +772,10 @@ class Computer_Item extends CommonDBRelation{
             case 'Monitor' :
                if (Computer::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(_n('Connection','Connections', Session::getPluralNumber()),
-                                                 self::countForItem($item));
+                     $nb = self::countForItem($item);
                   }
-                  return _n('Connection','Connections', Session::getPluralNumber());
+                  return self::createTabEntry(_n('Connection','Connections', Session::getPluralNumber()),
+                                              $nb);
                }
                break;
 
@@ -784,10 +785,10 @@ class Computer_Item extends CommonDBRelation{
                    || Peripheral::canView()
                    || Monitor::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(_n('Connection','Connections', Session::getPluralNumber()),
-                                                 self::countForComputer($item));
+                     $nb = self::countForComputer($item);
                   }
-                  return _n('Connection','Connections', Session::getPluralNumber());
+                  return self::createTabEntry(_n('Connection','Connections', Session::getPluralNumber()),
+                                              $nb);
                }
                break;
          }

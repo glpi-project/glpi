@@ -603,6 +603,9 @@ class Software extends CommonDBTM {
                                           => array('table'      => 'glpi_softwareversions',
                                                    'joinparams' => array('jointype' => 'child')));
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       $tab += Notepad::getSearchOptionsToAdd();
 
       $tab['license']            = _n('License', 'Licenses', Session::getPluralNumber());
@@ -610,7 +613,8 @@ class Software extends CommonDBTM {
       $licjoin       = array();
       $licjoinexpire = array();
 
-      if (!Session::isCron()) { // no filter for cron
+      if (!Session::isCron()
+          && !isCommandLine()) { // no filter for cron
          $licjoin       = array('jointype'  => 'child',
                                 'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
                                                                            '', '', true));
@@ -750,15 +754,13 @@ class Software extends CommonDBTM {
                 ORDER BY `glpi_softwares`.`name`";
       $result = $DB->query($query);
 
-      $values = array(0 => Dropdown::EMPTY_VALUE);
-
       if ($DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $softwares_id          = $data["id"];
             $values[$softwares_id] = $data["name"];
          }
       }
-      $rand = Dropdown::showFromArray('softwares_id', $values);
+      $rand = Dropdown::showFromArray('softwares_id', $values, array('display_emptychoice' => true));
 
       $paramsselsoft = array('softwares_id'    => '__VALUE__',
                              'entity_restrict' => $entity_restrict,

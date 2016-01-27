@@ -167,12 +167,10 @@ class EventManager implements EventManagerInterface
     /**
      * Trigger all listeners for a given event
      *
-     * Can emulate triggerUntil() if the last argument provided is a callback.
-     *
-     * @param  string $event
-     * @param  string|object $target Object calling emit, or symbol describing target (such as static method name)
-     * @param  array|ArrayAccess $argv Array of arguments; typically, should be associative
-     * @param  null|callable $callback
+     * @param  string|EventInterface $event
+     * @param  string|object     $target   Object calling emit, or symbol describing target (such as static method name)
+     * @param  array|ArrayAccess $argv     Array of arguments; typically, should be associative
+     * @param  null|callable     $callback Trigger listeners until return value of this callback evaluate to true
      * @return ResponseCollection All listener return values
      * @throws Exception\InvalidCallbackException
      */
@@ -214,42 +212,21 @@ class EventManager implements EventManagerInterface
      * Triggers listeners until the provided callback evaluates the return
      * value of one as true, or until all listeners have been executed.
      *
-     * @param  string $event
+     * @param  string|EventInterface $event
      * @param  string|object $target Object calling emit, or symbol describing target (such as static method name)
      * @param  array|ArrayAccess $argv Array of arguments; typically, should be associative
      * @param  callable $callback
      * @return ResponseCollection
+     * @deprecated Please use trigger()
      * @throws Exception\InvalidCallbackException if invalid callable provided
      */
     public function triggerUntil($event, $target, $argv = null, $callback = null)
     {
-        if ($event instanceof EventInterface) {
-            $e        = $event;
-            $event    = $e->getName();
-            $callback = $target;
-        } elseif ($target instanceof EventInterface) {
-            $e = $target;
-            $e->setName($event);
-            $callback = $argv;
-        } elseif ($argv instanceof EventInterface) {
-            $e = $argv;
-            $e->setName($event);
-            $e->setTarget($target);
-        } else {
-            $e = new $this->eventClass();
-            $e->setName($event);
-            $e->setTarget($target);
-            $e->setParams($argv);
-        }
-
-        if (!is_callable($callback)) {
-            throw new Exception\InvalidCallbackException('Invalid callback provided');
-        }
-
-        // Initial value of stop propagation flag should be false
-        $e->stopPropagation(false);
-
-        return $this->triggerListeners($event, $e, $callback);
+        trigger_error(
+            'This method is deprecated and will be removed in the future. Please use trigger() instead.',
+            E_USER_DEPRECATED
+        );
+        return $this->trigger($event, $target, $argv, $callback);
     }
 
     /**
@@ -416,7 +393,7 @@ class EventManager implements EventManagerInterface
      *
      * Use this method if you want to be able to modify arguments from within a
      * listener. It returns an ArrayObject of the arguments, which may then be
-     * passed to trigger() or triggerUntil().
+     * passed to trigger().
      *
      * @param  array $args
      * @return ArrayObject
@@ -429,8 +406,7 @@ class EventManager implements EventManagerInterface
     /**
      * Trigger listeners
      *
-     * Actual functionality for triggering listeners, to which both trigger() and triggerUntil()
-     * delegate.
+     * Actual functionality for triggering listeners, to which trigger() delegate.
      *
      * @param  string           $event Event name
      * @param  EventInterface $e

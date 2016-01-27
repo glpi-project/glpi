@@ -67,7 +67,7 @@ class Memcache extends AbstractAdapter implements
 
         // reset initialized flag on update option(s)
         $initialized = & $this->initialized;
-        $this->getEventManager()->attach('option', function ($event) use (& $initialized) {
+        $this->getEventManager()->attach('option', function () use (& $initialized) {
             $initialized = false;
         });
     }
@@ -220,7 +220,7 @@ class Memcache extends AbstractAdapter implements
         $result = $memc->get($internalKey);
         $success = ($result !== false);
         if ($result === false) {
-            return null;
+            return;
         }
 
         $casToken = $result;

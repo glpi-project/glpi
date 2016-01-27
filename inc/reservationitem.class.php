@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -421,7 +421,6 @@ class ReservationItem extends CommonDBChild {
 
       $result = $DB->query($sql);
 
-      $values[0] = Dropdown::EMPTY_VALUE;
       while ($data = $DB->fetch_assoc($result)) {
          $values[$data['itemtype']] = $data['itemtype']::getTypeName();
       }
@@ -445,7 +444,8 @@ class ReservationItem extends CommonDBChild {
       }
 
       Dropdown::showFromArray("reservation_types", $values,
-                              array('value' => $_POST['reservation_types']));
+                              array('value'               => $_POST['reservation_types'],
+                                    'display_emptychoice' => true));
 
       echo "</td></tr>";
       echo "</table>";
@@ -493,7 +493,7 @@ class ReservationItem extends CommonDBChild {
                           `$itemtable`.`name` AS name,
                           `$itemtable`.`entities_id` AS entities_id,
                           $otherserial,
-                          `glpi_locations`.`completename` AS location,
+                          `glpi_locations`.`id` AS location,
                           `glpi_reservationitems`.`items_id` AS items_id
                    FROM `glpi_reservationitems`
                    $left
@@ -529,7 +529,7 @@ class ReservationItem extends CommonDBChild {
                }
                echo "<td><a href='reservation.php?reservationitems_id=".$row['id']."'>".
                           sprintf(__('%1$s - %2$s'), $typename, $row["name"])."</a></td>";
-               echo "<td>".$row["location"]."</td>";
+               echo "<td>".Dropdown::getDropdownName("glpi_locations", $row["location"])."</td>";
                echo "<td>".nl2br($row["comment"])."</td>";
                if ($showentity) {
                   echo "<td>".Dropdown::getDropdownName("glpi_entities", $row["entities_id"]).

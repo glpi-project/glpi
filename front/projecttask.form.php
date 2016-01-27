@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    if ($_SESSION['glpibackcreated']) {
       Html::redirect($task->getFormURL()."?id=".$newID);
    } else {
-      Html::redirect(Project::getFormURL()."?projects_id=".$task->fields['projects_id']);
+      Html::redirect(ProjectTask::getFormURL()."?projects_id=".$task->fields['projects_id']);
    }
 
 } else if (isset($_POST["purge"])) {

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -435,12 +435,12 @@ class Group_User extends CommonDBRelation{
       echo "<tr class='tab_bg_1'><th colspan='2'>".User::getTypeName(Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo _n('Criterion', 'Criteria', 1)."&nbsp;";
-      $crits = array(''                => Dropdown::EMPTY_VALUE,
-                     'is_manager'      => __('Manager'),
+      $crits = array('is_manager'      => __('Manager'),
                      'is_userdelegate' => __('Delegatee'));
       Dropdown::showFromArray('crit', $crits,
-                              array('value'     => $crit,
-                                    'on_change' => 'reloadTab("start=0&criterion="+this.value)'));
+                              array('value'               => $crit,
+                                    'on_change'           => 'reloadTab("start=0&criterion="+this.value)',
+                                    'display_emptychoice' => true));
       if ($group->haveChildren()) {
          echo "</td><td class='center'>".__('Child groups');
          Dropdown::showYesNo('tree', $tree, -1,
@@ -666,28 +666,25 @@ class Group_User extends CommonDBRelation{
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'User' :
                if (Group::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()),
-                                                 countElementsInTable($this->getTable(),
-                                                                      "users_id
-                                                                        = '".$item->getID()."'"));
+                     $nb = countElementsInTable($this->getTable(),
+                                                "users_id = '".$item->getID()."'");
                   }
-                  return Group::getTypeName(Session::getPluralNumber());
+                  return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb);
                }
                break;
 
             case 'Group' :
                if (User::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(User::getTypeName(Session::getPluralNumber()),
-                                                 countElementsInTable("glpi_groups_users",
-                                                                      "`groups_id`
-                                                                        = '".$item->getID()."'" ));
+                     $nb = countElementsInTable("glpi_groups_users",
+                                                "`groups_id` = '".$item->getID()."'" );
                   }
-                  return User::getTypeName(Session::getPluralNumber());
+                  return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                }
                break;
          }

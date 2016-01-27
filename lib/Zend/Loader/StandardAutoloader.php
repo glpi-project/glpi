@@ -89,7 +89,7 @@ class StandardAutoloader implements SplAutoloader
                 case self::AUTOREGISTER_ZF:
                     if ($pairs) {
                         $this->registerNamespace('Zend', dirname(__DIR__));
-                        $this->registerNamespace('ZendXml', dirname(dirname((__DIR__))) . '/ZendXml');
+                        $this->registerNamespace('ZendXml', dirname(dirname((__DIR__))) . DIRECTORY_SEPARATOR .  'ZendXml');
                     }
                     break;
                 case self::LOAD_NS:
