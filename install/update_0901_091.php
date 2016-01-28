@@ -169,7 +169,16 @@ function update0901to091() {
                            'typedoc' => '1',
                            'user' => '2177') ) ;
 
-
+   // updates rights for Super-Admin profile
+   foreach( $CFG_GLPI['lock_lockable_objects'] as $itemtype ) {
+      $rightnames[] = "'".$itemtype::$rightname."'" ;
+   }
+   $query = "UPDATE `glpi_profilerights` 
+             SET `rights` = `rights` | ".UNLOCK."
+             WHERE `profiles_id` = '4' 
+               AND `name` IN (".implode( ",", $rightnames ).")" ;
+   $DB->query( $query ) or die( "0.91 Can't add UNLOCK right to super-admin profile" ) ;
+   
    Config::setConfigurationValues('core', array( 'lock_use_lock_item' => 0,
                                              'lock_autolock_mode'   => 1,
                                              'lock_directunlock_notification' => 0,
