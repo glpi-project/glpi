@@ -4335,7 +4335,7 @@ class CommonDBTM extends CommonGLPI {
     * @return array of link contents (may have several when item have several IP / MAC cases)
    **/
    static function generateLinkContents($link, CommonDBTM $item) {
-      return array($link);
+      return Link::generateLinkContents($link, $item);
    }
 }
 ?>
