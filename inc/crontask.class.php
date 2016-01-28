@@ -10,7 +10,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -166,7 +166,7 @@ class CronTask extends CommonDBTM{
    **/
    static function getUsedItemtypes() {
       global $DB;
-      
+
       $types= array();
       foreach  ($DB->request("SELECT DISTINCT(`itemtype`)
                             FROM `glpi_crontasks`") as $data) {
@@ -1322,7 +1322,7 @@ class CronTask extends CommonDBTM{
       $tab[8]['massiveaction'] = false;
       $tab[8]['datatype']      = 'itemtypename';
       $tab[8]['types']         = self::getUsedItemtypes();
-      
+
 
       $tab[16]['table']        = $this->getTable();
       $tab[16]['field']        = 'comment';
