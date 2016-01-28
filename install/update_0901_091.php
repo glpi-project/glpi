@@ -177,65 +177,74 @@ function update0901to091() {
                                              'lock_lockprofile_id' => $ret));
 
    // cron task
-   $query = "INSERT INTO `glpi_crontasks` ( `itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`) 
-               VALUES ('ObjectLock', 'unlockobject', 86400, 4, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL); " ;
-   $DB->query( $query ) or die( "0.91 Can't add UnlockObject cron task" ) ;
-
+   if (!countElementsInTable('glpi_crontasks',
+                             "`itemtype`='ObjectLock' AND `name`='unlockobject'")) {
+      $query = "INSERT INTO `glpi_crontasks` ( `itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`, `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`) 
+                  VALUES ('ObjectLock', 'unlockobject', 86400, 4, 0, 1, 3, 0, 24, 30, NULL, NULL, NULL); " ;
+      $DB->query( $query ) or die( "0.91 Can't add UnlockObject cron task" ) ;
+   }
    // notification template
-   $query = "INSERT INTO `glpi_notificationtemplates` ( `name`, `itemtype`, `date_mod`) 
-         VALUES ('Unlock Item request', 'ObjectLock', NOW() ); " ;
-   $DB->queryOrDie($query, "0.84 add planning recall notification");
-   $notid = $DB->insert_id();
+   $query = "SELECT *
+             FROM `glpi_notificationtemplates`
+             WHERE `itemtype` = 'ObjectLock'";
 
-   $query = "INSERT INTO `glpi_notificationtemplatetranslations`
-                          (`notificationtemplates_id`, `language`, `subject`,
-                           `content_text`,
-                           `content_html`)
-                   VALUES ($notid, '', '##objectlock.action##', 
-'##objectlock.type## ###objectlock.id## - ##objectlock.name##
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==0) {
+         $query = "INSERT INTO `glpi_notificationtemplates` ( `name`, `itemtype`, `date_mod`) 
+               VALUES ('Unlock Item request', 'ObjectLock', NOW() ); " ;
+         $DB->queryOrDie($query, "0.84 add planning recall notification");
+         $notid = $DB->insert_id();
 
-##lang.objectlock.url##
-##objectlock.url##
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+                                (`notificationtemplates_id`, `language`, `subject`,
+                                 `content_text`,
+                                 `content_html`)
+                         VALUES ($notid, '', '##objectlock.action##', 
+      '##objectlock.type## ###objectlock.id## - ##objectlock.name##
 
-##lang.objectlock.date_mod##
-##objectlock.date_mod##
+      ##lang.objectlock.url##
+      ##objectlock.url##
 
-Hello ##objectlock.lockedby.firstname##,
-Could go to this item and unlock it for me?
-Thank you,
-Regards,
-##objectlock.requester.firstname##',
-'&lt;table&gt;
-&lt;tbody&gt;
-&lt;tr&gt;&lt;th colspan=\"2\"&gt;&lt;a href=\"##objectlock.url##\"&gt;##objectlock.type## ###objectlock.id## - ##objectlock.name##&lt;/a&gt;&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;##lang.objectlock.url##&lt;/td&gt;
-&lt;td&gt;##objectlock.url##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;##lang.objectlock.date_mod##&lt;/td&gt;
-&lt;td&gt;##objectlock.date_mod##&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello ##objectlock.lockedby.firstname##,&lt;br /&gt;Could go to this item and unlock it for me?&lt;br /&gt;Thank you,&lt;br /&gt;Regards,&lt;br /&gt;##objectlock.requester.firstname## ##objectlock.requester.lastname##&lt;/span&gt;&lt;/p&gt;')";
-   
-   $DB->queryOrDie($query, "0.91 add Unlock Request notification translation");
+      ##lang.objectlock.date_mod##
+      ##objectlock.date_mod##
 
-   $query = "INSERT INTO `glpi_notifications`
-                          (`name`, `entities_id`, `itemtype`, `event`, `mode`,
-                           `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
-                           `date_mod`)
-                   VALUES ('Request Unlock Items', 0, 'ObjectLock', 'unlock', 'mail',
-                             $notid, '', 1, 1, NOW())";
-   $DB->queryOrDie($query, "0.91 add Unlock Request notification");
-   $notifid = $DB->insert_id();
+      Hello ##objectlock.lockedby.firstname##,
+      Could go to this item and unlock it for me?
+      Thank you,
+      Regards,
+      ##objectlock.requester.firstname##',
+      '&lt;table&gt;
+      &lt;tbody&gt;
+      &lt;tr&gt;&lt;th colspan=\"2\"&gt;&lt;a href=\"##objectlock.url##\"&gt;##objectlock.type## ###objectlock.id## - ##objectlock.name##&lt;/a&gt;&lt;/th&gt;&lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;##lang.objectlock.url##&lt;/td&gt;
+      &lt;td&gt;##objectlock.url##&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+      &lt;td&gt;##lang.objectlock.date_mod##&lt;/td&gt;
+      &lt;td&gt;##objectlock.date_mod##&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;/tbody&gt;
+      &lt;/table&gt;
+      &lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello ##objectlock.lockedby.firstname##,&lt;br /&gt;Could go to this item and unlock it for me?&lt;br /&gt;Thank you,&lt;br /&gt;Regards,&lt;br /&gt;##objectlock.requester.firstname## ##objectlock.requester.lastname##&lt;/span&gt;&lt;/p&gt;')";
+         
+         $DB->queryOrDie($query, "0.91 add Unlock Request notification translation");
 
-   $query = "INSERT INTO `glpi_notificationtargets`
-                          (`id`, `notifications_id`, `type`, `items_id`)
-                   VALUES (NULL, $notifid, ".Notification::USER_TYPE.", ".Notification::USER.");";
-   $DB->queryOrDie($query, "0.91 add Unlock Request notification target");
+         $query = "INSERT INTO `glpi_notifications`
+                                (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                                 `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                                 `date_mod`)
+                         VALUES ('Request Unlock Items', 0, 'ObjectLock', 'unlock', 'mail',
+                                   $notid, '', 1, 1, NOW())";
+         $DB->queryOrDie($query, "0.91 add Unlock Request notification");
+         $notifid = $DB->insert_id();
 
+         $query = "INSERT INTO `glpi_notificationtargets`
+                                (`id`, `notifications_id`, `type`, `items_id`)
+                         VALUES (NULL, $notifid, ".Notification::USER_TYPE.", ".Notification::USER.");";
+         $DB->queryOrDie($query, "0.91 add Unlock Request notification target");
+      }
+   }
    Config::setConfigurationValues('core', array('set_default_requester' => 1));
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
