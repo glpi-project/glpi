@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
 -------------------------------------------------------------------------
 GLPI - Gestionnaire Libre de Parc Informatique
 Copyright (C) 2015 Teclib'.
@@ -617,4 +616,3 @@ class ObjectLock extends CommonDBTM {
    }
 
 }
-?>

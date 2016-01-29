@@ -139,7 +139,8 @@ class Html {
    /**
     * Convert a date YY-MM-DD to DD-MM-YY for calendar
     *
-    * @param $time date: date to convert
+    * @param $time       date  date to convert
+    * @param $format           (default null)
     *
     * @return $time or $date
    **/
@@ -152,9 +153,9 @@ class Html {
       if (!isset($_SESSION["glpidate_format"])) {
          $_SESSION["glpidate_format"] = 0;
       }
-      if( !$format ) {
+      if (!$format ) {
          $format = $_SESSION["glpidate_format"];
-      } 
+      }
 
       switch ($format) {
          case 1 : // DD-MM-YYYY
@@ -181,7 +182,8 @@ class Html {
    /**
     * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
     *
-    * @param $time datetime: datetime to convert
+    * @param $time        datetime  datetime to convert
+    *  @param $format               (default null)
     *
     * @return $time or $date
    **/
@@ -5591,17 +5593,23 @@ class Html {
       };");
    }
 
+
    /**
     * Summary of confirmCallback
     * Is a replacement for Javascript native confirm function
     * Beware that native confirm is synchronous by nature (will block
     * browser waiting an answer from user, but that this is emulating the confirm behaviour
     * by using callbacks functions when user presses 'Yes' or 'No' buttons.
-    * @param string $msg: message to be shown
-    * @param string $title: title for dialog box
-    * @param string $yesCallback: function that will be called when 'Yes' is pressed
-    * @param string $noCallback: function that will be called when 'No' is pressed
-    * */
+    *
+    * @since version 0.91
+    *
+    * @param $msg            string      message to be shown
+    * @param $title          string      title for dialog box
+    * @param $yesCallback    string      function that will be called when 'Yes' is pressed
+    *                                    (default null)
+    * @param $noCallback     string      function that will be called when 'No' is pressed
+    *                                    (default null)
+   **/
    static function jsConfirmCallback( $msg, $title, $yesCallback=null, $noCallback=null ) {
 
       return "
@@ -5695,16 +5703,21 @@ class Html {
       };");
    }
 
+
    /**
     * Summary of jsAlertCallback
     * Is a replacement for Javascript native alert function
     * Beware that native alert is synchronous by nature (will block
     * browser waiting an answer from user, but that this is emulating the alert behaviour
     * by using a callback function when user presses 'Ok' button.
-    * @param string $msg: message to be shown
-    * @param string $title: title for dialog box
-    * @param string $okCallback: function that will be called when 'Ok' is pressed
-    */
+    *
+    * @since version 0.91
+    *
+    * @param $msg          string   message to be shown
+    * @param $title        string   title for dialog box
+    * @param $okCallback   string   function that will be called when 'Ok' is pressed
+    *                               (default null)
+   **/
    static function jsAlertCallback( $msg, $title, $okCallback=null) {
 
       return "

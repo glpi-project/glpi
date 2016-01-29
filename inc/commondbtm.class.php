@@ -3170,13 +3170,13 @@ class CommonDBTM extends CommonGLPI {
     * @return an array of massive actions
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
-      // test if current profile has rights to unlock current item type
-      if( Session::haveRight( static::$rightname, UNLOCK) ) {
-         return array( 'ObjectLock'.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock' => _x('button', 'Unlock items'));
-      } else {
-         return array();
-      }
 
+      // test if current profile has rights to unlock current item type
+      if (Session::haveRight( static::$rightname, UNLOCK)) {
+         return array('ObjectLock'.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock'
+                        => _x('button', 'Unlock items'));
+      }
+      return array();
    }
 
 
@@ -4323,7 +4323,7 @@ class CommonDBTM extends CommonGLPI {
 
       return $values;
    }
-   
+
    /**
     * Generate link
     *

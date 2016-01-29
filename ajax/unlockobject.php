@@ -48,25 +48,27 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 $ret = 0 ;
-if (isset($_GET['unlock']) && isset($_GET["id"])  ) {
+if (isset($_GET['unlock']) && isset($_GET["id"])) {
    // then we may have something to unlock
-   $ol = new ObjectLock( ) ;   
-   if( $ol->getFromDB( $_GET["id"] ) && $ol->deleteFromDB( 1 ) ) {
-      if( isset( $_GET['force'] ) ) {
-         Log::history($ol->fields['items_id'], $ol->fields['itemtype'], array(0, '', ''), 0, Log::HISTORY_UNLOCK_ITEM); 
+   $ol = new ObjectLock();
+   if ($ol->getFromDB($_GET["id"])
+       && $ol->deleteFromDB(1)) {
+      if (isset($_GET['force'])) {
+         Log::history($ol->fields['items_id'], $ol->fields['itemtype'], array(0, '', ''), 0,
+                      Log::HISTORY_UNLOCK_ITEM);
       }
       $ret = 1 ;
    }
 
-} elseif ( isset($_GET['requestunlock']) && isset($_GET["id"]) ) {
+} else if (isset($_GET['requestunlock'])
+           && isset($_GET["id"])) {
    // the we must ask for unlock
-   $ol = new ObjectLock( ) ;   
-   if( $ol->getFromDB( $_GET["id"] ) ) {
+   $ol = new ObjectLock();
+   if ($ol->getFromDB( $_GET["id"])) {
       NotificationEvent::raiseEvent( 'unlock', $ol ) ;
       $ret = 1 ;
    }
 }
 
 echo $ret ;
-
 ?>

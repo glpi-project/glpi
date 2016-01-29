@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id$
 -------------------------------------------------------------------------
 GLPI - Gestionnaire Libre de Parc Informatique
 Copyright (C) 2015 Teclib'.
@@ -43,19 +42,18 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Summary of NotificationTargetObjectLock
- * 
+ *
  * Notifications for ObjectLock
- * 
- * @author Olivier Moron
+ *
  * @since version 0.91
- */
+**/
 class NotificationTargetObjectLock extends NotificationTarget {
 
-   function getEvents() {
 
-      return array('unlock'               => __('Unlock Item Request')
-                   );
+   function getEvents() {
+      return array('unlock'               => __('Unlock Item Request'));
    }
+
 
    function getTags() {
 
@@ -75,18 +73,23 @@ class NotificationTargetObjectLock extends NotificationTarget {
                                    'label' => $label,
                                    'value' => true));
       }
-
       asort($this->tag_descriptions);
    }
 
+
    /**
     * @see NotificationTarget::getNotificationTargets()
-    **/
+   **/
    function getNotificationTargets($entity) {
       $this->addTarget(Notification::USER, __('Locking User'));
    }
 
-   function getSpecificTargets( $data, $options ) {
+
+   /**
+    * @see NotificationTarget::getSpecificTargets()
+    **/
+   function getSpecificTargets($data, $options) {
+
       $user = new User();
       if ($user->getFromDB($this->obj->fields['users_id'])) {
          $this->addToAddressesList(array('language' => $user->getField('language'),
@@ -94,32 +97,40 @@ class NotificationTargetObjectLock extends NotificationTarget {
       }
    }
 
+
    /**
     * Get all data needed for template processing
     *
     * @param $event
     * @param $options   array
-    **/
+   **/
    function getDatasForTemplate($event, $options=array()) {
-      global $CFG_GLPI, $_SESSION;
+      global $CFG_GLPI;
 
       $events = $this->getEvents();
 
-      $object = getItemForItemtype( $options['item']->fields['itemtype'] ) ;
-      $object->getFromDB( $options['item']->fields['items_id']  ) ;
-      $user = new User ;
-      $user->getFromDB( $options['item']->fields['users_id'] ) ;
+      $object = getItemForItemtype($options['item']->fields['itemtype']);
+      $object->getFromDB($options['item']->fields['items_id']);
+      $user = new User();
+      $user->getFromDB($options['item']->fields['users_id']);
 
-      $this->datas['##objectlock.action##']              = $events[$event];
-      $this->datas['##objectlock.name##']                = $object->fields['name'];
-      $this->datas['##objectlock.id##']                  = $options['item']->fields['items_id'];
-      $this->datas['##objectlock.type##']                = $options['item']->fields['itemtype'];
-      $this->datas['##objectlock.date_mod##']            = Html::convDateTime( $options['item']->fields['date_mod'], $user->fields['date_format'] ) ;
-      $this->datas['##objectlock.lockedby.lastname##']   = $user->fields['realname'];
-      $this->datas['##objectlock.lockedby.firstname##']  = $user->fields['firstname'];
-      $this->datas['##objectlock.requester.lastname##']  = $_SESSION['glpirealname'];
-      $this->datas['##objectlock.requester.firstname##'] = $_SESSION['glpifirstname'];
-      $this->datas['##objectlock.url##']                 = $CFG_GLPI['url_base']."/?redirect=".$options['item']->fields['itemtype']. "_".$options['item']->fields['items_id'] ;
+      $this->datas['##objectlock.action##']   = $events[$event];
+      $this->datas['##objectlock.name##']     = $object->fields['name'];
+      $this->datas['##objectlock.id##']       = $options['item']->fields['items_id'];
+      $this->datas['##objectlock.type##']     = $options['item']->fields['itemtype'];
+      $this->datas['##objectlock.date_mod##'] = Html::convDateTime($options['item']->fields['date_mod'],
+                                                                   $user->fields['date_format'] ) ;
+      $this->datas['##objectlock.lockedby.lastname##']
+                                              = $user->fields['realname'];
+      $this->datas['##objectlock.lockedby.firstname##']
+                                              = $user->fields['firstname'];
+      $this->datas['##objectlock.requester.lastname##']
+                                              = $_SESSION['glpirealname'];
+      $this->datas['##objectlock.requester.firstname##']
+                                              = $_SESSION['glpifirstname'];
+      $this->datas['##objectlock.url##']      = $CFG_GLPI['url_base']."/?redirect=".
+                                                   $options['item']->fields['itemtype']. "_".
+                                                   $options['item']->fields['items_id'] ;
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -129,15 +140,19 @@ class NotificationTargetObjectLock extends NotificationTarget {
       }
    }
 
-   function getSender($options = array()) {
-      global $_SESSION;
-      $mails = new UserEmail;
-      if( isset( $_SESSION['glpiID'] ) 
-         && $_SESSION['glpiID'] > 0 
-         && isset( $_SESSION['glpilock_directunlock_notification'] ) 
-         && $_SESSION['glpilock_directunlock_notification'] > 0 
-         && $mails->getFromDBByQuery( " WHERE users_id = ".$_SESSION['glpiID']." AND is_default = 1 " )) {
-            $ret = array('email' => $mails->fields['email'], 'name'  => formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"], $_SESSION["glpifirstname"]));
+
+   function getSender($options=array()) {
+
+      $mails = new UserEmail();
+      if (isset( $_SESSION['glpiID']) && ($_SESSION['glpiID'] > 0)
+          && isset($_SESSION['glpilock_directunlock_notification'])
+          && ($_SESSION['glpilock_directunlock_notification'] > 0)
+          && $mails->getFromDBByQuery(" WHERE users_id = ".$_SESSION['glpiID']."
+                                              AND is_default = 1 " )) {
+
+            $ret = array('email' => $mails->fields['email'],
+                         'name'  => formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
+                                                   $_SESSION["glpifirstname"]));
       } else {
          $ret = parent::getSender( $options ) ;
       }
