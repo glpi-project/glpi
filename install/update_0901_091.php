@@ -221,7 +221,7 @@ function update0901to091() {
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
                 VALUES ('ObjectLock', 'unlockobject', 86400, 4, 0, 1, 3,
                         0, 24, 30, NULL, NULL, NULL); " ;
-      $DB->queryOrDire($query, "Update UnlockObject cron task");
+      $DB->queryOrDie($query, "Update UnlockObject cron task");
    }
    // notification template
    $query = "SELECT *
