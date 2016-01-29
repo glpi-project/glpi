@@ -518,17 +518,17 @@ class ObjectLock extends CommonDBTM {
          $tab[200]['name']          = __('Locked by');
          $tab[200]['forcegroupby']  = true;
          $tab[200]['massiveaction'] = false;
-         $tab[200]['joinparams']    = array(['jointype']   => "",
-                                            ['beforejoin']
-                                             => array(['table']      => getTableForItemType('ObjectLock'),
-                                                      ['joinparams'] => array(['jointype']
+        $tab[200]['joinparams']    = array('jointype' => '',
+                                           'beforejoin'
+                                             => array('table'      => getTableForItemType('ObjectLock'),
+                                                      'joinparams' => array('jointype'
                                                                                => "itemtype_item")));
 
          $tab[201]['table']         = getTableForItemType('ObjectLock');
          $tab[201]['field']         = 'date_mod';
          $tab[201]['datatype']      = 'datetime';
          $tab[201]['name']          = __('Locked date');
-         $tab[201]['joinparams']    = array(['jointype'] => "itemtype_item");
+         $tab[201]['joinparams']    = array('jointype' => "itemtype_item");
          $tab[201]['massiveaction'] = false;
          $tab[201]['forcegroupby']  = true;
       }
