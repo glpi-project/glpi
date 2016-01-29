@@ -536,6 +536,11 @@ class DBmysql {
    static function optimize_tables($migration=NULL, $cron=false) {
        global $DB;
 
+       if (!empty(self::checkForCrashedTables())) {
+          Toolbox::logDebug("Cannot launch automatic action : crashed tables detected");
+          return -1;
+       }
+
        if (!is_null($migration) && method_exists($migration,'displayMessage')) {
           $migration->displayTitle(__('Optimizing tables'));
           $migration->addNewMessageArea('optimize_table'); // to force new ajax zone
@@ -660,10 +665,35 @@ class DBmysql {
 
       return $lock_ok;
    }
+
+   /**
+   * Check for crashed MySQL Tables
+   *
+   * @since version 0.90.2
+   *
+   * @return an array with supposed crashed table and check message
+   */
+   static public function checkForCrashedTables() {
+      global $DB;
+      $crashed_tables = array();
+
+      $result = $DB->list_tables();
+
+      while ($line = $DB->fetch_row($result)) {
+         $query  = "CHECK TABLE `".$line[0]."` FAST";
+         $result  = $DB->query($query);
+         if ($DB->numrows($result) > 0) {
+            $row = $DB->fetch_array($result);
+            if ($row['Msg_type'] != 'status' && $row['Msg_type'] != 'note') {
+               $crashed_tables[] = array('table'    => $row[0],
+                                         'Msg_type' => $row['Msg_type'],
+                                         'Msg_text' => $row['Msg_text']);
+            }
+         }
+      }
+      return $crashed_tables;
+   }
 }
-
-
-
 
 /**
  * Helper for simple query => see $DBmysql->requete
@@ -896,5 +926,6 @@ class DBmysqlIterator  implements Iterator {
    public function numrows() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
    }
+
 }
 ?>
