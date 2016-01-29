@@ -406,14 +406,14 @@ class ObjectLock extends CommonDBTM {
     * @param  $options
    **/
    static function manageObjectLock($itemtype, &$options) {
-      global $CFG_GLPI, $_SESSION ;
+      global $CFG_GLPI;
 
       if (isset($options['id']) && ($options['id'] > 0)) {
          $ol       = new self($itemtype, $options['id']);
          $template = (isset($options['withtemplate'])
                       && ($options['withtemplate'] > 0) ? true : false);
          if (($_SESSION["glpiactiveprofile"]["interface"] == "central")
-             && $CFG_GLPI["lock_use_lock_item"]
+             && isset($CFG_GLPI["lock_use_lock_item"]) && $CFG_GLPI["lock_use_lock_item"]
              && ($CFG_GLPI["lock_lockprofile_id"] > 0)
              && in_array($itemtype, $CFG_GLPI['lock_item_list'])
              && Session::haveRightsOr($itemtype::$rightname, array(UPDATE, DELETE, PURGE, UPDATENOTE))
