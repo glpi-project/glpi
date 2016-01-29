@@ -370,16 +370,11 @@ class ObjectLock extends CommonDBTM {
       if( isset( $options['id']  ) && $options['id'] > 0 ) {
          $ol = new self( $itemtype, $options['id'] ) ;
          $template = (isset( $options['withtemplate'] ) && $options['withtemplate'] > 0 ? true : false ) ;
-        if( $itemtype == 'Contact' || $itemtype == 'Supplier' ) {
-           $module = 'contact_enterprise' ;
-        } else {
-         $module = strtolower($itemtype) ;
-        }
          if( $_SESSION["glpiactiveprofile"]["interface"] == "central" &&
             $CFG_GLPI["lock_use_lock_item"] &&
             $CFG_GLPI["lock_lockprofile_id"] > 0 &&
             in_array($itemtype, $CFG_GLPI['lock_item_list']) &&
-            Session::haveRightsOr( $module, array( UPDATE, DELETE, PURGE, UPDATENOTE )) &&
+            Session::haveRightsOr( $itemtype::$rightname, array( UPDATE, DELETE, PURGE, UPDATENOTE )) &&
             !$template) {
 
             if( !$ol->autoLockMode( ) || !$ol->lockObject( $options['id'] ) ) {
