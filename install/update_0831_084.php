@@ -1234,13 +1234,13 @@ function update0831to084() {
 
                $DB->queryOrDie($query, "0.84 update datas for rules actions");
             }
-            // Update criterias
+            // Update criteria
             foreach ($tab as $old => $new) {
                $query = "UPDATE `glpi_rulecriterias`
                          SET `criteria` = '$new'
                          WHERE `criteria` = '$old'
                                AND `rules_id` IN ($rules)";
-               $DB->queryOrDie($query, "0.84 update datas for rules criterias");
+               $DB->queryOrDie($query, "0.84 update datas for rules criteria");
             }
          }
       }
@@ -2246,7 +2246,7 @@ function updateNetworkFramework(&$ADDTODISPLAYPREF) {
                   `items_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
                   `wifinetworks_id` int(11) NOT NULL DEFAULT '0',
                   `networkportwifis_id` int(11) NOT NULL DEFAULT '0'
-                                        COMMENT 'only usefull in case of Managed node',
+                                        COMMENT 'only useful in case of Managed node',
                   `version` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL
                             COMMENT 'a, a/b, a/b/g, a/b/g/n, a/b/g/n/y',
                   `mode` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL

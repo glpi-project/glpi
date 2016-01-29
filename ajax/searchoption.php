@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -81,7 +81,7 @@ if (isset($_POST["itemtype"])
       // get already get search options
       if (isset($actions['searchopt'])) {
          $searchopt = $actions['searchopt'];
-         // No name for clean array whith quotes
+         // No name for clean array with quotes
          unset($searchopt['name']);
          unset($actions['searchopt']);
       }

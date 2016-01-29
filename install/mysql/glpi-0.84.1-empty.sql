@@ -2949,7 +2949,7 @@ CREATE TABLE `glpi_networkportwifis` (
   `networkports_id` int(11) NOT NULL DEFAULT '0',
   `items_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
   `wifinetworks_id` int(11) NOT NULL DEFAULT '0',
-  `networkportwifis_id` int(11) NOT NULL DEFAULT '0' COMMENT 'only usefull in case of Managed node',
+  `networkportwifis_id` int(11) NOT NULL DEFAULT '0' COMMENT 'only useful in case of Managed node',
   `version` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'a, a/b, a/b/g, a/b/g/n, a/b/g/n/y',
   `mode` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'ad-hoc, managed, master, repeater, secondary, monitor, auto',
   PRIMARY KEY (`id`),

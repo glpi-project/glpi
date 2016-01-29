@@ -155,7 +155,7 @@ function step0() {
 }
 
 
-//Step 1 checking some compatibilty issue and some write tests.
+//Step 1 checking some compatibility issue and some write tests.
 function step1($update) {
    global $CFG_GLPI;
 
