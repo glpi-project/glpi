@@ -38,7 +38,7 @@
 
 // autoload include in objecttask.form (ticketcost, problemcost,...)
 if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+   die("Cannot access this file directly");
 }
 Session::checkCentralAccess();
 if (!($cost instanceof CommonITILCost)) {

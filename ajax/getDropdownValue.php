@@ -44,7 +44,7 @@ if (strpos($_SERVER['PHP_SELF'],"getDropdownValue.php")) {
 }
 
 if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+   die("Cannot access this file directly");
 }
 
 Session::checkLoginUser();
