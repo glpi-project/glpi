@@ -357,6 +357,7 @@ class ReservationItem extends CommonDBChild {
       $ri         = new self();
       $ok         = false;
       $showentity = Session::isMultiEntitiesMode();
+      $values     = array();
 
       if (isset($_SESSION['glpi_saved']['ReservationItem'])) {
          $_POST = $_SESSION['glpi_saved']['ReservationItem'];
