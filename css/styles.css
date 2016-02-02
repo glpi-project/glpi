@@ -674,6 +674,10 @@ input.save {
       width: 150px;
    }
 
+   .layout_vsplit.form .ui-tabs-panel table.tab_cadre_pager {
+      width: 100%;
+   }
+
   .layout_vsplit.form .form_content {
       position: relative;
       width: 46%;
@@ -2387,8 +2391,8 @@ ul#menu ul.ssmenu {
 
 .see_debug {
    position: fixed;
-   bottom: 20px;
-   left: 20px;
+   bottom: 5px;
+   right: 10px;
    cursor: pointer;
 }
 
@@ -2639,7 +2643,7 @@ ul#menu ul.ssmenu {
 }
 .timeline_history .left .h_date,
 .timeline_history .middle .h_date {
-   width: 100px;
+   width: 115px;
    margin: 0 auto;
 }
 

@@ -41,10 +41,8 @@ if (strpos($_SERVER['PHP_SELF'],"getDropdownValue.php")) {
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
-}
-
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+} else if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
 }
 
 Session::checkLoginUser();
@@ -399,7 +397,7 @@ if ($item instanceof CommonTreeDropdown) {
                }
                array_push($datastoadd, array('id'    => $ID,
                                              'text'  => $outputval,
-                                             'level' => $level, 
+                                             'level' => $level,
                                              'title' => $title));
                $count++;
             }
@@ -632,7 +630,7 @@ if ($item instanceof CommonTreeDropdown) {
                $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
             }
             array_push($datastoadd, array('id'    => $ID,
-                                          'text'  => $outputval, 
+                                          'text'  => $outputval,
                                           'title' => $title));
             $count++;
          }

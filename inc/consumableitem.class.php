@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 //!  ConsumableItem Class
@@ -322,6 +322,9 @@ class ConsumableItem extends CommonDBTM {
       $tab[80]['name']              = __('Entity');
       $tab[80]['massiveaction']     = false;
       $tab[80]['datatype']          = 'dropdown';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

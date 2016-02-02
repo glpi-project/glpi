@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /** Software Class
@@ -602,6 +602,9 @@ class Software extends CommonDBTM {
       $tab[4]['joinparams']      = array('beforejoin'
                                           => array('table'      => 'glpi_softwareversions',
                                                    'joinparams' => array('jointype' => 'child')));
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

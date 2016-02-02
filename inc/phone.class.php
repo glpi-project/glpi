@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -535,6 +535,9 @@ class Phone extends CommonDBTM {
       $tab[82]['name']           = __('Global management');
       $tab[82]['datatype']       = 'bool';
       $tab[82]['massiveaction']  = false;
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

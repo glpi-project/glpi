@@ -32,7 +32,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -3090,6 +3090,9 @@ class CommonDBTM extends CommonGLPI {
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['massiveaction'] = false;
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       return $tab;
    }
 
@@ -3167,6 +3170,12 @@ class CommonDBTM extends CommonGLPI {
     * @return an array of massive actions
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
+      // test if current profile has rights to unlock current item type
+      if (Session::haveRight( static::$rightname, UNLOCK)) {
+         return array('ObjectLock'.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock'
+                        => _x('button', 'Unlock items'));
+      }
       return array();
    }
 
@@ -3581,7 +3590,7 @@ class CommonDBTM extends CommonGLPI {
                          || $p['add_event_on_duplicate']) {
                         $message = array();
                         foreach (explode(',',$fields['fields']) as $field) {
-                           $message[$fiels] = $this->input[$field];
+                           $message[$fields] = $this->input[$field];
                         }
 
                         $doubles      = getAllDatasFromTable($this->gettable(),
@@ -4299,6 +4308,8 @@ class CommonDBTM extends CommonGLPI {
                       PURGE   => array('short' => __('Purge'),
                                        'long'  => _x('button', 'Delete permanently')));
 
+      $values += ObjectLock::getRightsToAdd( get_class($this), $interface ) ;
+
       if ($this->maybeDeleted()) {
          $values[DELETE] = array('short' => __('Delete'),
                                  'long'  => _x('button', 'Put in dustbin'));
@@ -4313,5 +4324,18 @@ class CommonDBTM extends CommonGLPI {
       return $values;
    }
 
+   /**
+    * Generate link
+    *
+    * @since version 0.91
+    *
+    * @param $link    string   original string content
+    * @param $item             CommonDBTM object: item used to make replacements
+    *
+    * @return array of link contents (may have several when item have several IP / MAC cases)
+   **/
+   static function generateLinkContents($link, CommonDBTM $item) {
+      return Link::generateLinkContents($link, $item);
+   }
 }
 ?>

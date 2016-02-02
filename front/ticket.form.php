@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -38,7 +38,6 @@
 include ('../inc/includes.php');
 
 Session::checkLoginUser();
-$fup   = new TicketFollowup();
 $track = new Ticket();
 
 if (!isset($_GET['id'])) {

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 include_once (GLPI_ROOT."/config/based_config.php");
@@ -139,6 +139,20 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix'],
                                                           true);
       }
+      if (isset($CFG_GLPI['lock_item_list'])) {
+          $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
+      }
+      if (isset($CFG_GLPI['lock_lockprofile_id'])
+          && $CFG_GLPI["lock_use_lock_item"]
+          && ($CFG_GLPI["lock_lockprofile_id"] > 0)
+          && !isset($CFG_GLPI['lock_lockprofile']) ) {
+
+            $prof = new Profile();
+            $prof->getFromDB($CFG_GLPI["lock_lockprofile_id"]);
+            $prof->cleanProfile();
+            $CFG_GLPI['lock_lockprofile'] = $prof->fields;
+      }
+
       // Path for icon of document type (web mode only)
       if (isset($CFG_GLPI["root_doc"])) {
          $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";

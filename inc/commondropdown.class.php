@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /// CommonDropdown class - generic dropdown
@@ -448,6 +448,9 @@ abstract class CommonDropdown extends CommonDBTM {
          $tab[19]['datatype']      = 'datetime';
          $tab[19]['massiveaction'] = false;
       }
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       return $tab;
    }

@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -464,7 +464,7 @@ class Profile extends CommonDBTM {
       // First, get all possible rights
       $right_subqueries = array();
       foreach (ProfileRight::getAllPossibleRights() as $key => $default) {
-         $val = $_SESSION['glpiactiveprofile'][$key];
+         $val = isset($_SESSION['glpiactiveprofile'][$key])?$_SESSION['glpiactiveprofile'][$key]:0;
 
          if (!is_array($val) // Do not include entities field added by login
              && (($_SESSION['glpiactiveprofile']['interface'] == 'central')
@@ -1396,6 +1396,7 @@ class Profile extends CommonDBTM {
 
       $dropdown_rights = CommonDBTM::getRights();
       unset($dropdown_rights[DELETE]);
+      unset($dropdown_rights[UNLOCK]);
 
       $rights = array(array('itemtype'  => 'Config',
                             'label'     => __('General setup'),
@@ -1507,6 +1508,9 @@ class Profile extends CommonDBTM {
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
       $tab[16]['datatype']       = 'text';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab['inventory']          = __('Assets');
 

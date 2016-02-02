@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -731,6 +731,9 @@ class Contract extends CommonDBTM {
       $tab[29]['joinparams']        = array('beforejoin'
                                              => array('table'      => 'glpi_contracts_suppliers',
                                                       'joinparams' => array('jointype' => 'child')));
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

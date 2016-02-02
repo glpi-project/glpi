@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class Dropdown {
@@ -729,6 +729,7 @@ class Dropdown {
                     __('Assistance')
                         => array('ITILCategory'     => _n('Ticket category', 'Ticket categories', Session::getPluralNumber()),
                                  'TaskCategory'     => _n('Task category','Task categories', Session::getPluralNumber()),
+                                 'TaskTemplate'     => _n('Task template','Task templates', Session::getPluralNumber()),
                                  'SolutionType'     => _n('Solution type', 'Solution types', Session::getPluralNumber()),
                                  'RequestType'      => _n('Request source', 'Request sources', Session::getPluralNumber()),
                                  'SolutionTemplate' => _n('Solution template',
@@ -1441,6 +1442,7 @@ class Dropdown {
       global $CFG_GLPI;
 
       $params['value']               = 0;
+      $params['rand']                = mt_rand();
       $params['min']                 = 0;
       $params['max']                 = DAY_TIMESTAMP;
       $params['step']                = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
@@ -1542,6 +1544,7 @@ class Dropdown {
                                             'display'             => $params['display'],
                                             'width'               => $params['width'],
                                             'display_emptychoice' => $params['display_emptychoice'],
+                                            'rand'                => $params['rand'],
                                             'emptylabel'          => $params['emptylabel']));
    }
 
@@ -1689,7 +1692,8 @@ class Dropdown {
       }
 
       if ($param["display_emptychoice"]) {
-         array_unshift($elements, $param['emptylabel']);
+         //array_unshift($elements, $param['emptylabel']); // cannot be used as it doesn't preserve keys when they are numbers
+         $elements = array( 0 => $param['emptylabel'] ) + $elements ;
       }
 
       if ($param["multiple"]) {

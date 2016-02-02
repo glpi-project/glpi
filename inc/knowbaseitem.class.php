@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -1599,6 +1599,9 @@ class KnowbaseItem extends CommonDBTM {
       $tab[86]['field']         = 'is_recursive';
       $tab[86]['name']          = __('Child entities');
       $tab[86]['datatype']      = 'bool';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       return $tab;
    }

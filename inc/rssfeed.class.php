@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 // $feed = new SimplePie();
 // $feed->set_cache_location('../files/_rss');
@@ -481,6 +481,9 @@ class RSSFeed extends CommonDBTM {
       $tab[19]['name']                = __('Last update');
       $tab[19]['datatype']            = 'datetime';
       $tab[19]['massiveaction']       = false;
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       return $tab;
    }

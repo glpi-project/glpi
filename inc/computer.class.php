@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -580,8 +580,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
 
       if ($inventory_show) {
-         echo "<td rowspan='4'>".__('Automatic inventory')."</td>";
-         echo "<td rowspan='4'>";
+         echo "<td rowspan='4' colspan='2'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
       }
@@ -814,6 +813,9 @@ class Computer extends CommonDBTM {
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['datatype']       = 'dropdown';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

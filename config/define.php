@@ -52,6 +52,7 @@ define("PURGE",      16);
 define("ALLSTANDARDRIGHT", 31);
 define("READNOTE",   32);
 define("UPDATENOTE", 64);
+define("UNLOCK",     128);
 
 // dictionnaries
 // 0 Name - 1 lang file - 2 extjs - 3 tiny_mce - 4 english lang name
@@ -244,12 +245,12 @@ $CFG_GLPI['device_types'] = array('DeviceMotherboard', 'DeviceProcessor', 'Devic
                                   'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
                                   'DevicePci', 'DeviceCase', 'DevicePowerSupply');
 
-$CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem', 'Contract',
-                                                  'Crontask', 'DBConnection', 'FieldUnicity', 'Infocom',
-                                                  'MailCollector', 'PlanningRecall',
-                                                  'Problem', 'Project', 'ProjectTask',
-                                                  'Reservation', 'SoftwareLicense',
-                                                  'Ticket', 'User');
+$CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem',
+                                                  'Contract', 'Crontask', 'DBConnection',
+                                                  'FieldUnicity', 'Infocom', 'MailCollector',
+                                                  'ObjectLock', 'PlanningRecall', 'Problem',
+                                                  'Project', 'ProjectTask', 'Reservation',
+                                                  'SoftwareLicense', 'Ticket', 'User');
 
 $CFG_GLPI["notificationmethods_types"]    = array('NotificationMail');
 
@@ -268,7 +269,7 @@ $CFG_GLPI["rulecollections_types"]        = array('RuleImportEntityCollection',
 
 // Items which can planned something
 $CFG_GLPI['planning_types']               = array('ChangeTask', 'ProblemTask', 'Reminder',
-                                                  'TicketTask');
+                                                  'TicketTask', 'ProjectTask');
 
 $CFG_GLPI["globalsearch_types"]           = array('Computer', 'Contact', 'Document',  'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
@@ -282,7 +283,6 @@ $CFG_GLPI["decimal_number"] = 2;
 $CFG_GLPI["debug_sql"] = $CFG_GLPI["debug_vars"] = $CFG_GLPI["debug_lang"] = 1;
 
 
-
 // User Prefs fields which override $CFG_GLPI config
 $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_format',
                                      'default_requesttypes_id', 'display_count_on_home',
@@ -291,8 +291,9 @@ $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_forma
                                      'duedateok_color', 'duedatewarning_color',
                                      'duedatewarning_less', 'duedatewarning_unit',
                                      'followup_private', 'is_ids_visible',
-                                     'keep_devices_when_purging_item', 'language',
-                                     'list_limit', 'names_format', 'notification_to_myself',
+                                     'keep_devices_when_purging_item', 'language', 'list_limit',
+                                     'lock_autolock_mode', 'lock_directunlock_notification',
+                                     'names_format', 'notification_to_myself',
                                      'number_format', 'pdffont', 'priority_1',
                                      'priority_2', 'priority_3', 'priority_4', 'priority_5',
                                      'priority_6', 'refresh_ticket_list', 'set_default_tech',
@@ -300,7 +301,6 @@ $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_forma
                                      'show_jobs_at_login', 'task_private', 'task_state',
                                      'use_flat_dropdowntree', 'layout', 'ticket_timeline',
                                      'ticket_timeline_keep_replaced_tabs', 'palette');
-
 
 $CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
                                            "knowbaseitem.php",
@@ -313,4 +313,10 @@ $CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
                                            "common.tabs.php",
                                            "entity.form.php");
 
+$CFG_GLPI['lock_lockable_objects'] = array('Budget',  'Change', 'Contact', 'Contract', 'Document',
+                                           'CartridgeItem', 'Computer', 'ConsumableItem', 'Entity',
+                                           'Group', 'KnowbaseItem', 'Link', 'Monitor',
+                                           'NetworkEquipment', 'NetworkName', 'Peripheral', 'Phone',
+                                           'Printer', 'Problem', 'Profile', 'Project', 'Reminder',
+                                           'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User') ;
 ?>

@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -188,6 +188,22 @@ class Central extends CommonGLPI {
             echo "</th></tr>";
          }
       }
+
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+         $crashedtables = DBMysql::checkForCrashedTables();
+         if (!empty($crashedtables)) {
+            $tables = array();
+            foreach ($crashedtables as $crashedtable) {
+               $tables[] = $crashtable['table'];
+            }
+            echo "<tr><th colspan='2'>";
+            $message = __('The following MySQL tables are marked as crashed:');
+            $message.= implode(',', $tables);
+            Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
+            echo "</th></tr>";
+         }
+      }
+
 
       if ($DB->isSlave()
           && !$DB->first_connection) {
