@@ -50,7 +50,9 @@ class SLA extends CommonDBTM {
    static $rightname                   = 'sla';
 
    static protected $forward_entity_to = array('SLALevel');
-
+   
+   const RESOLUTION_TYPE      = 0;
+   const TAKEINTOACCOUNT_TYPE = 1;
 
    static function getTypeName($nb=0) {
       // Acronymous, no plural
@@ -173,6 +175,12 @@ class SLA extends CommonDBTM {
                                'emptylabel' => __('24/7'),
                                'toadd'      => array('-1' => __('Calendar of the ticket'))));
       echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1'><td>".__('Type')."</td>";
+      echo "<td>";
+      self::getSlaTypeDropdown(array('value' => $this->fields["type"]));
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Maximum time to solve')."</td>";
       echo "<td>";
@@ -208,7 +216,46 @@ class SLA extends CommonDBTM {
 
       return true;
    }
+   
+   /**
+    * Get SLA types
+    * 
+    * @return array of types
+    */
+   static function getSlaTypes() {
+      return array(self::TAKEINTOACCOUNT_TYPE => __('Take into account'),
+                   self::RESOLUTION_TYPE      => __('Resolution'));
+   }
 
+   /**
+    * Get SLA types name
+    * 
+    * @param type $type
+    * @return string name
+    */
+   static function getSlaTypeName($type) {
+      $types = self::getSlaTypes();
+      $name  = null;
+      if (isset($types[$type])) {
+         $name = $types[$type];
+      }
+      return $name;
+   }
+   
+   /**
+    * Get SLA types dropdown
+    * 
+    * @param type $options
+    */
+   static function getSlaTypeDropdown($options){
+      $params = array('name'  => 'type');
+      
+      foreach ($options as $key => $val) {
+         $params[$key] = $val;
+      }
+
+      Dropdown::showFromArray($params['name'], self::getSlaTypes(), $options);
+   }
 
    function getSearchOptions() {
 
