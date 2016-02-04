@@ -3836,6 +3836,8 @@ class Html {
          mode : 'exact',
          browser_spellcheck : true,
          elements: '$name',
+         relative_urls: false,
+         remove_script_host: false,
          valid_elements: '*[*]',
          plugins : 'table,directionality,searchreplace,paste,tabfocus,autoresize',
          paste_use_dialog : false,
