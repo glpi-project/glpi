@@ -2057,6 +2057,10 @@ class AuthLDAP extends CommonDBTM {
                $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
                $user->fields['is_deleted_ldap'] = 0;
 
+               //clean picture from input
+               // (picture managed in User::post_addItem and prepareInputForUpdate)
+               unset($input['picture']);
+
                if ($action == self::ACTION_IMPORT) {
                   $user->fields["authtype"] = Auth::LDAP;
                   $user->fields["auths_id"] = $ldap_server;
@@ -2066,9 +2070,6 @@ class AuthLDAP extends CommonDBTM {
                   if ($display) {
                      $input['add'] = 1;
                   }
-
-                  //clean picture  from input (picture managed in User::post_addItem)
-                  unset($input['picture']);
 
                   $user->fields["id"] = $user->add($input);
                   return array('action' => self::USER_IMPORTED,
