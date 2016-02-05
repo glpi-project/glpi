@@ -460,11 +460,12 @@ class Dropdown {
    static function showItemTypes($name, $types=array(), $options=array()) {
       global $CFG_GLPI;
 
-      $params['value']        = '';
-      $params['used']         = array();
-      $params['emptylabel']   = self::EMPTY_VALUE;
-      $params['display']      = true;
-      $params['width']        = '80%';
+      $params['value']               = '';
+      $params['used']                = array();
+      $params['emptylabel']          = self::EMPTY_VALUE;
+      $params['display']             = true;
+      $params['width']               = '80%';
+      $params['display_emptychoice'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
