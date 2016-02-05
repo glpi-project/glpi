@@ -450,10 +450,13 @@ class Dropdown {
     * @param $types     array of types to display
     * @param $options   array Already used items ID: not to display in dropdown
     * Parameters which could be used in options array :
-    *    - value      : integer / preselected value (default '')
-    *    - used       : array / Already used items ID: not to display in dropdown (default empty)
-    *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
-    *    - display    : boolean if false get string
+    *    - value               : integer / preselected value (default '')
+    *    - used                : array / Already used items ID: not to display in dropdown (default empty)
+    *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
+    *    - display             : boolean if false get string
+    *    - width               : specific width needed (default not set)
+    *    - emptylabel          : empty label if empty displayed (default self::EMPTY_VALUE)
+    *    - display_emptychoice : display empty choice (default false)
     *
     * @return nothing (print out an HTML select box)
    **/
