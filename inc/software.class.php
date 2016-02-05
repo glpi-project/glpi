@@ -753,7 +753,7 @@ class Software extends CommonDBTM {
                       $where
                 ORDER BY `glpi_softwares`.`name`";
       $result = $DB->query($query);
-
+      $values = array();
       if ($DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $softwares_id          = $data["id"];
