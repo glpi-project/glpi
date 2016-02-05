@@ -472,20 +472,16 @@ class Dropdown {
          }
       }
 
+      $items = array();
       if (count($types)) {
          foreach ($types as $type) {
             if ($item = getItemForItemtype($type)) {
-               $options[$type] = $item->getTypeName(1);
+               $items[$type] = $item->getTypeName(1);
             }
          }
       }
       asort($options);
-      return self::showFromArray($name, $options,
-                                 array('value'      => $params['value'],
-                                       'used'       => $params['used'],
-                                       'width'      => $params['width'],
-                                       'display'    => $params['display'],
-                                       'emptylabel' => $params['emptylabel']));
+      return self::showFromArray($name, $items, $params);
    }
 
 
