@@ -469,12 +469,11 @@ class Dropdown {
          }
       }
 
-      $options = array('' => $params['emptylabel']);
-
+      $items = array();
       if (count($types)) {
          foreach ($types as $type) {
             if ($item = getItemForItemtype($type)) {
-               $options[$type] = $item->getTypeName(1);
+               $items[$type] = $item->getTypeName(1);
             }
          }
       }
@@ -483,6 +482,7 @@ class Dropdown {
                                                         'used'    => $params['used'],
                                                         'width'   => $params['width'],
                                                         'display' => $params['display']));
+      return self::showFromArray($name, $items, $params);
    }
 
 
