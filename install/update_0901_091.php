@@ -307,16 +307,88 @@ function update0901to091() {
                   KEY `taskcategories_id` (`taskcategories_id`),
                   KEY `entities_id` (`entities_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->queryOrDie($query, "0.84 add table glpi_tasktemplates");
+      $DB->queryOrDie($query, "0.91 add table glpi_tasktemplates");
    }
 
    $migration->addField("glpi_users", "lock_autolock_mode", "bool", true);
    $migration->addField("glpi_users", "lock_directunlock_notification", "bool", true);
 
+   $migration->displayMessage(sprintf(__('date_mod and date_creation')));
+   $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
+                  'SoftwareLicense', 'Peripheral', 'NetworkEquipment', 'User', 'Group', 'Entity',
+                  'Profile', 'Budget', 'Contact', 'Contract', 'Netpoint', 'NetworkPort', 'Rule',
+                  'Cartridge', 'CartridgeItem', 'Consumable', 'ConsumableItem', 'Ticket', 'Problem',
+                  'Change', 'Supplier', 'Document', 'AuthLDAP', 'MailCollector', 'Location',
+                  'State', 'Manufacturer', 'Blacklist', 'BlacklistedMailContent', 'ITILCategory',
+                  'TaskCategory', 'TaskTemplate', 'Project', 'Reminder', 'RSSFeed',
+                  'SolutionType', 'RequestType', 'SolutionTemplate', 'ProjectState', 'ProjectType',
+                  'ProjectTaskType', 'SoftwareLicenseType', 'CartridgeItemType', 'ConsumableItemType',
+                  'ContractType', 'ContactType', 'DeviceMemoryType', 'SupplierType', 'InterfaceType',
+                  'DeviceCaseType', 'PhonePowerSupply', 'Filesystem', 'VirtualMachineType',
+                  'VirtualMachineSystem', 'VirtualMachineState', 'DocumentCategory', 'DocumentType',
+                  'KnowbaseItemCategory', 'Calendar', 'Holiday', 'NetworkEquipmentFirmware',
+                  'Network', 'Domain', 'Vlan', 'IPNetwork', 'FQDN', 'WifiNetwork', 'NetworkName',
+                  'UserTitle', 'UserCategory', 'RuleRightParameter', 'Fieldblacklist', 'SsoVariable',
+                  'NotificationTemplate', 'Notification', 'SLA', 'FieldUnicity', 'Crontask', 'Link',
+                  'ComputerDisk', 'ComputerVirtualMachine', 'Infocom');
+   $types = array_merge($types, $CFG_GLPI["dictionnary_types"]);
+   $types = array_merge($types, $CFG_GLPI["device_types"]);
+   $types = array_merge($types, $CFG_GLPI['networkport_instantiations']);
+
+   foreach ($types as $type) {
+      $table       = getTableForItemType($type);
+
+      if (!FieldExists($table, 'date_mod')) {
+         $migration->displayMessage(sprintf(__('Add date_mod to %s'), $table));
+
+         //Add date_mod field if it doesn't exists
+         $migration->addField($table, 'date_mod', 'datetime');
+         $migration->addKey($table, 'date_mod');
+         $migration->migrationOneTable($table);
+
+         //Set last modificaton date by looking for the corresponding entry in glpi_logs
+         $query = "UPDATE $table
+                   LEFT JOIN (
+                     SELECT max(`id`), `date_mod`, `itemtype`, `items_id`
+                     FROM  glpi_logs
+                     GROUP BY itemtype, items_id
+                   ) as logs
+                     ON `logs`.`itemtype` = '$type'
+                     AND `logs`.`items_id` = `$table`.`id`
+                  SET  `$table`.`date_mod` = `logs`.`date_mod`";
+         $DB->queryOrDie($query, "Error filling items last modification date");
+      }
+
+      if (!FieldExists($table, 'date_creation')) {
+         $migration->displayMessage(sprintf(__('Add date_creation to %s'), $table));
+
+         //Add date_creation field
+         $migration->addField($table, 'date_creation', 'datetime');
+         $migration->addKey($table, 'date_creation');
+         $migration->migrationOneTable($table);
+         //Set creation date by looking for the corresponding entry in glpi_logs
+         $query = "UPDATE $table
+                   LEFT JOIN (
+                     SELECT min(`id`), `date_mod`, `itemtype`, `items_id`
+                     FROM  glpi_logs
+                     GROUP BY itemtype, items_id
+                   ) as logs
+                     ON `logs`.`itemtype` = '$type'
+                     AND `logs`.`items_id` = `$table`.`id`
+                  SET  `$table`.`date_creation` = `logs`.`date_mod`";
+         $DB->queryOrDie($query, "Error filling items creation date");
+      }
+   }
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
    return $updateresult;
+}
+
+function setCreationDate() {
+   global $DB;
+
+
 }
 ?>

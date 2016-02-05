@@ -148,6 +148,7 @@ class SoftwareVersion extends CommonDBChild {
           || (Computer_SoftwareVersion::countForVersion($ID) > 0)) {
          $options['candel'] = false;
       }
+
       $this->showFormButtons($options);
 
       return true;
@@ -179,6 +180,12 @@ class SoftwareVersion extends CommonDBChild {
       $tab[31]['name']      = __('Status');
       $tab[31]['datatype']  = 'dropdown';
       $tab[31]['condition'] = "`is_visible_softwareversion`";
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       return $tab;
    }

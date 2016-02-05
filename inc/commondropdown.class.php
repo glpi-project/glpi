@@ -42,6 +42,10 @@ if (!defined('GLPI_ROOT')) {
 /// CommonDropdown class - generic dropdown
 abstract class CommonDropdown extends CommonDBTM {
 
+
+   // From CommonDBTM
+   public $dohistory                   = true;
+
    // For delete operation (entity will overload this value)
    public $must_be_replace = false;
 
@@ -447,6 +451,14 @@ abstract class CommonDropdown extends CommonDBTM {
          $tab[19]['name']          = __('Last update');
          $tab[19]['datatype']      = 'datetime';
          $tab[19]['massiveaction'] = false;
+      }
+
+      if ($this->isField('date_creation')) {
+         $tab[121]['table']          = $this->getTable();
+         $tab[121]['field']          = 'date_creation';
+         $tab[121]['name']           = __('Creation date');
+         $tab[121]['datatype']       = 'datetime';
+         $tab[121]['massiveaction']  = false;
       }
 
       // add objectlock search options

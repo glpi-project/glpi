@@ -519,6 +519,18 @@ class Entity extends CommonTreeDropdown {
       $tab[16]['name']          = __('Comments');
       $tab[16]['datatype']      = 'text';
 
+      $tab[122]['table']          = $this->getTable();
+      $tab[122]['field']          = 'date_mod';
+      $tab[122]['name']           = __('Last update');
+      $tab[122]['datatype']       = 'datetime';
+      $tab[122]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       // add objectlock search options
       $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
@@ -1119,6 +1131,7 @@ class Entity extends CommonTreeDropdown {
       }
 
       echo "</div>";
+
    }
 
 
