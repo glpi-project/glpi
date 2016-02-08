@@ -311,6 +311,7 @@ $CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
                                            "preference.php",
                                            "config.form.php",
                                            "common.tabs.php",
+                                           "transfer.form.php",
                                            "entity.form.php");
 
 ?>
