@@ -318,31 +318,35 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * Get Datas to be added for SLA add
+    * Get Datas to be added for SLT add
     *
-    * @param $slas_id      SLA id
+    * @param $slts_id      SLT id
     * @param $entities_id  entity ID of the ticket
     * @param $date         begin date of the ticket
-    *
+    * @param $type         type of SLT
+    * 
     * @return array of datas to add in ticket
    **/
-   function getDatasToAddSLA($slas_id, $entities_id, $date) {
-
+   function getDatasToAddSLT($slts_id, $entities_id, $date, $type) {
+      
+      list($dateField, $sltField) = SLT::getSltFieldNames($type);
+      
       $calendars_id = Entity::getUsedConfig('calendars_id', $entities_id);
       $data         = array();
 
-      $sla = new SLA();
-      if ($sla->getFromDB($slas_id)) {
-         $sla->setTicketCalendar($calendars_id);
-         // Get first SLA Level
-         $data["slalevels_id"]         = SlaLevel::getFirstSlaLevel($slas_id);
+      $slt = new SLT();
+      if ($slt->getFromDB($slts_id)) {
+         $slt->setTicketCalendar($calendars_id);
+         // Get first SLT Level
+         $slalevels_id         = SlaLevel::getFirstSlaLevel($slts_id);
+         $slt->addLevelToDo($this, $slalevels_id);
          // Compute due_date
-         $data['due_date']             = $sla->computeDueDate($date);
+         $data[$dateField]             = $slt->computeDueDate($date);
          $data['sla_waiting_duration'] = 0;
 
       } else {
          $data["slalevels_id"]         = 0;
-         $data["slas_id"]              = 0;
+         $data[$sltField]              = 0;
          $data['sla_waiting_duration'] = 0;
       }
       return $data;
@@ -351,22 +355,32 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * Delete SLA for the ticket
-    *
-    * @param $id                ID of the ticket
-    * @param $delete_due_date   1 to delete due_date (default 0)
-    *
-    * @return boolean
-   **/
-   function deleteSLA($id, $delete_due_date=0) {
-
-      $input['slas_id']               = 0;
-      $input['slalevels_id']          = 0;
-      $input['sla_waiting_duration']  = 0;
-      $input['id']                    = $id;
-      if ($delete_due_date) {
+    * Delete SLT for the ticket
+    * 
+    * @param type $id
+    * @param type $type
+    * @param type $delete_date
+    * @return type
+    */
+   function deleteSLT($id, $type, $delete_date=0) {
+      switch ($type) {
+         case SLT::RESOLUTION_TYPE:
+            $input['slt_resolution']      = 0;
+                  if ($delete_date) {
+               $input['limit_takeintoaccount_date'] = '';
+            }
+            break;
+         case SLT::TAKEINTOACCOUNT_TYPE:
+            $input['slt_takeintoaccount'] = 0;
+                  if ($delete_date) {
          $input['due_date'] = '';
       }
+            break;
+      }
+
+      $input['sla_waiting_duration']  = 0;
+      $input['id']                    = $id;
+
 
       SlaLevel_Ticket::deleteForTicket($id);
 
@@ -514,9 +528,10 @@ class Ticket extends CommonITILObject {
                                              "`suppliers_id` = '".$item->getID()."'");
                   break;
 
-               case 'SLA' :
+               case 'SLT' :
                   $nb = countElementsInTable('glpi_tickets',
-                                             "`slas_id` = '".$item->getID()."'");
+                                             "`slt_takeintoaccount` = '".$item->getID()."' 
+                                               OR `slt_resolution` = '".$item->getID()."'");
                   break;
 
                case 'Group' :
@@ -640,7 +655,7 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'Group' :
-         case 'SLA' :
+         case 'SLT' :
          default :
             self::showListForItem($item);
       }
@@ -940,12 +955,15 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      // Business Rules do not override manual SLA
-      $manual_slas_id = 0;
-      if (isset($input['slas_id']) && ($input['slas_id'] > 0)) {
-         $manual_slas_id = $input['slas_id'];
+      // Business Rules do not override manual SLT
+      $manual_slts_id = array();
+      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+         list($dateField, $sltField) = self::getSltFieldNames($sltType);
+         if (isset($input[$sltField]) && ($input[$sltField] > 0)) {
+            $manual_slts_id[SLT::RESOLUTION_TYPE] = $input[$sltField];
+         }
       }
-
+      
       // Only process rules on changes
       if (count($changes)) {
          if (in_array('_users_id_requester', $changes)) {
@@ -968,10 +986,6 @@ class Ticket extends CommonITILObject {
                                                 'only_criteria' => $changes));
       }
 
-      // Restore slas_id
-      if ($manual_slas_id > 0) {
-         $input['slas_id'] = $manual_slas_id;
-      }
 
       //Action for send_validation rule : do validation before clean
       $this->manageValidationAdd($input);
@@ -1017,37 +1031,11 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      //// SLA affect by rules : reset due_date
-      // Manual SLA defined : reset due date
-      // No manual SLA and due date defined : reset auto SLA
-      if (($manual_slas_id == 0)
-          && isset($input["slas_id"])
-          && ($input['slas_id'] > 0)
-          && ($input['slas_id'] != $this->fields['slas_id'])) {
-         if (isset($input['due_date'])) {
-            // Unset due date
-            unset($input["due_date"]);
-         }
-      }
-
-
-     if (isset($input["slas_id"])
-         && ($input["slas_id"] > 0)
-         && ($input['slas_id'] != $this->fields['slas_id'])) {
-
-         $date = $this->fields['date'];
-         /// Use updated date if also done
-         if (isset($input["date"])) {
-            $date = $input["date"];
-         }
-         // Get datas to initialize SLA and set it
-         $sla_data = $this->getDatasToAddSLA($input["slas_id"], $this->fields['entities_id'],
-                                             $date);
-         if (count($sla_data)) {
-            foreach ($sla_data as $key => $val) {
-               $input[$key] = $val;
-            }
-         }
+      // SLT affect by rules : reset due_date
+      // Manual SLT defined : reset due date
+      // No manual SLT and due date defined : reset auto SLT
+      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+         $this->sltAffect($sltType, $input, $manual_slts_id);
       }
 
       if (isset($input['content'])) {
@@ -1066,7 +1054,112 @@ class Ticket extends CommonITILObject {
       $input = parent::prepareInputForUpdate($input);
       return $input;
    }
+   
+   /**
+    *  SLT affect by rules : reset due_date and limit_takeintoaccount_date
+    *  Manual SLT defined : reset due date and limit_takeintoaccount_date
+    *  No manual SLT and due date defined : reset auto SLT
+    * 
+    * @param type $type
+    * @param type $input
+    * @param type $manual_slts_id
+    */
+   function sltAffect($type, $input, $manual_slts_id){
+      
+      list($dateField, $sltField) = self::getSltFieldNames($type);
+      
+      // Restore slts
+      if (isset($manual_slts_id[$type])) {
+         $input[$sltField] = $manual_slts_id[$type];
+      }
+      
+      // Ticket update
+      if ($this->fields['id'] > 0) {
+         if (!isset($manual_slts_id[$type])
+             && isset($input[$sltField])
+             && ($input[$sltField] > 0)
+             && ($input[$sltField] != $this->fields[$sltField])) {
+            if (isset($input[$dateField])) {
+               // Unset due date
+               unset($input[$dateField]);
+            }
+         }
 
+         if (isset($input[$sltField])
+            && ($input[$sltField] > 0)
+            && ($input[$sltField] != $this->fields[$sltField])) {
+
+            $date = $this->fields['date'];
+            /// Use updated date if also done
+            if (isset($input["date"])) {
+               $date = $input["date"];
+            }
+            // Get datas to initialize SLT and set it
+            $slt_data = $this->getDatasToAddSLT($input[$sltField], $this->fields['entities_id'],
+                                                $date, $type);
+            if (count($slt_data)) {
+               foreach ($slt_data as $key => $val) {
+                  $input[$key] = $val;
+               }
+            }
+         }
+      // Ticket add
+      } else {
+         if (!isset($manual_slts_id[$type])
+             && isset($input[$dateField]) && ($input[$dateField] != 'NULL')) {
+            // Valid due date
+            if ($input[$dateField] >= $input['date']) {
+               if (isset($input[$sltField])) {
+                  unset($input[$sltField]);
+               }
+            } else {
+               // Unset due date
+               unset($input[$dateField]);
+            }
+         }
+
+         if (isset($input[$sltField]) && ($input[$sltField] > 0)) {
+            // Get datas to initialize SLT and set it
+            $slt_data = $this->getDatasToAddSLT($input[$sltField], $input['entities_id'],
+                                                $input['date'], $type);
+            if (count($slt_data)) {
+               foreach ($slt_data as $key => $val) {
+                  $input[$key] = $val;
+               }
+            }
+         }
+      }
+   }
+   
+   /**
+    *  Manage SLT level
+    * 
+    * @param type $input Ticket input
+    */
+   function manageSltLevel($input) {
+      
+      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+         list($dateField, $sltField) = self::getSltFieldNames($sltType);
+         if (in_array($sltField, $this->updates) && ($input[$sltField] > 0)) {
+
+            // Add First Level
+            $calendars_id = Entity::getUsedConfig('calendars_id', $input['entities_id']);
+
+            $slt = new SLT();
+            if ($slt->getFromDB($input[$sltField])) {
+               $slt->setTicketCalendar($calendars_id);
+               // Add first level in working table
+               $slaLevel_ticket = new SlaLevel_Ticket();
+               $slaLevel_ticket->getFromDBForTicket($input["id"]);
+               if ($slaLevel_ticket->fields["slalevels_id"] > 0) {
+                  $slt->addLevelToDo($this, $slaLevel_ticket->fields["slalevels_id"]);
+               }
+            }
+
+            SlaLevel_Ticket::replayForTicket($this->getID());
+         }
+      }
+   }
 
    function pre_updateInDB() {
 
@@ -1131,24 +1224,9 @@ class Ticket extends CommonITILObject {
       }
 
 
-      // Manage SLA Level : add actions
-      if (in_array("slas_id", $this->updates)
-          && ($this->fields["slas_id"] > 0)) {
-
-         // Add First Level
-         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
-
-         $sla = new SLA();
-         if ($sla->getFromDB($this->fields["slas_id"])) {
-            $sla->setTicketCalendar($calendars_id);
-            // Add first level in working table
-            if ($this->fields["slalevels_id"] > 0) {
-               $sla->addLevelToDo($this);
-            }
-         }
-
-         SlaLevel_Ticket::replayForTicket($this->getID());
-      }
+      // Manage SLT Level : add actions
+      $this->manageSltLevel($this->fields);
+      
       $this->updates[] = "actiontime";
 
       if (count($this->updates)) {
@@ -1306,11 +1384,13 @@ class Ticket extends CommonITILObject {
                         unset($mandatory_missing['_add_validation']);
                      }
 
-                     // For due_date : check also slas_id
-                     if (($key == 'due_date')
-                         && isset($input['slas_id']) && ($input['slas_id'] > 0)
-                         && isset($mandatory_missing['due_date'])) {
-                        unset($mandatory_missing['due_date']);
+                     // For due_date : check also slts
+                     foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+                        list($dateField, $sltField) = self::getSltFieldNames($sltType);
+                        if (($key == $dateField) && isset($input[$sltField]) 
+                              && ($input[$sltField] > 0) && isset($mandatory_missing[$dateField])) {
+                           unset($mandatory_missing[$dateField]);
+                        }
                      }
                   }
                   if (count($mandatory_missing)) {
@@ -1356,10 +1436,13 @@ class Ticket extends CommonITILObject {
       }
 
 
-      // Business Rules do not override manual SLA
-      $manual_slas_id = 0;
-      if (isset($input['slas_id']) && ($input['slas_id'] > 0)) {
-         $manual_slas_id = $input['slas_id'];
+      // Business Rules do not override manual SLT
+      $manual_slts_id = array();
+      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+         list($dateField, $sltField) = self::getSltFieldNames($sltType);
+         if (isset($input[$sltField]) && ($input[$sltField] > 0)) {
+            $manual_slts_id[SLT::RESOLUTION_TYPE] = $input[$sltField];
+         }
       }
 
       // Process Business Rules
@@ -1394,11 +1477,6 @@ class Ticket extends CommonITILObject {
           && ($input['_users_id_requester'] != $tmprequester)) {
          // if requester set by rule, clear address from mailcollector
          unset($input['_users_id_requester_notif']);
-      }
-
-      // Restore slas_id
-      if ($manual_slas_id > 0) {
-         $input['slas_id'] = $manual_slas_id;
       }
 
       // Manage auto assign
@@ -1481,31 +1559,11 @@ class Ticket extends CommonITILObject {
       }
 
 
-      //// Manage SLA assignment
-      // Manual SLA defined : reset due date
-      // No manual SLA and due date defined : reset auto SLA
-      if (($manual_slas_id == 0)
-          && isset($input["due_date"]) && ($input['due_date'] != 'NULL')) {
-         // Valid due date
-         if ($input['due_date'] >= $input['date']) {
-            if (isset($input["slas_id"])) {
-               unset($input["slas_id"]);
-            }
-         } else {
-            // Unset due date
-            unset($input["due_date"]);
-         }
-      }
-
-      if (isset($input["slas_id"]) && ($input["slas_id"] > 0)) {
-         // Get datas to initialize SLA and set it
-         $sla_data = $this->getDatasToAddSLA($input["slas_id"], $input['entities_id'],
-                                             $input['date']);
-         if (count($sla_data)) {
-            foreach ($sla_data as $key => $val) {
-               $input[$key] = $val;
-            }
-         }
+      // Manage SLT signment
+      // Manual SLT defined : reset due date
+      // No manual SLT and due date defined : reset auto SLT
+      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+         $this->sltAffect($sltType, $input, $manual_slts_id);
       }
 
       // auto set type if not set
@@ -1609,23 +1667,8 @@ class Ticket extends CommonITILObject {
          $ticket_ticket->add($input2);
       }
 
-      // Manage SLA Level : add actions
-      if (isset($this->input["slas_id"]) && ($this->input["slas_id"] > 0)
-          && isset($this->input["slalevels_id"]) && ($this->input["slalevels_id"] > 0)) {
-
-         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
-
-         $sla = new SLA();
-         if ($sla->getFromDB($this->input["slas_id"])) {
-            $sla->setTicketCalendar($calendars_id);
-            // Add first level in working table
-            if ($this->input["slalevels_id"] > 0) {
-               $sla->addLevelToDo($this);
-            }
-            // Replay action in case of open date is set before now
-         }
-         SlaLevel_Ticket::replayForTicket($this->getID());
-      }
+      // Manage SLT Level : add actions
+      $this->manageSltLevel($this->input);
 
       // Add project task link if needed
       if (isset($this->input['_projecttasks_id'])) {
@@ -2210,11 +2253,11 @@ class Ticket extends CommonITILObject {
       $tab += $this->getSearchOptionsActors();
 
 
-      $tab['sla']                   = __('SLA');
+      $tab['sla']                   = __('SLT');
 
-      $tab[30]['table']             = 'glpi_slas';
+      $tab[30]['table']             = 'glpi_slts';
       $tab[30]['field']             = 'name';
-      $tab[30]['name']              = __('SLA');
+      $tab[30]['name']              = __('SLT');
       $tab[30]['massiveaction']     = false;
       $tab[30]['datatype']          = 'dropdown';
 
@@ -3273,7 +3316,9 @@ class Ticket extends CommonITILObject {
                     'plan'                      => array(),
                     'global_validation'         => CommonITILValidation::NONE,
                     'due_date'                  => 'NULL',
-                    'slas_id'                   => 0,
+                    'limit_takeintoaccount_date'=> 'NULL',
+                    'slt_takeintoaccount'       => 0,
+                    'slt_resolution'            => 0,
                     '_add_validation'           => 0,
                     'users_id_validate'         => array(),
                     'type'                      => $type,
@@ -3679,9 +3724,11 @@ class Ticket extends CommonITILObject {
          echo Html::convDateTime($date);
       }
       echo $tt->getEndHiddenFieldValue('date', $this);
-      echo "</td>";
-      // SLA
-      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('due_date');
+      echo "</td><td colspan='2'></td></tr>";
+      
+      // SLTs
+      echo "<tr class='tab_bg_1'>";
+      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('due_date');
 
       if (!$ID) {
          printf(__('%1$s%2$s'), __('Due date'), $tt->getMandatoryMark('due_date'));
@@ -3690,121 +3737,23 @@ class Ticket extends CommonITILObject {
       }
       echo $tt->getEndHiddenFieldText('due_date');
       echo "</th>";
-      echo "<td width='$colsize4%' class='nopadding'>";
-      if ($ID) {
-         if ($this->fields["slas_id"] > 0) {
-            echo "<table width='100%'><tr><td class='nopadding'>";
-            echo Html::convDateTime($this->fields["due_date"]);
-            echo "</td><td class='b'>".__('SLA')."</td>";
-            echo "<td class='nopadding'>";
-            echo Dropdown::getDropdownName("glpi_slas", $this->fields["slas_id"]);
-            $commentsla = "";
-            $slalevel   = new SlaLevel();
-            if ($slalevel->getFromDB($this->fields['slalevels_id'])) {
-               $commentsla .= '<span class="b spaced">'.
-                                sprintf(__('%1$s: %2$s'), __('Escalation level'),
-                                        $slalevel->getName()).'</span><br>';
-            }
+      echo "<td width='$colsize2%' class='nopadding'>";
+      $slt = new SLT();
+      $slt->showSltForTicket($this, Slt::RESOLUTION_TYPE, $tt, $canupdate);
+      echo "</td>";
+      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('limit_takeintoaccount_date');
 
-            $nextaction = new SlaLevel_Ticket();
-            if ($nextaction->getFromDBForTicket($this->fields["id"])) {
-               $commentsla .= '<span class="b spaced">'.
-                                sprintf(__('Next escalation: %s'),
-                                        Html::convDateTime($nextaction->fields['date'])).
-                                           '</span><br>';
-               if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
-                  $commentsla .= '<span class="b spaced">'.
-                                   sprintf(__('%1$s: %2$s'), __('Escalation level'),
-                                           $slalevel->getName()).'</span>';
-               }
-            }
-            $slaoptions = array();
-            if (Session::haveRight('sla', READ)) {
-               $slaoptions['link'] = Toolbox::getItemTypeFormURL('SLA').
-                                          "?id=".$this->fields["slas_id"];
-            }
-            Html::showToolTip($commentsla,$slaoptions);
-            if ($canupdate) {
-               echo "&nbsp;";
-               $fields = array('sla_delete'        => 'sla_delete',
-                               'id'                => $this->getID(),
-                               '_glpi_csrf_token'  => Session::getNewCSRFToken(),
-                               '_glpi_simple_form' => 1);
-               $JS = "  function delete_due_date(){
-                           if (confirm('".addslashes(__('Delete due date too?'))."')) {
-                              submitGetLink('".$this->getFormURL()."',
-                                            ".json_encode(array_merge($fields,
-                                                                      array('delete_due_date' => 1))).");
-                           } else {
-                              submitGetLink('".$this->getFormURL()."',
-                                            ".json_encode(array_merge($fields,
-                                                                      array('delete_due_date' => 0))).");
-                           }
-                        }";
-               echo Html::scriptBlock($JS);
-               echo "<a class='vsubmit' onclick='delete_due_date();'>"._x('button', 'Delete permanently')."</a>";
-            }
-            echo "</td>";
-            echo "</tr></table>";
-
-         } else {
-            echo "<table width='100%'><tr><td class='nopadding'>";
-            echo $tt->getBeginHiddenFieldValue('due_date');
-            if ($canupdate) {
-               Html::showDateTimeField("due_date", array('value'      => $this->fields["due_date"],
-                                                         'timestep'   => 1,
-                                                         'maybeempty' => true));
-            } else {
-               echo Html::convDateTime($this->fields["due_date"]);
-            }
-            echo $tt->getEndHiddenFieldValue('due_date',$this);
-            echo "</td>";
-            if ($canupdate) {
-               echo "<td>";
-               echo $tt->getBeginHiddenFieldText('slas_id');
-               echo "<span id='sla_action'>";
-               echo "<a class='vsubmit' ".
-                      Html::addConfirmationOnAction(array(__('The assignment of a SLA to a ticket causes the recalculation of the due date.'),
-                       __("Escalations defined in the SLA will be triggered under this new date.")),
-                                                    "cleanhide('sla_action');cleandisplay('sla_choice');").
-                     ">".__('Assign a SLA').'</a>';
-               echo "</span>";
-               echo "<div id='sla_choice' style='display:none'>";
-               echo "<span  class='b'>".__('SLA')."</span>&nbsp;";
-               Sla::dropdown(array('entity' => $this->fields["entities_id"],
-                                   'value'  => $this->fields["slas_id"]));
-               echo "</div>";
-               echo $tt->getEndHiddenFieldText('slas_id');
-               echo "</td>";
-            }
-            echo "</tr></table>";
-         }
-
-      } else { // New Ticket
-         echo "<table width='100%'><tr><td width='40%' class='nopadding'>";
-         if ($this->fields["due_date"] == 'NULL') {
-            $this->fields["due_date"]='';
-         }
-         echo $tt->getBeginHiddenFieldValue('due_date');
-         Html::showDateTimeField("due_date", array('value'      => $this->fields["due_date"],
-                                                   'timestep'   => 1,
-                                                   'maybeempty' => false,
-                                                   'canedit'    => $canupdate));
-         echo $tt->getEndHiddenFieldValue('due_date',$this);
-         echo "</td>";
-         if ($canupdate) {
-            echo "<td class='nopadding b'>".$tt->getBeginHiddenFieldText('slas_id');
-            printf(__('%1$s%2$s'), __('SLA'), $tt->getMandatoryMark('slas_id'));
-            echo $tt->getEndHiddenFieldText('slas_id')."</td>";
-            echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue('slas_id');
-            Sla::dropdown(array('entity' => $this->fields["entities_id"],
-                                'value'  => $this->fields["slas_id"]));
-            echo $tt->getEndHiddenFieldValue('slas_id',$this);
-            echo "</td>";
-         }
-         echo "</tr></table>";
+      if (!$ID) {
+         printf(__('%1$s%2$s'), __('Limit take into account date'), $tt->getMandatoryMark('limit_takeintoaccount_date'));
+      } else {
+         _e('Limit take into account date');
       }
-      echo "</td></tr>";
+      echo $tt->getEndHiddenFieldText('limit_takeintoaccount_date');
+      echo "</th>";
+      echo "<td width='$colsize4%' class='nopadding'>";
+      $slt->showSltForTicket($this, Slt::TAKEINTOACCOUNT_TYPE, $tt, $canupdate);
+      echo "</td>";
+      echo "</tr>";
 
       if ($ID) {
          echo "<tr class='tab_bg_1'>";
@@ -5071,8 +5020,9 @@ class Ticket extends CommonITILObject {
             $options['criteria'][0]['link']       = 'AND';
             break;
 
-         case 'SLA' :
-            $restrict  = "(`slas_id` = '".$item->getID()."')";
+         case 'SLT' :
+            $restrict  = "`slt_takeintoaccount` = '".$item->getID()."' 
+                           OR `slt_resolution` = '".$item->getID()."'";
             $order     = '`glpi_tickets`.`due_date` DESC';
 
             $options['criteria'][0]['field']      = 30;

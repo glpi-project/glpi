@@ -6078,7 +6078,7 @@ DROP TABLE IF EXISTS `glpi_slalevels`;
 CREATE TABLE `glpi_slalevels` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `slas_id` int(11) NOT NULL DEFAULT '0',
+  `slts_id` int(11) NOT NULL DEFAULT '0',
   `execution_time` int(11) NOT NULL,
   `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -6088,7 +6088,7 @@ CREATE TABLE `glpi_slalevels` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
-  KEY `slas_id` (`slas_id`)
+  KEY `slts_id` (`slts_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -6115,19 +6115,34 @@ CREATE TABLE `glpi_slas` (
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
-  `resolution_time` int(11) NOT NULL,
-  `calendars_id` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
-  `definition_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `end_of_working_day` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `calendars_id` (`calendars_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+### Dump table glpi_slts
+
+DROP TABLE IF EXISTS `glpi_slts`;
+CREATE TABLE `glpi_slts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `type` int(11) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  `resolution_time` int(11) NOT NULL,
+  `calendars_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
+  `definition_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `end_of_working_day` tinyint(1) NOT NULL DEFAULT '0',
+  `slas_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `calendars_id` (`calendars_id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `slas_id` (`slas_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_softwarecategories
 
@@ -6521,8 +6536,8 @@ CREATE TABLE `glpi_tickets` (
   `solutiontypes_id` int(11) NOT NULL DEFAULT '0',
   `solution` longtext COLLATE utf8_unicode_ci,
   `global_validation` int(11) NOT NULL DEFAULT '1',
-  `slas_id` int(11) NOT NULL DEFAULT '0',
-  `slalevels_id` int(11) NOT NULL DEFAULT '0',
+  `slt_takeintoaccount` int(11) NOT NULL DEFAULT '0',
+  `slt_resolution` int(11) NOT NULL DEFAULT '0',
   `due_date` datetime DEFAULT NULL,
   `begin_waiting_date` datetime DEFAULT NULL,
   `sla_waiting_duration` int(11) NOT NULL DEFAULT '0',
@@ -6547,8 +6562,8 @@ CREATE TABLE `glpi_tickets` (
   KEY `urgency` (`urgency`),
   KEY `impact` (`impact`),
   KEY `global_validation` (`global_validation`),
-  KEY `slas_id` (`slas_id`),
-  KEY `slalevels_id` (`slalevels_id`),
+  KEY `slt_takeintoaccount` (`slt_takeintoaccount`),
+  KEY `slt_resolution` (`slt_resolution`),
   KEY `due_date` (`due_date`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `type` (`type`),

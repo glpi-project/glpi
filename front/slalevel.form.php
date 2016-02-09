@@ -52,6 +52,7 @@ if (isset($_POST["update"])) {
    Html::back();
 
 } else if (isset($_POST["add"])) {
+   Toolbox::logDebug($_POST);
    $item->check(-1, CREATE, $_POST);
 
    if ($newID = $item->add($_POST)) {

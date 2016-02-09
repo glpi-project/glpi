@@ -312,8 +312,57 @@ function update0901to091() {
 
    $migration->addField("glpi_users", "lock_autolock_mode", "bool", true);
    $migration->addField("glpi_users", "lock_directunlock_notification", "bool", true);
-
-
+   
+   // New SLA structure
+   if (!TableExists('glpi_slts')) {
+      $query = "CREATE TABLE `glpi_slts` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `type` int(11) NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `resolution_time` int(11) NOT NULL,
+                  `calendars_id` int(11) NOT NULL DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `definition_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `end_of_working_day` tinyint(1) NOT NULL DEFAULT '0',
+                  `slas_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `calendars_id` (`calendars_id`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `slas_id` (`slas_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "0.91 add table glpi_slts");
+   
+      // Sla migration
+      $query = "SELECT *
+                FROM `glpi_slas`";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) > 0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query = "INSERT INTO `glpi_slts`
+                          (`name`, `type`, `comment`, `resolution_time`, `calendars_id`, `date_mod`, `definition_time`, `end_of_working_day`, `slas_id`)
+                         VALUES ('".$data['name']."', '".SLT::RESOLUTION_TYPE."', '".addslashes($data['comment'])."', '".$data['resolution_time']."', '".$data['calendars_id']."', '".$data['date_mod']."', '".$data['definition_time']."', '".$data['end_of_working_day']."', '".$data['id']."');";
+               $DB->queryOrDie($query, "SLA migration to SLT");
+            }
+         }
+      }
+      
+      // Delete deprecated fields of SLA
+      foreach (array('resolution_time', 'calendars_id', 'definition_time', 'end_of_working_day') as $field) {
+         $migration->dropField('glpi_slas', $field);
+      }
+      
+      // Slalevels changes
+      $migration->changeField('glpi_slalevels', 'slas_id', 'slts_id', 'integer');
+      
+      // Ticket changes
+      $migration->addField("glpi_tickets", "slt_takeintoaccount", "integer");
+      $migration->changeField("glpi_tickets", "slas_id", "slt_resolution", "integer");
+      $migration->addField("glpi_tickets", "limit_takeintoaccount_date", "datetime");
+      $migration->addKey('glpi_tickets', 'slt_takeintoaccount');
+      $migration->addKey('glpi_tickets', 'limit_takeintoaccount_date');
+   }
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
