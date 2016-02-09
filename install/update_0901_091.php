@@ -349,12 +349,13 @@ function update0901to091() {
          //Set last modificaton date by looking for the corresponding entry in glpi_logs
          $query = "UPDATE $table
                    LEFT JOIN (
-                     SELECT max(`id`), `date_mod`, `itemtype`, `items_id`
+                     SELECT max(`id`), `date_mod`, `itemtype`, `items_id`, `linked_action`
                      FROM  glpi_logs
                      GROUP BY itemtype, items_id
                    ) as logs
                      ON `logs`.`itemtype` = '$type'
                      AND `logs`.`items_id` = `$table`.`id`
+                     AND `logs`.`linked_action`='20'
                   SET  `$table`.`date_mod` = `logs`.`date_mod`";
          $DB->queryOrDie($query, "Error filling items last modification date");
       }
