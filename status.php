@@ -94,7 +94,7 @@ if (!empty(DBMysql::checkForCrashedTables())) {
 // Slave and master ok;
 $ok = $ok_slave && $ok_master;
 
-// Check session dir (usefull when NFS mounted))
+// Check session dir (useful when NFS mounted))
 if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
    echo "GLPI_SESSION_DIR_OK\n";
 } else {

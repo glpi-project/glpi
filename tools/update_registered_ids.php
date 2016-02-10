@@ -33,7 +33,7 @@
 
 /** @file
  * @since version 0.85
-* @brief Purge history with some criterias
+* @brief Purge history with some criteria
 */
 
 include ('../inc/includes.php');

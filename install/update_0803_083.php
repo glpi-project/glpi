@@ -816,13 +816,13 @@ function update0803to083() {
 
                $DB->queryOrDie($query, "0.83 update datas for rules actions");
             }
-            // Update criterias
+            // Update criteria
             foreach ($tab as $old => $new) {
                $query = "UPDATE `glpi_rulecriterias`
                          SET `criteria` = '$new'
                          WHERE `criteria` = '$old'
                                AND `rules_id` IN ($rules)";
-               $DB->queryOrDie($query, "0.83 update datas for rules criterias");
+               $DB->queryOrDie($query, "0.83 update datas for rules criteria");
             }
          }
       }
@@ -1070,7 +1070,7 @@ function update0803to083() {
    $migration->addKey('glpi_groups_users', 'is_userdelegate');
 
 
-   //Software dictionnary update
+   //Software dictionary update
    $migration->addField("glpi_rulecachesoftwares", "entities_id", "string");
    $migration->addField("glpi_rulecachesoftwares", "new_entities_id", "string");
    $migration->addField("glpi_entitydatas", "entities_id_software", 'integer',
