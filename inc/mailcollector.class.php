@@ -1401,16 +1401,12 @@ class MailCollector  extends CommonDBTM {
             $filename = "image_$part.".$structure->subtype;
          } elseif (empty($filename) && $structure->type==2 && $structure->subtype) {
              // Embeded email comes without filename - try to get "Subject:" or generate trivial one
-             if ($message=$this->getDecodedFetchbody($structure, $mid, $part)) {
-                 if( preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches)  ) {
+             $filename = "msg_$part.EML"; // default trivial one :)!
+             if ( ($message=$this->getDecodedFetchbody($structure, $mid, $part)) 
+                && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches)) ) {
                      $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";  
                      $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;                    
-                 }
-                 else
-                     $filename = "msg_$part.EML";
              }
-             else
-                 $filename = "msg_$part.EML";
          }
 
          // if no filename found, ignore this part
