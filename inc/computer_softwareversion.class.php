@@ -122,7 +122,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                   if (isset($input['options']['move']['used'])) {
                      $options['used'] = $input['options']['move']['used'];
                   }
-                  SoftwareVersion::dropdown($options);
+                  SoftwareVersion::dropdownForOneSoftware($options);
                   echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
                   return true;
                }

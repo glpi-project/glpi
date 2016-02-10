@@ -279,9 +279,9 @@ class SoftwareLicense extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Purchase version')."</td>";
       echo "<td>";
-      SoftwareVersion::dropdown(array('name'         => "softwareversions_id_buy",
-                                      'softwares_id' => $this->fields["softwares_id"],
-                                      'value'        => $this->fields["softwareversions_id_buy"]));
+      SoftwareVersion::dropdownForOneSoftware(array('name'         => "softwareversions_id_buy",
+                                                    'softwares_id' => $this->fields["softwares_id"],
+                                                    'value'        => $this->fields["softwareversions_id_buy"]));
       echo "</td>";
       echo "<td>".__('Inventory number')."</td>";
       echo "<td>";
@@ -291,9 +291,9 @@ class SoftwareLicense extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Version in use')."</td>";
       echo "<td>";
-      SoftwareVersion::dropdown(array('name'         => "softwareversions_id_use",
-                                      'softwares_id' => $this->fields["softwares_id"],
-                                      'value'        => $this->fields["softwareversions_id_use"]));
+      SoftwareVersion::dropdownForOneSoftware(array('name'         => "softwareversions_id_use",
+                                                    'softwares_id' => $this->fields["softwares_id"],
+                                                    'value'        => $this->fields["softwareversions_id_use"]));
       echo "</td>";
       echo "<td rowspan='".(($ID > 0) ?'4':'3')."' class='middle'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='".(($ID > 0) ?'4':'3')."'>";
