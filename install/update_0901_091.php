@@ -345,19 +345,6 @@ function update0901to091() {
          $migration->addField($table, 'date_mod', 'datetime');
          $migration->addKey($table, 'date_mod');
          $migration->migrationOneTable($table);
-
-         //Set last modificaton date by looking for the corresponding entry in glpi_logs
-         $query = "UPDATE $table
-                   LEFT JOIN (
-                     SELECT max(`id`), `date_mod`, `itemtype`, `items_id`, `linked_action`
-                     FROM  glpi_logs
-                     GROUP BY itemtype, items_id
-                   ) as logs
-                     ON `logs`.`itemtype` = '$type'
-                     AND `logs`.`items_id` = `$table`.`id`
-                     AND `logs`.`linked_action`='20'
-                  SET  `$table`.`date_mod` = `logs`.`date_mod`";
-         $DB->queryOrDie($query, "Error filling items last modification date");
       }
 
       if (!FieldExists($table, 'date_creation')) {
@@ -367,17 +354,6 @@ function update0901to091() {
          $migration->addField($table, 'date_creation', 'datetime');
          $migration->addKey($table, 'date_creation');
          $migration->migrationOneTable($table);
-         //Set creation date by looking for the corresponding entry in glpi_logs
-         $query = "UPDATE $table
-                   LEFT JOIN (
-                     SELECT min(`id`), `date_mod`, `itemtype`, `items_id`
-                     FROM  glpi_logs
-                     GROUP BY itemtype, items_id
-                   ) as logs
-                     ON `logs`.`itemtype` = '$type'
-                     AND `logs`.`items_id` = `$table`.`id`
-                  SET  `$table`.`date_creation` = `logs`.`date_mod`";
-         $DB->queryOrDie($query, "Error filling items creation date");
       }
    }
 
