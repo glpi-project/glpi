@@ -1199,14 +1199,17 @@ class ProjectTask extends CommonDBChild {
       NotificationEvent::debugEvent($this);
    }
 
+
    /**
     * Populate the planning with planned project tasks
     *
+    * @since version 0.85
+    *
     * @param $options   array of possible options:
-    *    - who ID of the user (0 = undefined)
+    *    - who       ID of the user (0 = undefined)
     *    - who_group ID of the group of users (0 = undefined)
-    *    - begin Date
-    *    - end Date
+    *    - begin     Date
+    *    - end       Date
     *
     * @return array of planning item
    **/
@@ -1318,7 +1321,7 @@ class ProjectTask extends CommonDBChild {
 
                 $interv[$key]["name"]     = $task->fields["name"];
                 $interv[$key]["content"]  = Html::resume_text($task->fields["content"],
-                                                                   $CFG_GLPI["cut"]);
+                                                              $CFG_GLPI["cut"]);
                 $interv[$key]["status"]   = $task->fields["percent_done"];
 
             }
@@ -1328,14 +1331,21 @@ class ProjectTask extends CommonDBChild {
       return $interv;
    }
 
+
    /**
     * Display a Planning Item
     *
-    * @param $parm Array of the item to display
+    * @since version 0.91
+    *
+    * @param $val       array of the item to display
+    * @param $who             ID of the user (0 if all)
+    * @param $type            position of the item in the time block (in, through, begin or end)
+    *                         (default '')
+    * @param $complete        complete display (more details) (default 0)
+    *
     * @return Nothing (display function)
     **/
    static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
-     
      global $CFG_GLPI;
 
       $rand     = mt_rand();
@@ -1358,7 +1368,6 @@ class ProjectTask extends CommonDBChild {
             $beginend = sprintf(__('From %1$s to %2$s'), date("H:i",strtotime($val["begin"])),
                                 date("H:i",strtotime($val["end"])));
             printf(__('%1$s: %2$s'), $beginend, Html::resume_text($val["name"],80)) ;
-
             break;
 
          case "through" :
@@ -1384,8 +1393,7 @@ class ProjectTask extends CommonDBChild {
                            array('applyto' => "project_task_".$val["id"].$rand));
 
       echo "";
-
    }
-   
+
 }
 ?>

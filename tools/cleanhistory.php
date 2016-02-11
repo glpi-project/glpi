@@ -32,7 +32,7 @@
  */
 
 /** @file
-* @brief Purge history with some criterias
+* @brief Purge history with some criteria
 */
 
 ini_set("memory_limit", "-1");

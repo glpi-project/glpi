@@ -44,7 +44,7 @@ function update0712to0713() {
    if (!FieldExists("glpi_rule_cache_software", "ignore_ocs_import", false)) {
       $query = "ALTER TABLE `glpi_rule_cache_software`
                 ADD `ignore_ocs_import` VARCHAR( 255 ) NULL ";
-      $DB->queryOrDie($query, "0.71.3 add ignore_ocs_import field in dictionnary cache");
+      $DB->queryOrDie($query, "0.71.3 add ignore_ocs_import field in dictionary cache");
    }
 
    // Update to longtext for fields which may be very long
