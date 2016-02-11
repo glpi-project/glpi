@@ -733,7 +733,7 @@ class MassiveAction {
                   $common_options  = false;
                   $choose_itemtype = false;
                }
-               $choose_field = (count($options) > 1);
+               $choose_field = (count($options) >= 1);
 
                // Beware: "class='tab_cadre_fixe'" induce side effects ...
                echo "<table width='100%'><tr>";
