@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 
 Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
 
-Session::haveRightsOr('serach_config', array(DisplayPreference::PERSONAL,
+Session::haveRightsOr('search_config', array(DisplayPreference::PERSONAL,
                                              DisplayPreference::GENERAL));
 
 $setupdisplay = new DisplayPreference();
