@@ -1251,7 +1251,7 @@ class Ticket extends CommonITILObject {
 
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
-
+      toolbox::logdebug("input", $input);
       // save value before clean;
       $title = ltrim($input['name']);
       // Standard clean datas
@@ -1310,7 +1310,9 @@ class Ticket extends CommonITILObject {
                      // For document mandatory
                      if (($key == '_documents_id')
                          && !isset($input['_filename'])
-                         && !isset($input['_tag_filename'])) {
+                         && !isset($input['_tag_filename'])
+                         && !isset($input['_stock_image'])
+                         && !isset($input['_tag_stock_image'])) {
 
                          $mandatory_missing[$key] = $fieldsname[$val];
                      }
