@@ -1251,7 +1251,7 @@ class Ticket extends CommonITILObject {
 
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
-      toolbox::logdebug("input", $input);
+
       // save value before clean;
       $title = ltrim($input['name']);
       // Standard clean datas
