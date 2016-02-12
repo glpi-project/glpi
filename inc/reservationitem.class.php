@@ -426,12 +426,12 @@ class ReservationItem extends CommonDBChild {
          $values[$data['itemtype']] = $data['itemtype']::getTypeName();
       }
 
-      $query = "SELECT `glpi_peripheraltypes`.`name`, `glpi_reservationitems`.`id`
-                FROM `glpi_reservationitems`
+      $query = "SELECT `glpi_peripheraltypes`.`name`, `glpi_peripheraltypes`.`id`
+                FROM `glpi_peripheraltypes`
                 LEFT JOIN `glpi_peripherals`
-                  ON `glpi_reservationitems`.`items_id` = `glpi_peripherals`.`id`
-                LEFT JOIN `glpi_peripheraltypes`
                   ON `glpi_peripherals`.`peripheraltypes_id` = `glpi_peripheraltypes`.`id`
+                LEFT JOIN `glpi_reservationitems`
+                  ON `glpi_reservationitems`.`items_id` = `glpi_peripherals`.`id`
                 WHERE `itemtype` = 'Peripheral'
                       AND `is_active` = 1
                       AND `peripheraltypes_id`".
@@ -484,7 +484,10 @@ class ReservationItem extends CommonDBChild {
          if (isset($_POST["reservation_types"]) && !empty($_POST["reservation_types"])) {
             $tmp = explode('#', $_POST["reservation_types"]);
             $where .= " AND `glpi_reservationitems`.`itemtype` = '".$tmp[0]."'";
-            if (isset($tmp[1]) && ($tmp[0] == 'Peripheral')) {
+            if (isset($tmp[1]) && ($tmp[0] == 'Peripheral')
+                && ($itemtype == 'Peripheral')) {
+               $left  .= " LEFT JOIN `glpi_peripheraltypes`
+                              ON (`glpi_peripherals`.`peripheraltypes_id` = `glpi_peripheraltypes`.`id`)";
                $where .= " AND `$itemtable`.`peripheraltypes_id` = '".$tmp[1]."'";
             }
          }
@@ -497,10 +500,10 @@ class ReservationItem extends CommonDBChild {
                           `glpi_locations`.`id` AS location,
                           `glpi_reservationitems`.`items_id` AS items_id
                    FROM `glpi_reservationitems`
-                   $left
                    INNER JOIN `$itemtable`
                         ON (`glpi_reservationitems`.`itemtype` = '$itemtype'
                             AND `glpi_reservationitems`.`items_id` = `$itemtable`.`id`)
+                   $left
                    LEFT JOIN `glpi_locations`
                         ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)
                    WHERE `glpi_reservationitems`.`is_active` = '1'
