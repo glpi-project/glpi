@@ -6437,8 +6437,9 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_info'>";
          echo "<div class='h_date'>".Html::convDateTime($this->fields['date'])."</div>";
          echo "<div class='h_user'>";
-         if (isset($item_i['users_id_recipient'])
-             && ($item_i['users_id_recipient'] != 0)) {
+         if ((isset($item_i['users_id_recipient'])
+              && ($item_i['users_id_recipient'] != 0))
+             || ($this->fields['users_id_recipient'] > 0)) {
             $user->getFromDB($this->fields['users_id_recipient']);
 
             echo "<div class='tooltip_picture_border'>";
