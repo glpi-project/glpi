@@ -1165,7 +1165,7 @@ class MailCollector  extends CommonDBTM {
                   $to = $data;
                }
                $tos[] = $mailto;
-                           }
+            }
          }
          if (isset($mail_header->cc) && count($mail_header->cc)) {
             foreach ($mail_header->cc as $data) {
@@ -1308,7 +1308,7 @@ class MailCollector  extends CommonDBTM {
     * used to get decoded part from email
     * @param mixed $structure
     * @param mixed $mid
-    * @param mixed $part 
+    * @param mixed $part
     * @return bool|string
     */
    private function getDecodedFetchbody($structure, $mid, $part) {
@@ -1400,7 +1400,7 @@ class MailCollector  extends CommonDBTM {
          } elseif (empty($filename) && $structure->type==2 && $structure->subtype) {
             // Embeded email comes without filename - try to get "Subject:" or generate trivial one
             $filename = "msg_$part.EML"; // default trivial one :)!
-            if (($message=$this->getDecodedFetchbody($structure, $mid, $part)) 
+            if (($message=$this->getDecodedFetchbody($structure, $mid, $part))
                && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches)) ) {
                   $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";
                   $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;
@@ -1443,7 +1443,7 @@ class MailCollector  extends CommonDBTM {
             return false;
          }
 
-         if (($structure->type==2 && $structure->subtype) || $message = $this->getDecodedFetchbody($structure, $mid, $part)) {            
+         if (($structure->type==2 && $structure->subtype) || $message = $this->getDecodedFetchbody($structure, $mid, $part)) {
 
             if (file_put_contents($path.$filename, $message)) {
                $this->files[$filename] = $filename;
