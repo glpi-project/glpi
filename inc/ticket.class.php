@@ -6437,10 +6437,26 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_info'>";
          echo "<div class='h_date'>".Html::convDateTime($this->fields['date'])."</div>";
          echo "<div class='h_user'>";
-         if ((isset($item_i['users_id_recipient'])
-              && ($item_i['users_id_recipient'] != 0))
-             || ($this->fields['users_id_recipient'] > 0)) {
-            $user->getFromDB($this->fields['users_id_recipient']);
+         $dem = '0';
+         foreach ($DB->request("glpi_tickets_users",
+               "`tickets_id` = ".$this->fields['id']." AND `type` = 1") AS $req) {
+               $dem = $req['users_id'];
+         }
+         if ((!isset($item_i['users_id_recipient'])
+               || ($item_i['users_id_recipient'] == 0))
+               && ($dem == 0)) {
+            _e("Requester");
+         }
+         else {
+            if (isset($item_i['users_id_recipient'])
+                  && ($item_i['users_id_recipient'] != 0)) {
+               $user->getFromDB($this->fields['users_id_recipient']);
+            } else if ($dem > 0) {
+               $requester = new User();
+               if ($requester->getFromDB($dem)) {
+                  $user = $requester;
+               }
+            }
 
             echo "<div class='tooltip_picture_border'>";
             $picture = "";
@@ -6452,8 +6468,6 @@ class Ticket extends CommonITILObject {
             echo "</div>";
 
             echo $user->getLink();
-         } else {
-            _e("Requester");
          }
 
          echo "</div>"; // h_user
