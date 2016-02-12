@@ -2721,7 +2721,14 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[18]['maybefuture']         = true;
       $tab[18]['massiveaction']       = false;
       $tab[18]['additionalfields']    = array('status');
-
+      
+      $tab[155]['table']               = $this->getTable();
+      $tab[155]['field']               = 'limit_takeintoaccount_date';
+      $tab[155]['name']                = __('Limit take into account date');
+      $tab[155]['datatype']            = 'datetime';
+      $tab[155]['maybefuture']         = true;
+      $tab[155]['massiveaction']       = false;
+      $tab[155]['additionalfields']    = array('status');
 
 
       $tab[151]['table']              = $this->getTable();
@@ -2730,11 +2737,18 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[151]['massiveaction']      = false;
       $tab[151]['nosearch']           = true;
       $tab[151]['additionalfields']   = array('status');
+      
+      $tab[158]['table']              = $this->getTable();
+      $tab[158]['field']              = 'limit_takeintoaccount_date';
+      $tab[158]['name']               = __('Limit take into account date + Progress');
+      $tab[158]['massiveaction']      = false;
+      $tab[158]['nosearch']           = true;
+      $tab[158]['additionalfields']   = array('status');
 
 
       $tab[82]['table']               = $this->getTable();
       $tab[82]['field']               = 'is_late';
-      $tab[82]['name']                = __('Late');
+      $tab[82]['name']                = __('Late resolution');
       $tab[82]['datatype']            = 'bool';
       $tab[82]['massiveaction']       = false;
       $tab[82]['computation']         = "IF(TABLE.`due_date` IS NOT NULL
@@ -2744,6 +2758,17 @@ abstract class CommonITILObject extends CommonDBTM {
                                                       AND TABLE.`due_date` < NOW())),
                                             1, 0)";
 
+      $tab[159]['table']               = $this->getTable();
+      $tab[159]['field']               = 'is_late';
+      $tab[159]['name']                = __('Late take into account');
+      $tab[159]['datatype']            = 'bool';
+      $tab[159]['massiveaction']       = false;
+      $tab[159]['computation']         = "IF(TABLE.`limit_takeintoaccount_date` IS NOT NULL
+                                            AND TABLE.`status` <> ".self::WAITING."
+                                            AND (TABLE.`takeintoaccount_delay_stat` > TIME_TO_SEC(TIMEDIFF(TABLE.`limit_takeintoaccount_date`, TABLE.`date`))
+                                                 OR (TABLE.`takeintoaccount_delay_stat` = 0
+                                                      AND TABLE.`limit_takeintoaccount_date` < NOW())),
+                                            1, 0)";
 
       $tab[17]['table']               = $this->getTable();
       $tab[17]['field']               = 'solvedate';

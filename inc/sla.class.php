@@ -63,27 +63,6 @@ class SLA extends CommonDBTM {
       return $ong;
    }
 
-   function cleanDBonPurge() {
-      global $DB;
-
-      // Update tickets : clean SLA
-      $query = "SELECT `id`
-                FROM `glpi_tickets`
-                WHERE `slas_id` = '".$this->fields['id']."'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result) > 0) {
-            $ticket = new Ticket();
-            while ($data = $DB->fetch_assoc($result)) {
-               $ticket->deleteSLA($data['id']);
-            }
-         }
-      }
-
-      Rule::cleanForItemAction($this);
-   }
-
-
    /**
     * Print the sla form
     *
@@ -96,10 +75,7 @@ class SLA extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
 
-      $rowspan = 4;
-      if ($ID > 0) {
-         $rowspan = 5;
-      }
+      $rowspan = 2;
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);

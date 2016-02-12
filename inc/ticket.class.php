@@ -337,11 +337,8 @@ class Ticket extends CommonITILObject {
       $slt = new SLT();
       if ($slt->getFromDB($slts_id)) {
          $slt->setTicketCalendar($calendars_id);
-         // Get first SLT Level
-         $slalevels_id         = SlaLevel::getFirstSlaLevel($slts_id);
-         $slt->addLevelToDo($this, $slalevels_id);
          // Compute due_date
-         $data[$dateField]             = $slt->computeDueDate($date);
+         $data[$dateField]             = $slt->computeDate($date);
          $data['sla_waiting_duration'] = 0;
 
       } else {
@@ -362,31 +359,30 @@ class Ticket extends CommonITILObject {
     * @param type $delete_date
     * @return type
     */
-   function deleteSLT($id, $type, $delete_date=0) {
+   function deleteSLT($id, $type, $delete_date = 0) {
       switch ($type) {
          case SLT::RESOLUTION_TYPE:
-            $input['slt_resolution']      = 0;
-                  if ($delete_date) {
+            $input['slt_resolution'] = 0;
+            if ($delete_date) {
                $input['limit_takeintoaccount_date'] = '';
             }
             break;
          case SLT::TAKEINTOACCOUNT_TYPE:
             $input['slt_takeintoaccount'] = 0;
-                  if ($delete_date) {
-         $input['due_date'] = '';
-      }
+            if ($delete_date) {
+               $input['due_date'] = '';
+            }
             break;
       }
 
-      $input['sla_waiting_duration']  = 0;
-      $input['id']                    = $id;
+      $input['sla_waiting_duration'] = 0;
+      $input['id']                   = $id;
 
-
-      SlaLevel_Ticket::deleteForTicket($id);
+      $slaLevel_ticket = new SlaLevel_Ticket();
+      $slaLevel_ticket->deleteForTicket($id, $type);
 
       return $this->update($input);
    }
-
 
    /**
     * Is the current user have right to create the current ticket ?
@@ -739,8 +735,9 @@ class Ticket extends CommonITILObject {
 
       $ts = new TicketCost();
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-
-      SlaLevel_Ticket::deleteForTicket($this->getID());
+      
+      $slaLevel_ticket = new SlaLevel_Ticket();
+      $slaLevel_ticket->deleteForTicket($this->getID());
 
       $query1 = "DELETE
                  FROM `glpi_tickets_tickets`
@@ -958,9 +955,9 @@ class Ticket extends CommonITILObject {
       // Business Rules do not override manual SLT
       $manual_slts_id = array();
       foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
-         list($dateField, $sltField) = self::getSltFieldNames($sltType);
+         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
          if (isset($input[$sltField]) && ($input[$sltField] > 0)) {
-            $manual_slts_id[SLT::RESOLUTION_TYPE] = $input[$sltField];
+            $manual_slts_id[$sltType] = $input[$sltField];
          }
       }
       
@@ -1064,9 +1061,9 @@ class Ticket extends CommonITILObject {
     * @param type $input
     * @param type $manual_slts_id
     */
-   function sltAffect($type, $input, $manual_slts_id){
+   function sltAffect($type, &$input, $manual_slts_id){
       
-      list($dateField, $sltField) = self::getSltFieldNames($type);
+      list($dateField, $sltField) = SLT::getSltFieldNames($type);
       
       // Restore slts
       if (isset($manual_slts_id[$type])) {
@@ -1130,35 +1127,22 @@ class Ticket extends CommonITILObject {
          }
       }
    }
-   
    /**
-    *  Manage SLT level
+    * Manage SLT level escalation
     * 
-    * @param type $input Ticket input
+    * @param type $slts_id
     */
-   function manageSltLevel($input) {
-      
-      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
-         list($dateField, $sltField) = self::getSltFieldNames($sltType);
-         if (in_array($sltField, $this->updates) && ($input[$sltField] > 0)) {
+   function manageSltLevel($slts_id) {
 
-            // Add First Level
-            $calendars_id = Entity::getUsedConfig('calendars_id', $input['entities_id']);
-
-            $slt = new SLT();
-            if ($slt->getFromDB($input[$sltField])) {
-               $slt->setTicketCalendar($calendars_id);
-               // Add first level in working table
-               $slaLevel_ticket = new SlaLevel_Ticket();
-               $slaLevel_ticket->getFromDBForTicket($input["id"]);
-               if ($slaLevel_ticket->fields["slalevels_id"] > 0) {
-                  $slt->addLevelToDo($this, $slaLevel_ticket->fields["slalevels_id"]);
-               }
-            }
-
-            SlaLevel_Ticket::replayForTicket($this->getID());
-         }
+      $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
+      // Add first level in working table
+      $slalevels_id = SlaLevel::getFirstSltLevel($slts_id);
+      $slt          = new SLT();
+      if ($slt->getFromDB($slts_id)) {
+         $slt->setTicketCalendar($calendars_id);
+         $slt->addLevelToDo($this, $slalevels_id);
       }
+      SlaLevel_Ticket::replayForTicket($this->getID(), $slt->getField('type'));
    }
 
    function pre_updateInDB() {
@@ -1225,8 +1209,14 @@ class Ticket extends CommonITILObject {
 
 
       // Manage SLT Level : add actions
-      $this->manageSltLevel($this->fields);
-      
+      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
+         if (in_array($sltField, $this->updates) 
+               && ($this->fields[$sltField] > 0)) {
+            $this->manageSltLevel($this->fields[$sltField]);
+         }
+      }
+
       $this->updates[] = "actiontime";
 
       if (count($this->updates)) {
@@ -1384,9 +1374,9 @@ class Ticket extends CommonITILObject {
                         unset($mandatory_missing['_add_validation']);
                      }
 
-                     // For due_date : check also slts
+                     // For due_date and limit_takeintoaccount_date : check also slts
                      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
-                        list($dateField, $sltField) = self::getSltFieldNames($sltType);
+                        list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
                         if (($key == $dateField) && isset($input[$sltField]) 
                               && ($input[$sltField] > 0) && isset($mandatory_missing[$dateField])) {
                            unset($mandatory_missing[$dateField]);
@@ -1439,9 +1429,9 @@ class Ticket extends CommonITILObject {
       // Business Rules do not override manual SLT
       $manual_slts_id = array();
       foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
-         list($dateField, $sltField) = self::getSltFieldNames($sltType);
+         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
          if (isset($input[$sltField]) && ($input[$sltField] > 0)) {
-            $manual_slts_id[SLT::RESOLUTION_TYPE] = $input[$sltField];
+            $manual_slts_id[$sltType] = $input[$sltField];
          }
       }
 
@@ -1668,7 +1658,13 @@ class Ticket extends CommonITILObject {
       }
 
       // Manage SLT Level : add actions
-      $this->manageSltLevel($this->input);
+      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
+         if (isset($this->input[$sltField]) && ($this->input[$sltField] > 0)) {
+            $this->manageSltLevel($this->input[$sltField]);
+         }
+      }
+
 
       // Add project task link if needed
       if (isset($this->input['_projecttasks_id'])) {
@@ -2253,19 +2249,37 @@ class Ticket extends CommonITILObject {
       $tab += $this->getSearchOptionsActors();
 
 
-      $tab['sla']                   = __('SLT');
-
+      $tab['slt']                   = __('SLT');
+      
+      $tab[37]['table']             = 'glpi_slts';
+      $tab[37]['field']             = 'name';
+      $tab[37]['linkfield']         = 'slt_takeintoaccount';
+      $tab[37]['name']              = __('SLT')."&nbsp;".__('Take into account');
+      $tab[37]['massiveaction']     = false;
+      $tab[37]['datatype']          = 'dropdown';
+      $tab[37]['joinparams']        = array('condition' => "AND NEWTABLE.`type` = '".SLT::TAKEINTOACCOUNT_TYPE."'");
+      $tab[37]['condition']         = "`glpi_slts`.`type` = '".SLT::TAKEINTOACCOUNT_TYPE."'";
+      
       $tab[30]['table']             = 'glpi_slts';
       $tab[30]['field']             = 'name';
-      $tab[30]['name']              = __('SLT');
+      $tab[30]['linkfield']         = 'slt_resolution';
+      $tab[30]['name']              = __('SLT')."&nbsp;".__('Resolution');
       $tab[30]['massiveaction']     = false;
       $tab[30]['datatype']          = 'dropdown';
+      $tab[30]['joinparams']        = array('condition' => "AND NEWTABLE.`type` = '".SLT::RESOLUTION_TYPE."'");
+      $tab[30]['condition']         = "`glpi_slts`.`type` = '".SLT::RESOLUTION_TYPE."'";
 
       $tab[32]['table']             = 'glpi_slalevels';
       $tab[32]['field']             = 'name';
       $tab[32]['name']              = __('Escalation level');
       $tab[32]['massiveaction']     = false;
       $tab[32]['datatype']          = 'dropdown';
+      $tab[32]['joinparams']        = array('beforejoin'
+                                       => array('table'
+                                                 => 'glpi_slalevels_tickets',
+                                                'joinparams'
+                                                 => array('jointype'  => 'child')));
+      $tab[32]['forcegroupby']      = true;
 
       $tab += TicketValidation::getSearchOptionsToAdd();
 

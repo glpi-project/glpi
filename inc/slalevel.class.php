@@ -126,7 +126,7 @@ class SlaLevel extends RuleTicket {
          echo "<tr class='tab_bg_1'><th colspan='7'>".__('Add an escalation level')."</tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>".__('Name')."";
-         echo "<input type='hidden' name='slas_id' value='$ID'>";
+         echo "<input type='hidden' name='slts_id' value='$ID'>";
          echo "<input type='hidden' name='entities_id' value='".$slt->getEntityID()."'>";
          echo "<input type='hidden' name='is_recursive' value='".$slt->isRecursive()."'>";
          echo "<input type='hidden' name='match' value='AND'>";
@@ -153,7 +153,7 @@ class SlaLevel extends RuleTicket {
 
       $query = "SELECT *
                 FROM `glpi_slalevels`
-                WHERE `slas_id` = '$ID'
+                WHERE `slts_id` = '$ID'
                 ORDER BY `execution_time`";
       $result  = $DB->query($query);
       $numrows = $DB->numrows($result);
@@ -228,8 +228,8 @@ class SlaLevel extends RuleTicket {
 
       $actions                            = parent::getActions();
 
-      unset($actions['slas_id']);
-      $actions['recall']['name']          = __('Automatic reminders of SLA');
+      unset($actions['slts_id']);
+      $actions['recall']['name']          = __('Automatic reminders of SLT');
       $actions['recall']['type']          = 'yesonly';
       $actions['recall']['force_actions'] = array('send');
 
@@ -255,7 +255,7 @@ class SlaLevel extends RuleTicket {
 
       $actions                      = parent::getActions();
 
-      unset($actions['slas_id']);
+      unset($actions['slts_id']);
       // Could not be used as criteria
       unset($actions['users_id_validate_requester_supervisor']);
       unset($actions['users_id_validate_assign_supervisor']);
@@ -295,7 +295,7 @@ class SlaLevel extends RuleTicket {
       echo"</td></tr>\n";
 
       $slt = new SLT();
-      $slt->getFromDB($this->fields['slas_id']);
+      $slt->getFromDB($this->fields['slts_id']);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".SLT::getTypeName(1)."</td>";
@@ -398,17 +398,17 @@ class SlaLevel extends RuleTicket {
    /**
     * Get already used execution time for a SLT
     *
-    * @param $slas_id   integer  id of the SLT
+    * @param $slts_id   integer  id of the SLT
     *
     * @return array of already used execution times
    **/
-   static function getAlreadyUsedExecutionTime($slas_id) {
+   static function getAlreadyUsedExecutionTime($slts_id) {
       global $DB;
 
       $result = array();
       $query  = "SELECT DISTINCT `execution_time`
                  FROM `glpi_slalevels`
-                 WHERE `slas_id` = '$slas_id';";
+                 WHERE `slts_id` = '$slts_id';";
 
       foreach ($DB->request($query) as $data) {
          $result[$data['execution_time']] = $data['execution_time'];
@@ -424,7 +424,7 @@ class SlaLevel extends RuleTicket {
     *
     * @return id of the sla level : 0 if not exists
    **/
-   static function getFirstSlaLevel($slts_id) {
+   static function getFirstSltLevel($slts_id) {
       global $DB;
 
       $query = "SELECT `id`
@@ -487,7 +487,7 @@ class SlaLevel extends RuleTicket {
          switch ($item->getType()) {
             case 'SLT' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb =  countElementsInTable($this->getTable(), "`slas_id` = '".$item->getID()."'");
+                  $nb =  countElementsInTable($this->getTable(), "`slts_id` = '".$item->getID()."'");
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }

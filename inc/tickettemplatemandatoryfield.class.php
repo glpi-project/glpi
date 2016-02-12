@@ -222,6 +222,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
                   $select_fields[$key] = sprintf(__('%1$s (%2$s)'), $val, __('Standard interface'));
                }
             }
+
             Dropdown::showFromArray('num', $select_fields, array('used' => $used));
             echo "</td><td class='center'>";
             echo "&nbsp;<input type='submit' name='add' value=\""._sx('button', 'Add').

@@ -52,11 +52,10 @@ if (isset($_POST["update"])) {
    Html::back();
 
 } else if (isset($_POST["add"])) {
-   Toolbox::logDebug($_POST);
    $item->check(-1, CREATE, $_POST);
 
    if ($newID = $item->add($_POST)) {
-      Event::log($_POST["slas_id"], "slas", 4, "setup",
+      Event::log($_POST["slts_id"], "slts", 4, "setup",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
       if ($_SESSION['glpibackcreated']) {

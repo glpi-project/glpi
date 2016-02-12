@@ -444,11 +444,19 @@ class RuleTicket extends Rule {
       $criterias['_x-priority']['table']                    = '';
       $criterias['_x-priority']['type']                     = 'text';
 
-      $criterias['slas_id']['table']                        = 'glpi_slas';
-      $criterias['slas_id']['field']                        = 'name';
-      $criterias['slas_id']['name']                         = __('SLA');
-      $criterias['slas_id']['linkfield']                    = 'slas_id';
-      $criterias['slas_id']['type']                         = 'dropdown';
+      $criterias['slt_resolution']['table']                 = 'glpi_slts';
+      $criterias['slt_resolution']['field']                 = 'name';
+      $criterias['slt_resolution']['name']                  = __('SLT')."&nbsp;".__('Resolution');
+      $criterias['slt_resolution']['linkfield']             = 'slt_resolution';
+      $criterias['slt_resolution']['type']                  = 'dropdown';
+      $criterias['slt_resolution']['condition']             = "`glpi_slts`.`type` = '".SLT::RESOLUTION_TYPE."'";
+      
+      $criterias['slt_takeintoaccount']['table']            = 'glpi_slts';
+      $criterias['slt_takeintoaccount']['field']            = 'name';
+      $criterias['slt_takeintoaccount']['name']             = __('SLT')."&nbsp;".__('Take into account');
+      $criterias['slt_takeintoaccount']['linkfield']        = 'slt_takeintoaccount';
+      $criterias['slt_takeintoaccount']['type']             = 'dropdown';
+      $criterias['slt_takeintoaccount']['condition']        = "`glpi_slts`.`type` = '".SLT::TAKEINTOACCOUNT_TYPE."'";
 
       return $criterias;
    }
@@ -540,9 +548,19 @@ class RuleTicket extends Rule {
       $actions['affectobject']['force_actions']             = array('affectbyip', 'affectbyfqdn',
                                                                     'affectbymac');
 
-      $actions['slas_id']['table']                          = 'glpi_slas';
-      $actions['slas_id']['name']                           = __('SLA');
-      $actions['slas_id']['type']                           = 'dropdown';
+      $actions['slt_resolution']['table']                 = 'glpi_slts';
+      $actions['slt_resolution']['field']                 = 'name';
+      $actions['slt_resolution']['name']                  = __('SLT')."&nbsp;".__('Resolution');
+      $actions['slt_resolution']['linkfield']             = 'slt_resolution';
+      $actions['slt_resolution']['type']                  = 'dropdown';
+      $actions['slt_resolution']['condition']             = "`glpi_slts`.`type` = '".SLT::RESOLUTION_TYPE."'";
+      
+      $actions['slt_takeintoaccount']['table']            = 'glpi_slts';
+      $actions['slt_takeintoaccount']['field']            = 'name';
+      $actions['slt_takeintoaccount']['name']             = __('SLT')."&nbsp;".__('Take into account');
+      $actions['slt_takeintoaccount']['linkfield']        = 'slt_takeintoaccount';
+      $actions['slt_takeintoaccount']['type']             = 'dropdown';
+      $actions['slt_takeintoaccount']['condition']        = "`glpi_slts`.`type` = '".SLT::TAKEINTOACCOUNT_TYPE."'";
 
       $actions['users_id_validate']['name']                 = sprintf(__('%1$s - %2$s'),
                                                                       __('Send an approval request'),

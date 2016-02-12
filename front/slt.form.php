@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
          Html::redirect($slt->getFormURL()."?id=".$newID);
       }
    }
-   Html::redirect($CFG_GLPI["root_doc"]."/front/slt.php");
+   Html::back();
 
 } else if (isset($_POST["purge"])) {
    $slt->check($_POST["id"], PURGE);

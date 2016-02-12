@@ -4102,6 +4102,7 @@ class CommonDBTM extends CommonGLPI {
                   $options['entity'] = $_SESSION['glpiactiveentities'];
                }
                $itemtype = getItemTypeForTable($searchoptions['table']);
+
                return $itemtype::dropdown($options);
 
             case "right" :
