@@ -605,8 +605,8 @@ input.save {
    box-shadow: 0px 1px 2px 1px #D2D2D2;
 }
 
-.main_form .actor_title, 
-.main_form tr:not(.headerRow)  th:not(.actor-th) {
+.main_form .actor_title,
+.main_form tr:not(.headerRow):not(.footerRow) th:not(.actor-th) {
    text-align: right;
 }
 
