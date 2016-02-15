@@ -47,9 +47,12 @@ if (!isset($_REQUEST["softwares_id"])) {
    $_GET['softwares_id'] = $_REQUEST['softwares_id'];
 }
 if (!isset($_GET["withtemplate"])) {
-   $_GET["withtemplate"] = "";
+   if (isset($_POST['withtemplate'])) {
+      $_GET['withtemplate'] = $_POST['withtemplate'];
+   } else {
+      $_GET["withtemplate"] = "";
+   }
 }
-
 $license = new SoftwareLicense();
 
 if (isset($_POST["add"])) {
@@ -100,7 +103,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(SoftwareLicense::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "softwarelicense");
+   Html::header(SoftwareLicense::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'],
+                "management", "softwarelicense");
    $license->display(array('id'           => $_GET["id"],
                            'softwares_id' => $_GET["softwares_id"],
                            'withtemplate' => $_GET["withtemplate"]));

@@ -267,6 +267,7 @@ class SoftwareLicense extends CommonDBTM {
          }
       }
 
+      echo "<input type='hidden' name='withtemplate' value='".$options['withtemplate']."'>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>".Software::getTypeName(1)."</td>";
       echo "<td>";
