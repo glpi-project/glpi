@@ -45,6 +45,10 @@ if (isset($_POST["add"])) {
    if (isset($_POST['my_items']) && !empty($_POST['my_items'])) {
       list($_POST['itemtype'], $_POST['items_id']) = explode('_', $_POST['my_items']);
    }
+   
+   if (isset($_POST['add_items_id'])) {
+      $_POST['items_id'] = $_POST['add_items_id'];
+   }
 
    if(!isset($_POST['items_id']) || empty($_POST['items_id'])){
       $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
@@ -62,6 +66,12 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
+} elseif (isset($_POST["delete"])) {
+   $item_ticket = new Item_Ticket();
+   $deleted = $item_ticket->deleteByCriteria(array('tickets_id' => $_POST['tickets_id'],
+                                                   'items_id'   => $_POST['items_id'],
+                                                   'itemtype'   => $_POST['itemtype']));
+   Html::back();
 }
 
 Html::displayErrorAndDie("lost");
