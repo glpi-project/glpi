@@ -6102,7 +6102,8 @@ CREATE TABLE `glpi_slalevels_tickets` (
   `date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `tickets_id` (`tickets_id`),
-  KEY `slalevels_id` (`slalevels_id`)
+  KEY `slalevels_id` (`slalevels_id`),
+  KEY `unicity` (`tickets_id`,`slalevels_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -6125,10 +6126,11 @@ CREATE TABLE `glpi_slas` (
 
 ### Dump table glpi_slts
 
-DROP TABLE IF EXISTS `glpi_slts`;
 CREATE TABLE `glpi_slts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `type` int(11) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `resolution_time` int(11) NOT NULL,
@@ -6539,6 +6541,7 @@ CREATE TABLE `glpi_tickets` (
   `slt_takeintoaccount` int(11) NOT NULL DEFAULT '0',
   `slt_resolution` int(11) NOT NULL DEFAULT '0',
   `due_date` datetime DEFAULT NULL,
+  `limit_takeintoaccount_date` datetime DEFAULT NULL,
   `begin_waiting_date` datetime DEFAULT NULL,
   `sla_waiting_duration` int(11) NOT NULL DEFAULT '0',
   `waiting_duration` int(11) NOT NULL DEFAULT '0',
@@ -6565,6 +6568,7 @@ CREATE TABLE `glpi_tickets` (
   KEY `slt_takeintoaccount` (`slt_takeintoaccount`),
   KEY `slt_resolution` (`slt_resolution`),
   KEY `due_date` (`due_date`),
+  KEY `limit_takeintoaccount_date` (`limit_takeintoaccount_date`),
   KEY `users_id_lastupdater` (`users_id_lastupdater`),
   KEY `type` (`type`),
   KEY `solutiontypes_id` (`solutiontypes_id`),

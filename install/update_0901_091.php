@@ -296,7 +296,7 @@ function update0901to091() {
       $DB->queryOrDie($query, "0.84 add table glpi_tasktemplates");
    }
 
-   // New SLA structure
+   /** ************ New SLA structure ************ */
    if (!TableExists('glpi_slts')) {
       $query = "CREATE TABLE `glpi_slts` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -326,8 +326,8 @@ function update0901to091() {
          if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetch_assoc($result)) {
                $query = "INSERT INTO `glpi_slts`
-                          (`name`,`entities_id`, `is_recursive`, `type`, `comment`, `resolution_time`, `calendars_id`, `date_mod`, `definition_time`, `end_of_working_day`, `slas_id`)
-                         VALUES ('".$data['name']."', '".$data['entities_id']."', '".$data['is_recursive']."', '".SLT::RESOLUTION_TYPE."', '".addslashes($data['comment'])."', '".$data['resolution_time']."', '".$data['calendars_id']."', '".$data['date_mod']."', '".$data['definition_time']."', '".$data['end_of_working_day']."', '".$data['id']."');";
+                          (`id`, `name`,`entities_id`, `is_recursive`, `type`, `comment`, `resolution_time`, `calendars_id`, `date_mod`, `definition_time`, `end_of_working_day`, `slas_id`)
+                         VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."', '".$data['is_recursive']."', '".SLT::RESOLUTION_TYPE."', '".addslashes($data['comment'])."', '".$data['resolution_time']."', '".$data['calendars_id']."', '".$data['date_mod']."', '".$data['definition_time']."', '".$data['end_of_working_day']."', '".$data['id']."');";
                $DB->queryOrDie($query, "SLA migration to SLT");
             }
          }
@@ -342,8 +342,8 @@ function update0901to091() {
       $migration->changeField('glpi_slalevels', 'slas_id', 'slts_id', 'integer');
       
       // Ticket changes
-      $migration->addField("glpi_tickets", "slt_takeintoaccount", "integer", array('after' => 'slas_id'));
       $migration->changeField("glpi_tickets", "slas_id", "slt_resolution", "integer");
+      $migration->addField("glpi_tickets", "slt_takeintoaccount", "integer", array('after' => 'slt_resolution'));
       $migration->addField("glpi_tickets", "limit_takeintoaccount_date", "datetime", array('after' => 'due_date'));
       $migration->addKey('glpi_tickets', 'slt_takeintoaccount');
       $migration->addKey('glpi_tickets', 'limit_takeintoaccount_date');
