@@ -72,7 +72,22 @@ class SoftwareLicense extends CommonDBTM {
    }
 
 
+   /**
+    * @see CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
+
+      if (!isset($this->fields['softwares_id']) || !$this->fields['softwares_id']) {
+            Session::addMessageAfterRedirect("Please select a software for this license", true,
+                                             ERROR, true);
+            return false;
+      }
+
+      if (isset($input["id"]) && ($input["id"] > 0)) {
+         $input["_oldID"] = $input["id"];
+      }
+      unset($input['id']);
+      unset($input['withtemplate']);
 
       // Unset to set to default using mysql default value
       if (empty($input['expire'])) {
@@ -81,7 +96,6 @@ class SoftwareLicense extends CommonDBTM {
 
       return $input;
    }
-
 
    /**
     * @since version 0.85
@@ -155,7 +169,6 @@ class SoftwareLicense extends CommonDBTM {
 
    function post_addItem() {
       global $CFG_GLPI;
-
       $itemtype = 'Software';
       $dupid    = $this->fields["softwares_id"];
 
@@ -273,6 +286,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>";
       if ($ID > 0) {
          $softwares_id = $this->fields["softwares_id"];
+         echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
          echo "<a href='software.form.php?id=".$softwares_id."'>".
                 Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
       } else {
