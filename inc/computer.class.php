@@ -526,7 +526,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
 
       // Display auto inventory informations
-      $rowspan        = 10;
+      $rowspan        = 8;
       $inventory_show = false;
 
       if (!empty($ID)
@@ -565,7 +565,13 @@ class Computer extends CommonDBTM {
       echo "<td>".__('Version of the operating system')."</td>";
       echo "<td >";
       OperatingSystemVersion::dropdown(array('value' => $this->fields["operatingsystemversions_id"]));
-      echo "</td></tr>\n";
+      echo "</td>";
+      if ($inventory_show) {
+         echo "<td rowspan='4' colspan='2'>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td>";
+      }
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Product ID of the operating system')."</td>";
@@ -577,14 +583,7 @@ class Computer extends CommonDBTM {
       echo "<td>".__('Serial of the operating system')."</td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'os_license_number');
-      echo "</td>";
-
-      if ($inventory_show) {
-         echo "<td rowspan='4' colspan='2'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td>";
-      }
-      echo "</tr>\n";
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('UUID')."</td>";
