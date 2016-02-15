@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class TicketTask  extends CommonITILTask {
@@ -251,11 +251,6 @@ class TicketTask  extends CommonITILTask {
    **/
    function showFormButtons($options=array()) {
       global $CFG_GLPI;
-
-      if (isset($_SESSION["glpiactiveprofile"])
-          && $_SESSION["glpiactiveprofile"]["interface"] != "central") {
-         return parent::showFormButtons($options);
-      }
 
       // for single object like config
       $ID = 1;

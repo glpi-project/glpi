@@ -6,30 +6,30 @@
  * @version 2.0
  */
 
-.stMainWrapper ul.ui-tabs-nav
+.stMainWrapper > ul.ui-tabs-nav
 {
     position: relative;
     overflow: hidden;
     padding-right: 50px;
 }
 
-    .stMainWrapper ul.ui-tabs-nav li
+    .stMainWrapper > ul.ui-tabs-nav li
     {
         position: absolute;
         top: 3px; /*do not set 'left' should be done in the plugin after some calculations*/
     }
 
-        .stMainWrapper ul.ui-tabs-nav li.stHasCloseBtn a
+        .stMainWrapper > ul.ui-tabs-nav li.stHasCloseBtn a
         {
             padding-right: 5px;
         }
 
-        .stMainWrapper ul.ui-tabs-nav li.stFirstTab
+        .stMainWrapper > ul.ui-tabs-nav li.stFirstTab
         {
             margin-right: 3px;
         }
 
-        .stMainWrapper ul.ui-tabs-nav li span.stCloseBtn
+        .stMainWrapper > ul.ui-tabs-nav li span.stCloseBtn
         {
             float: left;
             margin-top: 6px;
@@ -38,7 +38,7 @@
             cursor: pointer;
         }
 
-.stMainWrapper ul.ui-tabs-nav.listTab
+.stMainWrapper > ul.ui-tabs-nav.listTab
 { 
    display: none;
    padding: .1em; 
@@ -52,7 +52,7 @@
    z-index: 2;
 }
 
-   .stMainWrapper ul.ui-tabs-nav.listTab li
+   .stMainWrapper > ul.ui-tabs-nav.listTab li
    { 
       clear: left; 
       width: 100%; 
@@ -62,11 +62,11 @@
       left: 0!important;
       position: relative;
    }
-   .stMainWrapper ul.ui-tabs-nav.listTab li a
+   .stMainWrapper > ul.ui-tabs-nav.listTab li a
    { 
       display:block; 
    }
-   .stMainWrapper ul.ui-tabs-nav.listTab li.ui-tabs-active
+   .stMainWrapper > ul.ui-tabs-nav.listTab li.ui-tabs-active
    { 
       padding-bottom: 0; 
       padding-right: .1em; 

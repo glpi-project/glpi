@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -44,9 +44,11 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Group extends CommonTreeDropdown {
 
-   public $dohistory = true;
+   public $dohistory       = true;
 
-   static $rightname = 'group';
+   static $rightname       = 'group';
+
+   protected $usenotepad  = true;
 
 
    static function getTypeName($nb=0) {
@@ -141,13 +143,11 @@ class Group extends CommonTreeDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate
-          && Group::canUpdate()) {
+      if (!$withtemplate && Group::canUpdate()) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Group' :
                $ong = array();
-
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
                                              "`groups_id` = '".$item->getID()."'");
@@ -206,18 +206,21 @@ class Group extends CommonTreeDropdown {
 
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Group', $ong, $options);
-      if ($this->fields['is_usergroup']) {
+      if (isset($this->fields['is_usergroup'])
+          && $this->fields['is_usergroup']) {
          $this->addStandardTab('Group_User', $ong, $options);
       }
-      if ($this->fields['is_notify']) {
+      if (isset($this->fields['is_notify'])
+          && $this->fields['is_notify']) {
          $this->addStandardTab('NotificationTarget', $ong, $options);
       }
-      if ($this->fields['is_requester']) {
+      if (isset($this->fields['is_requester'])
+          && $this->fields['is_requester']) {
          $this->addStandardTab('Ticket', $ong, $options);
       }
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
-      
+      $this->addStandardTab('Notepad',$ong, $options);
       $this->addStandardTab('Log',$ong, $options);
       return $ong;
    }
@@ -295,20 +298,13 @@ class Group extends CommonTreeDropdown {
       echo "<td>"._n('Item', 'Items', Session::getPluralNumber())."</td>";
       echo "<td>";
       Dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
-      echo "</td></tr>";
+      echo "</td><td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('User', 'Users', Session::getPluralNumber())."</td><td>";
       Dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
       echo "</td>";
       echo "<td colspan='2' class='center'>";
-      if (!$ID) {
-         //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
-      } else {
-         //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-      }
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -484,6 +480,18 @@ class Group extends CommonTreeDropdown {
       $tab[15]['field']         = 'is_usergroup';
       $tab[15]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), User::getTypeName(Session::getPluralNumber()));
       $tab[15]['datatype']      = 'bool';
+
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       $tab[70]['table']         = 'glpi_users';
       $tab[70]['field']         = 'name';

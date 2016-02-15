@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class Contact_Supplier extends CommonDBRelation{
@@ -74,20 +74,19 @@ class Contact_Supplier extends CommonDBRelation{
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate && Session::haveRight("contact_enterprise", READ)) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Contact', 'Contacts', Session::getPluralNumber()),
-                                              self::countForSupplier($item));
+                  $nb =  self::countForSupplier($item);
                }
-               return _n('Contact', 'Contacts', Session::getPluralNumber());
+               return self::createTabEntry(Contact::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Contact' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Supplier', 'Suppliers', Session::getPluralNumber()),
-                                              self::countForContact($item));
+                  $nb = self::countForContact($item);
                }
-               return _n('Supplier', 'Suppliers', Session::getPluralNumber());
+               return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';

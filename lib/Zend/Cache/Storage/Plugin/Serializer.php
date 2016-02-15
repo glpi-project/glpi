@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -33,17 +33,17 @@ class Serializer extends AbstractPlugin
         $postPriority = -$priority;
 
         // read
-        $this->listeners[] = $events->attach('getItem.post',  array($this, 'onReadItemPost'), $postPriority);
+        $this->listeners[] = $events->attach('getItem.post', array($this, 'onReadItemPost'), $postPriority);
         $this->listeners[] = $events->attach('getItems.post', array($this, 'onReadItemsPost'), $postPriority);
 
         // write
-        $this->listeners[] = $events->attach('setItem.pre',  array($this, 'onWriteItemPre'), $prePriority);
+        $this->listeners[] = $events->attach('setItem.pre', array($this, 'onWriteItemPre'), $prePriority);
         $this->listeners[] = $events->attach('setItems.pre', array($this, 'onWriteItemsPre'), $prePriority);
 
-        $this->listeners[] = $events->attach('addItem.pre',  array($this, 'onWriteItemPre'), $prePriority);
+        $this->listeners[] = $events->attach('addItem.pre', array($this, 'onWriteItemPre'), $prePriority);
         $this->listeners[] = $events->attach('addItems.pre', array($this, 'onWriteItemsPre'), $prePriority);
 
-        $this->listeners[] = $events->attach('replaceItem.pre',  array($this, 'onWriteItemPre'), $prePriority);
+        $this->listeners[] = $events->attach('replaceItem.pre', array($this, 'onWriteItemPre'), $prePriority);
         $this->listeners[] = $events->attach('replaceItems.pre', array($this, 'onWriteItemsPre'), $prePriority);
 
         $this->listeners[] = $events->attach('checkAndSetItem.pre', array($this, 'onWriteItemPre'), $prePriority);
@@ -56,7 +56,7 @@ class Serializer extends AbstractPlugin
         $this->listeners[] = $events->attach('decrementItems.pre', array($this, 'onDecrementItemsPre'), $prePriority);
 
         // overwrite capabilities
-        $this->listeners[] = $events->attach('getCapabilities.post',  array($this, 'onGetCapabilitiesPost'), $postPriority);
+        $this->listeners[] = $events->attach('getCapabilities.post', array($this, 'onGetCapabilitiesPost'), $postPriority);
     }
 
     /**

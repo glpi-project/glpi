@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -48,7 +48,7 @@ class Supplier extends CommonDBTM {
    public $dohistory           = true;
 
    static $rightname           = 'contact_enterprise';
-   protected $usenotepadrights = true;
+   protected $usenotepad       = true;
 
 
 
@@ -108,7 +108,7 @@ class Supplier extends CommonDBTM {
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
-      $this->addStandardTab('Change_Item', $ong, $options);      
+      $this->addStandardTab('Change_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
@@ -176,7 +176,7 @@ class Supplier extends CommonDBTM {
       echo "<textarea cols='37' rows='3' name='address'>".$this->fields["address"]."</textarea>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1' style='white-space: nowrap'>";
       echo "<td>".__('Postal code')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "postcode", array('size' => 10));
@@ -288,6 +288,18 @@ class Supplier extends CommonDBTM {
       $tab[9]['name']               = __('Third party type');
       $tab[9]['datatype']           = 'dropdown';
 
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
          $name1 = 'firstname';
          $name2 = 'name';
@@ -333,8 +345,11 @@ class Supplier extends CommonDBTM {
                                              => array('table'      => 'glpi_contracts_suppliers',
                                                       'joinparams' => array('jointype' => 'child')));
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       $tab += Notepad::getSearchOptionsToAdd();
-      
+
       return $tab;
    }
 
@@ -461,6 +476,7 @@ class Supplier extends CommonDBTM {
                $linktype  = 'Software';
                $linkfield = 'softwares_id';
             }
+            $link_item = new $linktype();
 
             if ($nb > $_SESSION['glpilist_limit']) {
                echo "<tr class='tab_bg_1'>";
@@ -478,8 +494,10 @@ class Supplier extends CommonDBTM {
                             'criteria'   => array(0 => array('value'      => '$$$$'.$instID,
                                                              'searchtype' => 'contains',
                                                              'field'      => 53)));
+              $link = $linktype::getSearchURL();
+              $link.= (strpos($link,'?') ? '&amp;':'?');
 
-               echo "<a href='". Toolbox::getItemTypeSearchURL($linktype) . "?" .
+               echo "<a href='$link" .
                      Toolbox::append_params($opt). "'>" . __('Device list')."</a></td>";
 
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
@@ -490,8 +508,8 @@ class Supplier extends CommonDBTM {
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                   }
-                  $link = Toolbox::getItemTypeFormURL($linktype);
-                  $name = "<a href=\"".$link."?id=".$data[$linkfield]."\">".$name."</a>";
+                  $link = $link_item->getFormURLWithID($data[$linkfield]);
+                  $name = "<a href='$link'>".$name."</a>";
 
                   echo "<tr class='tab_bg_1'>";
                   if ($prem) {

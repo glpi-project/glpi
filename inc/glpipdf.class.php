@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 require_once(GLPI_TCPDF_DIR.'/tcpdf.php');
@@ -90,6 +90,7 @@ class GLPIPDF extends TCPDF {
       foreach (glob($path.'/*.php') as $font) {
          unset($name, $type);
          include $font;
+         unset($cbbox, $cidinfo, $cw, $dw);
          $font = basename($font, '.php');
 
          // skip subfonts

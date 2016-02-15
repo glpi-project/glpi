@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /** Software Class
@@ -50,7 +50,7 @@ class Software extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom', 'ReservationItem', 'SoftwareVersion');
 
    static $rightname                   = 'software';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
 
 
@@ -302,26 +302,6 @@ class Software extends CommonDBTM {
                             'condition' => '`is_itemgroup`'));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
-          && !empty($this->fields['template_name'])) {
-         echo "<span class='small_space'>";
-         printf(__('Created from the template %s'), $this->fields['template_name']);
-         echo "</span>";
-      } else {
-         echo "&nbsp;";
-      }
-      echo "</td><td>";
-      if (isset($options['withtemplate']) && $options['withtemplate']) {
-         //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
-      } else {
-         //TRANS: %s is the datetime of insertion
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-      }
-      echo "</td></tr>\n";
-
       // UPDATE
       echo "<tr class='tab_bg_1'>";
       //TRANS: a noun, (ex : this software is an upgrade of..)
@@ -492,6 +472,12 @@ class Software extends CommonDBTM {
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[23]['table']          = 'glpi_manufacturers';
       $tab[23]['field']          = 'name';
       $tab[23]['name']           = __('Publisher');
@@ -603,6 +589,9 @@ class Software extends CommonDBTM {
                                           => array('table'      => 'glpi_softwareversions',
                                                    'joinparams' => array('jointype' => 'child')));
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       $tab += Notepad::getSearchOptionsToAdd();
 
       $tab['license']            = _n('License', 'Licenses', Session::getPluralNumber());
@@ -610,7 +599,8 @@ class Software extends CommonDBTM {
       $licjoin       = array();
       $licjoinexpire = array();
 
-      if (!Session::isCron()) { // no filter for cron
+      if (!Session::isCron()
+          && !isCommandLine()) { // no filter for cron
          $licjoin       = array('jointype'  => 'child',
                                 'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
                                                                            '', '', true));
@@ -749,16 +739,14 @@ class Software extends CommonDBTM {
                       $where
                 ORDER BY `glpi_softwares`.`name`";
       $result = $DB->query($query);
-
-      $values = array(0 => Dropdown::EMPTY_VALUE);
-
+      $values = array();
       if ($DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $softwares_id          = $data["id"];
             $values[$softwares_id] = $data["name"];
          }
       }
-      $rand = Dropdown::showFromArray('softwares_id', $values);
+      $rand = Dropdown::showFromArray('softwares_id', $values, array('display_emptychoice' => true));
 
       $paramsselsoft = array('softwares_id'    => '__VALUE__',
                              'entity_restrict' => $entity_restrict,

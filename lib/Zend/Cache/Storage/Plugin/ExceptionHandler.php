@@ -3,13 +3,12 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
 namespace Zend\Cache\Storage\Plugin;
 
-use Zend\Cache\Exception;
 use Zend\Cache\Storage\ExceptionEvent;
 use Zend\EventManager\EventManagerInterface;
 
@@ -56,6 +55,9 @@ class ExceptionHandler extends AbstractPlugin
 
         $this->listeners[] = $events->attach('decrementItem.exception', $callback, $priority);
         $this->listeners[] = $events->attach('decrementItems.exception', $callback, $priority);
+
+        // utility
+        $this->listeners[] = $events->attach('clearExpired.exception', $callback, $priority);
     }
 
     /**

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -37,7 +37,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -293,9 +293,9 @@ class Item_Devices extends CommonDBRelation {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->canView()) {
+         $nb = 0;
          if (in_array($item->getType(), self::getConcernedItems())) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $nb = 0;
                foreach (self::getItemAffinities($item->getType()) as $link_type) {
                   $nb   += countElementsInTable($link_type::getTable(),
                                                 "`items_id` = '".$item->getID()."'
@@ -303,10 +303,8 @@ class Item_Devices extends CommonDBRelation {
                                                    AND `is_deleted` = '0'");
                }
             }
-            if (isset($nb)) {
-               return self::createTabEntry(_n('Component', 'Components', $nb), $nb);
-            }
-            return _n('Component', 'Components', Session::getPluralNumber());
+            return self::createTabEntry(_n('Component', 'Components', Session::getPluralNumber()),
+                                        $nb);
          }
          if ($item instanceof CommonDevice) {
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -318,10 +316,7 @@ class Item_Devices extends CommonDBRelation {
                                           "`$foreignkeyField` = '".$item->getID()."'
                                             AND `is_deleted` = '0'");
             }
-            if (isset($nb)) {
-               return self::createTabEntry(_n('Item', 'Items', $nb), $nb);
-            }
-            return _n('Item', 'Items', Session::getPluralNumber());
+            return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
          }
       }
       return '';

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -54,7 +54,7 @@ class Change extends CommonITILObject {
    public $supplierlinkclass           = 'Change_Supplier';
 
    static $rightname                   = 'change';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
    const MATRIX_FIELD                  = 'priority_matrix';
    const URGENCY_MASK_FIELD            = 'urgency_mask';
@@ -195,7 +195,6 @@ class Change extends CommonITILObject {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
-         $nb = 0;
          switch ($item->getType()) {
             case __CLASS__ :
                $ong = array(1 => __('Analysis'),

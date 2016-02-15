@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -404,10 +404,13 @@ class ArrayObject implements IteratorAggregate, ArrayAccess, Serializable, Count
      */
     public function unserialize($data)
     {
-        $ar = unserialize($data);
+        $ar                        = unserialize($data);
+        $this->protectedProperties = array_keys(get_object_vars($this));
+
         $this->setFlags($ar['flag']);
         $this->exchangeArray($ar['storage']);
         $this->setIteratorClass($ar['iteratorClass']);
+
         foreach ($ar as $k => $v) {
             switch ($k) {
                 case 'flag':

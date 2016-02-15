@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,13 +36,17 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
  * KnowbaseItem Class
 **/
 class KnowbaseItem extends CommonDBTM {
+
+
+   // From CommonDBTM
+   public $dohistory    = true;
 
    // For visibility checks
    protected $users     = array();
@@ -130,7 +134,8 @@ class KnowbaseItem extends CommonDBTM {
 
       // Personal knowbase or visibility and write access
       return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
-              || ($this->fields['users_id'] == Session::getLoginUserID())
+              || (($_SESSION["glpiactiveprofile"]["interface"] == "central")
+                  && ($this->fields['users_id'] == Session::getLoginUserID()))
               || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
                    || (!$this->fields["is_faq"]
                        && Session::haveRight(self::$rightname, UPDATE)))
@@ -165,6 +170,7 @@ class KnowbaseItem extends CommonDBTM {
       $this->addStandardTab('Document_Item', $ong, $options);
 
       $this->addStandardTab('KnowbaseItemTranslation',$ong, $options);
+      $this->addStandardTab('Log',$ong, $options);
 
       return $ong;
    }
@@ -173,17 +179,16 @@ class KnowbaseItem extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case __CLASS__ :
                $ong[1] = $this->getTypeName(1);
                if ($item->canUpdateItem()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = $item->countVisibilities();
-                     $ong[2] = self::createTabEntry(_n('Target','Targets',$nb),
-                                                    $nb);
-                  } else {
-                     $ong[2] = _n('Target','Targets', Session::getPluralNumber());
                   }
+                  $ong[2] = self::createTabEntry(_n('Target','Targets', Session::getPluralNumber()),
+                                                    $nb);
                   $ong[3] = __('Edit');
                }
                return $ong;
@@ -1342,7 +1347,9 @@ class KnowbaseItem extends CommonDBTM {
 
                   echo Search::showItem($output_type,
                                         "<div class='kb'>$toadd<a ".
-                                          ($data['is_faq']?" class='pubfaq' ":" class='knowbase' ").
+                                          ($data['is_faq']?" class='pubfaq' title='"
+                                                           .__("This item is part of the FAQ")."' "
+                                                           :" class='knowbase' ").
                                           " $href>".Html::resume_text($name, 80)."</a></div>
                                           <div class='kb_resume'>".
                                           Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($answer)),
@@ -1379,9 +1386,15 @@ class KnowbaseItem extends CommonDBTM {
                    && isset($options['item_items_id'])
                    && ($output_type == Search::HTML_OUTPUT)) {
 
+                  $forcetab = $options['item_itemtype'];
+                  if (!$_SESSION['glpiticket_timeline'] || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
+                     $forcetab .= '$2'; //Solution tab
+                  } else {
+                     $forcetab .= '$1'; //Timeline tab
+                  }
                   $content = "<a href='".Toolbox::getItemTypeFormURL($options['item_itemtype']).
                                "?load_kb_sol=".$data['id']."&amp;id=".$options['item_items_id'].
-                               "&amp;forcetab=".$options['item_itemtype']."$2'>".
+                               "&amp;forcetab=".$forcetab."'>".
                                __('Use as a solution')."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
                }
@@ -1501,7 +1514,10 @@ class KnowbaseItem extends CommonDBTM {
                $name = $data['transname'];
             }
             echo "<tr class='tab_bg_2'><td class='left'>";
-            echo "<a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
+            echo "<a ".
+                  ($data['is_faq']?" class='pubfaq' title='"
+                                   .__("This item is part of the FAQ")."' "
+                                   :" class='knowbase' ")." href=\"".
                   $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$data["id"]."\">".
                   Html::resume_text($name,80)."</a></td></tr>";
          }
@@ -1588,6 +1604,9 @@ class KnowbaseItem extends CommonDBTM {
       $tab[86]['field']         = 'is_recursive';
       $tab[86]['name']          = __('Child entities');
       $tab[86]['datatype']      = 'bool';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       return $tab;
    }

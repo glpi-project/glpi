@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -935,6 +935,12 @@ class AuthLDAP extends CommonDBTM {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[20]['table']         = $this->getTable();
       $tab[20]['field']         = 'language_field';
       $tab[20]['name']          = __('Language');
@@ -1560,7 +1566,7 @@ class AuthLDAP extends CommonDBTM {
 
          foreach ($diff as $user) {
             //If user dn exists in DB, it means that user login field has changed
-            if (!$tmpuser->getFromDBByDn(addslashes($user_infos[$user]["user_dn"]))) {
+            if (!$tmpuser->getFromDBByDn(toolbox::addslashes_deep($user_infos[$user]["user_dn"]))) {
                $list[] = array("user"      => $user,
                                "timestamp" => $user_infos[$user]["timestamp"],
                                "date_sync" => Dropdown::EMPTY_VALUE);
@@ -2057,6 +2063,10 @@ class AuthLDAP extends CommonDBTM {
                $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
                $user->fields['is_deleted_ldap'] = 0;
 
+               //clean picture from input
+               // (picture managed in User::post_addItem and prepareInputForUpdate)
+               unset($input['picture']);
+
                if ($action == self::ACTION_IMPORT) {
                   $user->fields["authtype"] = Auth::LDAP;
                   $user->fields["auths_id"] = $ldap_server;
@@ -2066,6 +2076,7 @@ class AuthLDAP extends CommonDBTM {
                   if ($display) {
                      $input['add'] = 1;
                   }
+
                   $user->fields["id"] = $user->add($input);
                   return array('action' => self::USER_IMPORTED,
                                'id'     => $user->fields["id"]);
@@ -2340,7 +2351,7 @@ class AuthLDAP extends CommonDBTM {
       if ($user_dn) {
          $auth->auth_succeded            = true;
          //There's already an existing user in DB with the same DN but its login field has changed
-         if ($auth->user->getFromDBbyDn($user_dn)) {
+         if ($auth->user->getFromDBbyDn(toolbox::addslashes_deep($user_dn))) {
             //Change user login
             $auth->user->fields['name'] = $login;
             $auth->user_present         = true;
@@ -3056,7 +3067,7 @@ class AuthLDAP extends CommonDBTM {
          $ong[1]  = _sx('button','Test');                     // test connexion
          $ong[2]  = _n('User', 'Users', Session::getPluralNumber());
          $ong[3]  = _n('Group', 'Groups', Session::getPluralNumber());
-/// TODO clean fields entity_XXX if not used         
+/// TODO clean fields entity_XXX if not used
 //          $ong[4]  = __('Entity');                  // params for entity config
          $ong[5]  = __('Advanced information');   // params for entity advanced config
          $ong[6]  = _n('Replicate', 'Replicates', Session::getPluralNumber());

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -56,7 +56,9 @@ class ProjectTask extends CommonDBChild {
 
    protected $team             = array();
    static $rightname           = 'project';
-   protected $usenotepadrights = true;
+   protected $usenotepad       = true;
+
+   var $can_be_translated      = true;
 
    const READMY      = 1;
    const UPDATEMY    = 1024;
@@ -806,6 +808,26 @@ class ProjectTask extends CommonDBChild {
          echo "</div>";
       }
 
+      $addselect = '';
+      $addjoin = '';
+      if (Session::haveTranslations('ProjectTaskType', 'name')) {
+         $addselect .= ", `namet2`.`value` AS transname2";
+         $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet2
+                           ON (`namet2`.`itemtype` = 'ProjectTaskType'
+                               AND `namet2`.`items_id` = `glpi_projecttasks`.`projecttasktypes_id`
+                               AND `namet2`.`language` = '".$_SESSION['glpilanguage']."'
+                               AND `namet2`.`field` = 'name')";
+      }
+
+      if (Session::haveTranslations('ProjectState', 'name')) {
+         $addselect .= ", `namet3`.`value` AS transname3";
+         $addjoin   .= "LEFT JOIN `glpi_dropdowntranslations` AS namet3
+                           ON (`namet3`.`itemtype` = 'ProjectState'
+                               AND `namet3`.`language` = '".$_SESSION['glpilanguage']."'
+                               AND `namet3`.`field` = 'name')";
+         $where     .= " AND `namet3`.`items_id` = `glpi_projectstates`.`id` ";
+      }
+
 
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
@@ -813,7 +835,9 @@ class ProjectTask extends CommonDBChild {
                        `glpi_projectstates`.`color`,
                        `father`.`name` AS fname,
                        `father`.`id` AS fID
+                       $addselect
                 FROM `glpi_projecttasks`
+                $addjoin
                 LEFT JOIN `glpi_projecttasktypes`
                    ON (`glpi_projecttasktypes`.`id` = `glpi_projecttasks`.`projecttasktypes_id`)
                 LEFT JOIN `glpi_projectstates`
@@ -863,10 +887,12 @@ class ProjectTask extends CommonDBChild {
                                                array('display' => false,
                                                      'applyto' => "ProjectTask".$data["id"].$rand)));
                echo "</td>";
-               echo "<td>".$data['tname']."</td>";
+               $name = !empty($data['transname2'])?$data['transname2']:$data['tname'];
+               echo "<td>".$name."</td>";
                echo "<td";
+               $statename = !empty($data['transname3'])?$data['transname3']:$data['sname'];
                echo " style=\"background-color:".$data['color']."\"";
-               echo ">".$data['sname']."</td>";
+               echo ">".$statename."</td>";
                echo "<td>";
                echo Dropdown::getValueWithUnit($data["percent_done"],"%");
                echo "</td>";
@@ -901,23 +927,21 @@ class ProjectTask extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Project' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              countElementsInTable($this->getTable(),
-                                                                   "projects_id
-                                                                        = '".$item->getID()."'"));
+                  $nb = countElementsInTable($this->getTable(),
+                                             "projects_id = '".$item->getID()."'");
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+
             case __CLASS__ :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              countElementsInTable($this->getTable(),
-                                                                   "projecttasks_id
-                                                                        = '".$item->getID()."'"));
+                  $nb = countElementsInTable($this->getTable(),
+                                             "projecttasks_id = '".$item->getID()."'");
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';
@@ -1173,6 +1197,202 @@ class ProjectTask extends CommonDBChild {
    **/
    function showDebug() {
       NotificationEvent::debugEvent($this);
+   }
+
+
+   /**
+    * Populate the planning with planned project tasks
+    *
+    * @since version 0.85
+    *
+    * @param $options   array of possible options:
+    *    - who       ID of the user (0 = undefined)
+    *    - who_group ID of the group of users (0 = undefined)
+    *    - begin     Date
+    *    - end       Date
+    *
+    * @return array of planning item
+   **/
+   static function populatePlanning($options=array()) {
+
+      global $DB, $CFG_GLPI;
+
+      $interv  = array();
+
+      if (!isset($options['begin']) || ($options['begin'] == 'NULL')
+          || !isset($options['end']) || ($options['end'] == 'NULL')) {
+         return $interv;
+      }
+
+      $who       = $options['who'];
+      $who_group = $options['who_group'];
+      $begin     = $options['begin'];
+      $end       = $options['end'];
+
+      // Get items to print
+      $ASSIGN = "";
+
+      if ($who_group === "mine") {
+         if (count($_SESSION["glpigroups"])) {
+            $groups = implode("','",$_SESSION['glpigroups']);
+            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'Group'
+                       AND `glpi_projecttaskteams`.`items_id`
+                           IN (SELECT DISTINCT `groups_id`
+                               FROM `glpi_groups`
+                               WHERE `groups_id` IN ('$groups')
+                                     AND `glpi_groups`.`is_assign`)
+                                     AND ";
+         } else { // Only personal ones
+            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
+                       AND `glpi_projecttaskteams`.`items_id` = '$who'
+                       AND ";
+         }
+
+      } else {
+         if ($who > 0) {
+            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
+                       AND `glpi_projecttaskteams`.`items_id` = '$who'
+                       AND ";
+         }
+
+         if ($who_group > 0) {
+            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'Group'
+                       AND `glpi_projecttaskteams`.`items_id`
+                           IN (SELECT DISTINCT `groups_id`
+                               FROM `glpi_groups`
+                               WHERE `groups_id` IN ('$who_group')
+                                     AND `glpi_groups`.`is_assign`)
+                       AND ";
+         }
+      }
+      if (empty($ASSIGN)) {
+         $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
+                       AND `glpi_projecttaskteams`.`items_id`
+                        IN (SELECT DISTINCT `glpi_profiles_users`.`users_id`
+                            FROM `glpi_profiles`
+                            LEFT JOIN `glpi_profiles_users`
+                                 ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
+                            WHERE `glpi_profiles`.`interface` = 'central' ".
+                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                             $_SESSION["glpiactive_entity"], 1).")
+                     AND ";
+      }
+
+      $query = "SELECT `glpi_projecttasks`.*
+                FROM `glpi_projecttaskteams`
+                INNER JOIN `glpi_projecttasks`
+                  ON (`glpi_projecttasks`.`id` = `glpi_projecttaskteams`.`projecttasks_id`)
+                WHERE $ASSIGN
+                      '$begin' < `glpi_projecttasks`.`plan_end_date`
+                      AND '$end' > `glpi_projecttasks`.`plan_start_date`
+                ORDER BY `glpi_projecttasks`.`plan_start_date`";
+
+      $result = $DB->query($query);
+
+      $interv = array();
+      $task   = new self();
+
+      if ($DB->numrows($result) > 0) {
+         for ($i=0 ; $data=$DB->fetch_assoc($result) ; $i++) {
+            if ($task->getFromDB($data["id"])) {
+                $key = $data["plan_start_date"]."$$$".$i;
+                // Do not check entity here because webcal used non authenticated access
+//              if (Session::haveAccessToEntity($item->fields["entities_id"])) {
+                $interv[$key]['itemtype']  = 'ProjectTask';
+                $interv[$data["plan_start_date"]."$$$".$i]["url"]
+                                                = $CFG_GLPI["url_base"]."/index.php?redirect=".
+                                                   "project_".$task->fields['projects_id'];
+
+                $interv[$key][$task->getForeignKeyField()] = $data["id"];
+                $interv[$key]["id"]                        = $data["id"];
+                $interv[$key]["users_id"]       = $data["users_id"];
+
+                if (strcmp($begin,$data["plan_start_date"]) > 0) {
+                   $interv[$key]["begin"] = $begin;
+                } else {
+                   $interv[$key]["begin"] = $data["plan_start_date"];
+                }
+
+                if (strcmp($end,$data["plan_end_date"]) < 0) {
+                   $interv[$key]["end"] = $end;
+                } else {
+                   $interv[$key]["end"] = $data["plan_end_date"];
+                }
+
+                $interv[$key]["name"]     = $task->fields["name"];
+                $interv[$key]["content"]  = Html::resume_text($task->fields["content"],
+                                                              $CFG_GLPI["cut"]);
+                $interv[$key]["status"]   = $task->fields["percent_done"];
+
+            }
+         }
+      }
+
+      return $interv;
+   }
+
+
+   /**
+    * Display a Planning Item
+    *
+    * @since version 0.91
+    *
+    * @param $val       array of the item to display
+    * @param $who             ID of the user (0 if all)
+    * @param $type            position of the item in the time block (in, through, begin or end)
+    *                         (default '')
+    * @param $complete        complete display (more details) (default 0)
+    *
+    * @return Nothing (display function)
+    **/
+   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
+     global $CFG_GLPI;
+
+      $rand     = mt_rand();
+      $users_id = "";  // show users_id project task
+      $img      = "rdv_private.png"; // default icon for project task
+
+      if ($val["users_id"] != Session::getLoginUserID()) {
+         $users_id = "<br>".sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"]));
+         $img      = "rdv_public.png";
+      }
+
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\"".
+             self::getTypeName(1)."\">&nbsp;";
+      echo "<a id='project_task_".$val["id"].$rand."' href='".
+             $CFG_GLPI["root_doc"]."/front/projecttask.form.php?id=".$val["id"]."'>";
+
+      switch ($type) {
+         case "in" :
+            //TRANS: %1$s is the start time of a planned item, %2$s is the end
+            $beginend = sprintf(__('From %1$s to %2$s'), date("H:i",strtotime($val["begin"])),
+                                date("H:i",strtotime($val["end"])));
+            printf(__('%1$s: %2$s'), $beginend, Html::resume_text($val["name"],80)) ;
+            break;
+
+         case "through" :
+            echo Html::resume_text($val["name"],80);
+            break;
+
+         case "begin" :
+            $start = sprintf(__('Start at %s'), date("H:i", strtotime($val["begin"])));
+            printf(__('%1$s: %2$s'), $start, Html::resume_text($val["name"],80)) ;
+            break;
+
+         case "end" :
+            $end = sprintf(__('End at %s'), date("H:i", strtotime($val["end"])));
+            printf(__('%1$s: %2$s'), $end,  Html::resume_text($val["name"],80)) ;
+            break;
+      }
+
+      echo $users_id;
+      echo "</a>";
+
+      Html::showToolTip("<span class='b'>".$val["status"]." % completed</span><br>
+                              ".$val["content"],
+                           array('applyto' => "project_task_".$val["id"].$rand));
+
+      echo "";
    }
 
 }

@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -127,11 +127,11 @@ class Gettext extends AbstractFileLoader
 
                     array_shift($originalString);
 
-/// PROBLEM WITH GLPI WHEN singular = plural                    
-/// opened bug http://framework.zend.com/issues/browse/ZF-11974
-//                    foreach ($originalString as $string) {
-//                        $textDomain[$string] = '';
-//                    }
+                    foreach ($originalString as $string) {
+                        if (! isset($textDomain[$string])) {
+                            $textDomain[$string] = '';
+                        }
+                    }
                 } else {
                     $textDomain[$originalString[0]] = $translationString[0];
                 }

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class Computer_SoftwareVersion extends CommonDBRelation {
@@ -122,7 +122,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                   if (isset($input['options']['move']['used'])) {
                      $options['used'] = $input['options']['move']['used'];
                   }
-                  SoftwareVersion::dropdown($options);
+                  SoftwareVersion::dropdownForOneSoftware($options);
                   echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
                   return true;
                }
@@ -330,7 +330,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           'state,compname'    => __('Status'),
                           'groupe,compname'   => __('Group'),
                           'username,compname' => __('User'),
-                          'lname'             => _n('License', 'Licenses', Session::getPluralNumber()));
+                          'lname'             => _n('License', 'Licenses', Session::getPluralNumber()),
+                           'date_instal'      => __('Installation date'));
       if ($crit != "softwares_id") {
          unset($refcolumns['vername']);
       }
@@ -569,6 +570,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                $lics = Computer_SoftwareLicense::getLicenseForInstallation($data['cID'],
                                                                            $data['vID']);
                echo "<td>";
+               echo "<td>".Html::convDate($data['date_install'])."</td>";
 
                if (count($lics)) {
                   foreach ($lics as $data) {
@@ -696,7 +698,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                        `glpi_softwareversions`.`id` AS verid,
                        `glpi_softwareversions`.`softwares_id`,
                        `glpi_softwareversions`.`name` AS version,
-                       `glpi_softwares`.`is_valid` AS softvalid
+                       `glpi_softwares`.`is_valid` AS softvalid,
+                       `glpi_computers_softwareversions`.`date_install` AS dateinstall
                 FROM `glpi_computers_softwareversions`
                 LEFT JOIN `glpi_softwareversions`
                      ON (`glpi_computers_softwareversions`.`softwareversions_id`
@@ -795,6 +798,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
          $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
          $header_end .= "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         $header_end .="<th>" . __('Installation date') . "</th>";
          if (Plugin::haveImport()) {
             $header_end .= "<th>".__('Automatic inventory')."</th>";
          }
@@ -909,6 +913,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
          $header_end .= "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
          $header_end .= "<th>" .__('Version')."</th><th>" . __('License') . "</th>";
+         $header_end .= "<th>" .__('Installation date')."</th>";
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
 
@@ -1016,6 +1021,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
 
          echo "</td>";
+
+         echo "<td>".Html::convDate($data['dateinstall'])."</td>";
 
          if (isset($data['is_dynamic'])) {
             echo "<td class='center'>".Dropdown::getYesNo($data['is_dynamic'])."</td>";
@@ -1138,25 +1145,25 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    **/
   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
+     $nb = 0;
       switch ($item->getType()) {
          case 'Software' :
             if (!$withtemplate) {
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              self::countForSoftware($item->getID()));
+                  $nb = self::countForSoftware($item->getID());
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
             }
             break;
 
          case 'SoftwareVersion' :
             if (!$withtemplate) {
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = self::countForVersion($item->getID());
                }
                return array(1 => __('Summary'),
-                            2 => self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb));
+                            2 => self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
+                                                      $nb));
             }
             break;
 
@@ -1164,12 +1171,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             // Installation allowed for template
             if (Software::canView()) {
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()),
-                                              countElementsInTable('glpi_computers_softwareversions',
-                                                                   "computers_id = '".$item->getID()."'
-                                                                      AND `is_deleted`='0'"));
+                  $nb = countElementsInTable('glpi_computers_softwareversions',
+                                             "computers_id = '".$item->getID()."'
+                                                  AND `is_deleted`='0'");
                }
-               return Software::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()), $nb);
             }
             break;
       }

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -107,10 +107,11 @@ class Notepad extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (Session::haveRight($item::$rightname, READNOTE)) {
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), self::countForItem($item));
+            $nb = self::countForItem($item);
          }
-         return self::getTypeName(Session::getPluralNumber());
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return false;
    }
@@ -152,7 +153,7 @@ class Notepad extends CommonDBChild {
                 WHERE `glpi_notepads`.`itemtype` = '".$item->getType()."'
                      AND `glpi_notepads`.`items_id` = '".$item->getID()."'
                 ORDER BY `date_mod` DESC";
-      
+
       foreach($DB->request($query) as $note) {
          $data[] = $note;
       }
@@ -296,7 +297,7 @@ class Notepad extends CommonDBChild {
             printf(__('%1$s / %2$s'), $update, $create);
             echo "</div>"; // floatright
 
-            
+
             echo "<div class='boxnotetext $classtoadd' ";
             if ($canedit) {
                echo "onclick=\"".Html::jsHide("view$id")." ".
@@ -318,7 +319,7 @@ class Notepad extends CommonDBChild {
                                     '',
                                      __('Confirm the final deletion?'));
             }
-            echo "</div>"; // boxnoteright            
+            echo "</div>"; // boxnoteright
             echo "</div>"; // boxnote
 
              if ($canedit) {

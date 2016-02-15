@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -67,7 +67,7 @@ class Memcache extends AbstractAdapter implements
 
         // reset initialized flag on update option(s)
         $initialized = & $this->initialized;
-        $this->getEventManager()->attach('option', function ($event) use (& $initialized) {
+        $this->getEventManager()->attach('option', function () use (& $initialized) {
             $initialized = false;
         });
     }
@@ -220,7 +220,7 @@ class Memcache extends AbstractAdapter implements
         $result = $memc->get($internalKey);
         $success = ($result !== false);
         if ($result === false) {
-            return null;
+            return;
         }
 
         $casToken = $result;

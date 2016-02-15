@@ -10,7 +10,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -37,13 +37,16 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
  * CronTask class
  */
 class CronTask extends CommonDBTM{
+
+   // From CommonDBTM
+   public $dohistory                   = true;
 
    // Specific ones
    static private $lockname = '';
@@ -92,6 +95,7 @@ class CronTask extends CommonDBTM{
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('CronTaskLog', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -166,7 +170,7 @@ class CronTask extends CommonDBTM{
    **/
    static function getUsedItemtypes() {
       global $DB;
-      
+
       $types= array();
       foreach  ($DB->request("SELECT DISTINCT(`itemtype`)
                             FROM `glpi_crontasks`") as $data) {
@@ -189,7 +193,7 @@ class CronTask extends CommonDBTM{
 
       $query = "UPDATE `".$this->getTable()."`
                 SET `state` = '".self::STATE_RUNNING."',
-                    `lastrun` = NOW()
+                    `lastrun` = DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:00')
                 WHERE `id` = '".$this->fields['id']."'
                       AND `state` != '".self::STATE_RUNNING."'";
       $result = $DB->query($query);
@@ -250,8 +254,7 @@ class CronTask extends CommonDBTM{
          return false;
       }
       $query = "UPDATE `".$this->getTable()."`
-                SET `state` = '".$this->fields['state']."',
-                    `lastrun` = DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:00')
+                SET `state` = '".$this->fields['state']."'
                 WHERE `id` = '".$this->fields['id']."'
                       AND `state` = '".self::STATE_RUNNING."'";
       $result = $DB->query($query);
@@ -1323,7 +1326,7 @@ class CronTask extends CommonDBTM{
       $tab[8]['massiveaction'] = false;
       $tab[8]['datatype']      = 'itemtypename';
       $tab[8]['types']         = self::getUsedItemtypes();
-      
+
 
       $tab[16]['table']        = $this->getTable();
       $tab[16]['field']        = 'comment';
@@ -1352,6 +1355,18 @@ class CronTask extends CommonDBTM{
       $tab[19]['max']          = 360;
       $tab[19]['step']         = 10;
       $tab[19]['toadd']        = array(0 => __('Infinite'));
+
+      $tab[20]['table']          = $this->getTable();
+      $tab[20]['field']          = 'date_mod';
+      $tab[20]['name']           = __('Last update');
+      $tab[20]['datatype']       = 'datetime';
+      $tab[20]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       return $tab;
    }
@@ -1469,8 +1484,10 @@ class CronTask extends CommonDBTM{
       $maxlifetime = HOUR_TIMESTAMP;
       $nb          = 0;
       foreach (glob(GLPI_GRAPH_DIR."/*") as $filename) {
+         if (basename($filename) == "remove.txt" && is_dir(GLPI_ROOT.'/.git')) {
+            continue;
+         }
          if ((filemtime($filename) + $maxlifetime) < time()) {
-            // Delete session file if not delete before
             if (@unlink($filename)) {
                $nb++;
             }
@@ -1501,8 +1518,10 @@ class CronTask extends CommonDBTM{
       $maxlifetime = HOUR_TIMESTAMP;
       $nb          = 0;
       foreach (glob(GLPI_TMP_DIR."/*") as $filename) {
+         if (basename($filename) == "remove.txt" && is_dir(GLPI_ROOT.'/.git')) {
+            continue;
+         }
          if ((filemtime($filename) + $maxlifetime) < time()) {
-            // Delete session file if not delete before
             if (@unlink($filename)) {
                $nb++;
             }

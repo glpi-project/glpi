@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -53,7 +53,7 @@ echo "<table width='100%'><tr><td width='40%'>";
 foreach ($searchopt as $key => $val) {
 
    // print groups
-   $str_limit   = 28; // not use $_SESSION['glpidropdown_chars_limit'] because it came to too short
+   $str_limit   = 28;
    if (!is_array($val)) {
       $group = $val;
    } else {
@@ -64,8 +64,7 @@ foreach ($searchopt as $key => $val) {
    }
 }
 $rand     = Dropdown::showFromArray("metacriteria[".$_POST["num"]."][field]", $values,
-                                    array('value' => $_POST["field"],
-                                          'width' => '100%'));
+                                    array('value' => $_POST["field"]));
 $field_id = Html::cleanId("dropdown_metacriteria[".$_POST["num"]."][field]".$rand);
 
 echo "</td><td class='left'>";

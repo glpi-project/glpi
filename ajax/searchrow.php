@@ -128,8 +128,7 @@ if (isset($_POST["itemtype"])
       }
       Dropdown::showFromArray("criteria[".$_POST["num"]."][link]",
                               Search::getLogicalOperators(),
-                              array('value' => $value,
-                                    'width' => '30%'));
+                              array('value' => $value));
    }
 
    $selected = $first = '';
@@ -165,8 +164,7 @@ if (isset($_POST["itemtype"])
    } 
 
    $rand     = Dropdown::showFromArray("criteria[".$_POST["num"]."][field]", $values,
-                                       array('value' => $value,
-                                             'width' => '60%'));
+                                       array('value' => $value));
    $field_id = Html::cleanId("dropdown_criteria[".$_POST["num"]."][field]$rand");
    echo "</td><td class='left'>";
    $spanid= 'SearchSpan'.$_POST["itemtype"].$_POST["num"];

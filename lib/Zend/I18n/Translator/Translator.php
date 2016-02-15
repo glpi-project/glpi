@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -401,22 +401,18 @@ class Translator implements TranslatorInterface
             }
 
             return ($number == 1 ? $singular : $plural);
+        } elseif (is_string($translation)) {
+            $translation = array($translation);
         }
-
-        /// GLPI Hack for languages with 1 plural form (chinese)
-        if (!is_array($translation)) {
-            return $translation;
-        }
-
 
         $index = $this->messages[$textDomain][$locale]
                       ->getPluralRule()
                       ->evaluate($number);
 
         if (!isset($translation[$index])) {
-            throw new Exception\OutOfBoundsException(sprintf(
-                'Provided index %d does not exist in plural array', $index
-            ));
+            throw new Exception\OutOfBoundsException(
+                sprintf('Provided index %d does not exist in plural array', $index)
+            );
         }
 
         return $translation[$index];
@@ -467,7 +463,7 @@ class Translator implements TranslatorInterface
             }
         }
 
-        return null;
+        return;
     }
 
     /**

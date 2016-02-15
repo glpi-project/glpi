@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -51,7 +51,7 @@ class SoftwareLicense extends CommonDBTM {
    static protected $forward_entity_to = array('Infocom');
 
    static $rightname                   = 'software';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
 
 
@@ -279,9 +279,9 @@ class SoftwareLicense extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Purchase version')."</td>";
       echo "<td>";
-      SoftwareVersion::dropdown(array('name'         => "softwareversions_id_buy",
-                                      'softwares_id' => $this->fields["softwares_id"],
-                                      'value'        => $this->fields["softwareversions_id_buy"]));
+      SoftwareVersion::dropdownForOneSoftware(array('name'         => "softwareversions_id_buy",
+                                                    'softwares_id' => $this->fields["softwares_id"],
+                                                    'value'        => $this->fields["softwareversions_id_buy"]));
       echo "</td>";
       echo "<td>".__('Inventory number')."</td>";
       echo "<td>";
@@ -291,9 +291,9 @@ class SoftwareLicense extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Version in use')."</td>";
       echo "<td>";
-      SoftwareVersion::dropdown(array('name'         => "softwareversions_id_use",
-                                      'softwares_id' => $this->fields["softwares_id"],
-                                      'value'        => $this->fields["softwareversions_id_use"]));
+      SoftwareVersion::dropdownForOneSoftware(array('name'         => "softwareversions_id_use",
+                                                    'softwares_id' => $this->fields["softwares_id"],
+                                                    'value'        => $this->fields["softwareversions_id_use"]));
       echo "</td>";
       echo "<td rowspan='".(($ID > 0) ?'4':'3')."' class='middle'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='".(($ID > 0) ?'4':'3')."'>";
@@ -863,14 +863,14 @@ class SoftwareLicense extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Software' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $count = self::countForSoftware($item->getID());
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              (($count >= 0) ? $count : '&infin;'));
+                  $nb = self::countForSoftware($item->getID());
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
+                                           (($nb >= 0) ? $nb : '&infin;'));
          }
       }
       return '';

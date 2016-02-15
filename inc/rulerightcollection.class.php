@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -35,7 +35,7 @@
 * @brief
 */
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -131,11 +131,14 @@ class RuleRightCollection extends RuleCollection {
       }
       foreach ($output as $criteria => $value) {
          if (isset($actions[$criteria])) { // ignore _* fields
+            if (isset($actions[$criteria]['action_type'])) {
+               $actiontype = $actions[$criteria]['action_type'];
+            } else {
+               $actiontype ='';
+            }
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center'>".$actions[$criteria]["name"]."</td>";
-            echo "<td class='center'>".$rule->getActionValue($criteria,
-                                                             $actions[$criteria]['action_type'],
-                                                             $value);
+            echo "<td class='center'>".$rule->getActionValue($criteria, $actiontype, $value);
             echo "</td></tr>\n";
          }
       }

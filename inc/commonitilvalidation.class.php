@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -198,6 +198,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       }
 
       if (!$hidetab) {
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $restrict = "`".static::$items_id."` = '".$item->getID()."'";
             // No rights for create only count asign ones
@@ -205,9 +206,8 @@ abstract class CommonITILValidation  extends CommonDBChild {
               $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."'";
             }
             $nb = countElementsInTable(static::getTable(),$restrict);
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
-         return self::getTypeName(Session::getPluralNumber());
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }
@@ -438,19 +438,19 @@ abstract class CommonITILValidation  extends CommonDBChild {
     *
     * @param $name          select name
     * @param $options array of possible options:
-    *      - value   : default value (default waiting)
-    *      - all     : boolean display all (default false)
-    *      - global  : for global validation (default false)
-    *      - display : boolean display or get string ? (default true)
+    *      - value    : default value (default waiting)
+    *      - all      : boolean display all (default false)
+    *      - global   : for global validation (default false)
+    *      - display  : boolean display or get string ? (default true)
     *
     * @return nothing (display)
    **/
    static function dropdownStatus($name, $options=array()) {
 
-      $p['value']   = self::WAITING;
-      $p['global']  = false;
-      $p['all']     = false;
-      $p['display'] = true;
+      $p['value']    = self::WAITING;
+      $p['global']   = false;
+      $p['all']      = false;
+      $p['display']  = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -619,11 +619,11 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       global $CFG_GLPI;
 
-      $types            = array(0       => Dropdown::EMPTY_VALUE,
-                                'user'  => __('User'),
+      $types            = array('user'  => __('User'),
                                 'group' => __('Group'));
 
-      $rand             = Dropdown::showFromArray("validatortype", $types);
+      $rand             = Dropdown::showFromArray("validatortype", $types,
+                                                  array('display_emptychoice' => true));
 
       $paramsmassaction = array('validatortype' => '__VALUE__',
                                 'entity'        => $_SESSION['glpiactive_entity'],
@@ -739,8 +739,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Global approval status')."</td>";
       echo "<td colspan='2'>";
-      self::dropdownStatus("global_validation",
-                           array('value' => $item->fields["global_validation"]));
+      if (Session::haveRightsOr(static::$rightname, TicketValidation::getCreateRights())) {
+         self::dropdownStatus("global_validation",
+                              array('value'    => $item->fields["global_validation"]));
+      } else {
+         echo TicketValidation::getStatus($item->fields["global_validation"]);
+      }
       echo "</td></tr>";
 
       echo "<tr>";
@@ -1226,8 +1230,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $params[$key] = $val;
       }
 
-      $types = array(0       => Dropdown::EMPTY_VALUE,
-                     'user'  => __('User'),
+      $types = array('user'  => __('User'),
                      'group' => __('Group'));
 
       $type  = '';
@@ -1237,7 +1240,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
          $type = 'user';
       }
 
-      $rand = Dropdown::showFromArray("validatortype", $types, array('value' => $type));
+      $rand = Dropdown::showFromArray("validatortype", $types,
+                                      array('value'               => $type,
+                                            'display_emptychoice' => true));
 
       if ($type) {
          $params['validatortype'] = $type;

@@ -42,7 +42,7 @@ use \Ajax;
 
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -66,6 +66,23 @@ class Event extends \CommonDBTM {
          return $input;
       }
       return false;
+   }
+
+   function post_addItem() {
+      //only log in file, important events (connections and critical events; TODO : we need to add a general option to filter this in 0.91)
+      if (isset($this->fields['level']) && $this->fields['level'] <= 3) {
+         $message_type = "";
+         if (isset($this->fields['type']) && $this->fields['type'] != 'system') {
+            $message_type = "[".$this->fields['type']." ".$this->fields['id']."] ";
+         }
+
+         $full_message = "[".$this->fields['service']."] ".
+                         $message_type.
+                         $this->fields['level'].": ".
+                         Toolbox::stripslashes_deep($this->fields['message'])."\n";
+
+         Toolbox::logInFile("event", $full_message);
+      }
    }
 
 
@@ -352,15 +369,11 @@ class Event extends \CommonDBTM {
       echo "<tr>";
 
       foreach ($items as $field => $args) {
-         echo "<th ".$args[1].">";
+         echo "<th ".$args[1]."";
          if ($sort == $field) {
-            if ($order == "DESC") {
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-            } else {
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
-            }
+            echo " class='order_$order' ";
          }
-         echo "<a href='$target?sort=$field&amp;order=".(($order=="ASC")?"DESC":"ASC")."'>".$args[0].
+         echo "><a href='$target?sort=$field&amp;order=".(($order=="ASC")?"DESC":"ASC")."'>".$args[0].
               "</a></th>";
       }
       echo "</tr>";

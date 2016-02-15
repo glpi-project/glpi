@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -48,7 +48,7 @@ class Budget extends CommonDropdown{
    public $dohistory           = true;
 
    static $rightname           = 'budget';
-   protected $usenotepadrights = true;
+   protected $usenotepad       = true;
 
    var $can_be_translated = false;
 
@@ -150,15 +150,6 @@ class Budget extends CommonDropdown{
       Html::showDateField("end_date", array('value' => $this->fields["end_date"]));
       echo "</td></tr>";
 
-      if ($ID > 0) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Last update')."</td>";
-         echo "<td>";
-         echo ($this->fields["date_mod"]? Html::convDateTime($this->fields["date_mod"])
-                                        : __('Never'));
-         echo "</td></tr>";
-      }
-
       $this->showFormButtons($options);
       return true;
    }
@@ -208,6 +199,12 @@ class Budget extends CommonDropdown{
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'begin_date';
       $tab[5]['name']            = __('Start date');
@@ -238,6 +235,9 @@ class Budget extends CommonDropdown{
       $tab[86]['field']          = 'is_recursive';
       $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 
@@ -525,6 +525,7 @@ class Budget extends CommonDropdown{
       $itemtypes[] = 'Contract';
       $itemtypes[] = 'Ticket';
       $itemtypes[] = 'Problem';
+      $itemtypes[] = 'Project';
       $itemtypes[] = 'Change';
 
       foreach ($itemtypes as $itemtype) {
@@ -546,10 +547,22 @@ class Budget extends CommonDropdown{
                                 GROUP BY `$table`.`entities_id`";
                break;
 
+            case 'Project' :
+               $costtable   = getTableForItemType($item->getType().'Cost');
+               $query_infos = "SELECT SUM(`glpi_projectcosts`.`cost`) AS `sumvalue`,
+                                       `$table`.`entities_id`
+                               FROM `glpi_projectcosts`
+                               INNER JOIN `$table`
+                                    ON (`glpi_projectcosts`.`projects_id` = `$table`.`id`)
+                               WHERE `glpi_projectcosts`.`budgets_id` = '$budgets_id' ".
+                                      getEntitiesRestrictRequest(" AND", $table, "entities_id")."
+                                GROUP BY `$table`.`entities_id`";
+               break;
+
             case 'Ticket' :
             case 'Problem' :
             case 'Change' :
-               $costtable = getTableForItemType($item->getType().'Cost');
+               $costtable   = getTableForItemType($item->getType().'Cost');
                $query_infos = "SELECT SUM(`$costtable`.`actiontime`*`$costtable`.`cost_time`/".HOUR_TIMESTAMP."
                                           + `$costtable`.`cost_fixed`
                                           + `$costtable`.`cost_material`) AS `sumvalue`,

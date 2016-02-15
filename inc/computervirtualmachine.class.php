@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -65,14 +65,12 @@ class ComputerVirtualMachine extends CommonDBChild {
       if (!$withtemplate
           && ($item->getType() == 'Computer')
           && Computer::canView()) {
-
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                        countElementsInTable('glpi_computervirtualmachines',
-                                                             "computers_id = '".$item->getID()."'
-                                                                 AND `is_deleted`='0'"));
+            $nb = countElementsInTable('glpi_computervirtualmachines',
+                                       "computers_id = '".$item->getID()."' AND `is_deleted`='0'");
          }
-         return self::getTypeName(Session::getPluralNumber());
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }

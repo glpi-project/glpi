@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -108,6 +108,47 @@ class Document_Item extends CommonDBRelation{
          return false;
       }
       return parent::prepareInputForAdd($input);
+   }
+
+
+  /**
+    * @since version 0.90.2
+    *
+    * @see CommonDBTM::pre_deleteItem()
+   **/
+   function pre_deleteItem() {
+      global $DB;
+
+      // for mandatory fields
+      if ($this->fields['itemtype'] == 'Ticket') {
+         if ($DB->request('glpi_tickettemplatemandatoryfields', "`num` = 142")) {
+            $find = false;
+            // search if template for entity
+            foreach ($DB->request('glpi_tickettemplates',
+                  "`entities_id` = ".$_SESSION['glpiactive_entity']."
+                                    OR (`entities_id` = 0 AND `is_recursive` = 1)") as $data) {
+                                       $template = $data['id'];
+                                       // search if template for profile or category
+                                       if ($DB->request('glpi_profiles', "`tickettemplates_id` = ".$template)) {
+                                          $find = true;
+                                       } else if ($DB->request('glpi_itilcategories', "`tickettemplates_id` = ".$template)) {
+                                          $find = true;
+                                       }
+            }
+            if ($find) {
+               // refuse delete if only one document
+               if (countElementsInTable($this->getTable(),
+                     "`items_id` =". $this->fields['items_id'] ."
+                                          AND `itemtype` = 'Ticket'") == 1) {
+                                             $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
+                                                   _n('Document', 'Documents', 2));
+                                             Session::addMessageAfterRedirect($message, false, ERROR);
+                                             return false;
+               }
+            }
+         }
+      }
+      return true;
    }
 
 
@@ -212,20 +253,18 @@ class Document_Item extends CommonDBRelation{
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
+      $nbdoc = $nbitem = 0;
       switch ($item->getType()) {
          case 'Document' :
             $ong = array();
             if ($_SESSION['glpishow_count_on_tabs']) {
-               $ong[1] = self::createTabEntry(_n('Associated item', 'Associated items',
-                                              self::countForDocument($item)));
+               $nbdoc  = self::countForDocument($item);
+               $nbitem = self::countForItem($item);
             }
-            $ong[1] = _n('Associated item', 'Associated items', Session::getPluralNumber());
-
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               $ong[2] = self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
-                                                  self::countForItem($item));
-            }
-            $ong[2] = Document::getTypeName(Session::getPluralNumber());
+            $ong[1] = self::createTabEntry(_n('Associated item', 'Associated items',
+                                              Session::getPluralNumber()), $nbdoc);
+            $ong[2] = self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
+                                           $nbitem);
             return $ong;
 
          default :
@@ -236,10 +275,10 @@ class Document_Item extends CommonDBRelation{
                 || ($item->getType() == 'KnowbaseItem')) {
 
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
-                                              self::countForItem($item));
+                  $nbitem = self::countForItem($item);
                }
-               return Document::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(Document::getTypeName(Session::getPluralNumber()),
+                                           $nbitem);
             }
       }
       return '';
@@ -582,9 +621,9 @@ class Document_Item extends CommonDBRelation{
       if ($item->getType() == 'Ticket') {
          echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
       }
-      echo Html::file();
+      echo Html::file(array('multiple' => true));
       echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
-      echo "</tr>";
+      echo "<td></td></tr>";
    }
 
 
@@ -678,7 +717,7 @@ class Document_Item extends CommonDBRelation{
          if ($item->getType() == 'Ticket') {
             echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
          }
-         echo Html::file();
+         echo Html::file(array('multiple' => true));
          echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
          echo "<td class='center' width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add a new file')."\"

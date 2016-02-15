@@ -35,7 +35,7 @@
 * @brief
 */
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /// Rule class for Rights management
@@ -322,6 +322,11 @@ class RuleMailCollector extends Rule {
                          }
                       }
                   } // switch (field)
+               break;
+               default:
+                  //Allow plugins actions
+                  $executeaction = clone $this;
+                  $output = $executeaction->executePluginsActions($action, $output, $params);
                break;
             }
          }

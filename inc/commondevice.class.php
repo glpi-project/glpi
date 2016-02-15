@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -50,6 +50,8 @@ abstract class CommonDevice extends CommonDropdown {
 
    var $can_be_translated = false;
 
+   // From CommonDBTM
+   public $dohistory                   = true;
 
    static function canView() {
       return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE));
@@ -225,6 +227,18 @@ abstract class CommonDevice extends CommonDropdown {
       $tab[16]['field']        = 'comment';
       $tab[16]['name']         = __('Comments');
       $tab[16]['datatype']     = 'text';
+
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       $tab[80]['table']        = 'glpi_entities';
       $tab[80]['field']        = 'completename';
@@ -426,6 +440,7 @@ abstract class CommonDevice extends CommonDropdown {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(static::getItem_DeviceType(), $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }

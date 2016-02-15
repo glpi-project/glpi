@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -359,7 +359,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas['##ticket.item.model##']         = '';
 
       $item_ticket = new Item_Ticket();
-      $items = $item_ticket->find("`tickets_id` = ".$this->obj->fields['id']);
+      $items = $item_ticket->find("`tickets_id` = '".$item->getField('id')."'");
       $datas['items'] = array();
       if (count($items)) {
          foreach ($items as $val) {
@@ -775,7 +775,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                    'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
                    'problems'      => _n('Problem', 'Problems', Session::getPluralNumber()),
                    'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),
-                   'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()));
+                   'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()),
+                   'documents'     => _n('Document', 'Documents', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,

@@ -1,10 +1,10 @@
-#!/usr/bin/php
+#!/usr/bin/php -q
 <?php
 //============================================================+
 // File name   : tcpdf_addfont.php
 // Version     : 1.0.002
 // Begin       : 2013-05-13
-// Last Update : 2013-05-16
+// Last Update : 2013-08-05
 // Authors     : Nicola Asuni - Tecnick.com LTD - www.tecnick.com - info@tecnick.com
 //               Remi Collet
 // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
@@ -46,9 +46,9 @@ if (php_sapi_name() != 'cli') {
   exit(1);
 }
 
-$tcpdf_include_dirs = array(realpath(__DIR__.'/../tcpdf.php'), '/usr/share/php/tcpdf/tcpdf.php', '/usr/share/tcpdf/tcpdf.php', '/usr/share/php-tcpdf/tcpdf.php', '/var/www/tcpdf/tcpdf.php', '/var/www/html/tcpdf/tcpdf.php', '/usr/local/apache2/htdocs/tcpdf/tcpdf.php');
+$tcpdf_include_dirs = array(realpath(dirname(__FILE__).'/../tcpdf.php'), '/usr/share/php/tcpdf/tcpdf.php', '/usr/share/tcpdf/tcpdf.php', '/usr/share/php-tcpdf/tcpdf.php', '/var/www/tcpdf/tcpdf.php', '/var/www/html/tcpdf/tcpdf.php', '/usr/local/apache2/htdocs/tcpdf/tcpdf.php');
 foreach ($tcpdf_include_dirs as $tcpdf_include_path) {
-	if (file_exists($tcpdf_include_path)) {
+	if (@file_exists($tcpdf_include_path)) {
 		require_once($tcpdf_include_path);
 		break;
 	}

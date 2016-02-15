@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -35,7 +35,7 @@
 * @brief
 */
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /// Criteria Rule class
@@ -578,15 +578,17 @@ class RuleCriteria extends CommonDBChild {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (isset($options['parent']) && !empty($options['parent'])) {
-         $rule = $options['parent'];
-      }
+      // Yllen: you always have parent for criteria
+      $rule = $options['parent'];
 
       if ($ID > 0) {
          $this->check($ID, READ);
       } else {
          // Create item
          $options[static::$items_id] = $rule->getField('id');
+
+         //force itemtype of parent
+         static::$itemtype = get_class($rule);
 
          $this->check(-1, CREATE, $options);
       }

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -190,10 +190,32 @@ class Contract_Item extends CommonDBRelation{
     * @param $item   Contract object
    **/
    static function countForContract(Contract $item) {
+      global $DB;
 
-      $restrict = "`glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'";
+         $sql = "SELECT  DISTINCT `itemtype`
+              FROM `glpi_contracts_items`
+              WHERE `glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'";
 
-      return countElementsInTable(array('glpi_contracts_items'), $restrict);
+      $nb = 0;
+
+      foreach ($DB->request($sql) as $data) {
+         $itemt = getItemForItemtype($data['itemtype']);
+
+         $query = "SELECT COUNT(*) AS cpt
+                   FROM `glpi_contracts_items`, `".$itemt->getTable()."`
+                   WHERE `glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'
+                         AND `glpi_contracts_items`.`itemtype` = '".$data['itemtype']."'
+                         AND `".$itemt->getTable()."`.`id` = `glpi_contracts_items`.`items_id`";
+
+         if ($itemt->maybeTemplate()) {
+            $query .= " AND NOT `".$itemt->getTable()."`.`is_template`";
+         }
+
+         foreach($DB->request($query) as $row) {
+            $nb += $row['cpt'];
+         }
+      }
+      return $nb;
    }
 
 
@@ -265,20 +287,20 @@ class Contract_Item extends CommonDBRelation{
 
       // Can exists on template
       if (Contract::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Contract' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), self::countForContract($item));
+                  $nb = self::countForContract($item);
                }
-               return _n('Item', 'Items', Session::getPluralNumber());
+               return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
             default :
                if ($_SESSION['glpishow_count_on_tabs']
                    && in_array($item->getType(), $CFG_GLPI["contract_types"])) {
-                  return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), self::countForItem($item));
+                   $nb = self::countForItem($item);
                }
-               return _n('Contract', 'Contracts', Session::getPluralNumber());
-
+               return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';
@@ -377,8 +399,8 @@ class Contract_Item extends CommonDBRelation{
       $used      = array();
       if ($number = $DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $contracts[$data['id']] = $data;
-            $used[$data['id']]      = $data['id'];
+            $contracts[$data['id']]      = $data;
+            $used[$data['contracts_id']] = $data['contracts_id'];
          }
       }
 
@@ -523,8 +545,9 @@ class Contract_Item extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      $data = array();
+      $data    = array();
       $totalnb = 0;
+      $used    = array();
       for ($i=0 ; $i<$number ; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
          if (!($item = getItemForItemtype($itemtype))) {
@@ -566,16 +589,20 @@ class Contract_Item extends CommonDBRelation{
                                                              'searchtype' => 'contains',
                                                              'field'      => 29)));
 
-               $link = "<a href='". Toolbox::getItemTypeSearchURL($itemtype) . "?" .
-                                 Toolbox::append_params($opt)."'>" . __('Device list')."</a>";
+               $url  = $item::getSearchURL();
+               $url .= (strpos($url,'?') ? '&':'?');
+               $url .= Toolbox::append_params($opt);
+               $link = "<a href='$url'>" . __('Device list')."</a>";
 
                $data[$itemtype] = array('longlist' => true,
                                         'name'     => sprintf(__('%1$s: %2$s'),
                                                               $item->getTypeName($nb), $nb),
                                         'link'     => $link);
             } else if ($nb > 0) {
-               for ($prem=true ; $objdata=$DB->fetch_assoc($result_linked) ; $prem=false) {
+               $data[$itemtype] = array();
+               while ($objdata = $DB->fetch_assoc($result_linked)) {
                   $data[$itemtype][$objdata['id']] = $objdata;
+                  $used[$itemtype][$objdata['id']] = $objdata['id'];
                }
             }
             $totalnb += $nb;
@@ -601,7 +628,9 @@ class Contract_Item extends CommonDBRelation{
                                                                       $contract->fields['entities_id'])
                                                            :$contract->fields['entities_id']),
                                                      'checkright'
-                                                       => true));
+                                                       => true,
+                                                     'used'
+                                                       => $used));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "<input type='hidden' name='contracts_id' value='$instID'>";

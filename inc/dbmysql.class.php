@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -223,9 +223,7 @@ class DBmysql {
       if ($result && ($result->data_seek($i))
           && ($data = $result->fetch_array())
           && isset($data[$field])) {
-         return (Toolbox::get_magic_quotes_runtime()
-                    ? Toolbox::stripslashes_deep($data[$field])
-                    : $data[$field]);
+         return $data[$field];
       }
       return NULL;
    }
@@ -253,9 +251,7 @@ class DBmysql {
    **/
    function fetch_array($result) {
 
-      return (Toolbox::get_magic_quotes_runtime()
-                  ? Toolbox::stripslashes_deep($result->fetch_array())
-                  : $result->fetch_array());
+      return $result->fetch_array();
    }
 
 
@@ -268,9 +264,7 @@ class DBmysql {
    **/
    function fetch_row($result) {
 
-      return (Toolbox::get_magic_quotes_runtime()
-                  ? Toolbox::stripslashes_deep($result->fetch_row())
-                  : $result->fetch_row());
+      return $result->fetch_row();
    }
 
 
@@ -283,9 +277,7 @@ class DBmysql {
    **/
    function fetch_assoc($result) {
 
-      return (Toolbox::get_magic_quotes_runtime()
-                  ? Toolbox::stripslashes_deep($result->fetch_assoc())
-                  : $result->fetch_assoc());
+      return $result->fetch_assoc();
    }
 
 
@@ -486,11 +478,7 @@ class DBmysql {
              && (substr(rtrim($formattedQuery),-4) != "&gt;")
              && (substr(rtrim($formattedQuery),-4) != "160;")) {
 
-            if (Toolbox::get_magic_quotes_runtime()) {
-               $formattedQuerytorun = stripslashes($formattedQuery);
-            } else {
-               $formattedQuerytorun = $formattedQuery;
-            }
+            $formattedQuerytorun = $formattedQuery;
 
             // Do not use the $DB->query
             if ($this->query($formattedQuerytorun)) { //if no success continue to concatenate
@@ -672,10 +660,35 @@ class DBmysql {
 
       return $lock_ok;
    }
+
+   /**
+   * Check for crashed MySQL Tables
+   *
+   * @since version 0.90.2
+   *
+   * @return an array with supposed crashed table and check message
+   */
+   static public function checkForCrashedTables() {
+      global $DB;
+      $crashed_tables = array();
+
+      $result = $DB->list_tables();
+
+      while ($line = $DB->fetch_row($result)) {
+         $query  = "CHECK TABLE `".$line[0]."` FAST";
+         $result  = $DB->query($query);
+         if ($DB->numrows($result) > 0) {
+            $row = $DB->fetch_array($result);
+            if ($row['Msg_type'] != 'status' && $row['Msg_type'] != 'note') {
+               $crashed_tables[] = array('table'    => $row[0],
+                                         'Msg_type' => $row['Msg_type'],
+                                         'Msg_text' => $row['Msg_text']);
+            }
+         }
+      }
+      return $crashed_tables;
+   }
 }
-
-
-
 
 /**
  * Helper for simple query => see $DBmysql->requete
@@ -908,5 +921,6 @@ class DBmysqlIterator  implements Iterator {
    public function numrows() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
    }
+
 }
 ?>

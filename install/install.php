@@ -62,6 +62,11 @@ function header_html($etape) {
    echo "<meta name='DC.Language' content='fr' scheme='RFC1766'>";
    echo "<title>Setup GLPI</title>";
 
+   // LIBS
+   echo Html::script("../lib/jquery/js/jquery-1.10.2.min.js");
+   echo Html::script("../lib/jqueryplugins/select2/select2.min.js");
+   echo Html::css("../lib/jqueryplugins/select2/select2.css");
+
    // CSS
    echo "<link rel='stylesheet' href='../css/style_install.css' type='text/css' media='screen'>";
    echo "</head>";
@@ -82,9 +87,13 @@ function footer_html() {
 
 // choose language
 function choose_language() {
+   global $CFG_GLPI;
 
    echo "<form action='install.php' method='post'>";
    echo "<p class='center'>";
+
+   // fix missing param for js drodpown
+   $CFG_GLPI['ajax_limit_count'] = 15;
 
    Dropdown::showLanguages("language", array('value' => "en_GB"));
    echo "</p>";
@@ -146,7 +155,7 @@ function step0() {
 }
 
 
-//Step 1 checking some compatibilty issue and some write tests.
+//Step 1 checking some compatibility issue and some write tests.
 function step1($update) {
    global $CFG_GLPI;
 
@@ -265,19 +274,20 @@ function step3($host, $user, $password, $update) {
          echo "<p>".__('Please select a database:')."</p>";
          echo "<form action='install.php' method='post'>";
 
-         $DB_list = $link->query("SHOW DATABASES");
-         while ($row = $DB_list->fetch_array()) {
-            if (!in_array($row['Database'], array("information_schema",
-                                                  "mysql",
-                                                  "performance_schema") )) {
-               echo "<p>";
-               echo "<label class='radio'>";
-               echo "<input type='radio' name='databasename' value='". $row['Database']."'>";
+         if ($DB_list = $link->query("SHOW DATABASES")) {
+            while ($row = $DB_list->fetch_array()) {
+               if (!in_array($row['Database'], array("information_schema",
+                                                     "mysql",
+                                                     "performance_schema") )) {
+                  echo "<p>";
+                  echo "<label class='radio'>";
+                  echo "<input type='radio' name='databasename' value='". $row['Database']."'>";
 
-               echo "<span class='outer'><span class='inner'></span></span>";
-               echo $row['Database'];
-               echo " </label>";
-               echo " </p>";
+                  echo "<span class='outer'><span class='inner'></span></span>";
+                  echo $row['Database'];
+                  echo " </label>";
+                  echo " </p>";
+               }
             }
          }
 
@@ -365,7 +375,7 @@ function step4 ($databasename, $newdatabasename) {
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
       $DB = new DB();
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.90-empty.sql")) {
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.91-empty.sql")) {
          echo "Errors occurred inserting default database";
       }
       // update default language

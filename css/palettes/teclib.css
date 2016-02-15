@@ -9,6 +9,10 @@
    background: url(../../pics/login_logo_glpi.png) center no-repeat, #8E21A1; 
 }
 
+#display-login {
+   color: #FFF;
+}
+
 #text-login {
    background-color: #8E21A1;
    color: #FFF;
@@ -22,7 +26,7 @@
 
 /* ====== GENERAL ====== */
 
-a, a:link {
+a, a:link, .ui-widget-content a {
     color: #8E21A1;
 }
 
@@ -46,7 +50,7 @@ a, a:link {
 }
 
 #c_menu {
-   background-color: #F3F3F4;
+   background-color: #C6C6C8;
 }
 
 ul#menu a.itemP, ul#menu a.itemP1 {

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -40,10 +40,8 @@ if (strpos($_SERVER['PHP_SELF'],"searchoption.php")) {
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
-}
-
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+} else if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
 }
 
 Session::checkLoginUser();
@@ -81,14 +79,13 @@ if (isset($_POST["itemtype"])
       // get already get search options
       if (isset($actions['searchopt'])) {
          $searchopt = $actions['searchopt'];
-         // No name for clean array whith quotes
+         // No name for clean array with quotes
          unset($searchopt['name']);
          unset($actions['searchopt']);
       }
       $randsearch = Dropdown::showFromArray($fieldname."[".$_POST["num"]."][searchtype]",
                                             $actions,
-                                            array('value'  => $_POST["searchtype"],
-                                                  'width'  => '100%'));
+                                            array('value'  => $_POST["searchtype"]));
       $fieldsearch_id = Html::cleanId("dropdown_".$fieldname."[".$_POST["num"]."][searchtype]$randsearch");
    }
    echo "</td><td width='80%'>";

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -37,7 +37,7 @@
 
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 //!  ProjectTaskTeam Class
@@ -56,10 +56,10 @@ class ProjectTaskTeam extends CommonDBRelation {
    // From CommonDBRelation
    static public $itemtype_1             = 'ProjectTask';
    static public $items_id_1             = 'projecttasks_id';
-   
+
    static public $itemtype_2          = 'itemtype';
    static public $items_id_2          = 'items_id';
-   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;   
+   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
    static public $available_types      = array('User', 'Group', 'Supplier', 'Contact');
 
@@ -87,14 +87,14 @@ class ProjectTaskTeam extends CommonDBRelation {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate
-          && static::canView()) {
+      if (!$withtemplate && static::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'ProjectTask' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(1), $item->getTeamCount());
+                  $nb = $item->getTeamCount();
                }
-               return self::getTypeName(1);
+               return self::createTabEntry(self::getTypeName(1), $nb);
          }
       }
       return '';

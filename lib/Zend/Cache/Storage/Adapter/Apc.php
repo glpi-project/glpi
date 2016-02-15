@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -221,7 +221,7 @@ class Apc extends AbstractAdapter implements
         $result      = apc_fetch($internalKey, $success);
 
         if (!$success) {
-            return null;
+            return;
         }
 
         $casToken = $result;
@@ -361,16 +361,19 @@ class Apc extends AbstractAdapter implements
 
         $options   = $this->getOptions();
         $namespace = $options->getNamespace();
+        $prefixL   = 0;
+
         if ($namespace === '') {
             $pattern = '/^(' . implode('|', $keysRegExp) . ')' . '$/';
         } else {
             $prefix  = $namespace . $options->getNamespaceSeparator();
+            $prefixL = strlen($prefix);
             $pattern = '/^' . preg_quote($prefix, '/') . '(' . implode('|', $keysRegExp) . ')' . '$/';
         }
+
         $format  = APC_ITER_ALL ^ APC_ITER_VALUE ^ APC_ITER_TYPE ^ APC_ITER_REFCOUNT;
         $it      = new BaseApcIterator('user', $pattern, $format, 100, APC_LIST_ACTIVE);
         $result  = array();
-        $prefixL = strlen($prefix);
         foreach ($it as $internalKey => $metadata) {
             // @see http://pecl.php.net/bugs/bug.php?id=22564
             if (!apc_exists($internalKey)) {
@@ -378,7 +381,7 @@ class Apc extends AbstractAdapter implements
             }
 
             $this->normalizeMetadata($metadata);
-            $result[substr($internalKey, $prefixL)] = & $metadata;
+            $result[substr($internalKey, $prefixL)] = $metadata;
         }
 
         return $result;
@@ -717,20 +720,16 @@ class Apc extends AbstractAdapter implements
      */
     protected function normalizeMetadata(array & $metadata)
     {
-        $metadata['internal_key'] = $metadata['key'];
-        $metadata['ctime']        = $metadata['creation_time'];
-        $metadata['atime']        = $metadata['access_time'];
-        $metadata['rtime']        = $metadata['deletion_time'];
-        $metadata['size']         = $metadata['mem_size'];
-        $metadata['hits']         = $metadata['num_hits'];
-
-        unset(
-            $metadata['key'],
-            $metadata['creation_time'],
-            $metadata['access_time'],
-            $metadata['deletion_time'],
-            $metadata['mem_size'],
-            $metadata['num_hits']
+        $apcMetadata = $metadata;
+        $metadata = array(
+            'internal_key' => isset($metadata['key']) ? $metadata['key'] : $metadata['info'],
+            'atime'        => isset($metadata['access_time']) ? $metadata['access_time'] : $metadata['atime'],
+            'ctime'        => isset($metadata['creation_time']) ? $metadata['creation_time'] : $metadata['ctime'],
+            'mtime'        => isset($metadata['modified_time']) ? $metadata['modified_time'] : $metadata['mtime'],
+            'rtime'        => isset($metadata['deletion_time']) ? $metadata['deletion_time'] : $metadata['dtime'],
+            'size'         => $metadata['mem_size'],
+            'hits'         => isset($metadata['nhits']) ? $metadata['nhits'] : $metadata['num_hits'],
+            'ttl'          => $metadata['ttl'],
         );
     }
 
@@ -746,6 +745,10 @@ class Apc extends AbstractAdapter implements
      */
     protected function internalCheckAndSetItem(& $token, & $normalizedKey, & $value)
     {
-        return apc_cas($normalizedKey, $token, $value);
+        if (is_int($token) && is_int($value)) {
+            return apc_cas($normalizedKey, $token, $value);
+        }
+
+        return parent::internalCheckAndSetItem($token, $normalizedKey, $value);
     }
 }

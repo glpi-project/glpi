@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class DisplayPreference extends CommonDBTM {
@@ -376,7 +376,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='users_id' value='$IDuser'>";
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                      echo "<input type='image' name='up' value=\"".__s('Bring up')."\" src='".
-                            $CFG_GLPI["root_doc"]."/pics/puce-up2.png' alt=\"".
+                            $CFG_GLPI["root_doc"]."/pics/puce-up.png' alt=\"".
                             __s('Bring up')."\" title=\"".__s('Bring up')."\">";
                      Html::closeForm();
                      echo "</td>\n";
@@ -392,7 +392,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='users_id' value='$IDuser'>";
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                      echo "<input type='image' name='down' value=\"".__s('Bring down')."\" src='".
-                            $CFG_GLPI["root_doc"]."/pics/puce-down2.png' alt=\"".
+                            $CFG_GLPI["root_doc"]."/pics/puce-down.png' alt=\"".
                             __s('Bring down')."\" title=\"".__s('Bring down')."\">";
                      Html::closeForm();
                      echo "</td>\n";
@@ -408,7 +408,7 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                   echo "<input type='image' name='purge' value=\"".
                          _sx('button', 'Delete permanently')."\" src='".
-                         $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
+                         $CFG_GLPI["root_doc"]."/pics/delete.png' alt=\"".
                          _sx('button', 'Delete permanently')."\" title=\"".
                          _sx('button', 'Delete permanently')."\">";
                   Html::closeForm();
@@ -459,7 +459,7 @@ class DisplayPreference extends CommonDBTM {
       $result  = $DB->query($query);
       $numrows = $DB->numrows($result);
 
-      echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
+      echo "<table class='tab_cadre_fixehov'><tr><th colspan='4'>";
       echo __('Select default items to show')."</th></tr>\n";
 
       if ($global_write) {
@@ -532,8 +532,8 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='users_id' value='$IDuser'>";
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                      echo "<input type='image' name='up' value=\"".__s('Bring up')."\" src='".
-                            $CFG_GLPI["root_doc"]."/pics/puce-up2.png' alt=\"".
-                            __s('Bring up')."\"  title=\"".__s('Bring up')."\">";
+                            $CFG_GLPI["root_doc"]."/pics/puce-up.png' alt=\"".
+                            __s('Bring up')."\"  title=\"".__s('Bring up')."\" class='pointer'>";
                      Html::closeForm();
                      echo "</td>";
 
@@ -548,8 +548,8 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='hidden' name='users_id' value='$IDuser'>";
                      echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                      echo "<input type='image' name='down' value=\"".__s('Bring down')."\" src='".
-                            $CFG_GLPI["root_doc"]."/pics/puce-down2.png' alt=\"".
-                            __s('Bring down')."\" title=\"".__s('Bring down')."\">";
+                            $CFG_GLPI["root_doc"]."/pics/puce-down.png' alt=\"".
+                            __s('Bring down')."\" title=\"".__s('Bring down')."\" class='pointer'>";
                      Html::closeForm();
                      echo "</td>";
 
@@ -564,8 +564,8 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='hidden' name='itemtype' value='$itemtype'>";
                   echo "<input type='image' name='purge' value=\"".
                          _sx('button', 'Delete permanently')."\" src='".
-                         $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
-                         __s('Delete permanently')."\" title=\"". __s('Delete permanently')."\">";
+                         $CFG_GLPI["root_doc"]."/pics/delete.png' alt=\"".
+                         __s('Delete permanently')."\" title=\"". __s('Delete permanently')."\"  class='pointer'>";
                   Html::closeForm();
                   echo "</td>\n";
                }

@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -13,9 +13,15 @@ use Zend\Filter\FilterChain;
 
 class UnderscoreNamingStrategy implements NamingStrategyInterface
 {
+    /**
+     * @var FilterChain|null
+     */
     protected static $camelCaseToUnderscoreFilter;
 
-    protected static $underscoreToCamelCaseFilter;
+    /**
+     * @var FilterChain|null
+     */
+    protected static $underscoreToStudlyCaseFilter;
 
     /**
      * Remove underscores and capitalize letters
@@ -25,7 +31,7 @@ class UnderscoreNamingStrategy implements NamingStrategyInterface
      */
     public function hydrate($name)
     {
-        return $this->getUnderscoreToCamelCaseFilter()->filter($name);
+        return $this->getUnderscoreToStudlyCaseFilter()->filter($name);
     }
 
     /**
@@ -42,16 +48,17 @@ class UnderscoreNamingStrategy implements NamingStrategyInterface
     /**
      * @return FilterChain
      */
-    protected function getUnderscoreToCamelCaseFilter()
+    protected function getUnderscoreToStudlyCaseFilter()
     {
-        if (static::$underscoreToCamelCaseFilter instanceof FilterChain) {
-            return static::$underscoreToCamelCaseFilter;
+        if (static::$underscoreToStudlyCaseFilter instanceof FilterChain) {
+            return static::$underscoreToStudlyCaseFilter;
         }
 
         $filter = new FilterChain();
-        $filter->attachByName('WordUnderscoreToCamelCase');
-        static::$underscoreToCamelCaseFilter = $filter;
-        return $filter;
+
+        $filter->attachByName('WordUnderscoreToStudlyCase');
+
+        return static::$underscoreToStudlyCaseFilter = $filter;
     }
 
     /**
@@ -64,9 +71,10 @@ class UnderscoreNamingStrategy implements NamingStrategyInterface
         }
 
         $filter = new FilterChain();
+
         $filter->attachByName('WordCamelCaseToUnderscore');
         $filter->attachByName('StringToLower');
-        static::$camelCaseToUnderscoreFilter = $filter;
-        return $filter;
+
+        return static::$camelCaseToUnderscoreFilter = $filter;
     }
 }

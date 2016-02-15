@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -50,7 +50,7 @@ class Project extends CommonDBTM {
    public $dohistory                   = true;
    static protected $forward_entity_to = array('ProjectTask');
    static $rightname                   = 'project';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
    const READMY                        = 1;
    const READALL                       = 1024;
@@ -127,6 +127,7 @@ class Project extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (static::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case __CLASS__ :
                $ong    = array();
@@ -134,10 +135,8 @@ class Project extends CommonDBTM {
                   $nb = countElementsInTable($this->getTable(),
                                              "`".$this->getForeignKeyField()."` = '".
                                                 $item->getID()."'");
-                  $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
-               } else {
-                  $ong[1] = $this->getTypeName(Session::getPluralNumber());
                }
+               $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
                $ong[2] = __('GANTT');
                return $ong;
          }
@@ -506,6 +505,12 @@ class Project extends CommonDBTM {
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
@@ -515,6 +520,9 @@ class Project extends CommonDBTM {
       $tab[86]['field']          = 'is_recursive';
       $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 
@@ -1015,7 +1023,7 @@ class Project extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $ID      = $project->fields['id'];
-      $canedit = $project->canEdit($ID);
+      $canedit = $project->can($ID, UPDATE);
 
       echo "<div class='center'>";
 
@@ -1315,10 +1323,11 @@ class Project extends CommonDBTM {
          $months = array(__('January'), __('February'), __('March'), __('April'), __('May'),
                          __('June'), __('July'), __('August'), __('September'),
                          __('October'), __('November'), __('December'));
-         $dow    = array(substr(__('Sunday'),0,1), substr(__('Monday'),0,1),
-                         substr(__('Tuesday'),0,1), substr(__('Wednesday'),0,1),
-                         substr(__('Thursday'),0,1), substr(__('Friday'),0,1),
-                         substr(__('Saturday'),0,1)
+
+         $dow    = array(Toolbox::substr(__('Sunday'),0,1), Toolbox::substr(__('Monday'),0,1),
+                         Toolbox::substr(__('Tuesday'),0,1), Toolbox::substr(__('Wednesday'),0,1),
+                         Toolbox::substr(__('Thursday'),0,1), Toolbox::substr(__('Friday'),0,1),
+                         Toolbox::substr(__('Saturday'),0,1)
                      );
 
          echo "<div class='gantt'></div>";

@@ -22,9 +22,24 @@ Head over to the [docs](http://bgrins.github.io/spectrum) for more information. 
     });
     </script>
 
-### jQuery Plugin Repository
+### npm
 
-Spectrum is registered as a jQuery plugin on the jQuery plugin repository here: http://plugins.jquery.com/spectrum/
+Spectrum is registered as package with npm.  It can be installed with:
+
+    npm install spectrum-colorpicker
+
+### Bower
+
+Spectrum is registered as a package with [Bower](http://bower.io/), so it can be pulled down using:
+
+    bower install spectrum
+
+### Using spectrum with a CDN
+
+CDN provided by [cdnjs](https://cdnjs.com/libraries/spectrum)
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.1/spectrum.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.1/spectrum.min.css">
 
 ### Continuous Integration
 
@@ -40,8 +55,15 @@ If you'd like to run the development version, spectrum uses Grunt to automate th
 
     npm install -g grunt-cli
     npm install
+
+    # runs jshint and the unit test suite
+    grunt
+
+    # runs jshint, the unit test suite, and builds a minified version of the file.
     grunt build
 
 ### Internationalization
 
 If you are able to translate the text in the UI to another language, please do!  You can do so by either [filing a pull request](https://github.com/bgrins/spectrum/pulls) or [opening an issue]( https://github.com/bgrins/spectrum/issues) with the translation.  The existing languages are listed at: https://github.com/bgrins/spectrum/tree/master/i18n.
+
+For an example, see the [Dutch translation](i18n/jquery.spectrum-nl.js).

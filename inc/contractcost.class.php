@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /// ContractCost class
@@ -59,9 +59,10 @@ class ContractCost extends CommonDBChild {
    **/
    function prepareInputForAdd($input) {
 
-      if (empty($input['end_date'])
-          || ($input['end_date'] == 'NULL')
-          || ($input['end_date'] < $input['begin_date'])) {
+      if (!empty($input['begin_date'])
+          && (empty($input['end_date'])
+              || ($input['end_date'] == 'NULL')
+              || ($input['end_date'] < $input['begin_date']))) {
 
          $input['end_date'] = $input['begin_date'];
       }
@@ -75,9 +76,10 @@ class ContractCost extends CommonDBChild {
    **/
    function prepareInputForUpdate($input) {
 
-      if (empty($input['end_date'])
-          || ($input['end_date'] == 'NULL')
-          || ($input['end_date'] < $input['begin_date'])) {
+      if (!empty($input['begin_date'])
+          && (empty($input['end_date'])
+              || ($input['end_date'] == 'NULL')
+              || ($input['end_date'] < $input['begin_date']))) {
 
          $input['end_date'] = $input['begin_date'];
       }
@@ -94,13 +96,11 @@ class ContractCost extends CommonDBChild {
       // can exists for template
       if (($item->getType() == 'Contract')
           && Contract::canView()) {
-
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                        countElementsInTable('glpi_contractcosts',
-                                                             "contracts_id = '".$item->getID()."'"));
+            $nb = countElementsInTable('glpi_contractcosts', "contracts_id = '".$item->getID()."'");
          }
-         return self::getTypeName(Session::getPluralNumber());
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }

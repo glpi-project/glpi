@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 require_once GLPI_PASSWORD_COMPAT;
@@ -278,10 +278,7 @@ class Auth extends CommonGLPI {
    **/
    static function checkPassword($pass, $hash) {
 
-      $tmp = NULL;
-      if (PasswordCompat\binary\check()) {
-         $tmp = password_get_info($hash);
-      }
+      $tmp = password_get_info($hash);
 
       if (isset($tmp['algo']) && $tmp['algo']) {
          $ok = password_verify($pass, $hash);
@@ -312,11 +309,7 @@ class Auth extends CommonGLPI {
    **/
    static function needRehash($hash) {
 
-      if (PasswordCompat\binary\check()) {
-         return password_needs_rehash($hash, PASSWORD_DEFAULT);
-      }
-      // sha1(40) + salt(8)
-      return (strlen($hash) < 48);
+      return password_needs_rehash($hash, PASSWORD_DEFAULT);
    }
 
 
@@ -331,11 +324,7 @@ class Auth extends CommonGLPI {
    **/
    static function getPasswordHash($pass) {
 
-      if (PasswordCompat\binary\check()) {
-         return password_hash($pass, PASSWORD_DEFAULT);
-      }
-      $salt = sprintf("%08x", mt_rand());
-      return $salt.sha1($salt.$pass);
+      return password_hash($pass, PASSWORD_DEFAULT);
    }
 
 
@@ -701,7 +690,7 @@ class Auth extends CommonGLPI {
                      if (Toolbox::canUseLdap()) {
                         AuthLdap::tryLdapAuth($this, $login_name, $login_password,
                                               $this->user->fields["auths_id"],
-                                              $this->user->fields["user_dn"]);
+                                              toolbox::addslashes_deep($this->user->fields["user_dn"]));
                         if (!$this->auth_succeded && $this->user_deleted_ldap) {
                            $user_deleted_ldap = true;
                         }
@@ -834,9 +823,10 @@ class Auth extends CommonGLPI {
    static function dropdown($options=array()) {
       global $DB;
 
-      $p['name']    = 'auths_id';
-      $p['value']   = 0;
-      $p['display'] = true;
+      $p['name']                = 'auths_id';
+      $p['value']               = 0;
+      $p['display']             = true;
+      $p['display_emptychoice'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -844,7 +834,6 @@ class Auth extends CommonGLPI {
          }
       }
 
-      $methods[0]             = Dropdown::EMPTY_VALUE;
       $methods[self::DB_GLPI] = __('Authentication on GLPI database');
 
       $sql = "SELECT COUNT(*) AS cpt
@@ -1148,7 +1137,7 @@ class Auth extends CommonGLPI {
      * @return boolean
     **/
     static function isValidLogin($login) {
-       return preg_match( "/^[[:alnum:]@.\-_ ]+$/i", $login);
+       return preg_match( "/^[[:alnum:]@.\-_ ]+$/iu", $login);
     }
 
 

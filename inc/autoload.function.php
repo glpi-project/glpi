@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 include_once (GLPI_ROOT."/config/based_config.php");
@@ -359,7 +359,7 @@ spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
  *
  * @since version 0.84
  *
- * @package SimplePie
+ * From package SimplePie
 **/
 class SimplePie_Autoloader {
 

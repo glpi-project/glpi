@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -52,14 +52,15 @@ class GlobalEventManager
     /**
      * Trigger an event
      *
-     * @param  string $event
+     * @param  string        $event
      * @param  object|string $context
-     * @param  array|object $argv
+     * @param  array|object  $argv
+     * @param  null|callable $callback
      * @return ResponseCollection
      */
-    public static function trigger($event, $context, $argv = array())
+    public static function trigger($event, $context, $argv = array(), $callback = null)
     {
-        return static::getEventCollection()->trigger($event, $context, $argv);
+        return static::getEventCollection()->trigger($event, $context, $argv, $callback);
     }
 
     /**
@@ -71,10 +72,15 @@ class GlobalEventManager
      * @param  array|object $argv
      * @param  callable $callback
      * @return ResponseCollection
+     * @deprecated Please use trigger()
      */
     public static function triggerUntil($event, $context, $argv, $callback)
     {
-        return static::getEventCollection()->triggerUntil($event, $context, $argv, $callback);
+        trigger_error(
+            'This method is deprecated and will be removed in the future. Please use trigger() instead.',
+            E_USER_DEPRECATED
+        );
+        return static::trigger($event, $context, $argv, $callback);
     }
 
     /**

@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -12,9 +12,6 @@ namespace Zend\Stdlib;
 use Countable;
 use Iterator;
 
-/**
- * Priority list
- */
 class PriorityList implements Iterator, Countable
 {
     const EXTR_DATA     = 0x00000001;
@@ -23,7 +20,7 @@ class PriorityList implements Iterator, Countable
     /**
      * Internal list of all items.
      *
-     * @var array
+     * @var array[]
      */
     protected $items = array();
 
@@ -58,14 +55,18 @@ class PriorityList implements Iterator, Countable
      * Insert a new item.
      *
      * @param  string  $name
-     * @param  mixed $value
-     * @param  int $priority
+     * @param  mixed   $value
+     * @param  int     $priority
+     *
      * @return void
      */
     public function insert($name, $value, $priority = 0)
     {
+        if (!isset($this->items[$name])) {
+            $this->count++;
+        }
+
         $this->sorted = false;
-        $this->count++;
 
         $this->items[$name] = array(
             'data'     => $value,
@@ -74,13 +75,23 @@ class PriorityList implements Iterator, Countable
         );
     }
 
+    /**
+     * @param string $name
+     * @param int    $priority
+     *
+     * @return $this
+     *
+     * @throws \Exception
+     */
     public function setPriority($name, $priority)
     {
         if (!isset($this->items[$name])) {
             throw new \Exception("item $name not found");
         }
+
         $this->items[$name]['priority'] = (int) $priority;
-        $this->sorted = false;
+        $this->sorted                   = false;
+
         return $this;
     }
 
@@ -92,11 +103,10 @@ class PriorityList implements Iterator, Countable
      */
     public function remove($name)
     {
-        if (!isset($this->items[$name])) {
-            return;
+        if (isset($this->items[$name])) {
+            $this->count--;
         }
 
-        $this->count--;
         unset($this->items[$name]);
     }
 
@@ -107,7 +117,7 @@ class PriorityList implements Iterator, Countable
      */
     public function clear()
     {
-        $this->items = array();
+        $this->items  = array();
         $this->serial = 0;
         $this->count  = 0;
         $this->sorted = false;
@@ -122,7 +132,7 @@ class PriorityList implements Iterator, Countable
     public function get($name)
     {
         if (!isset($this->items[$name])) {
-            return null;
+            return;
         }
 
         return $this->items[$name]['data'];
@@ -158,25 +168,26 @@ class PriorityList implements Iterator, Countable
     /**
      * Get/Set serial order mode
      *
-     * @param bool $flag
+     * @param bool|null $flag
+     *
      * @return bool
      */
     public function isLIFO($flag = null)
     {
         if ($flag !== null) {
-            if (($flag = ($flag === true ? 1 : -1)) !== $this->isLIFO) {
-                $this->isLIFO = $flag;
+            $isLifo = $flag === true ? 1 : -1;
+
+            if ($isLifo !== $this->isLIFO) {
+                $this->isLIFO = $isLifo;
                 $this->sorted = false;
             }
         }
-        return $this->isLIFO === 1;
+
+        return 1 === $this->isLIFO;
     }
 
     /**
-     * rewind(): defined by Iterator interface.
-     *
-     * @see    Iterator::rewind()
-     * @return void
+     * {@inheritDoc}
      */
     public function rewind()
     {
@@ -185,56 +196,53 @@ class PriorityList implements Iterator, Countable
     }
 
     /**
-     * current(): defined by Iterator interface.
-     *
-     * @see    Iterator::current()
-     * @return mixed
+     * {@inheritDoc}
      */
     public function current()
     {
+        $this->sorted || $this->sort();
         $node = current($this->items);
-        return ($node !== false ? $node['data'] : false);
+
+        return $node ? $node['data'] : false;
     }
 
     /**
-     * key(): defined by Iterator interface.
-     *
-     * @see    Iterator::key()
-     * @return string
+     * {@inheritDoc}
      */
     public function key()
     {
+        $this->sorted || $this->sort();
         return key($this->items);
     }
 
     /**
-     * next(): defined by Iterator interface.
-     *
-     * @see    Iterator::next()
-     * @return mixed
+     * {@inheritDoc}
      */
     public function next()
     {
         $node = next($this->items);
-        return ($node !== false ? $node['data'] : false);
+
+        return $node ? $node['data'] : false;
     }
 
     /**
-     * valid(): defined by Iterator interface.
-     *
-     * @see    Iterator::valid()
-     * @return bool
+     * {@inheritDoc}
      */
     public function valid()
     {
-        return ($this->current() !== false);
+        return current($this->items) !== false;
     }
 
     /**
-     * count(): defined by Countable interface.
-     *
-     * @see    Countable::count()
-     * @return int
+     * @return self
+     */
+    public function getIterator()
+    {
+        return clone $this;
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function count()
     {
@@ -244,19 +252,22 @@ class PriorityList implements Iterator, Countable
     /**
      * Return list as array
      *
-     * @param type $raw
+     * @param int $flag
+     *
      * @return array
      */
     public function toArray($flag = self::EXTR_DATA)
     {
         $this->sort();
+
         if ($flag == self::EXTR_BOTH) {
             return $this->items;
         }
+
         return array_map(
-            ($flag == self::EXTR_PRIORITY)
-                ? function ($item) { return $item['priority']; }
-                : function ($item) { return $item['data']; },
+            function ($item) use ($flag) {
+                return ($flag == PriorityList::EXTR_PRIORITY) ? $item['priority'] : $item['data'];
+            },
             $this->items
         );
     }

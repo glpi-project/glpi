@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -62,10 +62,9 @@ class Rule
         $result = $this->evaluateAstPart($this->ast, abs((int) $number));
 
         if ($result < 0 || $result >= $this->numPlurals) {
-            throw new Exception\RangeException(sprintf(
-                'Calculated result %s is between 0 and %d',
-                $result, ($this->numPlurals - 1)
-            ));
+            throw new Exception\RangeException(
+                sprintf('Calculated result %s is between 0 and %d', $result, ($this->numPlurals - 1))
+            );
         }
 
         return $result;

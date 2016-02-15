@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 // Relation between CartridgeItem and PrinterModel
@@ -75,16 +75,14 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate
-          && Printer::canView()) {
+      if (!$withtemplate && Printer::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'CartridgeItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()),
-                                              self::countForCartridgeItem($item));
+                  $nb = self::countForCartridgeItem($item);
                }
-               return PrinterModel::getTypeName(Session::getPluralNumber());
-               break;
+               return self::createTabEntry(PrinterModel::getTypeName(Session::getPluralNumber()),$nb);
          }
       }
       return '';

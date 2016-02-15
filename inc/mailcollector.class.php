@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -277,12 +277,10 @@ class MailCollector  extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      if (version_compare(PHP_VERSION, '5.3.2', '>=')) {
-         echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
-         echo "<td>";
-         Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
-         echo "</td></tr>\n";
-      }
+      echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
+      echo "</td></tr>\n";
 
 
       if ($type != "pop") {
@@ -522,11 +520,13 @@ class MailCollector  extends CommonDBTM {
 
                $rejinput                      = array();
                $rejinput['mailcollectors_id'] = $mailgateID;
-               $rejinput['from']              = $tkt['_head']['from'];
-               $rejinput['to']                = $tkt['_head']['to'];
-               $rejinput['users_id']          = $tkt['_users_id_requester'];
-               $rejinput['subject']           = $this->textCleaner($tkt['_head']['subject']);
-               $rejinput['messageid']         = $tkt['_head']['message_id'];
+               if (!$tkt['_blacklisted']) {
+                  $rejinput['from']              = $tkt['_head']['from'];
+                  $rejinput['to']                = $tkt['_head']['to'];
+                  $rejinput['users_id']          = $tkt['_users_id_requester'];
+                  $rejinput['subject']           = $this->textCleaner($tkt['_head']['subject']);
+                  $rejinput['messageid']         = $tkt['_head']['message_id'];
+               }
                $rejinput['date']              = $_SESSION["glpi_currenttime"];
 
                // Manage blacklisted emails
@@ -677,11 +677,11 @@ class MailCollector  extends CommonDBTM {
          }
       }
       //  Who is the user ?
-      $tkt['_users_id_requester']                           = User::getOrImportByEmail($head['from']);
-      $tkt["_users_id_requester_notif"]['use_notification'] = 1;
+      $tkt['_users_id_requester']                              = User::getOrImportByEmail($head['from']);
+      $tkt["_users_id_requester_notif"]['use_notification'][0] = 1;
       // Set alternative email if user not found / used if anonymous mail creation is enable
       if (!$tkt['_users_id_requester']) {
-         $tkt["_users_id_requester_notif"]['alternative_email'] = $head['from'];
+         $tkt["_users_id_requester_notif"]['alternative_email'][0] = $head['from'];
       }
 
       // Add to and cc as additional observer if user found
@@ -761,7 +761,11 @@ class MailCollector  extends CommonDBTM {
                                                            array_merge($this->files, $this->altfiles),
                                                            $this->tags);
       }
-      $tkt['content'] = $this->cleanMailContent($tkt['content']);
+      $striptags = true;
+      if ($CFG_GLPI["use_rich_text"] && !isset($tkt['tickets_id'])) {
+         $striptags = false;
+      }
+      $tkt['content'] = $this->cleanMailContent($tkt['content'], $striptags);
 
       if ($is_html && !isset($tkt['tickets_id'])) {
          $tkt['content'] = nl2br($tkt['content']);
@@ -920,19 +924,25 @@ class MailCollector  extends CommonDBTM {
     * @since version 0.85
     *
     * @param $string text to clean
+    * @param $striptags remove html tags
     *
     * @return cleaned text
    **/
-   function cleanMailContent($string) {
+   function cleanMailContent($string, $striptags = true) {
       global $DB;
 
+      // delete html tags
+      if ($striptags) {
+         $string = Html::clean($string);
+      }
+
       // First clean HTML and XSS
-      $string = Toolbox::clean_cross_side_scripting_deep(Html::clean($string));
+      $string = Toolbox::clean_cross_side_scripting_deep($string);
 
       $rand   = mt_rand();
       // Move line breaks to special CHARS
       $string = str_replace(array("<br>"),"==$rand==", $string);
-      
+
       $string = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $string);
 
       // Wrap content for blacklisted items
@@ -1040,8 +1050,7 @@ class MailCollector  extends CommonDBTM {
    **/
    function connect() {
 
-      if (version_compare(PHP_VERSION, '5.3.2', '<')
-          || $this->fields['use_kerberos']) {
+      if ($this->fields['use_kerberos']) {
          $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
                                      Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                      CL_EXPUNGE, 1);
@@ -1151,8 +1160,12 @@ class MailCollector  extends CommonDBTM {
          $ccs = array();
          if (count($mail_header->to)) {
             foreach ($mail_header->to as $data) {
-               $tos[] = Toolbox::strtolower($data->mailbox).'@'.$data->host;
-            }
+               $mailto = Toolbox::strtolower($data->mailbox).'@'.$data->host;
+               if ($mailto === $this->fields['name']) {
+                  $to = $data;
+               }
+               $tos[] = $mailto;
+                           }
          }
          if (isset($mail_header->cc) && count($mail_header->cc)) {
             foreach ($mail_header->cc as $data) {
@@ -1167,7 +1180,7 @@ class MailCollector  extends CommonDBTM {
 
          $mail_details = array('from'       => Toolbox::strtolower($sender->mailbox).'@'.$sender->host,
                                'subject'    => $mail_header->subject,
-                               'to'         => Toolbox::strtolower($to->mailbox).'@'.$to->host,
+                               'to'         =>  Toolbox::strtolower($to->mailbox).'@'.$to->host,
                                'message_id' => $mail_header->message_id,
                                'tos'        => $tos,
                                'ccs'        => $ccs,
@@ -1292,6 +1305,40 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
+    * Summary of getDecodedFetchbody
+    * used to get decoded part from email
+    * @param mixed $structure
+    * @param mixed $mid
+    * @param mixed $part 
+    * @return bool|string
+    */
+   private function getDecodedFetchbody($structure, $mid, $part) {
+      if ($message=imap_fetchbody($this->marubox, $mid, $part)) {
+         switch ($structure->encoding) {
+            case 1 :
+               $message = imap_8bit($message);
+               break;
+
+            case 2 :
+               $message = imap_binary($message);
+               break;
+
+            case 3 :
+               $message = imap_base64($message);
+               break;
+
+            case 4 :
+               $message = quoted_printable_decode($message);
+               break;
+         }
+         return $message;
+      }
+
+      return false;
+   }
+
+
+   /**
     * Private function : Recursivly get attached documents
     *
     * @param $mid          message id
@@ -1312,6 +1359,11 @@ class MailCollector  extends CommonDBTM {
          }
 
       } else {
+         // fix monoparted mail
+         if ($part == "") {
+            $part = 1;
+         }
+
          $filename = '';
 
          if ($structure->ifdparameters) {
@@ -1347,6 +1399,14 @@ class MailCollector  extends CommonDBTM {
              && $structure->subtype) {
             // Embeded image come without filename - generate trivial one
             $filename = "image_$part.".$structure->subtype;
+         } elseif (empty($filename) && $structure->type==2 && $structure->subtype) {
+             // Embeded email comes without filename - try to get "Subject:" or generate trivial one
+             $filename = "msg_$part.EML"; // default trivial one :)!
+             if ( ($message=$this->getDecodedFetchbody($structure, $mid, $part)) 
+                && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches)) ) {
+                     $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";  
+                     $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;                    
+             }
          }
 
          // if no filename found, ignore this part
@@ -1385,25 +1445,7 @@ class MailCollector  extends CommonDBTM {
             return false;
          }
 
-         if ($message = imap_fetchbody($this->marubox, $mid, $part)) {
-            switch ($structure->encoding) {
-               case 1 :
-                  $message = imap_8bit($message);
-                  break;
-
-               case 2 :
-                  $message = imap_binary($message);
-                  break;
-
-               case 3 :
-                  $message = imap_base64($message);
-                  break;
-
-               case 4 :
-                  $message = quoted_printable_decode($message);
-                  break;
-            }
-
+         if (($structure->type==2 && $structure->subtype) || $message = $this->getDecodedFetchbody($structure, $mid, $part)) {
             if (file_put_contents($path.$filename, $message)) {
                $this->files[$filename] = $filename;
                // If embeded image, we add a tag

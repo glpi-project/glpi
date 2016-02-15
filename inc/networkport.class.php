@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -582,8 +582,7 @@ class NetworkPort extends CommonDBChild {
             }
          }
 
-         $c_network = $table->addHeader('Internet', _n(__('Internet information'),
-                                                       __('Internet information'), Session::getPluralNumber()));
+         $c_network = $table->addHeader('Internet', __('Internet information'));
          $c_network->setHTMLClass('center');
 
       } else {
@@ -1071,12 +1070,13 @@ class NetworkPort extends CommonDBChild {
       global $CFG_GLPI;
 
       // Can exists on template
+      $nb = 0;
       if (NetworkEquipment::canView()) {
          if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), self::countForItem($item));
+               $nb = self::countForItem($item);
             }
-            return (self::getTypeName(Session::getPluralNumber()));
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
 

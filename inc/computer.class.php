@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -55,7 +55,7 @@ class Computer extends CommonDBTM {
    var $devices                        = array();
 
    static $rightname                   = 'computer';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
 
 
@@ -95,24 +95,24 @@ class Computer extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Item_Devices', $ong, $options);
-      $this->addStandardTab('ComputerDisk', $ong, $options);
-      $this->addStandardTab('Computer_SoftwareVersion', $ong, $options);
-      $this->addStandardTab('Computer_Item', $ong, $options);
-      $this->addStandardTab('NetworkPort', $ong, $options);
-      $this->addStandardTab('Infocom', $ong, $options);
-      $this->addStandardTab('Contract_Item', $ong, $options);
-      $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('ComputerVirtualMachine', $ong, $options);
-      $this->addStandardTab('Ticket', $ong, $options);
-      $this->addStandardTab('Item_Problem', $ong, $options);
-      $this->addStandardTab('Change_Item', $ong, $options);
-      $this->addStandardTab('Link', $ong, $options);
-      $this->addStandardTab('Lock', $ong, $options);
-      $this->addStandardTab('Notepad', $ong, $options);
-      $this->addStandardTab('Reservation', $ong, $options);
-      $this->addStandardTab('Log', $ong, $options);
+      $this->addDefaultFormTab($ong)
+         ->addStandardTab('Item_Devices', $ong, $options)
+         ->addStandardTab('ComputerDisk', $ong, $options)
+         ->addStandardTab('Computer_SoftwareVersion', $ong, $options)
+         ->addStandardTab('Computer_Item', $ong, $options)
+         ->addStandardTab('NetworkPort', $ong, $options)
+         ->addStandardTab('Infocom', $ong, $options)
+         ->addStandardTab('Contract_Item', $ong, $options)
+         ->addStandardTab('Document_Item', $ong, $options)
+         ->addStandardTab('ComputerVirtualMachine', $ong, $options)
+         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Problem', $ong, $options)
+         ->addStandardTab('Change_Item', $ong, $options)
+         ->addStandardTab('Link', $ong, $options)
+         ->addStandardTab('Lock', $ong, $options)
+         ->addStandardTab('Notepad', $ong, $options)
+         ->addStandardTab('Reservation', $ong, $options)
+         ->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -580,8 +580,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
 
       if ($inventory_show) {
-         echo "<td rowspan='4'>".__('Automatic inventory')."</td>";
-         echo "<td rowspan='4'>";
+         echo "<td rowspan='4' colspan='2'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
       }
@@ -593,26 +592,6 @@ class Computer extends CommonDBTM {
       Html::autocompletionTextField($this, 'uuid');
       echo "</td>";
       echo "</tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
-          && !empty($this->fields['template_name'])) {
-         echo "<span class='small_space'>";
-         printf(__('Created from the template %s'), $this->fields['template_name']);
-         echo "</span>";
-      } else {
-         echo "&nbsp;";
-      }
-      echo "</td><td>";
-      if (isset($options['withtemplate']) && $options['withtemplate']) {
-         //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
-      } else {
-         //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-      }
-      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Update Source')."</td>";
@@ -781,6 +760,12 @@ class Computer extends CommonDBTM {
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[32]['table']          = 'glpi_networks';
       $tab[32]['field']          = 'name';
       $tab[32]['name']           = __('Network');
@@ -814,6 +799,9 @@ class Computer extends CommonDBTM {
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['datatype']       = 'dropdown';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 
@@ -943,7 +931,6 @@ class Computer extends CommonDBTM {
       $tab[34]['computation']    = "(SUM(TABLE.`capacity`) / COUNT(TABLE.`id`))
                                        * COUNT(DISTINCT TABLE.`id`)";
 
-
       $tab[39]['table']          = 'glpi_devicepowersupplies';
       $tab[39]['field']          = 'designation';
       $tab[39]['name']           = __('Power supply');
@@ -953,6 +940,17 @@ class Computer extends CommonDBTM {
       $tab[39]['datatype']       = 'string';
       $tab[39]['joinparams']     = array('beforejoin'
                                           => array('table'      => 'glpi_items_devicepowersupplies',
+                                                   'joinparams' => $items_device_joinparams));
+
+      $tab[95]['table']          = 'glpi_devicepcis';
+      $tab[95]['field']          = 'designation';
+      $tab[95]['name']           = __('Other component');
+      $tab[95]['forcegroupby']   = true;
+      $tab[95]['usehaving']      = true;
+      $tab[95]['massiveaction']  = false;
+      $tab[95]['datatype']       = 'string';
+      $tab[95]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_items_devicepcis',
                                                    'joinparams' => $items_device_joinparams));
 
       $tab['disk']               = _n('Volume', 'Volumes', Session::getPluralNumber());

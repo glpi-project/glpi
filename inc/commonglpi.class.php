@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -192,7 +192,7 @@ class CommonGLPI {
     * @param &$ong       array defined tab array
     * @param $options    array of options (for withtemplate)
     *
-    *  @return nothing (set the tab array)
+    * @return $this
    **/
    function addStandardTab($itemtype, array &$ong, array $options) {
 
@@ -218,6 +218,7 @@ class CommonGLPI {
             }
             break;
       }
+      return $this;
    }
 
 
@@ -225,15 +226,18 @@ class CommonGLPI {
     * @since version 0.85
     *
     * @param $ong   array
+    *
+    * @return $this
    **/
    function addDefaultFormTab(array &$ong) {
       global $CFG_GLPI;
 
-      if (in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])
-          || !in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))
+      if (self::isLayoutExcludedPage()
+          || !self::isLayoutWithMain()
           || !method_exists($this, "showForm")) {
          $ong[$this->getType().'$main'] = $this->getTypeName(1);
       }
+      return $this;
    }
 
 
@@ -577,7 +581,7 @@ class CommonGLPI {
 
       $itemtype = get_called_class();
       $link     = $itemtype::getFormURL($full);
-      $link    .= (strpos($link,'?') ? '&amp;':'?').'id=' . $id;
+      $link    .= (strpos($link,'?') ? '&':'?').'id=' . $id;
       return $link;
    }
 
@@ -595,18 +599,21 @@ class CommonGLPI {
          return false;
       }
 
-      $ong   = $this->defineTabs();
+      $ong   = $this->defineAllTabs();
       $class = "main_form";
       if (count($ong) == 0) {
          $class .= " no_tab";
       }
-      if (!isset($_GET['id']) || ($_GET['id'] <= 0)) {
+      if (!isset($_GET['id'])
+          || (($_GET['id'] <= 0) && !$this instanceof Entity )) {
          $class .= " create_form";
       } else {
          $class .= " modify_form";
       }
+      echo "<div class='form_content'>";
       echo "<div class='$class'>";
-      $this->showForm($_REQUEST['id'], $_REQUEST);
+      $this->showForm($options['id'], $options);
+      echo "</div>";
       echo "</div>";
    }
 
@@ -676,6 +683,7 @@ class CommonGLPI {
          $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options,'&amp;');
          $extraparam     = "&".Toolbox::append_params($cleaned_options);
       }
+      echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";
       echo "<div id='tabspanel' class='center-h'></div>";
       $current_tab = 0;
       $onglets     = $this->defineAllTabs($options);
@@ -705,9 +713,11 @@ class CommonGLPI {
                               'params' => "_target=$target&amp;_itemtype=".$this->getType().
                                           "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml");
          }
+
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), $ID,
                           $this->taborientation);
       }
+      echo "</div>";
    }
 
 
@@ -826,13 +836,7 @@ class CommonGLPI {
 
          echo "<td width='200px'><a href=\"".$glpilisturl."\">";
          if ($glpilisttitle) {
-            if (Toolbox::strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
-               $glpilisttitle = Toolbox::substr($glpilisttitle, 0,
-                                                $_SESSION['glpidropdown_chars_limit'])
-                                . "&hellip;";
-            }
             echo $glpilisttitle;
-
          } else {
             _e('List');
          }
@@ -856,7 +860,7 @@ class CommonGLPI {
 
          }
          echo "<td class='b big'>";
-         if (!in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+         if (!self::isLayoutWithMain() || self::isLayoutExcludedPage()) {
             echo $name;
          }
          echo "</td>";
@@ -991,13 +995,7 @@ class CommonGLPI {
          echo "<li><a href=\"".$glpilisturl."\">";
 
          if ($glpilisttitle) {
-            if (Toolbox::strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
-               $glpilisttitle = Toolbox::substr($glpilisttitle, 0,
-                                                $_SESSION['glpidropdown_chars_limit'])
-                                . "&hellip;";
-            }
             echo $glpilisttitle;
-
          } else {
             _e('List');
          }
@@ -1058,6 +1056,39 @@ class CommonGLPI {
    }
 
 
+   /**
+    * check if main is always display in current Layout
+    *
+    * @since version 0.90
+    *
+    * @return bool
+    */
+   public static function isLayoutWithMain() {
+      return (isset($_SESSION['glpilayout']) && in_array($_SESSION['glpilayout'], array('classic', 'vsplit')));
+   }
+
+
+   /**
+    * check if page is excluded for splitted layouts
+    *
+    * @since version 0.90
+    *
+    * @return bool
+    */
+   public static function isLayoutExcludedPage() {
+      global $CFG_GLPI;
+
+      if (basename($_SERVER['SCRIPT_NAME']) == "updatecurrenttab.php") {
+         $base_referer = basename($_SERVER['HTTP_REFERER']);
+         $base_referer = explode("?", $base_referer);
+         $base_referer = $base_referer[0];
+         return in_array($base_referer, $CFG_GLPI['layout_excluded_pages']);
+      }
+
+      return in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages']);
+   }
+
+
    /** Display item with tabs
     *
     * @since version 0.85
@@ -1074,15 +1105,26 @@ class CommonGLPI {
          }
       }
 
-      $this->showNavigationHeader($options);
-      if (!in_array(basename($_SERVER['SCRIPT_NAME']), $CFG_GLPI['layout_excluded_pages'])
-          && in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+      // in case of lefttab layout, we couldn't see "right error" message
+      if ($this->get_item_to_display_tab) {
+         if (isset($_GET["id"]) && $_GET["id"] && !$this->can($_GET["id"], READ)) {
+            html::displayRightError();
+         }
+      }
 
-         if (!isset($_REQUEST['id'])) {
-            $_REQUEST['id'] = "";
+      // try to lock object
+      // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
+      ObjectLock::manageObjectLock( get_class( $this ), $options ) ;
+
+      $this->showNavigationHeader($options);
+      if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {
+
+         if (!isset($options['id'])) {
+            $options['id'] = 0;
          }
          $this->showPrimaryForm($options);
       }
+
       $this->showTabsContent($options);
    }
 

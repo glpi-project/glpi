@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -357,6 +357,7 @@ class ReservationItem extends CommonDBChild {
       $ri         = new self();
       $ok         = false;
       $showentity = Session::isMultiEntitiesMode();
+      $values     = array();
 
       if (isset($_SESSION['glpi_saved']['ReservationItem'])) {
          $_POST = $_SESSION['glpi_saved']['ReservationItem'];
@@ -421,17 +422,16 @@ class ReservationItem extends CommonDBChild {
 
       $result = $DB->query($sql);
 
-      $values[0] = Dropdown::EMPTY_VALUE;
       while ($data = $DB->fetch_assoc($result)) {
          $values[$data['itemtype']] = $data['itemtype']::getTypeName();
       }
 
-      $query = "SELECT `glpi_peripheraltypes`.`name`, `glpi_reservationitems`.`id`
-                FROM `glpi_reservationitems`
+      $query = "SELECT `glpi_peripheraltypes`.`name`, `glpi_peripheraltypes`.`id`
+                FROM `glpi_peripheraltypes`
                 LEFT JOIN `glpi_peripherals`
-                  ON `glpi_reservationitems`.`items_id` = `glpi_peripherals`.`id`
-                LEFT JOIN `glpi_peripheraltypes`
                   ON `glpi_peripherals`.`peripheraltypes_id` = `glpi_peripheraltypes`.`id`
+                LEFT JOIN `glpi_reservationitems`
+                  ON `glpi_reservationitems`.`items_id` = `glpi_peripherals`.`id`
                 WHERE `itemtype` = 'Peripheral'
                       AND `is_active` = 1
                       AND `peripheraltypes_id`".
@@ -445,7 +445,8 @@ class ReservationItem extends CommonDBChild {
       }
 
       Dropdown::showFromArray("reservation_types", $values,
-                              array('value' => $_POST['reservation_types']));
+                              array('value'               => $_POST['reservation_types'],
+                                    'display_emptychoice' => true));
 
       echo "</td></tr>";
       echo "</table>";
@@ -483,7 +484,10 @@ class ReservationItem extends CommonDBChild {
          if (isset($_POST["reservation_types"]) && !empty($_POST["reservation_types"])) {
             $tmp = explode('#', $_POST["reservation_types"]);
             $where .= " AND `glpi_reservationitems`.`itemtype` = '".$tmp[0]."'";
-            if (isset($tmp[1]) && ($tmp[0] == 'Peripheral')) {
+            if (isset($tmp[1]) && ($tmp[0] == 'Peripheral')
+                && ($itemtype == 'Peripheral')) {
+               $left  .= " LEFT JOIN `glpi_peripheraltypes`
+                              ON (`glpi_peripherals`.`peripheraltypes_id` = `glpi_peripheraltypes`.`id`)";
                $where .= " AND `$itemtable`.`peripheraltypes_id` = '".$tmp[1]."'";
             }
          }
@@ -493,13 +497,13 @@ class ReservationItem extends CommonDBChild {
                           `$itemtable`.`name` AS name,
                           `$itemtable`.`entities_id` AS entities_id,
                           $otherserial,
-                          `glpi_locations`.`completename` AS location,
+                          `glpi_locations`.`id` AS location,
                           `glpi_reservationitems`.`items_id` AS items_id
                    FROM `glpi_reservationitems`
-                   $left
                    INNER JOIN `$itemtable`
                         ON (`glpi_reservationitems`.`itemtype` = '$itemtype'
                             AND `glpi_reservationitems`.`items_id` = `$itemtable`.`id`)
+                   $left
                    LEFT JOIN `glpi_locations`
                         ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)
                    WHERE `glpi_reservationitems`.`is_active` = '1'
@@ -529,7 +533,7 @@ class ReservationItem extends CommonDBChild {
                }
                echo "<td><a href='reservation.php?reservationitems_id=".$row['id']."'>".
                           sprintf(__('%1$s - %2$s'), $typename, $row["name"])."</a></td>";
-               echo "<td>".$row["location"]."</td>";
+               echo "<td>".Dropdown::getDropdownName("glpi_locations", $row["location"])."</td>";
                echo "<td>".nl2br($row["comment"])."</td>";
                if ($showentity) {
                   echo "<td>".Dropdown::getDropdownName("glpi_entities", $row["entities_id"]).

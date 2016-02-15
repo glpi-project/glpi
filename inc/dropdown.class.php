@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class Dropdown {
@@ -71,10 +71,12 @@ class Dropdown {
     *    - emptylabel           : Empty choice's label (default self::EMPTY_VALUE)
     *    - display_emptychoice  : Display emptychoice ? (default true)
     *    - display              : boolean / display or get string (default true)
-    *    - width                : specific width needed (default 80%)
+    *    - width                : specific width needed (default auto adaptive)
     *    - permit_select_parent : boolean / for tree dropdown permit to see parent items
     *                                       not available by default (default false)
     *    - specific_tags        : array of HTML5 tags to add the the field
+    *    - url                  : url of the ajax php code which should return the json data to show in
+    *                                       the dropdown
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -93,7 +95,7 @@ class Dropdown {
       $params['entity']               = -1;
       $params['entity_sons']          = false;
       $params['toupdate']             = '';
-      $params['width']                = '80%';
+      $params['width']                = '';
       $params['used']                 = array();
       $params['toadd']                = array();
       $params['on_change']            = '';
@@ -109,6 +111,7 @@ class Dropdown {
       $params['permit_select_parent'] = false;
       $params['addicon']              = true;
       $params['specific_tags']        = array();
+      $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php" ;
 
 
       if (is_array($options) && count($options)) {
@@ -119,7 +122,6 @@ class Dropdown {
       $output       = '';
       $name         = $params['emptylabel'];
       $comment      = "";
-      $limit_length = $_SESSION["glpidropdown_chars_limit"];
 
       // Check default value for dropdown : need to be a numeric
       if ((strlen($params['value']) == 0) || !is_numeric($params['value']) && $params['value'] != 'mygroups') {
@@ -136,24 +138,6 @@ class Dropdown {
          if ($tmpname["name"] != "&nbsp;") {
             $name    = $tmpname["name"];
             $comment = $tmpname["comment"];
-
-            if (Toolbox::strlen($name) > $_SESSION["glpidropdown_chars_limit"]) {
-               if ($item instanceof CommonTreeDropdown) {
-                  $pos          = strrpos($name, ">");
-                  $limit_length = max(Toolbox::strlen($name) - $pos,
-                                      $_SESSION["glpidropdown_chars_limit"]);
-
-                  if (Toolbox::strlen($name) > $limit_length) {
-                     $name = "...".Toolbox::substr($name, -$limit_length);
-                  }
-
-               } else {
-                  $limit_length = Toolbox::strlen($name);
-               }
-
-            } else {
-               $limit_length = $_SESSION["glpidropdown_chars_limit"];
-            }
          }
       }
 
@@ -190,14 +174,13 @@ class Dropdown {
                  'used'                 => $params['used'],
                  'toadd'                => $params['toadd'],
                  'entity_restrict'      => (is_array($params['entity']) ? json_encode(array_values($params['entity'])) : $params['entity']),
-                 'limit'                => $limit_length,
                  'on_change'            => $params['on_change'],
                  'permit_select_parent' => $params['permit_select_parent'],
                  'specific_tags'        => $params['specific_tags'],
                 );
 
       $output = Html::jsAjaxDropdown($params['name'], $field_id,
-                                     $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",
+                                     $params['url'],
                                      $p);
       // Display comment
       if ($params['comments']) {
@@ -467,21 +450,25 @@ class Dropdown {
     * @param $types     array of types to display
     * @param $options   array Already used items ID: not to display in dropdown
     * Parameters which could be used in options array :
-    *    - value      : integer / preselected value (default '')
-    *    - used       : array / Already used items ID: not to display in dropdown (default empty)
-    *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
-    *    - display    : boolean if false get string
+    *    - value               : integer / preselected value (default '')
+    *    - used                : array / Already used items ID: not to display in dropdown (default empty)
+    *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
+    *    - display             : boolean if false get string
+    *    - width               : specific width needed (default not set)
+    *    - emptylabel          : empty label if empty displayed (default self::EMPTY_VALUE)
+    *    - display_emptychoice : display empty choice (default false)
     *
     * @return nothing (print out an HTML select box)
    **/
    static function showItemTypes($name, $types=array(), $options=array()) {
       global $CFG_GLPI;
 
-      $params['value']        = '';
-      $params['used']         = array();
-      $params['emptylabel']   = self::EMPTY_VALUE;
-      $params['display']      = true;
-      $params['width']        = '80%';
+      $params['value']               = '';
+      $params['used']                = array();
+      $params['emptylabel']          = self::EMPTY_VALUE;
+      $params['display']             = true;
+      $params['width']               = '80%';
+      $params['display_emptychoice'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -489,20 +476,16 @@ class Dropdown {
          }
       }
 
-      $options = array('' => $params['emptylabel']);
-
+      $items = array();
       if (count($types)) {
          foreach ($types as $type) {
             if ($item = getItemForItemtype($type)) {
-               $options[$type] = $item->getTypeName(1);
+               $items[$type] = $item->getTypeName(1);
             }
          }
       }
       asort($options);
-      return self::showFromArray($name, $options, array('value'   => $params['value'],
-                                                        'used'    => $params['used'],
-                                                        'width'   => $params['width'],
-                                                        'display' => $params['display']));
+      return self::showFromArray($name, $items, $params);
    }
 
 
@@ -565,14 +548,14 @@ class Dropdown {
             closedir($dh);
             sort($files);
 
-            $values = array('' => self::EMPTY_VALUE);
             foreach ($files as $file) {
                if (preg_match("/\.png$/i",$file)) {
                   $values[$file] = $file;
                }
             }
             Dropdown::showFromArray($myname, $values,
-                                    array('value' => $value));
+                                    array('value'               => $value,
+                                          'display_emptychoice' => true));
 
          } else {
             //TRANS: %s is the store path
@@ -676,7 +659,7 @@ class Dropdown {
       }
 
       $params['value'] = $value;
-      $params['width'] = "58px";
+      $params['width'] = "65px";
       return self::showFromArray($name, $options, $params);
    }
 
@@ -745,6 +728,7 @@ class Dropdown {
                     __('Assistance')
                         => array('ITILCategory'     => _n('Ticket category', 'Ticket categories', Session::getPluralNumber()),
                                  'TaskCategory'     => _n('Task category','Task categories', Session::getPluralNumber()),
+                                 'TaskTemplate'     => _n('Task template','Task templates', Session::getPluralNumber()),
                                  'SolutionType'     => _n('Solution type', 'Solution types', Session::getPluralNumber()),
                                  'RequestType'      => _n('Request source', 'Request sources', Session::getPluralNumber()),
                                  'SolutionTemplate' => _n('Solution template',
@@ -913,7 +897,6 @@ class Dropdown {
 
       echo "<table class='tab_cadre' width='50%'>";
       echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$title."&nbsp; ";
-      $values   = array('' => self::EMPTY_VALUE);
       $selected = '';
 
       foreach ($optgroup as $label => $dp) {
@@ -928,7 +911,8 @@ class Dropdown {
       }
       Dropdown::showFromArray('dpmenu', $values,
                               array('on_change' => "window.location.href=this.options[this.selectedIndex].value",
-                                    'value'     => $selected));
+                                    'value'               => $selected,
+                                    'display_emptychoice' => true));
 
       echo "</td></tr>";
       echo "</table><br>";
@@ -986,15 +970,6 @@ class Dropdown {
    static function showLanguages($myname, $options=array()) {
       global $CFG_GLPI;
 
-      $values = array();
-      if (isset($options['display_emptychoice']) && ($options['display_emptychoice'])) {
-         if (isset($options['emptylabel'])) {
-            $values[''] = $options['emptylabel'];
-         } else {
-            $values[''] = self::EMPTY_VALUE;
-         }
-      }
-
       foreach ($CFG_GLPI["languages"] as $key => $val) {
          if (isset($val[1]) && is_file(GLPI_ROOT ."/locales/".$val[1])) {
             $values[$key] = $val[0];
@@ -1029,7 +1004,7 @@ class Dropdown {
     *     - value              default value (default '')
     *     - limit_planning     limit planning to the configuration range (default false)
     *     - display   boolean  if false get string
-    *     - width              specific width needed (default 80%)
+    *     - width              specific width needed (default auto adaptive)
     *     - step               step time (defaut config GLPI)
     *
     * @since 0.85 update prototype
@@ -1041,7 +1016,7 @@ class Dropdown {
       $p['value']          = '';
       $p['limit_planning'] = false;
       $p['display']        = true;
-      $p['width']          = '80%';
+      $p['width']          = '';
       $p['step']           = $CFG_GLPI["time_step"];
 
       if (is_array($options) && count($options)) {
@@ -1157,15 +1132,14 @@ class Dropdown {
          }
       }
       asort($options);
-      if ($params['display_emptychoice']) {
-         $options = array_merge(array(0=>$params['emptylabel']), $options);
-      }
 
       if (count($options)) {
          return Dropdown::showFromArray($params['name'], $options,
-                                        array('value'     => $params['value'],
-                                              'on_change' => $params['on_change'],
-                                              'toupdate'  => $params['toupdate'],));
+                                        array('value'               => $params['value'],
+                                              'on_change'           => $params['on_change'],
+                                              'toupdate'            => $params['toupdate'],
+                                              'display_emptychoice' => $params['display_emptychoice'],
+                                              'emptylabel'          => $params['emptylabel']));
       }
       return 0;
    }
@@ -1223,7 +1197,8 @@ class Dropdown {
     *    - showItemSpecificity : given an item, the AJAX file to open if there is special
     *                            treatment. For instance, select a Item_Device* for CommonDevice
     *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
-   *
+    *    - used                : array / Already used items ID: not to display in dropdown (default empty)
+    *
     * @return randomized value used to generate HTML IDs
    **/
    static function showSelectItemFromItemtypes(array $options=array()) {
@@ -1239,6 +1214,7 @@ class Dropdown {
       $params['checkright']          = false;
       $params['showItemSpecificity'] = '';
       $params['emptylabel']          = self::EMPTY_VALUE;
+      $params['used']                = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1259,7 +1235,10 @@ class Dropdown {
 
          // manage condition
          if ($params['onlyglobal']) {
-            $p['condition'] = static::addNewCondition("`is_global` = 1");  ;
+            $p['condition'] = static::addNewCondition("`is_global` = 1");
+         }
+         if ($params['used']) {
+            $p['used'] = $params['used'];
          }
 
          $field_id = Html::cleanId("dropdown_".$params['itemtype_name'].$rand);
@@ -1315,7 +1294,7 @@ class Dropdown {
       $p['toadd']     = array();
       $p['unit']      = '';
       $p['display']   = true;
-      $p['width']     = '80%';
+      $p['width']     = '';
       $p['on_change'] = '';
       $p['used']      = array();
 
@@ -1462,6 +1441,7 @@ class Dropdown {
       global $CFG_GLPI;
 
       $params['value']               = 0;
+      $params['rand']                = mt_rand();
       $params['min']                 = 0;
       $params['max']                 = DAY_TIMESTAMP;
       $params['step']                = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
@@ -1498,9 +1478,6 @@ class Dropdown {
       }
 
       $values = array();
-      if ($params['display_emptychoice']) {
-         $values = array(0 => $params['emptylabel']);
-      }
 
       if ($params['value']) {
          $values[$params['value']] = '';
@@ -1561,9 +1538,13 @@ class Dropdown {
             }
          }
       }
-      return Dropdown::showFromArray($myname, $values, array('value'   => $params['value'],
-                                                             'display' => $params['display'],
-                                                             'width'   => $params['width'],));
+      return Dropdown::showFromArray($myname, $values,
+                                     array('value'                => $params['value'],
+                                            'display'             => $params['display'],
+                                            'width'               => $params['width'],
+                                            'display_emptychoice' => $params['display_emptychoice'],
+                                            'rand'                => $params['rand'],
+                                            'emptylabel'          => $params['emptylabel']));
    }
 
 
@@ -1671,17 +1652,19 @@ class Dropdown {
    **/
    static function showFromArray($name, array $elements, $options=array()) {
 
-      $param['value']           = '';
-      $param['values']          = array('');
-      $param['used']            = array();
-      $param['readonly']        = false;
-      $param['on_change']       = '';
-      $param['width']           = '';
-      $param['multiple']        = false;
-      $param['size']            = 1;
-      $param['display']         = true;
-      $param['other']           = false;
-      $param['rand']            = mt_rand();
+      $param['value']               = '';
+      $param['values']              = array('');
+      $param['used']                = array();
+      $param['readonly']            = false;
+      $param['on_change']           = '';
+      $param['width']               = '';
+      $param['multiple']            = false;
+      $param['size']                = 1;
+      $param['display']             = true;
+      $param['other']               = false;
+      $param['rand']                = mt_rand();
+      $param['emptylabel']          = self::EMPTY_VALUE;
+      $param['display_emptychoice'] = false;
 
       if (is_array($options) && count($options)) {
          if (isset($options['value']) && strlen($options['value'])) {
@@ -1707,6 +1690,11 @@ class Dropdown {
          }
       }
 
+      if ($param["display_emptychoice"]) {
+         //array_unshift($elements, $param['emptylabel']); // cannot be used as it doesn't preserve keys when they are numbers
+         $elements = array( 0 => $param['emptylabel'] ) + $elements ;
+      }
+
       if ($param["multiple"]) {
          $field_name = $name."[]";
       } else {
@@ -1726,7 +1714,6 @@ class Dropdown {
          }
          $output .= implode('<br>',$to_display);
       } else {
-
 
          $output  .= "<select name='$field_name' id='$field_id'";
 
@@ -1752,7 +1739,6 @@ class Dropdown {
                   $max_option_size = strlen($opt_goup);
                }
                $output .= "<optgroup label=\"$opt_goup\">";
-
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
                      $output .= "<option value='".$key2."'";
@@ -2038,8 +2024,7 @@ class Dropdown {
       ksort($values);
       return self::showFromArray('glpilist_limit', $values,
                                  array('on_change' => $onchange,
-                                       'value'     => $list_limit,
-                                       'width'     => '20%'));
+                                       'value'     => $list_limit));
    }
 
 }

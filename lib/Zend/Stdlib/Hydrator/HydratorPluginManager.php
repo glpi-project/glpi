@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -27,6 +27,15 @@ class HydratorPluginManager extends AbstractPluginManager
     protected $shareByDefault = false;
 
     /**
+     * Default aliases
+     *
+     * @var array
+     */
+    protected $aliases = array(
+        'delegatinghydrator' => 'Zend\Stdlib\Hydrator\DelegatingHydrator',
+    );
+
+    /**
      * Default set of adapters
      *
      * @var array
@@ -36,6 +45,15 @@ class HydratorPluginManager extends AbstractPluginManager
         'classmethods'      => 'Zend\Stdlib\Hydrator\ClassMethods',
         'objectproperty'    => 'Zend\Stdlib\Hydrator\ObjectProperty',
         'reflection'        => 'Zend\Stdlib\Hydrator\Reflection'
+    );
+
+    /**
+     * Default factory-based adapters
+     *
+     * @var array
+     */
+    protected $factories = array(
+        'Zend\Stdlib\Hydrator\DelegatingHydrator' => 'Zend\Stdlib\Hydrator\DelegatingHydratorFactory',
     );
 
     /**

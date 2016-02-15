@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -212,13 +212,13 @@ class Change_Item extends CommonDBRelation{
             $nb            = $DB->numrows($result_linked);
 
             for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-               $link     = Toolbox::getItemTypeFormURL($itemtype);
+               $link     = $itemtype::getFormURLWithID($data['id']);
                $linkname = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data["name"])) {
                   $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
                }
-               $name = "<a href=\"".$link."?id=".$data["id"]."\">".$linkname."</a>";
+               $name = "<a href=\"".$link."\">".$linkname."</a>";
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
@@ -263,44 +263,38 @@ class Change_Item extends CommonDBRelation{
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Change' :
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_changes_items',
                                              "`changes_id` = '".$item->getID()."'");
                }
-
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+
             case 'User' :
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
-                
                   $nb = countDistinctElementsInTable('glpi_changes_users','changes_id',
                                              "`users_id` = '".$item->getID()."'");
                }
-
                return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+
             case 'Group' :
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countDistinctElementsInTable('glpi_changes_groups','changes_id',
                                              "`groups_id` = '".$item->getID()."'");
                }
-
                return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+
             case 'Supplier' :
-               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countDistinctElementsInTable('glpi_changes_suppliers','changes_id',
                                              "`suppliers_id` = '".$item->getID()."'");
                }
-
                return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
-               
+
             default :
                if (Session::haveRight("change", Change::READALL)) {
-                  $nb = 0;
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Direct one
                      $nb = countElementsInTable('glpi_changes_items',
@@ -321,7 +315,7 @@ class Change_Item extends CommonDBRelation{
                   }
                   return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
                }
-               
+
          }
       }
       return '';

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -753,18 +753,29 @@ class Reservation extends CommonDBChild {
          echo "</td></tr>\n";
 
       } else {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td class='top center'>";
-         echo "<input type='submit' name='purge' value=\""._sx('button', 'Delete permanently')."\"
-                class='submit'>";
-         if ($resa->fields["group"] > 0) {
-            echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".
-                  __s('Delete all rehearsals');
+         if (($resa->fields["users_id"] == Session::getLoginUserID())
+             || Session::haveRightsOr(static::$rightname, array(PURGE, UPDATE))) {
+            echo "<tr class='tab_bg_2'>";
+            if (($resa->fields["users_id"] == Session::getLoginUserID())
+                || Session::haveRight(static::$rightname, PURGE)) {
+               echo "<td class='top center'>";
+               echo "<input type='submit' name='purge' value=\""._sx('button', 'Delete permanently')."\"
+                      class='submit'>";
+               if ($resa->fields["group"] > 0) {
+                  echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".
+                             __s('Delete all rehearsals');
+               }
+               echo "</td>";
+            }
+            if (($resa->fields["users_id"] == Session::getLoginUserID())
+                || Session::haveRight(static::$rightname, UPDATE)) {
+              echo "<td class='top center'>";
+              echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
+                     class='submit'>";
+               echo "</td>";
+            }
+            echo "</tr>\n";
          }
-         echo "</td><td class='top center'>";
-         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
-                class='submit'>";
-         echo "</td></tr>\n";
       }
       echo "</table>";
       Html::closeForm();

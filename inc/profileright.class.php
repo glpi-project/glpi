@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -234,24 +234,29 @@ class ProfileRight extends CommonDBChild {
 
 
    /**
+    * Update the rights of a profile (static since 0.90.1)
+    *
     * @param $profiles_id
     * @param $rights         array
     */
-   function updateProfileRights($profiles_id, array $rights=array()) {
+   public static function updateProfileRights($profiles_id, array $rights=array()) {
 
+      $me = new self();
       foreach ($rights as $name => $right) {
-         if ($this->getFromDBByQuery("WHERE `profiles_id` = '$profiles_id'
-                                            AND `name` = '$name'")) {
+         if (isset($right)) {
+            if ($me->getFromDBByQuery("WHERE `profiles_id` = '$profiles_id'
+                                             AND `name` = '$name'")) {
 
-            $input = array('id'          => $this->getID(),
-                           'rights'      => $right);
-            $this->update($input);
+               $input = array('id'          => $me->getID(),
+                              'rights'      => $right);
+               $me->update($input);
 
-         } else {
-            $input = array('profiles_id' => $profiles_id,
-                           'name'        => $name,
-                           'rights'      => $right);
-            $this->add($input);
+            } else {
+               $input = array('profiles_id' => $profiles_id,
+                              'name'        => $name,
+                              'rights'      => $right);
+               $me->add($input);
+            }
          }
       }
 

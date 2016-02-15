@@ -3,7 +3,7 @@
  * Zend Framework (http://framework.zend.com/)
  *
  * @link      http://github.com/zendframework/zf2 for the canonical source repository
- * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
@@ -81,8 +81,8 @@ class CurrencyFormat extends AbstractHelper
         $number,
         $currencyCode = null,
         $showDecimals = null,
-        $locale       = null,
-        $pattern      = null
+        $locale = null,
+        $pattern = null
     ) {
         if (null === $locale) {
             $locale = $this->getLocale();
@@ -136,9 +136,7 @@ class CurrencyFormat extends AbstractHelper
             $this->formatters[$formatterId]->setAttribute(NumberFormatter::FRACTION_DIGITS, 0);
         }
 
-        return $this->formatters[$formatterId]->formatCurrency(
-            $number, $currencyCode
-        );
+        return $this->formatters[$formatterId]->formatCurrency($number, $currencyCode);
     }
 
     /**
@@ -162,7 +160,6 @@ class CurrencyFormat extends AbstractHelper
     {
         return $this->currencyCode;
     }
-
 
     /**
      * Set the currency pattern

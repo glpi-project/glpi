@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 // Current version of GLPI
-define("GLPI_VERSION","0.90");
+define("GLPI_VERSION","0.91");
 define("GLPI_DEMO_MODE","0");
 
 define("GLPI_USE_CSRF_CHECK", "1");
@@ -52,6 +52,7 @@ define("PURGE",      16);
 define("ALLSTANDARDRIGHT", 31);
 define("READNOTE",   32);
 define("UPDATENOTE", 64);
+define("UNLOCK",     128);
 
 // dictionnaries
 // 0 Name - 1 lang file - 2 extjs - 3 tiny_mce - 4 english lang name
@@ -106,7 +107,7 @@ $CFG_GLPI['languages'] =  //| NAME in native lang    |LANG FILE  |jquery| tinymc
             'zh_TW' => array('繁體中文',              'zh_TW.mo','zh-TW', 'zh','chinese'    , 2),);
 
 $DEFAULT_PLURAL_NUMBER = 2;
-            
+
 // Init to store glpi itemtype / tables link
 $CFG_GLPI['glpitables'] = array();
 
@@ -170,7 +171,7 @@ $CFG_GLPI["asset_types"]                  = array('Computer', 'Monitor', 'Networ
 $CFG_GLPI["project_asset_types"]          = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software');
 
-                                                  
+
 $CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Change', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract',
                                                   'Document', 'Entity', 'KnowbaseItem', 'Monitor',
@@ -244,12 +245,12 @@ $CFG_GLPI['device_types'] = array('DeviceMotherboard', 'DeviceProcessor', 'Devic
                                   'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
                                   'DevicePci', 'DeviceCase', 'DevicePowerSupply');
 
-$CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem', 'Contract',
-                                                  'Crontask', 'DBConnection', 'FieldUnicity', 'Infocom',
-                                                  'MailCollector', 'PlanningRecall',
-                                                  'Problem', 'Project', 'ProjectTask',
-                                                  'Reservation', 'SoftwareLicense',
-                                                  'Ticket', 'User');
+$CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem',
+                                                  'Contract', 'Crontask', 'DBConnection',
+                                                  'FieldUnicity', 'Infocom', 'MailCollector',
+                                                  'ObjectLock', 'PlanningRecall', 'Problem',
+                                                  'Project', 'ProjectTask', 'Reservation',
+                                                  'SoftwareLicense', 'Ticket', 'User');
 
 $CFG_GLPI["notificationmethods_types"]    = array('NotificationMail');
 
@@ -268,7 +269,7 @@ $CFG_GLPI["rulecollections_types"]        = array('RuleImportEntityCollection',
 
 // Items which can planned something
 $CFG_GLPI['planning_types']               = array('ChangeTask', 'ProblemTask', 'Reminder',
-                                                  'TicketTask');
+                                                  'TicketTask', 'ProjectTask');
 
 $CFG_GLPI["globalsearch_types"]           = array('Computer', 'Contact', 'Document',  'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
@@ -282,26 +283,41 @@ $CFG_GLPI["decimal_number"] = 2;
 $CFG_GLPI["debug_sql"] = $CFG_GLPI["debug_vars"] = $CFG_GLPI["debug_lang"] = 1;
 
 
-
 // User Prefs fields which override $CFG_GLPI config
 $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_format',
                                      'default_requesttypes_id', 'display_count_on_home',
-                                     'dropdown_chars_limit', 'duedatecritical_color',
+                                     'duedatecritical_color',
                                      'duedatecritical_less', 'duedatecritical_unit',
                                      'duedateok_color', 'duedatewarning_color',
                                      'duedatewarning_less', 'duedatewarning_unit',
                                      'followup_private', 'is_ids_visible',
-                                     'keep_devices_when_purging_item', 'language',
-                                     'list_limit', 'names_format', 'notification_to_myself',
+                                     'keep_devices_when_purging_item', 'language', 'list_limit',
+                                     'lock_autolock_mode', 'lock_directunlock_notification',
+                                     'names_format', 'notification_to_myself',
                                      'number_format', 'pdffont', 'priority_1',
                                      'priority_2', 'priority_3', 'priority_4', 'priority_5',
                                      'priority_6', 'refresh_ticket_list', 'set_default_tech',
-                                     'show_count_on_tabs', 'show_jobs_at_login', 'task_private',
-                                     'task_state', 'use_flat_dropdowntree', 'layout', 
-                                     'ticket_timeline', 'ticket_timeline_keep_replaced_tabs', 
-                                     'palette');
+                                     'set_default_requester', 'show_count_on_tabs',
+                                     'show_jobs_at_login', 'task_private', 'task_state',
+                                     'use_flat_dropdowntree', 'layout', 'ticket_timeline',
+                                     'ticket_timeline_keep_replaced_tabs', 'palette');
 
+$CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
+                                           "knowbaseitem.php",
+                                           "knowbaseitem.form.php",
+                                           "bookmark.php",
+                                           "displaypreference.form.php",
+                                           "central.php",
+                                           "preference.php",
+                                           "config.form.php",
+                                           "common.tabs.php",
+                                           "transfer.form.php",
+                                           "entity.form.php");
 
-$CFG_GLPI['layout_excluded_pages'] = array("profile.form.php", "knowbaseitem.form.php");
-
+$CFG_GLPI['lock_lockable_objects'] = array('Budget',  'Change', 'Contact', 'Contract', 'Document',
+                                           'CartridgeItem', 'Computer', 'ConsumableItem', 'Entity',
+                                           'Group', 'KnowbaseItem', 'Link', 'Monitor',
+                                           'NetworkEquipment', 'NetworkName', 'Peripheral', 'Phone',
+                                           'Printer', 'Problem', 'Profile', 'Project', 'Reminder',
+                                           'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User') ;
 ?>

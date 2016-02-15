@@ -37,7 +37,7 @@
 
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class Transfer extends CommonDBTM {
@@ -595,7 +595,9 @@ class Transfer extends CommonDBTM {
          foreach ($CFG_GLPI["contract_types"] as $itemtype) {
             if (isset($this->item_search[$itemtype])) {
                $itemtable = getTableForItemType($itemtype);
-
+               $this->item_search[$itemtype]
+                     = $this->createSearchConditionUsingArray($this->needtobe_transfer[$itemtype]);
+                     
                // Clean DB
                $query = "SELECT `glpi_contracts_items`.`id`
                          FROM `glpi_contracts_items`
@@ -3230,7 +3232,7 @@ class Transfer extends CommonDBTM {
       global $CFG_GLPI;
 
       $edit_form = true;
-      if (!strpos($_SERVER['HTTP_REFERER'],"transfer.form.php")) {
+      if (strpos($_SERVER['HTTP_REFERER'],"transfer.form.php") === false) {
          $edit_form = false;
       }
 

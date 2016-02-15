@@ -159,21 +159,14 @@ function current_time() {
 function get_content($DB, $table, $from, $limit) {
 
    $content = "";
-   $gmqr    = "";
 
    $result = $DB->query("SELECT *
                          FROM `$table`
                          LIMIT ".intval($from).",".intval($limit));
    if ($result) {
       $num_fields = $DB->num_fields($result);
-      if (Toolbox::get_magic_quotes_runtime()) {
-         $gmqr = true;
-      }
 
       while ($row = $DB->fetch_row($result)) {
-         if ($gmqr) {
-            $row = Toolbox::addslashes_deep($row);
-         }
          $insert = "INSERT INTO `$table` VALUES (";
 
          for( $j=0 ; $j<$num_fields ; $j++) {
@@ -281,9 +274,6 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
          // do not strip comments due to problems when # in begin of a data line
          $formattedQuery .= $buffer;
-         if (Toolbox::get_magic_quotes_runtime()) {
-            $formattedQuery = stripslashes($formattedQuery);
-         }
 
          if (substr(rtrim($formattedQuery),-1) == ";") {
             // Do not use the $DB->query
@@ -307,9 +297,6 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
          // do not strip comments due to problems when # in begin of a data line
          $formattedQuery .= $buffer;
-         if (Toolbox::get_magic_quotes_runtime()) {
-            $formattedQuery = stripslashes($formattedQuery);
-         }
 
          if (substr(rtrim($formattedQuery),-1) == ";") {
             // Do not use the $DB->query

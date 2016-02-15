@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -49,7 +49,7 @@ class Contract extends CommonDBTM {
    static protected $forward_entity_to = array('ContractCost');
 
    static $rightname                   = 'contract';
-   protected $usenotepadrights         = true;
+   protected $usenotepad               = true;
 
 
 
@@ -97,6 +97,7 @@ class Contract extends CommonDBTM {
 
       return $ong;
    }
+
 
    /**
     * @since version 0.83.3
@@ -204,8 +205,7 @@ class Contract extends CommonDBTM {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
                                                $this->fields["duration"], 0, true);
       }
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Notice')."</td><td>";
@@ -242,18 +242,18 @@ class Contract extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Invoice period')."</td>";
       echo "<td>";
-      Dropdown::showNumber("billing", array('value' => $this->fields["billing"],
-                                            'min'   => 12,
-                                            'max'   => 60,
-                                            'step'  => 12,
-                                            'toadd' => array(0 => Dropdown::EMPTY_VALUE,
-                                                             1 => sprintf(_n('%d month', '%d months', 1), 1),
-                                                             2 => sprintf(_n('%d month', '%d months', 2), 2),
-                                                             3 => sprintf(_n('%d month', '%d months', 3), 3),
-                                                             6 => sprintf(_n('%d month', '%d months', 6), 6)),
-                                            'unit'  => 'month'));
-      echo "</td>";
-      echo "</tr>";
+      Dropdown::showNumber("billing",
+                           array('value' => $this->fields["billing"],
+                                 'min'   => 12,
+                                 'max'   => 60,
+                                 'step'  => 12,
+                                 'toadd' => array(0 => Dropdown::EMPTY_VALUE,
+                                                  1 => sprintf(_n('%d month', '%d months', 1), 1),
+                                                  2 => sprintf(_n('%d month', '%d months', 2), 2),
+                                                  3 => sprintf(_n('%d month', '%d months', 3), 3),
+                                                  6 => sprintf(_n('%d month', '%d months', 6), 6)),
+                                 'unit'  => 'month'));
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Renewal')."</td><td>";
       self::dropdownContractRenewal("renewal", $this->fields["renewal"]);
@@ -264,15 +264,13 @@ class Contract extends CommonDBTM {
                                                       'max'   => 200,
                                                       'step'  => 1,
                                                       'toadd' => array(0 => __('Unlimited'))));
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
 
       if (Entity::getUsedConfig("use_contracts_alert", $this->fields["entities_id"])) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Email alarms')."</td>";
          echo "<td>";
-
          self::dropdownAlert(array('name'  => "alert",
                                    'value' => $this->fields["alert"]));
          Alert::displayLastAlert(__CLASS__, $ID);
@@ -291,9 +289,8 @@ class Contract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('on week')."</td>";
       echo "<td colspan='3'>";
-      echo "<table width='100%'><tr><td width='20%'>";
-      echo "&nbsp;";
-      echo "</td><td width='20%'>";
+      echo "<table width='100%'><tr><td width='20%'>&nbsp;</td>";
+      echo "<td width='20%'>";
       echo "<span class='small_space'>".__('Start')."</span>";
       echo "</td><td width='20%'>";
       Dropdown::showHours("week_begin_hour", array('value' => $this->fields["week_begin_hour"]));
@@ -311,11 +308,13 @@ class Contract extends CommonDBTM {
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('Start')."</span>";
       echo "</td><td width='20%'>";
-      Dropdown::showHours("saturday_begin_hour", array('value' => $this->fields["saturday_begin_hour"]));
+      Dropdown::showHours("saturday_begin_hour",
+                          array('value' => $this->fields["saturday_begin_hour"]));
       echo "</td><td width='20%'>";
       echo "<span class='small_space'>".__('End')."</span>";
       echo "</td><td width='20%'>";
-      Dropdown::showHours("saturday_end_hour", array('value' => $this->fields["saturday_end_hour"]));
+      Dropdown::showHours("saturday_end_hour",
+                          array('value' => $this->fields["saturday_end_hour"]));
       echo "</td></tr></table>";
       echo "</td></tr>";
 
@@ -380,13 +379,13 @@ class Contract extends CommonDBTM {
       $tab[30]['joinparams']     = $joinparams;
       $tab[30]['datatype']       = 'string';
 
-      $tab[129]['table']          = 'glpi_contracttypes';
-      $tab[129]['field']          = 'name';
-      $tab[129]['name']           = sprintf(__('%1$s - %2$s'), __('Contract'), __('Type'));
-      $tab[129]['datatype']       = 'dropdown';
-      $tab[129]['massiveaction']  = false;
-      $tab[129]['joinparams']     = array('beforejoin' => array('table' => 'glpi_contracts',
-                                          'joinparams' => $joinparams));
+      $tab[129]['table']         = 'glpi_contracttypes';
+      $tab[129]['field']         = 'name';
+      $tab[129]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Type'));
+      $tab[129]['datatype']      = 'dropdown';
+      $tab[129]['massiveaction'] = false;
+      $tab[129]['joinparams']    = array('beforejoin' => array('table' => 'glpi_contracts',
+                                         'joinparams' => $joinparams));
 
       $tab[130]['table']         = 'glpi_contracts';
       $tab[130]['field']         = 'duration';
@@ -607,6 +606,17 @@ class Contract extends CommonDBTM {
       $tab[6]['max']                = 120;
       $tab[6]['unit']               = 'month';
 
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       $tab[20]['table']             = $this->getTable();
       $tab[20]['field']             = 'end_date';
@@ -724,13 +734,18 @@ class Contract extends CommonDBTM {
 
       $tab[29]['table']             = 'glpi_suppliers';
       $tab[29]['field']             = 'name';
-      $tab[29]['name']              = _n('Associated supplier', 'Associated suppliers', Session::getPluralNumber());
+      $tab[29]['name']              = _n('Associated supplier', 'Associated suppliers',
+                                         Session::getPluralNumber());
       $tab[29]['forcegroupby']      = true;
       $tab[29]['datatype']          = 'itemlink';
       $tab[29]['massiveaction']     = false;
       $tab[29]['joinparams']        = array('beforejoin'
                                              => array('table'      => 'glpi_contracts_suppliers',
                                                       'joinparams' => array('jointype' => 'child')));
+
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 
@@ -788,6 +803,7 @@ class Contract extends CommonDBTM {
       $tab[45]['joinparams']        = array('beforejoin'
                                              => array('table'      => 'glpi_contractcosts',
                                                       'joinparams' => array('jointype' => 'child')));
+
 
       return $tab;
    }
@@ -879,7 +895,6 @@ class Contract extends CommonDBTM {
              self::getTypeName(1)."</a></th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-
       $options['reset'] = 'reset';
       $options['sort']  = 12;
       $options['order'] = 'DESC';
@@ -897,24 +912,24 @@ class Contract extends CommonDBTM {
                  Toolbox::append_params($options,'&amp;')."\">".
                  __('Contracts expired in the last 30 days')."</a> </td>";
       echo "<td class='numeric'>".$contract0."</td></tr>";
-      echo "<tr class='tab_bg_2'>";
 
+      echo "<tr class='tab_bg_2'>";
       $options['criteria'][0]['value'] = 0;
       $options['criteria'][1]['value'] = '<7';
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
                  Toolbox::append_params($options,'&amp;')."\">".
                  __('Contracts expiring in less than 7 days')."</a></td>";
       echo "<td class='numeric'>".$contract7."</td></tr>";
-      echo "<tr class='tab_bg_2'>";
 
+      echo "<tr class='tab_bg_2'>";
       $options['criteria'][0]['value'] = '>6';
       $options['criteria'][1]['value'] = '<30';
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
                  Toolbox::append_params($options,'&amp;')."\">".
                  __('Contracts expiring in less than 30 days')."</a></td>";
       echo "<td class='numeric'>".$contract30."</td></tr>";
-      echo "<tr class='tab_bg_2'>";
 
+      echo "<tr class='tab_bg_2'>";
       $options['criteria'][0]['field'] = 13;
       $options['criteria'][0]['value'] = '>0';
       $options['criteria'][1]['field'] = 13;
@@ -924,9 +939,8 @@ class Contract extends CommonDBTM {
                  Toolbox::append_params($options,'&amp;')."\">".
                  __('Contracts where notice begins in less than 7 days')."</a></td>";
       echo "<td class='numeric'>".$contractpre7."</td></tr>";
+
       echo "<tr class='tab_bg_2'>";
-
-
       $options['criteria'][0]['value'] = '>6';
       $options['criteria'][1]['value'] = '<30';
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
@@ -980,7 +994,6 @@ class Contract extends CommonDBTM {
       $items_notice  = array();
       $items_end     = array();
       $cron_status   = 0;
-
 
       $contract_infos[Alert::END]    = array();
       $contract_infos[Alert::NOTICE] = array();
@@ -1245,7 +1258,6 @@ class Contract extends CommonDBTM {
       $result = $DB->query($query);
 
 
-      $values = array(0 => Dropdown::EMPTY_VALUE);
       $group  = '';
       $prev   = -1;
       while ($data = $DB->fetch_assoc($result)) {
@@ -1271,9 +1283,10 @@ class Contract extends CommonDBTM {
          }
       }
       return Dropdown::showFromArray($p['name'], $values,
-                                     array('value'     => $p['value'],
-                                           'on_change' => $p['on_change'],
-                                           'display'   => $p['display']));
+                                     array('value'               => $p['value'],
+                                           'on_change'           => $p['on_change'],
+                                           'display'             => $p['display'],
+                                           'display_emptychoice' => true));
    }
 
 

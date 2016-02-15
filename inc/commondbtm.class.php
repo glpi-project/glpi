@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,7 +32,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -83,7 +83,7 @@ class CommonDBTM extends CommonGLPI {
    static $rightname                        = '';
 
    /// Is this item use notepad ?
-   protected $usenotepadrights              = false;
+   protected $usenotepad                    = false;
 
    /// FLush mail queue for
    public $mailqueueonaction = false;
@@ -230,7 +230,7 @@ class CommonDBTM extends CommonGLPI {
     * @param $order        order field if needed (default '')
     * @param $limit        limit retrieved datas if needed (default '')
     *
-    * @return true if succeed else false
+    * @return all retrieved data in a associative array by id
    **/
    function find($condition="", $order="", $limit="") {
       global $DB;
@@ -369,7 +369,7 @@ class CommonDBTM extends CommonGLPI {
 
       }
 
-      if (count($oldvalues)) {
+      if (count($oldvalues) && isset($_SESSION['glpiactiveentities_string'])) {
          Log::constructHistory($this, $oldvalues, $this->fields);
       }
 
@@ -695,6 +695,13 @@ class CommonDBTM extends CommonGLPI {
          $di = new Document_Item();
          $di->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       }
+
+      // If this type have NOTEPAD, clean one associated to purged item
+      if ($this->usenotepad) {
+         $note = new Notepad();
+         $note->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      }
+
    }
 
 
@@ -813,6 +820,11 @@ class CommonDBTM extends CommonGLPI {
                 && isset($table_fields[$key])) {
                $this->fields[$key] = $this->input[$key];
             }
+         }
+
+         // Auto set date_creation if exsist
+         if (isset($table_fields['date_creation'])) {
+            $this->fields['date_creation'] = $_SESSION["glpi_currenttime"];
          }
 
          // Auto set date_mod if exsist
@@ -1941,6 +1953,58 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
+   function showDates($options = array()) {
+
+      $isNewID = ((isset($options['withtemplate']) && ($options['withtemplate'] == 2))
+         || $this->isNewID($this->getID()));
+
+      if ($isNewID) {
+         return true;
+      }
+
+      $date_creation_exists = ($this->getField('date_creation') != NOT_AVAILABLE);
+      $date_mod_exists = ($this->getField('date_mod') != NOT_AVAILABLE);
+
+      $colspan = 4;
+      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
+          && !empty($this->fields['template_name'])) {
+         $colspan = 6;
+      }
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'>";
+
+      echo "<tr class='tab_bg_1'>";
+      //Display when it's not a new asset being created
+      if ($date_creation_exists
+         && $this->getID() > 0
+            && (!isset($options['withtemplate']) || $options['withtemplate'] == 0)) {
+         echo "<th>";
+         printf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
+         echo "</th>\n";
+      }
+
+      echo "<th>";
+
+      if (isset($options['withtemplate']) && $options['withtemplate']) {
+         //TRANS: %s is the datetime of insertion
+         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
+      } elseif ($date_mod_exists) {
+         //TRANS: %s is the datetime of update
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+      }
+      echo "</th><th>";
+
+      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
+          && !empty($this->fields['template_name'])) {
+             echo "<tr class='tab_bg_1'>";
+             echo "<th colspan='4'>";
+         printf(__('Created from the template %s'), $this->fields['template_name']);
+         echo "</th>\n";
+      }
+
+      echo "</tr></table>";
+   }
+
    /**
     * Display a 2 columns Footer for Form buttons
     * Close the form is user can edit
@@ -1954,6 +2018,8 @@ class CommonDBTM extends CommonGLPI {
    **/
    function showFormButtons($options=array()) {
       global $CFG_GLPI;
+
+      $this->showDates($options);
 
       // for single object like config
       if (isset($this->fields['id'])) {
@@ -2235,7 +2301,7 @@ class CommonDBTM extends CommonGLPI {
       } else {
          if ($this->maybeRecursive()) {
             if (Session::isMultiEntitiesMode()) {
-               echo "<table class='tab_format'><tr class='headerRow'><th>".$entityname."</th>";
+               echo "<table class='tab_format'><tr class='headerRow responsive_hidden'><th>".$entityname."</th>";
                echo "<th class='right'>".__('Child entities')."</th><th>";
                if ($params['canedit']) {
                   if ( $this instanceof CommonDBChild) {
@@ -3083,6 +3149,9 @@ class CommonDBTM extends CommonGLPI {
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['massiveaction'] = false;
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       return $tab;
    }
 
@@ -3160,6 +3229,12 @@ class CommonDBTM extends CommonGLPI {
     * @return an array of massive actions
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
+      // test if current profile has rights to unlock current item type
+      if (Session::haveRight( static::$rightname, UNLOCK)) {
+         return array('ObjectLock'.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock'
+                        => _x('button', 'Unlock items'));
+      }
       return array();
    }
 
@@ -3414,11 +3489,21 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Build an unicity error message
     *
-    * @param $message   the string to be display on the screen, or to be sent in a notification
+    * @param $msgs      the string not transleted to be display on the screen, or to be sent in a notification
     * @param $unicity   the unicity criterion that failed to match
     * @param $doubles   the items that are already present in DB
    **/
-   function getUnicityErrorMessage($message, $unicity, $doubles) {
+   function getUnicityErrorMessage($msgs, $unicity, $doubles) {
+
+      foreach($msgs as $field => $value) {
+         $table = getTableNameForForeignKeyField($field);
+         if ($table != '') {
+            $searchOption = $this->getSearchOptionByField('field', 'name', $table);
+         } else {
+            $searchOption = $this->getSearchOptionByField('field', $field);
+         }
+         $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'], $value);
+      }
 
       if ($unicity['action_refuse']) {
          $message_text = sprintf(__('Impossible record for %s'),
@@ -3564,15 +3649,7 @@ class CommonDBTM extends CommonGLPI {
                          || $p['add_event_on_duplicate']) {
                         $message = array();
                         foreach (explode(',',$fields['fields']) as $field) {
-                           $table = getTableNameForForeignKeyField($field);
-                           if ($table != '') {
-                              $searchOption = $this->getSearchOptionByField('field', 'name',
-                                                                            $table);
-                           } else {
-                              $searchOption = $this->getSearchOptionByField('field', $field);
-                           }
-                           $message[] = sprintf(__('%1$s = %2$s'), $searchOption['name'],
-                                                $this->input[$field]);
+                           $message[$fields] = $this->input[$field];
                         }
 
                         $doubles      = getAllDatasFromTable($this->gettable(),
@@ -3600,13 +3677,15 @@ class CommonDBTM extends CommonGLPI {
                         $result = false;
                      }
                      if ($fields['action_notify']) {
-                        $params = array('message'     => Html::clean($message_text),
-                                        'action_type' => $add,
+                        $params = array('action_type' => $add,
                                         'action_user' => getUserName(Session::getLoginUserID()),
                                         'entities_id' => $entities_id,
                                         'itemtype'    => get_class($this),
                                         'date'        => $_SESSION['glpi_currenttime'],
-                                        'refuse'      => $fields['action_refuse']);
+                                        'refuse'      => $fields['action_refuse'],
+                                        'label'       => $message,
+                                        'field'       => $fields,
+                                        'double'      => $doubles);
                         NotificationEvent::raiseEvent('refuse', new FieldUnicity(), $params);
                      }
                   }
@@ -4288,11 +4367,13 @@ class CommonDBTM extends CommonGLPI {
                       PURGE   => array('short' => __('Purge'),
                                        'long'  => _x('button', 'Delete permanently')));
 
+      $values += ObjectLock::getRightsToAdd( get_class($this), $interface ) ;
+
       if ($this->maybeDeleted()) {
          $values[DELETE] = array('short' => __('Delete'),
                                  'long'  => _x('button', 'Put in dustbin'));
       }
-      if ($this->usenotepadrights) {
+      if ($this->usenotepad) {
          $values[READNOTE] = array('short' => __('Read notes'),
                                    'long' => __("Read the item's notes"));
          $values[UPDATENOTE] = array('short' => __('Update notes'),
@@ -4302,5 +4383,18 @@ class CommonDBTM extends CommonGLPI {
       return $values;
    }
 
+   /**
+    * Generate link
+    *
+    * @since version 0.91
+    *
+    * @param $link    string   original string content
+    * @param $item             CommonDBTM object: item used to make replacements
+    *
+    * @return array of link contents (may have several when item have several IP / MAC cases)
+   **/
+   static function generateLinkContents($link, CommonDBTM $item) {
+      return Link::generateLinkContents($link, $item);
+   }
 }
 ?>

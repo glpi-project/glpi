@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -81,15 +81,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate) {
-         if ($item->getType()==$this->getType()) {
-            if ($_SESSION['glpishow_count_on_tabs']) {
-               $nb = countElementsInTable($this->getTable(),
-                                          "`".$this->getForeignKeyField()."` = '".$item->getID()."'");
-               return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
-           }
-           return $this->getTypeName(Session::getPluralNumber());
+      if (!$withtemplate
+          && ($item->getType() == $this->getType())) {
+         $nb = 0;
+         if ($_SESSION['glpishow_count_on_tabs']) {
+            $nb = countElementsInTable($this->getTable(),
+                                       "`".$this->getForeignKeyField()."` = '".$item->getID()."'");
          }
+         return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }
@@ -224,7 +223,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
         if (Session::haveTranslations($this->getType(), 'completename')) {
             DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $ID);
         }
-                   
+
          foreach ($DB->request($query) as $data) {
             $query = "UPDATE `".$this->getTable()."`
                       SET ";
@@ -252,7 +251,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             if (Session::haveTranslations($this->getType(), 'completename')) {
                 DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $data['id']);
             }
-            
+
             $this->regenerateTreeUnderID($data["id"], $updateName, $changeParent);
          }
       }
@@ -650,6 +649,17 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $tab[19]['datatype']       = 'datetime';
          $tab[19]['massiveaction']  = false;
       }
+
+      if ($this->isField('date_creation')) {
+         $tab[121]['table']          = $this->getTable();
+         $tab[121]['field']          = 'date_creation';
+         $tab[121]['name']           = __('Creation date');
+         $tab[121]['datatype']       = 'datetime';
+         $tab[121]['massiveaction']  = false;
+      }
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       return $tab;
    }

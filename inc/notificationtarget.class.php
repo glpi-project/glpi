@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -1133,24 +1133,22 @@ class NotificationTarget extends CommonDBChild {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate
-          && Notification::canView()) {
+      if (!$withtemplate && Notification::canView()) {
+         $nb = 0;
          switch ($item->getType()) {
             case 'Group' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()),
-                                              self::countForGroup($item));
+                  $nb = self::countForGroup($item);
                }
-               return Notification::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()),
+                                           $nb);
 
             case 'Notification' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),
-                                              countElementsInTable($this->getTable(),
-                                                                   "notifications_id
-                                                                        = '".$item->getID()."'"));
+                  $nb = countElementsInTable($this->getTable(),
+                                             "notifications_id = '".$item->getID()."'");
                }
-               return self::getTypeName(Session::getPluralNumber());
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';

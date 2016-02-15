@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -86,13 +86,13 @@ class Log extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
+         $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(self::getTypeName(1),
-                                        countElementsInTable('glpi_logs',
-                                                             "itemtype = '".$item->getType()."'
-                                                               AND items_id = '".$item->getID()."'"));
+            $nb = countElementsInTable('glpi_logs',
+                                       "itemtype = '".$item->getType()."'
+                                          AND items_id = '".$item->getID()."'");
          }
-         return self::getTypeName(1);
+         return self::createTabEntry(self::getTypeName(1), $nb);
       }
       return '';
    }
@@ -283,7 +283,7 @@ class Log extends CommonDBTM {
 
       // Output events
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      
+
       $header = "<tr><th>".__('ID')."</th>";
       $header .= "<th>".__('Date')."</th>";
       $header .= "<th>".__('User')."</th>";
@@ -291,7 +291,7 @@ class Log extends CommonDBTM {
       //TRANS: a noun, modification, change
       $header .= "<th>"._x('name', 'Update')."</th></tr>";
       echo $header;
-      
+
       foreach (self::getHistoryData($item,$start, $_SESSION['glpilist_limit']) as $data) {
          if ($data['display_history']) {
             // show line

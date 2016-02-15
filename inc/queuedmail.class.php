@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -351,8 +351,8 @@ class QueuedMail extends CommonDBTM {
          }
 
          // Add custom header for mail grouping in reader
-         $mmail->AddCustomHeader("In-Reply-To: GLPI-".$this->fields["itemtype"]."-".
-                                 $this->fields["items_id"]);
+         $mmail->AddCustomHeader("In-Reply-To: <GLPI-".$this->fields["itemtype"]."-".
+                                 $this->fields["items_id"].">");
 
       $mmail->SetFrom($this->fields['sender'], $this->fields['sendername']);
 
@@ -366,10 +366,9 @@ class QueuedMail extends CommonDBTM {
             $mmail->Body = $this->fields['body_text'];
          } else {
             $mmail->isHTML(true);
-            $mmail->Body = '';
+            $mmail->Body               = '';
             $this->fields['body_html'] = Html::entity_decode_deep($this->fields['body_html']);
-            $documents = importArrayFromDB($this->fields['documents']);
-            $link_doc = array();
+            $documents                 = importArrayFromDB($this->fields['documents']);
             if (is_array($documents) && count($documents)) {
                $doc = new Document();
                foreach ($documents as $docID) {
@@ -382,20 +381,10 @@ class QueuedMail extends CommonDBTM {
                                               $doc->fields['filename'],
                                               'base64',
                                               $doc->fields['mime']);
-                  // Else Add link to the document
-                  } else {
-                     $link_doc[] = "<a href='".rtrim($CFG_GLPI["url_base"], '/').
-                                     "/front/document.send.php?docid=".$doc->fields['id']."' >".
-                                    $doc->fields['name']."</a>";
                   }
                }
             }
             $mmail->Body   .= $this->fields['body_html'];
-            if (count($link_doc)) {
-               $mmail->Body .= '<p style="border:1px solid #cccccc;padding:5px">'.
-                                '<b>'._n('Associated item','Associated items', Session::getPluralNumber()).' : </b>'.
-                                implode(', ', $link_doc).'</p>';
-            }
             $mmail->AltBody = $this->fields['body_text'];
          }
 
@@ -471,10 +460,11 @@ class QueuedMail extends CommonDBTM {
       $cron_status = 0;
 
       // Send mail at least 1 minute after adding in queue to be sure that process on it is finished
+      $send_time = date("Y-m-d H:i:s", strtotime("+1 minutes"));
       $query       = "SELECT `glpi_queuedmails`.*
                       FROM `glpi_queuedmails`
                       WHERE NOT `glpi_queuedmails`.`is_deleted`
-                            AND `glpi_queuedmails`.`send_time` < DATE_ADD(NOW(),INTERVAL 1 MINUTE)
+                            AND `glpi_queuedmails`.`send_time` < '".$send_time."'
                       ORDER BY `glpi_queuedmails`.`send_time` ASC
                       LIMIT 0, ".$task->fields['param'];
 
@@ -504,10 +494,11 @@ class QueuedMail extends CommonDBTM {
       // Expire mails in queue
       if ($task->fields['param'] > 0) {
          $secs      = $task->fields['param'] * DAY_TIMESTAMP;
+         $send_time = date("U") - $secs;
          $query_exp = "DELETE
                        FROM `glpi_queuedmails`
                        WHERE `glpi_queuedmails`.`is_deleted`
-                             AND UNIX_TIMESTAMP(send_time) < UNIX_TIMESTAMP()-$secs";
+                             AND UNIX_TIMESTAMP(send_time) < '".$send_time."'";
 
          $DB->query($query_exp);
          $vol = $DB->affected_rows();
@@ -650,7 +641,7 @@ class QueuedMail extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1 top' >";
-      echo "<td colspan='2'>".self::cleanHtml($this->fields['body_html'])."</td>";
+      echo "<td colspan='2' class='queuemail_preview'>".self::cleanHtml($this->fields['body_html'])."</td>";
       echo "<td colspan='2'>".nl2br($this->fields['body_text'], false)."</td>";
       echo "</tr>";
 

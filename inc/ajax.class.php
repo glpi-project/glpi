@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -295,7 +295,8 @@ class Ajax {
       $rand = mt_rand();
       if (count($tabs) > 0) {
          echo "<div id='tabs$rand' class='center $orientation'>";
-         if (in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+         if (CommonGLPI::isLayoutWithMain() 
+             && !CommonGLPI::isLayoutExcludedPage()) {
             $orientation = 'horizontal';
          }
          echo "<ul>";
@@ -328,25 +329,35 @@ class Ajax {
          echo "</div>";
          echo "<div id='loadingtabs$rand' class='invisible'>".
               "<div class='loadingindicator'>".__s('Loading...')."</div></div>";
-         $js = "$('#tabs$rand').tabs({ active: $selected_tab,
-         // Loading indicator
-         beforeLoad: function (event, ui) {
+         $js = "
+         forceReload$rand = false;
+         $('#tabs$rand').tabs({
+            active: $selected_tab,
+            // Loading indicator
+            beforeLoad: function (event, ui) {
+               if ($(ui.panel).html()
+                   && !forceReload$rand) {
+                  event.preventDefault();
+               } else {
                   ui.panel.html($('#loadingtabs$rand').html());
-                },
-         ajaxOptions: {type: 'POST'},
-
-         activate : function( event, ui ){
-            //  Get future value
-            var newIndex = ui.newTab.parent().children().index(ui.newTab);
-            $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
-            { itemtype: '$type', id: '$ID', tab: newIndex });
-            }});";
+                  forceReload$rand = false;
+                }
+            },
+            ajaxOptions: {type: 'POST'},
+            activate : function( event, ui ) {
+               // Get future value
+               var newIndex = ui.newTab.parent().children().index(ui.newTab);
+               $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
+                  { itemtype: '$type', id: '$ID', tab: newIndex });
+            }
+         });";
 
          if ($orientation=='vertical') {
             $js .=  "$('#tabs$rand').tabs().addClass( 'ui-tabs-vertical ui-helper-clearfix' );";
          }
 
-         if (in_array($_SESSION['glpilayout'], array('classic', 'vsplit'))) {
+         if (CommonGLPI::isLayoutWithMain()
+             && !CommonGLPI::isLayoutExcludedPage()) {
             $js .=  "$('#tabs$rand').scrollabletabs();";
          } else {
             $js .=  "$('#tabs$rand').removeClass( 'ui-corner-top' ).addClass( 'ui-corner-left' );";
@@ -354,7 +365,7 @@ class Ajax {
 
          $js .=  "// force reload
             function reloadTab(add) {
-
+               forceReload$rand = true;
                var current_index = $('#tabs$rand').tabs('option','active');
                // Save tab
                currenthref = $('#tabs$rand ul>li a').eq(current_index).attr('href');
