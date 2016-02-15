@@ -579,7 +579,7 @@ class SLT extends CommonDBTM {
          $params[$key] = $val;
       }
 
-      Dropdown::showFromArray($params['name'], self::getSltTypes(), $options);
+      return Dropdown::showFromArray($params['name'], self::getSltTypes(), $options);
    }
 
    function getSearchOptions() {
