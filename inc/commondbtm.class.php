@@ -1965,44 +1965,42 @@ class CommonDBTM extends CommonGLPI {
       $date_creation_exists = ($this->getField('date_creation') != NOT_AVAILABLE);
       $date_mod_exists = ($this->getField('date_mod') != NOT_AVAILABLE);
 
-      $colspan = 4;
+      $colspan = $options['colspan'];
       if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
           && !empty($this->fields['template_name'])) {
-         $colspan = 6;
+         $colspan = 1;
       }
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'>";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1 footerRow'>";
       //Display when it's not a new asset being created
       if ($date_creation_exists
          && $this->getID() > 0
             && (!isset($options['withtemplate']) || $options['withtemplate'] == 0)) {
-         echo "<th>";
+         echo "<th colspan='$colspan'>";
          printf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
-         echo "</th>\n";
+         echo "</th>";
       }
-
-      echo "<th>";
 
       if (isset($options['withtemplate']) && $options['withtemplate']) {
+         echo "<th colspan='$colspan'>";
          //TRANS: %s is the datetime of insertion
          printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
+         echo "</th>";
       } elseif ($date_mod_exists) {
+         echo "<th colspan='$colspan'>";
          //TRANS: %s is the datetime of update
          printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+         echo "</th>";
       }
-      echo "</th><th>";
 
       if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
           && !empty($this->fields['template_name'])) {
-             echo "<tr class='tab_bg_1'>";
-             echo "<th colspan='4'>";
+         echo "<th colspan='".($colspan * 2)."'>";
          printf(__('Created from the template %s'), $this->fields['template_name']);
-         echo "</th>\n";
+         echo "</th>";
       }
 
-      echo "</tr></table>";
+      echo "</tr>";
    }
 
    /**
@@ -2018,8 +2016,6 @@ class CommonDBTM extends CommonGLPI {
    **/
    function showFormButtons($options=array()) {
       global $CFG_GLPI;
-
-      $this->showDates($options);
 
       // for single object like config
       if (isset($this->fields['id'])) {
@@ -2039,6 +2035,8 @@ class CommonDBTM extends CommonGLPI {
             $params[$key] = $val;
          }
       }
+
+      $this->showDates($params);
 
       if (!$params['canedit']
           || !$this->canEdit($ID)) {
