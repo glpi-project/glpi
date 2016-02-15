@@ -65,6 +65,23 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
+} else if (isset($_POST["restore"])) {
+   $license->check($_POST['id'], DELETE);
+   if ($license->restore($_POST)) {
+      Event::log($_POST["id"],"software", 4, "inventory",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
+   }
+   $license->redirectToList();
+
+} else if (isset($_POST["delete"])) {
+   $license->check($_POST['id'], DELETE);
+   $license->delete($_POST, 0);
+   Event::log($license->fields['softwares_id'], "software", 4, "inventory",
+              //TRANS: %s is the user login, %2$s is the license id
+              sprintf(__('%1$s deletes the license %2$s'), $_SESSION["glpiname"], $_POST["id"]));
+   $license->redirectToList();
+
 } else if (isset($_POST["purge"])) {
    $license->check($_POST['id'], PURGE);
    $license->delete($_POST, 1);
