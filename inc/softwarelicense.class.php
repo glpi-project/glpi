@@ -254,6 +254,19 @@ class SoftwareLicense extends CommonDBTM {
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
 
+      // Restore saved value or override with page parameter
+      if (!isset($options['template_preview'])) {
+         if (isset($_REQUEST)) {
+            $saved = Html::cleanPostForTextArea($_REQUEST);
+         }
+      }
+      foreach ($this->fields as $name => $value) {
+         if (isset($saved[$name])
+             && empty($this->fields[$name])) {
+            $this->fields[$name] = $saved[$name];
+         }
+      }
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".Software::getTypeName(1)."</td>";
       echo "<td>";
