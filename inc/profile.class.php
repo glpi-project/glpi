@@ -604,14 +604,6 @@ class Profile extends CommonDBTM {
                                'checked' => $this->fields['create_ticket_on_login']));
       echo "</td></tr>\n";
 
-      if ($ID > 0) {
-         echo "<tr class='tab_bg_1'><td>".__('Last update')."</td>";
-         echo "<td>";
-         echo ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
-                                         : __('Never'));
-         echo "</td></tr>";
-      }
-
       $this->showFormButtons($options);
 
       return true;
@@ -1485,6 +1477,12 @@ class Profile extends CommonDBTM {
       $tab[19]['name']           = __('Last update');
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'interface';

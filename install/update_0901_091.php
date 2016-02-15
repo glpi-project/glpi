@@ -72,7 +72,7 @@ function update0901to091() {
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Object Locks'));
 
 
-   /** ************ Lock Objects ************ */
+   /************** Lock Objects ************ */
    if (!TableExists('glpi_objectlocks')) {
       $query = "CREATE TABLE `glpi_objectlocks` (
                  `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -271,12 +271,12 @@ function update0901to091() {
 
 
 
-   /** ************ Default Requester ************ */
+   /************** Default Requester ************ */
    Config::setConfigurationValues('core', array('set_default_requester' => 1));
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
 
-   /** ************ Task's templates ************ */
+   /************** Task's templates ************ */
    if (!TableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -293,8 +293,61 @@ function update0901to091() {
                   KEY `taskcategories_id` (`taskcategories_id`),
                   KEY `entities_id` (`entities_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->queryOrDie($query, "0.84 add table glpi_tasktemplates");
+      $DB->queryOrDie($query, "0.91 add table glpi_tasktemplates");
    }
+
+
+   /************** Installation date for softwares ************ */
+   $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
+   $migration->addKey("glpi_computers_softwareversions", "date_install");
+
+
+   /************** Date mod/creation for itemtypes */
+   $migration->displayMessage(sprintf(__('date_mod and date_creation')));
+   $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
+                  'SoftwareLicense', 'Peripheral', 'NetworkEquipment', 'User', 'Group', 'Entity',
+                  'Profile', 'Budget', 'Contact', 'Contract', 'Netpoint', 'NetworkPort', 'Rule',
+                  'Cartridge', 'CartridgeItem', 'Consumable', 'ConsumableItem', 'Ticket', 'Problem',
+                  'Change', 'Supplier', 'Document', 'AuthLDAP', 'MailCollector', 'Location',
+                  'State', 'Manufacturer', 'Blacklist', 'BlacklistedMailContent', 'ITILCategory',
+                  'TaskCategory', 'TaskTemplate', 'Project', 'Reminder', 'RSSFeed',
+                  'SolutionType', 'RequestType', 'SolutionTemplate', 'ProjectState', 'ProjectType',
+                  'ProjectTaskType', 'SoftwareLicenseType', 'CartridgeItemType', 'ConsumableItemType',
+                  'ContractType', 'ContactType', 'DeviceMemoryType', 'SupplierType', 'InterfaceType',
+                  'DeviceCaseType', 'PhonePowerSupply', 'Filesystem', 'VirtualMachineType',
+                  'VirtualMachineSystem', 'VirtualMachineState', 'DocumentCategory', 'DocumentType',
+                  'KnowbaseItemCategory', 'Calendar', 'Holiday', 'NetworkEquipmentFirmware',
+                  'Network', 'Domain', 'Vlan', 'IPNetwork', 'FQDN', 'WifiNetwork', 'NetworkName',
+                  'UserTitle', 'UserCategory', 'RuleRightParameter', 'Fieldblacklist', 'SsoVariable',
+                  'NotificationTemplate', 'Notification', 'SLA', 'FieldUnicity', 'Crontask', 'Link',
+                  'ComputerDisk', 'ComputerVirtualMachine', 'Infocom');
+   $types = array_merge($types, $CFG_GLPI["dictionnary_types"]);
+   $types = array_merge($types, $CFG_GLPI["device_types"]);
+   $types = array_merge($types, $CFG_GLPI['networkport_instantiations']);
+
+   foreach ($types as $type) {
+      $table = getTableForItemType($type);
+
+      if (!FieldExists($table, 'date_mod')) {
+         $migration->displayMessage(sprintf(__('Add date_mod to %s'), $table));
+
+         //Add date_mod field if it doesn't exists
+         $migration->addField($table, 'date_mod', 'datetime');
+         $migration->addKey($table, 'date_mod');
+         $migration->migrationOneTable($table);
+      }
+
+      if (!FieldExists($table, 'date_creation')) {
+         $migration->displayMessage(sprintf(__('Add date_creation to %s'), $table));
+
+         //Add date_creation field
+         $migration->addField($table, 'date_creation', 'datetime');
+         $migration->addKey($table, 'date_creation');
+         $migration->migrationOneTable($table);
+      }
+   }
+
+
 
    /** ************ New SLA structure ************ */
    if (!TableExists('glpi_slts')) {
@@ -361,5 +414,11 @@ function update0901to091() {
    $migration->executeMigration();
 
    return $updateresult;
+}
+
+function setCreationDate() {
+   global $DB;
+
+
 }
 ?>

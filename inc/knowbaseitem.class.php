@@ -44,6 +44,10 @@ if (!defined('GLPI_ROOT')) {
 **/
 class KnowbaseItem extends CommonDBTM {
 
+
+   // From CommonDBTM
+   public $dohistory    = true;
+
    // For visibility checks
    protected $users     = array();
    protected $groups    = array();
@@ -166,6 +170,7 @@ class KnowbaseItem extends CommonDBTM {
       $this->addStandardTab('Document_Item', $ong, $options);
 
       $this->addStandardTab('KnowbaseItemTranslation',$ong, $options);
+      $this->addStandardTab('Log',$ong, $options);
 
       return $ong;
    }
