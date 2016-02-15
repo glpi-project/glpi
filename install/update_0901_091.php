@@ -72,7 +72,7 @@ function update0901to091() {
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Object Locks'));
 
 
-   /** ************ Lock Objects ************ */
+   /************** Lock Objects ************ */
    if (!TableExists('glpi_objectlocks')) {
       $query = "CREATE TABLE `glpi_objectlocks` (
                  `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -271,12 +271,12 @@ function update0901to091() {
 
 
 
-   /** ************ Default Requester ************ */
+   /************** Default Requester ************ */
    Config::setConfigurationValues('core', array('set_default_requester' => 1));
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
 
-   /** ************ Task's templates ************ */
+   /************** Task's templates ************ */
    if (!TableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -295,6 +295,10 @@ function update0901to091() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.84 add table glpi_tasktemplates");
    }
+
+   /************** Installation date for softwares ************ */
+   $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
+   $migration->addKey("glpi_computers_softwareversions", "date_install");
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

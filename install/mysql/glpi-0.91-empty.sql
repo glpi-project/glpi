@@ -729,13 +729,15 @@ CREATE TABLE `glpi_computers_softwareversions` (
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+  `date_install` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`computers_id`,`softwareversions_id`),
   KEY `softwareversions_id` (`softwareversions_id`),
   KEY `computers_info` (`entities_id`,`is_template_computer`,`is_deleted_computer`),
   KEY `is_template` (`is_template_computer`),
   KEY `is_deleted` (`is_deleted_computer`),
-  KEY `is_dynamic` (`is_dynamic`)
+  KEY `is_dynamic` (`is_dynamic`),
+  KEY `date_install` (`date_install`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3933,19 +3935,19 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('6','5','','##ticket
 ##lang.ticket.description##
 
 
-##lang.ticket.title##  :##ticket.title##
+##lang.ticket.title##  :##ticket.title##
 
-##lang.ticket.authors##  :##IFticket.authors##
+##lang.ticket.authors##  :##IFticket.authors##
 ##ticket.authors## ##ENDIFticket.authors##
-##ELSEticket.authors##--##ENDELSEticket.authors##  
+##ELSEticket.authors##--##ENDELSEticket.authors##  
 
-##IFticket.category## ##lang.ticket.category##  :##ticket.category##
+##IFticket.category## ##lang.ticket.category##  :##ticket.category##
 ##ENDIFticket.category## ##ELSEticket.category##
 ##lang.ticket.nocategoryassigned## ##ENDELSEticket.category##
 
-##lang.ticket.content##  : ##ticket.content##
+##lang.ticket.content##  : ##ticket.content##
 ##IFticket.itemtype##
-##lang.ticket.item.name##  : ##ticket.itemtype## - ##ticket.item.name##
+##lang.ticket.item.name##  : ##ticket.itemtype## - ##ticket.item.name##
 ##ENDIFticket.itemtype##','&lt;div&gt;##lang.ticket.url## : &lt;a href=\"##ticket.url##\"&gt;
 ##ticket.url##&lt;/a&gt;&lt;/div&gt;
 &lt;div class=\"description b\"&gt;
@@ -4161,31 +4163,31 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('17','17','','##prob
 
  ##lang.problem.description##
 
- ##lang.problem.title##  :##problem.title##
- ##lang.problem.authors##  :##IFproblem.authors## ##problem.authors## ##ENDIFproblem.authors## ##ELSEproblem.authors##--##ENDELSEproblem.authors##
- ##lang.problem.creationdate##  :##problem.creationdate##
- ##IFproblem.assigntousers## ##lang.problem.assigntousers##  : ##problem.assigntousers## ##ENDIFproblem.assigntousers##
- ##lang.problem.status##  : ##problem.status##
- ##IFproblem.assigntogroups## ##lang.problem.assigntogroups##  : ##problem.assigntogroups## ##ENDIFproblem.assigntogroups##
- ##lang.problem.urgency##  : ##problem.urgency##
- ##lang.problem.impact##  : ##problem.impact##
+ ##lang.problem.title##  :##problem.title##
+ ##lang.problem.authors##  :##IFproblem.authors## ##problem.authors## ##ENDIFproblem.authors## ##ELSEproblem.authors##--##ENDELSEproblem.authors##
+ ##lang.problem.creationdate##  :##problem.creationdate##
+ ##IFproblem.assigntousers## ##lang.problem.assigntousers##  : ##problem.assigntousers## ##ENDIFproblem.assigntousers##
+ ##lang.problem.status##  : ##problem.status##
+ ##IFproblem.assigntogroups## ##lang.problem.assigntogroups##  : ##problem.assigntogroups## ##ENDIFproblem.assigntogroups##
+ ##lang.problem.urgency##  : ##problem.urgency##
+ ##lang.problem.impact##  : ##problem.impact##
  ##lang.problem.priority## : ##problem.priority##
-##IFproblem.category## ##lang.problem.category##  :##problem.category## ##ENDIFproblem.category## ##ELSEproblem.category## ##lang.problem.nocategoryassigned## ##ENDELSEproblem.category##
- ##lang.problem.content##  : ##problem.content##
+##IFproblem.category## ##lang.problem.category##  :##problem.category## ##ENDIFproblem.category## ##ELSEproblem.category## ##lang.problem.nocategoryassigned## ##ENDELSEproblem.category##
+ ##lang.problem.content##  : ##problem.content##
 
 ##IFproblem.storestatus=6##
  ##lang.problem.solvedate## : ##problem.solvedate##
  ##lang.problem.solution.type## : ##problem.solution.type##
  ##lang.problem.solution.description## : ##problem.solution.description##
 ##ENDIFproblem.storestatus##
- ##lang.problem.numberoftickets## : ##problem.numberoftickets##
+ ##lang.problem.numberoftickets## : ##problem.numberoftickets##
 
 ##FOREACHtickets##
  [##ticket.date##] ##lang.problem.title## : ##ticket.title##
  ##lang.problem.content## ##ticket.content##
 
 ##ENDFOREACHtickets##
- ##lang.problem.numberoftasks## : ##problem.numberoftasks##
+ ##lang.problem.numberoftasks## : ##problem.numberoftasks##
 
 ##FOREACHtasks##
  [##task.date##]
@@ -6996,5 +6998,4 @@ CREATE TABLE `glpi_objectlocks` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `item` (`itemtype`, `items_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 
