@@ -39,10 +39,7 @@ include ('../inc/includes.php');
 
 
 $group = new Group();
-if (!Session::haveRightsOr('group', array(CREATE, UPDATE))) {
-   Session::redirectIfNotLoggedIn();
-   Html::displayRightError();
-}
+Session::checkRightsOr('group', array(CREATE, UPDATE));
 Session::checkRight('user', User::UPDATEAUTHENT);
 
 Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "group", "ldap");

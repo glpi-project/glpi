@@ -123,7 +123,7 @@ if (isset($_GET['checkavailability'])) {
 } else {
    Html::header(__('Planning'), $_SERVER['PHP_SELF'], "helpdesk", "planning");
 
-   Session::haveRightsOr('planning', array(Planning::READALL, Planning::READMY));
+   Session::checkRightsOr('planning', array(Planning::READALL, Planning::READMY));
 
    if (!isset($_GET["date"]) || empty($_GET["date"])) {
       $_GET["date"] = strftime("%Y-%m-%d");
