@@ -382,7 +382,7 @@ function update0901to091() {
             while ($data = $DB->fetch_assoc($result)) {
                $query = "INSERT INTO `glpi_slts`
                           (`id`, `name`,`entities_id`, `is_recursive`, `type`, `comment`, `resolution_time`, `calendars_id`, `date_mod`, `definition_time`, `end_of_working_day`, `date_creation`, `slas_id`)
-                         VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."', '".$data['is_recursive']."', '".SLT::RESOLUTION_TYPE."', '".addslashes($data['comment'])."', '".$data['resolution_time']."', '".$data['calendars_id']."', '".$data['date_mod']."', '".$data['definition_time']."', '".$data['end_of_working_day']."', '".date('Y-m-d h:i:s')."', '".$data['id']."');";
+                         VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."', '".$data['is_recursive']."', '".SLT::RESOLUTION_TYPE."', '".addslashes($data['comment'])."', '".$data['resolution_time']."', '".$data['calendars_id']."', '".$data['date_mod']."', '".$data['definition_time']."', '".$data['end_of_working_day']."', '".date('Y-m-d H:i:s')."', '".$data['id']."');";
                $DB->queryOrDie($query, "SLA migration to SLT");
             }
          }
