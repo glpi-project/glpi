@@ -2048,10 +2048,9 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>" ;
-         //TRANS: %s is the date
-         printf(__('Last update on %s'), HTML::convDateTime($this->fields["date_mod"]));
-         echo "<br>";
-         printf(__('Last login on %s'), HTML::convDateTime($this->fields["last_login"]));
+         if ($this->fields["last_login"]) {
+            printf(__('Last login on %s'), HTML::convDateTime($this->fields["last_login"]));
+         }
          echo "</td><td colspan='2'class='center'>";
 
          if ($ID > 0) {
@@ -2656,6 +2655,12 @@ class User extends CommonDBTM {
       $tab[19]['name']                 = __('Last update');
       $tab[19]['datatype']             = 'datetime';
       $tab[19]['massiveaction']        = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       $tab[20]['table']                = 'glpi_profiles';
       $tab[20]['field']                = 'name';

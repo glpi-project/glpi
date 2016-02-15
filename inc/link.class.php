@@ -43,6 +43,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Link extends CommonDBTM {
 
+   // From CommonDBTM
+   public $dohistory                   = true;
+
    static $rightname = 'link';
    static $tags      = array('[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
                              '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
@@ -95,6 +98,7 @@ class Link extends CommonDBTM {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Link_ItemType', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -213,6 +217,18 @@ class Link extends CommonDBTM {
       $tab[3]['field']          = 'link';
       $tab[3]['name']           = __('Link or filename');
       $tab[3]['datatype']       = 'string';
+
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
