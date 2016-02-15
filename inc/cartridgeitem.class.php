@@ -245,6 +245,7 @@ class CartridgeItem extends CommonDBTM {
       Alert::displayLastAlert('CartridgeItem', $ID);
       echo "</td></tr>";
 
+      $this->showDates($options);
       $this->showFormButtons($options);
 
       return true;

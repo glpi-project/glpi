@@ -79,7 +79,7 @@ if (isset($_POST["itemtype"])
       // get already get search options
       if (isset($actions['searchopt'])) {
          $searchopt = $actions['searchopt'];
-         // No name for clean array whith quotes
+         // No name for clean array with quotes
          unset($searchopt['name']);
          unset($actions['searchopt']);
       }

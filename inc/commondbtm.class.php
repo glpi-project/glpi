@@ -822,6 +822,11 @@ class CommonDBTM extends CommonGLPI {
             }
          }
 
+         // Auto set date_creation if exsist
+         if (isset($table_fields['date_creation'])) {
+            $this->fields['date_creation'] = $_SESSION["glpi_currenttime"];
+         }
+
          // Auto set date_mod if exsist
          if (isset($table_fields['date_mod'])) {
             $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
@@ -1948,6 +1953,58 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
+   function showDates($options = array()) {
+
+      $isNewID = ((isset($options['withtemplate']) && ($options['withtemplate'] == 2))
+         || $this->isNewID($this->getID()));
+
+      if ($isNewID) {
+         return true;
+      }
+
+      $date_creation_exists = ($this->getField('date_creation') != NOT_AVAILABLE);
+      $date_mod_exists = ($this->getField('date_mod') != NOT_AVAILABLE);
+
+      $colspan = 4;
+      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
+          && !empty($this->fields['template_name'])) {
+         $colspan = 6;
+      }
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'>";
+
+      echo "<tr class='tab_bg_1'>";
+      //Display when it's not a new asset being created
+      if ($date_creation_exists
+         && $this->getID() > 0
+            && (!isset($options['withtemplate']) || $options['withtemplate'] == 0)) {
+         echo "<th>";
+         printf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
+         echo "</th>\n";
+      }
+
+      echo "<th>";
+
+      if (isset($options['withtemplate']) && $options['withtemplate']) {
+         //TRANS: %s is the datetime of insertion
+         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
+      } elseif ($date_mod_exists) {
+         //TRANS: %s is the datetime of update
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+      }
+      echo "</th><th>";
+
+      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
+          && !empty($this->fields['template_name'])) {
+             echo "<tr class='tab_bg_1'>";
+             echo "<th colspan='4'>";
+         printf(__('Created from the template %s'), $this->fields['template_name']);
+         echo "</th>\n";
+      }
+
+      echo "</tr></table>";
+   }
+
    /**
     * Display a 2 columns Footer for Form buttons
     * Close the form is user can edit
@@ -1961,6 +2018,8 @@ class CommonDBTM extends CommonGLPI {
    **/
    function showFormButtons($options=array()) {
       global $CFG_GLPI;
+
+      $this->showDates($options);
 
       // for single object like config
       if (isset($this->fields['id'])) {

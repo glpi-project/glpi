@@ -37,10 +37,7 @@
 
 include ('../inc/includes.php');
 
-if (!Session::haveRightsOr('knowbase', array(READ, KnowbaseItem::READFAQ))) {
-   Session::redirectIfNotLoggedIn();
-   Html::displayRightError();
-}
+Session::checkRightsOr('knowbase', array(READ, KnowbaseItem::READFAQ));
 
 if (isset($_GET["id"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);

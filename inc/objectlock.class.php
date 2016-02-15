@@ -149,7 +149,7 @@ class ObjectLock extends CommonDBTM {
                   url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
                   cache: false,
                   data: 'unlock=1&force=1&id=".$this->fields['id']."',
-                  success: function( jqXHR, textStatus ) { ".
+                  success: function( data, textStatus, jqXHR ) { ".
                         Html::jsConfirmCallback(__('Reload page?'), __('Item unlocked!'), "function() {
                               window.location.reload(true);
                            }", "function() {
@@ -209,7 +209,7 @@ class ObjectLock extends CommonDBTM {
                      url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
                      cache: false,
                      data: 'requestunlock=1&id=".$this->fields['id']."',
-                     success: function( jqXHR, textStatus ) {
+                     success: function( data, textStatus, jqXHR ) {
                            ".Html::jsAlertCallback($completeUserName, __('Request sent to'), "function() { $('#message_after_lock').fadeToggle() ; }" )."
                         }
                      });
@@ -222,7 +222,36 @@ class ObjectLock extends CommonDBTM {
          ") ;
          echo $ret;
       }
-
+      
+      $ret = Html::scriptBlock("
+         $(function(){
+            var lockStatusTimer ;
+            $('#alertMe').change(function( eventObject ){
+               if( this.checked ) {
+                  lockStatusTimer = setInterval( function() {
+                     $.ajax({
+                           url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
+                           cache: false,
+                           data: 'lockstatus=1&id=".$this->fields['id']."',
+                           success: function( data, textStatus, jqXHR ) {
+                                 if( data == 0 ) {
+                                    clearInterval(lockStatusTimer);
+                                    $('#message_after_lock').fadeToggle() ;".
+                                    Html::jsConfirmCallback(__('Reload page?'), __('Item unlocked!'), "function() {
+                                       window.location.reload(true);
+                                    }") ."
+                                 }
+                              }
+                           });
+                  },15000)
+               } else {
+                  clearInterval(lockStatusTimer);
+               }
+            });
+         });
+      ");
+      echo $ret ;
+      
       $msg = "<table><tr><td class=red nowrap>";
 
       $msg .= __('Locked by ')."<a href='".$user->getLinkURL()."'>$completeUserName</a> -> ".
@@ -231,7 +260,7 @@ class ObjectLock extends CommonDBTM {
       if ($showAskUnlock) {
          $msg .= "<a class='vsubmit' onclick='javascript:askUnlock();'>".__('Ask for unlock')."</a>";
       }
-      $msg .= "</td></tr></table>";
+      $msg .= "</td><td>&nbsp;&nbsp;</td><td>".__('Alert me when unlocked')."</td><td>&nbsp;".Html::getCheckbox(array('id' => 'alertMe'))."</td></tr></table>";
 
       $this->displayLockMessage( $msg ) ;
    }

@@ -513,6 +513,9 @@ class Document extends CommonDBTM {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                $icon = $DB->result($result,0,'icon');
+               if (!file_exists(GLPI_ROOT."/".$CFG_GLPI["typedoc_icon_dir"]."/$icon")) {
+                  $icon = "defaut-dist.png" ;
+               }
                $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
                                $initfileout."\" title=\"".$initfileout."\" src='".
                                $CFG_GLPI["typedoc_icon_dir"]."/$icon'>";
@@ -814,6 +817,12 @@ class Document extends CommonDBTM {
       $tab[19]['name']           = __('Last update');
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       $tab[20]['table']          = $this->getTable();
       $tab[20]['field']          = 'sha1sum';

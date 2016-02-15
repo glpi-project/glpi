@@ -71,7 +71,8 @@ function update0901to091() {
 
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Object Locks'));
 
-   // create table
+
+   /************** Lock Objects ************ */
    if (!TableExists('glpi_objectlocks')) {
       $query = "CREATE TABLE `glpi_objectlocks` (
                  `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -82,7 +83,6 @@ function update0901to091() {
                  PRIMARY KEY (`id`),
                  UNIQUE INDEX `item` (`itemtype`, `items_id`)
                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-
       $DB->queryOrDie($query, "0.91 add table glpi_objectlocks");
    }
 
@@ -93,109 +93,88 @@ function update0901to091() {
                      `create_ticket_on_login`, `tickettemplates_id`, `change_status`)
              VALUES
                     ('Read-Only','central','0','0','[]',
-                     '{\"1\":{\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},
-                       \"2\":{\"1\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},
-                       \"3\":{\"1\":0,\"2\":0,\"4\":0,\"5\":0,\"6\":0},
-                       \"4\":{\"1\":0,\"2\":0,\"3\":0,\"5\":0,\"6\":0},
-                       \"5\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"6\":0},
-                       \"6\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0}}',
+                     '{\"1\":{\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"2\":{\"1\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"3\":{\"1\":0,\"2\":0,\"4\":0,\"5\":0,\"6\":0},\"4\":{\"1\":0,\"2\":0,\"3\":0,\"5\":0,\"6\":0},\"5\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"6\":0},\"6\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0}}',
                      NULL,
                      'This profile defines read-only access. It is used when objects are locked. It can also be used to give to users rights to unlock objects.',
-                    '{\"1\":{\"7\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"8\":0,\"6\":0},
-                      \"7\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"8\":0,\"6\":0},
-                      \"2\":{\"1\":0,\"7\":0,\"3\":0,\"4\":0,\"5\":0,\"8\":0,\"6\":0},
-                      \"3\":{\"1\":0,\"7\":0,\"2\":0,\"4\":0,\"5\":0,\"8\":0,\"6\":0},
-                      \"4\":{\"1\":0,\"7\":0,\"2\":0,\"3\":0,\"5\":0,\"8\":0,\"6\":0},
-                      \"5\":{\"1\":0,\"7\":0,\"2\":0,\"3\":0,\"4\":0,\"8\":0,\"6\":0},
-                      \"8\":{\"1\":0,\"7\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},
-                      \"6\":{\"1\":0,\"7\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"8\":0}}',
+                     '{\"1\":{\"7\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"8\":0,\"6\":0},\"7\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"8\":0,\"6\":0},\"2\":{\"1\":0,\"7\":0,\"3\":0,\"4\":0,\"5\":0,\"8\":0,\"6\":0},\"3\":{\"1\":0,\"7\":0,\"2\":0,\"4\":0,\"5\":0,\"8\":0,\"6\":0},\"4\":{\"1\":0,\"7\":0,\"2\":0,\"3\":0,\"5\":0,\"8\":0,\"6\":0},\"5\":{\"1\":0,\"7\":0,\"2\":0,\"3\":0,\"4\":0,\"8\":0,\"6\":0},\"8\":{\"1\":0,\"7\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"6\":{\"1\":0,\"7\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"8\":0}}',
                      0, 0,
-                     '{\"1\":{\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},
-                       \"9\":{\"1\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},
-                       \"10\":{\"1\":0,\"9\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},
-                       \"7\":{\"1\":0,\"9\":0,\"10\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},
-                       \"4\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},
-                       \"11\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},
-                       \"12\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"5\":0,\"8\":0,\"6\":0},
-                       \"5\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"8\":0,\"6\":0},
-                       \"8\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"6\":0},
-                       \"6\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0}}')";
+                     '{\"1\":{\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"9\":{\"1\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"10\":{\"1\":0,\"9\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"7\":{\"1\":0,\"9\":0,\"10\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"4\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"11\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"12\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"5\":0,\"8\":0,\"6\":0},\"5\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"8\":0,\"6\":0},\"8\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"6\":0},\"6\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0}}')";
 
    $DB->queryOrDie($query, "0.91 update profile with Unlock profile") ;
-   $ret = $DB->insert_id();
-
-   // insert default rights for this profile
-   ProfileRight::updateProfileRights($ret, array('backup'                     => '1',
-                                                 'bookmark_public'            => '1',
-                                                 'budget'                     => '161',
-                                                 'calendar'                   => '1',
-                                                 'cartridge'                  => '161',
-                                                 'change'                     => '1185',
-                                                 'changevalidation'           => '0',
-                                                 'computer'                   => '161',
-                                                 'config'                     => '1',
-                                                 'consumable'                 => '161',
-                                                 'contact_enterprise'         => '161',
-                                                 'contract'                   => '161',
-                                                 'device'                     => '0',
-                                                 'document'                   => '161',
-                                                 'domain'                     => '1',
-                                                 'dropdown'                   => '1',
-                                                 'entity'                     => '1185',
-                                                 'followup'                   => '8193',
-                                                 'global_validation'          => '0',
-                                                 'group'                      => '129',
-                                                 'infocom'                    => '1',
-                                                 'internet'                   => '129',
-                                                 'itilcategory'               => '1',
-                                                 'knowbase'                   => '2177',
-                                                 'knowbasecategory'           => '1',
-                                                 'link'                       => '129',
-                                                 'location'                   => '1',
-                                                 'logs'                       => '1',
-                                                 'monitor'                    => '161',
-                                                 'netpoint'                   => '1',
-                                                 'networking'                 => '161',
-                                                 'notification'               => '1',
-                                                 'password_update'            => '0',
-                                                 'peripheral'                 => '161',
-                                                 'phone'                      => '161',
-                                                 'planning'                   => '3073',
-                                                 'printer'                    => '161',
-                                                 'problem'                    => '1185',
-                                                 'profile'                    => '129',
-                                                 'project'                    => '1185',
-                                                 'projecttask'                => '1',
-                                                 'queuedmail'                 => '1',
-                                                 'reminder_public'            => '129',
-                                                 'reports'                    => '1',
-                                                 'reservation'                => '1',
-                                                 'rssfeed_public'             => '129',
-                                                 'rule_dictionnary_dropdown'  => '1',
-                                                 'rule_dictionnary_printer'   => '1',
-                                                 'rule_dictionnary_software'  => '1',
-                                                 'rule_import'                => '1',
-                                                 'rule_ldap'                  => '1',
-                                                 'rule_mailcollector'         => '1',
-                                                 'rule_softwarecategories'    => '1',
-                                                 'rule_ticket'                => '1',
-                                                 'search_config'              => '0',
-                                                 'show_group_hardware'        => '1',
-                                                 'sla'                        => '1',
-                                                 'software'                   => '161',
-                                                 'solutiontemplate'           => '1',
-                                                 'state'                      => '1',
-                                                 'statistic'                  => '1',
-                                                 'task'                       => '8193',
-                                                 'taskcategory'               => '1',
-                                                 'ticket'                     => '7297',
-                                                 'ticketcost'                 => '1',
-                                                 'ticketrecurrent'            => '1',
-                                                 'tickettemplate'             => '1',
-                                                 'ticketvalidation'           => '0',
-                                                 'transfer'                   => '1',
-                                                 'typedoc'                    => '1',
-                                                 'user'                       => '2177')) ;
+   $ro_p_id = $DB->insert_id();
+   $DB->queryOrDie("INSERT INTO `glpi_profilerights`
+                     (`profiles_id`, `name`, `rights`) VALUES
+                     ($ro_p_id, 'backup',                    '1'),
+                     ($ro_p_id, 'bookmark_public',           '1'),
+                     ($ro_p_id, 'budget',                    '161'),
+                     ($ro_p_id, 'calendar',                  '1'),
+                     ($ro_p_id, 'cartridge',                 '161'),
+                     ($ro_p_id, 'change',                    '1185'),
+                     ($ro_p_id, 'changevalidation',          '0'),
+                     ($ro_p_id, 'computer',                  '161'),
+                     ($ro_p_id, 'config',                    '1'),
+                     ($ro_p_id, 'consumable',                '161'),
+                     ($ro_p_id, 'contact_enterprise',        '161'),
+                     ($ro_p_id, 'contract',                  '161'),
+                     ($ro_p_id, 'device',                    '0'),
+                     ($ro_p_id, 'document',                  '161'),
+                     ($ro_p_id, 'domain',                    '1'),
+                     ($ro_p_id, 'dropdown',                  '1'),
+                     ($ro_p_id, 'entity',                    '1185'),
+                     ($ro_p_id, 'followup',                  '8193'),
+                     ($ro_p_id, 'global_validation',         '0'),
+                     ($ro_p_id, 'group',                     '129'),
+                     ($ro_p_id, 'infocom',                   '1'),
+                     ($ro_p_id, 'internet',                  '129'),
+                     ($ro_p_id, 'itilcategory',              '1'),
+                     ($ro_p_id, 'knowbase',                  '2177'),
+                     ($ro_p_id, 'knowbasecategory',          '1'),
+                     ($ro_p_id, 'link',                      '129'),
+                     ($ro_p_id, 'location',                  '1'),
+                     ($ro_p_id, 'logs',                      '1'),
+                     ($ro_p_id, 'monitor',                   '161'),
+                     ($ro_p_id, 'netpoint',                  '1'),
+                     ($ro_p_id, 'networking',                '161'),
+                     ($ro_p_id, 'notification',              '1'),
+                     ($ro_p_id, 'password_update',           '0'),
+                     ($ro_p_id, 'peripheral',                '161'),
+                     ($ro_p_id, 'phone',                     '161'),
+                     ($ro_p_id, 'planning',                  '3073'),
+                     ($ro_p_id, 'printer',                   '161'),
+                     ($ro_p_id, 'problem',                   '1185'),
+                     ($ro_p_id, 'profile',                   '129'),
+                     ($ro_p_id, 'project',                   '1185'),
+                     ($ro_p_id, 'projecttask',               '1'),
+                     ($ro_p_id, 'queuedmail',                '1'),
+                     ($ro_p_id, 'reminder_public',           '129'),
+                     ($ro_p_id, 'reports',                   '1'),
+                     ($ro_p_id, 'reservation',               '1'),
+                     ($ro_p_id, 'rssfeed_public',            '129'),
+                     ($ro_p_id, 'rule_dictionnary_dropdown', '1'),
+                     ($ro_p_id, 'rule_dictionnary_printer',  '1'),
+                     ($ro_p_id, 'rule_dictionnary_software', '1'),
+                     ($ro_p_id, 'rule_import',               '1'),
+                     ($ro_p_id, 'rule_ldap',                 '1'),
+                     ($ro_p_id, 'rule_mailcollector',        '1'),
+                     ($ro_p_id, 'rule_softwarecategories',   '1'),
+                     ($ro_p_id, 'rule_ticket',               '1'),
+                     ($ro_p_id, 'search_config',             '0'),
+                     ($ro_p_id, 'show_group_hardware',       '1'),
+                     ($ro_p_id, 'sla',                       '1'),
+                     ($ro_p_id, 'software',                  '161'),
+                     ($ro_p_id, 'solutiontemplate',          '1'),
+                     ($ro_p_id, 'state',                     '1'),
+                     ($ro_p_id, 'statistic',                 '1'),
+                     ($ro_p_id, 'task',                      '8193'),
+                     ($ro_p_id, 'taskcategory',              '1'),
+                     ($ro_p_id, 'ticket',                    '7297'),
+                     ($ro_p_id, 'ticketcost',                '1'),
+                     ($ro_p_id, 'ticketrecurrent',           '1'),
+                     ($ro_p_id, 'tickettemplate',            '1'),
+                     ($ro_p_id, 'ticketvalidation',          '0'),
+                     ($ro_p_id, 'transfer',                  '1'),
+                     ($ro_p_id, 'typedoc',                   '1'),
+                     ($ro_p_id, 'user',                      '2177')");
 
    // updates rights for Super-Admin profile
    foreach( $CFG_GLPI['lock_lockable_objects'] as $itemtype ) {
@@ -211,7 +190,7 @@ function update0901to091() {
                                                 'lock_autolock_mode'             => 1,
                                                 'lock_directunlock_notification' => 0,
                                                 'lock_item_list'                 => '[]',
-                                                'lock_lockprofile_id'            => $ret));
+                                                'lock_lockprofile_id'            => $ro_p_id));
 
    // cron task
    if (!countElementsInTable('glpi_crontasks',
@@ -287,10 +266,17 @@ function update0901to091() {
          $DB->queryOrDie($query, "0.91 add Unlock Request notification target");
       }
    }
+   $migration->addField("glpi_users", "lock_autolock_mode", "bool", true);
+   $migration->addField("glpi_users", "lock_directunlock_notification", "bool", true);
+
+
+
+   /************** Default Requester ************ */
    Config::setConfigurationValues('core', array('set_default_requester' => 1));
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
-   // Add task template
+
+   /************** Task's templates ************ */
    if (!TableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -307,11 +293,59 @@ function update0901to091() {
                   KEY `taskcategories_id` (`taskcategories_id`),
                   KEY `entities_id` (`entities_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->queryOrDie($query, "0.84 add table glpi_tasktemplates");
+      $DB->queryOrDie($query, "0.91 add table glpi_tasktemplates");
    }
 
-   $migration->addField("glpi_users", "lock_autolock_mode", "bool", true);
-   $migration->addField("glpi_users", "lock_directunlock_notification", "bool", true);
+   /************** Installation date for softwares ************ */
+   $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
+   $migration->addKey("glpi_computers_softwareversions", "date_install");
+
+
+
+   /************** Date mod/creation for itemtypes */
+   $migration->displayMessage(sprintf(__('date_mod and date_creation')));
+   $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
+                  'SoftwareLicense', 'Peripheral', 'NetworkEquipment', 'User', 'Group', 'Entity',
+                  'Profile', 'Budget', 'Contact', 'Contract', 'Netpoint', 'NetworkPort', 'Rule',
+                  'Cartridge', 'CartridgeItem', 'Consumable', 'ConsumableItem', 'Ticket', 'Problem',
+                  'Change', 'Supplier', 'Document', 'AuthLDAP', 'MailCollector', 'Location',
+                  'State', 'Manufacturer', 'Blacklist', 'BlacklistedMailContent', 'ITILCategory',
+                  'TaskCategory', 'TaskTemplate', 'Project', 'Reminder', 'RSSFeed',
+                  'SolutionType', 'RequestType', 'SolutionTemplate', 'ProjectState', 'ProjectType',
+                  'ProjectTaskType', 'SoftwareLicenseType', 'CartridgeItemType', 'ConsumableItemType',
+                  'ContractType', 'ContactType', 'DeviceMemoryType', 'SupplierType', 'InterfaceType',
+                  'DeviceCaseType', 'PhonePowerSupply', 'Filesystem', 'VirtualMachineType',
+                  'VirtualMachineSystem', 'VirtualMachineState', 'DocumentCategory', 'DocumentType',
+                  'KnowbaseItemCategory', 'Calendar', 'Holiday', 'NetworkEquipmentFirmware',
+                  'Network', 'Domain', 'Vlan', 'IPNetwork', 'FQDN', 'WifiNetwork', 'NetworkName',
+                  'UserTitle', 'UserCategory', 'RuleRightParameter', 'Fieldblacklist', 'SsoVariable',
+                  'NotificationTemplate', 'Notification', 'SLA', 'FieldUnicity', 'Crontask', 'Link',
+                  'ComputerDisk', 'ComputerVirtualMachine', 'Infocom');
+   $types = array_merge($types, $CFG_GLPI["dictionnary_types"]);
+   $types = array_merge($types, $CFG_GLPI["device_types"]);
+   $types = array_merge($types, $CFG_GLPI['networkport_instantiations']);
+
+   foreach ($types as $type) {
+      $table = getTableForItemType($type);
+
+      if (!FieldExists($table, 'date_mod')) {
+         $migration->displayMessage(sprintf(__('Add date_mod to %s'), $table));
+
+         //Add date_mod field if it doesn't exists
+         $migration->addField($table, 'date_mod', 'datetime');
+         $migration->addKey($table, 'date_mod');
+         $migration->migrationOneTable($table);
+      }
+
+      if (!FieldExists($table, 'date_creation')) {
+         $migration->displayMessage(sprintf(__('Add date_creation to %s'), $table));
+
+         //Add date_creation field
+         $migration->addField($table, 'date_creation', 'datetime');
+         $migration->addKey($table, 'date_creation');
+         $migration->migrationOneTable($table);
+      }
+   }
    
    // TEMPLATE UPDATE		
    if (isIndex('glpi_tickettemplatepredefinedfields', 'unicity')) {
@@ -405,5 +439,11 @@ function update0901to091() {
    $migration->executeMigration();
 
    return $updateresult;
+}
+
+function setCreationDate() {
+   global $DB;
+
+
 }
 ?>

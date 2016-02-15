@@ -206,6 +206,7 @@ class ConsumableItem extends CommonDBTM {
       Alert::displayLastAlert('ConsumableItem', $ID);
       echo "</td></tr>";
 
+      $this->showDates($options);
       $this->showFormButtons($options);
 
       return true;

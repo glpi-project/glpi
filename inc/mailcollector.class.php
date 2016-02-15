@@ -1305,6 +1305,40 @@ class MailCollector  extends CommonDBTM {
 
 
    /**
+    * Summary of getDecodedFetchbody
+    * used to get decoded part from email
+    * @param mixed $structure
+    * @param mixed $mid
+    * @param mixed $part 
+    * @return bool|string
+    */
+   private function getDecodedFetchbody($structure, $mid, $part) {
+      if ($message=imap_fetchbody($this->marubox, $mid, $part)) {
+         switch ($structure->encoding) {
+            case 1 :
+               $message = imap_8bit($message);
+               break;
+
+            case 2 :
+               $message = imap_binary($message);
+               break;
+
+            case 3 :
+               $message = imap_base64($message);
+               break;
+
+            case 4 :
+               $message = quoted_printable_decode($message);
+               break;
+         }
+         return $message;
+      }
+
+      return false;
+   }
+
+
+   /**
     * Private function : Recursivly get attached documents
     *
     * @param $mid          message id
@@ -1365,6 +1399,14 @@ class MailCollector  extends CommonDBTM {
              && $structure->subtype) {
             // Embeded image come without filename - generate trivial one
             $filename = "image_$part.".$structure->subtype;
+         } elseif (empty($filename) && $structure->type==2 && $structure->subtype) {
+             // Embeded email comes without filename - try to get "Subject:" or generate trivial one
+             $filename = "msg_$part.EML"; // default trivial one :)!
+             if ( ($message=$this->getDecodedFetchbody($structure, $mid, $part)) 
+                && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches)) ) {
+                     $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";  
+                     $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;                    
+             }
          }
 
          // if no filename found, ignore this part
@@ -1403,25 +1445,7 @@ class MailCollector  extends CommonDBTM {
             return false;
          }
 
-         if ($message = imap_fetchbody($this->marubox, $mid, $part)) {
-            switch ($structure->encoding) {
-               case 1 :
-                  $message = imap_8bit($message);
-                  break;
-
-               case 2 :
-                  $message = imap_binary($message);
-                  break;
-
-               case 3 :
-                  $message = imap_base64($message);
-                  break;
-
-               case 4 :
-                  $message = quoted_printable_decode($message);
-                  break;
-            }
-
+         if (($structure->type==2 && $structure->subtype) || $message = $this->getDecodedFetchbody($structure, $mid, $part)) {
             if (file_put_contents($path.$filename, $message)) {
                $this->files[$filename] = $filename;
                // If embeded image, we add a tag
