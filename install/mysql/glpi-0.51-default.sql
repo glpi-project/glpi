@@ -391,7 +391,7 @@ CREATE TABLE glpi_device_gfxcard (
 ) TYPE=MyISAM;
 
 INSERT INTO glpi_device_gfxcard VALUES ('1','ATI Rage Pro 3D AGP','','AGP','','0','');
-INSERT INTO glpi_device_gfxcard VALUES ('2','Matrox Millenium G400DH','','AGP','','0','');
+INSERT INTO glpi_device_gfxcard VALUES ('2','Matrox Millennium G400DH','','AGP','','0','');
 INSERT INTO glpi_device_gfxcard VALUES ('3','S3 Trio 64V+','','AGP','','0','');
 INSERT INTO glpi_device_gfxcard VALUES ('4','integrated','','AGP','','0','');
 

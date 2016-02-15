@@ -38,10 +38,7 @@
 include ('../inc/includes.php');
 
 Session::checkCentralAccess();
-if (!Session::haveRightsOr('reservation', array(CREATE, UPDATE, DELETE, PURGE))) {
-   Session::redirectIfNotLoggedIn();
-   Html::displayRightError();
-}
+Session::checkRightsOr('reservation', array(CREATE, UPDATE, DELETE, PURGE));
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = '';

@@ -189,13 +189,13 @@ class SoftwareVersion extends CommonDBChild {
     *
     * @param $options array of possible options:
     *    - name          : string / name of the select (default is softwareversions_id)
-    *    - softwares_id  : integer / ID of the software
+    *    - softwares_id  : integer / ID of the software (mandatory)
     *    - value         : integer / value of the selected version
     *    - used          : array / already used items
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdown($options=array()) {
+   static function dropdownForOneSoftware($options=array()) {
       global $CFG_GLPI, $DB;
 
       //$softwares_id,$value=0

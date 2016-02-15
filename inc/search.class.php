@@ -4351,8 +4351,6 @@ class Search {
                   $currenttime = 0;
                   $sltField    = 'slts_id';
                   
-     
-                  Toolbox::logDebug($table.$field);
                   if ($item->isField($sltField) && $item->fields[$sltField] != 0) { // Have SLT
                      $slt = new SLT();
                      $slt->getFromDB($item->fields[$sltField]);

@@ -3232,7 +3232,7 @@ class Transfer extends CommonDBTM {
       global $CFG_GLPI;
 
       $edit_form = true;
-      if (!strpos($_SERVER['HTTP_REFERER'],"transfer.form.php")) {
+      if (strpos($_SERVER['HTTP_REFERER'],"transfer.form.php") === false) {
          $edit_form = false;
       }
 

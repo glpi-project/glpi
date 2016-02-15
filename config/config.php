@@ -99,7 +99,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          unset($_SESSION['TRY_OLD_CONFIG_FIRST']);
       }
 
-      // First try old config table : for update proces management from < 0.80 to >= 0.80
+      // First try old config table : for update process management from < 0.80 to >= 0.80
       $config_object->forceTable('glpi_config');
 
       if ($config_object->getFromDB(1)) {

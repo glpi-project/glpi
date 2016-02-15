@@ -450,21 +450,25 @@ class Dropdown {
     * @param $types     array of types to display
     * @param $options   array Already used items ID: not to display in dropdown
     * Parameters which could be used in options array :
-    *    - value      : integer / preselected value (default '')
-    *    - used       : array / Already used items ID: not to display in dropdown (default empty)
-    *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
-    *    - display    : boolean if false get string
+    *    - value               : integer / preselected value (default '')
+    *    - used                : array / Already used items ID: not to display in dropdown (default empty)
+    *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
+    *    - display             : boolean if false get string
+    *    - width               : specific width needed (default not set)
+    *    - emptylabel          : empty label if empty displayed (default self::EMPTY_VALUE)
+    *    - display_emptychoice : display empty choice (default false)
     *
     * @return nothing (print out an HTML select box)
    **/
    static function showItemTypes($name, $types=array(), $options=array()) {
       global $CFG_GLPI;
 
-      $params['value']        = '';
-      $params['used']         = array();
-      $params['emptylabel']   = self::EMPTY_VALUE;
-      $params['display']      = true;
-      $params['width']        = '80%';
+      $params['value']               = '';
+      $params['used']                = array();
+      $params['emptylabel']          = self::EMPTY_VALUE;
+      $params['display']             = true;
+      $params['width']               = '80%';
+      $params['display_emptychoice'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -472,20 +476,16 @@ class Dropdown {
          }
       }
 
+      $items = array();
       if (count($types)) {
          foreach ($types as $type) {
             if ($item = getItemForItemtype($type)) {
-               $options[$type] = $item->getTypeName(1);
+               $items[$type] = $item->getTypeName(1);
             }
          }
       }
       asort($options);
-      return self::showFromArray($name, $options,
-                                 array('value'      => $params['value'],
-                                       'used'       => $params['used'],
-                                       'width'      => $params['width'],
-                                       'display'    => $params['display'],
-                                       'emptylabel' => $params['emptylabel']));
+      return self::showFromArray($name, $items, $params);
    }
 
 
