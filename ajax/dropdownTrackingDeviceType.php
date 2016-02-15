@@ -45,10 +45,10 @@ Session::checkLoginUser();
 if (isset($_POST["itemtype"])
     && CommonITILObject::isPossibleToAssignType($_POST["itemtype"])) {
    $table = getTableForItemType($_POST["itemtype"]);
+   
+   $rand = mt_rand();
    if (isset($_POST["rand"])) {
       $rand = $_POST["rand"];
-   } else {
-      $rand = mt_rand();
    }
    
    // Message for post-only
