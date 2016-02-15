@@ -1897,6 +1897,11 @@ INSERT INTO `glpi_displaypreferences` VALUES ('251','ProjectTask','13','7','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('252','CartridgeItem','9','5','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('253','ConsumableItem','9','5','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('254','ReservationItem','9','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','1','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','3','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','10','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','162','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','5','5','0');
 
 ### Dump table glpi_documentcategories
 

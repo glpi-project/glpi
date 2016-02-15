@@ -466,12 +466,16 @@ class SoftwareLicense extends CommonDBTM {
       $tab[1]['name']            = __('Name');
       $tab[1]['datatype']        = 'itemlink';
       $tab[1]['massiveaction']   = false;
+      $tab[1]['forcegroupby']    = true;
+      $tab[1]['massiveaction']   = false;
 
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'id';
       $tab[2]['name']            = __('ID');
       $tab[2]['massiveaction']   = false;
       $tab[2]['datatype']        = 'number';
+      $tab[2]['forcegroupby']    = true;
+      $tab[2]['massiveaction']   = false;
 
       $tab+=Location::getSearchOptionsToAdd();
 
