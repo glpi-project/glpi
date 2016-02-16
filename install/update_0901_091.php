@@ -373,7 +373,7 @@ function update0901to091() {
                   KEY `slas_id` (`slas_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.91 add table glpi_slts");
-   
+
       // Sla migration
       $query = "SELECT *
                 FROM `glpi_slas`";
@@ -387,28 +387,28 @@ function update0901to091() {
             }
          }
       }
-      
+
       // Delete deprecated fields of SLA
       foreach (array('resolution_time', 'calendars_id', 'definition_time', 'end_of_working_day') as $field) {
          $migration->dropField('glpi_slas', $field);
       }
-      
+
       // Slalevels changes
       $migration->changeField('glpi_slalevels', 'slas_id', 'slts_id', 'integer');
-      
+
       // Ticket changes
       $migration->changeField("glpi_tickets", "slas_id", "slt_resolution", "integer");
       $migration->addField("glpi_tickets", "slt_takeintoaccount", "integer", array('after' => 'slt_resolution'));
       $migration->addField("glpi_tickets", "limit_takeintoaccount_date", "datetime", array('after' => 'due_date'));
       $migration->addKey('glpi_tickets', 'slt_takeintoaccount');
       $migration->addKey('glpi_tickets', 'limit_takeintoaccount_date');
-      
+
       // Unique key for slalevel_ticket
       $migration->addKey('glpi_slalevels_tickets', array('tickets_id', 'slalevels_id'), 'unicity', 'UNIQUE');
-      
+
       // Sla rules criterias migration
       $DB->queryOrDie("UPDATE `glpi_rulecriterias` SET `criteria` = 'slt_resolution' WHERE `criteria` = 'slas_id'", "SLA rulecriterias migration");
-      
+
       // Sla rules actions migration
       $DB->queryOrDie("UPDATE `glpi_ruleactions` SET `field` = 'slt_resolution' WHERE `field` = 'slas_id'", "SLA ruleactions migration");
    }

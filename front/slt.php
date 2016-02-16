@@ -39,7 +39,7 @@ include ('../inc/includes.php');
 
 Session::checkRight("sla", READ);
 
-Html::header(SLT::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "slt");
+Html::header(SLT::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "sla", "slt");
 
 Search::show('SLT');
 

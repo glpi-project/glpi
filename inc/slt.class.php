@@ -50,7 +50,7 @@ class SLT extends CommonDBTM {
    static $rightname                   = 'sla';
 
    static protected $forward_entity_to = array('SLALevel');
-   
+
    const RESOLUTION_TYPE      = 0;
    const TAKEINTOACCOUNT_TYPE = 1;
 
@@ -183,7 +183,7 @@ class SLT extends CommonDBTM {
                                'emptylabel' => __('24/7'),
                                'toadd'      => array('-1' => __('Calendar of the ticket'))));
       echo "</td></tr>";
-      
+
       echo "<tr class='tab_bg_1'><td>".__('Type')."</td>";
       echo "<td>";
       self::getSltTypeDropdown(array('value' => $this->fields["type"]));
@@ -224,16 +224,16 @@ class SLT extends CommonDBTM {
 
       return true;
    }
-   
+
    /**
     * Print the HTML array for SLTs linked to a SLA
-    * 
+    *
     * @param SLA $sla
     * @return boolean
     */
    static function showForSla(SLA $sla) {
       global $CFG_GLPI;
-      
+
       $instID   = $sla->fields['id'];
       $slt      = new self();
       $calendar = new Calendar();
@@ -241,16 +241,16 @@ class SLT extends CommonDBTM {
       if (!$sla->can($instID, READ)) {
          return false;
       }
-      
+
       $canedit = ($sla->canEdit($instID)
                   && isset($_SESSION["glpiactiveprofile"])
                   && $_SESSION["glpiactiveprofile"]["interface"] == "central");
-      
+
       $rand = mt_rand();
-      
+
       if ($canedit) {
          echo "<div id='viewslt$instID$rand'></div>\n";
-         
+
          echo "<script type='text/javascript' >";
          echo "function viewAddSlt$instID$rand() {";
          $params = array('type'                     => $slt->getType(),
@@ -275,7 +275,7 @@ class SLT extends CommonDBTM {
             $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions($massiveactionparams);
          }
-         
+
          echo "<table class='tab_cadre_fixehov'>";
          $header_begin  = "<tr>";
          $header_top    = '';
@@ -307,7 +307,7 @@ class SLT extends CommonDBTM {
                                    $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
             echo "};";
             echo "</script>\n";
-            
+
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10' $edit>";
             if ($canedit) {
@@ -318,8 +318,8 @@ class SLT extends CommonDBTM {
             echo "<td $edit>".$slt->getLink()."</td>";
             echo "<td $edit>".$slt->getSpecificValueToDisplay('type', $slt->fields['type'])."</td>";
             echo "<td $edit>";
-            echo $slt->getSpecificValueToDisplay('resolution_time', 
-                  array('resolution_time' => $slt->fields['resolution_time'], 
+            echo $slt->getSpecificValueToDisplay('resolution_time',
+                  array('resolution_time' => $slt->fields['resolution_time'],
                         'definition_time' => $slt->fields['definition_time']));
             echo "</td>";
             $calendar->getFromDB($val['id']);
@@ -328,7 +328,7 @@ class SLT extends CommonDBTM {
          }
          echo $header_begin.$header_bottom.$header_end;
          echo "</table>";
-         
+
          if ($canedit) {
             $massiveactionparams['ontop'] = false;
             Html::showMassiveActions($massiveactionparams);
@@ -364,10 +364,10 @@ class SLT extends CommonDBTM {
       }
       return true;
    }
-   
+
    /**
     * Get SLT data by type
-    * 
+    *
     * @param type $tickets_id
     * @param type $type
     */
@@ -380,21 +380,21 @@ class SLT extends CommonDBTM {
             $field = 'slt_takeintoaccount';
             break;
       }
-      
+
       return $this->getFromDBByQuery("INNER JOIN `glpi_tickets` ON (`glpi_tickets`.`$field` = `".$this->getTable()."`.`id`) WHERE `glpi_tickets`.`id` = '".$tickets_id."' LIMIT 1");
    }
-   
+
    /**
     * Get SLT table fields
-    * 
+    *
     * @param type $type
     * @return type
     */
    static function getSltFieldNames($type){
-      
+
       $dateField = null;
       $sltField  = null;
-      
+
       switch ($type) {
          case self::TAKEINTOACCOUNT_TYPE:
             $dateField = 'limit_takeintoaccount_date';
@@ -405,13 +405,13 @@ class SLT extends CommonDBTM {
             $sltField  = 'slt_resolution';
             break;
       }
-      
+
       return array($dateField, $sltField);
    }
-   
+
    /**
     * Show SLT for ticket
-    * 
+    *
     * @param Ticket $ticket
     * @param type $type
     * @param type $tt
@@ -421,10 +421,10 @@ class SLT extends CommonDBTM {
       global $CFG_GLPI;
 
       list($dateField, $sltField) = self::getSltFieldNames($type);
-      
+
       echo "<table width='100%'>";
       echo "<tr class='tab_bg_1'>";
-      
+
       if ($ticket->fields['id']) {
          if ($this->getSltByType($ticket->fields['id'], $type)) {
             echo "<td>";
@@ -504,7 +504,7 @@ class SLT extends CommonDBTM {
                echo "<div id='slt_choice$type' style='display:none'>";
                echo "<span  class='b'>".__('SLT')."</span>&nbsp;";
                Slt::dropdown(array('name'      => $sltField,
-                                   'entity'    => $ticket->fields["entities_id"], 
+                                   'entity'    => $ticket->fields["entities_id"],
                                    'condition' => "`type` = '".$type."'"));
                echo "</div>";
                echo $tt->getEndHiddenFieldText($sltField);
@@ -537,14 +537,14 @@ class SLT extends CommonDBTM {
             echo "</td>";
          }
       }
-      
+
       echo "</tr>";
       echo "</table>";
    }
-   
+
    /**
     * Get SLT types
-    * 
+    *
     * @return array of types
     */
    static function getSltTypes() {
@@ -554,7 +554,7 @@ class SLT extends CommonDBTM {
 
    /**
     * Get SLT types name
-    * 
+    *
     * @param type $type
     * @return string name
     */
@@ -566,15 +566,15 @@ class SLT extends CommonDBTM {
       }
       return $name;
    }
-   
+
    /**
     * Get SLT types dropdown
-    * 
+    *
     * @param type $options
     */
    static function getSltTypeDropdown($options){
       $params = array('name'  => 'type');
-      
+
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
@@ -617,12 +617,12 @@ class SLT extends CommonDBTM {
       $tab[6]['name']             = __('End of working day');
       $tab[6]['datatype']         = 'bool';
       $tab[6]['massiveaction']    = false;
-      
+
       $tab[7]['table']            = $this->getTable();
       $tab[7]['field']            = 'type';
       $tab[7]['name']             = __('Type');
       $tab[7]['datatype']         = 'specific';
-      
+
       $tab[8]['table']            = 'glpi_slas';
       $tab[8]['field']            = 'name';
       $tab[8]['name']             = __('SLA');
@@ -667,7 +667,7 @@ class SLT extends CommonDBTM {
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
-   
+
    /**
     * @since version 0.84
     *
@@ -774,7 +774,7 @@ class SLT extends CommonDBTM {
             if ($slalevel->fields['slts_id'] == $this->fields['id']) { // correct slt level
                $work_in_days = ($this->fields['definition_time'] == 'day');
                $delay        = $this->getResolutionTime();
-    
+
                // Based on a calendar
                if ($this->fields['calendars_id'] > 0) {
                   $cal = new Calendar();

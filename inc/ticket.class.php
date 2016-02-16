@@ -324,13 +324,13 @@ class Ticket extends CommonITILObject {
     * @param $entities_id  entity ID of the ticket
     * @param $date         begin date of the ticket
     * @param $type         type of SLT
-    * 
+    *
     * @return array of datas to add in ticket
    **/
    function getDatasToAddSLT($slts_id, $entities_id, $date, $type) {
-      
+
       list($dateField, $sltField) = SLT::getSltFieldNames($type);
-      
+
       $calendars_id = Entity::getUsedConfig('calendars_id', $entities_id);
       $data         = array();
 
@@ -353,7 +353,7 @@ class Ticket extends CommonITILObject {
 
    /**
     * Delete SLT for the ticket
-    * 
+    *
     * @param type $id
     * @param type $type
     * @param type $delete_date
@@ -526,7 +526,7 @@ class Ticket extends CommonITILObject {
 
                case 'SLT' :
                   $nb = countElementsInTable('glpi_tickets',
-                                             "`slt_takeintoaccount` = '".$item->getID()."' 
+                                             "`slt_takeintoaccount` = '".$item->getID()."'
                                                OR `slt_resolution` = '".$item->getID()."'");
                   break;
 
@@ -735,7 +735,7 @@ class Ticket extends CommonITILObject {
 
       $ts = new TicketCost();
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      
+
       $slaLevel_ticket = new SlaLevel_Ticket();
       $slaLevel_ticket->deleteForTicket($this->getID());
 
@@ -960,7 +960,7 @@ class Ticket extends CommonITILObject {
             $manual_slts_id[$sltType] = $input[$sltField];
          }
       }
-      
+
       // Only process rules on changes
       if (count($changes)) {
          if (in_array('_users_id_requester', $changes)) {
@@ -2260,7 +2260,7 @@ class Ticket extends CommonITILObject {
 
 
       $tab['slt']                   = __('SLT');
-      
+
       $tab[37]['table']             = 'glpi_slts';
       $tab[37]['field']             = 'name';
       $tab[37]['linkfield']         = 'slt_takeintoaccount';
@@ -2269,7 +2269,7 @@ class Ticket extends CommonITILObject {
       $tab[37]['datatype']          = 'dropdown';
       $tab[37]['joinparams']        = array('condition' => "AND NEWTABLE.`type` = '".SLT::TAKEINTOACCOUNT_TYPE."'");
       $tab[37]['condition']         = "`glpi_slts`.`type` = '".SLT::TAKEINTOACCOUNT_TYPE."'";
-      
+
       $tab[30]['table']             = 'glpi_slts';
       $tab[30]['field']             = 'name';
       $tab[30]['linkfield']         = 'slt_resolution';
@@ -3749,24 +3749,10 @@ class Ticket extends CommonITILObject {
       }
       echo $tt->getEndHiddenFieldValue('date', $this);
       echo "</td><td colspan='2'></td></tr>";
-      
+
       // SLTs
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('due_date');
-
-      if (!$ID) {
-         printf(__('%1$s%2$s'), __('Due date'), $tt->getMandatoryMark('due_date'));
-      } else {
-         _e('Due date');
-      }
-      echo $tt->getEndHiddenFieldText('due_date');
-      echo "</th>";
-      echo "<td width='$colsize2%' class='nopadding'>";
-      $slt = new SLT();
-      $slt->showSltForTicket($this, Slt::RESOLUTION_TYPE, $tt, $canupdate);
-      echo "</td>";
       echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('limit_takeintoaccount_date');
-
       if (!$ID) {
          printf(__('%1$s%2$s'), __('Limit take into account date'), $tt->getMandatoryMark('limit_takeintoaccount_date'));
       } else {
@@ -3775,7 +3761,19 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('limit_takeintoaccount_date');
       echo "</th>";
       echo "<td width='$colsize4%' class='nopadding'>";
+      $slt = new SLT();
       $slt->showSltForTicket($this, Slt::TAKEINTOACCOUNT_TYPE, $tt, $canupdate);
+      echo "</td>";
+      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('due_date');
+      if (!$ID) {
+         printf(__('%1$s%2$s'), __('Due date'), $tt->getMandatoryMark('due_date'));
+      } else {
+         _e('Due date');
+      }
+      echo $tt->getEndHiddenFieldText('due_date');
+      echo "</th>";
+      echo "<td width='$colsize2%' class='nopadding'>";
+      $slt->showSltForTicket($this, Slt::RESOLUTION_TYPE, $tt, $canupdate);
       echo "</td>";
       echo "</tr>";
 

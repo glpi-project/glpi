@@ -2721,7 +2721,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[18]['maybefuture']         = true;
       $tab[18]['massiveaction']       = false;
       $tab[18]['additionalfields']    = array('status');
-      
+
       $tab[155]['table']               = $this->getTable();
       $tab[155]['field']               = 'limit_takeintoaccount_date';
       $tab[155]['name']                = __('Limit take into account date');
@@ -2737,7 +2737,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[151]['massiveaction']      = false;
       $tab[151]['nosearch']           = true;
       $tab[151]['additionalfields']   = array('status');
-      
+
       $tab[158]['table']              = $this->getTable();
       $tab[158]['field']              = 'limit_takeintoaccount_date';
       $tab[158]['name']               = __('Limit take into account date + Progress');

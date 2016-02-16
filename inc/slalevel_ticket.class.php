@@ -53,10 +53,10 @@ class SlaLevel_Ticket extends CommonDBTM {
    function getFromDBForTicket($ID, $sltType) {
       $query = "LEFT JOIN `glpi_slalevels` ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
                 LEFT JOIN `glpi_slts` ON (`glpi_slalevels`.`slts_id` = `glpi_slts`.`id`)
-                WHERE `".$this->getTable()."`.`tickets_id` = '$ID' 
-                AND `glpi_slts`.`type` = '$sltType' 
+                WHERE `".$this->getTable()."`.`tickets_id` = '$ID'
+                AND `glpi_slts`.`type` = '$sltType'
                 LIMIT 1";
-      
+
       return $this->getFromDBByQuery($query);
    }
 
@@ -75,9 +75,9 @@ class SlaLevel_Ticket extends CommonDBTM {
                  FROM `glpi_slalevels_tickets`
                  LEFT JOIN `glpi_slalevels` ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
                  LEFT JOIN `glpi_slts` ON (`glpi_slalevels`.`slts_id` = `glpi_slts`.`id`)
-                 WHERE `glpi_slalevels_tickets`.`tickets_id` = '$tickets_id' 
+                 WHERE `glpi_slalevels_tickets`.`tickets_id` = '$tickets_id'
                  AND `glpi_slts`.`type` = '$sltType'";
-     
+
       foreach ($DB->request($query1) as $data) {
          $this->delete(array('id' => $data['id']));
       }
@@ -202,7 +202,7 @@ class SlaLevel_Ticket extends CommonDBTM {
                $slt->addLevelToDo($ticket, $next);
                // Action done : drop the line
                $slalevelticket->delete(array('id' => $data['id']));
-               
+
                $ticket->update($input);
             }
          } else {
@@ -222,7 +222,7 @@ class SlaLevel_Ticket extends CommonDBTM {
     *
     * @param $tickets_id Ticket ID
     * @param $sltType Type of slt
-    * 
+    *
     */
    static function replayForTicket($tickets_id, $sltType) {
       global $DB;

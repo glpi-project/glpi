@@ -115,6 +115,29 @@ class SLA extends CommonDBTM {
       return $tab;
    }
 
+   /**
+    *  @see CommonGLPI::getMenuContent()
+    *
+    *  @since version 0.85
+   **/
+   static function getMenuContent() {
+
+      $menu = array();
+      if (Config::canUpdate()) {
+            $menu['title']                              = SLA::getTypeName(Session::getPluralNumber());
+            $menu['page']                               = '/front/sla.php';
+
+            $menu['options']['slt']['title']           = SLT::getTypeName(Session::getPluralNumber());
+            $menu['options']['slt']['page']            = '/front/slt.php';
+            $menu['options']['slt']['links']['search'] = '/front/slt.php';
+            $menu['options']['slt']['links']['add']    = '' .'/front/slt.form.php';
+
+      }
+      if (count($menu)) {
+         return $menu;
+      }
+      return false;
+   }
 
 }
 ?>
