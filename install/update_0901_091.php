@@ -353,7 +353,10 @@ function update0901to091() {
                    DROP KEY `unicity`;", "Associated items migration : alter template predefinedfields unicity");
    }
 
-   // Get associated item searchoption num		
+   // Get associated item searchoption num
+   if (!isset($CFG_GLPI["use_rich_text"])) {
+      $CFG_GLPI["use_rich_text"] = false;
+   }
    $searchOption = Search::getOptions('Ticket');
    $item_num     = 0;
    $itemtype_num = 0;

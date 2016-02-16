@@ -55,7 +55,6 @@ if (isset($_POST["itemtype"])
    if (!isset($_POST["admin"]) || ($_POST["admin"] == 0)) {
       echo "<br>".__('Enter the first letters (user, item name, serial or asset number)');
    }
-   
    echo "<br>";
    $field_id = Html::cleanId("dropdown_".$_POST['myname'].$rand);
    $p = array('itemtype'            => $_POST["itemtype"],
@@ -78,7 +77,6 @@ if (isset($_POST["itemtype"])
    // Auto update summary of active or just solved tickets
    $params = array('items_id' => '__VALUE__',
                    'itemtype' => $_POST['itemtype']);
-   
    Ajax::updateItemOnSelectEvent($field_id,"item_ticket_selection_information",
                                  $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
                                  $params);
