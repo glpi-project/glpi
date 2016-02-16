@@ -380,7 +380,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       echo "<div class='center'>";
 
-      if ($canedit) {
+      //If the number of linked assets have reached the number defined in the license,
+      //do not allow to add more assets
+      if ($canedit
+         && ($license->getField('number') == -1 || $number < $license->getField('number'))) {
          echo "<form method='post' action='".
                 $CFG_GLPI["root_doc"]."/front/computer_softwarelicense.form.php'>";
          echo "<input type='hidden' name='softwarelicenses_id' value='$searchID'>";
