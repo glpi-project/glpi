@@ -1175,12 +1175,12 @@ class Ticket extends CommonITILObject {
                foreach ($items as $items_id) {
                   $item_ticket->add(array('items_id'      => $items_id,
                                           'itemtype'      => $itemype,
-                                          'tickets_id'    => $this->fields['id'], 
+                                          'tickets_id'    => $this->fields['id'],
                                           '_disablenotif' => true));
                }
             }
          }
-         
+
          // Setting a solution type means the ticket is solved
          if ((in_array("solutiontypes_id", $this->updates)
               || in_array("solution", $this->updates))
@@ -4153,17 +4153,17 @@ class Ticket extends CommonITILObject {
       echo "</th>";
       if (!$ID) {
          echo "<td rowspan='2'>";
-         echo $tt->getBeginHiddenFieldValue('items_id'); 
+         echo $tt->getBeginHiddenFieldValue('items_id');
          if ($canupdate
                  || $canupdate_descr) {
             Item_Ticket::itemAddForm($this, $values);
          }
          echo $tt->getEndHiddenFieldValue('items_id', $this);
          echo "</td>";
-         
+
       } else {
          echo "<td>";
-         echo $tt->getBeginHiddenFieldValue('items_id'); 
+         echo $tt->getBeginHiddenFieldValue('items_id');
          Item_Ticket::itemAddForm($this, $values);
          echo $tt->getEndHiddenFieldValue('items_id', $this);
          echo "</td>";

@@ -942,7 +942,7 @@ class IPAddress extends CommonDBChild {
             }
          }
       }
-      
+
       if (count($addressesWithItems)) {
          // Get the first item that is matching entity
          foreach ($addressesWithItems as $items) {
@@ -955,7 +955,7 @@ class IPAddress extends CommonDBChild {
                }
             }
          }
-      }      
+      }
       return array();
    }
 

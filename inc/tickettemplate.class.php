@@ -141,7 +141,7 @@ class TicketTemplate extends CommonDropdown {
       } else {
          $withtypeandcategory = 0;
       }
-      
+
       if ($withitemtype) {
          $withitemtype = 1;
       } else {
@@ -206,11 +206,11 @@ class TicketTemplate extends CommonDropdown {
                [$ticket->getSearchOptionIDByField('field', 'itemtype',
                                                   'glpi_items_tickets')] = 'itemtype';
          }
-        
+
          $allowed_fields[$withtypeandcategory][$withitemtype]
             [$ticket->getSearchOptionIDByField('field', 'items_id',
                                                'glpi_items_tickets')] = 'items_id';
-         
+
          // Add validation request
          $allowed_fields[$withtypeandcategory][$withitemtype][-2] = '_add_validation';
 

@@ -176,7 +176,7 @@ class Item_Ticket extends CommonDBRelation{
 
       return $nb ;
    }
-   
+
    /**
     * Print the HTML ajax associated item add
     *
@@ -190,14 +190,14 @@ class Item_Ticket extends CommonDBRelation{
    **/
    static function itemAddForm(Ticket $ticket, $options=array()){
       global $CFG_GLPI;
- 
+
       $params = array('id'                  => (isset($ticket->fields['id']) && $ticket->fields['id'] != '') ? $ticket->fields['id'] : 0,
                       '_users_id_requester' => 0,
-                      'items_id'            => array(), 
+                      'items_id'            => array(),
                       'itemtype'            => '');
-            
+
       $opt = array();
-      
+
       foreach ($options as $key => $val) {
          if (!empty($val)) {
             $params[$key] = $val;
@@ -207,9 +207,9 @@ class Item_Ticket extends CommonDBRelation{
       if (!$ticket->can($params['id'], READ)) {
          return false;
       }
-      
+
       $canedit = ($ticket->can($params['id'], UPDATE));
-      
+
       // Ticket update case
       if ($params['id'] > 0) {
          // Get requester
@@ -220,7 +220,7 @@ class Item_Ticket extends CommonDBRelation{
                $params['_users_id_requester'] = $user_id_single['users_id'];
             }
          }
-         
+
          // Get associated elements for ticket
          $used = self::getUsedItems($params['id']);
          foreach ($used as $itemtype => $items) {
@@ -230,8 +230,8 @@ class Item_Ticket extends CommonDBRelation{
                }
             }
          }
-      }  
-      
+      }
+
       // Get ticket template
       $tt = new TicketTemplate();
       if (isset($options['_tickettemplate'])) {
@@ -244,14 +244,14 @@ class Item_Ticket extends CommonDBRelation{
 
       $rand  = mt_rand();
       $count = 0;
-      
+
       echo "<div id='itemAddForm$rand'>";
 
       // Show associated item dropdowns
       if ($canedit) {
          echo "<div style='float:left'>";
-         $p = array('used'       => $params['items_id'], 
-                    'rand'       => $rand, 
+         $p = array('used'       => $params['items_id'],
+                    'rand'       => $rand,
                     'tickets_id' => $params['id']);
          // My items
          if ($params['_users_id_requester'] > 0) {
@@ -261,14 +261,14 @@ class Item_Ticket extends CommonDBRelation{
          Item_Ticket::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $ticket->fields["entities_id"], $p);
          echo "<span id='item_ticket_selection_information'></span>";
          echo "</div>";
-         
+
          // Add button
          echo "<a href='javascript:itemAction$rand(\"add\");' class='vsubmit' style='float:left'>"._sx('button', 'Add')."</a>";
       }
 
       // Display list
       echo "<div style='clear:both;'>";
-            
+
       if (!empty($params['items_id'])) {
          // No delete if mandatory and only one item
          $delete = true;
@@ -290,12 +290,12 @@ class Item_Ticket extends CommonDBRelation{
                $count++;
             }
          }
-      } 
+      }
 
       if ($count == 0) {
          echo "<input type='hidden' value='0' name='items_id'>";
       }
-      
+
       if ($params['id'] > 0 && $count > 5) {
          echo "<i><a href='".$ticket->getFormURL()."?id=".$params['id']."&amp;forcetab=Item_Ticket$1'>"
                   .__('Display all items')." (".$count.")</a></i>";
@@ -310,13 +310,13 @@ class Item_Ticket extends CommonDBRelation{
       $js .= "    $.ajax({
                      url: '".$CFG_GLPI['root_doc']."/ajax/itemTicket.php',
                      dataType: 'html',
-                     data: {'action'     : action, 
+                     data: {'action'     : action,
                             'rand'       : $rand,
                             'params'     : ".json_encode($opt).",
                             'my_items'   : $('#dropdown_my_items$rand').val(),
-                            'itemtype'   : (itemtype === undefined) ? $('#dropdown_itemtype$rand').val() : itemtype, 
+                            'itemtype'   : (itemtype === undefined) ? $('#dropdown_itemtype$rand').val() : itemtype,
                             'items_id'   : (items_id === undefined) ? $('#dropdown_add_items_id$rand').val() : items_id},
-                     success: function(response) {";        
+                     success: function(response) {";
       $js .= "          $(\"#itemAddForm$rand\").html(response);";
       $js .= "       }";
       $js .= "    });";
@@ -324,16 +324,16 @@ class Item_Ticket extends CommonDBRelation{
       echo Html::scriptBlock($js);
       echo "</div>";
    }
-   
-      
+
+
    static function showItemToAdd($tickets_id, $itemtype, $items_id, $options) {
-      
+
       $params = array('rand' => mt_rand(), 'delete' => true);
-      
+
       foreach($options as $key => $val){
          $params[$key] = $val;
       }
-      
+
       $item = getItemForItemtype($itemtype);
       $item->getFromDB($items_id);
       $result =  "<div id='".$itemtype."_".$items_id."'>";
@@ -343,7 +343,7 @@ class Item_Ticket extends CommonDBRelation{
          $result .= " <img src=\"../pics/delete.png\" onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\">";
       }
       $result .= "</div>";
-      
+
       return $result;
    }
 
@@ -583,17 +583,17 @@ class Item_Ticket extends CommonDBRelation{
                                       $entity_restrict=-1,$options=array()) {
       global $CFG_GLPI, $DB;
 
-      $params = array('tickets_id' => 0, 
-                      'used'       => array(), 
-                      'multiple'   => 0, 
+      $params = array('tickets_id' => 0,
+                      'used'       => array(),
+                      'multiple'   => 0,
                       'rand'       => mt_rand());
-      
+
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
 
       $rand = $params['rand'];
-      
+
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] == 0) {
          echo "<input type='hidden' name='$myname' value=''>";
          echo "<input type='hidden' name='items_id' value='0'>";
@@ -670,17 +670,17 @@ class Item_Ticket extends CommonDBRelation{
     * @param $options   array of possible options:
     *    - used     : ID of the requester user
     *    - multiple : allow multiple choice
-    * 
+    *
     * @return nothing (print out an HTML select box)
    **/
    static function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_id=0, $options=array()) {
       global $DB, $CFG_GLPI;
 
       $params = array('tickets_id' => 0,
-                      'used'       => array(), 
-                      'multiple'   => false, 
+                      'used'       => array(),
+                      'multiple'   => false,
                       'rand'       => mt_rand());
-      
+
       foreach ($options as $key => $val) {
          $params[$key] = $val;
       }
@@ -1205,7 +1205,7 @@ class Item_Ticket extends CommonDBRelation{
          $values = array($field => $values);
       }
       switch ($field) {
-         case 'items_id':            
+         case 'items_id':
             if (strpos($values[$field], "_") !== false) {
                $item_itemtype      = explode("_", $values[$field]);
                $values['itemtype'] = $item_itemtype[0];

@@ -346,10 +346,10 @@ function update0901to091() {
          $migration->migrationOneTable($table);
       }
    }
-   
-   // TEMPLATE UPDATE		
+
+   // TEMPLATE UPDATE
    if (isIndex('glpi_tickettemplatepredefinedfields', 'unicity')) {
-      $DB->queryOrDie("ALTER TABLE `glpi_tickettemplatepredefinedfields`		
+      $DB->queryOrDie("ALTER TABLE `glpi_tickettemplatepredefinedfields`
                    DROP KEY `unicity`;", "Associated items migration : alter template predefinedfields unicity");
    }
 
@@ -380,9 +380,9 @@ function update0901to091() {
             $columns = array('num', 'tickettemplates_id');
             break;
       }
-      $query = "SELECT `".implode('`,`', $columns)."`		
-               FROM `$table`		
-               WHERE `num` = '$item_num'		
+      $query = "SELECT `".implode('`,`', $columns)."`
+               FROM `$table`
+               WHERE `num` = '$item_num'
                OR `num` = '$itemtype_num';";
 
       $items_to_update = array();
@@ -399,37 +399,37 @@ function update0901to091() {
       }
 
       switch ($table) {
-         case 'glpi_tickettemplatepredefinedfields' : // Update predefined items		
+         case 'glpi_tickettemplatepredefinedfields' : // Update predefined items
             foreach ($items_to_update as $templates_id => $type) {
                if (isset($type['itemtype'])) {
                   if (isset($type['items_id'])) {
-                     $DB->queryOrDie("UPDATE `$table`		
-                                     SET `value` = '".$type['itemtype']."_".$type['items_id']."'		
-                                     WHERE `num` = '".$item_num."' 		
+                     $DB->queryOrDie("UPDATE `$table`
+                                     SET `value` = '".$type['itemtype']."_".$type['items_id']."'
+                                     WHERE `num` = '".$item_num."'
                                      AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : update predefined items");
 
-                     $DB->queryOrDie("DELETE FROM `$table`		
-                                     WHERE `num` = '".$itemtype_num."'		
+                     $DB->queryOrDie("DELETE FROM `$table`
+                                     WHERE `num` = '".$itemtype_num."'
                                      AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
                   }
                }
             }
             break;
-         default: // Update mandatory and hidden items		
+         default: // Update mandatory and hidden items
             foreach ($items_to_update as $templates_id => $type) {
                if (isset($type['itemtype'])) {
                   if (isset($type['items_id'])) {
-                     $DB->queryOrDie("DELETE FROM `$table`		
-                                        WHERE `num` = '".$item_num."'		
+                     $DB->queryOrDie("DELETE FROM `$table`
+                                        WHERE `num` = '".$item_num."'
                                         AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
-                     $DB->queryOrDie("UPDATE `$table`		
-                                        SET `num` = '".$item_num."' 		
-                                        WHERE `num` = '".$itemtype_num."'		
+                     $DB->queryOrDie("UPDATE `$table`
+                                        SET `num` = '".$item_num."'
+                                        WHERE `num` = '".$itemtype_num."'
                                         AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
                   } else {
-                     $DB->queryOrDie("UPDATE `$table`		
-                                        SET `num` = '".$item_num."'		
-                                        WHERE `num` = '".$itemtype_num."'		
+                     $DB->queryOrDie("UPDATE `$table`
+                                        SET `num` = '".$item_num."'
+                                        WHERE `num` = '".$itemtype_num."'
                                         AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
                   }
                }
