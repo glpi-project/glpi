@@ -955,8 +955,7 @@ class IPAddress extends CommonDBChild {
                }
             }
          }
-      }
-      
+      }      
       return array();
    }
 

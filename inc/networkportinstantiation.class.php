@@ -428,8 +428,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                }
             }
          }
-      }
-      
+      }      
       return array();
    }
 
