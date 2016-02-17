@@ -448,11 +448,11 @@ class RuleCriteria extends CommonDBChild {
             $results = array();
             // Permit use < and >
             $pattern = Toolbox::unclean_cross_side_scripting_deep($pattern);
-            if (preg_match($pattern."i",$field,$results)>0) {
+            if (preg_match_all($pattern."i",$field,$results)>0) {
                // Drop $result[0] : complete match result
                array_shift($results);
                // And add to $regex_result array
-               $regex_result[]               = $results;
+               $regex_result[]               = $results[1];
                $criterias_results[$criteria] = $pattern;
                return true;
             }

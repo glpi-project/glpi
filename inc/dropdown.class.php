@@ -448,8 +448,7 @@ class Dropdown {
     *
     * @param $name            name of the select box
     * @param $types     array of types to display
-    * @param $options   array Already used items ID: not to display in dropdown
-    * Parameters which could be used in options array :
+    * @param $options   Parameters which could be used in options array :
     *    - value               : integer / preselected value (default '')
     *    - used                : array / Already used items ID: not to display in dropdown (default empty)
     *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
@@ -469,23 +468,25 @@ class Dropdown {
       $params['display']             = true;
       $params['width']               = '80%';
       $params['display_emptychoice'] = true;
-
+      $params['rand']         = mt_rand();
+      
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
          }
       }
 
-      $items = array();
+      $values = array();
       if (count($types)) {
          foreach ($types as $type) {
             if ($item = getItemForItemtype($type)) {
-               $items[$type] = $item->getTypeName(1);
+               $values[$type] = $item->getTypeName(1);
             }
          }
       }
-      asort($options);
-      return self::showFromArray($name, $items, $params);
+      asort($values);
+      return self::showFromArray($name, $values,
+                                 $params);
    }
 
 

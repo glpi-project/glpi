@@ -46,13 +46,17 @@ if (isset($_POST["add"])) {
       list($_POST['itemtype'], $_POST['items_id']) = explode('_', $_POST['my_items']);
    }
 
+   if (isset($_POST['add_items_id'])) {
+      $_POST['items_id'] = $_POST['add_items_id'];
+   }
+
    if(!isset($_POST['items_id']) || empty($_POST['items_id'])){
       $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
                          _n('Associated element', 'Associated elements', 1));
       Session::addMessageAfterRedirect($message, false, ERROR);
       Html::back();
    }
-   
+
    $item->check(-1, CREATE, $_POST);
 
    if ($item->add($_POST)) {
@@ -62,6 +66,12 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
+} elseif (isset($_POST["delete"])) {
+   $item_ticket = new Item_Ticket();
+   $deleted = $item_ticket->deleteByCriteria(array('tickets_id' => $_POST['tickets_id'],
+                                                   'items_id'   => $_POST['items_id'],
+                                                   'itemtype'   => $_POST['itemtype']));
+   Html::back();
 }
 
 Html::displayErrorAndDie("lost");

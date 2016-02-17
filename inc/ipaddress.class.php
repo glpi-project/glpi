@@ -942,15 +942,20 @@ class IPAddress extends CommonDBChild {
             }
          }
       }
-      if (count($addressesWithItems) == 1) {
-         $addressWithItems = current($addressesWithItems);
-         $item             = $addressWithItems[0];
-         $result           = array("id"       => $item->getID(),
-                                   "itemtype" => $item->getType());
-         unset($addressesWithItems);
-         return $result;
-      }
 
+      if (count($addressesWithItems)) {
+         // Get the first item that is matching entity
+         foreach ($addressesWithItems as $items) {
+            foreach ($items as $item) {
+               if ($item->getEntityID() == $entity) {
+                  $result = array("id"       => $item->getID(),
+                                  "itemtype" => $item->getType());
+                  unset($addressesWithItems);
+                  return $result;
+               }
+            }
+         }
+      }
       return array();
    }
 
