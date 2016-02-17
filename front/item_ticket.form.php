@@ -45,7 +45,7 @@ if (isset($_POST["add"])) {
    if (isset($_POST['my_items']) && !empty($_POST['my_items'])) {
       list($_POST['itemtype'], $_POST['items_id']) = explode('_', $_POST['my_items']);
    }
-   
+
    if (isset($_POST['add_items_id'])) {
       $_POST['items_id'] = $_POST['add_items_id'];
    }
@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
       Session::addMessageAfterRedirect($message, false, ERROR);
       Html::back();
    }
-   
+
    $item->check(-1, CREATE, $_POST);
 
    if ($item->add($_POST)) {

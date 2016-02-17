@@ -192,14 +192,14 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       return $fields;
    }
 
-   
+
    /**
     * @since version 0.85
    **/
    static function getMultiplePredefinedValues() {
 
       $ticket = new Ticket();
-      $fields = array($ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'), 
+      $fields = array($ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
                       $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_items_tickets'));
 
       return $fields;

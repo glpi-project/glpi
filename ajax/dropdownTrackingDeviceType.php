@@ -45,12 +45,12 @@ Session::checkLoginUser();
 if (isset($_POST["itemtype"])
     && CommonITILObject::isPossibleToAssignType($_POST["itemtype"])) {
    $table = getTableForItemType($_POST["itemtype"]);
-   
+
    $rand = mt_rand();
    if (isset($_POST["rand"])) {
       $rand = $_POST["rand"];
    }
-   
+
    // Message for post-only
    if (!isset($_POST["admin"]) || ($_POST["admin"] == 0)) {
       echo "<br>".__('Enter the first letters (user, item name, serial or asset number)');
@@ -61,19 +61,19 @@ if (isset($_POST["itemtype"])
               'entity_restrict'     => $_POST['entity_restrict'],
               'table'               => $table,
               'multiple'            => $_POST["multiple"],
-              'myname'              => $_POST["myname"], 
+              'myname'              => $_POST["myname"],
               'rand'                => $_POST["rand"]);
-   
+
    if (isset($_POST["used"]) && !empty($_POST["used"])) {
       if (isset($_POST["used"][$_POST["itemtype"]])) {
          $p["used"] = $_POST["used"][$_POST["itemtype"]];
       }
    }
-   
+
    echo Html::jsAjaxDropdown($_POST['myname'], $field_id,
                              $CFG_GLPI['root_doc']."/ajax/getDropdownFindNum.php",
                              $p);
-   
+
    // Auto update summary of active or just solved tickets
    $params = array('items_id' => '__VALUE__',
                    'itemtype' => $_POST['itemtype']);
