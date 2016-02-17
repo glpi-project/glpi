@@ -347,6 +347,8 @@ function update0901to091() {
       }
    }
 
+
+   /************** Enhance Associated items for ticket ***************/
    // TEMPLATE UPDATE
    if (isIndex('glpi_tickettemplatepredefinedfields', 'unicity')) {
       $DB->queryOrDie("ALTER TABLE `glpi_tickettemplatepredefinedfields`
@@ -437,6 +439,7 @@ function update0901to091() {
             break;
       }
    }
+
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
