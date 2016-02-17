@@ -6739,8 +6739,6 @@ class Ticket extends CommonITILObject {
       }
       $ticket       = new self();
       $ticket->getFromDB($tickets_id);
-      $ticket_users = $ticket->getTicketActors();
-      $actor_type   = $ticket_users[Session::getLoginUserID()];
       $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
 
       $html = "<div class='x-split-button' id='x-split-button'>
