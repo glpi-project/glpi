@@ -47,6 +47,8 @@ class SLA extends CommonDBTM {
    // From CommonDBTM
    var $dohistory                      = true;
 
+   static protected $forward_entity_to = array('SLT');
+
    static $rightname                   = 'sla';
 
    static function getTypeName($nb=0) {
@@ -64,6 +66,12 @@ class SLA extends CommonDBTM {
       return $ong;
    }
 
+   function cleanDBonPurge() {
+
+      $slt = new SLT();
+      $slt->cleanDBonItemDelete('SLA', $this->fields['id']);
+   }
+
    /**
     * Print the sla form
     *
@@ -76,7 +84,7 @@ class SLA extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
 
-      $rowspan = 2;
+      $rowspan = 1;
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -126,11 +134,12 @@ class SLA extends CommonDBTM {
       if (Config::canUpdate()) {
             $menu['title']                              = SLA::getTypeName(Session::getPluralNumber());
             $menu['page']                               = '/front/sla.php';
+            $menu['links']['search'] = '/front/sla.php';
+            $menu['links']['add']    = '/front/sla.form.php';
 
             $menu['options']['slt']['title']           = SLT::getTypeName(Session::getPluralNumber());
             $menu['options']['slt']['page']            = '/front/slt.php';
             $menu['options']['slt']['links']['search'] = '/front/slt.php';
-            $menu['options']['slt']['links']['add']    = '' .'/front/slt.form.php';
 
       }
       if (count($menu)) {

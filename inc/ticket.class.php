@@ -1051,25 +1051,25 @@ class Ticket extends CommonITILObject {
       $input = parent::prepareInputForUpdate($input);
       return $input;
    }
-   
+
    /**
     *  SLT affect by rules : reset due_date and limit_takeintoaccount_date
     *  Manual SLT defined : reset due date and limit_takeintoaccount_date
     *  No manual SLT and due date defined : reset auto SLT
-    * 
+    *
     * @param type $type
     * @param type $input
     * @param type $manual_slts_id
     */
    function sltAffect($type, &$input, $manual_slts_id){
-      
+
       list($dateField, $sltField) = SLT::getSltFieldNames($type);
-      
+
       // Restore slts
       if (isset($manual_slts_id[$type])) {
          $input[$sltField] = $manual_slts_id[$type];
       }
-      
+
       // Ticket update
       if ($this->fields['id'] > 0) {
          if (!isset($manual_slts_id[$type])
@@ -3752,7 +3752,7 @@ class Ticket extends CommonITILObject {
 
       // SLTs
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('limit_takeintoaccount_date');
+      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('limit_takeintoaccount_date');
       if (!$ID) {
          printf(__('%1$s%2$s'), __('Limit take into account date'), $tt->getMandatoryMark('limit_takeintoaccount_date'));
       } else {
@@ -3760,11 +3760,11 @@ class Ticket extends CommonITILObject {
       }
       echo $tt->getEndHiddenFieldText('limit_takeintoaccount_date');
       echo "</th>";
-      echo "<td width='$colsize4%' class='nopadding'>";
+      echo "<td width='$colsize2%' class='nopadding'>";
       $slt = new SLT();
       $slt->showSltForTicket($this, Slt::TAKEINTOACCOUNT_TYPE, $tt, $canupdate);
       echo "</td>";
-      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('due_date');
+      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('due_date');
       if (!$ID) {
          printf(__('%1$s%2$s'), __('Due date'), $tt->getMandatoryMark('due_date'));
       } else {
@@ -3772,7 +3772,7 @@ class Ticket extends CommonITILObject {
       }
       echo $tt->getEndHiddenFieldText('due_date');
       echo "</th>";
-      echo "<td width='$colsize2%' class='nopadding'>";
+      echo "<td width='$colsize4%' class='nopadding'>";
       $slt->showSltForTicket($this, Slt::RESOLUTION_TYPE, $tt, $canupdate);
       echo "</td>";
       echo "</tr>";

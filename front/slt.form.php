@@ -46,7 +46,7 @@ if (empty($_GET["id"])) {
 $slt = new SLT();
 
 if (isset($_POST["add"])) {
-   $slt->check(-1, CREATE);
+   $slt->check(-1, CREATE, $_POST);
 
    if ($newID = $slt->add($_POST)) {
       Event::log($newID, "slts", 4, "setup",

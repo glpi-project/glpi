@@ -42,10 +42,14 @@ if (!defined('GLPI_ROOT')) {
 /**
  * SLT Class
 **/
-class SLT extends CommonDBTM {
+class SLT extends CommonDBChild {
 
    // From CommonDBTM
    var $dohistory                      = true;
+
+   // From CommonDBChild
+   static public $itemtype             = 'SLA';
+   static public $items_id             = 'slas_id';
 
    static $rightname                   = 'sla';
 
@@ -149,7 +153,26 @@ class SLT extends CommonDBTM {
          $rowspan = 6;
       }
 
-      $this->initForm($ID, $options);
+      // Get SLA object
+      $sla = new SLA();
+      if (isset($options['parent'])) {
+         $sla = $options['parent'];
+      } else {
+         $sla->getFromDB($this->fields['slas_id']);
+      }
+
+      if ($ID > 0) {
+         $this->check($ID, READ);
+      } else {
+         // Create item
+         $options[static::$items_id] = $sla->getField('id');
+
+         //force itemtype of parent
+         static::$itemtype = get_class($sla);
+
+         $this->check(-1, CREATE, $options);
+      }
+
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
@@ -159,15 +182,14 @@ class SLT extends CommonDBTM {
       echo "<td rowspan='".$rowspan."'>
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
-      if ($ID <= 0 && isset($options['parent'])) {
-         echo "<input type='hidden' name='slas_id' value='".$options['parent']->fields['id']."'>";
-      } else {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('SLA')."</td>";
-         echo "<td>";
-         Dropdown::show('SLA', array('value' => $this->fields["slas_id"], 'entities_id' => $_SESSION['glpiactiveentities']));
-         echo "</td></tr>";
-      }
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('SLA')."</td>";
+      echo "<td>";
+      echo $sla->getLink();
+      echo "<input type='hidden' name='slas_id' value='".$this->fields['slas_id']."'>";
+      echo "</td></tr>";
+
       if ($ID > 0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Last update')."</td>";
@@ -203,17 +225,18 @@ class SLT extends CommonDBTM {
       echo "\n<script type='text/javascript' >\n";
       echo "function appearhideendofworking() {\n";
       echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day') {
-         $('#title_endworkingday').show();
-         $('#dropdown_endworkingday').show();
-      } else {
-         $('#title_endworkingday').hide();
-         $('#dropdown_endworkingday').hide();
-      }";
+               $('#title_endworkingday').show();
+               $('#dropdown_endworkingday').show();
+            } else {
+               $('#title_endworkingday').hide();
+               $('#dropdown_endworkingday').hide();
+            }";
       echo "}\n";
       echo "appearhideendofworking();\n";
       echo "</script>\n";
 
       echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'>";
       echo "<td><div id='title_endworkingday'>".__('End of working day')."</div></td>";
       echo "<td><div id='dropdown_endworkingday'>";
@@ -268,6 +291,11 @@ class SLT extends CommonDBTM {
 
       // SLT list
       $sltList = $slt->find("`slas_id` = '".$instID."'");
+      Session::initNavigateListItems('SLT',
+      //TRANS : %1$s is the itemtype name,
+      //       %2$s is the name of the item (used for headings of a list)
+                               sprintf(__('%1$s = %2$s'), $sla::getTypeName(1),
+                                       $sla->getName()));
       echo "<div class='spaced'>";
       if (count($sltList)) {
          if ($canedit) {
@@ -366,12 +394,13 @@ class SLT extends CommonDBTM {
    }
 
    /**
-    * Get SLT data by type
+    * Get SLT data by type and ticket
     *
     * @param type $tickets_id
     * @param type $type
     */
-   function getSltByType($tickets_id, $type) {
+   function getSltDataForTicket($tickets_id, $type) {
+
       switch($type){
          case SLT::RESOLUTION_TYPE :
             $field = 'slt_resolution';
@@ -382,6 +411,17 @@ class SLT extends CommonDBTM {
       }
 
       return $this->getFromDBByQuery("INNER JOIN `glpi_tickets` ON (`glpi_tickets`.`$field` = `".$this->getTable()."`.`id`) WHERE `glpi_tickets`.`id` = '".$tickets_id."' LIMIT 1");
+   }
+
+    /**
+    * Get SLT datas by type
+    *
+    * @param type $tickets_id
+    * @param type $type
+    */
+   function getSltData($condition) {
+
+      return $this->find($condition);
    }
 
    /**
@@ -426,7 +466,7 @@ class SLT extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
 
       if ($ticket->fields['id']) {
-         if ($this->getSltByType($ticket->fields['id'], $type)) {
+         if ($this->getSltDataForTicket($ticket->fields['id'], $type)) {
             echo "<td>";
             echo Html::convDateTime($ticket->fields[$dateField]);
             echo "</td>";
@@ -480,7 +520,7 @@ class SLT extends CommonDBTM {
             echo "</td>";
 
          } else {
-            echo "<td>";
+            echo "<td width='200px'>";
             echo $tt->getBeginHiddenFieldValue($dateField);
             if ($canupdate) {
                Html::showDateTimeField($dateField, array('value'      => $ticket->fields[$dateField],
@@ -491,15 +531,14 @@ class SLT extends CommonDBTM {
             }
             echo $tt->getEndHiddenFieldValue($dateField, $ticket);
             echo "</td>";
-            if ($canupdate) {
+            if ($canupdate && !empty($this->getSltData("`type` = '$type' AND `entities_id` = '".$ticket->fields['entities_id']."'"))) {
                echo "<td>";
                echo $tt->getBeginHiddenFieldText($sltField);
                echo "<span id='slt_action$type'>";
-               echo "<a class='vsubmit' ".
-                      Html::addConfirmationOnAction(array(__('The assignment of a SLT to a ticket causes the recalculation of the date.'),
+               echo "<a ".Html::addConfirmationOnAction(array(__('The assignment of a SLT to a ticket causes the recalculation of the date.'),
                        __("Escalations defined in the SLT will be triggered under this new date.")),
                                                     "cleanhide('slt_action$type');cleandisplay('slt_choice$type');").
-                     ">".__('Assign a SLT').'</a>';
+                     "><img src='".$CFG_GLPI['root_doc']."/pics/clock.png' title='".__('SLT')."' alt='".__('SLT')."' class='pointer'></a>";
                echo "</span>";
                echo "<div id='slt_choice$type' style='display:none'>";
                echo "<span  class='b'>".__('SLT')."</span>&nbsp;";
@@ -524,14 +563,14 @@ class SLT extends CommonDBTM {
                                                    'canedit'    => $canupdate));
          echo $tt->getEndHiddenFieldValue($dateField, $ticket);
          echo "</td>";
-         if ($canupdate) {
+         if ($canupdate && !empty($this->getSltData("`type` = '$type' AND `entities_id` = '".$ticket->fields['entities_id']."'"))) {
             echo "<th>".$tt->getBeginHiddenFieldText($sltField);
             printf(__('%1$s%2$s'), __('SLT'), $tt->getMandatoryMark($sltField));
             echo $tt->getEndHiddenFieldText('slas_id')."</th>";
             echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue($sltField);
             Slt::dropdown(array('name'      => $sltField,
                                 'entity'    => $ticket->fields["entities_id"],
-                                'value'     => isset($ticket->fields[$sltField]) ? $ticket->fields[$sltField] : 0, 
+                                'value'     => isset($ticket->fields[$sltField]) ? $ticket->fields[$sltField] : 0,
                                 'condition' => "`type` = '".$type."'"));
             echo $tt->getEndHiddenFieldValue($sltField, $ticket);
             echo "</td>";
