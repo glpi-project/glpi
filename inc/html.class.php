@@ -3677,7 +3677,7 @@ class Html {
             }
             $out .= '>';
          }
-         $out .= "<img id='tooltip$rand' alt='ffff' src='".$param['img']."' class='pointer'>";
+         $out .= "<img id='tooltip$rand' src='".$param['img']."' class='pointer'>";
 
          if (!empty($param['link'])) {
             $out .= "</a>";
