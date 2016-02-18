@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -37,24 +37,13 @@
 
 include ('../inc/includes.php');
 
-Session ::checkRight('tickettemplate', UPDATE);
+Session::checkRight("license", READ);
 
-$item = new TicketTemplatePredefinedField();
+Html::header(SoftwareLicense::getTypeName(Session::getPluralNumber()),
+                                          $_SERVER['PHP_SELF'],
+                                          "management", "softwarelicense");
 
-// Use masiveaction system to manage add value
-if (isset($_POST["massiveaction"])) {
-   $item->check(-1, UPDATE, $_POST);
-   if (isset($_POST['items_tickets_id']) && isset($_POST['add_items_id'])) {
-      $_POST['items_tickets_id'] = $_POST['items_tickets_id']."_".$_POST['add_items_id'];
-   }
-   if ($item->add($_POST)) {
-      Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s adds predefined field'), $_SESSION["glpiname"]));
-   }
-   Html::back();
+Search::show('SoftwareLicense');
 
-}
-
-Html::displayErrorAndDie("lost");
+Html::footer();
 ?>

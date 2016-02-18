@@ -296,10 +296,10 @@ function update0901to091() {
       $DB->queryOrDie($query, "0.91 add table glpi_tasktemplates");
    }
 
-
    /************** Installation date for softwares ************ */
    $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
    $migration->addKey("glpi_computers_softwareversions", "date_install");
+
 
 
    /************** Date mod/creation for itemtypes */
@@ -347,7 +347,115 @@ function update0901to091() {
       }
    }
 
+   /************** Enhance Associated items for ticket ***************/
+   // TEMPLATE UPDATE
+   if (isIndex('glpi_tickettemplatepredefinedfields', 'unicity')) {
+      $DB->queryOrDie("ALTER TABLE `glpi_tickettemplatepredefinedfields`
+                   DROP KEY `unicity`;", "Associated items migration : alter template predefinedfields unicity");
+   }
 
+   // Get associated item searchoption num
+   if (!isset($CFG_GLPI["use_rich_text"])) {
+      $CFG_GLPI["use_rich_text"] = false;
+   }
+   $searchOption = Search::getOptions('Ticket');
+   $item_num     = 0;
+   $itemtype_num = 0;
+   foreach ($searchOption as $num => $option) {
+      if (is_array($option)) {
+         if ($option['field'] == 'items_id') {
+            $item_num = $num;
+         } else if ($option['field'] == 'itemtype') {
+            $itemtype_num = $num;
+         }
+      }
+   }
+
+   foreach (array('glpi_tickettemplatepredefinedfields', 'glpi_tickettemplatehiddenfields', 'glpi_tickettemplatemandatoryfields') as $table) {
+      $columns = array();
+      switch ($table) {
+         case 'glpi_tickettemplatepredefinedfields' :
+            $columns = array('num', 'value', 'tickettemplates_id');
+            break;
+         default :
+            $columns = array('num', 'tickettemplates_id');
+            break;
+      }
+      $query = "SELECT `".implode('`,`', $columns)."`
+               FROM `$table`
+               WHERE `num` = '$item_num'
+               OR `num` = '$itemtype_num';";
+
+      $items_to_update = array();
+      if ($result          = $DB->query($query)) {
+         if ($DB->numrows($result) > 0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               if ($data['num'] == $itemtype_num) {
+                  $items_to_update[$data['tickettemplates_id']]['itemtype'] = isset($data['value']) ? $data['value'] : 0;
+               } elseif ($data['num'] == $item_num) {
+                  $items_to_update[$data['tickettemplates_id']]['items_id'] = isset($data['value']) ? $data['value'] : 0;
+               }
+            }
+         }
+      }
+
+      switch ($table) {
+         case 'glpi_tickettemplatepredefinedfields' : // Update predefined items
+            foreach ($items_to_update as $templates_id => $type) {
+               if (isset($type['itemtype'])) {
+                  if (isset($type['items_id'])) {
+                     $DB->queryOrDie("UPDATE `$table`
+                                     SET `value` = '".$type['itemtype']."_".$type['items_id']."'
+                                     WHERE `num` = '".$item_num."'
+                                     AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : update predefined items");
+
+                     $DB->queryOrDie("DELETE FROM `$table`
+                                     WHERE `num` = '".$itemtype_num."'
+                                     AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
+                  }
+               }
+            }
+            break;
+         default: // Update mandatory and hidden items
+            foreach ($items_to_update as $templates_id => $type) {
+               if (isset($type['itemtype'])) {
+                  if (isset($type['items_id'])) {
+                     $DB->queryOrDie("DELETE FROM `$table`
+                                        WHERE `num` = '".$item_num."'
+                                        AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
+                     $DB->queryOrDie("UPDATE `$table`
+                                        SET `num` = '".$item_num."'
+                                        WHERE `num` = '".$itemtype_num."'
+                                        AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
+                  } else {
+                     $DB->queryOrDie("UPDATE `$table`
+                                        SET `num` = '".$item_num."'
+                                        WHERE `num` = '".$itemtype_num."'
+                                        AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
+                  }
+               }
+            }
+            break;
+      }
+   }
+
+   $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
+   $migration->addField("glpi_softwarelicenses", "locations_id", "integer");
+   $migration->addField("glpi_softwarelicenses", "users_id_tech", "integer");
+   $migration->addField("glpi_softwarelicenses", "users_id", "integer");
+   $migration->addField("glpi_softwarelicenses", "groups_id_tech", "integer");
+   $migration->addField("glpi_softwarelicenses", "groups_id", "integer");
+   $migration->addField("glpi_softwarelicenses", "is_helpdesk_visible", "bool");
+   $migration->addField("glpi_softwarelicenses", "is_template", "bool");
+   $migration->addField("glpi_softwarelicenses", "template_name", "string");
+   $migration->addKey("glpi_softwarelicenses", "locations_id");
+   $migration->addKey("glpi_softwarelicenses", "users_id_tech");
+   $migration->addKey("glpi_softwarelicenses", "users_id");
+   $migration->addKey("glpi_softwarelicenses", "groups_id_tech");
+   $migration->addKey("glpi_softwarelicenses", "groups_id");
+   $migration->addKey("glpi_softwarelicenses", "is_helpdesk_visible");
+   $migration->addKey("glpi_softwarelicenses", "is_deleted");
+   $migration->addKey("glpi_softwarelicenses", "is_template");
 
    /** ************ New SLA structure ************ */
    if (!TableExists('glpi_slts')) {
@@ -414,6 +522,57 @@ function update0901to091() {
    }
    // ************ Keep it at the end **************
    $migration->executeMigration();
+
+   // ************ Keep it at the end **************
+   //TRANS: %s is the table or item to migrate
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
+
+   $ADDTODISPLAYPREF['SoftwareLicense'] = array(3, 10, 162, 5);
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+      $query = "SELECT DISTINCT `users_id`
+                FROM `glpi_displaypreferences`
+                WHERE `itemtype` = '$type'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query = "SELECT MAX(`rank`)
+                         FROM `glpi_displaypreferences`
+                         WHERE `users_id` = '".$data['users_id']."'
+                               AND `itemtype` = '$type'";
+               $result = $DB->query($query);
+               $rank   = $DB->result($result,0,0);
+               $rank++;
+
+               foreach ($tab as $newval) {
+                  $query = "SELECT *
+                            FROM `glpi_displaypreferences`
+                            WHERE `users_id` = '".$data['users_id']."'
+                                  AND `num` = '$newval'
+                                  AND `itemtype` = '$type'";
+                  if ($result2 = $DB->query($query)) {
+                     if ($DB->numrows($result2) == 0) {
+                        $query = "INSERT INTO `glpi_displaypreferences`
+                                         (`itemtype` ,`num` ,`rank` ,`users_id`)
+                                  VALUES ('$type', '$newval', '".$rank++."',
+                                          '".$data['users_id']."')";
+                        $DB->query($query);
+                     }
+                  }
+               }
+            }
+
+         } else { // Add for default user
+            $rank = 1;
+            foreach ($tab as $newval) {
+               $query = "INSERT INTO `glpi_displaypreferences`
+                                (`itemtype` ,`num` ,`rank` ,`users_id`)
+                         VALUES ('$type', '$newval', '".$rank++."', '0')";
+               $DB->query($query);
+            }
+         }
+      }
+   }
 
    return $updateresult;
 }

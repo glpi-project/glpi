@@ -1897,6 +1897,11 @@ INSERT INTO `glpi_displaypreferences` VALUES ('251','ProjectTask','13','7','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('252','CartridgeItem','9','5','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('253','ConsumableItem','9','5','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('254','ReservationItem','9','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','1','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','3','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','10','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','162','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','5','5','0');
 
 ### Dump table glpi_documentcategories
 
@@ -4355,7 +4360,7 @@ INSERT INTO `glpi_notificationtemplatetranslations` VALUES ('6','5','','##ticket
 
 ##lang.ticket.authors##  :##IFticket.authors##
 ##ticket.authors## ##ENDIFticket.authors##
-##ELSEticket.authors##--##ENDELSEticket.authors##  
+##ELSEticket.authors##--##ENDELSEticket.authors##
 
 ##IFticket.category## ##lang.ticket.category##  :##ticket.category##
 ##ENDIFticket.category## ##ELSEticket.category##
@@ -6716,8 +6721,18 @@ CREATE TABLE `glpi_softwarelicenses` (
   `date_mod` datetime DEFAULT NULL,
   `is_valid` tinyint(1) NOT NULL DEFAULT '1',
   `date_creation` datetime DEFAULT NULL,
+  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `locations_id` int(11) NOT NULL DEFAULT '0',
+  `users_id_tech` int(11) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id_tech` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `is_helpdesk_visible` tinyint(1) NOT NULL DEFAULT '0',
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
+  KEY `is_template` (`is_template`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `expire` (`expire`),
@@ -6727,6 +6742,13 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `softwareversions_id_use` (`softwareversions_id_use`),
   KEY `date_mod` (`date_mod`),
   KEY `softwares_id_expire` (`softwares_id`,`expire`),
+  KEY `locations_id` (`locations_id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `users_id` (`users_id`),
+  KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `groups_id` (`groups_id`),
+  KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
+  KEY `is_deleted` (`is_helpdesk_visible`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

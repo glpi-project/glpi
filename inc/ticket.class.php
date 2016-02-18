@@ -1199,15 +1199,6 @@ class Ticket extends CommonITILObject {
          $donotif = true;
       }
 
-
-      if (!empty($this->input['itemtype']) && !empty($this->input['items_id'])) {
-         $item_ticket = new Item_Ticket();
-         $item_ticket->add(array('items_id'   => $this->input['items_id'],
-                                 'itemtype'   => $this->input['itemtype'],
-                                 'tickets_id' => $this->fields['id']));
-      }
-
-
       // Manage SLT Level : add actions
       foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
          list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
@@ -1230,21 +1221,32 @@ class Ticket extends CommonITILObject {
             $item_ticket = new Item_Ticket();
             $linked_items = $item_ticket->find("`tickets_id` = ".$this->fields['id']);
 
-            if (!empty($linked_items)) {
-               foreach($linked_items as $data){
-                  if ($data["itemtype"]
-                          && ($item = getItemForItemtype($data["itemtype"]))) {
-
-                     if ($item->getFromDB($data["items_id"])) {
-                        $newinput = array();
-                        $newinput['id'] = $data["items_id"];
-                        $newinput['ticket_tco'] = self::computeTco($item);
-                        $item->update($newinput);
+            if (!empty($this->input["items_id"])) {
+               foreach ($this->input["items_id"] as $itemtype => $items) {
+                  foreach ($items as $items_id) {
+                     if ($itemtype && ($item = getItemForItemtype($itemtype))) {
+                        if ($item->getFromDB($items_id)) {
+                           $newinput               = array();
+                           $newinput['id']         = $items_id;
+                           $newinput['ticket_tco'] = self::computeTco($item);
+                           $item->update($newinput);
+                        }
                      }
                   }
                }
             }
+         }
 
+         if (!empty($this->input['items_id'])) {
+            $item_ticket = new Item_Ticket();
+            foreach ($this->input['items_id'] as $itemype => $items) {
+               foreach ($items as $items_id) {
+                  $item_ticket->add(array('items_id'      => $items_id,
+                                          'itemtype'      => $itemype,
+                                          'tickets_id'    => $this->fields['id'],
+                                          '_disablenotif' => true));
+               }
+            }
          }
 
          // Setting a solution type means the ticket is solved
@@ -1414,7 +1416,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Set additional default dropdown
-      $dropdown_fields = array('items_id', 'users_locations', 'items_locations');
+      $dropdown_fields = array('users_locations', 'items_locations');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
@@ -1425,13 +1427,17 @@ class Ticket extends CommonITILObject {
       }
 
 
-      // Get item
+      // Get first item location
       $item = NULL;
-      if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
-         if ($item = getItemForItemtype($input["itemtype"])) {
-            $item->getFromDB($input["items_id"]);
-
-            $input['items_locations'] = $item->fields['locations_id'];
+      if (isset($input["items_id"]) && (count($input["items_id"]) > 0)) {
+         foreach($input["items_id"] as $itemtype => $items){
+            foreach($items as $items_id){
+               if ($item = getItemForItemtype($itemtype)) {
+                  $item->getFromDB($items_id);
+                  $input['items_locations'] = $item->fields['locations_id'];
+                  break(2);
+               }
+            }
          }
       }
 
@@ -1688,12 +1694,16 @@ class Ticket extends CommonITILObject {
       }
 
 
-      if (!empty($this->input['itemtype']) && !empty($this->input['items_id'])) {
+      if (!empty($this->input['items_id'])) {
          $item_ticket = new Item_Ticket();
-         $item_ticket->add(array('items_id'   => $this->input['items_id'],
-                                 'itemtype'   => $this->input['itemtype'],
-                                 'tickets_id' => $this->fields['id'],
-                                 '_disablenotif' => true));
+         foreach ($this->input['items_id'] as $itemype => $items) {
+            foreach ($items as $items_id) {
+               $item_ticket->add(array('items_id'      => $items_id,
+                                       'itemtype'      => $itemype,
+                                       'tickets_id'    => $this->fields['id'], 
+                                       '_disablenotif' => true));
+            }
+         }
       }
 
 
@@ -2813,7 +2823,6 @@ class Ticket extends CommonITILObject {
                               'itilcategories_id'   => 0,
                               'locations_id'        => 0,
                               'urgency'             => 3,
-                              'itemtype'            => '',
                               'items_id'            => 0,
                               'entities_id'         => $_SESSION['glpiactive_entity'],
                               'plan'                => array(),
@@ -2977,9 +2986,14 @@ class Ticket extends CommonITILObject {
       }
 
       // Display predefined fields if hidden
-      if ($tt->isHiddenField('itemtype')) {
-         echo "<input type='hidden' name='itemtype' value='".$values['itemtype']."'>";
-         echo "<input type='hidden' name='items_id' value='".$values['items_id']."'>";
+      if ($tt->isHiddenField('items_id')) {
+         if (!empty($values['items_id'])) {
+            foreach ($values['items_id'] as $itemtype => $items) {
+               foreach ($items as $items_id) {
+                  echo "<input type='hidden' name='items_id[$itemtype][$items_id]' value='$items_id'>";
+               }
+            }
+         }
       }
       if ($tt->isHiddenField('locations_id')) {
          echo "<input type='hidden' name='locations_id' value='".$values['locations_id']."'>";
@@ -3057,15 +3071,9 @@ class Ticket extends CommonITILObject {
          if (!$tt->isHiddenField('itemtype')) {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".sprintf(__('%1$s%2$s'), __('Hardware type'),
-                                $tt->getMandatoryMark('itemtype'))."</td>";
+                                $tt->getMandatoryMark('items_id'))."</td>";
             echo "<td>";
-            Item_Ticket::dropdownMyDevices($values['_users_id_requester'], $_SESSION["glpiactive_entity"],
-                                    $values['itemtype'], $values['items_id']);
-            Item_Ticket::dropdownAllDevices("itemtype", $values['itemtype'], $values['items_id'], 0,
-                                     $values['_users_id_requester'],
-                                     $_SESSION["glpiactive_entity"]);
-            echo "<span id='item_ticket_selection_information'></span>";
-
+            Item_Ticket::itemAddForm($this, $values);
             echo "</td></tr>";
          }
       }
@@ -4095,56 +4103,32 @@ class Ticket extends CommonITILObject {
 
 
 
-      echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype');
-      printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()), $tt->getMandatoryMark('itemtype'));
+      echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('items_id');
+      printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()), $tt->getMandatoryMark('items_id'));
       if ($ID && $canupdate) {
          echo "&nbsp;<a  href='".$this->getFormURL()."?id=".$ID.
                        "&amp;forcetab=Item_Ticket$1'><img title='".__s('Update')."' alt='".__s('Update')."'
                       class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'></a>";
       }
-      echo $tt->getEndHiddenFieldText('itemtype');
+      echo $tt->getEndHiddenFieldText('items_id');
       echo "</th>";
-      echo "<td rowspan='2'>";
       if (!$ID) {
-         echo $tt->getBeginHiddenFieldValue('itemtype');
-
-         // Select hardware on creation or if have update right
+         echo "<td rowspan='2'>";
+         echo $tt->getBeginHiddenFieldValue('items_id');
          if ($canupdate
                  || $canupdate_descr) {
-
-            $dev_user_id = $values['_users_id_requester'];
-            $dev_itemtype = $values["itemtype"];
-            $dev_items_id = $values["items_id"];
-
-            if ($dev_user_id > 0) {
-               Item_Ticket::dropdownMyDevices($dev_user_id, $this->fields["entities_id"], $dev_itemtype, $dev_items_id);
-            }
-            Item_Ticket::dropdownAllDevices("itemtype", $dev_itemtype, $dev_items_id, 1, $dev_user_id, $this->fields["entities_id"]);
-
-            echo "<span id='item_ticket_selection_information'></span>";
+            Item_Ticket::itemAddForm($this, $values);
          }
-         echo $tt->getEndHiddenFieldValue('itemtype', $this);
+         echo $tt->getEndHiddenFieldValue('items_id', $this);
+         echo "</td>";
+
       } else {
-         // display associated elements
-         $item_tickets = getAllDatasFromTable(
-                           getTableForItemType('Item_Ticket'),
-                           "`tickets_id`='".$ID."'");
-         $i = 0;
-         foreach ($item_tickets as $itdata) {
-            if ($i >= 5) {
-               echo "<i><a href='".$this->getFormURL()."?id=".$ID.
-                       "&amp;forcetab=Item_Ticket$1'>"
-               .__('Display all items')." (".count($item_tickets).")</a></i>";
-               break;
-            }
-            $item = new $itdata['itemtype'];
-            $item->getFromDB($itdata['items_id']);
-            echo $item->getTypeName(1).": ".$item->getLink(array('comments' => true))."<br/>";
-            $i++;
-         }
-
+         echo "<td>";
+         echo $tt->getBeginHiddenFieldValue('items_id');
+         Item_Ticket::itemAddForm($this, $values);
+         echo $tt->getEndHiddenFieldValue('items_id', $this);
+         echo "</td>";
       }
-      echo "</td>";
       echo "</tr>";
 
 
@@ -6701,8 +6685,6 @@ class Ticket extends CommonITILObject {
       }
       $ticket       = new self();
       $ticket->getFromDB($tickets_id);
-      $ticket_users = $ticket->getTicketActors();
-      $actor_type   = $ticket_users[Session::getLoginUserID()];
       $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
 
       $html = "<div class='x-split-button' id='x-split-button'>

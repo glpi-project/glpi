@@ -79,7 +79,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    function getRawName() {
 
       $tt     = new TicketTemplate();
-      $fields = $tt->getAllowedFieldsNames(true);
+      $fields = $tt->getAllowedFieldsNames(true, true);
 
       if (isset($fields[$this->fields["num"]])) {
          return $fields[$this->fields["num"]];
@@ -178,7 +178,12 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       while ($rule = $DB->fetch_assoc($result)) {
          if (isset($allowed_fields[$rule['num']])) {
             if (in_array($rule['num'], $multiple)) {
-               $fields[$allowed_fields[$rule['num']]][] = $rule['value'];
+               if ($allowed_fields[$rule['num']] == 'items_id') {
+                  $item_itemtype = explode("_", $rule['value']);
+                  $fields[$allowed_fields[$rule['num']]][$item_itemtype[0]][$item_itemtype[1]] = $item_itemtype[1];
+               } else {
+                  $fields[$allowed_fields[$rule['num']]][] = $rule['value'];
+               }
             } else {
                $fields[$allowed_fields[$rule['num']]] = $rule['value'];
             }
@@ -194,7 +199,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    static function getMultiplePredefinedValues() {
 
       $ticket = new Ticket();
-      $fields = array($ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'));
+      $fields = array($ticket->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
+                      $ticket->getSearchOptionIDByField('field', 'items_id', 'glpi_items_tickets'));
 
       return $fields;
    }
@@ -221,15 +227,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       $canedit       = $tt->canEdit($ID);
 
-      $ttp           = new self();
-      $used_fields   = $ttp->getPredefinedFields($ID, true);
-
-      $itemtype_used = '';
-      if (isset($used_fields['itemtype'])) {
-         $itemtype_used = $used_fields['itemtype'];
-      }
-
-      $fields        = $tt->getAllowedFieldsNames(true, isset($used_fields['itemtype']));
+      $fields        = $tt->getAllowedFieldsNames(true, true);
       $searchOption  = Search::getOptions('Ticket');
       $ticket        = new Ticket();
       $rand          = mt_rand();
@@ -240,7 +238,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                 WHERE (`tickettemplates_id` = '$ID')
                 ORDER BY 'id'";
 
-      $display_datas   = array('itemtype'       => $itemtype_used);
+
       $display_options = array('relative_dates' => true,
                                'comments'       => true,
                                'html'           => true);
@@ -250,7 +248,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          if ($numrows = $DB->numrows($result)) {
             while ($data = $DB->fetch_assoc($result)) {
                $predeffields[$data['id']] = $data;
-               $used[$data['num']]        = $data['num'];
+               $used[$data['num']] = $data['num'];
             }
          }
          if ($canedit) {
@@ -280,7 +278,6 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             echo "</td><td class='top'>";
             $paramsmassaction = array('id_field'         => '__VALUE__',
                                       'itemtype'         => 'Ticket',
-                                      'additionalvalues' => array('itemtype' => $itemtype_used),
                                       'inline'           => true,
                                       'submitname'       => _sx('button', 'Add'),
                                       'options'          => array('relative_dates'     => 1,
