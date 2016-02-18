@@ -142,7 +142,8 @@ class SLA extends CommonDBTM {
             $menu['options']['slt']['links']['search'] = '/front/slt.php';
 
             $menu['options']['slalevel']['title']           = SlaLevel::getTypeName(Session::getPluralNumber());
-            $menu['options']['slalevel']['page']            = '/front/slalevel.form.php';
+            $menu['options']['slalevel']['page']            = '/front/slalevel.php';
+            $menu['options']['slalevel']['links']['search'] = '/front/slalevel.php';
 
       }
       if (count($menu)) {
