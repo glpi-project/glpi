@@ -1661,7 +1661,7 @@ class Ticket extends CommonITILObject {
             foreach ($items as $items_id) {
                $item_ticket->add(array('items_id'      => $items_id,
                                        'itemtype'      => $itemype,
-                                       'tickets_id'    => $this->fields['id'], 
+                                       'tickets_id'    => $this->fields['id'],
                                        '_disablenotif' => true));
             }
          }
@@ -6279,7 +6279,6 @@ class Ticket extends CommonITILObject {
 
          echo "<div class='h_date'>".Html::convDateTime($date)."</div>";
          if ($item_i['users_id'] !== false) {
-
             echo "<div class='h_user'>";
             if (isset($item_i['users_id']) && ($item_i['users_id'] != 0)) {
                $user->getFromDB($item_i['users_id']);
@@ -6293,7 +6292,6 @@ class Ticket extends CommonITILObject {
             } else {
                _e("Requester");
             }
-
             echo "</div>"; // h_user
          }
 
@@ -6332,48 +6330,44 @@ class Ticket extends CommonITILObject {
          }
 
          echo "<div class='b_right'>";
-            if (isset($item_i['solutiontypes_id']) && !empty($item_i['solutiontypes_id'])) {
-               echo Dropdown::getDropdownName("glpi_solutiontypes", $item_i['solutiontypes_id'])."<br>";
-            }
-            if (isset($item_i['taskcategories_id']) && !empty($item_i['taskcategories_id'])) {
-               echo Dropdown::getDropdownName("glpi_taskcategories", $item_i['taskcategories_id'])."<br>";
-            }
-            if (isset($item_i['actiontime']) && !empty($item_i['actiontime'])) {
-               echo "<span class='actiontime'>";
-               echo Html::timestampToString($item_i['actiontime'], false);
-               echo "</span>";
-            }
-            if (isset($item_i['state'])) {
-               echo "<span class='state state_".$item_i['state']."'>";
-               echo Planning::getState($item_i['state']);
-               echo "</span>";
-            }
-            if (isset($item_i['begin'])) {
-               echo "<span class='planification'>";
-               echo Html::convDateTime($item_i["begin"]);
-               echo " &rArr; ";
-               echo Html::convDateTime($item_i["end"]);
-               echo "</span>";
-            }
-            if (isset($item_i['users_id_tech'])) {
+         if (isset($item_i['solutiontypes_id']) && !empty($item_i['solutiontypes_id'])) {
+            echo Dropdown::getDropdownName("glpi_solutiontypes", $item_i['solutiontypes_id'])."<br>";
+         }
+         if (isset($item_i['taskcategories_id']) && !empty($item_i['taskcategories_id'])) {
+            echo Dropdown::getDropdownName("glpi_taskcategories", $item_i['taskcategories_id'])."<br>";
+         }
+         if (isset($item_i['actiontime']) && !empty($item_i['actiontime'])) {
+            echo "<span class='actiontime'>";
+            echo Html::timestampToString($item_i['actiontime'], false);
+            echo "</span>";
+         }
+         if (isset($item_i['state'])) {
+            echo "<span class='state state_".$item_i['state']."'>";
+            echo Planning::getState($item_i['state']);
+            echo "</span>";
+         }
+         if (isset($item_i['begin'])) {
+            echo "<span class='planification'>";
+            echo Html::convDateTime($item_i["begin"]);
+            echo " &rArr; ";
+            echo Html::convDateTime($item_i["end"]);
+            echo "</span>";
+         }
+         if (isset($item_i['users_id_tech'])) {
+            echo "<div class='users_id_tech'>";
+            $user->getFromDB($item_i['users_id_tech']);
+            echo "<div class='tooltip_picture_border'>";
+            echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+                   User::getThumbnailURLForPicture($user->fields['picture'])."'>";
+            echo "</div>";
+            echo $user->getLink();
+            echo "</div>";
+         }
 
-               echo "<div class='users_id_tech'>";
-               $user->getFromDB($item_i['users_id_tech']);
-
-               echo "<div class='tooltip_picture_border'>";
-               echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-                      User::getThumbnailURLForPicture($user->fields['picture'])."'>";
-               echo "</div>";
-
-               echo $user->getLink();
-
-               echo "</div>";
-            }
-
-            // show "is_private" icon
-            if (isset($item_i['is_private']) && $item_i['is_private']) {
-               echo "<div class='private'>".__('Private')."</div>";
-            }
+         // show "is_private" icon
+         if (isset($item_i['is_private']) && $item_i['is_private']) {
+            echo "<div class='private'>".__('Private')."</div>";
+         }
 
          echo "</div>"; // b_right
 
