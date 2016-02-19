@@ -1247,9 +1247,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<td class='center'>";
       $rand_user          = mt_rand();
       $params             = array('name'   => "users_id_tech",
-                                  'value'  => $this->fields["users_id_tech"]
+                                  'value'  => (($ID > -1)
                                                 ?$this->fields["users_id_tech"]
-                                                :Session::getLoginUserID(),
+                                                :Session::getLoginUserID()),
                                   'right'  => "own_ticket",
                                   'rand'   => $rand_user,
                                   'entity' => $item->fields["entities_id"]);
