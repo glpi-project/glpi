@@ -1953,6 +1953,13 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
+   /**
+    * @since version 0.91
+    *
+    * @param $options      array
+    *
+    * @return boolean
+   **/
    function showDates($options = array()) {
 
       $isNewID = ((isset($options['withtemplate']) && ($options['withtemplate'] == 2))
