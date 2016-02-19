@@ -6153,7 +6153,7 @@ class Ticket extends CommonITILObject {
          $timeline[$solution_date."_solution"]
             = array('type' => 'Solution',
                     'item' => array('id'               => 0,
-                                    'content'          => Html::clean(html_entity_decode($solution_content)),
+                                    'content'          => Toolbox::unclean_cross_side_scripting_deep($solution_content),
                                     'date'             => $solution_date,
                                     'users_id'         => $users_id,
                                     'solutiontypes_id' => $this->fields['solutiontypes_id'],
