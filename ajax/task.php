@@ -27,6 +27,7 @@
  */
 
 /** @file
+ * @since version 0.91
 * @brief
 */
 
@@ -38,11 +39,10 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-$template = new TaskTemplate();
-$template->getEmpty();
-
-if (isset($_POST['tasktemplates_id']) && ((int) $_POST['tasktemplates_id'] > 0)) {
+if (isset($_POST['tasktemplates_id']) && ($_POST['tasktemplates_id'] > 0)) {
+   $template = new TaskTemplate();
    $template->getFromDB($_POST['tasktemplates_id']);
+
+   $template->fields = array_map('html_entity_decode', $template->fields);
+   echo json_encode($template->fields);
 }
-$template->fields = array_map('html_entity_decode', $template->fields);
-echo json_encode($template->fields);

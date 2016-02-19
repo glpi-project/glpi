@@ -35,17 +35,24 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class SolutionTemplate
+/**
+ * Template for task
+ * @since version 0.91
+**/
 class TaskTemplate extends CommonDropdown {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory       = true;
    var $can_be_translated  = true;
 
    static $rightname       = 'taskcategory';
 
+
+
    static function getTypeName($nb=0) {
       return _n('Task template', 'Task templates', $nb);
    }
+
 
    function getAdditionalFields() {
 
@@ -60,6 +67,7 @@ class TaskTemplate extends CommonDropdown {
                          'label' => __('Content'),
                          'type'  => 'textarea'));
    }
+
 
    function getSearchOptions() {
 
@@ -79,23 +87,25 @@ class TaskTemplate extends CommonDropdown {
       return $tab;
    }
 
+
    /**
     * @see CommonDropdown::displaySpecificTypeField()
    **/
    function displaySpecificTypeField($ID, $field=array()) {
+
       switch ($field['type']) {
          case 'actiontime' :
             $toadd = array();
             for ($i=9 ; $i<=100 ; $i++) {
                $toadd[] = $i*HOUR_TIMESTAMP;
             }
-
-            Dropdown::showTimeStamp("actiontime", array('min'             => 0,
-                                                        'max'             => 8*HOUR_TIMESTAMP,
-                                                        'value'           => $this->fields["actiontime"],
-                                                        'addfirstminutes' => true,
-                                                        'inhours'         => true,
-                                                        'toadd'           => $toadd));
+            Dropdown::showTimeStamp("actiontime",
+                                    array('min'             => 0,
+                                          'max'             => 8*HOUR_TIMESTAMP,
+                                          'value'           => $this->fields["actiontime"],
+                                          'addfirstminutes' => true,
+                                          'inhours'         => true,
+                                          'toadd'           => $toadd));
             break;
       }
    }

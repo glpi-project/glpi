@@ -1181,13 +1181,10 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</td>";
 
       echo "<td>"._n('Task template', 'Task templates', 1)."</td><td>";
-
-      TaskTemplate::dropdown(array(
-         'value'     => 0,
-         'entity'    => $this->getEntityID(),
-         'rand'      => $rand_template,
-         'on_change' => 'tasktemplate_update(this.value)',
-      ));
+      TaskTemplate::dropdown(array('value'     => 0,
+                                   'entity'    => $this->getEntityID(),
+                                   'rand'      => $rand_template,
+                                   'on_change' => 'tasktemplate_update(this.value)'));
       echo "</td>";
 
       echo Html::scriptBlock('
