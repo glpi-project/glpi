@@ -6053,6 +6053,7 @@ class Search {
 
       $value = str_replace("\"", "''", $value);
       $value = Html::clean($value);
+      $value = str_replace("&gt;", ">", $value);
 
       return $value;
    }
