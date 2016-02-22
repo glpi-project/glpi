@@ -1,0 +1,130 @@
+xmlseclibs.php
+??, ??? ????, 2.0.0
+Features:
+- Support for locating specific signature when multiple exist in 
+  document. (griga3k)
+
+23, Jun 2015, 1.4.0
+Features:
+- Support for PSR-0 standard.
+- Support for X509SubjectName. (Milos Tomic)
+- Add HMAC-SHA1 support.
+
+Improvements:
+- Add how to install to README. (Bernardo Vieira da Silva)
+- Code cleanup. (Jaime Pérez)
+- Normalilze tests. (Hidde Wieringa)
+- Add basic usage to README. (Hidde Wieringa)
+
+21, May 2015, 1.3.2
+Bug Fixes:
+- Fix Undefined variable notice. (dpieper85)
+- Fix typo when setting MimeType attribute. (Eugene OZ)
+- Fix validateReference() with enveloping signatures
+
+Features:
+- canonicalizeData performance optimization. (Jaime Pérez)
+- Add composer support (Maks3w)
+
+19, Jun 2013, 1.3.1
+Features:
+- return encrypted node from XMLSecEnc::encryptNode() when replace is set to 
+  false. (Olav)
+- Add support for RSA SHA384 and RSA_SHA512 and SHA384 digest. (Jaime Prez)
+- Add options parameter to the add cert methods.
+- Add optional issuerSerial creation with cert
+
+Bug Fixes:
+- Fix persisted Id when namespaced. (Koen Thomeer)
+
+Improvements:
+- Add LICENSE file
+- Convert CHANGELOG.txt to UTF-8
+
+26, Sep 2011, 1.3.0
+Features:
+- Add param to append sig to node when signing. Fixes a problem when using 
+  inclusive canonicalization to append a signature within a namespaced subtree.
+  ex. $objDSig->sign($objKey, $appendToNode); 
+- Add ability to encrypt by reference
+- Add support for refences within an encrypted key
+- Add thumbprint generation capability (XMLSecurityKey->getX509Thumbprint() and 
+  XMLSecurityKey::getRawThumbprint($cert))
+- Return signature element node from XMLSecurityDSig::insertSignature() and 
+  XMLSecurityDSig::appendSignature() methods
+- Support for <ds:RetrievalMethod> with simple URI Id reference.
+- Add XMLSecurityKey::getSymmetricKeySize() method (Olav)
+- Add XMLSecEnc::getCipherValue() method (Olav)
+- Improve XMLSecurityKey:generateSessionKey() logic (Olav)
+
+Bug Fixes:
+- Change split() to explode() as split is now depreciated
+- ds:References using empty or simple URI Id reference should never include 
+  comments in canonicalized data.
+- Make sure that the elements in EncryptedData are emitted in the correct 
+  sequence.
+
+11 Jan 2010, 1.2.2
+Features:
+- Add support XPath support when creating signature. Provides support for 
+  working with EBXML documents.
+- Add reference option to force creation of URI attribute. For use
+  when adding a DOM Document where by default no URI attribute is added.
+- Add support for RSA-SHA256
+
+Bug Fixes:
+- fix bug #5: createDOMDocumentFragment() in decryptNode when data is node 
+  content (patch by Francois Wang)
+
+
+08 Jul 2008, 1.2.1
+Features:
+- Attempt to use mhash when hash extension is not present. (Alfredo Cubitos).
+- Add fallback to built-in sha1 if both hash and mhash are not available and 
+  throw error for other for other missing hashes. (patch by Olav Morken).
+- Add getX509Certificate method to retrieve the x509 cert used for Key. 
+  (patch by Olav Morken).
+- Add getValidatedNodes method to retrieve the elements signed by the 
+  signature. (patch by Olav Morken).
+- Add insertSignature method for precision signature insertion. Merge 
+  functionality from appendSignature in the process. (Olav Morken, Rob).
+- Finally add some tests
+
+Bug Fixes:
+- Fix canonicalization for Document node when using PHP < 5.2.
+- Add padding for RSA_SHA1. (patch by Olav Morken).
+
+
+27 Nov 2007, 1.2.0
+Features:
+- New addReference/List option (overwrite). Boolean flag indicating if URI
+  value should be overwritten if already existing within document.
+  Default is TRUE to maintain BC.
+
+18 Nov 2007, 1.1.2
+Bug Fixes:
+- Remove closing PHP tag to fix extra whitespace characters from being output
+
+11 Nov 2007, 1.1.1
+Features:
+- Add getRefNodeID() and getRefIDs() methods missed in previous release.
+  Provide functionality to find URIs of existing reference nodes.
+  Required by simpleSAMLphp project
+
+Bug Fixes:
+- Remove erroneous whitespace causing issues under certain circumastances.
+
+18 Oct 2007, 1.1.0
+Features:
+- Enable creation of enveloping signature. This allows the creation of
+  managed information cards.
+- Add addObject method for enveloping signatures.
+- Add staticGet509XCerts method. Chained certificates within a PEM file can
+  now be added within the X509Data node.
+- Add xpath support within transformations
+- Add InclusiveNamespaces prefix list support within exclusive transformations.
+
+Bug Fixes:
+- Initialize random number generator for mcrypt_create_iv. (Joan Cornadó).
+- Fix an interoperability issue with .NET when encrypting data in CBC mode.
+  (Joan Cornadó).

@@ -35,6 +35,10 @@
 * @since version 0.85 in front
 */
 
+if (isset($_GET['saml'])) {
+   define('DO_NOT_CHECK_HTTP_REFERER', 1);
+}
+
 include ('../inc/includes.php');
 
 
@@ -62,6 +66,12 @@ if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
 }
 
 $remember = isset($_SESSION['rmbfield']) && isset($_POST[$_SESSION['rmbfield']]) && $CFG_GLPI["login_remember_time"];
+
+// saml and redirect
+if (isset($_SESSION['saml_redirect'])) {
+   $_POST['redirect'] = $_SESSION['saml_redirect'];
+   unset($_SESSION['saml_redirect']);
+}
 
 // Redirect management
 $REDIRECT = "";

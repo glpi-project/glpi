@@ -74,6 +74,7 @@ class Auth extends CommonGLPI {
    const X509     = 6;
    const API      = 7;
    const COOKIE   = 8;
+   const SAML     = 9;
    const NOT_YET_AUTHENTIFIED = 0;
 
 
@@ -118,6 +119,10 @@ class Auth extends CommonGLPI {
 
             $menu['options']['settings']['title']       = __('Setup');
             $menu['options']['settings']['page']        = '/front/auth.settings.php';
+
+            $menu['options']['saml']['title']         = __('SAML');
+            $menu['options']['saml']['page']          = '/front/authsaml.form.php';
+
       }
       if (count($menu)) {
          return $menu;
@@ -386,6 +391,32 @@ class Auth extends CommonGLPI {
             // force CAS authentication
             phpCAS::forceAuthentication();
             $this->user->fields['name'] = phpCAS::getUser();
+            return true;
+
+         case self::SAML :
+            require_once(GLPI_PHP_SAML_AUTOLOADER);
+            $authSAML = new AuthSAML();
+            $authSAML->getFromDB(1);
+            $auth = new OneLogin_Saml2_Auth($authSAML->generate_settings());
+            $rep = base64_decode($_POST['SAMLResponse']);
+            $document = new DOMDocument();
+            $document = OneLogin_Saml2_Utils::loadXML($document, $rep);
+            $auth->processResponse();
+            $errors = $auth->getErrors();
+            if (!empty($auth->_errors)) {
+               print_r($auth->_errors);
+            }
+            if (!empty($errors)) {
+               print_r('SAML error: <p>'.implode(', ', $errors).'</p>');
+            }
+            if (!$auth->isAuthenticated()) {
+               return false;
+            }
+            // It's email address
+            $this->user->fields['name'] = $auth->getNameId();
+
+            //Other attributes to get
+            //print_r($auth->getAttributes());
             return true;
 
          case self::EXTERNAL :
@@ -1119,6 +1150,19 @@ class Auth extends CommonGLPI {
          }
       }
 
+      $authSAML = new AuthSAML();
+      $authSAML->getFromDB(1);
+      if ($authSAML->fields['is_active']) {
+         $_SESSION['saml_redirect'] = $redirect_string;
+         if ($redirect) {
+            require_once(GLPI_ROOT.'/lib/php-saml/_toolkit_loader.php');
+            $auth = new OneLogin_Saml2_Auth($authSAML->generate_settings());
+            $auth->login();
+            exit();
+         } else {
+            return self::SAML;
+         }
+      }
       return false;
    }
 
