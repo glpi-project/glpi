@@ -1987,7 +1987,7 @@ class Transfer extends CommonDBTM {
                   if ($ID == $newID) {
                      if ($item_ID != $newdocID) {
                         $query = "UPDATE `glpi_documents_items`
-                                  SET `documents_id` = '$newdocID'
+                                  SET `documents_id` = '$newdocID', `entities_id` = '".$this->to."'
                                   WHERE `id` = '".$data['id']."'";
                         $DB->query($query);
                      } else { // Same doc update link entity
