@@ -1276,8 +1276,14 @@ class Html {
             foreach  ($PLUGIN_HOOKS["menu_toadd"] as $plugin => $items) {
                if (count($items)) {
                   foreach ($items as $key => $val) {
-                     if (isset($menu[$key])) {
-                        $menu[$key]['types'][] = $val;
+                     if (is_array($val)) {
+                        foreach ($val as $k => $object) {
+                           $menu[$key]['types'][] = $object;
+                        }
+                     } else {
+                        if (isset($menu[$key])) {
+                           $menu[$key]['types'][] = $val;
+                        }
                      }
                   }
                }
