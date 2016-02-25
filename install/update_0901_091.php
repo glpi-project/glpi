@@ -266,8 +266,8 @@ function update0901to091() {
          $DB->queryOrDie($query, "0.91 add Unlock Request notification target");
       }
    }
-   $migration->addField("glpi_users", "lock_autolock_mode", "bool", true);
-   $migration->addField("glpi_users", "lock_directunlock_notification", "bool", true);
+   $migration->addField("glpi_users", "lock_autolock_mode", "tinyint(1) NULL DEFAULT NULL");
+   $migration->addField("glpi_users", "lock_directunlock_notification", "tinyint(1) NULL DEFAULT NULL");
 
 
 
