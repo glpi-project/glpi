@@ -5627,7 +5627,7 @@ class Html {
             close: function(event, ui) { $(this).remove(); },
             resizable: false,
             modal: true,
-            title: '$title',
+            title: '".Toolbox::addslashes_deep($title)."',
             buttons: {
                'Yes': function () {
                      $(this).dialog('close');
@@ -5638,7 +5638,7 @@ class Html {
                      ".($noCallback!==null?'('.$noCallback.')()':'')."
                   }
             }
-         }).text('$msg');
+         }).text('".Toolbox::addslashes_deep($msg)."');
       ";
    }
 
@@ -5735,14 +5735,14 @@ class Html {
             close: function(event, ui) { $(this).remove(); },
             resizable: false,
             modal: true,
-            title: '$title',
+            title: '".Toolbox::addslashes_deep( $title )."',
             buttons: {
                'Ok': function () {
                      $(this).dialog('close');
                      ".($okCallback!==null?'('.$okCallback.')()':'')."
                   }
             }
-         }).text('$msg');
+         }).text('".Toolbox::addslashes_deep($msg)."');
          " ;
    }
 
