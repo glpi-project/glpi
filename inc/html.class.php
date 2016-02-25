@@ -582,6 +582,8 @@ class Html {
                       && !$(e.target).is('.ui-dialog, a')
                       && !$(e.target).closest('.ui-dialog').length) {
                      $('#message_after_redirect').dialog('close');
+                     // redo focus on initial element
+                     e.target.focus();
                   }
                });
             });
