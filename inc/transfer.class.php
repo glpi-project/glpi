@@ -1987,7 +1987,12 @@ class Transfer extends CommonDBTM {
                   if ($ID == $newID) {
                      if ($item_ID != $newdocID) {
                         $query = "UPDATE `glpi_documents_items`
-                                  SET `documents_id` = '$newdocID'
+                                  SET `documents_id` = '$newdocID', `entities_id` = '".$this->to."'
+                                  WHERE `id` = '".$data['id']."'";
+                        $DB->query($query);
+                     } else { // Same doc update link entity
+                        $query = "UPDATE `glpi_documents_items`
+                                  SET `entities_id` = '".$this->to."'
                                   WHERE `id` = '".$data['id']."'";
                         $DB->query($query);
                      }
@@ -1997,13 +2002,13 @@ class Transfer extends CommonDBTM {
                      // Copy Item -> copy links
                      if ($item_ID != $newdocID) {
                         $query = "INSERT INTO `glpi_documents_items`
-                                         (`documents_id`, `items_id`, `itemtype`)
-                                  VALUES ('$newdocID','$newID','$itemtype')";
+                                         (`documents_id`, `items_id`, `itemtype`, `entities_id`)
+                                  VALUES ('$newdocID','$newID','$itemtype','".$this->to."')";
                         $DB->query($query);
 
                      } else { // same doc for new item update link
                         $query = "UPDATE `glpi_documents_items`
-                                  SET `items_id` = '$newID'
+                                  SET `items_id` = '$newID', `entities_id` = '".$this->to."'
                                   WHERE `id` = '".$data['id']."'";
                         $DB->query($query);
                      }
