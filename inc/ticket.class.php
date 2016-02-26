@@ -77,14 +77,15 @@ class Ticket extends CommonITILObject {
    // Demand type
    const DEMAND_TYPE   = 2;
 
-   const READMY           =     1;
-   const READALL          =  1024;
-   const READGROUP        =  2048;
-   const READASSIGN       =  4096;
-   const ASSIGN           =  8192;
-   const STEAL            = 16384;
-   const OWN              = 32768;
-   const CHANGEPRIORITY   = 65536;
+   const READMY           =      1;
+   const READALL          =   1024;
+   const READGROUP        =   2048;
+   const READASSIGN       =   4096;
+   const ASSIGN           =   8192;
+   const STEAL            =  16384;
+   const OWN              =  32768;
+   const CHANGEPRIORITY   =  65536;
+   const SURVEY           = 131072;
 
 
    function getForbiddenStandardMassiveAction() {
@@ -569,7 +570,8 @@ class Ticket extends CommonITILObject {
                $ong[2] = _n('Solution', 'Solutions', 1);
             }
             // enquete si statut clos
-            if ($item->fields['status'] == self::CLOSED) {
+            if (($item->fields['status'] == self::CLOSED)
+                && Session::haveRight('ticket', Ticket::SURVEY)){
                $satisfaction = new TicketSatisfaction();
                if ($satisfaction->getFromDB($item->getID())) {
                   $ong[3] = __('Satisfaction');
@@ -5678,6 +5680,8 @@ class Ticket extends CommonITILObject {
          $values[self::OWN]            = array('short' => __('Beeing in charge'),
                                                'long'  => __('To be in charge of a ticket'));
          $values[self::CHANGEPRIORITY] = __('Change the priority');
+         $values[self::SURVEY]         = array('short' => __('Reply to survey'),
+                                               'long'  => __('Reply to survey for ticket created by me'));
       }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);

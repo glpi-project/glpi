@@ -457,6 +457,16 @@ function update0901to091() {
    $migration->addKey("glpi_softwarelicenses", "is_deleted");
    $migration->addKey("glpi_softwarelicenses", "is_template");
 
+
+   //new right for survey
+   foreach ($DB->request("glpi_profilerights", "`name` = 'ticket'") as $profrights) {
+      $query = "UPDATE `glpi_profilerights`
+                SET `rights` = `rights` | " . Ticket::SURVEY ."
+                WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'ticket'";
+      $DB->queryOrDie($query, "0.91 update ticket with survey right");
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
