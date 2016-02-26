@@ -1615,11 +1615,13 @@ class CronTask extends CommonDBTM{
       }
 
       if (count($crontasks)) {
-         if (NotificationEvent::raiseEvent("alert", new Crontask(),
-                                           array('items' => $crontasks))) {
+         $task = new self();
+         $task->getFromDBByQuery("WHERE `itemtype` = 'Crontask' AND `name` = 'watcher'");
+         if (NotificationEvent::raiseEvent("alert", $task,  array('items' => $crontasks))) {
             $cron_status = 1;
             $task->addVolume(1);
          }
+         QueuedMail::forceSendFor($task->getType(), $task->fields['id']);
       }
 
       return 1;
