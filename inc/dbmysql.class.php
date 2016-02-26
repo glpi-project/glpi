@@ -536,6 +536,12 @@ class DBmysql {
    static function optimize_tables($migration=NULL, $cron=false) {
        global $DB;
 
+       $crashed_tables = self::checkForCrashedTables();
+       if (!empty($crashed_tables)) {
+          Toolbox::logDebug("Cannot launch automatic action : crashed tables detected");
+          return -1;
+       }
+
        if (!is_null($migration) && method_exists($migration,'displayMessage')) {
           $migration->displayTitle(__('Optimizing tables'));
           $migration->addNewMessageArea('optimize_table'); // to force new ajax zone
