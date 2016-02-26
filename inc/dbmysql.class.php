@@ -536,7 +536,8 @@ class DBmysql {
    static function optimize_tables($migration=NULL, $cron=false) {
        global $DB;
 
-       if (!empty(self::checkForCrashedTables())) {
+       $crashed_tables = self::checkForCrashedTables();
+       if (!empty($crashed_tables)) {
           Toolbox::logDebug("Cannot launch automatic action : crashed tables detected");
           return -1;
        }
