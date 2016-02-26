@@ -6365,8 +6365,7 @@ class Ticket extends CommonITILObject {
                echo Html::convDateTime($item_i["end"]);
                echo "</span>";
             }
-            if (isset($item_i['users_id_tech'])) {
-
+            if (isset($item_i['users_id_tech']) && ($item_i['users_id_tech'] > 0)) {
                echo "<div class='users_id_tech'>";
                $user->getFromDB($item_i['users_id_tech']);
 
