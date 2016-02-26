@@ -463,6 +463,7 @@ class Dropdown {
       $params['display']             = true;
       $params['width']               = '80%';
       $params['display_emptychoice'] = true;
+      $params['rand']                = mt_rand();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -470,20 +471,16 @@ class Dropdown {
          }
       }
 
-      $items = array();
+      $values = array();
       if (count($types)) {
          foreach ($types as $type) {
             if ($item = getItemForItemtype($type)) {
-               $items[$type] = $item->getTypeName(1);
+               $values[$type] = $item->getTypeName(1);
             }
          }
       }
-      asort($options);
-      return self::showFromArray($name, $options, array('value'   => $params['value'],
-                                                        'used'    => $params['used'],
-                                                        'width'   => $params['width'],
-                                                        'display' => $params['display']));
-      return self::showFromArray($name, $items, $params);
+      asort($values);
+      return self::showFromArray($name, $values, $params);
    }
 
 
