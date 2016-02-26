@@ -656,9 +656,9 @@ class Ticket extends CommonITILObject {
           || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
          $this->addStandardTab('TicketFollowup',$ong, $options);
          $this->addStandardTab('TicketTask', $ong, $options);
+         $this->addStandardTab('Document_Item', $ong, $options);
       }
       $this->addStandardTab(__CLASS__, $ong, $options);
-      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
       $this->addStandardTab('TicketCost', $ong, $options);
