@@ -167,8 +167,10 @@ class TicketFollowup  extends CommonDBTM {
          return false;
       }
 
-      if (($this->fields["users_id"] === Session::getLoginUserID())
-          && Session::haveRight(self::$rightname, self::UPDATEMY)) {
+      if ($this->fields["users_id"] === Session::getLoginUserID()) {
+         if (!Session::haveRight(self::$rightname, self::UPDATEMY)) {
+            return false;
+         }
          return true;
       }
 
@@ -428,11 +430,11 @@ class TicketFollowup  extends CommonDBTM {
          }
 
          $update['id'] = $this->input["_job"]->fields['id'];
-         
+
          // don't notify on Ticket - update event
          $update['_disablenotif'] = true;
-         
-         // Use update method for history 
+
+         // Use update method for history
          $this->input["_job"]->update($update);
          $reopened     = true;
       }
@@ -443,11 +445,11 @@ class TicketFollowup  extends CommonDBTM {
 
          $update['status'] = $this->input['_status'];
          $update['id']     = $this->input['_job']->fields['id'];
-         
+
          // don't notify on Ticket - update event
          $update['_disablenotif'] = true;
 
-         // Use update method for history 
+         // Use update method for history
          $this->input['_job']->update($update);
       }
 
