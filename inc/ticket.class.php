@@ -4559,13 +4559,20 @@ class Ticket extends CommonITILObject {
                              getEntitiesRestrictRequest("AND","glpi_tickets");
             break;
 
-         case "survey" : // on affiche les tickets dont l'enquête de satisfaction n'est pas remplie
+         case "survey" : // tickets dont l'enquête de satisfaction n'est pas remplie et encore valide
             $query .= " INNER JOIN `glpi_ticketsatisfactions`
                            ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                        INNER JOIN `glpi_entities`
+                           ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`)
                         WHERE $is_deleted
                               AND ($search_users_id
                                    OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."')
                               AND `glpi_tickets`.`status` = '".self::CLOSED."'
+                              AND (`glpi_entities`.`inquest_duration` = 0
+                                   OR DATEDIFF(ADDDATE(`glpi_ticketsatisfactions`.`date_begin`,
+                                                       INTERVAL
+                                                       `glpi_entities`.`inquest_duration` DAY),
+                                               CURDATE()) > 0)
                               AND `glpi_ticketsatisfactions`.`date_answered` IS NULL ".
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
@@ -4584,7 +4591,7 @@ class Ticket extends CommonITILObject {
                              getEntitiesRestrictRequest("AND","glpi_tickets");
       }
 
-      $query  .= " ORDER BY date_mod DESC";
+      $query  .= " ORDER BY `glpi_tickets`.`date_mod` DESC";
       $result  = $DB->query($query);
       $numrows = $DB->numrows($result);
 
