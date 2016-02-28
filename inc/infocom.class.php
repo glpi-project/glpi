@@ -1178,7 +1178,10 @@ class Infocom extends CommonDBChild {
             }
             echo "</td></tr>";
 
-            Plugin::doHook("infocom", $item);
+            //We use a static method to call the hook
+            //It's then easier for plugins to detect if the hook is available or not
+            //The just have to look for the addPluginInfos method
+            self::addPluginInfos($item);
 
             if ($canedit) {
                echo "<tr>";
@@ -1202,6 +1205,10 @@ class Infocom extends CommonDBChild {
       }
    }
 
+
+   static function addPluginInfos(CommonDBTM $item) {
+      Plugin::doHook("infocom", $item);
+   }
 
    /**
     * @param $itemtype
