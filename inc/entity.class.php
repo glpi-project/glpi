@@ -80,7 +80,8 @@ class Entity extends CommonTreeDropdown {
                                        'infocom'
                                           => array('autofill_buy_date', 'autofill_delivery_date',
                                                    'autofill_order_date', 'autofill_use_date',
-                                                   'autofill_warranty_date'),
+                                                   'autofill_warranty_date',
+                                                   'autofill_destruction_date'),
                                        // Notification
                                        'notification'
                                           => array('admin_email', 'admin_reply', 'admin_email_name',
@@ -833,6 +834,13 @@ class Entity extends CommonTreeDropdown {
       $tab[51]['nosearch']      = true;
       $tab[51]['datatype']      = 'specific';
 
+      $tab[56]['table']         = $this->getTable();
+      $tab[56]['field']         = 'autofill_destruction_date';
+      $tab[56]['name']          = __('Date of destruction');
+      $tab[56]['massiveaction'] = false;
+      $tab[56]['nosearch']      = true;
+      $tab[56]['datatype']      = 'specific';
+
       return $tab;
    }
 
@@ -1304,6 +1312,29 @@ class Entity extends CommonTreeDropdown {
 
       Dropdown::showFromArray('autofill_warranty_date', $options,
                               array('value' => $entity->getField('autofill_warranty_date')));
+      echo "</td>";
+
+      //Destruction date
+      echo "<td> " . __('Destruction date') . "</td>";
+      echo "<td>";
+
+      $options = array(0                           => __('No autofill'),
+                       Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
+                       Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
+                       Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'));
+      if ($ID > 0) {
+         $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+      }
+
+      foreach (getAllDatasFromTable('glpi_states') as $state) {
+         $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
+                     //TRANS: %s is the name of the state
+            = sprintf(__('Fill when shifting to state %s'), $state['name']);
+      }
+
+      Dropdown::showFromArray('autofill_destruction_date', $options,
+                              array('value' => $entity->getField('autofill_destruction_date')));
+
       echo "</td><td colspan='2'></td></tr>";
 
       echo "<tr><th colspan='4'>"._n('Software', 'Software', Session::getPluralNumber())."</th></tr>";
@@ -2344,6 +2375,7 @@ class Entity extends CommonTreeDropdown {
          case 'autofill_delivery_date' :
          case 'autofill_use_date' :
          case 'autofill_warranty_date' :
+         case 'autofill_destruction_date' :
             switch ($values[$field]) {
                case self::CONFIG_PARENT :
                   return __('Inheritance of the parent entity');
@@ -2473,6 +2505,7 @@ class Entity extends CommonTreeDropdown {
          case 'autofill_order_date' :
          case 'autofill_delivery_date' :
          case 'autofill_use_date' :
+         case 'autofill_destruction_date' :
             $tab[0]                   = __('No autofill');
             $tab[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
             foreach (getAllDatasFromTable('glpi_states') as $state) {

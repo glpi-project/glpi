@@ -457,6 +457,9 @@ function update0901to091() {
    $migration->addKey("glpi_softwarelicenses", "is_deleted");
    $migration->addKey("glpi_softwarelicenses", "is_template");
 
+   $migration->addField("glpi_infocoms", "destruction_date", "datetime");
+   $migration->addField("glpi_entities", "autofill_destruction_date",
+                        "string", array('value' => '-2'));
 
    //new right for survey
    foreach ($DB->request("glpi_profilerights", "`name` = 'ticket'") as $profrights) {
