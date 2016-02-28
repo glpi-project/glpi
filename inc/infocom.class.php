@@ -1178,6 +1178,8 @@ class Infocom extends CommonDBChild {
             }
             echo "</td></tr>";
 
+            Plugin::doHook("infocom", $item);
+
             if ($canedit) {
                echo "<tr>";
                echo "<td class='tab_bg_2 center' colspan='2'>";
