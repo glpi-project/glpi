@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -513,6 +513,9 @@ class Document extends CommonDBTM {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                $icon = $DB->result($result,0,'icon');
+               if (!file_exists(GLPI_ROOT."/".$CFG_GLPI["typedoc_icon_dir"]."/$icon")) {
+                  $icon = "defaut-dist.png" ;
+               }
                $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
                                $initfileout."\" title=\"".$initfileout."\" src='".
                                $CFG_GLPI["typedoc_icon_dir"]."/$icon'>";
@@ -815,11 +818,22 @@ class Document extends CommonDBTM {
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[20]['table']          = $this->getTable();
       $tab[20]['field']          = 'sha1sum';
       $tab[20]['name']           = sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1'));
       $tab[20]['massiveaction']  = false;
       $tab[20]['datatype']       = 'string';
+
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
       $tab[72]['table']          = 'glpi_documents_items';
       $tab[72]['field']          = 'id';
@@ -829,6 +843,9 @@ class Document extends CommonDBTM {
       $tab[72]['datatype']       = 'count';
       $tab[72]['massiveaction']  = false;
       $tab[72]['joinparams']     = array('jointype' => 'child');
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

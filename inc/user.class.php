@@ -37,7 +37,7 @@
 // And Marco Gaiarin for ldap features
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class User extends CommonDBTM {
@@ -1782,7 +1782,8 @@ class User extends CommonDBTM {
             $buttons["user.form.php?new=1&amp;ext_auth=1"] = __('... From an external source');
          }
       }
-      if (Session::haveRight("user", self::IMPORTEXTAUTHUSERS)) {
+      if (Session::haveRight("user", self::IMPORTEXTAUTHUSERS)
+         && (static::canCreate() || static::canUpdate())) {
          if (AuthLdap::useAuthLdap()) {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
@@ -2047,10 +2048,9 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>" ;
-         //TRANS: %s is the date
-         printf(__('Last update on %s'), HTML::convDateTime($this->fields["date_mod"]));
-         echo "<br>";
-         printf(__('Last login on %s'), HTML::convDateTime($this->fields["last_login"]));
+         if ($this->fields["last_login"]) {
+            printf(__('Last login on %s'), HTML::convDateTime($this->fields["last_login"]));
+         }
          echo "</td><td colspan='2'class='center'>";
 
          if ($ID > 0) {
@@ -2656,6 +2656,12 @@ class User extends CommonDBTM {
       $tab[19]['datatype']             = 'datetime';
       $tab[19]['massiveaction']        = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[20]['table']                = 'glpi_profiles';
       $tab[20]['field']                = 'name';
       $tab[20]['name']                 = sprintf(__('%1$s (%2$s)'), _n('Profile', 'Profiles', Session::getPluralNumber()),
@@ -2776,6 +2782,9 @@ class User extends CommonDBTM {
                                                                   'condition'
                                                                    => 'AND NEWTABLE.`type`
                                                                         = '.CommonITILActor::ASSIGN)));
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       return $tab;
    }
 
@@ -2962,7 +2971,7 @@ class User extends CommonDBTM {
 
 
          case "all" :
-            $where = " `glpi_users`.`id` > '1' ".
+            $where = " `glpi_users`.`id` > '0' ".
                      getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
             break;
 

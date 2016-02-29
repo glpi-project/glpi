@@ -133,7 +133,7 @@ CREATE TABLE glpi_dropdown_gfxcard (
 );
 
 INSERT INTO glpi_dropdown_gfxcard VALUES ('1','ATI Rage Pro 3D AGP');
-INSERT INTO glpi_dropdown_gfxcard VALUES ('2','Matrox Millenium G400DH');
+INSERT INTO glpi_dropdown_gfxcard VALUES ('2','Matrox Millennium G400DH');
 INSERT INTO glpi_dropdown_gfxcard VALUES ('3','S3 Trio 64V+');
 INSERT INTO glpi_dropdown_gfxcard VALUES ('4','integrated');
 ### Dump table glpi_dropdown_hdtype

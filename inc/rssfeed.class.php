@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 // $feed = new SimplePie();
 // $feed->set_cache_location('../files/_rss');
@@ -65,6 +65,9 @@ if (!defined('GLPI_ROOT')) {
  * @since version 0.84
 **/
 class RSSFeed extends CommonDBTM {
+
+   // From CommonDBTM
+   public $dohistory                   = true;
 
    // For visibility checks
    protected $users     = array();
@@ -482,6 +485,15 @@ class RSSFeed extends CommonDBTM {
       $tab[19]['datatype']            = 'datetime';
       $tab[19]['massiveaction']       = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       return $tab;
    }
 
@@ -518,6 +530,7 @@ class RSSFeed extends CommonDBTM {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -714,6 +727,7 @@ class RSSFeed extends CommonDBTM {
          echo "<td colspan='2'>&nbsp;</td>";
       }
       echo "</tr>";
+
       $this->showFormButtons($options);
 
       return true;

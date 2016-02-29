@@ -2782,7 +2782,7 @@ function update0723to078() {
    }
 
 
-   // For compatiblity with updates from past versions
+   // For compatibility with updates from past versions
    regenerateTreeCompleteName("glpi_locations");
    regenerateTreeCompleteName("glpi_knowbaseitemcategories");
    regenerateTreeCompleteName("glpi_ticketcategories");
@@ -2983,13 +2983,13 @@ function update0723to078() {
                                AND `rules_id` IN ($rules);";
                $DB->queryOrDie($query, "0.78 update datas for rules actions");
             }
-            // Update criterias
+            // Update criteria
             foreach ($tab as $old => $new) {
                $query = "UPDATE `glpi_rulecriterias`
                          SET `criteria` = '$new'
                          WHERE `criteria` = '$old'
                                AND `rules_id` IN ($rules);";
-               $DB->queryOrDie($query, "0.78 update datas for rules criterias");
+               $DB->queryOrDie($query, "0.78 update datas for rules criteria");
             }
          }
       }

@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -538,8 +538,8 @@ class Computer extends CommonDBTM {
 
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
-      echo "<textarea cols='45' rows='".($rowspan+5)."' name='comment' >".$this->fields["comment"];
-      echo "</textarea></td></tr>\n";
+      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain')."</td>";
@@ -561,8 +561,7 @@ class Computer extends CommonDBTM {
       OperatingSystemVersion::dropdown(array('value' => $this->fields["operatingsystemversions_id"]));
       echo "</td>";
       if ($inventory_show) {
-         echo "<td rowspan='5'>".__('Automatic inventory')."</td>";
-         echo "<td rowspan='5'>";
+         echo "<td rowspan='4' colspan='2'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
       }
@@ -607,7 +606,7 @@ class Computer extends CommonDBTM {
       echo "<td>".__('Product ID of the operating system')."</td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'os_licenseid');
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Serial of the operating system')."</td>";
@@ -626,26 +625,6 @@ class Computer extends CommonDBTM {
       Html::autocompletionTextField($this, 'uuid');
       echo "</td>";
       echo "</tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
-          && !empty($this->fields['template_name'])) {
-         echo "<span class='small_space'>";
-         printf(__('Created from the template %s'), $this->fields['template_name']);
-         echo "</span>";
-      } else {
-         echo "&nbsp;";
-      }
-      echo "</td><td>";
-      if (isset($options['withtemplate']) && $options['withtemplate']) {
-         //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
-      } else {
-         //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-      }
-      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Update Source')."</td>";
@@ -819,6 +798,12 @@ class Computer extends CommonDBTM {
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[32]['table']          = 'glpi_networks';
       $tab[32]['field']          = 'name';
       $tab[32]['name']           = __('Network');
@@ -852,6 +837,9 @@ class Computer extends CommonDBTM {
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
       $tab[80]['datatype']       = 'dropdown';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

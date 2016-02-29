@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -288,6 +288,18 @@ class Supplier extends CommonDBTM {
       $tab[9]['name']               = __('Third party type');
       $tab[9]['datatype']           = 'dropdown';
 
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
          $name1 = 'firstname';
          $name2 = 'name';
@@ -332,6 +344,9 @@ class Supplier extends CommonDBTM {
       $tab[29]['joinparams']        = array('beforejoin'
                                              => array('table'      => 'glpi_contracts_suppliers',
                                                       'joinparams' => array('jointype' => 'child')));
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

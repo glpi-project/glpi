@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -464,7 +464,7 @@ class Profile extends CommonDBTM {
       // First, get all possible rights
       $right_subqueries = array();
       foreach (ProfileRight::getAllPossibleRights() as $key => $default) {
-         $val = $_SESSION['glpiactiveprofile'][$key];
+         $val = isset($_SESSION['glpiactiveprofile'][$key])?$_SESSION['glpiactiveprofile'][$key]:0;
 
          if (!is_array($val) // Do not include entities field added by login
              && (($_SESSION['glpiactiveprofile']['interface'] == 'central')
@@ -603,14 +603,6 @@ class Profile extends CommonDBTM {
       Html::showCheckbox(array('name'    => 'create_ticket_on_login',
                                'checked' => $this->fields['create_ticket_on_login']));
       echo "</td></tr>\n";
-
-      if ($ID > 0) {
-         echo "<tr class='tab_bg_1'><td>".__('Last update')."</td>";
-         echo "<td>";
-         echo ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
-                                         : __('Never'));
-         echo "</td></tr>";
-      }
 
       $this->showFormButtons($options);
 
@@ -852,7 +844,10 @@ class Profile extends CommonDBTM {
                               'default_class' => 'tab_bg_2');
 
 
-      $rights = array(array('itemtype'  => 'Contact',
+      $rights = array(array('itemtype'  => 'SoftwareLicense',
+                            'label'     => _n('License', 'Licenses', Session::getPluralNumber()),
+                            'field'     => 'license'),
+                      array('itemtype'  => 'Contact',
                             'label'     => _n('Contact', 'Contacts', Session::getPluralNumber())." / ".
                                            _n('Supplier', 'Suppliers', Session::getPluralNumber()),
                             'field'     => 'contact_enterprise'),
@@ -1396,6 +1391,7 @@ class Profile extends CommonDBTM {
 
       $dropdown_rights = CommonDBTM::getRights();
       unset($dropdown_rights[DELETE]);
+      unset($dropdown_rights[UNLOCK]);
 
       $rights = array(array('itemtype'  => 'Config',
                             'label'     => __('General setup'),
@@ -1485,6 +1481,12 @@ class Profile extends CommonDBTM {
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'interface';
       $tab[2]['name']            = __("Profile's interface");
@@ -1507,6 +1509,9 @@ class Profile extends CommonDBTM {
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
       $tab[16]['datatype']       = 'text';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab['inventory']          = __('Assets');
 

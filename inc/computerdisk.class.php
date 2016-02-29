@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -101,7 +101,8 @@ class ComputerDisk extends CommonDBChild {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-
+      $this->addStandardTab('Log', $ong, $options);
+      
       return $ong;
    }
 

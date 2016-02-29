@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -37,19 +37,21 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight("software", READ);
-
-if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
+Session::checkRight("license", READ);
+if (!isset($_REQUEST["id"])) {
+   $_REQUEST["id"] = "";
 }
-if (!isset($_GET["softwares_id"])) {
-   $_GET["softwares_id"] = "";
+
+if (!isset($_REQUEST["softwares_id"])) {
+   $_REQUEST["softwares_id"] = "";
+}
+if (!isset($_REQUEST["withtemplate"])) {
+   $_REQUEST["withtemplate"] = "";
 }
 $license = new SoftwareLicense();
 
 if (isset($_POST["add"])) {
    $license->check(-1, CREATE,$_POST);
-
    if ($newID = $license->add($_POST)) {
       Event::log($_POST['softwares_id'], "software", 4, "inventory",
                  //TRANS: %s is the user login, %2$s is the license id
@@ -59,6 +61,23 @@ if (isset($_POST["add"])) {
       }
    }
    Html::back();
+
+} else if (isset($_POST["restore"])) {
+   $license->check($_POST['id'], DELETE);
+   if ($license->restore($_POST)) {
+      Event::log($_POST["id"],"software", 4, "inventory",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
+   }
+   $license->redirectToList();
+
+} else if (isset($_POST["delete"])) {
+   $license->check($_POST['id'], DELETE);
+   $license->delete($_POST, 0);
+   Event::log($license->fields['softwares_id'], "software", 4, "inventory",
+              //TRANS: %s is the user login, %2$s is the license id
+              sprintf(__('%1$s deletes the license %2$s'), $_SESSION["glpiname"], $_POST["id"]));
+   $license->redirectToList();
 
 } else if (isset($_POST["purge"])) {
    $license->check($_POST['id'], PURGE);
@@ -78,9 +97,9 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(SoftwareLicense::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "software");
-   $license->display(array('id'           => $_GET["id"],
-                           'softwares_id' => $_GET["softwares_id"]));
+   Html::header(SoftwareLicense::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'],
+                "management", "softwarelicense");
+   $license->display($_REQUEST);
    Html::footer();
 }
 ?>

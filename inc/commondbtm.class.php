@@ -32,7 +32,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -820,6 +820,11 @@ class CommonDBTM extends CommonGLPI {
                 && isset($table_fields[$key])) {
                $this->fields[$key] = $this->input[$key];
             }
+         }
+
+         // Auto set date_creation if exsist
+         if (isset($table_fields['date_creation'])) {
+            $this->fields['date_creation'] = $_SESSION["glpi_currenttime"];
          }
 
          // Auto set date_mod if exsist
@@ -1949,6 +1954,63 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * @since version 0.91
+    *
+    * @param $options      array
+    *
+    * @return boolean
+   **/
+   function showDates($options = array()) {
+
+      $isNewID = ((isset($options['withtemplate']) && ($options['withtemplate'] == 2))
+         || $this->isNewID($this->getID()));
+
+      if ($isNewID) {
+         return true;
+      }
+
+      $date_creation_exists = ($this->getField('date_creation') != NOT_AVAILABLE);
+      $date_mod_exists = ($this->getField('date_mod') != NOT_AVAILABLE);
+
+      $colspan = $options['colspan'];
+      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
+          && !empty($this->fields['template_name'])) {
+         $colspan = 1;
+      }
+
+      echo "<tr class='tab_bg_1 footerRow'>";
+      //Display when it's not a new asset being created
+      if ($date_creation_exists
+         && $this->getID() > 0
+            && (!isset($options['withtemplate']) || $options['withtemplate'] == 0)) {
+         echo "<th colspan='$colspan'>";
+         printf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
+         echo "</th>";
+      }
+
+      if (isset($options['withtemplate']) && $options['withtemplate']) {
+         echo "<th colspan='$colspan'>";
+         //TRANS: %s is the datetime of insertion
+         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
+         echo "</th>";
+      } elseif ($date_mod_exists) {
+         echo "<th colspan='$colspan'>";
+         //TRANS: %s is the datetime of update
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+         echo "</th>";
+      }
+
+      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
+          && !empty($this->fields['template_name'])) {
+         echo "<th colspan='".($colspan * 2)."'>";
+         printf(__('Created from the template %s'), $this->fields['template_name']);
+         echo "</th>";
+      }
+
+      echo "</tr>";
+   }
+
+   /**
     * Display a 2 columns Footer for Form buttons
     * Close the form is user can edit
     *
@@ -1980,6 +2042,8 @@ class CommonDBTM extends CommonGLPI {
             $params[$key] = $val;
          }
       }
+
+      $this->showDates($params);
 
       if (!$params['canedit']
           || !$this->canEdit($ID)) {
@@ -3090,6 +3154,9 @@ class CommonDBTM extends CommonGLPI {
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['massiveaction'] = false;
 
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       return $tab;
    }
 
@@ -3167,6 +3234,12 @@ class CommonDBTM extends CommonGLPI {
     * @return an array of massive actions
    **/
    function getSpecificMassiveActions($checkitem=NULL) {
+
+      // test if current profile has rights to unlock current item type
+      if (Session::haveRight( static::$rightname, UNLOCK)) {
+         return array('ObjectLock'.MassiveAction::CLASS_ACTION_SEPARATOR.'unlock'
+                        => _x('button', 'Unlock items'));
+      }
       return array();
    }
 
@@ -4299,6 +4372,8 @@ class CommonDBTM extends CommonGLPI {
                       PURGE   => array('short' => __('Purge'),
                                        'long'  => _x('button', 'Delete permanently')));
 
+      $values += ObjectLock::getRightsToAdd( get_class($this), $interface ) ;
+
       if ($this->maybeDeleted()) {
          $values[DELETE] = array('short' => __('Delete'),
                                  'long'  => _x('button', 'Put in dustbin'));
@@ -4313,5 +4388,18 @@ class CommonDBTM extends CommonGLPI {
       return $values;
    }
 
+   /**
+    * Generate link
+    *
+    * @since version 0.91
+    *
+    * @param $link    string   original string content
+    * @param $item             CommonDBTM object: item used to make replacements
+    *
+    * @return array of link contents (may have several when item have several IP / MAC cases)
+   **/
+   static function generateLinkContents($link, CommonDBTM $item) {
+      return Link::generateLinkContents($link, $item);
+   }
 }
 ?>

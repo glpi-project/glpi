@@ -61,20 +61,6 @@ if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
    Html::header(__('Simplified interface'), '', $_SESSION["glpiname"], "helpdesk", "tracking");
 }
 
-if (isset($_POST["my_items"]) && !empty($_POST["my_items"])) {
-   $splitter = explode("_",$_POST["my_items"]);
-   if (count($splitter) == 2) {
-      $_POST["itemtype"] = $splitter[0];
-      $_POST["items_id"] = $splitter[1];
-   }
-}
-
-if (!isset($_POST["itemtype"])
-    || (empty($_POST["items_id"]) && ($_POST["itemtype"] != 0))) {
-   $_POST["itemtype"] = '';
-   $_POST["items_id"] = 0;
-}
-
 if (isset($_POST['add'])) {
    if ($newID = $track->add($_POST)) {
       if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {

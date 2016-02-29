@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -133,6 +133,14 @@ class Change_Ticket extends CommonDBRelation{
       global $CFG_GLPI;
 
       switch ($ma->getAction()) {
+         case 'add_task' :
+            $tasktype = 'TicketTask';
+            if ($ttype = getItemForItemtype($tasktype)) {
+               $ttype->showFormMassiveAction();
+               return true;
+            }
+            return false;
+            
          case "solveticket" :
             $change = new Change();
             $input = $ma->getInput();
@@ -157,7 +165,42 @@ class Change_Ticket extends CommonDBRelation{
                                                        array $ids) {
 
       switch ($ma->getAction()) {
-          case 'solveticket' :
+         case 'add_task' :
+            if (!($task = getItemForItemtype('TicketTask'))) {
+               $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+               break;
+            }
+            $ticket = new Ticket();
+            $field = $ticket->getForeignKeyField();
+
+            $input = $ma->getInput();
+
+            foreach ($ids as $id) {
+               if ($item->can($id, READ)) {
+                  if ($ticket->getFromDB($item->fields['tickets_id'])) {
+                     $input2 = array($field              => $item->fields['tickets_id'],
+                                  'taskcategories_id' => $input['taskcategories_id'],
+                                  'actiontime'        => $input['actiontime'],
+                                  'content'           => $input['content']);
+                     if ($task->can(-1, CREATE, $input2)) {
+                        if ($task->add($input2)) {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                           $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                           $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        }
+                     } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                     }
+                  } else {
+                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                  }
+               }
+            }
+            return;
+         case 'solveticket' :
             $input  = $ma->getInput();
             $ticket = new Ticket();
             foreach ($ids as $id) {
@@ -254,7 +297,9 @@ class Change_Ticket extends CommonDBRelation{
             = array('num_displayed'    => $numrows,
                     'specific_actions' => array('purge' => _x('button', 'Delete permanently'),
                                                  __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'solveticket'
-                                                        => __('Solve tickets')),
+                                                        => __('Solve tickets'),
+                                                 __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task' 
+                                                        => __('Add a new task')),
                      'container'        => 'mass'.__CLASS__.$rand,
                      'extraparams'      => array('changes_id' => $change->getID()),
                      'width'            => 1000,

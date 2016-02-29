@@ -32,7 +32,7 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -733,7 +733,7 @@ class MassiveAction {
                   $common_options  = false;
                   $choose_itemtype = false;
                }
-               $choose_field = (count($options) > 1);
+               $choose_field = (count($options) >= 1);
 
                // Beware: "class='tab_cadre_fixe'" induce side effects ...
                echo "<table width='100%'><tr>";

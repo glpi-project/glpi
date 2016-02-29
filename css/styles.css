@@ -605,8 +605,8 @@ input.save {
    box-shadow: 0px 1px 2px 1px #D2D2D2;
 }
 
-.main_form .actor_title, 
-.main_form tr:not(.headerRow)  th:not(.actor-th) {
+.main_form .actor_title,
+.main_form tr:not(.headerRow):not(.footerRow) th:not(.actor-th) {
    text-align: right;
 }
 
@@ -672,6 +672,10 @@ input.save {
       margin: 0;
       border: 0;
       width: 150px;
+   }
+
+   .layout_vsplit.form .ui-tabs-panel table.tab_cadre_pager {
+      width: 100%;
    }
 
   .layout_vsplit.form .form_content {
@@ -2387,8 +2391,8 @@ ul#menu ul.ssmenu {
 
 .see_debug {
    position: fixed;
-   bottom: 20px;
-   left: 20px;
+   bottom: 5px;
+   right: 10px;
    cursor: pointer;
 }
 

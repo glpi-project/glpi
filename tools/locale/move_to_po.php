@@ -59,7 +59,7 @@ define('GLPI_ROOT', realpath('../..'));
 //include (GLPI_ROOT . "/inc/includes.php");
 
 if (!is_readable(GLPI_ROOT . "/locales/".$_GET['lang'].".php")) {
-   print "Unable to read dictionnary file\n";
+   print "Unable to read dictionary file\n";
    exit();
 }
 include (GLPI_ROOT . "/locales/en_GB.php");

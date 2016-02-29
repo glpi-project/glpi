@@ -977,7 +977,7 @@ function update0681to07() {
          $query = "INSERT INTO `glpi_rules_criterias`
                           (`FK_rules`, `criteria`, `condition`, `pattern`)
                    VALUES (".$datas["ID"].", 'TAG', 0, '*')";
-         $DB->queryOrDie($query, "0.7 add default ocs criterias");
+         $DB->queryOrDie($query, "0.7 add default ocs criteria");
 
          $query = "INSERT INTO `glpi_rules_actions`
                           (`FK_rules`, `action_type`, `field`, `value`)
@@ -998,21 +998,21 @@ function update0681to07() {
          //Get the defaut rule's ID
          $datas = $DB->fetch_array($result);
 
-         //Criterias
+         //Criteria
          $query = "INSERT INTO `glpi_rules_criterias`
                           (`FK_rules`, `criteria`, `condition`, `pattern`)
                    VALUES (".$datas["ID"].", 'uid', 0, '*')";
-         $DB->queryOrDie($query, "0.7 add default right criterias");
+         $DB->queryOrDie($query, "0.7 add default right criteria");
 
          $query = "INSERT INTO `glpi_rules_criterias`
                           (`FK_rules`, `criteria`, `condition`, `pattern`)
                    VALUES (".$datas["ID"].", 'samaccountname', 0, '*')";
-         $DB->queryOrDie($query, "0.7 add default right criterias");
+         $DB->queryOrDie($query, "0.7 add default right criteria");
 
          $query = "INSERT INTO `glpi_rules_criterias`
                           (`FK_rules`, `criteria`, `condition`, `pattern`)
                    VALUES (".$datas["ID"].", 'MAIL_EMAIL', 0, '*')";
-         $DB->queryOrDie($query, "0.7 add default right criterias");
+         $DB->queryOrDie($query, "0.7 add default right criteria");
 
          //Action
          $query = "INSERT INTO `glpi_rules_actions`
@@ -1867,7 +1867,7 @@ function update0681to07() {
 
 } // fin 0.7 #####################################################################################
 
-//######### Function comming from old tracking.function.php which is now deleted since GLPI 0.72
+//######### Function coming from old tracking.function.php which is now deleted since GLPI 0.72
 //######### Theses functionS were used during the migration process
 function computeTicketTco($item_type,$item) {
    global $DB;

@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -518,6 +518,21 @@ class Entity extends CommonTreeDropdown {
       $tab[16]['field']         = 'comment';
       $tab[16]['name']          = __('Comments');
       $tab[16]['datatype']      = 'text';
+
+      $tab[122]['table']          = $this->getTable();
+      $tab[122]['field']          = 'date_mod';
+      $tab[122]['name']           = __('Last update');
+      $tab[122]['datatype']       = 'datetime';
+      $tab[122]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 
@@ -1116,6 +1131,7 @@ class Entity extends CommonTreeDropdown {
       }
 
       echo "</div>";
+
    }
 
 
@@ -2111,26 +2127,14 @@ class Entity extends CommonTreeDropdown {
                             $url);
       }
 
-      if (strstr($url,"[ITEMTYPE]")
-          && $ticket->fields['itemtype']
-          && ($objet = getItemForItemtype($ticket->fields['itemtype']))) {
-         $url = str_replace("[ITEMTYPE]", urlencode($objet->getTypeName(1)), $url);
-      }
-
-      if (strstr($url,"[ITEM_ID]")) {
-         $url = str_replace("[ITEM_ID]", $ticket->fields['items_id'], $url);
-      }
-
-      if (strstr($url,"[ITEM_NAME]")
-          && $ticket->fields['itemtype']
-          && ($objet = getItemForItemtype($ticket->fields['itemtype']))) {
-         if ($objet->getFromDB($ticket->fields['items_id'])) {
-            $url = str_replace("[ITEM_NAME]", urlencode($objet->getName()), $url);
-         }
-      }
-
       if (strstr($url,"[TICKET_PRIORITY]")) {
          $url = str_replace("[TICKET_PRIORITY]", $ticket->fields['priority'], $url);
+      }
+
+      if (strstr($url,"[TICKET_PRIORITYNAME]")) {
+         $url = str_replace("[TICKET_PRIORITYNAME]",
+               urlencode(CommonITILObject::getPriorityName($ticket->fields['priority'])),
+               $url);
       }
 
       if (strstr($url,"[TICKETCATEGORY_ID]")) {

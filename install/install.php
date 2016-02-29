@@ -155,7 +155,7 @@ function step0() {
 }
 
 
-//Step 1 checking some compatibilty issue and some write tests.
+//Step 1 checking some compatibility issue and some write tests.
 function step1($update) {
    global $CFG_GLPI;
 
@@ -274,19 +274,20 @@ function step3($host, $user, $password, $update) {
          echo "<p>".__('Please select a database:')."</p>";
          echo "<form action='install.php' method='post'>";
 
-         $DB_list = $link->query("SHOW DATABASES");
-         while ($row = $DB_list->fetch_array()) {
-            if (!in_array($row['Database'], array("information_schema",
-                                                  "mysql",
-                                                  "performance_schema") )) {
-               echo "<p>";
-               echo "<label class='radio'>";
-               echo "<input type='radio' name='databasename' value='". $row['Database']."'>";
+         if ($DB_list = $link->query("SHOW DATABASES")) {
+            while ($row = $DB_list->fetch_array()) {
+               if (!in_array($row['Database'], array("information_schema",
+                                                     "mysql",
+                                                     "performance_schema") )) {
+                  echo "<p>";
+                  echo "<label class='radio'>";
+                  echo "<input type='radio' name='databasename' value='". $row['Database']."'>";
 
-               echo "<span class='outer'><span class='inner'></span></span>";
-               echo $row['Database'];
-               echo " </label>";
-               echo " </p>";
+                  echo "<span class='outer'><span class='inner'></span></span>";
+                  echo $row['Database'];
+                  echo " </label>";
+                  echo " </p>";
+               }
             }
          }
 

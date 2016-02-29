@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -296,32 +296,14 @@ class Peripheral extends CommonDBTM {
       Html::autocompletionTextField($this, "brand");
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
-          && !empty($this->fields['template_name'])) {
-         echo "<span class='small_space'>";
-         printf(__('Created from the template %s'), $this->fields['template_name']);
-         echo "</span>";
-      } else {
-         echo "&nbsp;";
-      }
-      echo "</td><td>";
-      if (isset($options['withtemplate']) && $options['withtemplate']) {
-         //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
-      } else {
-         //TRANS: %s is the datetime of insertion
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-      }
-      echo "</td>";
       if ($inventory_show) {
+         echo "<tr class='tab_bg_1'>";
          echo "<td rowspan='1'>".__('Automatic inventory')."</td>";
          echo "<td rowspan='1'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
+         echo "</tr>\n";
       }
-      echo "</tr>\n";
 
       $this->showFormButtons($options);
 
@@ -439,6 +421,12 @@ class Peripheral extends CommonDBTM {
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';
       $tab[16]['name']           = __('Comments');
@@ -479,6 +467,9 @@ class Peripheral extends CommonDBTM {
       $tab[82]['name']           = __('Global management');
       $tab[82]['datatype']       = 'bool';
       $tab[82]['massiveaction']  = false;
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

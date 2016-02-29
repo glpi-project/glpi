@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -117,6 +117,7 @@ class Session {
                $_SESSION["glpiauthtype"]        = $auth->user->fields['authtype'];
                $_SESSION["glpiroot"]            = $CFG_GLPI["root_doc"];
                $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
+               $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
                $_SESSION["glpicrontimer"]       = time();
                // Default tab
 //               $_SESSION['glpi_tab']=1;
@@ -773,6 +774,22 @@ class Session {
       self::checkValidSessionId();
       if (!self::haveRight($module, $right)) {
          // Gestion timeout session
+         self::redirectIfNotLoggedIn();
+         Html::displayRightError();
+      }
+   }
+
+   /**
+    * Check if I one right of array $rights to module $module (conpare to session variable)
+    *
+    * @param $module           Module to check
+    * @param $rights   array   Rights to check
+    *
+    * @return Nothing : display error if not permit
+    **/
+   static function checkRightsOr($module, $rights=array()) {
+      self::checkValidSessionId();
+      if (!self::haveRightsOr($module, $rights)) {
          self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }

@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -606,6 +606,17 @@ class Contract extends CommonDBTM {
       $tab[6]['max']                = 120;
       $tab[6]['unit']               = 'month';
 
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       $tab[20]['table']             = $this->getTable();
       $tab[20]['field']             = 'end_date';
@@ -732,6 +743,10 @@ class Contract extends CommonDBTM {
                                              => array('table'      => 'glpi_contracts_suppliers',
                                                       'joinparams' => array('jointype' => 'child')));
 
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       $tab += Notepad::getSearchOptionsToAdd();
 
       $tab['cost']                  = __('Cost');
@@ -788,6 +803,7 @@ class Contract extends CommonDBTM {
       $tab[45]['joinparams']        = array('beforejoin'
                                              => array('table'      => 'glpi_contractcosts',
                                                       'joinparams' => array('jointype' => 'child')));
+
 
       return $tab;
    }
@@ -1244,6 +1260,7 @@ class Contract extends CommonDBTM {
 
       $group  = '';
       $prev   = -1;
+      $values = array();
       while ($data = $DB->fetch_assoc($result)) {
          if ($p['nochecklimit']
              || ($data["max_links_allowed"] == 0)

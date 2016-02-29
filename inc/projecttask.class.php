@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -1197,6 +1197,202 @@ class ProjectTask extends CommonDBChild {
    **/
    function showDebug() {
       NotificationEvent::debugEvent($this);
+   }
+
+
+   /**
+    * Populate the planning with planned project tasks
+    *
+    * @since version 0.85
+    *
+    * @param $options   array of possible options:
+    *    - who       ID of the user (0 = undefined)
+    *    - who_group ID of the group of users (0 = undefined)
+    *    - begin     Date
+    *    - end       Date
+    *
+    * @return array of planning item
+   **/
+   static function populatePlanning($options=array()) {
+
+      global $DB, $CFG_GLPI;
+
+      $interv  = array();
+
+      if (!isset($options['begin']) || ($options['begin'] == 'NULL')
+          || !isset($options['end']) || ($options['end'] == 'NULL')) {
+         return $interv;
+      }
+
+      $who       = $options['who'];
+      $who_group = $options['who_group'];
+      $begin     = $options['begin'];
+      $end       = $options['end'];
+
+      // Get items to print
+      $ASSIGN = "";
+
+      if ($who_group === "mine") {
+         if (count($_SESSION["glpigroups"])) {
+            $groups = implode("','",$_SESSION['glpigroups']);
+            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'Group'
+                       AND `glpi_projecttaskteams`.`items_id`
+                           IN (SELECT DISTINCT `groups_id`
+                               FROM `glpi_groups`
+                               WHERE `groups_id` IN ('$groups')
+                                     AND `glpi_groups`.`is_assign`)
+                                     AND ";
+         } else { // Only personal ones
+            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
+                       AND `glpi_projecttaskteams`.`items_id` = '$who'
+                       AND ";
+         }
+
+      } else {
+         if ($who > 0) {
+            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
+                       AND `glpi_projecttaskteams`.`items_id` = '$who'
+                       AND ";
+         }
+
+         if ($who_group > 0) {
+            $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'Group'
+                       AND `glpi_projecttaskteams`.`items_id`
+                           IN (SELECT DISTINCT `groups_id`
+                               FROM `glpi_groups`
+                               WHERE `groups_id` IN ('$who_group')
+                                     AND `glpi_groups`.`is_assign`)
+                       AND ";
+         }
+      }
+      if (empty($ASSIGN)) {
+         $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'User'
+                       AND `glpi_projecttaskteams`.`items_id`
+                        IN (SELECT DISTINCT `glpi_profiles_users`.`users_id`
+                            FROM `glpi_profiles`
+                            LEFT JOIN `glpi_profiles_users`
+                                 ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
+                            WHERE `glpi_profiles`.`interface` = 'central' ".
+                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                             $_SESSION["glpiactive_entity"], 1).")
+                     AND ";
+      }
+
+      $query = "SELECT `glpi_projecttasks`.*
+                FROM `glpi_projecttaskteams`
+                INNER JOIN `glpi_projecttasks`
+                  ON (`glpi_projecttasks`.`id` = `glpi_projecttaskteams`.`projecttasks_id`)
+                WHERE $ASSIGN
+                      '$begin' < `glpi_projecttasks`.`plan_end_date`
+                      AND '$end' > `glpi_projecttasks`.`plan_start_date`
+                ORDER BY `glpi_projecttasks`.`plan_start_date`";
+
+      $result = $DB->query($query);
+
+      $interv = array();
+      $task   = new self();
+
+      if ($DB->numrows($result) > 0) {
+         for ($i=0 ; $data=$DB->fetch_assoc($result) ; $i++) {
+            if ($task->getFromDB($data["id"])) {
+                $key = $data["plan_start_date"]."$$$".$i;
+                // Do not check entity here because webcal used non authenticated access
+//              if (Session::haveAccessToEntity($item->fields["entities_id"])) {
+                $interv[$key]['itemtype']  = 'ProjectTask';
+                $interv[$data["plan_start_date"]."$$$".$i]["url"]
+                                                = $CFG_GLPI["url_base"]."/index.php?redirect=".
+                                                   "project_".$task->fields['projects_id'];
+
+                $interv[$key][$task->getForeignKeyField()] = $data["id"];
+                $interv[$key]["id"]                        = $data["id"];
+                $interv[$key]["users_id"]       = $data["users_id"];
+
+                if (strcmp($begin,$data["plan_start_date"]) > 0) {
+                   $interv[$key]["begin"] = $begin;
+                } else {
+                   $interv[$key]["begin"] = $data["plan_start_date"];
+                }
+
+                if (strcmp($end,$data["plan_end_date"]) < 0) {
+                   $interv[$key]["end"] = $end;
+                } else {
+                   $interv[$key]["end"] = $data["plan_end_date"];
+                }
+
+                $interv[$key]["name"]     = $task->fields["name"];
+                $interv[$key]["content"]  = Html::resume_text($task->fields["content"],
+                                                              $CFG_GLPI["cut"]);
+                $interv[$key]["status"]   = $task->fields["percent_done"];
+
+            }
+         }
+      }
+
+      return $interv;
+   }
+
+
+   /**
+    * Display a Planning Item
+    *
+    * @since version 0.91
+    *
+    * @param $val       array of the item to display
+    * @param $who             ID of the user (0 if all)
+    * @param $type            position of the item in the time block (in, through, begin or end)
+    *                         (default '')
+    * @param $complete        complete display (more details) (default 0)
+    *
+    * @return Nothing (display function)
+    **/
+   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
+     global $CFG_GLPI;
+
+      $rand     = mt_rand();
+      $users_id = "";  // show users_id project task
+      $img      = "rdv_private.png"; // default icon for project task
+
+      if ($val["users_id"] != Session::getLoginUserID()) {
+         $users_id = "<br>".sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"]));
+         $img      = "rdv_public.png";
+      }
+
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\"".
+             self::getTypeName(1)."\">&nbsp;";
+      echo "<a id='project_task_".$val["id"].$rand."' href='".
+             $CFG_GLPI["root_doc"]."/front/projecttask.form.php?id=".$val["id"]."'>";
+
+      switch ($type) {
+         case "in" :
+            //TRANS: %1$s is the start time of a planned item, %2$s is the end
+            $beginend = sprintf(__('From %1$s to %2$s'), date("H:i",strtotime($val["begin"])),
+                                date("H:i",strtotime($val["end"])));
+            printf(__('%1$s: %2$s'), $beginend, Html::resume_text($val["name"],80)) ;
+            break;
+
+         case "through" :
+            echo Html::resume_text($val["name"],80);
+            break;
+
+         case "begin" :
+            $start = sprintf(__('Start at %s'), date("H:i", strtotime($val["begin"])));
+            printf(__('%1$s: %2$s'), $start, Html::resume_text($val["name"],80)) ;
+            break;
+
+         case "end" :
+            $end = sprintf(__('End at %s'), date("H:i", strtotime($val["end"])));
+            printf(__('%1$s: %2$s'), $end,  Html::resume_text($val["name"],80)) ;
+            break;
+      }
+
+      echo $users_id;
+      echo "</a>";
+
+      Html::showToolTip("<span class='b'>".$val["status"]." % completed</span><br>
+                              ".$val["content"],
+                           array('applyto' => "project_task_".$val["id"].$rand));
+
+      echo "";
    }
 
 }

@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -731,17 +731,17 @@ abstract class CommonITILObject extends CommonDBTM {
             $input['_itil_assign']['type']                      = CommonITILActor::ASSIGN;
             $input['_itil_assign'][$this->getForeignKeyField()] = $input['id'];
 
+            if (isset($input['_itil_assign']['use_notification'])
+                  && is_array($input['_itil_assign']['use_notification'])) {
+               $input['_itil_assign']['use_notification'] = $input['_itil_assign']['use_notification'][0];
+            }
+            if (isset($input['_itil_assign']['alternative_email'])
+                  && is_array($input['_itil_assign']['alternative_email'])) {
+               $input['_itil_assign']['alternative_email'] = $input['_itil_assign']['alternative_email'][0];
+            }
+
             switch ($input['_itil_assign']['_type']) {
                case "user" :
-                  if (isset($input['_itil_assign']['use_notification'])
-                      && is_array($input['_itil_assign']['use_notification'])) {
-                     $input['_itil_assign']['use_notification'] = $input['_itil_assign']['use_notification'][0];
-                  }
-                  if (isset($input['_itil_assign']['alternative_email'])
-                      && is_array($input['_itil_assign']['alternative_email'])) {
-                     $input['_itil_assign']['alternative_email'] = $input['_itil_assign']['alternative_email'][0];
-                  }
-
                   if (!empty($this->userlinkclass)
                       && ($input['_itil_assign']['users_id'] > 0)) {
                      $useractors = new $this->userlinkclass();
@@ -1165,7 +1165,8 @@ abstract class CommonITILObject extends CommonDBTM {
       if (($uid = Session::getLoginUserID())
           && !isset($input['_auto_import'])) {
          $input["users_id_recipient"] = $uid;
-      } else if (isset($input["_users_id_requester"]) && $input["_users_id_requester"]) {
+      } else if (isset($input["_users_id_requester"]) && $input["_users_id_requester"]
+                 && !isset($input["users_id_recipient"])) {
          $input["users_id_recipient"] = $input["_users_id_requester"];
       }
 
@@ -2786,6 +2787,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[64]['massiveaction']       = false;
       $tab[64]['datatype']            = 'dropdown';
       $tab[64]['right']               = 'all';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       return $tab;
    }

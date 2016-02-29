@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -106,8 +106,8 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Valid tags')."</td><td>".
                "[TICKET_ID] [TICKET_NAME] [TICKET_CREATEDATE] [TICKET_SOLVEDATE] ".
-               "[REQUESTTYPE_ID] [REQUESTTYPE_NAME] [ITEMTYPE] [ITEM_ID] [ITEM_NAME] ".
-               "[TICKET_PRIORITY] [TICKETCATEGORY_ID] [TICKETCATEGORY_NAME] [TICKETTYPE_ID] ".
+               "[REQUESTTYPE_ID] [REQUESTTYPE_NAME] [TICKET_PRIORITY] [TICKET_PRIORITYNAME]  ".
+               "[TICKETCATEGORY_ID] [TICKETCATEGORY_NAME] [TICKETTYPE_ID] ".
                "[TICKETTYPE_NAME] [SOLUTIONTYPE_ID] [SOLUTIONTYPE_NAME] ".
                "[SLA_ID] [SLA_NAME] [SLALEVEL_ID] [SLALEVEL_NAME]</td></tr>";
 

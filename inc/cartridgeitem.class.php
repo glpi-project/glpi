@@ -37,7 +37,7 @@
 
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -245,6 +245,7 @@ class CartridgeItem extends CommonDBTM {
       Alert::displayLastAlert('CartridgeItem', $ID);
       echo "</td></tr>";
 
+      $this->showDates($options);
       $this->showFormButtons($options);
 
       return true;
@@ -384,6 +385,9 @@ class CartridgeItem extends CommonDBTM {
                                                          => 'glpi_cartridgeitems_printermodels',
                                                       'joinparams'
                                                          => array('jointype' => 'child')));
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

@@ -129,9 +129,9 @@ class TicketTemplate extends CommonDropdown {
 
    /**
     * @param $withtypeandcategory   (default 0)
-    * @param $with_items_id         (default 1)
+    * @param $withitemtype         (default 0)
    **/
-   static function getAllowedFields($withtypeandcategory=0, $with_items_id=1) {
+   static function getAllowedFields($withtypeandcategory=0, $withitemtype=0) {
 
       static $allowed_fields = array();
 
@@ -142,17 +142,17 @@ class TicketTemplate extends CommonDropdown {
          $withtypeandcategory = 0;
       }
 
-      if ($with_items_id) {
-         $with_items_id = 1;
+      if ($withitemtype) {
+         $withitemtype = 1;
       } else {
-         $with_items_id = 0;
+         $withitemtype = 0;
       }
 
-      if (!isset($allowed_fields[$withtypeandcategory][$with_items_id])) {
+      if (!isset($allowed_fields[$withtypeandcategory][$withitemtype])) {
          $ticket = new Ticket();
 
          // SearchOption ID => name used for options
-         $allowed_fields[$withtypeandcategory][$with_items_id]
+         $allowed_fields[$withtypeandcategory][$withitemtype]
              = array($ticket->getSearchOptionIDByField('field', 'name',
                                                        'glpi_tickets')   => 'name',
                      $ticket->getSearchOptionIDByField('field', 'content',
@@ -178,8 +178,6 @@ class TicketTemplate extends CommonDropdown {
                                                        'glpi_tickets')   => 'date',
                      $ticket->getSearchOptionIDByField('field', 'actiontime',
                                                        'glpi_tickets')   => 'actiontime',
-                     $ticket->getSearchOptionIDByField('field', 'itemtype',
-                                                       'glpi_items_tickets')   => 'itemtype',
                      $ticket->getSearchOptionIDByField('field', 'global_validation',
                                                        'glpi_tickets')   => 'global_validation',
 
@@ -195,37 +193,42 @@ class TicketTemplate extends CommonDropdown {
             );
 
          if ($withtypeandcategory) {
-            $allowed_fields[$withtypeandcategory][$with_items_id]
+            $allowed_fields[$withtypeandcategory][$withitemtype]
                [$ticket->getSearchOptionIDByField('field', 'completename',
                                                   'glpi_itilcategories')]  = 'itilcategories_id';
-            $allowed_fields[$withtypeandcategory][$with_items_id]
+            $allowed_fields[$withtypeandcategory][$withitemtype]
                [$ticket->getSearchOptionIDByField('field', 'type',
                                                   'glpi_tickets')]         = 'type';
          }
 
-         if ($with_items_id) {
-            $allowed_fields[$withtypeandcategory][$with_items_id]
-               [$ticket->getSearchOptionIDByField('field', 'items_id',
-                                                  'glpi_items_tickets')] = 'items_id';
+         if ($withitemtype) {
+            $allowed_fields[$withtypeandcategory][$withitemtype]
+               [$ticket->getSearchOptionIDByField('field', 'itemtype',
+                                                  'glpi_items_tickets')] = 'itemtype';
          }
+
+         $allowed_fields[$withtypeandcategory][$withitemtype]
+            [$ticket->getSearchOptionIDByField('field', 'items_id',
+                                               'glpi_items_tickets')] = 'items_id';
+
          // Add validation request
-         $allowed_fields[$withtypeandcategory][$with_items_id][-2] = '_add_validation';
+         $allowed_fields[$withtypeandcategory][$withitemtype][-2] = '_add_validation';
 
          // Add document
-         $allowed_fields[$withtypeandcategory][$with_items_id]
+         $allowed_fields[$withtypeandcategory][$withitemtype]
                [$ticket->getSearchOptionIDByField('field', 'name',
                                                   'glpi_documents')] = '_documents_id';
       }
 
-      return $allowed_fields[$withtypeandcategory][$with_items_id];
+      return $allowed_fields[$withtypeandcategory][$withitemtype];
    }
 
 
    /**
     * @param $withtypeandcategory   (default 0)
-    * @param $with_items_id         (default 1)
+    * @param $with_items_id         (default 0)
    **/
-   function getAllowedFieldsNames($withtypeandcategory=0, $with_items_id=1) {
+   function getAllowedFieldsNames($withtypeandcategory=0, $with_items_id=0) {
 
       $searchOption = Search::getOptions('Ticket');
       $tab          = $this->getAllowedFields($withtypeandcategory, $with_items_id);

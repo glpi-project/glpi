@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -44,6 +44,9 @@ if (!defined('GLPI_ROOT')) {
  * Reminder Class
 **/
 class Reminder extends CommonDBTM {
+
+   // From CommonDBTM
+   public $dohistory                   = true;
 
    // For visibility checks
    protected $users     = array();
@@ -453,6 +456,15 @@ class Reminder extends CommonDBTM {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       return $tab;
    }
 
@@ -531,6 +543,7 @@ class Reminder extends CommonDBTM {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Reminder', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }

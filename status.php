@@ -85,10 +85,16 @@ if (DBConnection::establishDBConnection(false, true, false)) {
    $ok_master = false;
 }
 
+if (!empty(DBMysql::checkForCrashedTables())) {
+   echo "GLPI_TABLES_KO\n";
+} else {
+   echo "GLPI_TABLES_OK\n";
+}
+
 // Slave and master ok;
 $ok = $ok_slave && $ok_master;
 
-// Check session dir (usefull when NFS mounted))
+// Check session dir (useful when NFS mounted))
 if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
    echo "GLPI_SESSION_DIR_OK\n";
 } else {

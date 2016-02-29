@@ -14,13 +14,13 @@
 ; This is a quick script that import most of the data, but there's some
 ; differences from IRM to GLPI because GLPI came from IRMA, an IRM 1.0.X
 ; fork.
-; Particulary expect trouble on licence handling.
+; Particularly expect trouble on licence handling.
 ;
 ; Also, i've not even try to convert some data, as templates and
 ; configuration data...
 
 
-; STEP to achive the conversion
+; STEP to achieve the conversion
 ;
 ; 1) dump the IRM database, i use:
 ;	mysqldump -p --add-drop-table irmpp > irmpp.sql
@@ -42,7 +42,7 @@
 
 ; 6) if you have knowledgebase data, run the last command to import these
 
-; 7) verify your installation, particulary the software and licenses, cleanup
+; 7) verify your installation, particularly the software and licenses, cleanup
 ;  (drop) manually the remaining irm tables
 
 ; 8) upgrade GLPI to latest version.

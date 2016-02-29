@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class Dropdown {
@@ -448,44 +448,45 @@ class Dropdown {
     *
     * @param $name            name of the select box
     * @param $types     array of types to display
-    * @param $options   array Already used items ID: not to display in dropdown
-    * Parameters which could be used in options array :
-    *    - value      : integer / preselected value (default '')
-    *    - used       : array / Already used items ID: not to display in dropdown (default empty)
-    *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
-    *    - display    : boolean if false get string
+    * @param $options   Parameters which could be used in options array :
+    *    - value               : integer / preselected value (default '')
+    *    - used                : array / Already used items ID: not to display in dropdown (default empty)
+    *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
+    *    - display             : boolean if false get string
+    *    - width               : specific width needed (default not set)
+    *    - emptylabel          : empty label if empty displayed (default self::EMPTY_VALUE)
+    *    - display_emptychoice : display empty choice (default false)
     *
     * @return nothing (print out an HTML select box)
    **/
    static function showItemTypes($name, $types=array(), $options=array()) {
       global $CFG_GLPI;
 
-      $params['value']        = '';
-      $params['used']         = array();
-      $params['emptylabel']   = self::EMPTY_VALUE;
-      $params['display']      = true;
-      $params['width']        = '80%';
-
+      $params['value']               = '';
+      $params['used']                = array();
+      $params['emptylabel']          = self::EMPTY_VALUE;
+      $params['display']             = true;
+      $params['width']               = '80%';
+      $params['display_emptychoice'] = true;
+      $params['rand']         = mt_rand();
+      
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
          }
       }
 
+      $values = array();
       if (count($types)) {
          foreach ($types as $type) {
             if ($item = getItemForItemtype($type)) {
-               $options[$type] = $item->getTypeName(1);
+               $values[$type] = $item->getTypeName(1);
             }
          }
       }
-      asort($options);
-      return self::showFromArray($name, $options,
-                                 array('value'      => $params['value'],
-                                       'used'       => $params['used'],
-                                       'width'      => $params['width'],
-                                       'display'    => $params['display'],
-                                       'emptylabel' => $params['emptylabel']));
+      asort($values);
+      return self::showFromArray($name, $values,
+                                 $params);
    }
 
 
@@ -728,6 +729,7 @@ class Dropdown {
                     __('Assistance')
                         => array('ITILCategory'     => _n('Ticket category', 'Ticket categories', Session::getPluralNumber()),
                                  'TaskCategory'     => _n('Task category','Task categories', Session::getPluralNumber()),
+                                 'TaskTemplate'     => _n('Task template','Task templates', Session::getPluralNumber()),
                                  'SolutionType'     => _n('Solution type', 'Solution types', Session::getPluralNumber()),
                                  'RequestType'      => _n('Request source', 'Request sources', Session::getPluralNumber()),
                                  'SolutionTemplate' => _n('Solution template',
@@ -1440,6 +1442,7 @@ class Dropdown {
       global $CFG_GLPI;
 
       $params['value']               = 0;
+      $params['rand']                = mt_rand();
       $params['min']                 = 0;
       $params['max']                 = DAY_TIMESTAMP;
       $params['step']                = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
@@ -1541,6 +1544,7 @@ class Dropdown {
                                             'display'             => $params['display'],
                                             'width'               => $params['width'],
                                             'display_emptychoice' => $params['display_emptychoice'],
+                                            'rand'                => $params['rand'],
                                             'emptylabel'          => $params['emptylabel']));
    }
 

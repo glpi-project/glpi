@@ -220,7 +220,7 @@
 "
 " Options: PHP_BracesAtCodeLevel = 1 to indent the '{' and '}' at the same
 "		   level than the code they contain.
-"		   Exemple:
+"		   Example:
 "			Instead of:
 "				if ($foo)
 "				{
@@ -685,7 +685,7 @@ function! GetPhpIndent()
 
 		let b:PHP_CurrentIndentLevel = b:PHP_default_indenting
 
-		" prevent a problem if multiline /**/ comment are surounded by
+		" prevent a problem if multiline /**/ comment are surrounded by
 		" other types of comments
 		let b:PHP_LastIndentedWasComment = 0
 
@@ -917,7 +917,7 @@ function! GetPhpIndent()
 	" If the last line is terminated by ';' or if it's a closing '}'
 	" We need to check if this isn't the end of a multilevel non '{}'
 	" structure such as:
-	" Exemple: 
+	" Example:
 	"			if ($truc)
 	"				echo 'truc';
 	"
@@ -942,7 +942,7 @@ function! GetPhpIndent()
 	let LastLineClosed = 1
 	" The idea here is to check if the current line is after a non '{}'
 	" structure so we can indent it like the top of that structure.
-	" The top of that structure is caracterized by a if (ff)$ style line
+	" The top of that structure is characterized by a if (ff)$ style line
 	" preceded by a stated line. If there is no such structure then we
 	" just have to find two 'normal' lines following each other with the
 	" same indentation and with the first of these two lines terminated by
