@@ -37,6 +37,8 @@
 
 include ('../inc/includes.php');
 
+Session::checkLoginUser();
+
 // Manage tabs
 if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
    if ($item = getItemForItemtype($_GET['itemtype'])) {
