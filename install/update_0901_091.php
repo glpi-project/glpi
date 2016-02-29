@@ -276,6 +276,10 @@ function update0901to091() {
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
 
+   /************** Kernel version for os *************/
+   $migration->addField("glpicomputers", "os_kernel_version", "string");
+
+
    /************** Task's templates *************/
    if (!TableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
@@ -528,7 +532,6 @@ function update0901to091() {
          }
       }
    }
-
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
