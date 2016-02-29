@@ -101,6 +101,7 @@ if($C['show_setting'] && preg_match('`^[a-z][a-z0-9_]*$`i', $C['show_setting']))
  $GLOBALS[$C['show_setting']] = array('config'=>$C, 'spec'=>$S, 'time'=>microtime());
 }
 
+// Neutralize not well formatted html tags
 if ($C['keep_bad'] == 1) {
    if (preg_match_all('/<[^\s><\/]+/', $t, $matches)) {
       foreach ($matches[0] as $match) {
