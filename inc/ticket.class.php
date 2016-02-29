@@ -361,14 +361,14 @@ class Ticket extends CommonITILObject {
     */
    function deleteSLT($id, $type, $delete_date = 0) {
       switch ($type) {
-         case SLT::RESOLUTION_TYPE:
-            $input['slt_resolution'] = 0;
+         case SLT::TTR:
+            $input['slt_ttr'] = 0;
             if ($delete_date) {
-               $input['limit_takeintoaccount_date'] = '';
+               $input['time_to_own'] = '';
             }
             break;
-         case SLT::TAKEINTOACCOUNT_TYPE:
-            $input['slt_takeintoaccount'] = 0;
+         case SLT::TTO:
+            $input['slt_tto'] = 0;
             if ($delete_date) {
                $input['due_date'] = '';
             }
@@ -526,8 +526,8 @@ class Ticket extends CommonITILObject {
 
                case 'SLT' :
                   $nb = countElementsInTable('glpi_tickets',
-                                             "`slt_takeintoaccount` = '".$item->getID()."'
-                                               OR `slt_resolution` = '".$item->getID()."'");
+                                             "`slt_tto` = '".$item->getID()."'
+                                               OR `slt_ttr` = '".$item->getID()."'");
                   break;
 
                case 'Group' :
@@ -954,7 +954,7 @@ class Ticket extends CommonITILObject {
 
       // Business Rules do not override manual SLT
       $manual_slts_id = array();
-      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+      foreach (array(SLT::TTR, SLT::TTO) as $sltType) {
          list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
          if (isset($input[$sltField]) && ($input[$sltField] > 0)) {
             $manual_slts_id[$sltType] = $input[$sltField];
@@ -1031,7 +1031,7 @@ class Ticket extends CommonITILObject {
       // SLT affect by rules : reset due_date
       // Manual SLT defined : reset due date
       // No manual SLT and due date defined : reset auto SLT
-      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+      foreach (array(SLT::TTR, SLT::TTO) as $sltType) {
          $this->sltAffect($sltType, $input, $manual_slts_id);
       }
 
@@ -1053,8 +1053,8 @@ class Ticket extends CommonITILObject {
    }
 
    /**
-    *  SLT affect by rules : reset due_date and limit_takeintoaccount_date
-    *  Manual SLT defined : reset due date and limit_takeintoaccount_date
+    *  SLT affect by rules : reset due_date and time_to_own
+    *  Manual SLT defined : reset due date and time_to_own
     *  No manual SLT and due date defined : reset auto SLT
     *
     * @param type $type
@@ -1137,6 +1137,7 @@ class Ticket extends CommonITILObject {
       $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
       // Add first level in working table
       $slalevels_id = SlaLevel::getFirstSltLevel($slts_id);
+
       $slt          = new SLT();
       if ($slt->getFromDB($slts_id)) {
          $slt->setTicketCalendar($calendars_id);
@@ -1200,7 +1201,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Manage SLT Level : add actions
-      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+      foreach (array(SLT::TTR, SLT::TTO) as $sltType) {
          list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
          if (in_array($sltField, $this->updates) 
                && ($this->fields[$sltField] > 0)) {
@@ -1376,8 +1377,8 @@ class Ticket extends CommonITILObject {
                         unset($mandatory_missing['_add_validation']);
                      }
 
-                     // For due_date and limit_takeintoaccount_date : check also slts
-                     foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+                     // For due_date and time_to_own : check also slts
+                     foreach (array(SLT::TTR, SLT::TTO) as $sltType) {
                         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
                         if (($key == $dateField) && isset($input[$sltField]) 
                               && ($input[$sltField] > 0) && isset($mandatory_missing[$dateField])) {
@@ -1444,7 +1445,7 @@ class Ticket extends CommonITILObject {
 
       // Business Rules do not override manual SLT
       $manual_slts_id = array();
-      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+      foreach (array(SLT::TTR, SLT::TTO) as $sltType) {
          list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
          if (isset($input[$sltField]) && ($input[$sltField] > 0)) {
             $manual_slts_id[$sltType] = $input[$sltField];
@@ -1568,7 +1569,7 @@ class Ticket extends CommonITILObject {
       // Manage SLT signment
       // Manual SLT defined : reset due date
       // No manual SLT and due date defined : reset auto SLT
-      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+      foreach (array(SLT::TTR, SLT::TTO) as $sltType) {
          $this->sltAffect($sltType, $input, $manual_slts_id);
       }
 
@@ -1674,7 +1675,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Manage SLT Level : add actions
-      foreach (array(SLT::RESOLUTION_TYPE, SLT::TAKEINTOACCOUNT_TYPE) as $sltType) {
+      foreach (array(SLT::TTR, SLT::TTO) as $sltType) {
          list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
          if (isset($this->input[$sltField]) && ($this->input[$sltField] > 0)) {
             $this->manageSltLevel($this->input[$sltField]);
@@ -2273,21 +2274,21 @@ class Ticket extends CommonITILObject {
 
       $tab[37]['table']             = 'glpi_slts';
       $tab[37]['field']             = 'name';
-      $tab[37]['linkfield']         = 'slt_takeintoaccount';
-      $tab[37]['name']              = __('SLT')."&nbsp;".__('Take into account');
+      $tab[37]['linkfield']         = 'slt_tto';
+      $tab[37]['name']              = __('SLT')."&nbsp;".__('Time to own');
       $tab[37]['massiveaction']     = false;
       $tab[37]['datatype']          = 'dropdown';
-      $tab[37]['joinparams']        = array('condition' => "AND NEWTABLE.`type` = '".SLT::TAKEINTOACCOUNT_TYPE."'");
-      $tab[37]['condition']         = "`glpi_slts`.`type` = '".SLT::TAKEINTOACCOUNT_TYPE."'";
+      $tab[37]['joinparams']        = array('condition' => "AND NEWTABLE.`type` = '".SLT::TTO."'");
+      $tab[37]['condition']         = "`glpi_slts`.`type` = '".SLT::TTO."'";
 
       $tab[30]['table']             = 'glpi_slts';
       $tab[30]['field']             = 'name';
-      $tab[30]['linkfield']         = 'slt_resolution';
-      $tab[30]['name']              = __('SLT')."&nbsp;".__('Resolution');
+      $tab[30]['linkfield']         = 'slt_ttr';
+      $tab[30]['name']              = __('SLT')."&nbsp;".__('Time to resolve');
       $tab[30]['massiveaction']     = false;
       $tab[30]['datatype']          = 'dropdown';
-      $tab[30]['joinparams']        = array('condition' => "AND NEWTABLE.`type` = '".SLT::RESOLUTION_TYPE."'");
-      $tab[30]['condition']         = "`glpi_slts`.`type` = '".SLT::RESOLUTION_TYPE."'";
+      $tab[30]['joinparams']        = array('condition' => "AND NEWTABLE.`type` = '".SLT::TTR."'");
+      $tab[30]['condition']         = "`glpi_slts`.`type` = '".SLT::TTR."'";
 
       $tab[32]['table']             = 'glpi_slalevels';
       $tab[32]['field']             = 'name';
@@ -3348,9 +3349,9 @@ class Ticket extends CommonITILObject {
                     'plan'                      => array(),
                     'global_validation'         => CommonITILValidation::NONE,
                     'due_date'                  => 'NULL',
-                    'limit_takeintoaccount_date'=> 'NULL',
-                    'slt_takeintoaccount'       => 0,
-                    'slt_resolution'            => 0,
+                    'time_to_own'=> 'NULL',
+                    'slt_tto'       => 0,
+                    'slt_ttr'                   => 0,
                     '_add_validation'           => 0,
                     'users_id_validate'         => array(),
                     'type'                      => $type,
@@ -3760,28 +3761,28 @@ class Ticket extends CommonITILObject {
 
       // SLTs
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('limit_takeintoaccount_date');
+      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('time_to_own');
       if (!$ID) {
-         printf(__('%1$s%2$s'), __('Limit take into account date'), $tt->getMandatoryMark('limit_takeintoaccount_date'));
+         printf(__('%1$s%2$s'), __('Time to own'), $tt->getMandatoryMark('time_to_own'));
       } else {
-         _e('Limit take into account date');
+         _e('Time to own');
       }
-      echo $tt->getEndHiddenFieldText('limit_takeintoaccount_date');
+      echo $tt->getEndHiddenFieldText('time_to_own');
       echo "</th>";
       echo "<td width='$colsize2%' class='nopadding'>";
       $slt = new SLT();
-      $slt->showSltForTicket($this, Slt::TAKEINTOACCOUNT_TYPE, $tt, $canupdate);
+      $slt->showSltForTicket($this, SLT::TTO, $tt, $canupdate);
       echo "</td>";
       echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('due_date');
       if (!$ID) {
-         printf(__('%1$s%2$s'), __('Due date'), $tt->getMandatoryMark('due_date'));
+         printf(__('%1$s%2$s'), __('Time to resolve'), $tt->getMandatoryMark('due_date'));
       } else {
-         _e('Due date');
+         _e('Time to resolve');
       }
       echo $tt->getEndHiddenFieldText('due_date');
       echo "</th>";
       echo "<td width='$colsize4%' class='nopadding'>";
-      $slt->showSltForTicket($this, Slt::RESOLUTION_TYPE, $tt, $canupdate);
+      $slt->showSltForTicket($this, SLT::TTR, $tt, $canupdate);
       echo "</td>";
       echo "</tr>";
 
@@ -5027,8 +5028,8 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'SLT' :
-            $restrict  = "`slt_takeintoaccount` = '".$item->getID()."' 
-                           OR `slt_resolution` = '".$item->getID()."'";
+            $restrict  = "`slt_tto` = '".$item->getID()."' 
+                           OR `slt_ttr` = '".$item->getID()."'";
             $order     = '`glpi_tickets`.`due_date` DESC';
 
             $options['criteria'][0]['field']      = 30;

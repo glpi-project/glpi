@@ -55,8 +55,8 @@ class SLT extends CommonDBChild {
 
    static protected $forward_entity_to = array('SLALevel');
 
-   const RESOLUTION_TYPE      = 0;
-   const TAKEINTOACCOUNT_TYPE = 1;
+   const TTR = 0;
+   const TTO = 1;
 
    static function getTypeName($nb=0) {
       // Acronymous, no plural
@@ -402,11 +402,11 @@ class SLT extends CommonDBChild {
    function getSltDataForTicket($tickets_id, $type) {
 
       switch($type){
-         case SLT::RESOLUTION_TYPE :
-            $field = 'slt_resolution';
+         case SLT::TTR :
+            $field = 'slt_ttr';
             break;
-         case SLT::TAKEINTOACCOUNT_TYPE :
-            $field = 'slt_takeintoaccount';
+         case SLT::TTO :
+            $field = 'slt_tto';
             break;
       }
 
@@ -436,13 +436,13 @@ class SLT extends CommonDBChild {
       $sltField  = null;
 
       switch ($type) {
-         case self::TAKEINTOACCOUNT_TYPE:
-            $dateField = 'limit_takeintoaccount_date';
-            $sltField  = 'slt_takeintoaccount';
+         case self::TTO:
+            $dateField = 'time_to_own';
+            $sltField  = 'slt_tto';
             break;
-         case self::RESOLUTION_TYPE:
+         case self::TTR:
             $dateField = 'due_date';
-            $sltField  = 'slt_resolution';
+            $sltField  = 'slt_ttr';
             break;
       }
 
@@ -587,8 +587,8 @@ class SLT extends CommonDBChild {
     * @return array of types
     */
    static function getSltTypes() {
-      return array(self::TAKEINTOACCOUNT_TYPE => __('Take into account'),
-                   self::RESOLUTION_TYPE      => __('Resolution'));
+      return array(self::TTO => __('Time to own'),
+                   self::TTR => __('Time to resolve'));
    }
 
    /**

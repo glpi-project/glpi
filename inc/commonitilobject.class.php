@@ -2716,15 +2716,15 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[18]['table']               = $this->getTable();
       $tab[18]['field']               = 'due_date';
-      $tab[18]['name']                = __('Due date');
+      $tab[18]['name']                = __('Time to resolve');
       $tab[18]['datatype']            = 'datetime';
       $tab[18]['maybefuture']         = true;
       $tab[18]['massiveaction']       = false;
       $tab[18]['additionalfields']    = array('status');
 
       $tab[155]['table']               = $this->getTable();
-      $tab[155]['field']               = 'limit_takeintoaccount_date';
-      $tab[155]['name']                = __('Limit take into account date');
+      $tab[155]['field']               = 'time_to_own';
+      $tab[155]['name']                = __('Time to own');
       $tab[155]['datatype']            = 'datetime';
       $tab[155]['maybefuture']         = true;
       $tab[155]['massiveaction']       = false;
@@ -2733,14 +2733,14 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[151]['table']              = $this->getTable();
       $tab[151]['field']              = 'due_date';
-      $tab[151]['name']               = __('Due date + Progress');
+      $tab[151]['name']               = __('Time to resolve + Progress');
       $tab[151]['massiveaction']      = false;
       $tab[151]['nosearch']           = true;
       $tab[151]['additionalfields']   = array('status');
 
       $tab[158]['table']              = $this->getTable();
-      $tab[158]['field']              = 'limit_takeintoaccount_date';
-      $tab[158]['name']               = __('Limit take into account date + Progress');
+      $tab[158]['field']              = 'time_to_own';
+      $tab[158]['name']               = __('Time to own + Progress');
       $tab[158]['massiveaction']      = false;
       $tab[158]['nosearch']           = true;
       $tab[158]['additionalfields']   = array('status');
@@ -2763,11 +2763,11 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[159]['name']                = __('Late take into account');
       $tab[159]['datatype']            = 'bool';
       $tab[159]['massiveaction']       = false;
-      $tab[159]['computation']         = "IF(TABLE.`limit_takeintoaccount_date` IS NOT NULL
+      $tab[159]['computation']         = "IF(TABLE.`time_to_own` IS NOT NULL
                                             AND TABLE.`status` <> ".self::WAITING."
-                                            AND (TABLE.`takeintoaccount_delay_stat` > TIME_TO_SEC(TIMEDIFF(TABLE.`limit_takeintoaccount_date`, TABLE.`date`))
+                                            AND (TABLE.`takeintoaccount_delay_stat` > TIME_TO_SEC(TIMEDIFF(TABLE.`time_to_own`, TABLE.`date`))
                                                  OR (TABLE.`takeintoaccount_delay_stat` = 0
-                                                      AND TABLE.`limit_takeintoaccount_date` < NOW())),
+                                                      AND TABLE.`time_to_own` < NOW())),
                                             1, 0)";
 
       $tab[17]['table']               = $this->getTable();
@@ -4410,7 +4410,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".__('Opening date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['date'])."</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>".__('Due date')."</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Time to resolve')."</td>";
       echo "<td>".Html::convDateTime($this->fields['due_date'])."</td></tr>";
 
       if (in_array($this->fields['status'], array_merge($this->getSolvedStatusArray(),
@@ -5131,7 +5131,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                   ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
                                     Html::convDateTime($item->fields['begin_waiting_date']));
          } else if ($item->fields['due_date']) {
-            $second_col = sprintf(__('%1$s: %2$s'), __('Due date'),
+            $second_col = sprintf(__('%1$s: %2$s'), __('Time to resolve'),
                                   ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
                                     Html::convDateTime($item->fields['due_date']));
          } else {

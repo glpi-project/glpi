@@ -3958,7 +3958,7 @@ class Search {
          case "glpi_tickets.due_date" :
          case "glpi_problems.due_date" :
          case "glpi_changes.due_date" :
-         case "glpi_tickets.limit_takeintoaccount_date" :
+         case "glpi_tickets.time_to_own" :
             if (($ID <> 151 && $ID <> 158)
                 && !empty($data[$num][0]['name'])
                 && ($data[$num][0]['status'] != CommonITILObject::WAITING)
@@ -4314,7 +4314,7 @@ class Search {
             case "glpi_tickets.due_date" :
             case "glpi_problems.due_date" :
             case "glpi_changes.due_date" :
-            case "glpi_tickets.limit_takeintoaccount_date" :
+            case "glpi_tickets.time_to_own" :
                // Due date + progress
                if ($ID == 151 || $ID == 158) {
                   $out = Html::convDate($data[$num][0]['name']);
@@ -4334,10 +4334,10 @@ class Search {
                   // Get Ticket slts fields name
                   switch($table.$field){
                      case "glpi_tickets.due_date" :
-                        list($dateField, $sltField) = SLT::getSltFieldNames(SLT::RESOLUTION_TYPE);
+                        list($dateField, $sltField) = SLT::getSltFieldNames(SLT::TTR);
                         break;
-                     case "glpi_tickets.limit_takeintoaccount_date" :
-                        list($dateField, $sltField) = SLT::getSltFieldNames(SLT::TAKEINTOACCOUNT_TYPE);
+                     case "glpi_tickets.time_to_own" :
+                        list($dateField, $sltField) = SLT::getSltFieldNames(SLT::TTO);
                         break;
                      default:
                         break;

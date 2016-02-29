@@ -202,7 +202,7 @@ class SlaLevel extends RuleTicket {
          echo "</td>";
          echo "<td>".(($data["execution_time"] <> 0)
                         ?Html::timestampToString($data["execution_time"], false)
-                        :__('Due date'))."</td>";
+                        :__('Time to resolve'))."</td>";
          echo "<td>".Dropdown::getYesNo($data["is_active"])."</td>";
          echo "</tr>";
 
@@ -387,7 +387,7 @@ class SlaLevel extends RuleTicket {
          }
       }
       if (!in_array(0,$p['used'])) {
-         $possible_values[0] = __('Due date');
+         $possible_values[0] = __('Time to resolve');
       }
       ksort($possible_values);
 

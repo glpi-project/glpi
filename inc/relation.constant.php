@@ -474,8 +474,8 @@ $RELATION = array("glpi_authldaps"
 
                   "glpi_slts"
                         => array('glpi_slalevels' => 'slts_id',
-                                 'glpi_tickets'   => array('slt_resolution', 
-                                                           'slt_takeintoaccount')),
+                                 'glpi_tickets'   => array('slt_ttr', 
+                                                           'slt_tto')),
 
                   "glpi_softwarecategories"
                         => array('glpi_softwares' => 'softwarecategories_id',

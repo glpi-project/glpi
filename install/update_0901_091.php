@@ -490,7 +490,7 @@ function update0901to091() {
             while ($data = $DB->fetch_assoc($result)) {
                $query = "INSERT INTO `glpi_slts`
                           (`id`, `name`,`entities_id`, `is_recursive`, `type`, `comment`, `resolution_time`, `calendars_id`, `date_mod`, `definition_time`, `end_of_working_day`, `date_creation`, `slas_id`)
-                         VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."', '".$data['is_recursive']."', '".SLT::RESOLUTION_TYPE."', '".addslashes($data['comment'])."', '".$data['resolution_time']."', '".$data['calendars_id']."', '".$data['date_mod']."', '".$data['definition_time']."', '".$data['end_of_working_day']."', '".date('Y-m-d H:i:s')."', '".$data['id']."');";
+                         VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."', '".$data['is_recursive']."', '".SLT::TTR."', '".addslashes($data['comment'])."', '".$data['resolution_time']."', '".$data['calendars_id']."', '".$data['date_mod']."', '".$data['definition_time']."', '".$data['end_of_working_day']."', '".date('Y-m-d H:i:s')."', '".$data['id']."');";
                $DB->queryOrDie($query, "SLA migration to SLT");
             }
          }
@@ -505,20 +505,20 @@ function update0901to091() {
       $migration->changeField('glpi_slalevels', 'slas_id', 'slts_id', 'integer');
 
       // Ticket changes
-      $migration->changeField("glpi_tickets", "slas_id", "slt_resolution", "integer");
-      $migration->addField("glpi_tickets", "slt_takeintoaccount", "integer", array('after' => 'slt_resolution'));
-      $migration->addField("glpi_tickets", "limit_takeintoaccount_date", "datetime", array('after' => 'due_date'));
-      $migration->addKey('glpi_tickets', 'slt_takeintoaccount');
-      $migration->addKey('glpi_tickets', 'limit_takeintoaccount_date');
+      $migration->changeField("glpi_tickets", "slas_id", "slt_ttr", "integer");
+      $migration->addField("glpi_tickets", "slt_tto", "integer", array('after' => 'slt_ttr'));
+      $migration->addField("glpi_tickets", "time_to_own", "datetime", array('after' => 'due_date'));
+      $migration->addKey('glpi_tickets', 'slt_tto');
+      $migration->addKey('glpi_tickets', 'time_to_own');
 
       // Unique key for slalevel_ticket
       $migration->addKey('glpi_slalevels_tickets', array('tickets_id', 'slalevels_id'), 'unicity', 'UNIQUE');
 
       // Sla rules criterias migration
-      $DB->queryOrDie("UPDATE `glpi_rulecriterias` SET `criteria` = 'slt_resolution' WHERE `criteria` = 'slas_id'", "SLA rulecriterias migration");
+      $DB->queryOrDie("UPDATE `glpi_rulecriterias` SET `criteria` = 'slt_ttr' WHERE `criteria` = 'slas_id'", "SLA rulecriterias migration");
 
       // Sla rules actions migration
-      $DB->queryOrDie("UPDATE `glpi_ruleactions` SET `field` = 'slt_resolution' WHERE `field` = 'slas_id'", "SLA ruleactions migration");
+      $DB->queryOrDie("UPDATE `glpi_ruleactions` SET `field` = 'slt_ttr' WHERE `field` = 'slas_id'", "SLA ruleactions migration");
    }
    // ************ Keep it at the end **************
    $migration->executeMigration();
