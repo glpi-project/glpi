@@ -100,6 +100,18 @@ if($C['hook']){$t = $C['hook']($t, $C, $S);}
 if($C['show_setting'] && preg_match('`^[a-z][a-z0-9_]*$`i', $C['show_setting'])){
  $GLOBALS[$C['show_setting']] = array('config'=>$C, 'spec'=>$S, 'time'=>microtime());
 }
+
+if ($C['keep_bad'] == 1) {
+   if (preg_match_all('/<[^\s><\/]+/', $t, $matches)) {
+      foreach ($matches[0] as $match) {
+         $search = str_replace('<', '', $match);
+         if (!in_array($search, array_keys($C['elements']))) {
+            $t = str_replace($match, '&lt;'.$search, $t);
+         }
+      }
+   }
+}
+
 // main
 $t = preg_replace_callback('`<(?:(?:\s|$)|(?:[^>]*(?:>|$)))|>`m', 'hl_tag', $t);
 $t = $C['balance'] ? hl_bal($t, $C['keep_bad'], $C['parent']) : $t;
