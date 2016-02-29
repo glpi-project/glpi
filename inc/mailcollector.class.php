@@ -1062,7 +1062,7 @@ class MailCollector  extends CommonDBTM {
                                         Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                         CL_EXPUNGE, 1, $option);
             if (is_ressource($this->marubox)) {
-               break
+               break;
             }
          }
 
