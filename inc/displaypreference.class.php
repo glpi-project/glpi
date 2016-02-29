@@ -122,31 +122,25 @@ class DisplayPreference extends CommonDBTM {
    static function getForTypeUser($itemtype, $user_id) {
       global $DB;
 
-      // Add default items for user
       $query = "SELECT *
                 FROM `glpi_displaypreferences`
                 WHERE `itemtype` = '$itemtype'
-                      AND `users_id` = '$user_id'
-                ORDER BY `rank`";
+                      AND (`users_id` = '$user_id' OR `users_id` = '0')
+                ORDER BY `users_id`, `rank`";
       $result = $DB->query($query);
 
-      // GET default serach options
-      if ($DB->numrows($result) == 0) {
-         $query = "SELECT *
-                   FROM `glpi_displaypreferences`
-                   WHERE `itemtype` = '$itemtype'
-                         AND `users_id` = '0'
-                   ORDER BY `rank`";
-         $result = $DB->query($query);
-      }
+      $default_prefs = array();
+      $user_prefs = array();
 
-      $prefs = array();
-      if ($DB->numrows($result) > 0) {
-         while ($data = $DB->fetch_assoc($result)) {
-            array_push($prefs, $data["num"]);
+      while ($data = $DB->fetch_assoc($result)) {
+         if ($data["users_id"] != 0) {
+            $user_prefs[] = $data["num"];
+         } else {
+            $default_prefs[] = $data["num"];
          }
       }
-      return $prefs;
+
+      return count($user_prefs) ? $user_prefs : $default_prefs;
    }
 
 
