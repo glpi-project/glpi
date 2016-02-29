@@ -1395,7 +1395,10 @@ class Ticket extends CommonITILObject {
       if (isset($input["content"])) {
          $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
          $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
-         $input["content"] = Html::clean($input["content"]);
+         if (!$CFG_GLPI['use_rich_text']) {
+            $input["content"] = Html::entity_decode_deep($input["content"]);
+            $input["content"] = Html::clean($input["content"]);
+         }
       }
 
       $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
@@ -3462,7 +3465,7 @@ class Ticket extends CommonITILObject {
       if (isset($values['name'])) {
          $values['name'] = str_replace("\\", "", $values['name']);
       }
-
+      
       if (!$ID) {
          // Override defaut values from projecttask if needed
          if (isset($options['_projecttasks_id'])) {
@@ -6012,16 +6015,16 @@ class Ticket extends CommonITILObject {
    **/
    function setSimpleTextContent($content) {
 
-     $text = Html::entity_decode_deep($content);
+      $content = Html::entity_decode_deep($content);
 
       // If is html content
-      if ($text != strip_tags($text)) {
-         $content = Html::clean($this->convertImageToTag($text));
+      if ($content != strip_tags($content)) {
+         $content = Html::clean($this->convertImageToTag($content), false, 1);
+         $content = Html::entity_decode_deep(Html::clean($this->convertImageToTag($content)));
       }
 
       return $content;
    }
-
 
    /**
     * Convert simple text content to rich text content, init html editor
@@ -6044,13 +6047,14 @@ class Ticket extends CommonITILObject {
          $content = $this->convertTagToImage($content);
       }
 
-      // If content does not contain <br> or <p> html tag, use nl2br
-      $content = Html::entity_decode_deep($content);
+      // Neutralize non valid HTML tags
+      $content = html::clean($content, false, 1);
 
+      // If content does not contain <br> or <p> html tag, use nl2br
       if (!preg_match("/<br\s?\/?>/", $content) && !preg_match("/<p>/", $content)) {
          $content = nl2br($content);
       }
-      return Toolbox::clean_cross_side_scripting_deep($content);
+      return $content;
    }
 
 

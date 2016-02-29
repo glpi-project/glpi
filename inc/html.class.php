@@ -50,38 +50,50 @@ class Html {
     * Clean display value deleting html tags
     *
     * @param $value string: string value
-    *
+    * @param $striptags bool: strip all html tags
+    * @param $keep_bad int:
+    *          1 : neutralize tag anb content,
+    *          2 : remove tag and neutralize content
     * @return clean value
    **/
-   static function clean($value) {
-
-      $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-
-      $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
-      $value = preg_replace("/(&nbsp;| )+/", " ", $value);
-
-
-      $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                             '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
-                             '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
-                              );
-
-      $value = preg_replace($search, '', $value);
+   static function clean($value, $striptags=true, $keep_bad=2) {
 
       include_once(GLPI_HTMLAWED);
 
-      $value = htmLawed($value, array('elements' => 'none',
-                                      'keep_bad' => 2, // remove tag / neutralize content
+      $value = Html::entity_decode_deep($value);
+
+      // Clean MS office tags
+      $value = str_replace(array("<![if !supportLists]>", "<![endif]>"), '', $value);
+
+      if ($striptags) {
+         $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+
+         $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
+         $value = preg_replace("/(&nbsp;| )+/", " ", $value);
+
+
+         $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
+                                '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
+                                '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
+                                 );
+
+         $value = preg_replace($search, '', $value);
+      }
+
+      $value = htmLawed($value, array('elements' => ($striptags) ? 'none' : '',
+                                      'keep_bad' => $keep_bad, // 1 : neutralize tag and content, 2 : remove tag and neutralize content
                                       'comment' => 1, // DROP
                                       'cdata'   => 1, // DROP
                                       ));
+
+      $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
 
 /*
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
