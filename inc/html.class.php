@@ -660,13 +660,13 @@ class Html {
     *
     * @param $with_session with session information (true by default)
    **/
-   static function displayDebugInfos($with_session=true) {
+   static function displayDebugInfos($with_session=true, $ajax=false) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
-         echo "<div class='debug'>";
+         echo "<div class='debug ".($ajax?"debug_ajax":"")."'>";
          echo "<h1 id='see_debug$rand' class='see_debug'><a name='see_debug'>See GLPI DEBUG</a></h1>";
 
          echo "<div id='debugtabs$rand'><ul>";
@@ -1833,7 +1833,7 @@ class Html {
          }
          echo "</div>";
          echo "<div id='see_ajaxdebug$rand' name='see_ajaxdebug$rand' style=\"display:none;\">";
-         self::displayDebugInfos(false);
+         self::displayDebugInfos(false, true);
          echo "</div></div>";
       }
    }
