@@ -813,6 +813,9 @@ class Ticket extends CommonITILObject {
 
          if (in_array($this->fields['status'],$this->getClosedStatusArray())) {
             $allowed_fields[] = 'status';
+
+            // probably transfer
+            $allowed_fields[] = 'entities_id';
          } else {
             if ($this->canApprove()
                 && isset($input["status"])) {
