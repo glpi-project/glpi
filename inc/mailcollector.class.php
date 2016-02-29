@@ -1055,9 +1055,16 @@ class MailCollector  extends CommonDBTM {
                                      Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                      CL_EXPUNGE, 1);
       } else {
-         $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
-                                     Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
-                                     CL_EXPUNGE, 1, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
+         $try_options = array(array('DISABLE_AUTHENTICATOR' => 'GSSAPI'),
+                              array('DISABLE_AUTHENTICATOR' => 'PLAIN'));
+         foreach($try_options as $option) {
+            $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
+                                        Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
+                                        CL_EXPUNGE, 1, $option);
+            if (is_ressource($this->marubox)) {
+               break;
+            }
+         }
 
       }
       // Reset errors

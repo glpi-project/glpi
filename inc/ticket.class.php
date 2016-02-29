@@ -77,14 +77,15 @@ class Ticket extends CommonITILObject {
    // Demand type
    const DEMAND_TYPE   = 2;
 
-   const READMY           =     1;
-   const READALL          =  1024;
-   const READGROUP        =  2048;
-   const READASSIGN       =  4096;
-   const ASSIGN           =  8192;
-   const STEAL            = 16384;
-   const OWN              = 32768;
-   const CHANGEPRIORITY   = 65536;
+   const READMY           =      1;
+   const READALL          =   1024;
+   const READGROUP        =   2048;
+   const READASSIGN       =   4096;
+   const ASSIGN           =   8192;
+   const STEAL            =  16384;
+   const OWN              =  32768;
+   const CHANGEPRIORITY   =  65536;
+   const SURVEY           = 131072;
 
 
    function getForbiddenStandardMassiveAction() {
@@ -580,7 +581,8 @@ class Ticket extends CommonITILObject {
                $ong[2] = _n('Solution', 'Solutions', 1);
             }
             // enquete si statut clos
-            if ($item->fields['status'] == self::CLOSED) {
+            if (($item->fields['status'] == self::CLOSED)
+                && Session::haveRight('ticket', Ticket::SURVEY)){
                $satisfaction = new TicketSatisfaction();
                if ($satisfaction->getFromDB($item->getID())) {
                   $ong[3] = __('Satisfaction');
@@ -667,9 +669,9 @@ class Ticket extends CommonITILObject {
           || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
          $this->addStandardTab('TicketFollowup',$ong, $options);
          $this->addStandardTab('TicketTask', $ong, $options);
+         $this->addStandardTab('Document_Item', $ong, $options);
       }
       $this->addStandardTab(__CLASS__, $ong, $options);
-      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
       $this->addStandardTab('TicketCost', $ong, $options);
@@ -831,6 +833,9 @@ class Ticket extends CommonITILObject {
 
          if (in_array($this->fields['status'],$this->getClosedStatusArray())) {
             $allowed_fields[] = 'status';
+
+            // probably transfer
+            $allowed_fields[] = 'entities_id';
          } else {
             if ($this->canApprove()
                 && isset($input["status"])) {
@@ -1701,7 +1706,7 @@ class Ticket extends CommonITILObject {
             foreach ($items as $items_id) {
                $item_ticket->add(array('items_id'      => $items_id,
                                        'itemtype'      => $itemype,
-                                       'tickets_id'    => $this->fields['id'], 
+                                       'tickets_id'    => $this->fields['id'],
                                        '_disablenotif' => true));
             }
          }
@@ -3952,6 +3957,7 @@ class Ticket extends CommonITILObject {
          RequestType::dropdown(array('value' => $this->fields["requesttypes_id"]));
       } else {
          echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
+         echo Html::hidden('requesttypes_id', array('value' => $this->fields["requesttypes_id"]));
       }
       echo $tt->getEndHiddenFieldValue('requesttypes_id',$this);
       echo "</td>";
@@ -4166,7 +4172,7 @@ class Ticket extends CommonITILObject {
       if (!$ID
           || $canupdate_descr) {
          echo $tt->getBeginHiddenFieldValue('name');
-         echo "<input type='text' size='90' maxlength=250 name='name' ".
+         echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
                 " value=\"".Html::cleanInputText($this->fields["name"])."\">";
          echo $tt->getEndHiddenFieldValue('name', $this);
       } else {
@@ -4194,7 +4200,6 @@ class Ticket extends CommonITILObject {
          echo $tt->getBeginHiddenFieldValue('content');
          $rand       = mt_rand();
          $rand_text  = mt_rand();
-         $cols       = 90;
          $rows       = 6;
          $content_id = "content$rand";
 
@@ -4202,14 +4207,13 @@ class Ticket extends CommonITILObject {
             $this->fields["content"] = $this->setRichTextContent($content_id,
                                                                  $this->fields["content"],
                                                                  $rand);
-            $cols = 100;
             $rows = 10;
          } else {
             $this->fields["content"] = $this->setSimpleTextContent($this->fields["content"]);
          }
 
          echo "<div id='content$rand_text'>";
-         echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'>".
+         echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
                 $this->fields["content"]."</textarea></div>";
          echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
          echo $tt->getEndHiddenFieldValue('content', $this);
@@ -4519,13 +4523,20 @@ class Ticket extends CommonITILObject {
                              getEntitiesRestrictRequest("AND","glpi_tickets");
             break;
 
-         case "survey" : // on affiche les tickets dont l'enquête de satisfaction n'est pas remplie
+         case "survey" : // tickets dont l'enquête de satisfaction n'est pas remplie et encore valide
             $query .= " INNER JOIN `glpi_ticketsatisfactions`
                            ON (`glpi_tickets`.`id` = `glpi_ticketsatisfactions`.`tickets_id`)
+                        INNER JOIN `glpi_entities`
+                           ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`)
                         WHERE $is_deleted
                               AND ($search_users_id
                                    OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."')
                               AND `glpi_tickets`.`status` = '".self::CLOSED."'
+                              AND (`glpi_entities`.`inquest_duration` = 0
+                                   OR DATEDIFF(ADDDATE(`glpi_ticketsatisfactions`.`date_begin`,
+                                                       INTERVAL
+                                                       `glpi_entities`.`inquest_duration` DAY),
+                                               CURDATE()) > 0)
                               AND `glpi_ticketsatisfactions`.`date_answered` IS NULL ".
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
@@ -4544,7 +4555,7 @@ class Ticket extends CommonITILObject {
                              getEntitiesRestrictRequest("AND","glpi_tickets");
       }
 
-      $query  .= " ORDER BY date_mod DESC";
+      $query  .= " ORDER BY `glpi_tickets`.`date_mod` DESC";
       $result  = $DB->query($query);
       $numrows = $DB->numrows($result);
 
@@ -5641,6 +5652,8 @@ class Ticket extends CommonITILObject {
          $values[self::OWN]            = array('short' => __('Beeing in charge'),
                                                'long'  => __('To be in charge of a ticket'));
          $values[self::CHANGEPRIORITY] = __('Change the priority');
+         $values[self::SURVEY]         = array('short' => __('Reply to survey'),
+                                               'long'  => __('Reply to survey for ticket created by me'));
       }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);
@@ -6116,7 +6129,7 @@ class Ticket extends CommonITILObject {
          $timeline[$solution_date."_solution"]
             = array('type' => 'Solution',
                     'item' => array('id'               => 0,
-                                    'content'          => Html::clean(html_entity_decode($solution_content)),
+                                    'content'          => Toolbox::unclean_cross_side_scripting_deep($solution_content),
                                     'date'             => $solution_date,
                                     'users_id'         => $users_id,
                                     'solutiontypes_id' => $this->fields['solutiontypes_id'],
@@ -6242,7 +6255,6 @@ class Ticket extends CommonITILObject {
 
          echo "<div class='h_date'>".Html::convDateTime($date)."</div>";
          if ($item_i['users_id'] !== false) {
-
             echo "<div class='h_user'>";
             if (isset($item_i['users_id']) && ($item_i['users_id'] != 0)) {
                $user->getFromDB($item_i['users_id']);
@@ -6256,7 +6268,6 @@ class Ticket extends CommonITILObject {
             } else {
                _e("Requester");
             }
-
             echo "</div>"; // h_user
          }
 
@@ -6295,48 +6306,44 @@ class Ticket extends CommonITILObject {
          }
 
          echo "<div class='b_right'>";
-            if (isset($item_i['solutiontypes_id']) && !empty($item_i['solutiontypes_id'])) {
-               echo Dropdown::getDropdownName("glpi_solutiontypes", $item_i['solutiontypes_id'])."<br>";
-            }
-            if (isset($item_i['taskcategories_id']) && !empty($item_i['taskcategories_id'])) {
-               echo Dropdown::getDropdownName("glpi_taskcategories", $item_i['taskcategories_id'])."<br>";
-            }
-            if (isset($item_i['actiontime']) && !empty($item_i['actiontime'])) {
-               echo "<span class='actiontime'>";
-               echo Html::timestampToString($item_i['actiontime'], false);
-               echo "</span>";
-            }
-            if (isset($item_i['state'])) {
-               echo "<span class='state state_".$item_i['state']."'>";
-               echo Planning::getState($item_i['state']);
-               echo "</span>";
-            }
-            if (isset($item_i['begin'])) {
-               echo "<span class='planification'>";
-               echo Html::convDateTime($item_i["begin"]);
-               echo " &rArr; ";
-               echo Html::convDateTime($item_i["end"]);
-               echo "</span>";
-            }
-            if (isset($item_i['users_id_tech'])) {
+         if (isset($item_i['solutiontypes_id']) && !empty($item_i['solutiontypes_id'])) {
+            echo Dropdown::getDropdownName("glpi_solutiontypes", $item_i['solutiontypes_id'])."<br>";
+         }
+         if (isset($item_i['taskcategories_id']) && !empty($item_i['taskcategories_id'])) {
+            echo Dropdown::getDropdownName("glpi_taskcategories", $item_i['taskcategories_id'])."<br>";
+         }
+         if (isset($item_i['actiontime']) && !empty($item_i['actiontime'])) {
+            echo "<span class='actiontime'>";
+            echo Html::timestampToString($item_i['actiontime'], false);
+            echo "</span>";
+         }
+         if (isset($item_i['state'])) {
+            echo "<span class='state state_".$item_i['state']."'>";
+            echo Planning::getState($item_i['state']);
+            echo "</span>";
+         }
+         if (isset($item_i['begin'])) {
+            echo "<span class='planification'>";
+            echo Html::convDateTime($item_i["begin"]);
+            echo " &rArr; ";
+            echo Html::convDateTime($item_i["end"]);
+            echo "</span>";
+         }
+         if (isset($item_i['users_id_tech']) && ($item_i['users_id_tech'] > 0)) {
+            echo "<div class='users_id_tech'>";
+            $user->getFromDB($item_i['users_id_tech']);
+            echo "<div class='tooltip_picture_border'>";
+            echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
+                   User::getThumbnailURLForPicture($user->fields['picture'])."'>";
+            echo "</div>";
+            echo $user->getLink();
+            echo "</div>";
+         }
 
-               echo "<div class='users_id_tech'>";
-               $user->getFromDB($item_i['users_id_tech']);
-
-               echo "<div class='tooltip_picture_border'>";
-               echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-                      User::getThumbnailURLForPicture($user->fields['picture'])."'>";
-               echo "</div>";
-
-               echo $user->getLink();
-
-               echo "</div>";
-            }
-
-            // show "is_private" icon
-            if (isset($item_i['is_private']) && $item_i['is_private']) {
-               echo "<div class='private'>".__('Private')."</div>";
-            }
+         // show "is_private" icon
+         if (isset($item_i['is_private']) && $item_i['is_private']) {
+            echo "<div class='private'>".__('Private')."</div>";
+         }
 
          echo "</div>"; // b_right
 

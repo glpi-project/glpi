@@ -1953,6 +1953,13 @@ class CommonDBTM extends CommonGLPI {
    }
 
 
+   /**
+    * @since version 0.91
+    *
+    * @param $options      array
+    *
+    * @return boolean
+   **/
    function showDates($options = array()) {
 
       $isNewID = ((isset($options['withtemplate']) && ($options['withtemplate'] == 2))
@@ -3493,6 +3500,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getUnicityErrorMessage($msgs, $unicity, $doubles) {
 
+      $message = array();
       foreach($msgs as $field => $value) {
          $table = getTableNameForForeignKeyField($field);
          if ($table != '') {
@@ -3647,7 +3655,7 @@ class CommonDBTM extends CommonGLPI {
                          || $p['add_event_on_duplicate']) {
                         $message = array();
                         foreach (explode(',',$fields['fields']) as $field) {
-                           $message[$fields] = $this->input[$field];
+                           $message[$field] = $this->input[$field];
                         }
 
                         $doubles      = getAllDatasFromTable($this->gettable(),

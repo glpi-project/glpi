@@ -534,41 +534,46 @@ class DBmysql {
      * @return number of tables
     **/
    static function optimize_tables($migration=NULL, $cron=false) {
-       global $DB;
+      global $DB;
 
-       if (!is_null($migration) && method_exists($migration,'displayMessage')) {
-          $migration->displayTitle(__('Optimizing tables'));
-          $migration->addNewMessageArea('optimize_table'); // to force new ajax zone
-          $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('Start')));
-       }
-       $result = $DB->list_tables();
-       $nb     = 0;
+      $crashed_tables = self::checkForCrashedTables();
+      if (!empty($crashed_tables)) {
+         Toolbox::logDebug("Cannot launch automatic action : crashed tables detected");
+         return -1;
+      }
 
+      if (!is_null($migration) && method_exists($migration,'displayMessage')) {
+         $migration->displayTitle(__('Optimizing tables'));
+         $migration->addNewMessageArea('optimize_table'); // to force new ajax zone
+         $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('Start')));
+      }
+      $result = $DB->list_tables();
+      $nb     = 0;
 
-       while ($line = $DB->fetch_row($result)) {
-          $table = $line[0];
+      while ($line = $DB->fetch_row($result)) {
+         $table = $line[0];
 
-       // For big database to reduce delay of migration
-          if ($cron
-              || (countElementsInTable($table) < 15000000)) {
+         // For big database to reduce delay of migration
+         if ($cron
+             || (countElementsInTable($table) < 15000000)) {
 
-             if (!is_null($migration) && method_exists($migration,'displayMessage')) {
-                $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), $table));
-             }
+            if (!is_null($migration) && method_exists($migration,'displayMessage')) {
+               $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), $table));
+            }
 
-             $query = "OPTIMIZE TABLE `".$table."` ;";
-             $DB->query($query);
-             $nb++;
-          }
-       }
-       $DB->free_result($result);
+            $query = "OPTIMIZE TABLE `".$table."` ;";
+            $DB->query($query);
+            $nb++;
+         }
+      }
+      $DB->free_result($result);
 
-       if (!is_null($migration)
-           && method_exists($migration,'displayMessage') ) {
-          $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('End')));
-       }
+      if (!is_null($migration)
+          && method_exists($migration,'displayMessage') ) {
+         $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('End')));
+      }
 
-       return $nb;
+      return $nb;
     }
 
 

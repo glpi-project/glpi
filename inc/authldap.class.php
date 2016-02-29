@@ -1671,7 +1671,10 @@ class AuthLDAP extends CommonDBTM {
             echo "<th>".__('Group DN')."</th>";
             echo "<th>".__('Destination entity')."</th>";
             if (Session::isMultiEntitiesMode()) {
-               echo"<th>".__('Child entities')."</th>";
+               echo"<th>";
+               Html::showCheckbox(array('criterion' => array('tag_for_massive' => 'select_item_child_entities')));
+               echo "&nbsp;".__('Child entities');
+               echo "</th>";
             }
             echo "</tr>";
 
@@ -1699,8 +1702,10 @@ class AuthLDAP extends CommonDBTM {
                echo "</td>";
                if (Session::isMultiEntitiesMode()) {
                   echo "<td>";
-                  Html::showCheckbox(array('name'          => "ldap_import_recursive[$dn_index]",
-                                           'specific_tags' => array('data-glpicore-ma-tags' => 'common')));
+                  Html::showMassiveActionCheckBox(__CLASS__, $dn_index,
+                                               array('massive_tags'  => 'select_item_child_entities',
+                                                     'name'          => "ldap_import_recursive[$dn_index]",
+                                                     'specific_tags' => array('data-glpicore-ma-tags' => 'common')));
                   echo "</td>";
                } else {
                   echo Html::hidden("ldap_import_recursive[$dn_index]", array('value'                 => 0,

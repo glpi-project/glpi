@@ -72,7 +72,7 @@ function update0901to091() {
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Object Locks'));
 
 
-   /************** Lock Objects ************ */
+   /************** Lock Objects *************/
    if (!TableExists('glpi_objectlocks')) {
       $query = "CREATE TABLE `glpi_objectlocks` (
                  `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -266,17 +266,17 @@ function update0901to091() {
          $DB->queryOrDie($query, "0.91 add Unlock Request notification target");
       }
    }
-   $migration->addField("glpi_users", "lock_autolock_mode", "bool", true);
-   $migration->addField("glpi_users", "lock_directunlock_notification", "bool", true);
+   $migration->addField("glpi_users", "lock_autolock_mode", "tinyint(1) NULL DEFAULT NULL");
+   $migration->addField("glpi_users", "lock_directunlock_notification", "tinyint(1) NULL DEFAULT NULL");
 
 
 
-   /************** Default Requester ************ */
+   /************** Default Requester *************/
    Config::setConfigurationValues('core', array('set_default_requester' => 1));
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
 
-   /************** Task's templates ************ */
+   /************** Task's templates *************/
    if (!TableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -296,13 +296,13 @@ function update0901to091() {
       $DB->queryOrDie($query, "0.91 add table glpi_tasktemplates");
    }
 
-   /************** Installation date for softwares ************ */
+   /************** Installation date for softwares *************/
    $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
    $migration->addKey("glpi_computers_softwareversions", "date_install");
 
 
 
-   /************** Date mod/creation for itemtypes */
+   /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
    $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
                   'SoftwareLicense', 'Peripheral', 'NetworkEquipment', 'User', 'Group', 'Entity',
@@ -346,6 +346,7 @@ function update0901to091() {
          $migration->migrationOneTable($table);
       }
    }
+
 
    /************** Enhance Associated items for ticket ***************/
    // TEMPLATE UPDATE
@@ -439,7 +440,8 @@ function update0901to091() {
       }
    }
 
-   $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
+   /************** Add more fields to software licenses */
+   $new = $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
    $migration->addField("glpi_softwarelicenses", "locations_id", "integer");
    $migration->addField("glpi_softwarelicenses", "users_id_tech", "integer");
    $migration->addField("glpi_softwarelicenses", "users_id", "integer");
@@ -456,6 +458,76 @@ function update0901to091() {
    $migration->addKey("glpi_softwarelicenses", "is_helpdesk_visible");
    $migration->addKey("glpi_softwarelicenses", "is_deleted");
    $migration->addKey("glpi_softwarelicenses", "is_template");
+
+   if ($new) {
+      //new right for software license
+      //copy the software right value to the new license right
+      foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {
+         $query = "INSERT INTO `glpi_profilerights` (`id`, `profiles_id`, `name`, `rights`)
+                   VALUES (NULL, '".$profrights['profiles_id']."', 'license',
+                           '".$profrights['rights']."')";
+         $DB->queryOrDie($query, "0.91 add right for softwarelicense");
+      }
+   }
+
+   //new right for survey
+   foreach ($DB->request("glpi_profilerights", "`name` = 'ticket'") as $profrights) {
+      $query = "UPDATE `glpi_profilerights`
+                SET `rights` = `rights` | " . Ticket::SURVEY ."
+                WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'ticket'";
+      $DB->queryOrDie($query, "0.91 update ticket with survey right");
+   }
+
+   //TRANS: %s is the table or item to migrate
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
+
+   $ADDTODISPLAYPREF['SoftwareLicense'] = array(3, 10, 162, 5);
+   foreach ($ADDTODISPLAYPREF as $type => $tab) {
+      $query = "SELECT DISTINCT `users_id`
+                FROM `glpi_displaypreferences`
+                WHERE `itemtype` = '$type'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query = "SELECT MAX(`rank`)
+                         FROM `glpi_displaypreferences`
+                         WHERE `users_id` = '".$data['users_id']."'
+                               AND `itemtype` = '$type'";
+               $result = $DB->query($query);
+               $rank   = $DB->result($result,0,0);
+               $rank++;
+
+               foreach ($tab as $newval) {
+                  $query = "SELECT *
+                            FROM `glpi_displaypreferences`
+                            WHERE `users_id` = '".$data['users_id']."'
+                                  AND `num` = '$newval'
+                                  AND `itemtype` = '$type'";
+                  if ($result2 = $DB->query($query)) {
+                     if ($DB->numrows($result2) == 0) {
+                        $query = "INSERT INTO `glpi_displaypreferences`
+                                         (`itemtype` ,`num` ,`rank` ,`users_id`)
+                                  VALUES ('$type', '$newval', '".$rank++."',
+                                          '".$data['users_id']."')";
+                        $DB->query($query);
+                     }
+                  }
+               }
+            }
+
+         } else { // Add for default user
+            $rank = 1;
+            foreach ($tab as $newval) {
+               $query = "INSERT INTO `glpi_displaypreferences`
+                                (`itemtype` ,`num` ,`rank` ,`users_id`)
+                         VALUES ('$type', '$newval', '".$rank++."', '0')";
+               $DB->query($query);
+            }
+         }
+      }
+   }
 
    /** ************ New SLA structure ************ */
    if (!TableExists('glpi_slts')) {
@@ -520,59 +592,9 @@ function update0901to091() {
       // Sla rules actions migration
       $DB->queryOrDie("UPDATE `glpi_ruleactions` SET `field` = 'slt_ttr' WHERE `field` = 'slas_id'", "SLA ruleactions migration");
    }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
-
-   // ************ Keep it at the end **************
-   //TRANS: %s is the table or item to migrate
-   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
-
-   $ADDTODISPLAYPREF['SoftwareLicense'] = array(3, 10, 162, 5);
-   foreach ($ADDTODISPLAYPREF as $type => $tab) {
-      $query = "SELECT DISTINCT `users_id`
-                FROM `glpi_displaypreferences`
-                WHERE `itemtype` = '$type'";
-
-      if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $query = "SELECT MAX(`rank`)
-                         FROM `glpi_displaypreferences`
-                         WHERE `users_id` = '".$data['users_id']."'
-                               AND `itemtype` = '$type'";
-               $result = $DB->query($query);
-               $rank   = $DB->result($result,0,0);
-               $rank++;
-
-               foreach ($tab as $newval) {
-                  $query = "SELECT *
-                            FROM `glpi_displaypreferences`
-                            WHERE `users_id` = '".$data['users_id']."'
-                                  AND `num` = '$newval'
-                                  AND `itemtype` = '$type'";
-                  if ($result2 = $DB->query($query)) {
-                     if ($DB->numrows($result2) == 0) {
-                        $query = "INSERT INTO `glpi_displaypreferences`
-                                         (`itemtype` ,`num` ,`rank` ,`users_id`)
-                                  VALUES ('$type', '$newval', '".$rank++."',
-                                          '".$data['users_id']."')";
-                        $DB->query($query);
-                     }
-                  }
-               }
-            }
-
-         } else { // Add for default user
-            $rank = 1;
-            foreach ($tab as $newval) {
-               $query = "INSERT INTO `glpi_displaypreferences`
-                                (`itemtype` ,`num` ,`rank` ,`users_id`)
-                         VALUES ('$type', '$newval', '".$rank++."', '0')";
-               $DB->query($query);
-            }
-         }
-      }
-   }
 
    return $updateresult;
 }

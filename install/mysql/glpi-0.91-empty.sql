@@ -1898,10 +1898,10 @@ INSERT INTO `glpi_displaypreferences` VALUES ('252','CartridgeItem','9','5','0')
 INSERT INTO `glpi_displaypreferences` VALUES ('253','ConsumableItem','9','5','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('254','ReservationItem','9','4','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','1','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','3','2','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','10','3','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','162','4','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('255','SoftwareLicense','5','5','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('256','SoftwareLicense','3','2','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('257','SoftwareLicense','10','3','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('258','SoftwareLicense','162','4','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('259','SoftwareLicense','5','5','0');
 
 ### Dump table glpi_documentcategories
 
@@ -5418,7 +5418,7 @@ INSERT INTO `glpi_profilerights` VALUES ('43','1','reminder_public','1');
 INSERT INTO `glpi_profilerights` VALUES ('44','1','rssfeed_public','1');
 INSERT INTO `glpi_profilerights` VALUES ('45','1','bookmark_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('46','1','backup','0');
-INSERT INTO `glpi_profilerights` VALUES ('47','1','ticket','5');
+INSERT INTO `glpi_profilerights` VALUES ('47','1','ticket','131077');
 INSERT INTO `glpi_profilerights` VALUES ('51','1','followup','5');
 INSERT INTO `glpi_profilerights` VALUES ('52','1','task','1');
 INSERT INTO `glpi_profilerights` VALUES ('64','1','planning','0');
@@ -5485,7 +5485,7 @@ INSERT INTO `glpi_profilerights` VALUES ('137','2','reminder_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('138','2','rssfeed_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('139','2','bookmark_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('140','2','backup','1024');
-INSERT INTO `glpi_profilerights` VALUES ('141','2','ticket','37917');
+INSERT INTO `glpi_profilerights` VALUES ('141','2','ticket','168989');
 INSERT INTO `glpi_profilerights` VALUES ('145','2','followup','5');
 INSERT INTO `glpi_profilerights` VALUES ('146','2','task','1');
 INSERT INTO `glpi_profilerights` VALUES ('748','6','projecttask','1025');
@@ -5556,7 +5556,7 @@ INSERT INTO `glpi_profilerights` VALUES ('231','3','reminder_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('232','3','rssfeed_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('233','3','bookmark_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('234','3','backup','1024');
-INSERT INTO `glpi_profilerights` VALUES ('235','3','ticket','128031');
+INSERT INTO `glpi_profilerights` VALUES ('235','3','ticket','259103');
 INSERT INTO `glpi_profilerights` VALUES ('239','3','followup','15383');
 INSERT INTO `glpi_profilerights` VALUES ('240','3','task','13329');
 INSERT INTO `glpi_profilerights` VALUES ('745','3','projecttask','1025');
@@ -5626,7 +5626,7 @@ INSERT INTO `glpi_profilerights` VALUES ('325','4','reminder_public','159');
 INSERT INTO `glpi_profilerights` VALUES ('326','4','rssfeed_public','159');
 INSERT INTO `glpi_profilerights` VALUES ('327','4','bookmark_public','31');
 INSERT INTO `glpi_profilerights` VALUES ('328','4','backup','1055');
-INSERT INTO `glpi_profilerights` VALUES ('329','4','ticket','128159');
+INSERT INTO `glpi_profilerights` VALUES ('329','4','ticket','259231');
 INSERT INTO `glpi_profilerights` VALUES ('333','4','followup','15383');
 INSERT INTO `glpi_profilerights` VALUES ('334','4','task','13329');
 INSERT INTO `glpi_profilerights` VALUES ('742','7','project','1151');
@@ -5697,7 +5697,7 @@ INSERT INTO `glpi_profilerights` VALUES ('419','5','reminder_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('420','5','rssfeed_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('421','5','bookmark_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('422','5','backup','0');
-INSERT INTO `glpi_profilerights` VALUES ('423','5','ticket','9223');
+INSERT INTO `glpi_profilerights` VALUES ('423','5','ticket','140295');
 INSERT INTO `glpi_profilerights` VALUES ('427','5','followup','12295');
 INSERT INTO `glpi_profilerights` VALUES ('428','5','task','8193');
 INSERT INTO `glpi_profilerights` VALUES ('739','4','project','1279');
@@ -5767,7 +5767,7 @@ INSERT INTO `glpi_profilerights` VALUES ('513','6','reminder_public','31');
 INSERT INTO `glpi_profilerights` VALUES ('514','6','rssfeed_public','31');
 INSERT INTO `glpi_profilerights` VALUES ('515','6','bookmark_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('516','6','backup','0');
-INSERT INTO `glpi_profilerights` VALUES ('517','6','ticket','37895');
+INSERT INTO `glpi_profilerights` VALUES ('517','6','ticket','168967');
 INSERT INTO `glpi_profilerights` VALUES ('521','6','followup','13319');
 INSERT INTO `glpi_profilerights` VALUES ('522','6','task','13329');
 INSERT INTO `glpi_profilerights` VALUES ('736','1','project','0');
@@ -5838,7 +5838,7 @@ INSERT INTO `glpi_profilerights` VALUES ('607','7','reminder_public','31');
 INSERT INTO `glpi_profilerights` VALUES ('608','7','rssfeed_public','31');
 INSERT INTO `glpi_profilerights` VALUES ('609','7','bookmark_public','0');
 INSERT INTO `glpi_profilerights` VALUES ('610','7','backup','0');
-INSERT INTO `glpi_profilerights` VALUES ('611','7','ticket','128031');
+INSERT INTO `glpi_profilerights` VALUES ('611','7','ticket','259103');
 INSERT INTO `glpi_profilerights` VALUES ('615','7','followup','13335');
 INSERT INTO `glpi_profilerights` VALUES ('616','7','task','13329');
 INSERT INTO `glpi_profilerights` VALUES ('735','7','queuedmail','0');
@@ -5931,7 +5931,7 @@ INSERT INTO `glpi_profilerights` VALUES ('809','8','state','1');
 INSERT INTO `glpi_profilerights` VALUES ('810','8','statistic','1');
 INSERT INTO `glpi_profilerights` VALUES ('811','8','task','8193');
 INSERT INTO `glpi_profilerights` VALUES ('812','8','taskcategory','1');
-INSERT INTO `glpi_profilerights` VALUES ('813','8','ticket','7297');
+INSERT INTO `glpi_profilerights` VALUES ('813','8','ticket','138369');
 INSERT INTO `glpi_profilerights` VALUES ('814','8','ticketcost','1');
 INSERT INTO `glpi_profilerights` VALUES ('815','8','ticketrecurrent','1');
 INSERT INTO `glpi_profilerights` VALUES ('816','8','tickettemplate','1');
@@ -5939,6 +5939,14 @@ INSERT INTO `glpi_profilerights` VALUES ('817','8','ticketvalidation','0');
 INSERT INTO `glpi_profilerights` VALUES ('818','8','transfer','1');
 INSERT INTO `glpi_profilerights` VALUES ('819','8','typedoc','1');
 INSERT INTO `glpi_profilerights` VALUES ('820','8','user','2177');
+INSERT INTO `glpi_profilerights` VALUES ('821','1','license','0');
+INSERT INTO `glpi_profilerights` VALUES ('822','2','license','33');
+INSERT INTO `glpi_profilerights` VALUES ('823','3','license','127');
+INSERT INTO `glpi_profilerights` VALUES ('824','4','license','255');
+INSERT INTO `glpi_profilerights` VALUES ('825','5','license','0');
+INSERT INTO `glpi_profilerights` VALUES ('826','6','license','127');
+INSERT INTO `glpi_profilerights` VALUES ('827','7','license','127');
+INSERT INTO `glpi_profilerights` VALUES ('828','8','license','161');
 
 ### Dump table glpi_profiles
 
@@ -7506,8 +7514,8 @@ CREATE TABLE `glpi_users` (
   `ticket_timeline` tinyint(1) DEFAULT NULL,
   `ticket_timeline_keep_replaced_tabs` tinyint(1) DEFAULT NULL,
   `set_default_requester` tinyint(1) DEFAULT NULL,
-  `lock_autolock_mode` tinyint(1) NOT NULL DEFAULT '0',
-  `lock_directunlock_notification` tinyint(1) NOT NULL DEFAULT '0',
+  `lock_autolock_mode` tinyint(1) DEFAULT NULL,
+  `lock_directunlock_notification` tinyint(1) DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`name`),

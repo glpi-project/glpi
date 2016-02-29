@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -146,10 +146,12 @@ class Central extends CommonGLPI {
    static function showMyView() {
       global $DB, $CFG_GLPI;
 
-      $showticket = Session::haveRightsOr("ticket",
-                                          array(Ticket::READMY, Ticket::READALL, Ticket::READASSIGN));
+      $showticket  = Session::haveRightsOr("ticket",
+                                           array(Ticket::READMY, Ticket::READALL, Ticket::READASSIGN));
 
       $showproblem = Session::haveRightsOr('problem', array(Problem::READALL, Problem::READMY));
+
+      $showsurvey  = Session::haveRight('ticket', Ticket::SURVEY);
 
       echo "<table class='tab_cadre_central'>";
 
@@ -223,7 +225,9 @@ class Central extends CommonGLPI {
             Ticket::showCentralList(0, "toapprove", false);
          }
 
-         Ticket::showCentralList(0, "survey", false);
+         if ($showsurvey) {
+            Ticket::showCentralList(0, "survey", false);
+         }
 
          Ticket::showCentralList(0, "rejected", false);
          Ticket::showCentralList(0, "requestbyself", false);

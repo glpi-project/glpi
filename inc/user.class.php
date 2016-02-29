@@ -3641,7 +3641,7 @@ class User extends CommonDBTM {
                 FROM `glpi_useremails`
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_useremails`.`users_id`)
                 WHERE `glpi_useremails`.`email` = '".stripslashes($email)."'
-                ORDER BY `glpi_users`.`is_active`  DESC";
+                ORDER BY `glpi_users`.`is_active`  DESC, is_deleted ASC";
       $result = $DB->query($query);
 
       //User still exists in DB

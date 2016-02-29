@@ -330,6 +330,10 @@ input {
    vertical-align: middle;
 }
 
+.no-wrap {
+   white-space: nowrap;
+}
+
 .ui-datepicker-trigger {
    cursor: pointer;
 }
@@ -546,7 +550,7 @@ input.save {
    -moz-box-shadow: 0px 1px 1px #7F7979;
    -webkit-box-shadow: 0px 1px 1px #7F7979;
    box-shadow: 0px 1px 1px #7F7979;
-   width: 90% !important;
+   width: 90%;
 }
 
 .ui-tabs sup.tab_nb {
@@ -744,7 +748,7 @@ input.save {
    }
    .layout_vsplit.form .main_form textarea {
       resize: vertical;
-      width:98%;
+      width:97%;
       min-height: 125px;
    }
 
@@ -757,12 +761,15 @@ input.save {
       width: 100%;
    }
 
-   .layout_vsplit .debug,
+   .layout_vsplit .debug:not(.debug_ajax),
    .layout_vsplit #footer {
       position: absolute;
       bottom: 0;
       width: 100%;
       z-index: 3;
+   }
+   .layout_vsplit .debug_ajax {
+      width: 100% !important;
    }
 }
 
@@ -2404,19 +2411,31 @@ ul#menu ul.ssmenu {
    top: inherit !important;
    height: 300px !important;
    z-index: 100 !important;
+   width: 98%;
 }
 
-.ui-tabs .debug .see_debug{
-   display: none;
-}
-.ui-tabs .debug .ui-tabs {
+.debug_ajax .ui-tabs {
+   position: relative !important;
+   height: inherit !important;
    display: block;
-   position: relative;
+}
+
+#page .debug_ajax div.ui-tabs {
+   width: 98%;
+}
+
+
+.debug_ajax .see_debug{
+   display: none;
 }
 
 .debug .ui-tabs-panel {
    height: 273px;
    overflow: auto;
+}
+
+.debug_ajax .ui-tabs .ui-tabs-panel {
+   height: auto;
 }
 
 .debug .tab_cadre {
