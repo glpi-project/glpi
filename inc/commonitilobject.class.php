@@ -2760,7 +2760,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[159]['table']               = $this->getTable();
       $tab[159]['field']               = 'is_late';
-      $tab[159]['name']                = __('Late take into account');
+      $tab[159]['name']                = __('Late own');
       $tab[159]['datatype']            = 'bool';
       $tab[159]['massiveaction']       = false;
       $tab[159]['computation']         = "IF(TABLE.`time_to_own` IS NOT NULL
