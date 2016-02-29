@@ -177,7 +177,7 @@ class Dropdown {
                 );
 
       $output = "<div class='no-wrap'>";
-      $output = Html::jsAjaxDropdown($params['name'], $field_id,
+      $output.= Html::jsAjaxDropdown($params['name'], $field_id,
                                      $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php",
                                      $p);
       // Display comment
