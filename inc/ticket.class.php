@@ -4210,7 +4210,7 @@ class Ticket extends CommonITILObject {
       if (!$ID
           || $canupdate_descr) {
          echo $tt->getBeginHiddenFieldValue('name');
-         echo "<input type='text' size='90' maxlength=250 name='name' ".
+         echo "<input type='text' style='width:98%' maxlength=250 name='name' ".
                 " value=\"".Html::cleanInputText($this->fields["name"])."\">";
          echo $tt->getEndHiddenFieldValue('name', $this);
       } else {
@@ -4238,7 +4238,6 @@ class Ticket extends CommonITILObject {
          echo $tt->getBeginHiddenFieldValue('content');
          $rand       = mt_rand();
          $rand_text  = mt_rand();
-         $cols       = 90;
          $rows       = 6;
          $content_id = "content$rand";
 
@@ -4246,14 +4245,13 @@ class Ticket extends CommonITILObject {
             $this->fields["content"] = $this->setRichTextContent($content_id,
                                                                  $this->fields["content"],
                                                                  $rand);
-            $cols = 100;
             $rows = 10;
          } else {
             $this->fields["content"] = $this->setSimpleTextContent($this->fields["content"]);
          }
 
          echo "<div id='content$rand_text'>";
-         echo "<textarea id='$content_id' name='content' cols='$cols' rows='$rows'>".
+         echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
                 $this->fields["content"]."</textarea></div>";
          echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
          echo $tt->getEndHiddenFieldValue('content', $this);
