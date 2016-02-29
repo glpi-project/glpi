@@ -72,7 +72,7 @@ function update0901to091() {
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Object Locks'));
 
 
-   /************** Lock Objects ************ */
+   /************** Lock Objects *************/
    if (!TableExists('glpi_objectlocks')) {
       $query = "CREATE TABLE `glpi_objectlocks` (
                  `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -271,12 +271,12 @@ function update0901to091() {
 
 
 
-   /************** Default Requester ************ */
+   /************** Default Requester *************/
    Config::setConfigurationValues('core', array('set_default_requester' => 1));
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
 
-   /************** Task's templates ************ */
+   /************** Task's templates *************/
    if (!TableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -296,13 +296,13 @@ function update0901to091() {
       $DB->queryOrDie($query, "0.91 add table glpi_tasktemplates");
    }
 
-   /************** Installation date for softwares ************ */
+   /************** Installation date for softwares *************/
    $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
    $migration->addKey("glpi_computers_softwareversions", "date_install");
 
 
 
-   /************** Date mod/creation for itemtypes */
+   /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
    $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
                   'SoftwareLicense', 'Peripheral', 'NetworkEquipment', 'User', 'Group', 'Entity',
@@ -346,6 +346,7 @@ function update0901to091() {
          $migration->migrationOneTable($table);
       }
    }
+
 
    /************** Enhance Associated items for ticket ***************/
    // TEMPLATE UPDATE
@@ -478,10 +479,6 @@ function update0901to091() {
       $DB->queryOrDie($query, "0.91 update ticket with survey right");
    }
 
-   // ************ Keep it at the end **************
-   $migration->executeMigration();
-
-   // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
@@ -531,6 +528,10 @@ function update0901to091() {
          }
       }
    }
+
+
+   // ************ Keep it at the end **************
+   $migration->executeMigration();
 
    return $updateresult;
 }
