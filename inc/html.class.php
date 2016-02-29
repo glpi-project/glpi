@@ -2978,7 +2978,8 @@ class Html {
             $p[$key] = $val;
          }
       }
-      $output = "<input id='showdate".$p['rand']."' type='text' size='10' name='_$name' ".
+      $output = "<div class='no-wrap'>";
+      $output .= "<input id='showdate".$p['rand']."' type='text' size='10' name='_$name' ".
                   "value='".self::convDate($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'],
                                            'id'    => "hiddendate".$p['rand'],
@@ -2987,6 +2988,7 @@ class Html {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
                       "\" id='resetdate".$p['rand']."' class='pointer'>";
       }
+      $output .= "</div>";
 
       $js = '';
       if ($p['maybeempty'] && $p['canedit']) {
@@ -3194,13 +3196,15 @@ class Html {
          $p['value'] = $date_value.' '.$hour_value;
       }
 
-      $output  = "<input id='showdate".$p['rand']."' type='text' name='_$name' value='".
+      $output = "<div class='no-wrap'>";
+      $output .= "<input id='showdate".$p['rand']."' type='text' name='_$name' value='".
                    self::convDateTime($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "hiddendate".$p['rand']));
       if ($p['maybeempty'] && $p['canedit']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
                       "\" id='resetdate".$p['rand']."' class='pointer'>";
       }
+      $output .= "</div>";
 
       $js = "";
       if ($p['maybeempty'] && $p['canedit']) {
@@ -3750,7 +3754,6 @@ class Html {
       if (array_key_exists($field,$item->fields)) {
          $params['value'] = $item->fields[$field];
       }
-      $params['size']   = 40;
       $params['entity'] = -1;
 
       if (array_key_exists('entities_id',$item->fields)) {
@@ -3769,8 +3772,8 @@ class Html {
          $rand    = mt_rand();
          $name    = "field_".$params['name'].$rand;
          $output .=  "<input ".$params['option']." id='text$name' type='text' name='".
-                       $params['name']."' value=\"".self::cleanInputText($params['value']).
-                       "\" size='".$params['size']."'>\n";
+                       $params['name']."' value=\"".self::cleanInputText($params['value'])."\"
+                       class='autocompletion-text-field'>";
 
          $parameters['itemtype'] = $item->getType();
          $parameters['field']    = $field;

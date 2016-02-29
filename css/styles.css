@@ -330,6 +330,10 @@ input {
    vertical-align: middle;
 }
 
+.no-wrap {
+   white-space: nowrap;
+}
+
 .ui-datepicker-trigger {
    cursor: pointer;
 }
@@ -744,7 +748,7 @@ input.save {
    }
    .layout_vsplit.form .main_form textarea {
       resize: vertical;
-      width:98%;
+      width:97%;
       min-height: 125px;
    }
 
