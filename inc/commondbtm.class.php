@@ -3427,6 +3427,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getUnicityErrorMessage($msgs, $unicity, $doubles) {
 
+      $message = array();
       foreach($msgs as $field => $value) {
          $table = getTableNameForForeignKeyField($field);
          if ($table != '') {
@@ -3581,7 +3582,7 @@ class CommonDBTM extends CommonGLPI {
                          || $p['add_event_on_duplicate']) {
                         $message = array();
                         foreach (explode(',',$fields['fields']) as $field) {
-                           $message[$fiels] = $this->input[$field];
+                           $message[$field] = $this->input[$field];
                         }
 
                         $doubles      = getAllDatasFromTable($this->gettable(),
