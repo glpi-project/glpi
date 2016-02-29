@@ -3995,6 +3995,7 @@ class Ticket extends CommonITILObject {
          RequestType::dropdown(array('value' => $this->fields["requesttypes_id"]));
       } else {
          echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
+         echo Html::hidden('requesttypes_id', array('value' => $this->fields["requesttypes_id"]));
       }
       echo $tt->getEndHiddenFieldValue('requesttypes_id',$this);
       echo "</td>";
