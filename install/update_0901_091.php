@@ -439,7 +439,8 @@ function update0901to091() {
       }
    }
 
-   $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
+   /************** Add more fields to software licenses */
+   $new = $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
    $migration->addField("glpi_softwarelicenses", "locations_id", "integer");
    $migration->addField("glpi_softwarelicenses", "users_id_tech", "integer");
    $migration->addField("glpi_softwarelicenses", "users_id", "integer");
@@ -457,6 +458,16 @@ function update0901to091() {
    $migration->addKey("glpi_softwarelicenses", "is_deleted");
    $migration->addKey("glpi_softwarelicenses", "is_template");
 
+   if ($new) {
+      //new right for software license
+      //copy the software right value to the new license right
+      foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {
+         $query = "INSERT INTO `glpi_profilerights` (`id`, `profiles_id`, `name`, `rights`)
+                   VALUES (NULL, '".$profrights['profiles_id']."', 'license',
+                           '".$profrights['rights']."')";
+         $DB->queryOrDie($query, "0.91 add right for softwarelicense");
+      }
+   }
 
    //new right for survey
    foreach ($DB->request("glpi_profilerights", "`name` = 'ticket'") as $profrights) {
