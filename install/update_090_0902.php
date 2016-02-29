@@ -40,15 +40,15 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update090to0901() {
+function update090to0902() {
    global $DB, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '0.90.1'));
-   $migration->setVersion('0.90.1');
+   $migration->displayTitle(sprintf(__('Update to %s'), '0.90.2'));
+   $migration->setVersion('0.90.2');
 
 
    $backup_tables = false;
