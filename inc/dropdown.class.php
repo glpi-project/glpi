@@ -1654,17 +1654,18 @@ class Dropdown {
    **/
    static function showFromArray($name, array $elements, $options=array()) {
 
-      $param['value']           = '';
-      $param['values']          = array('');
-      $param['used']            = array();
-      $param['readonly']        = false;
-      $param['on_change']       = '';
-      $param['width']           = '';
-      $param['multiple']        = false;
-      $param['size']            = 1;
-      $param['display']         = true;
-      $param['other']           = false;
-      $param['rand']            = mt_rand();
+      $param['value']               = '';
+      $param['values']              = array('');
+      $param['used']                = array();
+      $param['readonly']            = false;
+      $param['on_change']           = '';
+      $param['width']               = '';
+      $param['multiple']            = false;
+      $param['size']                = 1;
+      $param['display']             = true;
+      $param['other']               = false;
+      $param['rand']                = mt_rand();
+      $param['display_emptychoice'] = false;
 
       if (is_array($options) && count($options)) {
          if (isset($options['value']) && strlen($options['value'])) {
@@ -1688,6 +1689,10 @@ class Dropdown {
                $param['values'][] = $other_select_option;
             }
          }
+      }
+
+      if ($param["display_emptychoice"]) {
+         $elements = array( 0 => $param['emptylabel'] ) + $elements ;
       }
 
       if ($param["multiple"]) {
