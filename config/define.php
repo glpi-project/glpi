@@ -306,7 +306,8 @@ $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_forma
                                      'set_default_requester', 'show_count_on_tabs',
                                      'show_jobs_at_login', 'task_private', 'task_state',
                                      'use_flat_dropdowntree', 'layout', 'ticket_timeline',
-                                     'ticket_timeline_keep_replaced_tabs', 'palette');
+                                     'ticket_timeline_keep_replaced_tabs', 'palette',
+                                     'highcontrast_css');
 
 $CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
                                            "knowbaseitem.php",

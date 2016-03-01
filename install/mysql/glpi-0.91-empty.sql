@@ -1000,6 +1000,7 @@ INSERT INTO `glpi_configs` VALUES ('161','core','lock_directunlock_notification'
 INSERT INTO `glpi_configs` VALUES ('162','core','lock_item_list','[]');
 INSERT INTO `glpi_configs` VALUES ('163','core','lock_lockprofile_id','8');
 INSERT INTO `glpi_configs` VALUES ('164','core','set_default_requester','1');
+INSERT INTO `glpi_configs` VALUES ('165','core','highcontrast_css','0');
 
 ### Dump table glpi_consumableitems
 
@@ -7498,6 +7499,7 @@ CREATE TABLE `glpi_users` (
   `lock_autolock_mode` tinyint(1) DEFAULT NULL,
   `lock_directunlock_notification` tinyint(1) DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
+  `highcontrast_css` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`name`),
   KEY `firstname` (`firstname`),

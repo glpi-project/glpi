@@ -1056,6 +1056,13 @@ class Config extends CommonDBTM {
                           $data['ticket_timeline_keep_replaced_tabs']);
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'><td>".__('Enable high contrast')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo('highcontrast_css', $data['highcontrast_css']);
+      echo "</td>";
+      echo "<td>";
+      echo "</td></tr>";
+
 
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";

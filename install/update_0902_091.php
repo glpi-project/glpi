@@ -530,6 +530,12 @@ function update0902to091() {
    }
 
 
+   /************** High contrast CSS **************/
+   Config::setConfigurationValues('core', array('highcontrast_css' => 0));
+   $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
+
+
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
