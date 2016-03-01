@@ -40,7 +40,7 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update0901to091() {
+function update0902to091() {
    global $DB, $migration, $CFG_GLPI;
 
    $updateresult     = true;
