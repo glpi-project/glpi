@@ -553,21 +553,21 @@ input.save {
    width: 90%;
 }
 
+.ui-tabs-anchor {
+   height: 18px;
+}
+
 .ui-tabs sup.tab_nb {
    border-radius: 50%;
    background-color: #FFF;
-   height: 13px;
-   min-width: 16px;
-   text-align: center;
-   display: inline-block;
-   vertical-align: middle;
-   padding: 3px 2px;
-   margin-bottom: -7px;
+   min-width: 18px;
    margin-left: 5px;
-   position: absolute;
-   right: 3px;
-   top: 3px;
-
+   display: inline-block;
+   text-align: center;
+   vertical-align: top;
+   padding: 3px 2px 5px;
+   box-sizing: border-box;
+   margin-right: -5px;
 }
 
 .ui-tabs .ui-state-active sup.tab_nb {
