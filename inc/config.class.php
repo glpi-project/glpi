@@ -913,33 +913,12 @@ class Config extends CommonDBTM {
                                                'max'   => $CFG_GLPI['list_limit_max'],
                                                'step'  => 5));
       echo "</td>";
-      echo "<td>" . __("Color palette") . "</td><td>";
-      $themes_files = scandir(GLPI_ROOT."/css/palettes/");
-      echo "<select name='palette' id='theme-selector'>";
-      foreach ($themes_files as $key => $file) {
-         if (strpos($file, ".css") !== false) {
-            $name     = substr($file, 0, -4);
-            $selected = "";
-            if ($data["palette"] == $name) {
-               $selected = "selected='selected'";
-            }
-            echo "<option value='$name' $selected>".ucfirst($name)."</option>";
-         }
-      }
-      echo Html::scriptBlock("
-         function formatThemes(theme) {
-             return \"&nbsp;<img src='../css/palettes/previews/\" + theme.text.toLowerCase() + \".png'/>\"
-                     + \"&nbsp;\" + theme.text;
-         }
-         $(\"#theme-selector\").select2({
-             formatResult: formatThemes,
-             formatSelection: formatThemes,
-             width: '100%',
-             escapeMarkup: function(m) { return m; }
-         });
-      ");
-      echo "</select>";
-      echo "</td></tr>";
+      echo "<td>".__('Go to created item after creation')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo("backcreated", $data["backcreated"]);
+      echo "</td>";
+
+      echo "</tr>";
 
 
       echo "<tr class='tab_bg_2'>";
@@ -1015,11 +994,34 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td>".__('Go to created item after creation')."</td>";
-      echo "<td>";
-      Dropdown::showYesNo("backcreated", $data["backcreated"]);
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __("Color palette") . "</td><td>";
+      $themes_files = scandir(GLPI_ROOT."/css/palettes/");
+      echo "<select name='palette' id='theme-selector'>";
+      foreach ($themes_files as $key => $file) {
+         if (strpos($file, ".css") !== false) {
+            $name     = substr($file, 0, -4);
+            $selected = "";
+            if ($data["palette"] == $name) {
+               $selected = "selected='selected'";
+            }
+            echo "<option value='$name' $selected>".ucfirst($name)."</option>";
+         }
+      }
+      echo Html::scriptBlock("
+         function formatThemes(theme) {
+             return \"&nbsp;<img src='../css/palettes/previews/\" + theme.text.toLowerCase() + \".png'/>\"
+                     + \"&nbsp;\" + theme.text;
+         }
+         $(\"#theme-selector\").select2({
+             formatResult: formatThemes,
+             formatSelection: formatThemes,
+             width: '100%',
+             escapeMarkup: function(m) { return m; }
+         });
+      ");
+      echo "</select>";
       echo "</td>";
-
       echo "<td>" . __('Layout')."</td><td>";
       $layout_options = array('lefttab' => __("Tabs on left"),
                               'classic' => __("Classic view"),
