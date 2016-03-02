@@ -1015,16 +1015,6 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td>".__('Enable ticket timeline')."</td>";
-      echo "<td>";
-      Dropdown::showYesNo('ticket_timeline', $data['ticket_timeline']);
-      echo "</td>";
-      echo "<td>" . __('Keep tabs replaced by the ticket timeline')."</td><td>";
-      Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
-                          $data['ticket_timeline_keep_replaced_tabs']);
-      echo "</td></tr>";
-
-
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
 
@@ -1093,6 +1083,18 @@ class Config extends CommonDBTM {
          echo "</tr></table>";
 
          echo "</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td>".__('Enable ticket timeline')."</td>";
+         echo "<td>";
+         Dropdown::showYesNo('ticket_timeline', $data['ticket_timeline']);
+         echo "</td>";
+         echo "<td>" . __('Keep tabs replaced by the ticket timeline')."</td><td>";
+         Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
+                             $data['ticket_timeline_keep_replaced_tabs']);
+         echo "</td></tr>";
+
+
+         
       }
 
       // Only for user
