@@ -888,14 +888,10 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Results to display by page')."</td><td>";
-      // Limit using global config
-      $value = (($data['list_limit'] < $CFG_GLPI['list_limit_max'])
-                ? $data['list_limit'] : $CFG_GLPI['list_limit_max']);
-      Dropdown::showNumber('list_limit', array('value' => $value,
-                                               'min'   => 5,
-                                               'max'   => $CFG_GLPI['list_limit_max'],
-                                               'step'  => 5));
+      echo "<td>".__('Display order of surnames firstnames')."</td><td>";
+      $values = array(User::REALNAME_BEFORE  => __('Surname, First name'),
+                      User::FIRSTNAME_BEFORE => __('First name, Surname'));
+      Dropdown::showFromArray('names_format', $values, array('value' => $data["names_format"]));
       echo "</td>";
       echo "<td>" .__('Number format') . "</td>";
       $values = array(0 => '1 234.56',
@@ -908,10 +904,14 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Display order of surnames firstnames')."</td><td>";
-      $values = array(User::REALNAME_BEFORE  => __('Surname, First name'),
-                      User::FIRSTNAME_BEFORE => __('First name, Surname'));
-      Dropdown::showFromArray('names_format', $values, array('value' => $data["names_format"]));
+      echo "<td>" . __('Results to display by page')."</td><td>";
+      // Limit using global config
+      $value = (($data['list_limit'] < $CFG_GLPI['list_limit_max'])
+                ? $data['list_limit'] : $CFG_GLPI['list_limit_max']);
+      Dropdown::showNumber('list_limit', array('value' => $value,
+                                               'min'   => 5,
+                                               'max'   => $CFG_GLPI['list_limit_max'],
+                                               'step'  => 5));
       echo "</td>";
       echo "<td>" . __("Color palette") . "</td><td>";
       $themes_files = scandir(GLPI_ROOT."/css/palettes/");
@@ -978,12 +978,11 @@ class Config extends CommonDBTM {
          echo "<td colspan='2'></td>";
       }
 
-      echo "<td>".__('CSV delimiter')."</td><td>";
-      $values = array(';' => ';',
-                      ',' => ',');
-      Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
-
-      echo "</td></tr>";
+      echo "<td>" . __('Keep devices when purging an item') . "</td><td>";
+      Dropdown::showYesNo('keep_devices_when_purging_item',
+                          $data['keep_devices_when_purging_item']);
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Notifications for my changes') . "</td><td>";
@@ -1008,10 +1007,13 @@ class Config extends CommonDBTM {
                                     'width' => 200));
       echo "</td>";
 
-      echo "<td>" . __('Keep devices when purging an item') . "</td><td>";
-      Dropdown::showYesNo('keep_devices_when_purging_item',
-                          $data['keep_devices_when_purging_item']);
-      echo "</td></tr>";
+      echo "<td>".__('CSV delimiter')."</td><td>";
+      $values = array(';' => ';',
+                      ',' => ',');
+      Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
+
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('Go to created item after creation')."</td>";
       echo "<td>";
