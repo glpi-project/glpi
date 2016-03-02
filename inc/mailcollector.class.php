@@ -1061,7 +1061,7 @@ class MailCollector  extends CommonDBTM {
             $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
                                         Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                         CL_EXPUNGE, 1, $option);
-            if (is_ressource($this->marubox)) {
+            if (is_resource($this->marubox)) {
                break;
             }
          }
