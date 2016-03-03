@@ -606,6 +606,11 @@ class Log extends CommonDBTM {
                }
             }
 
+            // Do not display history if searchoption is not found
+            if (empty($fieldname)) {
+               $tmp['display_history'] = false;
+            }
+
             if (empty($tmp['change'])) {
                $tmp['change'] = sprintf(__('Change %1$s by %2$s'),
                                         $data["old_value"], $data["new_value"]);
