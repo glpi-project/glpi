@@ -3815,7 +3815,7 @@ class Html {
 
       } else {
          $output .=  "<input ".$params['option']." type='text' name='".$params['name']."'
-                value=\"".self::cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
+                value=\"".self::cleanInputText($params['value'])."\">\n";
       }
 
       if (!isset($options['display']) || $options['display']) {
