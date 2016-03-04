@@ -179,7 +179,7 @@ class Dropdown {
                  'specific_tags'        => $params['specific_tags'],
                 );
 
-      $output = "<div class='no-wrap'>";
+      $output = "<span class='no-wrap'>";
       $output.= Html::jsAjaxDropdown($params['name'], $field_id,
                                      $params['url'],
                                      $p);
@@ -245,7 +245,7 @@ class Dropdown {
          echo $output;
          return $params['rand'];
       }
-      $output .= "</div>";
+      $output .= "</span>";
       return $output;
    }
 
