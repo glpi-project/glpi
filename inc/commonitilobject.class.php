@@ -3973,8 +3973,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
       echo "</div>"; // tab_actors
-
-      echo "<div class='actor_clear'></div>";
    }
 
 
