@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2015 Teclib'.
@@ -36,11 +35,11 @@
 */
 
 /**
- * Update from 0.90 to 0.90.1
+ * Update from 0.90.1 to 0.90.2
  *
  * @return bool for success (will die for most error)
 **/
-function update090to0902() {
+function update0901to0902() {
    global $DB, $migration;
 
    $updateresult     = true;
@@ -68,10 +67,6 @@ function update090to0902() {
       $migration->displayWarning("You can delete backup tables if you have no need of them.",
                                  true);
    }
-
-   // Add missing fill in 0.90 empty version
-   $migration->addField("glpi_entities", 'inquest_duration', "integer", array('value' => 0));
-
 
    $profileRight = new profileRight();
    foreach ($DB->request('glpi_profiles') as $profile) {
@@ -104,4 +99,3 @@ function update090to0902() {
 
    return $updateresult;
 }
-?>
