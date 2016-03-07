@@ -4317,7 +4317,7 @@ class Search {
             case "glpi_tickets.time_to_own" :
                // Due date + progress
                if ($ID == 151 || $ID == 158) {
-                  $out = Html::convDate($data[$num][0]['name']);
+                  $out = Html::convDateTime($data[$num][0]['name']);
 
                   // No due date in waiting status
                   if ($data[$num][0]['status'] == CommonITILObject::WAITING) {
@@ -4330,19 +4330,7 @@ class Search {
                             || ($data[$num][0]['status'] == Ticket::CLOSED)) {
                      return $out;
                   }
-                  
-                  // Get Ticket slts fields name
-                  switch($table.$field){
-                     case "glpi_tickets.due_date" :
-                        list($dateField, $sltField) = SLT::getSltFieldNames(SLT::TTR);
-                        break;
-                     case "glpi_tickets.time_to_own" :
-                        list($dateField, $sltField) = SLT::getSltFieldNames(SLT::TTO);
-                        break;
-                     default:
-                        break;
-                  }
-                  
+
                   $itemtype = getItemTypeForTable($table);
                   $item = new $itemtype();
                   $item->getFromDB($data['id']);
@@ -4350,7 +4338,16 @@ class Search {
                   $totaltime   = 0;
                   $currenttime = 0;
                   $sltField    = 'slts_id';
-                  
+
+                  switch ($table.'.'.$field) {
+                     // If ticket has been taken into account : no progression display
+                     case "glpi_tickets.time_to_own" :
+                        if (($item->fields['takeintoaccount_delay_stat'] > 0)) {
+                           return $out;
+                        }
+                        break;
+                  }
+
                   if ($item->isField($sltField) && $item->fields[$sltField] != 0) { // Have SLT
                      $slt = new SLT();
                      $slt->getFromDB($item->fields[$sltField]);

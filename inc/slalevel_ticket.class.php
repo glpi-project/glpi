@@ -180,30 +180,36 @@ class SlaLevel_Ticket extends CommonDBTM {
                $slalevelticket->delete(array('id' => $data['id']));
 
             } else if ($ticket->fields['status'] != CommonITILObject::SOLVED) {
-               // If status = solved : keep the line in case of solution not validated
-               $input['id']           = $ticket->getID();
-               $input['_auto_update'] = true;
+               // No execution if ticket has been taken into account
+               if (!($sltType == SLT::TTO && $ticket->fields['takeintoaccount_delay_stat'] > 0)) {
+                  // If status = solved : keep the line in case of solution not validated
+                  $input['id']           = $ticket->getID();
+                  $input['_auto_update'] = true;
 
-               if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'], 1, 1)
-                   && $slt->getFromDB($ticket->fields[$sltField])) {
-                  $doit = true;
-                  if (count($slalevel->criterias)) {
-                     $doit = $slalevel->checkCriterias($ticket->fields);
+                  if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'], 1, 1)
+                      && $slt->getFromDB($ticket->fields[$sltField])) {
+                     $doit = true;
+                     if (count($slalevel->criterias)) {
+                        $doit = $slalevel->checkCriterias($ticket->fields);
+                     }
+                     // Process rules
+                     if ($doit) {
+                        $input = $slalevel->executeActions($input, array());
+                     }
                   }
-                  // Process rules
-                  if ($doit) {
-                     $input = $slalevel->executeActions($input, array());
-                  }
+
+                  // Put next level in todo list
+                  $next                  = $slalevel->getNextSlaLevel($ticket->fields[$sltField],
+                                                                      $data['slalevels_id']);
+                  $slt->addLevelToDo($ticket, $next);
+                  // Action done : drop the line
+                  $slalevelticket->delete(array('id' => $data['id']));
+
+                  $ticket->update($input);
+               } else {
+                  // Drop line
+                  $slalevelticket->delete(array('id' => $data['id']));
                }
-
-               // Put next level in todo list
-               $next                  = $slalevel->getNextSlaLevel($ticket->fields[$sltField],
-                                                                   $data['slalevels_id']);
-               $slt->addLevelToDo($ticket, $next);
-               // Action done : drop the line
-               $slalevelticket->delete(array('id' => $data['id']));
-
-               $ticket->update($input);
             }
          } else {
             // Drop line

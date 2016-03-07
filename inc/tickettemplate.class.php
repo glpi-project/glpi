@@ -111,6 +111,10 @@ class TicketTemplate extends CommonDropdown {
             $this->predefined['due_date']
                         = Html::computeGenericDateTimeSearch($this->predefined['due_date'], false);
          }
+         if (isset($this->predefined['time_to_own'])) {
+            $this->predefined['time_to_own']
+                        = Html::computeGenericDateTimeSearch($this->predefined['time_to_own'], false);
+         }
          // Compute date
          if (isset($this->predefined['date'])) {
             $this->predefined['date']
