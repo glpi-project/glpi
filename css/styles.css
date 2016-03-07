@@ -1102,7 +1102,7 @@ td.rotate {
 
 .actor-bloc {
    width: 29%;
-   float: left;
+   /*float: left;*/
 }
 
 .actor_title, .actor-bloc {
