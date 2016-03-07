@@ -39,7 +39,7 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update090to0902() {
+function update0901to0902() {
    global $DB, $migration;
 
    $updateresult     = true;
