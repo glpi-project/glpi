@@ -1667,6 +1667,7 @@ class Dropdown {
       $param['display']             = true;
       $param['other']               = false;
       $param['rand']                = mt_rand();
+      $param['emptylabel']          = self::EMPTY_VALUE;
       $param['display_emptychoice'] = false;
 
       if (is_array($options) && count($options)) {
