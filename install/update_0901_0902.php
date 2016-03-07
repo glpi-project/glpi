@@ -1,6 +1,5 @@
 <?php
 /*
- * @version $Id: $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2015 Teclib'.
@@ -36,7 +35,7 @@
 */
 
 /**
- * Update from 0.90 to 0.90.1
+ * Update from 0.90.1 to 0.90.2
  *
  * @return bool for success (will die for most error)
 **/
@@ -69,13 +68,34 @@ function update090to0902() {
                                  true);
    }
 
-   // Add missing fill in 0.90 empty version
-   $migration->addField("glpi_entities", 'inquest_duration', "integer", array('value' => 0));
+   $profileRight = new profileRight();
+   foreach ($DB->request('glpi_profiles') as $profile) {
+      if (!countElementsInTable("glpi_profilerights",
+                                "`profiles_id`='".$profile['id']."' AND `name`='license'")) {
+        $query = "SELECT `rights`
+                  FROM `glpi_profilerights`
+                  WHERE `profiles_id`='".$profile['id']."'
+                     AND `name`='software'";
+        $result = $DB->query($query);
+        $tmp['rights'] = 0;
+        if ($DB->numrows($result) > 0) {
+           $tmp['rights']       = $DB->result($result, 0, "rights");
+        }
+        $tmp['profiles_id'] = $profile['id'];
+        $tmp['name']        = 'license';
+        $profileRight->add($tmp);
+      }
+   }
 
+   $migration->addField('glpi_softwarelicenses', 'is_template', 'bool');
+   $migration->addField('glpi_softwarelicenses', 'template_name', 'string');
+   $migration->addKey('glpi_softwarelicenses', 'is_template');
+
+   $migration->addField('glpi_softwarelicenses', 'is_deleted', 'bool');
+   $migration->addKey('glpi_softwarelicenses', 'is_deleted');
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
    return $updateresult;
 }
-?>
