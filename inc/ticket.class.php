@@ -1398,6 +1398,7 @@ class Ticket extends CommonITILObject {
          $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
          $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
          if (!$CFG_GLPI['use_rich_text']) {
+         $input["content"] = Html::entity_decode_deep($input["content"]);
             $input["content"] = Html::entity_decode_deep($input["content"]);
             $input["content"] = Html::clean($input["content"]);
          }
@@ -6502,7 +6503,9 @@ class Ticket extends CommonITILObject {
          echo "</div>";
 
          echo "<div class='ticket_description'>";
-         echo Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
+
+         echo $this->setSimpleTextContent($this->fields['content']);
+
          echo "</div>";
 
          echo "</div>"; // h_content TicketContent
@@ -6510,15 +6513,15 @@ class Ticket extends CommonITILObject {
          echo "</div>"; // h_item middle
 
          echo "<div class='break'></div>";
-      }
+         }
 
       // end timeline
       echo "</div>"; // h_item $user_position
       echo "<script type='text/javascript'>read_more();</script>";
-   }
+      }
 
 
-   /**
+    /**
     * @since version 0.90
    **/
    function getTicketActors() {
