@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -237,7 +236,7 @@ class Item_Ticket extends CommonDBRelation{
       if (isset($options['_tickettemplate'])) {
          $tt                  = $options['_tickettemplate'];
          $opt['templates_id'] = $tt->fields['id'];
-      } elseif (isset($options['templates_id'])) {
+      } else if (isset($options['templates_id'])) {
          $tt->getFromDBWithDatas($options['templates_id']);
          $opt['templates_id'] = $tt->fields['id'];
       }
@@ -616,7 +615,7 @@ class Item_Ticket extends CommonDBRelation{
             }
             Dropdown::showItemTypes($myname, array_keys($types),
                                     array('emptylabel' => $emptylabel,
-                                          'value'      => $itemtype, 
+                                          'value'      => $itemtype,
                                           'rand'       => $rand, 'display_emptychoice' => true));
             $found_type = isset($types[$itemtype]);
 

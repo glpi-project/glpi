@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -1314,13 +1313,17 @@ class MailCollector  extends CommonDBTM {
    /**
     * Summary of getDecodedFetchbody
     * used to get decoded part from email
-    * @param mixed $structure
-    * @param mixed $mid
-    * @param mixed $part 
+    *
+    * @since version 0.90.2
+    * @param $structure
+    * @param $mid
+    * @param $part
+    *
     * @return bool|string
-    */
+   **/
    private function getDecodedFetchbody($structure, $mid, $part) {
-      if ($message=imap_fetchbody($this->marubox, $mid, $part)) {
+
+      if ($message = imap_fetchbody($this->marubox, $mid, $part)) {
          switch ($structure->encoding) {
             case 1 :
                $message = imap_8bit($message);
@@ -1406,13 +1409,15 @@ class MailCollector  extends CommonDBTM {
              && $structure->subtype) {
             // Embeded image come without filename - generate trivial one
             $filename = "image_$part.".$structure->subtype;
-         } elseif (empty($filename) && $structure->type==2 && $structure->subtype) {
+         } else if (empty($filename)
+                    && ($structure->type == 2)
+                    && $structure->subtype) {
              // Embeded email comes without filename - try to get "Subject:" or generate trivial one
              $filename = "msg_$part.EML"; // default trivial one :)!
-             if ( ($message=$this->getDecodedFetchbody($structure, $mid, $part)) 
-                && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches)) ) {
-                     $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";  
-                     $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;                    
+             if (($message = $this->getDecodedFetchbody($structure, $mid, $part))
+                 && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches))) {
+                 $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";
+                $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;
              }
          }
 
@@ -1452,7 +1457,8 @@ class MailCollector  extends CommonDBTM {
             return false;
          }
 
-         if (($structure->type==2 && $structure->subtype) || $message = $this->getDecodedFetchbody($structure, $mid, $part)) {
+         if ((($structure->type == 2) && $structure->subtype)
+             || ($message = $this->getDecodedFetchbody($structure, $mid, $part))) {
             if (file_put_contents($path.$filename, $message)) {
                $this->files[$filename] = $filename;
                // If embeded image, we add a tag
@@ -1799,4 +1805,3 @@ class MailCollector  extends CommonDBTM {
    }
 
 }
-?>
