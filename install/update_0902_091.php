@@ -348,10 +348,7 @@ function update0902to091() {
 
    /************** Enhance Associated items for ticket ***************/
    // TEMPLATE UPDATE
-   if (isIndex('glpi_tickettemplatepredefinedfields', 'unicity')) {
-      $DB->queryOrDie("ALTER TABLE `glpi_tickettemplatepredefinedfields`
-                   DROP KEY `unicity`;", "Associated items migration : alter template predefinedfields unicity");
-   }
+   $migration->dropKey('glpi_tickettemplatepredefinedfields', 'unicity')
 
    // Get associated item searchoption num
    if (!isset($CFG_GLPI["use_rich_text"])) {
@@ -429,18 +426,12 @@ function update0902to091() {
                                       WHERE `num` = '".$item_num."'
                                             AND `tickettemplates_id` = '".$templates_id."'",
                                      "Associated items migration : delete $table itemtypes");
-                     $DB->queryOrDie("UPDATE `$table`
-                                      SET `num` = '".$item_num."'
-                                      WHERE `num` = '".$itemtype_num."'
-                                            AND `tickettemplates_id` = '".$templates_id."'",
-                                      "Associated items migration : delete $table itemtypes");
-                  } else {
-                     $DB->queryOrDie("UPDATE `$table`
-                                      SET `num` = '".$item_num."'
-                                      WHERE `num` = '".$itemtype_num."'
-                                            AND `tickettemplates_id` = '".$templates_id."'",
-                                    "Associated items migration : delete $table itemtypes");
                   }
+                  $DB->queryOrDie("UPDATE `$table`
+                                   SET `num` = '".$item_num."'
+                                   WHERE `num` = '".$itemtype_num."'
+                                         AND `tickettemplates_id` = '".$templates_id."'",
+                                 "Associated items migration : delete $table itemtypes");
                }
             }
             break;
