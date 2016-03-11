@@ -325,6 +325,10 @@ switch ($current_version) {
       include("../install/update_0901_0902.php");
       update0901to0902();
 
+   case "0.90.2" :
+      include("../install/update_0902_091.php");
+      update0902to091();
+
    /* remember to also change --force below for last version */
 
    case GLPI_VERSION :
