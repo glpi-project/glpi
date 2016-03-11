@@ -350,18 +350,20 @@ class ProjectTask extends CommonDBChild {
          $this->check($ID, READ);
          $projects_id     = $this->fields['projects_id'];
          $projecttasks_id = $this->fields['projecttasks_id'];
+
       } else {
          $projects_id     = $options['projects_id'];
          $projecttasks_id = $options['projecttasks_id'];
+         $recursive       = $this->fields['is_recursive'];
          $this->check(-1, CREATE, $options);
       }
-
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>"._n('Project', 'Projects', Session::getPluralNumber())."</td>";
       echo "<td>";
       if ($this->isNewID($ID)) {
          echo "<input type='hidden' name='projects_id' value='$projects_id'>";
+         echo "<input type='hidden' name='is_recursive' value='$recursive'>";
       }
       echo "<a href='project.form.php?id=".$projects_id."'>".
              Dropdown::getDropdownName("glpi_projects", $projects_id)."</a>";
