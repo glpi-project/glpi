@@ -43,8 +43,9 @@ try {
    $ma = new MassiveAction($_POST, $_GET, 'initial');
 } catch (Exception $e) {
 
-   echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
-                              __s('Warning')."'><br><br>";
+   echo "<div class='center'>";
+   echo Html::sprite_img('warning', array('title' => __s('Warning')));
+   echo "<br><br>";
    echo "<span class='b'>".$e->getMessage()."</span><br>";
    echo "</div>";
    exit();

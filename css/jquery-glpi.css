@@ -100,7 +100,11 @@ html .ui-autocomplete {
    -webkit-border-radius: 10px;
    -o-border-radius: 10px;
    border: 1px solid  #CC9900;
-   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
+/*   background: url("../pics/fd_hoverlink.png") 0 0 repeat; */
+   background-color: #f0e5bd;
+   opacity: 0.93;
+   filter: alpha(opacity=93); /* For IE8 and earlier */
+   
    max-width: 350px;
    margin : auto;
 }

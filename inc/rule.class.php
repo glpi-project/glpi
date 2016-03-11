@@ -1859,7 +1859,7 @@ class Rule extends CommonDBTM {
                                                 'condition' => $active_condition), '',
                                  array('type' => $this->fields["sub_type"],
                                        'id'   => $this->fields["id"],),
-                                 $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
+                                 'deplier_up');
             echo "</td>";
          } else {
             echo "<td>&nbsp;</td>";
@@ -1875,7 +1875,7 @@ class Rule extends CommonDBTM {
                                                 'condition' => $active_condition), '',
                                  array('type' => $this->fields["sub_type"],
                                        'id'   => $this->fields["id"]),
-                                 $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
+                                 'deplier_down');
             echo "</td>";
          } else {
             echo "<td>&nbsp;</td>";

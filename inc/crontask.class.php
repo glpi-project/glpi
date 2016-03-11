@@ -162,7 +162,7 @@ class CronTask extends CommonDBTM{
    **/
    static function getUsedItemtypes() {
       global $DB;
-      
+
       $types= array();
       foreach  ($DB->request("SELECT DISTINCT(`itemtype`)
                             FROM `glpi_crontasks`") as $data) {
@@ -486,7 +486,7 @@ class CronTask extends CommonDBTM{
          echo Html::convDateTime($this->fields['lastrun']);
          echo "&nbsp;";
          Html::showSimpleForm(static::getFormURL(), 'resetdate', __('Blank'),
-                              array('id' => $ID), $CFG_GLPI['root_doc']."/pics/reset.png");
+                              array('id' => $ID), 'reset');
       }
       echo "</td></tr>";
 
@@ -553,7 +553,7 @@ class CronTask extends CommonDBTM{
       }
       if ($tmpstate == self::STATE_RUNNING) {
          Html::showSimpleForm(static::getFormURL(), 'resetstate', __('Blank'),
-                              array('id' => $ID), $CFG_GLPI['root_doc']."/pics/reset.png");
+                              array('id' => $ID), 'reset');
       }
       echo "</td></tr>";
 
@@ -1319,7 +1319,7 @@ class CronTask extends CommonDBTM{
       $tab[8]['massiveaction'] = false;
       $tab[8]['datatype']      = 'itemtypename';
       $tab[8]['types']         = self::getUsedItemtypes();
-      
+
 
       $tab[16]['table']        = $this->getTable();
       $tab[16]['field']        = 'comment';

@@ -1720,11 +1720,11 @@ class Config extends CommonDBTM {
 
          if ($tmperror > 0) {
             if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'> ".
+               echo Html::sprite_img('redbutton')." ".
                      sprintf(__('Check permissions to the directory: %s'), $dir).
                      " ".$errors[$tmperror]."\n";
             } else {
-               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/redbutton.png'><p class='red'>".
+               echo "<td>".Html::sprite_img('redbutton')."<p class='red'>".
                     $errors[$tmperror]."</p> ".
                     sprintf(__('Check permissions to the directory: %s'), $dir).
                     "'</td></tr>";
@@ -1732,13 +1732,11 @@ class Config extends CommonDBTM {
             $error = 2;
          } else {
             if ($fordebug) {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".__s('OK').
-                    "\">$dir : OK\n";
+                echo Html::sprite_img('greenbutton', array('title' => __s('OK'))).
+                        $dir." : OK\n";
             } else {
-               echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
-                          __s('A file and a directory have be created and deleted - Perfect!')."\"
-                          title=\"".
-                          __s('A file and a directory have be created and deleted - Perfect!')."\">".
+               echo "<td>".Html::sprite_img('greenbutton', array('title' =>
+                   __s('A file and a directory have be created and deleted - Perfect!'))).
                     "</td></tr>";
             }
          }
@@ -1752,20 +1750,19 @@ class Config extends CommonDBTM {
 
       if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
          if ($fordebug) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".__s('OK')."\">".
+            echo Html::sprite_img('greenbutton', array('title' => __s('OK'))).
                    GLPI_LOG_DIR." : OK\n";
          } else {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/greenbutton.png' alt=\"".
-                       __s('A file was created - Perfect!')."\" title=\"".
-                       __s('A file was created - Perfect!')."\"></td></tr>";
+            echo "<td>".Html::sprite_img('greenbutton', array('title' => __s('A file was created - Perfect!'))).
+                    "</td></tr>";
          }
 
       } else {
          if ($fordebug) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/orangebutton.png'>".
+            echo Html::sprite_img('orangebutton').
                   sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."\n";
          } else {
-            echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/orangebutton.png'>".
+            echo "<td>".Html::sprite_img('orangebutton').
                  "<p class='red'>".__('The file could not be created.')."</p>".
                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
          }

@@ -213,7 +213,7 @@ class Group extends CommonTreeDropdown {
       }
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
-      
+
       $this->addStandardTab('Log',$ong, $options);
       return $ong;
    }
@@ -333,7 +333,7 @@ class Group extends CommonTreeDropdown {
          $title = self::getTypeName(Session::getPluralNumber());
       }
 
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/groupes.png", self::getTypeName(Session::getPluralNumber()), $title,
+      Html::displayTitle("groupes", self::getTypeName(Session::getPluralNumber()), $title,
                          $buttons);
    }
 

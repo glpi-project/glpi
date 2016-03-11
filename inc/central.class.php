@@ -164,14 +164,14 @@ class Central extends CommonGLPI {
                                implode(" ", $accounts));
 
             echo "<tr><th colspan='2'>";
-            Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
+            Html::displayTitle("warning", $message, $message);
             echo "</th></tr>";
          }
          if (file_exists(GLPI_ROOT . "/install/install.php")) {
             echo "<tr><th colspan='2'>";
             $message = sprintf(__('For security reasons, please remove file: %s'),
                                "install/install.php");
-            Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
+            Html::displayTitle("warning", $message, $message);
             echo "</th></tr>";
          }
       }
@@ -179,7 +179,7 @@ class Central extends CommonGLPI {
       if ($DB->isSlave()
           && !$DB->first_connection) {
          echo "<tr><th colspan='2'>";
-         Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", __('MySQL replica: read only'),
+         Html::displayTitle("warning", __('MySQL replica: read only'),
                             __('MySQL replica: read only'));
          echo "</th></tr>";
       }

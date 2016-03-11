@@ -722,12 +722,12 @@ class Bookmark extends CommonDBTM {
                   echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
                          "mark_default=1&amp;id=".$this->fields["id"]."\" alt=\"".
                          __s('Not default search')."\" itle=\"".__s('Not default search')."\">".
-                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark_grey.png\"></a>";
+                         Html::sprite_img('bookmark_grey')."</a>";
                } else {
                   echo "<a href=\"".$CFG_GLPI['root_doc']."/front/bookmark.php?action=edit&amp;".
                          "mark_default=0&amp;id=".$this->fields["id"]."\" alt=\"".
                          __s('Default search')."\" title=\"".__s('Default search')."\">".
-                         "<img src=\"".$CFG_GLPI['root_doc']."/pics/bookmark.png\"></a>";
+                         Html::sprite_img('bookmark')."</a>";
                }
             }
             echo "</td>";
@@ -736,7 +736,7 @@ class Bookmark extends CommonDBTM {
                   echo "<td>";
                   Html::showSimpleForm($this->getSearchURL(), array('action' => 'up'), '',
                                        array('id'      => $this->fields["id"]),
-                                       $CFG_GLPI["root_doc"]."/pics/deplier_up.png");
+                                       'deplier_up');
                   echo "</td>";
                } else {
                   echo "<td>&nbsp;</td>";
@@ -746,7 +746,7 @@ class Bookmark extends CommonDBTM {
                   echo "<td>";
                   Html::showSimpleForm($this->getSearchURL(), array('action' => 'down'), '',
                                        array('id'      => $this->fields["id"]),
-                                       $CFG_GLPI["root_doc"]."/pics/deplier_down.png");
+                                       'deplier_down');
                   echo "</td>";
                } else {
                   echo "<td>&nbsp;</td>";
@@ -881,9 +881,9 @@ class Bookmark extends CommonDBTM {
 
 
       echo " <a href='#' onClick=\"".Html::jsGetElementbyID('bookmarksave').".dialog('open');\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
-             title=\"".__s('Save as bookmark')."\" alt=\"".__s('Save as bookmark')."\"
-             class='calendrier'>";
+      echo Html::sprite_img('bookmark_record',
+              array('title' => __s('Save as bookmark'),
+                    'addclass' => 'calendrier'));
       echo "</a>";
       Ajax::createIframeModalWindow('bookmarksave',
                                     $CFG_GLPI["root_doc"]."/front/bookmark.php?type=$type".

@@ -168,15 +168,14 @@ class Ticket_Ticket extends CommonDBRelation {
       if (is_array($tickets) && count($tickets)) {
          foreach ($tickets as $linkID => $data) {
             if ($ticket->getFromDB($data['tickets_id'])) {
-               $icons =  "<img src='".Ticket::getStatusIconURL($ticket->fields["status"]).
-                             "' alt=\"".Ticket::getStatus($ticket->fields["status"])."\"
-                             title=\"". Ticket::getStatus($ticket->fields["status"])."\">";
+               $icons = Html::sprite_img(Ticket::getStatusIconURL($ticket->fields["status"]),
+                       array('title' => Ticket::getStatus($ticket->fields["status"])));
                if ($canupdate) {
                   $icons .= '&nbsp;'.Html::getSimpleForm(static::getFormURL(), 'purge',
                                                          _x('button', 'Delete permanently'),
                                                          array('id'         => $linkID,
                                                                'tickets_id' => $ID),
-                                                         $CFG_GLPI["root_doc"]."/pics/delete.png");
+                                                         'delete');
                }
                $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link']),
                                $ticket->getLink());
@@ -257,7 +256,7 @@ class Ticket_Ticket extends CommonDBRelation {
 
    function post_deleteFromDB() {
       global $CFG_GLPI;
-      
+
       $t = new Ticket();
       $t->updateDateMod($this->fields['tickets_id_1']);
       $t->updateDateMod($this->fields['tickets_id_2']);
@@ -275,12 +274,12 @@ class Ticket_Ticket extends CommonDBRelation {
 
    function post_addItem() {
       global $CFG_GLPI;
-      
+
       $t = new Ticket();
       $t->updateDateMod($this->fields['tickets_id_1']);
       $t->updateDateMod($this->fields['tickets_id_2']);
       parent::post_addItem();
-      
+
       $donotif = $CFG_GLPI["use_mailing"];
       if ($donotif) {
          $t->getFromDB($this->fields['tickets_id_1']);
@@ -288,7 +287,7 @@ class Ticket_Ticket extends CommonDBRelation {
          $t->getFromDB($this->fields['tickets_id_2']);
          NotificationEvent::raiseEvent("update", $t);
       }
-      
+
    }
 
 

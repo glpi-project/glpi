@@ -344,9 +344,9 @@ class Event extends CommonDBTM {
          echo "<th ".$args[1].">";
          if ($sort == $field) {
             if ($order == "DESC") {
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+               echo Html::sprite_img('puce-down');
             } else {
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+               echo Html::sprite_img('puce-up');
             }
          }
          echo "<a href='$target?sort=$field&amp;order=".(($order=="ASC")?"DESC":"ASC")."'>".$args[0].

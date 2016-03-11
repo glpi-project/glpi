@@ -58,8 +58,11 @@ if (isset($_POST["itemtype"])
    // First line display add / delete images for normal and meta search items
    if ($_POST["num"] == 0) {
       $linked = Search::getMetaItemtypeAvailable($_POST["itemtype"]);
-      echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title=\"".
-             __s('Add a search criterion')."\" id='addsearchcriteria$randrow'>";
+      echo Html::sprite_img('plus', array(
+          'title' => __s('Add a search criterion'),
+          'id' => 'addsearchcriteria'.$randrow,
+          'addclass' => 'pointer'
+      ));
 
       $js = Html::jsGetElementbyID("addsearchcriteria$randrow").".on('click', function(e) {
                $.post( '".$CFG_GLPI['root_doc']."/ajax/searchrow.php',
@@ -73,9 +76,12 @@ if (isset($_POST["itemtype"])
       echo "&nbsp;&nbsp;&nbsp;&nbsp;";
 
       if (is_array($linked) && (count($linked) > 0)) {
-         echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" 
-                alt='+' title=\"". __s('Add a global search criterion').
-                "\" id='addmetasearchcriteria$randrow'>";
+        echo Html::sprite_img('meta_plus', array(
+            'title' => __s('Add a global search criterion'),
+            'id' => 'addmetasearchcriteria'.$randrow,
+            'addclass' => 'pointer'
+        ));
+
 
          $js = Html::jsGetElementbyID("addmetasearchcriteria$randrow").".on('click', function(e) {
                   $.post( '".$CFG_GLPI['root_doc']."/ajax/searchmetarow.php',
@@ -96,19 +102,18 @@ if (isset($_POST["itemtype"])
       if ($item && $item->maybeDeleted()) {
          echo "<input type='hidden' id='is_deleted' name='is_deleted' value='".$p['is_deleted']."'>";
          echo "<a href='#' onClick = \"toogle('is_deleted','','','');
-                  document.forms['searchform".$_POST["itemtype"]."'].submit();\">
-                  <img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted".
-                  (!$p['is_deleted']?'_no':'').".png\" name='img_deleted' alt=\"".
-                  (!$p['is_deleted']?__s('Show the dustbin'):__s("Don't show deleted items")).
-                  "\" title=\"".
-                  (!$p['is_deleted']?__s('Show the dustbin'):__s("Don't show deleted items")).
-                  "\"></a>";
+                  document.forms['searchform".$_POST["itemtype"]."'].submit();\">".
+                  Html::sprite_img('showdeleted'.(!$p['is_deleted']?'_no':''),
+                   array('title' => (!$p['is_deleted']?__s('Show the dustbin'):__s("Don't show deleted items")))).
+                  "</a>";
          echo '&nbsp;&nbsp;';
       }
    } else {
-      echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title=\"".
-             __s('Delete a search criterion')."\" onclick=\"".
-             Html::jsGetElementbyID($rowid).".remove();\">&nbsp;&nbsp;";
+      echo Html::sprite_img('moins', array(
+          'title' => __s('Delete a search criterion'),
+          'onclick' => Html::jsGetElementbyID($rowid).".remove();",
+          'addclass' => 'pointer'));
+      echo "&nbsp;&nbsp;";
    }
 
    $criteria = array();
@@ -167,7 +172,7 @@ if (isset($_POST["itemtype"])
 
    if (isset($criteria['field'])) {
       $value = $criteria['field'];
-   } 
+   }
 
    $rand     = Dropdown::showFromArray("criteria[".$_POST["num"]."][field]", $values,
                                        array('value' => $value,

@@ -936,8 +936,7 @@ class RSSFeed extends CommonDBTM {
             || (!$personal && Session::haveRight('rssfeed_public', CREATE))) {
          echo "<span class='floatright'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/rssfeed.form.php'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."' title=\"".
-                __s('Add')."\"></a></span>";
+         echo Html::sprite_img('plus', array('title' => __s('Add')))."</a></span>";
       }
 
       echo "</div></th></tr>\n";

@@ -798,8 +798,9 @@ class MassiveAction {
             }
 
             if (!isset($ma->POST['common_options'])) {
-               echo "<div class='center'><img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='".
-                              __s('Warning')."'><br><br>";
+               echo "<div class='center'>".
+                       Html::sprite_img('warning', array('title' => __s('Warning'))).
+                       "<br><br>";
                echo "<span class='b'>".__('Implementation error !')."</span><br>";
                echo "</div>";
                exit();

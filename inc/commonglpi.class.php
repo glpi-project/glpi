@@ -756,17 +756,18 @@ class CommonGLPI {
 
          if ($first >= 0) {
             echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'>".
-                  "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
-                    "\" title=\"".__s('First')."\"></a></td>";
+                   Html::sprite_img('first', array('title' => __s('First'))).
+                  "</a></td>";
          } else {
-            echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
-                                    __s('First')."\" title=\"".__s('First')."\"></td>";
+            echo "<td class='left'>".
+                    Html::sprite_img('first_off', array('title' => __s('First'))).
+                    "</td>";
          }
 
          if ($prev >= 0) {
             echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>".
-                  "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                    "\" title=\"".__s('Previous')."\"></a></td>";
+                  Html::sprite_img('left', array('title' => __s('Previous'))).
+                  "</a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 37 && e.ctrlKey) {
@@ -776,8 +777,9 @@ class CommonGLPI {
                   });';
             echo Html::scriptBlock($js);
          } else {
-            echo "<td class='left'><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
-                                    __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
+            echo "<td class='left'>".
+                    Html::sprite_img('left_off', array('title' => __s('Previous'))).
+                    "</td>";
          }
 
          echo "<td><a href=\"".$glpilisturl."\">";
@@ -819,8 +821,8 @@ class CommonGLPI {
 
          if ($next >= 0) {
             echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>".
-                  "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                    "\" title=\"".__s('Next')."\"></a></td>";
+                  Html::sprite_img('right', array('title' => __s('Next'))).
+                  "</a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
                           if(e.keyCode == 39 && e.ctrlKey) {
@@ -830,17 +832,19 @@ class CommonGLPI {
                   });';
             echo Html::scriptBlock($js);
          } else {
-            echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
-                                     __s('Next')."\" title=\"".__s('Next')."\"></td>";
+            echo "<td class='right'>".
+                    Html::sprite_img('right_off', array('title' => __s('Next'))).
+                    "</td>";
          }
 
          if ($last >= 0) {
             echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'>".
-                  "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
-                    "\" title=\"".__s('Last')."\"></a></td>";
+                  Html::sprite_img('last', array('title' => __s('Last'))).
+                  "</a></td>";
          } else {
-            echo "<td class='right'><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
-                                     __s('Last')."\" title=\"".__s('Last')."\"></td>";
+            echo "<td class='right'>".
+                  Html::sprite_img('last_off', array('title' => __s('Last'))).
+                    "</td>";
          }
 
 //          echo "</ul></div>";
@@ -935,7 +939,7 @@ class CommonGLPI {
 //          echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
 //          echo "</a></li>";
          echo "<li><a href=\"javascript:toggleTableDisplay('mainformtable','tabsbodyimg','".
-                    $CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"].
+                 $CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"].
                     "/pics/deplier_up.png')\">";
          echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
          echo "</a></li>";
@@ -956,21 +960,23 @@ class CommonGLPI {
          echo "</a></li>";
 
          if ($first >= 0) {
-            echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
-                       "\" title=\"".__s('First')."\"></a></li>";
+            echo "<li><a href='$cleantarget?id=$first$extraparamhtml'>".
+                    Html::sprite_img('first', array('title' => __s('First'))).
+                    "</a></li>";
          } else {
-            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
-                       __s('First')."\" title=\"".__s('First')."\"></li>";
+            echo "<li>".
+                    Html::sprite_img('first_off', array('title' => __s('First'))).
+                    "</li>";
          }
 
          if ($prev >= 0) {
-            echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                       "\" title=\"".__s('Previous')."\"></a></li>";
+            echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'>".
+                    Html::sprite_img('left', array('title' => __s('Previous'))).
+                    "</a></li>";
          } else {
-            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
-                       __s('Previous')."\" title=\"".__s('Previous')."\"></li>";
+            echo "<li>".
+                    Html::sprite_img('left_off', array('title' => __s('Previous'))).
+                    "</li>";
          }
 
          if ($current !== false) {
@@ -978,21 +984,23 @@ class CommonGLPI {
          }
 
          if ($next >= 0) {
-            echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                       "\" title=\"".__s('Next')."\"></a></li>";
+            echo "<li><a href='$cleantarget?id=$next$extraparamhtml'>".
+                    Html::sprite_img('right', array('title' => __s('Next'))).
+                    "</a></li>";
          } else {
-            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
-                       __s('Next')."\" title=\"".__s('Next')."\"></li>";
+            echo "<li>".
+                    Html::sprite_img('right_off', array('title' => __s('Next'))).
+                    "</li>";
          }
 
          if ($last >= 0) {
-            echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
-                       $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
-                       "\" title=\"".__s('Last')."\"></a></li>";
+            echo "<li><a href='$cleantarget?id=$last$extraparamhtml'>".
+                    Html::sprite_img('last', array('title' => __s('Last'))).
+                    "</a></li>";
          } else {
-            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
-                       __s('Last')."\" title=\"".__s('Last')."\"></li>";
+            echo "<li>".
+                    Html::sprite_img('last_off', array('title' => __s('Last'))).
+                    "</li>";
          }
          echo "</ul></div>";
          echo "<div class='sep'></div>";
@@ -1241,10 +1249,11 @@ class CommonGLPI {
 
       $rand = mt_rand();
 
-      $link ="<img alt=\"".__s('Display options')."\" title=\"";
-      $link .= __s('Display options')."\" src='";
-      $link .= $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
-      $link .= " class='pointer' onClick=\"".Html::jsGetElementbyID("displayoptions".$rand).".dialog('open');\">";
+      $link = Html::sprite_img('options_search', array(
+         'title' => __s('Display options'),
+         'addclass' => 'pointer',
+         'onClick' => Html::jsGetElementbyID("displayoptions".$rand).".dialog('open');"
+      ));
       $link .= Ajax::createIframeModalWindow("displayoptions".$rand,
                                              $CFG_GLPI['root_doc'].
                                                 "/front/display.options.php?itemtype=".

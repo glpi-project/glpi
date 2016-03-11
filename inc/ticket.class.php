@@ -177,9 +177,7 @@ class Ticket extends CommonITILObject {
          $opt['criteria'][1]['value']      = Session::getLoginUserID();
          $opt['criteria'][1]['link']       = 'AND';
 
-         $pic_validate = "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
-                           __s('Ticket waiting for your approval')."\" src='".
-                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png'>";
+         $pic_validate = Html::sprite_img('menu_showall', array('title' => __s('Ticket waiting for your approval')));
 
          $links[$pic_validate] = '/front/ticket.php?'.Toolbox::append_params($opt, '&amp;');
       }
@@ -3979,8 +3977,9 @@ class Ticket extends CommonITILObject {
       printf(__('%1$s%2$s'), _n('Associated element', 'Associated elements', Session::getPluralNumber()), $tt->getMandatoryMark('itemtype'));
       if ($ID && $canupdate) {
          echo "&nbsp;<a  href='".$this->getFormURL()."?id=".$ID.
-                       "&amp;forcetab=Item_Ticket$1'><img title='".__s('Update')."' alt='".__s('Update')."'
-                      class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'></a>";
+                       "&amp;forcetab=Item_Ticket$1'>">
+                 Html::sprite_img('showselect', array('title' => __s('Update'), 'addclass' => 'pointer')).
+                 "</a>";
       }
       echo $tt->getEndHiddenFieldText('itemtype');
       echo "</th>";
@@ -4122,9 +4121,7 @@ class Ticket extends CommonITILObject {
          $rand_linked_ticket = mt_rand();
          if ($canupdate) {
             echo "&nbsp;";
-            echo "<img onClick=\"".Html::jsShow("linkedticket$rand_linked_ticket")."\"
-                   title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                   class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+            echo Html::sprite_img('add_dropdown', array('title' => __s('Add'), 'addclass' => 'pointer'));
          }
          echo '</th>';
          echo "<td width='".(100-$colsize1)."%' colspan='3'>";
@@ -4291,16 +4288,20 @@ class Ticket extends CommonITILObject {
       global $CFG_GLPI;
 
       echo "<script type='text/javascript'>var nbfiles=1; var maxfiles = 5;</script>";
-      echo "<span id='addfilebutton'><img title=\"".__s('Add')."\" alt=\"".
-             __s('Add')."\" onClick=\"if (nbfiles<maxfiles){
+      echo "<span id='addfilebutton'>";
+      echo Html::sprite_img('add_dropdown', array(
+        'title' => __s('Add'),
+        'class' => 'pointer',
+        'onClick' => "if (nbfiles<maxfiles){
                            var row = ".Html::jsGetElementbyID('uploadfiles').";
                            row.append('<br><input type=\'file\' name=\'filename[]\' size=\'$size\'>');
                            nbfiles++;
                            if (nbfiles==maxfiles) {
                               ".Html::jsHide('addfilebutton')."
                            }
-                        }\"
-              class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
+                        }"
+      ));
+      echo "</span>";
    }
 
 
@@ -4802,8 +4803,9 @@ class Ticket extends CommonITILObject {
 
       if ($_SESSION["glpiactiveprofile"]["interface"] != "central") {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1\">".
-                __('Create a ticket')."&nbsp;<img src='".$CFG_GLPI["root_doc"].
-                "/pics/menu_add.png' title=\"". __s('Add')."\" alt=\"".__s('Add')."\"></a>";
+                __('Create a ticket')."&nbsp;".
+                Html::sprite_img('menu_add', array('title' => __s('Add'))).
+                "</a>";
       } else {
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                 Toolbox::append_params($options,'&amp;')."\">".__('Ticket followup')."</a>";

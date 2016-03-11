@@ -462,11 +462,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                            sprintf(__('%1$s = %2$s'),
                                                   Software::getTypeName(1), $title));
 
-
-            $sort_img = "<img src='".$CFG_GLPI["root_doc"]."/pics/".
-                          ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt=''
-                          title=''>";
-
+            $sort_img = Html::sprite_img(($order == "DESC" ? "puce-down" : "puce-up"));
 
             if ($canedit) {
                $rand = mt_rand();
@@ -493,8 +489,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
             echo "<table class='tab_cadre_fixehov'>";
 
-            $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                          (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
+            $sort_img = Html::sprite_img(($order == "DESC" ? "puce-down" : "puce-up"));
 
             $header_begin  = "<tr>";
             $header_top    = '';

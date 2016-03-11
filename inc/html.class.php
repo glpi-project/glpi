@@ -68,12 +68,12 @@ class Html {
                               );
 
       $value = preg_replace($search, '', $value);
-      
+
       $search        = array('@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
                               );
 
       $value = preg_replace($search, '', $value);
-      
+
       include_once(GLPI_HTMLAWED);
 
       $value = htmLawed($value, array('elements' => 'none',
@@ -524,7 +524,7 @@ class Html {
          }
       }
       echo "<div class='center'><br><br>";
-      echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='".__s('Warning')."'>";
+      echo Html::sprite_img('warning', array('title' => __s('Warning')));
       echo "<br><br><span class='b'>" . __('Item not found') . "</span></div>";
       self::nullFooter();
       exit ();
@@ -583,7 +583,9 @@ class Html {
       echo "<div class='center'><table class='tab_glpi'><tr>";
       if ($ref_pic_link!="") {
          $ref_pic_text = self::clean($ref_pic_text);
-         echo "<td>".Html::image($ref_pic_link, array('alt' => $ref_pic_text))."</td>";
+         echo "<td>";
+         echo Html::sprite_img($ref_pic_link, array('title' => $ref_pic_text));
+         echo "</td>";
       }
 
       if ($ref_title != "") {
@@ -741,7 +743,7 @@ class Html {
          }
       }
       echo "<div class='center'><br><br>";
-      echo Html::image($CFG_GLPI["root_doc"] . "/pics/warning.png", array('alt' => __('Warning')));
+      echo Html::sprite_img('warning', array('title' => __('Warning')));
       echo "<br><br><span class='b'>$message</span></div>";
       self::nullFooter();
       exit ();
@@ -1004,6 +1006,7 @@ class Html {
       echo "<meta http-equiv='Cache-Control' content='no-cache'>\n";
       echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
       //  CSS link
+/**
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
 
       // surcharge CSS hack for IE
@@ -1024,6 +1027,10 @@ class Html {
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/css/style.css");
 
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
+
+      echo Html::css($CFG_GLPI["root_doc"]."/minify/main.css");
+**/
+      echo Html::css($CFG_GLPI["root_doc"]."/minify/glpi.min.css");
 
       // Add specific css for plugins
       if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
@@ -1046,45 +1053,27 @@ class Html {
       // AJAX library
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.js");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.js");
+         $js_lib = Html::core_js_lib();
+         foreach ($js_lib as $js_file) {
+            if (strstr($js_file, '[LANG]')) {
+               if (isset($_SESSION['glpilanguage'])) {
+                  $js_file = str_replace("[LANG]", $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2], $js_file);
+                  if (file_exists($CFG_GLPI["root_doc"]."/".$js_file)) {
+                     echo Html::script($CFG_GLPI["root_doc"]."/".$js_file);
+                  }
+               }
+            } else {
+                echo Html::script($CFG_GLPI["root_doc"]."/".$js_file);
+            }
+         }
       } else {
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.min.js");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.min.js");
+          if (isset($_SESSION['glpilanguage'])) {
+             echo Html::script($CFG_GLPI["root_doc"]."/minify/main.".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".min.js");
+          } else {
+             echo Html::script($CFG_GLPI["root_doc"]."/minify/main.min.js");
+          }
       }
-
       echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js");
-
-      // PLugins jquery
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/imagepaste/jquery.image_paste.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js");
-
-      if (isset($_SESSION['glpilanguage'])) {
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
-         $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
-         if (file_exists(GLPI_ROOT.$filename)) {
-            echo Html::script($CFG_GLPI["root_doc"].$filename);
-         }
-         $filename = "/lib/jqueryplugins/select2/select2_locale_".
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
-         if (file_exists(GLPI_ROOT.$filename)) {
-            echo Html::script($CFG_GLPI["root_doc"].$filename);
-         }
-      }
-
-      // Some Javascript-Functions which we may need later
-      echo Html::script($CFG_GLPI["root_doc"].'/script.js');
 
       // Add specific javascript for plugins
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
@@ -1304,8 +1293,8 @@ class Html {
       $already_used_shortcut = array('1');
 
 
-      echo "<div id='header'>";
-      echo "<div id='c_logo'>";
+      echo "<div id='header' class='glpimg glpimg-fd_nav1'>";
+      echo "<div id='c_logo' class='glpimg glpimg-fd_logo'>";
       echo Html::link('', $CFG_GLPI["root_doc"]."/front/central.php",
                       array('accesskey' => '1',
                             'title'     => __('Home')));
@@ -1526,24 +1515,24 @@ class Html {
          // Add item
          echo "<li>";
          if (isset($links['add'])) {
-            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_add.png",
-                             array('alt' => __('Add'),
+            echo Html::sprite_img("menu_add",
+                             array('title' => __('Add'),
                                     'url' => $CFG_GLPI["root_doc"].$links['add']));
          } else {
-            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_add_off.png",
-                             array('alt' => __('Add')));
+            echo Html::sprite_img("menu_add_off",
+                             array('title' => __('Add')));
          }
          echo "</li>";
 
          // Search Item
          echo "<li>";
          if (isset($links['search'])) {
-            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search.png",
-                             array('alt' => __('Search'),
+            echo Html::sprite_img("menu_search",
+                             array('title' => __('Search'),
                                    'url' => $CFG_GLPI["root_doc"].$links['search']));
          } else {
-            echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_search_off.png",
-                             array('alt' => __('Search')));
+            echo Html::sprite_img("menu_search_off",
+                             array('title' => __('Search')));
          }
          echo "</li>";
         // Links
@@ -1557,31 +1546,31 @@ class Html {
 
                   case "template" :
                      echo "<li>";
-                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_addtemplate.png",
-                                      array('alt' => __('Manage templates...'),
+                     echo Html::sprite_img("menu_addtemplate",
+                                      array('title' => __('Manage templates...'),
                                             'url' => $CFG_GLPI["root_doc"].$val));
                      echo "</li>";
                      break;
 
                   case "showall" :
                      echo "<li>";
-                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_showall.png",
-                                      array('alt' => __('Show all'),
+                     echo Html::sprite_img("menu_showall",
+                                      array('title' => __('Show all'),
                                             'url' => $CFG_GLPI["root_doc"].$val));
                      echo "</li>";
                      break;
 
                   case "summary" :
                      echo "<li>";
-                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_show.png",
-                                      array('alt' => __('Summary'),
+                     echo Html::sprite_img("menu_show",
+                                      array('title' => __('Summary'),
                                             'url' => $CFG_GLPI["root_doc"].$val));
                      echo "</li>";
                      break;
 
                   case "config" :
                      echo "<li>";
-                     echo Html::image($CFG_GLPI["root_doc"] . "/pics/menu_config.png",
+                     echo Html::sprite_img("menu_config",
                                       array('alt' => __('Setup'),
                                             'url' => $CFG_GLPI["root_doc"].$val));
                      echo "</li>";
@@ -1669,14 +1658,13 @@ class Html {
                                     array('title'         => __('Load a bookmark'),
                                           'reloadonclose' => true));
       echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
-             "\"  alt=\"".__s('Load a bookmark')."\">";
+      echo Html::sprite_img('bookmark', array('title' => __s('Load a bookmark')));
       echo "</a></li>";
 
       /// MENU ALL
       echo "<li>";
       echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open');\">";
-      echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png'>";
+      echo Html::sprite_img('menu_all');
       echo "</a></li>";
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -1737,7 +1725,7 @@ class Html {
       $FOOTER_LOADED = true;
       echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
 
-      echo "<div id='footer' >";
+      echo "<div id='footer' class='glpimg glpimg-fd_footer'>";
       echo "<table width='100%'><tr><td class='left'><span class='copyright'>";
       $timedebug = sprintf(_n('%s second', '%s seconds', $TIMER_DEBUG->getTime()),
                            $TIMER_DEBUG->getTime());
@@ -1833,8 +1821,8 @@ class Html {
       echo "<body>";
 
       // Main Headline
-      echo "<div id='header'>";
-      echo "<div id='c_logo'>";
+      echo "<div id='header' class='glpimg glpimg-fd_nav1'>";
+      echo "<div id='c_logo' class='glpimg glpimg-fd_logo'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/' accesskey='1' title=\"".__s('Home')."\">".
            "<span class='invisible'>Logo</span></a></div>";
 
@@ -1900,8 +1888,8 @@ class Html {
       echo "<body>";
 
       // Main Headline
-      echo "<div id='header'>";
-      echo "<div id='c_logo' >";
+      echo "<div id='header' class='glpimg glpimg-fd_nav1'>";
+      echo "<div id='c_logo' class='glpimg glpimg-fd_logo'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='1' title=\"".
              __s('Home')."\"><span class='invisible'>Logo</span></a></div>";
 
@@ -2052,9 +2040,8 @@ class Html {
          $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($opt,'&amp;');
          $pic_validate = "<a href='$url_validate'>".
-                         "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
-                           __s('Ticket waiting for your approval')."\" src='".
-                           $CFG_GLPI["root_doc"]."/pics/menu_showall.png'></a>";
+                         Html::sprite_img('menu_showall', array('title' => __s('Ticket waiting for your approval'))).
+                         "</a>";
          echo "<li>$pic_validate</li>\n";
 
       }
@@ -2063,8 +2050,8 @@ class Html {
       if (Session::haveRight('ticket', CREATE)
           && strpos($_SERVER['PHP_SELF'],"ticket")) {
          echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".__s('Add').
-                "\" alt=\"".__s('Add')."\"></a></li>";
+         echo Html::sprite_img('menu_add', array('title' => __s('Add')));
+         echo "</a></li>";
       }
 
       echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
@@ -2076,8 +2063,7 @@ class Html {
                                     array('title'         => __('Load a bookmark'),
                                           'reloadonclose' => true));
       echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\"\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
-             "\" alt=\"".__s('Load a bookmark')."\">";
+      echo Html::sprite_img('bookmark', array('title' => __s('Load a bookmark')));
       echo "</a></li>";
 
       // check user id : header used for display messages when session logout
@@ -2109,7 +2095,7 @@ class Html {
 
       echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
 
-      echo "<div id='footer'>";
+      echo "<div id='footer' class='glpimg glpimg-fd_footer'>";
       echo "<table width='100%'><tr><td class='right'>";
       echo "<a href='http://glpi-project.org/'>";
       echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"]." Copyright (C) 2003-".date("Y").
@@ -2280,11 +2266,12 @@ class Html {
 
       echo "<tr>";
       if (!$onright) {
-         echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($ontop?'-top':'').".png'
-                    alt=''></td>";
+         echo "<td>";
+         echo Html::sprite_img("arrow-left".($ontop?'-top':''));
       } else {
-         echo "<td class='left' width='80%'></td>";
+         echo "<td class='left' width='80%'>";
       }
+      echo "</td>";
       echo "<td class='center' style='white-space:nowrap;'>";
       echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
              href='#'>".__('Check all')."</a></td>";
@@ -2294,8 +2281,8 @@ class Html {
              href='#'>".__('Uncheck all')."</a></td>";
 
       if ($onright) {
-         echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-right".($ontop?'-top':'').".png'
-                    alt=''>";
+         echo "<td>";
+         echo Html::sprite_img("arrow-right".($ontop?'-top':''));
       } else {
          echo "<td class='left' width='80%'>";
       }
@@ -2743,8 +2730,9 @@ class Html {
          }
          echo "<table class='tab_glpi' width='$width'><tr>";
          if ($p['display_arrow']) {
-            echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
-                   ($p['ontop']?'-top':'').".png' alt=''></td>";
+            echo "<td width='30px'>";
+            echo Html::sprite_img("arrow-left".($p['ontop']?'-top':''));
+            echo "</td>";
          }
          echo "<td width='100%' class='left'>";
          echo "<a class='vsubmit' ";
@@ -2832,9 +2820,12 @@ class Html {
       $output .= Html::hidden($name, array('value' => $p['value'],
                                            'id'    => "hiddendate".$p['rand'],
                                            'size'  => 10));
+      $output .= Html::sprite_img('calendar', array('id' => 'cal'.$p['rand']));
       if ($p['maybeempty'] && $p['canedit']) {
-         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
-                      "\" id='resetdate".$p['rand']."'>";
+         $output .= "&nbsp;".Html::sprite_img('reset', array(
+             'title' => __('Clear'),
+             'id' => "resetdate".$p['rand']
+         ));
       }
 
       $js = '';
@@ -2853,10 +2844,7 @@ class Html {
                   showButtonPanel: true,
                   changeMonth: true,
                   changeYear: true,
-                  showOn: 'button',
-                  showWeek: true,
-                  buttonImage: '".$CFG_GLPI['root_doc']."/pics/calendar.png',
-                  buttonImageOnly: true  ";
+                  showWeek: true ";
 
       if (!$p['canedit']) {
          $js .= ",disabled: true";
@@ -2885,6 +2873,10 @@ class Html {
       $js .= ",dateFormat: '".$format."'";
 
       $js .= "});";
+
+      $js .= "$('#cal".$p['rand']."').click(function(){
+      $('#showdate".$p['rand']."').focus();
+      });";
       $output .= Html::scriptBlock($js);
 
       if ($p['display']) {
@@ -3046,9 +3038,12 @@ class Html {
       $output  = "<input id='showdate".$p['rand']."' type='text' name='_$name' value='".
                    self::convDateTime($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "hiddendate".$p['rand']));
+      $output .= Html::sprite_img('calendar', array('id' => 'cal'.$p['rand']));
       if ($p['maybeempty'] && $p['canedit']) {
-         $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
-                      "\" id='resetdate".$p['rand']."'>";
+         $output .= "&nbsp;".Html::sprite_img('reset', array(
+             'title' => __('Clear'),
+             'id' => "resetdate".$p['rand']
+         ));
       }
 
       $js = "";
@@ -3074,11 +3069,8 @@ class Html {
                   showButtonPanel: true,
                   changeMonth: true,
                   changeYear: true,
-                  showOn: 'button',
                   showWeek: true,
-                  controlType: 'select',
-                  buttonImage: '".$CFG_GLPI['root_doc']."/pics/calendar.png',
-                  buttonImageOnly: true";
+                  controlType: 'select'";
       if (!$p['canedit']) {
          $js .= ",disabled: true";
       }
@@ -3108,8 +3100,10 @@ class Html {
 
       $js .= "});";
 
+      $js .= "$('#cal".$p['rand']."').click(function(){
+      $('#showdate".$p['rand']."').focus();
+      });";
       $output .= Html::scriptBlock($js);
-
 
       if ($p['display']) {
          echo $output;
@@ -3489,7 +3483,7 @@ class Html {
       $param['link']       = '';
       $param['linkid']     = '';
       $param['linktarget'] = '';
-      $param['img']        = $CFG_GLPI["root_doc"]."/pics/aide.png";
+      $param['img']        = "aide";
       $param['popup']      = '';
       $param['ajax']       = '';
       $param['display']    = true;
@@ -3527,7 +3521,8 @@ class Html {
             }
             $out .= '>';
          }
-         $out .= "<img id='tooltip$rand' alt='ffff' src='".$param['img']."'>";
+         $out .= Html::sprite_img($param['img'],
+                 array('id' => 'tooltip'.$rand));
 
          if (!empty($param['link'])) {
             $out .= "</a>";
@@ -3829,12 +3824,12 @@ class Html {
 
       // Back and fast backward button
       if (!$start == 0) {
-         echo "<th class='left'><a href='javascript:reloadTab(\"start=0\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
-                "\" title=\"".__s('Start')."\"></a></th>";
-         echo "<th class='left'><a href='javascript:reloadTab(\"start=$back\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-                "\" title=\"".__s('Previous')."\"></th>";
+         echo "<th class='left'><a href='javascript:reloadTab(\"start=0\");'>";
+         echo Html::sprite_img('first', array('title' => __s('Start')));
+         echo "</a></th>";
+         echo "<th class='left'><a href='javascript:reloadTab(\"start=$back\");'>";
+         echo Html::sprite_img('left', array('title' => __s('Previous')));
+         echo "</th>";
       }
 
       echo "<td width='50%' class='tab_bg_2'>";
@@ -3853,12 +3848,12 @@ class Html {
 
       // Forward and fast forward button
       if ($forward < $numrows) {
-         echo "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-                "\" title=\"".__s('Next')."\"></a></th>";
-         echo "<th class='right'><a href='javascript:reloadTab(\"start=$end\");'>
-               <img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
-                "\" title=\"".__s('End')."\"></a></th>";
+         echo "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");'>";
+         echo Html::sprite_img('right', array('title' => __s('Next')));
+         echo "</a></th>";
+         echo "<th class='right'><a href='javascript:reloadTab(\"start=$end\");'>";
+         echo Html::sprite_img('last', array('title' => __s('End')));
+         echo "</a></th>";
       }
 
       // End pager
@@ -3982,13 +3977,11 @@ class Html {
       if (!$start == 0) {
          echo "<th class='left'>";
          echo "<a href='$target?$parameters&amp;start=0'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
-               "\" title=\"".__s('Start')."\">";
+         echo Html::sprite_img('first', array('title' => __s('Start')));
          echo "</a></th>";
          echo "<th class='left'>";
          echo "<a href='$target?$parameters&amp;start=$back'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-               "\" title=\"".__s('Previous')."\">";
+         echo Html::sprite_img('left', array('title' => __s('Previous')));
          echo "</a></th>";
       }
 
@@ -4038,14 +4031,12 @@ class Html {
       if ($forward<$numrows) {
          echo "<th class='right'>";
          echo "<a href='$target?$parameters&amp;start=$forward'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-               "\" title=\"".__s('Next')."\">";
+         echo Html::sprite_img('right', array('title' => __s('Next')));
          echo "</a></th>\n";
 
          echo "<th class='right'>";
          echo "<a href='$target?$parameters&amp;start=$end'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/last.png' alt=\"".__s('End').
-                "\" title=\"".__s('End')."\">";
+         echo Html::sprite_img('last', array('title' => __s('End')));
          echo "</a></th>\n";
       }
       // End pager
@@ -4164,7 +4155,7 @@ class Html {
       if (empty($btimage)) {
          $link .= $btlabel;
       } else {
-         $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel'>";
+         $link .= Html::sprite_img($btimage, array('title' => $btlabel));
       }
       $link .="</a>";
 
@@ -4605,7 +4596,8 @@ class Html {
          unset($options['confirm']);
       }
       // Do not escape title if it is an image
-      if (!preg_match('/^<img.*/', $text)) {
+      if (!preg_match('/^<img.*/', $text)
+              && !preg_match('/^<span class.*/', $text)) {
          $text = Html::cleanInputText($text);
       }
 
@@ -5372,5 +5364,85 @@ class Html {
    }
 
 
+
+   /**
+    * List of js lib to load
+    */
+   static function core_js_lib() {
+       return array(
+           "lib/jquery/js/jquery-1.10.2.js",
+           "lib/jquery/js/jquery-ui-1.10.4.custom.js",
+//           "lib/tiny_mce/tiny_mce_src.js",
+           // Plugins jquery
+           "lib/jqueryplugins/backtotop/BackToTop.jquery.js",
+           "lib/jqueryplugins/select2/select2.js",
+           "lib/jqueryplugins/qtip2/jquery.qtip.js",
+           "lib/jqueryplugins/jstree/jquery.jstree.js",
+           "lib/jqueryplugins/rateit/jquery.rateit.min.js",
+           "lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js",
+           "lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.js",
+           "lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js",
+           "lib/jqueryplugins/jcrop/jquery.Jcrop.js",
+           "lib/jqueryplugins/imagepaste/jquery.image_paste.js",
+           "lib/jqueryplugins/spectrum-colorpicker/spectrum.js",
+           "lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.js",
+           "lib/jquery/i18n/jquery.ui.datepicker-[LANG].js",
+           "lib/jqueryplugins/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-[LANG].js",
+           "lib/jqueryplugins/select2/select2_locale_[LANG].js",
+           // Some Javascript-Functions which we may need later
+           "script.js"
+       );
+   }
+
+
+
+   /**
+    * Display an image from sprite
+    */
+   static function sprite_img($name, $options=array()) {
+
+      if (!isset($options['title'])) {
+         $options['title'] = '';
+      }
+
+      $url = false;
+      if (!empty($options['url'])) {
+         $url = $options['url'];
+         unset($options['url']);
+      }
+
+      $prefix = 'glpimg';
+      if (isset($options['prefix'])) {
+          $prefix = $options['prefix'];
+      }
+
+      $addclass = '';
+      if (isset($options['addclass'])) {
+          $addclass = $options['addclass'];
+      }
+
+      $id = '';
+      if (isset($options['id'])) {
+          $id = "id='".$options['id']."'";
+      }
+
+      $onclick = '';
+      if (isset($options['onclick'])) {
+          $onclick = "onclick='".$options['onclick']."'";
+      }
+
+      $style = '';
+      if (isset($options['style'])) {
+          $onclick = "style='".$options['style']."'";
+      }
+
+      $image = sprintf("<span class='block %s %s-%s %s' %s %s %s %s></span>",
+              $prefix, $prefix, $name, $addclass,
+              Html::parseAttributes($options), $id, $onclick, $style);
+      if ($url) {
+         return Html::link($image, $url);
+      }
+      return $image;
+   }
 }
 ?>

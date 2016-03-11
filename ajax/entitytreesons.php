@@ -75,8 +75,8 @@ if (isset($_GET['node'])) {
                $path['data']['title'] .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
                                                  $CFG_GLPI["root_doc"]."/front/".$target.
                                                  "?active_entity=".$ID."&amp;is_recursive=1'>".
-                                         "<img alt=\"".__s('Show all')."\" src='".
-                                           $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+                                         Html::sprite_img('entity_all', array('title' => __s('Show all'))).
+                                         "</a>";
                if (isset($ancestors[$ID])) {
                   $path['state'] = 'open';
                } else {
@@ -110,8 +110,8 @@ if (isset($_GET['node'])) {
                   $path['data']['title'] .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
                                                     $CFG_GLPI["root_doc"]."/front/".$target.
                                                     "?active_entity=".$row['id']."&amp;is_recursive=1'>".
-                                            "<img alt=\"".__s('Show all')."\" src='".
-                                              $CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+                                            Html::sprite_img('entity_all', array('title' => __s('Show all'))).
+                                            "</a>";
 
                   if (isset($ancestors[$row['id']])) {
                      $path['state'] = 'open';

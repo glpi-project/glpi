@@ -221,9 +221,11 @@ class Dropdown {
              && !isset($_REQUEST['_in_modal'])
              && $params['addicon']) {
 
-               $output .= "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
-                            "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                            onClick=\"".Html::jsGetElementbyID('add_dropdown'.$params['rand']).".dialog('open');\">";
+               $output .=  Html::sprite_img('add_dropdown', array(
+                   'title' => __s('Add'),
+                   'style' => 'cursor:pointer; margin-left:2px;',
+                   'onClick' => Html::jsGetElementbyID('add_dropdown'.$params['rand']).".dialog('open');"
+               ));
                $output .= Ajax::createIframeModalWindow('add_dropdown'.$params['rand'],
                                                         $item->getFormURL(),
                                                         array('display' => false));
@@ -1882,9 +1884,8 @@ class Dropdown {
                                        __('Duplicate the element as many times as there are connections')));
             echo "&nbsp;";
 
-            echo "<img alt=\"".__s('Duplicate the element as many times as there are connections').
-                 "\" title=\"".__s('Duplicate the element as many times as there are connections').
-                 "\" src='".$CFG_GLPI["root_doc"]."/pics/aide.png'>";
+            echo Html::sprite_img('aide',
+                    array('title' => __s('Duplicate the element as many times as there are connections')));
          }
 
       } else {

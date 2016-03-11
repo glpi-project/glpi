@@ -687,7 +687,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
     * @todo study if we cannot use these methods for the user emails
     * @see showChildsForItemForm(CommonDBTM $item, $field_name)
     *
-    * @param $item                  CommonDBTM object: the item on which to add the current CommenDBChild
+    * @param $item                  CommonDBTM object: the item on which to add the current CommonDBChild
     * @param $field_name            the name of the HTML field inside Item's form
     * @param $canedit               (default NULL) NULL to use default behaviour
     * @param $display      boolean  true display or false to return the button HTML code (true by default)
@@ -725,13 +725,18 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
          // Beware : -1 is for the first element added ...
          $result = "&nbsp;<script type='text/javascript'>var $child_count_js_var=2; </script>";
-         $result .= "<span id='add".$lower_name."button'>".
-              "<img title=\"".__s('Add')."\" alt=\"". __s('Add').
-                "\" onClick=\"var row = ".Html::jsGetElementByID($div_id).";
-                             row.append('<br>" .
+         $result .= "<span id='add".$lower_name."button'>";
+
+         $result .=  Html::sprite_img('add_dropdown', array(
+             'title' => __s('Add'),
+             'addclass' => 'pointer',
+             'onClick' => "var row = ".Html::jsGetElementByID($div_id).";
+               row.append('<br>" .
                static::getJSCodeToAddForItemChild($field_name, $child_count_js_var)."');
-                            $child_count_js_var++;\"
-               class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
+               $child_count_js_var++;"
+         ));
+         $result .= "</span>";
+
       }
       if ($display) {
          echo $result;

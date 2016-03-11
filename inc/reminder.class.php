@@ -1096,8 +1096,8 @@ class Reminder extends CommonDBTM {
         || (!$personal && Session::haveRight(self::$rightname, CREATE))) {
          echo "<span class='floatright'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php'>";
-         echo "<img src='".$CFG_GLPI["root_doc"]."/pics/plus.png' alt='".__s('Add')."'
-                title=\"". __s('Add')."\"></a></span>";
+         echo Html::sprite_img('plus', array('title' => __s('Add')));
+         echo "</a></span>";
       }
 
       echo "</div></th></tr>\n";
@@ -1122,10 +1122,10 @@ class Reminder extends CommonDBTM {
                echo "<span class='floatright'>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
                      "&amp;type=day'>";
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"". __s('Planning').
-                     "\" title=\"".sprintf(__s('From %1$s to %2$s'),
+               echo Html::sprite_img('rdv',
+                       array('title' => sprintf(__s('From %1$s to %2$s'),
                                            Html::convDateTime($data["begin"]),
-                                           Html::convDateTime($data["end"]))."\">";
+                                           Html::convDateTime($data["end"]))));
                echo "</a></span>";
             }
 

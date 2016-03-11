@@ -445,7 +445,8 @@ class Reservation extends CommonDBChild {
       }
 
       echo "<div class='center'><table class='tab_glpi'><tr><td>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation.png' alt='' title=''></td>";
+      echo Html::sprite_img('reservation');
+      echo "</td>";
       echo "<td class ='b'>".$name."</td></tr>";
       echo "<tr><td colspan='2' class ='center'>$all</td></tr></table></div><br>\n";
 
@@ -467,13 +468,13 @@ class Reservation extends CommonDBChild {
 
       echo "<div class='center'>";
       echo "<table class='tab_glpi'><tr><td><a href='reservation.php".$str_precedent."'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
-             "\" title=\"".__s('Previous')."\"></a></td>";
+      echo Html::sprite_img('left', array('title' => __s('Previous'))).
+              "</a></td>";
       echo "<td class='b'>".sprintf(__('%1$s %2$s'), $monthsarray[$mois_courant], $annee_courante).
            "</td>";
       echo "<td><a href='reservation.php".$str_suivant."'>";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
-             "\" title=\"".__s('Next')."\"></a></td></tr></table>\n";
+      echo Html::sprite_img('right', array('title' => __s('Next'))).
+              "</a></td></tr></table>\n";
 
       // test
       echo "<table width='90%' class='tab_glpi'><tr><td class='top' width='100px'>";
@@ -556,8 +557,8 @@ class Reservation extends CommonDBChild {
             echo "<tr><td class='center'>";
             echo "<a href='reservation.form.php?id=&amp;item[$ID]=$ID&amp;".
                   "begin=".$annee_courante."-".$mois_courant."-".$ii." 12:00:00'>";
-            echo "<img  src='".$CFG_GLPI["root_doc"]."/pics/addresa.png' alt=\"".
-                  __s('Reserve')."\" title=\"".__s('Reserve')."\"></a></td></tr>\n";
+            echo Html::sprite_img('addresa', array('title' => __s('Reserve'))).
+                    "</a></td></tr>\n";
          }
 
          echo "<tr><td>";
@@ -1098,7 +1099,7 @@ class Reservation extends CommonDBChild {
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                      $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
                      __s('See planning')."\">";
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''>".
+               echo Html::sprite_img('reservation-3').
                     "</a>";
                echo "</td></tr>\n";
             }
@@ -1146,7 +1147,7 @@ class Reservation extends CommonDBChild {
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                      $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
                      __s('See planning')."\">";
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''>";
+               echo Html::sprite_img('reservation-3');
                echo "</a></td></tr>\n";
             }
          }
@@ -1227,8 +1228,9 @@ class Reservation extends CommonDBChild {
             list($annee, $mois, $jour) = explode("-", $data["begin"]);
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;".
-                  "annee_courante=$annee' title=\"".__s('See planning')."\"><img src=\"".
-                  $CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
+                  "annee_courante=$annee' title=\"".__s('See planning')."\">".
+                  Html::sprite_img('reservation-3').
+                  "</a>";
             echo "</td></tr>\n";
          }
       }
@@ -1289,7 +1291,7 @@ class Reservation extends CommonDBChild {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   $data["reservationitems_id"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' ".
                   "title=\"".__s('See planning')."\">";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png' alt='' title=''></a>";
+            echo Html::sprite_img('reservation-3')."</a>";
             echo "</td></tr>\n";
          }
       }

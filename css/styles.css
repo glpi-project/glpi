@@ -54,6 +54,10 @@ span.invisible {
    visibility: hidden;
 }
 
+span.block {
+    display: inline-block;
+}
+
 .starthidden {
    display: none;
 }
@@ -1482,7 +1486,9 @@ div#tabcontent {
 /* ################--------------- Header / menu  ---------------#################### */
 
 div#header {
-   background: #f1f4e3 url("../pics/fd_nav1.png") 0 0 repeat-x;
+/*   background: #f1f4e3 url("../pics/fd_nav1.png") 0 0 repeat-x;*/
+  width: 100%;
+  height: 93px;
   /* margin: 0px 10px 10px 10px;
    -moz-border-radius: 0px 0px 8px 8px;
    -webkit-border-radius: 0px 0px 8px 8px;
@@ -1605,7 +1611,11 @@ ul#menu ul.ssmenu {
    top: 5px;
   /* width: 108px;*/
    border: 1px solid #CC9900;
-   background: url("../pics/fd_ssmenu.png") 0 0 repeat;
+   /* background: url("../pics/fd_ssmenu.png") 0 0 repeat; */
+   background-color: #f0e5bd;
+   opacity: 0.9;
+   filter: alpha(opacity=90); /* For IE8 and earlier */
+    
    display: none;
    -moz-border-radius: 4px;
    -webkit-border-radius: 4px;
@@ -1722,7 +1732,6 @@ div#header div#c_logo {
    width: 64px;
    height: 41px;
    float: left;
-   background: url("../pics/fd_logo.png") 0 0 repeat-x;
 }
 
 div#header div#c_logo a {
@@ -1766,7 +1775,8 @@ div#c_ssmenu2 {
    /*background: url("../pics/fd_nav3.png") 0 0 repeat-x;*/
    height: 28px;
    clear: both;
-   font-size: 0.9em; 
+   font-size: 0.9em;
+   background: #f8f7f3;
 }
 
 div#c_ssmenu2 ul {
@@ -1798,7 +1808,11 @@ div#show_all_menu {
 /*   top:20px;*/ 
 /*   left:5px;*/
    border: 1px solid  #CC9900;
-   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
+/*   background: url("../pics/fd_hoverlink.png") 0 0 repeat; */
+   background-color: #f0e5bd;
+   opacity: 0.93;
+   filter: alpha(opacity=93); /* For IE8 and earlier */
+   
    -moz-border-radius: 5px;
    -webkit-border-radius: 5px;
    border-radius: 5px;
@@ -1846,7 +1860,7 @@ div#show_all_menu .tab_bg_1 a:hover {
 #footer {
    margin-top:10px;
    margin-bottom:10px;
-   background: url("../pics/fd_footer.png") 0 0 repeat-x;
+/*   background: 0 0 repeat-x;*/
    font-size: 9px;	
    color :#757575;
    padding: 6px;

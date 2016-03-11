@@ -1141,17 +1141,20 @@ class Search {
                 && Session::haveRightsOr('search_config', array(DisplayPreference::PERSONAL,
                                                                 DisplayPreference::GENERAL))) {
 
-               $search_config_top = $search_config_bottom
-                  = "<img alt=\"".__s('Select default items to show')."\" title=\"".
-                        __s('Select default items to show')."\" src='".
-                        $CFG_GLPI["root_doc"]."/pics/options_search.png' ";
+               $search_config_top = Html::sprite_img('options_search', array(
+                    'title' => __s('Select default items to show'),
+                    'addclass' => 'pointer',
+                    'onclick' => Html::jsGetElementbyID('search_config_top').
+                                                      ".dialog('open');"
+                 ));
 
-               $search_config_top    .= " class='pointer' onClick=\"";
-               $search_config_top    .= Html::jsGetElementbyID('search_config_top').
-                                                      ".dialog('open');\">";
-               $search_config_bottom .= " class='pointer' onClick=\"";
-               $search_config_bottom .= Html::jsGetElementbyID('search_config_bottom').
-                                                      ".dialog('open');\">";
+               $search_config_bottom = Html::sprite_img('options_search', array(
+                    'title' => __s('Select default items to show'),
+                    'addclass' => 'pointer',
+                    'onclick' => Html::jsGetElementbyID('search_config_bottom').
+                                                      ".dialog('open');"
+                 ));
+
                $search_config_top
                   .= Ajax::createIframeModalWindow('search_config_top',
                                                    $CFG_GLPI["root_doc"].
@@ -1789,8 +1792,9 @@ class Search {
                .$p['target']
                .(strpos($p['target'],'?') ? '&amp;' : '?')
                ."reset=reset' >";
-            echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
-                  $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
+            echo "&nbsp;&nbsp;".
+                    Html::sprite_img('reset', array('title' => __s('Blank'),
+                        'addclass' => 'calendrier'))."</a>";
          }
          echo "</td>";
       }
@@ -4321,18 +4325,18 @@ class Search {
 
             case 'glpi_changes.status':
                $status = Change::getStatus($data[$num][0]['name']);
-               return "<img src=\"".Change::getStatusIconURL($data[$num][0]['name'])."\"
-                        alt=\"$status\" title=\"$status\">&nbsp;$status";
+               return Html::sprite_img(Change::getStatusIconURL($data[$num][0]['name']),
+                       array('title' => $status))."&nbsp;$status";
 
             case 'glpi_problems.status':
                $status = Problem::getStatus($data[$num][0]['name']);
-               return "<img src=\"".Problem::getStatusIconURL($data[$num][0]['name'])."\"
-                        alt=\"$status\" title=\"$status\">&nbsp;$status";
+               return Html::sprite_img(Problem::getStatusIconURL($data[$num][0]['name']),
+                       array('title' => $status))."&nbsp;$status";
 
             case 'glpi_tickets.status':
                $status = Ticket::getStatus($data[$num][0]['name']);
-               return "<img src=\"".Ticket::getStatusIconURL($data[$num][0]['name'])."\"
-                        alt=\"$status\" title=\"$status\">&nbsp;$status";
+               return Html::sprite_img(Ticket::getStatusIconURL($data[$num][0]['name']),
+                       array('title' => $status))."&nbsp;$status";
 
             case 'glpi_projectstates.name':
                $out = '';
@@ -4502,8 +4506,7 @@ class Search {
                if ($data[$num][0]['is_active']) {
                   return "<a href='reservation.php?reservationitems_id=".
                                           $data["refID"]."' title=\"".__s('See planning')."\">".
-                                          "<img src=\"".$CFG_GLPI["root_doc"].
-                                          "/pics/reservation-3.png\" alt='' title=''></a>";
+                                          Html::sprite_img('reservation-3')."</a>";
                } else {
                   return "&nbsp;";
                }
@@ -5483,9 +5486,9 @@ class Search {
             $out = "<th $options>";
             if ($issort) {
                if ($order=="DESC") {
-                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
+                  $out .= Html::sprite_img('puce-down');
                } else {
-                  $out .= "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+                  $out .= Html::sprite_img('puce-up');
                }
             }
             if (!empty($linkto)) {

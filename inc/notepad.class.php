@@ -148,7 +148,7 @@ class Notepad extends CommonDBChild {
                 WHERE `glpi_notepads`.`itemtype` = '".$item->getType()."'
                      AND `glpi_notepads`.`items_id` = '".$item->getID()."'
                 ORDER BY `date_mod` DESC";
-      
+
       foreach($DB->request($query) as $note) {
          $data[] = $note;
       }
@@ -292,7 +292,7 @@ class Notepad extends CommonDBChild {
             printf(__('%1$s / %2$s'), $update, $create);
             echo "</div>"; // floatright
 
-            
+
             echo "<div class='boxnotetext $classtoadd' ";
             if ($canedit) {
                echo "onclick=\"".Html::jsHide("view$id")." ".
@@ -310,11 +310,11 @@ class Notepad extends CommonDBChild {
                                     array('purge' => 'purge'),
                                     _x('button', 'Delete permanently'),
                                     array('id'   => $note['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png",
+                                    'delete',
                                     '',
                                      __('Confirm the final deletion?'));
             }
-            echo "</div>"; // boxnoteright            
+            echo "</div>"; // boxnoteright
             echo "</div>"; // boxnote
 
              if ($canedit) {

@@ -1767,7 +1767,7 @@ class User extends CommonDBTM {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
       }
-      Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", self::getTypeName(Session::getPluralNumber()), $title,
+      Html::displayTitle("users", self::getTypeName(Session::getPluralNumber()), $title,
                          $buttons);
    }
 
@@ -3242,9 +3242,12 @@ class User extends CommonDBTM {
           && $p['ldap_import']
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
-         $output .= "<img alt='' title=\"".__s('Import a user')."\" src='".$CFG_GLPI["root_doc"].
-                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                      onClick=\"".Html::jsGetElementbyID('userimport'.$p['rand']).".dialog('open');\">";
+         $output .= Html::sprite_img('add_dropdown', array(
+            'title' => __s('Import a user'),
+            'style' => 'cursor:pointer; margin-left:2px;',
+            'onClick' => Html::jsGetElementbyID('userimport'.$p['rand']).".dialog('open');"
+         ));
+
          $output .= Ajax::createIframeModalWindow('userimport'.$p['rand'],
                                                   $CFG_GLPI["root_doc"].
                                                       "/front/ldap.import.php?entity=".

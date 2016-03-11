@@ -45,9 +45,9 @@ Session::checkLoginUser();
 if (isset($_POST['users_id']) && ($_POST['users_id'] > 0)) {
       $rand = mt_rand();
       echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open');\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png'
-             title=\"".__s('Availability')."\" alt=\"".__s('Availability')."\"
-             class='calendrier'>";
+      echo Html::sprite_img('reservation-3',
+              array('title' => __s('Availability'),
+                    'addclass' => 'calendrier'));
       echo "</a>";
       Ajax::createIframeModalWindow('planningcheck'.$rand,
                                     $CFG_GLPI["root_doc"].

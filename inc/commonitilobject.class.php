@@ -2249,7 +2249,7 @@ abstract class CommonITILObject extends CommonDBTM {
                Html::showSimpleForm($linkclass->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
                                     array('id' => $d['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png");
+                                    'delete');
             }
             echo '<br>';
          }
@@ -2318,7 +2318,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   }
                   echo "&nbsp;";
                   if ($canedit) {
-                     $opt = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                     $opt = array('img'   => 'edit',
                                   'popup' => $linksupplier->getFormURL()."?id=".$d['id']);
                      Html::showToolTip($text, $opt);
                   }
@@ -2331,7 +2331,7 @@ abstract class CommonITILObject extends CommonDBTM {
                Html::showSimpleForm($linksupplier->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
                                     array('id' => $d['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png");
+                                    'delete');
             }
             echo '<br>';
          }
@@ -2957,40 +2957,40 @@ abstract class CommonITILObject extends CommonDBTM {
 
       switch ($status) {
          case self::INCOMING :
-            return $CFG_GLPI["root_doc"]."/pics/new.png";
+            return "new";
 
          case self::ASSIGNED :
-            return $CFG_GLPI["root_doc"]."/pics/assign.png";
+            return "assign";
 
          case self::PLANNED :
-            return $CFG_GLPI["root_doc"]."/pics/plan.png";
+            return "plan";
 
          case self::WAITING :
-            return $CFG_GLPI["root_doc"]."/pics/waiting.png";
+            return "waiting";
 
          case self::SOLVED :
-            return $CFG_GLPI["root_doc"]."/pics/solved.png";
+            return "solved";
 
          case self::CLOSED :
-            return $CFG_GLPI["root_doc"]."/pics/closed.png";
+            return "closed";
 
          case self::ACCEPTED :
-            return $CFG_GLPI["root_doc"]."/pics/accepted.png";
+            return "accepted";
 
          case self::OBSERVED :
-            return $CFG_GLPI["root_doc"]."/pics/observe.png";
+            return "observe";
 
          case self::EVALUATION :
-            return $CFG_GLPI["root_doc"]."/pics/evaluation.png";
+            return "evaluation";
 
          case self::APPROVAL :
-            return $CFG_GLPI["root_doc"]."/pics/approbation.png";
+            return "approbation";
 
          case self::TEST :
-            return $CFG_GLPI["root_doc"]."/pics/test.png";
+            return "test";
 
          case self::QUALIFICATION :
-            return $CFG_GLPI["root_doc"]."/pics/qualification.png";
+            return "qualification";
       }
       return '';
    }
@@ -3023,8 +3023,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   $icontitle = __s('Technician');
                   break;
             }
-            return "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/users.png'
-                     alt=\"$icontitle\" title=\"$icontitle\">";
+            return Html::sprite_img('users_20', array('title' => $icontitle));
 
          case 'group' :
             $icontitle = __('Group');
@@ -3131,7 +3130,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                if ($canedit
                    || ($d['users_id'] == Session::getLoginUserID())) {
-                  $opt      = array('img'   => $CFG_GLPI['root_doc'].'/pics/edit.png',
+                  $opt      = array('img'   => 'edit',
                                     'popup' => $linkuser->getFormURL()."?id=".$d['id']);
                   Html::showToolTip($text, $opt);
                }
@@ -3142,7 +3141,7 @@ abstract class CommonITILObject extends CommonDBTM {
                Html::showSimpleForm($linkuser->getFormURL(), 'delete',
                                     _x('button', 'Delete permanently'),
                                     array('id' => $d['id']),
-                                    $CFG_GLPI["root_doc"]."/pics/delete.png");
+                                    'delete');
             }
             echo "<br>";
          }
@@ -3529,9 +3528,11 @@ abstract class CommonITILObject extends CommonDBTM {
           && (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester'])) {
          $rand_requester = mt_rand();
          echo "&nbsp;&nbsp;";
-         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                onClick=\"".Html::jsShow("itilactor$rand_requester")."\"
-                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+         echo Html::sprite_img('add_dropdown', array(
+             'title' => __s('Add'),
+             'addclass' => 'pointer',
+             'onClick' => Html::jsShow("itilactor$rand_requester")
+         ));
          $candeleterequester = true;
       }
       echo "</th>";
@@ -3549,9 +3550,11 @@ abstract class CommonITILObject extends CommonDBTM {
          $rand_observer = mt_rand();
 
          echo "&nbsp;&nbsp;";
-         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                onClick=\"".Html::jsShow("itilactor$rand_observer")."\"
-                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+         echo Html::sprite_img('add_dropdown', array(
+             'title' => __s('Add'),
+             'addclass' => 'pointer',
+             'onClick' => Html::jsShow("itilactor$rand_observer")
+         ));
 
          $candeleteobserver = true;
 
@@ -3564,7 +3567,7 @@ abstract class CommonITILObject extends CommonDBTM {
          Html::showSimpleForm($this->getFormURL(), 'addme_observer',
                               __('Associate myself'),
                               array($this->getForeignKeyField() => $this->fields['id']),
-                              $CFG_GLPI["root_doc"]."/pics/addme.png");
+                              'addme');
       }
 
       echo "</th>";
@@ -3586,9 +3589,11 @@ abstract class CommonITILObject extends CommonDBTM {
          $rand_assign = mt_rand();
 
          echo "&nbsp;&nbsp;";
-         echo "<img title=\"".__s('Add')."\" alt=\"".__s('Add')."\"
-                onClick=\"".Html::jsShow("itilactor$rand_assign")."\"
-                class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+         echo Html::sprite_img('add_dropdown', array(
+             'title' => __s('Add'),
+             'addclass' => 'pointer',
+             'onClick' => Html::jsShow("itilactor$rand_assign")
+         ));
       }
       if ($ID
           && $can_assigntome
@@ -3598,7 +3603,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && $this->isAllowedStatus($this->fields['status'], CommonITILObject::ASSIGNED)) {
          Html::showSimpleForm($this->getFormURL(), 'addme_assign', __('Associate myself'),
                               array($this->getForeignKeyField() => $this->fields['id']),
-                              $CFG_GLPI["root_doc"]."/pics/addme.png");
+                              'addme');
       }
       if ($ID
           && $can_assign) {
@@ -4965,9 +4970,9 @@ abstract class CommonITILObject extends CommonDBTM {
          // First column
          $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $item->fields["id"]);
          if ($p['output_type'] == Search::HTML_OUTPUT) {
-            $first_col .= "<br><img src='".static::getStatusIconURL($item->fields["status"])."'
-                                alt=\"".static::getStatus($item->fields["status"])."\" title=\"".
-                                static::getStatus($item->fields["status"])."\">";
+            $first_col .= "<br>";
+            $first_col .= Html::sprite_img(static::getStatusIconURL($item->fields["status"]),
+                    array('title' => static::getStatus($item->fields["status"])));
          } else {
             $first_col = sprintf(__('%1$s - %2$s'), $first_col,
                                  static::getStatus($item->fields["status"]));

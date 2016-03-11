@@ -517,7 +517,7 @@ class Stat extends CommonGLPI {
                   $link = "<a href='stat.graph.php?id=".$value[$i]['id'].
                             "&amp;date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type".
                             (!empty($value2)?"&amp;champ=$value2":"")."'>".
-                          "<img src='".$CFG_GLPI["root_doc"]."/pics/stats_item.png' alt='' title=''>".
+                          Html::sprite_img('stats_item').
                           "</a>";
                }
                echo Search::showItem($output_type, $link, $item_num, $row_num);

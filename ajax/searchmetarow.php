@@ -67,12 +67,13 @@ if (isset($_POST["itemtype"])
    $rowid  = 'metasearchrow'.$_POST['itemtype'].$rand;
 
    echo "<tr class='metacriteria' id='$rowid'><td class='left' colspan='2'>";
-   
+
    echo "<table class='tab_format'><tr class='left'>";
    echo "<td width='30%'>";
-   echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
-          __s('Delete a global search criterion')."\" onclick=\"".
-          Html::jsGetElementbyID($rowid).".remove();\">";
+   echo Html::sprite_img('meta_moins',
+        array('title' => __s('Delete a global search criterion'),
+              'onclick' => Html::jsGetElementbyID($rowid).".remove();",
+              'addclass' => 'pointer'));
    echo "&nbsp;&nbsp;";
 
    // Display link item (not for the first item)
