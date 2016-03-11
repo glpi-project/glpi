@@ -195,17 +195,28 @@ class Ticket extends CommonITILObject {
 
 
    function canAdminActors() {
+
+      if ($this->fields['is_deleted'] = 1) {
+         return false;
+      }
       return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
    function canAssign() {
+
+      if ($this->fields['is_deleted'] = 1) {
+         return false;
+      }
       return Session::haveRight(self::$rightname, self::ASSIGN);
    }
 
 
    function canAssignToMe() {
 
+      if ($this->fields['is_deleted'] = 1) {
+         return false;
+      }
       return (Session::haveRight(self::$rightname, self::STEAL)
               || (Session::haveRight(self::$rightname, self::OWN)
                   && ($this->countUsers(CommonITILActor::ASSIGN) == 0)));
