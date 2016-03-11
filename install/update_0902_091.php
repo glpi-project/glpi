@@ -348,7 +348,7 @@ function update0902to091() {
 
    /************** Enhance Associated items for ticket ***************/
    // TEMPLATE UPDATE
-   $migration->dropKey('glpi_tickettemplatepredefinedfields', 'unicity')
+   $migration->dropKey('glpi_tickettemplatepredefinedfields', 'unicity');
 
    // Get associated item searchoption num
    if (!isset($CFG_GLPI["use_rich_text"])) {
