@@ -2706,6 +2706,7 @@ class Search {
                   if (Session::haveRight("$right", $itemtype::READMY)) {
                      $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
                                     OR $observer_table.users_id = '".Session::getLoginUserID()."'
+                                    OR $assign_table.users_id = '".Session::getLoginUserID()."'
                                     OR `glpi_".$table."`.`users_id_recipient` = '".Session::getLoginUserID()."'";
                   } else {
                      $condition .= "0=1";
@@ -4516,7 +4517,6 @@ class Search {
             case 'glpi_tickets.name' :
             case 'glpi_problems.name' :
             case 'glpi_changes.name' :
-
                if (isset($data[$num][0]['content'])
                    && isset($data[$num][0]['id'])
                    && isset($data[$num][0]['status'])) {
