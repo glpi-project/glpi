@@ -302,7 +302,8 @@ class Ticket extends CommonITILObject {
    **/
    function canApprove() {
 
-      return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
+      return ((($this->fields["users_id_recipient"] === Session::getLoginUserID())
+               &&  Session::haveRight('ticket', Ticket::SURVEY))
               || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
@@ -4534,7 +4535,7 @@ class Ticket extends CommonITILObject {
             $query .= "WHERE $is_deleted
                              AND (`status` = '".self::SOLVED."')
                              AND ($search_users_id";
-            if (!$showgrouptickets) {
+            if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
                $query .= " OR `glpi_tickets`.users_id_recipient = '".Session::getLoginUserID()."' ";
             }
             $query .= ")".
@@ -5700,8 +5701,8 @@ class Ticket extends CommonITILObject {
          $values[self::OWN]            = array('short' => __('Beeing in charge'),
                                                'long'  => __('To be in charge of a ticket'));
          $values[self::CHANGEPRIORITY] = __('Change the priority');
-         $values[self::SURVEY]         = array('short' => __('Reply to survey'),
-                                               'long'  => __('Reply to survey for ticket created by me'));
+         $values[self::SURVEY]         = array('short' => __('Approve solution/Reply survey (my ticket)'),
+                                               'long'  => __('Approve solution and reply to survey for ticket created by me'));
       }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);
