@@ -125,6 +125,23 @@ class Log extends CommonDBTM {
       if (!is_array($searchopt)) {
          return false;
       }
+      
+      // specific for infocom
+      if ($item->getType() == 'Infocom') {
+         $searchopt_real_type = Infocom::getSearchOptionsToAdd($real_type);
+         foreach ($searchopt as $key2 => $val2) {
+            // Keep searchoptions of plugins
+            if (!is_array($val2) && $key2 == 'plugins') {
+               break;
+            }
+
+            // Delete searchoptions not about infocom
+            if (! array_key_exists($key2, $searchopt_real_type)) {
+               unset($searchopt[$key2]);
+            }
+         }
+      }
+      
       $result = 0;
       // type for which getValueToDisplay() could be used (fully tested)
       $oktype = array('Entity');
