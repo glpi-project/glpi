@@ -4659,6 +4659,7 @@ class Html {
                         ajax: {
                            url: '$url',
                            dataType: 'json',
+                           type: 'POST',
                            data: function (term, page) {
                               return { ";
       foreach ($params as $key => $val) {
@@ -4701,6 +4702,7 @@ class Html {
 
          $js .= "            _one_id: id},
                                  dataType: 'json',
+                                 type: 'POST',
                                  }).done(function(data) { callback(data); });
                               }
                            }
