@@ -2021,6 +2021,7 @@ class AuthLDAP extends CommonDBTM {
       $config_ldap = new self();
       $res         = $config_ldap->getFromDB($ldap_server);
       $ldap_users  = array();
+      $input       = array();
 
       // we prevent some delay...
       if (!$res) {
