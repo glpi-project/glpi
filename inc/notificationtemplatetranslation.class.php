@@ -266,11 +266,17 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function prepareInputForAdd($input) {
+      if( $input['language'] == 0 ) {
+         $input['language'] = ''; // for default tanslation
+      }
       return parent::prepareInputForAdd(self::cleanContentHtml($input));
    }
 
 
    function prepareInputForUpdate($input) {
+      if( $input['language'] == 0 ) {
+         $input['language'] = ''; // for default tanslation
+      }
       return parent::prepareInputForUpdate(self::cleanContentHtml($input));
    }
 
