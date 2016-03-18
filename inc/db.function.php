@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -1274,9 +1273,11 @@ function getUserName($ID, $link=0) {
             $comments        = array();
             $comments[]      = array('name'  => __('Name'),
                                      'value' => $username);
-            $comments[]      = array('name'  => __('Login'),
-                                     'value' => $data["name"]);
-
+            // Ident only if you have right to read user
+            if (session::haveRight('user', READ)) {
+               $comments[]      = array('name'  => __('Login'),
+                                        'value' => $data["name"]);
+            }
 
             $email           = UserEmail::getDefaultForUser($ID);
             if (!empty($email)) {
@@ -1738,4 +1739,3 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
 
    return $query;
 }
-?>
