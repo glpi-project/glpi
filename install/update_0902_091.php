@@ -198,7 +198,7 @@ function update0902to091() {
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
                 VALUES ('ObjectLock', 'unlockobject', 86400, 4, 0, 1, 3,
                         0, 24, 30, NULL, NULL, NULL); " ;
-      $DB->queryOrDie($query, "Update UnlockObject cron task");
+      $DB->queryOrDie($query, "0.91 Add UnlockObject cron task");
    }
    // notification template
    $query = "SELECT *
@@ -210,7 +210,7 @@ function update0902to091() {
          $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Unlock Item request', 'ObjectLock', NOW())";
-         $DB->queryOrDie($query, "0.84 add planning recall notification");
+         $DB->queryOrDie($query, "0.91 Add unlock request notification template");
          $notid = $DB->insert_id();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
