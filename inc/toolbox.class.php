@@ -1829,7 +1829,7 @@ class Toolbox {
              && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
             $decoded_where = rawurldecode($where);
             // redirect to URL : URL must be rawurlencoded
-            if ($link = preg_match('/https?:\/\/.+/',$decoded_where)) {
+            if ($link = preg_match('/(https?:\/\/[^\/]+)\/.+/',$decoded_where, $matches)) {
                if($matches[1] !== $CFG_GLPI['url_base']) {
                   Session::addMessageAfterRedirect('Redirection failed');
                   if($_SESSION["glpiactiveprofile"]["interface"] === "helpdesk") {
