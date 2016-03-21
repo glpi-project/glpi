@@ -39,11 +39,11 @@
         }
 
 .stMainWrapper > ul.ui-tabs-nav.listTab
-{ 
+{
    display: none;
-   padding: .1em; 
-   float: right; 
-   width: 12em; 
+   padding: .1em;
+   float: right;
+   width: 12em;
    position: absolute;
    top: 37px;
    right: 2px;
@@ -53,24 +53,24 @@
 }
 
    .stMainWrapper > ul.ui-tabs-nav.listTab li
-   { 
-      clear: left; 
-      width: 100%; 
-      border-bottom-width: 1px !important; 
-      border-right-width: 0 !important; 
-      margin: 0 -1px .2em 0; 
+   {
+      clear: left;
+      width: 100%;
+      border-bottom-width: 1px !important;
+      border-right-width: 0 !important;
+      margin: 0 -1px .2em 0;
       left: 0!important;
       position: relative;
    }
    .stMainWrapper > ul.ui-tabs-nav.listTab li a
-   { 
-      display:block; 
+   {
+      display:block;
    }
    .stMainWrapper > ul.ui-tabs-nav.listTab li.ui-tabs-active
-   { 
-      padding-bottom: 0; 
-      padding-right: .1em; 
-      border-right-width: 1px; 
+   {
+      padding-bottom: 0;
+      padding-right: .1em;
+      border-right-width: 1px;
    }
 
 .stNavMain
