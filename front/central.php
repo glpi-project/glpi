@@ -51,7 +51,8 @@ if (isset($_POST['newprofile'])) {
             Html::redirect($CFG_GLPI['root_doc']."/front/helpdesk.public.php");
          }
       }
-      Html::redirect($_SERVER['PHP_SELF']);
+      $_SESSION['_redirected_from_profile_selector'] = true;
+      Html::redirect($_SERVER['HTTP_REFERER']);
    }
    Html::redirect(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
 }

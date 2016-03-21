@@ -1108,6 +1108,13 @@ class CommonGLPI {
       // in case of lefttab layout, we couldn't see "right error" message
       if ($this->get_item_to_display_tab) {
          if (isset($_GET["id"]) && $_GET["id"] && !$this->can($_GET["id"], READ)) {
+            // This triggers from a profile switch.
+            // If we don't have right, redirect instead to central page
+            if (isset($_SESSION['_redirected_from_profile_selector'])
+                && $_SESSION['_redirected_from_profile_selector']) {
+               unset($_SESSION['_redirected_from_profile_selector']);
+               Html::redirect($CFG_GLPI['root_doc']."/front/central.php");
+            }
             html::displayRightError();
          }
       }
