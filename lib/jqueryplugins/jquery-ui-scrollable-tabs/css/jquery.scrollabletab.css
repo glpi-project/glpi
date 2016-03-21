@@ -41,25 +41,28 @@
 .stMainWrapper > ul.ui-tabs-nav.listTab
 {
    display: none;
-   padding: .1em;
+   padding: 0 .1em;
    float: right;
-   width: 12em;
+   width: 13em;
    position: absolute;
-   top: 37px;
    right: 2px;
    overflow: inherit;
+   overflow-y: auto;
    height: initial !important;
+   max-height: calc(100% - 40px);
    z-index: 2;
+   background: white;
+   border: 1px solid #D3D3D3;
+   box-sizing: border-box;
 }
 
    .stMainWrapper > ul.ui-tabs-nav.listTab li
    {
       clear: left;
       width: 100%;
-      border-bottom-width: 1px !important;
       border-right-width: 0 !important;
-      margin: 0 -1px .2em 0;
       left: 0!important;
+      top: 0;
       position: relative;
    }
    .stMainWrapper > ul.ui-tabs-nav.listTab li a
