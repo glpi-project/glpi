@@ -578,7 +578,7 @@ class Session {
       try {
          $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc'));
          $TRANSLATE->setCache($cache);
-      } catch (Zend\Cache\Exception\ExtensionNotLoadedException $e) {
+      } catch (Exception $e) {
          // ignore when APC not available
          // toolbox::logDebug($e->getMessage());
       }
