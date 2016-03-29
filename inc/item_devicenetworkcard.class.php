@@ -70,7 +70,8 @@ class Item_DeviceNetworkCard extends Item_Devices {
     * @since version 0.85
    **/
    static function itemAffinity() {
-      return array('Computer', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer');
+      global $CFG_GLPI;
+      return $CFG_GLPI["itemdevicenetworkcard_types"];
    }
 
 }
