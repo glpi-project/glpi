@@ -5,7 +5,7 @@
 # Translators:
 # Dario <dario.pudlo@smartway.com.ar>, 2013
 # Emmanuel Arias <emmanuel.arias@ues21.edu.ar>, 2013
-# Luis A. Uriarte <luisuriarte@gmail.com>, 2013,2015
+# Luis A. Uriarte <luisuriarte@gmail.com>, 2013,2015-2016
 # Michael Manganiello, 2015
 # Michael Manganiello, 2016
 # Pablo Nazar <pablo.e.nazar@gmail.com>, 2013,2015
@@ -13,9 +13,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-25 10:19+0100\n"
-"PO-Revision-Date: 2016-03-25 09:19+0000\n"
-"Last-Translator: Alexandre DELAUNAY <delaunay.alexandre@gmail.com>\n"
+"POT-Creation-Date: 2016-03-25 10:48+0100\n"
+"PO-Revision-Date: 2016-03-25 23:39+0000\n"
+"Last-Translator: Luis A. Uriarte <luisuriarte@gmail.com>\n"
 "Language-Team: Spanish (Argentina) (http://www.transifex.com/glpi/GLPI/language/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4933,7 +4933,7 @@ msgstr "No está habilitado el modo estricto de MySQL"
 
 #: inc/central.class.php:200
 msgid "The following MySQL tables are marked as crashed:"
-msgstr ""
+msgstr "Las siguientes tablas MySQL se marcan como erroneas"
 
 #: inc/central.class.php:211 inc/central.class.php:212 inc/html.class.php:1704
 msgid "MySQL replica: read only"

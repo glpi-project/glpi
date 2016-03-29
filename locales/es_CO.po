@@ -14,9 +14,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-25 10:19+0100\n"
-"PO-Revision-Date: 2016-03-25 09:19+0000\n"
-"Last-Translator: Alexandre DELAUNAY <delaunay.alexandre@gmail.com>\n"
+"POT-Creation-Date: 2016-03-25 10:48+0100\n"
+"PO-Revision-Date: 2016-03-28 13:29+0000\n"
+"Last-Translator: guillermohaad <guillermohaad@hotmail.com>\n"
 "Language-Team: Spanish (Colombia) (http://www.transifex.com/glpi/GLPI/language/es_CO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -11757,7 +11757,7 @@ msgstr "Administrador del grupo a cargo de la incidencia"
 
 #: inc/notificationtargetcommonitilobject.class.php:435
 msgid "Group in charge of the ticket except manager users"
-msgstr ""
+msgstr "Grupo encargado de los ticket, excepto los administradores"
 
 #: inc/notificationtargetcommonitilobject.class.php:436
 msgid "Requester group manager"
@@ -11765,7 +11765,7 @@ msgstr "Administrador grupo solicitante"
 
 #: inc/notificationtargetcommonitilobject.class.php:438
 msgid "Requester group except manager users"
-msgstr ""
+msgstr "Grupo solicitante, excepto los usuarios administradores"
 
 #: inc/notificationtargetcommonitilobject.class.php:443
 msgid "Technician in charge of the ticket"
@@ -11820,7 +11820,7 @@ msgstr "Numero de elementos sin resolver"
 #: inc/notificationtargetcommonitilobject.class.php:1049
 #: inc/notificationtargetproject.class.php:597
 msgid "Number of costs"
-msgstr ""
+msgstr "Número de costes"
 
 #: inc/notificationtargetcommonitilobject.class.php:1107
 msgid "No defined category"
@@ -11834,7 +11834,7 @@ msgstr "Enlace web para aprobar la solución"
 #: inc/notificationtargetproject.class.php:649
 #: inc/notificationtargetprojecttask.class.php:533
 msgid "Download URL"
-msgstr ""
+msgstr "Descargar URL"
 
 #: inc/notificationtargetcommonitilobject.class.php:1167
 #: inc/notificationtargetticket.class.php:865
@@ -11924,7 +11924,7 @@ msgstr "Fecha de expiración"
 
 #: inc/notificationtargetmailcollector.class.php:51
 msgid "Receiver errors"
-msgstr ""
+msgstr "Errores del Receptor"
 
 #: inc/notificationtargetplanningrecall.class.php:52
 msgid "Planning recall"
@@ -11962,15 +11962,15 @@ msgstr "Síntomas"
 
 #: inc/notificationtargetproject.class.php:55
 msgid "New project"
-msgstr ""
+msgstr "Nuevo proyecto"
 
 #: inc/notificationtargetproject.class.php:56
 msgid "Update of a project"
-msgstr ""
+msgstr "Actualización de un proyecto"
 
 #: inc/notificationtargetproject.class.php:57
 msgid "Deletion of a project"
-msgstr ""
+msgstr "Eliminación de un proyecto"
 
 #: inc/notificationtargetproject.class.php:69
 #: inc/notificationtargetproject.class.php:575 inc/project.class.php:457
@@ -11980,7 +11980,7 @@ msgstr ""
 
 #: inc/notificationtargetproject.class.php:70
 msgid "Manager of manager group"
-msgstr ""
+msgstr "Administración del Administrador de grupo"
 
 #: inc/notificationtargetproject.class.php:72
 msgid "Manager group except manager users"

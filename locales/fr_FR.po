@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# Alexandre DELAUNAY <delaunay.alexandre@gmail.com>, 2015
+# Alexandre DELAUNAY <delaunay.alexandre@gmail.com>, 2015-2016
 # Damien Touraine <glpi@damien-touraine.net>, 2012
 # David Durieux <d.durieux@siprossii.com>, 2012
 # Derek V. Giroulle <derek.v.giroulle@skynet.be>, 2013
@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-25 10:19+0100\n"
-"PO-Revision-Date: 2016-03-25 09:19+0000\n"
+"POT-Creation-Date: 2016-03-25 10:48+0100\n"
+"PO-Revision-Date: 2016-03-25 10:19+0000\n"
 "Last-Translator: Alexandre DELAUNAY <delaunay.alexandre@gmail.com>\n"
 "Language-Team: French (France) (http://www.transifex.com/glpi/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -4937,7 +4937,7 @@ msgstr "Le mode strict de MySQL n'est pas activé"
 
 #: inc/central.class.php:200
 msgid "The following MySQL tables are marked as crashed:"
-msgstr ""
+msgstr "Les tables MySQL suivantes ont été notées comme crashées :"
 
 #: inc/central.class.php:211 inc/central.class.php:212 inc/html.class.php:1704
 msgid "MySQL replica: read only"

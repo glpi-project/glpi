@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-25 10:19+0100\n"
-"PO-Revision-Date: 2016-03-25 09:19+0000\n"
-"Last-Translator: Alexandre DELAUNAY <delaunay.alexandre@gmail.com>\n"
+"POT-Creation-Date: 2016-03-25 10:48+0100\n"
+"PO-Revision-Date: 2016-03-25 12:54+0000\n"
+"Last-Translator: Kaya Zeren <kayazeren@gmail.com>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/glpi/GLPI/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -4854,7 +4854,7 @@ msgstr "MySQL strict kipi etkinleştirilmemiş"
 
 #: inc/central.class.php:200
 msgid "The following MySQL tables are marked as crashed:"
-msgstr ""
+msgstr "Şu MySQL tabloları hasarlı olarak işaretlenmiş:"
 
 #: inc/central.class.php:211 inc/central.class.php:212 inc/html.class.php:1704
 msgid "MySQL replica: read only"

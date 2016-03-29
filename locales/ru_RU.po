@@ -13,7 +13,8 @@
 # Gleb Mekhrenin <mehrenin@gmail.com>, 2013
 # igor_ku <ivk@kristal.ru>, 2014
 # Konstantin Shalygin <k0ste@cn.ru>, 2014
-# mikhail d <mikhail.degterev@gmail.com>, 2016
+# Mikhail Degterev <mikhail.degterev@gmail.com>, 2016
+# Mikhail Degterev <mikhail.degterev@gmail.com>, 2016
 # Mr GreyWolf, 2016
 # Nelly Mahu-Lasson <nini.lasson@orange.fr>, 2012
 # Nikolay Petrov <techobsl@yandex.ru>, 2016
@@ -23,9 +24,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-25 10:19+0100\n"
-"PO-Revision-Date: 2016-03-25 09:19+0000\n"
-"Last-Translator: Alexandre DELAUNAY <delaunay.alexandre@gmail.com>\n"
+"POT-Creation-Date: 2016-03-25 10:48+0100\n"
+"PO-Revision-Date: 2016-03-29 08:24+0000\n"
+"Last-Translator: Nikolay Petrov <techobsl@yandex.ru>\n"
 "Language-Team: Russian (Russia) (http://www.transifex.com/glpi/GLPI/language/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2295,8 +2296,8 @@ msgid "Monitor"
 msgid_plural "Monitors"
 msgstr[0] "Монитор"
 msgstr[1] "Мониторы"
-msgstr[2] "мониторов"
-msgstr[3] "мониторов"
+msgstr[2] "Монитор"
+msgstr[3] "Монитор"
 
 #: front/find_num.php:107 inc/item_devices.class.php:993
 #: inc/lock.class.php:486 inc/peripheral.class.php:63
@@ -2306,8 +2307,8 @@ msgid "Device"
 msgid_plural "Devices"
 msgstr[0] "Устройство"
 msgstr[1] "Устройства"
-msgstr[2] "Устройств"
-msgstr[3] "Устройств"
+msgstr[2] "Устройства"
+msgstr[3] "Устройства"
 
 #. TRANS: %s is the user login
 #: front/group_user.form.php:50 front/user.form.php:123
@@ -2827,7 +2828,7 @@ msgstr "Аппаратный сетевой отчет: %s"
 #: inc/notificationtargetsoftwarelicense.class.php:107
 #: inc/supplier.class.php:486
 msgid "Device list"
-msgstr "Список материалов"
+msgstr "Список устройств"
 
 #: front/report.year.php:51
 msgid "Equipment's report by year"
@@ -4943,7 +4944,7 @@ msgstr[3] "%d месяцев"
 #: inc/notificationtargetcartridgeitem.class.php:91
 #: inc/notificationtargetconsumableitem.class.php:93
 msgid "Reference"
-msgstr "Артикул"
+msgstr "Наименование"
 
 #: inc/cartridgeitem.class.php:209 inc/cartridgeitem.class.php:348
 #: inc/commondbtm.class.php:2847 inc/computer.class.php:455
@@ -5093,7 +5094,7 @@ msgstr "MySQL strict mode не включен"
 
 #: inc/central.class.php:200
 msgid "The following MySQL tables are marked as crashed:"
-msgstr ""
+msgstr "Следующие таблицы MySQL помечены как поврежденные:"
 
 #: inc/central.class.php:211 inc/central.class.php:212 inc/html.class.php:1704
 msgid "MySQL replica: read only"
