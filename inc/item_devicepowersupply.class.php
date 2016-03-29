@@ -54,7 +54,8 @@ class Item_DevicePowerSupply extends Item_Devices {
     * @since version 0.85
    **/
    static function itemAffinity() {
-      return array('Computer', 'NetworkEquipment');
+      global $CFG_GLPI;
+      return $CFG_GLPI["itemdevicepowersupply_types"];
    }
 
 
