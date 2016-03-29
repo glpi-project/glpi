@@ -749,6 +749,9 @@ class MailCollector  extends CommonDBTM {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
+      // Double encoding for > and < char to avoid misinterpretations
+      $tkt['content'] = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $tkt['content']);
+
       $is_html = false;
       //If files are present and content is html
       if (isset($this->files)
@@ -760,11 +763,13 @@ class MailCollector  extends CommonDBTM {
                                                            array_merge($this->files, $this->altfiles),
                                                            $this->tags);
       }
+
+      // Clean mail content
       $striptags = true;
       if ($CFG_GLPI["use_rich_text"] && !isset($tkt['tickets_id'])) {
          $striptags = false;
       }
-      $tkt['content'] = $this->cleanMailContent($tkt['content'], $striptags);
+      $tkt['content'] = $this->cleanMailContent(Html::entities_deep($tkt['content']), $striptags);
 
       if ($is_html && !isset($tkt['tickets_id'])) {
          $tkt['content'] = nl2br($tkt['content']);
@@ -930,10 +935,8 @@ class MailCollector  extends CommonDBTM {
    function cleanMailContent($string, $striptags = true) {
       global $DB;
 
-      // delete html tags
-      if ($striptags) {
-         $string = Html::clean($string);
-      }
+      // Delete html tags
+      $string = Html::clean($string, $striptags, 2);
 
       // First clean HTML and XSS
       $string = Toolbox::clean_cross_side_scripting_deep($string);
