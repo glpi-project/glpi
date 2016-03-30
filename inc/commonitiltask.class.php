@@ -994,12 +994,13 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo $recall;
 
       } else {
-         $content = "<span class='b'>";
+         $content = "<div class='b'>";
          if (isset($val["state"])) {
             $content .= Planning::getState($val["state"])."<br>";
          }
          $content .= sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"])).
-                    "<br>".__('Description')."</span><br>".$val["content"].$recall;
+                    "<br>".__('Description')."</div>".
+                    Html::entity_decode_deep($val["content"].$recall);
          Html::showToolTip($content, array('applyto' => "content_tracking_".$val["id"].$rand));
       }
    }
