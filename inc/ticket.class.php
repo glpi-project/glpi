@@ -1188,10 +1188,10 @@ class Ticket extends CommonITILObject {
 
          if (!empty($this->input['items_id'])) {
             $item_ticket = new Item_Ticket();
-            foreach ($this->input['items_id'] as $itemype => $items) {
+            foreach ($this->input['items_id'] as $itemtype => $items) {
                foreach ($items as $items_id) {
                   $item_ticket->add(array('items_id'      => $items_id,
-                                          'itemtype'      => $itemype,
+                                          'itemtype'      => $itemtype,
                                           'tickets_id'    => $this->fields['id'],
                                           '_disablenotif' => true));
                }
@@ -1376,12 +1376,15 @@ class Ticket extends CommonITILObject {
 
       // Get first item location
       $item = NULL;
-      if (isset($input["items_id"]) && (count($input["items_id"]) > 0)) {
+      if (isset($input["items_id"]) 
+            && is_array($input["items_id"]) 
+            && (count($input["items_id"]) > 0)) {
          foreach($input["items_id"] as $itemtype => $items){
             foreach($items as $items_id){
                if ($item = getItemForItemtype($itemtype)) {
                   $item->getFromDB($items_id);
                   $input['items_locations'] = $item->fields['locations_id'];
+                  $input['items_groups'] = $item->fields['groups_id'];
                   break(2);
                }
             }
