@@ -217,7 +217,7 @@ class Html {
     * @return clean string
    **/
    static function cleanInputText($string) {
-      return preg_replace('/\"/', '&quot;', $string);
+      return preg_replace('/[\"\']/', '&quot;', $string);
    }
 
 
