@@ -203,8 +203,8 @@ class Rule extends CommonDBTM {
       $menu = array();
 
       if (Session::haveRight("rule_ldap", READ)
-          || Session::haveRight("rule_ocs", READ)
-          || Session::haveRight("entity_rule_ticket", READ)
+          || Session::haveRight("rule_import", READ)
+          || Session::haveRight("rule_ticket", READ)
           || Session::haveRight("rule_softwarecategories", READ)
           || Session::haveRight("rule_mailcollector", READ)) {
 
