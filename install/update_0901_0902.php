@@ -68,6 +68,7 @@ function update0901to0902() {
                                  true);
    }
 
+   // Add rights for licenses
    $profileRight = new profileRight();
    foreach ($DB->request('glpi_profiles') as $profile) {
       if (!countElementsInTable("glpi_profilerights",
@@ -77,13 +78,13 @@ function update0901to0902() {
                   WHERE `profiles_id`='".$profile['id']."'
                      AND `name`='software'";
         $result = $DB->query($query);
-        $tmp['rights'] = 0;
+        $right = 0;
         if ($DB->numrows($result) > 0) {
-           $tmp['rights']       = $DB->result($result, 0, "rights");
+           $right = $DB->result($result, 0, "rights");
         }
-        $tmp['profiles_id'] = $profile['id'];
-        $tmp['name']        = 'license';
-        $profileRight->add($tmp);
+        $query = "INSERT INTO `glpi_profilerights`
+                             (`profiles_id`, `name`, `rights`)
+                      VALUES ('".$profile['id']."', 'license', '$right')";
       }
    }
 

@@ -2985,6 +2985,7 @@ class AuthLDAP extends CommonDBTM {
       $options[1] = __('Put in dustbin');
       $options[2] = __('Withdraw dynamic authorizations and groups');
       $options[3] = __('Disable');
+      $options[4] = __('Disable').' + '.__('Withdraw dynamic authorizations and groups') ;
       asort($options);
       return Dropdown::showFromArray('user_deleted_ldap', $options, array('value' => $value));
    }
