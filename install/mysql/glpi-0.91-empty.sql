@@ -604,6 +604,38 @@ CREATE TABLE `glpi_changevalidations` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_computerantiviruses
+
+DROP TABLE IF EXISTS `glpi_computerantiviruses`;
+CREATE TABLE `glpi_computerantiviruses` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `computers_id` int(11) NOT NULL DEFAULT '0',
+   `name` varchar(255) DEFAULT NULL,
+   `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+   `antivirus_version` varchar(255) DEFAULT NULL,
+   `signature_version` varchar(255) DEFAULT NULL,
+   `is_active` tinyint(1) NOT NULL DEFAULT '0',
+   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+   `is_uptodate` tinyint(1) NOT NULL DEFAULT '0',
+   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+   `date_expiration` datetime DEFAULT NULL,
+   `date_mod` datetime DEFAULT NULL,
+   `date_creation` datetime DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `name` (`name`),
+   KEY `antivirus_version` (`antivirus_version`),
+   KEY `signature_version` (`signature_version`),
+   KEY `is_active` (`is_active`),
+   KEY `is_uptodate` (`is_uptodate`),
+   KEY `is_dynamic` (`is_dynamic`),
+   KEY `is_deleted` (`is_deleted`),
+   KEY `computers_id` (`computers_id`),
+   KEY `date_expiration` (`date_expiration`),
+   KEY `date_mod` (`date_mod`),
+   KEY `date_creation` (`date_creation`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_computerdisks
 
 DROP TABLE IF EXISTS `glpi_computerdisks`;
