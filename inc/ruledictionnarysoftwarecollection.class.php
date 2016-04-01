@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -99,7 +98,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       echo "<tr><td class='tab_bg_2 center' colspan='2'>";
       echo "<input type='submit' name='replay_rule' value=\""._sx('button', 'Post')."\"
              class='submit'>";
-      echo "<input type='hidden' name='replay_confirm' value='replay_confirm'";
+      echo "<input type='hidden' name='replay_confirm' value='replay_confirm'>";
       echo "</td></tr>";
       echo "</table>\n";
       echo "</div>\n";
@@ -491,4 +490,3 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    }
 
 }
-?>
