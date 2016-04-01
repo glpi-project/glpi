@@ -1601,7 +1601,7 @@ class MailCollector  extends CommonDBTM {
                    && ($data = $DB->fetch_assoc($result))) {
                $mc->maxfetch_emails = $max;
 
-               $task->log("Collect mails from ".$data["host"]."\n");
+               $task->log("Collect mails from ".$data["name"]." (".$data["host"].")\n");
                $message = $mc->collect($data["id"]);
 
                $task->addVolume($mc->fetch_emails);
