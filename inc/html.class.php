@@ -1083,6 +1083,12 @@ class Html {
       //  CSS link
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
 
+      // High constrast CSS link
+      if (isset($_SESSION['glpihighcontrast_css'])
+         && $_SESSION['glpihighcontrast_css']) {
+         echo Html::css($CFG_GLPI["root_doc"]."/css/highcontrast.css");
+      }
+
       // CSS theme link
       if (isset($_SESSION["glpipalette"])) {
          echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$_SESSION["glpipalette"].".css");
