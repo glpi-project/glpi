@@ -99,7 +99,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       echo "<tr><td class='tab_bg_2 center' colspan='2'>";
       echo "<input type='submit' name='replay_rule' value=\""._sx('button', 'Post')."\"
              class='submit'>";
-      echo "<input type='hidden' name='replay_confirm' value='replay_confirm'";
+      echo "<input type='hidden' name='replay_confirm' value='replay_confirm'>";
       echo "</td></tr>";
       echo "</table>\n";
       echo "</div>\n";
