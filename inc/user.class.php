@@ -707,7 +707,7 @@ class User extends CommonDBTM {
          } else {
             //ldap jpegphoto synchronisation.
             if (isset($this->fields["authtype"])
-                && ($this->fields["authtype"] == Auth::LDAP 
+                && ($this->fields["authtype"] == Auth::LDAP
                      || Auth::isAlternateAuth($this->fields['authtype']))
                 && $picture = $this->syncLdapPhoto()) {
                if (!empty($picture)) {
@@ -1075,7 +1075,7 @@ class User extends CommonDBTM {
    function syncLdapPhoto() {
 
       if (isset($this->fields["authtype"])
-          && (($this->fields["authtype"] == Auth::LDAP) 
+          && (($this->fields["authtype"] == Auth::LDAP)
                || Auth::isAlternateAuth($this->fields['authtype']))) {
 
          if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
@@ -2960,7 +2960,6 @@ class User extends CommonDBTM {
 
             break;
 
-
          case "all" :
             $where = " `glpi_users`.`id` > '0' ".
                      getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
@@ -3030,6 +3029,12 @@ class User extends CommonDBTM {
                                                              $entity_restrict, 1).") ";
                      break;
 
+                  case 'faq' :
+                     $where[]= " (`glpi_profilerights`.`name` = 'knowbase'
+                               AND (`glpi_profilerights`.`rights` & ".KnowbaseItem::READFAQ.") ".
+                               getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                          $entity_restrict, 1).") ";
+                                                          toolbox::logdebug("dans faq", $where);
                   default :
                      // Check read or active for rights
                      $where[]= " (`glpi_profilerights`.`name` = '".$r."'
