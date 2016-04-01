@@ -3039,6 +3039,12 @@ class User extends CommonDBTM {
                                                              $entity_restrict, 1).") ";
                      break;
 
+                  case 'faq' :
+                     $where[]= " (`glpi_profilerights`.`name` = 'knowbase'
+                                  AND (`glpi_profilerights`.`rights` & ".KnowbaseItem::READFAQ.") ".
+                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                             $entity_restrict, 1).") ";
+
                   default :
                      // Check read or active for rights
                      $where[]= " (`glpi_profilerights`.`name` = '".$r."'
