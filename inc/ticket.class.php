@@ -1376,8 +1376,8 @@ class Ticket extends CommonITILObject {
 
       // Get first item location
       $item = NULL;
-      if (isset($input["items_id"]) 
-            && is_array($input["items_id"]) 
+      if (isset($input["items_id"])
+            && is_array($input["items_id"])
             && (count($input["items_id"]) > 0)) {
          foreach($input["items_id"] as $itemtype => $items){
             foreach($items as $items_id){
@@ -1681,10 +1681,10 @@ class Ticket extends CommonITILObject {
 
       if (!empty($this->input['items_id'])) {
          $item_ticket = new Item_Ticket();
-         foreach ($this->input['items_id'] as $itemype => $items) {
+         foreach ($this->input['items_id'] as $itemtype => $items) {
             foreach ($items as $items_id) {
                $item_ticket->add(array('items_id'      => $items_id,
-                                       'itemtype'      => $itemype,
+                                       'itemtype'      => $itemtype,
                                        'tickets_id'    => $this->fields['id'],
                                        '_disablenotif' => true));
             }
@@ -3486,7 +3486,7 @@ class Ticket extends CommonITILObject {
       if (isset($values['name'])) {
          $values['name'] = str_replace("\\", "", $values['name']);
       }
-      
+
       if (!$ID) {
          // Override defaut values from projecttask if needed
          if (isset($options['_projecttasks_id'])) {
