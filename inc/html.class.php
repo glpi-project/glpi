@@ -4605,7 +4605,8 @@ class Html {
                      return text;
                   },
                   formatResult: function (result, container) {
-                     return $('<div>', {title: result.title}).text(result.text);
+                     container.attr('title', result.title || result.element[0].title);
+                     return result.text;
                   }
 
              });";
