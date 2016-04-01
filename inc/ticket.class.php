@@ -196,17 +196,28 @@ class Ticket extends CommonITILObject {
 
 
    function canAdminActors() {
+
+      if ($this->fields['is_deleted'] == 1) {
+         return false;
+      }
       return Session::haveRight(self::$rightname, UPDATE);
    }
 
 
    function canAssign() {
+
+      if (isset($this->fields['is_deleted']) && ($this->fields['is_deleted'] == 1)) {
+         return false;
+      }
       return Session::haveRight(self::$rightname, self::ASSIGN);
    }
 
 
    function canAssignToMe() {
 
+      if ($this->fields['is_deleted'] == 1) {
+         return false;
+      }
       return (Session::haveRight(self::$rightname, self::STEAL)
               || (Session::haveRight(self::$rightname, self::OWN)
                   && ($this->countUsers(CommonITILActor::ASSIGN) == 0)));
@@ -291,7 +302,8 @@ class Ticket extends CommonITILObject {
    **/
    function canApprove() {
 
-      return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
+      return ((($this->fields["users_id_recipient"] === Session::getLoginUserID())
+               &&  Session::haveRight('ticket', Ticket::SURVEY))
               || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
@@ -1176,10 +1188,10 @@ class Ticket extends CommonITILObject {
 
          if (!empty($this->input['items_id'])) {
             $item_ticket = new Item_Ticket();
-            foreach ($this->input['items_id'] as $itemype => $items) {
+            foreach ($this->input['items_id'] as $itemtype => $items) {
                foreach ($items as $items_id) {
                   $item_ticket->add(array('items_id'      => $items_id,
-                                          'itemtype'      => $itemype,
+                                          'itemtype'      => $itemtype,
                                           'tickets_id'    => $this->fields['id'],
                                           '_disablenotif' => true));
                }
@@ -1351,7 +1363,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Set additional default dropdown
-      $dropdown_fields = array('users_locations', 'items_locations');
+      $dropdown_fields = array('users_locations', 'items_locations', 'items_groups');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
@@ -1364,12 +1376,15 @@ class Ticket extends CommonITILObject {
 
       // Get first item location
       $item = NULL;
-      if (isset($input["items_id"]) && (count($input["items_id"]) > 0)) {
+      if (isset($input["items_id"]) 
+            && is_array($input["items_id"]) 
+            && (count($input["items_id"]) > 0)) {
          foreach($input["items_id"] as $itemtype => $items){
             foreach($items as $items_id){
                if ($item = getItemForItemtype($itemtype)) {
                   $item->getFromDB($items_id);
                   $input['items_locations'] = $item->fields['locations_id'];
+                  $input['items_groups'] = $item->fields['groups_id'];
                   break(2);
                }
             }
@@ -1400,7 +1415,11 @@ class Ticket extends CommonITILObject {
       if (isset($input["content"])) {
          $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
          $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
-         $input["content"] = Html::clean($input["content"]);
+         if (!$CFG_GLPI['use_rich_text']) {
+         $input["content"] = Html::entity_decode_deep($input["content"]);
+            $input["content"] = Html::entity_decode_deep($input["content"]);
+            $input["content"] = Html::clean($input["content"]);
+         }
       }
 
       $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
@@ -3467,7 +3486,7 @@ class Ticket extends CommonITILObject {
       if (isset($values['name'])) {
          $values['name'] = str_replace("\\", "", $values['name']);
       }
-
+      
       if (!$ID) {
          // Override defaut values from projecttask if needed
          if (isset($options['_projecttasks_id'])) {
@@ -4523,7 +4542,7 @@ class Ticket extends CommonITILObject {
             $query .= "WHERE $is_deleted
                              AND (`status` = '".self::SOLVED."')
                              AND ($search_users_id";
-            if (!$showgrouptickets) {
+            if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
                $query .= " OR `glpi_tickets`.users_id_recipient = '".Session::getLoginUserID()."' ";
             }
             $query .= ")".
@@ -5689,8 +5708,8 @@ class Ticket extends CommonITILObject {
          $values[self::OWN]            = array('short' => __('Beeing in charge'),
                                                'long'  => __('To be in charge of a ticket'));
          $values[self::CHANGEPRIORITY] = __('Change the priority');
-         $values[self::SURVEY]         = array('short' => __('Reply to survey'),
-                                               'long'  => __('Reply to survey for ticket created by me'));
+         $values[self::SURVEY]         = array('short' => __('Approve solution/Reply survey (my ticket)'),
+                                               'long'  => __('Approve solution and reply to survey for ticket created by me'));
       }
       if ($interface == 'helpdesk') {
          unset($values[UPDATE], $values[DELETE], $values[PURGE]);
@@ -6025,16 +6044,16 @@ class Ticket extends CommonITILObject {
    **/
    function setSimpleTextContent($content) {
 
-     $text = Html::entity_decode_deep($content);
+      $content = Html::entity_decode_deep($content);
 
       // If is html content
-      if ($text != strip_tags($text)) {
-         $content = Html::clean($this->convertImageToTag($text));
+      if ($content != strip_tags($content)) {
+         $content = Html::clean($this->convertImageToTag($content), false, 1);
+         $content = Html::entity_decode_deep(Html::clean($this->convertImageToTag($content)));
       }
 
       return $content;
    }
-
 
    /**
     * Convert simple text content to rich text content, init html editor
@@ -6057,13 +6076,14 @@ class Ticket extends CommonITILObject {
          $content = $this->convertTagToImage($content);
       }
 
-      // If content does not contain <br> or <p> html tag, use nl2br
-      $content = Html::entity_decode_deep($content);
+      // Neutralize non valid HTML tags
+      $content = html::clean($content, false, 1);
 
+      // If content does not contain <br> or <p> html tag, use nl2br
       if (!preg_match("/<br\s?\/?>/", $content) && !preg_match("/<p>/", $content)) {
          $content = nl2br($content);
       }
-      return Toolbox::clean_cross_side_scripting_deep($content);
+      return $content;
    }
 
 
@@ -6483,7 +6503,9 @@ class Ticket extends CommonITILObject {
          echo "</div>";
 
          echo "<div class='ticket_description'>";
-         echo Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
+
+         echo $this->setSimpleTextContent($this->fields['content']);
+
          echo "</div>";
 
          echo "</div>"; // h_content TicketContent
@@ -6491,15 +6513,15 @@ class Ticket extends CommonITILObject {
          echo "</div>"; // h_item middle
 
          echo "<div class='break'></div>";
-      }
+         }
 
       // end timeline
       echo "</div>"; // h_item $user_position
       echo "<script type='text/javascript'>read_more();</script>";
-   }
+      }
 
 
-   /**
+    /**
     * @since version 0.90
    **/
    function getTicketActors() {

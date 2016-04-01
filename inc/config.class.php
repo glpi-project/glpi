@@ -888,14 +888,10 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Results to display by page')."</td><td>";
-      // Limit using global config
-      $value = (($data['list_limit'] < $CFG_GLPI['list_limit_max'])
-                ? $data['list_limit'] : $CFG_GLPI['list_limit_max']);
-      Dropdown::showNumber('list_limit', array('value' => $value,
-                                               'min'   => 5,
-                                               'max'   => $CFG_GLPI['list_limit_max'],
-                                               'step'  => 5));
+      echo "<td>".__('Display order of surnames firstnames')."</td><td>";
+      $values = array(User::REALNAME_BEFORE  => __('Surname, First name'),
+                      User::FIRSTNAME_BEFORE => __('First name, Surname'));
+      Dropdown::showFromArray('names_format', $values, array('value' => $data["names_format"]));
       echo "</td>";
       echo "<td>" .__('Number format') . "</td>";
       $values = array(0 => '1 234.56',
@@ -908,38 +904,21 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Display order of surnames firstnames')."</td><td>";
-      $values = array(User::REALNAME_BEFORE  => __('Surname, First name'),
-                      User::FIRSTNAME_BEFORE => __('First name, Surname'));
-      Dropdown::showFromArray('names_format', $values, array('value' => $data["names_format"]));
+      echo "<td>" . __('Results to display by page')."</td><td>";
+      // Limit using global config
+      $value = (($data['list_limit'] < $CFG_GLPI['list_limit_max'])
+                ? $data['list_limit'] : $CFG_GLPI['list_limit_max']);
+      Dropdown::showNumber('list_limit', array('value' => $value,
+                                               'min'   => 5,
+                                               'max'   => $CFG_GLPI['list_limit_max'],
+                                               'step'  => 5));
       echo "</td>";
-      echo "<td>" . __("Color palette") . "</td><td>";
-      $themes_files = scandir(GLPI_ROOT."/css/palettes/");
-      echo "<select name='palette' id='theme-selector'>";
-      foreach ($themes_files as $key => $file) {
-         if (strpos($file, ".css") !== false) {
-            $name     = substr($file, 0, -4);
-            $selected = "";
-            if ($data["palette"] == $name) {
-               $selected = "selected='selected'";
-            }
-            echo "<option value='$name' $selected>".ucfirst($name)."</option>";
-         }
-      }
-      echo Html::scriptBlock("
-         function formatThemes(theme) {
-             return \"&nbsp;<img src='../css/palettes/previews/\" + theme.text.toLowerCase() + \".png'/>\"
-                     + \"&nbsp;\" + theme.text;
-         }
-         $(\"#theme-selector\").select2({
-             formatResult: formatThemes,
-             formatSelection: formatThemes,
-             width: '100%',
-             escapeMarkup: function(m) { return m; }
-         });
-      ");
-      echo "</select>";
-      echo "</td></tr>";
+      echo "<td>".__('Go to created item after creation')."</td>";
+      echo "<td>";
+      Dropdown::showYesNo("backcreated", $data["backcreated"]);
+      echo "</td>";
+
+      echo "</tr>";
 
 
       echo "<tr class='tab_bg_2'>";
@@ -978,12 +957,11 @@ class Config extends CommonDBTM {
          echo "<td colspan='2'></td>";
       }
 
-      echo "<td>".__('CSV delimiter')."</td><td>";
-      $values = array(';' => ';',
-                      ',' => ',');
-      Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
-
-      echo "</td></tr>";
+      echo "<td>" . __('Keep devices when purging an item') . "</td><td>";
+      Dropdown::showYesNo('keep_devices_when_purging_item',
+                          $data['keep_devices_when_purging_item']);
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Notifications for my changes') . "</td><td>";
@@ -1008,16 +986,42 @@ class Config extends CommonDBTM {
                                     'width' => 200));
       echo "</td>";
 
-      echo "<td>" . __('Keep devices when purging an item') . "</td><td>";
-      Dropdown::showYesNo('keep_devices_when_purging_item',
-                          $data['keep_devices_when_purging_item']);
-      echo "</td></tr>";
+      echo "<td>".__('CSV delimiter')."</td><td>";
+      $values = array(';' => ';',
+                      ',' => ',');
+      Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
 
-      echo "<tr class='tab_bg_2'><td>".__('Go to created item after creation')."</td>";
-      echo "<td>";
-      Dropdown::showYesNo("backcreated", $data["backcreated"]);
       echo "</td>";
+      echo "</tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __("Color palette") . "</td><td>";
+      $themes_files = scandir(GLPI_ROOT."/css/palettes/");
+      echo "<select name='palette' id='theme-selector'>";
+      foreach ($themes_files as $key => $file) {
+         if (strpos($file, ".css") !== false) {
+            $name     = substr($file, 0, -4);
+            $selected = "";
+            if ($data["palette"] == $name) {
+               $selected = "selected='selected'";
+            }
+            echo "<option value='$name' $selected>".ucfirst($name)."</option>";
+         }
+      }
+      echo Html::scriptBlock("
+         function formatThemes(theme) {
+             return \"&nbsp;<img src='../css/palettes/previews/\" + theme.text.toLowerCase() + \".png'/>\"
+                     + \"&nbsp;\" + theme.text;
+         }
+         $(\"#theme-selector\").select2({
+             formatResult: formatThemes,
+             formatSelection: formatThemes,
+             width: '100%',
+             escapeMarkup: function(m) { return m; }
+         });
+      ");
+      echo "</select>";
+      echo "</td>";
       echo "<td>" . __('Layout')."</td><td>";
       $layout_options = array('lefttab' => __("Tabs on left"),
                               'classic' => __("Classic view"),
@@ -1047,22 +1051,12 @@ class Config extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td>".__('Enable ticket timeline')."</td>";
-      echo "<td>";
-      Dropdown::showYesNo('ticket_timeline', $data['ticket_timeline']);
-      echo "</td>";
-      echo "<td>" . __('Keep tabs replaced by the ticket timeline')."</td><td>";
-      Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
-                          $data['ticket_timeline_keep_replaced_tabs']);
-      echo "</td></tr>";
-
       echo "<tr class='tab_bg_2'><td>".__('Enable high contrast')."</td>";
       echo "<td>";
       Dropdown::showYesNo('highcontrast_css', $data['highcontrast_css']);
       echo "</td>";
       echo "<td>";
       echo "</td></tr>";
-
 
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
@@ -1137,6 +1131,18 @@ class Config extends CommonDBTM {
          echo "</tr></table>";
 
          echo "</td></tr>";
+
+         echo "<tr class='tab_bg_2'><td>".__('Enable ticket timeline')."</td>";
+         echo "<td>";
+         Dropdown::showYesNo('ticket_timeline', $data['ticket_timeline']);
+         echo "</td>";
+         echo "<td>" . __('Keep tabs replaced by the ticket timeline')."</td><td>";
+         Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
+                             $data['ticket_timeline_keep_replaced_tabs']);
+         echo "</td></tr>";
+
+
+         
       }
 
       // Only for user

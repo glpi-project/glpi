@@ -117,7 +117,6 @@ class Session {
                $_SESSION["glpiauthtype"]        = $auth->user->fields['authtype'];
                $_SESSION["glpiroot"]            = $CFG_GLPI["root_doc"];
                $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
-               $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
                $_SESSION["glpicrontimer"]       = time();
                // Default tab
 //               $_SESSION['glpi_tab']=1;
@@ -579,7 +578,7 @@ class Session {
       try {
          $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc'));
          $TRANSLATE->setCache($cache);
-      } catch (Zend\Cache\Exception\ExtensionNotLoadedException $e) {
+      } catch (Exception $e) {
          // ignore when APC not available
          // toolbox::logDebug($e->getMessage());
       }

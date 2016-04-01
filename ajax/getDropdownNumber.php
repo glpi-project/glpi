@@ -49,26 +49,26 @@ Session::checkLoginUser();
 
 $used = array();
 
-if (isset($_GET['used'])) {
-   $used = $_GET['used'];
+if (isset($_POST['used'])) {
+   $used = $_POST['used'];
 }
 
-if (!isset($_GET['value'])) {
-   $_GET['value'] = 0;
+if (!isset($_POST['value'])) {
+   $_POST['value'] = 0;
 }
 
 $one_item = -1;
-if (isset($_GET['_one_id'])) {
-   $one_item = $_GET['_one_id'];
+if (isset($_POST['_one_id'])) {
+   $one_item = $_POST['_one_id'];
 }
 
-if (!isset($_GET['page'])) {
-   $_GET['page']       = 1;
-   $_GET['page_limit'] = $CFG_GLPI['dropdown_max'];
+if (!isset($_POST['page'])) {
+   $_POST['page']       = 1;
+   $_POST['page_limit'] = $CFG_GLPI['dropdown_max'];
 }
 
-if (isset($_GET['toadd'])) {
-   $toadd = $_GET['toadd'];
+if (isset($_POST['toadd'])) {
+   $toadd = $_POST['toadd'];
 } else {
    $toadd = array();
 }
@@ -77,7 +77,7 @@ $datas = array();
 // Count real items returned
 $count = 0;
 
-if ($_GET['page'] == 1) {
+if ($_POST['page'] == 1) {
    if (count($toadd)) {
       foreach ($toadd as $key => $val) {
          if (($one_item < 0) || ($one_item == $key)) {
@@ -89,25 +89,25 @@ if ($_GET['page'] == 1) {
 }
 
 $values = array();
-if (!empty($_GET['searchText'])) {
-   for ($i=$_GET['min'] ; $i<=$_GET['max'] ; $i+=$_GET['step']) {
-      if (strstr($i, $_GET['searchText'])) {
+if (!empty($_POST['searchText'])) {
+   for ($i=$_POST['min'] ; $i<=$_POST['max'] ; $i+=$_POST['step']) {
+      if (strstr($i, $_POST['searchText'])) {
          $values[$i] = $i;
       }
    }
 } else {
-   for ($i=$_GET['min'] ; $i<=$_GET['max'] ; $i+=$_GET['step']) {
+   for ($i=$_POST['min'] ; $i<=$_POST['max'] ; $i+=$_POST['step']) {
       $values[$i] = $i;
    }
 }
 
 if ($one_item < 0 && count($values)) {
-   $start  = ($_GET['page']-1)*$_GET['page_limit'];
-   $tosend = array_splice($values,$start, $_GET['page_limit']);
+   $start  = ($_POST['page']-1)*$_POST['page_limit'];
+   $tosend = array_splice($values,$start, $_POST['page_limit']);
    foreach ($tosend as $i) {
       $txt = $i;
-      if (isset($_GET['unit'])) {
-         $txt = Dropdown::getValueWithUnit($i,$_GET['unit']);
+      if (isset($_POST['unit'])) {
+         $txt = Dropdown::getValueWithUnit($i,$_POST['unit']);
       }
       array_push($datas, array('id'   => $i,
                                'text' => strval($txt)));
@@ -116,8 +116,8 @@ if ($one_item < 0 && count($values)) {
 
 } else {
    if (!isset($toadd[$one_item])) {
-      if (isset($_GET['unit'])) {
-         $txt = Dropdown::getValueWithUnit($one_item,$_GET['unit']);
+      if (isset($_POST['unit'])) {
+         $txt = Dropdown::getValueWithUnit($one_item,$_POST['unit']);
       }
       array_push($datas, array('id'   => $one_item,
                                'text' => strval(stripslashes($txt))));

@@ -250,6 +250,18 @@ $CFG_GLPI['device_types'] = array('DeviceMotherboard', 'DeviceProcessor', 'Devic
                                   'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
                                   'DevicePci', 'DeviceCase', 'DevicePowerSupply');
 
+$CFG_GLPI["itemdevices_types"]            = array('Computer', 'NetworkEquipment', 'Peripheral',
+                                                  'Phone', 'Printer');
+
+$CFG_GLPI["itemdevices_itemaffinity"]     = array('Computer');
+
+$CFG_GLPI["itemdevicesmemory_types"]      = array('Computer', 'NetworkEquipment', 'Peripheral', 'Printer');
+
+$CFG_GLPI["itemdevicepowersupply_types"]  = array('Computer', 'NetworkEquipment');
+
+$CFG_GLPI["itemdevicenetworkcard_types"]  = array('Computer', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer');
+
+
 $CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem',
                                                   'Contract', 'Crontask', 'DBConnection',
                                                   'FieldUnicity', 'Infocom', 'MailCollector',

@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id: $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -91,8 +90,7 @@ function update0902to091() {
                     (`name`, `interface`, `is_default`, `helpdesk_hardware`, `helpdesk_item_type`,
                      `ticket_status`, `date_mod`, `comment`, `problem_status`,
                      `create_ticket_on_login`, `tickettemplates_id`, `change_status`)
-             VALUES
-                    ('Read-Only','central','0','0','[]',
+             VALUES ('Read-Only','central','0','0','[]',
                      '{\"1\":{\"2\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"2\":{\"1\":0,\"3\":0,\"4\":0,\"5\":0,\"6\":0},\"3\":{\"1\":0,\"2\":0,\"4\":0,\"5\":0,\"6\":0},\"4\":{\"1\":0,\"2\":0,\"3\":0,\"5\":0,\"6\":0},\"5\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"6\":0},\"6\":{\"1\":0,\"2\":0,\"3\":0,\"4\":0,\"5\":0}}',
                      NULL,
                      'This profile defines read-only access. It is used when objects are locked. It can also be used to give to users rights to unlock objects.',
@@ -103,78 +101,78 @@ function update0902to091() {
    $DB->queryOrDie($query, "0.91 update profile with Unlock profile") ;
    $ro_p_id = $DB->insert_id();
    $DB->queryOrDie("INSERT INTO `glpi_profilerights`
-                     (`profiles_id`, `name`, `rights`) VALUES
-                     ($ro_p_id, 'backup',                    '1'),
-                     ($ro_p_id, 'bookmark_public',           '1'),
-                     ($ro_p_id, 'budget',                    '161'),
-                     ($ro_p_id, 'calendar',                  '1'),
-                     ($ro_p_id, 'cartridge',                 '161'),
-                     ($ro_p_id, 'change',                    '1185'),
-                     ($ro_p_id, 'changevalidation',          '0'),
-                     ($ro_p_id, 'computer',                  '161'),
-                     ($ro_p_id, 'config',                    '1'),
-                     ($ro_p_id, 'consumable',                '161'),
-                     ($ro_p_id, 'contact_enterprise',        '161'),
-                     ($ro_p_id, 'contract',                  '161'),
-                     ($ro_p_id, 'device',                    '0'),
-                     ($ro_p_id, 'document',                  '161'),
-                     ($ro_p_id, 'domain',                    '1'),
-                     ($ro_p_id, 'dropdown',                  '1'),
-                     ($ro_p_id, 'entity',                    '1185'),
-                     ($ro_p_id, 'followup',                  '8193'),
-                     ($ro_p_id, 'global_validation',         '0'),
-                     ($ro_p_id, 'group',                     '129'),
-                     ($ro_p_id, 'infocom',                   '1'),
-                     ($ro_p_id, 'internet',                  '129'),
-                     ($ro_p_id, 'itilcategory',              '1'),
-                     ($ro_p_id, 'knowbase',                  '2177'),
-                     ($ro_p_id, 'knowbasecategory',          '1'),
-                     ($ro_p_id, 'link',                      '129'),
-                     ($ro_p_id, 'location',                  '1'),
-                     ($ro_p_id, 'logs',                      '1'),
-                     ($ro_p_id, 'monitor',                   '161'),
-                     ($ro_p_id, 'netpoint',                  '1'),
-                     ($ro_p_id, 'networking',                '161'),
-                     ($ro_p_id, 'notification',              '1'),
-                     ($ro_p_id, 'password_update',           '0'),
-                     ($ro_p_id, 'peripheral',                '161'),
-                     ($ro_p_id, 'phone',                     '161'),
-                     ($ro_p_id, 'planning',                  '3073'),
-                     ($ro_p_id, 'printer',                   '161'),
-                     ($ro_p_id, 'problem',                   '1185'),
-                     ($ro_p_id, 'profile',                   '129'),
-                     ($ro_p_id, 'project',                   '1185'),
-                     ($ro_p_id, 'projecttask',               '1'),
-                     ($ro_p_id, 'queuedmail',                '1'),
-                     ($ro_p_id, 'reminder_public',           '129'),
-                     ($ro_p_id, 'reports',                   '1'),
-                     ($ro_p_id, 'reservation',               '1'),
-                     ($ro_p_id, 'rssfeed_public',            '129'),
-                     ($ro_p_id, 'rule_dictionnary_dropdown', '1'),
-                     ($ro_p_id, 'rule_dictionnary_printer',  '1'),
-                     ($ro_p_id, 'rule_dictionnary_software', '1'),
-                     ($ro_p_id, 'rule_import',               '1'),
-                     ($ro_p_id, 'rule_ldap',                 '1'),
-                     ($ro_p_id, 'rule_mailcollector',        '1'),
-                     ($ro_p_id, 'rule_softwarecategories',   '1'),
-                     ($ro_p_id, 'rule_ticket',               '1'),
-                     ($ro_p_id, 'search_config',             '0'),
-                     ($ro_p_id, 'show_group_hardware',       '1'),
-                     ($ro_p_id, 'sla',                       '1'),
-                     ($ro_p_id, 'software',                  '161'),
-                     ($ro_p_id, 'solutiontemplate',          '1'),
-                     ($ro_p_id, 'state',                     '1'),
-                     ($ro_p_id, 'statistic',                 '1'),
-                     ($ro_p_id, 'task',                      '8193'),
-                     ($ro_p_id, 'taskcategory',              '1'),
-                     ($ro_p_id, 'ticket',                    '7297'),
-                     ($ro_p_id, 'ticketcost',                '1'),
-                     ($ro_p_id, 'ticketrecurrent',           '1'),
-                     ($ro_p_id, 'tickettemplate',            '1'),
-                     ($ro_p_id, 'ticketvalidation',          '0'),
-                     ($ro_p_id, 'transfer',                  '1'),
-                     ($ro_p_id, 'typedoc',                   '1'),
-                     ($ro_p_id, 'user',                      '2177')");
+                           (`profiles_id`, `name`, `rights`)
+                    VALUES ($ro_p_id, 'backup',                    '1'),
+                           ($ro_p_id, 'bookmark_public',           '1'),
+                           ($ro_p_id, 'budget',                    '161'),
+                           ($ro_p_id, 'calendar',                  '1'),
+                           ($ro_p_id, 'cartridge',                 '161'),
+                           ($ro_p_id, 'change',                    '1185'),
+                           ($ro_p_id, 'changevalidation',          '0'),
+                           ($ro_p_id, 'computer',                  '161'),
+                           ($ro_p_id, 'config',                    '1'),
+                           ($ro_p_id, 'consumable',                '161'),
+                           ($ro_p_id, 'contact_enterprise',        '161'),
+                           ($ro_p_id, 'contract',                  '161'),
+                           ($ro_p_id, 'device',                    '0'),
+                           ($ro_p_id, 'document',                  '161'),
+                           ($ro_p_id, 'domain',                    '1'),
+                           ($ro_p_id, 'dropdown',                  '1'),
+                           ($ro_p_id, 'entity',                    '1185'),
+                           ($ro_p_id, 'followup',                  '8193'),
+                           ($ro_p_id, 'global_validation',         '0'),
+                           ($ro_p_id, 'group',                     '129'),
+                           ($ro_p_id, 'infocom',                   '1'),
+                           ($ro_p_id, 'internet',                  '129'),
+                           ($ro_p_id, 'itilcategory',              '1'),
+                           ($ro_p_id, 'knowbase',                  '2177'),
+                           ($ro_p_id, 'knowbasecategory',          '1'),
+                           ($ro_p_id, 'link',                      '129'),
+                           ($ro_p_id, 'location',                  '1'),
+                           ($ro_p_id, 'logs',                      '1'),
+                           ($ro_p_id, 'monitor',                   '161'),
+                           ($ro_p_id, 'netpoint',                  '1'),
+                           ($ro_p_id, 'networking',                '161'),
+                           ($ro_p_id, 'notification',              '1'),
+                           ($ro_p_id, 'password_update',           '0'),
+                           ($ro_p_id, 'peripheral',                '161'),
+                           ($ro_p_id, 'phone',                     '161'),
+                           ($ro_p_id, 'planning',                  '3073'),
+                           ($ro_p_id, 'printer',                   '161'),
+                           ($ro_p_id, 'problem',                   '1185'),
+                           ($ro_p_id, 'profile',                   '129'),
+                           ($ro_p_id, 'project',                   '1185'),
+                           ($ro_p_id, 'projecttask',               '1'),
+                           ($ro_p_id, 'queuedmail',                '1'),
+                           ($ro_p_id, 'reminder_public',           '129'),
+                           ($ro_p_id, 'reports',                   '1'),
+                           ($ro_p_id, 'reservation',               '1'),
+                           ($ro_p_id, 'rssfeed_public',            '129'),
+                           ($ro_p_id, 'rule_dictionnary_dropdown', '1'),
+                           ($ro_p_id, 'rule_dictionnary_printer',  '1'),
+                           ($ro_p_id, 'rule_dictionnary_software', '1'),
+                           ($ro_p_id, 'rule_import',               '1'),
+                           ($ro_p_id, 'rule_ldap',                 '1'),
+                           ($ro_p_id, 'rule_mailcollector',        '1'),
+                           ($ro_p_id, 'rule_softwarecategories',   '1'),
+                           ($ro_p_id, 'rule_ticket',               '1'),
+                           ($ro_p_id, 'search_config',             '0'),
+                           ($ro_p_id, 'show_group_hardware',       '1'),
+                           ($ro_p_id, 'sla',                       '1'),
+                           ($ro_p_id, 'software',                  '161'),
+                           ($ro_p_id, 'solutiontemplate',          '1'),
+                           ($ro_p_id, 'state',                     '1'),
+                           ($ro_p_id, 'statistic',                 '1'),
+                           ($ro_p_id, 'task',                      '8193'),
+                           ($ro_p_id, 'taskcategory',              '1'),
+                           ($ro_p_id, 'ticket',                    '7297'),
+                           ($ro_p_id, 'ticketcost',                '1'),
+                           ($ro_p_id, 'ticketrecurrent',           '1'),
+                           ($ro_p_id, 'tickettemplate',            '1'),
+                           ($ro_p_id, 'ticketvalidation',          '0'),
+                           ($ro_p_id, 'transfer',                  '1'),
+                           ($ro_p_id, 'typedoc',                   '1'),
+                           ($ro_p_id, 'user',                      '2177')");
 
    // updates rights for Super-Admin profile
    foreach( $CFG_GLPI['lock_lockable_objects'] as $itemtype ) {
@@ -200,7 +198,7 @@ function update0902to091() {
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
                 VALUES ('ObjectLock', 'unlockobject', 86400, 4, 0, 1, 3,
                         0, 24, 30, NULL, NULL, NULL); " ;
-      $DB->queryOrDie($query, "Update UnlockObject cron task");
+      $DB->queryOrDie($query, "0.91 Add UnlockObject cron task");
    }
    // notification template
    $query = "SELECT *
@@ -212,7 +210,7 @@ function update0902to091() {
          $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Unlock Item request', 'ObjectLock', NOW())";
-         $DB->queryOrDie($query, "0.84 add planning recall notification");
+         $DB->queryOrDie($query, "0.91 Add unlock request notification template");
          $notid = $DB->insert_id();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
@@ -350,10 +348,7 @@ function update0902to091() {
 
    /************** Enhance Associated items for ticket ***************/
    // TEMPLATE UPDATE
-   if (isIndex('glpi_tickettemplatepredefinedfields', 'unicity')) {
-      $DB->queryOrDie("ALTER TABLE `glpi_tickettemplatepredefinedfields`
-                   DROP KEY `unicity`;", "Associated items migration : alter template predefinedfields unicity");
-   }
+   $migration->dropKey('glpi_tickettemplatepredefinedfields', 'unicity');
 
    // Get associated item searchoption num
    if (!isset($CFG_GLPI["use_rich_text"])) {
@@ -372,7 +367,8 @@ function update0902to091() {
       }
    }
 
-   foreach (array('glpi_tickettemplatepredefinedfields', 'glpi_tickettemplatehiddenfields', 'glpi_tickettemplatemandatoryfields') as $table) {
+   foreach (array('glpi_tickettemplatepredefinedfields', 'glpi_tickettemplatehiddenfields',
+                  'glpi_tickettemplatemandatoryfields') as $table) {
       $columns = array();
       switch ($table) {
          case 'glpi_tickettemplatepredefinedfields' :
@@ -383,18 +379,20 @@ function update0902to091() {
             break;
       }
       $query = "SELECT `".implode('`,`', $columns)."`
-               FROM `$table`
-               WHERE `num` = '$item_num'
-               OR `num` = '$itemtype_num';";
+                FROM `$table`
+                WHERE `num` = '$item_num'
+                      OR `num` = '$itemtype_num';";
 
       $items_to_update = array();
       if ($result          = $DB->query($query)) {
          if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetch_assoc($result)) {
                if ($data['num'] == $itemtype_num) {
-                  $items_to_update[$data['tickettemplates_id']]['itemtype'] = isset($data['value']) ? $data['value'] : 0;
-               } elseif ($data['num'] == $item_num) {
-                  $items_to_update[$data['tickettemplates_id']]['items_id'] = isset($data['value']) ? $data['value'] : 0;
+                  $items_to_update[$data['tickettemplates_id']]['itemtype']
+                     = isset($data['value']) ? $data['value'] : 0;
+               } else if ($data['num'] == $item_num) {
+                  $items_to_update[$data['tickettemplates_id']]['items_id']
+                     = isset($data['value']) ? $data['value'] : 0;
                }
             }
          }
@@ -406,34 +404,34 @@ function update0902to091() {
                if (isset($type['itemtype'])) {
                   if (isset($type['items_id'])) {
                      $DB->queryOrDie("UPDATE `$table`
-                                     SET `value` = '".$type['itemtype']."_".$type['items_id']."'
-                                     WHERE `num` = '".$item_num."'
-                                     AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : update predefined items");
+                                      SET `value` = '".$type['itemtype']."_".$type['items_id']."'
+                                      WHERE `num` = '".$item_num."'
+                                      AND `tickettemplates_id` = '".$templates_id."'",
+                                     "Associated items migration : update predefined items");
 
                      $DB->queryOrDie("DELETE FROM `$table`
-                                     WHERE `num` = '".$itemtype_num."'
-                                     AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
+                                      WHERE `num` = '".$itemtype_num."'
+                                            AND `tickettemplates_id` = '".$templates_id."'",
+                                     "Associated items migration : delete $table itemtypes");
                   }
                }
             }
             break;
+
          default: // Update mandatory and hidden items
             foreach ($items_to_update as $templates_id => $type) {
                if (isset($type['itemtype'])) {
                   if (isset($type['items_id'])) {
                      $DB->queryOrDie("DELETE FROM `$table`
-                                        WHERE `num` = '".$item_num."'
-                                        AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
-                     $DB->queryOrDie("UPDATE `$table`
-                                        SET `num` = '".$item_num."'
-                                        WHERE `num` = '".$itemtype_num."'
-                                        AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
-                  } else {
-                     $DB->queryOrDie("UPDATE `$table`
-                                        SET `num` = '".$item_num."'
-                                        WHERE `num` = '".$itemtype_num."'
-                                        AND `tickettemplates_id` = '".$templates_id."';", "Associated items migration : delete $table itemtypes");
+                                      WHERE `num` = '".$item_num."'
+                                            AND `tickettemplates_id` = '".$templates_id."'",
+                                     "Associated items migration : delete $table itemtypes");
                   }
+                  $DB->queryOrDie("UPDATE `$table`
+                                   SET `num` = '".$item_num."'
+                                   WHERE `num` = '".$itemtype_num."'
+                                         AND `tickettemplates_id` = '".$templates_id."'",
+                                 "Associated items migration : delete $table itemtypes");
                }
             }
             break;
@@ -463,7 +461,8 @@ function update0902to091() {
       //new right for software license
       //copy the software right value to the new license right
       foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {
-         $query = "INSERT INTO `glpi_profilerights` (`id`, `profiles_id`, `name`, `rights`)
+         $query = "INSERT INTO `glpi_profilerights`
+                          (`id`, `profiles_id`, `name`, `rights`)
                    VALUES (NULL, '".$profrights['profiles_id']."', 'license',
                            '".$profrights['rights']."')";
          $DB->queryOrDie($query, "0.91 add right for softwarelicense");
@@ -541,10 +540,3 @@ function update0902to091() {
 
    return $updateresult;
 }
-
-function setCreationDate() {
-   global $DB;
-
-
-}
-?>

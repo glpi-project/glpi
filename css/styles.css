@@ -1102,7 +1102,7 @@ td.rotate {
 
 .actor-bloc {
    width: 29%;
-   float: left;
+   /*float: left;*/
 }
 
 .actor_title, .actor-bloc {
@@ -2747,6 +2747,10 @@ ul#menu ul.ssmenu {
 .timeline_history .TicketValidation.status_3:after { border-color: #A1D7A2;}
 .timeline_history .TicketValidation:after          { border-color: #FFFFFF;}
 .timeline_history .TicketValidation.status_4:after { border-color: #D3A4A4;}
+
+.timeline_history .right .h_content p {
+   margin: 2px 0 0;
+}
 
 .timeline_history .private {
    width: 23px;

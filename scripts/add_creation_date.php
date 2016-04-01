@@ -31,6 +31,10 @@
  --------------------------------------------------------------------------
  */
 
+
+ // Ensure current directory when run from crontab
+ chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
+
 /** @file
 * @brief
 */
