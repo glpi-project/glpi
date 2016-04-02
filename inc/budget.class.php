@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -114,7 +114,7 @@ class Budget extends CommonDropdown{
     **/
    function showForm($ID, $options=array()) {
 
-      $rowspan = 4;
+      $rowspan = 3;
       if ($ID > 0) {
          $rowspan++;
       }
@@ -149,15 +149,6 @@ class Budget extends CommonDropdown{
       echo "<td>";
       Html::showDateField("end_date", array('value' => $this->fields["end_date"]));
       echo "</td></tr>";
-
-      if ($ID > 0) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Last update')."</td>";
-         echo "<td>";
-         echo ($this->fields["date_mod"]? Html::convDateTime($this->fields["date_mod"])
-                                        : __('Never'));
-         echo "</td></tr>";
-      }
 
       $this->showFormButtons($options);
       return true;
@@ -208,6 +199,12 @@ class Budget extends CommonDropdown{
       $tab[19]['datatype']       = 'datetime';
       $tab[19]['massiveaction']  = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'begin_date';
       $tab[5]['name']            = __('Start date');
@@ -238,6 +235,9 @@ class Budget extends CommonDropdown{
       $tab[86]['field']          = 'is_recursive';
       $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

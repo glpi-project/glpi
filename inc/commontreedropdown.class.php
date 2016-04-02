@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -649,6 +649,17 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $tab[19]['datatype']       = 'datetime';
          $tab[19]['massiveaction']  = false;
       }
+
+      if ($this->isField('date_creation')) {
+         $tab[121]['table']          = $this->getTable();
+         $tab[121]['field']          = 'date_creation';
+         $tab[121]['name']           = __('Creation date');
+         $tab[121]['datatype']       = 'datetime';
+         $tab[121]['massiveaction']  = false;
+      }
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       return $tab;
    }

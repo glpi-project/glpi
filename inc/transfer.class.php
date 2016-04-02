@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -37,7 +37,7 @@
 
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class Transfer extends CommonDBTM {
@@ -597,7 +597,7 @@ class Transfer extends CommonDBTM {
                $itemtable = getTableForItemType($itemtype);
                $this->item_search[$itemtype]
                      = $this->createSearchConditionUsingArray($this->needtobe_transfer[$itemtype]);
-                     
+
                // Clean DB
                $query = "SELECT `glpi_contracts_items`.`id`
                          FROM `glpi_contracts_items`
@@ -1412,10 +1412,16 @@ class Transfer extends CommonDBTM {
             $newsoftID = $ID;
 
          } else {
+            $manufacturer = '';
+            if (isset($soft->fields['manufacturers_id'])
+                && ($soft->fields['manufacturers_id'] > 0)) {
+               $manufacturer = "AND `manufacturers_id` = '".$soft->fields['manufacturers_id']."'";
+            }
             $query = "SELECT *
                       FROM `glpi_softwares`
                       WHERE `entities_id` = ".$this->to."
-                            AND `name` = '".addslashes($soft->fields['name'])."'";
+                            AND `name` = '".addslashes($soft->fields['name'])."'
+                            $manufacturer";
 
             if ($data = $DB->request($query)->next()) {
                $newsoftID = $data["id"];
@@ -3232,7 +3238,7 @@ class Transfer extends CommonDBTM {
       global $CFG_GLPI;
 
       $edit_form = true;
-      if (!strpos($_SERVER['HTTP_REFERER'],"transfer.form.php")) {
+      if (strpos($_SERVER['HTTP_REFERER'],"transfer.form.php") === false) {
          $edit_form = false;
       }
 

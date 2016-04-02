@@ -41,49 +41,47 @@ if (strpos($_SERVER['PHP_SELF'],"getDropdownValue.php")) {
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
-}
-
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+} else if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
 }
 
 Session::checkLoginUser();
 
-if (isset($_GET["entity_restrict"])
-    && !is_array($_GET["entity_restrict"])
-    && (substr($_GET["entity_restrict"], 0, 1) === '[')
-    && (substr($_GET["entity_restrict"], -1) === ']')) {
-   $_GET["entity_restrict"] = json_decode($_GET["entity_restrict"]);
+if (isset($_POST["entity_restrict"])
+    && !is_array($_POST["entity_restrict"])
+    && (substr($_POST["entity_restrict"], 0, 1) === '[')
+    && (substr($_POST["entity_restrict"], -1) === ']')) {
+   $_POST["entity_restrict"] = json_decode($_POST["entity_restrict"]);
 }
 
 // Security
-if (!($item = getItemForItemtype($_GET['itemtype']))) {
+if (!($item = getItemForItemtype($_POST['itemtype']))) {
    exit();
 }
 $table = $item->getTable();
 $datas = array();
 
 $displaywith = false;
-if (isset($_GET['displaywith'])) {
-   if (is_array($_GET['displaywith']) && count($_GET['displaywith'])) {
+if (isset($_POST['displaywith'])) {
+   if (is_array($_POST['displaywith']) && count($_POST['displaywith'])) {
       $displaywith = true;
    }
 }
 
-if (!isset($_GET['permit_select_parent'])) {
-   $_GET['permit_select_parent'] = false;
+if (!isset($_POST['permit_select_parent'])) {
+   $_POST['permit_select_parent'] = false;
 }
 
-if (isset($_GET['condition']) && !empty($_GET['condition'])) {
-    if (isset($_SESSION['glpicondition'][$_GET['condition']])) {
-        $_GET['condition'] = $_SESSION['glpicondition'][$_GET['condition']];
+if (isset($_POST['condition']) && !empty($_POST['condition'])) {
+    if (isset($_SESSION['glpicondition'][$_POST['condition']])) {
+        $_POST['condition'] = $_SESSION['glpicondition'][$_POST['condition']];
     } else {
-        $_GET['condition'] = '';
+        $_POST['condition'] = '';
     }
 }
 
-if (!isset($_GET['emptylabel']) || ($_GET['emptylabel'] == '')) {
-   $_GET['emptylabel'] = Dropdown::EMPTY_VALUE;
+if (!isset($_POST['emptylabel']) || ($_POST['emptylabel'] == '')) {
+   $_POST['emptylabel'] = Dropdown::EMPTY_VALUE;
 }
 
 $where = "WHERE 1 ";
@@ -95,43 +93,43 @@ if ($item->maybeTemplate()) {
    $where .= " AND `is_template` = '0' ";
 }
 
-if (!isset($_GET['page'])) {
-   $_GET['page']       = 1;
-   $_GET['page_limit'] = $CFG_GLPI['dropdown_max'];
+if (!isset($_POST['page'])) {
+   $_POST['page']       = 1;
+   $_POST['page_limit'] = $CFG_GLPI['dropdown_max'];
 }
 
-$start = ($_GET['page']-1)*$_GET['page_limit'];
-$limit = $_GET['page_limit'];
+$start = ($_POST['page']-1)*$_POST['page_limit'];
+$limit = $_POST['page_limit'];
 // Get last item retrieve to init values
-if ($_GET['page'] > 1) {
+if ($_POST['page'] > 1) {
    $start--;
    $limit++;
 }
 $LIMIT = "LIMIT $start,$limit";
 
-if (isset($_GET['used'])) {
-   $used = $_GET['used'];
+if (isset($_POST['used'])) {
+   $used = $_POST['used'];
 
    if (count($used)) {
       $where .=" AND `$table`.`id` NOT IN ('".implode("','",$used)."' ) ";
    }
 }
 
-if (isset($_GET['toadd'])) {
-   $toadd = $_GET['toadd'];
+if (isset($_POST['toadd'])) {
+   $toadd = $_POST['toadd'];
 } else {
    $toadd = array();
 }
 
 // $where .= ") ";
 
-if (isset($_GET['condition']) && ($_GET['condition'] != '')) {
-   $where .= " AND ".$_GET['condition']." ";
+if (isset($_POST['condition']) && ($_POST['condition'] != '')) {
+   $where .= " AND ".$_POST['condition']." ";
 }
 
 $one_item = -1;
-if (isset($_GET['_one_id'])) {
-   $one_item = $_GET['_one_id'];
+if (isset($_POST['_one_id'])) {
+   $one_item = $_POST['_one_id'];
 }
 
 // Count real items returned
@@ -143,16 +141,16 @@ if ($item instanceof CommonTreeDropdown) {
    if ($one_item >= 0) {
       $where .= " AND `$table`.`id` = '$one_item'";
    } else {
-      if (!empty($_GET['searchText'])) {
-         $search = Search::makeTextSearch($_GET['searchText']);
-         if (Session::haveTranslations($_GET['itemtype'], 'completename')) {
+      if (!empty($_POST['searchText'])) {
+         $search = Search::makeTextSearch($_POST['searchText']);
+         if (Session::haveTranslations($_POST['itemtype'], 'completename')) {
             $where .= " AND (`$table`.`completename` $search ".
                              "OR `namet`.`value` $search " ;
          } else {
             $where .= " AND (`$table`.`completename` $search ";
          }
          // Also search by id
-         if ($displaywith && in_array('id', $_GET['displaywith'])) {
+         if ($displaywith && in_array('id', $_POST['displaywith'])) {
             $where .= " OR `$table`.`id` ".$search;
          }
 
@@ -171,15 +169,15 @@ if ($item instanceof CommonTreeDropdown) {
       $recur = $item->maybeRecursive();
 
        // Entities are not really recursive : do not display parents
-      if ($_GET['itemtype'] == 'Entity') {
+      if ($_POST['itemtype'] == 'Entity') {
          $recur = false;
       }
 
-      if (isset($_GET["entity_restrict"]) && !($_GET["entity_restrict"] < 0)) {
-         $where .= getEntitiesRestrictRequest(" AND ", $table, '', $_GET["entity_restrict"],
+      if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"] < 0)) {
+         $where .= getEntitiesRestrictRequest(" AND ", $table, '', $_POST["entity_restrict"],
                                               $recur);
 
-         if (is_array($_GET["entity_restrict"]) && (count($_GET["entity_restrict"]) > 1)) {
+         if (is_array($_POST["entity_restrict"]) && (count($_POST["entity_restrict"]) > 1)) {
             $multi = true;
          }
 
@@ -202,7 +200,7 @@ if ($item instanceof CommonTreeDropdown) {
       }
 
       // no multi view for entitites
-      if ($_GET['itemtype'] == "Entity") {
+      if ($_POST['itemtype'] == "Entity") {
          $multi = false;
       }
 
@@ -213,26 +211,26 @@ if ($item instanceof CommonTreeDropdown) {
 
    $addselect = '';
    $addjoin = '';
-   if (Session::haveTranslations($_GET['itemtype'], 'completename')) {
+   if (Session::haveTranslations($_POST['itemtype'], 'completename')) {
       $addselect = ", `namet`.`value` AS transcompletename";
       $addjoin   = " LEFT JOIN `glpi_dropdowntranslations` AS namet
-                        ON (`namet`.`itemtype` = '".$_GET['itemtype']."'
+                        ON (`namet`.`itemtype` = '".$_POST['itemtype']."'
                            AND `namet`.`items_id` = `$table`.`id`
                            AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
                            AND `namet`.`field` = 'completename')";
    }
-   if (Session::haveTranslations($_GET['itemtype'], 'name')) {
+   if (Session::haveTranslations($_POST['itemtype'], 'name')) {
       $addselect .= ", `namet2`.`value` AS transname";
       $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet2
-                        ON (`namet2`.`itemtype` = '".$_GET['itemtype']."'
+                        ON (`namet2`.`itemtype` = '".$_POST['itemtype']."'
                            AND `namet2`.`items_id` = `$table`.`id`
                            AND `namet2`.`language` = '".$_SESSION['glpilanguage']."'
                            AND `namet2`.`field` = 'name')";
    }
-   if (Session::haveTranslations($_GET['itemtype'], 'comment')) {
+   if (Session::haveTranslations($_POST['itemtype'], 'comment')) {
       $addselect .= ", `commentt`.`value` AS transcomment";
       $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS commentt
-                        ON (`commentt`.`itemtype` = '".$_GET['itemtype']."'
+                        ON (`commentt`.`itemtype` = '".$_POST['itemtype']."'
                            AND `commentt`.`items_id` = `$table`.`id`
                            AND `commentt`.`language` = '".$_SESSION['glpilanguage']."'
                            AND `commentt`.`field` = 'comment')";
@@ -247,16 +245,16 @@ if ($item instanceof CommonTreeDropdown) {
 
    if ($result = $DB->query($query)) {
       // Empty search text : display first
-      if ($_GET['page'] == 1 && empty($_GET['searchText'])) {
-         if ($_GET['display_emptychoice']) {
+      if ($_POST['page'] == 1 && empty($_POST['searchText'])) {
+         if ($_POST['display_emptychoice']) {
             if (($one_item < 0) || ($one_item  == 0)) {
                array_push($datas, array('id'   => 0,
-                                        'text' => $_GET['emptylabel']));
+                                        'text' => $_POST['emptylabel']));
             }
          }
       }
 
-      if ($_GET['page'] == 1) {
+      if ($_POST['page'] == 1) {
          if (count($toadd)) {
             foreach ($toadd as $key => $val) {
                if (($one_item < 0) || ($one_item == $key)) {
@@ -270,7 +268,7 @@ if ($item instanceof CommonTreeDropdown) {
       $datastoadd           = array();
 
       // Ignore first item for all pages except first page or one_item
-      $firstitem = (($_GET['page'] > 1) && ($one_item < 0));
+      $firstitem = (($_POST['page'] > 1) && ($one_item < 0));
       if ($DB->numrows($result)) {
          $prev             = -1;
          $firstitem_entity = -1;
@@ -334,14 +332,14 @@ if ($item instanceof CommonTreeDropdown) {
 
                               if (isset($item->fields["comment"])) {
                                  $addcomment
-                                 = DropdownTranslation::getTranslatedValue($ID, $_GET['itemtype'],
+                                 = DropdownTranslation::getTranslatedValue($ID, $_POST['itemtype'],
                                                                            'comment',
                                                                            $_SESSION['glpilanguage'],
                                                                            $item->fields['comment']);
                                  $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                               }
                               $output2 = DropdownTranslation::getTranslatedValue($item->fields['id'],
-                                                                                 $_GET['itemtype'],
+                                                                                 $_POST['itemtype'],
                                                                                  'name',
                                                                                  $_SESSION['glpilanguage'],
                                                                                  $item->fields['name']);
@@ -351,7 +349,7 @@ if ($item instanceof CommonTreeDropdown) {
                                             'text'     => $output2,
                                             'level'    => $work_level,
                                             'disabled' => true);
-                              if ($_GET['permit_select_parent']) {
+                              if ($_POST['permit_select_parent']) {
                                  unset($temp['disabled']);
                               }
                               array_unshift($parent_datas, $temp);
@@ -399,7 +397,8 @@ if ($item instanceof CommonTreeDropdown) {
                }
                array_push($datastoadd, array('id'    => $ID,
                                              'text'  => $outputval,
-                                             'level' => $level));
+                                             'level' => $level,
+                                             'title' => $title));
                $count++;
             }
             $firstitem = false;
@@ -430,11 +429,11 @@ if ($item instanceof CommonTreeDropdown) {
        && ($one_item < 0)) {
       $multi = $item->maybeRecursive();
 
-      if (isset($_GET["entity_restrict"]) && !($_GET["entity_restrict"] < 0)) {
+      if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"] < 0)) {
          $where .= getEntitiesRestrictRequest("AND", $table, "entities_id",
-                                              $_GET["entity_restrict"], $multi);
+                                              $_POST["entity_restrict"], $multi);
 
-         if (is_array($_GET["entity_restrict"]) && (count($_GET["entity_restrict"]) > 1)) {
+         if (is_array($_POST["entity_restrict"]) && (count($_POST["entity_restrict"]) > 1)) {
             $multi = true;
          }
 
@@ -462,18 +461,18 @@ if ($item instanceof CommonTreeDropdown) {
    if ($one_item >= 0) {
       $where .=" AND `$table`.`id` = '$one_item'";
    } else {
-      if (!empty($_GET['searchText'])) {
-         $search = Search::makeTextSearch($_GET['searchText']);
+      if (!empty($_POST['searchText'])) {
+         $search = Search::makeTextSearch($_POST['searchText']);
          $where .=" AND  (`$table`.`$field` ".$search;
 
-         if (Session::haveTranslations($_GET['itemtype'], $field)) {
+         if (Session::haveTranslations($_POST['itemtype'], $field)) {
             $where .= " OR `namet`.`value` ".$search;
          }
-         if ($_GET['itemtype'] == "SoftwareLicense") {
+         if ($_POST['itemtype'] == "SoftwareLicense") {
             $where .= " OR `glpi_softwares`.`name` ".$search;
          }
          // Also search by id
-         if ($displaywith && in_array('id', $_GET['displaywith'])) {
+         if ($displaywith && in_array('id', $_POST['displaywith'])) {
             $where .= " OR `$table`.`id` ".$search;
          }
 
@@ -482,24 +481,24 @@ if ($item instanceof CommonTreeDropdown) {
    }
    $addselect = '';
    $addjoin = '';
-   if (Session::haveTranslations($_GET['itemtype'], $field)) {
+   if (Session::haveTranslations($_POST['itemtype'], $field)) {
       $addselect .= ", `namet`.`value` AS transname";
       $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
-                        ON (`namet`.`itemtype` = '".$_GET['itemtype']."'
+                        ON (`namet`.`itemtype` = '".$_POST['itemtype']."'
                             AND `namet`.`items_id` = `$table`.`id`
                             AND `namet`.`language` = '".$_SESSION['glpilanguage']."'
                             AND `namet`.`field` = '$field')";
    }
-   if (Session::haveTranslations($_GET['itemtype'], 'comment')) {
+   if (Session::haveTranslations($_POST['itemtype'], 'comment')) {
       $addselect .= ", `commentt`.`value` AS transcomment";
       $addjoin   .= " LEFT JOIN `glpi_dropdowntranslations` AS commentt
-                        ON (`commentt`.`itemtype` = '".$_GET['itemtype']."'
+                        ON (`commentt`.`itemtype` = '".$_POST['itemtype']."'
                             AND `commentt`.`items_id` = `$table`.`id`
                             AND `commentt`.`language` = '".$_SESSION['glpilanguage']."'
                             AND `commentt`.`field` = 'comment')";
    }
 
-   switch ($_GET['itemtype']) {
+   switch ($_POST['itemtype']) {
       case "Contact" :
          $query = "SELECT `$table`.`entities_id`,
                           CONCAT(IFNULL(`name`,''),' ',IFNULL(`firstname`,'')) AS $field,
@@ -544,15 +543,15 @@ if ($item instanceof CommonTreeDropdown) {
    if ($result = $DB->query($query)) {
 
       // Display first if no search
-      if ($_GET['page'] == 1 && empty($_GET['searchText'])) {
-         if (!isset($_GET['display_emptychoice']) || $_GET['display_emptychoice']) {
+      if ($_POST['page'] == 1 && empty($_POST['searchText'])) {
+         if (!isset($_POST['display_emptychoice']) || $_POST['display_emptychoice']) {
             if (($one_item < 0) || ($one_item == 0)) {
                array_push($datas, array('id'    => 0,
-                                        'text'  => $_GET["emptylabel"]));
+                                        'text'  => $_POST["emptylabel"]));
             }
          }
       }
-      if ($_GET['page'] == 1) {
+      if ($_POST['page'] == 1) {
          if (count($toadd)) {
             foreach ($toadd as $key => $val) {
                if (($one_item < 0) || ($one_item == $key)) {
@@ -563,7 +562,7 @@ if ($item instanceof CommonTreeDropdown) {
          }
       }
 
-//       $outputval = Dropdown::getDropdownName($table, $_GET['value']);
+//       $outputval = Dropdown::getDropdownName($table, $_POST['value']);
 
       $datastoadd = array();
 
@@ -600,7 +599,7 @@ if ($item instanceof CommonTreeDropdown) {
             $outputval = Toolbox::unclean_cross_side_scripting_deep($outputval);
 
             if ($displaywith) {
-               foreach ($_GET['displaywith'] as $key) {
+               foreach ($_POST['displaywith'] as $key) {
                   if (isset($data[$key])) {
                      $withoutput = $data[$key];
                      if (isForeignKeyField($key)) {
@@ -631,7 +630,8 @@ if ($item instanceof CommonTreeDropdown) {
                $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
             }
             array_push($datastoadd, array('id'    => $ID,
-                                          'text'  => $outputval));
+                                          'text'  => $outputval,
+                                          'title' => $title));
             $count++;
          }
          if ($multi) {

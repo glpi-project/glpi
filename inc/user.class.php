@@ -37,7 +37,7 @@
 // And Marco Gaiarin for ldap features
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class User extends CommonDBTM {
@@ -707,7 +707,7 @@ class User extends CommonDBTM {
          } else {
             //ldap jpegphoto synchronisation.
             if (isset($this->fields["authtype"])
-                && ($this->fields["authtype"] == Auth::LDAP 
+                && ($this->fields["authtype"] == Auth::LDAP
                      || Auth::isAlternateAuth($this->fields['authtype']))
                 && $picture = $this->syncLdapPhoto()) {
                if (!empty($picture)) {
@@ -1075,7 +1075,7 @@ class User extends CommonDBTM {
    function syncLdapPhoto() {
 
       if (isset($this->fields["authtype"])
-          && (($this->fields["authtype"] == Auth::LDAP) 
+          && (($this->fields["authtype"] == Auth::LDAP)
                || Auth::isAlternateAuth($this->fields['authtype']))) {
 
          if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
@@ -1782,7 +1782,8 @@ class User extends CommonDBTM {
             $buttons["user.form.php?new=1&amp;ext_auth=1"] = __('... From an external source');
          }
       }
-      if (Session::haveRight("user", self::IMPORTEXTAUTHUSERS)) {
+      if (Session::haveRight("user", self::IMPORTEXTAUTHUSERS)
+         && (static::canCreate() || static::canUpdate())) {
          if (AuthLdap::useAuthLdap()) {
             $buttons["ldap.php"] = __('LDAP directory link');
          }
@@ -2031,12 +2032,12 @@ class User extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td>" .  __('Default profile') . "</td><td>";
 
-            $options = array(0 => Dropdown::EMPTY_VALUE);
-            $options   += Dropdown::getDropdownArrayNames('glpi_profiles',
-                                                          Profile_User::getUserProfiles($this->fields['id']));
+            $options   = Dropdown::getDropdownArrayNames('glpi_profiles',
+                                                         Profile_User::getUserProfiles($this->fields['id']));
 
             Dropdown::showFromArray("profiles_id", $options,
-                                    array('value' => $this->fields["profiles_id"]));
+                                    array('value'               => $this->fields["profiles_id"],
+                                          'display_emptychoice' => true));
 
             echo "</td><td>" .  __('Default entity') . "</td><td>";
             $entities = Profile_User::getUserEntities($this->fields['id'],1);
@@ -2047,10 +2048,9 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>" ;
-         //TRANS: %s is the date
-         printf(__('Last update on %s'), HTML::convDateTime($this->fields["date_mod"]));
-         echo "<br>";
-         printf(__('Last login on %s'), HTML::convDateTime($this->fields["last_login"]));
+         if ($this->fields["last_login"]) {
+            printf(__('Last login on %s'), HTML::convDateTime($this->fields["last_login"]));
+         }
          echo "</td><td colspan='2'class='center'>";
 
          if ($ID > 0) {
@@ -2270,11 +2270,11 @@ class User extends CommonDBTM {
          if (count($_SESSION['glpiprofiles']) >1) {
             echo "<td>" . __('Default profile') . "</td><td>";
 
-            $options  = array(0 => Dropdown::EMPTY_VALUE);
-            $options += Dropdown::getDropdownArrayNames('glpi_profiles',
-                                                        Profile_User::getUserProfiles($this->fields['id']));
+            $options = Dropdown::getDropdownArrayNames('glpi_profiles',
+                                                       Profile_User::getUserProfiles($this->fields['id']));
             Dropdown::showFromArray("profiles_id", $options,
-                                    array('value' => $this->fields["profiles_id"]));
+                                    array('value'               => $this->fields["profiles_id"],
+                                          'display_emptychoice' => true));
             echo "</td>";
 
          } else {
@@ -2656,6 +2656,12 @@ class User extends CommonDBTM {
       $tab[19]['datatype']             = 'datetime';
       $tab[19]['massiveaction']        = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[20]['table']                = 'glpi_profiles';
       $tab[20]['field']                = 'name';
       $tab[20]['name']                 = sprintf(__('%1$s (%2$s)'), _n('Profile', 'Profiles', Session::getPluralNumber()),
@@ -2776,6 +2782,9 @@ class User extends CommonDBTM {
                                                                   'condition'
                                                                    => 'AND NEWTABLE.`type`
                                                                         = '.CommonITILActor::ASSIGN)));
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+
       return $tab;
    }
 
@@ -2962,7 +2971,7 @@ class User extends CommonDBTM {
 
 
          case "all" :
-            $where = " `glpi_users`.`id` > '1' ".
+            $where = " `glpi_users`.`id` > '0' ".
                      getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
             break;
 
@@ -3029,6 +3038,12 @@ class User extends CommonDBTM {
                                   getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                              $entity_restrict, 1).") ";
                      break;
+
+                  case 'faq' :
+                     $where[]= " (`glpi_profilerights`.`name` = 'knowbase'
+                                  AND (`glpi_profilerights`.`rights` & ".KnowbaseItem::READFAQ.") ".
+                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                             $entity_restrict, 1).") ";
 
                   default :
                      // Check read or active for rights
@@ -3138,32 +3153,35 @@ class User extends CommonDBTM {
     * Make a select box with all glpi users where select key = name
     *
     * @param $options array of possible options:
-    *    - name         : string / name of the select (default is users_id)
+    *    - name           : string / name of the select (default is users_id)
     *    - value
-    *    - right        : string / limit user who have specific right :
-    *                         id -> only current user (default case);
-    *                         interface -> central ;
-    *                         all -> all users ;
-    *                         specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
-    *    - comments     : boolean / is the comments displayed near the dropdown (default true)
-    *    - entity       : integer or array / restrict to a defined entity or array of entities
-    *                      (default -1 : no restriction)
-    *    - entity_sons  : boolean / if entity restrict specified auto select its sons
-    *                      only available if entity is a single value not an array(default false)
-    *    - all          : Nobody or All display for none selected
-    *                         all=0 (default) -> Nobody
-    *                         all=1 -> All
-    *                         all=-1-> nothing
-    *    - rand         : integer / already computed rand value
-    *    - toupdate     : array / Update a specific item on select change on dropdown
-    *                      (need value_fieldname, to_update, url
-    *                      (see Ajax::updateItemOnSelectEvent for information)
-    *                      and may have moreparams)
-    *    - used         : array / Already used items ID: not to display in dropdown (default empty)
+    *    - right          : string / limit user who have specific right :
+    *                           id -> only current user (default case);
+    *                           interface -> central ;
+    *                           all -> all users ;
+    *                           specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
+    *    - comments       : boolean / is the comments displayed near the dropdown (default true)
+    *    - entity         : integer or array / restrict to a defined entity or array of entities
+    *                        (default -1 : no restriction)
+    *    - entity_sons    : boolean / if entity restrict specified auto select its sons
+    *                        only available if entity is a single value not an array(default false)
+    *    - all            : Nobody or All display for none selected
+    *                           all=0 (default) -> Nobody
+    *                           all=1 -> All
+    *                           all=-1-> nothing
+    *    - rand           : integer / already computed rand value
+    *    - toupdate       : array / Update a specific item on select change on dropdown
+    *                        (need value_fieldname, to_update, url
+    *                        (see Ajax::updateItemOnSelectEvent for information)
+    *                        and may have moreparams)
+    *    - used           : array / Already used items ID: not to display in dropdown (default empty)
     *    - ldap_import
-    *    - on_change    : string / value to transmit to "onChange"
-    *    - display      : boolean / display or get string (default true)
-    *    - width        : specific width needed (default 80%)
+    *    - on_change      : string / value to transmit to "onChange"
+    *    - display        : boolean / display or get string (default true)
+    *    - width          : specific width needed (default 80%)
+    *    - specific_tags  : array of HTML5 tags to add the the field
+    *    - url            : url of the ajax php code which should return the json data to show in
+    *                        the dropdown (default /ajax/getDropdownUsers.php)
     *
     * @return rand value if displayed / string if not
    **/
@@ -3186,6 +3204,8 @@ class User extends CommonDBTM {
       $p['rand']           = mt_rand();
       $p['display']        = true;
       $p['_user_index']   = 0;
+      $p['specific_tags']  = array();
+      $p['url']            = $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php" ;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -3234,10 +3254,11 @@ class User extends CommonDBTM {
                         'right'               => $p['right'],
                         'on_change'           => $p['on_change'],
                         'used'                => $p['used'],
-                        'entity_restrict'     => $p['entity']);
+                        'entity_restrict'     => $p['entity'],
+                        'specific_tags'       => $p['specific_tags']);
 
       $output   = Html::jsAjaxDropdown($p['name'], $field_id,
-                                       $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php",
+                                       $p['url'],
                                        $param);
 
       // Display comment
@@ -3626,7 +3647,7 @@ class User extends CommonDBTM {
                 FROM `glpi_useremails`
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_useremails`.`users_id`)
                 WHERE `glpi_useremails`.`email` = '".stripslashes($email)."'
-                ORDER BY `glpi_users`.`is_active`  DESC";
+                ORDER BY `glpi_users`.`is_active`  DESC, is_deleted ASC";
       $result = $DB->query($query);
 
       //User still exists in DB
@@ -3697,6 +3718,15 @@ class User extends CommonDBTM {
             $tmp['is_active'] = 0;
             $myuser->update($tmp);
             break;
+
+         //Deactivate the user+ Delete all user dynamic habilitations and groups
+         case 4:
+            $tmp['is_active'] = 0;
+            $myuser->update($tmp);
+            Profile_User::deleteRights($users_id, true);
+            Group_User::deleteGroups($users_id, true);
+            break;
+
       }
       /*
       $changes[0] = '0';

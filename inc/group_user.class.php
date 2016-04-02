@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -435,12 +435,12 @@ class Group_User extends CommonDBRelation{
       echo "<tr class='tab_bg_1'><th colspan='2'>".User::getTypeName(Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo _n('Criterion', 'Criteria', 1)."&nbsp;";
-      $crits = array(''                => Dropdown::EMPTY_VALUE,
-                     'is_manager'      => __('Manager'),
+      $crits = array('is_manager'      => __('Manager'),
                      'is_userdelegate' => __('Delegatee'));
       Dropdown::showFromArray('crit', $crits,
-                              array('value'     => $crit,
-                                    'on_change' => 'reloadTab("start=0&criterion="+this.value)'));
+                              array('value'               => $crit,
+                                    'on_change'           => 'reloadTab("start=0&criterion="+this.value)',
+                                    'display_emptychoice' => true));
       if ($group->haveChildren()) {
          echo "</td><td class='center'>".__('Child groups');
          Dropdown::showYesNo('tree', $tree, -1,

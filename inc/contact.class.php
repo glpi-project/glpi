@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -233,7 +233,6 @@ class Contact extends CommonDBTM{
       }
       echo "</td></tr>";
 
-
       $this->showFormButtons($options);
 
       return true;
@@ -384,6 +383,21 @@ class Contact extends CommonDBTM{
       $tab[86]['field']         = 'is_recursive';
       $tab[86]['name']          = __('Child entities');
       $tab[86]['datatype']      = 'bool';
+
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 

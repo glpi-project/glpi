@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /// Hidden fields for ticket template class
@@ -151,7 +151,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
       $result = $DB->query($sql);
 
       $tt             = new TicketTemplate();
-      $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
+      $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
       $fields         = array();
 
       while ($rule = $DB->fetch_assoc($result)) {
@@ -186,7 +186,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
       $used    = $ttm->getHiddenFields($ID);
 
       $canedit = $tt->canEdit($ID);
-      $fields  = $tt->getAllowedFieldsNames(false, isset($used['itemtype']));
+      $fields  = $tt->getAllowedFieldsNames(false);
       $rand    = mt_rand();
 
       $query = "SELECT `glpi_tickettemplatehiddenfields`.*

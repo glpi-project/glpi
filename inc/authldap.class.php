@@ -935,6 +935,12 @@ class AuthLDAP extends CommonDBTM {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       $tab[20]['table']         = $this->getTable();
       $tab[20]['field']         = 'language_field';
       $tab[20]['name']          = __('Language');
@@ -1665,7 +1671,10 @@ class AuthLDAP extends CommonDBTM {
             echo "<th>".__('Group DN')."</th>";
             echo "<th>".__('Destination entity')."</th>";
             if (Session::isMultiEntitiesMode()) {
-               echo"<th>".__('Child entities')."</th>";
+               echo"<th>";
+               Html::showCheckbox(array('criterion' => array('tag_for_massive' => 'select_item_child_entities')));
+               echo "&nbsp;".__('Child entities');
+               echo "</th>";
             }
             echo "</tr>";
 
@@ -1693,8 +1702,10 @@ class AuthLDAP extends CommonDBTM {
                echo "</td>";
                if (Session::isMultiEntitiesMode()) {
                   echo "<td>";
-                  Html::showCheckbox(array('name'          => "ldap_import_recursive[$dn_index]",
-                                           'specific_tags' => array('data-glpicore-ma-tags' => 'common')));
+                  Html::showMassiveActionCheckBox(__CLASS__, $dn_index,
+                                               array('massive_tags'  => 'select_item_child_entities',
+                                                     'name'          => "ldap_import_recursive[$dn_index]",
+                                                     'specific_tags' => array('data-glpicore-ma-tags' => 'common')));
                   echo "</td>";
                } else {
                   echo Html::hidden("ldap_import_recursive[$dn_index]", array('value'                 => 0,
@@ -2010,6 +2021,7 @@ class AuthLDAP extends CommonDBTM {
       $config_ldap = new self();
       $res         = $config_ldap->getFromDB($ldap_server);
       $ldap_users  = array();
+      $input       = array();
 
       // we prevent some delay...
       if (!$res) {
@@ -2057,6 +2069,10 @@ class AuthLDAP extends CommonDBTM {
                $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
                $user->fields['is_deleted_ldap'] = 0;
 
+               //clean picture from input
+               // (picture managed in User::post_addItem and prepareInputForUpdate)
+               unset($input['picture']);
+
                if ($action == self::ACTION_IMPORT) {
                   $user->fields["authtype"] = Auth::LDAP;
                   $user->fields["auths_id"] = $ldap_server;
@@ -2066,9 +2082,6 @@ class AuthLDAP extends CommonDBTM {
                   if ($display) {
                      $input['add'] = 1;
                   }
-
-                  //clean picture  from input (picture managed in User::post_addItem)
-                  unset($input['picture']);
 
                   $user->fields["id"] = $user->add($input);
                   return array('action' => self::USER_IMPORTED,
@@ -2978,6 +2991,7 @@ class AuthLDAP extends CommonDBTM {
       $options[1] = __('Put in dustbin');
       $options[2] = __('Withdraw dynamic authorizations and groups');
       $options[3] = __('Disable');
+      $options[4] = __('Disable').' + '.__('Withdraw dynamic authorizations and groups') ;
       asort($options);
       return Dropdown::showFromArray('user_deleted_ldap', $options, array('value' => $value));
    }

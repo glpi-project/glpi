@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /// ContractCost class
@@ -59,9 +59,10 @@ class ContractCost extends CommonDBChild {
    **/
    function prepareInputForAdd($input) {
 
-      if (empty($input['end_date'])
-          || ($input['end_date'] == 'NULL')
-          || ($input['end_date'] < $input['begin_date'])) {
+      if (!empty($input['begin_date'])
+          && (empty($input['end_date'])
+              || ($input['end_date'] == 'NULL')
+              || ($input['end_date'] < $input['begin_date']))) {
 
          $input['end_date'] = $input['begin_date'];
       }
@@ -75,9 +76,10 @@ class ContractCost extends CommonDBChild {
    **/
    function prepareInputForUpdate($input) {
 
-      if (empty($input['end_date'])
-          || ($input['end_date'] == 'NULL')
-          || ($input['end_date'] < $input['begin_date'])) {
+      if (!empty($input['begin_date'])
+          && (empty($input['end_date'])
+              || ($input['end_date'] == 'NULL')
+              || ($input['end_date'] < $input['begin_date']))) {
 
          $input['end_date'] = $input['begin_date'];
       }

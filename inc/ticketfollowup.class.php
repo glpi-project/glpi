@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /// TODO extends it from CommonDBChild
@@ -167,8 +167,10 @@ class TicketFollowup  extends CommonDBTM {
          return false;
       }
 
-      if (($this->fields["users_id"] === Session::getLoginUserID())
-          && Session::haveRight(self::$rightname, self::UPDATEMY)) {
+      if ($this->fields["users_id"] === Session::getLoginUserID()) {
+         if (!Session::haveRight(self::$rightname, self::UPDATEMY)) {
+            return false;
+         }
          return true;
       }
 
@@ -267,6 +269,21 @@ class TicketFollowup  extends CommonDBTM {
                NotificationEvent::raiseEvent("update_followup", $job, $options);
             }
          }
+
+         // change ticket status (from splitted button)
+         $this->input['_job'] = new Ticket();
+         if (!$this->input['_job']->getFromDB($this->input["tickets_id"])) {
+            return false;
+         }
+         if (isset($this->input['_status'])
+             && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
+             $update['status']        = $this->input['_status'];
+             $update['id']            = $this->input['_job']->fields['id'];
+             $update['_disablenotif'] = true;
+             $this->input['_job']->update($update);
+          }
+
+
          // Add log entry in the ticket
          $changes[0] = 0;
          $changes[1] = '';
@@ -413,11 +430,11 @@ class TicketFollowup  extends CommonDBTM {
          }
 
          $update['id'] = $this->input["_job"]->fields['id'];
-         
+
          // don't notify on Ticket - update event
          $update['_disablenotif'] = true;
-         
-         // Use update method for history 
+
+         // Use update method for history
          $this->input["_job"]->update($update);
          $reopened     = true;
       }
@@ -428,11 +445,11 @@ class TicketFollowup  extends CommonDBTM {
 
          $update['status'] = $this->input['_status'];
          $update['id']     = $this->input['_job']->fields['id'];
-         
+
          // don't notify on Ticket - update event
          $update['_disablenotif'] = true;
 
-         // Use update method for history 
+         // Use update method for history
          $this->input['_job']->update($update);
       }
 

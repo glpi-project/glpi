@@ -37,7 +37,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -70,7 +70,8 @@ class Item_DeviceMemory extends Item_Devices {
     * @since version 0.85
    **/
    static function itemAffinity() {
-      return array('Computer', 'NetworkEquipment', 'Peripheral', 'Printer');
+      global $CFG_GLPI;
+      return $CFG_GLPI["itemdevicesmemory_types"];
    }
 
 }

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -42,10 +42,8 @@ if (strpos($_SERVER['PHP_SELF'],"getDropdownNetpoint.php")) {
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
-}
-
-if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+} else if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access this file directly");
 }
 
 Session::checkLoginUser();
@@ -55,39 +53,39 @@ $datas             = array();
 $location_restrict = false;
 
 
-if (!isset($_GET['page'])) {
-   $_GET['page']       = 1;
-   $_GET['page_limit'] = $CFG_GLPI['dropdown_max'];
+if (!isset($_POST['page'])) {
+   $_POST['page']       = 1;
+   $_POST['page_limit'] = $CFG_GLPI['dropdown_max'];
 }
 
-$start = ($_GET['page']-1)*$_GET['page_limit'];
-$limit = $_GET['page_limit'];
+$start = ($_POST['page']-1)*$_POST['page_limit'];
+$limit = $_POST['page_limit'];
 
 $LIMIT = "LIMIT $start,$limit";
 
 $one_item = -1;
-if (isset($_GET['_one_id'])) {
-   $one_item = $_GET['_one_id'];
+if (isset($_POST['_one_id'])) {
+   $one_item = $_POST['_one_id'];
 }
 
 if ($one_item >= 0) {
    $where .= " AND `glpi_netpoints`.`id` = '$one_item'";
 } else {
-   if (strlen($_GET['searchText']) > 0) {
-      $where = " WHERE (`glpi_netpoints`.`name` ".Search::makeTextSearch($_GET['searchText'])."
-                        OR `glpi_locations`.`completename` ".Search::makeTextSearch($_GET['searchText']).")";
+   if (strlen($_POST['searchText']) > 0) {
+      $where = " WHERE (`glpi_netpoints`.`name` ".Search::makeTextSearch($_POST['searchText'])."
+                        OR `glpi_locations`.`completename` ".Search::makeTextSearch($_POST['searchText']).")";
    } else {
       $where = " WHERE 1 ";
    }
 }
 
-if (!(isset($_GET["devtype"])
-      && ($_GET["devtype"] != 'NetworkEquipment')
-      && isset($_GET["locations_id"])
-      && ($_GET["locations_id"] > 0))) {
+if (!(isset($_POST["devtype"])
+      && ($_POST["devtype"] != 'NetworkEquipment')
+      && isset($_POST["locations_id"])
+      && ($_POST["locations_id"] > 0))) {
 
-   if (isset($_GET["entity_restrict"]) && ($_GET["entity_restrict"] >= 0)) {
-      $where .= " AND `glpi_netpoints`.`entities_id` = '".$_GET["entity_restrict"]."'";
+   if (isset($_POST["entity_restrict"]) && ($_POST["entity_restrict"] >= 0)) {
+      $where .= " AND `glpi_netpoints`.`entities_id` = '".$_POST["entity_restrict"]."'";
    } else {
       $where .= getEntitiesRestrictRequest(" AND ", "glpi_locations");
    }
@@ -100,7 +98,7 @@ $query = "SELECT `glpi_netpoints`.`comment` AS comment,
           FROM `glpi_netpoints`
           LEFT JOIN `glpi_locations` ON (`glpi_netpoints`.`locations_id` = `glpi_locations`.`id`) ";
 
-if (isset($_GET["devtype"]) && !empty($_GET["devtype"])) {
+if (isset($_POST["devtype"]) && !empty($_POST["devtype"])) {
    $query .= "LEFT JOIN `glpi_networkportethernets`
                   ON (`glpi_netpoints`.`id` = `glpi_networkportethernets`.`netpoints_id`)
               LEFT JOIN `glpi_networkports`
@@ -108,20 +106,20 @@ if (isset($_GET["devtype"]) && !empty($_GET["devtype"])) {
                       AND `glpi_networkports`.`instantiation_type` = 'NetworkPortEthernet'
                       AND `glpi_networkports`.`itemtype`";
 
-   if ($_GET["devtype"] == 'NetworkEquipment') {
+   if ($_POST["devtype"] == 'NetworkEquipment') {
       $query .= " = 'NetworkEquipment' )";
    } else {
       $query .= " != 'NetworkEquipment' )";
-      if (isset($_GET["locations_id"]) && ($_GET["locations_id"] >= 0)) {
+      if (isset($_POST["locations_id"]) && ($_POST["locations_id"] >= 0)) {
          $location_restrict = true;
-         $where .= " AND `glpi_netpoints`.`locations_id` = '".$_GET["locations_id"]."' ";
+         $where .= " AND `glpi_netpoints`.`locations_id` = '".$_POST["locations_id"]."' ";
       }
    }
    $where .= " AND `glpi_networkportethernets`.`netpoints_id` IS NULL ";
 
-} else if (isset($_GET["locations_id"]) && ($_GET["locations_id"] >= 0)) {
+} else if (isset($_POST["locations_id"]) && ($_POST["locations_id"] >= 0)) {
    $location_restrict = true;
-   $where .= " AND `glpi_netpoints`.`locations_id` = '".$_GET["locations_id"]."' ";
+   $where .= " AND `glpi_netpoints`.`locations_id` = '".$_POST["locations_id"]."' ";
 }
 
 $query .= $where ."
@@ -132,8 +130,8 @@ $query .= $where ."
 $result = $DB->query($query);
 
 // Display first if no search
-if (empty($_GET['searchText']) && ($one_item < 0) || ($one_item == 0)) {
-   if ($_GET['page'] == 1) {
+if (empty($_POST['searchText']) && ($one_item < 0) || ($one_item == 0)) {
+   if ($_POST['page'] == 1) {
       array_push($datas, array('id'   => 0,
                               'text' => Dropdown::EMPTY_VALUE));
    }

@@ -1217,7 +1217,7 @@ function generateGlobalDropdowns() {
 
    $items = array("A9250/TD", "AX550/TD", "Extreme N5900", "V9520-X/TD", "All-In-Wonder X800 GT",
                   "GV-NX66256D", "GV-RX80256DE", "Excalibur 9600XT", "X1300 IceQ",
-                  "WinFast PX6200 TD", "Millenium 750","NX6600GT");
+                  "WinFast PX6200 TD", "Millennium 750","NX6600GT");
    $dp    = new DeviceGraphicCard();
    for ($i=0 ; $i<$MAX['device'] ; $i++) {
       if (isset($items[$i])) {

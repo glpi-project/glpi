@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 require_once GLPI_PASSWORD_COMPAT;
@@ -823,9 +823,10 @@ class Auth extends CommonGLPI {
    static function dropdown($options=array()) {
       global $DB;
 
-      $p['name']    = 'auths_id';
-      $p['value']   = 0;
-      $p['display'] = true;
+      $p['name']                = 'auths_id';
+      $p['value']               = 0;
+      $p['display']             = true;
+      $p['display_emptychoice'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -833,7 +834,6 @@ class Auth extends CommonGLPI {
          }
       }
 
-      $methods[0]             = Dropdown::EMPTY_VALUE;
       $methods[self::DB_GLPI] = __('Authentication on GLPI database');
 
       $sql = "SELECT COUNT(*) AS cpt
@@ -1137,7 +1137,7 @@ class Auth extends CommonGLPI {
      * @return boolean
     **/
     static function isValidLogin($login) {
-       return preg_match( "/^[[:alnum:]@.\-_ ]+$/i", $login);
+       return preg_match( "/^[[:alnum:]@.\-_ ]+$/iu", $login);
     }
 
 

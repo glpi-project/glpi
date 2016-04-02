@@ -113,6 +113,10 @@ class SimplePie_File
                                 if (!empty($CFG_GLPI["proxy_name"])) {
                                   curl_setopt($fp, CURLOPT_PROXY, $CFG_GLPI["proxy_name"]);
                                   curl_setopt($fp, CURLOPT_PROXYPORT, $CFG_GLPI["proxy_port"]);
+                                  if(!empty($CFG_GLPI["proxy_user"])) {
+                                    curl_setopt($fp, CURLOPT_HTTPAUTH, CURLAUTH_ANYSAFE );
+                                    curl_setopt($fp, CURLOPT_PROXYUSERPWD, $CFG_GLPI["proxy_user"].":".Toolbox::decrypt($CFG_GLPI["proxy_passwd"], GLPIKEY) );
+                                  }
                                }
                                
 				if (!ini_get('open_basedir') && !ini_get('safe_mode') && version_compare(SimplePie_Misc::get_curl_version(), '7.15.2', '>='))

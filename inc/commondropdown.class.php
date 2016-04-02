@@ -36,11 +36,15 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /// CommonDropdown class - generic dropdown
 abstract class CommonDropdown extends CommonDBTM {
+
+
+   // From CommonDBTM
+   public $dohistory                   = true;
 
    // For delete operation (entity will overload this value)
    public $must_be_replace = false;
@@ -185,6 +189,16 @@ abstract class CommonDropdown extends CommonDBTM {
     * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
+      global $DB;
+
+      // if item based on location, create item in the same entity as location
+      if (isset($input['locations_id'])) {
+         foreach ($DB->request("SELECT `entities_id`
+                                FROM `glpi_locations`
+                                WHERE `id` = ".$input['locations_id']) as $data) {
+            $input['entities_id'] = $data['entities_id'];
+         }
+      }
 
       if (isset($input['name'])) {
          // leading/ending space will break findID/import
@@ -448,6 +462,17 @@ abstract class CommonDropdown extends CommonDBTM {
          $tab[19]['datatype']      = 'datetime';
          $tab[19]['massiveaction'] = false;
       }
+
+      if ($this->isField('date_creation')) {
+         $tab[121]['table']          = $this->getTable();
+         $tab[121]['field']          = 'date_creation';
+         $tab[121]['name']           = __('Creation date');
+         $tab[121]['datatype']       = 'datetime';
+         $tab[121]['massiveaction']  = false;
+      }
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       return $tab;
    }

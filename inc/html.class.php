@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -50,38 +50,50 @@ class Html {
     * Clean display value deleting html tags
     *
     * @param $value string: string value
-    *
+    * @param $striptags bool: strip all html tags
+    * @param $keep_bad int:
+    *          1 : neutralize tag anb content,
+    *          2 : remove tag and neutralize content
     * @return clean value
    **/
-   static function clean($value) {
-
-      $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-
-      $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
-      $value = preg_replace("/(&nbsp;| )+/", " ", $value);
-
-
-      $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                             '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
-                             '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
-                              );
-
-      $value = preg_replace($search, '', $value);
+   static function clean($value, $striptags=true, $keep_bad=2) {
 
       include_once(GLPI_HTMLAWED);
 
-      $value = htmLawed($value, array('elements' => 'none',
-                                      'keep_bad' => 2, // remove tag / neutralize content
+      $value = Html::entity_decode_deep($value);
+
+      // Clean MS office tags
+      $value = str_replace(array("<![if !supportLists]>", "<![endif]>"), '', $value);
+
+      if ($striptags) {
+         $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+
+         $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
+         $value = preg_replace("/(&nbsp;| )+/", " ", $value);
+
+
+         $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
+                                '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
+                                '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
+                                 );
+
+         $value = preg_replace($search, '', $value);
+      }
+
+      $value = htmLawed($value, array('elements' => ($striptags) ? 'none' : '',
+                                      'keep_bad' => $keep_bad, // 1 : neutralize tag and content, 2 : remove tag and neutralize content
                                       'comment' => 1, // DROP
                                       'cdata'   => 1, // DROP
                                       ));
+
+      $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
 
 /*
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
@@ -139,11 +151,12 @@ class Html {
    /**
     * Convert a date YY-MM-DD to DD-MM-YY for calendar
     *
-    * @param $time date: date to convert
+    * @param $time       date  date to convert
+    * @param $format           (default null)
     *
     * @return $time or $date
    **/
-   static function convDate($time) {
+   static function convDate($time, $format=null) {
 
       if (is_null($time) || ($time == 'NULL')) {
          return NULL;
@@ -152,8 +165,11 @@ class Html {
       if (!isset($_SESSION["glpidate_format"])) {
          $_SESSION["glpidate_format"] = 0;
       }
+      if (!$format ) {
+         $format = $_SESSION["glpidate_format"];
+      }
 
-      switch ($_SESSION['glpidate_format']) {
+      switch ($format) {
          case 1 : // DD-MM-YYYY
             $date  = substr($time, 8, 2)."-";  // day
             $date .= substr($time, 5, 2)."-"; // month
@@ -178,17 +194,18 @@ class Html {
    /**
     * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
     *
-    * @param $time datetime: datetime to convert
+    * @param $time        datetime  datetime to convert
+    *  @param $format               (default null)
     *
     * @return $time or $date
    **/
-   static function convDateTime($time) {
+   static function convDateTime($time, $format=null) {
 
       if (is_null($time) || ($time == 'NULL')) {
          return NULL;
       }
 
-      return self::convDate($time).' '. substr($time, 11, 5);
+      return self::convDate($time, $format).' '. substr($time, 11, 5);
    }
 
 
@@ -200,7 +217,7 @@ class Html {
     * @return clean string
    **/
    static function cleanInputText($string) {
-      return preg_replace('/\"/', '&quot;', $string);
+      return preg_replace( '/\'/', '&apos;', preg_replace('/\"/', '&quot;', $string));
    }
 
 
@@ -576,12 +593,14 @@ class Html {
                })
                .dialog('open');
 
-               // close dialog on outside click 
+               // close dialog on outside click
                $(document.body).on('click', function(e){
                   if ($('#message_after_redirect').dialog('isOpen')
                       && !$(e.target).is('.ui-dialog, a')
                       && !$(e.target).closest('.ui-dialog').length) {
                      $('#message_after_redirect').dialog('close');
+                     // redo focus on initial element
+                     e.target.focus();
                   }
                });
             });
@@ -653,13 +672,13 @@ class Html {
     *
     * @param $with_session with session information (true by default)
    **/
-   static function displayDebugInfos($with_session=true) {
+   static function displayDebugInfos($with_session=true, $ajax=false) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
 
       // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
-         echo "<div class='debug'>";
+         echo "<div class='debug ".($ajax?"debug_ajax":"")."'>";
          echo "<h1 id='see_debug$rand' class='see_debug'><a name='see_debug'>See GLPI DEBUG</a></h1>";
 
          echo "<div id='debugtabs$rand'><ul>";
@@ -1064,6 +1083,12 @@ class Html {
       //  CSS link
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
 
+      // High constrast CSS link
+      if (isset($_SESSION['glpihighcontrast_css'])
+         && $_SESSION['glpihighcontrast_css']) {
+         echo Html::css($CFG_GLPI["root_doc"]."/css/highcontrast.css");
+      }
+
       // CSS theme link
       if (isset($_SESSION["glpipalette"])) {
          echo Html::css($CFG_GLPI["root_doc"]."/css/palettes/".$_SESSION["glpipalette"].".css");
@@ -1096,7 +1121,7 @@ class Html {
       }
 
       // AJAX library
-      if (isset($_SESSION['glpi_use_mode']) 
+      if (isset($_SESSION['glpi_use_mode'])
             && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.js");
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.js");
@@ -1123,7 +1148,7 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js");
 
       // layout
-      if (CommonGLPI::isLayoutWithMain() 
+      if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
          echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/css/jquery.scrollabletab.css");
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.js");
@@ -1147,6 +1172,8 @@ class Html {
 
       // Some Javascript-Functions which we may need later
       echo Html::script($CFG_GLPI["root_doc"].'/script.js');
+      self::redefineAlert();
+      self::redefineConfirm();
 
       // Add specific javascript for plugins
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
@@ -1188,7 +1215,7 @@ class Html {
                                              'Planning', 'Stat', 'TicketRecurrent');
 
       $menu['management']['title']   = __('Management');
-      $menu['management']['types']   = array('Budget', 'Supplier', 'Contact', 'Contract',
+      $menu['management']['types']   = array('SoftwareLicense','Budget', 'Supplier', 'Contact', 'Contract',
                                                 'Document');
 
       $menu['tools']['title']        = __('Tools');
@@ -1269,8 +1296,14 @@ class Html {
             foreach  ($PLUGIN_HOOKS["menu_toadd"] as $plugin => $items) {
                if (count($items)) {
                   foreach ($items as $key => $val) {
-                     if (isset($menu[$key])) {
-                        $menu[$key]['types'][] = $val;
+                     if (is_array($val)) {
+                        foreach ($val as $k => $object) {
+                           $menu[$key]['types'][] = $object;
+                        }
+                     } else {
+                        if (isset($menu[$key])) {
+                           $menu[$key]['types'][] = $val;
+                        }
                      }
                   }
                }
@@ -1427,7 +1460,7 @@ class Html {
                               $_SESSION["glpifirstname"], 0, 20);
          echo "</span>";
       }
-      echo "</a></li>";  
+      echo "</a></li>";
 
       /// Bookmark load
       echo "<li id='bookmark_link'>";
@@ -1466,7 +1499,7 @@ class Html {
       }
       echo "</li>";
 
-      
+
       echo "</ul>";
       echo "</div>\n";
 
@@ -1818,7 +1851,7 @@ class Html {
          }
          echo "</div>";
          echo "<div id='see_ajaxdebug$rand' name='see_ajaxdebug$rand' style=\"display:none;\">";
-         self::displayDebugInfos(false);
+         self::displayDebugInfos(false, true);
          echo "</div></div>";
       }
    }
@@ -1956,7 +1989,7 @@ class Html {
                               $_SESSION["glpifirstname"], 0, 20);
          echo "</span>";
       }
-      echo "</a></li>";  
+      echo "</a></li>";
 
       echo "<li>";
       Ajax::createIframeModalWindow('loadbookmark',
@@ -1993,33 +2026,33 @@ class Html {
 
       //  Create ticket
       if (Session::haveRight("ticket", CREATE)) {
-         $menu['create_ticket']['id']      = "menu1";
+         $menu['create_ticket']['id']      = "menu2";
          $menu['create_ticket']['default'] = '/front/helpdesk.public.php?create_ticket=1';
          $menu['create_ticket']['title']   = __s('Create a ticket');
          $menu['create_ticket']['content'] = array(true);
       }
-      
+
       //  Tickets
-      if (Session::haveRight("ticket", CREATE) 
+      if (Session::haveRight("ticket", CREATE)
           || Session::haveRight("ticket", Ticket::READMY)
           || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
-         $menu['tickets']['id']      = "menu2";
+         $menu['tickets']['id']      = "menu3";
          $menu['tickets']['default'] = '/front/ticket.php';
          $menu['tickets']['title']   = _n('Ticket','Tickets', Session::getPluralNumber());
          $menu['tickets']['content'] = array(true);
       }
-      
+
       // Reservation
       if (Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
-         $menu['reservation']['id']      = "menu3";
+         $menu['reservation']['id']      = "menu4";
          $menu['reservation']['default'] = '/front/reservationitem.php';
          $menu['reservation']['title']   = _n('Reservation', 'Reservations', Session::getPluralNumber());
          $menu['reservation']['content'] = array(true);
       }
-      
+
       // FAQ
       if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
-         $menu['faq']['id']      = "menu4";
+         $menu['faq']['id']      = "menu5";
          $menu['faq']['default'] = '/front/helpdesk.faq.php';
          $menu['faq']['title']   = __s('FAQ');
          $menu['faq']['content'] = array(true);
@@ -2300,17 +2333,17 @@ class Html {
     * @since 0.90.1
     * @param $menu array of menu items
     *    - key   : plugin system name
-    *    - value : array of options 
+    *    - value : array of options
     *       * id      : html id attribute
     *       * default : defaul url
     *       * title   : displayed label
-    *       * content : menu sub items, array with theses options : 
+    *       * content : menu sub items, array with theses options :
     *          - page     : url
     *          - title    : displayed label
     *          - shortcut : keyboard shortcut letter
     */
    static function displayMenuAll($menu = array()) {
-      global $CFG_GLPI;
+      global $CFG_GLPI,$PLUGIN_HOOKS;
 
       // Display MENU ALL
       echo "<div id='show_all_menu' class='invisible'>";
@@ -2336,12 +2369,20 @@ class Html {
 
                if (isset($val['page'])
                    && isset($val['title'])) {
-                  echo "<tr><td><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
+                  echo "<tr><td>";
 
+                  if (isset($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])
+                        && is_string($PLUGIN_HOOKS["helpdesk_menu_entry"][$key])) {
+                     echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$key.$val['page']."'";
+                  } else {
+                     echo "<a href='".$CFG_GLPI["root_doc"].$val['page']."'";
+                  }
                   if (isset($data['shortcut']) && !empty($data['shortcut'])) {
                      echo " accesskey='".$val['shortcut']."'";
                   }
-                  echo ">".$val['title']."</a></td></tr>\n";
+                  echo ">";
+
+                  echo $val['title']."</a></td></tr>\n";
                   $i++;
                }
             }
@@ -2389,7 +2430,7 @@ class Html {
    **/
    static function header_nocache() {
 
-      header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+      header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
       header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passe
    }
 
@@ -2976,7 +3017,8 @@ class Html {
             $p[$key] = $val;
          }
       }
-      $output = "<input id='showdate".$p['rand']."' type='text' size='10' name='_$name' ".
+      $output = "<div class='no-wrap'>";
+      $output .= "<input id='showdate".$p['rand']."' type='text' size='10' name='_$name' ".
                   "value='".self::convDate($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'],
                                            'id'    => "hiddendate".$p['rand'],
@@ -2985,6 +3027,7 @@ class Html {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
                       "\" id='resetdate".$p['rand']."' class='pointer'>";
       }
+      $output .= "</div>";
 
       $js = '';
       if ($p['maybeempty'] && $p['canedit']) {
@@ -3192,13 +3235,15 @@ class Html {
          $p['value'] = $date_value.' '.$hour_value;
       }
 
-      $output  = "<input id='showdate".$p['rand']."' type='text' name='_$name' value='".
+      $output = "<div class='no-wrap'>";
+      $output .= "<input id='showdate".$p['rand']."' type='text' name='_$name' value='".
                    self::convDateTime($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'], 'id' => "hiddendate".$p['rand']));
       if ($p['maybeempty'] && $p['canedit']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
                       "\" id='resetdate".$p['rand']."' class='pointer'>";
       }
+      $output .= "</div>";
 
       $js = "";
       if ($p['maybeempty'] && $p['canedit']) {
@@ -3677,7 +3722,7 @@ class Html {
             }
             $out .= '>';
          }
-         $out .= "<img id='tooltip$rand' alt='ffff' src='".$param['img']."' class='pointer'>";
+         $out .= "<img id='tooltip$rand' src='".$param['img']."' class='pointer'>";
 
          if (!empty($param['link'])) {
             $out .= "</a>";
@@ -3748,7 +3793,6 @@ class Html {
       if (array_key_exists($field,$item->fields)) {
          $params['value'] = $item->fields[$field];
       }
-      $params['size']   = 40;
       $params['entity'] = -1;
 
       if (array_key_exists('entities_id',$item->fields)) {
@@ -3767,8 +3811,8 @@ class Html {
          $rand    = mt_rand();
          $name    = "field_".$params['name'].$rand;
          $output .=  "<input ".$params['option']." id='text$name' type='text' name='".
-                       $params['name']."' value=\"".self::cleanInputText($params['value']).
-                       "\" size='".$params['size']."'>\n";
+                       $params['name']."' value=\"".self::cleanInputText($params['value'])."\"
+                       class='autocompletion-text-field'>";
 
          $parameters['itemtype'] = $item->getType();
          $parameters['field']    = $field;
@@ -3789,7 +3833,7 @@ class Html {
 
       } else {
          $output .=  "<input ".$params['option']." type='text' name='".$params['name']."'
-                value=\"".self::cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
+                value=\"".self::cleanInputText($params['value'])."\">\n";
       }
 
       if (!isset($options['display']) || $options['display']) {
@@ -3836,6 +3880,8 @@ class Html {
          mode : 'exact',
          browser_spellcheck : true,
          elements: '$name',
+         relative_urls: false,
+         remove_script_host: false,
          valid_elements: '*[*]',
          plugins : 'table,directionality,searchreplace,paste,tabfocus,autoresize',
          paste_use_dialog : false,
@@ -3854,7 +3900,7 @@ class Html {
             }
          },
          theme : 'advanced',
-         entity_encoding : 'raw', 
+         entity_encoding : 'raw',
          // directionality + search replace plugin
          theme_advanced_buttons1_add : 'ltr,rtl,search,replace',
          theme_advanced_toolbar_location : 'top',
@@ -3870,7 +3916,7 @@ class Html {
             setTimeout(
                function(){
                   ed.execCommand('mceAutoResize');
-               }, 1);4204
+               }, 1);
                if (tinymce.isIE) {
                   tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
                      return tinymce.dom.Event.cancel(e);
@@ -3909,7 +3955,7 @@ class Html {
    **/
    static function initImagePasteSystem($name, $rand) {
       global $CFG_GLPI;
-      
+
       echo Html::imagePaste(array('rand' => $rand));
 
       $params = array('name'         => $name,
@@ -4557,6 +4603,10 @@ class Html {
                         text = object.element[0].parentElement.getAttribute('label') + ' - ' + text;
                      }
                      return text;
+                  },
+                  formatResult: function (result, container) {
+                     container.attr('title', result.title || result.element[0].title);
+                     return result.text;
                   }
 
              });";
@@ -4628,6 +4678,7 @@ class Html {
                         ajax: {
                            url: '$url',
                            dataType: 'json',
+                           type: 'POST',
                            data: function (term, page) {
                               return { ";
       foreach ($params as $key => $val) {
@@ -4670,12 +4721,14 @@ class Html {
 
          $js .= "            _one_id: id},
                                  dataType: 'json',
+                                 type: 'POST',
                                  }).done(function(data) { callback(data); });
                               }
                            }
 
                         },
                         formatResult: function(result, container, query, escapeMarkup) {
+                           container.attr('title', result.title);
                            var markup=[];
                            window.Select2.util.markMatch(result.text, query.term, markup, escapeMarkup);
                            if (result.level) {
@@ -5542,6 +5595,182 @@ class Html {
       return $param['rand'];
    }
 
+
+   /**
+    * In this function, we redefine 'window.alert' javascript function
+    * by a jquery-ui dialog equivalent (but prettier).
+    *
+    * @since version 0.91
+   **/
+   static function redefineAlert() {
+
+      echo self::scriptBlock("
+      window.old_alert = window.alert;
+      window.alert = function(message, caption) {
+         message = message.replace('\\n', '<br>');
+         caption = caption || '".__("Information")."';
+         $('<div>').html(message).dialog({
+            title: caption,
+            buttons: {
+               ".__('OK').": function() {
+                  $(this).dialog('close');
+               }
+            },
+            close: function(){
+               $(this).remove();
+            },
+            draggable: true,
+            modal: true,
+            resizable: false,
+            width: 'auto'
+         });
+      };");
+   }
+
+
+   /**
+    * Summary of confirmCallback
+    * Is a replacement for Javascript native confirm function
+    * Beware that native confirm is synchronous by nature (will block
+    * browser waiting an answer from user, but that this is emulating the confirm behaviour
+    * by using callbacks functions when user presses 'Yes' or 'No' buttons.
+    *
+    * @since version 0.91
+    *
+    * @param $msg            string      message to be shown
+    * @param $title          string      title for dialog box
+    * @param $yesCallback    string      function that will be called when 'Yes' is pressed
+    *                                    (default null)
+    * @param $noCallback     string      function that will be called when 'No' is pressed
+    *                                    (default null)
+   **/
+   static function jsConfirmCallback( $msg, $title, $yesCallback=null, $noCallback=null ) {
+
+      return "
+         // the Dialog and its properties.
+         $('<div></div>').dialog({
+            open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
+            close: function(event, ui) { $(this).remove(); },
+            resizable: false,
+            modal: true,
+            title: '".Toolbox::addslashes_deep($title)."',
+            buttons: {
+               'Yes': function () {
+                     $(this).dialog('close');
+                     ".($yesCallback!==null?'('.$yesCallback.')()':'')."
+                  },
+               'No': function () {
+                     $(this).dialog('close');
+                     ".($noCallback!==null?'('.$noCallback.')()':'')."
+                  }
+            }
+         }).text('".Toolbox::addslashes_deep($msg)."');
+      ";
+   }
+
+
+   /**
+    * In this function, we redefine 'window.confirm' javascript function
+    * by a jquery-ui dialog equivalent (but prettier).
+    * This dialog is normally asynchronous and can't return a boolean like naive window.confirm.
+    * We manage this behavior with a global variable 'confirmed' who watchs the acceptation of dialog.
+    * In this case, we trigger a new click on element to return the value (and without display dialog)
+    *
+    * @since version 0.91
+   */
+   static function redefineConfirm() {
+
+      echo self::scriptBlock("
+      var confirmed = false;
+      var lastClickedElement;
+
+      // store last clicked element on dom
+      $(document).click(function(event) {
+          lastClickedElement = $(event.target);
+      });
+
+      // asynchronous confirm dialog with jquery ui
+      var newConfirm = function(message, caption) {
+         message = message.replace('\\n', '<br>');
+         caption = caption || '';
+
+         $('<div>').html(message).dialog({
+            title: caption,
+            dialogClass: 'fixed',
+            buttons: {
+               '"._sx('button', 'Confirm')."': function () {
+                  $(this).dialog('close');
+                  confirmed = true;
+
+                  //trigger click on the same element (to return true value)
+                  lastClickedElement.click();
+
+                  // re-init confirmed (to permit usage of 'confirm' function again in the page)
+                  // maybe timeout is not essential ...
+                  setTimeout(function(){  confirmed = false; }, 100);
+               },
+               '"._sx('button', 'Cancel')."': function () {
+                  $(this).dialog('close');
+                  confirmed = false;
+               }
+            },
+            close: function () {
+                $(this).remove();
+            },
+            draggable: true,
+            modal: true,
+            resizable: false,
+            width: 'auto'
+         });
+      };
+
+      // redefine native 'confirm' function
+      window.confirm = function (message, caption) {
+         // if watched var isn't true, we can display dialog
+         if(!confirmed) {
+            // call asynchronous dialog
+            newConfirm(message, caption);
+         }
+
+         // return early
+         return confirmed;
+      };");
+   }
+
+
+   /**
+    * Summary of jsAlertCallback
+    * Is a replacement for Javascript native alert function
+    * Beware that native alert is synchronous by nature (will block
+    * browser waiting an answer from user, but that this is emulating the alert behaviour
+    * by using a callback function when user presses 'Ok' button.
+    *
+    * @since version 0.91
+    *
+    * @param $msg          string   message to be shown
+    * @param $title        string   title for dialog box
+    * @param $okCallback   string   function that will be called when 'Ok' is pressed
+    *                               (default null)
+   **/
+   static function jsAlertCallback( $msg, $title, $okCallback=null) {
+
+      return "
+         // Dialog and its properties.
+         $('<div></div>').dialog({
+            open: function(event, ui) { $('.ui-dialog-titlebar-close').hide(); },
+            close: function(event, ui) { $(this).remove(); },
+            resizable: false,
+            modal: true,
+            title: '".Toolbox::addslashes_deep( $title )."',
+            buttons: {
+               'Ok': function () {
+                     $(this).dialog('close');
+                     ".($okCallback!==null?'('.$okCallback.')()':'')."
+                  }
+            }
+         }).text('".Toolbox::addslashes_deep($msg)."');
+         " ;
+   }
 
 }
 ?>

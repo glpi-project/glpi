@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -148,6 +148,7 @@ class SoftwareVersion extends CommonDBChild {
           || (Computer_SoftwareVersion::countForVersion($ID) > 0)) {
          $options['candel'] = false;
       }
+
       $this->showFormButtons($options);
 
       return true;
@@ -180,6 +181,12 @@ class SoftwareVersion extends CommonDBChild {
       $tab[31]['datatype']  = 'dropdown';
       $tab[31]['condition'] = "`is_visible_softwareversion`";
 
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
+
       return $tab;
    }
 
@@ -189,20 +196,21 @@ class SoftwareVersion extends CommonDBChild {
     *
     * @param $options array of possible options:
     *    - name          : string / name of the select (default is softwareversions_id)
-    *    - softwares_id  : integer / ID of the software
+    *    - softwares_id  : integer / ID of the software (mandatory)
     *    - value         : integer / value of the selected version
     *    - used          : array / already used items
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdown($options=array()) {
+   static function dropdownForOneSoftware($options=array()) {
       global $CFG_GLPI, $DB;
 
       //$softwares_id,$value=0
-      $p['softwares_id'] = 0;
-      $p['value']        = 0;
-      $p['name']         = 'softwareversions_id';
-      $p['used']         = array();
+      $p['softwares_id']          = 0;
+      $p['value']                 = 0;
+      $p['name']                  = 'softwareversions_id';
+      $p['used']                  = array();
+      $p['display_emptychoice']   = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -224,8 +232,8 @@ class SoftwareVersion extends CommonDBChild {
                 ORDER BY `name`";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-
-      $values = array(0 => Dropdown::EMPTY_VALUE);
+      $values = array();
+      
       if ($number) {
          while ($data = $DB->fetch_assoc($result)) {
             $ID     = $data['id'];

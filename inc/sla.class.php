@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -78,6 +78,7 @@ class SLA extends CommonDBTM {
       $this->addStandardTab('SlaLevel', $ong, $options);
       $this->addStandardTab('Rule', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -157,14 +158,6 @@ class SLA extends CommonDBTM {
       echo "<td rowspan='".$rowspan."'>
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
-
-      if ($ID > 0) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Last update')."</td>";
-         echo "<td>".($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
-                                                : __('Never'));
-         echo "</td></tr>";
-      }
 
       echo "<tr class='tab_bg_1'><td>".__('Calendar')."</td>";
       echo "<td>";

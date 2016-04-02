@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -305,13 +305,6 @@ class Group extends CommonTreeDropdown {
       Dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
       echo "</td>";
       echo "<td colspan='2' class='center'>";
-      if (!$ID) {
-         //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
-      } else {
-         //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-      }
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -487,6 +480,18 @@ class Group extends CommonTreeDropdown {
       $tab[15]['field']         = 'is_usergroup';
       $tab[15]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), User::getTypeName(Session::getPluralNumber()));
       $tab[15]['datatype']      = 'bool';
+
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       $tab[70]['table']         = 'glpi_users';
       $tab[70]['field']         = 'name';

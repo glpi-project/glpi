@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -55,9 +55,10 @@ class NotificationEvent extends CommonDBTM {
    **/
    static function dropdownEvents($itemtype, $options=array()) {
 
-      $p['name']    = 'event';
-      $p['display'] = true;
-      $p['value']   = '';
+      $p['name']                = 'event';
+      $p['display']             = true;
+      $p['value']               = '';
+      $p['display_emptychoice'] = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -70,7 +71,6 @@ class NotificationEvent extends CommonDBTM {
       if ($target) {
          $events = $target->getAllEvents();
       }
-      $events[''] = Dropdown::EMPTY_VALUE;
       return Dropdown::showFromArray($p['name'], $events, $p);
    }
 

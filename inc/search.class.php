@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -220,6 +220,8 @@ class Search {
                array_push($data['toview'],$val);
             }
          }
+      } else {
+         $data['toview'] = array_merge($data['toview'], $forcedisplay);
       }
 
       if (count($p['criteria']) > 0) {
@@ -2478,16 +2480,19 @@ class Search {
                                         SEPARATOR '".self::LONGSEP."') AS `".$NAME."_$num`,
                            $ADDITONALFIELDS";
                }
-               $TRANS = '';
-               if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-                   $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
-                                                          '".self::SHORTSEP."',$tocomputeid)
-                                          SEPARATOR '".self::LONGSEP."')
-                                  AS `".$NAME."_".$num."_trans`, ";
-               }
+//               $TRANS = '';
+//               if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+//                   $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
+//                                                          '".self::SHORTSEP."',$tocomputeid)
+//                                          SEPARATOR '".self::LONGSEP."')
+//                                  AS `".$NAME."_".$num."_trans`, ";
+//               }
+//               return " $tocompute AS `".$NAME."_$num`,
+//                        `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
+//                        $TRANS
+//                        $ADDITONALFIELDS";
                return " $tocompute AS `".$NAME."_$num`,
                         `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
-                        $TRANS
                         $ADDITONALFIELDS";
          }
       }
@@ -2704,6 +2709,7 @@ class Search {
                   if (Session::haveRight("$right", $itemtype::READMY)) {
                      $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
                                     OR $observer_table.users_id = '".Session::getLoginUserID()."'
+                                    OR $assign_table.users_id = '".Session::getLoginUserID()."'
                                     OR `glpi_".$table."`.`users_id_recipient` = '".Session::getLoginUserID()."'";
                   } else {
                      $condition .= "0=1";
@@ -2865,7 +2871,8 @@ class Search {
 
             if (in_array($searchtype, array('equals', 'notequals'))) {
                return " $link (`$table`.`id`".$SEARCH.
-                               (($val == 0)?" OR `$table`.`id` IS NULL":'').') ';
+                               (($val == 0)?" OR `$table`.`id` IS".
+                                   (($searchtype == "notequals")?" NOT":"")." NULL":'').') ';
             }
             $toadd   = '';
 
@@ -5059,9 +5066,11 @@ class Search {
          }
       }
 
+      $saved_params = $params;
       foreach ($default_values as $key => $val) {
          if (!isset($params[$key])) {
             if ($usesession
+                && !isset($saved_params['criteria']) // retrieve session only if not a new request
                 && isset($_SESSION['glpisearch'][$itemtype][$key])) {
                $params[$key] = $_SESSION['glpisearch'][$itemtype][$key];
             } else {
@@ -6048,6 +6057,7 @@ class Search {
 
       $value = str_replace("\"", "''", $value);
       $value = Html::clean($value);
+      $value = str_replace("&gt;", ">", $value);
 
       return $value;
    }

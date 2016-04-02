@@ -94,7 +94,7 @@ CREATE TABLE `dropdown_gfxcard` (
 #
 
 INSERT INTO `dropdown_gfxcard` (`name`) VALUES ('ATI Rage Pro 3D AGP');
-INSERT INTO `dropdown_gfxcard` (`name`) VALUES ('Matrox Millenium G400DH');
+INSERT INTO `dropdown_gfxcard` (`name`) VALUES ('Matrox Millennium G400DH');
 INSERT INTO `dropdown_gfxcard` (`name`) VALUES ('S3 Trio 64V+');
 INSERT INTO `dropdown_gfxcard` (`name`) VALUES ('integrated');
 

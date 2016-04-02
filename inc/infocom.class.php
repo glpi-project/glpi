@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -615,12 +615,13 @@ class Infocom extends CommonDBChild {
    **/
    static function dropdownAmortType($name, $value=0, $display=true) {
 
-      $values = array(0 => Dropdown::EMPTY_VALUE,
-                      2 => __('Linear'),
+      $values = array(2 => __('Linear'),
                       1 => __('Decreasing'));
 
-      return Dropdown::showFromArray($name, $values, array('value'   => $value,
-                                                           'display' => $display));
+      return Dropdown::showFromArray($name, $values,
+                                     array('value'               => $value,
+                                           'display'             => $display,
+                                           'display_emptychoice' => true));
    }
 
 

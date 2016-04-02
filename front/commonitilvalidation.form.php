@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -38,7 +38,7 @@
 
 // autoload include in objecttask.form (ticketvalidation, changevalidation,...)
 if (!defined('GLPI_ROOT')) {
-   die("Can not acces directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 Session::checkLoginUser();

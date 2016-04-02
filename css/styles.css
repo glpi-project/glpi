@@ -330,6 +330,10 @@ input {
    vertical-align: middle;
 }
 
+.no-wrap {
+   white-space: nowrap;
+}
+
 .ui-datepicker-trigger {
    cursor: pointer;
 }
@@ -546,24 +550,24 @@ input.save {
    -moz-box-shadow: 0px 1px 1px #7F7979;
    -webkit-box-shadow: 0px 1px 1px #7F7979;
    box-shadow: 0px 1px 1px #7F7979;
-   width: 90% !important;
+   width: 90%;
+}
+
+.ui-tabs-anchor {
+   height: 18px;
 }
 
 .ui-tabs sup.tab_nb {
    border-radius: 50%;
    background-color: #FFF;
-   height: 13px;
-   min-width: 16px;
-   text-align: center;
-   display: inline-block;
-   vertical-align: middle;
-   padding: 3px 2px;
-   margin-bottom: -7px;
+   min-width: 18px;
    margin-left: 5px;
-   position: absolute;
-   right: 3px;
-   top: 3px;
-
+   display: inline-block;
+   text-align: center;
+   vertical-align: top;
+   padding: 3px 2px 5px;
+   box-sizing: border-box;
+   margin-right: -5px;
 }
 
 .ui-tabs .ui-state-active sup.tab_nb {
@@ -605,8 +609,8 @@ input.save {
    box-shadow: 0px 1px 2px 1px #D2D2D2;
 }
 
-.main_form .actor_title, 
-.main_form tr:not(.headerRow)  th:not(.actor-th) {
+.main_form .actor_title,
+.main_form tr:not(.headerRow):not(.footerRow) th:not(.actor-th) {
    text-align: right;
 }
 
@@ -672,6 +676,10 @@ input.save {
       margin: 0;
       border: 0;
       width: 150px;
+   }
+
+   .layout_vsplit.form .ui-tabs-panel table.tab_cadre_pager {
+      width: 100%;
    }
 
   .layout_vsplit.form .form_content {
@@ -740,7 +748,7 @@ input.save {
    }
    .layout_vsplit.form .main_form textarea {
       resize: vertical;
-      width:98%;
+      width:97%;
       min-height: 125px;
    }
 
@@ -753,12 +761,15 @@ input.save {
       width: 100%;
    }
 
-   .layout_vsplit .debug,
+   .layout_vsplit .debug:not(.debug_ajax),
    .layout_vsplit #footer {
       position: absolute;
       bottom: 0;
       width: 100%;
       z-index: 3;
+   }
+   .layout_vsplit .debug_ajax {
+      width: 100% !important;
    }
 }
 
@@ -1091,7 +1102,7 @@ td.rotate {
 
 .actor-bloc {
    width: 29%;
-   float: left;
+   /*float: left;*/
 }
 
 .actor_title, .actor-bloc {
@@ -2387,8 +2398,8 @@ ul#menu ul.ssmenu {
 
 .see_debug {
    position: fixed;
-   bottom: 20px;
-   left: 20px;
+   bottom: 5px;
+   right: 10px;
    cursor: pointer;
 }
 
@@ -2400,19 +2411,31 @@ ul#menu ul.ssmenu {
    top: inherit !important;
    height: 300px !important;
    z-index: 100 !important;
+   width: 98%;
 }
 
-.ui-tabs .debug .see_debug{
-   display: none;
-}
-.ui-tabs .debug .ui-tabs {
+.debug_ajax .ui-tabs {
+   position: relative !important;
+   height: inherit !important;
    display: block;
-   position: relative;
+}
+
+#page .debug_ajax div.ui-tabs {
+   width: 98%;
+}
+
+
+.debug_ajax .see_debug{
+   display: none;
 }
 
 .debug .ui-tabs-panel {
    height: 273px;
    overflow: auto;
+}
+
+.debug_ajax .ui-tabs .ui-tabs-panel {
+   height: auto;
 }
 
 .debug .tab_cadre {
@@ -2639,7 +2662,7 @@ ul#menu ul.ssmenu {
 }
 .timeline_history .left .h_date,
 .timeline_history .middle .h_date {
-   width: 100px;
+   width: 115px;
    margin: 0 auto;
 }
 
@@ -2724,6 +2747,10 @@ ul#menu ul.ssmenu {
 .timeline_history .TicketValidation.status_3:after { border-color: #A1D7A2;}
 .timeline_history .TicketValidation:after          { border-color: #FFFFFF;}
 .timeline_history .TicketValidation.status_4:after { border-color: #D3A4A4;}
+
+.timeline_history .right .h_content p {
+   margin: 2px 0 0;
+}
 
 .timeline_history .private {
    width: 23px;

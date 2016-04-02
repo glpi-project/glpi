@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -534,41 +534,46 @@ class DBmysql {
      * @return number of tables
     **/
    static function optimize_tables($migration=NULL, $cron=false) {
-       global $DB;
+      global $DB;
 
-       if (!is_null($migration) && method_exists($migration,'displayMessage')) {
-          $migration->displayTitle(__('Optimizing tables'));
-          $migration->addNewMessageArea('optimize_table'); // to force new ajax zone
-          $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('Start')));
-       }
-       $result = $DB->list_tables();
-       $nb     = 0;
+      $crashed_tables = self::checkForCrashedTables();
+      if (!empty($crashed_tables)) {
+         Toolbox::logDebug("Cannot launch automatic action : crashed tables detected");
+         return -1;
+      }
 
+      if (!is_null($migration) && method_exists($migration,'displayMessage')) {
+         $migration->displayTitle(__('Optimizing tables'));
+         $migration->addNewMessageArea('optimize_table'); // to force new ajax zone
+         $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('Start')));
+      }
+      $result = $DB->list_tables();
+      $nb     = 0;
 
-       while ($line = $DB->fetch_row($result)) {
-          $table = $line[0];
+      while ($line = $DB->fetch_row($result)) {
+         $table = $line[0];
 
-       // For big database to reduce delay of migration
-          if ($cron
-              || (countElementsInTable($table) < 15000000)) {
+         // For big database to reduce delay of migration
+         if ($cron
+             || (countElementsInTable($table) < 15000000)) {
 
-             if (!is_null($migration) && method_exists($migration,'displayMessage')) {
-                $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), $table));
-             }
+            if (!is_null($migration) && method_exists($migration,'displayMessage')) {
+               $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), $table));
+            }
 
-             $query = "OPTIMIZE TABLE `".$table."` ;";
-             $DB->query($query);
-             $nb++;
-          }
-       }
-       $DB->free_result($result);
+            $query = "OPTIMIZE TABLE `".$table."` ;";
+            $DB->query($query);
+            $nb++;
+         }
+      }
+      $DB->free_result($result);
 
-       if (!is_null($migration)
-           && method_exists($migration,'displayMessage') ) {
-          $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('End')));
-       }
+      if (!is_null($migration)
+          && method_exists($migration,'displayMessage') ) {
+         $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('End')));
+      }
 
-       return $nb;
+      return $nb;
     }
 
 
@@ -660,10 +665,35 @@ class DBmysql {
 
       return $lock_ok;
    }
+
+   /**
+   * Check for crashed MySQL Tables
+   *
+   * @since version 0.90.2
+   *
+   * @return an array with supposed crashed table and check message
+   */
+   static public function checkForCrashedTables() {
+      global $DB;
+      $crashed_tables = array();
+
+      $result = $DB->list_tables();
+
+      while ($line = $DB->fetch_row($result)) {
+         $query  = "CHECK TABLE `".$line[0]."` FAST";
+         $result  = $DB->query($query);
+         if ($DB->numrows($result) > 0) {
+            $row = $DB->fetch_array($result);
+            if ($row['Msg_type'] != 'status' && $row['Msg_type'] != 'note') {
+               $crashed_tables[] = array('table'    => $row[0],
+                                         'Msg_type' => $row['Msg_type'],
+                                         'Msg_text' => $row['Msg_text']);
+            }
+         }
+      }
+      return $crashed_tables;
+   }
 }
-
-
-
 
 /**
  * Helper for simple query => see $DBmysql->requete
@@ -896,5 +926,6 @@ class DBmysqlIterator  implements Iterator {
    public function numrows() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
    }
+
 }
 ?>

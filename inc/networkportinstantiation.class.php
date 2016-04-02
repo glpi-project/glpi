@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -369,7 +369,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       $macItemWithItems = array();
 
-      foreach (array('NetworkPort', 'NetworkEquipment') as $netporttype) {
+      foreach (array('NetworkPort') as $netporttype) {
          $netport = new $netporttype();
 
          $query = "SELECT `id`
@@ -405,7 +405,6 @@ class NetworkPortInstantiation extends CommonDBChild {
    static function getUniqueItemByMac($value, $entity) {
 
       $macs_with_items = self::getItemsByMac($value);
-
       if (count($macs_with_items)) {
          foreach ($macs_with_items as $key => $tab) {
             if (isset($tab[0])
@@ -417,15 +416,19 @@ class NetworkPortInstantiation extends CommonDBChild {
          }
       }
 
-      if (count($macs_with_items) == 1) {
-         $mac_with_items = $macs_with_items[0];
-         $item           = $mac_with_items[0];
-         $result         = array("id"       => $item->getID(),
-                                 "itemtype" => $item->getType());
-         unset($macs_with_items);
-         return $result;
-      }
-
+      if (count($macs_with_items)) {
+         // Get the first item that is matching entity
+         foreach ($macs_with_items as $items) {
+            foreach ($items as $item) {
+               if ($item->getEntityID() == $entity) {
+                  $result = array("id"       => $item->getID(),
+                                  "itemtype" => $item->getType());
+                  unset($macs_with_items);
+                  return $result;
+               }
+            }
+         }
+      }      
       return array();
    }
 

@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -35,7 +34,7 @@
 * @brief
 */
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class RuleDictionnarySoftwareCollection extends RuleCollection {
@@ -99,7 +98,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       echo "<tr><td class='tab_bg_2 center' colspan='2'>";
       echo "<input type='submit' name='replay_rule' value=\""._sx('button', 'Post')."\"
              class='submit'>";
-      echo "<input type='hidden' name='replay_confirm' value='replay_confirm'";
+      echo "<input type='hidden' name='replay_confirm' value='replay_confirm'>";
       echo "</td></tr>";
       echo "</table>\n";
       echo "</div>\n";
@@ -164,7 +163,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
             //Replay software dictionnary rules
             $res_rule = $this->processAllRules($input, array(), array());
 
-            if ((isset($res_rule["name"]) && ($res_rule["name"] != $input["name"]))
+            if ((isset($res_rule["name"]) && (strtolower($res_rule["name"]) != strtolower($input["name"])))
                 || (isset($res_rule["version"]) && ($res_rule["version"] != ''))
                 || (isset($res_rule['new_entities_id'])
                     && ($res_rule['new_entities_id'] != $input['entities_id']))
@@ -290,7 +289,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
       }
 
       //Software's name has changed or entity
-      if ((isset($res_rule["name"]) && ($res_rule["name"] != $name))
+      if ((isset($res_rule["name"]) && (strtolower($res_rule["name"]) != strtolower($name)))
             //Entity has changed, and new entity is a parent of the current one
           || (!isset($res_rule["name"])
               && isset($res_rule['new_entities_id'])
@@ -491,4 +490,3 @@ class RuleDictionnarySoftwareCollection extends RuleCollection {
    }
 
 }
-?>

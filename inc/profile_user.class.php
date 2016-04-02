@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -919,16 +919,23 @@ class Profile_User extends CommonDBRelation {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $DB;
 
       if (!$withtemplate) {
          $nb = 0;
+         $query_nb = "SELECT COUNT(*) as cpt
+                      FROM `".$this->getTable()."`
+                      LEFT JOIN glpi_users 
+                        ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
+                      WHERE `glpi_users`.`is_deleted` = '0' ";
          switch ($item->getType()) {
             case 'Entity' :
                if (Session::haveRight('user', READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     // Keep this ? (only approx. as count deleted users)
-                     $nb = countElementsInTable($this->getTable(),
-                                                "entities_id = '".$item->getID()."'");
+                     $query_nb.= "AND `glpi_profiles_users`.`entities_id` = '".$item->getID()."'";
+                     $result_nb = $DB->query($query_nb);
+                     $data_nb   = $DB->fetch_assoc($result_nb);
+                     $nb        = $data_nb['cpt'];
                   }
                   return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                }
@@ -937,14 +944,15 @@ class Profile_User extends CommonDBRelation {
             case 'Profile' :
                if (Session::haveRight('user', READ)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     // Keep this ? (only approx. as count deleted users)
-                     $nb = countElementsInTable($this->getTable(),
-                                                "profiles_id = '".$item->getID()."'".
-                                                 getEntitiesRestrictRequest('AND',
-                                                                            'glpi_profiles_users',
-                                                                            'entities_id',
-                                                                            $_SESSION['glpiactiveentities'],
-                                                                            true));
+                     $query_nb.= "AND `glpi_profiles_users`.`profiles_id` = '".$item->getID()."'".
+                                       getEntitiesRestrictRequest('AND',
+                                                                  'glpi_profiles_users',
+                                                                  'entities_id',
+                                                                  $_SESSION['glpiactiveentities'],
+                                                                  true);
+                     $result_nb = $DB->query($query_nb);
+                     $data_nb   = $DB->fetch_assoc($result_nb);
+                     $nb        = $data_nb['cpt'];
                   }
                   return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                }

@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -578,7 +578,7 @@ class Session {
       try {
          $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc'));
          $TRANSLATE->setCache($cache);
-      } catch (Zend\Cache\Exception\ExtensionNotLoadedException $e) {
+      } catch (Exception $e) {
          // ignore when APC not available
          // toolbox::logDebug($e->getMessage());
       }
@@ -773,6 +773,22 @@ class Session {
       self::checkValidSessionId();
       if (!self::haveRight($module, $right)) {
          // Gestion timeout session
+         self::redirectIfNotLoggedIn();
+         Html::displayRightError();
+      }
+   }
+
+   /**
+    * Check if I one right of array $rights to module $module (conpare to session variable)
+    *
+    * @param $module           Module to check
+    * @param $rights   array   Rights to check
+    *
+    * @return Nothing : display error if not permit
+    **/
+   static function checkRightsOr($module, $rights=array()) {
+      self::checkValidSessionId();
+      if (!self::haveRightsOr($module, $rights)) {
          self::redirectIfNotLoggedIn();
          Html::displayRightError();
       }

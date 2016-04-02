@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -37,11 +37,12 @@
 
 include ('../inc/includes.php');
 
+//Session::checkRightsOr('knowbase', array(READ, KnowbaseItem::READFAQ));
+//yllen: a knowbaseitem can be view without log in
 if (!Session::haveRightsOr('knowbase', array(READ, KnowbaseItem::READFAQ))) {
    Session::redirectIfNotLoggedIn();
    Html::displayRightError();
 }
-
 if (isset($_GET["id"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);
 }

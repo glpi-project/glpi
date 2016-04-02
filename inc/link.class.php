@@ -36,19 +36,37 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /** Link Class
 **/
 class Link extends CommonDBTM {
 
-   static $rightname = 'link';
+   // From CommonDBTM
+   public $dohistory                   = true;
 
+   static $rightname = 'link';
+   static $tags      = array('[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
+                             '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
+                             '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]');
 
 
    static function getTypeName($nb=0) {
       return _n('External link', 'External links',$nb);
+   }
+
+
+   /**
+    * For plugins, add a tag to the links tags
+    *
+    * @param $tag    string    class name
+   **/
+   static function registerTag($tag) {
+
+      if (!in_array($tag, self::$tags)) {
+         self::$tags[] = $tag;
+      }
    }
 
 
@@ -62,7 +80,7 @@ class Link extends CommonDBTM {
                           getEntitiesRestrictRequest(" AND ", "glpi_links", '', '', false);
             $nb = countElementsInTable(array('glpi_links_itemtypes','glpi_links'), $restrict);
          }
-         return self::createTabEntry(self::getTypeName(),Session::getPluralNumber(), $nb);
+         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
       return '';
    }
@@ -80,6 +98,7 @@ class Link extends CommonDBTM {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Link_ItemType', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -122,9 +141,19 @@ class Link extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td height='23'>".__('Valid tags')."</td>";
-      echo "<td colspan='3'>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK],
-                            [DOMAIN], [SERIAL], [OTHERSERIAL], [USER], [GROUP], [REALNAME],
-                            [FIRSTNAME]</td></tr>";
+      echo "<td colspan='3'>";
+
+      $count = count(self::$tags);
+      $i     = 0;
+      foreach (self::$tags as $tag) {
+         echo $tag;
+         echo "&nbsp;";
+         $i++;
+         if (($i%8 == 0) && ($count > 1)) {
+         echo "<br>";
+         }
+      }
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td colspan='3'>";
@@ -188,6 +217,18 @@ class Link extends CommonDBTM {
       $tab[3]['field']          = 'link';
       $tab[3]['name']           = __('Link or filename');
       $tab[3]['datatype']       = 'string';
+
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
+
+      $tab[121]['table']          = $this->getTable();
+      $tab[121]['field']          = 'date_creation';
+      $tab[121]['name']           = __('Creation date');
+      $tab[121]['datatype']       = 'datetime';
+      $tab[121]['massiveaction']  = false;
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
@@ -466,12 +507,13 @@ class Link extends CommonDBTM {
       if (empty($params['name'])) {
          $params['name'] = $params['link'];
       }
-      $names = self::generateLinkContents($params['name'], $item);
+
+      $names = $item->generateLinkContents($params['name'], $item);
       $file  = trim($params['data']);
 
       if (empty($file)) {
          // Generate links
-         $links = self::generateLinkContents($params['link'], $item);
+         $links = $item->generateLinkContents($params['link'], $item);
          $i     = 1;
          foreach ($links as $key => $val) {
             $name    = (isset($names[$key]) ? $names[$key] : reset($names));
@@ -489,8 +531,8 @@ class Link extends CommonDBTM {
          }
       } else {
          // Generate files
-         $files = self::generateLinkContents($params['link'], $item);
-         $links = self::generateLinkContents($params['data'], $item);
+         $files = $item->generateLinkContents($params['link'], $item);
+         $links = $item->generateLinkContents($params['data'], $item);
          $i     = 1;
          foreach ($links as $key => $val) {
             $name = (isset($names[$key]) ? $names[$key] : reset($names));

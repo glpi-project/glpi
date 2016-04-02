@@ -5,6 +5,8 @@
 /.buildpath
 /.project
 /.settings/
+/.vscode/
 /tools/composer.lock
 /tools/vendor/
 /tools/api/
+/nbproject/private/

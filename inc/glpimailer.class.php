@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 // GLPIMailer::__construct don't call PHPMailer::__construct
 // so PHPMailerAutoload is not registered, so need this

@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -1108,9 +1108,20 @@ class CommonGLPI {
       // in case of lefttab layout, we couldn't see "right error" message
       if ($this->get_item_to_display_tab) {
          if (isset($_GET["id"]) && $_GET["id"] && !$this->can($_GET["id"], READ)) {
+            // This triggers from a profile switch.
+            // If we don't have right, redirect instead to central page
+            if (isset($_SESSION['_redirected_from_profile_selector'])
+                && $_SESSION['_redirected_from_profile_selector']) {
+               unset($_SESSION['_redirected_from_profile_selector']);
+               Html::redirect($CFG_GLPI['root_doc']."/front/central.php");
+            }
             html::displayRightError();
          }
       }
+
+      // try to lock object
+      // $options must contains the id of the object, and if locked by manageObjectLock will contains 'locked' => 1
+      ObjectLock::manageObjectLock( get_class( $this ), $options ) ;
 
       $this->showNavigationHeader($options);
       if (!self::isLayoutExcludedPage() && self::isLayoutWithMain()) {

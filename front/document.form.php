@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -46,16 +46,29 @@ if (!isset($_GET["id"])) {
 $doc          = new Document();
 
 if (isset($_POST["add"])) {
-   
-   $doc->check(-1, CREATE, $_POST);
 
-   if ($newID = $doc->add($_POST)) {
+   $doc->check(-1, CREATE, $_POST);
+   if (isset($_POST['_filename']) && is_array($_POST['_filename'])) {
+      $fic = $_POST['_filename'];
+      $tag = $_POST['_tag_filename'];
+      foreach ($fic as $key => $val) {
+         $_POST['_filename']     = [$fic[$key]];
+         $_POST['_tag_filename'] = [$tag[$key]];
+         if ($newID = $doc->add($_POST)) {
+            Event::log($newID, "documents", 4, "login",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $doc->fields["name"]));
+         }
+      }
+      if ($_SESSION['glpibackcreated'] && (!isset($_POST['itemtype']) || !isset($_POST['items_id']))) {
+         Html::redirect($doc->getFormURL()."?id=".$newID);
+      }
+   } else if ($newID = $doc->add($_POST)) {
       Event::log($newID, "documents", 4, "login",
                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $doc->fields["name"]));
       // Not from item tab
       if ($_SESSION['glpibackcreated'] && (!isset($_POST['itemtype']) || !isset($_POST['items_id']))) {
          Html::redirect($doc->getFormURL()."?id=".$newID);
-      } 
+      }
    }
 
    Html::back();

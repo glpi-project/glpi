@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /**
@@ -108,6 +108,47 @@ class Document_Item extends CommonDBRelation{
          return false;
       }
       return parent::prepareInputForAdd($input);
+   }
+
+
+  /**
+    * @since version 0.90.2
+    *
+    * @see CommonDBTM::pre_deleteItem()
+   **/
+   function pre_deleteItem() {
+      global $DB;
+
+      // for mandatory fields
+      if ($this->fields['itemtype'] == 'Ticket') {
+         if ($DB->request('glpi_tickettemplatemandatoryfields', "`num` = 142")) {
+            $find = false;
+            // search if template for entity
+            foreach ($DB->request('glpi_tickettemplates',
+                  "`entities_id` = ".$_SESSION['glpiactive_entity']."
+                                    OR (`entities_id` = 0 AND `is_recursive` = 1)") as $data) {
+                                       $template = $data['id'];
+                                       // search if template for profile or category
+                                       if ($DB->request('glpi_profiles', "`tickettemplates_id` = ".$template)) {
+                                          $find = true;
+                                       } else if ($DB->request('glpi_itilcategories', "`tickettemplates_id` = ".$template)) {
+                                          $find = true;
+                                       }
+            }
+            if ($find) {
+               // refuse delete if only one document
+               if (countElementsInTable($this->getTable(),
+                     "`items_id` =". $this->fields['items_id'] ."
+                                          AND `itemtype` = 'Ticket'") == 1) {
+                                             $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
+                                                   _n('Document', 'Documents', 2));
+                                             Session::addMessageAfterRedirect($message, false, ERROR);
+                                             return false;
+               }
+            }
+         }
+      }
+      return true;
    }
 
 
@@ -580,7 +621,7 @@ class Document_Item extends CommonDBRelation{
       if ($item->getType() == 'Ticket') {
          echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
       }
-      echo Html::file();
+      echo Html::file(array('multiple' => true));
       echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
       echo "<td></td></tr>";
    }
@@ -676,7 +717,7 @@ class Document_Item extends CommonDBRelation{
          if ($item->getType() == 'Ticket') {
             echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
          }
-         echo Html::file();
+         echo Html::file(array('multiple' => true));
          echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
          echo "<td class='center' width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add a new file')."\"

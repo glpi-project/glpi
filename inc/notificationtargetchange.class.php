@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 
@@ -87,6 +87,12 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                                         "change_".$item->getField("id")."_ChangeValidation$1");
       $datas['##change.globalvalidation##']
                      = ChangeValidation::getStatus($item->getField('global_validation'));
+
+      $datas['##change.impactcontent##']      = $item->getField("impactcontent");
+      $datas['##change.controlistcontent##']  = $item->getField("controlistcontent");
+      $datas['##change.rolloutplancontent##'] = $item->getField("rolloutplancontent");
+      $datas['##change.backoutplancontent##'] = $item->getField("backoutplancontent");
+      $datas['##change.checklistcontent##']   = $item->getField("checklistcontent");
 
 //       $datas["##problem.impacts##"]  = $item->getField('impactcontent');
 //       $datas["##problem.causes##"]   = $item->getField('causecontent');
@@ -262,8 +268,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       parent::getTags();
 
       //Locales
-      $tags = array('change.numberoftickets'   => _x('quantity', 'Number of tickets'),
-                    'change.numberofproblems'  => _x('quantity', 'Number of problems'),
+      $tags = array('change.numberoftickets'    => _x('quantity', 'Number of tickets'),
+                    'change.numberofproblems'   => _x('quantity', 'Number of problems'),
+                    'change.impactcontent'      => __('Impact'),
+                    'change.controlistcontent'  => __('Control list'),
+                    'change.rolloutplancontent' => __('Deployment plan'),
+                    'change.backoutplancontent' => __('Backup plan'),
+                    'change.checklistcontent'   => __('Checklist'),
 //                     'problem.impacts'           => __('Impacts'),
 //                     'problem.causes'            => __('Causes'),
 //                     'problem.symptoms'          => __('Symptoms'),
@@ -303,7 +314,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
          $this->addTagToList(array('tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
-                                   'events' => array('validation', 'validation')));
+                                   'events' => array('validation', 'validation_answer')));
       }
 
       //Tags without lang for validation
@@ -320,14 +331,17 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                                    'label' => $label,
                                    'value' => true,
                                    'lang'  => false,
-                                   'events' => array('validation', 'validation')));
+                                   'events' => array('validation', 'validation_answer')));
       }
 
 
       //Foreach global tags
-      $tags = array('tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-                    'problems' => _n('Problem', 'Problems', Session::getPluralNumber()),
-                    'items'    => _n('Item', 'Items', Session::getPluralNumber()));
+      $tags = array('tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+                    'problems'    => _n('Problem', 'Problems', Session::getPluralNumber()),
+                    'items'       => _n('Item', 'Items', Session::getPluralNumber()),
+                    'validations' => _n('Validation','Validations', Session::getPluralNumber()),
+                    'documents'   => _n('Document', 'Documents', Session::getPluralNumber()));
+
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,

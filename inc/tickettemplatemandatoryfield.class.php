@@ -36,7 +36,7 @@
 */
 
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 /// Mandatory fields for ticket template class
@@ -151,7 +151,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       $result = $DB->query($sql);
 
       $tt             = new TicketTemplate();
-      $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
+      $allowed_fields = $tt->getAllowedFields($withtypeandcategory);
       $fields         = array();
 
       while ($rule = $DB->fetch_assoc($result)) {
@@ -184,7 +184,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       $canedit           = $tt->canEdit($ID);
       $ttm               = new self();
       $used              = $ttm->getMandatoryFields($ID);
-      $fields            = $tt->getAllowedFieldsNames(true, isset($used['itemtype']));
+      $fields            = $tt->getAllowedFieldsNames(true);
       $simplified_fields = $tt->getSimplifiedInterfaceFields();
       $both_interfaces   = sprintf(__('%1$s + %2$s'), __('Simplified interface'), __
                                    ('Standard interface'));

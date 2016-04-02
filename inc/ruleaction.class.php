@@ -35,7 +35,7 @@
 * @brief
 */
 if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+   die("Sorry. You can't access this file directly");
 }
 
 class RuleAction extends CommonDBChild {
@@ -452,7 +452,8 @@ class RuleAction extends CommonDBChild {
          while ($action = $DB->fetch_assoc($res)) {
             if (isset($actions_options[$action["field"]])
                  && ($action["field"] != 'groups_id_validate')
-                 && ($action["field"] != 'users_id_validate')) {
+                 && ($action["field"] != 'users_id_validate')
+                 && ($action["field"] != 'affectobject')) {
                $actions[$action["field"]] = $action["field"];
             }
          }
