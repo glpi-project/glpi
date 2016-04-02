@@ -1165,7 +1165,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $canplan = (!$item->isStatusExists(CommonITILObject::PLANNED)
                   || $item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED));
 
-      $rowspan = 4;
+      $rowspan = 5;
       if ($this->maybePrivate()) {
          $rowspan++;
       }
@@ -1179,14 +1179,17 @@ abstract class CommonITILTask  extends CommonDBTM {
            "</textarea>";
       echo Html::scriptBlock("$(document).ready(function() { $('#content$rand').autogrow(); });");
       echo "</td>";
-
+      echo "<input type='hidden' name='$fkfield' value='".$this->fields[$fkfield]."'>";
+      echo "</td></tr>\n";
+      
+      echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Task template', 'Task templates', 1)."</td><td>";
       TaskTemplate::dropdown(array('value'     => 0,
                                    'entity'    => $this->getEntityID(),
                                    'rand'      => $rand_template,
                                    'on_change' => 'tasktemplate_update(this.value)'));
       echo "</td>";
-
+      echo "</tr>";
       echo Html::scriptBlock('
          function tasktemplate_update(value) {
             jQuery.ajax({
@@ -1206,18 +1209,21 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       ');
 
-
+      
       if ($ID > 0) {
+         echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Date')."</td>";
          echo "<td>";
          Html::showDateTimeField("date", array('value'      => $this->fields["date"],
                                                'timestep'   => 1,
                                                'maybeempty' => false));
+         echo "</tr>";
       } else {
+         echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2'>&nbsp;";
+         echo "</tr>";
       }
-      echo "<input type='hidden' name='$fkfield' value='".$this->fields[$fkfield]."'>";
-      echo "</td></tr>\n";
+      
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Category')."</td><td>";
