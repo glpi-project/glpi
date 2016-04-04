@@ -794,7 +794,7 @@ function updateDbUpTo031() {
          include("update_0902_091.php");
          update0902to091();
 
-      case "0.91" :
+      case "9.1" :
          break;
 
       default :
@@ -825,7 +825,7 @@ function updateDbUpTo031() {
    }
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   Config::setConfigurationValues('core', array('version'             => '0.91',
+   Config::setConfigurationValues('core', array('version'             => '9.1',
                                                 'language'            => $glpilanguage,
                                                 'founded_new_version' => ''));
 

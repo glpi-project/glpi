@@ -1349,7 +1349,7 @@ class ProjectTask extends CommonDBChild {
    /**
     * Display a Planning Item
     *
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $val       array of the item to display
     * @param $who             ID of the user (0 if all)

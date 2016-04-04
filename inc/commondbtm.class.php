@@ -1954,7 +1954,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $options      array
     *
@@ -4394,7 +4394,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Generate link
     *
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $link    string   original string content
     * @param $item             CommonDBTM object: item used to make replacements

@@ -5637,7 +5637,7 @@ class Html {
    /**
     * This function provides a mecanism to send html form by ajax
     *
-    * @since version 0.91
+    * @since version 9.1
    **/
    static function ajaxForm($selector, $success = "console.log(html);") {
       echo Html::scriptBlock("
@@ -5675,7 +5675,7 @@ class Html {
     * In this function, we redefine 'window.alert' javascript function
     * by a jquery-ui dialog equivalent (but prettier).
     *
-    * @since version 0.91
+    * @since version 9.1
    **/
    static function redefineAlert() {
 
@@ -5710,7 +5710,7 @@ class Html {
     * browser waiting an answer from user, but that this is emulating the confirm behaviour
     * by using callbacks functions when user presses 'Yes' or 'No' buttons.
     *
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $msg            string      message to be shown
     * @param $title          string      title for dialog box
@@ -5751,7 +5751,7 @@ class Html {
     * We manage this behavior with a global variable 'confirmed' who watchs the acceptation of dialog.
     * In this case, we trigger a new click on element to return the value (and without display dialog)
     *
-    * @since version 0.91
+    * @since version 9.1
    */
    static function redefineConfirm() {
 
@@ -5820,7 +5820,7 @@ class Html {
     * browser waiting an answer from user, but that this is emulating the alert behaviour
     * by using a callback function when user presses 'Ok' button.
     *
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $msg          string   message to be shown
     * @param $title        string   title for dialog box

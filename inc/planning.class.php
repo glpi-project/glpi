@@ -79,7 +79,7 @@ class Planning extends CommonGLPI {
    /**
     *  @see CommonGLPI::getMenuContent()
     *
-    *   @since version 0.91
+    *   @since version 9.1
    **/
    static function getMenuContent() {
       global $CFG_GLPI;
@@ -498,7 +498,7 @@ class Planning extends CommonGLPI {
     * Show the planning
     *
     * Function name change since version 0.84 show() => showPlanning
-    * Function prototype changes in 0.91 (no more parameters)
+    * Function prototype changes in 9.1 (no more parameters)
     *
     * @return Nothing (display function)
    **/
@@ -1232,7 +1232,7 @@ class Planning extends CommonGLPI {
    /**
     * Recieve 'All users of a group' data from self::showAddGroupUsersForm and save them to session and DB
     *
-    * @since 0.91
+    * @since 9.1
     *
     * @param $params (array) : must contais form data (typically $_REQUEST)
     */
@@ -1286,7 +1286,7 @@ class Planning extends CommonGLPI {
     * Display 'Group' part of self::showAddPlanningForm spcified by planning type dropdown.
     * Actually called by ajax/planning.php
     *
-    * @since 0.91
+    * @since 9.1
     *
     * @return Nothing (display function)
     */
@@ -1302,7 +1302,7 @@ class Planning extends CommonGLPI {
    /**
     * Recieve 'Group' data from self::showAddGroupForm and save them to session and DB
     *
-    * @since 0.91
+    * @since 9.1
     *
     * @param $params (array) : must contais form data (typically $_REQUEST)
     */
@@ -1354,7 +1354,7 @@ class Planning extends CommonGLPI {
    /**
     * Display form after selecting date range in planning
     *
-    * @since 0.91
+    * @since 9.1
     *
     * @param $params (array): must contains this keys :
     *  - begin : start of selection range.
@@ -1382,10 +1382,10 @@ class Planning extends CommonGLPI {
 
 
    /**
-    * Former front/planning.php before 0.91.
+    * Former front/planning.php before 9.1.
     * Display a classic form to plan an event (with begin fiel and duration)
     *
-    * @since 0.91
+    * @since 9.1
     *
     * @param $params (array): array of parameters whou should contain :
     *   - id (integer): id of item who receive the planification
@@ -1488,7 +1488,7 @@ class Planning extends CommonGLPI {
    /**
     * toggle display for selected line of $_SESSION['glpi_plannings']
     *
-    * @since 0.91
+    * @since 9.1
     *
     * @param  array $options: should contains :
     *  - type : event type, can be event_filter, user, group or group_users
@@ -1518,7 +1518,7 @@ class Planning extends CommonGLPI {
    /**
     * change color for selected line of $_SESSION['glpi_plannings']
     *
-    * @since 0.91
+    * @since 9.1
     *
     * @param  array $options: should contains :
     *  - type : event type, can be event_filter, user, group or group_users
@@ -1546,7 +1546,7 @@ class Planning extends CommonGLPI {
    /**
     * delete selected line in $_SESSION['glpi_plannings']
     *
-    * @since 0.91
+    * @since 9.1
     *
     * @param  array $options: should contains :
     *  - type : event type, can be event_filter, user, group or group_users
@@ -1577,7 +1577,7 @@ class Planning extends CommonGLPI {
     * Prepare a set of events for jquery fullcalendar.
     * Call populatePlanning functions for all $CFG_GLPI['planning_types'] types
     *
-    * @since 0.91
+    * @since 9.1
     *
     * @param array $options: must contains this keys :
     *  - begin : planning start .
@@ -1664,7 +1664,7 @@ class Planning extends CommonGLPI {
     * construct a single line for self::constructEventsArray()
     * Recursively called to construct $raw_events param.
     *
-    * @since 0.91
+    * @since 9.1
     *
     * @param  string $actor: a type and id concaneted separated by '_' char, ex 'user_41'
     * @param  array  $params: must contains this keys :
@@ -1712,7 +1712,7 @@ class Planning extends CommonGLPI {
     * Change dates of a selected event.
     * Called from a drag&drop in planning
     *
-    * @since 0.91
+    * @since 9.1
     *
     * @param array $options: must contains this keys :
     *  - items_id : integer to identify items

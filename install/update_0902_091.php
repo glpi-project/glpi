@@ -35,7 +35,7 @@
 */
 
 /**
- * Update from 0.90.1 to 0.91
+ * Update from 0.90.1 to 9.1
  *
  * @return bool for success (will die for most error)
 **/
@@ -46,8 +46,8 @@ function update0902to091() {
    $ADDTODISPLAYPREF = array();
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '0.91'));
-   $migration->setVersion('0.91');
+   $migration->displayTitle(sprintf(__('Update to %s'), '9.1'));
+   $migration->setVersion('9.1');
 
 
    $backup_tables = false;
@@ -82,7 +82,7 @@ function update0902to091() {
                  PRIMARY KEY (`id`),
                  UNIQUE INDEX `item` (`itemtype`, `items_id`)
                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.91 add table glpi_objectlocks");
+      $DB->queryOrDie($query, "9.1 add table glpi_objectlocks");
    }
 
    // insert new profile
@@ -98,7 +98,7 @@ function update0902to091() {
                      0, 0,
                      '{\"1\":{\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"9\":{\"1\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"10\":{\"1\":0,\"9\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"7\":{\"1\":0,\"9\":0,\"10\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"4\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"11\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"12\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"5\":0,\"8\":0,\"6\":0},\"5\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"8\":0,\"6\":0},\"8\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"6\":0},\"6\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0}}')";
 
-   $DB->queryOrDie($query, "0.91 update profile with Unlock profile") ;
+   $DB->queryOrDie($query, "9.1 update profile with Unlock profile") ;
    $ro_p_id = $DB->insert_id();
    $DB->queryOrDie("INSERT INTO `glpi_profilerights`
                            (`profiles_id`, `name`, `rights`)
@@ -198,7 +198,7 @@ function update0902to091() {
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
                 VALUES ('ObjectLock', 'unlockobject', 86400, 4, 0, 1, 3,
                         0, 24, 30, NULL, NULL, NULL); " ;
-      $DB->queryOrDie($query, "0.91 Add UnlockObject cron task");
+      $DB->queryOrDie($query, "9.1 Add UnlockObject cron task");
    }
    // notification template
    $query = "SELECT *
@@ -210,7 +210,7 @@ function update0902to091() {
          $query = "INSERT INTO `glpi_notificationtemplates`
                           (`name`, `itemtype`, `date_mod`)
                    VALUES ('Unlock Item request', 'ObjectLock', NOW())";
-         $DB->queryOrDie($query, "0.91 Add unlock request notification template");
+         $DB->queryOrDie($query, "9.1 Add unlock request notification template");
          $notid = $DB->insert_id();
 
          $query = "INSERT INTO `glpi_notificationtemplatetranslations`
@@ -247,7 +247,7 @@ function update0902to091() {
       &lt;/table&gt;
       &lt;p&gt;&lt;span style=\"font-size: small;\"&gt;Hello ##objectlock.lockedby.firstname##,&lt;br /&gt;Could go to this item and unlock it for me?&lt;br /&gt;Thank you,&lt;br /&gt;Regards,&lt;br /&gt;##objectlock.requester.firstname## ##objectlock.requester.lastname##&lt;/span&gt;&lt;/p&gt;')";
 
-         $DB->queryOrDie($query, "0.91 add Unlock Request notification translation");
+         $DB->queryOrDie($query, "9.1 add Unlock Request notification translation");
 
          $query = "INSERT INTO `glpi_notifications`
                                 (`name`, `entities_id`, `itemtype`, `event`, `mode`,
@@ -255,13 +255,13 @@ function update0902to091() {
                                  `date_mod`)
                          VALUES ('Request Unlock Items', 0, 'ObjectLock', 'unlock', 'mail',
                                    $notid, '', 1, 1, NOW())";
-         $DB->queryOrDie($query, "0.91 add Unlock Request notification");
+         $DB->queryOrDie($query, "9.1 add Unlock Request notification");
          $notifid = $DB->insert_id();
 
          $query = "INSERT INTO `glpi_notificationtargets`
                                 (`id`, `notifications_id`, `type`, `items_id`)
                          VALUES (NULL, $notifid, ".Notification::USER_TYPE.", ".Notification::USER.");";
-         $DB->queryOrDie($query, "0.91 add Unlock Request notification target");
+         $DB->queryOrDie($query, "9.1 add Unlock Request notification target");
       }
    }
    $migration->addField("glpi_users", "lock_autolock_mode", "tinyint(1) NULL DEFAULT NULL");
@@ -291,7 +291,7 @@ function update0902to091() {
                   KEY `taskcategories_id` (`taskcategories_id`),
                   KEY `entities_id` (`entities_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->queryOrDie($query, "0.91 add table glpi_tasktemplates");
+      $DB->queryOrDie($query, "9.1 add table glpi_tasktemplates");
    }
 
    /************** Installation date for softwares *************/
@@ -497,7 +497,7 @@ function update0902to091() {
                           (`id`, `profiles_id`, `name`, `rights`)
                    VALUES (NULL, '".$profrights['profiles_id']."', 'license',
                            '".$profrights['rights']."')";
-         $DB->queryOrDie($query, "0.91 add right for softwarelicense");
+         $DB->queryOrDie($query, "9.1 add right for softwarelicense");
       }
    }
 
@@ -507,7 +507,7 @@ function update0902to091() {
                 SET `rights` = `rights` | " . Ticket::SURVEY ."
                 WHERE `profiles_id` = '".$profrights['profiles_id']."'
                        AND `name` = 'ticket'";
-      $DB->queryOrDie($query, "0.91 update ticket with survey right");
+      $DB->queryOrDie($query, "9.1 update ticket with survey right");
    }
 
    //TRANS: %s is the table or item to migrate

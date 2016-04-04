@@ -874,7 +874,7 @@ CREATE TABLE `glpi_configs` (
   UNIQUE KEY `unicity` (`context`,`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_configs` VALUES ('1','core','version','0.91');
+INSERT INTO `glpi_configs` VALUES ('1','core','version','9.1');
 INSERT INTO `glpi_configs` VALUES ('2','core','show_jobs_at_login','0');
 INSERT INTO `glpi_configs` VALUES ('3','core','cut','250');
 INSERT INTO `glpi_configs` VALUES ('4','core','list_limit','15');
