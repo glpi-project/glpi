@@ -7532,7 +7532,7 @@ CREATE TABLE `glpi_users` (
   `lock_directunlock_notification` tinyint(1) DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   `highcontrast_css` tinyint(1) DEFAULT 0,
-  `plannings` text COLLATE utf8_unicode_ci,
+  `plannings` text COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`name`),
   KEY `firstname` (`firstname`),

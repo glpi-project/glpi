@@ -300,6 +300,11 @@ function update0902to091() {
 
 
 
+  /************** New Planning with fullcalendar.io *************/
+   $migration->addField("glpi_users", "plannings", "text");
+
+
+
    /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
    $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
