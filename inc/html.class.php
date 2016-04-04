@@ -612,6 +612,23 @@ class Html {
    }
 
 
+   static function displayAjaxMessageAfterRedirect() {
+      global $CFG_GLPI;
+
+      echo Html::scriptBlock("
+      displayAjaxMessageAfterRedirect = function() {
+         // attach MESSAGE_AFTER_REDIRECT to body
+         $('#message_after_redirect').remove();
+         $.ajax({
+            url:  '".$CFG_GLPI['root_doc']."/ajax/displayMessageAfterRedirect.php',
+            success: function(html) {
+               $('body').append(html);
+            }
+         });
+      }");
+   }
+
+
    /**
     * Common Title Function
     *
@@ -1078,6 +1095,10 @@ class Html {
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/css/style.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.css",
+                     array('media' => ''));
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.print.css",
+                     array('media' => 'print'));
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
 
       //  CSS link
@@ -1146,6 +1167,8 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum-min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/lib/moment.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.js");
 
       // layout
       if (CommonGLPI::isLayoutWithMain()
@@ -1155,7 +1178,9 @@ class Html {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js");
       }
 
+      //locales for js library
       if (isset($_SESSION['glpilanguage'])) {
+         // jquery ui
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
          $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
@@ -1163,7 +1188,16 @@ class Html {
          if (file_exists(GLPI_ROOT.$filename)) {
             echo Html::script($CFG_GLPI["root_doc"].$filename);
          }
+
+         // select2
          $filename = "/lib/jqueryplugins/select2/select2_locale_".
+                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
+         if (file_exists(GLPI_ROOT.$filename)) {
+            echo Html::script($CFG_GLPI["root_doc"].$filename);
+         }
+
+         //fullcalendar
+         $filename = "/lib/jqueryplugins/fullcalendar/lang/".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
          if (file_exists(GLPI_ROOT.$filename)) {
             echo Html::script($CFG_GLPI["root_doc"].$filename);
@@ -1174,6 +1208,9 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"].'/script.js');
       self::redefineAlert();
       self::redefineConfirm();
+
+      // add Ajax display message after redirect
+      Html::displayAjaxMessageAfterRedirect();
 
       // Add specific javascript for plugins
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
@@ -2686,7 +2723,7 @@ class Html {
       }
 
       $out .= ">";
-      $out .= "<label class='label-checkbox' title='".$params['title']."' for='".$params['id']."'>";
+      $out .= "<label class='label-checkbox' title=\"".$params['title']."\" for='".$params['id']."'>";
       $out .= " <span class='check'></span>";
       $out .= " <span class='box'></span>";
       $out .= "&nbsp;";
@@ -5596,6 +5633,44 @@ class Html {
    }
 
 
+
+   /**
+    * This function provides a mecanism to send html form by ajax
+    *
+    * @since version 0.91
+   **/
+   static function ajaxForm($selector, $success = "console.log(html);") {
+      echo Html::scriptBlock("
+      $(document).ready(function() {
+         var lastClicked = null;
+         $('input[type=submit]').click(function(e) {
+            e = e || event;
+            lastClicked = e.target || e.srcElement;
+         });
+
+         $('$selector').on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var formData = form.closest('form').serializeArray();
+            //push submit button
+            formData.push({
+               name: $(lastClicked).attr('name'),
+               value: $(lastClicked).val()
+            });
+
+            $.ajax({
+               url: form.attr('action'),
+               type: form.attr('method'),
+               data: formData,
+               success: function(html) {
+                  $success
+               }
+            });
+         });
+      });
+      ");
+   }
+
    /**
     * In this function, we redefine 'window.alert' javascript function
     * by a jquery-ui dialog equivalent (but prettier).
@@ -5771,6 +5846,5 @@ class Html {
          }).text('".Toolbox::addslashes_deep($msg)."');
          " ;
    }
-
 }
 ?>

@@ -37,6 +37,8 @@
 
 include ('../inc/includes.php');
 
+Session::checkRight("planning", READ);
+
 if (!isset($_GET["uID"])) {
    if (($uid = Session::getLoginUserID())
        && !Session::haveRight("planning", Planning::READALL)) {
