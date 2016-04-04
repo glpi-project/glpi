@@ -300,7 +300,7 @@ function update0902to091() {
 
 
 
-  /************** New Planning with fullcalendar.io *************/
+   /************** New Planning with fullcalendar.io *************/
    $migration->addField("glpi_users", "plannings", "text");
 
 
