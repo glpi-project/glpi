@@ -72,6 +72,7 @@ class Auth extends CommonGLPI {
    const EXTERNAL = 4;
    const CAS      = 5;
    const X509     = 6;
+   const API      = 7;
    const NOT_YET_AUTHENTIFIED = 0;
 
 
@@ -490,6 +491,14 @@ class Auth extends CommonGLPI {
                   $this->user->fields['email'] = $this->user->fields['name'];
                   return true;
                }
+            }
+            break;
+
+         case self::API:
+            $user = new User();
+            if ($user->getFromDBbyToken($_REQUEST['api_key'])) {
+               $this->user->fields['name'] = $user->fields['name'];
+               return true;
             }
             break;
       }
@@ -928,6 +937,9 @@ class Auth extends CommonGLPI {
          case self::DB_GLPI :
             return __('GLPI internal database');
 
+         case self::API: 
+            return __("API");
+
          case self::NOT_YET_AUTHENTIFIED :
             return __('Not yet authenticated');
       }
@@ -994,6 +1006,11 @@ class Auth extends CommonGLPI {
 
       // Using CAS server
       if (!empty($CFG_GLPI["cas_host"])) {
+         return true;
+      }
+
+      // Using API login with personnal token
+      if (!empty($_REQUEST['api_key'])) {
          return true;
       }
 
@@ -1065,6 +1082,11 @@ class Auth extends CommonGLPI {
          } else {
             return self::CAS;
          }
+      }
+
+      // using user token for api login
+      if (!empty($_REQUEST['api_key'])) {
+         return self::API;
       }
    return false;
    }

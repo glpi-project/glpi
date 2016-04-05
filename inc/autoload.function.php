@@ -51,6 +51,15 @@ function isCommandLine() {
    return (!isset($_SERVER["SERVER_NAME"]));
 }
 
+/**
+ * Is the script launched From API ?
+ *
+ * @return boolean
+**/
+function isAPI() {
+   return (strpos($_SERVER["SCRIPT_FILENAME"], 'api.php') !== false);
+}
+
 
 /**
  * Determine if an object name is a plugin one

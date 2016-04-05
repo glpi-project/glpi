@@ -212,7 +212,6 @@ class Search {
 
       $data['toview'] = self::addDefaultToView($itemtype);
       if (!$forcetoview) {
-
          // Add items to display depending of personal prefs
          $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
          if (count($displaypref)) {
@@ -223,7 +222,7 @@ class Search {
       } else {
          $data['toview'] = array_merge($data['toview'], $forcedisplay);
       }
-
+      
       if (count($p['criteria']) > 0) {
          foreach ($p['criteria'] as $key => $val) {
             if (!in_array($val['field'], $data['toview'])) {
@@ -276,7 +275,6 @@ class Search {
             }
          }
       }
-
 
       return $data;
    }

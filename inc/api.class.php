@@ -1,0 +1,1298 @@
+<?php
+/*
+ * @version $Id$
+ -------------------------------------------------------------------------
+ GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2015 Teclib'.
+
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2014 by the INDEPNET Development Team.
+
+ -------------------------------------------------------------------------
+
+ LICENSE
+
+ This file is part of GLPI.
+
+ GLPI is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+
+ GLPI is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+ --------------------------------------------------------------------------
+ */
+
+/** @file
+* @brief
+*/
+
+abstract class API {
+
+   // permit writing to $_SESSION
+   protected $session_write = false;
+
+   static $api_url = "";
+   protected $format;
+
+   // first function used on api call
+   abstract public function call();
+
+   // needed to transform params of called api in $this->parameters attribute
+   abstract protected function parseIncomingParams();
+
+   // generic messages
+   abstract protected function returnError($message, $code, $status, $docmessage);
+   abstract protected function returnResponse($response, $code, $additionalheaders);
+
+   // definitions of errors
+   abstract protected function messageNotfoundError();
+   abstract protected function messageBadArrayError();
+   abstract protected function messageLostError();
+   abstract protected function messageRightError();
+   abstract protected function messageSessionError();
+   abstract protected function messageSessionTokenMissing();
+   abstract protected function messageNotDeletedError();
+
+
+   public function __construct() {
+      global $CFG_GLPI;
+
+      // construct api url
+      self::$api_url = trim($CFG_GLPI['url_base'], "/")."/api/";
+
+      // Don't display error in result
+      ini_set('display_errors', 'Off');
+
+      // Avoid keeping messages between api calls
+      $_SESSION["MESSAGE_AFTER_REDIRECT"]='';
+
+      // check if api is enabled
+      if (!$CFG_GLPI['enable_api']) {
+         $this->returnError(__("API disabled"), "", "", false);
+         exit;
+      }
+   }
+
+
+   public static function getTitle() {
+      return __('API');
+   }
+
+
+   /**
+    * Init GLPI Session
+    * @param      array   $params   array with theses options :
+    *    - a couple 'name' & 'password' : 2 parameters to login with user auhentication
+    *         OR
+    *    - an 'api_key' defined in User Configuration
+    *
+    * @return array with session_token
+    */
+   public function initSession($params = array()) {
+      if ((!isset($params['login'])
+           || empty($params['login'])
+           || !isset($params['password'])
+           || empty($params['password']))
+         && (!isset($params['api_key'])
+             || empty($params['api_key']))) {
+         $this->returnError(__("parameter(s) login, password or api_key missing"), 400,
+                            "ERROR_LOGIN_PARAMETERS_MISSING");
+      }
+
+      $auth = new Auth();
+
+      // fill missing params (in case of api_key)
+      if (!isset($params['login'])) {
+         $params['login'] = '';
+      }
+      if (!isset($params['password'])) {
+         $params['password'] = '';
+      }
+
+      $noAuto = true;
+      if (isset($params['api_key']) && !empty($params['api_key'])) {
+         $noAuto = false;
+      }
+
+      // login on glpi
+      if (!$auth->Login($params['login'], $params['password'], $noAuto)) {
+         return $this->returnError($auth->getErr(), 401, "ERROR_GLPI_LOGIN");
+      }
+
+      // stop session and return session key
+      session_write_close();
+      return array('session_token' => $_SESSION['valid_id']);
+   }
+
+
+   /**
+    * Kill GLPI Session
+    * Use 'session_token' param in $this->parameters
+    * @return boolean
+    */
+   public function killSession() {
+      self::checkSessionToken();
+      return Session::destroy();
+   }
+
+
+   /**
+    * Retrieve GLPI Session initialised by initSession function
+    * Use 'session_token' param in $this->parameters
+    */
+   function retrieveSession() {
+      if (isset($this->parameters['session_token'])
+          && !empty($this->parameters['session_token'])) {
+         $current = session_id();
+         $session = trim($this->parameters['session_token']);
+
+         if (file_exists(GLPI_ROOT . "/config/config_path.php")) {
+            include_once (GLPI_ROOT . "/config/config_path.php");
+         }
+         if (!defined("GLPI_SESSION_DIR")) {
+            define("GLPI_SESSION_DIR", GLPI_ROOT . "/files/_sessions");
+         }
+
+         if ($session!=$current && !empty($current)) {
+            session_destroy();
+         }
+         if ($session!=$current && !empty($session)) {
+            if (ini_get("session.save_handler")=="files") {
+               session_save_path(GLPI_SESSION_DIR);
+            }
+            session_id($session);
+            session_start();
+
+            // Define current time for sync of action timing
+            $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
+         }
+      }
+   }
+
+
+   /**
+    * Change active entity to the entities_id one.
+    * @param      array   $params   array with theses options :
+    *   - 'entities_id'  : (default 'all') ID of the new active entity ("all"=>load all possible entities). Optionnal
+    *   - 'is_recursive' : (default false) Also display sub entities of the active entity.  Optionnal
+    * @return bool
+    */
+   public function changeActiveEntities($params = array()) {
+      self::manageSession();
+
+      if (!isset($params['entities_id'])) {
+         $params['entities_id'] = 'all';
+      }
+
+      if (!isset($params['is_recursive'])) {
+         $params['is_recursive'] = false;
+      }
+
+      return Session::changeActiveEntities(intval($params['entities_id']),
+                                           $params['is_recursive']);
+   }
+
+
+   /**
+    * return all the possible entity of the current logged user (and for current active profile)
+    *
+    * @return     array of entities (with id and name)
+    */
+   public function getMyEntities() {
+      self::manageSession();
+
+      $myentities = array();
+      foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
+         $myentities[$entity['id']] = array('id' => $entity['id'],
+                                            'name' => Dropdown::getDropdownName("glpi_entities",
+                                                                                $entity['id']));
+      }
+
+      return $myentities;
+   }
+
+
+   /**
+    * return active entities of current logged user
+    *
+    * @return     array with 3 keys :
+    *                - active_entity : current set entity
+    *                - active_entity_recursive : boolean, if we see sons of this entity
+    *                - active_entities : array all active entities (active_entity and its sons)
+    */
+   public function getActiveEntities() {
+      self::manageSession();
+
+      return array("active_entity"           => $_SESSION['glpiactive_entity'],
+                   "active_entity_recursive" => $_SESSION['glpiactive_entity_recursive'],
+                   "active_entities"         => $_SESSION['glpiactiveentities']);
+
+   }
+
+
+   /**
+    * set a profile to active
+    *
+    * @param      array   $params with theses options :
+    *    - profiles_id : identifier of profile to set
+    * @return     boolean
+    */
+   public function changeActiveProfile($params = array()) {
+      self::manageSession();
+
+      $profiles_id = intval($params['profiles_id']);
+      if (isset($_SESSION['glpiprofiles'][$profiles_id])) {
+         return Session::changeProfile($profiles_id);
+      }
+   }
+
+
+   /**
+    * Return all the profiles associated to logged user
+    *
+    * @return     array of profiles (with associated rights)
+    */
+   public function getMyProfiles() {
+      self::manageSession();
+
+      return $_SESSION['glpiprofiles'];
+   }
+
+
+   /**
+    * return the current active profile
+    *
+    * @return     integer the profiles_id
+    */
+   public function getActiveProfile() {
+      self::manageSession();
+      return $_SESSION['glpiactiveprofile'];
+   }
+
+
+   /**
+    *  return the current php $_SESSION
+    *
+    * @return     array
+    */
+   public function getFullSession() {
+      self::manageSession();
+      return $_SESSION;
+   }
+
+   /**
+    * Return the instance fields of itemtype identified by id
+    *
+    * @param      string   $itemtype  itemtype (class) of object
+    * @param      integer  $id        identifier of object
+    * @param      array   $params   array with theses options :
+    *    - 'expand_dropdowns' : show dropdown's names instead of id. default: false. Optionnal
+    *    - 'get_hateoas' :      show relation of current item in a links attribute. default: true. Optionnal
+    *    - 'with_components' :  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
+    *    - 'with_disks' :       Only for Computer, retrieve the associated filesystems. Optionnal.
+    *    - 'with_softwares' :   Only for Computer, retrieve the associated softwares installations. Optionnal.
+    *    - 'with_connections' : Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
+    *    - 'with_networkports' :Retrieve all network connections and advanced network informations. Optionnal.
+    *    - 'with_infocoms' :    Retrieve financial and administrative informations. Optionnal.
+    *    - 'with_contracts' :   Retrieve associated contracts. Optionnal.
+    *    - 'with_documents' :   Retrieve associated external documents. Optionnal.
+    *    - 'with_tickets' :     Retrieve associated itil tickets. Optionnal.
+    *    - 'with_problems' :    Retrieve associated itil problems. Optionnal.
+    *    - 'with_changes' :     Retrieve associated itil changes. Optionnal.
+    *    - 'with_notes' :       Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
+    *    - 'with_logs' :        Retrieve historical. Optionnal.
+    *
+    * @return     array    fields of found object
+    */
+   public function getItem($itemtype, $id, $params = array()) {
+      global $CFG_GLPI, $DB;
+      self::manageSession();
+
+      // default params
+      $default = array('expand_dropdowns'  => false,
+                       'get_hateoas'       => true,
+                       'with_components'   => false,
+                       'with_disks'        => false,
+                       'with_softwares'    => false,
+                       'with_connections'  => false,
+                       'with_networkports' => false,
+                       'with_infocoms'     => false,
+                       'with_contracts'    => false,
+                       'with_documents'    => false,
+                       'with_tickets'      => false,
+                       'with_problems'     => false,
+                       'with_changes'      => false,
+                       'with_notes'        => false,
+                       'with_logs'         => false);
+      $params = array_merge($default, $params);
+
+      if ($id !== 0) {
+         $item = new $itemtype;
+
+         if (!$item->getFromDB($id)) {
+            return $this->messageNotfoundError();
+         }
+
+         if (!$item->can($id, READ)) {
+            return $this->messageRightError();
+         }
+
+         $fields =  $item->fields;
+
+
+         // retrieve devices
+         if (isset($params['with_devices'])
+            && $params['with_devices']
+            && in_array($itemtype, Item_Devices::getConcernedItems())) {
+            $all_devices = array();
+            foreach (Item_Devices::getItemAffinities($item->getType()) as $device_type) {
+               $found_devices = getAllDatasFromTable($device_type::getTable(),
+                                                     "`items_id` = '".$item->getID()."'
+                                                      AND `itemtype` = '".$item->getType()."'
+                                                      AND `is_deleted` = '0'", true);
+
+               foreach($found_devices as $devices_id => &$device) {
+                  unset($device['items_id']);
+                  unset($device['itemtype']);
+                  unset($device['is_deleted']);
+               }
+
+               if (!empty($found_devices)) {
+                  $all_devices[$device_type] = $found_devices;
+               }
+            }
+            $fields['_devices'] = $all_devices;
+         }
+
+
+         // retrieve computer disks
+         if (isset($params['with_disks'])
+            && $params['with_disks']
+            && $itemtype == "Computer") {
+            // build query to retrive filesystems
+            $query = "SELECT `glpi_filesystems`.`name` AS fsname,
+                             `glpi_computerdisks`.*
+                      FROM `glpi_computerdisks`
+                      LEFT JOIN `glpi_filesystems`
+                                ON (`glpi_computerdisks`.`filesystems_id` = `glpi_filesystems`.`id`)
+                      WHERE `computers_id` = '$id'
+                            AND `is_deleted` = '0'";
+            if ($result = $DB->query($query)) {
+               while ($data = $DB->fetch_assoc($result)) {
+                  unset($data['computers_id']);
+                  unset($data['is_deleted']);
+                  $fields['_disks'][] = array('name' => $data);
+               }
+            }
+         }
+
+         // retrieve computer softwares
+         if (isset($params['with_softwares'])
+            && $params['with_softwares']
+            && $itemtype == "Computer") {
+            $fields['_softwares'] = array();
+            if (!Software::canView()) {
+               $fields['_softwares'] = self::arrayRightError();
+            } else {
+               $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
+                                `glpi_softwares`.`id` AS softwares_id,
+                                `glpi_softwareversions`.`id` AS softwareversions_id,
+                                `glpi_computers_softwareversions`.`is_dynamic`,
+                                `glpi_softwareversions`.`states_id`,
+                                `glpi_softwares`.`is_valid`
+                         FROM `glpi_computers_softwareversions`
+                         LEFT JOIN `glpi_softwareversions`
+                              ON (`glpi_computers_softwareversions`.`softwareversions_id`
+                                    = `glpi_softwareversions`.`id`)
+                         LEFT JOIN `glpi_softwares`
+                              ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
+                         WHERE `glpi_computers_softwareversions`.`computers_id` = '$id'
+                               AND `glpi_computers_softwareversions`.`is_deleted` = '0'
+                         ORDER BY `glpi_softwares`.`name`, `glpi_softwareversions`.`name`";
+               if ($result = $DB->query($query)) {
+                  while ($data = $DB->fetch_assoc($result)) {
+                     $fields['_softwares'][] = $data;
+                  }
+               }
+            }
+         }
+
+
+         // retrieve item connections
+         if (isset($params['with_connections'])
+            && $params['with_connections']
+            && $itemtype == "Computer") {
+            $fields['_connections'] = array();
+            foreach ($CFG_GLPI["directconnect_types"] as $connect_type) {
+               $connect_item = new $connect_type();
+               if ($connect_item->canView()) {
+                  $query = "SELECT `glpi_computers_items`.`id` AS assoc_id,
+                            `glpi_computers_items`.`computers_id` AS assoc_computers_id,
+                            `glpi_computers_items`.`itemtype` AS assoc_itemtype,
+                            `glpi_computers_items`.`items_id` AS assoc_items_id,
+                            `glpi_computers_items`.`is_dynamic` AS assoc_is_dynamic,
+                            ".getTableForItemType($connect_type).".*
+                            FROM `glpi_computers_items`
+                            LEFT JOIN `".getTableForItemType($connect_type)."`
+                              ON (`".getTableForItemType($connect_type)."`.`id`
+                                    = `glpi_computers_items`.`items_id`)
+                            WHERE `computers_id` = '$id'
+                                  AND `itemtype` = '".$connect_type."'
+                                  AND `glpi_computers_items`.`is_deleted` = '0'";
+                  if ($result = $DB->query($query)) {
+                     while ($data = $DB->fetch_assoc($result)) {
+                        $fields['_connections'][$connect_type][] = $data;
+                     }
+                  }
+               }
+            }
+         }
+
+
+
+         // retrieve item networkports
+         if (isset($params['with_networkports'])
+            && $params['with_networkports']) {
+            $fields['_networkports'] = array();
+            if (!NetworkEquipment::canView()) {
+               $fields['_networkports'] = self::arrayRightError();
+            } else {
+               foreach (NetworkPort::getNetworkPortInstantiations() as $networkport_type) {
+                  $query = "SELECT
+                              netp.`entities_id`,
+                              netp.`is_recursive`,
+                              netp.`logical_number`,
+                              netp.`name`,
+                              netp.`mac`,
+                              netp.`comment`,
+                              netp.`is_dynamic`,
+                              netp_subtable.*
+                            FROM glpi_networkports AS netp
+                            LEFT JOIN ".$networkport_type::getTable()." AS netp_subtable
+                              ON netp_subtable.`networkports_id` = netp.`id`
+                            WHERE netp.`instantiation_type` = '$networkport_type'
+                                  AND netp.`items_id` = '$id'
+                                  AND netp.`itemtype` = '$itemtype'
+                                  AND netp.`is_deleted` = '0'";
+                  if ($result = $DB->query($query)) {
+                     while ($data = $DB->fetch_assoc($result)) {
+                        $fields['_networkports'][$networkport_type][] = $data;
+                     }
+                  }
+               }
+            }
+         }
+
+
+
+         // retrieve item infocoms
+         if (isset($params['with_infocoms'])
+            && $params['with_infocoms']) {
+            $fields['_infocoms'] = array();
+            if (!Infocom::canView()) {
+               $fields['_infocoms'] = self::arrayRightError();
+            } else {
+               $ic = new Infocom();
+               if ($ic->getFromDBforDevice($itemtype, $id)) {
+                  $fields['_infocoms'] = $ic->fields;
+               }
+            }
+         }
+
+
+         // retrieve item contracts
+         if (isset($params['with_contracts'])
+            && $params['with_contracts']) {
+            $fields['_contracts'] = array();
+            if (!Contract::canView()) {
+               $fields['_contracts'] = self::arrayRightError();
+            } else {
+               $query = "SELECT `glpi_contracts_items`.*
+                        FROM `glpi_contracts_items`,
+                             `glpi_contracts`
+                        LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id`=`glpi_entities`.`id`)
+                        WHERE `glpi_contracts`.`id`=`glpi_contracts_items`.`contracts_id`
+                              AND `glpi_contracts_items`.`items_id` = '$id'
+                              AND `glpi_contracts_items`.`itemtype` = '$itemtype'".
+                              getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)."
+                        ORDER BY `glpi_contracts`.`name`";
+               if ($result = $DB->query($query)) {
+                  while ($data = $DB->fetch_assoc($result)) {
+                     $fields['_contracts'][] = $data;
+                  }
+               }
+            }
+         }
+
+
+
+         // retrieve item contracts
+         if (isset($params['with_documents'])
+            && $params['with_documents']) {
+            $fields['_documents'] = array();
+            if (!$itemtype != 'Ticket'
+                && $itemtype != 'KnowbaseItem'
+                && $itemtype != 'Reminder'
+                && !Document::canView()) {
+               $fields['_documents'] = self::arrayRightError();
+            } else {
+               $query = "SELECT `glpi_documents_items`.`id` AS assocID,
+                                `glpi_documents_items`.`date_mod` AS assocdate,
+                                `glpi_entities`.`id` AS entityID,
+                                `glpi_entities`.`completename` AS entity,
+                                `glpi_documentcategories`.`completename` AS headings,
+                                `glpi_documents`.*
+                         FROM `glpi_documents_items`
+                         LEFT JOIN `glpi_documents`
+                                   ON (`glpi_documents_items`.`documents_id`=`glpi_documents`.`id`)
+                         LEFT JOIN `glpi_entities` ON (`glpi_documents`.`entities_id`=`glpi_entities`.`id`)
+                         LEFT JOIN `glpi_documentcategories`
+                                 ON (`glpi_documents`.`documentcategories_id`=`glpi_documentcategories`.`id`)
+                         WHERE `glpi_documents_items`.`items_id` = '$id'
+                               AND `glpi_documents_items`.`itemtype` = '$itemtype' ";
+               if ($result = $DB->query($query)) {
+                  while ($data = $DB->fetch_assoc($result)) {
+                     $fields['_documents'][] = $data;
+                  }
+               }
+            }
+         }
+
+
+
+         // retrieve item tickets
+         if (isset($params['with_tickets'])
+            && $params['with_tickets']) {
+            $fields['_tickets'] = array();
+            if (!Ticket::canView()) {
+               $fields['_tickets'] = self::arrayRightError();
+            } else {
+               $query = "SELECT ".Ticket::getCommonSelect()."
+                         FROM `glpi_tickets` ".
+                         Ticket::getCommonLeftJoin()."
+                         WHERE `glpi_items_tickets`.`items_id` = '$id'
+                                AND `glpi_items_tickets`.`itemtype` = '$itemtype' ".
+                               getEntitiesRestrictRequest("AND", "glpi_tickets")."
+                         ORDER BY `glpi_tickets`.`date_mod` DESC";
+               if ($result = $DB->query($query)) {
+                  while ($data = $DB->fetch_assoc($result)) {
+                     $fields['_tickets'][] = $data;
+                  }
+               }
+            }
+         }
+
+
+
+         // retrieve item problems
+         if (isset($params['with_problems'])
+            && $params['with_problems']) {
+            $fields['_problems'] = array();
+            if (!Problem::canView()) {
+               $fields['_problems'] = self::arrayRightError();
+            } else {
+               $query = "SELECT ".Problem::getCommonSelect()."
+                               FROM `glpi_problems`
+                               LEFT JOIN `glpi_items_problems`
+                                 ON (`glpi_problems`.`id` = `glpi_items_problems`.`problems_id`) ".
+                               Problem::getCommonLeftJoin()."
+                               WHERE `items_id` = '$id'
+                                     AND `itemtype` = '$itemtype' ".
+                                     getEntitiesRestrictRequest("AND","glpi_problems")."
+                               ORDER BY `glpi_problems`.`date_mod` DESC";
+               if ($result = $DB->query($query)) {
+                  while ($data = $DB->fetch_assoc($result)) {
+                     $fields['_problems'][] = $data;
+                  }
+               }
+            }
+         }
+
+
+
+         // retrieve item changes
+         if (isset($params['with_changes'])
+            && $params['with_changes']) {
+            $fields['_changes'] = array();
+            if (!Change::canView()) {
+               $fields['_changes'] = self::arrayRightError();
+            } else {
+               $query = "SELECT ".Change::getCommonSelect()."
+                               FROM `glpi_changes`
+                               LEFT JOIN `glpi_changes_items`
+                                 ON (`glpi_changes`.`id` = `glpi_changes_items`.`problems_id`) ".
+                               Change::getCommonLeftJoin()."
+                               WHERE `items_id` = '$id'
+                                     AND `itemtype` = '$itemtype' ".
+                                     getEntitiesRestrictRequest("AND","glpi_changes")."
+                               ORDER BY `glpi_changes`.`date_mod` DESC";
+               if ($result = $DB->query($query)) {
+                  while ($data = $DB->fetch_assoc($result)) {
+                     $fields['_changes'][] = $data;
+                  }
+               }
+            }
+         }
+
+
+
+         // retrieve item notes
+         if (isset($params['with_notes'])
+            && $params['with_notes']) {
+            $fields['_notes'] = array();
+            if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
+               $fields['_notes'] = self::arrayRightError();
+            } else {
+               $fields['_notes'] = Notepad::getAllForItem($itemtype);
+            }
+         }
+
+
+
+         // retrieve item logs
+         if (isset($params['with_logs'])
+            && $params['with_logs']) {
+            $fields['_logs'] = array();
+            if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
+               $fields['_logs'] = self::arrayRightError();
+            } else {
+               $fields['_logs'] = getAllDatasFromTable("glpi_logs",
+                                                       "`items_id` = '".$item->getID()."'
+                                                       AND `itemtype` = '".$item->getType()."'");
+            }
+         }
+
+         // expand dropdown (retrieve name of dropdowns) and get hateoas
+         $fields = self::parseDropdowns($fields, $params);
+
+
+         return $fields;
+      }
+   }
+
+   /**
+    * Fill a sub array with a right error
+    */
+   public function arrayRightError() {
+      return array('error'   => 401,
+                   'message' => __("You don't have permission to perform this action."));
+   }
+
+
+
+   /**
+    * Return a collection of rows of the desired itemtype
+    *
+    * @param      string  $itemtype  itemtype (class) of object
+    * @param      array   $params   array with theses options :
+    * - 'expand_dropdowns' (default: false): show dropdown's names instead of id. Optionnal
+    * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
+    * - 'only_id'          (default: false): keep only id in fields list. Optionnal
+    *
+    * @return     array collection of fields
+    */
+   public function getItems($itemtype, $params = array()) {
+      global $DB;
+      self::manageSession();
+
+      // default params
+      $default = array('expand_dropdowns' => false,
+                       'get_hateoas'      => true,
+                       'only_id'          => false);
+      $params = array_merge($default, $params);
+
+
+      if (!$itemtype::canView()) {
+         return $this->messageRightError();
+      }
+
+      $found = array();
+
+      //specific case for restriction
+      $where = Search::addDefaultWhere($itemtype);
+      $table = getTableForItemType($itemtype);
+      $already_linked_table = array();
+      $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
+      if (!empty($where)
+          || !empty($join)) {
+         $query = "SELECT `$table`.*
+                   FROM `$table`
+                   $join
+                   WHERE $where";
+         if ($result = $DB->query($query)) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $found[$data['id']] = $data;
+            }
+         }
+
+      // all other itemtypes
+      } else {
+         $item = new $itemtype();
+         $condition = "";
+         if ($item->isEntityAssign()) {
+            $condition = getEntitiesRestrictRequest("", $itemtype::getTable(), '', $_SESSION['glpiactiveentities']);
+         }
+         $found = getAllDatasFromTable($itemtype::getTable(), $condition, true);
+      }
+
+
+
+      foreach ($found as $key => &$fields) {
+         // only keep id in field list
+         if ($params['only_id']) {
+            $fields = array('id' => $fields['id']);
+         }
+
+         // expand dropdown (retrieve name of dropdowns) and get hateoas
+         $fields = self::parseDropdowns($fields, $params);
+      }
+
+      return array_values($found);
+   }
+
+
+   /**
+    * List the searchoptions of provided itemtype. To use with searchItems function
+    *
+    * @param      string  $itemtype  itemtype (class) of object
+    *
+    * @return     array    all searchoptions of specified itemtype
+    */
+   public function listSearchOptions($itemtype) {
+      self::manageSession();
+      $searchoptions = Search::getOptions($itemtype);
+      $cleaned_searchoptions = array();
+      foreach($searchoptions as $sID => $option) {
+         if (is_int($sID)) {
+            $cleaned_searchoptions[$sID] = array('name'     => $option['name'],
+                                                 'table'    => $option['table'],
+                                                 'field'    => $option['field'],
+                                                 'datatype' => isset($option['datatype'])
+                                                                     ?$option['datatype']
+                                                                     :"");
+         } else {
+            $cleaned_searchoptions[$sID] = $option;
+         }
+      }
+
+      return $cleaned_searchoptions;
+   }
+
+
+
+   /**
+    * Expose the GLPI searchEngine
+    *
+    * @param      string  $itemtype  itemtype (class) of object
+    * @param      array   $params   array with theses options :
+    *    - 'criteria': array of criterion object to filter search.
+    *        Optionnal.
+    *        Each criterion object must provide :
+    *           - link: (optionnal for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
+    *           - field: id of searchoptions.
+    *           - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+    *           - value : value to search.
+    *     - 'metacriteria' (optionnal): array of metacriterion object to filter search.
+    *                                  Optionnal.
+    *                                  A meta search is a link with another itemtype (ex: Computer with softwares).
+    *         Each metacriterion object must provide :
+    *            - link: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory
+    *            - itemtype: second itemtype to link.
+    *            - field: id of searchoptions.
+    *            - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+    *            - value : value to search.
+    *    - 'sort' :  id of searchoption to sort by (default 1). Optionnal.
+    *    - 'order' : ASC - Ascending sort / DESC Descending sort (default ASC). Optionnal.
+    *    - 'range' : a string with a couple of number for start and end of pagination separated by a '-'. Ex : 150-200. (default 0-50)
+    *                Optionnal.
+    *    - 'forcedisplay': array of columns to display (default empty = empty use display pref and search criterias).
+    *                      Some columns will be always presents (1-id, 2-name, 80-Entity).
+    *                      Optionnal.
+    *    - 'rawdata': boolean for displaying raws data of Search engine of glpi (like sql request, and full searchoptions)
+    *
+    * @return     Array   of raw rows from Search class
+    */
+   public function searchItems($itemtype, $params = array()) {
+      global $DEBUG_SQL;
+
+      self::manageSession();
+
+      // check rights
+      if ($itemtype != 'AllAssets'
+          && !$itemtype::canView()) {
+         return $this->messageRightError();
+      }
+
+      // manage forcedisplay
+      if (isset($params['forcedisplay'])) {
+         if (!is_array($params['forcedisplay'])) {
+            $params['forcedisplay'] = array(intval($params['forcedisplay']));
+         }
+         $params['forcedisplay'] = array_combine($params['forcedisplay'], $params['forcedisplay']);
+      } else {
+         $params['forcedisplay'] = array();
+      }
+
+      // transform range parameter in start and limit variables
+      if (isset($params['range']) > 0) {
+         if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
+            $range = explode("-", $params['range']);
+            $params['start']      = $range[0];
+            $params['list_limit'] = $range[1]-$range[0];
+            $params['range']      = $range;
+         } else {
+            $this->returnError("range must be in format : [start-end] with integers");
+         }
+      } else{
+         $params['range'] = array(0,50);
+      }
+
+      // force reset
+      $params['reset'] = 'reset';
+
+      // force logging sql queries
+      $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+
+      // call Core Search method
+      $rawdata = Search::getDatas($itemtype, $params, $params['forcedisplay']);
+
+      // probably a sql error
+      if (!isset($rawdata['data']) || count($rawdata['data']) === 0) {
+         $this->returnError("Unexpected SQL Error : ".array_splice($DEBUG_SQL['errors'], -2)[0],
+                            500, "ERROR_SQL", false);
+      }
+
+
+      $cleaned_data = array('totalcount' => $rawdata['data']['totalcount'],
+                            'count'      => count($rawdata['data']['rows']),
+                            'sort'       => $rawdata['search']['sort'],
+                            'order'      => $rawdata['search']['order']
+      );
+
+      if ($params['range'][0] > $cleaned_data['totalcount']) {
+         $this->returnError("Provided range exceed total count of data : ".$cleaned_data['totalcount'],
+                            400,
+                            "ERROR_RANGE_EXCEED_TOTAL");
+      }
+
+
+      //prepare cols (searchoptions_id) for cleaned data
+      $cleaned_cols = array();
+      foreach ($rawdata['data']['cols'] as $cols) {
+         $cleaned_cols[] = $cols['id'];
+      }
+
+      foreach($rawdata['data']['rows'] as $row) {
+         $raw = $row['raw'];
+         $id = $raw['id'];
+
+         // keep row itemtype for all asset
+         if ($itemtype == 'AllAssets' ) {
+            $current_itemtype = $raw['TYPE'];
+         }
+
+
+         // clean unused keys, explode multiple values and decode html entities
+         foreach ($raw as $rkey => &$rvalue) {
+            if (preg_match("/^ITEM_[0-9]+\$/", $rkey) <= 0) {
+               unset($raw[$rkey]);
+               continue;
+            }
+
+            if (strpos($rvalue, Search::SHORTSEP) !== false) {
+               $rvalue = explode(Search::SHORTSEP, $rvalue);
+               continue;
+            }
+            if (strpos($rvalue, Search::LONGSEP) !== false) {
+               $rvalue = explode(Search::LONGSEP, $rvalue);
+               continue;
+            }
+
+            $rvalue = html_entity_decode($rvalue);
+         }
+
+         // combine cols (searchoptions_id) with values (raws data)
+         $cleaned_data['data'][$id] = array_combine($cleaned_cols, $raw);
+
+         // if all asset, provide type in returned data
+         if ($itemtype == 'AllAssets') {
+            $cleaned_data['data'][$id]['itemtype'] = $current_itemtype;
+         }
+      }
+
+      if (isset($params['rawdata'])
+          && $params['rawdata']) {
+         $cleaned_data['rawdata'] = $rawdata;
+      }
+
+      // return data
+
+      //add pagination headers
+      header("Content-Range: ".implode('-', $params['range'])."/".$cleaned_data['count']);
+      header("Accept-Range: $itemtype ".Toolbox::get_max_input_vars());
+
+      // diffent http return codes for complete or partial response
+      if ($cleaned_data['count'] >= $cleaned_data['count']) {
+         // full content
+         return $this->returnResponse($cleaned_data, 200);
+      } else {
+         // partial content
+         return $this->returnResponse($cleaned_data, 206);
+      }
+   }
+
+
+   /**
+    * Add an object to GLPI
+    *
+    * @param      string  $itemtype  itemtype (class) of object
+    * @param      array   $params   array with theses options :
+    *    - 'input' : object with fields of itemtype to be inserted.
+    *                You can add several items in one action by passing array of input object.
+    *                Mandatory.
+    *
+    * @return   array of id
+    */
+   public function createItems($itemtype, $params = array()) {
+      self::manageSession();
+      $input = isset($params['input']) ? $params["input"] : null;
+      $item = new $itemtype;
+      $response = "";
+
+      if (is_array($input)) {
+         $idCollection = array();
+         $failed = 0;
+         foreach($input as $object) {
+            $object = get_object_vars($object);
+            //check rights
+            if (!$item->can(-1, CREATE, $object)) {
+               $idCollection[] = array('error' => $this->messageRightError());
+               $failed++;
+            } else {
+               //add current item
+               if ($new_id = $item->add( $object)) {
+                  $idCollection[] = array('id' => $new_id);
+               } else {
+                  $idCollection[] = array('error' => $this->getGlpiLastMessage());
+               }
+            }
+         }
+         if ($failed == count($input)) {
+            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_ADD", false);
+         } else if ($failed > 0) {
+            $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_ADD", false);
+         }
+
+         return $idCollection;
+
+      } else if (is_object($input)) {
+         $input = get_object_vars($input);
+
+         //check rights
+         if (!$item->can(-1, CREATE, $input)) {
+            $this->messageRightError();
+         }
+
+         //add item
+         if ($new_id = $item->add( $input)) {
+            return array('id' => $new_id);
+         } else {
+            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_ADD", false);
+         }
+
+      } else {
+         $this->messageBadArrayError();
+      }
+   }
+
+
+   /**
+    * update an object to GLPI
+    *
+    * @param      string  $itemtype  itemtype (class) of object
+    * @param      array   $params   array with theses options :
+    *    - 'input' : Array of objects with fields of itemtype to be updated.
+    *                Mandatory.
+    *                You must provide in each object a key named 'id' to identify item to update.
+    *
+    * @return   array of boolean
+    */
+   public function updateItems($itemtype, $params = array()) {
+      self::manageSession();
+      $input = $params['input'];
+      $item = new $itemtype;
+      $response = "";
+
+      if (is_array($input)) {
+         $idCollection = array();
+         $failed = 0;
+         foreach($input as $object) {
+            if (isset($object->id)) {
+               //check rights
+               if (!$item->can(-1, UPDATE)) {
+                  $failed++;
+                  $idCollection[] = array($object->id => $this->messageRightError());
+               } else {
+                  //update item
+                  if ($update_return = $item->update( (array) $object)) {
+                     $idCollection[] = array($object->id => $update_return);
+                  } else {
+                     $failed++;
+                     $idCollection[] = array($object->id => $this->getGlpiLastMessage());
+                  }
+               }
+            }
+         }
+         if ($failed == count($input)) {
+            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
+         } else if ($failed > 0) {
+            $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_UPDATE", false);
+         }
+
+         return $idCollection;
+
+      } else if (is_object($input)) {
+         $input = get_object_vars($input);
+
+         //check rights
+         if (!$item->can(-1, UPDATE, $input)) {
+            $this->messageRightError();
+         }
+
+         // update item
+         if (! $item->update($input)) {
+            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
+         } else {
+            $idCollection[] = array($item->fields["id"] => "true");
+         }
+         return $idCollection;
+
+      } else {
+         $this->messageBadArrayError();
+      }
+   }
+
+
+   /**
+    * delete an object in GLPI
+    *
+    * @param      string   $itemtype  itemtype (class) of object
+    * @param      integer  $id        identifier of object
+    * @param      array    $params   array with theses options :
+    *    - 'force_purge' : boolean, if itemtype have a dustbin, you can force purge (delete finally).
+    *                      Optionnal.
+    *    - 'history' : boolean, default true, false to disable saving of deletion in global history.
+    *                  Optionnal.
+    */
+   public function deleteItem($itemtype, $id, $params = array()) {
+      self::manageSession();
+      $response    = "";
+      $force_purge = isset($params['force_purge'])?$params['force_purge']:false;
+      $history     = isset($params['$history'])?$params['$history']:true;
+
+      if ($id !== 0) {
+         $item = new $itemtype;
+
+         if (!$item->getFromDB($id)) {
+            return $this->messageNotfoundError();
+         }
+
+         if ($force_purge
+             && !$item->can(-1, PURGE)
+             || !$item->can(-1, DELETE)) {
+            $this->messageRightError();
+         }
+
+         if (!$item->delete(array('id' => $id), $force_purge, $history)) {
+            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_DELETE", false);
+         }
+      }
+
+      return true;
+   }
+
+
+   protected function manageSession() {
+      self::checkSessionToken();
+      self::unlockSessionIfPossible();
+   }
+
+
+   protected function checkSessionToken() {
+      if (!isset($this->parameters['session_token'])
+          || empty($this->parameters['session_token']))  {
+         return $this->messageSessionTokenMissing();
+      }
+
+      $current = session_id();
+      if ($this->parameters['session_token'] != $current
+          && !empty($current)
+          || !isset($_SESSION['glpiID'])) {
+         return $this->messageSessionError();
+      }
+   }
+
+
+   public function unlockSessionIfPossible() {
+      if (!$this->session_write) {
+         session_write_close();
+      }
+   }
+
+
+   /**
+    * Get last message added in $_SESSION by Session::addMessageAfterRedirect
+    *
+    * @return     array  of messages
+    */
+   function getGlpiLastMessage() {
+      $messages = array();
+      if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])
+          && !empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
+         $messages = $_SESSION["MESSAGE_AFTER_REDIRECT"];
+
+         // Clean messages
+         $_SESSION["MESSAGE_AFTER_REDIRECT"] = "";
+      };
+
+      $explode_on = array("<br>", "</h3>");
+      $all_messages = array();
+      foreach($explode_on as $separator) {
+         $all_messages[] = explode($separator, $messages);
+      }
+
+      // clean html
+      foreach($all_messages as &$message) {
+         $message = Html::clean($message);
+      }
+
+      return end($messages);
+   }
+
+
+   /**
+    * Show API Debug
+    */
+   public function showDebug() {
+      Html::printCleanArray($this);
+   }
+
+
+   /**
+    * Show API header
+    * in debug, it add body and some libs (essentialy to colorise markdown)
+    * otherwise, it change only Content-Type of the page
+    *
+    */
+   public function header($html = false, $title = "") {
+      // Send UTF8 Headers
+      $content_type = "application/json";
+      if ($html) {
+         $content_type = "text/html";
+      }
+      header("Content-Type: $content_type; charset=UTF-8");
+
+       // Send extra expires header
+      Html::header_nocache();
+
+      if ($html) {
+         if (empty($title)) {
+            $title = self::getTitle();
+         }
+
+         Html::includeHeader($title);
+
+         // Body with configured stuff
+         echo "<body>";
+         echo "<div id='page'>";
+      }
+   }
+
+
+   /**
+    * Display the API Documentation in Html (parsed from markdown)
+    *
+    * @param      string  $file   relative path of documentation file
+    */
+   public function inlineDocumentation($file) {
+      global $CFG_GLPI;
+
+      require_once(GLPI_PARSEDOWN_DIR.'/Parsedown.php');
+      require_once(GLPI_PARSEDOWN_DIR.'/parsedown-extra/ParsedownExtra.php');
+
+      self::header(true, __("API Documentation"));
+      echo Html::css("../"."lib/prism/prism.css");
+      echo Html::script("../"."lib/prism/prism.js");
+
+      echo "<div class='documentation'>";
+      $documentation = file_get_contents(GLPI_ROOT.'/'.$file);
+      echo ParsedownExtra::instance()->text($documentation);
+      echo "</div>";
+
+      Html::nullFooter();
+   }
+
+
+   /**
+    * transform array of fields passed in parameter :
+    * change value from  integer id to string name of foreign key
+    * You can pass an array of array, this method is recursive.
+    *
+    *
+    * @param      array  $fields  array to check and transform
+    * @param      bool   $expand  array of option to enable, could be :
+    *                                 - expand_dropdowns (default false)
+    *                                 - get_hateoas      (default true)
+    *
+    * @return     array  altered $fields
+    */
+   protected static function parseDropdowns($fields, $params = array()) {
+      // default params
+      $default = array('expand_dropdowns' => false,
+                       'get_hateoas'      => true);
+      $params = array_merge($default, $params);
+
+      // parse fields recursively
+      foreach($fields as $key => &$value) {
+         if (is_array($value)) {
+            $value = self::parseDropdowns($value);
+         }
+         if (is_integer($key)) {
+            continue;
+         }
+         if ($key != "items_id" && isForeignKeyField($key)) {
+            if (!empty($value) || $key == 'entities_id') {
+
+               $tablename = getTableNameForForeignKeyField($key);
+               $itemtype = getItemTypeForTable($tablename);
+
+               // get hateoas
+               if ($params['get_hateoas']) {
+                  $fields['links'][] = array('rel'  => $itemtype,
+                                             'href' => self::$api_url.$itemtype."/".$value);
+               }
+
+               // expand dropdown
+               if ($params['expand_dropdowns']) {
+                  $value = Dropdown::getDropdownName($tablename, $value);
+                  // fix value for inexistent items
+                  if ($value == "&nbsp;") {
+                     $value = "";
+                  }
+               }
+            }
+         }
+      }
+      return $fields;
+   }
+
+}

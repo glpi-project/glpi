@@ -305,6 +305,11 @@ function update0902to091() {
 
 
 
+   /************** API Rest *************/
+   Config::setConfigurationValues('core', array('enable_api' => 0));
+
+
+
    /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
    $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',

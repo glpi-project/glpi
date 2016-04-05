@@ -316,6 +316,11 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("translate_kb", $CFG_GLPI["translate_kb"]);
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __("Enable Rest API") . "</td><td>";
+      Dropdown::showYesNo("enable_api", $CFG_GLPI["enable_api"]);
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Dynamic display').
            "</td></tr>";
 
@@ -1149,14 +1154,16 @@ class Config extends CommonDBTM {
       if (array_key_exists('personal_token', $data)) {
          echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access key') ."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . __('Remote access key');
+         echo "<tr class='tab_bg_1'><td colspan='2'>";
          if (!empty($data["personal_token"])) {
             //TRANS: %s is the generation date
             echo "<br>".sprintf(__('generated on %s'),
                                 Html::convDateTime($data["personal_token_date"]));
          }
 
-         echo "</td><td colspan='3'>";
+         echo "</td><td>";
+         echo $data["personal_token"];
+         echo "</td><td>";
          echo "<input type='checkbox' name='_reset_personal_token'>&nbsp;".__('Regenerate');
          echo "</td></tr>";
       }
@@ -1699,6 +1706,11 @@ class Config extends CommonDBTM {
          chdir($currentdir);
          $globaldir  = Html::cleanParametersURL($_SERVER['REQUEST_URI']);
          $globaldir  = preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$globaldir);
+
+         // api exception
+         if (strpos($globaldir, 'api/') !== false) {
+            $globaldir = preg_replace("/(.*\/)api\/.*/", "$1", $globaldir);
+         }
 
          $CFG_GLPI["root_doc"] = str_replace($glpidir,"",$globaldir);
          $CFG_GLPI["root_doc"] = preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);

@@ -164,6 +164,7 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER')
 
 // Security : check CSRF token
 if (GLPI_USE_CSRF_CHECK
+    && !isAPI()
     && isset($_POST) && is_array($_POST) && count($_POST)
     // ALL plugins need to be CSRF compliant
     /*&& Plugin::isAllPluginsCSRFCompliant()*/) {
