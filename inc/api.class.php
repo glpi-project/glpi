@@ -94,6 +94,7 @@ abstract class API extends CommonGLPI {
     * @return array with session_token
     */
    protected function initSession($params = array()) {
+      global $CFG_GLPI;
       $this->logEndpointUsage(__FUNCTION__);
 
       if ((!isset($params['login'])
@@ -119,6 +120,10 @@ abstract class API extends CommonGLPI {
       $noAuto = true;
       if (isset($params['api_key']) && !empty($params['api_key'])) {
          $noAuto = false;
+
+      } else if (!$CFG_GLPI['enable_api_login_credentials']) {
+         $this->returnError(__("initSession with credentials is disabled"), 400,
+                            "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED");
       }
 
       // login on glpi
