@@ -1231,7 +1231,7 @@ abstract class API extends CommonGLPI {
 
       if ($html) {
          if (empty($title)) {
-            $title = self::getTypeName();
+            $title = $this->getTypeName();
          }
 
          Html::includeHeader($title);
