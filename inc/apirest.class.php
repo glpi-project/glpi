@@ -144,55 +144,42 @@ class APIRest extends API {
 
       // list searchOptions of an itemtype
       } else if ($ressource === "listSearchOptions") {
-         if (!isset($this->url_elements[1]))  {
-            $this->returnError(__("parameter itemtype missing"), 400, "ERROR_ITEMTYPE_MISSING");
-         }
-         $itemtype = $this->url_elements[1];
+         $itemtype = $this->getItemtype(1);
          return $this->returnResponse($this->listSearchOptions($itemtype));
 
       // Search on itemtype
       } else if ($ressource === "search") {
          self::checkSessionToken();
-         if (!isset($this->url_elements[1])) {
-            $this->returnError();
-         }
-         $itemtype = $this->url_elements[1];
-         if (class_exists($itemtype)
-               && is_subclass_of($itemtype, 'CommonDBTM')
-             || $itemtype == "AllAssets" ) {
-                  $itemtype = $this->url_elements[1];
-                  //clean stdObjects in parameter
-                  $params = json_decode(json_encode($this->parameters), true);
-                  //search
-                  return $this->searchItems($itemtype, $params);
-          } else {
-             $this->returnError();
-          }
+
+         $itemtype = $this->getItemtype(1, true, true);
+         //clean stdObjects in parameter
+         $params = json_decode(json_encode($this->parameters), true);
+         //search
+         return $this->searchItems($itemtype, $params);
 
       // commonDBTM manipulation
-      } else if (class_exists($ressource)
-                 && is_subclass_of($ressource, 'CommonDBTM')) {
+      } else {
+         $itemtype          = $this->getItemtype(0);
+         $id                = $this->getId();
          $additionalheaders = array();
-         $code = 200;
+         $code              = 200;
          switch ($this->verb) {
             default:
             case "GET": // retrieve item(s)
-               if (isset($this->url_elements[1])) {
-                  //get single item
-                  $id = intval($this->url_elements[1]);
-                  $response = $this->getItem($ressource, $id, $this->parameters);
+               if ($id > 0) {
+                  $response = $this->getItem($itemtype, $id, $this->parameters);
                   if (isset($response['date_mod'])) {
                      $datemod = strtotime($response['date_mod']);
                      $additionalheaders['Last-Modified'] = date('r', $datemod);
                   }
                } else {
                   // return collection of items
-                  $response = $this->getItems($ressource, $this->parameters);
+                  $response = $this->getItems($itemtype, $this->parameters);
                }
                break;
 
             case "POST": // create item(s)
-               $response = $this->createItems($ressource, $this->parameters);
+               $response = $this->createItems($itemtype, $this->parameters);
                $code = 201;
                if (count($response) == 1) {
                   // add a location targetting created element
@@ -212,14 +199,11 @@ class APIRest extends API {
                break;
 
             case "PUT": // update item(s)
-               $response = $this->updateItems($ressource, $this->parameters);
+               $response = $this->updateItems($itemtype, $this->parameters);
                break;
 
             case "DELETE": //delete item(s)
-               if (isset($this->url_elements[1])) {
-                  $id = intval($this->url_elements[1]);
-                  $response = $this->deleteItem($ressource, $id, $this->parameters);
-               }
+               $response = $this->deleteItem($itemtype, $id, $this->parameters);
                break;
          }
          return $this->returnResponse($response, $code, $additionalheaders);
@@ -227,6 +211,63 @@ class APIRest extends API {
 
       $this->messageLostError();
    }
+
+
+   /**
+    * Retrieve and check itemtype from $this->url_elements
+    * @param  integer $index         we'll find itemtype in this index of $this->url_elements
+    * @param  boolean $recursive     can we go depper or we trigger an http error if we fail to find itemtype
+    * @param  boolean $all_assets    if we can have allasset virtual type
+    * @return boolean
+    */
+   private function getItemtype($index = 0, $recursive = true, $all_assets = false) {
+      if (isset($this->url_elements[$index]))  {
+         if (class_exists($this->url_elements[$index])
+               && is_subclass_of($this->url_elements[$index], 'CommonDBTM')
+             || $all_assets
+               && $this->url_elements[$index] == "AllAssets" ) {
+            $itemtype = $this->url_elements[$index];
+
+            if ($recursive && $additional_itemtype = $this->getItemtype(2, false)) {
+               $this->parameters['parent_itemtype'] = $itemtype;
+               $itemtype = $additional_itemtype;
+            }
+
+            return $itemtype;
+         } else if (!$recursive) {
+            $this->returnError(__("parameter itemtype is not an instance of CommonDBTM"),
+                               400,
+                               "ERROR_ITEMTYPE_NOT_COMMONDBTM");
+         }
+      } else if ($recursive) {
+         $this->returnError(__("parameter itemtype missing"), 400, "ERROR_ITEMTYPE_MISSING");
+      }
+
+      return false;
+   }
+
+
+   /**
+    * Retrieve in url_element the current id. If we have a multiple id (ex /Ticket/1/TicketFollwup/2),
+    * it always find the second
+    * @return int id of current itemtype (or false if not found)
+    */
+   private function getId() {
+      $id            = isset($this->url_elements[1]) && is_numeric($this->url_elements[1])
+                       ?intval($this->url_elements[1])
+                       :false;
+      $additional_id = isset($this->url_elements[3]) && is_numeric($this->url_elements[3])
+                       ?intval($this->url_elements[3])
+                       :false;
+
+      if ($additional_id || isset($this->parameters['parent_itemtype'])) {
+         $this->parameters['parent_id'] = $id;
+         $id = $additional_id;
+      }
+
+      return $id;
+   }
+
 
    /**
     * Construct this->parameters from query string and http body
@@ -290,7 +331,6 @@ class APIRest extends API {
 
       $this->parameters = $parameters;
    }
-
 
    /**
     * Send 404 error to client
