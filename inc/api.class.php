@@ -97,7 +97,9 @@ abstract class API {
     *
     * @return array with session_token
     */
-   public function initSession($params = array()) {
+   protected function initSession($params = array()) {
+      $this->logEndpointUsage(__FUNCTION__);
+
       if ((!isset($params['login'])
            || empty($params['login'])
            || !isset($params['password'])
@@ -139,7 +141,8 @@ abstract class API {
     * Use 'session_token' param in $this->parameters
     * @return boolean
     */
-   public function killSession() {
+   protected function killSession() {
+      $this->logEndpointUsage(__FUNCTION__);
       self::checkSessionToken();
       return Session::destroy();
    }
@@ -149,7 +152,7 @@ abstract class API {
     * Retrieve GLPI Session initialised by initSession function
     * Use 'session_token' param in $this->parameters
     */
-   function retrieveSession() {
+   protected function retrieveSession() {
       if (isset($this->parameters['session_token'])
           && !empty($this->parameters['session_token'])) {
          $current = session_id();
@@ -186,8 +189,8 @@ abstract class API {
     *   - 'is_recursive' : (default false) Also display sub entities of the active entity.  Optionnal
     * @return bool
     */
-   public function changeActiveEntities($params = array()) {
-      self::manageSession();
+   protected function changeActiveEntities($params = array()) {
+      $this->initEndpoint();
 
       if (!isset($params['entities_id'])) {
          $params['entities_id'] = 'all';
@@ -207,8 +210,8 @@ abstract class API {
     *
     * @return     array of entities (with id and name)
     */
-   public function getMyEntities() {
-      self::manageSession();
+   protected function getMyEntities() {
+      $this->initEndpoint();
 
       $myentities = array();
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
@@ -229,8 +232,8 @@ abstract class API {
     *                - active_entity_recursive : boolean, if we see sons of this entity
     *                - active_entities : array all active entities (active_entity and its sons)
     */
-   public function getActiveEntities() {
-      self::manageSession();
+   protected function getActiveEntities() {
+      $this->initEndpoint();
 
       return array("active_entity"           => $_SESSION['glpiactive_entity'],
                    "active_entity_recursive" => $_SESSION['glpiactive_entity_recursive'],
@@ -246,8 +249,8 @@ abstract class API {
     *    - profiles_id : identifier of profile to set
     * @return     boolean
     */
-   public function changeActiveProfile($params = array()) {
-      self::manageSession();
+   protected function changeActiveProfile($params = array()) {
+      $this->initEndpoint();
 
       $profiles_id = intval($params['profiles_id']);
       if (isset($_SESSION['glpiprofiles'][$profiles_id])) {
@@ -261,8 +264,8 @@ abstract class API {
     *
     * @return     array of profiles (with associated rights)
     */
-   public function getMyProfiles() {
-      self::manageSession();
+   protected function getMyProfiles() {
+      $this->initEndpoint();
 
       return $_SESSION['glpiprofiles'];
    }
@@ -273,8 +276,8 @@ abstract class API {
     *
     * @return     integer the profiles_id
     */
-   public function getActiveProfile() {
-      self::manageSession();
+   protected function getActiveProfile() {
+      $this->initEndpoint();
       return $_SESSION['glpiactiveprofile'];
    }
 
@@ -284,8 +287,8 @@ abstract class API {
     *
     * @return     array
     */
-   public function getFullSession() {
-      self::manageSession();
+   protected function getFullSession() {
+      $this->initEndpoint();
       return $_SESSION;
    }
 
@@ -313,9 +316,9 @@ abstract class API {
     *
     * @return     array    fields of found object
     */
-   public function getItem($itemtype, $id, $params = array()) {
+   protected function getItem($itemtype, $id, $params = array()) {
       global $CFG_GLPI, $DB;
-      self::manageSession();
+      $this->initEndpoint();
 
       // default params
       $default = array('expand_dropdowns'  => false,
@@ -682,7 +685,7 @@ abstract class API {
    /**
     * Fill a sub array with a right error
     */
-   public function arrayRightError() {
+   protected function arrayRightError() {
       return array('error'   => 401,
                    'message' => __("You don't have permission to perform this action."));
    }
@@ -700,9 +703,9 @@ abstract class API {
     *
     * @return     array collection of fields
     */
-   public function getItems($itemtype, $params = array()) {
+   protected function getItems($itemtype, $params = array()) {
       global $DB;
-      self::manageSession();
+      $this->initEndpoint();
 
       // default params
       $default = array('expand_dropdowns' => false,
@@ -767,8 +770,8 @@ abstract class API {
     *
     * @return     array    all searchoptions of specified itemtype
     */
-   public function listSearchOptions($itemtype) {
-      self::manageSession();
+   protected function listSearchOptions($itemtype) {
+      $this->initEndpoint();
       $searchoptions = Search::getOptions($itemtype);
       $cleaned_searchoptions = array();
       foreach($searchoptions as $sID => $option) {
@@ -821,10 +824,9 @@ abstract class API {
     *
     * @return     Array   of raw rows from Search class
     */
-   public function searchItems($itemtype, $params = array()) {
+   protected function searchItems($itemtype, $params = array()) {
       global $DEBUG_SQL;
-
-      self::manageSession();
+      $this->initEndpoint();
 
       // check rights
       if ($itemtype != 'AllAssets'
@@ -962,8 +964,8 @@ abstract class API {
     *
     * @return   array of id
     */
-   public function createItems($itemtype, $params = array()) {
-      self::manageSession();
+   protected function createItems($itemtype, $params = array()) {
+      $this->initEndpoint();
       $input = isset($params['input']) ? $params["input"] : null;
       $item = new $itemtype;
       $response = "";
@@ -1026,8 +1028,8 @@ abstract class API {
     *
     * @return   array of boolean
     */
-   public function updateItems($itemtype, $params = array()) {
-      self::manageSession();
+   protected function updateItems($itemtype, $params = array()) {
+      $this->initEndpoint();
       $input = $params['input'];
       $item = new $itemtype;
       $response = "";
@@ -1093,8 +1095,8 @@ abstract class API {
     *    - 'history' : boolean, default true, false to disable saving of deletion in global history.
     *                  Optionnal.
     */
-   public function deleteItem($itemtype, $id, $params = array()) {
-      self::manageSession();
+   protected function deleteItem($itemtype, $id, $params = array()) {
+      $this->initEndpoint();
       $response    = "";
       $force_purge = isset($params['force_purge'])?$params['force_purge']:false;
       $history     = isset($params['$history'])?$params['$history']:true;
@@ -1121,13 +1123,33 @@ abstract class API {
    }
 
 
-   protected function manageSession() {
+   private function initEndpoint() {
+      $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+      $this->logEndpointUsage($backtrace[1]['function']);
       self::checkSessionToken();
       self::unlockSessionIfPossible();
    }
 
 
-   protected function checkSessionToken() {
+   private function logEndpointUsage($endpoint) {
+      $ip = (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"]
+                                                     : $_SERVER["REMOTE_ADDR"]);
+      $username = "";
+      if ($endpoint != "initSession") {
+         $username = "(".$_SESSION['glpiname'].")";
+      }
+
+      $changes[0] = 0;
+      $changes[1] = "";
+      $changes[2] = "Enpoint '$endpoint' called by $ip $username";
+      Log::history("api", 'API', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
+
+
+      Toolbox::logInFile("api", $changes[2]."\n");
+   }
+
+
+   private function checkSessionToken() {
       if (!isset($this->parameters['session_token'])
           || empty($this->parameters['session_token']))  {
          return $this->messageSessionTokenMissing();
@@ -1142,7 +1164,7 @@ abstract class API {
    }
 
 
-   public function unlockSessionIfPossible() {
+   private function unlockSessionIfPossible() {
       if (!$this->session_write) {
          session_write_close();
       }
@@ -1154,7 +1176,7 @@ abstract class API {
     *
     * @return     array  of messages
     */
-   function getGlpiLastMessage() {
+   private function getGlpiLastMessage() {
       $messages = array();
       if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])
           && !empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
@@ -1182,7 +1204,7 @@ abstract class API {
    /**
     * Show API Debug
     */
-   public function showDebug() {
+   protected function showDebug() {
       Html::printCleanArray($this);
    }
 
@@ -1193,7 +1215,7 @@ abstract class API {
     * otherwise, it change only Content-Type of the page
     *
     */
-   public function header($html = false, $title = "") {
+   protected function header($html = false, $title = "") {
       // Send UTF8 Headers
       $content_type = "application/json";
       if ($html) {
