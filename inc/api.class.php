@@ -716,6 +716,8 @@ abstract class API extends CommonGLPI {
       }
 
       $found = array();
+      $item = new $itemtype();
+      $item->getEmpty();
 
       //specific case for restriction
       $table = getTableForItemType($itemtype);
@@ -726,11 +728,19 @@ abstract class API extends CommonGLPI {
       // add filter for a parent itemtype
       if (isset($this->parameters['parent_itemtype'])
           && isset($this->parameters['parent_id'])) {
-         $fk_parent = getForeignKeyFieldForItemType($this->parameters['parent_itemtype']);
          if (!empty($where)) {
             $where.= " AND ";
          }
-         $where.= "`$table`.`$fk_parent` = ".$this->parameters['parent_id'];
+         $fk_parent = getForeignKeyFieldForItemType($this->parameters['parent_itemtype']);
+         if (isset($item->fields[$fk_parent])) {
+            $where.= "`$table`.`$fk_parent` = ".$this->parameters['parent_id'];
+         } else if (isset($item->fields['itemtype'])
+                 && isset($item->fields['items_id'])) {
+            $where.= "`$table`.`itemtype` = '".$this->parameters['parent_itemtype']."'
+                  AND `$table`.`items_id` = ".$this->parameters['parent_id'];
+         } else {
+            $where.= "1=1";
+         }
       }
 
       if (!empty($where)
@@ -747,7 +757,6 @@ abstract class API extends CommonGLPI {
 
       // all other itemtypes
       } else {
-         $item = new $itemtype();
          $condition = "";
          if ($item->isEntityAssign()) {
             $condition = getEntitiesRestrictRequest("", $itemtype::getTable(), '', $_SESSION['glpiactiveentities']);
