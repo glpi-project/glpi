@@ -1136,11 +1136,11 @@ abstract class API extends CommonGLPI {
          $username = "(".$_SESSION['glpiname'].")";
       }
 
-      // todo, need to log on existing commondbtm item (we can get it with app_token declaration)
-      /*$changes[0] = 0;
+      $changes[0] = 0;
       $changes[1] = "";
       $changes[2] = "Enpoint '$endpoint' called by $ip $username";
-      Log::history(0, 'API', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);*/
+      // todo, need to log on existing commondbtm item (we can get it with app_token declaration)
+      // Log::history(0, 'API', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
 
 
       Toolbox::logInFile("api", $changes[2]."\n");
