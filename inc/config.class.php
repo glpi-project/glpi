@@ -316,11 +316,6 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("translate_kb", $CFG_GLPI["translate_kb"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __("Enable Rest API") . "</td><td>";
-      Dropdown::showYesNo("enable_api", $CFG_GLPI["enable_api"]);
-      echo "</td></tr>";
-
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Dynamic display').
            "</td></tr>";
 
@@ -668,6 +663,70 @@ class Config extends CommonDBTM {
          DBConnection::showAllReplicateDelay();
          echo "</td></tr>";
       }
+
+      echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
+      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+      echo "</td></tr>";
+
+      echo "</table></div>";
+      Html::closeForm();
+   }
+
+
+   /**
+    * Print the config form for External API
+    *
+    * @since 9.1
+    * @return Nothing (display)
+   **/
+   function showFormAPI() {
+      global $DB, $CFG_GLPI;
+
+      if (!self::canView()) {
+         return false;
+      }
+
+      $API = new APIRest;
+
+      $canedit = Config::canUpdate();
+      if ($canedit) {
+         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      }
+      echo "<div class='center spaced' id='tabsbody'>";
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr><th colspan='4'>" . __('API') . "</th></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __("Enable Rest API") . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("enable_api", $CFG_GLPI["enable_api"]);
+      echo "</td>";
+      if ($CFG_GLPI["enable_api"]) {
+         echo "<td colspan='2'>";
+         echo "<a href='".$API::$api_url."'>".__("API inline Documentation")."</a>";
+         echo "</td>";
+      }
+      echo "</tr>";
+
+      echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
+      echo __("Enable credentials login")."&nbsp;";
+      Html::showToolTip(__("Allow to login to api and get a session token with user credentials"));
+      echo "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("enable_api_login_credentials", $CFG_GLPI["enable_api_login_credentials"]);
+      echo "</td>";
+      echo "<td>";
+      echo __("Enable external token login")."&nbsp;";
+      Html::showToolTip(__("Allow to login to api and get a session token with user external token. See Remote access key in user Settings tab "));
+      echo "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("enable_api_login_external_token", $CFG_GLPI["enable_api_login_external_token"]);
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
       echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
@@ -1771,6 +1830,7 @@ class Config extends CommonDBTM {
                 && Config::canUpdate()) {
                $tabs[6]  = _n('Mysql replica', 'Mysql replicas', Session::getPluralNumber());  // Slave
             }
+            $tabs[7] = __('API');
             return $tabs;
       }
       return '';
@@ -1822,6 +1882,10 @@ class Config extends CommonDBTM {
 
             case 6 :
                $item->showFormDBSlave();
+               break;
+
+            case 7 :
+               $item->showFormAPI();
                break;
 
          }

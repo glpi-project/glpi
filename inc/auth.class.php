@@ -495,10 +495,14 @@ class Auth extends CommonGLPI {
             break;
 
          case self::API:
-            $user = new User();
-            if ($user->getFromDBbyToken($_REQUEST['api_key'])) {
-               $this->user->fields['name'] = $user->fields['name'];
-               return true;
+            if ($CFG_GLPI['enable_api_login_external_token']) {
+               $user = new User();
+               if ($user->getFromDBbyToken($_REQUEST['api_key'])) {
+                  $this->user->fields['name'] = $user->fields['name'];
+                  return true;
+               }
+            } else {
+               $this->addToError(__("Login with external token disabled"));
             }
             break;
       }

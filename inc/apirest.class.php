@@ -44,7 +44,7 @@ class APIRest extends API {
    protected $format = "json";
 
 
-   public static function getTitle() {
+   public static function getTypeName($nb=0) {
       return __('Rest API');
    }
 

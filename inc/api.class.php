@@ -35,7 +35,7 @@
 * @brief
 */
 
-abstract class API {
+abstract class API extends CommonGLPI {
 
    // permit writing to $_SESSION
    protected $session_write = false;
@@ -45,6 +45,7 @@ abstract class API {
 
    // first function used on api call
    abstract public function call();
+
 
    // needed to transform params of called api in $this->parameters attribute
    abstract protected function parseIncomingParams();
@@ -80,11 +81,6 @@ abstract class API {
          $this->returnError(__("API disabled"), "", "", false);
          exit;
       }
-   }
-
-
-   public static function getTitle() {
-      return __('API');
    }
 
 
@@ -127,7 +123,8 @@ abstract class API {
 
       // login on glpi
       if (!$auth->Login($params['login'], $params['password'], $noAuto)) {
-         return $this->returnError($auth->getErr(), 401, "ERROR_GLPI_LOGIN");
+         $err = Html::clean($auth->getErr());
+         return $this->returnError($err, 401, "ERROR_GLPI_LOGIN");
       }
 
       // stop session and return session key

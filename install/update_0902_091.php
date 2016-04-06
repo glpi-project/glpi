@@ -306,7 +306,9 @@ function update0902to091() {
 
 
    /************** API Rest *************/
-   Config::setConfigurationValues('core', array('enable_api' => 0));
+   Config::setConfigurationValues('core', array('enable_api'                      => 0));
+   Config::setConfigurationValues('core', array('enable_api_login_credentials'    => 0));
+   Config::setConfigurationValues('core', array('enable_api_login_external_token' => 1));
 
 
 
