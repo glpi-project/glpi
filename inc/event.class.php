@@ -39,6 +39,7 @@ namespace Glpi;
 use \Session;
 use \Html;
 use \Ajax;
+use \Toolbox;
 
 
 if (!defined('GLPI_ROOT')) {
