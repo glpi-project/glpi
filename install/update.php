@@ -589,8 +589,6 @@ function updateDbUpTo031() {
       $glpilanguage    = $configurationValues['language'];
    }
 
-
-
    // To prevent problem of execution time
    ini_set("max_execution_time", "0");
 
@@ -791,9 +789,10 @@ function updateDbUpTo031() {
          update0901to0902();
 
       case "0.90.2" :
-         include("update_0902_091.php");
+         include("update_0902_91.php");
          update0902to091();
 
+      case "0.91": // // for change name of the version - to delete in next version
       case "9.1" :
          break;
 
