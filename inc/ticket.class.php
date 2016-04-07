@@ -1363,8 +1363,8 @@ class Ticket extends CommonITILObject {
       }
 
       // Set additional default dropdown
-      $dropdown_fields = array('users_locations', 'items_locations', 'items_groups');
-      foreach ($dropdown_fields as $field ) {
+      $dropdown_fields = array('users_locations', 'items_locations');
+      foreach ($dropdown_fields as $field) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
          }
