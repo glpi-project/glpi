@@ -6369,6 +6369,10 @@ class Ticket extends CommonITILObject {
          if (isset($item_i['taskcategories_id']) && !empty($item_i['taskcategories_id'])) {
             echo Dropdown::getDropdownName("glpi_taskcategories", $item_i['taskcategories_id'])."<br>";
          }
+         if (isset($item_i['requesttypes_id']) && !empty($item_i['requesttypes_id'])) {
+            echo Dropdown::getDropdownName("glpi_requesttypes", $item_i['requesttypes_id'])."<br>";
+         }
+
          if (isset($item_i['actiontime']) && !empty($item_i['actiontime'])) {
             echo "<span class='actiontime'>";
             echo Html::timestampToString($item_i['actiontime'], false);
