@@ -570,7 +570,9 @@ function update0902to91() {
    Config::setConfigurationValues('core', array('highcontrast_css' => 0));
    $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
 
-
+   // Adding the address and inheritance 
+   $migration->addField("glpi_locations", "address", "text");
+   $migration->addField("glpi_locations", "inheritance", "int(11) DEFAULT 0");
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

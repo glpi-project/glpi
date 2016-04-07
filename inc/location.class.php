@@ -47,9 +47,7 @@ class Location extends CommonTreeDropdown {
    var $can_be_translated  = true;
 
    static $rightname       = 'location';
-
-
-
+   const CONFIG_PARENT                  = 1;
    function getAdditionalFields() {
 
       return array(array('name'  => $this->getForeignKeyField(),
@@ -64,6 +62,18 @@ class Location extends CommonTreeDropdown {
                          'label' => __('Room number'),
                          'type'  => 'text',
                          'list'  => true),
+                   array('name'  => 'address',
+                         'label' => __('Address'),
+                         'type'  => 'textarea',
+                         'list'  => true),
+                   array('name'  => 'inheritance',
+                         'label' => __('Inheritance of the parent entity'),
+                         'type'  => 'bool',
+                         'list'  => true),
+                   array('name'  => 'inheritance_address',
+                         'label' => '',
+                         'type'  => 'link',
+                         'list'  => false),
                    array('name'  => 'longitude',
                          'label' => __('Longitude'),
                          'type'  => 'text',
@@ -78,8 +88,121 @@ class Location extends CommonTreeDropdown {
                          'list'  => true),
                          );
    }
-
-
+   /**
+    * @see CommonDropdown::displaySpecificTypeField()
+   **/
+   function displaySpecificTypeField($ID, $field=array()) {
+      global $CFG_GLPI;
+      switch ($field['type']) {
+         case 'link' :
+            echo "<span id='address_parent'>";
+            $location = new Location();
+            if ($location->getFromDB($ID)) {
+               if (isset($location->fields['inheritance']) && $location->fields['inheritance'] && $location->fields['locations_id'] != 0) {
+                  $ancestors       = getAncestorsOf('glpi_locations', $ID);
+                  $location_parent = new self();
+                  if (count($ancestors) == 0) {
+                     $location_parent->getFromDB($location->fields['locations_id']);
+                     $address = $location_parent->fields['address'];
+                  } else {
+                     $location_parent->getFromDB($location->fields['locations_id']);
+                     $address = $location_parent->fields['address'];
+                     foreach ($ancestors as $ancestor) {
+                        if ($location->getFromDB($ancestor)) {
+                           if (!$location->fields['inheritance']) {
+                              $address = $location->fields['address'];
+                           }
+                        }
+                     }
+                  }
+                  echo $address;
+               }
+            }
+            echo "</span>";
+            $ID = empty($ID)?0:$ID;
+            $root_doc = $CFG_GLPI['root_doc'];
+            echo Html::scriptBlock("
+               var disabledInheritance = function(inheritance, bool){
+               if(bool){
+                  inheritance.select2(\"val\", 0);
+               }
+                  inheritance.prop('disabled', bool);
+               }
+               var load = function(){
+                  var parent = $(\"input[id^='dropdown_locations_id']\");
+                  var inheritance = $(\"select[id^='dropdown_inheritance']\");
+                  if(parent.val() == 0){
+                     disabledInheritance(inheritance, true);
+                  }
+                  parent.on('change', function () {
+                     getAddress(inheritance, parent);
+                     if(parent.val() == 0){
+                        disabledInheritance(inheritance, true);
+                     }else{
+                        disabledInheritance(inheritance, false);
+                     }
+                  });
+                  inheritance.on('change', function () {
+                      getAddress(inheritance, parent);
+                  });
+               }
+               load();
+               
+               var getAddress = function(inheritance, parent){
+                  if(inheritance.val() == 1){
+                     $.ajax({
+                        url:  '$root_doc/ajax/location.php',
+                        type: \"POST\",
+                        dataType: \"html\",
+                        data: {
+                            action: 'loadAddress',
+                            parent: parent.val(),
+                            locations_id: $ID,
+                        },
+                        success: function (response, opts) {
+                           $('span[id=\"address_parent\"]').html(response);
+                        }
+                     });
+                  }else{
+                     $('span[id=\"address_parent\"]').html('');
+                  }
+               }
+           " );
+         break;
+      }
+   }
+   
+   /**
+    * Returns the address of the parent place
+    * @param type $parent
+    * @return type
+    */
+   static function getAddress($parent) {
+      $ancestors = getAncestorsOf('glpi_locations', $parent);
+      $location  = new self();
+      $address   = "";
+      if ($location->getFromDB($parent)) {
+         //if the parent does not allow inheritance
+         if (!$location->fields['inheritance']) {
+            $address = $location->fields['address'];
+         } else {
+            if (count($ancestors) == 0) {
+               $address = $location->fields['address'];
+            } else {
+               $location->getFromDB($parent);
+               $address = $location->fields['address'];
+               foreach ($ancestors as $ancestor) {
+                  if ($location->getFromDB($ancestor)) {
+                     if (!$location->fields['inheritance']) {
+                        $address = $location->fields['address'];
+                     }
+                  }
+               }
+            }
+         }
+      }
+      return $address;
+   }
    static function getTypeName($nb=0) {
       return _n('Location','Locations',$nb);
    }
@@ -111,7 +234,13 @@ class Location extends CommonTreeDropdown {
       $tab[93]['name']          = __('Location comments');
       $tab[93]['massiveaction'] = false;
       $tab[93]['datatype']      = 'text';
-
+      
+      $tab[94]['table']         = 'glpi_locations';
+      $tab[94]['field']         = 'address';
+      $tab[94]['name']          = __('Address');
+      $tab[94]['massiveaction'] = false;
+      $tab[94]['datatype']      = 'specific';
+      $tab[94]['nosearch']      = true;
       return $tab;
    }
 
@@ -153,12 +282,55 @@ class Location extends CommonTreeDropdown {
       $tab[22]['massiveaction'] = false;
       $tab[22]['datatype']      = 'string';
       
+      $tab[23]['table']         = 'glpi_locations';
+      $tab[23]['field']         = 'address';
+      $tab[23]['name']          = __('Address');
+      $tab[23]['massiveaction'] = false;
+      $tab[23]['datatype']      = 'specific';
+      $tab[23]['nosearch']      = true;
       return $tab;
    }
-
-
+   
+   /**
+    * @since version 0.84 
+    *
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
+   static function getSpecificValueToDisplay($field, $values, array $options = array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'address' :
+            if ($values["inheritance"] == self::CONFIG_PARENT) {
+               return __('Inheritance of the parent entity');
+            }
+            if($values["address"] == '0'){
+               return " ";
+            }
+            return $values[$field];
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+   
+   function prepareInputForAdd($input) {
+      if(isset($input['inheritance']) && $input['inheritance'] && isset($input['address'])){
+         $input['address'] = "";
+      }
+      $input = parent::prepareInputForAdd($input);
+      return $input;
+   }
+   
+   function prepareInputForUpdate($input) {
+      if(isset($input['inheritance']) && $input['inheritance'] && isset($input['address'])){
+         $input['address'] = "";
+      }
+      $input = parent::prepareInputForUpdate($input);
+      return $input;
+   }
    function defineTabs($options=array()) {
-
       $ong = parent::defineTabs($options);
       $this->addStandardTab('Netpoint', $ong, $options);
       $this->addStandardTab(__CLASS__,$ong, $options);

@@ -3280,6 +3280,8 @@ CREATE TABLE `glpi_locations` (
   `latitude` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `longitude` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `altitude` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `address` text COLLATE utf8_unicode_ci,
+  `inheritance` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
