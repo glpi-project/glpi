@@ -844,7 +844,10 @@ class Profile extends CommonDBTM {
                               'default_class' => 'tab_bg_2');
 
 
-      $rights = array(array('itemtype'  => 'Contact',
+      $rights = array(array('itemtype'  => 'SoftwareLicense',
+                            'label'     => _n('License', 'Licenses', Session::getPluralNumber()),
+                            'field'     => 'license'),
+                      array('itemtype'  => 'Contact',
                             'label'     => _n('Contact', 'Contacts', Session::getPluralNumber())." / ".
                                            _n('Supplier', 'Suppliers', Session::getPluralNumber()),
                             'field'     => 'contact_enterprise'),

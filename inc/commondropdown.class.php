@@ -189,6 +189,16 @@ abstract class CommonDropdown extends CommonDBTM {
     * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
+      global $DB;
+
+      // if item based on location, create item in the same entity as location
+      if (isset($input['locations_id'])) {
+         foreach ($DB->request("SELECT `entities_id`
+                                FROM `glpi_locations`
+                                WHERE `id` = ".$input['locations_id']) as $data) {
+            $input['entities_id'] = $data['entities_id'];
+         }
+      }
 
       if (isset($input['name'])) {
          // leading/ending space will break findID/import

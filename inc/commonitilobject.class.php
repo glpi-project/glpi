@@ -3364,13 +3364,13 @@ abstract class CommonITILObject extends CommonDBTM {
                       'value'       => $options["_users_id_".$typename],
                       'right'       => $right,
                       'rand'        => $rand,
-                      'ldap_import' => true);
+                      'ldap_import' => true,
+                      'entity'      => $options['entities_id']);
 
       if ($this->userentity_oncreate
           && ($type == CommonITILActor::REQUESTER)) {
          $params['on_change'] = 'this.form.submit()';
-      } else { // Force entity search if needed
-         $params['entity'] = $options['entities_id'];
+         unset($params['entity']);
       }
 
       $params['_user_index'] = 0;
@@ -3977,8 +3977,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
       echo "</div>"; // tab_actors
-
-      echo "<div class='actor_clear'></div>";
    }
 
 

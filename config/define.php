@@ -36,7 +36,7 @@
 */
 
 // Current version of GLPI
-define("GLPI_VERSION","0.91");
+define("GLPI_VERSION","9.1");
 define("GLPI_DEMO_MODE","0");
 
 define("GLPI_USE_CSRF_CHECK", "1");
@@ -197,24 +197,29 @@ $CFG_GLPI["reservation_types"]            = array('Computer', 'Monitor', 'Networ
                                                   'Peripheral', 'Phone', 'Printer', 'Software');
 
 $CFG_GLPI["linkuser_types"]               = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense');
 
 $CFG_GLPI["linkgroup_types"]              = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense');
 
 $CFG_GLPI["linkuser_tech_types"]          = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense');
 
 $CFG_GLPI["linkgroup_tech_types"]         = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense');
 
 $CFG_GLPI["location_types"]               = array('CartridgeItem', 'ConsumableItem', 'Computer',
                                                   'Monitor', 'Netpoint',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'User');
+                                                  'Printer', 'Software', 'User', 'SoftwareLicense');
 
 $CFG_GLPI["ticket_types"]                 = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer', 'Software');
+                                                  'Peripheral', 'Phone', 'Printer', 'Software',
+                                                  'SoftwareLicense');
 
 $CFG_GLPI["link_types"]                   = array('Budget', 'CartridgeItem', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract', 'Monitor',
@@ -245,6 +250,18 @@ $CFG_GLPI['device_types'] = array('DeviceMotherboard', 'DeviceProcessor', 'Devic
                                   'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
                                   'DevicePci', 'DeviceCase', 'DevicePowerSupply');
 
+$CFG_GLPI["itemdevices_types"]            = array('Computer', 'NetworkEquipment', 'Peripheral',
+                                                  'Phone', 'Printer');
+
+$CFG_GLPI["itemdevices_itemaffinity"]     = array('Computer');
+
+$CFG_GLPI["itemdevicesmemory_types"]      = array('Computer', 'NetworkEquipment', 'Peripheral', 'Printer');
+
+$CFG_GLPI["itemdevicepowersupply_types"]  = array('Computer', 'NetworkEquipment');
+
+$CFG_GLPI["itemdevicenetworkcard_types"]  = array('Computer', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer');
+
+
 $CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Change', 'ConsumableItem',
                                                   'Contract', 'Crontask', 'DBConnection',
                                                   'FieldUnicity', 'Infocom', 'MailCollector',
@@ -270,10 +287,12 @@ $CFG_GLPI["rulecollections_types"]        = array('RuleImportEntityCollection',
 // Items which can planned something
 $CFG_GLPI['planning_types']               = array('ChangeTask', 'ProblemTask', 'Reminder',
                                                   'TicketTask', 'ProjectTask');
+$CFG_GLPI['planning_add_types']           = array('Reminder');
 
 $CFG_GLPI["globalsearch_types"]           = array('Computer', 'Contact', 'Document',  'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'Supplier', 'Ticket');
+                                                  'Printer', 'Software', 'Supplier', 'Ticket',
+                                                  'SoftwareLicense');
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;
@@ -300,7 +319,8 @@ $CFG_GLPI['user_pref_field'] = array('backcreated', 'csv_delimiter', 'date_forma
                                      'set_default_requester', 'show_count_on_tabs',
                                      'show_jobs_at_login', 'task_private', 'task_state',
                                      'use_flat_dropdowntree', 'layout', 'ticket_timeline',
-                                     'ticket_timeline_keep_replaced_tabs', 'palette');
+                                     'ticket_timeline_keep_replaced_tabs', 'palette',
+                                     'highcontrast_css');
 
 $CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
                                            "knowbaseitem.php",

@@ -69,7 +69,7 @@ class Event extends \CommonDBTM {
    }
 
    function post_addItem() {
-      //only log in file, important events (connections and critical events; TODO : we need to add a general option to filter this in 0.91)
+      //only log in file, important events (connections and critical events; TODO : we need to add a general option to filter this in 9.1)
       if (isset($this->fields['level']) && $this->fields['level'] <= 3) {
          $message_type = "";
          if (isset($this->fields['type']) && $this->fields['type'] != 'system') {

@@ -520,6 +520,8 @@ class Software extends CommonDBTM {
       $tab[63]['name']           = __('Valid licenses');
       $tab[63]['datatype']       = 'bool';
 
+      $tab+= SoftwareLicense::getSearchOptionsToAdd();
+
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
@@ -593,92 +595,6 @@ class Software extends CommonDBTM {
       $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
-
-      $tab['license']            = _n('License', 'Licenses', Session::getPluralNumber());
-
-      $licjoin       = array();
-      $licjoinexpire = array();
-
-      if (!Session::isCron()
-          && !isCommandLine()) { // no filter for cron
-         $licjoin       = array('jointype'  => 'child',
-                                'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
-                                                                           '', '', true));
-
-         $licjoinexpire = array('jointype'  => 'child',
-                                 'condition' => getEntitiesRestrictRequest(' AND', "NEWTABLE",
-                                                                           '', '', true).
-                                                " AND (NEWTABLE.`expire` IS NULL
-                                                      OR NEWTABLE.`expire` > NOW())");
-      }
-
-      $tab[160]['table']         = 'glpi_softwarelicenses';
-      $tab[160]['field']         = 'name';
-      $tab[160]['name']          = __('License name');
-      $tab[160]['datatype']      = 'dropdown';
-      $tab[160]['forcegroupby']  = true;
-      $tab[160]['massiveaction'] = false;
-      $tab[160]['joinparams']    = $licjoinexpire;
-
-      $tab[161]['table']         = 'glpi_softwarelicenses';
-      $tab[161]['field']         = 'serial';
-      $tab[161]['datatype']      = 'string';
-      $tab[161]['name']          = __('License serial number');
-      $tab[161]['forcegroupby']  = true;
-      $tab[161]['massiveaction'] = false;
-      $tab[161]['joinparams']    = $licjoinexpire;
-
-      $tab[162]['table']         = 'glpi_softwarelicenses';
-      $tab[162]['field']         = 'otherserial';
-      $tab[162]['datatype']      = 'string';
-      $tab[162]['name']          = __('License inventory number');
-      $tab[162]['forcegroupby']  = true;
-      $tab[162]['massiveaction'] = false;
-      $tab[162]['joinparams']    = $licjoinexpire;
-
-      $tab[163]['table']         = 'glpi_softwarelicenses';
-      $tab[163]['field']         = 'number';
-      $tab[163]['name']          = _x('phone', 'Number of licenses');
-      $tab[163]['forcegroupby']  = true;
-      $tab[163]['usehaving']     = true;
-      $tab[163]['datatype']      = 'number';
-      $tab[163]['massiveaction'] = false;
-      $tab[163]['joinparams']    = $licjoinexpire;
-
-      $tab[164]['table']         = 'glpi_softwarelicensetypes';
-      $tab[164]['field']         = 'name';
-      $tab[164]['datatype']      = 'dropdown';
-      $tab[164]['name']          = _n('License type', 'License types', Session::getPluralNumber());
-      $tab[164]['forcegroupby']  = true;
-      $tab[164]['massiveaction'] = false;
-      $tab[164]['joinparams']    = array('beforejoin'
-                                           => array('table'      => 'glpi_softwarelicenses',
-                                                    'joinparams' => $licjoinexpire));
-
-      $tab[165]['table']         = 'glpi_softwarelicenses';
-      $tab[165]['field']         = 'comment';
-      $tab[165]['name']          = __('License comments');
-      $tab[165]['forcegroupby']  = true;
-      $tab[165]['datatype']      = 'text';
-      $tab[165]['massiveaction'] = false;
-      $tab[165]['joinparams']    = $licjoinexpire;
-
-      $tab[166]['table']         = 'glpi_softwarelicenses';
-      $tab[166]['field']         =  'expire';
-      $tab[166]['name']          = __('Expiration');
-      $tab[166]['forcegroupby']  = true;
-      $tab[166]['datatype']      = 'date';
-      $tab[166]['emptylabel']    = __('Never expire');
-      $tab[166]['massiveaction'] = false;
-      $tab[166]['joinparams']    = $licjoinexpire;
-
-      $tab[167]['table']         = 'glpi_softwarelicenses';
-      $tab[167]['field']         =  'is_valid';
-      $tab[167]['name']          = _x('adjective', 'Valid');
-      $tab[167]['forcegroupby']  = true;
-      $tab[167]['datatype']      = 'bool';
-      $tab[167]['massiveaction'] = false;
-      $tab[167]['joinparams']    = $licjoinexpire;
 
       return $tab;
    }

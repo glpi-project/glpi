@@ -208,11 +208,13 @@ $migration->displayWarning("Default GLPI Language: $glpilanguage");
 // To prevent problem of execution time
 ini_set("max_execution_time", "0");
 
-if (version_compare($current_version, GLPI_VERSION, 'ne')
-    && !in_array('--upgrade', $_SERVER['argv'])) {
-   die("Upgrade required\n");
+// for change name of the version - to delete in next version
+if (($current_version != "0.91") && (GLPI_VERSION != 9.1)) {
+   if (version_compare($current_version, GLPI_VERSION, 'ne')
+       && !in_array('--upgrade', $_SERVER['argv'])) {
+      die("Upgrade required\n");
+   }
 }
-
 switch ($current_version) {
    case "0.72.3" :
    case "0.72.4" :
@@ -321,12 +323,17 @@ switch ($current_version) {
       include("../install/update_090_0901.php");
       update090to0901();
 
- case "0.90.1":
-      include("../install/update_0901_091.php");
-      update0901to091();
+    case "0.90.1" :
+      include("../install/update_0901_0902.php");
+      update0901to0902();
+
+   case "0.90.2" :
+      include("../install/update_0902_91.php");
+      update0902to091();
 
    /* remember to also change --force below for last version */
 
+   case "0.91" : // // for change name of the version - to delete in next version
    case GLPI_VERSION :
       break;
 
@@ -348,8 +355,8 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
 } else if (in_array('--force', $_SERVER['argv'])) {
 
-   include("../install/update_0901_091.php");
-   update0901to091();
+   include("../install/update_0902_91.php");
+   update0902to91();
 
    $migration->displayWarning("\nForced migration Done.");
 

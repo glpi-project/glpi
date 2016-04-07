@@ -452,7 +452,8 @@ class RuleAction extends CommonDBChild {
          while ($action = $DB->fetch_assoc($res)) {
             if (isset($actions_options[$action["field"]])
                  && ($action["field"] != 'groups_id_validate')
-                 && ($action["field"] != 'users_id_validate')) {
+                 && ($action["field"] != 'users_id_validate')
+                 && ($action["field"] != 'affectobject')) {
                $actions[$action["field"]] = $action["field"];
             }
          }

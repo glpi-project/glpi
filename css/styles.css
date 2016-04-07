@@ -330,6 +330,10 @@ input {
    vertical-align: middle;
 }
 
+.no-wrap {
+   white-space: nowrap;
+}
+
 .ui-datepicker-trigger {
    cursor: pointer;
 }
@@ -546,24 +550,24 @@ input.save {
    -moz-box-shadow: 0px 1px 1px #7F7979;
    -webkit-box-shadow: 0px 1px 1px #7F7979;
    box-shadow: 0px 1px 1px #7F7979;
-   width: 90% !important;
+   width: 90%;
+}
+
+.ui-tabs-anchor {
+   height: 18px;
 }
 
 .ui-tabs sup.tab_nb {
    border-radius: 50%;
    background-color: #FFF;
-   height: 13px;
-   min-width: 16px;
-   text-align: center;
-   display: inline-block;
-   vertical-align: middle;
-   padding: 3px 2px;
-   margin-bottom: -7px;
+   min-width: 18px;
    margin-left: 5px;
-   position: absolute;
-   right: 3px;
-   top: 3px;
-
+   display: inline-block;
+   text-align: center;
+   vertical-align: top;
+   padding: 3px 2px 5px;
+   box-sizing: border-box;
+   margin-right: -5px;
 }
 
 .ui-tabs .ui-state-active sup.tab_nb {
@@ -605,8 +609,8 @@ input.save {
    box-shadow: 0px 1px 2px 1px #D2D2D2;
 }
 
-.main_form .actor_title, 
-.main_form tr:not(.headerRow)  th:not(.actor-th) {
+.main_form .actor_title,
+.main_form tr:not(.headerRow):not(.footerRow) th:not(.actor-th) {
    text-align: right;
 }
 
@@ -744,7 +748,7 @@ input.save {
    }
    .layout_vsplit.form .main_form textarea {
       resize: vertical;
-      width:98%;
+      width:97%;
       min-height: 125px;
    }
 
@@ -757,12 +761,15 @@ input.save {
       width: 100%;
    }
 
-   .layout_vsplit .debug,
+   .layout_vsplit .debug:not(.debug_ajax),
    .layout_vsplit #footer {
       position: absolute;
       bottom: 0;
       width: 100%;
       z-index: 3;
+   }
+   .layout_vsplit .debug_ajax {
+      width: 100% !important;
    }
 }
 
@@ -1095,7 +1102,7 @@ td.rotate {
 
 .actor-bloc {
    width: 29%;
-   float: left;
+   /*float: left;*/
 }
 
 .actor_title, .actor-bloc {
@@ -1558,40 +1565,234 @@ a.icon_nav_move:hover img {
 
 /* ################--------------- planning  ---------------#################### */
 
-.planning {
-   text-align:center;
-   border:1px dashed #cccccc;
-   background-color: #d7d7d2;
-   font-size:9px;
+#planning_filter {
+   float: left;
+   text-align: left;
+   margin-right: 10px;
+}
+#planning_filter_content {
+   width: 300px;
 }
 
-.planning:hover {
-   border: 1px solid #999999;
-   background-color: white;
+#planning_filter .toggle {
+   float: right;
+   margin: 8px 8px 0 0;
+   height: 18px;
+   width: 18px;
+   display: block;
+   background: url(../pics/toggle-left.png) no-repeat;
 }
 
-.available {
-   background-color: green;
+#planning_filter.folded .toggle {
+   background: url(../pics/toggle-right.png) no-repeat;
 }
 
-.notavailable {
-   background-color: red;
+#planning_filter h3 {
+   background: #e6e6e6;
+   margin: 2px 0 0 0;
+   padding: .5em .5em .5em .7em;
+   font-weight: normal;
+   line-height: 1.3;
+   font-size: 13px;
 }
 
-.partialavailableend {
-   background-image: -webkit-linear-gradient(left, red 50%, green  0%);
-   background-image: -moz-linear-gradient(left, red 50%, green  0%);
-   background-image: -ms-linear-gradient(left, red 50%, green  0%);
-   background-image: -o-linear-gradient(left, red 50%, green  0%);
-   background-image: linear-gradient(left, red 50%, green  0%);
+#planning_filter ul.filters {
+   border: 0;
+   padding: 5px;
+}
+#planning_filter ul.filters > li {
+   clear: both;
+   padding: 5px 0 5px 5px;
 }
 
-.partialavailablebegin {
-   background-image: -webkit-linear-gradient(left, green 50%, red  0%);
-   background-image: -moz-linear-gradient(left, green 50%, red  0%);
-   background-image: -ms-linear-gradient(left, green 50%, red  0%);
-   background-image: -o-linear-gradient(left, green 50%, red  0%);
-   background-image: linear-gradient(left, green 50%, red  0%);
+#planning_filter ul.filters > li:nth-child(even) {
+   background-color: #F3F3F3;
+}
+
+#planning_filter ul.filters > li .form-group-checkbox {
+   margin-right: 6px;
+}
+#planning_filter ul.filters > li .actor_icon {
+   padding-bottom: 2px;
+   vertical-align: middle;
+}
+
+#planning_filter ul.filters > li label {
+   padding-left: 4px;
+   line-height: 16px;
+}
+
+#planning_filter ul.filters > li .filter-icon, 
+#planning_filter ul.filters > li .sp-replacer {
+   float: right;
+   padding: 0;
+   border: none;
+}
+
+#planning_filter ul.filters > li .sp-replacer .sp-preview {
+   margin-right: 0;
+   border: none;
+}
+
+#planning_filter ul.filters > li .sp-replacer .sp-dd {
+   display: none;
+}
+
+#planning_filter ul.filters > li.group_users .toggle {
+   width:14px;
+   height:14px;
+   background: url(../pics/expand.png) no-repeat;
+   display: inline-block;
+   margin-right: 4px;
+   vertical-align: middle;
+   margin-bottom: 2px;
+   float: right;
+}
+
+#planning_filter ul.filters > li.group_users.expanded .toggle {
+   background: url(../pics/collapse.png) no-repeat;
+}
+
+#planning_filter ul.filters > li.group_users ul.group_listofusers {
+   border-left: 1px dashed #D4D4D4;
+   margin: 6px 0 0 6px;
+   padding: 0;
+   display: none;
+}
+
+#planning_filter ul.filters > li.group_users.expanded ul.group_listofusers {
+   display: block;
+}
+
+#planning_filter .planning_link {
+   text-align: center;
+   display: block;
+}
+
+#planning_filter .planning_add_filter {
+   float: right;
+   margin-right: 3px;
+}
+
+#planning_filter .filter_option {
+   float: right;
+   width: 12px;
+   height: 12px;
+   margin: 3px 2px;
+   display: inline-block;
+   position: relative;
+   left:0;
+}
+
+#planning_filter .filter_option > img {
+   z-index: 1;
+}
+
+#planning_filter .filter_option ul {
+   display: none;
+   position: absolute;
+   background: #FFF repeat-x top left;
+   box-shadow: 0px 1px 1px #7F7979;
+   padding: 5px;
+   z-index: 2;
+   left:auto;
+   right:0;
+   top: 15px;
+   margin-right:-10px;
+   width: 140px;
+   text-align: right;
+}
+
+#planning_filter .filter_option ul li {
+   padding: 5px;
+   cursor: pointer;
+   font-size: 13px;
+}
+
+#planning_filter .filter_option ul li:hover {
+   background-color: #EAEAEA;
+}
+
+#planning_filter .filter_option ul li a {
+   color: inherit;
+   font-size: 13px;
+   font-weight: normal;
+}
+
+.planning_on_central .ui-widget-content {
+   border: none;
+}
+
+.planning_on_central .fc-head {
+   display: none;
+}
+
+#planning {
+   width:auto;
+   overflow:hidden;
+}
+
+#planning .fc-toolbar h2 {
+   font-size: 1.2em;
+}
+#planning .fc-toolbar h2 .ui-datepicker-trigger{
+   margin-left: 4px;
+}
+
+#planning .fc-event {
+   font-weight: normal;
+}
+
+#planning .fc-event .fc-content {
+   margin-right: 8px;
+}
+
+
+#planning .fc-event .fc-time {
+   overflow: hidden;
+}
+#planning .fc-event .fc-title {
+   font-weight: bold;
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow : ellipsis;
+}
+
+#planning .fc-event .content {
+   font-weight: normal;
+   padding: 0 7px 0 2px;
+   overflow: hidden;
+   text-overflow : ellipsis;
+}
+
+#planning .fc-event .content .event-description {
+   border-top: 1px solid rgba(0, 0, 0, 0.2);
+   margin-top: 2px;
+   padding-top: 2px;
+}
+#planning .fc-event .content .event-description p {
+   margin: 0;
+}
+
+#planning .fc-event .event_type {
+   position: absolute;
+   width: 7px;
+   bottom: 0;
+   top: 0;
+   right: 0;
+}
+
+#planning .planning-select-helper {
+   border: 2px solid #3B8CBE;
+   background-color: rgba(59, 140, 190, .5);
+}
+
+#planning .fc-day-grid-event .fc-resizer {
+   width: 10px;
+}
+
+#planning .fc-time-grid-event .fc-resizer {
+   height: 10px;
 }
 
 /* ################--------------- Menu navigation  ---------------#################### */
@@ -2404,19 +2605,31 @@ ul#menu ul.ssmenu {
    top: inherit !important;
    height: 300px !important;
    z-index: 100 !important;
+   width: 98%;
 }
 
-.ui-tabs .debug .see_debug{
-   display: none;
-}
-.ui-tabs .debug .ui-tabs {
+.debug_ajax .ui-tabs {
+   position: relative !important;
+   height: inherit !important;
    display: block;
-   position: relative;
+}
+
+#page .debug_ajax div.ui-tabs {
+   width: 98%;
+}
+
+
+.debug_ajax .see_debug{
+   display: none;
 }
 
 .debug .ui-tabs-panel {
    height: 273px;
    overflow: auto;
+}
+
+.debug_ajax .ui-tabs .ui-tabs-panel {
+   height: auto;
 }
 
 .debug .tab_cadre {
@@ -2728,6 +2941,10 @@ ul#menu ul.ssmenu {
 .timeline_history .TicketValidation.status_3:after { border-color: #A1D7A2;}
 .timeline_history .TicketValidation:after          { border-color: #FFFFFF;}
 .timeline_history .TicketValidation.status_4:after { border-color: #D3A4A4;}
+
+.timeline_history .right .h_content p {
+   margin: 2px 0 0;
+}
 
 .timeline_history .private {
    width: 23px;
@@ -3314,6 +3531,12 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    .select2-search,
    .select2-search input {
        display: none !important;
+   }
+
+   #planning_filter {
+      float: none;
+      width: 100%;
+      margin-bottom: 10px;
    }
 }
 

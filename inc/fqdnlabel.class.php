@@ -243,13 +243,18 @@ abstract class FQDNLabel extends CommonDBChild {
          }
       }
 
-      if (count($labels_with_items) == 1) {
-         $label_with_items = current($labels_with_items);
-         $item             = $label_with_items[0];
-         $result           = array("id"       => $item->getID(),
-                                   "itemtype" => $item->getType());
-         unset($labels_with_items);
-         return $result;
+      if (count($labels_with_items)) {
+         // Get the first item that is matching entity
+         foreach ($labels_with_items as $items) {
+            foreach ($items as $item) {
+               if ($item->getEntityID() == $entity) {
+                  $result = array("id"       => $item->getID(),
+                                  "itemtype" => $item->getType());
+                  unset($labels_with_items);
+                  return $result;
+               }
+            }
+         }
       }
 
       return array();

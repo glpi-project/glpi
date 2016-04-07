@@ -179,7 +179,8 @@ class Dropdown {
                  'specific_tags'        => $params['specific_tags'],
                 );
 
-      $output = Html::jsAjaxDropdown($params['name'], $field_id,
+      $output = "<span class='no-wrap'>";
+      $output.= Html::jsAjaxDropdown($params['name'], $field_id,
                                      $params['url'],
                                      $p);
       // Display comment
@@ -244,6 +245,7 @@ class Dropdown {
          echo $output;
          return $params['rand'];
       }
+      $output .= "</span>";
       return $output;
    }
 
@@ -448,8 +450,7 @@ class Dropdown {
     *
     * @param $name            name of the select box
     * @param $types     array of types to display
-    * @param $options   array Already used items ID: not to display in dropdown
-    * Parameters which could be used in options array :
+    * @param $options   Parameters which could be used in options array :
     *    - value               : integer / preselected value (default '')
     *    - used                : array / Already used items ID: not to display in dropdown (default empty)
     *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
@@ -469,23 +470,25 @@ class Dropdown {
       $params['display']             = true;
       $params['width']               = '80%';
       $params['display_emptychoice'] = true;
-
+      $params['rand']         = mt_rand();
+      
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
          }
       }
 
-      $items = array();
+      $values = array();
       if (count($types)) {
          foreach ($types as $type) {
             if ($item = getItemForItemtype($type)) {
-               $items[$type] = $item->getTypeName(1);
+               $values[$type] = $item->getTypeName(1);
             }
          }
       }
-      asort($options);
-      return self::showFromArray($name, $items, $params);
+      asort($values);
+      return self::showFromArray($name, $values,
+                                 $params);
    }
 
 
@@ -1643,6 +1646,8 @@ class Dropdown {
     *    - width               : specific width needed (default not set)
     *    - emptylabel          : empty label if empty displayed (default self::EMPTY_VALUE)
     *    - display_emptychoice : display empty choice (default false)
+    *    - tooltip             : string / message to add as tooltip on the dropdown (default '')
+    *    - option_tooltips     : array / message to add as tooltip on the dropdown options. Use the same keys as for the $elements parameter, but none is mandotary. Missing keys will just be ignored and no tooltip will be added. To add a tooltip on an option group, is the '__optgroup_label' key inside the array describing option tooltips : 'optgroupname1' => array('__optgroup_label' => 'tooltip for option group') (default empty)
     *
     * Permit to use optgroup defining items in arrays
     * array('optgroupname'  => array('key1' => 'val1',
@@ -1654,6 +1659,8 @@ class Dropdown {
 
       $param['value']               = '';
       $param['values']              = array('');
+      $param['tooltip']             = '';
+      $param['option_tooltips']     = array();
       $param['used']                = array();
       $param['readonly']            = false;
       $param['on_change']           = '';
@@ -1690,8 +1697,9 @@ class Dropdown {
          }
       }
 
+      $param['option_tooltips'] = Html::entities_deep($param['option_tooltips']);
+
       if ($param["display_emptychoice"]) {
-         //array_unshift($elements, $param['emptylabel']); // cannot be used as it doesn't preserve keys when they are numbers
          $elements = array( 0 => $param['emptylabel'] ) + $elements ;
       }
 
@@ -1717,6 +1725,10 @@ class Dropdown {
 
          $output  .= "<select name='$field_name' id='$field_id'";
 
+         if($param['tooltip']) {
+            $output .= ' title="'.Html::entities_deep($param['tooltip']).'"';
+         }
+
          if (!empty($param["on_change"])) {
             $output .= " onChange='".$param["on_change"]."'";
          }
@@ -1738,7 +1750,21 @@ class Dropdown {
                if ($max_option_size < strlen($opt_goup)) {
                   $max_option_size = strlen($opt_goup);
                }
-               $output .= "<optgroup label=\"$opt_goup\">";
+
+               $output .= "<optgroup label=\"$opt_goup\"";
+               $optgroup_tooltips = false;
+               if(isset($param['option_tooltips'][$key])) {
+                  if(is_array($param['option_tooltips'][$key])) {
+                     if(isset($param['option_tooltips'][$key]['__optgroup_label'])){
+                        $output .= ' title="'.$param['option_tooltips'][$key]['__optgroup_label'].'"';
+                     }
+                     $optgroup_tooltips = $param['option_tooltips'][$key];
+                  } else {
+                     $output .= ' title="'.$param['option_tooltips'][$key].'"';
+                  }
+               }
+               $output .= ">";
+
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
                      $output .= "<option value='".$key2."'";
@@ -1748,6 +1774,9 @@ class Dropdown {
                            $output .= " selected";
                            break;
                        }
+                     }
+                     if($optgroup_tooltips && isset($optgroup_tooltips[$key2])) {
+                        $output .= ' title="'.$optgroup_tooltips[$key2].'"';
                      }
                      $output .= ">" .  $val2 . "</option>";
                      if ($max_option_size < strlen($val2)) {
@@ -1765,6 +1794,9 @@ class Dropdown {
                         $output .= " selected";
                         break;
                      }
+                  }
+                  if(isset($param['option_tooltips'][$key])) {
+                     $output .= ' title="'.$param['option_tooltips'][$key].'"';
                   }
                   $output .= ">" .$val . "</option>";
                   if ($max_option_size < strlen($val)) {

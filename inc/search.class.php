@@ -2709,6 +2709,7 @@ class Search {
                   if (Session::haveRight("$right", $itemtype::READMY)) {
                      $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
                                     OR $observer_table.users_id = '".Session::getLoginUserID()."'
+                                    OR $assign_table.users_id = '".Session::getLoginUserID()."'
                                     OR `glpi_".$table."`.`users_id_recipient` = '".Session::getLoginUserID()."'";
                   } else {
                      $condition .= "0=1";
@@ -6056,6 +6057,7 @@ class Search {
 
       $value = str_replace("\"", "''", $value);
       $value = Html::clean($value);
+      $value = str_replace("&gt;", ">", $value);
 
       return $value;
    }

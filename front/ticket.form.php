@@ -47,13 +47,6 @@ if (!isset($_GET['id'])) {
 if (isset($_POST["add"])) {
    $track->check(-1, CREATE, $_POST);
 
-   if (isset($_POST["my_items"]) && !empty($_POST["my_items"])) {
-      $splitter = explode("_",$_POST["my_items"]);
-      if (count($splitter) == 2) {
-         $_POST["itemtype"] = $splitter[0];
-         $_POST["items_id"] = $splitter[1];
-      }
-   }
    if ($id = $track->add($_POST)) {
       if ($_SESSION['glpibackcreated']) {
          Html::redirect($track->getFormURL()."?id=".$id);
@@ -192,6 +185,10 @@ if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
 } else {
    Html::header(__('New ticket'),'',"helpdesk","ticket");
    unset($_REQUEST['id']);
+   // Add a ticket from item : format data
+   if (isset($_REQUEST['_add_fromitem'])) {
+      $_REQUEST['items_id'] = array($_REQUEST['itemtype'] => array($_REQUEST['items_id']));
+   }
    $track->display($_REQUEST);
 }
 

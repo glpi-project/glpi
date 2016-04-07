@@ -37,91 +37,74 @@
 
 include ('../inc/includes.php');
 
-header("Content-Type: text/html; charset=UTF-8");
-Html::header_nocache();
-
 Session::checkCentralAccess();
 
-if (isset($_POST["id"]) && ($_POST["id"] > 0)) {
-   echo "<input type='hidden' name='plan[id]' value='".$_POST["id"]."'>";
+if (!isset($_REQUEST["action"])) {
+   exit;
 }
 
-if (isset($_POST["begin"]) && !empty($_POST["begin"])) {
-   $begin = $_POST["begin"];
-
-} else {
-   $minute = (floor(date('i')/10)*10);
-
-   if ($minute < 10) {
-      $minute = '0'.$minute;
-   }
-   $begin = date("Y-m-d H").":$minute:00";
+if ($_REQUEST["action"] == "get_events") {
+   header("Content-Type: application/json; charset=UTF-8");
+   echo json_encode(Planning::constructEventsArray($_REQUEST));
+   exit;
 }
 
-if (isset($_POST["end"]) && !empty($_POST["end"])) {
-   $end = $_POST["end"];
-
-} else {
-   $end = date("Y-m-d H:i:s",strtotime($begin)+HOUR_TIMESTAMP);
+if ($_REQUEST["action"] == "update_event_times") {
+   echo Planning::updateEventTimes($_REQUEST);
+   exit;
 }
 
-echo "<table class='tab_cadre'>";
+Html::header_nocache();
+header("Content-Type: text/html; charset=UTF-8");
 
-echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
-$rand_begin = Html::showDateTimeField("plan[begin]",
-                                      array('value'      => $begin,
-                                            'timestep'   => -1,
-                                            'maybeempty' => false,
-                                            'canedit'    => true,
-                                            'mindate'    => '',
-                                            'maxdate'    => '',
-                                            'mintime'    => $CFG_GLPI["planning_begin"],
-                                            'maxtime'    => $CFG_GLPI["planning_end"]));
-echo "</td></tr>\n";
-
-echo "<tr class='tab_bg_2'><td>".__('Period')."&nbsp;";
-
-if (isset($_POST["rand_user"])) {
-   echo "<span id='user_available".$_POST["rand_user"]."'>";
-   include_once(GLPI_ROOT.'/ajax/planningcheck.php');
-   echo "</span>";
+if ($_REQUEST["action"] == "add_event_fromselect") {
+   Planning::showAddEventForm($_REQUEST);
 }
 
-echo "</td><td>";
-
-$default_delay = floor((strtotime($end)-strtotime($begin))/15/MINUTE_TIMESTAMP)*15*MINUTE_TIMESTAMP;
-
-$rand = Dropdown::showTimeStamp("plan[_duration]", array('min'        => 0,
-                                                         'max'        => 50*HOUR_TIMESTAMP,
-                                                         'value'      => $default_delay,
-                                                         'emptylabel' => __('Specify an end date')));
-echo "<br><div id='date_end$rand'></div>";
-
-$params = array('duration'     => '__VALUE__',
-                'end'          => $end,
-                'name'         => "plan[end]",
-                'global_begin' => $CFG_GLPI["planning_begin"],
-                'global_end'   => $CFG_GLPI["planning_end"]);
-
-Ajax::updateItemOnSelectEvent("dropdown_plan[_duration]$rand", "date_end$rand",
-                              $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
-
-if ($default_delay == 0) {
-   $params['duration'] = 0;
-  Ajax::updateItem("date_end$rand", $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
+if ($_REQUEST["action"] == "add_event_sub_form") {
+   Planning::showAddEventSubForm($_REQUEST);
 }
 
-echo "</td></tr>\n";
-
-if ((!isset($_POST["id"]) || ($_POST["id"] == 0))
-    && isset($_POST['itemtype'])
-    && PlanningRecall::isAvailable()) {
-   echo "<tr class='tab_bg_2'><td>"._x('Planning','Reminder')."</td><td>";
-   PlanningRecall::dropdown(array('itemtype' => $_POST['itemtype'],
-                                  'items_id' => $_POST['items_id']));
-   echo "</td></tr>";
+if ($_REQUEST["action"] == "add_planning_form") {
+   Planning::showAddPlanningForm();
 }
-echo "</table>\n";
+
+if ($_REQUEST["action"] == "add_user_form") {
+   Planning::showAddUserForm();
+}
+
+if ($_REQUEST["action"] == "add_group_users_form") {
+   Planning::showAddGroupUsersForm();
+}
+
+if ($_REQUEST["action"] == "add_group_form") {
+   Planning::showAddGroupForm();
+}
+
+if ($_REQUEST["action"] == "add_event_classic_form") {
+   Planning::showAddEventClassicForm($_REQUEST);
+}
+
+if ($_REQUEST["action"] == "edit_event_form") {
+   Planning::editEventForm($_REQUEST);
+}
+
+if ($_REQUEST["action"] == "get_filters_form") {
+   Planning::showPlanningFilter();
+}
+
+if ($_REQUEST["action"] == "toggle_filter") {
+   Planning::toggleFilter($_REQUEST);
+}
+
+if ($_REQUEST["action"] == "color_filter") {
+   Planning::colorFilter($_REQUEST);
+}
+
+if ($_REQUEST["action"] == "delete_filter") {
+   Planning::deleteFilter($_REQUEST);
+}
 
 Html::ajaxFooter();
+
 ?>

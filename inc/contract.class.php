@@ -1260,6 +1260,7 @@ class Contract extends CommonDBTM {
 
       $group  = '';
       $prev   = -1;
+      $values = array();
       while ($data = $DB->fetch_assoc($result)) {
          if ($p['nochecklimit']
              || ($data["max_links_allowed"] == 0)

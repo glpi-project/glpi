@@ -245,6 +245,9 @@ class RuleTicket extends Rule {
                   if ($action->fields['field'] == 'locations_id' && isset($output['items_locations'])) {
                      $output['locations_id'] = $output['items_locations'];
                   }
+                  if ($action->fields['field'] == 'groups_id' && isset($output['items_groups'])) {
+                     $output['groups_id'] = $output['items_groups'];
+                  }
                   break;
 
                case 'compute' :
@@ -288,8 +291,7 @@ class RuleTicket extends Rule {
                         $result = array();
                   }
                   if (!empty($result)) {
-                     $output["itemtype"] = $result["itemtype"];
-                     $output["items_id"] = $result["id"];
+                     $output["items_id"][$result["itemtype"]][] = $result["id"];
                   }
                   break;
             }
@@ -363,7 +365,13 @@ class RuleTicket extends Rule {
       $criterias['items_locations']['name']                 = __('Item location');
       $criterias['items_locations']['linkfield']            = 'items_locations';
       $criterias['items_locations']['type']                 = 'dropdown';
-
+      
+      $criterias['items_groups']['table']                   = 'glpi_groups';
+      $criterias['items_groups']['field']                   = 'completename';
+      $criterias['items_groups']['name']                    = __('Item group');
+      $criterias['items_groups']['linkfield']               = 'items_groups';
+      $criterias['items_groups']['type']                    = 'dropdown';
+      
       $criterias['locations_id']['table']                   = 'glpi_locations';
       $criterias['locations_id']['field']                   = 'completename';
       $criterias['locations_id']['name']                    = __('Ticket location');
@@ -478,7 +486,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_requester']['type']              = 'dropdown';
       $actions['_groups_id_requester']['table']             = 'glpi_groups';
       $actions['_groups_id_requester']['condition']         = '`is_requester`';
-      $actions['_groups_id_requester']['force_actions']     = array('assign', 'append');
+      $actions['_groups_id_requester']['force_actions']     = array('assign', 'append', 'fromitem');
       $actions['_groups_id_requester']['permitseveral']     = array('append');
       $actions['_groups_id_requester']['appendto']          = '_additional_groups_requesters';
 
