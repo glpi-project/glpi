@@ -3365,7 +3365,8 @@ abstract class CommonITILObject extends CommonDBTM {
                       'right'       => $right,
                       'rand'        => $rand,
                       'ldap_import' => true,
-                      'entity'      => $options['entities_id']);
+                      'entity'      => (isset($options['entities_id'])
+                                        ? $options['entities_id']: $options['entity_restrict']));
 
       if ($this->userentity_oncreate
           && ($type == CommonITILActor::REQUESTER)) {
