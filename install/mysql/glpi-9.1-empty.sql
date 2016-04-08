@@ -1034,8 +1034,8 @@ INSERT INTO `glpi_configs` VALUES ('163','core','lock_lockprofile_id','8');
 INSERT INTO `glpi_configs` VALUES ('164','core','set_default_requester','1');
 INSERT INTO `glpi_configs` VALUES ('165','core','highcontrast_css','0');
 INSERT INTO `glpi_configs` VALUES ('166','core','enable_api','0');
-INSERT INTO `glpi_configs` VALUES ('166','core','enable_api_login_credentials','0');
-INSERT INTO `glpi_configs` VALUES ('166','core','enable_api_login_external_token','1');
+INSERT INTO `glpi_configs` VALUES ('167','core','enable_api_login_credentials','0');
+INSERT INTO `glpi_configs` VALUES ('168','core','enable_api_login_external_token','1');
 
 ### Dump table glpi_consumableitems
 
