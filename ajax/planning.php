@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -45,17 +45,15 @@ Session::checkCentralAccess();
 if (isset($_POST["id"]) && ($_POST["id"] > 0)) {
    echo "<input type='hidden' name='plan[id]' value='".$_POST["id"]."'>";
 }
-
+toolbox::logdebug("post", $_POST);
 if (isset($_POST["begin"]) && !empty($_POST["begin"])) {
    $begin = $_POST["begin"];
 
 } else {
-   $minute = (floor(date('i')/10)*10);
-
-   if ($minute < 10) {
-      $minute = '0'.$minute;
-   }
-   $begin = date("Y-m-d H").":$minute:00";
+   $ts = $CFG_GLPI['time_step'] * 60 ; // passage en minutes
+   $time = time() + $ts - 60;
+   $time = floor($time / $ts) * $ts;
+   $begin = date("Y-m-d H:i", $time);
 }
 
 if (isset($_POST["end"]) && !empty($_POST["end"])) {
