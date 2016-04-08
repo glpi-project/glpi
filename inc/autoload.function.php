@@ -277,10 +277,23 @@ function glpi_autoload($classname) {
       die("Security die. trying to load an forbidden class name");
    }
 
-   
-   
+
    $dir = GLPI_ROOT . "/inc/";
-   if ($plug = isPluginItemType($classname)) {
+
+   if (strstr($classname, '\\')) {
+      $ns = explode('\\', $classname);
+      if ($ns[0] == 'Glpi') {
+         /* Glpi\Event => /inc/events.class.php */
+         unset($ns[0]);
+
+      } else if (count($ns) > 2 && $ns[0] == 'Plugin') {
+         /* Plugin\Foo\Bar => /plugins/foo/inc/bar.class.php */
+         $dir = GLPI_ROOT . "/plugins/".strtolower($ns[1])."/inc/";
+         unset($ns[0], $ns[1]);
+      }
+      $item = strtolower(implode('/', $ns));
+
+   } else if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
       $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
       $item     = strtolower($plug['class']);
@@ -299,29 +312,27 @@ function glpi_autoload($classname) {
             return false;
          }
       }
-
    } else {
-      // Is ezComponent class ?
-      if (preg_match('/^ezc([A-Z][a-z]+)/',$classname,$matches)) {
-         include_once(GLPI_EZC_BASE);
-         ezcBase::autoload($classname);
-         return true;
-      }
-
-      // Do not try to load phpcas using GLPI autoload
-      if (preg_match('/^CAS_.*/', $classname)) {
-         return false;
-      }
-      // Do not try to load Zend using GLPI autoload
-      if (preg_match('/^Zend.*/', $classname)) {
-         return false;
-      }
-      // Do not try to load Simplepie using GLPI autoload
-      if (preg_match('/^SimplePie.*/', $classname)) {
-         return false;
-      }
-
       $item = strtolower($classname);
+   }
+   // Is ezComponent class ?
+   if (preg_match('/^ezc([A-Z][a-z]+)/',$classname,$matches)) {
+      include_once(GLPI_EZC_BASE);
+      ezcBase::autoload($classname);
+      return true;
+   }
+
+   // Do not try to load phpcas using GLPI autoload
+   if (preg_match('/^CAS_.*/', $classname)) {
+      return false;
+   }
+   // Do not try to load Zend using GLPI autoload
+   if (preg_match('/^Zend.*/', $classname)) {
+      return false;
+   }
+   // Do not try to load Simplepie using GLPI autoload
+   if (preg_match('/^SimplePie.*/', $classname)) {
+      return false;
    }
 
    if (file_exists("$dir$item.class.php")) {

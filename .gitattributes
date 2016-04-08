@@ -2,4 +2,6 @@
 .gitignore export-ignore
 .tx export-ignore
 tools/ export-ignore
+tests/ export-ignore
+phpunit.xml.dist export-ignore
 pics/logos/*.eps export-ignore
