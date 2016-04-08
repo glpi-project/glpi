@@ -321,8 +321,8 @@ class Toolbox {
    **/
    static function clean_cross_side_scripting_deep($value) {
 
-      $in  = array('&lt;', '&gt;', '<', '>');
-      $out = array('&amp;lt;', '&amp;gt;', '&lt;', '&gt;');
+      $in  = array('<', '>');
+      $out = array('&lt;', '&gt;');
 
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'), $value)
@@ -345,8 +345,8 @@ class Toolbox {
    **/
    static function unclean_cross_side_scripting_deep($value) {
 
-      $in  = array('&lt;', '&gt;', '<', '>');
-      $out = array('&amp;lt;', '&amp;gt;', '&lt;', '&gt;');
+      $in  = array('<', '>');
+      $out = array('&lt;', '&gt;');
 
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'), $value)
@@ -1829,7 +1829,7 @@ class Toolbox {
              && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
             $decoded_where = rawurldecode($where);
             // redirect to URL : URL must be rawurlencoded
-            if ($link = preg_match('/https?:\/\/.+/',$decoded_where)) {
+            if ($link = preg_match('/(https?:\/\/[^\/]+)\/.+/',$decoded_where, $matches)) {
                if($matches[1] !== $CFG_GLPI['url_base']) {
                   Session::addMessageAfterRedirect('Redirection failed');
                   if($_SESSION["glpiactiveprofile"]["interface"] === "helpdesk") {

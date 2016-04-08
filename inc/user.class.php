@@ -3039,6 +3039,12 @@ class User extends CommonDBTM {
                                                              $entity_restrict, 1).") ";
                      break;
 
+                  case 'faq' :
+                     $where[]= " (`glpi_profilerights`.`name` = 'knowbase'
+                                  AND (`glpi_profilerights`.`rights` & ".KnowbaseItem::READFAQ.") ".
+                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                             $entity_restrict, 1).") ";
+
                   default :
                      // Check read or active for rights
                      $where[]= " (`glpi_profilerights`.`name` = '".$r."'
@@ -3712,6 +3718,15 @@ class User extends CommonDBTM {
             $tmp['is_active'] = 0;
             $myuser->update($tmp);
             break;
+
+         //Deactivate the user+ Delete all user dynamic habilitations and groups
+         case 4:
+            $tmp['is_active'] = 0;
+            $myuser->update($tmp);
+            Profile_User::deleteRights($users_id, true);
+            Group_User::deleteGroups($users_id, true);
+            break;
+
       }
       /*
       $changes[0] = '0';

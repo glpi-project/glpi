@@ -33,7 +33,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 
 /** @file
  * @brief
- * @since version 0.91
+ * @since version 9.1
  */
 
 // here we are going to try to unlock the given object

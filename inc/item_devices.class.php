@@ -177,7 +177,8 @@ class Item_Devices extends CommonDBRelation {
     * @return array of the itemtype that can have this Item_Device
    **/
    static function itemAffinity() {
-      return array('Computer');
+      global $CFG_GLPI;
+      return $CFG_GLPI["itemdevices_itemaffinity"];
    }
 
 
@@ -243,7 +244,8 @@ class Item_Devices extends CommonDBRelation {
     * @return array of the available items
    **/
    static function getConcernedItems() {
-      return array('Computer', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer');
+      global $CFG_GLPI;
+      return $CFG_GLPI["itemdevices_types"];
    }
 
 

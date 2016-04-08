@@ -2,3 +2,5 @@
 .gitignore export-ignore
 .tx export-ignore
 tools/ export-ignore
+pics/logos/*.eps export-ignore
+ISSUE_TEMPLATE.md export-ignore

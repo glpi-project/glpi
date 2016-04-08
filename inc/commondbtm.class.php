@@ -1954,7 +1954,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $options      array
     *
@@ -1995,11 +1995,12 @@ class CommonDBTM extends CommonGLPI {
          echo "</th>";
       }
 
-      echo "<th colspan='$colspan'>";
-      //TRANS: %s is the datetime of update
-      printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-      echo "</th>";
-      
+      if ($date_mod_exists) {
+         echo "<th colspan='$colspan'>";
+         //TRANS: %s is the datetime of update
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+         echo "</th>";
+      }
 
       if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
           && !empty($this->fields['template_name'])) {
@@ -4394,7 +4395,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Generate link
     *
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $link    string   original string content
     * @param $item             CommonDBTM object: item used to make replacements

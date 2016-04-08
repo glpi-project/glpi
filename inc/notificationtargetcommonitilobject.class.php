@@ -652,9 +652,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.description##"]  = $item->getField('content');
       $datas["##$objettype.id##"]           = sprintf("%07d", $item->getField("id"));
 
-      $datas["##$objettype.url##"]
+      if ($_SESSION['glpiticket_timeline'] == 1) {
+         $datas["##$objettype.url##"]
+                           = $this->formatURL($options['additionnaloption']['usertype'],
+                                              $objettype."_".$item->getField("id")."_".
+                                                         $item->getType().'$1');
+      } else {
+         $datas["##$objettype.url##"]
                            = $this->formatURL($options['additionnaloption']['usertype'],
                                               $objettype."_".$item->getField("id"));
+      }
 
       $tab = '$2';
       if ($_SESSION['glpiticket_timeline'] == 1) {

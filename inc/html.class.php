@@ -50,38 +50,50 @@ class Html {
     * Clean display value deleting html tags
     *
     * @param $value string: string value
-    *
+    * @param $striptags bool: strip all html tags
+    * @param $keep_bad int:
+    *          1 : neutralize tag anb content,
+    *          2 : remove tag and neutralize content
     * @return clean value
    **/
-   static function clean($value) {
-
-      $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-      $specialfilter = array('@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, '', $value);
-
-      $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
-      $value = preg_replace("/(&nbsp;| )+/", " ", $value);
-
-
-      $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                             '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
-                             '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
-                              );
-
-      $value = preg_replace($search, '', $value);
+   static function clean($value, $striptags=true, $keep_bad=2) {
 
       include_once(GLPI_HTMLAWED);
 
-      $value = htmLawed($value, array('elements' => 'none',
-                                      'keep_bad' => 2, // remove tag / neutralize content
+      $value = Html::entity_decode_deep($value);
+
+      // Clean MS office tags
+      $value = str_replace(array("<![if !supportLists]>", "<![endif]>"), '', $value);
+
+      if ($striptags) {
+         $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+         $specialfilter = array('@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         $value         = preg_replace($specialfilter, '', $value);
+
+         $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
+         $value = preg_replace("/(&nbsp;| )+/", " ", $value);
+
+
+         $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
+                                '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
+                                '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
+                                 );
+
+         $value = preg_replace($search, '', $value);
+      }
+
+      $value = htmLawed($value, array('elements' => ($striptags) ? 'none' : '',
+                                      'keep_bad' => $keep_bad, // 1 : neutralize tag and content, 2 : remove tag and neutralize content
                                       'comment' => 1, // DROP
                                       'cdata'   => 1, // DROP
                                       ));
+
+      $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
 
 /*
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
@@ -205,7 +217,7 @@ class Html {
     * @return clean string
    **/
    static function cleanInputText($string) {
-      return preg_replace('/\"/', '&quot;', $string);
+      return preg_replace( '/\'/', '&apos;', preg_replace('/\"/', '&quot;', $string));
    }
 
 
@@ -597,6 +609,23 @@ class Html {
 
       // Clean message
       $_SESSION["MESSAGE_AFTER_REDIRECT"] = "";
+   }
+
+
+   static function displayAjaxMessageAfterRedirect() {
+      global $CFG_GLPI;
+
+      echo Html::scriptBlock("
+      displayAjaxMessageAfterRedirect = function() {
+         // attach MESSAGE_AFTER_REDIRECT to body
+         $('#message_after_redirect').remove();
+         $.ajax({
+            url:  '".$CFG_GLPI['root_doc']."/ajax/displayMessageAfterRedirect.php',
+            success: function(html) {
+               $('body').append(html);
+            }
+         });
+      }");
    }
 
 
@@ -1066,10 +1095,20 @@ class Html {
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/css/style.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.css",
+                     array('media' => ''));
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.print.css",
+                     array('media' => 'print'));
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
 
       //  CSS link
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
+
+      // High constrast CSS link
+      if (isset($_SESSION['glpihighcontrast_css'])
+         && $_SESSION['glpihighcontrast_css']) {
+         echo Html::css($CFG_GLPI["root_doc"]."/css/highcontrast.css");
+      }
 
       // CSS theme link
       if (isset($_SESSION["glpipalette"])) {
@@ -1128,6 +1167,8 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum-min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/lib/moment.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.js");
 
       // layout
       if (CommonGLPI::isLayoutWithMain()
@@ -1137,7 +1178,9 @@ class Html {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js");
       }
 
+      //locales for js library
       if (isset($_SESSION['glpilanguage'])) {
+         // jquery ui
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
          $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
@@ -1145,7 +1188,16 @@ class Html {
          if (file_exists(GLPI_ROOT.$filename)) {
             echo Html::script($CFG_GLPI["root_doc"].$filename);
          }
+
+         // select2
          $filename = "/lib/jqueryplugins/select2/select2_locale_".
+                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
+         if (file_exists(GLPI_ROOT.$filename)) {
+            echo Html::script($CFG_GLPI["root_doc"].$filename);
+         }
+
+         //fullcalendar
+         $filename = "/lib/jqueryplugins/fullcalendar/lang/".
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
          if (file_exists(GLPI_ROOT.$filename)) {
             echo Html::script($CFG_GLPI["root_doc"].$filename);
@@ -1156,6 +1208,9 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"].'/script.js');
       self::redefineAlert();
       self::redefineConfirm();
+
+      // add Ajax display message after redirect
+      Html::displayAjaxMessageAfterRedirect();
 
       // Add specific javascript for plugins
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
@@ -2668,7 +2723,7 @@ class Html {
       }
 
       $out .= ">";
-      $out .= "<label class='label-checkbox' title='".$params['title']."' for='".$params['id']."'>";
+      $out .= "<label class='label-checkbox' title=\"".$params['title']."\" for='".$params['id']."'>";
       $out .= " <span class='check'></span>";
       $out .= " <span class='box'></span>";
       $out .= "&nbsp;";
@@ -4587,7 +4642,8 @@ class Html {
                      return text;
                   },
                   formatResult: function (result, container) {
-                     return $('<div>', {title: result.title}).text(result.text);
+                     container.attr('title', result.title || result.element[0].title);
+                     return result.text;
                   }
 
              });";
@@ -4659,6 +4715,7 @@ class Html {
                         ajax: {
                            url: '$url',
                            dataType: 'json',
+                           type: 'POST',
                            data: function (term, page) {
                               return { ";
       foreach ($params as $key => $val) {
@@ -4701,6 +4758,7 @@ class Html {
 
          $js .= "            _one_id: id},
                                  dataType: 'json',
+                                 type: 'POST',
                                  }).done(function(data) { callback(data); });
                               }
                            }
@@ -5575,11 +5633,49 @@ class Html {
    }
 
 
+
+   /**
+    * This function provides a mecanism to send html form by ajax
+    *
+    * @since version 9.1
+   **/
+   static function ajaxForm($selector, $success = "console.log(html);") {
+      echo Html::scriptBlock("
+      $(document).ready(function() {
+         var lastClicked = null;
+         $('input[type=submit]').click(function(e) {
+            e = e || event;
+            lastClicked = e.target || e.srcElement;
+         });
+
+         $('$selector').on('submit', function(e) {
+            e.preventDefault();
+            var form = $(this);
+            var formData = form.closest('form').serializeArray();
+            //push submit button
+            formData.push({
+               name: $(lastClicked).attr('name'),
+               value: $(lastClicked).val()
+            });
+
+            $.ajax({
+               url: form.attr('action'),
+               type: form.attr('method'),
+               data: formData,
+               success: function(html) {
+                  $success
+               }
+            });
+         });
+      });
+      ");
+   }
+
    /**
     * In this function, we redefine 'window.alert' javascript function
     * by a jquery-ui dialog equivalent (but prettier).
     *
-    * @since version 0.91
+    * @since version 9.1
    **/
    static function redefineAlert() {
 
@@ -5614,7 +5710,7 @@ class Html {
     * browser waiting an answer from user, but that this is emulating the confirm behaviour
     * by using callbacks functions when user presses 'Yes' or 'No' buttons.
     *
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $msg            string      message to be shown
     * @param $title          string      title for dialog box
@@ -5655,7 +5751,7 @@ class Html {
     * We manage this behavior with a global variable 'confirmed' who watchs the acceptation of dialog.
     * In this case, we trigger a new click on element to return the value (and without display dialog)
     *
-    * @since version 0.91
+    * @since version 9.1
    */
    static function redefineConfirm() {
 
@@ -5724,7 +5820,7 @@ class Html {
     * browser waiting an answer from user, but that this is emulating the alert behaviour
     * by using a callback function when user presses 'Ok' button.
     *
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $msg          string   message to be shown
     * @param $title        string   title for dialog box
@@ -5750,6 +5846,5 @@ class Html {
          }).text('".Toolbox::addslashes_deep($msg)."');
          " ;
    }
-
 }
 ?>

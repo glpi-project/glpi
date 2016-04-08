@@ -3389,13 +3389,14 @@ abstract class CommonITILObject extends CommonDBTM {
                       'value'       => $options["_users_id_".$typename],
                       'right'       => $right,
                       'rand'        => $rand,
-                      'ldap_import' => true);
+                      'ldap_import' => true,
+                      'entity'      => (isset($options['entities_id'])
+                                        ? $options['entities_id']: $options['entity_restrict']));
 
       if ($this->userentity_oncreate
           && ($type == CommonITILActor::REQUESTER)) {
          $params['on_change'] = 'this.form.submit()';
-      } else { // Force entity search if needed
-         $params['entity'] = $options['entities_id'];
+         unset($params['entity']);
       }
 
       $params['_user_index'] = 0;
@@ -4332,8 +4333,7 @@ abstract class CommonITILObject extends CommonDBTM {
 //             return true;
 //          }
 //       }
-      if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
-          && $itemtype::canView()) {
+      if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
          return true;
       }
       return false;

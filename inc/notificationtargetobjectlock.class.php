@@ -33,7 +33,7 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 
 /** @file
  * @brief
- * @since version 0.91
+ * @since version 9.1
  */
 
 if (!defined('GLPI_ROOT')) {
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
  *
  * Notifications for ObjectLock
  *
- * @since version 0.91
+ * @since version 9.1
 **/
 class NotificationTargetObjectLock extends NotificationTarget {
 
