@@ -142,11 +142,6 @@ if (!defined("GLPI_PARSEDOWN_DIR")) {
    define("GLPI_PARSEDOWN_DIR", GLPI_ROOT."/lib/parsedown");
 }
 
-// Default parsedown installation dir
-if (!defined("GLPI_PRISM_DIR")) {
-   define("GLPI_PRISM_DIR", GLPI_ROOT."/lib/prism");
-}
-
 // Default EZ Components path to base.php
 if (!defined("GLPI_EZC_BASE")) {
    //define("GLPI_EZC_BASE", GLPI_ROOT."/lib/ezcomponents/Base/src/base.php");
