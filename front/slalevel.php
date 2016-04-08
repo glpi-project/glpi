@@ -37,34 +37,11 @@
 
 include ('../inc/includes.php');
 
-Session::checkLoginUser();
+Session::checkRight("sla", READ);
 
-// Manage tabs
-if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
-   if ($item = getItemForItemtype($_GET['itemtype'])) {
-   
-      if (isset($_GET['id']) && !$item->isNewID($_GET['id'])) {
-         $item->getFromDB($_GET['id']);
-      }
+Html::header(SlaLevel::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "sla", "slalevel");
 
-      $tabs         = $item->defineAllTabs();
-      if (isset($tabs['no_all_tab'])) {
-         unset($tabs['no_all_tab']);
-      }
-      // Add all tab
-      $tabs[-1]     = 'All';
-      $selected_tab = '';
-      $current      = 0;
-      foreach ($tabs as $key => $val) {
-         if ($current == $_GET['tab']) {
-            $selected_tab = $key;
-         }
-         $current++;
-      }
-      if (!empty($selected_tab)) {
-         Session::setActiveTab($_GET['itemtype'], $selected_tab);
-      }
+Search::show('SlaLevel');
 
-   }
-}
+Html::footer();
 ?>

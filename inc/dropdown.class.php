@@ -179,7 +179,8 @@ class Dropdown {
                  'specific_tags'        => $params['specific_tags'],
                 );
 
-      $output = Html::jsAjaxDropdown($params['name'], $field_id,
+      $output = "<span class='no-wrap'>";
+      $output.= Html::jsAjaxDropdown($params['name'], $field_id,
                                      $params['url'],
                                      $p);
       // Display comment
@@ -244,6 +245,7 @@ class Dropdown {
          echo $output;
          return $params['rand'];
       }
+      $output .= "</span>";
       return $output;
    }
 
@@ -1692,7 +1694,6 @@ class Dropdown {
       }
 
       if ($param["display_emptychoice"]) {
-         //array_unshift($elements, $param['emptylabel']); // cannot be used as it doesn't preserve keys when they are numbers
          $elements = array( 0 => $param['emptylabel'] ) + $elements ;
       }
 

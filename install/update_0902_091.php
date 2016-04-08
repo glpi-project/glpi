@@ -40,7 +40,7 @@
  *
  * @return bool for success (will die for most error)
 **/
-function update0901to091() {
+function update0902to091() {
    global $DB, $migration, $CFG_GLPI;
 
    $updateresult     = true;
@@ -72,7 +72,7 @@ function update0901to091() {
    $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Object Locks'));
 
 
-   /************** Lock Objects ************ */
+   /************** Lock Objects *************/
    if (!TableExists('glpi_objectlocks')) {
       $query = "CREATE TABLE `glpi_objectlocks` (
                  `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -271,12 +271,12 @@ function update0901to091() {
 
 
 
-   /************** Default Requester ************ */
+   /************** Default Requester *************/
    Config::setConfigurationValues('core', array('set_default_requester' => 1));
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
 
-   /************** Task's templates ************ */
+   /************** Task's templates *************/
    if (!TableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -296,13 +296,13 @@ function update0901to091() {
       $DB->queryOrDie($query, "0.91 add table glpi_tasktemplates");
    }
 
-   /************** Installation date for softwares ************ */
+   /************** Installation date for softwares *************/
    $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
    $migration->addKey("glpi_computers_softwareversions", "date_install");
 
 
 
-   /************** Date mod/creation for itemtypes */
+   /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
    $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
                   'SoftwareLicense', 'Peripheral', 'NetworkEquipment', 'User', 'Group', 'Entity',
@@ -346,6 +346,7 @@ function update0901to091() {
          $migration->migrationOneTable($table);
       }
    }
+
 
    /************** Enhance Associated items for ticket ***************/
    // TEMPLATE UPDATE
@@ -439,7 +440,8 @@ function update0901to091() {
       }
    }
 
-   $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
+   /************** Add more fields to software licenses */
+   $new = $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
    $migration->addField("glpi_softwarelicenses", "locations_id", "integer");
    $migration->addField("glpi_softwarelicenses", "users_id_tech", "integer");
    $migration->addField("glpi_softwarelicenses", "users_id", "integer");
@@ -457,10 +459,26 @@ function update0901to091() {
    $migration->addKey("glpi_softwarelicenses", "is_deleted");
    $migration->addKey("glpi_softwarelicenses", "is_template");
 
-   // ************ Keep it at the end **************
-   $migration->executeMigration();
+   if ($new) {
+      //new right for software license
+      //copy the software right value to the new license right
+      foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {
+         $query = "INSERT INTO `glpi_profilerights` (`id`, `profiles_id`, `name`, `rights`)
+                   VALUES (NULL, '".$profrights['profiles_id']."', 'license',
+                           '".$profrights['rights']."')";
+         $DB->queryOrDie($query, "0.91 add right for softwarelicense");
+      }
+   }
 
-   // ************ Keep it at the end **************
+   //new right for survey
+   foreach ($DB->request("glpi_profilerights", "`name` = 'ticket'") as $profrights) {
+      $query = "UPDATE `glpi_profilerights`
+                SET `rights` = `rights` | " . Ticket::SURVEY ."
+                WHERE `profiles_id` = '".$profrights['profiles_id']."'
+                       AND `name` = 'ticket'";
+      $DB->queryOrDie($query, "0.91 update ticket with survey right");
+   }
+
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
@@ -510,6 +528,73 @@ function update0901to091() {
          }
       }
    }
+
+   /** ************ New SLA structure ************ */
+   if (!TableExists('glpi_slts')) {
+      $query = "CREATE TABLE `glpi_slts` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `type` int(11) NOT NULL DEFAULT '0',
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `resolution_time` int(11) NOT NULL,
+                  `calendars_id` int(11) NOT NULL DEFAULT '0',
+                  `date_mod` datetime DEFAULT NULL,
+                  `definition_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `end_of_working_day` tinyint(1) NOT NULL DEFAULT '0',
+                  `date_creation` datetime DEFAULT NULL,
+                  `slas_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `calendars_id` (`calendars_id`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date_creation` (`date_creation`),
+                  KEY `slas_id` (`slas_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "0.91 add table glpi_slts");
+
+      // Sla migration
+      $query = "SELECT *
+                FROM `glpi_slas`";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) > 0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $query = "INSERT INTO `glpi_slts`
+                          (`id`, `name`,`entities_id`, `is_recursive`, `type`, `comment`, `resolution_time`, `calendars_id`, `date_mod`, `definition_time`, `end_of_working_day`, `date_creation`, `slas_id`)
+                         VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."', '".$data['is_recursive']."', '".SLT::TTR."', '".addslashes($data['comment'])."', '".$data['resolution_time']."', '".$data['calendars_id']."', '".$data['date_mod']."', '".$data['definition_time']."', '".$data['end_of_working_day']."', '".date('Y-m-d H:i:s')."', '".$data['id']."');";
+               $DB->queryOrDie($query, "SLA migration to SLT");
+            }
+         }
+      }
+
+      // Delete deprecated fields of SLA
+      foreach (array('resolution_time', 'calendars_id', 'definition_time', 'end_of_working_day') as $field) {
+         $migration->dropField('glpi_slas', $field);
+      }
+
+      // Slalevels changes
+      $migration->changeField('glpi_slalevels', 'slas_id', 'slts_id', 'integer');
+
+      // Ticket changes
+      $migration->changeField("glpi_tickets", "slas_id", "slt_ttr", "integer");
+      $migration->addField("glpi_tickets", "slt_tto", "integer", array('after' => 'slt_ttr'));
+      $migration->addField("glpi_tickets", "time_to_own", "datetime", array('after' => 'due_date'));
+      $migration->addKey('glpi_tickets', 'slt_tto');
+      $migration->addKey('glpi_tickets', 'time_to_own');
+
+      // Unique key for slalevel_ticket
+      $migration->addKey('glpi_slalevels_tickets', array('tickets_id', 'slalevels_id'), 'unicity', 'UNIQUE');
+
+      // Sla rules criterias migration
+      $DB->queryOrDie("UPDATE `glpi_rulecriterias` SET `criteria` = 'slt_ttr' WHERE `criteria` = 'slas_id'", "SLA rulecriterias migration");
+
+      // Sla rules actions migration
+      $DB->queryOrDie("UPDATE `glpi_ruleactions` SET `field` = 'slt_ttr' WHERE `field` = 'slas_id'", "SLA ruleactions migration");
+   }
+
+   // ************ Keep it at the end **************
+   $migration->executeMigration();
 
    return $updateresult;
 }

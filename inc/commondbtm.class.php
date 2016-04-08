@@ -1993,12 +1993,13 @@ class CommonDBTM extends CommonGLPI {
          //TRANS: %s is the datetime of insertion
          printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
          echo "</th>";
-      } elseif ($date_mod_exists) {
-         echo "<th colspan='$colspan'>";
-         //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-         echo "</th>";
       }
+
+      echo "<th colspan='$colspan'>";
+      //TRANS: %s is the datetime of update
+      printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+      echo "</th>";
+      
 
       if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
           && !empty($this->fields['template_name'])) {
@@ -3500,6 +3501,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getUnicityErrorMessage($msgs, $unicity, $doubles) {
 
+      $message = array();
       foreach($msgs as $field => $value) {
          $table = getTableNameForForeignKeyField($field);
          if ($table != '') {
@@ -3654,7 +3656,7 @@ class CommonDBTM extends CommonGLPI {
                          || $p['add_event_on_duplicate']) {
                         $message = array();
                         foreach (explode(',',$fields['fields']) as $field) {
-                           $message[$fields] = $this->input[$field];
+                           $message[$field] = $this->input[$field];
                         }
 
                         $doubles      = getAllDatasFromTable($this->gettable(),
@@ -4166,6 +4168,7 @@ class CommonDBTM extends CommonGLPI {
                   $options['entity'] = $_SESSION['glpiactiveentities'];
                }
                $itemtype = getItemTypeForTable($searchoptions['table']);
+
                return $itemtype::dropdown($options);
 
             case "right" :

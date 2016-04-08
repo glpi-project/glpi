@@ -658,7 +658,7 @@ class Change extends CommonITILObject {
                                             'timestep'   => 1,
                                             'maybeempty' => false));
       echo "</td>";
-      echo "<th width='$colsize1%'>".__('Due date')."</th>";
+      echo "<th width='$colsize1%'>".__('Time to resolve')."</th>";
       echo "<td width='$colsize2%' class='left'>";
 
       if ($this->fields["due_date"] == 'NULL') {

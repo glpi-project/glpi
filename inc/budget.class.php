@@ -114,7 +114,7 @@ class Budget extends CommonDropdown{
     **/
    function showForm($ID, $options=array()) {
 
-      $rowspan = 4;
+      $rowspan = 3;
       if ($ID > 0) {
          $rowspan++;
       }

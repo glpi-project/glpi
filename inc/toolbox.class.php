@@ -1830,7 +1830,16 @@ class Toolbox {
             $decoded_where = rawurldecode($where);
             // redirect to URL : URL must be rawurlencoded
             if ($link = preg_match('/https?:\/\/.+/',$decoded_where)) {
-               Html::redirect($decoded_where);
+               if($matches[1] !== $CFG_GLPI['url_base']) {
+                  Session::addMessageAfterRedirect('Redirection failed');
+                  if($_SESSION["glpiactiveprofile"]["interface"] === "helpdesk") {
+                     Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+                  } else {
+                     Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
+                  }
+               } else {
+                  Html::redirect($decoded_where);
+               }
             }
             // Redirect based on GLPI_ROOT : URL must be rawurlencoded
             if ($decoded_where[0] == '/') {
