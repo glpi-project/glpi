@@ -107,7 +107,7 @@ if (!isset($_GET['page'])) {
 }
 
 $start = ($_GET['page']-1)*$_GET['page_limit'];
-$limit = $_GET['page_limit'];
+$limit = intval($_GET['page_limit']);
 $LIMIT = "LIMIT $start,$limit";
 
 
