@@ -160,12 +160,13 @@ class APIRest extends API {
       } else {
          $itemtype          = $this->getItemtype(0);
          $id                = $this->getId();
-         $additionalheaders = array();
+         Toolbox::logDebug();
+         $additionalheaders = array($itemtype);
          $code              = 200;
          switch ($this->verb) {
             default:
             case "GET": // retrieve item(s)
-               if ($id > 0) {
+               if ($id > 0 || $id == 0 && $itemtype == "Entity") {
                   $response = $this->getItem($itemtype, $id, $this->parameters);
                   if (isset($response['date_mod'])) {
                      $datemod = strtotime($response['date_mod']);
@@ -233,13 +234,13 @@ class APIRest extends API {
             }
 
             return $itemtype;
-         } else if (!$recursive) {
-            $this->returnError(__("parameter itemtype is not an instance of CommonDBTM"),
+         } else {
+            $this->returnError(__("endpoint is not found or not an instance of CommonDBTM"),
                                400,
-                               "ERROR_ITEMTYPE_NOT_COMMONDBTM");
+                               "ERROR_RESSOURCE_NOT_FOUND_NOR_COMMONDBTM");
          }
       } else if ($recursive) {
-         $this->returnError(__("parameter itemtype missing"), 400, "ERROR_ITEMTYPE_MISSING");
+         $this->returnError(__("ressource missing"), 400, "ERROR_RESSOURCE_MISSING");
       }
 
       return false;

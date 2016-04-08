@@ -767,7 +767,7 @@ class Auth extends CommonGLPI {
 
                // update user and Blank PWD to clean old database for the external auth
                $this->user->update($input);
-               if ($this->extauth) {
+               if ($this->extauth && $this->user->fields["authtype"] != self::API) {
                   $this->user->blankPassword();
                }
             } else if ($CFG_GLPI["is_users_auto_add"]) {

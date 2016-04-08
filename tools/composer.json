@@ -8,6 +8,7 @@
         "zendframework/zend-i18n": "~2.4.0",
         "zendframework/zend-loader": "~2.4.0",
         "zendframework/zend-version": "~2.4.0",
-        "zetacomponents/graph": "~1.5"
+        "zetacomponents/graph": "~1.5",
+        "guzzlehttp/guzzle": "~1.6.0"
     }
 }

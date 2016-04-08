@@ -166,6 +166,11 @@ if (!defined("GLPI_SIMPLEPIE_PATH")) {
    # define("GLPI_SIMPLEPIE_PATH", "/usr/share/php/simplepie");  // if not in standard include_path
 }
 
+// Default SimplePie path
+if (!defined("GLPI_GUZZLE_PATH")) {
+   define("GLPI_GUZZLE_PATH", GLPI_ROOT."/lib/guzzle");
+}
+
 // Default phpCAS installation dir
 if (!defined("GLPI_PHPCAS")) {
    define("GLPI_PHPCAS", GLPI_ROOT . "/lib/phpcas/CAS.php");

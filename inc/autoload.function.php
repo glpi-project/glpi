@@ -360,7 +360,8 @@ $loader->register();
 // SimplePie autoloader
 spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
 
-
+//guzzle autloader
+require_once (GLPI_GUZZLE_PATH . '/autoloader.php');
 
 
 /**

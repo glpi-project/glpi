@@ -2,6 +2,7 @@
 <phpunit bootstrap="./tests/boostrap.php"
 		 backupGlobals="false"
 		 colors="true"
+       stopOnFailure="false"
        >
     <testsuites>
         <testsuite name="GLPI">

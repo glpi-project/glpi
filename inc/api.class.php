@@ -747,8 +747,10 @@ abstract class API extends CommonGLPI {
           || !empty($join)) {
          $query = "SELECT `$table`.*
                    FROM `$table`
-                   $join
-                   WHERE $where";
+                   $join ";
+         if (!empty($where)) {
+            $query .= "WHERE $where";
+         }
          if ($result = $DB->query($query)) {
             while ($data = $DB->fetch_assoc($result)) {
                $found[$data['id']] = $data;
@@ -1164,7 +1166,7 @@ abstract class API extends CommonGLPI {
    }
 
 
-   private function checkSessionToken() {
+   protected function checkSessionToken() {
       if (!isset($this->parameters['session_token'])
           || empty($this->parameters['session_token']))  {
          return $this->messageSessionTokenMissing();
@@ -1307,7 +1309,8 @@ abstract class API extends CommonGLPI {
             continue;
          }
          if ($key != "items_id" && isForeignKeyField($key)) {
-            if (!empty($value) || $key == 'entities_id') {
+            if (!empty($value)
+                || $key == 'entities_id' && $value >= 0) {
 
                $tablename = getTableNameForForeignKeyField($key);
                $itemtype = getItemTypeForTable($tablename);
