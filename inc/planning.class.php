@@ -1410,12 +1410,10 @@ class Planning extends CommonGLPI {
          }
 
       } else {
-         $minute = (floor(date('i')/10)*10);
-
-         if ($minute < 10) {
-            $minute = '0'.$minute;
-         }
-         $begin = date("Y-m-d H").":$minute:00";
+         $ts = $CFG_GLPI['time_step'] * 60 ; // passage en minutes
+         $time = time() + $ts - 60;
+         $time = floor($time / $ts) * $ts;
+         $begin = date("Y-m-d H:i", $time);
       }
 
       if (isset($params["end"]) && !empty($params["end"])) {
