@@ -45,7 +45,6 @@ Session::checkCentralAccess();
 if (isset($_POST["id"]) && ($_POST["id"] > 0)) {
    echo "<input type='hidden' name='plan[id]' value='".$_POST["id"]."'>";
 }
-toolbox::logdebug("post", $_POST);
 if (isset($_POST["begin"]) && !empty($_POST["begin"])) {
    $begin = $_POST["begin"];
 
