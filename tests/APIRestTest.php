@@ -50,6 +50,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertContains( "application/json; charset=UTF-8", $res->getHeader('content-type') );
 
       $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('session_token', $data);
       return $data['session_token'];
    }
@@ -72,6 +73,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('session_token', $data);
    }
 
@@ -99,6 +101,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey(0, $data); // check presence of root entity
    }
 
@@ -113,6 +116,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('active_entity', $data);
       $this->assertArrayHasKey('active_entity_recursive', $data);
       $this->assertArrayHasKey('active_entities', $data);
@@ -142,6 +146,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey(4, $data);  // check presence of super-admin profile
    }
 
@@ -156,6 +161,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('id', $data);
       $this->assertArrayHasKey('name', $data);
       $this->assertArrayHasKey('interface', $data);
@@ -172,6 +178,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('glpiID', $data);
       $this->assertArrayHasKey('glpiname', $data);
       $this->assertArrayHasKey('glpiroot', $data);
@@ -209,6 +216,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('id', $data);
       $this->assertArrayHasKey('name', $data);
       $this->assertArrayHasKey('completename', $data);
@@ -245,6 +253,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
       $this->assertGreaterThanOrEqual(4, count($data));
       $this->assertArrayHasKey('id', $data[0]);
       $this->assertArrayNotHasKey('name', $data[0]);
@@ -264,6 +273,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
       $this->assertGreaterThanOrEqual(128, count($data));
       $this->assertEquals('Name', $data[1]['name']);
       $this->assertEquals('glpi_computers', $data[1]['table']);
@@ -294,6 +304,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals('10-15/5', $headers['Content-Range'][0]);
 
       $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('totalcount', $data);
       $this->assertArrayHasKey('count', $data);
       $this->assertArrayHasKey('sort', $data);
@@ -328,8 +339,107 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    }
 
 
-   // TODO addItem
-   // TODO updateItem
+   /**
+     * @depends testInitSessionCredentials
+     */
+   public function testAddItem($session_token) {
+      $res = $this->http_client->request('POST', 'Computer/',
+                                         ['json' => [
+                                             'session_token' => $session_token,
+                                             'input'         => [
+                                                'name' => "My computer 1"
+                                             ]],
+                                          'http_errors' => false]);
+      $this->assertEquals(201, $res->getStatusCode());
+
+      $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('id', $data);
+      $id = $data['id'];
+      $this->assertEquals(true, is_numeric($id));
+      $this->assertEquals(true, $id > 0);
+
+      return $id;
+   }
+
+   /**
+     * @depends testInitSessionCredentials
+     */
+   public function testAddItems($session_token) {
+      $res = $this->http_client->request('POST', 'Computer/',
+                                         ['json' => [
+                                             'session_token' => $session_token,
+                                             'input'         => [[
+                                                'name' => "My computer 2"
+                                             ],[
+                                                'name' => "My computer 3"
+                                             ]]],
+                                          'http_errors' => false]);
+      $this->assertEquals(201, $res->getStatusCode());
+
+      $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
+      $first_computer = $data[0];
+      $secnd_computer = $data[1];
+      $this->assertArrayHasKey('id', $first_computer);
+      $this->assertArrayHasKey('id', $secnd_computer);
+      $this->assertEquals(true, is_numeric($first_computer['id']));
+      $this->assertEquals(true, is_numeric($secnd_computer['id']));
+      $this->assertEquals(true, $first_computer['id'] > 0);
+      $this->assertEquals(true, $secnd_computer['id'] > 0);
+
+      return $data;
+   }
+
+
+   /**
+     * @depends testInitSessionCredentials
+     * @depends testAddItem
+     */
+   public function testUpdateItem($session_token, $computers_id) {
+      $res = $this->http_client->request('PUT', 'Computer/',
+                                         ['json' => [
+                                             'session_token' => $session_token,
+                                             'input'         => [
+                                                'id'     => $computers_id,
+                                                'serial' => "abcdef"
+                                             ]],
+                                          'http_errors' => false]);
+      $this->assertEquals(200, $res->getStatusCode());
+
+      $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
+      $first_computer = array_shift($data);
+      $this->assertArrayHasKey($computers_id, $first_computer);
+      $this->assertEquals(true, boolval($first_computer[$computers_id]));
+   }
+
+   /**
+     * @depends testInitSessionCredentials
+     * @depends testAddItems
+     */
+   public function testUpdateItems($session_token, $computers_id_collection) {
+      $input = array();
+      foreach($computers_id_collection as $key => $computers_id) {
+         $input[] = ['id' => $computers_id['id'], 'otherserial' => "abcdef"];
+      }
+      $res = $this->http_client->request('PUT', 'Computer/',
+                                         ['json' => [
+                                             'session_token' => $session_token,
+                                             'input'         => $input],
+                                          'http_errors' => false]);
+      $this->assertEquals(200, $res->getStatusCode());
+
+      $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
+      foreach($data as $index => $row) {
+         $computers_id = $computers_id_collection[$index]['id'];
+         $this->assertArrayHasKey($computers_id, $row);
+         $this->assertEquals(true, boolval($row[$computers_id]));
+      }
+   }
+
+
    // TODO deleteItem
 
    /**

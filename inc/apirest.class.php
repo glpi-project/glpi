@@ -160,7 +160,6 @@ class APIRest extends API {
       } else {
          $itemtype          = $this->getItemtype(0);
          $id                = $this->getId();
-         Toolbox::logDebug();
          $additionalheaders = array($itemtype);
          $code              = 200;
          switch ($this->verb) {
