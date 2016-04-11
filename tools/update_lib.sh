@@ -52,6 +52,25 @@ for fic in LICENSE NOTICE README.md
 do cp $SRC/$fic $DST/$fic
 done
 
+
+echo "+ parsedown"
+
+SRC="vendor/erusev/parsedown"
+DST="../lib/parsedown"
+cp $SRC/*php $DST
+for fic in LICENSE.txt README.md
+do cp $SRC/$fic $DST/$fic
+done
+
+echo "+ parsedown"
+
+SRC="vendor/erusev/parsedown-extra"
+DST="../lib/parsedown/parsedown-extra"
+cp $SRC/*php $DST
+for fic in LICENSE.txt README.md
+do cp $SRC/$fic $DST/$fic
+done
+
 git status
 
 echo -e "\nDone: you can now review the changes and commit\n"
