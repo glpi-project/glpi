@@ -62,7 +62,7 @@ for fic in LICENSE.txt README.md
 do cp $SRC/$fic $DST/$fic
 done
 
-echo "+ parsedown"
+echo "+ parsedown extra"
 
 SRC="vendor/erusev/parsedown-extra"
 DST="../lib/parsedown/parsedown-extra"
