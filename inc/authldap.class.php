@@ -1705,11 +1705,11 @@ class AuthLDAP extends CommonDBTM {
                   Html::showMassiveActionCheckBox(__CLASS__, $dn_index,
                                                array('massive_tags'  => 'select_item_child_entities',
                                                      'name'          => "ldap_import_recursive[$dn_index]",
-                                                     'specific_tags' => array('data-glpicore-ma-tags' => 'common')));
+                                                     'specific_tags' => array('data-glpicore-ma-tags' => 'entities_id')));
                   echo "</td>";
                } else {
                   echo Html::hidden("ldap_import_recursive[$dn_index]", array('value'                 => 0,
-                                                                              'data-glpicore-ma-tags' => 'common'));
+                                                                              'data-glpicore-ma-tags' => 'entities_id'));
                }
                echo "</tr>\n";
                $dn_index++;
