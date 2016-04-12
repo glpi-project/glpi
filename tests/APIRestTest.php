@@ -348,8 +348,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'session_token' => $session_token,
                                              'input'         => [
                                                 'name' => "My computer 1"
-                                             ]],
-                                          'http_errors' => false]);
+                                             ]]]);
       $this->assertEquals(201, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -373,8 +372,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                                 'name' => "My computer 2"
                                              ],[
                                                 'name' => "My computer 3"
-                                             ]]],
-                                          'http_errors' => false]);
+                                             ]]]]);
       $this->assertEquals(201, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -403,8 +401,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'input'         => [
                                                 'id'     => $computers_id,
                                                 'serial' => "abcdef"
-                                             ]],
-                                          'http_errors' => false]);
+                                             ]]]);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -421,13 +418,13 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    public function testUpdateItems($session_token, $computers_id_collection) {
       $input = array();
       foreach($computers_id_collection as $key => $computers_id) {
-         $input[] = ['id' => $computers_id['id'], 'otherserial' => "abcdef"];
+         $input[] = ['id'          => $computers_id['id'],
+                     'otherserial' => "abcdef"];
       }
       $res = $this->http_client->request('PUT', 'Computer/',
                                          ['json' => [
                                              'session_token' => $session_token,
-                                             'input'         => $input],
-                                          'http_errors' => false]);
+                                             'input'         => $input]]);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -440,7 +437,43 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    }
 
 
-   // TODO deleteItem
+   /**
+     * @depends testInitSessionCredentials
+     * @depends testAddItem
+     */
+   public function testDeleteItem($session_token, $computers_id) {
+      $res = $this->http_client->request('DELETE', "Computer/$computers_id",
+                                         ['query' => [
+                                             'session_token' => $session_token]]);
+      $this->assertEquals(204, $res->getStatusCode());
+
+      $data = json_decode($res->getBody(), true);
+      $this->assertEquals(NULL, $data);
+   }
+
+
+   /**
+     * @depends testInitSessionCredentials
+     * @depends testAddItems
+     */
+   public function testDeleteItems($session_token, $computers_id_collection) {
+      $input = array();
+      foreach($computers_id_collection as $key => $computers_id) {
+         $input[] = ['id' => $computers_id['id']];
+      }
+      $res = $this->http_client->request('DELETE', "Computer/$computers_id",
+                                         ['json' => [
+                                             'session_token' => $session_token,
+                                             'input'         => $input]]);
+      $this->assertEquals(200, $res->getStatusCode());
+      $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
+      foreach($data as $index => $row) {
+         $computers_id = $computers_id_collection[$index]['id'];
+         $this->assertArrayHasKey($computers_id, $row);
+         $this->assertEquals(true, boolval($row[$computers_id]));
+      }
+   }
 
    /**
      * @depends testInitSessionCredentials

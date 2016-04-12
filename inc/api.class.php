@@ -1103,39 +1103,85 @@ abstract class API extends CommonGLPI {
    }
 
 
+
    /**
-    * delete an object in GLPI
+    * delete one or more objects in GLPI
     *
     * @param      string   $itemtype  itemtype (class) of object
-    * @param      integer  $id        identifier of object
     * @param      array    $params   array with theses options :
+    *    - 'input' : Array of objects with fields of itemtype to be updated.
+    *                Mandatory.
+    *                You must provide in each object a key named 'id' to identify item to delete.*
     *    - 'force_purge' : boolean, if itemtype have a dustbin, you can force purge (delete finally).
     *                      Optionnal.
     *    - 'history' : boolean, default true, false to disable saving of deletion in global history.
     *                  Optionnal.
     */
-   protected function deleteItem($itemtype, $id, $params = array()) {
+   protected function deleteItems($itemtype, $params = array()) {
       $this->initEndpoint();
-      $response    = "";
-      $force_purge = isset($params['force_purge'])?$params['force_purge']:false;
-      $history     = isset($params['$history'])?$params['$history']:true;
+      $default = array('force_purge' => false,
+                       'history'     => true);
+      $params = array_merge($default, $params);
 
+      $input = $params['input'];
       $item = new $itemtype;
-      if (!$item->getFromDB($id)) {
-         return $this->messageNotfoundError();
-      }
+      $response = "";
 
-      if ($force_purge
-          && !$item->can(-1, PURGE)
-          || !$item->can(-1, DELETE)) {
-         $this->messageRightError();
-      }
+      if (is_array($input)) {
+         $idCollection = array();
+         $failed = 0;
+         foreach($input as $object) {
+            if (isset($object->id)) {
+               //check rights
+               if ($params['force_purge']
+                   && !$item->can(-1, PURGE)
+                   || !$item->can(-1, DELETE)) {
+                  $failed++;
+                  $idCollection[] = array($object->id => $this->messageRightError());
+               } else {
+                  //delete item
+                  if ($delete_return = $item->delete((array) $object,
+                                                     $params['force_purge'],
+                                                     $params['history'])) {
+                     $idCollection[] = array($object->id => $delete_return);
+                  } else {
+                     $failed++;
+                     $idCollection[] = array($object->id => $this->getGlpiLastMessage());
+                  }
+               }
+            }
+         }
+         if ($failed == count($input)) {
+            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_DELETE", false);
+         } else if ($failed > 0) {
+            $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_DELETE", false);
+         }
 
-      if (!$item->delete(array('id' => $id), $force_purge, $history)) {
-         $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_DELETE", false);
-      }
+         return $idCollection;
 
-      return true;
+      } else if (is_object($input)) {
+         $input = get_object_vars($input);
+
+         //check rights
+         if ($params['force_purge']
+             && !$item->can(-1, PURGE)
+             || !$item->can(-1, DELETE)) {
+            $this->messageRightError();
+         }
+
+         // delete item
+         if (! $item->delete($input,
+                             $params['force_purge'],
+                             $params['history'])) {
+            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_DELETE", false);
+         } else {
+            $idCollection[] = array($item->fields["id"] => "true");
+         }
+         return $idCollection;
+
+      } else {
+         $this->messageBadArrayError();
+      }
    }
 
 

@@ -19,7 +19,7 @@
 * [Search items](#search_items)
 * [Add item(s)](#add_items)
 * [Update item(s)](#update_items)
-* [Delete item](#delete_item)
+* [Delete item(s)](#delete_items)
 
 
 ## Glossary {#glossary}
@@ -749,6 +749,7 @@ $ curl -X POST \
 < Location: http://path/to/glpi/api/Computer/15
 < {"id": 15}
 
+
 $ curl -X POST \
 -H 'Content-Type: application/json' \
 -d '{"input": [{"name": "My first computer", "serial": "12345"}, {"name": "My 2nd computer", "serial": "67890"}, {"name": "My 3rd computer", "serial": "qsd12sd"}], "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" }' \
@@ -763,14 +764,15 @@ $ curl -X POST \
 
 ## Update item(s) {#update_items}
 
-* **URL**: api/:itemtype/
+* **URL**: api/:itemtype/(:id)
 * **Description**: update an object (or multiple objects) in GLPI
 * **Method**: PUT
 * **Parameters (JSON Payload)**
+   - *id* : unique identifier of the itemtype passed in url. You **can skip** this param by passing it in input payload.
    - *session_token*: session var provided by [initSession](#init_session) endpoint . Mandatory
    - *input* : Array of objects with fields of itemtype to be updated.
                Mandatory.
-               You **must provide** in each object a key named 'id' to identify item to update.
+               You **could provide** in each object a key named 'id' to identify item to update.
 * **Returns**
    - 200 (OK) with update status for each item
    - 207 (Multi-Status) with id of added items and errors.
@@ -782,11 +784,21 @@ Example usage (CURL) :
 ```bash
 $ curl -X PUT \
 -H 'Content-Type: application/json' \
+-d '{"input": {"otherserial": "xcvbn"}, "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" }' \
+'http://path/to/glpi/api/Computer/10'
+
+< 200 OK
+[{"10":"true"}]
+
+
+$ curl -X PUT \
+-H 'Content-Type: application/json' \
 -d '{"input": {"id": 11,  "otherserial": "abcde"}, "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" }' \
 'http://path/to/glpi/api/Computer/'
 
 < 200 OK
 [{"11":"true"}]
+
 
 $ curl -X PUT \
 -H 'Content-Type: application/json' \
@@ -799,20 +811,27 @@ $ curl -X PUT \
 
 
 
-## Delete item {#delete_item}
+## Delete item(s) {#delete_items}
 
-* **URL**: api/:itemtype/:id
+* **URL**: api/:itemtype/(:id)
 * **Description**: delete an object in GLPI
 * **Method**: DELETE
 * **Parameters (query string)**
-   - *id* : unique identifier of the itemtype. Mandatory
+   - *id* : unique identifier of the itemtype passed in url.  
+      OR
+   - *input* Array of id who need to be deleted. This param is passed by payload  
+
+   id param has precedence over input payload.
+
    - *session_token*: session var provided by [initSession](#init_session) endpoint . Mandatory
    - *force_purge* : boolean, if itemtype have a dustbin, you can force purge (delete finally).
                      Optional.
    - *history* : boolean, default true, false to disable saving of deletion in global history.
                  Optional.
 * **Returns**
-   - 204 (No Content)
+   - 200 (OK) *in case of multiple deletion*
+   - 204 (No Content) *in case of single deletion*
+   - 207 (Multi-Status) with id of deleted items and errors.
    - 400 (Bad Request) with a message indicating error in input parameter
    - 401 (UNAUTHORIZED)
 
@@ -823,6 +842,24 @@ $ curl -X DELETE \
 -H 'Content-Type: application/json' \
 'http://path/to/glpi/api/Computer/16?session_token=83af7e620c83a50a18d3eac2f6ed05a3ca0bea62&force_purge=true'
 
+< 204 OK
+
+
+$ curl -X DELETE \
+-H 'Content-Type: application/json' \
+-d '{"input": {"id": 11, "force_purge": true}, "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" }' \
+'http://path/to/glpi/api/Computer/'
+
 < 200 OK
+[{"11":"true"}]
+
+
+$ curl -X DELETE \
+-H 'Content-Type: application/json' \
+-d '{"input": [{"id": 16}, {"id": 17}], "session_token": "83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" }' \
+'http://path/to/glpi/api/Computer/'
+
+< 207 OK
+[{"16":"true"},{"17":"false"}]
 ```
 

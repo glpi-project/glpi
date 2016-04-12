@@ -198,11 +198,19 @@ class APIRest extends API {
                break;
 
             case "PUT": // update item(s)
+               if ($id > 0 && !isset($this->parameters['input']['id'])) {
+                  $this->parameters['input']['id'] = $id;
+               }
                $response = $this->updateItems($itemtype, $this->parameters);
                break;
 
             case "DELETE": //delete item(s)
-               $response = $this->deleteItem($itemtype, $id, $this->parameters);
+               if ($id > 0) {
+                  $code = 204;
+                  //override input
+                  $this->parameters['input'] = ['id' => $id];
+               }
+               $response = $this->deleteItems($itemtype, $this->parameters);
                break;
          }
          return $this->returnResponse($response, $code, $additionalheaders);
