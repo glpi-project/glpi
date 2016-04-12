@@ -982,20 +982,11 @@ abstract class API extends CommonGLPI {
          $cleaned_data['rawdata'] = $rawdata;
       }
 
+      $cleaned_data['content-range'] = implode('-', $params['range']).
+                                       "/".$cleaned_data['count'];
+
       // return data
-
-      //add pagination headers
-      header("Content-Range: ".implode('-', $params['range'])."/".$cleaned_data['count']);
-      header("Accept-Range: $itemtype ".Toolbox::get_max_input_vars());
-
-      // diffent http return codes for complete or partial response
-      if ($cleaned_data['count'] >= $cleaned_data['count']) {
-         // full content
-         return $this->returnResponse($cleaned_data, 200);
-      } else {
-         // partial content
-         return $this->returnResponse($cleaned_data, 206);
-      }
+      return $cleaned_data;
    }
 
 

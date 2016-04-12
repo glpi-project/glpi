@@ -154,13 +154,27 @@ class APIRest extends API {
          //clean stdObjects in parameter
          $params = json_decode(json_encode($this->parameters), true);
          //search
-         return $this->searchItems($itemtype, $params);
+         $response =  $this->searchItems($itemtype, $params);
+
+         //add pagination headers
+         $additionalheaders = array();
+         $additionalheaders["Content-Range"] = $response['content-range'];
+         $additionalheaders["Accept-Range"] = $itemtype." ".Toolbox::get_max_input_vars();
+
+         // diffent http return codes for complete or partial response
+         if ($response['count'] >= $response['count']) {
+            $code = 200; // full content
+         } else {
+            $code = 206; // partial content
+         }
+
+         return $this->returnResponse($response, $code, $additionalheaders);
 
       // commonDBTM manipulation
       } else {
          $itemtype          = $this->getItemtype(0);
          $id                = $this->getId();
-         $additionalheaders = array($itemtype);
+         $additionalheaders = array();
          $code              = 200;
          switch ($this->verb) {
             default:
