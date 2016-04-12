@@ -208,7 +208,8 @@ class APIRest extends API {
                if ($id > 0) {
                   $code = 204;
                   //override input
-                  $this->parameters['input'] = ['id' => $id];
+                  $this->parameters['input'] = new stdClass();;
+                  $this->parameters['input']->id = $id;
                }
                $response = $this->deleteItems($itemtype, $this->parameters);
                break;

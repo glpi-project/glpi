@@ -444,7 +444,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    public function testDeleteItem($session_token, $computers_id) {
       $res = $this->http_client->request('DELETE', "Computer/$computers_id",
                                          ['query' => [
-                                             'session_token' => $session_token]]);
+                                             'session_token' => $session_token,
+                                             'force_purge'   => true]]);
       $this->assertEquals(204, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -461,10 +462,11 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       foreach($computers_id_collection as $key => $computers_id) {
          $input[] = ['id' => $computers_id['id']];
       }
-      $res = $this->http_client->request('DELETE', "Computer/$computers_id",
+      $res = $this->http_client->request('DELETE', "Computer/",
                                          ['json' => [
                                              'session_token' => $session_token,
-                                             'input'         => $input]]);
+                                             'input'         => $input,
+                                             'force_purge'   => true]]);
       $this->assertEquals(200, $res->getStatusCode());
       $data = json_decode($res->getBody(), true);
       $this->assertNotEquals(false, $data);
