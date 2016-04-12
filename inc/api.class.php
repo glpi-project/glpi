@@ -999,6 +999,11 @@ abstract class API extends CommonGLPI {
                $idCollection[] = array('error' => $this->messageRightError());
                $failed++;
             } else {
+               // add missing entity
+               if (!isset($object['entities_id'])) {
+                  $object['entities_id'] = $_SESSION['glpiactive_entity'];
+               }
+
                //add current item
                if ($new_id = $item->add( $object)) {
                   $idCollection[] = array('id' => $new_id);
@@ -1021,6 +1026,11 @@ abstract class API extends CommonGLPI {
          //check rights
          if (!$item->can(-1, CREATE, $input)) {
             $this->messageRightError();
+         }
+
+         // add missing entity
+         if (!isset($input['entities_id'])) {
+            $input['entities_id'] = $_SESSION['glpiactive_entity'];
          }
 
          //add item
