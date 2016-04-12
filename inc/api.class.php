@@ -1364,7 +1364,19 @@ abstract class API extends CommonGLPI {
          if (is_integer($key)) {
             continue;
          }
-         if ($key != "items_id" && isForeignKeyField($key)) {
+         if (isForeignKeyField($key)) {
+            // specific key transformations
+            if ($key == "items_id" && isset($fields['itemtype'])) {
+               $key = getForeignKeyFieldForItemType($fields['itemtype']);
+            }
+            if ($key == "auths_id"
+                && isset($fields['authtype']) && $fields['authtype'] == Auth::LDAP) {
+               $key = "authldaps_id";
+            }
+            if ($key == "default_requesttypes_id") {
+               $key = "requesttypes_id";
+            }
+
             if (!empty($value)
                 || $key == 'entities_id' && $value >= 0) {
 
