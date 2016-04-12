@@ -1277,7 +1277,8 @@ abstract class API extends CommonGLPI {
     * @return     array  of messages
     */
    private function getGlpiLastMessage() {
-      $messages = array();
+      $all_messages = array();
+      $messages = "";
       if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])
           && !empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
          $messages = $_SESSION["MESSAGE_AFTER_REDIRECT"];
@@ -1286,18 +1287,15 @@ abstract class API extends CommonGLPI {
          $_SESSION["MESSAGE_AFTER_REDIRECT"] = "";
       };
 
-      $explode_on = array("<br>", "</h3>");
-      $all_messages = array();
-      foreach($explode_on as $separator) {
-         $all_messages[] = explode($separator, $messages);
-      }
+      // split in array
+      $all_messages = preg_split( "/ (<br>|<\/h3>) /", $messages );
 
       // clean html
       foreach($all_messages as &$message) {
          $message = Html::clean($message);
       }
 
-      return end($messages);
+      return end($all_messages);
    }
 
 
