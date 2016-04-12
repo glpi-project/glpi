@@ -462,6 +462,13 @@ function update0902to91() {
    $migration->addKey("glpi_softwarelicenses", "is_deleted");
    $migration->addKey("glpi_softwarelicenses", "is_template");
 
+   /************* Add is_recursive on assets ***/
+
+   foreach (array('glpi_computers', 'glpi_monitors', 'glpi_phones') as $table) {
+      $migration->addField($table, "is_recursive", "bool");
+      $migration->addKey($table, "is_recursive");
+   }
+
    /************* Add antivirus table */
    if (!TableExists('glpi_computerantiviruses')) {
       $query = "CREATE TABLE `glpi_computerantiviruses` (

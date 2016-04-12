@@ -4258,11 +4258,16 @@ class CommonDBTM extends CommonGLPI {
 
       if ($item->isEntityAssign()) {
          $query .= getEntitiesRestrictRequest('AND', $item->getTable(), 'entities_id',
-                                              $_SESSION['glpiactive_entity'],
+                                              $_SESSION['glpiactiveentities'],
                                               $item->maybeRecursive());
       }
       $query .= " ORDER by `template_name`";
 
+      if (Session::isMultiEntitiesMode()) {
+         $colspan=3;
+      } else {
+         $colspan=2;
+      }
       if ($result = $DB->query($query)) {
          echo "<div class='center'><table class='tab_cadre'>";
          if ($add) {
@@ -4272,17 +4277,24 @@ class CommonDBTM extends CommonGLPI {
             $target_blank = $target . $blank_params;
             echo "<tr><th>" . $item->getTypeName(1)."</th>";
             echo "<th>".__('Choose a template')."</th></tr>";
-            echo "<tr><td class='tab_bg_1 center' colspan='2'>";
+            echo "<tr><td class='tab_bg_1 center' colspan='$colspan'>";
             echo "<a href=\"$target_blank\">".__('Blank Template')."</a></td>";
             echo "</tr>";
          } else {
-            echo "<tr><th>".$item->getTypeName(1)."</th><th>".__('Templates')."</th></tr>";
+            echo "<tr><th>".$item->getTypeName(1)."</th>";
+            if (Session::isMultiEntitiesMode()) {
+               echo "<th>".__('Entity')."</th>";
+            }
+            echo "<th>".__('Templates')."</th></tr>";
          }
 
          while ($data = $DB->fetch_assoc($result)) {
             $templname = $data["template_name"];
             if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
                $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
+            }
+            if (Session::isMultiEntitiesMode()) {
+               $entity = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
             }
             if ($item->canCreate() && !$add) {
                $modify_params =
@@ -4294,6 +4306,9 @@ class CommonDBTM extends CommonGLPI {
                echo "<tr><td class='tab_bg_1 center'>";
                echo "<a href=\"$target_modify\">";
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
+               if (Session::isMultiEntitiesMode()) {
+                  echo "<td class='tab_bg_1 center'>$entity</td>";                  
+               }
                echo "<td class='tab_bg_2 center b'>";
                Html::showSimpleForm($target, 'purge', _x('button', 'Delete permanently'),
                                     array('withtemplate' => 1,
