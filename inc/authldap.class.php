@@ -1522,7 +1522,12 @@ class AuthLDAP extends CommonDBTM {
                // -> renaming case
                if ($userfound) {
                   //Get user in DB with this dn
-                  $tmpuser->getFromDBByDn($user['user_dn']);
+                  if (!$tmpuser->getFromDBByDn($user['user_dn'])) {
+                     //This should never happened
+                     //If a user_dn is present more than one time in database
+                     //Just skip user synchronization to avoid errors
+                     continue;
+                  }
                   $glpi_users[] = array('id'        => $user['id'],
                                         'user'      => $userfound['name'],
                                         'timestamp' => $user_infos[$userfound['name']]['timestamp'],
@@ -1699,11 +1704,11 @@ class AuthLDAP extends CommonDBTM {
                   Html::showMassiveActionCheckBox(__CLASS__, $dn_index,
                                                array('massive_tags'  => 'select_item_child_entities',
                                                      'name'          => "ldap_import_recursive[$dn_index]",
-                                                     'specific_tags' => array('data-glpicore-ma-tags' => 'common')));
+                                                     'specific_tags' => array('data-glpicore-ma-tags' => 'entities_id')));
                   echo "</td>";
                } else {
                   echo Html::hidden("ldap_import_recursive[$dn_index]", array('value'                 => 0,
-                                                                              'data-glpicore-ma-tags' => 'common'));
+                                                                              'data-glpicore-ma-tags' => 'entities_id'));
                }
                echo "</tr>\n";
                $dn_index++;
