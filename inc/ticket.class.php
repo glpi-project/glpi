@@ -569,8 +569,9 @@ class Ticket extends CommonITILObject {
                $ong[1]      = __("Processing ticket")." <sup class='tab_nb'>$nb_elements</sup>";
             }
 
-            if (!$_SESSION['glpiticket_timeline']
-                || $_SESSION['glpiticket_timeline_keep_replaced_tabs']) {
+            if ((!$_SESSION['glpiticket_timeline']
+                || $_SESSION['glpiticket_timeline_keep_replaced_tabs'])
+                && ($item->fields['status'] == self::SOLVED)) {
                $ong[2] = _n('Solution', 'Solutions', 1);
             }
             // enquete si statut clos
@@ -3466,7 +3467,7 @@ class Ticket extends CommonITILObject {
       if (isset($values['name'])) {
          $values['name'] = str_replace("\\", "", $values['name']);
       }
-      
+
       if (!$ID) {
          // Override defaut values from projecttask if needed
          if (isset($options['_projecttasks_id'])) {
