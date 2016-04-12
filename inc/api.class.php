@@ -1197,7 +1197,7 @@ abstract class API extends CommonGLPI {
       $ip = (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"]
                                                      : $_SERVER["REMOTE_ADDR"]);
       $username = "";
-      if ($endpoint != "initSession") {
+      if (isset($_SESSION['glpiname'])) {
          $username = "(".$_SESSION['glpiname'].")";
       }
 
