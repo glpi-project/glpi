@@ -441,6 +441,9 @@ $ curl -X GET \
    - *expand_dropdowns* (default: false): show dropdown name instead of id. Optional
    - *get_hateoas* (default: true): Show relation of item in a links attribute. Optional
    - *only_id* (default: false):  keep only id in fields list. Optional
+   - *range* (default: 0-50):  a string with a couple of number for start and end of pagination separated by a '-'. Ex : 150-200. Optional.
+   - *sort* (default 1): id of searchoption to sort by. Optional.
+   - *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
 * **Returns**
    - 200 (OK) with item data
    - 401 (UNAUTHORIZED)

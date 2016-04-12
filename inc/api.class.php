@@ -697,6 +697,7 @@ abstract class API extends CommonGLPI {
     * - 'expand_dropdowns' (default: false): show dropdown's names instead of id. Optionnal
     * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
     * - 'only_id'          (default: false): keep only id in fields list. Optionnal
+    * - 'range'            (default: 0-50): limit the list to start-end attributes
     *
     * @return     array collection of fields
     */
@@ -707,7 +708,10 @@ abstract class API extends CommonGLPI {
       // default params
       $default = array('expand_dropdowns' => false,
                        'get_hateoas'      => true,
-                       'only_id'          => false);
+                       'only_id'          => false,
+                       'range'            => "0-50",
+                       'sort'             => "id",
+                       'order'            => "ASC");
       $params = array_merge($default, $params);
 
 
@@ -718,9 +722,30 @@ abstract class API extends CommonGLPI {
       $found = array();
       $item = new $itemtype();
       $item->getEmpty();
+      $table = getTableForItemType($itemtype);
+
+      // transform range parameter in start and limit variables
+      if (isset($params['range']) > 0) {
+         if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
+            $range = explode("-", $params['range']);
+            $params['start']      = $range[0];
+            $params['list_limit'] = $range[1]-$range[0];
+         } else {
+            $this->returnError("range must be in format : [start-end] with integers");
+         }
+      }
+
+      // check parameters
+      if (isset($params['order'])
+          && !in_array(strtoupper($params['order']), array('DESC', 'ASC'))) {
+         $this->returnError("order must be DESC or ASC");
+      }
+      if (!isset($item->fields[$params['sort']])) {
+         $this->returnError("sort param is not a field of $table");
+      }
+
 
       //specific case for restriction
-      $table = getTableForItemType($itemtype);
       $already_linked_table = array();
       $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
       $where = Search::addDefaultWhere($itemtype);
@@ -745,12 +770,14 @@ abstract class API extends CommonGLPI {
 
       if (!empty($where)
           || !empty($join)) {
-         $query = "SELECT `$table`.*
+         $query = "SELECT DISTINCT `$table`.id,  `$table`.*
                    FROM `$table`
                    $join ";
          if (!empty($where)) {
             $query .= "WHERE $where";
          }
+         $query.= " ORDER BY ".$params['sort']." ".$params['order'];
+         $query.= " LIMIT ".$params['start'].", ".$params['list_limit'];
          if ($result = $DB->query($query)) {
             while ($data = $DB->fetch_assoc($result)) {
                $found[$data['id']] = $data;
