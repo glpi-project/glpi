@@ -327,6 +327,7 @@ switch ($current_version) {
 
    /* remember to also change --force below for last version */
 
+   case "0.90.2" :
    case GLPI_VERSION :
       break;
 
@@ -348,8 +349,8 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
 } else if (in_array('--force', $_SERVER['argv'])) {
 
-   include("../install/update_090_0901.php");
-   update090to0901();
+   include("../install/update_0901_0902.php");
+   update0901to0902();
 
    $migration->displayWarning("\nForced migration Done.");
 
