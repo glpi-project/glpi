@@ -448,6 +448,10 @@ $ curl -X GET \
    - 200 (OK) with item data
    - 401 (UNAUTHORIZED)
 
+   and theses headers :
+      * *Content-Range* offset – limit / count
+      * *Accept-Range* itemtype max
+
 Example usage (CURL) :
 
 ```bash
@@ -688,7 +692,7 @@ $ curl -X GET \
 
    and theses headers :
       * *Content-Range* offset – limit / count
-      * *Accept-Range* :resource :max
+      * *Accept-Range* itemtype max
 
    - 206 (PARTIAL CONTENT) with rows data (pagination doesn't permit to display all rows).
    - 401 (UNAUTHORIZED)
