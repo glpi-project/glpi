@@ -724,6 +724,7 @@ CREATE TABLE `glpi_computers` (
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `uuid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `name` (`name`),
@@ -749,8 +750,9 @@ CREATE TABLE `glpi_computers` (
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `uuid` (`uuid`),
-  KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `date_creation` (`date_creation`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_computers_items
@@ -3457,6 +3459,7 @@ INSERT INTO `glpi_logs` VALUES ('140','ProfileRight','819','0','20','','2016-02-
 INSERT INTO `glpi_logs` VALUES ('141','Profile','8','ProfileRight','17','','2016-02-08 16:57:46','0','','user (820)');
 INSERT INTO `glpi_logs` VALUES ('142','ProfileRight','820','0','20','','2016-02-08 16:57:46','0','','');
 
+
 ### Dump table glpi_mailcollectors
 
 DROP TABLE IF EXISTS `glpi_mailcollectors`;
@@ -3553,6 +3556,7 @@ CREATE TABLE `glpi_monitors` (
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -3571,8 +3575,9 @@ CREATE TABLE `glpi_monitors` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
-  KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `date_creation` (`date_creation`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_monitortypes
@@ -4968,6 +4973,7 @@ CREATE TABLE `glpi_peripherals` (
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -4987,7 +4993,8 @@ CREATE TABLE `glpi_peripherals` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `is_recursive` (`is_recursive`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -5074,6 +5081,7 @@ CREATE TABLE `glpi_phones` (
   `ticket_tco` decimal(20,4) DEFAULT '0.0000',
   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -5094,8 +5102,9 @@ CREATE TABLE `glpi_phones` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
-  KEY `date_creation` (`date_creation`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `date_creation` (`date_creation`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_phonetypes
