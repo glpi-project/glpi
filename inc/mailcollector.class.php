@@ -584,11 +584,15 @@ class MailCollector  extends CommonDBTM {
                } else {
                   if (!$tkt['_users_id_requester']) {
                      $rejinput['reason'] = NotImportedEmail::USER_UNKNOWN;
+                     $rejected->add($rejinput);
 
                   } else {
                      $rejinput['reason'] = NotImportedEmail::MATCH_NO_RULE;
+                     $rejected->add($rejinput);
                   }
+                  $refused++;
                   $rejected->add($rejinput);
+                  $this->deleteMails($i, self::REFUSED_FOLDER);
                }
                $this->fetch_emails++;
             }
