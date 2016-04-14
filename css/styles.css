@@ -745,6 +745,7 @@ input.save {
 
    .layout_vsplit.form .main_form input[type=text]:not([size]) {
       width:74%;
+      min-width: 175px;
    }
    .layout_vsplit.form .main_form textarea {
       resize: vertical;
