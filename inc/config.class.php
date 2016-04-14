@@ -72,6 +72,11 @@ class Config extends CommonDBTM {
       if (static::canView()) {
          $menu['title']   = _x('setup', 'General');
          $menu['page']    = '/front/config.form.php';
+
+         $menu['options']['apiclient']['title']           = APIClient::getTypeName(Session::getPluralNumber());
+         $menu['options']['apiclient']['page']            = '/front/config.form.php?forcetab=Config$7';
+         $menu['options']['apiclient']['links']['search'] = '/front/config.form.php?forcetab=Config$7';
+         $menu['options']['apiclient']['links']['add']    = '/front/apiclient.form.php';
       }
       if (count($menu)) {
          return $menu;
@@ -730,7 +735,22 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
       echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+      echo "<br><br><br>";
       echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan='4'>";
+      echo "<hr>";
+      $buttons["apiclient.form.php"] = __('Add API client');
+      $title                    = "";
+      Html::displayTitle("",
+                         self::getTypeName(Session::getPluralNumber()),
+                         "",
+                         $buttons);
+      Search::show("APIClient");
+      echo "</td>";
+      echo "</tr>";
+
 
       echo "</table></div>";
       Html::closeForm();

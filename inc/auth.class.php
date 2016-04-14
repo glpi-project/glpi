@@ -497,7 +497,7 @@ class Auth extends CommonGLPI {
          case self::API:
             if ($CFG_GLPI['enable_api_login_external_token']) {
                $user = new User();
-               if ($user->getFromDBbyToken($_REQUEST['api_key'])) {
+               if ($user->getFromDBbyToken($_REQUEST['user_token'])) {
                   $this->user->fields['name'] = $user->fields['name'];
                   return true;
                }
@@ -1014,7 +1014,7 @@ class Auth extends CommonGLPI {
       }
 
       // Using API login with personnal token
-      if (!empty($_REQUEST['api_key'])) {
+      if (!empty($_REQUEST['user_token'])) {
          return true;
       }
 
@@ -1089,7 +1089,7 @@ class Auth extends CommonGLPI {
       }
 
       // using user token for api login
-      if (!empty($_REQUEST['api_key'])) {
+      if (!empty($_REQUEST['user_token'])) {
          return self::API;
       }
    return false;

@@ -42,6 +42,10 @@ abstract class API extends CommonGLPI {
 
    static $api_url = "";
    protected $format;
+   protected $iptxt         = "";
+   protected $ipnum         = "";
+   protected $app_tokens    = array();
+   protected $apiclients_id = 0;
 
    // first function used on api call
    abstract public function call();
@@ -71,6 +75,7 @@ abstract class API extends CommonGLPI {
       self::$api_url = trim($CFG_GLPI['url_base'], "/")."/api/";
 
       // Don't display error in result
+      set_error_handler(array('Toolbox', 'userErrorHandlerNormal'));
       ini_set('display_errors', 'Off');
 
       // Avoid keeping messages between api calls
@@ -81,6 +86,31 @@ abstract class API extends CommonGLPI {
          $this->returnError(__("API disabled"), "", "", false);
          exit;
       }
+
+      // retrieve ip of client
+      $this->iptxt = (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"]
+                                                              : $_SERVER["REMOTE_ADDR"]);
+      $this->ipnum = (strstr($this->iptxt, ':')===false ? ip2long($this->iptxt) : '');
+
+      // check ip access
+      $apiclient = new APIClient;
+      $where_ip = "";
+      if ($this->ipnum) {
+         $where_ip .= " AND (`ipv4_range_start` IS NULL
+                             OR (`ipv4_range_start` <= '$this->ipnum'
+                                 AND `ipv4_range_end` >= '$this->ipnum'))";
+      } else {
+         $where_ip .= " AND `ipv6` = '".addslashes($this->iptxt)."'";
+      }
+      $found_clients = $apiclient->find("`is_active` = '1' $where_ip");
+      if (count($found_clients) <= 0) {
+         $this->returnError(__("Can't find an active client defined in config for your ip").
+                            " (".$this->iptxt.")",
+                            "", "ERROR_NOT_ALLOWED_IP", false);
+      }
+      $app_tokens = array_column($found_clients, 'app_token');
+      $apiclients_id = array_column($found_clients, 'id');
+      $this->app_tokens = array_combine($apiclients_id, $app_tokens);
    }
 
 
@@ -89,27 +119,28 @@ abstract class API extends CommonGLPI {
     * @param      array   $params   array with theses options :
     *    - a couple 'name' & 'password' : 2 parameters to login with user auhentication
     *         OR
-    *    - an 'api_key' defined in User Configuration
+    *    - an 'user_token' defined in User Configuration
     *
     * @return array with session_token
     */
    protected function initSession($params = array()) {
       global $CFG_GLPI;
+      $this->checkAppToken();
       $this->logEndpointUsage(__FUNCTION__);
 
       if ((!isset($params['login'])
            || empty($params['login'])
            || !isset($params['password'])
            || empty($params['password']))
-         && (!isset($params['api_key'])
-             || empty($params['api_key']))) {
-         $this->returnError(__("parameter(s) login, password or api_key missing"), 400,
+         && (!isset($params['user_token'])
+             || empty($params['user_token']))) {
+         $this->returnError(__("parameter(s) login, password or user_token missing"), 400,
                             "ERROR_LOGIN_PARAMETERS_MISSING");
       }
 
       $auth = new Auth();
 
-      // fill missing params (in case of api_key)
+      // fill missing params (in case of user_token)
       if (!isset($params['login'])) {
          $params['login'] = '';
       }
@@ -118,7 +149,7 @@ abstract class API extends CommonGLPI {
       }
 
       $noAuto = true;
-      if (isset($params['api_key']) && !empty($params['api_key'])) {
+      if (isset($params['user_token']) && !empty($params['user_token'])) {
          $noAuto = false;
 
       } else if (!$CFG_GLPI['enable_api_login_credentials']) {
@@ -144,8 +175,7 @@ abstract class API extends CommonGLPI {
     * @return boolean
     */
    protected function killSession() {
-      $this->logEndpointUsage(__FUNCTION__);
-      self::checkSessionToken();
+      $this->initEndpoint(false, __FUNCTION__);
       return Session::destroy();
    }
 
@@ -1213,30 +1243,54 @@ abstract class API extends CommonGLPI {
    }
 
 
-   private function initEndpoint() {
-      $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
-      $this->logEndpointUsage($backtrace[1]['function']);
+   private function initEndpoint($unlock_session = true, $enpoint = "") {
+      if ($enpoint === "") {
+         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+         $endpoint = $backtrace[1]['function'];
+      }
+      $this->checkAppToken();
+      $this->logEndpointUsage($endpoint);
       self::checkSessionToken();
-      self::unlockSessionIfPossible();
+      if ($unlock_session) {
+         self::unlockSessionIfPossible();
+      }
+   }
+
+   private function checkAppToken() {
+      // check app token (if needed)
+      if (!isset($params['app_token'])) {
+         $params['app_token'] = "";
+      }
+      if (!$this->apiclients_id = array_search($params['app_token'], $this->app_tokens)) {
+         $this->returnError(__("parameter app_token missing"), 400,
+                            "ERROR_APP_TOKEN_PARAMETERS_MISSING");
+      }
    }
 
 
    private function logEndpointUsage($endpoint) {
-      $ip = (isset($_SERVER["HTTP_X_FORWARDED_FOR"]) ? $_SERVER["HTTP_X_FORWARDED_FOR"]
-                                                     : $_SERVER["REMOTE_ADDR"]);
       $username = "";
       if (isset($_SESSION['glpiname'])) {
          $username = "(".$_SESSION['glpiname'].")";
       }
 
-      $changes[0] = 0;
-      $changes[1] = "";
-      $changes[2] = "Enpoint '$endpoint' called by $ip $username";
-      // todo, need to log on existing commondbtm item (we can get it with app_token declaration)
-      // Log::history(0, 'API', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
+      $apiclient = new APIClient;
+      if ($apiclient->getFromDB($this->apiclients_id)) {
+         $changes[0] = 0;
+         $changes[1] = "";
+         $changes[2] = "Enpoint '$endpoint' called by ".$this->iptxt." $username";
 
+         switch ($apiclient->fields['dolog_method']) {
+            case APIClient::DOLOG_HISTORICAL:
+               Log::history($this->apiclients_id, 'APIClient', $changes, 0,
+                            Log::HISTORY_LOG_SIMPLE_MESSAGE);
+               break;
 
-      Toolbox::logInFile("api", $changes[2]."\n");
+            case APIClient::DOLOG_LOGS:
+               Toolbox::logInFile("api", $changes[2]."\n");
+               break;
+         }
+      }
    }
 
 
