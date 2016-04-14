@@ -55,7 +55,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       return $data['session_token'];
    }
 
-   public function testInitSessionPersonnalToken() {
+   public function testInitSessionUserToken() {
       // retrieve personnal token of 'glpi' user
       $user = new User;
       $user->getFromDB(2);
@@ -66,7 +66,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
       $res = $this->http_client->request('GET', 'initSession/',
                                          ['query' => [
-                                             'api_key' => $token
+                                             'user_token' => $token
                                          ]]);
 
 
