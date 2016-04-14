@@ -51,12 +51,12 @@ Method
    - application/json
    - multipart/form-data (for files upload, see [Add item(s)](#add_items) endpoint.
 
-* GET request must have an empty body. You must pass all parameters in URL.
+* GET requests must have an empty body. You must pass all parameters in URL.
   Failing to do so will trigger an HTTP 400 response.
 
 * You may pass your session_token in query string instead of payload for any verb.
 
-* By default, sessions used in this API is read-only.
+* By default, sessions used in this API are read-only.
   Only Some methods have write access to session :
    - [initSession](#init_session)
    - [killSession](#kill_session)
@@ -67,7 +67,7 @@ Method
   This read-only mode allow to use this API with parallel calls.
   In write mode, sessions are locked and you client must wait the end of a call before the next one can execute.
 
-* You can filter API access by enable theses parameters in glpi General Config (API tab) :
+* You can filter API access by enable the following parameters in glpi General Config (API tab) :
    - IPv4 range
    - IPv6 address
    - *app_token* parameter : if not empty, you must pass this parameter in all of your api calls
@@ -455,7 +455,7 @@ $ curl -X GET \
    - *sort* (default 1): id of searchoption to sort by. Optional.
    - *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
 * **Returns**
-   - 200 (OK) with item data
+   - 200 (OK) with items data
    - 401 (UNAUTHORIZED)
 
    and theses headers :
@@ -470,6 +470,8 @@ $ curl -X GET \
 'http://path/to/glpi/api/Computer/?expand_drodpowns=true&session_token=83af7e620c83a50a18d3eac2f6ed05a3ca0bea62'
 
 < 200 OK
+< Content-Range: 0-50/200
+< Accept-Range: 990
 < [
    {
       "id": "34",
@@ -605,7 +607,8 @@ $ curl -X GET \
 ## Search items {#search_items}
 
 * **URL**: [api/search/:itemtype/](search/Computer/?debug)
-* **Description**: Expose the GLPI searchEngine and combine criteria to retrieve a list of elements of specified itemtype. Note you can use 'AllAssets' itemtype to retrieve combined asset types.
+* **Description**: Expose the GLPI searchEngine and combine criteria to retrieve a list of elements of specified itemtype.  
+Note you can use 'AllAssets' itemtype to retrieve combined asset types.
 * **Method**: GET
 * **Parameters (query string)**
    - *session_token*: session var provided by [initSession](#init_session) endpoint . Mandatory
@@ -700,12 +703,12 @@ $ curl -X GET \
       }
    ```
 
+   - 206 (PARTIAL CONTENT) with rows data (pagination doesn't permit to display all rows).
+   - 401 (UNAUTHORIZED)
+
    and theses headers :
       * *Content-Range* offset – limit / count
       * *Accept-Range* itemtype max
-
-   - 206 (PARTIAL CONTENT) with rows data (pagination doesn't permit to display all rows).
-   - 401 (UNAUTHORIZED)
 
 Example usage (CURL) :
 
@@ -726,6 +729,8 @@ curl -g -X GET \
 \&range\=0-2\&&forcedisplay\[0\]\=1
 
 < 200 OK
+< Content-Range: 0-2/2
+< Accept-Range: 990
 < {"totalcount":2,"count":2,"data":{"11":{"1":"W2242","80":"Root Entity","23":"GSM"},"7":{"1":"W2252","80":"Root Entity","23":"GSM"}}}%
 ```
 
@@ -834,9 +839,9 @@ $ curl -X PUT \
 * **Description**: delete an object in GLPI
 * **Method**: DELETE
 * **Parameters (query string)**
-   - *id* : unique identifier of the itemtype passed in url.  
+   - *id* : unique identifier of the itemtype passed in url. You **can skip** this param by passing it in input payload.
       OR
-   - *input* Array of id who need to be deleted. This param is passed by payload  
+   - *input* Array of id who need to be deleted. This param is passed by payload.
 
    id param has precedence over input payload.
 
