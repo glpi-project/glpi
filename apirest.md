@@ -46,35 +46,45 @@ Method
 
 ## Important {#important}
 
-you should always precise a Content-Type header in your http calls.
-Currently, the api supports :
-* application/json
-* multipart/form-data (for files upload, see [Add item(s)](#add_items) endpoint.
+* you should always precise a Content-Type header in your http calls.
+   Currently, the api supports :
+   - application/json
+   - multipart/form-data (for files upload, see [Add item(s)](#add_items) endpoint.
 
-GET request must have an empty body. You must pass all parameters in URL.
-Failing to do so will trigger an HTTP 400 response.
+* GET request must have an empty body. You must pass all parameters in URL.
+  Failing to do so will trigger an HTTP 400 response.
 
-You may pass your session_token in query string instead of payload for any verb.
+* You may pass your session_token in query string instead of payload for any verb.
 
-By default, sessions used in this API is read-only.
-Only Some methods (initSession/killSession/changeActiveEntities/changeActiveProfile) have write access to session.
-You could pass an additional parameter "session_write=true" to bypass this default.
-This read-only mode allow to use this API with parallel calls.
-In write mode, sessions are locked and you client must wait the end of a call before the next one can execute.
+* By default, sessions used in this API is read-only.
+  Only Some methods have write access to session :
+   - [initSession](#init_session)
+   - [killSession](#kill_session)
+   - [changeActiveEntities](#change_active_entities)
+   - [changeActiveProfile](#change_active_profiles)
+
+  You could pass an additional parameter "session_write=true" to bypass this default.
+  This read-only mode allow to use this API with parallel calls.
+  In write mode, sessions are locked and you client must wait the end of a call before the next one can execute.
+
+* You can filter API access by enable theses parameters in glpi General Config (API tab) :
+   - IPv4 range
+   - IPv6 address
+   - *app_token* parameter : if not empty, you must pass this parameter in all of your api calls
 
 
 ## Init session {#init_session}
 
 * **URL**: api/initSession/
 * **Description**: Request a session token to uses other api endpoints.
-                   This endpoint can be optional by defining an api_key directly in [Users Configuration](../front/user.php).
+                   This endpoint can be optional by defining an user_token directly in [Users Configuration](../front/user.php).
 * **Method**: GET
 * **Parameters (query string)**
    - a couple *login* & *password* : 2 parameters to login with user authentication
 
       **OR**
 
-   - an *api_key* defined in User Preference (See 'Remote access key')
+   - an *user_token* defined in User Preference (See 'Remote access key')
 * **Returns** :
    - 200 (OK) with an *session_token*
    - 400 (Bad Request) with a message indicating error in input parameter.
@@ -94,7 +104,7 @@ $ curl -X GET \
 
 $ curl -X GET \
 -H 'Content-Type: application/json' \
-'http://path/to/glpi/api/initSession?api_key=mystringapikey'
+'http://path/to/glpi/api/initSession?user_token=mystringapikey'
 
 < 200 OK
 < {
