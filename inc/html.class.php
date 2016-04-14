@@ -76,7 +76,7 @@ class Html {
          $value         = preg_replace($specialfilter, '', $value);
 
          $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
-         $value = preg_replace("/(&nbsp;| )+/", " ", $value);
+         $value = preg_replace("/(&nbsp;| |\xC2\xA0)+/", " ", $value);
 
 
          $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
