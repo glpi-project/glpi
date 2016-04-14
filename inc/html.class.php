@@ -56,7 +56,7 @@ class Html {
     *          2 : remove tag and neutralize content
     * @return clean value
    **/
-   static function clean($value, $striptags=true, $keep_bad=2) {
+   static function clean($value, $striptags=true, $keep_bad=2, $double_escape_angle_brackets = true) {
 
       include_once(GLPI_HTMLAWED);
 
@@ -93,7 +93,10 @@ class Html {
                                       'cdata'   => 1, // DROP
                                       ));
 
-      $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
+
+      if ($double_escape_angle_brackets) {
+         $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
+      }
 
 /*
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
