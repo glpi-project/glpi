@@ -1401,23 +1401,29 @@ abstract class CommonITILObject extends CommonDBTM {
                                     '_from_object' => true));
          }
       }
-
       if (!is_null($supplieractors)) {
-         if (isset($this->input["_suppliers_id_assign"])
-             && ($this->input["_suppliers_id_assign"] > 0)) {
-            $input3 = array($supplieractors->getItilObjectForeignKey()
-                                           => $this->fields['id'],
-                            'suppliers_id' => $this->input["_suppliers_id_assign"],
-                            'type'         => CommonITILActor::ASSIGN);
-
-            if (isset($this->input["_suppliers_id_assign_notif"])) {
-               foreach ($this->input["_suppliers_id_assign_notif"] as $key => $val) {
-                  $input3[$key] = $val;
-               }
+         if (isset($this->input["_suppliers_id_assign"])) {
+            if (is_array($this->input["_suppliers_id_assign"])) {
+               $tab_assign = array_unique($this->input["_suppliers_id_assign"]);
+            } else {
+               $tab_assign   = array();
+               $tab_assign[] = $this->input["_suppliers_id_assign"];
             }
-            $input3['_from_object'] = true;
-            $supplieractors->add($input3);
 
+            foreach ($tab_assign as $key_assign => $assign) {
+               $input3 = array($supplieractors->getItilObjectForeignKey()
+                                              => $this->fields['id'],
+                               'suppliers_id' => $assign,
+                               'type'         => CommonITILActor::ASSIGN);
+
+               if (isset($this->input["_suppliers_id_assign_notif"])) {
+                  foreach ($this->input["_suppliers_id_assign_notif"] as $key => $val) {
+                     $input3[$key] = $val[$key_assign];
+                  }
+               }
+               $input3['_from_object'] = true;
+               $supplieractors->add($input3);
+            }
          }
       }
 
