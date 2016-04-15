@@ -570,8 +570,7 @@ class Ticket extends CommonITILObject {
             }
 
             if ((!$_SESSION['glpiticket_timeline']
-                || $_SESSION['glpiticket_timeline_keep_replaced_tabs'])
-                && ($item->fields['status'] == self::SOLVED)) {
+                || $_SESSION['glpiticket_timeline_keep_replaced_tabs'])) {
                $ong[2] = _n('Solution', 'Solutions', 1);
             }
             // enquete si statut clos
