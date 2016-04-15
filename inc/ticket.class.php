@@ -4163,9 +4163,7 @@ class Ticket extends CommonITILObject {
          echo $tt->getBeginHiddenFieldValue('itemtype');
 
          // Select hardware on creation or if have update right
-         if ($canupdate
-                 || $canupdate_descr) {
-
+         if (Session::haveRight('ticket', CREATE)) {
             $dev_user_id = $values['_users_id_requester'];
             $dev_itemtype = $values["itemtype"];
             $dev_items_id = $values["items_id"];
