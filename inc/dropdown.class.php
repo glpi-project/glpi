@@ -1694,7 +1694,7 @@ class Dropdown {
          }
       }
 
-      if ($param["display_emptychoice"]) {
+      if ($param["display_emptychoice"] && ($name != 'language')) {
          $elements = array( 0 => $param['emptylabel'] ) + $elements ;
       }
 
@@ -1716,9 +1716,8 @@ class Dropdown {
             }
          }
          $output .= implode('<br>',$to_display);
+
       } else {
-
-
          $output  .= "<select name='$field_name' id='$field_id'";
 
          if (!empty($param["on_change"])) {
