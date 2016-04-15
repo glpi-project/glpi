@@ -1719,7 +1719,7 @@ a.icon_nav_move:hover img {
 }
 
 #logo_login {
-   padding: 70px 0 0;
+   padding: 80px 0 0;
    margin: 0 auto 0;
    width: 100%;
    height: 76px;
@@ -1838,7 +1838,7 @@ a.icon_nav_move:hover img {
 }
 
 #footer-login {
-   position: fixed;
+   position: absolute;
    right: 10px;
    bottom: 0px;
    height: 40px;
@@ -3162,7 +3162,46 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
 
 /* ################--------------- Responsive  ---------------#################### */
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 700px) {
+   #header {
+      transition: top 0.2s ease-in-out;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+   }
+
+   #c_ssmenu2 {
+      overflow: auto;
+      border-bottom: 1px solid #DDD;
+   }
+
+   #header.nav-up {
+      top: -150px;
+   }
+
+   #page {
+      padding-top: 130px;
+   }
+
+   #firstboxlogin {
+      position: fixed;
+      overflow-y: auto;
+   }
+
+   #logo_login {
+      height: inherit;
+   }
+
+   #display-login, #text-login {
+      padding: 1px 2%;
+   }
+
+   #footer-login {
+      display: none;
+   }
+
+
    .icons_block {
       margin-left: 0;
    }
@@ -3196,8 +3235,17 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
       display: none !important;
    }
 
+   .search_page > form > .center {
+      width: 100%;
+      overflow-y: auto;
+   }
+
    .ui-tabs {
       width: 100% !important;
+   }
+
+   .stMainWrapper > ul.ui-tabs-nav {
+      overflow-x: auto !important;
    }
 
    .ui-tabs-vertical .ui-tabs-nav {
@@ -3226,6 +3274,7 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    .ui-tabs .ui-tabs-panel
    .ui-tabs-vertical .ui-tabs-panel {
       padding: 2px !important;
+      overflow-y: auto;
    }
 
    .ui-tabs-vertical .ui-tabs-panel {
@@ -3286,6 +3335,10 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
       box-sizing: border-box;
    }
 
+   #searchcriterias table {
+      border-collapse: collapse;
+   }
+
    #searchcriterias .tab_cadre_fixe  {
       width: 100%;
    }
@@ -3296,14 +3349,24 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    }
 
 
-   #searchcriterias .normalcriteria, 
-   #searchcriterias .normalcriteria > td {
+   #searchcriterias .tab_cadre_fixe {
       display: block;
-      min-width: 49%;
+      width: 100%;
    }
+   #searchcriterias .metacriteria td,
+   #searchcriterias .normalcriteria td {
+      display: inline-block;
+      float: left;
+      white-space: nowrap;
+      width: initial !important;
+   }
+   #searchcriterias .metacriteria,
    #searchcriterias .normalcriteria {
-      border-bottom: 1px solid #EEE;
-      margin-bottom: 7px;
+      clear: left;
+      display: block;
+      width: 100%;
+      margin-bottom: 6px;
+      overflow: auto;
    }
 
    .timeline_history .h_date {
