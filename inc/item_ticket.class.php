@@ -391,7 +391,7 @@ class Item_Ticket extends CommonDBRelation{
          return false;
       }
 
-      $canedit = ($ticket->canEdit($instID)
+      $canedit = ($ticket->canAddItem($instID)
                   && isset($_SESSION["glpiactiveprofile"])
                   && $_SESSION["glpiactiveprofile"]["interface"] == "central");
       $rand    = mt_rand();
