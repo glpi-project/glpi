@@ -1092,17 +1092,21 @@ class Html {
 
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/css/jstree/style.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.min.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/css/style.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.css",
                      array('media' => ''));
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.print.css",
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.print.min.css",
                      array('media' => 'print'));
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
+      if (CommonGLPI::isLayoutWithMain()
+          && !CommonGLPI::isLayoutExcludedPage()) {
+         echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/css/jquery.scrollabletab.min.css");
+      }
 
       //  CSS link
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
@@ -1160,25 +1164,24 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/imagepaste/jquery.image_paste.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/imagepaste/jquery.image_paste.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum-min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/autogrow/jquery.autogrow-textarea.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/lib/moment.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.js");
 
       // layout
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
-         echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/css/jquery.scrollabletab.css");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.js");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.min.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.min.js");
       }
 
       //locales for js library
