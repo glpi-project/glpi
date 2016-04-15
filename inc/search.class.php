@@ -1225,7 +1225,9 @@ class Search {
             if ($item !== null && $item->maybeDeleted()) {
                $delete_ctrl        = self::isDeletedSwitch($data['search']['is_deleted']);
                $search_config_top .= $delete_ctrl;
-               $parameters.= "&amp;is_deleted=".$data['search']['is_deleted'];
+               if ($data['search']['is_deleted']) {
+                  $parameters.= "&amp;is_deleted=".$data['search']['is_deleted'];
+               }
             }
 
             Html::printPager($data['search']['start'], $data['data']['totalcount'],
