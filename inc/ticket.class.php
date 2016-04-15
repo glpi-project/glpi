@@ -4180,8 +4180,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          echo "<td rowspan='2'>";
          echo $tt->getBeginHiddenFieldValue('items_id');
-         if ($canupdate
-                 || $canupdate_descr) {
+         if (Session::haveRight('ticket', CREATE)) {
             Item_Ticket::itemAddForm($this, $values);
          }
          echo $tt->getEndHiddenFieldValue('items_id', $this);
@@ -4190,7 +4189,10 @@ class Ticket extends CommonITILObject {
       } else {
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue('items_id');
-         Item_Ticket::itemAddForm($this, $values);
+         if ($canupdate
+             || $canupdate_descr) {
+            Item_Ticket::itemAddForm($this, $values);
+         }
          echo $tt->getEndHiddenFieldValue('items_id', $this);
          echo "</td>";
       }
