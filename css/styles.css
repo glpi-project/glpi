@@ -3244,10 +3244,6 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
       width: 100% !important;
    }
 
-   .stMainWrapper > ul.ui-tabs-nav {
-      overflow-x: auto !important;
-   }
-
    .ui-tabs-vertical .ui-tabs-nav {
       padding: .2em .2em 0;
       float: inherit;
