@@ -105,6 +105,7 @@ class Computer extends CommonDBTM {
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('ComputerVirtualMachine', $ong, $options)
+         ->addStandardTab('ComputerAntivirus', $ong, $options)
          ->addStandardTab('Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
@@ -403,6 +404,9 @@ class Computer extends CommonDBTM {
 
       $vm = new ComputerVirtualMachine();
       $vm->cleanDBonItemDelete('Computer', $this->fields['id']);
+
+      $antivirus = new ComputerAntivirus();
+      $antivirus->cleanDBonItemDelete('Computer', $this->fields['id']);
    }
 
 
@@ -538,7 +542,8 @@ class Computer extends CommonDBTM {
 
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
-      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"];
+      echo "<textarea style='width:95%' rows='".($rowspan+3)."' name='comment' >".
+           $this->fields["comment"];
       echo "</textarea></td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -1083,6 +1088,8 @@ class Computer extends CommonDBTM {
       $tab[166]['massiveaction'] = false;
       $tab[166]['joinparams']    = array('jointype' => 'child');
 
+      $tab+= ComputerAntivirus::getSearchOptionsToAdd();
+      
       return $tab;
    }
 

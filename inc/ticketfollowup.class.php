@@ -302,6 +302,8 @@ class TicketFollowup  extends CommonDBTM {
       if (empty($input['content'])
           && !isset($input['add_close'])
           && !isset($input['add_reopen'])) {
+         Session::addMessageAfterRedirect(__("You can't add a followup without description"),
+                                          false, ERROR);
          return false;
       }
       if (!$input["_job"]->getFromDB($input["tickets_id"])) {

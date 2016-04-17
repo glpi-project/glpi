@@ -48,40 +48,40 @@ if (strpos($_SERVER['PHP_SELF'],"getDropdownUsers.php")) {
 
 Session::checkLoginUser();
 
-if (!isset($_GET['right'])) {
-   $_GET['right'] = "all";
+if (!isset($_POST['right'])) {
+   $_POST['right'] = "all";
 }
 
 // Default view : Nobody
-if (!isset($_GET['all'])) {
-   $_GET['all'] = 0;
+if (!isset($_POST['all'])) {
+   $_POST['all'] = 0;
 }
 
 $used = array();
 
-if (isset($_GET['used'])) {
-   $used = $_GET['used'];
+if (isset($_POST['used'])) {
+   $used = $_POST['used'];
 }
 
-if (!isset($_GET['value'])) {
-   $_GET['value'] = 0;
+if (!isset($_POST['value'])) {
+   $_POST['value'] = 0;
 }
 
 $one_item = -1;
-if (isset($_GET['_one_id'])) {
-   $one_item = $_GET['_one_id'];
+if (isset($_POST['_one_id'])) {
+   $one_item = $_POST['_one_id'];
 }
 
-if (!isset($_GET['page'])) {
-   $_GET['page']       = 1;
-   $_GET['page_limit'] = $CFG_GLPI['dropdown_max'];
+if (!isset($_POST['page'])) {
+   $_POST['page']       = 1;
+   $_POST['page_limit'] = $CFG_GLPI['dropdown_max'];
 }
 
 if ($one_item < 0) {
-   $start  = ($_GET['page']-1)*$_GET['page_limit'];
-   $result = User::getSqlSearchResult(false, $_GET['right'], $_GET["entity_restrict"],
-                                      $_GET['value'], $used, $_GET['searchText'], $start,
-                                      $_GET['page_limit']);
+   $start  = ($_POST['page']-1)*$_POST['page_limit'];
+   $result = User::getSqlSearchResult(false, $_POST['right'], $_POST["entity_restrict"],
+                                      $_POST['value'], $used, $_POST['searchText'], $start,
+                                      $_POST['page_limit']);
 } else {
    $query = "SELECT DISTINCT `glpi_users`.*
              FROM `glpi_users`
@@ -114,12 +114,12 @@ uasort($users, 'dpuser_cmp');
 $datas = array();
 
 // Display first if empty search
-if ($_GET['page'] == 1 && empty($_GET['searchText'])) {
+if ($_POST['page'] == 1 && empty($_POST['searchText'])) {
    if (($one_item < 0) || ($one_item == 0)) {
-      if ($_GET['all'] == 0) {
+      if ($_POST['all'] == 0) {
          array_push($datas, array('id'   => 0,
                                   'text' => Dropdown::EMPTY_VALUE));
-      } else if ($_GET['all'] == 1) {
+      } else if ($_POST['all'] == 1) {
          array_push($datas, array('id'   => 0,
                                   'text' => __('All')));
       }

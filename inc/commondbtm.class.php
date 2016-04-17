@@ -1954,7 +1954,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $options      array
     *
@@ -1993,7 +1993,9 @@ class CommonDBTM extends CommonGLPI {
          //TRANS: %s is the datetime of insertion
          printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
          echo "</th>";
-      } elseif ($date_mod_exists) {
+      }
+
+      if ($date_mod_exists) {
          echo "<th colspan='$colspan'>";
          //TRANS: %s is the datetime of update
          printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
@@ -3500,6 +3502,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    function getUnicityErrorMessage($msgs, $unicity, $doubles) {
 
+      $message = array();
       foreach($msgs as $field => $value) {
          $table = getTableNameForForeignKeyField($field);
          if ($table != '') {
@@ -3654,7 +3657,7 @@ class CommonDBTM extends CommonGLPI {
                          || $p['add_event_on_duplicate']) {
                         $message = array();
                         foreach (explode(',',$fields['fields']) as $field) {
-                           $message[$fields] = $this->input[$field];
+                           $message[$field] = $this->input[$field];
                         }
 
                         $doubles      = getAllDatasFromTable($this->gettable(),
@@ -4391,7 +4394,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Generate link
     *
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $link    string   original string content
     * @param $item             CommonDBTM object: item used to make replacements

@@ -3364,13 +3364,20 @@ abstract class CommonITILObject extends CommonDBTM {
                       'value'       => $options["_users_id_".$typename],
                       'right'       => $right,
                       'rand'        => $rand,
-                      'ldap_import' => true);
+                      'entity'      => (isset($options['entities_id'])
+                                        ? $options['entities_id']: $options['entity_restrict']));
+
+      //only for active ldap and corresponding right
+      $ldap_methods = getAllDatasFromTable('glpi_authldaps', '`is_active`=1');
+      if (count($ldap_methods)
+            && Session::haveRight('user', User::IMPORTEXTAUTHUSERS)) {
+         $params['ldap_import'] = true;
+      }
 
       if ($this->userentity_oncreate
           && ($type == CommonITILActor::REQUESTER)) {
          $params['on_change'] = 'this.form.submit()';
-      } else { // Force entity search if needed
-         $params['entity'] = $options['entities_id'];
+         unset($params['entity']);
       }
 
       $params['_user_index'] = 0;
@@ -3977,8 +3984,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
       echo "</div>"; // tab_actors
-
-      echo "<div class='actor_clear'></div>";
    }
 
 
@@ -4309,8 +4314,7 @@ abstract class CommonITILObject extends CommonDBTM {
 //             return true;
 //          }
 //       }
-      if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
-          && $itemtype::canView()) {
+      if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
          return true;
       }
       return false;

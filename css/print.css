@@ -485,53 +485,13 @@ li.auto_comp {
 
 /* ################--------------- Calendrier  / reservation ---------------#################### */
 
-.calendrier {
-   border: 1px solid #888888;
-   background-color:#eeeeee;
-   vertical-align:middle;
-   background:  url("../pics/fond_form.png") repeat-x; 
+#ui-datepicker-div,
+#planning_filter,
+#refresh_planning,
+.sp-hidden,
+.fc-time:before {
+   display: none;
 }
-
-.calendrier:hover {
-   border: 1px inset #888888;
-   background-color:#ffffff;
-   cursor:pointer;
-}
-
-.calendrier_mois {
-   font-family: Verdana, Arial, Sans, sans-serif; 
-   font-size: 10px;
-}
-
-.calendrier_jour {
-   font-family: arial,helvetica,sans-serif; 
-   font-size: 14px; 
-   color: black;
-}
-
-.calendrier_case1 {
-   margin-left: 10px; 
-   padding: 2px; 
-   -moz-border-radius: 5px;
-   margin-top: 2px; 
-   border: 1px solid #666666;
-   background-color: white;
-}
-
-.calendrier_case2 {
-   margin-left: 10px; 
-   padding: 2px; 
-   -moz-border-radius: 5px; 
-   margin-top: 2px;
-   border: 1px solid #cccccc; 
-   background-color: #eeeeee
-}
-
-.calendrier_case_white {
-   background-color:#ffffff;
-}
-
-
 
 /* ################--------------- Knowledge FAQ  ---------------#################### */
 

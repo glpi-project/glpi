@@ -305,9 +305,14 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')."</td>";
+      echo "<td>".sprintf(__('%1$s%2$s'),__('Name'),
+                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+           "</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,"name");
+      $objectName = autoName($this->fields["name"], "name",
+                             (isset($options['withtemplate']) && ( $options['withtemplate']== 2)),
+                             $this->getType(), $this->fields["entities_id"]);
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
       echo "<td>".__('Serial number')."</td>";
       echo "<td>";
@@ -351,9 +356,14 @@ class SoftwareLicense extends CommonDBTM {
                                                     'softwares_id' => $this->fields["softwares_id"],
                                                     'value'        => $this->fields["softwareversions_id_buy"]));
       echo "</td>";
-      echo "<td>".__('Inventory number')."</td>";
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'),
+                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+           "</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,"otherserial");
+      $objectName = autoName($this->fields["otherserial"], "otherserial",
+                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
+                             $this->getType(), $this->fields["entities_id"]);
+      Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -409,14 +419,6 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>" . __('Associable to a ticket') . "</td><td>";
       Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
       echo "</td></tr>\n";
-
-      if ($ID > 0) {
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Last update')."</td>";
-         echo "<td>".($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
-                                                : __('Never'));
-         echo "</td></tr>";
-      }
 
       $this->showFormButtons($options);
 

@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -158,6 +157,31 @@ class Item_Ticket extends CommonDBRelation{
             }
          }
       }
+      $group = new Group_Ticket();
+      $groups = $group->find("`tickets_id` = ". $input['tickets_id']. " AND `type` = ".CommonITILActor::REQUESTER);
+
+      if (count($groups) <= 0) {
+         if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
+            if ($item = getItemForItemtype($input["itemtype"])) {
+               if ($item->getFromDB($input["items_id"])) {
+                  if ($item->isField('groups_id')) {
+                     $ticket->fields['items_groups'] = $item->fields['groups_id'];
+
+                     // Process Business Rules
+                     $rules = new RuleTicketCollection($ticket->fields['entities_id']);
+
+                     $ticket->fields = $rules->processAllRules(Toolbox::stripslashes_deep($ticket->fields),
+                                                Toolbox::stripslashes_deep($ticket->fields),
+                                                array('recursive' => true));
+
+                     unset($ticket->fields['items_groups']);
+
+                     $group->add(array('tickets_id' => $input['tickets_id'], 'groups_id' => $item->fields['groups_id'], 'type' => CommonITILActor::REQUESTER));
+                  }
+               }
+            }
+         }
+      }
 
       return parent::prepareInputForAdd($input);
    }
@@ -236,10 +260,14 @@ class Item_Ticket extends CommonDBRelation{
       $tt = new TicketTemplate();
       if (isset($options['_tickettemplate'])) {
          $tt                  = $options['_tickettemplate'];
-         $opt['templates_id'] = $tt->fields['id'];
-      } elseif (isset($options['templates_id'])) {
+         if (isset($tt->fields['id'])) {
+            $opt['templates_id'] = $tt->fields['id'];
+         }
+      } else if (isset($options['templates_id'])) {
          $tt->getFromDBWithDatas($options['templates_id']);
-         $opt['templates_id'] = $tt->fields['id'];
+         if (isset($tt->fields['id'])) {
+            $opt['templates_id'] = $tt->fields['id'];
+         }
       }
 
       $rand  = mt_rand();
@@ -616,7 +644,7 @@ class Item_Ticket extends CommonDBRelation{
             }
             Dropdown::showItemTypes($myname, array_keys($types),
                                     array('emptylabel' => $emptylabel,
-                                          'value'      => $itemtype, 
+                                          'value'      => $itemtype,
                                           'rand'       => $rand, 'display_emptychoice' => true));
             $found_type = isset($types[$itemtype]);
 

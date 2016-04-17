@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -66,7 +65,7 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} elseif (isset($_POST["delete"])) {
+} else if (isset($_POST["delete"])) {
    $item_ticket = new Item_Ticket();
    $deleted = $item_ticket->deleteByCriteria(array('tickets_id' => $_POST['tickets_id'],
                                                    'items_id'   => $_POST['items_id'],
@@ -75,4 +74,3 @@ if (isset($_POST["add"])) {
 }
 
 Html::displayErrorAndDie("lost");
-?>

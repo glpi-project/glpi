@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class SolutionTemplate
 /**
  * Template for task
- * @since version 0.91
+ * @since version 9.1
 **/
 class TaskTemplate extends CommonDropdown {
 

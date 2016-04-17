@@ -3039,6 +3039,12 @@ class User extends CommonDBTM {
                                                              $entity_restrict, 1).") ";
                      break;
 
+                  case 'faq' :
+                     $where[]= " (`glpi_profilerights`.`name` = 'knowbase'
+                                  AND (`glpi_profilerights`.`rights` & ".KnowbaseItem::READFAQ.") ".
+                                  getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
+                                                             $entity_restrict, 1).") ";
+
                   default :
                      // Check read or active for rights
                      $where[]= " (`glpi_profilerights`.`name` = '".$r."'
@@ -3641,7 +3647,7 @@ class User extends CommonDBTM {
                 FROM `glpi_useremails`
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_useremails`.`users_id`)
                 WHERE `glpi_useremails`.`email` = '".stripslashes($email)."'
-                ORDER BY `glpi_users`.`is_active`  DESC";
+                ORDER BY `glpi_users`.`is_active`  DESC, is_deleted ASC";
       $result = $DB->query($query);
 
       //User still exists in DB
@@ -3676,6 +3682,13 @@ class User extends CommonDBTM {
    **/
    static function manageDeletedUserInLdap($users_id) {
       global $CFG_GLPI;
+
+      //The only case where users_id can be null if when a user has been imported into GLPi
+      //it's dn still exists, but doesn't match the connection filter anymore
+      //In this case, do not try to process the user
+      if (!$users_id) {
+         return true;
+      }
 
       //User is present in DB but not in the directory : it's been deleted in LDAP
       $tmp['id']              = $users_id;
@@ -3712,6 +3725,15 @@ class User extends CommonDBTM {
             $tmp['is_active'] = 0;
             $myuser->update($tmp);
             break;
+
+         //Deactivate the user+ Delete all user dynamic habilitations and groups
+         case 4:
+            $tmp['is_active'] = 0;
+            $myuser->update($tmp);
+            Profile_User::deleteRights($users_id, true);
+            Group_User::deleteGroups($users_id, true);
+            break;
+
       }
       /*
       $changes[0] = '0';

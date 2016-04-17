@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -588,7 +587,9 @@ class MailCollector  extends CommonDBTM {
                   } else {
                      $rejinput['reason'] = NotImportedEmail::MATCH_NO_RULE;
                   }
+                  $refused++;
                   $rejected->add($rejinput);
+                  $this->deleteMails($i, self::REFUSED_FOLDER);
                }
                $this->fetch_emails++;
             }
@@ -750,6 +751,9 @@ class MailCollector  extends CommonDBTM {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
+      // Double encoding for > and < char to avoid misinterpretations
+      $tkt['content'] = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $tkt['content']);
+
       $is_html = false;
       //If files are present and content is html
       if (isset($this->files)
@@ -761,11 +765,13 @@ class MailCollector  extends CommonDBTM {
                                                            array_merge($this->files, $this->altfiles),
                                                            $this->tags);
       }
+
+      // Clean mail content
       $striptags = true;
       if ($CFG_GLPI["use_rich_text"] && !isset($tkt['tickets_id'])) {
          $striptags = false;
       }
-      $tkt['content'] = $this->cleanMailContent($tkt['content'], $striptags);
+      $tkt['content'] = $this->cleanMailContent(Html::entities_deep($tkt['content']), $striptags);
 
       if ($is_html && !isset($tkt['tickets_id'])) {
          $tkt['content'] = nl2br($tkt['content']);
@@ -931,10 +937,8 @@ class MailCollector  extends CommonDBTM {
    function cleanMailContent($string, $striptags = true) {
       global $DB;
 
-      // delete html tags
-      if ($striptags) {
-         $string = Html::clean($string);
-      }
+      // Delete html tags
+      $string = Html::clean($string, $striptags, 2);
 
       // First clean HTML and XSS
       $string = Toolbox::clean_cross_side_scripting_deep($string);
@@ -1055,9 +1059,16 @@ class MailCollector  extends CommonDBTM {
                                      Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                      CL_EXPUNGE, 1);
       } else {
-         $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
-                                     Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
-                                     CL_EXPUNGE, 1, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
+         $try_options = array(array('DISABLE_AUTHENTICATOR' => 'GSSAPI'),
+                              array('DISABLE_AUTHENTICATOR' => 'PLAIN'));
+         foreach($try_options as $option) {
+            $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
+                                        Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
+                                        CL_EXPUNGE, 1, $option);
+            if (is_resource($this->marubox)) {
+               break;
+            }
+         }
 
       }
       // Reset errors
@@ -1307,13 +1318,17 @@ class MailCollector  extends CommonDBTM {
    /**
     * Summary of getDecodedFetchbody
     * used to get decoded part from email
-    * @param mixed $structure
-    * @param mixed $mid
-    * @param mixed $part 
+    *
+    * @since version 0.90.2
+    * @param $structure
+    * @param $mid
+    * @param $part
+    *
     * @return bool|string
-    */
+   **/
    private function getDecodedFetchbody($structure, $mid, $part) {
-      if ($message=imap_fetchbody($this->marubox, $mid, $part)) {
+
+      if ($message = imap_fetchbody($this->marubox, $mid, $part)) {
          switch ($structure->encoding) {
             case 1 :
                $message = imap_8bit($message);
@@ -1399,13 +1414,15 @@ class MailCollector  extends CommonDBTM {
              && $structure->subtype) {
             // Embeded image come without filename - generate trivial one
             $filename = "image_$part.".$structure->subtype;
-         } elseif (empty($filename) && $structure->type==2 && $structure->subtype) {
+         } else if (empty($filename)
+                    && ($structure->type == 2)
+                    && $structure->subtype) {
              // Embeded email comes without filename - try to get "Subject:" or generate trivial one
              $filename = "msg_$part.EML"; // default trivial one :)!
-             if ( ($message=$this->getDecodedFetchbody($structure, $mid, $part)) 
-                && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches)) ) {
-                     $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";  
-                     $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;                    
+             if (($message = $this->getDecodedFetchbody($structure, $mid, $part))
+                 && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches))) {
+                 $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";
+                $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;
              }
          }
 
@@ -1445,7 +1462,8 @@ class MailCollector  extends CommonDBTM {
             return false;
          }
 
-         if (($structure->type==2 && $structure->subtype) || $message = $this->getDecodedFetchbody($structure, $mid, $part)) {
+         if ((($structure->type == 2) && $structure->subtype)
+             || ($message = $this->getDecodedFetchbody($structure, $mid, $part))) {
             if (file_put_contents($path.$filename, $message)) {
                $this->files[$filename] = $filename;
                // If embeded image, we add a tag
@@ -1585,7 +1603,7 @@ class MailCollector  extends CommonDBTM {
                    && ($data = $DB->fetch_assoc($result))) {
                $mc->maxfetch_emails = $max;
 
-               $task->log("Collect mails from ".$data["host"]."\n");
+               $task->log("Collect mails from ".$data["name"]." (".$data["host"].")\n");
                $message = $mc->collect($data["id"]);
 
                $task->addVolume($mc->fetch_emails);
@@ -1792,4 +1810,3 @@ class MailCollector  extends CommonDBTM {
    }
 
 }
-?>
