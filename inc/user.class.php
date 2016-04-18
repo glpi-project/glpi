@@ -3116,7 +3116,9 @@ class User extends CommonDBTM {
                              OR `glpi_users`.`firstname` ".Search::makeTextSearch($search)."
                              OR `glpi_users`.`phone` ".Search::makeTextSearch($search)."
                              OR `glpi_useremails`.`email` ".Search::makeTextSearch($search)."
-                             OR CONCAT(`glpi_users`.`realname`,' ',`glpi_users`.`firstname`) ".
+                             OR CONCAT(`glpi_users`.`realname`,' ',
+                                       `glpi_users`.`firstname`,' ',
+                                       `glpi_users`.`firstname`) ".
                                        Search::makeTextSearch($search).")";
          }
          $query .= " WHERE $where ";
