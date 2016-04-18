@@ -1580,13 +1580,24 @@ class Config extends CommonDBTM {
       return '';
    }
 
-   static function getLibraryDir($mixed) {
-      if (is_object($mixed)) {
-         return realpath(dirname((new ReflectionObject($mixed))->getFileName()));
-      } elseif (class_exists($mixed)) {
-         return realpath(dirname((new ReflectionClass($mixed))->getFileName()));
-      } elseif (function_exists($mixed)) {
-         return realpath(dirname((new ReflectionFunction($mixed))->getFileName()));
+
+   /**
+    * Retrieve full directory of a lib
+    * @param  $libstring  object, class or function
+    * @return string       the path or false
+    *
+    * @since version 9.1
+    */
+   static function getLibraryDir($libstring) {
+      if (is_object($libstring)) {
+         return realpath(dirname((new ReflectionObject($libstring))->getFileName()));
+
+      } elseif (class_exists($libstring)) {
+         return realpath(dirname((new ReflectionClass($libstring))->getFileName()));
+
+      } elseif (function_exists($libstring)) {
+         return realpath(dirname((new ReflectionFunction($libstring))->getFileName()));
+
       }
       return false;
    }
@@ -1624,11 +1635,11 @@ class Config extends CommonDBTM {
       echo "SimplePie version " . SIMPLEPIE_VERSION . " in (" . self::getLibraryDir($sp) . ")\n";
 
       // TCPDF
-      echo "TCPDF version " . TCPDF_STATIC::getTCPDFVersion() . " in (" . realpath("TCPDF") . ")\n";
+      echo "TCPDF version " . TCPDF_STATIC::getTCPDFVersion() . " in (" . self::getLibraryDir("TCPDF") . ")\n";
 
       // password_compat
       $check = (PasswordCompat\binary\check() ? "Ok" : "KO");
-      echo "ircmaxell/password-compat in (" . self::getLibraryDir($check) . "). Compatitility: $check\n";
+      echo "ircmaxell/password-compat in (" . self::getLibraryDir("PasswordCompat\binary\check") . "). Compatitility: $check\n";
 
       echo "\n</pre></td></tr>";
    }
