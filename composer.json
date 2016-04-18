@@ -1,6 +1,15 @@
 {
     "name": "glpi/glpi",
     "description": "GLPI depdendencies",
+    "license": "GPL-2.0",
+    "type": "project",
+    "homepage": "http://www.glpi-project.org/",
+    "support": {
+        "irc": "irc://irc.freenode.org/glpi",
+        "forum": "http://forum.glpi-project.org/",
+        "issues": "https://github.com/glpi-project/glpi/issues",
+        "docs": "https://github.com/glpi-project/doc"
+    },
     "require": {
         "bedandbreakfast/icalcreator": "~2.22",
         "htmlawed/htmlawed": "~1.1",
@@ -14,6 +23,12 @@
         "zendframework/zend-i18n": "~2.4.0",
         "zendframework/zend-loader": "~2.4.0",
         "zendframework/zend-version": "~2.4.0",
-        "zetacomponents/graph": "~1.5",
+        "zetacomponents/graph": "~1.5"
+    }
+    ,
+    "config": {
+        "platform": {
+            "php": "5.4.0"
+        }
     }
 }

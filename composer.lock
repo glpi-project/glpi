@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c8989b9f4dda7847480be10447e5ab37",
-    "content-hash": "c704836870a9556a596835c0b6e7a1b1",
+    "hash": "0cf8440ff04416734143156035fcf43d",
+    "content-hash": "4ddefbeac39a1e943561d3ccff5ebb00",
     "packages": [
         {
             "name": "bedandbreakfast/icalcreator",
@@ -1094,5 +1094,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "platform-overrides": {
+        "php": "5.4.0"
+    }
 }
