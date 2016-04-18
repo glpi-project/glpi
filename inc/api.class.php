@@ -1391,9 +1391,6 @@ abstract class API extends CommonGLPI {
    public function inlineDocumentation($file) {
       global $CFG_GLPI;
 
-      require_once(GLPI_PARSEDOWN_DIR.'/Parsedown.php');
-      require_once(GLPI_PARSEDOWN_DIR.'/parsedown-extra/ParsedownExtra.php');
-
       self::header(true, __("API Documentation"));
       echo Html::css("../"."lib/prism/prism.css");
       echo Html::script("../"."lib/prism/prism.js");

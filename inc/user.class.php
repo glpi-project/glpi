@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use JeroenDesloovere\VCard\VCard;
+
 class User extends CommonDBTM {
 
    // From CommonDBTM
@@ -3395,28 +3397,26 @@ class User extends CommonDBTM {
    **/
    function generateVcard() {
 
-      include_once (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
-
       // build the Vcard
       $vcard = new vCard();
 
       if (!empty($this->fields["realname"])
           || !empty($this->fields["firstname"])) {
-         $vcard->setName($this->fields["realname"], $this->fields["firstname"], "", "");
+         $vcard->addName($this->fields["realname"], $this->fields["firstname"], "", "");
       } else {
-         $vcard->setName($this->fields["name"], "", "", "");
+         $vcard->addName($this->fields["name"], "", "", "");
       }
 
-      $vcard->setPhoneNumber($this->fields["phone"], "PREF;WORK;VOICE");
-      $vcard->setPhoneNumber($this->fields["phone2"], "HOME;VOICE");
-      $vcard->setPhoneNumber($this->fields["mobile"], "WORK;CELL");
+      $vcard->addPhoneNumber($this->fields["phone"], "PREF;WORK;VOICE");
+      $vcard->addPhoneNumber($this->fields["phone2"], "HOME;VOICE");
+      $vcard->addPhoneNumber($this->fields["mobile"], "WORK;CELL");
 
-      $vcard->setEmail($this->getDefaultEmail());
+      $vcard->addEmail($this->getDefaultEmail());
 
-      $vcard->setNote($this->fields["comment"]);
+      $vcard->addNote($this->fields["comment"]);
 
       // send the  VCard
-      $output   = $vcard->getVCard();
+      $output   = $vcard->getOutput();
       $filename = $vcard->getFileName();      // "xxx xxx.vcf"
 
       @Header("Content-Disposition: attachment; filename=\"$filename\"");

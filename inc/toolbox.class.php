@@ -380,8 +380,6 @@ class Toolbox {
                       ? NULL : (is_resource($value)
                                   ? $value : str_replace($out,$in,$value)));
 
-      include_once(GLPI_HTMLAWED);
-
       // revert unclean inside <pre>
       $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
       for ($i = 0; $i < $count; ++$i) {

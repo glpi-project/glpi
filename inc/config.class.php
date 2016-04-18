@@ -1668,6 +1668,28 @@ class Config extends CommonDBTM {
 
 
    /**
+    * Retrieve full directory of a lib
+    * @param  $libstring  object, class or function
+    * @return string       the path or false
+    *
+    * @since version 9.1
+    */
+   static function getLibraryDir($libstring) {
+      if (is_object($libstring)) {
+         return realpath(dirname((new ReflectionObject($libstring))->getFileName()));
+
+      } elseif (class_exists($libstring)) {
+         return realpath(dirname((new ReflectionClass($libstring))->getFileName()));
+
+      } elseif (function_exists($libstring)) {
+         return realpath(dirname((new ReflectionFunction($libstring))->getFileName()));
+
+      }
+      return false;
+   }
+
+
+   /**
     * show Libraries information in system information
     *
     * @since version 0.84
@@ -1679,37 +1701,54 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th>Libraries</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
-      include_once(GLPI_HTMLAWED);
-      echo "htmLawed version " . hl_version() . " in (" . realpath(dirname(GLPI_HTMLAWED)) . ")\n";
+      echo "htmLawed version ".hl_version().
+           " in (".self::getLibraryDir("hl_version").")\n";
 
-      include (GLPI_PHPCAS);
-      echo "phpCas version " . phpCAS::getVersion() . " in (" .
-            (dirname(GLPI_PHPCAS) ? realpath(dirname(GLPI_PHPCAS)) : "system") . ")\n";
+      echo "phpCas version ".phpCAS::getVersion().
+           " in (".(self::getLibraryDir("phpCAS")
+                     ? self::getLibraryDir("phpCAS")
+                     : "system").
+           ")\n";
 
-      require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
       $pm = new PHPMailer();
-      echo "PHPMailer version " . $pm->Version . " in (" . realpath(GLPI_PHPMAILER_DIR) . ")\n";
+      echo "PHPMailer version ".$pm->Version.
+           " in (" . self::getLibraryDir("PHPMailer") . ")\n";
 
       // EZ component
-      echo "ZetaComponent ezcGraph installed in (" . dirname(dirname(GLPI_EZC_BASE)) .
-           "):  ".(class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
+      echo "ZetaComponent ezcGraph installed in (".self::getLibraryDir("ezcGraph")."): ".
+           (class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
 
       // Zend
       $zv = new Zend\Version\Version;
-      echo "Zend Framework version " . $zv::VERSION . " in (" . realpath(GLPI_ZEND_PATH) . ")\n";
+      echo "Zend Framework version ".$zv::VERSION.
+           " in (".self::getLibraryDir($zv).")\n";
 
       // SimplePie :
       $sp = new SimplePie();
-      echo "SimplePie version " . SIMPLEPIE_VERSION . " in (" . realpath(GLPI_SIMPLEPIE_PATH) . ")\n";
+      echo "SimplePie version ".SIMPLEPIE_VERSION.
+           " in (".self::getLibraryDir($sp).")\n";
 
       // TCPDF
-      include_once(GLPI_TCPDF_DIR.'/include/tcpdf_static.php');
-      echo "TCPDF version " . TCPDF_STATIC::getTCPDFVersion() . " in (" . realpath(GLPI_TCPDF_DIR) . ")\n";
+      echo "TCPDF version ".TCPDF_STATIC::getTCPDFVersion().
+           " in (".self::getLibraryDir("TCPDF").")\n";
 
       // password_compat
-      require_once GLPI_PASSWORD_COMPAT;
       $check = (PasswordCompat\binary\check() ? "Ok" : "KO");
-      echo "ircmaxell/password-compat in (" . realpath(dirname(GLPI_PASSWORD_COMPAT)) . "). Compatitility: $check\n";
+      echo "ircmaxell/password-compat in (".
+           self::getLibraryDir("PasswordCompat\binary\check")."). Compatitility: $check\n";
+
+      // icalcreator
+      echo "icalcreator version ".ICALCREATOR_VERSION.
+           " in (".self::getLibraryDir("vcalendar").")\n";
+
+      // autolink
+      echo "iacaml/autolink in (".self::getLibraryDir("autolink").")\n";
+
+      // vcard
+      echo "JeroenDesloovere/VCard in (".self::getLibraryDir("JeroenDesloovere\VCard\VCard").")\n";
+
+      // vcard
+      echo "guzzlehttp/guzzle in (".self::getLibraryDir("JeroenDesloovere\VCard\VCard").")\n";
 
       echo "\n</pre></td></tr>";
    }

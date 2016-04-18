@@ -39,8 +39,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-require_once(GLPI_TCPDF_DIR.'/tcpdf.php');
-
 /**
  *  GLPIPDF class extends TCPDF
  *

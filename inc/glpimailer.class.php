@@ -38,10 +38,6 @@
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
-// GLPIMailer::__construct don't call PHPMailer::__construct
-// so PHPMailerAutoload is not registered, so need this
-require_once(GLPI_PHPMAILER_DIR . "/class.smtp.php");
-require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
 
 
 /** GLPIPhpMailer class
@@ -62,7 +58,7 @@ class GLPIMailer extends PHPMailer {
       $this->CharSet            = "utf-8";
 
       // Comes from config
-      $this->SetLanguage("en", GLPI_PHPMAILER_DIR . "/language/");
+      $this->SetLanguage("en", self::getLibraryDir("PHPMailer") . "/language/");
 
       if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
          $this->Mailer = "smtp";

@@ -1860,7 +1860,6 @@ class Planning extends CommonGLPI {
           && ($who_group === 0)) {
          return false;
       }
-      include_once (GLPI_ROOT . "/lib/icalcreator/iCalcreator.php");
       $v = new vcalendar();
 
       if (!empty( $CFG_GLPI["version"])) {
