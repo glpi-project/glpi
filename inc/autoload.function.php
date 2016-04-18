@@ -324,6 +324,11 @@ function glpi_autoload($classname) {
 spl_autoload_register('glpi_autoload');
 
 // composer autoload
-require_once dirname(__DIR__) . '/vendor/autoload.php';
+$autoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (!file_exists($autoload)) {
+   die('Run "composer install --no-dev" in the glpi tree');
+}
+require_once $autoload;
+
 
 ?>
