@@ -6257,9 +6257,6 @@ class Ticket extends CommonITILObject {
 
       $timeline          = $this->getTimelineItems();
 
-      //include lib for parsing url
-      require GLPI_ROOT."/lib/urllinker/urllinker.php";
-
       //display timeline
       echo "<div class='timeline_history'>";
 

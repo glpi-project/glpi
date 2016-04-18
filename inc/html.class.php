@@ -57,9 +57,6 @@ class Html {
     * @return clean value
    **/
    static function clean($value, $striptags=true, $keep_bad=2, $double_escape_angle_brackets = true) {
-
-      include_once(GLPI_HTMLAWED);
-
       $value = Html::entity_decode_deep($value);
 
       // Clean MS office tags

@@ -39,8 +39,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-require_once GLPI_PASSWORD_COMPAT;
-
 /**
  *  Identification class used to login
 **/
@@ -399,7 +397,6 @@ class Auth extends CommonGLPI {
 
       switch ($authtype) {
          case self::CAS :
-            include (GLPI_PHPCAS);
             phpCAS::client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
                            $CFG_GLPI["cas_uri"],false);
 
