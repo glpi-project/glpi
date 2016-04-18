@@ -290,18 +290,20 @@ function glpi_autoload($classname) {
       }
 
    } else {
+      //TODO: clean, seems uneeded, as composer autoloader is used first
+
       // Do not try to load phpcas using GLPI autoload
-      if (preg_match('/^CAS_.*/', $classname)) {
-         return false;
-      }
+      //if (preg_match('/^CAS_.*/', $classname)) {
+      //   return false;
+      //}
       // Do not try to load Zend using GLPI autoload
-      if (preg_match('/^Zend.*/', $classname)) {
-         return false;
-      }
+      //if (preg_match('/^Zend.*/', $classname)) {
+      //   return false;
+      //}
       // Do not try to load Simplepie using GLPI autoload
-      if (preg_match('/^SimplePie.*/', $classname)) {
-         return false;
-      }
+      //if (preg_match('/^SimplePie.*/', $classname)) {
+      //   return false;
+      //}
 
       $item = strtolower($classname);
    }
