@@ -1615,31 +1615,48 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th>Libraries</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
-      echo "htmLawed version " . hl_version() . " in (" . self::getLibraryDir("hl_version") . ")\n";
+      echo "htmLawed version ".hl_version().
+           " in (".self::getLibraryDir("hl_version").")\n";
 
-      echo "phpCas version " . phpCAS::getVersion() . " in (" .
-            (self::getLibraryDir("phpCAS") ? self::getLibraryDir("phpCAS") : "system") . ")\n";
+      echo "phpCas version ".phpCAS::getVersion().
+           " in (".(self::getLibraryDir("phpCAS")
+                     ? self::getLibraryDir("phpCAS")
+                     : "system").
+           ")\n";
 
       $pm = new PHPMailer();
-      echo "PHPMailer version " . $pm->Version . " in (" . self::getLibraryDir("PHPMailer") . ")\n";
+      echo "PHPMailer version ".$pm->Version.
+           " in (" . self::getLibraryDir("PHPMailer") . ")\n";
 
       // EZ component
-      echo "ZetaComponent ezcGraph installed in (" . self::getLibraryDir("ezcGraph")."):  ".(class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
+      echo "ZetaComponent ezcGraph installed in (".self::getLibraryDir("ezcGraph")."): ".
+           (class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
 
       // Zend
       $zv = new Zend\Version\Version;
-      echo "Zend Framework version " . $zv::VERSION . " in (" . self::getLibraryDir($zv) . ")\n";
+      echo "Zend Framework version ".$zv::VERSION.
+           " in (".self::getLibraryDir($zv).")\n";
 
       // SimplePie :
       $sp = new SimplePie();
-      echo "SimplePie version " . SIMPLEPIE_VERSION . " in (" . self::getLibraryDir($sp) . ")\n";
+      echo "SimplePie version ".SIMPLEPIE_VERSION.
+           " in (".self::getLibraryDir($sp).")\n";
 
       // TCPDF
-      echo "TCPDF version " . TCPDF_STATIC::getTCPDFVersion() . " in (" . self::getLibraryDir("TCPDF") . ")\n";
+      echo "TCPDF version ".TCPDF_STATIC::getTCPDFVersion().
+           " in (".self::getLibraryDir("TCPDF").")\n";
 
       // password_compat
       $check = (PasswordCompat\binary\check() ? "Ok" : "KO");
-      echo "ircmaxell/password-compat in (" . self::getLibraryDir("PasswordCompat\binary\check") . "). Compatitility: $check\n";
+      echo "ircmaxell/password-compat in (".
+           self::getLibraryDir("PasswordCompat\binary\check")."). Compatitility: $check\n";
+
+      // icalcreator
+      echo "icalcreator version ".ICALCREATOR_VERSION.
+           " in (".self::getLibraryDir("vcalendar").")\n";
+
+      // autolink
+      echo "autolink in (".self::getLibraryDir("autolink").")\n";
 
       echo "\n</pre></td></tr>";
    }
