@@ -105,7 +105,7 @@ if (!isset($_POST['page'])) {
 }
 
 $start = ($_POST['page']-1)*$_POST['page_limit'];
-$limit = $_POST['page_limit'];
+$limit = intval($_POST['page_limit']);
 $LIMIT = "LIMIT $start,$limit";
 
 

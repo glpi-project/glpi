@@ -3126,7 +3126,9 @@ class User extends CommonDBTM {
                              OR `glpi_users`.`firstname` ".Search::makeTextSearch($search)."
                              OR `glpi_users`.`phone` ".Search::makeTextSearch($search)."
                              OR `glpi_useremails`.`email` ".Search::makeTextSearch($search)."
-                             OR CONCAT(`glpi_users`.`realname`,' ',`glpi_users`.`firstname`) ".
+                             OR CONCAT(`glpi_users`.`realname`,' ',
+                                       `glpi_users`.`firstname`,' ',
+                                       `glpi_users`.`firstname`) ".
                                        Search::makeTextSearch($search).")";
          }
          $query .= " WHERE $where ";
@@ -3682,6 +3684,13 @@ class User extends CommonDBTM {
    **/
    static function manageDeletedUserInLdap($users_id) {
       global $CFG_GLPI;
+
+      //The only case where users_id can be null if when a user has been imported into GLPi
+      //it's dn still exists, but doesn't match the connection filter anymore
+      //In this case, do not try to process the user
+      if (!$users_id) {
+         return true;
+      }
 
       //User is present in DB but not in the directory : it's been deleted in LDAP
       $tmp['id']              = $users_id;

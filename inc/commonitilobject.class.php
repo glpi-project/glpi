@@ -1406,19 +1406,27 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!is_null($supplieractors)) {
          if (isset($this->input["_suppliers_id_assign"])
              && ($this->input["_suppliers_id_assign"] > 0)) {
-            $input3 = array($supplieractors->getItilObjectForeignKey()
-                                           => $this->fields['id'],
-                            'suppliers_id' => $this->input["_suppliers_id_assign"],
-                            'type'         => CommonITILActor::ASSIGN);
 
-            if (isset($this->input["_suppliers_id_assign_notif"])) {
-               foreach ($this->input["_suppliers_id_assign_notif"] as $key => $val) {
-                  $input3[$key] = $val;
-               }
+            if (is_array($this->input["_suppliers_id_assign"])) {
+               $tab_assign = array_unique($this->input["_suppliers_id_assign"]);
+            } else {
+               $tab_assign   = array();
+               $tab_assign[] = $this->input["_suppliers_id_assign"];
             }
-            $input3['_from_object'] = true;
-            $supplieractors->add($input3);
+            foreach ($tab_assign as $key_assign => $assign) {
+               $input3 = array($supplieractors->getItilObjectForeignKey()
+                                              => $this->fields['id'],
+                               'suppliers_id' => $assign,
+                               'type'         => CommonITILActor::ASSIGN);
 
+               if (isset($this->input["_suppliers_id_assign_notif"])) {
+                  foreach ($this->input["_suppliers_id_assign_notif"] as $key => $val) {
+                     $input3[$key] = $val[$key_assign];
+                  }
+               }
+               $input3['_from_object'] = true;
+               $supplieractors->add($input3);
+            }
          }
       }
 
@@ -3364,8 +3372,15 @@ abstract class CommonITILObject extends CommonDBTM {
                       'value'       => $options["_users_id_".$typename],
                       'right'       => $right,
                       'rand'        => $rand,
-                      'ldap_import' => true,
-                      'entity'      => $options['entities_id']);
+                      'entity'      => (isset($options['entities_id'])
+                                        ? $options['entities_id']: $options['entity_restrict']));
+
+      //only for active ldap and corresponding right
+      $ldap_methods = getAllDatasFromTable('glpi_authldaps', '`is_active`=1');
+      if (count($ldap_methods)
+            && Session::haveRight('user', User::IMPORTEXTAUTHUSERS)) {
+         $params['ldap_import'] = true;
+      }
 
       if ($this->userentity_oncreate
           && ($type == CommonITILActor::REQUESTER)) {
@@ -4307,8 +4322,7 @@ abstract class CommonITILObject extends CommonDBTM {
 //             return true;
 //          }
 //       }
-      if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
-          && $itemtype::canView()) {
+      if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
          return true;
       }
       return false;

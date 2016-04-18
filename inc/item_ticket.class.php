@@ -159,7 +159,7 @@ class Item_Ticket extends CommonDBRelation{
       }
       $group = new Group_Ticket();
       $groups = $group->find("`tickets_id` = ". $input['tickets_id']. " AND `type` = ".CommonITILActor::REQUESTER);
-      
+
       if (count($groups) <= 0) {
          if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
             if ($item = getItemForItemtype($input["itemtype"])) {
@@ -175,7 +175,7 @@ class Item_Ticket extends CommonDBRelation{
                                                 array('recursive' => true));
 
                      unset($ticket->fields['items_groups']);
-                     
+
                      $group->add(array('tickets_id' => $input['tickets_id'], 'groups_id' => $item->fields['groups_id'], 'type' => CommonITILActor::REQUESTER));
                   }
                }
@@ -260,10 +260,14 @@ class Item_Ticket extends CommonDBRelation{
       $tt = new TicketTemplate();
       if (isset($options['_tickettemplate'])) {
          $tt                  = $options['_tickettemplate'];
-         $opt['templates_id'] = $tt->fields['id'];
+         if (isset($tt->fields['id'])) {
+            $opt['templates_id'] = $tt->fields['id'];
+         }
       } else if (isset($options['templates_id'])) {
          $tt->getFromDBWithDatas($options['templates_id']);
-         $opt['templates_id'] = $tt->fields['id'];
+         if (isset($tt->fields['id'])) {
+            $opt['templates_id'] = $tt->fields['id'];
+         }
       }
 
       $rand  = mt_rand();
@@ -387,7 +391,7 @@ class Item_Ticket extends CommonDBRelation{
          return false;
       }
 
-      $canedit = ($ticket->canEdit($instID)
+      $canedit = ($ticket->canAddItem($instID)
                   && isset($_SESSION["glpiactiveprofile"])
                   && $_SESSION["glpiactiveprofile"]["interface"] == "central");
       $rand    = mt_rand();

@@ -1363,8 +1363,8 @@ class Ticket extends CommonITILObject {
       }
 
       // Set additional default dropdown
-      $dropdown_fields = array('users_locations', 'items_locations', 'items_groups');
-      foreach ($dropdown_fields as $field ) {
+      $dropdown_fields = array('users_locations', 'items_locations');
+      foreach ($dropdown_fields as $field) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
          }
@@ -4086,7 +4086,8 @@ class Ticket extends CommonITILObject {
       } else {
          echo $tt->getBeginHiddenFieldValue('global_validation');
 
-         if (Session::haveRightsOr('ticketvalidation', TicketValidation::getCreateRights())) {
+         if (Session::haveRightsOr('ticketvalidation', TicketValidation::getCreateRights())
+             && $canupdate) {
             TicketValidation::dropdownStatus('global_validation',
                                              array('global' => true,
                                                    'value'  => $this->fields['global_validation']));
@@ -4179,8 +4180,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          echo "<td rowspan='2'>";
          echo $tt->getBeginHiddenFieldValue('items_id');
-         if ($canupdate
-                 || $canupdate_descr) {
+         if (Session::haveRight('ticket', CREATE)) {
             Item_Ticket::itemAddForm($this, $values);
          }
          echo $tt->getEndHiddenFieldValue('items_id', $this);
@@ -4189,7 +4189,10 @@ class Ticket extends CommonITILObject {
       } else {
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue('items_id');
-         Item_Ticket::itemAddForm($this, $values);
+         if ($canupdate
+             || $canupdate_descr) {
+            Item_Ticket::itemAddForm($this, $values);
+         }
          echo $tt->getEndHiddenFieldValue('items_id', $this);
          echo "</td>";
       }
@@ -6369,6 +6372,10 @@ class Ticket extends CommonITILObject {
          if (isset($item_i['taskcategories_id']) && !empty($item_i['taskcategories_id'])) {
             echo Dropdown::getDropdownName("glpi_taskcategories", $item_i['taskcategories_id'])."<br>";
          }
+         if (isset($item_i['requesttypes_id']) && !empty($item_i['requesttypes_id'])) {
+            echo Dropdown::getDropdownName("glpi_requesttypes", $item_i['requesttypes_id'])."<br>";
+         }
+
          if (isset($item_i['actiontime']) && !empty($item_i['actiontime'])) {
             echo "<span class='actiontime'>";
             echo Html::timestampToString($item_i['actiontime'], false);
