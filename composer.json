@@ -15,7 +15,7 @@
         "htmlawed/htmlawed": "~1.1",
         "ircmaxell/password-compat": "~1.0.0",
         "jasig/phpcas": "~1.3.0",
-        "kwi/urllinker": "dev-default",
+        "iamcal/lib_autolink": "~1.7",
         "phpmailer/phpmailer": "~5.2",
         "simplepie/simplepie": "~1.3",
         "tecnickcom/tcpdf": "~6.2",

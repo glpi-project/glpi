@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0cf8440ff04416734143156035fcf43d",
-    "content-hash": "4ddefbeac39a1e943561d3ccff5ebb00",
+    "hash": "645ede20ed3b0b93e16d84efd8091b9d",
+    "content-hash": "f53b0043929f36698a77c7439826de43",
     "packages": [
         {
             "name": "bedandbreakfast/icalcreator",
@@ -97,6 +97,38 @@
                 "tags"
             ],
             "time": "2015-04-05 17:23:05"
+        },
+        {
+            "name": "iamcal/lib_autolink",
+            "version": "v1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/iamcal/lib_autolink.git",
+                "reference": "b3a86d8437e5d635fb85b155a86288d94f6a924d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/iamcal/lib_autolink/zipball/b3a86d8437e5d635fb85b155a86288d94f6a924d",
+                "reference": "b3a86d8437e5d635fb85b155a86288d94f6a924d",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib_autolink.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Adds anchors to urls in a text",
+            "keywords": [
+                "anchor",
+                "autolink",
+                "link"
+            ],
+            "time": "2015-05-22 17:10:41"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -193,51 +225,6 @@
                 "jasig"
             ],
             "time": "2015-11-16 20:44:36"
-        },
-        {
-            "name": "kwi/urllinker",
-            "version": "dev-default",
-            "source": {
-                "type": "hg",
-                "url": "https://bitbucket.org/kwi/urllinker",
-                "reference": "b5e097f03963454b4e8f32581265c8e57c3409e6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://bitbucket.org/kwi/urllinker/get/b5e097f03963454b4e8f32581265c8e57c3409e6.zip",
-                "reference": "b5e097f03963454b4e8f32581265c8e57c3409e6",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Kwi\\": "lib"
-                },
-                "files": [
-                    "UrlLinker.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "CC0-1.0"
-            ],
-            "authors": [
-                {
-                    "name": "Søren Løvborg",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Dawid Nowak",
-                    "email": "code@dnowak.pl",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Autolink URLs in text or html",
-            "homepage": "http://www.kwi.dk/projects/php/UrlLinker/",
-            "time": "2014-12-28 22:05:00"
         },
         {
             "name": "phpmailer/phpmailer",
@@ -1088,9 +1075,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "kwi/urllinker": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

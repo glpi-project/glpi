@@ -6344,7 +6344,7 @@ class Ticket extends CommonITILObject {
 
          if (isset($item_i['content'])) {
             $content = $item_i['content'];
-            $content = linkUrlsInTrustedHtml($content);
+            $content = autolink($content, 40);
             //$content = nl2br($content);
 
             $long_text = "";
