@@ -719,7 +719,8 @@ class MailCollector  extends CommonDBTM {
       $tkt['_head']                  = $head;
 
       if (!empty($this->charset)
-          && !$this->body_converted) {
+          && !$this->body_converted
+          && mb_detect_encoding($body) != 'UTF-8') {
          $body                 = Toolbox::encodeInUtf8($body,$this->charset);
          $this->body_converted = true;
       }
