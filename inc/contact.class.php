@@ -39,6 +39,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use JeroenDesloovere\VCard\VCard;
+
 /**
  * Contact class
 **/
@@ -412,8 +414,6 @@ class Contact extends CommonDBTM{
    **/
    function generateVcard() {
 
-      include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
-
       if (!$this->can($this->fields['id'], READ)) {
          return false;
       }
@@ -421,24 +421,24 @@ class Contact extends CommonDBTM{
       // build the Vcard
       $vcard = new vCard();
 
-      $vcard->setName($this->fields["name"], $this->fields["firstname"], "", "");
+      $vcard->addName($this->fields["name"], $this->fields["firstname"], "", "");
 
-      $vcard->setPhoneNumber($this->fields["phone"], "PREF;WORK;VOICE");
-      $vcard->setPhoneNumber($this->fields["phone2"], "HOME;VOICE");
-      $vcard->setPhoneNumber($this->fields["mobile"], "WORK;CELL");
+      $vcard->addPhoneNumber($this->fields["phone"], "PREF;WORK;VOICE");
+      $vcard->addPhoneNumber($this->fields["phone2"], "HOME;VOICE");
+      $vcard->addPhoneNumber($this->fields["mobile"], "WORK;CELL");
 
       $addr = $this->GetAddress();
       if (is_array($addr)) {
-         $vcard->setAddress($addr["name"], "", $addr["address"], $addr["town"], $addr["state"],
+         $vcard->addAddress($addr["name"], "", $addr["address"], $addr["town"], $addr["state"],
                             $addr["postcode"], $addr["country"], "WORK;POSTAL");
       }
-      $vcard->setEmail($this->fields["email"]);
-      $vcard->setNote($this->fields["comment"]);
-      $vcard->setURL($this->GetWebsite(), "WORK");
+      $vcard->addEmail($this->fields["email"]);
+      $vcard->addNote($this->fields["comment"]);
+      $vcard->addURL($this->GetWebsite(), "WORK");
 
       // send the  VCard
-      $output   = $vcard->getVCard();
-      $filename = $vcard->getFileName();      // "xxx xxx.vcf"
+      $output   = $vcard->getOutput();
+      $filename = $vcard->getFileName();
 
       @Header("Content-Disposition: attachment; filename=\"$filename\"");
       @Header("Content-Length: ".Toolbox::strlen($output));

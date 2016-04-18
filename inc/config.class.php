@@ -1656,7 +1656,10 @@ class Config extends CommonDBTM {
            " in (".self::getLibraryDir("vcalendar").")\n";
 
       // autolink
-      echo "autolink in (".self::getLibraryDir("autolink").")\n";
+      echo "iacaml/autolink in (".self::getLibraryDir("autolink").")\n";
+
+      // vcard
+      echo "JeroenDesloovere/VCard in (".self::getLibraryDir("JeroenDesloovere\VCard\VCard").")\n";
 
       echo "\n</pre></td></tr>";
    }
