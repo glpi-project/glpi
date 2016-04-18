@@ -38,6 +38,14 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       ]);
    }
 
+   public function testInlineDocumentation() {
+      $res = $this->http_client->request('GET');
+      $this->assertEquals(200, $res->getStatusCode());
+      $headers = $res->getHeaders();
+      $this->assertArrayHasKey('Content-Type', $headers);
+      $this->assertContains('text/html; charset=UTF-8', $headers['Content-Type'][0]);
+   }
+
    public function testInitSessionCredentials() {
       $res = $this->http_client->request('GET', 'initSession/',
                                          ['query' => [
