@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use JeroenDesloovere\VCard\VCard;
+use Sabre\VObject;
 
 /**
  * Contact class
@@ -419,26 +419,27 @@ class Contact extends CommonDBTM{
       }
 
       // build the Vcard
-      $vcard = new vCard();
+      $vcard = new VObject\Component\VCard([
+         'N'     => [$this->fields["name"], $this->fields["firstname"]],
+         'EMAIL' => $this->fields["email"],
+         'NOTE'  => $this->fields["comment"],
+      ]);
 
-      $vcard->addName($this->fields["name"], $this->fields["firstname"], "", "");
+      $vcard->add('TEL', $this->fields["phone"], ['type' => 'PREF;WORK;VOICE']);
+      $vcard->add('TEL', $this->fields["phone2"], ['type' => 'HOME;VOICE']);
+      $vcard->add('TEL', $this->fields["mobile"], ['type' => 'WORK;CELL']);
+      $vcard->add('URL', $this->GetWebsite(), ['type' => 'WORK']);
 
-      $vcard->addPhoneNumber($this->fields["phone"], "PREF;WORK;VOICE");
-      $vcard->addPhoneNumber($this->fields["phone2"], "HOME;VOICE");
-      $vcard->addPhoneNumber($this->fields["mobile"], "WORK;CELL");
 
       $addr = $this->GetAddress();
       if (is_array($addr)) {
-         $vcard->addAddress($addr["name"], "", $addr["address"], $addr["town"], $addr["state"],
-                            $addr["postcode"], $addr["country"], "WORK;POSTAL");
+         $addr_string = implode(";", array_filter($addr));
+         $vcard->add('ADR', $addr_string, ['type' => 'WORK;POSTAL']);
       }
-      $vcard->addEmail($this->fields["email"]);
-      $vcard->addNote($this->fields["comment"]);
-      $vcard->addURL($this->GetWebsite(), "WORK");
 
       // send the  VCard
-      $output   = $vcard->getOutput();
-      $filename = $vcard->getFileName();
+      $output   = $vcard->serialize();
+      $filename = $this->fields["name"]."_".$this->fields["firstname"].".vcf";
 
       @Header("Content-Disposition: attachment; filename=\"$filename\"");
       @Header("Content-Length: ".Toolbox::strlen($output));

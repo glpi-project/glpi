@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "38845890c96f5a161b5677974622cc40",
-    "content-hash": "4b88c9705ae69d4532fd95f9f5c52bcc",
+    "hash": "3b474e5559e53d6c81b72fe8224a2170",
+    "content-hash": "d972258f78a2bb52b4e3b1129c3fe0ee",
     "packages": [
         {
             "name": "bedandbreakfast/icalcreator",
@@ -51,46 +51,6 @@
                 "rfc5545"
             ],
             "time": "2015-05-03 00:00:00"
-        },
-        {
-            "name": "behat/transliterator",
-            "version": "v1.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Behat/Transliterator.git",
-                "reference": "868e05be3a9f25ba6424c2dd4849567f50715003"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Behat/Transliterator/zipball/868e05be3a9f25ba6424c2dd4849567f50715003",
-                "reference": "868e05be3a9f25ba6424c2dd4849567f50715003",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.1-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Behat\\Transliterator": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Artistic-1.0"
-            ],
-            "description": "String transliterator",
-            "keywords": [
-                "i18n",
-                "slug",
-                "transliterator"
-            ],
-            "time": "2015-09-28 16:26:35"
         },
         {
             "name": "iamcal/lib_autolink",
@@ -221,55 +181,6 @@
             "time": "2015-11-16 20:44:36"
         },
         {
-            "name": "jeroendesloovere/vcard",
-            "version": "1.2.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jeroendesloovere/vcard.git",
-                "reference": "dd6a1f0c96f561a590b6fafda5696e33fbcb7985"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jeroendesloovere/vcard/zipball/dd6a1f0c96f561a590b6fafda5696e33fbcb7985",
-                "reference": "dd6a1f0c96f561a590b6fafda5696e33fbcb7985",
-                "shasum": ""
-            },
-            "require": {
-                "behat/transliterator": "~1.0",
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.6.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "JeroenDesloovere\\VCard\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jeroen Desloovere",
-                    "email": "info@jeroendesloovere.be",
-                    "homepage": "http://jeroendesloovere.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "This VCard PHP class can generate a vCard with some data. When using an iOS device it will export as a .ics file because iOS devices don't support the default .vcf files.",
-            "homepage": "https://github.com/jeroendesloovere/vcard",
-            "keywords": [
-                ".vcf",
-                "generator",
-                "php",
-                "vCard"
-            ],
-            "time": "2016-04-18 06:05:13"
-        },
-        {
             "name": "phpmailer/phpmailer",
             "version": "v5.2.14",
             "source": {
@@ -329,6 +240,72 @@
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
             "time": "2015-11-01 10:15:28"
+        },
+        {
+            "name": "sabre/vobject",
+            "version": "3.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fruux/sabre-vobject.git",
+                "reference": "5b92c27399a31c860877b9c29f4fcbb241069679"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fruux/sabre-vobject/zipball/5b92c27399a31c860877b9c29f4fcbb241069679",
+                "reference": "5b92c27399a31c860877b9c29f4fcbb241069679",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.3.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*",
+                "squizlabs/php_codesniffer": "*"
+            },
+            "bin": [
+                "bin/vobject",
+                "bin/generate_vcards"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sabre\\VObject\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Evert Pot",
+                    "email": "me@evertpot.com",
+                    "homepage": "http://evertpot.com/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Dominik Tobschall",
+                    "email": "dominik@fruux.com",
+                    "homepage": "http://tobschall.de/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The VObject library for PHP allows you to easily parse and manipulate iCalendar and vCard objects",
+            "homepage": "http://sabre.io/vobject/",
+            "keywords": [
+                "VObject",
+                "iCalendar",
+                "jCal",
+                "jCard",
+                "vCard"
+            ],
+            "time": "2016-04-07 00:12:31"
         },
         {
             "name": "simplepie/simplepie",
