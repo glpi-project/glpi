@@ -1649,10 +1649,6 @@ class Config extends CommonDBTM {
       echo "ircmaxell/password-compat in (".
            self::getLibraryDir("PasswordCompat\binary\check")."). Compatitility: $check\n";
 
-      // icalcreator
-      echo "icalcreator version ".ICALCREATOR_VERSION.
-           " in (".self::getLibraryDir("vcalendar").")\n";
-
       // autolink
       echo "iacaml/autolink in (".self::getLibraryDir("autolink").")\n";
 

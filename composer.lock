@@ -4,54 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3b474e5559e53d6c81b72fe8224a2170",
-    "content-hash": "d972258f78a2bb52b4e3b1129c3fe0ee",
+    "hash": "daa0f7bf5e903418574062274e058041",
+    "content-hash": "9c088ebbcdf64685db9130d962927b6c",
     "packages": [
-        {
-            "name": "bedandbreakfast/icalcreator",
-            "version": "v2.22.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/bedandbreakfasteu/iCalcreator.git",
-                "reference": "b772f7eb20fec9b20322091c0dddd3127a452f7d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/bedandbreakfasteu/iCalcreator/zipball/b772f7eb20fec9b20322091c0dddd3127a452f7d",
-                "reference": "b772f7eb20fec9b20322091c0dddd3127a452f7d",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "iCalcreator.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1"
-            ],
-            "authors": [
-                {
-                    "name": "Kjell-Inge Gustafsson",
-                    "email": "ical@kigkonsult.se"
-                }
-            ],
-            "description": "iCalcreator is a PHP implementation of rfc2445/rfc5545, management of iCal formatted files",
-            "homepage": "http://kigkonsult.se",
-            "keywords": [
-                "calendar",
-                "file",
-                "format",
-                "managerment",
-                "rfc2445",
-                "rfc5545"
-            ],
-            "time": "2015-05-03 00:00:00"
-        },
         {
             "name": "iamcal/lib_autolink",
             "version": "v1.7",

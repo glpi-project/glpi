@@ -11,7 +11,6 @@
         "docs": "https://github.com/glpi-project/doc"
     },
     "require": {
-        "bedandbreakfast/icalcreator": "~2.22",
         "ircmaxell/password-compat": "~1.0.0",
         "jasig/phpcas": "~1.3.0",
         "iamcal/lib_autolink": "~1.7",
