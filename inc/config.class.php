@@ -1609,8 +1609,7 @@ class Config extends CommonDBTM {
            "):  ".(class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
 
       // Zend
-      $zv = new Zend\Version\Version;
-      echo "Zend Framework version " . $zv::VERSION . " in (" . realpath(GLPI_ZEND_PATH) . ")\n";
+      echo "Zend Framework in (" . realpath(GLPI_ZEND_PATH) . ")\n";
 
       // SimplePie :
       $sp = new SimplePie();
