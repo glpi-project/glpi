@@ -28,18 +28,27 @@
 
 /* Test for inc/api.class.php */
 
+use GuzzleHttp\Exception\ClientException;
+
 class APIRestTest extends PHPUnit_Framework_TestCase {
    protected $http_client;
+   protected $base_uri = "";
 
    protected function setUp() {
       global $CFG_GLPI;
-      $this->http_client = new GuzzleHttp\Client([
-         'base_uri'    => trim($CFG_GLPI['url_base'], "/")."/api/"
-      ]);
+      $this->http_client = new GuzzleHttp\Client();
+      $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/api/";
+   }
+
+   protected function doHttpRequest($method = "get", $relative_uri = "", $params = array()) {
+      $method = strtolower($method);
+      if (in_array($method, array('get', 'post', 'delete', 'put', 'options', 'patch'))) {
+         return $this->http_client->{$method}($this->base_uri.$relative_uri, $params);
+      }
    }
 
    public function testInlineDocumentation() {
-      $res = $this->http_client->request('GET');
+      $res = $this->doHttpRequest('GET');
       $this->assertEquals(200, $res->getStatusCode());
       $headers = $res->getHeaders();
       $this->assertArrayHasKey('Content-Type', $headers);
@@ -47,7 +56,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    }
 
    public function testInitSessionCredentials() {
-      $res = $this->http_client->request('GET', 'initSession/',
+      $res = $this->doHttpRequest('GET', 'initSession/',
                                          ['query' => [
                                              'login'    => 'glpi',
                                              'password' => 'glpi'
@@ -72,7 +81,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $token = User::getPersonalToken(2);
       }
 
-      $res = $this->http_client->request('GET', 'initSession/',
+      $res = $this->doHttpRequest('GET', 'initSession/',
                                          ['query' => [
                                              'user_token' => $token
                                          ]]);
@@ -89,7 +98,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testChangeActiveEntities($session_token) {
-      $res = $this->http_client->request('POST', 'changeActiveEntities/',
+      $res = $this->doHttpRequest('POST', 'changeActiveEntities/',
                                          ['json' => [
                                              'session_token' => $session_token,
                                              'entities_id'   => 'all',
@@ -102,7 +111,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testGetMyEntities($session_token) {
-      $res = $this->http_client->request('GET', 'getMyEntities/',
+      $res = $this->doHttpRequest('GET', 'getMyEntities/',
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
@@ -117,7 +126,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testGetActiveEntities($session_token) {
-      $res = $this->http_client->request('GET', 'getActiveEntities/',
+      $res = $this->doHttpRequest('GET', 'getActiveEntities/',
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
@@ -135,7 +144,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testChangeActiveProfile($session_token) {
-      $res = $this->http_client->request('POST', 'changeActiveProfile/',
+      $res = $this->doHttpRequest('POST', 'changeActiveProfile/',
                                          ['json' => [
                                              'session_token' => $session_token,
                                              'profiles_id'   => 4
@@ -147,7 +156,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testGetMyProfiles($session_token) {
-      $res = $this->http_client->request('GET', 'getMyProfiles/',
+      $res = $this->doHttpRequest('GET', 'getMyProfiles/',
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
@@ -162,7 +171,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testGetActiveProfile($session_token) {
-      $res = $this->http_client->request('GET', 'getActiveProfile/',
+      $res = $this->doHttpRequest('GET', 'getActiveProfile/',
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
@@ -179,7 +188,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testGetFullSession($session_token) {
-      $res = $this->http_client->request('GET', 'getFullSession/',
+      $res = $this->doHttpRequest('GET', 'getFullSession/',
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
@@ -199,7 +208,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      */
    public function testGetItem($session_token) {
       // Get the User 'glpi'
-      $res = $this->http_client->request('GET', 'User/2/',
+      $res = $this->doHttpRequest('GET', 'User/2/',
                                          ['query' => [
                                              'session_token'    => $session_token,
                                              'expand_dropdowns' => true,
@@ -216,7 +225,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('_logs', $data); // with_logs == true
 
       // Get the root-entity
-      $res = $this->http_client->request('GET', 'Entity/0',
+      $res = $this->doHttpRequest('GET', 'Entity/0',
                                          ['query' => [
                                              'session_token' => $session_token,
                                              'get_hateoas'   => false,
@@ -236,7 +245,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      */
    public function testGetItems($session_token) {
       // test retrieve all users
-      $res = $this->http_client->request('GET', 'User/',
+      $res = $this->doHttpRequest('GET', 'User/',
                                          ['query' => [
                                              'session_token'    => $session_token,
                                              'expand_dropdowns' => true
@@ -253,7 +262,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
 
       // Test only_id param
-      $res = $this->http_client->request('GET', 'User/',
+      $res = $this->doHttpRequest('GET', 'User/',
                                          ['query' => [
                                              'session_token' => $session_token,
                                              'only_id'       => true
@@ -274,7 +283,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      */
    public function testListSearchOptions($session_token) {
       // test retrieve all users
-      $res = $this->http_client->request('GET', 'listSearchOptions/Computer/',
+      $res = $this->doHttpRequest('GET', 'listSearchOptions/Computer/',
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
@@ -294,7 +303,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      */
    public function testListSearch($session_token) {
       // test retrieve all users
-      $res = $this->http_client->request('GET', 'search/User/',
+      $res = $this->doHttpRequest('GET', 'search/User/',
                                          ['query' => [
                                              'session_token' => $session_token,
                                              'sort'          => 19,
@@ -333,17 +342,23 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testBadEndpoint($session_token) {
-      $res = $this->http_client->request('GET', 'badEndpoint/',
-                                         ['query' => [
-                                             'session_token' => $session_token],
-                                          'http_errors' => false]);
-      $this->assertEquals(400, $res->getStatusCode());
+      try {
+         $res = $this->doHttpRequest('GET', 'badEndpoint/',
+                                            ['query' => [
+                                                'session_token' => $session_token]]);
+      } catch (ClientException $e) {
+         $response = $e->getResponse();
+         $this->assertEquals(400, $response->getStatusCode());
+      }
 
-      $res = $this->http_client->request('GET', 'Entity/0/badEndpoint/',
-                                         ['query' => [
-                                             'session_token' => $session_token],
-                                          'http_errors' => false]);
-      $this->assertEquals(400, $res->getStatusCode());
+      try {
+         $res = $this->doHttpRequest('GET', 'Entity/0/badEndpoint/',
+                                            ['query' => [
+                                                'session_token' => $session_token]]);
+      } catch (ClientException $e) {
+         $response = $e->getResponse();
+         $this->assertEquals(400, $response->getStatusCode());
+      }
    }
 
 
@@ -351,7 +366,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testAddItem($session_token) {
-      $res = $this->http_client->request('POST', 'Computer/',
+      $res = $this->doHttpRequest('POST', 'Computer/',
                                          ['json' => [
                                              'session_token' => $session_token,
                                              'input'         => [
@@ -373,7 +388,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testAddItems($session_token) {
-      $res = $this->http_client->request('POST', 'Computer/',
+      $res = $this->doHttpRequest('POST', 'Computer/',
                                          ['json' => [
                                              'session_token' => $session_token,
                                              'input'         => [[
@@ -403,7 +418,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testAddItem
      */
    public function testUpdateItem($session_token, $computers_id) {
-      $res = $this->http_client->request('PUT', 'Computer/',
+      $res = $this->doHttpRequest('PUT', 'Computer/',
                                          ['json' => [
                                              'session_token' => $session_token,
                                              'input'         => [
@@ -429,7 +444,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $input[] = ['id'          => $computers_id['id'],
                      'otherserial' => "abcdef"];
       }
-      $res = $this->http_client->request('PUT', 'Computer/',
+      $res = $this->doHttpRequest('PUT', 'Computer/',
                                          ['json' => [
                                              'session_token' => $session_token,
                                              'input'         => $input]]);
@@ -450,7 +465,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testAddItem
      */
    public function testDeleteItem($session_token, $computers_id) {
-      $res = $this->http_client->request('DELETE', "Computer/$computers_id",
+      $res = $this->doHttpRequest('DELETE', "Computer/$computers_id",
                                          ['query' => [
                                              'session_token' => $session_token,
                                              'force_purge'   => true]]);
@@ -470,7 +485,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       foreach($computers_id_collection as $key => $computers_id) {
          $input[] = ['id' => $computers_id['id']];
       }
-      $res = $this->http_client->request('DELETE', "Computer/",
+      $res = $this->doHttpRequest('DELETE', "Computer/",
                                          ['json' => [
                                              'session_token' => $session_token,
                                              'input'         => $input,
@@ -490,16 +505,19 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      */
    public function testKillSession($session_token) {
       // test retrieve all users
-      $res = $this->http_client->request('GET', 'killSession/',
+      $res = $this->doHttpRequest('GET', 'killSession/',
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $res = $this->http_client->request('GET', 'getFullSession/',
-                                         ['query' => [
-                                             'session_token' => $session_token],
-                                          'http_errors' => false]);
-      $this->assertEquals(401, $res->getStatusCode());
+      try {
+         $res = $this->doHttpRequest('GET', 'getFullSession/',
+                                            ['query' => [
+                                                'session_token' => $session_token]]);
+      } catch (ClientException $e) {
+         $response = $e->getResponse();
+         $this->assertEquals(401, $response->getStatusCode());
+      }
    }
 }

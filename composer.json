@@ -14,7 +14,7 @@
         "bedandbreakfast/icalcreator": "~2.22",
         "erusev/parsedown": "~1.6.0",
         "erusev/parsedown-extra": "~0.7.0",
-        "guzzlehttp/guzzle": "~6.2.0",
+        "guzzlehttp/guzzle": "~5",
         "ircmaxell/password-compat": "~1.0.0",
         "jasig/phpcas": "~1.3.0",
         "jeroendesloovere/vcard": "~1.2",
