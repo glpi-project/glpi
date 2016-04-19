@@ -1243,8 +1243,8 @@ abstract class API extends CommonGLPI {
    }
 
 
-   private function initEndpoint($unlock_session = true, $enpoint = "") {
-      if ($enpoint === "") {
+   private function initEndpoint($unlock_session = true, $endpoint = "") {
+      if ($endpoint === "") {
          $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
          $endpoint = $backtrace[1]['function'];
       }
