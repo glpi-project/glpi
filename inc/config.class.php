@@ -1633,7 +1633,7 @@ class Config extends CommonDBTM {
            (class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
 
       // Zend
-      echo "Zend Framework in (".self::getLibraryDir($zv).")\n";
+      echo "Zend Framework in (".self::getLibraryDir("Zend\Loader\StandardAutoloader").")\n";
 
       // SimplePie :
       $sp = new SimplePie();
