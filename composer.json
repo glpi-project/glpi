@@ -20,6 +20,7 @@
         "tecnickcom/tcpdf": "~6.2",
         "zendframework/zend-cache": "~2.4.0",
         "zendframework/zend-i18n": "~2.4.0",
+        "zendframework/zend-loader": "~2.4.0",
         "zetacomponents/graph": "~1.5"
     }
     ,
