@@ -100,7 +100,8 @@ abstract class API extends CommonGLPI {
                              OR (`ipv4_range_start` <= '$this->ipnum'
                                  AND `ipv4_range_end` >= '$this->ipnum'))";
       } else {
-         $where_ip .= " AND `ipv6` = '".addslashes($this->iptxt)."'";
+         $where_ip .= " AND (`ipv6` IS NULL
+                             OR `ipv6` = '".addslashes($this->iptxt)."')";
       }
       $found_clients = $apiclient->find("`is_active` = '1' $where_ip");
       if (count($found_clients) <= 0) {
