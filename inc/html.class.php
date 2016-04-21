@@ -77,15 +77,14 @@ class Html {
 
          $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
          $value = preg_replace("/(&nbsp;| |\xC2\xA0)+/", " ", $value);
-
-
-         $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                                '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
-                                '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
-                                 );
-
-         $value = preg_replace($search, '', $value);
       }
+
+      $search = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
+                      '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
+                      '@<title[^>]*?>.*?</title[^>]*?>@si', // Strip out title
+                      '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
+                       );
+      $value = preg_replace($search, '', $value);
 
       $value = htmLawed($value, array('elements' => ($striptags) ? 'none' : '',
                                       'keep_bad' => $keep_bad, // 1 : neutralize tag and content, 2 : remove tag and neutralize content
