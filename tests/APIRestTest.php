@@ -436,6 +436,26 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
    /**
      * @depends testInitSessionCredentials
+     * @depends testAddItem
+     */
+   public function testUpdateItemWithIdInQueryString($session_token, $computers_id) {
+      $res = $this->doHttpRequest('PUT', "Computer/$computers_id",
+                                         ['json' => [
+                                             'session_token' => $session_token,
+                                             'input'         => [
+                                                'serial' => "abcdefg"
+                                             ]]]);
+      $this->assertEquals(200, $res->getStatusCode());
+
+      $data = json_decode($res->getBody(), true);
+      $this->assertNotEquals(false, $data);
+      $first_computer = array_shift($data);
+      $this->assertArrayHasKey($computers_id, $first_computer);
+      $this->assertEquals(true, boolval($first_computer[$computers_id]));
+   }
+
+   /**
+     * @depends testInitSessionCredentials
      * @depends testAddItems
      */
    public function testUpdateItems($session_token, $computers_id_collection) {

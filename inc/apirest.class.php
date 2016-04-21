@@ -219,8 +219,9 @@ class APIRest extends API {
                break;
 
             case "PUT": // update item(s)
-               if ($id > 0 && !isset($this->parameters['input']['id'])) {
-                  $this->parameters['input']['id'] = $id;
+            $input = (array) ($this->parameters['input']);
+               if ($id > 0 && !isset($input['id'])) {
+                  $this->parameters['input']->id = $id;
                }
                $response = $this->updateItems($itemtype, $this->parameters);
                break;
