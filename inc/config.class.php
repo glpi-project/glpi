@@ -691,8 +691,6 @@ class Config extends CommonDBTM {
          return false;
       }
 
-      $API = new APIRest;
-
       $canedit = Config::canUpdate();
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
@@ -709,7 +707,7 @@ class Config extends CommonDBTM {
       echo "</td>";
       if ($CFG_GLPI["enable_api"]) {
          echo "<td colspan='2'>";
-         echo "<a href='".$API::$api_url."'>".__("API inline Documentation")."</a>";
+         echo "<a href='".APIRest::$api_url."'>".__("API inline Documentation")."</a>";
          echo "</td>";
       }
       echo "</tr>";
