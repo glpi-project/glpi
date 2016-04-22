@@ -1399,7 +1399,7 @@ class Config extends CommonDBTM {
          Html::displayProgressBar('100', $rate, array('simple'       => true,
                                                       'forcepadding' => false));
          echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
-              ($rate < 75 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+              ($rate > 5 && $rate < 75 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
 
          // Hits
          $hits = $info['opcache_statistics']['hits'];
@@ -1413,7 +1413,7 @@ class Config extends CommonDBTM {
          echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
               ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
 
-         // Restart
+         // Restart (1 seems ok, can happen)
          $max = $info['opcache_statistics']['oom_restarts'];
          echo "<tr><td>" . __('Out of memory restart') . "</td>
                <td>$max</td><td>";
@@ -1456,7 +1456,7 @@ class Config extends CommonDBTM {
          Html::displayProgressBar('100', $rate, array('simple'       => true,
                                                       'forcepadding' => false));
          echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
-              ($rate < 50 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+              ($rate > 5 && $rate < 50 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
 
          // Hits
          $hits = $stat['num_hits'];
