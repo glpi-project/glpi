@@ -563,6 +563,7 @@ $ curl -X GET \
 * **Description**: Return a collection of rows of the desired sub_itemtype for the identified item
 * **Method**: GET
 * **Parameters (query string)**
+   - id : unique identifier of the parent itemtype. Mandatory
    - *session_token*: session var provided by [initSession](#init_session) endpoint . Mandatory
    - *expand_dropdowns* (default: false): show dropdown name instead of id. Optional
    - *get_hateoas* (default: true): Show relation of item in a links attribute. Optional
