@@ -1,7 +1,5 @@
 ![GLPi Logo](https://raw.githubusercontent.com/glpi-project/glpi/master/pics/logos/logo-GLPI-250-black.png)
 
-# GLPi
-
 GLPi stands for **Gestionnaire Libre de Parc Informatique** is a Free Asset and IT Management Software package, that provides ITIL Service Desk features, licenses tracking and software auditing.
 
 GLPi features:
@@ -24,7 +22,7 @@ Moreover, GLPi supports many [plugins](http://plugins.glpi-project.org) that pro
 
 ## License
 
-It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consult the file called COPYING for more details.
+It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consult the file called [COPYING](https://raw.githubusercontent.com/glpi-project/glpi/master/COPYING.txt) for more details.
 
 
 ## Prerequisites
