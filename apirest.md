@@ -15,6 +15,7 @@
 * [Get full session](#get_full_session)
 * [Get an item](#get_item)
 * [Get all items](#get_items)
+* [Get all sub items](#get_sub_items)
 * [List searchOptions](#list_searchoptions)
 * [Search items](#search_items)
 * [Add item(s)](#add_items)
@@ -556,6 +557,65 @@ $ curl -X GET \
 ]
 ```
 
+## Get sub items {#get_sub_items}
+
+* **URL**: [api/:itemtype/:id/:sub_itemtype](User/2/Log?debug)
+* **Description**: Return a collection of rows of the desired sub_itemtype for the identified item
+* **Method**: GET
+* **Parameters (query string)**
+   - *session_token*: session var provided by [initSession](#init_session) endpoint . Mandatory
+   - *expand_dropdowns* (default: false): show dropdown name instead of id. Optional
+   - *get_hateoas* (default: true): Show relation of item in a links attribute. Optional
+   - *only_id* (default: false):  keep only id in fields list. Optional
+   - *range* (default: 0-50):  a string with a couple of number for start and end of pagination separated by a '-'. Ex : 150-200. Optional.
+   - *sort* (default 1): id of searchoption to sort by. Optional.
+   - *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
+* **Returns**
+   - 200 (OK) with items data
+   - 401 (UNAUTHORIZED)
+
+   and theses headers :
+      * *Content-Range* offset – limit / count
+      * *Accept-Range* itemtype max
+
+Example usage (CURL) :
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+'http://path/to/glpi/api/User/2/Log/?session_token=83af7e620c83a50a18d3eac2f6ed05a3ca0bea62'
+
+< 200 OK
+< Content-Range: 0-50/200
+< Accept-Range: 990
+< [
+   {
+      "id": "22117",
+      "itemtype": "User",
+      "items_id": "2",
+      "itemtype_link": "Profile",
+      "linked_action": "17",
+      "user_name": "glpi (27)",
+      "date_mod": "2015-10-13 10:00:59",
+      "id_search_option": "0",
+      "old_value": "",
+      "new_value": "super-admin (4)"
+   }, {
+      "id": "22118",
+      "itemtype": "User",
+      "items_id": "2",
+      "itemtype_link": "",
+      "linked_action": "0",
+      "user_name": "glpi (2)",
+      "date_mod": "2015-10-13 10:01:22",
+      "id_search_option": "80",
+      "old_value": "Root entity (0)",
+      "new_value": "Root entity > my entity (1)"
+   }, {
+      ...
+   }
+]
+```
 
 
 ## List searchOptions {#list_searchoptions}
