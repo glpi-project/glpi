@@ -64,6 +64,7 @@ We are working on a [markdown version](https://github.com/glpi-project/doc)
 ## Additional resources
 
 * [Official website](http://glpi-project.org)
+* [Demo](http://demo.glpi-project.org/)
 * [Issues](https://github.com/glpi-project/glpi/issues)
 * [Suggestions](http://suggest.glpi-project.org)
 * [Forum](http://forum.glpi-project.org)
