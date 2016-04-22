@@ -198,7 +198,7 @@ if (!TableExists("glpi_configs")) {
    $glpilanguage        = $configurationValues['language'];
 }
 
-$migration = new CliMigration($current_version);
+$migration = new CliMigration(GLPI_VERSION);
 
 $migration->displayWarning("Current GLPI Data version: $current_version");
 $migration->displayWarning("Current GLPI Code version: ".GLPI_VERSION);

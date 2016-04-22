@@ -469,20 +469,52 @@ function displayOtherSelectOptions(select_object, other_option_name) {
  * @param    container_id    DOM element
 **/
 function checkAsCheckboxes( reference_id, container_id ) {
+   $('#' + container_id + ' input[type="checkbox"]:enabled')
+      .prop('checked', $('#' + reference_id).is(':checked'));
 
-   var ref        =  document.getElementById(reference_id);
-   var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
-
-   for (var j=0 ; j<checkboxes.length ; j++ ) {
-      checkbox = checkboxes[j];
-      if (checkbox && (checkbox.type == 'checkbox')) {
-         if (checkbox.disabled == false) {
-            checkbox.checked = ref.checked;
-         }
-      }
-   }
    return true;
 }
+
+/**
+ * Permit to use Shift key on a group of checkboxes
+ * Usage: $form.find('input[type="checkbox"]').shiftSelectable();
+ */
+$.fn.shiftSelectable = function() {
+   var lastChecked,
+       $boxes = this;
+
+   // prevent html selection
+   document.onkeydown = function(e) {
+      var keyPressed = e.keyCode;
+      if (keyPressed == 16) { // shift key
+         $('html').addClass('unselectable');
+         document.onkeyup = function() {
+            $('html').removeClass('unselectable');
+         };
+      }
+   };
+
+   $(document).on("click", $boxes.selector, function(evt) {
+      if ($boxes.length <= 0) {
+         $boxes = $($boxes.selector);
+      }
+
+      if(!lastChecked) {
+         lastChecked = this;
+         return;
+      }
+
+      if(evt.shiftKey) {
+         var start = $boxes.index(this),
+             end = $boxes.index(lastChecked);
+         $boxes.slice(Math.min(start, end), Math.max(start, end) + 1)
+               .prop('checked', $(lastChecked).is(':checked'))
+               .trigger('change');
+      }
+
+      lastChecked = this;
+   });
+};
 
 
 /**

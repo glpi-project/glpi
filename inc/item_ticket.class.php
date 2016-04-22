@@ -175,8 +175,10 @@ class Item_Ticket extends CommonDBRelation{
                                                 array('recursive' => true));
 
                      unset($ticket->fields['items_groups']);
-
-                     $group->add(array('tickets_id' => $input['tickets_id'], 'groups_id' => $item->fields['groups_id'], 'type' => CommonITILActor::REQUESTER));
+                     
+                     if ($item->fields['groups_id'] > 0) {
+                        $group->add(array('tickets_id' => $input['tickets_id'], 'groups_id' => $item->fields['groups_id'], 'type' => CommonITILActor::REQUESTER));
+                     }
                   }
                }
             }

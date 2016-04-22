@@ -777,11 +777,13 @@ class Toolbox {
    /**
     * Compute PHP memory_limit
     *
+    * @param $ininame String name of the ini ooption to retrieve (since 9.1)
+    *
     * @return memory limit
    **/
-   static function getMemoryLimit() {
+   static function getMemoryLimit($ininame='memory_limit') {
 
-      $mem = ini_get("memory_limit");
+      $mem = ini_get($ininame);
       preg_match("/([-0-9]+)([KMG]*)/", $mem, $matches);
       $mem = "";
 
