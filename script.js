@@ -469,7 +469,6 @@ function displayOtherSelectOptions(select_object, other_option_name) {
  * @param    container_id    DOM element
 **/
 function checkAsCheckboxes( reference_id, container_id ) {
-
    $('#' + container_id + ' input[type="checkbox"]:enabled')
       .prop('checked', $('#' + reference_id).is(':checked'));
 
@@ -491,11 +490,15 @@ $.fn.shiftSelectable = function() {
          $('html').addClass('unselectable');
          document.onkeyup = function() {
             $('html').removeClass('unselectable');
-         }
+         };
       }
-   }
+   };
 
-   $boxes.click(function(evt) {
+   $(document).on("click", $boxes.selector, function(evt) {
+      if ($boxes.length <= 0) {
+         $boxes = $($boxes.selector);
+      }
+
       if(!lastChecked) {
          lastChecked = this;
          return;

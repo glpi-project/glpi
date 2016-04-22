@@ -2589,6 +2589,9 @@ class Html {
                   </label>
                </div>";
 
+      // permit to shift select checkboxes
+      $out.= Html::scriptBlock("\$('#$container_id input[type=\"checkbox\"]').shiftSelectable();");
+
       return $out;
    }
 
@@ -2734,6 +2737,10 @@ class Html {
       $out .= "&nbsp;";
       $out .= "</label>";
       $out .= "</span>";
+
+      if (!empty($criterion)) {
+         $out .= Html::scriptBlock("\$('$criterion').shiftSelectable();");
+      }
 
       return $out;
    }
