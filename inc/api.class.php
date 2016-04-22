@@ -778,52 +778,43 @@ abstract class API extends CommonGLPI {
 
       //specific case for restriction
       $already_linked_table = array();
+      $where = "1=1 ";
       $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
-      $where = Search::addDefaultWhere($itemtype);
+      $where.= Search::addDefaultWhere($itemtype);
 
       // add filter for a parent itemtype
       if (isset($this->parameters['parent_itemtype'])
           && isset($this->parameters['parent_id'])) {
-         if (!empty($where)) {
-            $where.= " AND ";
-         }
          $fk_parent = getForeignKeyFieldForItemType($this->parameters['parent_itemtype']);
          if (isset($item->fields[$fk_parent])) {
-            $where.= "`$table`.`$fk_parent` = ".$this->parameters['parent_id'];
+            $where.= " AND `$table`.`$fk_parent` = ".$this->parameters['parent_id'];
          } else if (isset($item->fields['itemtype'])
                  && isset($item->fields['items_id'])) {
-            $where.= "`$table`.`itemtype` = '".$this->parameters['parent_itemtype']."'
-                  AND `$table`.`items_id` = ".$this->parameters['parent_id'];
-         } else {
-            $where.= "1=1";
+            $where.= " AND `$table`.`itemtype` = '".$this->parameters['parent_itemtype']."'
+                       AND `$table`.`items_id` = ".$this->parameters['parent_id'];
          }
       }
 
-      if (!empty($where)
-          || !empty($join)) {
-         $query = "SELECT DISTINCT `$table`.id,  `$table`.*
-                   FROM `$table`
-                   $join ";
-         if (!empty($where)) {
-            $query .= "WHERE $where";
-         }
-         $query.= " ORDER BY ".$params['sort']." ".$params['order'];
-         $query.= " LIMIT ".$params['start'].", ".$params['list_limit'];
-         if ($result = $DB->query($query)) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $found[$data['id']] = $data;
-            }
-         }
-
-      // all other itemtypes
-      } else {
-         $condition = "";
-         if ($item->isEntityAssign()) {
-            $condition = getEntitiesRestrictRequest("", $itemtype::getTable(), '', $_SESSION['glpiactiveentities']);
-         }
-         $found = getAllDatasFromTable($itemtype::getTable(), $condition, true);
+      // filter with entity
+      if ($item->isEntityAssign()) {
+         $where.= getEntitiesRestrictRequest("AND",
+                                             $itemtype::getTable(),
+                                             '',
+                                             $_SESSION['glpiactiveentities']);
       }
 
+      // build query
+      $query = "SELECT DISTINCT `$table`.id,  `$table`.*
+                FROM `$table`
+                $join
+                WHERE $where
+                ORDER BY ".$params['sort']." ".$params['order']."
+                LIMIT ".$params['start'].", ".$params['list_limit'];
+      if ($result = $DB->query($query)) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $found[$data['id']] = $data;
+         }
+      }
 
 
       foreach ($found as $key => &$fields) {
