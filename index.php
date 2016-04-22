@@ -104,6 +104,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<div id='boxlogin'>";
    echo "<form action='".$CFG_GLPI["root_doc"]."/front/login.php' method='post'>";
 
+   $_SESSION['namfield'] = $namfield = uniqid('field');
+   $_SESSION['pwdfield'] = $pwdfield = uniqid('field');
 
    // Other CAS
    if (isset($_GET["noAUTO"])) {
@@ -115,12 +117,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'"/>';
    }
    echo '<p class="login_input">
-         <input type="text" name="login_name" id="login_name" required="required"
+         <input type="text" name="'.$namfield.'" id="login_name" required="required"
                 placeholder="'.__('Login').'" />
          <span class="login_img"></span>
          </p>';
    echo '<p class="login_input">
-         <input type="password" name="login_password" id="login_password" required="required"
+         <input type="password" name="'.$pwdfield.'" id="login_password" required="required"
                 placeholder="'.__('Password').'"  />
          <span class="login_img"></span>
          </p>';
