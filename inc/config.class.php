@@ -1419,6 +1419,13 @@ class Config extends CommonDBTM {
                <td>$max</td><td>";
          echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
                ($max < 2 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            echo "<tr><td></td><td colspan='3'>";
+            echo "<a class='vsubmit' href='config.form.php?reset_opcache=1'>";
+            _e('Reset');
+            echo "</a></td></tr>\n";
+         }
       } else {
          echo "<tr><td>" . sprintf(__('Installing the "%s" extension may improve GLPI performance'), $ext) . "</td>
                <td></td>
@@ -1462,6 +1469,13 @@ class Config extends CommonDBTM {
                                                       'forcepadding' => false));
          echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
               ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            echo "<tr><td></td><td colspan='3'>";
+            echo "<a class='vsubmit' href='config.form.php?reset_apcu=1'>";
+            _e('Reset');
+            echo "</a></td></tr>\n";
+         }
       } else {
          echo "<tr><td>" . sprintf(__('Installing the "%s" extension may improve GLPI performance'), $ext) . "</td>
                <td></td>
