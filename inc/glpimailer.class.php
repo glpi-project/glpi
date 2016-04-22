@@ -58,7 +58,7 @@ class GLPIMailer extends PHPMailer {
       $this->CharSet            = "utf-8";
 
       // Comes from config
-      $this->SetLanguage("en", self::getLibraryDir("PHPMailer") . "/language/");
+      $this->SetLanguage("en", Config::getLibraryDir("PHPMailer") . "/language/");
 
       if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
          $this->Mailer = "smtp";
