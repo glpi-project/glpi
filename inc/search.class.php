@@ -1472,6 +1472,10 @@ class Search {
                Html::showMassiveActions($massiveactionparams);
                // End form for delete item
                Html::closeForm();
+
+               // permit to shift select checkboxes
+               echo Html::scriptBlock("
+                  \$('#$massformid input[type=\"checkbox\"]').shiftSelectable();");
             } else {
                echo "<br>";
             }
