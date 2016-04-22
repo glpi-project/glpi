@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-use JeroenDesloovere\VCard\VCard;
+use Sabre\VObject;
 
 class User extends CommonDBTM {
 
@@ -3397,27 +3397,27 @@ class User extends CommonDBTM {
    **/
    function generateVcard() {
 
-      // build the Vcard
-      $vcard = new vCard();
-
+      // prepare properties for the Vcard
       if (!empty($this->fields["realname"])
           || !empty($this->fields["firstname"])) {
-         $vcard->addName($this->fields["realname"], $this->fields["firstname"], "", "");
+         $name = [$this->fields["realname"], $this->fields["firstname"], "", "", ""];
       } else {
-         $vcard->addName($this->fields["name"], "", "", "");
+         $name = [$this->fields["name"], "", "", "", ""];
       }
 
-      $vcard->addPhoneNumber($this->fields["phone"], "PREF;WORK;VOICE");
-      $vcard->addPhoneNumber($this->fields["phone2"], "HOME;VOICE");
-      $vcard->addPhoneNumber($this->fields["mobile"], "WORK;CELL");
-
-      $vcard->addEmail($this->getDefaultEmail());
-
-      $vcard->addNote($this->fields["comment"]);
+      // create vcard
+      $vcard = new VObject\Component\VCard([
+         'N'     => $name,
+         'EMAIL' => $this->getDefaultEmail(),
+         'NOTE'  => $this->fields["comment"],
+      ]);
+      $vcard->add('TEL', $this->fields["phone"], ['type' => 'PREF;WORK;VOICE']);
+      $vcard->add('TEL', $this->fields["phone2"], ['type' => 'HOME;VOICE']);
+      $vcard->add('TEL', $this->fields["mobile"], ['type' => 'WORK;CELL']);
 
       // send the  VCard
-      $output   = $vcard->getOutput();
-      $filename = $vcard->getFileName();      // "xxx xxx.vcf"
+      $output   = $vcard->serialize();
+      $filename = implode("_", array_filter($name)).".vcf";
 
       @Header("Content-Disposition: attachment; filename=\"$filename\"");
       @Header("Content-Length: ".Toolbox::strlen($output));

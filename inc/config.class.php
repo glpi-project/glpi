@@ -1717,9 +1717,7 @@ class Config extends CommonDBTM {
            (class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
 
       // Zend
-      $zv = new Zend\Version\Version;
-      echo "Zend Framework version ".$zv::VERSION.
-           " in (".self::getLibraryDir($zv).")\n";
+      echo "Zend Framework in (".self::getLibraryDir("Zend\Loader\StandardAutoloader").")\n";
 
       // SimplePie :
       $sp = new SimplePie();
@@ -1735,15 +1733,11 @@ class Config extends CommonDBTM {
       echo "ircmaxell/password-compat in (".
            self::getLibraryDir("PasswordCompat\binary\check")."). Compatitility: $check\n";
 
-      // icalcreator
-      echo "icalcreator version ".ICALCREATOR_VERSION.
-           " in (".self::getLibraryDir("vcalendar").")\n";
-
       // autolink
       echo "iacaml/autolink in (".self::getLibraryDir("autolink").")\n";
 
-      // vcard
-      echo "JeroenDesloovere/VCard in (".self::getLibraryDir("JeroenDesloovere\VCard\VCard").")\n";
+      // sabre/vobject
+      echo "sabre/vobject in (".self::getLibraryDir("Sabre\VObject\Component").")\n";
 
       // vcard
       echo "guzzlehttp/guzzle in (".self::getLibraryDir("JeroenDesloovere\VCard\VCard").")\n";
