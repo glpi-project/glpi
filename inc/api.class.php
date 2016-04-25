@@ -1182,10 +1182,29 @@ abstract class API extends CommonGLPI {
          $failed = 0;
          foreach($input as $object) {
             if (isset($object->id)) {
-               //check rights
+
+               if (!$item->getFromDB($input['id'])) {
+                  $failed++;
+                  $idCollection[] = array($object->id => $this->messageNotfoundError());
+                  break; // I hate doing this, but I  guess you would prefer
+               }
+                
+               // Force purge for templates / may not to be deleted / not dynamic lockable items
+               // see CommonDBTM::delete()
+               // Needs factorization
+               if ($item->isTemplate()
+                  || !$item->maybeDeleted()
+                  // Do not take into account deleted field if maybe dynamic but not dynamic
+                  || ($item->useDeletedToLockIfDynamic()
+                        && !$item->isDynamic())) {
+                  $params['force_purge'] = 1;
+               }
+
+               //check rights               
                if ($params['force_purge']
-                   && !$item->can(-1, PURGE)
-                   || !$item->can(-1, DELETE)) {
+                   && !$item->can($object->id, PURGE)
+                   || !$params['force_purge'] 
+                   && !$item->can($object->id, DELETE)) {
                   $failed++;
                   $idCollection[] = array($object->id => $this->messageRightError());
                } else {
@@ -1211,11 +1230,27 @@ abstract class API extends CommonGLPI {
 
       } else if (is_object($input)) {
          $input = get_object_vars($input);
-
+         
+         if (!$item->getFromDB($input['id'])) {
+            $this->messageNotfoundError();
+         }
+         
+         // Force purge for templates / may not to be deleted / not dynamic lockable items
+         // see CommonDBTM::delete() 
+         // Needs factorization
+         if ($item->isTemplate()
+             || !$item->maybeDeleted()
+             // Do not take into account deleted field if maybe dynamic but not dynamic
+             || ($item->useDeletedToLockIfDynamic()
+                 && !$item->isDynamic())) {
+            $params['force_purge'] = 1;
+         }
+         
          //check rights
          if ($params['force_purge']
-             && !$item->can(-1, PURGE)
-             || !$item->can(-1, DELETE)) {
+             && !$item->can($object->id, PURGE)
+             || !$params['force_purge']
+             && !$item->can($object->id, DELETE)) {
             $this->messageRightError();
          }
 
