@@ -1177,9 +1177,9 @@ abstract class API extends CommonGLPI {
                if (!$item->getFromDB($input['id'])) {
                   $failed++;
                   $idCollection[] = array($object->id => $this->messageNotfoundError());
-                  break; // I hate doing this, but I  guess you would prefer
+                  break;
                }
-                
+
                // Force purge for templates / may not to be deleted / not dynamic lockable items
                // see CommonDBTM::delete()
                // Needs factorization
@@ -1191,10 +1191,10 @@ abstract class API extends CommonGLPI {
                   $params['force_purge'] = 1;
                }
 
-               //check rights               
+               //check rights
                if ($params['force_purge']
                    && !$item->can($object->id, PURGE)
-                   || !$params['force_purge'] 
+                   || !$params['force_purge']
                    && !$item->can($object->id, DELETE)) {
                   $failed++;
                   $idCollection[] = array($object->id => $this->messageRightError());
@@ -1221,13 +1221,13 @@ abstract class API extends CommonGLPI {
 
       } else if (is_object($input)) {
          $input = get_object_vars($input);
-         
+
          if (!$item->getFromDB($input['id'])) {
             $this->messageNotfoundError();
          }
-         
+
          // Force purge for templates / may not to be deleted / not dynamic lockable items
-         // see CommonDBTM::delete() 
+         // see CommonDBTM::delete()
          // Needs factorization
          if ($item->isTemplate()
              || !$item->maybeDeleted()
@@ -1236,7 +1236,7 @@ abstract class API extends CommonGLPI {
                  && !$item->isDynamic())) {
             $params['force_purge'] = 1;
          }
-         
+
          //check rights
          if ($params['force_purge']
              && !$item->can($object->id, PURGE)
