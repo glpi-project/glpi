@@ -398,6 +398,10 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, is_numeric($id));
       $this->assertEquals(true, $id > 0);
 
+      $computer = new Computer;
+      $computers_exist = $computer->getFromDB($id);
+      $this->assertEquals(true, boolval($computers_exist));
+
       return $id;
    }
 
@@ -427,6 +431,13 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, $first_computer['id'] > 0);
       $this->assertEquals(true, $secnd_computer['id'] > 0);
 
+
+      $computer = new Computer;
+      $computers_exist = $computer->getFromDB($first_computer['id']);
+      $this->assertEquals(true, boolval($computers_exist));
+      $computers_exist = $computer->getFromDB($secnd_computer['id']);
+      $this->assertEquals(true, boolval($computers_exist));
+
       return $data;
    }
 
@@ -447,9 +458,14 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
       $data = json_decode($res->getBody(), true);
       $this->assertNotEquals(false, $data);
-      $first_computer = array_shift($data);
-      $this->assertArrayHasKey($computers_id, $first_computer);
-      $this->assertEquals(true, boolval($first_computer[$computers_id]));
+      $computer = array_shift($data);
+      $this->assertArrayHasKey($computers_id, $computer);
+      $this->assertEquals(true, boolval($computer[$computers_id]));
+
+      $computer = new Computer;
+      $computers_exist = $computer->getFromDB($computers_id);
+      $this->assertEquals(true, boolval($computers_exist));
+      $this->assertEquals("abcdef", $computer->fields['serial']);
    }
 
 
@@ -471,6 +487,11 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $first_computer = array_shift($data);
       $this->assertArrayHasKey($computers_id, $first_computer);
       $this->assertEquals(true, boolval($first_computer[$computers_id]));
+
+      $computer = new Computer;
+      $computers_exist = $computer->getFromDB($computers_id);
+      $this->assertEquals(true, boolval($computers_exist));
+      $this->assertEquals("abcdefg", $computer->fields['serial']);
    }
 
 
@@ -479,7 +500,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testCreateItems
      */
    public function testUpdateItems($session_token, $computers_id_collection) {
-      $input = array();
+      $input    = array();
+      $computer = new Computer;
       foreach($computers_id_collection as $key => $computers_id) {
          $input[] = ['id'          => $computers_id['id'],
                      'otherserial' => "abcdef"];
@@ -496,6 +518,10 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $computers_id = $computers_id_collection[$index]['id'];
          $this->assertArrayHasKey($computers_id, $row);
          $this->assertEquals(true, boolval($row[$computers_id]));
+
+         $computers_exist = $computer->getFromDB($computers_id);
+         $this->assertEquals(true, boolval($computers_exist));
+         $this->assertEquals("abcdef", $computer->fields['otherserial']);
       }
    }
 
@@ -513,6 +539,10 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
       $data = json_decode($res->getBody(), true);
       $this->assertEquals(NULL, $data);
+
+      $computer = new Computer;
+      $computers_exist = $computer->getFromDB($computers_id);
+      $this->assertEquals(false, boolval($computers_exist));
    }
 
 
@@ -521,7 +551,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testCreateItems
      */
    public function testDeleteItems($session_token, $computers_id_collection) {
-      $input = array();
+      $input    = array();
+      $computer = new Computer;
       foreach($computers_id_collection as $key => $computers_id) {
          $input[] = ['id' => $computers_id['id']];
       }
@@ -537,6 +568,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $computers_id = $computers_id_collection[$index]['id'];
          $this->assertArrayHasKey($computers_id, $row);
          $this->assertEquals(true, boolval($row[$computers_id]));
+
+         $computers_exist = $computer->getFromDB($computers_id);
+         $this->assertEquals(false, boolval($computers_exist));
       }
    }
 
