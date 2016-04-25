@@ -123,7 +123,8 @@ class APIXmlrpc extends API {
          return $this->returnResponse($response, $code);
 
       // commonDBTM manipulation
-      } else {
+      } else if (in_array($ressource,
+                          array("getItem", "getItems", "createItems", "updateItems", "deleteItems"))) {
          // check itemtype parameter
          if (!isset($this->parameters['itemtype'])) {
             $this->returnError(__("itemtype missing"), 400, "ITEMTYPE_RESSOURCE_MISSING");

@@ -2001,13 +2001,13 @@ class Config extends CommonDBTM {
             if (Config::canUpdate()) {
                $tabs[5] = __('System');
                $tabs[7] = __('Performance');
+               $tabs[8] = __('API');
             }
 
             if (DBConnection::isDBSlaveActive()
                 && Config::canUpdate()) {
                $tabs[6]  = _n('Mysql replica', 'Mysql replicas', Session::getPluralNumber());  // Slave
             }
-            $tabs[7] = __('API');
             return $tabs;
       }
       return '';
@@ -2057,15 +2057,15 @@ class Config extends CommonDBTM {
                $item->showSystemInformations();
                break;
 
-            case 7 :
-               $item->showPerformanceInformations();
-               break;
-
             case 6 :
                $item->showFormDBSlave();
                break;
 
             case 7 :
+               $item->showPerformanceInformations();
+               break;
+
+            case 8 :
                $item->showFormAPI();
                break;
 

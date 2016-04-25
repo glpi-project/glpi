@@ -306,7 +306,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
          $res = $this->doHttpRequest('badEndpoint', ['session_token' => $session_token]);
       } catch (ClientException $e) {
          $response = $e->getResponse();
-         $this->assertEquals(400, $response->getStatusCode());
+         $this->assertEquals(405, $response->getStatusCode());
       }
    }
 
