@@ -34,11 +34,13 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    protected $http_client;
    protected $base_uri = "";
 
+
    protected function setUp() {
       global $CFG_GLPI;
       $this->http_client = new GuzzleHttp\Client();
       $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/api/";
    }
+
 
    protected function doHttpRequest($method = "get", $relative_uri = "", $params = array()) {
       $method = strtolower($method);
@@ -47,6 +49,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       }
    }
 
+
    public function testInlineDocumentation() {
       $res = $this->doHttpRequest('GET');
       $this->assertEquals(200, $res->getStatusCode());
@@ -54,6 +57,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('Content-Type', $headers);
       $this->assertContains('text/html; charset=UTF-8', $headers['Content-Type'][0]);
    }
+
 
    public function testInitSessionCredentials() {
       $res = $this->doHttpRequest('GET', 'initSession/',
@@ -71,6 +75,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('session_token', $data);
       return $data['session_token'];
    }
+
 
    public function testInitSessionUserToken() {
       // retrieve personnal token of 'glpi' user
@@ -94,6 +99,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('session_token', $data);
    }
 
+
    /**
      * @depends testInitSessionCredentials
      */
@@ -106,6 +112,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ]]);
       $this->assertEquals(200, $res->getStatusCode());
    }
+
 
    /**
      * @depends testInitSessionCredentials
@@ -121,6 +128,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey(0, $data); // check presence of root entity
    }
+
 
    /**
      * @depends testInitSessionCredentials
@@ -140,6 +148,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertTrue(is_array($data['active_entities']), $data);
    }
 
+
    /**
      * @depends testInitSessionCredentials
      */
@@ -151,6 +160,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                           ]]);
       $this->assertEquals(200, $res->getStatusCode());
    }
+
 
    /**
      * @depends testInitSessionCredentials
@@ -166,6 +176,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey(4, $data);  // check presence of super-admin profile
    }
+
 
    /**
      * @depends testInitSessionCredentials
@@ -183,6 +194,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('name', $data);
       $this->assertArrayHasKey('interface', $data);
    }
+
 
    /**
      * @depends testInitSessionCredentials
@@ -202,6 +214,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('glpilanguage', $data);
       $this->assertArrayHasKey('glpilist_limit', $data);
    }
+
 
    /**
      * @depends testInitSessionCredentials
@@ -239,6 +252,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('completename', $data);
       $this->assertArrayNotHasKey('links', $data); // get_hateoas == false
    }
+
 
    /**
      * @depends testInitSessionCredentials
@@ -278,6 +292,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayNotHasKey('is_active', $data[0]);
    }
 
+
    /**
      * @depends testInitSessionCredentials
      */
@@ -297,6 +312,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals('name', $data[1]['field']);
       $this->assertEquals('itemlink', $data[1]['datatype']);
    }
+
 
    /**
      * @depends testInitSessionCredentials
@@ -338,6 +354,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
    }
 
+
    /**
      * @depends testInitSessionCredentials
      */
@@ -365,7 +382,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    /**
      * @depends testInitSessionCredentials
      */
-   public function testAddItem($session_token) {
+   public function testCreateItem($session_token) {
       $res = $this->doHttpRequest('POST', 'Computer/',
                                          ['json' => [
                                              'session_token' => $session_token,
@@ -384,10 +401,11 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       return $id;
    }
 
+
    /**
      * @depends testInitSessionCredentials
      */
-   public function testAddItems($session_token) {
+   public function testCreateItems($session_token) {
       $res = $this->doHttpRequest('POST', 'Computer/',
                                          ['json' => [
                                              'session_token' => $session_token,
@@ -415,7 +433,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
    /**
      * @depends testInitSessionCredentials
-     * @depends testAddItem
+     * @depends testCreateItem
      */
    public function testUpdateItem($session_token, $computers_id) {
       $res = $this->doHttpRequest('PUT', 'Computer/',
@@ -434,9 +452,10 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, boolval($first_computer[$computers_id]));
    }
 
+
    /**
      * @depends testInitSessionCredentials
-     * @depends testAddItem
+     * @depends testCreateItem
      */
    public function testUpdateItemWithIdInQueryString($session_token, $computers_id) {
       $res = $this->doHttpRequest('PUT', "Computer/$computers_id",
@@ -454,9 +473,10 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, boolval($first_computer[$computers_id]));
    }
 
+
    /**
      * @depends testInitSessionCredentials
-     * @depends testAddItems
+     * @depends testCreateItems
      */
    public function testUpdateItems($session_token, $computers_id_collection) {
       $input = array();
@@ -482,7 +502,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
    /**
      * @depends testInitSessionCredentials
-     * @depends testAddItem
+     * @depends testCreateItem
      */
    public function testDeleteItem($session_token, $computers_id) {
       $res = $this->doHttpRequest('DELETE', "Computer/$computers_id",
@@ -498,7 +518,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
    /**
      * @depends testInitSessionCredentials
-     * @depends testAddItems
+     * @depends testCreateItems
      */
    public function testDeleteItems($session_token, $computers_id_collection) {
       $input = array();
@@ -519,6 +539,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $this->assertEquals(true, boolval($row[$computers_id]));
       }
    }
+
 
    /**
      * @depends testInitSessionCredentials

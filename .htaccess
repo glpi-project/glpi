@@ -5,7 +5,7 @@
    RewriteEngine On
    RewriteCond %{REQUEST_FILENAME} !-f
    RewriteCond %{REQUEST_FILENAME} !-d
-   RewriteRule (.*)$ api.php/$1
+   RewriteRule (.*)$ apirest.php/$1
 </IfModule>
 
 <IfModule mod_expires.c>
