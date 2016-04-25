@@ -70,6 +70,7 @@ abstract class API extends CommonGLPI {
 
       // Avoid keeping messages between api calls
       $_SESSION["MESSAGE_AFTER_REDIRECT"]='';
+      $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
       // check if api is enabled
       if (!$CFG_GLPI['enable_api']) {
