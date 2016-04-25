@@ -1173,11 +1173,10 @@ abstract class API extends CommonGLPI {
          $failed = 0;
          foreach($input as $object) {
             if (isset($object->id)) {
-
-               if (!$item->getFromDB($input['id'])) {
+               if (!$item->getFromDB($object->id)) {
                   $failed++;
                   $idCollection[] = array($object->id => $this->messageNotfoundError());
-                  break;
+                  continue;
                }
 
                // Force purge for templates / may not to be deleted / not dynamic lockable items
@@ -1239,9 +1238,9 @@ abstract class API extends CommonGLPI {
 
          //check rights
          if ($params['force_purge']
-             && !$item->can($object->id, PURGE)
+             && !$item->can($input['id'], PURGE)
              || !$params['force_purge']
-             && !$item->can($object->id, DELETE)) {
+             && !$item->can($input['id'], DELETE)) {
             $this->messageRightError();
          }
 
@@ -1583,8 +1582,7 @@ abstract class API extends CommonGLPI {
       if ($docmessage) {
          $message .= "; ".sprintf(__("see documentation with your browser on %s"), self::$api_url);
       }
-      $this->returnResponse(array($statuscode, $message), $httpcode);
-      die;
+      return $this->returnResponse(array($statuscode, $message), $httpcode);
    }
 
 }
