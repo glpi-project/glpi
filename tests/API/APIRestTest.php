@@ -484,9 +484,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
       $data = json_decode($res->getBody(), true);
       $this->assertNotEquals(false, $data);
-      $first_computer = array_shift($data);
-      $this->assertArrayHasKey($computers_id, $first_computer);
-      $this->assertEquals(true, boolval($first_computer[$computers_id]));
+      $computer = array_shift($data);
+      $this->assertArrayHasKey($computers_id, $computer);
+      $this->assertEquals(true, boolval($computer[$computers_id]));
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($computers_id);
