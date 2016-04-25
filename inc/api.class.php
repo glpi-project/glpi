@@ -69,8 +69,7 @@ abstract class API extends CommonGLPI {
       ini_set('display_errors', 'Off');
 
       // Avoid keeping messages between api calls
-      $_SESSION["MESSAGE_AFTER_REDIRECT"]='';
-      $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+      $_SESSION["MESSAGE_AFTER_REDIRECT"] = '';
 
       // check if api is enabled
       if (!$CFG_GLPI['enable_api']) {
@@ -202,6 +201,7 @@ abstract class API extends CommonGLPI {
 
             // Define current time for sync of action timing
             $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
+            $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
          }
       }
    }
