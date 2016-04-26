@@ -1028,7 +1028,7 @@ abstract class API extends CommonGLPI {
             $object = get_object_vars($object);
             //check rights
             if (!$item->can(-1, CREATE, $object)) {
-               $idCollection[] = array('error' => $this->messageRightError());
+               $idCollection[] = array('error' => $this->messageRightError(false));
                $failed++;
             } else {
                // add missing entity
@@ -1103,14 +1103,14 @@ abstract class API extends CommonGLPI {
                //check rights
                if (!$item->can(-1, UPDATE)) {
                   $failed++;
-                  $idCollection[] = array($object->id => $this->messageRightError());
+                  $idCollection[] = array($object->id => $this->messageRightError(false));
                } else {
                   //update item
                   if ($update_return = $item->update( (array) $object)) {
                      $idCollection[] = array($object->id => $update_return);
                   } else {
                      $failed++;
-                     $idCollection[] = array($object->id => $this->getGlpiLastMessage());
+                     $idCollection[] = array($object->id => $this->getGlpiLastMessage(false));
                   }
                }
             }
@@ -1176,7 +1176,7 @@ abstract class API extends CommonGLPI {
             if (isset($object->id)) {
                if (!$item->getFromDB($object->id)) {
                   $failed++;
-                  $idCollection[] = array($object->id => $this->messageNotfoundError());
+                  $idCollection[] = array($object->id => $this->messageNotfoundError(false));
                   continue;
                }
 
@@ -1197,7 +1197,7 @@ abstract class API extends CommonGLPI {
                    || !$params['force_purge']
                    && !$item->can($object->id, DELETE)) {
                   $failed++;
-                  $idCollection[] = array($object->id => $this->messageRightError());
+                  $idCollection[] = array($object->id => $this->messageRightError(false));
                } else {
                   //delete item
                   if ($delete_return = $item->delete((array) $object,
@@ -1491,74 +1491,84 @@ abstract class API extends CommonGLPI {
    /**
     * Send 404 error to client
     */
-   public function messageNotfoundError() {
+   public function messageNotfoundError($return_error = true) {
       $this->returnError(__("Not found"),
                          404,
                          "ERROR_NOT_FOUND",
-                         false);
+                         false,
+                         $return_error);
    }
 
 
    /**
     * Send 401 error to client
     */
-   public function messageBadArrayError() {
+   public function messageBadArrayError($return_error = true) {
       $this->returnError(__("input parameter must be an an array of objects"),
                          400,
-                         "ERROR_BAD_ARRAY");
+                         "ERROR_BAD_ARRAY",
+                         true,
+                         $return_error);
    }
 
 
    /**
     * Send 405 error to client
     */
-   public function messageLostError() {
+   public function messageLostError($return_error = true) {
       $this->returnError(__("Method Not Allowed"),
                          405,
-                         "ERROR_METHOD_NOT_ALLOWED");
+                         "ERROR_METHOD_NOT_ALLOWED",
+                         true,
+                         $return_error);
    }
 
 
    /**
     * Send 401 error to client
     */
-   public function messageRightError() {
+   public function messageRightError($return_error = true) {
       $this->returnError(__("You don't have permission to perform this action"),
                          401,
                          "ERROR_RIGHT_MISSING",
-                         false);
+                         false,
+                         $return_error);
    }
 
 
    /**
     * Session Token KO
     */
-   public function messageSessionError() {
+   public function messageSessionError($return_error = true) {
       $this->returnError(__("session_token seems invalid"),
                          401,
                          "ERROR_SESSION_TOKEN_INVALID",
-                         false);
+                         false,
+                         $return_error);
    }
 
 
    /**
     * Session Token missing
     */
-   public function messageSessionTokenMissing() {
+   public function messageSessionTokenMissing($return_error = true) {
       $this->returnError(__("parameter session_token missing or empty"),
                          400,
-                         "ERROR_SESSION_TOKEN_MISSING");
+                         "ERROR_SESSION_TOKEN_MISSING",
+                         true,
+                         $return_error);
    }
 
 
    /**
     * Send 401 error to client
     */
-   public function messageNotDeletedError() {
+   public function messageNotDeletedError($return_error = true) {
       $this->returnError(__("You must mark the item for deletion before actualy deleting it"),
                          401,
                          "ERROR_NOT_DELETED",
-                         false);
+                         false,
+                         $return_error);
    }
 
 
@@ -1569,8 +1579,9 @@ abstract class API extends CommonGLPI {
     * @param      integer  $httpcode    http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
     * @param      string   $statuscode  API status (to represend more precisely the current error)
     * @param      boolean  $docmessage  if true, add a link to inline document in message
+    * @param      boolean  $return_response  if true, the error will be send to returnResponse function (who may exit after sending data), otherwise, we will return an array with the error.
     */
-   public function returnError($message = "Bad Request", $httpcode = 400, $statuscode = "ERROR", $docmessage = true) {
+   public function returnError($message = "Bad Request", $httpcode = 400, $statuscode = "ERROR", $docmessage = true, $return_response = true) {
       global $CFG_GLPI;
 
       if (empty($httpcode)) {
@@ -1583,7 +1594,11 @@ abstract class API extends CommonGLPI {
       if ($docmessage) {
          $message .= "; ".sprintf(__("see documentation with your browser on %s"), self::$api_url);
       }
-      return $this->returnResponse(array($statuscode, $message), $httpcode);
+      if ($return_response) {
+         return $this->returnResponse(array($statuscode, $message), $httpcode);
+      } else {
+         return array($statuscode, $message);
+      }
    }
 
 }

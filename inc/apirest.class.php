@@ -392,6 +392,7 @@ class APIRest extends API {
       } else {
          echo $json;
       }
+      exit;
    }
 
    /**
