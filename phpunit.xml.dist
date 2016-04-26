@@ -6,9 +6,7 @@
        >
     <testsuites>
         <testsuite name="GLPI">
-            <!-- <directory suffix="Test.php">./tests/</directory> -->
-            <!-- <directory suffix="Test.php">./tests/API/APIRestTest.php</directory> -->
-            <directory suffix="Test.php">./tests/API/APIXmlrpcTest.php</directory>
+            <directory suffix="Test.php">./tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
