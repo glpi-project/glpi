@@ -183,9 +183,9 @@ class Central extends CommonGLPI {
       }
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-         if (!DBMysql::isMySQLStrictMode()) {
+         if (!DBMysql::isMySQLStrictMode($comment)) {
             echo "<tr><th colspan='2'>";
-            $message = __('MySQL strict mode is not enabled');
+            $message = sprintf(__('MySQL strict mode is not fully enabled, recommended for development: %s'), $comment);
             Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
             echo "</th></tr>";
          }
