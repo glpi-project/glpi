@@ -341,15 +341,17 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
    public function testCreateItems($session_token) {
       $res = $this->doHttpRequest('createItems', ['session_token' => $session_token,
                                                   'itemtype'      => 'Computer',
-                                                  'input'         => [
+                                                  'input'         => [[
                                                      'name' => "My computer 2"
                                                   ],[
                                                      'name' => "My computer 3"
-                                                  ]]);
+                                                  ]]]);
       $this->assertEquals(201, $res->getStatusCode());
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey(0, $data);
+      $this->assertArrayHasKey(1, $data);
       $first_computer = $data[0];
       $secnd_computer = $data[1];
       $this->assertArrayHasKey('id', $first_computer);
@@ -372,7 +374,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
    /**
      * @depends testInitSessionCredentials
-     * @depends testAddItem
+     * @depends testCreateItem
      */
    public function testUpdateItem($session_token, $computers_id) {
       $res = $this->doHttpRequest('updateItems', ['session_token' => $session_token,
@@ -399,7 +401,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
    /**
      * @depends testInitSessionCredentials
-     * @depends testAddItems
+     * @depends testCreateItems
      */
    public function testUpdateItems($session_token, $computers_id_collection) {
       $input    = array();
@@ -429,7 +431,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
    /**
      * @depends testInitSessionCredentials
-     * @depends testAddItem
+     * @depends testCreateItem
      */
    public function testDeleteItem($session_token, $computers_id) {
       $res = $this->doHttpRequest('deleteItems', ['session_token' => $session_token,
@@ -449,7 +451,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
    /**
      * @depends testInitSessionCredentials
-     * @depends testAddItems
+     * @depends testCreateItems
      */
    public function testDeleteItems($session_token, $computers_id_collection) {
       $input    = array();

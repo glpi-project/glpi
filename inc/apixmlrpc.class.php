@@ -50,18 +50,22 @@ class APIXmlrpc extends API {
 
 
    /**
-    * parse url and http body to retrieve :
-    *  TODO
+    * parse POST var to retrieve
+    *  - Ressource
+    *  - Identifier
+    *  - and parameters
     *
     *  And send to method corresponding identified ressource
     *
-    * @return     TODO
+    * @return     xmlrpc response
     */
    public function call() {
       $ressource = $this->parseIncomingParams();
 
       // retrieve session (if exist)
       $this->retrieveSession();
+
+      $code = 200;
 
       if ($ressource === "initSession") {
          $this->session_write = true;
@@ -114,9 +118,7 @@ class APIXmlrpc extends API {
          $response =  $this->searchItems($this->parameters['itemtype'], $this->parameters);
 
          // diffent http return codes for complete or partial response
-         if ($response['count'] >= $response['count']) {
-            $code = 200; // full content
-         } else {
+         if ($response['count'] < $response['count']) {
             $code = 206; // partial content
          }
 
@@ -166,9 +168,15 @@ class APIXmlrpc extends API {
 
          // delete one or many CommonDBTM items
          } else if ($ressource === "deleteItems") {
+            if (isset($this->parameters['id'])) {
+               $code = 204;
+               //override input
+               $this->parameters['input'] = new stdClass();;
+               $this->parameters['input']->id = $this->parameters['id'];
+            }
             return $this->returnResponse($this->deleteItems($this->parameters['itemtype'],
                                                             $this->parameters),
-                                                            204);
+                                                            $code);
 
          }
       }
@@ -178,7 +186,7 @@ class APIXmlrpc extends API {
 
 
    /**
-    * Construct this->parameters from query string and http body
+    * Construct this->parameters POST data
     */
    public function parseIncomingParams() {
       $parameters = array();
@@ -194,6 +202,20 @@ class APIXmlrpc extends API {
                           ? $parameters[0]
                           : array());
 
+      // transform input from array to object
+      if (isset($this->parameters['input'])
+          && is_array($this->parameters['input'])) {
+         $first_field = array_values($this->parameters['input'])[0];
+         if (is_array($first_field)) {
+            foreach($this->parameters['input'] as &$input) {
+               $input = json_decode(json_encode($input), false);
+            }
+         } else {
+            $this->parameters['input'] = json_decode(json_encode($this->parameters['input']),
+                                                                 false);
+         }
+      }
+
       return $ressource;
    }
 
@@ -204,7 +226,7 @@ class APIXmlrpc extends API {
     * @param integer  $httpcode        http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
     * @param array    $aditionnalheaders header to send with http response (must be an array(key => value))
     */
-   public function returnResponse($response, $httpcode = 200, $aditionnalheaders = array()) {
+   protected function returnResponse($response, $httpcode = 200, $aditionnalheaders = array()) {
       if (empty($httpcode)) {
          $httpcode = 200;
       }
@@ -216,7 +238,33 @@ class APIXmlrpc extends API {
       http_response_code($httpcode);
       self::header($this->debug);
 
-      echo xmlrpc_encode_request(NULL, $response,array('encoding'=>'UTF-8', 'escaping'=>'markup'));
+      $response = $this->escapekeys($response);
+      $out = xmlrpc_encode_request(NULL, $response, array('encoding' => 'UTF-8',
+                                                          'escaping' => 'markup'));
+      echo $out;
+   }
+
+   /**
+    * Add a space before all numeric keys to prevent their deletion by xmlrpc_encode_request function
+    * see https://bugs.php.net/bug.php?id=21949
+    * @param  array  $response the response array to escape
+    * @return array  the escaped response.
+    */
+   protected function escapekeys($response = array()) {
+      if (is_array($response)) {
+         $escaped_response = array();
+         foreach ($response as $key => $value) {
+            if (is_integer($key)) {
+               $key = " ".$key;
+            }
+            if (is_array($value)) {
+               $value = $this->escapekeys($value);
+            }
+            $escaped_response[$key] = $value;
+         }
+         return $escaped_response;
+      }
+      return $response;
    }
 
 }

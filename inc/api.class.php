@@ -1132,7 +1132,7 @@ abstract class API extends CommonGLPI {
          }
 
          // update item
-         if (! $item->update($input)) {
+         if (!$item->update($input)) {
             $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
          } else {
             $idCollection[] = array($item->fields["id"] => "true");
