@@ -777,7 +777,27 @@ abstract class API extends CommonGLPI {
       // add filter for a parent itemtype
       if (isset($this->parameters['parent_itemtype'])
           && isset($this->parameters['parent_id'])) {
+
+         // check parent itemtype
+         if (!class_exists($this->parameters['parent_itemtype'])
+             || !is_subclass_of($this->parameters['parent_itemtype'], 'CommonDBTM')) {
+            $this->returnError(__("parent itemtype is not found or not an instance of CommonDBTM"),
+                               400,
+                               "ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM");
+         }
+
          $fk_parent = getForeignKeyFieldForItemType($this->parameters['parent_itemtype']);
+
+         // check parent rights
+         $parent_item = new $this->parameters['parent_itemtype'];
+         if (!$parent_item->getFromDB($id)) {
+            return $this->messageNotfoundError();
+         }
+         if (!$parent_item->can($id, READ)) {
+            return $this->messageRightError();
+         }
+
+         // filter with parent s fields
          if (isset($item->fields[$fk_parent])) {
             $where.= " AND `$table`.`$fk_parent` = ".$this->parameters['parent_id'];
          } else if (isset($item->fields['itemtype'])
