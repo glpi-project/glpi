@@ -1,4 +1,4 @@
 test:app:
   script:
-  - composer update  
+  - composer update
   - phpunit --verbose --debug
