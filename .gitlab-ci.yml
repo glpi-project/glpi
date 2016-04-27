@@ -3,7 +3,7 @@ test:app:
   - pwd
   - composer update
   - |
-    cat > confg/config_db.php <<- EOM
+    cat > config/config_db.php <<- EOM
     <?php
     class DB extends DBmysql {
       var $dbhost = 'localhost';
@@ -15,4 +15,4 @@ test:app:
     EOM
   - php tests/installGLPI.php --force
   - phpunit --verbose --debug
-  - rm confg/config_db.php
+  - rm config/config_db.php
