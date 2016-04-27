@@ -1,7 +1,7 @@
 test:app:
   script:
   - pwd
-  - composer update
+  - composer update --quiet
   - |
     cat > config/config_db.php <<- EOM
     <?php
