@@ -3,13 +3,13 @@ test:app:
   - pwd
   - composer update --quiet
   - |
-    cat > config/config_db.php <<- EOM
+    cat > config/config_db.php << EOM
     <?php
     class DB extends DBmysql {
-      var $dbhost = 'localhost';
-      var $dbuser  = 'glpi-testsuite';
-      var $dbpassword= 'glpi-testsuite';
-      var $dbdefault = 'glpi-testsuite';
+      var \$dbhost = 'localhost';
+      var \$dbuser  = 'glpi-testsuite';
+      var \$dbpassword= 'glpi-testsuite';
+      var \$dbdefault = 'glpi-testsuite';
     }
     ?>
     EOM
