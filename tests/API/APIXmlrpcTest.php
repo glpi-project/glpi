@@ -274,7 +274,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
                                              'itemtype'      => 'User',
                                              'sort'          => 19,
                                              'order'         => 'DESC',
-                                             'range'         => '10-15',
+                                             'range'         => '0-2',
                                              'forcedisplay'  => '81',
                                              'rawdata'       => true]);
       $this->assertEquals(200, $res->getStatusCode());

@@ -324,7 +324,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'session_token' => $session_token,
                                              'sort'          => 19,
                                              'order'         => 'DESC',
-                                             'range'         => '10-15',
+                                             'range'         => '0-2',
                                              'forcedisplay'  => '81',
                                              'rawdata'       => true
                                           ]]);
