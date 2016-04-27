@@ -1120,8 +1120,14 @@ abstract class API extends CommonGLPI {
          $failed = 0;
          foreach($input as $object) {
             if (isset($object->id)) {
+               if (!$item->getFromDB($object->id)) {
+                  $failed++;
+                  $idCollection[] = array($object->id => $this->messageNotfoundError(false));
+                  continue;
+               }
+               
                //check rights
-               if (!$item->can(-1, UPDATE)) {
+               if (!$item->can($object->id, UPDATE)) {
                   $failed++;
                   $idCollection[] = array($object->id => $this->messageRightError(false));
                } else {
@@ -1146,8 +1152,12 @@ abstract class API extends CommonGLPI {
       } else if (is_object($input)) {
          $input = get_object_vars($input);
 
+         if (!$item->getFromDB($input['id'])) {
+            $this->messageNotfoundError();
+         }
+         
          //check rights
-         if (!$item->can(-1, UPDATE, $input)) {
+         if (!$item->can($input['id'], UPDATE, $input)) {
             $this->messageRightError();
          }
 
