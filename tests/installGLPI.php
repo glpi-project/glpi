@@ -8,6 +8,7 @@ include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
 $DBvars = get_class_vars('DB');
+$cmd_mysql = constructMysqlOptions($DBvars['dbuser'], $DBvars['dbhost'], $DBvars['dbpassword']);
 
 // confirm execution of script
 if (!in_array('--force', $_SERVER['argv'])) {
@@ -50,6 +51,26 @@ exec(
 );
 displayCommandResult(array('returncode' => $returncode,
                              'output'     => $output));
+
+
+echo "Enable API: ";
+exec(
+   $cmd_mysql . " -e 'UPDATE glpi_configs SET value = 1 WHERE name LIKE \"enable_api%\"' ".$DBvars['dbdefault'],
+   $output, $returncode
+);
+displayCommandResult(array('returncode' => $returncode,
+                             'output'     => $output));
+
+
+echo "Change url in GLPI: ";
+exec(
+   $cmd_mysql . " -e 'UPDATE glpi_configs SET value = \"http://localhost/glpi_testsuite/\" WHERE name = \"url_base%\"' ".$DBvars['dbdefault'],
+   $output, $returncode
+);
+displayCommandResult(array('returncode' => $returncode,
+                             'output'     => $output));
+
+
 
 exit;
 
