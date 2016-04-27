@@ -1,10 +1,10 @@
 test:app:
   script:
-  - pwd
+  - current_wd=$(pwd)
   - composer update --quiet
   - echo -e "<?php\nclass DB extends DBmysql {\nvar \$dbhost = 'localhost';\nvar \$dbuser = 'glpi_testsuite';\nvar \$dbpassword = 'glpi_testsuite';\nvar \$dbdefault = 'glpi_testsuite';\n}\n" > config/config_db.php
   - php tests/installGLPI.php --force
-  - ln -s . /tmp/glpi_testsuite
+  - ln -s current_wd /tmp/glpi_testsuite
   - phpunit --verbose --debug
   - rm config/config_db.php
   - rm /tmp/glpi_testsuite
