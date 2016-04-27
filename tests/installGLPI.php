@@ -64,7 +64,7 @@ displayCommandResult(array('returncode' => $returncode,
 
 echo "Change url in GLPI: ";
 exec(
-   $cmd_mysql . " -e 'UPDATE glpi_configs SET value = \"http://localhost/glpi_testsuite/\" WHERE name = \"url_base%\"' ".$DBvars['dbdefault'],
+   $cmd_mysql . " -e 'UPDATE glpi_configs SET value = \"http://localhost/glpi_testsuite/\" WHERE name = \"url_base\"' ".$DBvars['dbdefault'],
    $output, $returncode
 );
 displayCommandResult(array('returncode' => $returncode,
