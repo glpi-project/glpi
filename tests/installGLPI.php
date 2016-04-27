@@ -128,6 +128,6 @@ function displayCommandResult($result) {
    echo $codes[$bool_result]."\n";
    if (!$bool_result) {
       echo implode("\n", $result['output'])."\n";
-      exit(1);
+      exit($result['returncode']);
    }
 }
