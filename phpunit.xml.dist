@@ -5,8 +5,11 @@
        stopOnFailure="false"
        >
     <testsuites>
-        <testsuite name="GLPI">
-            <directory suffix="Test.php">./tests/</directory>
+        <testsuite name="API">
+            <directory suffix="Test.php">./tests/API/</directory>
+        </testsuite>
+        <testsuite name="Core">
+            <directory suffix="Test.php">./tests/Core/</directory>
         </testsuite>
     </testsuites>
     <filter>

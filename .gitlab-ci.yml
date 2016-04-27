@@ -1,4 +1,16 @@
 test:app:
   script:
   - composer update
+  - php tests/installGLPI.php --force
+  - cat > confg/config_db.php <<- EOM
+<?php
+class DB extends DBmysql {
+  var $dbhost = 'localhost';
+  var $dbuser  = 'glpi-testsuite';
+  var $dbpassword= 'glpi-testsuite';
+  var $dbdefault = 'glpi-testsuite';
+}
+?>
+EOM
   - phpunit --verbose --debug
+  - rm confg/config_db.php

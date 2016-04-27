@@ -39,7 +39,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       unset($CFG_GLPI['glpitablesitemtype']);
 
       // Pseudo plugin class for test
-      require_once 'fixtures/pluginfoobar.php';
+      require_once 'tests/fixtures/pluginfoobar.php';
    }
 
 
