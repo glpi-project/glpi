@@ -2,7 +2,6 @@ test:app:
   script:
   - pwd
   - composer update
-  - php tests/installGLPI.php --force
   - |
     cat > confg/config_db.php <<- EOM
     <?php
@@ -14,5 +13,6 @@ test:app:
     }
     ?>
     EOM
+  - php tests/installGLPI.php --force
   - phpunit --verbose --debug
   - rm confg/config_db.php
