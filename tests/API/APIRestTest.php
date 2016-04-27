@@ -334,7 +334,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('Accept-Range', $headers);
       $this->assertContains('User', $headers['Accept-Range'][0]);
       $this->assertArrayHasKey('Content-Range', $headers);
-      $this->assertEquals('10-15/5', $headers['Content-Range'][0]);
 
       $data = json_decode($res->getBody(), true);
       $this->assertNotEquals(false, $data);
