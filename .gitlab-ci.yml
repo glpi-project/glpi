@@ -2,7 +2,7 @@ test:app:
   script:
   - pwd
   - composer update --quiet
-  - echo -e "<?php\nclass DB extends DBmysql {\nvar $dbhost = 'localhost';\nvar $dbuser  = 'glpi-testsuite';\nvar $dbpassword= 'glpi-testsuite';\nvar $dbdefault = 'glpi-testsuite';\n}\n" > config/config_db.php
+  - echo -e "<?php\nclass DB extends DBmysql {\nvar \$dbhost = 'localhost';\nvar \$dbuser  = 'glpi-testsuite';\nvar \$dbpassword= 'glpi-testsuite';\nvar \$dbdefault = 'glpi-testsuite';\n}\n" > config/config_db.php
   - php tests/installGLPI.php --force
   - phpunit --verbose --debug
   - rm config/config_db.php
