@@ -177,6 +177,16 @@ class Profile extends CommonDBTM {
                    WHERE `id` <> '".$this->input['id']."'";
          $DB->query($query);
       }
+
+      // To avoid log out and login when rights change (very useful in debug mode)
+      if (isset($_SESSION['glpiactiveprofile']['id'])
+            && $_SESSION['glpiactiveprofile']['id'] == $this->input['id']) {
+
+         if (in_array('helpdesk_item_type', $this->updates)) {
+            $_SESSION['glpiactiveprofile']['helpdesk_item_type'] = importArrayFromDB($this->input['helpdesk_item_type']);
+         }
+         ///TODO other needed fields
+      }
    }
 
 
