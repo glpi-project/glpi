@@ -2418,7 +2418,7 @@ class Ticket extends CommonITILObject {
          $tab[47]['joinparams']       = array('jointype'  => 'item_item',
                                               'condition' => "AND NEWTABLE.`link` = ".
                                                               Ticket_Ticket::DUPLICATE_WITH);
-         $tab[47]['datatype']         = 'dropdown';
+         $tab[47]['additionalfields'] = array('tickets_id_2');
          $tab[47]['forcegroupby']     = true;
 
          $tab[41]['table']            = 'glpi_tickets_tickets';
