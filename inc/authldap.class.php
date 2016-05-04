@@ -631,8 +631,8 @@ class AuthLDAP extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Filter to search in groups')."</td><td colspan='3'>";
-      echo "<input type='text' name='group_condition' value='".$this->fields["group_condition"]."'
-             size='100'>";
+      echo "<textarea cols='100' rows='1' name='group_condition'>".$this->fields["group_condition"];
+      echo "</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Group attribute containing its users') . "</td>";
@@ -957,7 +957,7 @@ class AuthLDAP extends CommonDBTM {
       $tab[22]['field']         = 'group_condition';
       $tab[22]['name']          = __('Filter to search in groups');
       $tab[22]['massiveaction'] = false;
-      $tab[22]['datatype']      = 'string';
+      $tab[22]['datatype']      = 'text';
 
       $tab[23]['table']         = $this->getTable();
       $tab[23]['field']         = 'group_member_field';
