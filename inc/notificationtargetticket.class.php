@@ -73,10 +73,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       if (isset($options['task_id'])) {
          $this->options['sendprivate'] = $options['is_private'];
       }
-
-      if ($CFG_GLPI["use_rich_text"]) {
-         $this->html_tags[] = '##ticket.content##';
-      }
    }
 
 
