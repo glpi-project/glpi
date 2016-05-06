@@ -749,7 +749,13 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>" . __('Picture') . "</td>";
       echo "<td><input type='text' name='picture_field' value='".
-                 $this->fields["picture_field"]."'></td><td colspan='2'></td></tr>";
+                 $this->fields["picture_field"]."'></td>";
+      echo "<td>" . __('Location') . "</td>";
+      echo "<td><input type='text' name='location_field' value='".$this->fields["location_field"]."'>";
+      echo "</td></tr>";
+
+      echo "<tr><td colspan=4 class='center green'>".__('You can use a field name or an expression using various %{fieldname}').
+           " <br />".__('Example for location: %{city} > %{roomnumber}')."</td></tr>";
 
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
@@ -1035,6 +1041,7 @@ class AuthLDAP extends CommonDBTM {
                       'phone_field'               => 'phone',
                       'phone2_field'              => 'phone2',
                       'mobile_field'              => 'mobile',
+                      'location_field'            => 'locations_id',
                       'comment_field'             => 'comment',
                       'title_field'               => 'usertitles_id',
                       'category_field'            => 'usercategories_id',

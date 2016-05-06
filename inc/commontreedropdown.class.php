@@ -786,6 +786,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $tmp['name'] = $name;
          $tmp[$fk]    = $parent;
 
+         if (isset($input['is_recursive'])) {
+            $tmp['is_recursive'] = $input['is_recursive'];
+         }
          if (isset($input['entities_id'])) {
             $tmp['entities_id'] = $input['entities_id'];
          }
