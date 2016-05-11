@@ -32,6 +32,8 @@
 class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
    protected function setUp() {
+      global $CFG_GLPI;
+
       // Clean the cache
       unset($CFG_GLPI['glpiitemtypetables']);
       unset($CFG_GLPI['glpitablesitemtype']);
