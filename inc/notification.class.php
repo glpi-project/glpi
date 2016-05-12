@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -224,12 +223,14 @@ class Notification extends CommonDBTM {
       } else if (Config::canUpdate()
           && ($this->getEntityID() == 0)) {
          $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
-                                          array('value' => $this->fields['itemtype']));
+                                          array('value'               => $this->fields['itemtype'],
+                                                'display_emptychoice' => false));
       } else {
          $rand = Dropdown::showItemTypes('itemtype',
                                          array_diff($CFG_GLPI["notificationtemplates_types"],
                                                     array('Crontask', 'DBConnection', 'User')),
-                                         array('value' => $this->fields['itemtype']));
+                                         array('value'               => $this->fields['itemtype'],
+                                               'display_emptychoice' => false));
       }
 
       $params = array('itemtype' => '__VALUE__');
@@ -523,4 +524,3 @@ class Notification extends CommonDBTM {
 
 
 }
-?>
