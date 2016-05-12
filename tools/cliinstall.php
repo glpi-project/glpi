@@ -35,7 +35,7 @@
 */
 
 function displayUsage() {
-   die("\nusage: ".$_SERVER['argv'][0]." [ --host=<dbhost> ] --db=<dbname> --user=<dbuser> [ --pass=<dbpassword> ] [ --force ]\n\n");
+   die("\nusage: ".$_SERVER['argv'][0]." [ --host=<dbhost> ] --db=<dbname> --user=<dbuser> [ --pass=<dbpassword> ] [ --lang=xx_XX] [ --force ]\n\n");
 }
 
 define('GLPI_ROOT', dirname(__DIR__));
@@ -57,6 +57,11 @@ if ($_SERVER['argc']>1) {
 
 if (isset($args['help']) || !(isset($args['db']) && isset($args['user']))) {
    displayUsage();
+}
+
+if (isset($args['lang']) && !isset($CFG_GLPI['languages'][$args['lang']])) {
+   $kl = implode(', ', array_keys($CFG_GLPI['languages']));
+   die("Unkown locale (use one of: $kl)\n");
 }
 
 if (file_exists(GLPI_CONFIG_DIR . '/config_db.php') && !isset($args['force'])) {
@@ -97,6 +102,6 @@ if (!Toolbox::createMainConfig($args['host'], $args['user'], $args['pass'], $arg
 }
 
 echo "Load default schema...\n";
-Toolbox::createSchema();
+Toolbox::createSchema($_SESSION['glpilanguage']);
 
 echo "Done\n";
