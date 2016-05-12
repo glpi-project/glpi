@@ -139,6 +139,7 @@ class Document_Item extends CommonDBRelation{
                return false;
             }
          }
+      }
       return true;
    }
 
