@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="./inc/includes.php"
+		 backupGlobals="false"
+		 colors="true">
+    <testsuites>
+        <testsuite name="GLPI">
+            <directory suffix="Test.php">./tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory>./inc</directory>
+            <directory>./config</directory>
+        </whitelist>
+    </filter>
+</phpunit>
