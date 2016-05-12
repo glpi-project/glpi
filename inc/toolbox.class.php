@@ -2335,6 +2335,58 @@ class Toolbox {
 
 
    /**
+    * Create GLPI main configuration file
+    *
+    * @since 9.1
+    *
+    * @param $dbhost
+    * @param $user
+    * @param $password
+    * @param $DBname
+    *
+    * @return boolean
+    *
+   **/
+   static function createMainConfig($host, $user, $password, $DBname) {
+
+      $DB_str = "<?php\n class DB extends DBmysql {
+                \n public \$dbhost     = '". $host ."';
+                \n public \$dbuser     = '". $user ."';
+                \n public \$dbpassword = '". rawurlencode($password) ."';
+                \n public \$dbdefault  = '". $DBname ."';
+                \n }\n";
+
+      return self::writeConfig('config_db.php', $DB_str);
+   }
+
+
+   /**
+    * Create the GLPI default schema
+    *
+    * @since 9.1
+    *
+    * @param $lang
+    *
+    * @return nothing
+   **/
+   static function createSchema($lang='en_GB') {
+      global $CFG_GLPI, $DB;
+
+      include_once (GLPI_CONFIG_DIR . "/config_db.php");
+
+      $DB = new DB();
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-9.1-empty.sql")) {
+         echo "Errors occurred inserting default database";
+      }
+      // update default language
+      Config::setConfigurationValues('core', array('language' => $lang));
+      $query = "UPDATE `glpi_users`
+                SET `language` = NULL";
+      $DB->queryOrDie($query, "4203");
+   }
+
+
+   /**
     * Save a configuration file
     *
     * @since version 0.84
