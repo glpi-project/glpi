@@ -10,3 +10,4 @@
 /tools/vendor/
 /tools/api/
 /nbproject/private/
+phpunit.xml
