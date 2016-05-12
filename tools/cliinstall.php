@@ -35,7 +35,7 @@
 */
 
 function displayUsage() {
-   die("\nusage: ".$_SERVER['argv'][0]." [ --host=<dbhost> ] --db=<dbname> --user=<dbuser> --pass=<dbpassword> [ --force ]\n\n");
+   die("\nusage: ".$_SERVER['argv'][0]." [ --host=<dbhost> ] --db=<dbname> --user=<dbuser> [ --pass=<dbpassword> ] [ --force ]\n\n");
 }
 
 define('GLPI_ROOT', dirname(__DIR__));
@@ -45,7 +45,7 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 Config::detectRootDoc();
 
-$args = [ 'host' => 'localhost' ];
+$args = [ 'host' => 'localhost', 'pass' => ''];
 
 if ($_SERVER['argc']>1) {
    for ($i=1 ; $i<count($_SERVER['argv']) ; $i++) {
@@ -55,8 +55,7 @@ if ($_SERVER['argc']>1) {
    }
 }
 
-if (isset($args['help']) || 
-      !(isset($args['db']) && isset($args['user']) && isset($args['pass']))) {
+if (isset($args['help']) || !(isset($args['db']) && isset($args['user']))) {
    displayUsage();
 }
 
