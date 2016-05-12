@@ -876,7 +876,7 @@ class CommonDBTM extends CommonGLPI {
                   QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
                }
                // For unit test (workaround for MyIsam without transaction)
-               if (is_array($DB->objcreated)) {
+               if (isset($DB->objcreated) && is_array($DB->objcreated)) {
                   $DB->objcreated[$this->getTable()][] = $this->fields['id'];
                }
                return $this->fields['id'];
