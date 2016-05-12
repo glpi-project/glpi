@@ -2800,6 +2800,29 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      // Check category / type validity
+      if ($values['itilcategories_id']) {
+         $cat = new ITILCategory();
+         if ($cat->getFromDB($values['itilcategories_id'])) {
+            switch ($values['type']) {
+               case self::INCIDENT_TYPE :
+                  if (!$cat->getField('is_incident')) {
+                     $values['itilcategories_id'] = 0;
+                  }
+                  break;
+
+               case self::DEMAND_TYPE :
+                  if (!$cat->getField('is_request')) {
+                     $values['itilcategories_id'] = 0;
+                  }
+                  break;
+
+               default :
+                  break;
+            }
+         }
+      }
+
       if (!$ticket_template) {
          echo "<form method='post' name='helpdeskform' action='".
                $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
