@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -45,15 +44,15 @@ if (!defined('GLPI_ROOT')) {
 class Profile_User extends CommonDBRelation {
 
    // From CommonDBTM
-   var $auto_message_on_action = false;
+   public $auto_message_on_action               = false;
 
    // From CommonDBRelation
-   static public $itemtype_1          = 'User';
-   static public $items_id_1          = 'users_id';
+   static public $itemtype_1                    = 'User';
+   static public $items_id_1                    = 'users_id';
 
-   static public $itemtype_2          = 'Profile';
-   static public $items_id_2          = 'profiles_id';
-   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $itemtype_2                    = 'Profile';
+   static public $items_id_2                    = 'profiles_id';
+   static public $checkItem_2_Rights            = self::DONT_CHECK_ITEM_RIGHTS;
 
    // Specific log system
    static public $logs_for_item_2               = false;
@@ -925,7 +924,7 @@ class Profile_User extends CommonDBRelation {
          $nb = 0;
          $query_nb = "SELECT COUNT(*) as cpt
                       FROM `".$this->getTable()."`
-                      LEFT JOIN glpi_users 
+                      LEFT JOIN glpi_users
                         ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)
                       WHERE `glpi_users`.`is_deleted` = '0' ";
          switch ($item->getType()) {
@@ -1043,4 +1042,3 @@ class Profile_User extends CommonDBRelation {
    }
 
 }
-?>

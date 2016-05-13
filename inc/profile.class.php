@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -57,11 +56,13 @@ class Profile extends CommonDBTM {
 
 
    /// Common fields used for all profiles type
-   static public $common_fields = array('id', 'interface', 'is_default', 'name');
+   static public $common_fields  = array('id', 'interface', 'is_default', 'name');
 
-   var $dohistory = true;
+   public $dohistory             = true;
 
-   static $rightname = 'profile';
+   static $rightname             = 'profile';
+
+
 
    function getForbiddenStandardMassiveAction() {
 
@@ -2683,4 +2684,3 @@ class Profile extends CommonDBTM {
    }
 
 }
-?>

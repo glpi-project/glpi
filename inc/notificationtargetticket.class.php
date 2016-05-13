@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -44,9 +43,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
-   var $private_profiles = array();
+   public $private_profiles = array();
 
-   public $html_tags = array('##ticket.solution.description##');
+   public $html_tags        = array('##ticket.solution.description##');
 
    const HEADERTAG = '=-=-=-=';
    const FOOTERTAG = '=_=_=_=';
@@ -944,4 +943,3 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    }
 
 }
-?>

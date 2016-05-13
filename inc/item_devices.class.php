@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -64,9 +63,9 @@ class Item_Devices extends CommonDBRelation {
    static public $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
    // This var is defined by CommonDBRelation ...
-   var $no_form_page                    = false;
+   public $no_form_page                 = false;
 
-   static protected $forward_entity_to = array('Infocom');
+   static protected $forward_entity_to  = array('Infocom');
 
 
    /**
@@ -1017,4 +1016,3 @@ class Item_Devices extends CommonDBRelation {
    }
 
 }
-?>

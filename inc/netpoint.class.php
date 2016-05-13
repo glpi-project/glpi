@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -43,11 +42,11 @@ if (!defined('GLPI_ROOT')) {
 class Netpoint extends CommonDropdown {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory          = true;
 
-   static $rightname = 'netpoint';
+   static $rightname          = 'netpoint';
 
-   var $can_be_translated = false;
+   public $can_be_translated  = false;
 
 
    function getAdditionalFields() {
@@ -431,4 +430,3 @@ class Netpoint extends CommonDropdown {
    }
 
 }
-?>

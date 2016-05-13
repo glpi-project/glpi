@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -45,12 +44,12 @@ if (!defined('GLPI_ROOT')) {
 class FieldUnicity extends CommonDropdown {
 
    // From CommonDBTM
-   public $dohistory       = true;
+   public $dohistory          = true;
 
-   var $second_level_menu  = "control";
-   var $can_be_translated  = false;
+   public $second_level_menu  = "control";
+   public $can_be_translated  = false;
 
-   static $rightname       = 'config';
+   static $rightname          = 'config';
 
 
    static function getTypeName($nb=0) {
@@ -605,4 +604,3 @@ class FieldUnicity extends CommonDropdown {
    }
 
 }
-?>

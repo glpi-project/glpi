@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -44,16 +43,16 @@ if (!defined('GLPI_ROOT')) {
 **/
 class State extends CommonTreeDropdown {
 
-   protected $visibility_fields = array('Computer'         => 'is_visible_computer',
-                                        'SoftwareVersion'  => 'is_visible_softwareversion',
-                                        'Monitor'          => 'is_visible_monitor',
-                                        'Printer'          => 'is_visible_printer',
-                                        'Peripheral'       => 'is_visible_peripheral',
-                                        'Phone'            => 'is_visible_phone',
-                                        'NetworkEquipment' => 'is_visible_networkequipment');
-   var $can_be_translated       = true;
+   protected $visibility_fields    = array('Computer'         => 'is_visible_computer',
+                                           'SoftwareVersion'  => 'is_visible_softwareversion',
+                                           'Monitor'          => 'is_visible_monitor',
+                                           'Printer'          => 'is_visible_printer',
+                                           'Peripheral'       => 'is_visible_peripheral',
+                                           'Phone'            => 'is_visible_phone',
+                                           'NetworkEquipment' => 'is_visible_networkequipment');
+   public $can_be_translated       = true;
 
-   static $rightname            = 'state';
+   static $rightname               = 'state';
 
 
 
@@ -326,4 +325,3 @@ class State extends CommonTreeDropdown {
    }
 
 }
-?>

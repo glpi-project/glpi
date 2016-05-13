@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -46,47 +45,47 @@ if (!defined('GLPI_ROOT')) {
 class CommonDBTM extends CommonGLPI {
 
    /// Data of the Item
-   var $fields                              = array();
+   public $fields                              = array();
    /// Make an history of the changes
-   var $dohistory                           = false;
+   public $dohistory                           = false;
    /// Black list fields for history log or date mod update
-   var $history_blacklist                   = array();
+   public $history_blacklist                   = array();
    /// Set false to desactivate automatic message on action
-   var $auto_message_on_action              = true;
+   public $auto_message_on_action              = true;
 
    /// Set true to desactivate link generation because form page do not permit show/edit item
-   var $no_form_page                        = false;
+   public $no_form_page                        = false;
 
    /// Set true to desactivate auto compute table name
-   static protected $notable                = false;
+   static protected $notable                   = false;
 
    ///Additional fiedls for dictionnary processing
-   var $additional_fields_for_dictionnary   = array();
+   public $additional_fields_for_dictionnary   = array();
 
    /// Forward entity datas to linked items
-   static protected $forward_entity_to      = array();
+   static protected $forward_entity_to         = array();
    /// Foreign key field cache : set dynamically calling getForeignKeyField
-   protected $fkfield                       = "";
+   protected $fkfield                          = "";
 
    /// Search options of the item : to avoid multiple load
-   protected $searchopt                     = false;
+   protected $searchopt                        = false;
 
    /// Tab orientation : horizontal or vertical
-   public $taborientation                   = 'vertical';
+   public $taborientation                      = 'vertical';
    /// Need to get item to show tab
-   public $get_item_to_display_tab          = true;
+   public $get_item_to_display_tab             = true;
 
    /// Forward entity to plugins itemtypes
-   static protected $plugins_forward_entity = array();
+   static protected $plugins_forward_entity    = array();
 
    /// Profile name
-   static $rightname                        = '';
+   static $rightname                           = '';
 
    /// Is this item use notepad ?
-   protected $usenotepad                    = false;
+   protected $usenotepad                       = false;
 
    /// FLush mail queue for
-   public $mailqueueonaction = false;
+   public $mailqueueonaction                   = false;
 
    const SUCCESS                    = 0; //Process is OK
    const TYPE_MISMATCH              = 1; //Type is not good, value cannot be inserted
@@ -4413,4 +4412,3 @@ class CommonDBTM extends CommonGLPI {
       return Link::generateLinkContents($link, $item);
    }
 }
-?>

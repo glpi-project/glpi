@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -44,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
  */
 class NotificationMailSetting extends CommonDBTM {
 
-   var $table              = 'glpi_configs';
+   public $table           = 'glpi_configs';
 
    protected $displaylist  = false;
 
@@ -162,14 +161,14 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<td><input type='text' name='admin_reply_name' size='40' value='" .
                     $CFG_GLPI["admin_reply_name"] . "'>";
          echo " </td></tr>";
-         
+
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Add documents into ticket notifications') . "</td><td>";
          Dropdown::showYesNo("attach_ticket_documents_to_mail",
                              $CFG_GLPI["attach_ticket_documents_to_mail"]);
          echo "</td>";
          echo "<td colspan='2'></td></tr>";
-         
+
          if (!function_exists('mail')) {
              echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
              echo "<span class='red'>" .
@@ -201,12 +200,12 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<td><input type='text' name='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
          echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr class='tab_bg_2'>";
          echo "<td >" . __('SMTP login (optional)') . "</td>";
          echo "<td><input type='text' name='smtp_username' size='40' value='" .
                     $CFG_GLPI["smtp_username"] . "'></td>";
-         
+
          echo "<td >" . __('SMTP password (optional)') . "</td>";
          echo "<td><input type='password' name='smtp_passwd' size='40' value='' autocomplete='off'>";
          echo "<br><input type='checkbox' name='_blank_smtp_passwd'>&nbsp;".__('Clear');
@@ -224,6 +223,4 @@ class NotificationMailSetting extends CommonDBTM {
 
    }
 
-
 }
-?>

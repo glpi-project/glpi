@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -68,9 +67,9 @@ class Ticket extends CommonITILObject {
 
    // Specific ones
    /// Hardware datas used by getFromDBwithData
-   var $hardwaredatas = array();
+   public $hardwaredatas = array();
    /// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
-   var $computerfound = 0;
+   public $computerfound = 0;
 
    // Request type
    const INCIDENT_TYPE = 1;
@@ -6809,4 +6808,3 @@ class Ticket extends CommonITILObject {
    }
 
 }
-?>

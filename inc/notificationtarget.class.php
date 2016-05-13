@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -47,41 +46,41 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotificationTarget extends CommonDBChild {
 
-   var $prefix                      = '';
+   public $prefix                      = '';
    // From CommonDBChild
-   static public $itemtype          = 'Notification';
-   static public $items_id          = 'notifications_id';
-   public $table                    = 'glpi_notificationtargets';
+   static public $itemtype             = 'Notification';
+   static public $items_id             = 'notifications_id';
+   public $table                       = 'glpi_notificationtargets';
 
-   var $notification_targets        = array();
-   var $notification_targets_labels = array();
-   var $notificationoptions         = 0;
+   public $notification_targets        = array();
+   public $notification_targets_labels = array();
+   public $notificationoptions         = 0;
 
    // Tags which have data in HTML : do not try to clean them
-   public $html_tags                = array();
+   public $html_tags                   = array();
 
    // Data from the objet which can be used by the template
    // See https://forge.indepnet.net/projects/5/wiki/NotificationTemplatesTags
-   var $datas                       = array();
-   var $tag_descriptions            = array();
+   public $datas                       = array();
+   public $tag_descriptions            = array();
 
    // From CommonDBTM
-   public $dohistory                = true;
+   public $dohistory                   = true;
 
    //Array to store emails by notification
-   var $target                      = array();
-   var $entity                      = '';
+   public $target                      = array();
+   public $entity                      = '';
 
    //Object which raises the notification event
-   var $obj                         = null;
+   public $obj                         = null;
 
    //Object which is associated with the event
-   var $target_object               = array();
+   public $target_object               = array();
 
    // array of event name => event label
-   var $events                      = array();
-   var $options                     = array();
-   var $raiseevent                  = '';
+   public $events                      = array();
+   public $options                     = array();
+   public $raiseevent                  = '';
 
    const TAG_LANGUAGE               = 'lang';
    const TAG_VALUE                  = 'tag';
@@ -1270,4 +1269,3 @@ class NotificationTarget extends CommonDBChild {
    }
 
 }
-?>
