@@ -471,7 +471,7 @@ class Dropdown {
       $params['width']               = '80%';
       $params['display_emptychoice'] = true;
       $params['rand']         = mt_rand();
-      
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
@@ -1699,7 +1699,7 @@ class Dropdown {
 
       $param['option_tooltips'] = Html::entities_deep($param['option_tooltips']);
 
-      if ($param["display_emptychoice"]) {
+      if ($param["display_emptychoice"] && ($name != 'language')) {
          $elements = array( 0 => $param['emptylabel'] ) + $elements ;
       }
 
