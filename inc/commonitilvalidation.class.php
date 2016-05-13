@@ -803,9 +803,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $query = "SELECT *
                 FROM `".$this->getTable()."`
                 WHERE `".static::$items_id."` = '".$item->getField('id')."'";
-      if (!$canadd) {
-         $query .= " AND `users_id_validate` = '".Session::getLoginUserID()."'";
-      }
 
       $query .= " ORDER BY submission_date DESC";
 
