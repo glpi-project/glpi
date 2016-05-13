@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -46,27 +45,27 @@ if (!defined('GLPI_ROOT')) {
 class DBmysql {
 
    //! Database Host - string or Array of string (round robin)
-   var $dbhost = "";
+   public $dbhost             = "";
    //! Database User
-   var $dbuser = "";
+   public $dbuser             = "";
    //! Database Password
-   var $dbpassword = "";
+   public $dbpassword         = "";
    //! Default Database
-   var $dbdefault = "";
+   public $dbdefault          = "";
    //! Database Handler
-   var $dbh;
+   public $dbh;
    //! Database Error
-   var $error = 0;
+   public $error              = 0;
 
    /// Slave management
-   var $slave = false;
+   public $slave              = false;
    /** Is it a first connection ?
     * Indicates if the first connection attempt is successful or not
     * if first attempt fail -> display a warning which indicates that glpi is in readonly
    **/
-   var $first_connection = true;
+   public $first_connection   = true;
    /// Is connected to the DB ?
-   var $connected = false;
+   public $connected          = false;
 
 
    /**
@@ -698,6 +697,9 @@ class DBmysql {
    }
 }
 
+
+
+
 /**
  * Helper for simple query => see $DBmysql->requete
 **/
@@ -931,4 +933,3 @@ class DBmysqlIterator  implements Iterator {
    }
 
 }
-?>

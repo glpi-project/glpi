@@ -471,7 +471,7 @@ class Dropdown {
       $params['width']               = '80%';
       $params['display_emptychoice'] = true;
       $params['rand']         = mt_rand();
-      
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
@@ -972,6 +972,15 @@ class Dropdown {
    **/
    static function showLanguages($myname, $options=array()) {
       global $CFG_GLPI;
+
+      $values = array();
+      if (isset($options['display_emptychoice']) && ($options['display_emptychoice'])) {
+         if (isset($options['emptylabel'])) {
+            $values[''] = $options['emptylabel'];
+         } else {
+            $values[''] = self::EMPTY_VALUE;
+         }
+      }
 
       foreach ($CFG_GLPI["languages"] as $key => $val) {
          if (isset($val[1]) && is_file(GLPI_ROOT ."/locales/".$val[1])) {
@@ -1699,7 +1708,7 @@ class Dropdown {
 
       $param['option_tooltips'] = Html::entities_deep($param['option_tooltips']);
 
-      if ($param["display_emptychoice"]) {
+      if ($param["display_emptychoice"] && ($name != 'language')) {
          $elements = array( 0 => $param['emptylabel'] ) + $elements ;
       }
 

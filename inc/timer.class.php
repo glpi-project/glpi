@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,7 +31,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -44,8 +43,9 @@ if (!defined('GLPI_ROOT')) {
  *  Timer class for debug
  */
 class Timer {
+
    //! Timer value
-   var $timer=0;
+   public $timer=0;
 
 
    //! Start the Timer
@@ -70,4 +70,3 @@ class Timer {
    }
 
 }
-?>

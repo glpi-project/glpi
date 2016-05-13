@@ -119,32 +119,24 @@ class Document_Item extends CommonDBRelation{
    function pre_deleteItem() {
       global $DB;
 
-      // for mandatory fields
+      // fordocument mandatory
       if ($this->fields['itemtype'] == 'Ticket') {
-         if ($DB->request('glpi_tickettemplatemandatoryfields', "`num` = 142")) {
-            $find = false;
-            // search if template for entity
-            foreach ($DB->request('glpi_tickettemplates',
-                  "`entities_id` = ".$_SESSION['glpiactive_entity']."
-                                    OR (`entities_id` = 0 AND `is_recursive` = 1)") as $data) {
-                                       $template = $data['id'];
-                                       // search if template for profile or category
-                                       if ($DB->request('glpi_profiles', "`tickettemplates_id` = ".$template)) {
-                                          $find = true;
-                                       } else if ($DB->request('glpi_itilcategories', "`tickettemplates_id` = ".$template)) {
-                                          $find = true;
-                                       }
-            }
-            if ($find) {
-               // refuse delete if only one document
-               if (countElementsInTable($this->getTable(),
-                     "`items_id` =". $this->fields['items_id'] ."
+         $ticket = new Ticket();
+         $ticket->getFromDB($this->fields['items_id']);
+
+         $tt = $ticket->getTicketTemplateToUse(0, $ticket->fields['type'],
+                                               $ticket->fields['itilcategories_id'],
+                                               $ticket->fields['entities_id']);
+
+         if (isset($tt->mandatory['_documents_id'])) {
+            // refuse delete if only one document
+            if (countElementsInTable($this->getTable(),
+                                     "`items_id` =". $this->fields['items_id'] ."
                                           AND `itemtype` = 'Ticket'") == 1) {
-                                             $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
-                                                   _n('Document', 'Documents', 2));
-                                             Session::addMessageAfterRedirect($message, false, ERROR);
-                                             return false;
-               }
+               $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
+                                  _n('Document', 'Documents', 2));
+               Session::addMessageAfterRedirect($message, false, ERROR);
+               return false;
             }
          }
       }

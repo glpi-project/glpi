@@ -49,4 +49,25 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
       }
       unset($DB->objcreated);
    }
+
+
+   /**
+    * Connect using the test user
+    */
+   protected function login() {
+
+      $auth = new Auth();
+      if (!$auth->Login(TU_USER, TU_PASS, true)) {
+         $this->markTestSkipped('No login');
+      }
+   }
+
+
+   /**
+    * change current entity
+    */
+   protected function setEntity($entityname, $subtree) {
+
+      $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', $entityname,  true), $subtree));
+   }
 }

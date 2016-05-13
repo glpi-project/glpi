@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -522,5 +521,31 @@ class Notification extends CommonDBTM {
    }
 
 
+   /**
+    * @since version 0.90.4
+    * @see CommonDBTM::prepareInputForAdd()
+   **/
+   function prepareInputForAdd($input) {
+
+      if (empty($input["itemtype"])) {
+         $message = __('Field itemtype is mandatory');
+         Session::addMessageAfterRedirect($message, false, ERROR);
+         return false;
+      }
+   }
+
+
+   /**
+    * @since version 0.90.4
+    * @see CommonDBTM::prepareInputForUpdate()
+   **/
+   function prepareInputForUpdate($input) {
+
+      if (empty($input["itemtype"])) {
+         $message = __('Field itemtype is mandatory');
+         Session::addMessageAfterRedirect($message, false, ERROR);
+         return false;
+      }
+   }
+
 }
-?>

@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 201-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -58,7 +57,7 @@ class ProjectTask extends CommonDBChild {
    static $rightname           = 'project';
    protected $usenotepad       = true;
 
-   var $can_be_translated      = true;
+   public $can_be_translated   = true;
 
    const READMY      = 1;
    const UPDATEMY    = 1024;
@@ -1408,4 +1407,3 @@ class ProjectTask extends CommonDBChild {
       return $html;
    }
 }
-?>

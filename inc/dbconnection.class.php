@@ -54,6 +54,32 @@ class DBConnection extends CommonDBTM {
 
 
    /**
+    * Create GLPI main configuration file
+    *
+    * @since 9.1
+    *
+    * @param $dbhost
+    * @param $user
+    * @param $password
+    * @param $DBname
+    *
+    * @return boolean
+    *
+   **/
+   static function createMainConfig($host, $user, $password, $DBname) {
+
+      $DB_str = "<?php\n class DB extends DBmysql {
+                \n public \$dbhost     = '". $host ."';
+                \n public \$dbuser     = '". $user ."';
+                \n public \$dbpassword = '". rawurlencode($password) ."';
+                \n public \$dbdefault  = '". $DBname ."';
+                \n}\n";
+
+      return Toolbox::writeConfig('config_db.php', $DB_str);
+   }
+
+
+   /**
     * Create slave DB configuration file
     *
     * @param host       the slave DB host(s)
@@ -65,7 +91,7 @@ class DBConnection extends CommonDBTM {
    **/
    static function createSlaveConnectionFile($host, $user, $password, $DBname) {
 
-      $DB_str = "<?php \n class DBSlave extends DBmysql { \n var \$slave = true; \n var \$dbhost = ";
+      $DB_str = "<?php \n class DBSlave extends DBmysql { \n public \$slave = true; \n public \$dbhost = ";
       $host   = trim($host);
       if (strpos($host, ' ')) {
          $hosts = explode(' ', $host);
@@ -85,8 +111,8 @@ class DBConnection extends CommonDBTM {
       } else {
          $DB_str .= "'$host';\n";
       }
-      $DB_str .= " var \$dbuser = '" . $user . "'; \n var \$dbpassword= '" .
-                  rawurlencode($password) . "'; \n var \$dbdefault = '" . $DBname . "'; \n } \n ?>";
+      $DB_str .= " public \$dbuser = '" . $user . "'; \n public \$dbpassword= '" .
+                  rawurlencode($password) . "'; \n public \$dbdefault = '" . $DBname . "'; \n }\n";
 
       return Toolbox::writeConfig('config_db_slave.php', $DB_str);
    }

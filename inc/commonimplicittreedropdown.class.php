@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,7 +31,7 @@
 */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -44,7 +43,9 @@ if (!defined('GLPI_ROOT')) {
 /// @since 0.84
 class CommonImplicitTreeDropdown extends CommonTreeDropdown {
 
-   var $can_be_translated = true;
+   public $can_be_translated = true;
+
+
 
    function getForbiddenStandardMassiveAction() {
 
@@ -227,4 +228,3 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
       }
    }
 }
-?>

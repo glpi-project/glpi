@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -45,10 +44,10 @@ if (!defined('GLPI_ROOT')) {
 class TaskCategory extends CommonTreeDropdown {
 
    // From CommonDBTM
-   public $dohistory       = true;
-   var $can_be_translated  = true;
+   public $dohistory          = true;
+   public $can_be_translated  = true;
 
-   static $rightname       = 'taskcategory';
+   static $rightname          = 'taskcategory';
 
 
 
@@ -57,4 +56,3 @@ class TaskCategory extends CommonTreeDropdown {
    }
 
 }
-?>

@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -82,7 +81,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    /// If both items must be in viewable each other entities
    static public $check_entity_coherency = true;
 
-   var $no_form_page = true;
+   public $no_form_page                  = true;
 
 
 
@@ -1516,4 +1515,3 @@ abstract class CommonDBRelation extends CommonDBConnexity {
    }
 
 }
-?>

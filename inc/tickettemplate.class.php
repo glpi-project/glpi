@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -58,15 +57,15 @@ class TicketTemplate extends CommonDropdown {
 
    static $rightname                 = 'tickettemplate';
 
-   var $can_be_translated            = false;
+   public $can_be_translated            = false;
 
    // Specific fields
    /// Mandatory Fields
-   var $mandatory  = array();
+   public $mandatory  = array();
    /// Hidden fields
-   var $hidden     = array();
+   public $hidden     = array();
    /// Predefined fields
-   var $predefined = array();
+   public $predefined = array();
 
 
    /**
@@ -781,4 +780,3 @@ class TicketTemplate extends CommonDropdown {
       return $forbidden;
    }
 }
-?>

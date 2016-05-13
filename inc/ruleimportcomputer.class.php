@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -44,12 +43,11 @@ class RuleImportComputer extends Rule {
    const RULE_ACTION_LINK_OR_IMPORT    = 0;
    const RULE_ACTION_LINK_OR_NO_IMPORT = 1;
 
-   var $restrict_matching = Rule::AND_MATCHING;
 
+   public $restrict_matching = Rule::AND_MATCHING;
+   public $can_sort          = true;
 
-   // From Rule
-   static $rightname = 'rule_import';
-   public $can_sort  = true;
+   static $rightname         = 'rule_import';
 
 
 
@@ -443,4 +441,3 @@ class RuleImportComputer extends Rule {
    }
 
 }
-?>

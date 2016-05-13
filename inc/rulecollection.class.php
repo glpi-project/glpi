@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -42,23 +41,23 @@ class RuleCollection extends CommonDBTM {
    /// Rule type
    public $sub_type;
    /// process collection stop on first matched rule
-   var $stop_on_first_match                   = false;
+   public $stop_on_first_match                   = false;
    /// field used to order rules
-   var $orderby                               = "ranking";
+   public $orderby                               = "ranking";
    /// Processing several rules : use result of the previous one to computer the current one
-   var $use_output_rule_process_as_next_input = false;
+   public $use_output_rule_process_as_next_input = false;
    /// Rule collection can be replay (for dictionnary)
-   var $can_replay_rules                      = false;
+   public $can_replay_rules                      = false;
    /// List of rules of the rule collection
-   var $RuleList                              = NULL;
+   public $RuleList                              = NULL;
    /// Menu type
-   var $menu_type                             = "rule";
+   public $menu_type                             = "rule";
    /// Menu option
-   var $menu_option                           = "";
+   public $menu_option                           = "";
 
-   var $entity                                = 0;
+   public $entity                                = 0;
 
-   static $rightname                          = 'config';
+   static $rightname                             = 'config';
 
 
 
@@ -1955,4 +1954,3 @@ class RuleCollection extends CommonDBTM {
    }
 
 }
-?>
