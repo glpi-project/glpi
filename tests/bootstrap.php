@@ -76,7 +76,7 @@ function loadDataset() {
          [
             'name'          => TU_USER,
             'password'      => TU_PASS,
-            'password2'     => 'PhpUnit_4',
+            'password2'     => TU_PASS,
             'entities_id'   => '_test_root_entity',
             'profiles_id'   => 4, // TODO manage test profiles
             '_entities_id'  => '_test_root_entity',
