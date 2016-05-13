@@ -2225,8 +2225,12 @@ class CommonDBTM extends CommonGLPI {
       } else if ($this->isNewID($ID)) {
          printf(__('%1$s - %2$s'), __('New item'), $this->getTypeName(1));
       } else {
-         //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-         printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+         $nametype =  $this->getTypeName(1);
+         if ($_SESSION['glpiis_ids_visible'] || empty($this->getTypeName(1))) {
+            //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
+            $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
+         }
+         echo $nametype;
       }
       $entityname = '';
       if (isset($this->fields["entities_id"])
