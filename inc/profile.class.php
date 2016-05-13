@@ -504,6 +504,9 @@ class Profile extends CommonDBTM {
    static function currentUserHaveMoreRightThan($IDs=array()) {
       global $DB;
 
+      if (Session::isCron()) {
+         return true;
+      }
       if (count($IDs) == 0) {
          // Check all profiles (means more right than all possible profiles)
          return (countElementsInTable('glpi_profiles')
