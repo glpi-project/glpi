@@ -82,7 +82,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       $this->assertFalse(isForeignKeyField('FakeId'));
       $this->assertFalse(isForeignKeyField('id_Another_Fake_Id'));
       $this->assertTrue(isForeignKeyField('users_id_tech'));
-      $this->assertTrue(isForeignKeyField('_id'));
+      $this->assertTFalse(isForeignKeyField('_id'));
    }
 
 
