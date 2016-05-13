@@ -86,27 +86,27 @@ class PrinterTest extends DbTestCase {
    }
 
    public function testVisibility() {
-      $auth = new Auth();
-      $this->assertTrue($auth->Login(TU_USER, TU_PASS, true));
+
+      $this->Login();
 
       $p = new Printer();
 
       // Visibility from root + tree
-      $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', '_test_root_entity',  true), true));
+      $this->setEntity('_test_root_entity', true);
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_all',  true), READ));
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_ent0', true), READ));
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_ent1', true), READ));
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_ent2', true), READ));
 
       // Visibility from root only
-      $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', '_test_root_entity',  true), false));
+      $this->setEntity('_test_root_entity', false);
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_all',  true), READ));
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_ent0', true), READ));
       $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent1', true), READ));
       $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent2', true), READ));
 
       // Visibility from child
-      $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', '_test_child_1',  true), false));
+      $this->setEntity('_test_child_1', false);
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_all',  true), READ));
       $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent0', true), READ));
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_ent1', true), READ));

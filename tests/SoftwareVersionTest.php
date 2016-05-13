@@ -36,8 +36,8 @@ class SoftwareVersionTest extends DbTestCase {
     * @covers Computer_SoftwareVersion::countForVersion
     */
    public function testCountInstall() {
-      $auth = new Auth();
-      $this->assertTrue($auth->Login(TU_USER, TU_PASS, true));
+
+      $this->Login();
 
       $c01 = getItemByTypeName('Computer', '_test_pc01', true);
       $c11 = getItemByTypeName('Computer', '_test_pc11', true);
@@ -60,13 +60,13 @@ class SoftwareVersionTest extends DbTestCase {
       ]));
 
       // Count installations
-      $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', '_test_root_entity',  true), true));
+      $this->setEntity('_test_root_entity', true);
       $this->assertEquals(3, Computer_SoftwareVersion::countForVersion($ver), 'count in all tree');
 
-      $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', '_test_root_entity',  true), false));
+      $this->setEntity('_test_root_entity', false);
       $this->assertEquals(1, Computer_SoftwareVersion::countForVersion($ver), 'count in root');
 
-      $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', '_test_child_1',  true), false));
+      $this->setEntity('_test_child_1', false);
       $this->assertEquals(2, Computer_SoftwareVersion::countForVersion($ver), 'count in child');
    }
 }
