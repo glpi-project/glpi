@@ -233,6 +233,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       'rejectsolution'    => __('Solution rejected'),
                       'validation'        => __('Validation request'),
                       'validation_answer' => __('Validation request answer'),
+                      'assignedtosupplier' => __('Assigned to a supplier'),
                       'add_followup'      => __("New followup"),
                       'update_followup'   => __('Update of a followup'),
                       'delete_followup'   => __('Deletion of a followup'),

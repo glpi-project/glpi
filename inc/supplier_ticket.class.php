@@ -52,6 +52,14 @@ class Supplier_Ticket extends CommonITILActor {
    static public $itemtype_2 = 'Supplier';
    static public $items_id_2 = 'suppliers_id';
 
+   function post_addItem() {
+      $ticket = new Ticket();
+      $ticket->getFromDB($this->fields['tickets_id']);
+      NotificationEvent::raiseEvent("assignedtosupplier", $ticket);
+
+      parent::post_addItem();
+   }
+
 
    /**
     * @param $items_id
