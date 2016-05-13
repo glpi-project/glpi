@@ -160,7 +160,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
          case 2 : // GLPI_SESSION_DIR not writable
             _e('Checking write permissions for session files');
-            echo "<br>".GLPI_SESSION_DIR;
             break;
 
          case 3 :
