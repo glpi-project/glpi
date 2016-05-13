@@ -334,9 +334,14 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
 
       $datas['##ticket.location##'] = '';
+      $datas['##ticket.location.address##'] = '';
       if ($item->getField('locations_id')) {
          $datas['##ticket.location##'] = Dropdown::getDropdownName('glpi_locations',
                                                                    $item->getField('locations_id'));
+         $location = new Location();
+         if($location->getFromDB($item->getField('locations_id'))){
+            $datas['##ticket.location.address##'] = $location->fields['address'];
+         }
       }
 
       // is ticket deleted
@@ -684,6 +689,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.numberofitems'         => _x('quantity', 'Number of items'),
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
                     'ticket.location'              => __('Location'),
+                    'ticket.location.address'      => __('Address'),
                     'ticket.globalvalidation'      => __('Global approval status'),
                     'ticket.solution.approval.description'  => __('Solution rejection comment'),
                     'ticket.solution.approval.date'         => __('Solution rejection date'),

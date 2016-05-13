@@ -2362,7 +2362,14 @@ class Search {
                         $ADDITONALFIELDS";
             }
             break;
-
+            
+         case "glpi_locations.address" :
+            return " `glpi_locations`.`address` AS `" . $NAME . "_$num`,
+               IF(`glpi_locations`.`address` = '',`glpi_locations`.`inheritance`,`glpi_locations`.`address`)  AS `" . $NAME . "_" . $num . "`,
+                   `glpi_locations`.`inheritance` AS `" . $NAME . "_" . $num . "_inheritance`,
+                  $ADDITONALFIELDS ";
+            break;
+         
          case "glpi_auth_tables.name":
             $user_searchopt = self::getOptions('User');
             return " `glpi_users`.`authtype` AS `".$NAME."_".$num."`,

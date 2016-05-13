@@ -570,13 +570,39 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=tr
          $comment  = sprintf(__('%1$s: %2$s')."<br>",
                              "<span class='b'>".__('Complete name')."</span>",
                              $name);
-         $comment .= "<span class='b'>&nbsp;".__('Comments')."&nbsp;</span>";
+         $comment .= "<span class='b'>".__('Comments')."&nbsp;:</span>";
 
          $transcomment = $DB->result($result,0,"transcomment");
          if ($translate && !empty($transcomment)) {
             $comment .= nl2br($transcomment);
          } else {
             $comment .= nl2br($DB->result($result,0,"comment"));
+         }
+         switch ($table) {
+            case "glpi_locations" :
+               $location = new Location();
+               if ($location->getFromDB($ID)) {
+                  if (!empty($location->fields['building'])) {
+                     $comment .= "<br>" . sprintf(__('%1$s: %2$s'), "<span class='b'>" . __('Building number') . "</span>", $location->fields['building']);
+                  }
+                  if (!empty($location->fields['room'])) {
+                     $comment .= "<br>" . sprintf(__('%1$s: %2$s'), "<span class='b'>" . __('Room number') . "</span>", $location->fields['room']);
+                  }
+                  $address = $location->getAddress($ID);
+                  if (!empty($address)) {
+                     $comment .= "<br>" . sprintf(__('%1$s: %2$s'), "<span class='b'>" . __('Address') . "</span>", $address);
+                  }
+                  if (!empty($location->fields['longitude'])) {
+                     $comment .= "<br>" . sprintf(__('%1$s: %2$s'), "<span class='b'>" . __('Longitude') . "</span>", $location->fields['longitude']);
+                  }
+                  if (!empty($location->fields['latitude'])) {
+                     $comment .= "<br>" . sprintf(__('%1$s: %2$s'), "<span class='b'>" . __('Latitude') . "</span>", $location->fields['latitude']);
+                  }
+                  if (!empty($location->fields['altitude'])) {
+                     $comment .= "<br>" . sprintf(__('%1$s: %2$s'), "<span class='b'>" . __('Altitude') . "</span>", $location->fields['altitude']);
+                  }
+               }
+               break;
          }
       }
    }
