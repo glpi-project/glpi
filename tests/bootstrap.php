@@ -40,7 +40,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => 1,
+      '_version' => 2,
 
       // Type => array of entries
       'Entity' => [
@@ -54,23 +54,61 @@ function loadDataset() {
             'name'        => '_test_child_2',
             'entities_id' => '_test_root_entity',
          ]
+      ], 'Computer' => [
+         [
+            'name'        => '_test_pc01',
+            'entities_id' => '_test_root_entity',
+         ], [
+            'name'        => '_test_pc02',
+            'entities_id' => '_test_root_entity',
+         ], [
+            'name'        => '_test_pc11',
+            'entities_id' => '_test_child_1',
+         ], [
+            'name'        => '_test_pc12',
+            'entities_id' => '_test_child_1',
+         ], [
+            'name'        => '_test_pc21',
+            'entities_id' => '_test_child_2',
+         ], [
+            'name'        => '_test_pc22',
+            'entities_id' => '_test_child_2',
+         ]
+      ], 'Software' => [
+         [
+            'name'         => '_test_soft',
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
+         ]
+      ], 'SoftwareVersion' => [
+         [
+            'name'        => '_test_softver_1',
+            'entities_id' => '_test_root_entity',
+            'is_recursive' => 1,
+            'softwares_id' => '_test_soft',
+         ], [
+            'name'        => '_test_softver_2',
+            'entities_id' => '_test_root_entity',
+            'is_recursive' => 1,
+            'softwares_id' => '_test_soft',
+         ]
       ], 'Printer' => [
          [
             'name'         => '_test_printer_all',
             'entities_id'  => '_test_root_entity',
-            'is_recursive' => 1    
+            'is_recursive' => 1,
          ], [
             'name'         => '_test_printer_ent0',
             'entities_id'  => '_test_root_entity',
-            'is_recursive' => 0    
+            'is_recursive' => 0,
          ], [
             'name'         => '_test_printer_ent1',
             'entities_id'  => '_test_child_1',
-            'is_recursive' => 0    
+            'is_recursive' => 0,
          ], [
             'name'         => '_test_printer_ent2',
             'entities_id'  => '_test_child_2',
-            'is_recursive' => 0    
+            'is_recursive' => 0,
          ]   
       ], 'User' => [
          [
@@ -81,7 +119,7 @@ function loadDataset() {
             'profiles_id'   => 4, // TODO manage test profiles
             '_entities_id'  => '_test_root_entity',
             '_profiles_id'  => 4,
-            '_is_recursive' => 1
+            '_is_recursive' => 1,
          ]
       ]
    ];
