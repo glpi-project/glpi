@@ -117,8 +117,7 @@ function loadDataset() {
                // Not found, create it
                $item = getItemForItemtype($type);
                $id = $item->add($input);
-               var_dump($input);
-               echo ".";
+               echo "+";
                if (isset($input['name'])) {
                   $ids[$input['name']] = $id;
                }
