@@ -39,8 +39,9 @@ function loadDataset() {
 
    // Unit test data definition
    $data = [
-      // dump the version to force reload
+      // bump this version to force reload of the full dataset, when content change
       '_version' => 1,
+
       // Type => array of entries
       'Entity' => [
          [
@@ -129,6 +130,14 @@ function loadDataset() {
    }
 }
 
+/**
+ * Test helper, search an item from its type and name
+ *
+ * @param string  $type
+ * @param string  $name
+ * @param boolean $onlyid
+ * @return the item, or its id
+ */
 function getItemByTypeName($type, $name, $onlyid=false) {
 
    $item = getItemForItemtype($type);
