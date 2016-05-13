@@ -30,7 +30,7 @@
 
 require_once 'DbTestCase.php';
 
-class SoftwareVersionTest extends DbTestCase {
+class Computer_SoftwareVersionTest extends DbTestCase {
 
    /**
     * @covers Computer_SoftwareVersion::countForVersion
