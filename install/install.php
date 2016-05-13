@@ -387,7 +387,7 @@ function step4 ($databasename, $newdatabasename) {
          prev_form($host, $user, $password);
 
       } else {
-         if (Toolbox::createMainConfig($host,$user,$password,$databasename)) {
+         if (DBConnection::createMainConfig($host,$user,$password,$databasename)) {
             Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
 
@@ -404,7 +404,7 @@ function step4 ($databasename, $newdatabasename) {
       if ($link->select_db($newdatabasename)) {
          echo "<p>".__('Database created')."</p>";
 
-         if (Toolbox::createMainConfig($host,$user,$password,$newdatabasename)) {
+         if (DBConnection::createMainConfig($host,$user,$password,$newdatabasename)) {
             Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
             next_form();
@@ -482,7 +482,7 @@ function update1($DBname) {
    $user     = $_SESSION['db_access']['user'];
    $password = $_SESSION['db_access']['password'];
 
-   if (Toolbox::createMainConfig($host,$user,$password,$DBname) && !empty($DBname)) {
+   if (DBConnection::createMainConfig($host,$user,$password,$DBname) && !empty($DBname)) {
       $from_install = true;
       include(GLPI_ROOT ."/install/update.php");
 

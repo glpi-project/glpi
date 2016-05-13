@@ -2335,32 +2335,6 @@ class Toolbox {
 
 
    /**
-    * Create GLPI main configuration file
-    *
-    * @since 9.1
-    *
-    * @param $dbhost
-    * @param $user
-    * @param $password
-    * @param $DBname
-    *
-    * @return boolean
-    *
-   **/
-   static function createMainConfig($host, $user, $password, $DBname) {
-
-      $DB_str = "<?php\n class DB extends DBmysql {
-                \n public \$dbhost     = '". $host ."';
-                \n public \$dbuser     = '". $user ."';
-                \n public \$dbpassword = '". rawurlencode($password) ."';
-                \n public \$dbdefault  = '". $DBname ."';
-                \n }\n";
-
-      return self::writeConfig('config_db.php', $DB_str);
-   }
-
-
-   /**
     * Create the GLPI default schema
     *
     * @since 9.1

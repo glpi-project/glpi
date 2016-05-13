@@ -97,7 +97,7 @@ if (!$link->select_db($args['db'])) {
 }
 
 echo "Save configuration file...\n";
-if (!Toolbox::createMainConfig($args['host'], $args['user'], $args['pass'], $args['db'])) {
+if (!DBConnection::createMainConfig($args['host'], $args['user'], $args['pass'], $args['db'])) {
    die("Can't write configuration file\n");
 }
 
