@@ -19,7 +19,7 @@ Load default schema...
 Done
 ```
 
-The configuration file is saved as `tests/config_db.php.`
+The configuration file is saved as `tests/config_db.php`.
 
 The database is created using the default schema for current version.
 
@@ -33,6 +33,8 @@ Changing database configuration
 If you prefer to use the another test configuration file, 
 Copy the `phpunit.xml.dist` file to `phpunit.xml` and change 
 the `GLPI_CONFIG_DIR` option.
+
+Using the same database than the web application is not recommended.
 
 
 Running the test suite
