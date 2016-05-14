@@ -31,7 +31,7 @@
 class DropdownTest extends DbTestCase {
 
    /**
-    * @covers Printer::add
+    * @covers Dropdown::showLanguages
     */
    public function testShowLanguages() {
 
