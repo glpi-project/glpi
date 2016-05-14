@@ -30,6 +30,9 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 --------------------------------------------------------------------------
 */
 
+if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
+   die("\nConfiguration file for tests not found\n\nrun: php tools/cliinstall.php --tests ...\n\n");
+}
 require_once __DIR__ . '/../inc/includes.php';
 
 define('TU_USER', '_test_user');
@@ -109,7 +112,7 @@ function loadDataset() {
             'name'         => '_test_printer_ent2',
             'entities_id'  => '_test_child_2',
             'is_recursive' => 0,
-         ]   
+         ]
       ], 'User' => [
          [
             'name'          => TU_USER,
