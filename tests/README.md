@@ -7,7 +7,8 @@ To run the GLPI test suite you need
 Creating a dedicated database
 -----------------------------
 
-Use the **CliInstall** script to create a new database, using the --tests option:
+Use the **CliInstall** script to create a new database,
+only used for the test suite, using the `--tests` option:
 
 ```bash
 $ php tools/cliinstall.php --db=glpitests --user=root --pass=xxxx --lang=fr_FR --tests
@@ -18,20 +19,20 @@ Load default schema...
 Done
 ```
 
-The configuration file is saved as tests/config_db.php.
+The configuration file is saved as `tests/config_db.php.`
 
 The database is created using the default schema for current version.
 
 If you need to recreate the database (e.g. for a new schema), you need to run
-**CliInstall** again with the --force option.
+**CliInstall** again with the `--force` option.
 
 
 Changing database configuration
 -------------------------------
 
 If you prefer to use the another test configuration file, 
-Copy the phpunit.xml.dist file to phpunit.xml and change 
-the GLPI_CONFIG_DIR option.
+Copy the `phpunit.xml.dist` file to `phpunit.xml` and change 
+the `GLPI_CONFIG_DIR` option.
 
 
 Running the test suite
