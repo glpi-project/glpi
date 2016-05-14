@@ -26,9 +26,7 @@
  --------------------------------------------------------------------------
  */
 
-/* Test for inc/db.function.php */
-
-require_once 'DbTestCase.php';
+/* Test for inc/printer.class.php */
 
 class PrinterTest extends DbTestCase {
 

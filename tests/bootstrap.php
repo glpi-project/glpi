@@ -34,6 +34,7 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
    die("\nConfiguration file for tests not found\n\nrun: php tools/cliinstall.php --tests ...\n\n");
 }
 require_once __DIR__ . '/../inc/includes.php';
+require_once __DIR__ . '/DbTestCase.php';
 
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');

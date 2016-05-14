@@ -26,9 +26,7 @@
  --------------------------------------------------------------------------
  */
 
-/* Test for inc/db.function.php */
-
-require_once 'DbTestCase.php';
+/* Test for inc/computer_softwareversion.class.php */
 
 class Computer_SoftwareVersionTest extends DbTestCase {
 

@@ -980,6 +980,7 @@ class Dropdown {
          } else {
             $values[''] = self::EMPTY_VALUE;
          }
+         unset($options['display_emptychoice']);
       }
 
       foreach ($CFG_GLPI["languages"] as $key => $val) {
@@ -1708,7 +1709,7 @@ class Dropdown {
 
       $param['option_tooltips'] = Html::entities_deep($param['option_tooltips']);
 
-      if ($param["display_emptychoice"] && ($name != 'language')) {
+      if ($param["display_emptychoice"]) {
          $elements = array( 0 => $param['emptylabel'] ) + $elements ;
       }
 

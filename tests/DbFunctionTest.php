@@ -28,7 +28,6 @@
 
 /* Test for inc/db.function.php */
 
-
 class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
    protected function setUp() {
