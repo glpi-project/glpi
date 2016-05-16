@@ -13,4 +13,7 @@
             <directory>./config</directory>
         </whitelist>
     </filter>
+    <php>
+        <const name="GLPI_CONFIG_DIR" value="./tests" />
+    </php>
 </phpunit>

@@ -1,34 +1,36 @@
 <?php
 /*
- -------------------------------------------------------------------------
- GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2015 by the INDEPNET Development Team.
+-------------------------------------------------------------------------
+GLPI - Gestionnaire Libre de Parc Informatique
+Copyright (C) 2015 Teclib'.
 
- http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+http://glpi-project.org
 
- LICENSE
+based on GLPI - Gestionnaire Libre de Parc Informatique
+Copyright (C) 2003-2014 by the INDEPNET Development Team.
 
- This file is part of GLPI.
+-------------------------------------------------------------------------
 
- GLPI is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
+LICENSE
 
- GLPI is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+This file is part of GLPI.
 
- You should have received a copy of the GNU General Public License
- along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
- */
+GLPI is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
 
-/* Test for inc/db.function.php */
+GLPI is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-require_once 'DbTestCase.php';
+You should have received a copy of the GNU General Public License
+along with GLPI. If not, see <http://www.gnu.org/licenses/>.
+--------------------------------------------------------------------------
+*/
+
+/* Test for inc/computer_softwareversion.class.php */
 
 class Computer_SoftwareVersionTest extends DbTestCase {
 

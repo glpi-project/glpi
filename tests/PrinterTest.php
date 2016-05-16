@@ -2,9 +2,13 @@
 /*
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2015 by the INDEPNET Development Team.
+ Copyright (C) 2015-2016 Teclib'.
 
- http://indepnet.net/   http://glpi-project.org
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2014 by the INDEPNET Development Team.
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -26,9 +30,7 @@
  --------------------------------------------------------------------------
  */
 
-/* Test for inc/db.function.php */
-
-require_once 'DbTestCase.php';
+/* Test for inc/printer.class.php */
 
 class PrinterTest extends DbTestCase {
 

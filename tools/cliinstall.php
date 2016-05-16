@@ -35,15 +35,8 @@
 */
 
 function displayUsage() {
-   die("\nusage: ".$_SERVER['argv'][0]." [ --host=<dbhost> ] --db=<dbname> --user=<dbuser> [ --pass=<dbpassword> ] [ --lang=xx_XX] [ --force ]\n\n");
+   die("\nusage: ".$_SERVER['argv'][0]." [ --host=<dbhost> ] --db=<dbname> --user=<dbuser> [ --pass=<dbpassword> ] [ --lang=xx_XX] [ --tests ] [ --force ]\n\n");
 }
-
-define('GLPI_ROOT', dirname(__DIR__));
-chdir(GLPI_ROOT);
-
-include_once (GLPI_ROOT . "/inc/autoload.function.php");
-include_once (GLPI_ROOT . "/inc/db.function.php");
-Config::detectRootDoc();
 
 $args = [ 'host' => 'localhost', 'pass' => ''];
 
@@ -54,6 +47,17 @@ if ($_SERVER['argc']>1) {
       $args[$it[0]] = (isset($it[1]) ? $it[1] : true);
    }
 }
+
+define('GLPI_ROOT', dirname(__DIR__));
+chdir(GLPI_ROOT);
+
+if (isset($args['tests'])) {
+   define("GLPI_CONFIG_DIR", GLPI_ROOT . "/tests");
+}
+
+include_once (GLPI_ROOT . "/inc/autoload.function.php");
+include_once (GLPI_ROOT . "/inc/db.function.php");
+Config::detectRootDoc();
 
 if (isset($args['help']) || !(isset($args['db']) && isset($args['user']))) {
    displayUsage();
