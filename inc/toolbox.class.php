@@ -2357,6 +2357,12 @@ class Toolbox {
       $query = "UPDATE `glpi_users`
                 SET `language` = NULL";
       $DB->queryOrDie($query, "4203");
+
+      if (defined('GLPI_SYSTEM_CRON')) {
+         // Downstream packages may provide a good system cron
+         $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
+         $DB->queryOrDie($query, "4203");
+      }
    }
 
 
