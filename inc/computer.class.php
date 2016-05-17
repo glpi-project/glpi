@@ -111,6 +111,7 @@ class Computer extends CommonDBTM {
          ->addStandardTab('Lock', $ong, $options)
          ->addStandardTab('Notepad', $ong, $options)
          ->addStandardTab('Reservation', $ong, $options)
+         ->addStandardTab('ComputerConfiguration_Computer', $ong, $options)
          ->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -128,6 +129,20 @@ class Computer extends CommonDBTM {
 
       $comp_softvers = new Computer_SoftwareVersion();
       $comp_softvers->updateDatasForComputer($this->fields['id']);
+   }
+
+
+   /**
+    * @see CommonDBTM::prepareInputForUpdate()
+   **/
+   function prepareInputForUpdate($input) {
+      // retrieve links with computer configuration
+      $rules = new RuleComputerconfigurationCollection();
+      $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
+                                          Toolbox::stripslashes_deep($input), 
+                                             array('computers_id' => $this->getID()));
+
+      return $input;
    }
 
 
@@ -371,6 +386,12 @@ class Computer extends CommonDBTM {
          // Add connected devices
          Computer_Item::cloneComputer($this->input["_oldID"], $this->fields['id']);
       }
+
+      // retrieve links with computer configuration
+      $rules = new RuleComputerconfigurationCollection();
+      $input = $rules->processAllRules(Toolbox::stripslashes_deep($this->input),
+                                          Toolbox::stripslashes_deep($this->input), 
+                                             array('computers_id' => $this->getID()));
    }
 
 
@@ -638,6 +659,7 @@ class Computer extends CommonDBTM {
       if ($isadmin) {
          $actions['Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = _x('button', 'Connect');
          $actions['Computer_SoftwareVersion'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Install');
+         $actions['ComputerConfiguration_Computer'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'add to a configuration');
       }
 
       if ($isadmin) {
@@ -806,6 +828,15 @@ class Computer extends CommonDBTM {
       $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
+
+      $tab[50]['table']          = 'glpi_computerconfigurations';
+      $tab[50]['field']          = 'name';
+      $tab[50]['name']           = __('Computer Configuration');
+      $tab[50]['datatype']       = 'dropdown';
+      $tab[50]['massiveaction']  = false;
+      $tab[50]['joinparams']     = array('beforejoin' => array(
+                                            'table' => 'glpi_computerconfigurations_computers',
+                                            'joinparams' => array('jointype' => 'child')));
 
       $tab['periph']             = _n('Component', 'Components', Session::getPluralNumber());
 

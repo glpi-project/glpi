@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -29,36 +29,15 @@
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
- */
+*/
 
 /** @file
 * @brief
 */
 
-
 include ('../inc/includes.php');
 
-Session::checkCentralAccess();
+$rulecollection = new RuleComputerconfigurationCollection();
 
-Html::header(Control::getTypeName(2), $_SERVER['PHP_SELF'], "config", "control", -1);
-
-echo "<table class='tab_cadre'>";
-echo "<tr><th>" . __('Rule type') . "</th></tr>";
-
-if (Session::haveRight("config", READ)) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/front/fieldunicity.php'>".__('Fields unicity')."</a>";
-   echo "</td></tr>";
-}
-
-if (Session::haveRight("config", READ)) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/front/computerconfiguration.php'>".
-        _n('Computer Configuration', 'Computer Configurations', 2)."</a>";
-   echo "</td></tr>";
-}
-
-echo "</table>";
-
-Html::footer();
+include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>

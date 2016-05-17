@@ -96,7 +96,6 @@ class Search {
       $data = self::prepareDatasForSearch($itemtype, $params);
       self::constructSQL($data);
       self::constructDatas($data);
-//       Html::printCleanArray($data);
       self::displayDatas($data);
    }
 
