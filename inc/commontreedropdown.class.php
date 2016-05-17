@@ -778,6 +778,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       foreach ($names as $name) {
          $i--;
+         $name = trim($name);
          if (empty($name)) {
             // Skip empty name (completename starting/endind with >, double >, ...)
             continue;
