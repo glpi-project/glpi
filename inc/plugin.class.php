@@ -74,6 +74,24 @@ class Plugin extends CommonDBTM {
       return static::getTypeName(Session::getPluralNumber());
    }
 
+   /**
+    * @see CommonGLPI::getMenuContent()
+    *
+    * @since version 0.85
+   **/
+   static function getMenuContent() {
+      global $CFG_GLPI;
+
+      $menu = array();
+      if (static::canView()) {
+         $menu['title']   = self::getMenuName();
+         $menu['page']    = '/front/plugin.php';
+      }
+      if (count($menu)) {
+         return $menu;
+      }
+      return false;
+   }
 
    /**
     * Retrieve an item from the database using its directory
