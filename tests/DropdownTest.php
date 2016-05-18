@@ -54,4 +54,68 @@ class DropdownTest extends DbTestCase {
       $this->assertContains("value='cs_CZ' selected", $out);
       $this->assertContains("value='fr_FR'", $out);
    }
+
+   public function dataTestImport() {
+      return [
+            // input,             name,  message
+            [ [ ],                '',    'missing name'],
+            [ [ 'name' => ''],    '',    'empty name'],
+            [ [ 'name' => ' '],   '',    'space name'],
+            [ [ 'name' => ' a '], 'a',   'simple name'],
+            [ [ 'name' => 'foo'], 'foo', 'simple name'],
+      ];
+   }
+
+   /**
+    * @covers Dropdown::import
+    * @covers CommonDropdown::import
+    * @dataProvider dataTestImport
+    */
+   public function testImport($input, $result, $msg) {
+      $id = Dropdown::import('UserTitle', $input);
+      if ($result) {
+         $this->assertGreaterThan(0, $id, $msg);
+         $ut = new UserTitle();
+         $this->assertTrue($ut->getFromDB($id), $msg);
+         $this->assertEquals($result, $ut->getField('name'), $msg);
+      } else {
+         $this->AssertLessThan(0, $id, $msg);
+      }
+   }
+
+   public function dataTestTreeImport() {
+      return [
+            // input,                                  name,    completename, message
+            [ [ ],                                     '',      '',           'missing name'],
+            [ [ 'name' => ''],                          '',     '',           'empty name'],
+            [ [ 'name' => ' '],                         '',     '',           'space name'],
+            [ [ 'name' => ' a '],                       'a',    'a',          'simple name'],
+            [ [ 'name' => 'foo'],                       'foo',  'foo',        'simple name'],
+            [ [ 'completename' => 'foo > bar'],         'bar',  'foo > bar',  'two names'],
+            [ [ 'completename' => ' '],                 '',     '',           'only space'],
+            [ [ 'completename' => '>'],                 '',     '',           'only >'],
+            [ [ 'completename' => ' > '],               '',     '',           'only > and spaces'],
+            [ [ 'completename' => 'foo>bar'],           'bar',  'foo > bar',  'two names with no space'],
+            [ [ 'completename' => '>foo>>bar>'],        'bar',  'foo > bar',  'two names with additional >'],
+            [ [ 'completename' => ' foo >   > bar > '], 'bar',  'foo > bar',  'two names with garbage'],
+      ];
+   }
+
+   /**
+    * @covers Dropdown::import
+    * @covers CommonTreeDropdown::import
+    * @dataProvider dataTestTreeImport
+    */
+   public function testTreeImport($input, $result, $complete, $msg) {
+      $id = Dropdown::import('Location', $input);
+      if ($result) {
+         $this->assertGreaterThan(0, $id, $msg);
+         $ut = new Location();
+         $this->assertTrue($ut->getFromDB($id), $msg);
+         $this->assertEquals($result, $ut->getField('name'), $msg);
+         $this->assertEquals($complete, $ut->getField('completename'), $msg);
+      } else {
+         $this->assertLessThanOrEqual(0, $id, $msg);
+      }
+   }
 }
