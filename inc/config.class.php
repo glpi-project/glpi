@@ -632,7 +632,7 @@ class Config extends CommonDBTM {
          $host = $DBslave->dbhost;
       }
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('SQL server (MariaDB or MySQL')') . "</td>";
+      echo "<td>" . __('SQL server (MariaDB or MySQL') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbhost' size='40' value='$host'></td>";
       echo "<td>" . __('Database') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbdefault' value='".$DBslave->dbdefault."'>";
