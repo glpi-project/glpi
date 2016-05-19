@@ -1335,7 +1335,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          if ($canplan) {
             echo "<script type='text/javascript' >\n";
             echo "function showPlanUpdate$rand_text() {\n";
-            echo Html::jsHide('plan$rand_text');
+            echo Html::jsHide("plan$rand_text");
             $params = array('action'    => 'add_event_classic_form',
                             'form'      => 'followups',
                             'entity'    => $_SESSION["glpiactive_entity"],
