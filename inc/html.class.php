@@ -1774,7 +1774,7 @@ class Html {
       if ($DB->isSlave()
           && !$DB->first_connection) {
          echo "<div id='dbslave-float'>";
-         echo "<a href='#see_debug'>".__('MySQL replica: read only')."</a>";
+         echo "<a href='#see_debug'>".__('SQL replica: read only')."</a>";
          echo "</div>";
       }
 
