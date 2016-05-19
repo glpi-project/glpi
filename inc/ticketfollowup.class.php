@@ -428,27 +428,30 @@ class TicketFollowup  extends CommonDBTM {
          }
 
          $update['id'] = $this->input["_job"]->fields['id'];
-         
+
          // don't notify on Ticket - update event
          $update['_disablenotif'] = true;
-         
-         // Use update method for history 
+
+         // Use update method for history
          $this->input["_job"]->update($update);
          $reopened     = true;
       }
 
-      //change ticket status only if imput change
+      //change ticket status only if input change
       if (!$reopened
           && $this->input['_status'] != $this->input['_job']->fields['status']) {
 
          $update['status'] = $this->input['_status'];
          $update['id']     = $this->input['_job']->fields['id'];
-         
+
          // don't notify on Ticket - update event
          $update['_disablenotif'] = true;
 
-         // Use update method for history 
+         // Use update method for history
          $this->input['_job']->update($update);
+      } else {
+         // add notification for followup created by mail
+         $donotif = true;
       }
 
       if ($donotif) {
