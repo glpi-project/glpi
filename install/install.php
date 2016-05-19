@@ -218,7 +218,7 @@ function step2($update) {
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='".$update."'>";
    echo "<fieldset><legend>".__('Database connection parameters')."</legend>";
-   echo "<p><label class='block'>".__('SQL server (MariaDB or MySQL') ." </label>";
+   echo "<p><label class='block'>".__('SQL server (MariaDB or MySQL)') ." </label>";
    echo "<input type='text' name='db_host'><p>";
    echo "<p><label class='block'>".__('SQL user') ." </label>";
    echo "<input type='text' name='db_user'></p>";
