@@ -282,7 +282,8 @@ $CFG_GLPI["rulecollections_types"]        = array('RuleImportEntityCollection',
                                                   'RuleMailCollectorCollection',
                                                   'RuleRightCollection',
                                                   'RuleSoftwareCategoryCollection',
-                                                  'RuleTicketCollection');
+                                                  'RuleTicketCollection',
+                                                  'RuleComputerConfigurationCollection');
 
 // Items which can planned something
 $CFG_GLPI['planning_types']               = array('ChangeTask', 'ProblemTask', 'Reminder',

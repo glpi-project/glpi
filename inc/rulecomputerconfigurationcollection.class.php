@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -29,36 +29,40 @@
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
  --------------------------------------------------------------------------
- */
+*/
 
 /** @file
 * @brief
 */
 
-
-include ('../inc/includes.php');
-
-Session::checkCentralAccess();
-
-Html::header(Control::getTypeName(2), $_SERVER['PHP_SELF'], "config", "control", -1);
-
-echo "<table class='tab_cadre'>";
-echo "<tr><th>" . __('Rule type') . "</th></tr>";
-
-if (Session::haveRight("config", READ)) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/front/fieldunicity.php'>".__('Fields unicity')."</a>";
-   echo "</td></tr>";
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
 
-if (Session::haveRight("config", READ)) {
-   echo "<tr class='tab_bg_1'><td class='center b'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/front/computerconfiguration.php'>".
-        _n('Computer Configuration', 'Computer Configurations', 2)."</a>";
-   echo "</td></tr>";
+/// Import rules collection class
+class RuleComputerconfigurationCollection extends RuleCollection {
+
+   // From RuleCollection
+   public $stop_on_first_match = false;
+   static $rightname           = 'rule_compconf';
+   public $menu_option         = 'linkcomputerconfiguration';
+
+   function getTitle() {
+      return __('Automatic assignment for computer configurations');
+   }
+
+   /**
+    * @see RuleCollection::processAllRules
+    */
+   function processAllRules($input=array() ,$output=array(), $params=array(), $options=array()) {
+      $input = parent::processAllRules($input ,$output, $params, $options);
+
+      if (isset($input["_affect_configuration"]) && isset($params['computers_id'])) {
+         ComputerConfiguration_Computer::linkComputerWithConfigurations($params['computers_id'], 
+                                                                        $input["_affect_configuration"]);
+      }
+      return $input;
+   }
+
 }
-
-echo "</table>";
-
-Html::footer();
 ?>

@@ -637,6 +637,44 @@ CREATE TABLE `glpi_computerantiviruses` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_computerconfigurations
+DROP TABLE IF EXISTS `glpi_computerconfigurations`;
+CREATE TABLE `glpi_computerconfigurations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) default NULL,
+  `viewchilds` TINYINT(1) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
+  `comment` LONGTEXT DEFAULT NULL,
+  `criteria` LONGTEXT DEFAULT NULL,
+  `metacriteria` LONGTEXT DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `date_mod` (`date_mod`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+CREATE TABLE `glpi_computerconfigurations_computerconfigurations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `computerconfigurations_id_1` int(11) NOT NULL DEFAULT '0',
+  `computerconfigurations_id_2` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computerconfigurations_id_1` (`computerconfigurations_id_1`),
+  KEY `computerconfigurations_id_2` (`computerconfigurations_id_2`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `glpi_computerconfigurations_computers`;
+CREATE TABLE `glpi_computerconfigurations_computers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `computerconfigurations_id` int(11) NOT NULL DEFAULT '0',
+  `computers_id` int(11) NOT NULL DEFAULT '0',
+  `is_dynamic` TINYINT(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `computerconfigurations_id` (`computerconfigurations_id`),
+  KEY `computers_id` (`computers_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 ### Dump table glpi_computerdisks
 
 DROP TABLE IF EXISTS `glpi_computerdisks`;

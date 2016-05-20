@@ -68,6 +68,11 @@ class Control extends CommonGLPI {
          $options['FieldUnicity']['links']['add']    = '/front/fieldunicity.form.php';
          $options['FieldUnicity']['links']['search'] = '/front/fieldunicity.php';
 
+         $options['ComputerConfiguration']['title']           = __('Computer Configuration');
+         $options['ComputerConfiguration']['page']            = '/front/computerconfiguration.php';
+         $options['ComputerConfiguration']['links']['add']    = '/front/computerconfiguration.form.php';
+         $options['ComputerConfiguration']['links']['search'] = '/front/computerconfiguration.php';
+
          return $options;
       }
       return false;
