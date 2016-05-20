@@ -560,7 +560,11 @@ class MassiveAction {
                $actions[$self_pref.'delete'] = _x('button', 'Put in dustbin');
             }
          } else if ($canpurge) {
-            $actions[$self_pref.'purge'] = _x('button', 'Delete permanently');
+            if ($item instanceof CommonDBRelation) {
+               $actions[$self_pref.'purge'] = _x('button', 'Delete permanently the relation with selected elements');
+            } else {
+               $actions[$self_pref.'purge'] = _x('button', 'Delete permanently');
+            }
             if ($item instanceof CommonDropdown) {
                $actions[$self_pref.'purge_but_item_linked']
                      = _x('button', 'Delete permanently even if linked items');
