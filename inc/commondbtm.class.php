@@ -2226,7 +2226,7 @@ class CommonDBTM extends CommonGLPI {
          printf(__('%1$s - %2$s'), __('New item'), $this->getTypeName(1));
       } else {
          $nametype =  $this->getTypeName(1);
-         if ($_SESSION['glpiis_ids_visible'] || empty($this->getTypeName(1))) {
+         if ($_SESSION['glpiis_ids_visible'] || empty($nametype)) {
             //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
             $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
          }
