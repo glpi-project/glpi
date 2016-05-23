@@ -274,6 +274,10 @@ function update0902to91() {
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
 
+   /************** Kernel version for os *************/
+   $migration->addField("glpi_computers", "os_kernel_version", "string");
+
+
    /************** Task's templates *************/
    if (!TableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
@@ -575,7 +579,7 @@ function update0902to91() {
    $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
 
 
-   // group for task
+   // for group task
    $migration->addField("glpi_tickettasks", "group_id_tech", "integer");
    $migration->addField("glpi_problemtasks", "group_id_tech", "integer");
 
