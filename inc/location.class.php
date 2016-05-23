@@ -67,7 +67,7 @@ class Location extends CommonTreeDropdown {
                          'type'  => 'textarea',
                          'list'  => true),
                    array('name'  => 'inheritance',
-                         'label' => __('Inheritance of the parent entity'),
+                         'label' => __('Inheritance of the parent location'),
                          'type'  => 'bool',
                          'list'  => true),
                    array('name'  => 'inheritance_address',
