@@ -494,25 +494,27 @@ $.fn.shiftSelectable = function() {
       }
    };
 
-   $(document).on("click", $boxes.selector, function(evt) {
+   $($boxes.selector).parent().click(function(evt) {
       if ($boxes.length <= 0) {
          $boxes = $($boxes.selector);
       }
+      var selected_checkbox = $(this).children('input[type=checkbox]');
 
       if(!lastChecked) {
-         lastChecked = this;
+         lastChecked = selected_checkbox;
          return;
       }
 
       if(evt.shiftKey) {
-         var start = $boxes.index(this),
+         evt.preventDefault();
+         var start = $boxes.index(selected_checkbox),
              end = $boxes.index(lastChecked);
          $boxes.slice(Math.min(start, end), Math.max(start, end) + 1)
                .prop('checked', $(lastChecked).is(':checked'))
                .trigger('change');
       }
 
-      lastChecked = this;
+      lastChecked = selected_checkbox;
    });
 };
 
