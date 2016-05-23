@@ -6126,6 +6126,9 @@ class Search {
       // Unclean to permit < and > search
       $val = Toolbox::unclean_cross_side_scripting_deep($val);
 
+      // escape _ char used as wildcard in mysql likes
+      $val = str_replace('_', '\\_', $val);
+
       if (($val == 'NULL') || ($val == 'null')) {
          $SEARCH = " IS $NOT NULL ";
 
