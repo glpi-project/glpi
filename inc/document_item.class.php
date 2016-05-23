@@ -592,8 +592,9 @@ class Document_Item extends CommonDBRelation{
     *
     * @param $item
     * @param $withtemplate   (default '')
+    * @param $colspan
    */
-   static function showSimpleAddForItem(CommonDBTM $item, $withtemplate='') {
+   static function showSimpleAddForItem(CommonDBTM $item, $withtemplate='', $colspan=1) {
 
       $entity = $_SESSION["glpiactive_entity"];
       if ($item->isEntityAssign()) {
@@ -605,7 +606,7 @@ class Document_Item extends CommonDBRelation{
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'>".__('Add a document')."</td>";
-      echo "<td>";
+      echo "<td colspan='$colspan'>";
       echo "<input type='hidden' name='entities_id' value='$entity'>";
       echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
       echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";

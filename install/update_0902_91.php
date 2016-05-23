@@ -575,6 +575,10 @@ function update0902to91() {
    $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
 
 
+   // group for task
+   $migration->addField("glpi_tickettasks", "group_id_tech", "integer");
+   $migration->addField("glpi_problemtasks", "group_id_tech", "integer");
+
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

@@ -1765,6 +1765,44 @@ a.icon_nav_move:hover img {
    height: 10px;
 }
 
+/* for checkavailable */
+
+.planning {
+   text-align:center;
+   border:1px dashed #cccccc;
+   background-color: #d7d7d2;
+   font-size:9px;
+}
+
+.planning:hover {
+   border: 1px solid #999999;
+   background-color: white;
+}
+
+.available {
+   background-color: green;
+}
+
+.notavailable {
+   background-color: red;
+}
+
+.partialavailableend {
+   background-image: -webkit-linear-gradient(left, red 50%, green  0%);
+   background-image: -moz-linear-gradient(left, red 50%, green  0%);
+   background-image: -ms-linear-gradient(left, red 50%, green  0%);
+   background-image: -o-linear-gradient(left, red 50%, green  0%);
+   background-image: linear-gradient(left, red 50%, green  0%);
+}
+
+.partialavailablebegin {
+   background-image: -webkit-linear-gradient(left, green 50%, red  0%);
+   background-image: -moz-linear-gradient(left, green 50%, red  0%);
+   background-image: -ms-linear-gradient(left, green 50%, red  0%);
+   background-image: -o-linear-gradient(left, green 50%, red  0%);
+   background-image: linear-gradient(left, green 50%, red  0%);
+}
+
 /* ################--------------- Menu navigation  ---------------#################### */
 
 #menu_navigate {
