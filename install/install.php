@@ -218,11 +218,11 @@ function step2($update) {
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='".$update."'>";
    echo "<fieldset><legend>".__('Database connection parameters')."</legend>";
-   echo "<p><label class='block'>".__('Mysql server') ." </label>";
+   echo "<p><label class='block'>".__('SQL server (MariaDB or MySQL)') ." </label>";
    echo "<input type='text' name='db_host'><p>";
-   echo "<p><label class='block'>".__('Mysql user') ." </label>";
+   echo "<p><label class='block'>".__('SQL user') ." </label>";
    echo "<input type='text' name='db_user'></p>";
-   echo "<p><label class='block'>".__('Mysql password')." </label>";
+   echo "<p><label class='block'>".__('SQL password')." </label>";
    echo "<input type='password' name='db_pass'></p></fieldset>";
    echo "<input type='hidden' name='install' value='Etape_2'>";
    echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".

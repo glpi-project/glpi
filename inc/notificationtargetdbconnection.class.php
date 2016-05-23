@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -57,7 +57,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
 
    function getEvents() {
-      return array('desynchronization' => __('Desynchronization MySQL replica'));
+      return array('desynchronization' => __('Desynchronization SQL replica'));
    }
 
 

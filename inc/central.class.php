@@ -185,7 +185,7 @@ class Central extends CommonGLPI {
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          if (!DBMysql::isMySQLStrictMode($comment)) {
             echo "<tr><th colspan='2'>";
-            $message = sprintf(__('MySQL strict mode is not fully enabled, recommended for development: %s'), $comment);
+            $message = sprintf(__('SQL strict mode is not fully enabled, recommended for development: %s'), $comment);
             Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
             echo "</th></tr>";
          }
@@ -199,7 +199,7 @@ class Central extends CommonGLPI {
                $tables[] = $crashtable['table'];
             }
             echo "<tr><th colspan='2'>";
-            $message = __('The following MySQL tables are marked as crashed:');
+            $message = __('The following SQL tables are marked as crashed:');
             $message.= implode(',', $tables);
             Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", $message, $message);
             echo "</th></tr>";
@@ -210,8 +210,8 @@ class Central extends CommonGLPI {
       if ($DB->isSlave()
           && !$DB->first_connection) {
          echo "<tr><th colspan='2'>";
-         Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", __('MySQL replica: read only'),
-                            __('MySQL replica: read only'));
+         Html::displayTitle($CFG_GLPI['root_doc']."/pics/warning.png", __('SQL replica: read only'),
+                            __('SQL replica: read only'));
          echo "</th></tr>";
       }
       echo "<tr class='noHover'><td class='top' width='50%'><table class='central'>";

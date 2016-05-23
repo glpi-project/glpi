@@ -758,7 +758,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @param $input array of value to import (name or completename, ...)
     *
-    * @return the ID of the new or existing dropdown
+    * @return the ID of the new or existing dropdown (0 on failure)
    **/
    function import(array $input) {
 
@@ -778,6 +778,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       foreach ($names as $name) {
          $i--;
+         $name = trim($name);
          if (empty($name)) {
             // Skip empty name (completename starting/endind with >, double >, ...)
             continue;
