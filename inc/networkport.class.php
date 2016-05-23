@@ -250,6 +250,7 @@ class NetworkPort extends CommonDBChild {
       $this->input_for_NetworkPortConnect = array();
 
       foreach ($input as $field => $value) {
+Toolbox::logDebug($field, $value, array_key_exists($field, $this->fields));
          if (array_key_exists($field, $this->fields)) {
             continue;
          }
