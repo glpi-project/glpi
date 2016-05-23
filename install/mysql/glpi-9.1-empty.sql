@@ -706,6 +706,7 @@ CREATE TABLE `glpi_computers` (
   `operatingsystemservicepacks_id` int(11) NOT NULL DEFAULT '0',
   `os_license_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `os_licenseid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `os_kernel_version` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `autoupdatesystems_id` int(11) NOT NULL DEFAULT '0',
   `locations_id` int(11) NOT NULL DEFAULT '0',
   `domains_id` int(11) NOT NULL DEFAULT '0',

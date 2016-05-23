@@ -274,6 +274,10 @@ function update0902to91() {
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
 
+   /************** Kernel version for os *************/
+   $migration->addField("glpicomputers", "os_kernel_version", "string");
+
+
    /************** Task's templates *************/
    if (!TableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
@@ -573,7 +577,6 @@ function update0902to91() {
    /************** High contrast CSS **************/
    Config::setConfigurationValues('core', array('highcontrast_css' => 0));
    $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
-
 
 
    // ************ Keep it at the end **************
