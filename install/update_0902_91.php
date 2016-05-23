@@ -275,7 +275,7 @@ function update0902to91() {
 
 
    /************** Kernel version for os *************/
-   $migration->addField("glpicomputers", "os_kernel_version", "string");
+   $migration->addField("glpi_computers", "os_kernel_version", "string");
 
 
    /************** Task's templates *************/
