@@ -806,31 +806,31 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-      if ($number) {
-         $colonnes = array(_x('item', 'State'), __('Request date'), __('Approval requester'),
-                           __('Request comments'), __('Approval status'),
-                           __('Approver'), __('Approval comments'));
-         $nb_colonnes = count($colonnes);
+      $colonnes = array(_x('item', 'State'), __('Request date'), __('Approval requester'),
+                     __('Request comments'), __('Approval status'),
+                     __('Approver'), __('Approval comments'));
+      $nb_colonnes = count($colonnes);
 
-         echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr class='noHover'><th colspan='".$nb_colonnes."'>".__('Approvals for the ticket').
-              "</th></tr>";
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr class='noHover'><th colspan='".$nb_colonnes."'>".__('Approvals for the ticket').
+           "</th></tr>";
 
-         if ($canadd) {
-            if (!in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(),
-               $item->getClosedStatusArray()))) {
-                  echo "<tr class='tab_bg_1'><th colspan='" . $nb_colonnes . "'>";
-                  echo "<a class='vsubmit' href='javascript:viewAddValidation".$tID."$rand();'>";
-                  echo __('Create an approval request')."</a></th></tr>\n";
-            }
+      if ($canadd) {
+         if (!in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(),
+            $item->getClosedStatusArray()))) {
+               echo "<tr class='tab_bg_1 noHover'><td class='center' colspan='" . $nb_colonnes . "'>";
+               echo "<a class='vsubmit' href='javascript:viewAddValidation".$tID."$rand();'>";
+               echo __('Create an approval request')."</a></td></tr>\n";
          }
+      }
+      if ($number) {
          $header = "<tr>";
          foreach ($colonnes as $colonne) {
             $header .= "<th>".$colonne."</th>";
          }
          $header .= "</tr>";
          echo $header;
-
+          
          Session::initNavigateListItems($this->getType(),
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
@@ -875,10 +875,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "</tr>";
          }
          echo $header;
-         echo "</table>";
       } else {
-         echo "<div class='center b'>".__('No item found')."</div>";
+         //echo "<div class='center b'>".__('No item found')."</div>";
+         echo "<tr class='tab_bg_1 noHover'><th colspan='" . $nb_colonnes . "'>";
+         echo __('No item found')."</th></tr>\n";
       }
+      echo "</table>";
    }
 
 
