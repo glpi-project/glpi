@@ -110,6 +110,10 @@ class TicketTemplate extends CommonDropdown {
             $this->predefined['due_date']
                         = Html::computeGenericDateTimeSearch($this->predefined['due_date'], false);
          }
+         if (isset($this->predefined['time_to_own'])) {
+            $this->predefined['time_to_own']
+                        = Html::computeGenericDateTimeSearch($this->predefined['time_to_own'], false);
+         }
          // Compute date
          if (isset($this->predefined['date'])) {
             $this->predefined['date']
@@ -169,10 +173,14 @@ class TicketTemplate extends CommonDropdown {
                                                                          => 'requesttypes_id',
                      $ticket->getSearchOptionIDByField('field', 'completename',
                                                        'glpi_locations') => 'locations_id',
-                     $ticket->getSearchOptionIDByField('field', 'name',
-                                                       'glpi_slas')      => 'slas_id',
+                     $ticket->getSearchOptionIDByField('field', 'slt_tto',
+                                                       'glpi_slts')      => 'slt_tto',
+                     $ticket->getSearchOptionIDByField('field', 'slt_ttr',
+                                                       'glpi_slts')      => 'slt_ttr',
                      $ticket->getSearchOptionIDByField('field', 'due_date',
                                                        'glpi_tickets')   => 'due_date',
+                     $ticket->getSearchOptionIDByField('field', 'time_to_own',
+                                                       'glpi_tickets')   => 'time_to_own',
                      $ticket->getSearchOptionIDByField('field', 'date',
                                                        'glpi_tickets')   => 'date',
                      $ticket->getSearchOptionIDByField('field', 'actiontime',
