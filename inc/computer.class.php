@@ -528,7 +528,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
 
       // Display auto inventory informations
-      $rowspan        = 8;
+      $rowspan        = 7;
       $inventory_show = false;
 
       if (!empty($ID)
@@ -557,18 +557,19 @@ class Computer extends CommonDBTM {
       echo "<td>";
       OperatingSystem::dropdown(array('value' => $this->fields["operatingsystems_id"]));
       echo "<br /><a href='#' id='toggle_os_information'>".__("More information")."</a>";
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Version of the operating system')."</td>";
-      echo "<td >";
-      OperatingSystemVersion::dropdown(array('value' => $this->fields["operatingsystemversions_id"]));
       echo "</td>";
       if ($inventory_show) {
          echo "<td rowspan='4' colspan='2'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
       }
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Version of the operating system')."</td>";
+      echo "<td >";
+      OperatingSystemVersion::dropdown(array('value' => $this->fields["operatingsystemversions_id"]));
+      echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='2'>";
@@ -580,6 +581,7 @@ class Computer extends CommonDBTM {
             $('#os_information').dialog({
                width:'auto',
                resizable: false,
+               appendTo: '#os_information_parent',
                position: {
                   my : 'left top',
                   at : 'left bottom',
@@ -590,6 +592,7 @@ class Computer extends CommonDBTM {
       });");
 
       // group os advanced information in a single bloc (who can be toggled)
+      echo "<div id='os_information_parent'>";
       echo "<div id='os_information' title=\"".__('Operating system')."\">";
       echo "<table>";
       echo "<tr class='tab_bg_1'>";
@@ -619,7 +622,9 @@ class Computer extends CommonDBTM {
       echo "</td>";
 
 
-      echo "</table></div>";
+      echo "</table>";
+      echo "</div>";
+      echo "</div>";
       echo "</td>";
       echo "</tr>";
 
