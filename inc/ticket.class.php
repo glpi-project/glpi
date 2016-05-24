@@ -6245,10 +6245,10 @@ class Ticket extends CommonITILObject {
          $item_i = $item['item'];
 
          // don't display empty followup (ex : solution approbation)
-         if (($item['type'] == 'TicketFollowup')
-             && empty($item_i['content'])) {
-            continue;
-         }
+//          if (($item['type'] == 'TicketFollowup')
+//              && empty($item_i['content'])) {
+//             continue;
+//          }
 
          $date = "";
          if (isset($item_i['date'])) {
