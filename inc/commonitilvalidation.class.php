@@ -792,12 +792,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
                                 $params);
          echo "};";
          echo "</script>\n";
-         if (!in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(),
-                                                           $item->getClosedStatusArray()))) {
-            echo "<div class='center'>";
-            echo "<a class='vsubmit' href='javascript:viewAddValidation".$tID."$rand();'>";
-            echo __('Send an approval request')."</a></div><br>\n";
-         }
       }
 
       $query = "SELECT *
@@ -822,6 +816,14 @@ abstract class CommonITILValidation  extends CommonDBChild {
          echo "<tr class='noHover'><th colspan='".$nb_colonnes."'>".__('Approvals for the ticket').
               "</th></tr>";
 
+         if ($canadd) {
+            if (!in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(),
+               $item->getClosedStatusArray()))) {
+                  echo "<tr><th colspan='" . $nb_colonnes . "'>";
+                  echo "<a class='vsubmit' href='javascript:viewAddValidation".$tID."$rand();'>";
+                  echo __('Send an approval request')."</a></th></tr>\n";
+            }
+         }
          $header = "<tr>";
          foreach ($colonnes as $colonne) {
             $header .= "<th>".$colonne."</th>";
