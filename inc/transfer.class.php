@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -44,21 +43,21 @@ class Transfer extends CommonDBTM {
 
    // Specific ones
    /// Already transfer item
-   var $already_transfer      = array();
+   public $already_transfer      = array();
    /// Items simulate to move - non recursive item or recursive item not visible in destination entity
-   var $needtobe_transfer     = array();
+   public $needtobe_transfer     = array();
    /// Items simulate to move - recursive item visible in destination entity
-   var $noneedtobe_transfer   = array();
+   public $noneedtobe_transfer   = array();
    /// Search in need to be transfer items
-   var $item_search           = array();
+   public $item_search           = array();
    /// Search in need to be exclude from transfer
-   var $item_recurs           = array();
+   public $item_recurs           = array();
    /// Options used to transfer
-   var $options               = array();
+   public $options               = array();
    /// Destination entity id
-   var $to                    = -1;
+   public $to                    = -1;
    /// type of initial item transfered
-   var $inittype              = 0;
+   public $inittype              = 0;
 
    static $rightname = 'transfer';
 
@@ -3544,4 +3543,3 @@ class Transfer extends CommonDBTM {
 
 
 }
-?>

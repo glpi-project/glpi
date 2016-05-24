@@ -71,6 +71,7 @@ CREATE TABLE `glpi_authldaps` (
   `email2_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `email3_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `email4_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `location_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `pagesize` int(11) NOT NULL DEFAULT '0',
   `ldap_maxlimit` int(11) NOT NULL DEFAULT '0',
   `can_support_pagesize` tinyint(1) NOT NULL DEFAULT '0',

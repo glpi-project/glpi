@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -46,12 +45,14 @@ if (!defined('GLPI_ROOT')) {
 */
 abstract class CommonDevice extends CommonDropdown {
 
-   static $rightname = 'device';
+   static $rightname          = 'device';
 
-   var $can_be_translated = false;
+   public $can_be_translated  = false;
 
    // From CommonDBTM
-   public $dohistory                   = true;
+   public $dohistory           = true;
+
+
 
    static function canView() {
       return Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE));
@@ -508,4 +509,3 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 }
-?>

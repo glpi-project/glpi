@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -58,7 +57,7 @@ if (!defined('GLPI_ROOT')) {
 class NetworkPortInstantiation extends CommonDBChild {
 
    // From CommonDBTM
-   var $auto_message_on_action   = false;
+   public $auto_message_on_action   = false;
 
    // From CommonDBChild
    static public $itemtype       = 'NetworkPort';
@@ -428,7 +427,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                }
             }
          }
-      }      
+      }
       return array();
    }
 
@@ -886,4 +885,3 @@ class NetworkPortInstantiation extends CommonDBChild {
       return $rand;
    }
 }
-?>

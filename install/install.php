@@ -367,24 +367,6 @@ function step4 ($databasename, $newdatabasename) {
    }
 
 
-   //Fill the database
-   function fill_db() {
-      global $CFG_GLPI, $DB;
-
-      //include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
-      include_once (GLPI_CONFIG_DIR . "/config_db.php");
-
-      $DB = new DB();
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-9.1-empty.sql")) {
-         echo "Errors occurred inserting default database";
-      }
-      // update default language
-      Config::setConfigurationValues('core', array('language' => $_SESSION["glpilanguage"]));
-      $query = "UPDATE `glpi_users`
-                SET `language` = NULL";
-      $DB->queryOrDie($query, "4203");
-   }
-
    //Check if the port is in url
    $hostport = explode(":", $host);
    if (count($hostport) < 2) {
@@ -405,8 +387,8 @@ function step4 ($databasename, $newdatabasename) {
          prev_form($host, $user, $password);
 
       } else {
-         if (create_conn_file($host,$user,$password,$databasename)) {
-            fill_db();
+         if (DBConnection::createMainConfig($host,$user,$password,$databasename)) {
+            Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
 
             next_form();
@@ -422,8 +404,8 @@ function step4 ($databasename, $newdatabasename) {
       if ($link->select_db($newdatabasename)) {
          echo "<p>".__('Database created')."</p>";
 
-         if (create_conn_file($host,$user,$password,$newdatabasename)) {
-            fill_db();
+         if (DBConnection::createMainConfig($host,$user,$password,$newdatabasename)) {
+            Toolbox::createSchema($_SESSION["glpilanguage"]);
             echo "<p>".__('OK - database was initialized')."</p>";
             next_form();
 
@@ -437,9 +419,9 @@ function step4 ($databasename, $newdatabasename) {
             echo "<p>".__('Database created')."</p>";
 
             if ($link->select_db($newdatabasename)
-                && create_conn_file($host,$user,$password,$newdatabasename)) {
+                && Toolbox::createMainConfig($host,$user,$password,$newdatabasename)) {
 
-               fill_db();
+               Toolbox::createSchema($_SESSION["glpilanguage"]);
                echo "<p>".__('OK - database was initialized')."</p>";
                next_form();
 
@@ -494,29 +476,13 @@ function step7() {
 }
 
 
-//Create the file config_db.php
-// an fill it with user connections info.
-function create_conn_file($host, $user, $password, $DBname) {
-   global $CFG_GLPI;
-
-   $DB_str = "<?php\n class DB extends DBmysql {
-                \n var \$dbhost = '". $host ."';
-                \n var \$dbuser 	= '". $user ."';
-                \n var \$dbpassword= '". rawurlencode($password) ."';
-                \n var \$dbdefault	= '". $DBname ."';
-                \n } \n?>";
-
-   return Toolbox::writeConfig('config_db.php', $DB_str);
-}
-
-
 function update1($DBname) {
 
    $host     = $_SESSION['db_access']['host'];
    $user     = $_SESSION['db_access']['user'];
    $password = $_SESSION['db_access']['password'];
 
-   if (create_conn_file($host,$user,$password,$DBname) && !empty($DBname)) {
+   if (DBConnection::createMainConfig($host,$user,$password,$DBname) && !empty($DBname)) {
       $from_install = true;
       include(GLPI_ROOT ."/install/update.php");
 

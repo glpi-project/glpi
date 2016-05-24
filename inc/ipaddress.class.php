@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -60,7 +59,7 @@ class IPAddress extends CommonDBChild {
    static public $items_id       = 'items_id';
    public $dohistory             = false;
 
-   var $history_blacklist = array('binary_0', 'binary_1', 'binary_2', 'binary_3');
+   public $history_blacklist     = array('binary_0', 'binary_1', 'binary_2', 'binary_3');
 
    /// $version (integer) : version of the adresse. Should be 4 or 6, or empty if not valid address
    protected $version = '';
@@ -1270,4 +1269,3 @@ class IPAddress extends CommonDBChild {
       }
    }
 }
-?>

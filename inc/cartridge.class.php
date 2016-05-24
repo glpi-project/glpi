@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -51,7 +50,7 @@ class Cartridge extends CommonDBChild {
    // From CommonDBTM
    static protected $forward_entity_to = array('Infocom');
    public $dohistory                   = true;
-   var $no_form_page                   = true;
+   public $no_form_page                = true;
 
    // From CommonDBChild
    static public $itemtype             = 'CartridgeItem';
@@ -1241,4 +1240,3 @@ class Cartridge extends CommonDBChild {
    }
 
 }
-?>

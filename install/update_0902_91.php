@@ -515,6 +515,10 @@ function update0902to91() {
       $DB->queryOrDie($query, "9.1 update ticket with survey right");
    }
 
+   //new field
+   $migration->addField('glpi_authldaps', 'location_field', 'string', ['after' => 'email4_field']);
+
+
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 

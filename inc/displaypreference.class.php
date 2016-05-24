@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -46,7 +45,7 @@ class DisplayPreference extends CommonDBTM {
    public $get_item_to_display_tab = false;
 
    // From CommonDBTM
-   var $auto_message_on_action     = false;
+   public $auto_message_on_action  = false;
 
    protected $displaylist          = false;
 
@@ -308,7 +307,7 @@ class DisplayPreference extends CommonDBTM {
                 class='submit'>";
          echo "</span>";
          Html::closeForm();
-         
+
          echo "</th></tr>";
          echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
          echo "<form method='post' action=\"$target\">";
@@ -719,4 +718,3 @@ class DisplayPreference extends CommonDBTM {
    }
 
 }
-?>

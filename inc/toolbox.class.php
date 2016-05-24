@@ -561,7 +561,7 @@ class Toolbox {
       }
 
       $skip = array('Toolbox::backtrace()');
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+      if (isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          $hide   = "Toolbox::userErrorHandlerDebug()";
          $skip[] = "Toolbox::userErrorHandlerNormal()";
       } else {
@@ -2331,6 +2331,38 @@ class Toolbox {
       $string = preg_replace("/\n/", " ", $string);
       $string = preg_replace("/\r/", " ", $string);
       return $string;
+   }
+
+
+   /**
+    * Create the GLPI default schema
+    *
+    * @since 9.1
+    *
+    * @param $lang
+    *
+    * @return nothing
+   **/
+   static function createSchema($lang='en_GB') {
+      global $CFG_GLPI, $DB;
+
+      include_once (GLPI_CONFIG_DIR . "/config_db.php");
+
+      $DB = new DB();
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-9.1-empty.sql")) {
+         echo "Errors occurred inserting default database";
+      }
+      // update default language
+      Config::setConfigurationValues('core', array('language' => $lang));
+      $query = "UPDATE `glpi_users`
+                SET `language` = NULL";
+      $DB->queryOrDie($query, "4203");
+
+      if (defined('GLPI_SYSTEM_CRON')) {
+         // Downstream packages may provide a good system cron
+         $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
+         $DB->queryOrDie($query, "4203");
+      }
    }
 
 

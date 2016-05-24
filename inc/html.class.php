@@ -3046,6 +3046,7 @@ class Html {
     *      - showyear   : should we set/diplay the year? (true by default)
     *      - display    : boolean display of return string (default true)
     *      - rand       : specific rand value (default generated one)
+    *      - yearrange  : set a year range to show in drop-down (default '')
     *
     * @return rand value used if displayes else string
    **/
@@ -3060,6 +3061,7 @@ class Html {
       $p['showyear']   = true;
       $p['display']    = true;
       $p['rand']       = mt_rand();
+      $p['yearrange']  = '';
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3109,6 +3111,10 @@ class Html {
 
       if (!empty($p['max'])) {
          $js .= ",maxDate: '".self::convDate($p['max'])."'";
+      }
+
+      if (!empty($p['yearrange'])) {
+	 $js .= ",yearRange: '". $p['yearrange'] ."'";
       }
 
       switch ($_SESSION['glpidate_format']) {

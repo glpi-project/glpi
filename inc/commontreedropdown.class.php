@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -46,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 abstract class CommonTreeDropdown extends CommonDropdown {
 
-   var $can_be_translated = false;
+   public $can_be_translated = false;
 
 
    /**
@@ -779,6 +778,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       foreach ($names as $name) {
          $i--;
+         $name = trim($name);
          if (empty($name)) {
             // Skip empty name (completename starting/endind with >, double >, ...)
             continue;
@@ -786,6 +786,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $tmp['name'] = $name;
          $tmp[$fk]    = $parent;
 
+         if (isset($input['is_recursive'])) {
+            $tmp['is_recursive'] = $input['is_recursive'];
+         }
          if (isset($input['entities_id'])) {
             $tmp['entities_id'] = $input['entities_id'];
          }
@@ -805,4 +808,3 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 }
-?>

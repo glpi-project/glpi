@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -52,11 +51,10 @@ class Computer extends CommonDBTM {
                                                'NetworkPort', 'ReservationItem');
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
-   var $devices                        = array();
+   public $devices                     = array();
 
    static $rightname                   = 'computer';
    protected $usenotepad               = true;
-
 
 
    /**
@@ -1089,9 +1087,8 @@ class Computer extends CommonDBTM {
       $tab[166]['joinparams']    = array('jointype' => 'child');
 
       $tab+= ComputerAntivirus::getSearchOptionsToAdd();
-      
+
       return $tab;
    }
 
 }
-?>
