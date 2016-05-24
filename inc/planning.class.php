@@ -57,7 +57,7 @@ class Planning extends CommonGLPI {
    static $palette_ev = array('#E94A31', '#5174F2', '#51C9F2', '#FFCC29', '#20C646',
                               '#364959', '#8C5344');
 
-   static $directgroup_itemtype = array('ProjectTask');
+   static $directgroup_itemtype = array('ProjectTask', 'TicketTask', 'ProblemTask');
 
    const READMY    =    1;
    const READGROUP = 1024;
@@ -208,6 +208,7 @@ class Planning extends CommonGLPI {
          $data = call_user_func(array($itemtype, 'populatePlanning'),
                                 array('who'           => $users_id,
                                       'who_group'     => 0,
+                                      'whogroup'      => 0,
                                       'begin'         => $begin,
                                       'end'           => $end,
                                       'check_planned' => true));
@@ -259,7 +260,6 @@ class Planning extends CommonGLPI {
    static function checkAvailability($params=array()) {
       global $CFG_GLPI, $DB;
 
-
       if (!isset($params['itemtype'])) {
          return false;
       }
@@ -310,7 +310,22 @@ class Planning extends CommonGLPI {
                   }
                }
             }
-
+            if ($itemtype = 'Ticket') {
+               $task = new TicketTask();
+            } else if ($itemtype = 'Problem') {
+               $task = new ProblemTask();
+            }
+            if ($task->getFromDBByQuery("WHERE `tickets_id` = ".$item->fields['id'])) {
+               $id = $task->fields['id'];
+               $users['users_id'] = getUserName($task->fields['users_id_tech']);
+               $group_id = $task->fields['group_id_tech'];
+               if ($group_id) {
+                  foreach (Group_User::getGroupUsers($group_id) as $data2) {
+                  $users[$data2['id']] = formatUserName($data2["id"], $data2["name"],
+                                                        $data2["realname"], $data2["firstname"]);
+                  }
+               }
+            }
             break;
       }
       asort($users);
@@ -366,6 +381,7 @@ class Planning extends CommonGLPI {
          foreach ($displayuser as $who => $whoname) {
             $params = array('who'       => $who,
                             'who_group' => 0,
+                            'whogroup'  => 0,
                             'begin'     => $realbegin,
                             'end'       => $realend);
 
@@ -1258,6 +1274,7 @@ class Planning extends CommonGLPI {
 
 
    static function editEventForm($params = array()) {
+
       if (!$params['itemtype'] instanceof CommonDBTM) {
          echo "<div class='center'>";
          echo "<a href='".$params['url']."'>".__("View this item in his context")."</a>";
@@ -1365,6 +1382,7 @@ class Planning extends CommonGLPI {
     * @return Nothing (display function)
     */
    static function showAddEventSubForm($params = array()) {
+
       $rand            = mt_rand();
       $params['begin'] = date("Y-m-d H:i:s", strtotime($params['begin']));
       $params['end']   = date("Y-m-d H:i:s", strtotime($params['end']));
@@ -1496,6 +1514,7 @@ class Planning extends CommonGLPI {
     * @return nothing
     */
    static function toggleFilter($options = array()) {
+
       $key = 'filters';
       if (in_array($options['type'], array('user', 'group'))) {
          $key = 'plannings';
@@ -1552,6 +1571,7 @@ class Planning extends CommonGLPI {
     * @return nothing
     */
    static function deleteFilter($options = array()) {
+
       $current = &$_SESSION['glpi_plannings']['plannings'][$options['filter']];
       if (in_array($options['type'], array('user', 'group'))) {
          $_SESSION['glpi_plannings_color_index']--;
@@ -1564,7 +1584,9 @@ class Planning extends CommonGLPI {
       self::savePlanningsInDB();
    }
 
+
    static function savePlanningsInDB() {
+
       $user = new User;
       $user->update(array('id' => $_SESSION['glpiID'],
                           'plannings' => exportArrayToDB($_SESSION['glpi_plannings'])));
@@ -1676,6 +1698,7 @@ class Planning extends CommonGLPI {
     * @return nothing
     */
    static function constructEventsArraySingleLine($actor, $params = array(), &$raw_events = array()) {
+
       if ($params['display']) {
          $actor_array = explode("_", $actor);
          if ($params['type'] == "group_users") {
@@ -1688,11 +1711,14 @@ class Planning extends CommonGLPI {
          } else {
             $params['who']       = $actor_array[1];
             $params['who_group'] = 0;
+            $params['whogroup']  = 0;
             if ($params['type'] == "group"
                 && in_array($params['planning_type'], self::$directgroup_itemtype)) {
                $params['who']       = 0;
                $params['who_group'] = $actor_array[1];
+               $params['whogroup']  = $actor_array[1];
             }
+
             if (isset($params['color'])) {
                $params['color'] = $params['color'];
             }
@@ -1890,6 +1916,7 @@ class Planning extends CommonGLPI {
 
       $params = array('who'       => $who,
                       'who_group' => $who_group,
+                      'whogroup'  => $whogroup,
                       'begin'     => $begin,
                       'end'       => $end);
 

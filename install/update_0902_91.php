@@ -274,6 +274,10 @@ function update0902to91() {
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
 
+   /************** Kernel version for os *************/
+   $migration->addField("glpi_computers", "os_kernel_version", "string");
+
+
    /************** Task's templates *************/
    if (!TableExists('glpi_tasktemplates')) {
       $query = "CREATE TABLE `glpi_tasktemplates` (
@@ -466,6 +470,13 @@ function update0902to91() {
    $migration->addField("glpi_entities", "autofill_destruction_date",
                         "string", array('value' => '-2'));
 
+   /************* Add is_recursive on assets ***/
+
+   foreach (array('glpi_computers', 'glpi_monitors', 'glpi_phones', 'glpi_peripherals') as $table) {
+      $migration->addField($table, "is_recursive", "bool");
+      $migration->addKey($table, "is_recursive");
+   }
+
    /************* Add antivirus table */
    if (!TableExists('glpi_computerantiviruses')) {
       $query = "CREATE TABLE `glpi_computerantiviruses` (
@@ -518,6 +529,10 @@ function update0902to91() {
                        AND `name` = 'ticket'";
       $DB->queryOrDie($query, "9.1 update ticket with survey right");
    }
+
+   //new field
+   $migration->addField('glpi_authldaps', 'location_field', 'string', ['after' => 'email4_field']);
+
 
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
@@ -574,6 +589,10 @@ function update0902to91() {
    Config::setConfigurationValues('core', array('highcontrast_css' => 0));
    $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
 
+
+   // for group task
+   $migration->addField("glpi_tickettasks", "group_id_tech", "integer");
+   $migration->addField("glpi_problemtasks", "group_id_tech", "integer");
 
 
    // ************ Keep it at the end **************

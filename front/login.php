@@ -51,14 +51,15 @@ $_POST = array_map('stripslashes', $_POST);
 
 //Do login and checks
 //$user_present = 1;
-if (!isset($_POST['login_name'])) {
-   $_POST['login_name'] = '';
-}
-
-if (isset($_POST['login_password'])) {
-   $_POST['login_password'] = Toolbox::unclean_cross_side_scripting_deep($_POST['login_password']);
+if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
+   $login = $_POST[$_SESSION['namfield']];
 } else {
-   $_POST['login_password'] = '';
+   $login = '';
+}
+if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
+   $password = Toolbox::unclean_cross_side_scripting_deep($_POST[$_SESSION['pwdfield']]);
+} else {
+   $password = '';
 }
 
 // Redirect management
@@ -74,8 +75,7 @@ $auth = new Auth();
 
 
 // now we can continue with the process...
-if ($auth->Login($_POST['login_name'], $_POST['login_password'],
-                 (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false))) {
+if ($auth->Login($login, $password, (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false))) {
 
    // Redirect to Command Central if not post-only
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {

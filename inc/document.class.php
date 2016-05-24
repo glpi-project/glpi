@@ -459,7 +459,7 @@ class Document extends CommonDBTM {
       header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
       header('Pragma: private'); /// IE BUG + SSL
       header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-      header("Content-disposition: filename=\"".$this->fields['filename']."\"");
+      header("Content-disposition: attachment; filename=\"".$this->fields['filename']."\"");
       header("Content-type: ".$this->fields['mime']);
 
       readfile($file) or die ("Error opening file $file");

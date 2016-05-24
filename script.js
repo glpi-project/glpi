@@ -469,20 +469,54 @@ function displayOtherSelectOptions(select_object, other_option_name) {
  * @param    container_id    DOM element
 **/
 function checkAsCheckboxes( reference_id, container_id ) {
+   $('#' + container_id + ' input[type="checkbox"]:enabled')
+      .prop('checked', $('#' + reference_id).is(':checked'));
 
-   var ref        =  document.getElementById(reference_id);
-   var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
-
-   for (var j=0 ; j<checkboxes.length ; j++ ) {
-      checkbox = checkboxes[j];
-      if (checkbox && (checkbox.type == 'checkbox')) {
-         if (checkbox.disabled == false) {
-            checkbox.checked = ref.checked;
-         }
-      }
-   }
    return true;
 }
+
+/**
+ * Permit to use Shift key on a group of checkboxes
+ * Usage: $form.find('input[type="checkbox"]').shiftSelectable();
+ */
+$.fn.shiftSelectable = function() {
+   var lastChecked,
+       $boxes = this;
+
+   // prevent html selection
+   document.onkeydown = function(e) {
+      var keyPressed = e.keyCode;
+      if (keyPressed == 16) { // shift key
+         $('html').addClass('unselectable');
+         document.onkeyup = function() {
+            $('html').removeClass('unselectable');
+         };
+      }
+   };
+
+   $($boxes.selector).parent().click(function(evt) {
+      if ($boxes.length <= 0) {
+         $boxes = $($boxes.selector);
+      }
+      var selected_checkbox = $(this).children('input[type=checkbox]');
+
+      if(!lastChecked) {
+         lastChecked = selected_checkbox;
+         return;
+      }
+
+      if(evt.shiftKey) {
+         evt.preventDefault();
+         var start = $boxes.index(selected_checkbox),
+             end = $boxes.index(lastChecked);
+         $boxes.slice(Math.min(start, end), Math.max(start, end) + 1)
+               .prop('checked', $(lastChecked).is(':checked'))
+               .trigger('change');
+      }
+
+      lastChecked = selected_checkbox;
+   });
+};
 
 
 /**
@@ -855,4 +889,42 @@ split_button = function() {
          splitBtn.removeClass('open');
       }
    });
+}
+
+// Responsive header
+if ($(window).width() <= 700) {
+   var didScroll;
+   var lastScrollTop = 0;
+   var delta = 5;
+   var navbarHeight = $('header').outerHeight();
+
+   $(window).scroll(function(event){
+      didScroll = true;
+   });
+
+   setInterval(function() {
+      if (didScroll) {
+         scollHeaderResponsive();
+         didScroll = false;
+      }
+   }, 250);
+
+   var scollHeaderResponsive = function() {
+      var st = $(this).scrollTop();
+
+      // Make sure they scroll more than delta
+      if(Math.abs(lastScrollTop - st) <= delta)
+         return;
+
+      if (st > lastScrollTop && st > navbarHeight){
+         // Scroll Down
+         $('#header').removeClass('nav-down').addClass('nav-up');
+      } else {
+         // Scroll Up
+         if(st + $(window).height() < $(document).height()) {
+            $('#header').removeClass('nav-up').addClass('nav-down');
+         }
+      }
+      lastScrollTop = st;
+   }
 }

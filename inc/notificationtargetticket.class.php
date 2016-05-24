@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -44,9 +43,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
-   var $private_profiles = array();
+   public $private_profiles = array();
 
-   public $html_tags = array('##ticket.solution.description##');
+   public $html_tags        = array('##ticket.solution.description##');
 
    const HEADERTAG = '=-=-=-=';
    const FOOTERTAG = '=_=_=_=';
@@ -74,9 +73,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $this->options['sendprivate'] = $options['is_private'];
       }
 
-      if ($CFG_GLPI["use_rich_text"]) {
-         $this->html_tags[] = '##ticket.content##';
-      }
    }
 
 
@@ -340,6 +336,26 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       if ($item->getField('locations_id')) {
          $datas['##ticket.location##'] = Dropdown::getDropdownName('glpi_locations',
                                                                    $item->getField('locations_id'));
+         $locations = new Location();
+         $locations->getFromDB($item->getField('locations_id'));
+         if ($location>getField('comment')) {
+            $datas['##ticket.location.comment##'] = $locations->getField('comment');
+         }
+         if ($location>getField('room')) {
+            $datas['##ticket.location.room##'] = $locations->getField('room');
+         }
+         if ($location>getField('building')) {
+            $datas['##ticket.location.building##'] = $locations->getField('building');
+         }
+         if ($location>getField('latitude')) {
+            $datas['##ticket.location.latitude##'] = $locations->getField('latitude');
+         }
+         if ($location>getField('longitude')) {
+            $datas['##ticket.location.longitude##'] = $locations->getField('longitude');
+         }
+         if ($location>getField('altitude')) {
+            $datas['##ticket.location.altitude##'] = $locations->getField('altitude');
+         }
       }
 
       // is ticket deleted
@@ -347,16 +363,22 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
 
       //Tags associated with the object linked to the ticket
-      $datas['##ticket.itemtype##']           = '';
-      $datas['##ticket.item.name##']          = '';
-      $datas['##ticket.item.serial##']        = '';
-      $datas['##ticket.item.otherserial##']   = '';
-      $datas['##ticket.item.location##']      = '';
-      $datas['##ticket.item.contact##']       = '';
-      $datas['##ticket.item.contactnumber##'] = '';
-      $datas['##ticket.item.user##']          = '';
-      $datas['##ticket.item.group##']         = '';
-      $datas['##ticket.item.model##']         = '';
+      $datas['##ticket.itemtype##']                 = '';
+      $datas['##ticket.item.name##']                = '';
+      $datas['##ticket.item.serial##']              = '';
+      $datas['##ticket.item.otherserial##']         = '';
+      $datas['##ticket.item.location##']            = '';
+      $datas['##ticket.item.locationcomment##']     = '';
+      $datas['##ticket.item.locationroom##']        = '';
+      $datas['##ticket.item.locationbuilding##']    = '';
+      $datas['##ticket.item.locationlatitude##']    = '';
+      $datas['##ticket.item.locationlongitude##']   = '';
+      $datas['##ticket.item.locationaltitude##']    = '';
+      $datas['##ticket.item.contact##']             = '';
+      $datas['##ticket.item.contactnumber##']       = '';
+      $datas['##ticket.item.user##']                = '';
+      $datas['##ticket.item.group##']               = '';
+      $datas['##ticket.item.model##']               = '';
 
       $item_ticket = new Item_Ticket();
       $items = $item_ticket->find("`tickets_id` = '".$item->getField('id')."'");
@@ -401,6 +423,26 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                   $tmp['##ticket.item.location##']
                               = Dropdown::getDropdownName('glpi_locations',
                                                           $hardware->getField('locations_id'));
+                  $locations = new Location();
+                  $locations->getFromDB($hardware->getField('locations_id'));
+                  if ($hardware->getField('comment')) {
+                     $datas['##ticket.item.locationcomment##'] = $locations->getField('comment');
+                  }
+                  if ($hardware->getField('room')) {
+                     $datas['##ticket.item.locationroom##'] = $locations->getField('room');
+                  }
+                  if ($hardware->getField('building')) {
+                     $datas['##ticket.item.locationbuilding##'] = $locations->getField('building');
+                  }
+                  if ($hardware->getField('latitude')) {
+                     $datas['##ticket.item.locationlatitude##'] = $locations->getField('latitude');
+                  }
+                  if ($hardware->getField('longitude')) {
+                     $datas['##ticket.item.locationlongitude##'] = $locations->getField('longitude');
+                  }
+                  if ($hardware->getField('altitude')) {
+                     $datas['##ticket.item.locationaltitude##'] = $locations->getField('altitude');
+                  }
                }
 
                //Object user
@@ -668,7 +710,25 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.item.otherserial'      => __('Inventory number'),
                     'ticket.item.location'         => sprintf(__('%1$s: %2$s'),
                                                               _n('Associated element', 'Associated elements', 2),
-                                                              __('Location')),
+                                                              __('Location name')),
+                    'ticket.item.locationcomment'  => sprintf(__('%1$s: %2$s'),
+                                                              _n('Associated element', 'Associated elements', 2),
+                                                              __('Location comments')),
+                    'ticket.item.locationroom'     => sprintf(__('%1$s: %2$s'),
+                                                              _n('Associated element', 'Associated elements', 2),
+                                                              __('Room number')),
+                    'ticket.item.locationbuilding' => sprintf(__('%1$s: %2$s'),
+                                                              _n('Associated element', 'Associated elements', 2),
+                                                              __('Building number')),
+                    'ticket.item.locationlatitude' => sprintf(__('%1$s: %2$s'),
+                                                              _n('Associated element', 'Associated elements', 2),
+                                                              __('Latitude')),
+                    'ticket.item.locationlongitude' => sprintf(__('%1$s: %2$s'),
+                                                               _n('Associated element', 'Associated elements', 2),
+                                                               __('Longitude')),
+                    'ticket.item.locationaltitude' => sprintf(__('%1$s: %2$s'),
+                                                              _n('Associated element', 'Associated elements', 2),
+                                                              __('Altitude')),
                     'ticket.item.model'            => __('Model'),
                     'ticket.item.contact'          => __('Alternate username'),
                     'ticket.item.contactnumber'    => __('Alternate username number'),
@@ -687,6 +747,12 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.numberofitems'         => _x('quantity', 'Number of items'),
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
                     'ticket.location'              => __('Location'),
+                    'ticket.location.comment'      => __('Location comments'),
+                    'ticket.location.room'         => __('Room number'),
+                    'ticket.location.building'     => __('Building number'),
+                    'ticket.location.latitude'     => __('Latitude'),
+                    'ticket.location.longitude'    => __('Longitude'),
+                    'ticket.location.altitude'     => __('Altitude'),
                     'ticket.globalvalidation'      => __('Global approval status'),
                     'ticket.solution.approval.description'  => __('Solution rejection comment'),
                     'ticket.solution.approval.date'         => __('Solution rejection date'),
@@ -877,4 +943,3 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    }
 
 }
-?>

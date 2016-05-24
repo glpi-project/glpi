@@ -56,7 +56,7 @@ class Html {
     *          2 : remove tag and neutralize content
     * @return clean value
    **/
-   static function clean($value, $striptags=true, $keep_bad=2) {
+   static function clean($value, $striptags=true, $keep_bad=2, $double_escape_angle_brackets = true) {
 
       include_once(GLPI_HTMLAWED);
 
@@ -76,16 +76,15 @@ class Html {
          $value         = preg_replace($specialfilter, '', $value);
 
          $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
-         $value = preg_replace("/(&nbsp;| )+/", " ", $value);
-
-
-         $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                                '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
-                                '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
-                                 );
-
-         $value = preg_replace($search, '', $value);
+         $value = preg_replace("/(&nbsp;| |\xC2\xA0)+/", " ", $value);
       }
+
+      $search = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
+                      '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
+                      '@<title[^>]*?>.*?</title[^>]*?>@si', // Strip out title
+                      '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
+                       );
+      $value = preg_replace($search, '', $value);
 
       $value = htmLawed($value, array('elements' => ($striptags) ? 'none' : '',
                                       'keep_bad' => $keep_bad, // 1 : neutralize tag and content, 2 : remove tag and neutralize content
@@ -93,7 +92,10 @@ class Html {
                                       'cdata'   => 1, // DROP
                                       ));
 
-      $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
+
+      if ($double_escape_angle_brackets) {
+         $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
+      }
 
 /*
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
@@ -1089,17 +1091,21 @@ class Html {
 
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/css/jstree/style.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.min.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.css");
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/css/style.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.css",
                      array('media' => ''));
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.print.css",
+      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.print.min.css",
                      array('media' => 'print'));
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
+      if (CommonGLPI::isLayoutWithMain()
+          && !CommonGLPI::isLayoutExcludedPage()) {
+         echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/css/jquery.scrollabletab.min.css");
+      }
 
       //  CSS link
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles.css");
@@ -1157,25 +1163,24 @@ class Html {
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/imagepaste/jquery.image_paste.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/imagepaste/jquery.image_paste.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum-min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/autogrow/jquery.autogrow-textarea.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/autogrow/jquery.autogrow-textarea.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/lib/moment.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.js");
 
       // layout
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
-         echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/css/jquery.scrollabletab.css");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.js");
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.min.js");
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.min.js");
       }
 
       //locales for js library
@@ -1769,7 +1774,7 @@ class Html {
       if ($DB->isSlave()
           && !$DB->first_connection) {
          echo "<div id='dbslave-float'>";
-         echo "<a href='#see_debug'>".__('MySQL replica: read only')."</a>";
+         echo "<a href='#see_debug'>".__('SQL replica: read only')."</a>";
          echo "</div>";
       }
 
@@ -2584,6 +2589,9 @@ class Html {
                   </label>
                </div>";
 
+      // permit to shift select checkboxes
+      $out.= Html::scriptBlock("\$('#$container_id input[type=\"checkbox\"]').shiftSelectable();");
+
       return $out;
    }
 
@@ -2729,6 +2737,10 @@ class Html {
       $out .= "&nbsp;";
       $out .= "</label>";
       $out .= "</span>";
+
+      if (!empty($criterion)) {
+         $out .= Html::scriptBlock("\$('$criterion').shiftSelectable();");
+      }
 
       return $out;
    }
@@ -3034,6 +3046,7 @@ class Html {
     *      - showyear   : should we set/diplay the year? (true by default)
     *      - display    : boolean display of return string (default true)
     *      - rand       : specific rand value (default generated one)
+    *      - yearrange  : set a year range to show in drop-down (default '')
     *
     * @return rand value used if displayes else string
    **/
@@ -3048,6 +3061,7 @@ class Html {
       $p['showyear']   = true;
       $p['display']    = true;
       $p['rand']       = mt_rand();
+      $p['yearrange']  = '';
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3097,6 +3111,10 @@ class Html {
 
       if (!empty($p['max'])) {
          $js .= ",maxDate: '".self::convDate($p['max'])."'";
+      }
+
+      if (!empty($p['yearrange'])) {
+	 $js .= ",yearRange: '". $p['yearrange'] ."'";
       }
 
       switch ($_SESSION['glpidate_format']) {

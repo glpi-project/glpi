@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -48,29 +47,29 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Rule extends CommonDBTM {
 
-   public $dohistory = true;
+   public $dohistory             = true;
 
    // Specific ones
    ///Actions affected to this rule
-   var $actions   = array();
+   public $actions               = array();
    ///Criterias affected to this rule
-   var $criterias = array();
+   public $criterias             = array();
    /// Rules can be sorted ?
-   var $can_sort  = false;
+   public $can_sort              = false;
    /// field used to order rules
-   var $orderby   = 'ranking';
+   public $orderby               = 'ranking';
 
    /// restrict matching to self::AND_MATCHING or self::OR_MATCHING : specify value to activate
-   var $restrict_matching        = false;
+   public $restrict_matching     = false;
 
    protected $rules_id_field     = 'rules_id';
    protected $ruleactionclass    = 'RuleAction';
    protected $rulecriteriaclass  = 'RuleCriteria';
 
-   var $specific_parameters      = false;
+   public $specific_parameters   = false;
 
-   var $regex_results            = array();
-   var $criterias_results        = array();
+   public $regex_results         = array();
+   public $criterias_results     = array();
 
    static $rightname             = 'config';
 
@@ -3093,4 +3092,3 @@ class Rule extends CommonDBTM {
 
 
 }
-?>

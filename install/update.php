@@ -592,7 +592,7 @@ function updateDbUpTo031() {
    // To prevent problem of execution time
    ini_set("max_execution_time", "0");
 
-   $migration = new Migration($current_version);
+   $migration = new Migration(GLPI_VERSION);
 
    switch ($current_version) {
       case "0.31" :
@@ -831,6 +831,12 @@ function updateDbUpTo031() {
    // Update process desactivate all plugins
    $plugin = new Plugin();
    $plugin->unactivateAll();
+
+   if (defined('GLPI_SYSTEM_CRON')) {
+      // Downstream packages may provide a good system cron
+      $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
+      $DB->queryOrDie($query);
+   }
 
    DBmysql::optimize_tables($migration);
 

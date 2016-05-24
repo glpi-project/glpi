@@ -1,2 +1,14 @@
 # If you have problem with session.auto_start on install you need to set this value to 0 on php.ini or uncomment this line
 #php_value session.auto_start 0
+
+<IfModule mod_expires.c>
+   ExpiresActive On
+   ExpiresByType image/jpg "access 1 year"
+   ExpiresByType image/jpeg "access 1 year"
+   ExpiresByType image/gif "access 1 year"
+   ExpiresByType image/png "access 1 year"
+   ExpiresByType text/css "access 1 year"
+   ExpiresByType text/x-javascript "access 1 year"
+   ExpiresByType text/javascript "access 1 year"
+   ExpiresByType application/javascript "access 1 year"
+</IfModule>

@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -52,11 +51,10 @@ class Computer extends CommonDBTM {
                                                'NetworkPort', 'ReservationItem');
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
-   var $devices                        = array();
+   public $devices                     = array();
 
    static $rightname                   = 'computer';
    protected $usenotepad               = true;
-
 
 
    /**
@@ -537,14 +535,15 @@ class Computer extends CommonDBTM {
           && Plugin::haveImport()
           && $this->fields["is_dynamic"]) {
          $inventory_show = true;
-         $rowspan       -= 4;
+         $rowspan       -= 5;
       }
 
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
-      echo "<textarea style='width:95%' rows='".($rowspan+3)."' name='comment' >".
+
+      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".
            $this->fields["comment"];
-      echo "</textarea></td></tr>\n";
+      echo "</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain')."</td>";
@@ -557,14 +556,8 @@ class Computer extends CommonDBTM {
       echo "<td>".__('Operating system')."</td>";
       echo "<td>";
       OperatingSystem::dropdown(array('value' => $this->fields["operatingsystems_id"]));
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Service pack')."</td>";
-      echo "<td >";
-      OperatingSystemServicePack::dropdown(array('value'
-                                                 => $this->fields["operatingsystemservicepacks_id"]));
-      echo "</td></tr>\n";
+      echo "<br /><a href='#' id='toggle_os_information'>".__("More information")."</a>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Version of the operating system')."</td>";
@@ -578,17 +571,57 @@ class Computer extends CommonDBTM {
       }
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1'><td colspan='2'>";
+      echo Html::scriptBlock("
+      $(document).ready(function(){
+         $('#os_information').hide();
+
+         $('#toggle_os_information').on('click',function() {
+            $('#os_information').dialog({
+               width:'auto',
+               resizable: false,
+               position: {
+                  my : 'left top',
+                  at : 'left bottom',
+                  of: $('#toggle_os_information')
+               }
+            })
+         })
+      });");
+
+      // group os advanced information in a single bloc (who can be toggled)
+      echo "<div id='os_information' title=\"".__('Operating system')."\">";
+      echo "<table>";
+      echo "<tr class='tab_bg_1'>";
+
+      echo "<td>".__('Service pack')."</td>";
+      echo "<td >";
+      OperatingSystemServicePack::dropdown(array('value'
+                                                 => $this->fields["operatingsystemservicepacks_id"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Kernel version of the operating system')."</td>";
+      echo "<td >";
+      Html::autocompletionTextField($this, 'os_kernel_version');
+      echo "</td></tr>";
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Product ID of the operating system')."</td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'os_licenseid');
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Serial of the operating system')."</td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'os_license_number');
-      echo "</td></tr>\n";
+      echo "</td>";
+
+
+      echo "</table></div>";
+      echo "</td>";
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('UUID')."</td>";
@@ -720,6 +753,11 @@ class Computer extends CommonDBTM {
       $tab[47]['field']          = 'uuid';
       $tab[47]['name']           = __('UUID');
       $tab[47]['datatype']       = 'string';
+
+      $tab[48]['table']          = $this->getTable();
+      $tab[48]['field']          = 'os_kernel_version';
+      $tab[48]['name']           = __('Kernel version of the operating system');
+      $tab[48]['datatype']       = 'string';
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'serial';
@@ -1089,9 +1127,8 @@ class Computer extends CommonDBTM {
       $tab[166]['joinparams']    = array('jointype' => 'child');
 
       $tab+= ComputerAntivirus::getSearchOptionsToAdd();
-      
+
       return $tab;
    }
 
 }
-?>

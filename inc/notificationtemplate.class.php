@@ -512,10 +512,8 @@ class NotificationTemplate extends CommonDBTM {
       $mailing_options['content_html'] = $template_data['content_html'];
       $mailing_options['content_text'] = $template_data['content_text'];
       $mailing_options['items_id']     = $target->obj->getField('id');
-      if ($target->obj->getType() == 'Ticket') {
-         if (isset($target->obj->documents)) {
-            $mailing_options['documents'] = $target->obj->documents;
-         }
+      if (isset($target->obj->documents)) {
+         $mailing_options['documents'] = $target->obj->documents;
       }
 
       return $mailing_options;

@@ -5070,7 +5070,7 @@ class Search {
       foreach ($default_values as $key => $val) {
          if (!isset($params[$key])) {
             if ($usesession
-                && !isset($saved_params['criteria']) // retrieve session only if not a new request
+                && ($key == 'is_deleted' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
                 && isset($_SESSION['glpisearch'][$itemtype][$key])) {
                $params[$key] = $_SESSION['glpisearch'][$itemtype][$key];
             } else {
@@ -5640,7 +5640,7 @@ class Search {
             $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
             $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
             $PDF_TABLE .= "<td $extraparam valign='top'>";
-            $PDF_TABLE .= Html::weblink_extract(Html::clean($value));
+            $PDF_TABLE .= Html::weblink_extract(Html::clean($value, true, 2, false));
             $PDF_TABLE .= "</td>\n";
 
             break;
@@ -6075,8 +6075,12 @@ class Search {
       $value = preg_replace('/\x0A/', ' ', $value);
       $value = preg_replace('/\x0D/', NULL, $value);
       $value = str_replace("\"", "''", $value);
+      $value = str_replace("&gt;", ">", $value);
+      $value = str_replace("&lt;", "<", $value);
       $value = str_replace(';', ';;', $value);
-      $value = Html::clean($value);
+      $value = Html::clean($value, true, 2, false);
+      $value = str_replace("&gt;", ">", $value);
+      $value = str_replace("&lt;", "<", $value);
 
       return $value;
    }
@@ -6121,6 +6125,9 @@ class Search {
 
       // Unclean to permit < and > search
       $val = Toolbox::unclean_cross_side_scripting_deep($val);
+
+      // escape _ char used as wildcard in mysql likes
+      $val = str_replace('_', '\\_', $val);
 
       if (($val == 'NULL') || ($val == 'null')) {
          $SEARCH = " IS $NOT NULL ";

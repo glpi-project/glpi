@@ -52,37 +52,37 @@ class MailCollector  extends CommonDBTM {
 
    // Specific one
    /// working charset of the mail
-   var $charset = "";
+   public $charset         = "";
    /// IMAP / POP connection
-   var $marubox = '';
+   public $marubox         = '';
    /// ID of the current message
-   var $mid = -1;
+   public $mid             = -1;
    /// structure used to store the mail structure
-   var $structure = false;
+   public $structure       = false;
    /// structure used to store files attached to a mail
-   var $files;
+   public $files;
    /// structure used to store alt files attached to a mail
-   var $altfiles;
+   public $altfiles;
    /// Tag used to recognize embedded images of a mail
-   var $tags;
+   public $tags;
    /// Message to add to body to build ticket
-   var $addtobody;
+   public $addtobody;
    /// Number of fetched emails
-   var $fetch_emails = 0;
+   public $fetch_emails    = 0;
    /// Maximum number of emails to fetch : default to 10
-   var $maxfetch_emails = 10;
+   public $maxfetch_emails = 10;
    /// Max size for attached files
-   var $filesize_max = 0;
+   public $filesize_max    = 0;
    /// Body converted
-   var $body_converted = false;
+   public $body_converted  = false;
 
-   static $rightname = 'config';
+   public $dohistory       = true;
+
+   static $rightname       = 'config';
 
    // Destination folder
    const REFUSED_FOLDER  = 'refused';
    const ACCEPTED_FOLDER = 'accepted';
-
-   public $dohistory = true;
 
 
    static function getTypeName($nb=0) {
@@ -719,7 +719,8 @@ class MailCollector  extends CommonDBTM {
       $tkt['_head']                  = $head;
 
       if (!empty($this->charset)
-          && !$this->body_converted) {
+          && !$this->body_converted
+          && mb_detect_encoding($body) != 'UTF-8') {
          $body                 = Toolbox::encodeInUtf8($body,$this->charset);
          $this->body_converted = true;
       }

@@ -242,7 +242,11 @@ class Entity extends CommonTreeDropdown {
          return false;
       }
       $input['max_closedate'] = $_SESSION["glpi_currenttime"];
-      return $this->checkRightDatas($input);
+
+      if (!Session::isCron()) { // Filter input for connected
+         $input = $this->checkRightDatas($input);
+      }
+      return $input;
    }
 
 
