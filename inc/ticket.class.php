@@ -6302,12 +6302,6 @@ class Ticket extends CommonITILObject {
       foreach ($timeline as $item) {
          $item_i = $item['item'];
 
-         // don't display empty followup (ex : solution approbation)
-         if (($item['type'] == 'TicketFollowup')
-             && empty($item_i['content'])) {
-            continue;
-         }
-
          $date = "";
          if (isset($item_i['date'])) {
             $date = $item_i['date'];
