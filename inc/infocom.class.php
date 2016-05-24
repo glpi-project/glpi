@@ -1748,18 +1748,5 @@ class Infocom extends CommonDBChild {
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
-
-   static function showStatusChange(CommonDBTM $item) {
-      global $DB;
-
-      $query = "SELECT `date_mod`, `old_value`, `new_value`
-                FROM `glpi_logs`
-                WHERE `itemtype`='".get_class($item)."'
-                   AND `items_id`='".$item->getID()."'
-                   AND `id_search_option`='31'";
-      foreach ($DB->request($query) as $log) {
-         Toolbox::logDebug($log);
-      }
-   }
 }
 ?>
