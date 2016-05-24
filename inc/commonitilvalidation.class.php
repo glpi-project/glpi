@@ -830,7 +830,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
          }
          $header .= "</tr>";
          echo $header;
-          
+
          Session::initNavigateListItems($this->getType(),
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
