@@ -819,9 +819,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
          if ($canadd) {
             if (!in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(),
                $item->getClosedStatusArray()))) {
-                  echo "<tr><th colspan='" . $nb_colonnes . "'>";
+                  echo "<tr class='tab_bg_1'><th colspan='" . $nb_colonnes . "'>";
                   echo "<a class='vsubmit' href='javascript:viewAddValidation".$tID."$rand();'>";
-                  echo __('Send an approval request')."</a></th></tr>\n";
+                  echo __('Create an approval request')."</a></th></tr>\n";
             }
          }
          $header = "<tr>";
