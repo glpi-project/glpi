@@ -12247,7 +12247,7 @@ msgstr "Bijwerking van een ticket"
 
 #: inc/notificationtargetticket.class.php:231
 msgid "Ticket solved"
-msgstr "Ogelost Incident-ticket"
+msgstr "Opgelost Incident-ticket"
 
 #: inc/notificationtargetticket.class.php:232
 msgid "Solution rejected"
