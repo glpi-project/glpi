@@ -39,6 +39,13 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       global $CFG_GLPI;
       $this->http_client = new GuzzleHttp\Client();
       $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/api/";
+
+      // enable api config
+      $config = new Config;
+      $config->update(array('id'                              => 1,
+                            'enable_api'                      => true,
+                            'enable_api_login_credentials'    => true,
+                            'enable_api_login_external_token' => true));
    }
 
 
