@@ -1,5 +1,6 @@
 /config/config_db*
 /config/config_path.php
+/tests/config_db*
 /plugins/
 /files/
 /.buildpath
@@ -11,3 +12,4 @@
 /tools/api/
 /vendor/
 /nbproject/private/
+phpunit.xml

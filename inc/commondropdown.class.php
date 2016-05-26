@@ -633,7 +633,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @param $input  array of value to import (name, ...)
     *
-    * @return the ID of the new or existing dropdown
+    * @return the ID of the new or existing dropdown (-1 on failure)
    **/
    function import(array $input) {
 

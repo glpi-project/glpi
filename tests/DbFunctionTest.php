@@ -2,9 +2,13 @@
 /*
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2015 by the INDEPNET Development Team.
+ Copyright (C) 2015-2016 Teclib'.
 
- http://indepnet.net/   http://glpi-project.org
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2003-2014 by the INDEPNET Development Team.
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -28,7 +32,6 @@
 
 /* Test for inc/db.function.php */
 
-
 class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
    protected function setUp() {
@@ -39,7 +42,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       unset($CFG_GLPI['glpitablesitemtype']);
 
       // Pseudo plugin class for test
-      require_once 'tests/fixtures/pluginfoobar.php';
+      require_once 'fixtures/pluginfoobar.php';
    }
 
 
@@ -47,7 +50,6 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       return array(
          array('foo', ''),
          array('glpi_computers', 'computers_id'),
-         array('glpi_events', 'events_id'),
          array('glpi_users', 'users_id'),
          array('glpi_plugin_foo_bars', 'plugin_foo_bars_id'),
       );
@@ -83,6 +85,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       $this->assertFalse(isForeignKeyField('FakeId'));
       $this->assertFalse(isForeignKeyField('id_Another_Fake_Id'));
       $this->assertTrue(isForeignKeyField('users_id_tech'));
+      $this->assertFalse(isForeignKeyField('_id'));
    }
 
 
@@ -101,7 +104,6 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       return array(
          array('glpi_computers', 'Computer', true),
          array('glpi_users', 'User', true),
-         array('glpi_events', 'Glpi\\Event', true),
          array('glpi_plugin_foo_bars', 'PluginFooBar', true),
          array('glpi_plugin_foo_bazs', 'PluginFooBaz', false),
       );

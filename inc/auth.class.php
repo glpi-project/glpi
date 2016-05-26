@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -43,26 +42,27 @@ if (!defined('GLPI_ROOT')) {
  *  Identification class used to login
 **/
 class Auth extends CommonGLPI {
+
    //! Error string
-   var $err ='';
+   public $err ='';
    /** User class variable
     * @see User
    **/
-   var $user;
+   public $user;
    //! External authentification variable : boolean
-   var $extauth = 0;
+   public $extauth = 0;
    ///External authentifications methods;
-   var $authtypes;
+   public $authtypes;
    ///Indicates if the user is authenticated or not
-   var $auth_succeded = 0;
+   public $auth_succeded = 0;
    ///Indicates if the user is already present in database
-   var $user_present = 0;
+   public $user_present = 0;
    //Indicates if the user is deleted in the directory (doesn't mean that it can login)
-   var $user_deleted_ldap = 0;
+   public $user_deleted_ldap = 0;
    /// LDAP connection descriptor
-   var $ldap_connection;
+   public $ldap_connection;
    //Store user LDAP dn
-   var $user_dn = false;
+   public $user_dn = false;
 
    const DB_GLPI  = 1;
    const MAIL     = 2;
@@ -1367,4 +1367,3 @@ class Auth extends CommonGLPI {
    }
 
 }
-?>

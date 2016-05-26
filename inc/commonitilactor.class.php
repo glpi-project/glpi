@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -48,7 +47,7 @@ abstract class CommonITILActor extends CommonDBRelation {
    // items_id_1, items_id_2, itemtype_1 and itemtype_2 are defined inside the inherited classes
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
    static public $logs_for_item_2     = false;
-   var $auto_message_on_action        = false;
+   public $auto_message_on_action     = false;
 
    // Requester
    const REQUESTER = 1;
@@ -366,4 +365,3 @@ abstract class CommonITILActor extends CommonDBRelation {
    }
 
 }
-?>

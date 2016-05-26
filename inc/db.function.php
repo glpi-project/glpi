@@ -70,7 +70,7 @@ function isForeignKeyField($field) {
       return false;
    }
 
-   return preg_match("/_id$/", $field) || preg_match("/_id_/", $field);
+   return preg_match("/._id$/", $field) || preg_match("/._id_/", $field);
 }
 
 

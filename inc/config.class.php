@@ -627,7 +627,7 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       $active = DBConnection::isDBSlaveActive();
 
-      echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('Mysql replica', 'Mysql replicas', Session::getPluralNumber()) .
+      echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('SQL replica', 'SQL replicas', Session::getPluralNumber()) .
            "</th></tr>";
       $DBslave = DBConnection::getDBSlaveConf();
 
@@ -637,16 +637,16 @@ class Config extends CommonDBTM {
          $host = $DBslave->dbhost;
       }
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Mysql server') . "</td>";
+      echo "<td>" . __('SQL server (MariaDB or MySQL)') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbhost' size='40' value='$host'></td>";
       echo "<td>" . __('Database') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbdefault' value='".$DBslave->dbdefault."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Mysql user') . "</td>";
+      echo "<td>" . __('SQL user') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbuser' value='".$DBslave->dbuser."'></td>";
-      echo "<td>" . __('Mysql password') . "</td>";
+      echo "<td>" . __('SQL password') . "</td>";
       echo "<td><input type='password' name='_dbreplicate_dbpassword' value='".
                  rawurldecode($DBslave->dbpassword)."'>";
       echo "</td></tr>";
@@ -1224,7 +1224,7 @@ class Config extends CommonDBTM {
          echo "</td></tr>";
 
 
-         
+
       }
 
       // Only for user
@@ -1603,7 +1603,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('Logs in files (SQL, email, automatic action...)') . "</td><td>";
       Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
-      echo "</td><td> " . _n('Mysql replica', 'Mysql replicas', 1) . "</td><td>";
+      echo "</td><td> " . _n('SQL replica', 'SQL replicas', 1) . "</td><td>";
       $active = DBConnection::isDBSlaveActive();
       Dropdown::showYesNo("_dbslave_status", $active);
       echo "</td></tr>";
@@ -2006,7 +2006,7 @@ class Config extends CommonDBTM {
 
             if (DBConnection::isDBSlaveActive()
                 && Config::canUpdate()) {
-               $tabs[6]  = _n('Mysql replica', 'Mysql replicas', Session::getPluralNumber());  // Slave
+               $tabs[6]  = _n('SQL replica', 'SQL replicas', Session::getPluralNumber());  // Slave
             }
             return $tabs;
       }

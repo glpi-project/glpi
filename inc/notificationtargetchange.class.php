@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -47,9 +46,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class NotificationTargetChange extends NotificationTargetCommonITILObject {
 
-   var $private_profiles = array();
+   public $private_profiles = array();
 
-   public $html_tags     = array('##change.solution.description##');
+   public $html_tags        = array('##change.solution.description##');
 
 
    /**
@@ -384,6 +383,4 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       asort($this->tag_descriptions);
    }
 
-
 }
-?>

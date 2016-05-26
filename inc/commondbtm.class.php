@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -46,47 +45,47 @@ if (!defined('GLPI_ROOT')) {
 class CommonDBTM extends CommonGLPI {
 
    /// Data of the Item
-   var $fields                              = array();
+   public $fields                              = array();
    /// Make an history of the changes
-   var $dohistory                           = false;
+   public $dohistory                           = false;
    /// Black list fields for history log or date mod update
-   var $history_blacklist                   = array();
+   public $history_blacklist                   = array();
    /// Set false to desactivate automatic message on action
-   var $auto_message_on_action              = true;
+   public $auto_message_on_action              = true;
 
    /// Set true to desactivate link generation because form page do not permit show/edit item
-   var $no_form_page                        = false;
+   public $no_form_page                        = false;
 
    /// Set true to desactivate auto compute table name
-   static protected $notable                = false;
+   static protected $notable                   = false;
 
    ///Additional fiedls for dictionnary processing
-   var $additional_fields_for_dictionnary   = array();
+   public $additional_fields_for_dictionnary   = array();
 
    /// Forward entity datas to linked items
-   static protected $forward_entity_to      = array();
+   static protected $forward_entity_to         = array();
    /// Foreign key field cache : set dynamically calling getForeignKeyField
-   protected $fkfield                       = "";
+   protected $fkfield                          = "";
 
    /// Search options of the item : to avoid multiple load
-   protected $searchopt                     = false;
+   protected $searchopt                        = false;
 
    /// Tab orientation : horizontal or vertical
-   public $taborientation                   = 'vertical';
+   public $taborientation                      = 'vertical';
    /// Need to get item to show tab
-   public $get_item_to_display_tab          = true;
+   public $get_item_to_display_tab             = true;
 
    /// Forward entity to plugins itemtypes
-   static protected $plugins_forward_entity = array();
+   static protected $plugins_forward_entity    = array();
 
    /// Profile name
-   static $rightname                        = '';
+   static $rightname                           = '';
 
    /// Is this item use notepad ?
-   protected $usenotepad                    = false;
+   protected $usenotepad                       = false;
 
    /// FLush mail queue for
-   public $mailqueueonaction = false;
+   public $mailqueueonaction                   = false;
 
    const SUCCESS                    = 0; //Process is OK
    const TYPE_MISMATCH              = 1; //Type is not good, value cannot be inserted
@@ -874,6 +873,10 @@ class CommonDBTM extends CommonGLPI {
                }
                if ($this->mailqueueonaction) {
                   QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+               }
+               // For unit test (workaround for MyIsam without transaction)
+               if (isset($DB->objcreated) && is_array($DB->objcreated)) {
+                  $DB->objcreated[$this->getTable()][] = $this->fields['id'];
                }
                return $this->fields['id'];
             }
@@ -2291,8 +2294,12 @@ class CommonDBTM extends CommonGLPI {
       } else if ($this->isNewID($ID)) {
          printf(__('%1$s - %2$s'), __('New item'), $this->getTypeName(1));
       } else {
-         //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-         printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+         $nametype =  $this->getTypeName(1);
+         if ($_SESSION['glpiis_ids_visible'] || empty($nametype)) {
+            //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
+            $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
+         }
+         echo $nametype;
       }
       $entityname = '';
       if (isset($this->fields["entities_id"])
@@ -4251,11 +4258,16 @@ class CommonDBTM extends CommonGLPI {
 
       if ($item->isEntityAssign()) {
          $query .= getEntitiesRestrictRequest('AND', $item->getTable(), 'entities_id',
-                                              $_SESSION['glpiactive_entity'],
+                                              $_SESSION['glpiactiveentities'],
                                               $item->maybeRecursive());
       }
       $query .= " ORDER by `template_name`";
 
+      if (Session::isMultiEntitiesMode()) {
+         $colspan=3;
+      } else {
+         $colspan=2;
+      }
       if ($result = $DB->query($query)) {
          echo "<div class='center'><table class='tab_cadre'>";
          if ($add) {
@@ -4265,17 +4277,24 @@ class CommonDBTM extends CommonGLPI {
             $target_blank = $target . $blank_params;
             echo "<tr><th>" . $item->getTypeName(1)."</th>";
             echo "<th>".__('Choose a template')."</th></tr>";
-            echo "<tr><td class='tab_bg_1 center' colspan='2'>";
+            echo "<tr><td class='tab_bg_1 center' colspan='$colspan'>";
             echo "<a href=\"$target_blank\">".__('Blank Template')."</a></td>";
             echo "</tr>";
          } else {
-            echo "<tr><th>".$item->getTypeName(1)."</th><th>".__('Templates')."</th></tr>";
+            echo "<tr><th>".$item->getTypeName(1)."</th>";
+            if (Session::isMultiEntitiesMode()) {
+               echo "<th>".__('Entity')."</th>";
+            }
+            echo "<th>".__('Templates')."</th></tr>";
          }
 
          while ($data = $DB->fetch_assoc($result)) {
             $templname = $data["template_name"];
             if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
                $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
+            }
+            if (Session::isMultiEntitiesMode()) {
+               $entity = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
             }
             if ($item->canCreate() && !$add) {
                $modify_params =
@@ -4287,6 +4306,9 @@ class CommonDBTM extends CommonGLPI {
                echo "<tr><td class='tab_bg_1 center'>";
                echo "<a href=\"$target_modify\">";
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
+               if (Session::isMultiEntitiesMode()) {
+                  echo "<td class='tab_bg_1 center'>$entity</td>";                  
+               }
                echo "<td class='tab_bg_2 center b'>";
                Html::showSimpleForm($target, 'purge', _x('button', 'Delete permanently'),
                                     array('withtemplate' => 1,
@@ -4405,4 +4427,3 @@ class CommonDBTM extends CommonGLPI {
       return Link::generateLinkContents($link, $item);
    }
 }
-?>

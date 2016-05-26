@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -312,7 +312,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
    if ($DB->error) {
       echo "<hr>";
       //TRANS: %s is the SQL query which generates the error
-      printf(__("Mysql error starting from %s"), "[$formattedQuery]");
+      printf(__("SQL error starting from %s"), "[$formattedQuery]");
       echo "<br>".$DB->error()."<hr>";
    }
 
@@ -344,7 +344,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    } else {
       $fileHandle = gzopen64($dumpFile, "a");
    }
-   
+
 
    if (!$fileHandle) {
       //TRANS: %s is the name of the file
@@ -416,7 +416,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    if ($DB->error()) {
       echo "<hr>";
       //TRANS: %s is the SQL query which generates the error
-      printf(__("Mysql error starting from %s"), "[$formattedQuery]");
+      printf(__("SQL error starting from %s"), "[$formattedQuery]");
       echo "<br>".$DB->error()."<hr>";
    }
    $offsettable = -1;

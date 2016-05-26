@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -52,15 +51,15 @@ if (!defined('GLPI_ROOT')) {
 class XML {
 
    /// Array of SQL requests to export
-   var $SqlString    = "";
+   public $SqlString    = "";
    /// 1 there is a problem !!!
-   var $IsError      = 0;
+   public $IsError      = 0;
    /// If there is an error, this string explains it
-   var $ErrorString  = "NO errors ;)";
+   public $ErrorString  = "NO errors ;)";
    /// Which format do you want your XML ?
-   var $Type         = 1;
+   public $Type         = 1;
    ///path where the file will be saved.
-   var $FilePath;
+   public $FilePath;
 
    // HERE I explain $Type
 
@@ -195,6 +194,6 @@ class XML {
       fclose($fp);
 
    } // End  Function : DoXML
+
 } // Fine Class XML
 
-?>

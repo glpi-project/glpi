@@ -28,7 +28,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 ## Prerequisites
 
 * A web server (Apache, Nginx, IIS, etc.)
-* MariaDB (or MySQL)
+* MariaDB (or MySQL < 5.7)
 * PHP 5.4 or higher
 * Mandatory PHP extensions:
     - json

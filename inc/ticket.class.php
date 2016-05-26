@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -68,9 +67,9 @@ class Ticket extends CommonITILObject {
 
    // Specific ones
    /// Hardware datas used by getFromDBwithData
-   var $hardwaredatas = array();
+   public $hardwaredatas = array();
    /// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
-   var $computerfound = 0;
+   public $computerfound = 0;
 
    // Request type
    const INCIDENT_TYPE = 1;
@@ -2418,7 +2417,7 @@ class Ticket extends CommonITILObject {
          $tab[47]['joinparams']       = array('jointype'  => 'item_item',
                                               'condition' => "AND NEWTABLE.`link` = ".
                                                               Ticket_Ticket::DUPLICATE_WITH);
-         $tab[47]['datatype']         = 'dropdown';
+         $tab[47]['additionalfields'] = array('tickets_id_2');
          $tab[47]['forcegroupby']     = true;
 
          $tab[41]['table']            = 'glpi_tickets_tickets';
@@ -2817,6 +2816,29 @@ class Ticket extends CommonITILObject {
                $values[$name] = $saved[$name];
             } else {
                $values[$name] = $value;
+            }
+         }
+      }
+
+      // Check category / type validity
+      if ($values['itilcategories_id']) {
+         $cat = new ITILCategory();
+         if ($cat->getFromDB($values['itilcategories_id'])) {
+            switch ($values['type']) {
+               case self::INCIDENT_TYPE :
+                  if (!$cat->getField('is_incident')) {
+                     $values['itilcategories_id'] = 0;
+                  }
+                  break;
+
+               case self::DEMAND_TYPE :
+                  if (!$cat->getField('is_request')) {
+                     $values['itilcategories_id'] = 0;
+                  }
+                  break;
+
+               default :
+                  break;
             }
          }
       }
@@ -6277,12 +6299,6 @@ class Ticket extends CommonITILObject {
       foreach ($timeline as $item) {
          $item_i = $item['item'];
 
-         // don't display empty followup (ex : solution approbation)
-         if (($item['type'] == 'TicketFollowup')
-             && empty($item_i['content'])) {
-            continue;
-         }
-
          $date = "";
          if (isset($item_i['date'])) {
             $date = $item_i['date'];
@@ -6783,4 +6799,3 @@ class Ticket extends CommonITILObject {
    }
 
 }
-?>
