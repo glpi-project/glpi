@@ -185,14 +185,14 @@ class Search {
 
       if (!$CFG_GLPI['allow_search_all']) {
          foreach ($p['criteria'] as $val) {
-            if ($val['field'] == 'all') {
+            if (isset($val['field']) && $val['field'] == 'all') {
                Html::displayRightError();
             }
          }
       }
       if (!$CFG_GLPI['allow_search_view']) {
          foreach ($p['criteria'] as $val) {
-            if ($val['field'] == 'view') {
+            if ($val['field']) && $val['field'] == 'view') {
                Html::displayRightError();
             }
          }
@@ -227,7 +227,7 @@ class Search {
       if (count($p['criteria']) > 0) {
          foreach ($p['criteria'] as $key => $val) {
             if (!in_array($val['field'], $data['toview'])) {
-               if (($val['field'] != 'all') && ($val['field'] != 'view')) {
+               if ($val['field']) && ($val['field'] != 'all') && ($val['field'] != 'view')) {
                   array_push($data['toview'], $val['field']);
                } else if ($val['field'] == 'all'){
                   $data['search']['all_search'] = true;
@@ -431,7 +431,7 @@ class Search {
             // if real search (strlen >0) and not all and view search
             if (isset($criteria['value']) && (strlen($criteria['value']) > 0)) {
                // common search
-               if (($criteria['field'] != "all") && ($criteria['field'] != "view")) {
+               if ($criteria['field']) && ($criteria['field'] != "all") && ($criteria['field'] != "view")) {
                   $LINK    = " ";
                   $NOT     = 0;
                   $tmplink = "";
