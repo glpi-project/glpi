@@ -33,6 +33,7 @@ use GuzzleHttp\Exception\ClientException;
 class APIRestTest extends PHPUnit_Framework_TestCase {
    protected $http_client;
    protected $base_uri = "";
+   protected $last_error = "";
 
 
    protected function setUp() {
@@ -52,13 +53,20 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    protected function doHttpRequest($method = "get", $relative_uri = "", $params = array()) {
       $method = strtolower($method);
       if (in_array($method, array('get', 'post', 'delete', 'put', 'options', 'patch'))) {
-         return $this->http_client->{$method}($this->base_uri.$relative_uri, $params);
+         try {
+            return $this->http_client->{$method}($this->base_uri.$relative_uri, $params);
+         } catch (Exception $e) {
+            if ($e->hasResponse()) {
+               $this->last_error = $e->getResponse();
+            }
+         }
       }
    }
 
 
    public function testInlineDocumentation() {
       $res = $this->doHttpRequest('GET');
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
       $headers = $res->getHeaders();
       $this->assertArrayHasKey('Content-Type', $headers);
@@ -74,6 +82,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ]]);
 
 
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
       $this->assertContains( "application/json; charset=UTF-8", $res->getHeader('content-type') );
 
@@ -98,7 +107,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'user_token' => $token
                                          ]]);
 
-
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -117,6 +126,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'entities_id'   => 'all',
                                              'is_recursive'  => true
                                          ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
    }
 
@@ -129,6 +139,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -145,6 +156,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -165,6 +177,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'session_token' => $session_token,
                                              'profiles_id'   => 4
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
    }
 
@@ -177,6 +190,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -193,6 +207,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -211,6 +226,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -234,6 +250,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'expand_dropdowns' => true,
                                              'with_logs'        => true,
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -250,6 +267,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'session_token' => $session_token,
                                              'get_hateoas'   => false,
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -271,6 +289,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'session_token'    => $session_token,
                                              'expand_dropdowns' => true
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
       $data = json_decode($res->getBody(), true);
 
@@ -288,6 +307,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'session_token' => $session_token,
                                              'only_id'       => true
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -309,6 +329,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -335,6 +356,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'forcedisplay'  => '81',
                                              'rawdata'       => true
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $headers = $res->getHeaders();
@@ -460,6 +482,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                                 'id'     => $computers_id,
                                                 'serial' => "abcdef"
                                              ]]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -486,6 +509,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'input'         => [
                                                 'serial' => "abcdefg"
                                              ]]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -516,6 +540,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ['json' => [
                                              'session_token' => $session_token,
                                              'input'         => $input]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -567,6 +592,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'session_token' => $session_token,
                                              'input'         => $input,
                                              'force_purge'   => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
       $data = json_decode($res->getBody(), true);
       $this->assertNotEquals(false, $data);
@@ -590,6 +616,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ['query' => [
                                              'session_token' => $session_token
                                           ]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
       try {
