@@ -57,7 +57,13 @@ function isCommandLine() {
  * @return boolean
 **/
 function isAPI() {
-   return (strpos($_SERVER["SCRIPT_FILENAME"], 'api.php') !== false);
+   if (strpos($_SERVER["SCRIPT_FILENAME"], 'apirest.php') !== false) {
+      return true;
+   }
+   if (strpos($_SERVER["SCRIPT_FILENAME"], 'apixmlrpc.php') !== false) {
+      return true;
+   }
+   return false;
 }
 
 
