@@ -6274,6 +6274,7 @@ class Ticket extends CommonITILObject {
       $ticket_users_keys = $this->getTicketActors();
 
       $user              = new User();
+      $group             = new Group();
       $followup_obj      = new TicketFollowup();
       $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
 
@@ -6419,6 +6420,13 @@ class Ticket extends CommonITILObject {
             echo $user->getLink();
             echo "</div>";
          }
+         if (isset($item_i['groups_id_tech']) && ($item_i['groups_id_tech'] > 0)) {
+            echo "<div class='groups_id_tech'>";
+            $group->getFromDB($item_i['groups_id_tech']);
+            echo $group->getLink();
+            echo "</div>";
+         }
+
 
          // show "is_private" icon
          if (isset($item_i['is_private']) && $item_i['is_private']) {
