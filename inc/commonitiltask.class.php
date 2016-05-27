@@ -786,7 +786,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                                                          AND ";
          }
          if ($whogroup > 0) {
-            $ASSIGN = "`".$item->getTable()."`.`group_id_tech` = '$whogroup'
+            $ASSIGN = "`".$item->getTable()."`.`groups_id_tech` = '$whogroup'
                        AND ";
          }
 
@@ -849,7 +849,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                                   = $item->fields[$parentitem->getForeignKeyField()];
                   $interv[$key]["users_id"]       = $data["users_id"];
                   $interv[$key]["users_id_tech"]  = $data["users_id_tech"];
-                  $interv[$key]["group_id_tech"]  = $data["group_id_tech"];
+                  $interv[$key]["groups_id_tech"]  = $data["groups_id_tech"];
 
                   if (strcmp($begin,$data["begin"]) > 0) {
                      $interv[$key]["begin"] = $begin;
@@ -1090,16 +1090,16 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (isset($this->fields["state"])) {
             echo Planning::getState($this->fields["state"])."<br>";
          }
-         if ($this->fields["users_id_tech"] || $this->fields["group_id_tech"]) {
+         if ($this->fields["users_id_tech"] || $this->fields["groups_id_tech"]) {
             if ($this->fields["users_id_tech"]) {
                printf('%1$s %2$s',__('By user'),getUserName($this->fields["users_id_tech"]));
             }
-            if ($this->fields["group_id_tech"]) {
+            if ($this->fields["groups_id_tech"]) {
                $groupname = sprintf('%1$s %2$s',"<br />".__('By group'),
                                     Dropdown::getDropdownName('glpi_groups',
-                                                              $this->fields["group_id_tech"]));
+                                                              $this->fields["groups_id_tech"]));
                if ($_SESSION['glpiis_ids_visible']) {
-                  $groupname = printf(__('%1$s (%2$s)'), $groupname, $this->fields["group_id_tech"]);
+                  $groupname = printf(__('%1$s (%2$s)'), $groupname, $this->fields["groups_id_tech"]);
                }
             }
          } else {
@@ -1119,12 +1119,12 @@ abstract class CommonITILTask  extends CommonDBTM {
          if ($this->fields["users_id_tech"]) {
             printf('%1$s %2$s',__('By user'),getUserName($this->fields["users_id_tech"]));
          }
-         if ($this->fields["group_id_tech"]) {
+         if ($this->fields["groups_id_tech"]) {
             $groupname = sprintf('%1$s %2$s',"<br />".__('By group'),
                                   Dropdown::getDropdownName('glpi_groups',
-                                                            $this->fields["group_id_tech"]));
+                                                            $this->fields["groups_id_tech"]));
             if ($_SESSION['glpiis_ids_visible']) {
-               $groupname = printf(__('%1$s (%2$s)'), $groupname, $this->fields["group_id_tech"]);
+               $groupname = printf(__('%1$s (%2$s)'), $groupname, $this->fields["groups_id_tech"]);
             }
          }
          if (PlanningRecall::isAvailable()
@@ -1312,9 +1312,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       User::dropdown($params);
 
       $rand_group = mt_rand();
-      $params     = array('name'      => "group_id_tech",
+      $params     = array('name'      => "groups_id_tech",
                           'value'     => (($ID > -1)
-                                          ?$this->fields["group_id_tech"]
+                                          ?$this->fields["groups_id_tech"]
                                           :Dropdown::EMPTY_VALUE),
                           'condition' => "is_assign",
                           'rand'      => $rand_group,
@@ -1340,7 +1340,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             $params = array('action'    => 'add_event_classic_form',
                             'form'      => 'followups',
                             'users_id'  => $this->fields["users_id_tech"],
-                            'groups_id' => $this->fields["group_id_tech"],
+                            'groups_id' => $this->fields["groups_id_tech"],
                             'id'        => $this->fields["id"],
                             'begin'     => $this->fields["begin"],
                             'end'       => $this->fields["end"],
@@ -1365,8 +1365,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (isset($this->fields["users_id_tech"]) && ($this->fields["users_id_tech"] > 0)) {
             echo "<br>".getUserName($this->fields["users_id_tech"]);
          }
-         if (isset($this->fields["group_id_tech"]) && ($this->fields["group_id_tech"] > 0)) {
-            echo "<br>".Dropdown::getDropdownName('glpi_groups', $this->fields["group_id_tech"]);
+         if (isset($this->fields["groups_id_tech"]) && ($this->fields["groups_id_tech"] > 0)) {
+            echo "<br>".Dropdown::getDropdownName('glpi_groups', $this->fields["groups_id_tech"]);
          }
          if (Session::haveRight('planning', Planning::READMY)) {
             echo "</span>";

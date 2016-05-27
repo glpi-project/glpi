@@ -587,8 +587,8 @@ function update0902to91() {
 
 
    // for group task
-   $migration->addField("glpi_tickettasks", "group_id_tech", "integer");
-   $migration->addField("glpi_problemtasks", "group_id_tech", "integer");
+   $migration->addField("glpi_tickettasks", "groups_id_tech", "integer");
+   $migration->addField("glpi_problemtasks", "groups_id_tech", "integer");
 
 
    // ************ Keep it at the end **************

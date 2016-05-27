@@ -318,7 +318,7 @@ class Planning extends CommonGLPI {
             if ($task->getFromDBByQuery("WHERE `tickets_id` = ".$item->fields['id'])) {
                $id = $task->fields['id'];
                $users['users_id'] = getUserName($task->fields['users_id_tech']);
-               $group_id = $task->fields['group_id_tech'];
+               $group_id = $task->fields['groups_id_tech'];
                if ($group_id) {
                   foreach (Group_User::getGroupUsers($group_id) as $data2) {
                   $users[$data2['id']] = formatUserName($data2["id"], $data2["name"],
