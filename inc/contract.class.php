@@ -1248,6 +1248,9 @@ class Contract extends CommonDBTM {
          $entrest = getEntitiesRestrictRequest("AND", "glpi_contracts", "entities_id",
                                                $p['entity'], true);
       }
+      if (count($p['used'])) {
+          $idrest = " AND `glpi_contracts`.`id` NOT IN (".implode(",",$p['used']).") ";
+      }
       if (!$p['expired']) {
          $expired = " AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                                `glpi_contracts`.`duration` MONTH),CURDATE() ) > '0' ";
