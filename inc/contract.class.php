@@ -1205,7 +1205,8 @@ class Contract extends CommonDBTM {
     *    - used          : array / Already used items ID: not to display in dropdown (default empty)
     *    - nochecklimit  : boolean / disable limit for nomber of device (for supplier, default false)
     *    - on_change     : string / value to transmit to "onChange"
-    *    - display       : boolean / display or return string (deault true)
+    *    - display       : boolean / display or return string (default true)
+    *    - expired       : boolean / display expired contract (default true)
     *
     * @return Nothing (display)
    **/
@@ -1222,6 +1223,7 @@ class Contract extends CommonDBTM {
       $p['nochecklimit']   = false;
       $p['on_change']      = '';
       $p['display']        = true;
+      $p['expired']        = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1241,17 +1243,21 @@ class Contract extends CommonDBTM {
 
       $entrest = "";
       $idrest = "";
+      $expired = "";
       if ($p['entity'] >= 0) {
          $entrest = getEntitiesRestrictRequest("AND", "glpi_contracts", "entities_id",
                                                $p['entity'], true);
       }
-      if (count($p['used'])) {
-         $idrest = " AND `glpi_contracts`.`id` NOT IN (".implode(",",$p['used']).") ";
+      if (!$p['expired']) {
+         $expired = " AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
+                                               `glpi_contracts`.`duration` MONTH),CURDATE() ) > '0' ";
       }
+
+
       $query = "SELECT `glpi_contracts`.*
                 FROM `glpi_contracts`
                 LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id` = `glpi_entities`.`id`)
-                WHERE `glpi_contracts`.`is_deleted` = '0' $entrest $idrest
+                WHERE `glpi_contracts`.`is_deleted` = '0' $entrest $idrest $expired
                 ORDER BY `glpi_entities`.`completename`,
                          `glpi_contracts`.`name` ASC,
                          `glpi_contracts`.`begin_date` DESC";
