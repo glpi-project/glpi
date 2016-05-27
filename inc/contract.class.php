@@ -1252,11 +1252,11 @@ class Contract extends CommonDBTM {
           $idrest = " AND `glpi_contracts`.`id` NOT IN (".implode(",",$p['used']).") ";
       }
       if (!$p['expired']) {
-         $expired = " AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
+         $expired = " AND (DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                                `glpi_contracts`.`duration` MONTH), CURDATE()) > '0'
                            OR `glpi_contracts`.`begin_date` IS NULL
                            OR (`glpi_contracts`.`duration` IS NULL
-                               AND DATEDIFF(`glpi_contracts`.`begin_date`, CURDATE() ) > '0' )";
+                               AND DATEDIFF(`glpi_contracts`.`begin_date`, CURDATE() ) > '0' ))";
       }
 
 
