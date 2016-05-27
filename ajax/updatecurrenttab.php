@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -39,7 +39,7 @@ include ('../inc/includes.php');
 
 if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {
    Session::checkLoginUser();
-
+}
 
 // Manage tabs
 if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
