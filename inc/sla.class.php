@@ -58,7 +58,7 @@ class SLA extends CommonDBTM {
 
 
    /**
-    * Define calendar of the ticket using the SLA when using this calendar as sla-s calendar
+    * Force calendar of the SLA if value -1: calendar of the entity
     *
     * @param $calendars_id calendars_id of the ticket
    **/
