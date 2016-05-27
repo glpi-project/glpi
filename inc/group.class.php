@@ -269,9 +269,14 @@ class Group extends CommonTreeDropdown {
       Dropdown::showYesNo('is_requester', $this->fields['is_requester']);
       echo "</td></tr>";
 
-      echo "<tr  class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Assigned to')."</td><td>";
       Dropdown::showYesNo('is_assign', $this->fields['is_assign']);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Task')."</td><td>";
+      Dropdown::showYesNo('is_task', $this->fields['is_task']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

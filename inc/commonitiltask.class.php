@@ -1316,7 +1316,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                           'value'     => (($ID > -1)
                                           ?$this->fields["groups_id_tech"]
                                           :Dropdown::EMPTY_VALUE),
-                          'condition' => "is_assign",
+                          'condition' => "is_task",
                           'rand'      => $rand_group,
                           'entity'    => $item->fields["entities_id"]);
 
