@@ -2551,7 +2551,7 @@ class Search {
             if (Session::isViewAllEntities()) {
                return "";
             }
-            return getEntitiesRestrictRequest("","glpi_profiles_users", '', '', true);
+            return getEntitiesRestrictRequest("","glpi_profiles_users");
 
          case 'ProjectTask' :
             $condition  = '';
