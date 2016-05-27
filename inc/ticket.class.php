@@ -1105,7 +1105,7 @@ class Ticket extends CommonITILObject {
 
       if (isset($this->fields['id'])
           && !empty($this->fields['date'])) {
-         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendars_id = $this->getCalendar();
          $calendar     = new Calendar();
 
          // Using calendar
@@ -6799,6 +6799,27 @@ class Ticket extends CommonITILObject {
 
       $html.= "<script type='text/javascript'>split_button();</script>";
       return $html;
+   }
+
+
+   /**
+    * Get correct Calendar: Entity or Sla
+    *
+    * @since 0.90.4
+    *
+   **/
+   function getCalendar() {
+
+      if ($this->fields['slas_id'] > 0) {
+         $sla = new SLA();
+         if ($sla->getFromDB($this->fields['slas_id'])) {
+            // not -1: calendar of the entity
+            if ($sla->getField('calendars_id') >= 0) {
+               return $sla->getField('calendars_id');
+            }
+         }
+      }
+      return parent::getCalendar();
    }
 
 }
