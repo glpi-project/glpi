@@ -2195,6 +2195,7 @@ ul#menu a.itemP, ul#menu a.itemP1 {
    text-align: center;
    text-decoration: none;
    font-size: 13px;
+   white-space: nowrap;
 }
 
 ul#menu ul.ssmenu {
