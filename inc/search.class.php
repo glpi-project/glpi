@@ -1412,6 +1412,11 @@ class Search {
                      && !in_array($row["id"], $_SESSION["glpiactiveentities"])) {
                   $tmpcheck = "&nbsp;";
 
+               } else if ($data['itemtype'] == 'User'
+                          && !Session::isViewAllEntities()
+                          && !Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($row["id"], false))) {
+                  $tmpcheck = "&nbsp;";
+
                } else if (($data['item'] instanceof CommonDBTM)
                            && $data['item']->maybeRecursive()
                            && !in_array($row["entities_id"], $_SESSION["glpiactiveentities"])) {
@@ -2554,7 +2559,7 @@ class Search {
             if (Session::isViewAllEntities()) {
                return "";
             }
-            return getEntitiesRestrictRequest("","glpi_profiles_users");
+            return getEntitiesRestrictRequest("","glpi_profiles_users", '', '', true);
 
          case 'ProjectTask' :
             $condition  = '';
