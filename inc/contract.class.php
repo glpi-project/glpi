@@ -1206,7 +1206,7 @@ class Contract extends CommonDBTM {
     *    - nochecklimit  : boolean / disable limit for nomber of device (for supplier, default false)
     *    - on_change     : string / value to transmit to "onChange"
     *    - display       : boolean / display or return string (default true)
-    *    - expired       : boolean / display expired contract (default true)
+    *    - expired       : boolean / display expired contract (default false)
     *
     * @return Nothing (display)
    **/
@@ -1223,7 +1223,7 @@ class Contract extends CommonDBTM {
       $p['nochecklimit']   = false;
       $p['on_change']      = '';
       $p['display']        = true;
-      $p['expired']        = true;
+      $p['expired']        = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
