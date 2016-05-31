@@ -1185,9 +1185,9 @@ abstract class CommonITILTask  extends CommonDBTM {
          $rowspan++;
       }
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='$rowspan' class='middle'>".__('Description')."</td>";
-      echo "<td class='center middle' colspan='2' rowspan='$rowspan' id='content$rand_text'>".
-           "<textarea name='content' cols='50' rows='15' id='task$rand_text'>".$this->fields["content"].
+      echo "<td rowspan='$rowspan' style='width:100px'>".__('Description')."</td>";
+      echo "<td rowspan='$rowspan' style='width:50%' id='content$rand_text'>".
+           "<textarea name='content' style='width: 95%; height: 160px' id='task$rand_text'>".$this->fields["content"].
            "</textarea>";
       echo Html::scriptBlock("$(document).ready(function() { $('#content$rand').autogrow(); });");
       echo "</td>";
@@ -1195,7 +1195,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Task template', 'Task templates', 1)."</td><td>";
+      echo "<td style='width:100px'>"._n('Task template', 'Task templates', 1)."</td><td>";
       TaskTemplate::dropdown(array('value'     => 0,
                                    'entity'    => $this->getEntityID(),
                                    'rand'      => $rand_template,
@@ -1279,13 +1279,31 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</td></tr>\n";
 
       if ($ID <= 0) {
-         Document_Item::showSimpleAddForItem($item, '', 2);
+         Document_Item::showSimpleAddForItem($item);
       }
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('By')."</td>";
-      echo "<td>"._n('User', 'Users', 1);
+      echo "<td colspan='2'>";
+      echo Html::image($CFG_GLPI['root_doc']."/pics/user.png")."&nbsp;";
+      echo _n('User', 'Users', 1);
       echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open');\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png'
+      $rand_user          = mt_rand();
+      $params             = array('name'   => "users_id_tech",
+                                  'value'  => (($ID > -1)
+                                                ?$this->fields["users_id_tech"]
+                                                :Session::getLoginUserID()),
+                                  'right'  => "own_ticket",
+                                  'rand'   => $rand_user,
+                                  'entity' => $item->fields["entities_id"],
+                                  'width'  => '');
+
+      $params['toupdate'] = array('value_fieldname'
+                                              => 'users_id',
+                                  'to_update' => "user_available$rand_user",
+                                  'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
+      User::dropdown($params);
+
+      echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png'
              title=\"".__s('Availability')."\" alt=\"".__s('Availability')."\"
              class='calendrier'>";
       echo "</a>";
@@ -1294,23 +1312,11 @@ abstract class CommonITILTask  extends CommonDBTM {
                                           "/front/planning.php?checkavailability=checkavailability".
                                           "&itemtype=".$item->getType()."&$fkfield=".$item->getID(),
                                     array('title'  => __('Availability')));
-      echo "<br />"._n('Group', 'Groups', 1);
-      echo "</td><td>";
-      $rand_user          = mt_rand();
-      $params             = array('name'   => "users_id_tech",
-                                  'value'  => (($ID > -1)
-                                                ?$this->fields["users_id_tech"]
-                                                :Session::getLoginUserID()),
-                                  'right'  => "own_ticket",
-                                  'rand'   => $rand_user,
-                                  'entity' => $item->fields["entities_id"]);
 
-      $params['toupdate'] = array('value_fieldname'
-                                              => 'users_id',
-                                  'to_update' => "user_available$rand_user",
-                                  'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
-      User::dropdown($params);
 
+      echo "<br />";
+      echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
+      echo _n('Group', 'Groups', 1)."&nbsp;";
       $rand_group = mt_rand();
       $params     = array('name'      => "groups_id_tech",
                           'value'     => (($ID > -1)
@@ -1323,13 +1329,12 @@ abstract class CommonITILTask  extends CommonDBTM {
       $params['toupdate'] = array('value_fieldname' => 'users_id',
                                   'to_update' => "group_available$rand_group",
                                   'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
-      echo "<br />";
       Group::dropdown($params);
       echo "</td>\n";
-      if ($canplan) {
-         echo "<td>".__('Planning')."</td>";
-      }
       echo "<td>";
+      if ($canplan) {
+         echo __('Planning');
+      }
 
       if (!empty($this->fields["begin"])) {
 

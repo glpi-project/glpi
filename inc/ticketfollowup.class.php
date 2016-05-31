@@ -658,9 +658,11 @@ class TicketFollowup  extends CommonDBTM {
          $rand = mt_rand();
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td rowspan='3' class='middle right'>".__('Description')."</td>";
-         echo "<td class='center middle' rowspan='3'>";
-         echo "<textarea id='content$rand' name='content' cols='70' rows='6'>".$this->fields["content"]."</textarea>";
+         echo "<td rowspan='3'>".__('Description')."</td>";
+         echo "<td rowspan='3' style='width:60%'>";
+         echo "<textarea id='content$rand' name='content' style='width: 95%; height: 120px'>";
+         echo $this->fields["content"];
+         echo "</textarea>";
          echo Html::scriptBlock("$(document).ready(function() { $('#content$rand').autogrow(); });");
          if ($this->fields["date"]) {
             echo "</td><td>".__('Date')."</td>";

@@ -2865,13 +2865,12 @@ ul#menu ul.ssmenu {
 .timeline_history .h_content {
    max-width:50%;
    min-width: 200px;
-   float: left;
    padding: 5px 5px 5px 8px;
    margin-bottom: 10px;
    min-height: 70px;
    position: relative;
    margin-right: 0;
-   margin-left: 20px;
+   margin-left: 160px;
    word-wrap: break-word;
    white-space: pre-wrap;
 }
@@ -2943,7 +2942,7 @@ ul#menu ul.ssmenu {
    background: url(../pics/timeline/private.png) no-repeat center top;
    color: #A2A2A2;
    font-size: 0.8em;
-   text-align: center;
+   text-align: center;œ
    white-space: nowrap;
 }
 .timeline_history .right .private {
@@ -2957,12 +2956,30 @@ ul#menu ul.ssmenu {
    border-left: 8px solid #3C5874;
 }
 
+.timeline_history .h_content.edited {
+   max-width: 60%;
+   text-align: center;
+}
+
+.timeline_history .right .h_content.edited {
+   width: 100%;
+}
+
+.timeline_history .h_content.edited .tab_cadre_fixe {
+   width: 100%;
+   margin: 0;
+}
+
+.timeline_history .h_content .edit_item_content {
+   display: none;
+   border: 1px dotted #C0C0C0;
+}
+
 .timeline_history .h_content.TicketFollowup {
    background-color: #E0E0E0;
    color: #535353;
    background-image: url(../pics/timeline/followup.png);
    background-repeat: no-repeat;
-   cursor: pointer;
 }
 
 .timeline_history .h_content.TicketTask {
@@ -2970,7 +2987,6 @@ ul#menu ul.ssmenu {
    color: #38301F;
    background-image: url(../pics/timeline/task.png);
    background-repeat: no-repeat;
-   cursor: pointer;
 }
 
 .timeline_history .h_content.Solution {
@@ -2978,7 +2994,6 @@ ul#menu ul.ssmenu {
    color: #425B64;
    background-image: url(../pics/timeline/solution.png);
    background-repeat: no-repeat;
-   cursor: pointer;
 }
 
 .timeline_history .h_content.Document_Item,
@@ -3048,6 +3063,20 @@ ul#menu ul.ssmenu {
 .timeline_history .h_content img.h_requesttype {
    float: right;
    height: 20px;
+}
+
+.timeline_history .h_content .edit_item {
+   background-image: url(../pics/edit.png);
+   width: 16px;
+   height: 16px;
+   display: block;
+   float: right;
+   opacity: .5;
+}
+
+.timeline_history .h_content .edit_item:hover {
+   opacity: 1;
+   cursor: pointer;
 }
 
 .timeline_history .h_content .long_text {
@@ -3144,6 +3173,8 @@ ul#menu ul.ssmenu {
   position: relative;
   width: 250px;
   left: 40%;
+  word-wrap: normal;
+  white-space: normal;
 }
 
 .x-button {
