@@ -2974,6 +2974,20 @@ ul#menu ul.ssmenu {
    display: none;
    border: 1px dotted #C0C0C0;
 }
+.timeline_history .h_content .cancel_edit_item_content {
+   display: none;
+   background-image: url(../pics/close.png);
+   width: 16px;
+   height: 16px;
+   cursor: pointer;
+   opacity: .5;
+   position: absolute;
+   top: 12px;
+   right: 12px;
+}
+.timeline_history .h_content .cancel_edit_item_content:hover {
+   opacity: 1;
+}
 
 .timeline_history .h_content.TicketFollowup {
    background-color: #E0E0E0;

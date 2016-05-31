@@ -6354,6 +6354,7 @@ class Ticket extends CommonITILObject {
                ((isset($item_i['status'])) ? " ".$item_i['status'] : "")."'".
                "id='viewitem".$item['type'].$item_i['id'].$rand."'>";
          echo "<div class='edit_item_content'></div>";
+         echo "<span class='cancel_edit_item_content'></span>";
          echo "<div class='displayed_content'>";
          if (!in_array($item['type'], array('Document_Item', 'Assign'))
              && $item_i['can_edit']) {
@@ -6673,9 +6674,15 @@ class Ticket extends CommonITILObject {
                var target = e.target || window.event.srcElement;
                if (target.nodeName == 'a') return;
                if (target.className == 'read_more_button') return;
-               $('#'+domid).removeClass('TicketFollowup TicketTask Solution Document_Item')
-                           .addClass('edited');
+               $('#'+domid).addClass('edited');
                $('#'+domid+' .displayed_content').hide();
+               $('#'+domid+' .cancel_edit_item_content').show()
+                                                        .click(function() {
+                                                            $(this).hide();
+                                                            $('#'+domid).removeClass('edited');
+                                                            $('#'+domid+' .edit_item_content').empty().hide();
+                                                            $('#'+domid+' .displayed_content').show();
+                                                        });
                $('#'+domid+' .edit_item_content').show()
                                                  .load('".$CFG_GLPI["root_doc"]."/ajax/timeline_viewsubitem.php',
                                                        {'type'      : itemtype,
