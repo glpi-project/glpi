@@ -6378,7 +6378,15 @@ class Ticket extends CommonITILObject {
             }
 
             echo "<div class='item_content $long_text'>";
-            echo "<p>$content</p>";
+            echo "<p>";
+            if (isset($item_i['state'])) {
+               echo "<span class='state state_".$item_i['state']."'
+                           onclick='change_task_state(".$item_i['id'].", this)'
+                           title='".Planning::getState($item_i['state'])."'>";
+               echo "</span>";
+            }
+            echo $content;
+            echo "</p>";
             if (!empty($long_text)) {
                echo "<p class='read_more'>";
                echo "<a class='read_more_button'>.....</a>";
@@ -6401,11 +6409,6 @@ class Ticket extends CommonITILObject {
          if (isset($item_i['actiontime']) && !empty($item_i['actiontime'])) {
             echo "<span class='actiontime'>";
             echo Html::timestampToString($item_i['actiontime'], false);
-            echo "</span>";
-         }
-         if (isset($item_i['state'])) {
-            echo "<span class='state state_".$item_i['state']."'>";
-            echo Planning::getState($item_i['state']);
             echo "</span>";
          }
          if (isset($item_i['begin'])) {
@@ -6654,7 +6657,8 @@ class Ticket extends CommonITILObject {
       // javascript function for add and edit items
       echo "<script type='text/javascript' >\n";
       echo "function viewAddSubitem" . $this->fields['id'] . "$rand(itemtype) {\n";
-      $params = array('type'       => 'itemtype',
+      $params = array('action'     => 'viewsubitem',
+                      'type'       => 'itemtype',
                       'parenttype' => 'Ticket',
                       'tickets_id' => $this->fields['id'],
                       'id'         => -1);
@@ -6662,12 +6666,27 @@ class Ticket extends CommonITILObject {
          $params['load_kb_sol'] = $_GET['load_kb_sol'];
       }
       $out = Ajax::updateItemJsCode("viewitem" . $this->fields['id'] . "$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/timeline_viewsubitem.php",
+                                    $CFG_GLPI["root_doc"]."/ajax/timeline.php",
                                     $params, "", false);
       echo str_replace("\"itemtype\"", "itemtype", $out);
       echo "$('#approbation_form$rand').remove()";
       echo "};";
-      echo "function viewEditSubitem" . $this->fields['id'] . "$rand(e, itemtype, items_id, o, domid) {
+
+      echo "
+
+      function change_task_state(tasks_id, target) {
+         $.post('".$CFG_GLPI["root_doc"]."/ajax/timeline.php',
+                {'action':     'change_task_state',
+                  'tasks_id':   tasks_id,
+                  'tickets_id': ".$this->fields['id']."
+                })
+                .done(function(new_state) {
+                  $(target).removeClass('state_1 state_2')
+                           .addClass('state_'+new_state);
+                });
+      }
+
+      function viewEditSubitem" . $this->fields['id'] . "$rand(e, itemtype, items_id, o, domid) {
                domid = (typeof domid === 'undefined')
                          ? 'viewitem".$this->fields['id'].$rand."'
                          : domid;
@@ -6684,15 +6703,16 @@ class Ticket extends CommonITILObject {
                                                             $('#'+domid+' .displayed_content').show();
                                                         });
                $('#'+domid+' .edit_item_content').show()
-                                                 .load('".$CFG_GLPI["root_doc"]."/ajax/timeline_viewsubitem.php',
-                                                       {'type'      : itemtype,
+                                                 .load('".$CFG_GLPI["root_doc"]."/ajax/timeline.php',
+                                                       {'action'    : 'viewsubitem',
+                                                        'type'      : itemtype,
                                                         'parenttype': 'Ticket',
                                                         'tickets_id': ".$this->fields['id'].",
                                                         'id'        : items_id
                                                        });
 
 
-         };";
+      };";
 
       if (isset($_GET['load_kb_sol'])) {
          echo "viewAddSubitem" . $this->fields['id'] . "$rand('Solution');";

@@ -3155,19 +3155,24 @@ ul#menu ul.ssmenu {
    margin-right: 6px;
 }
 
-.timeline_history .b_right .state {
-   padding-left: 17px;
-   margin-right: 6px;
+.timeline_history .state {
+   display: inline-block;
+   width: 14px;
+   height: 14px;
+   margin-right: 3px;
    background-repeat: no-repeat;
+   vertical-align: middle;
 }
 
-.timeline_history .b_right .state.state_0 {
+.timeline_history .state.state_0 {
    background-image: url(../pics/timeline/information.png);
 }
-.timeline_history .b_right .state.state_1 {
+.timeline_history .state.state_1 {
+   cursor: pointer;
    background-image: url(../pics/timeline/todo.png);
 }
-.timeline_history .b_right .state.state_2 {
+.timeline_history .state.state_2 {
+   cursor: pointer;
    background-image: url(../pics/timeline/done.png);
 }
 
