@@ -6341,7 +6341,12 @@ class Ticket extends CommonITILObject {
                       User::getThumbnailURLForPicture($user->fields['picture'])."'>";
                echo "</div>";
 
-               echo $user->getLink();
+               echo "<span class='h_user_name'>";
+               $userdata = getUserName($item_i['users_id'], 2);
+               echo $user->getLink()."&nbsp;";
+               echo Html::showToolTip($userdata["comment"],
+                                      array('link' => $userdata['link']));
+               echo "</span>";
             } else {
                _e("Requester");
             }
@@ -6419,19 +6424,22 @@ class Ticket extends CommonITILObject {
             echo "</span>";
          }
          if (isset($item_i['users_id_tech']) && ($item_i['users_id_tech'] > 0)) {
-            echo "<div class='users_id_tech'>";
+            echo "<div class='users_id_tech' id='users_id_tech_".$item_i['users_id_tech']."'>";
             $user->getFromDB($item_i['users_id_tech']);
-            echo "<div class='tooltip_picture_border'>";
-            echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-                   User::getThumbnailURLForPicture($user->fields['picture'])."'>";
-            echo "</div>";
-            echo $user->getLink();
+            echo Html::image($CFG_GLPI['root_doc']."/pics/user.png")."&nbsp;";
+            $userdata = getUserName($item_i['users_id_tech'], 2);
+            echo $user->getLink()."&nbsp;";
+            echo Html::showToolTip($userdata["comment"],
+                                   array('link' => $userdata['link']));
             echo "</div>";
          }
          if (isset($item_i['groups_id_tech']) && ($item_i['groups_id_tech'] > 0)) {
             echo "<div class='groups_id_tech'>";
             $group->getFromDB($item_i['groups_id_tech']);
-            echo $group->getLink();
+            echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
+            echo $group->getLink()."&nbsp;";
+            echo Html::showToolTip($group->getComments(),
+                                   array('link' => $group->getLinkURL()));
             echo "</div>";
          }
 

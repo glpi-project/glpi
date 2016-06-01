@@ -2788,14 +2788,14 @@ ul#menu ul.ssmenu {
    line-height: 20px;
 }
 
-.timeline_history .h_user a {
+ .timeline_history .h_user .h_user_name {
    display: inline-block;
    margin-bottom: 5px;
    vertical-align: middle;
    width: 100%;
    text-align: center;
    margin-top: 5px;
-   font-size: 1.1em;
+   white-space: nowrap;
 }
 
 .timeline_history .h_user a:hover {
@@ -2819,21 +2819,8 @@ ul#menu ul.ssmenu {
    border-radius: 50%;
 }
 
-.timeline_history .users_id_tech .user_picture {
-   width: 31px;
-   height: 31px;
-   border-radius: 50%;
-}
-
-.timeline_history .users_id_tech .tooltip_picture_border {
-   padding: 2px;
-   border-radius: 50%;
-   border: 3px inset #DABB7C;
-   _border: 3px solid #DABB7C;
-   width:31px;
-   height:31px;
-   position: relative;
-   float: right;
+.timeline_history .users_id_tech img {
+   vertical-align: middle;
 }
 
 .timeline_history .left .h_user,
