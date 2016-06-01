@@ -718,6 +718,8 @@ abstract class CommonITILTask  extends CommonDBTM {
     *    - who_group ID of the group of users (0 = undefined)
     *    - begin Date
     *    - end Date
+    *    - color
+    *    - event_type_color
     *
     * @return array of planning item
    **/
@@ -739,8 +741,17 @@ abstract class CommonITILTask  extends CommonDBTM {
          return;
       }
 
+      if (!isset($options['color'])) {
+         $options['color'] = '';
+      }
+
+      if (!isset($options['event_type_color'])) {
+         $options['event_type_color'] = '';
+      }
+
       $who       = $options['who'];
       $who_group = $options['who_group'];
+      $whogroup  = $options['whogroup'];
       $begin     = $options['begin'];
       $end       = $options['end'];
 
@@ -768,13 +779,17 @@ abstract class CommonITILTask  extends CommonDBTM {
             $ASSIGN = "`".$item->getTable()."`.`users_id_tech` = '$who'
                        AND ";
          }
-
          if ($who_group > 0) {
             $ASSIGN = "`".$item->getTable()."`.`users_id_tech` IN (SELECT `users_id`
                                                                    FROM `glpi_groups_users`
                                                                    WHERE `groups_id` = '$who_group')
                                                                          AND ";
          }
+         if ($whogroup > 0) {
+            $ASSIGN = "`".$item->getTable()."`.`groups_id_tech` = '$whogroup'
+                       AND ";
+         }
+
       }
       if (empty($ASSIGN)) {
          $ASSIGN = "`".$item->getTable()."`.`users_id_tech`
@@ -811,53 +826,60 @@ abstract class CommonITILTask  extends CommonDBTM {
          for ($i=0 ; $data=$DB->fetch_assoc($result) ; $i++) {
             if ($item->getFromDB($data["id"])) {
                if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()],0)) {
-                  $key = $data["begin"]."$$$".$i;
-                  // Do not check entity here because webcal used non authenticated access
-//                  if (Session::haveAccessToEntity($item->fields["entities_id"])) {
-                     $interv[$key]['itemtype']  = $itemtype;
-                     $interv[$data["begin"]."$$$".$i]["url"]
-                                                = $CFG_GLPI["url_base"]."/index.php?redirect=".
-                                                   $parentitemtype."_".
-                                                   $item->fields[$parentitem->getForeignKeyField()];
+                  $key = $data["begin"]."$$$".$itemtype."$$$".$data["id"];
+                  $interv[$key]['color']            = $options['color'];
+                  $interv[$key]['event_type_color'] = $options['event_type_color'];
+                  $interv[$key]['itemtype']         = $itemtype;
+                  $interv[$key]["url"]              = $parentitemtype::getFormURL()."?id=".
+                                                      $item->fields[$parentitem->getForeignKeyField()];
+                  $interv[$key]["ajaxurl"]          = $CFG_GLPI["root_doc"]."/ajax/planning.php".
+                                                         "?action=edit_event_form".
+                                                         "&itemtype=".$itemtype.
+                                                         "&parentitemtype=".$parentitemtype.
+                                                         "&parentid=".$item->fields[$parentitem->getForeignKeyField()].
+                                                         "&id=".$data['id'].
+                                                         "&url=".$interv[$key]["url"];
 
-                     $interv[$key][$item->getForeignKeyField()] = $data["id"];
-                     $interv[$key]["id"]                        = $data["id"];
-                     if (isset($data["state"])) {
-                        $interv[$key]["state"]                  = $data["state"];
+                  $interv[$key][$item->getForeignKeyField()] = $data["id"];
+                  $interv[$key]["id"]                        = $data["id"];
+                  if (isset($data["state"])) {
+                     $interv[$key]["state"]                  = $data["state"];
+                  }
+                  $interv[$key][$parentitem->getForeignKeyField()]
+                                                  = $item->fields[$parentitem->getForeignKeyField()];
+                  $interv[$key]["users_id"]       = $data["users_id"];
+                  $interv[$key]["users_id_tech"]  = $data["users_id_tech"];
+                  $interv[$key]["groups_id_tech"]  = $data["groups_id_tech"];
+
+                  if (strcmp($begin,$data["begin"]) > 0) {
+                     $interv[$key]["begin"] = $begin;
+                  } else {
+                     $interv[$key]["begin"] = $data["begin"];
+                  }
+
+                  if (strcmp($end,$data["end"]) < 0) {
+                     $interv[$key]["end"] = $end;
+                  } else {
+                     $interv[$key]["end"] = $data["end"];
+                  }
+
+                  $interv[$key]["name"]     = $parentitem->fields["name"];
+                  $interv[$key]["content"]  = Html::resume_text($item->fields["content"],
+                                                                $CFG_GLPI["cut"]);
+                  $interv[$key]["status"]   = $parentitem->fields["status"];
+                  $interv[$key]["priority"] = $parentitem->fields["priority"];
+
+                  $interv[$key]["editable"] = $item->canUpdateITILItem();
+
+                  /// Specific for tickets
+                  $interv[$key]["device"] = '';
+                  if (isset($parentitem->hardwaredatas) && !empty($parentitem->hardwaredatas)) {
+                     foreach($parentitem->hardwaredatas as $hardwaredata){
+                        $interv[$key]["device"][$hardwaredata->fields['id']] = ($hardwaredata
+                                                   ? $hardwaredata->getName() :'');
                      }
-                     $interv[$key][$parentitem->getForeignKeyField()]
-                                                     = $item->fields[$parentitem->getForeignKeyField()];
-                     $interv[$key]["users_id"]       = $data["users_id"];
-                     $interv[$key]["users_id_tech"]  = $data["users_id_tech"];
-
-                     if (strcmp($begin,$data["begin"]) > 0) {
-                        $interv[$key]["begin"] = $begin;
-                     } else {
-                        $interv[$key]["begin"] = $data["begin"];
-                     }
-
-                     if (strcmp($end,$data["end"]) < 0) {
-                        $interv[$key]["end"] = $end;
-                     } else {
-                        $interv[$key]["end"] = $data["end"];
-                     }
-
-                     $interv[$key]["name"]     = $parentitem->fields["name"];
-                     $interv[$key]["content"]  = Html::resume_text($parentitem->fields["content"],
-                                                                   $CFG_GLPI["cut"]);
-                     $interv[$key]["status"]   = $parentitem->fields["status"];
-                     $interv[$key]["priority"] = $parentitem->fields["priority"];
-
-                     /// Specific for tickets
-                     $interv[$key]["device"] = '';
-                     if (isset($parentitem->hardwaredatas) && !empty($parentitem->hardwaredatas)) {
-                        foreach($parentitem->hardwaredatas as $hardwaredata){
-                           $interv[$key]["device"][$hardwaredata->fields['id']] = ($hardwaredata
-                                                      ? $hardwaredata->getName() :'');
-                        }
-                        $interv[$key]["device"] = implode("<br>", $interv[$key]["device"]);
-                     }
-//                  }
+                     $interv[$key]["device"] = implode("<br>", $interv[$key]["device"]);
+                  }
                }
             }
          }
@@ -907,6 +929,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    static function genericDisplayPlanningItem($itemtype, array $val, $who, $type="", $complete=0) {
       global $CFG_GLPI;
 
+      $html = "";
       $rand      = mt_rand();
       $styleText = "";
       if (isset($val["state"])) {
@@ -924,51 +947,26 @@ abstract class CommonITILTask  extends CommonDBTM {
          return;
       }
 
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title=\"".
+      $html.= "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title=\"".
              Html::entities_deep($parent->getTypeName(1))."\">&nbsp;&nbsp;";
-      echo "<img src='".$parent->getStatusIconURL($val["status"])."' alt='".
+      $html.= "<img src='".$parent->getStatusIconURL($val["status"])."' alt='".
              Html::entities_deep($parent->getStatus($val["status"]))."' title=\"".
              Html::entities_deep($parent->getStatus($val["status"]))."\">";
-      echo "&nbsp;<a id='content_tracking_".$val["id"].$rand."'
+      $html.= "&nbsp;<a id='content_tracking_".$val["id"].$rand."'
                    href='".Toolbox::getItemTypeFormURL($parenttype)."?id=".$val[$parenttype_fk]."'
                    style='$styleText'>";
 
-      switch ($type) {
-         case "in" :
-            //TRANS: %1$s is the start time of a planned item, %2$s is the end
-            printf(__('From %1$s to %2$s :'),
-                   date("H:i",strtotime($val["begin"])), date("H:i",strtotime($val["end"]))) ;
-            break;
-
-         case "through" :
-            break;
-
-         case "begin" :
-            //TRANS: %s is the start time of a planned item
-            printf(__('Start at %s:'), date("H:i", strtotime($val["begin"]))) ;
-            break;
-
-         case "end" :
-            //TRANS: %s is the end time of a planned item
-            printf(__('End at %s:'), date("H:i", strtotime($val["end"]))) ;
-            break;
-      }
-
-      echo "<br>";
-      //TRANS: %1$s is name of the item, %2$d is its ID
-      printf(__('%1$s (#%2$d)'), Html::resume_text($val["name"],80), $val[$parenttype_fk]);
-
       if (!empty($val["device"])) {
-         echo "<br>".$val["device"];
+         $html.= "<br>".$val["device"];
       }
 
       if ($who <= 0) { // show tech for "show all and show group"
-         echo "<br>";
+         $html.= "<br>";
          //TRANS: %s is user name
-         printf(__('By %s'), getUserName($val["users_id_tech"]));
+         $html.= sprintf(__('By %s'), getUserName($val["users_id_tech"]));
       }
 
-      echo "</a>";
+      $html.= "</a>";
 
       $recall = '';
       if (isset($val[getForeignKeyFieldForItemType($itemtype)])
@@ -977,31 +975,25 @@ abstract class CommonITILTask  extends CommonDBTM {
          if ($pr->getFromDBForItemAndUser($val['itemtype'],
                                           $val[getForeignKeyFieldForItemType($itemtype)],
                                           Session::getLoginUserID())) {
-            $recall = "<br><span class='b'>".sprintf(__('Recall on %s'),
+            $recall = "<span class='b'>".sprintf(__('Recall on %s'),
                                                      Html::convDateTime($pr->fields['when'])).
                       "<span>";
          }
       }
 
 
-      if ($complete) {
-         echo "<br><span class='b'>";
-         if (isset($val["state"])) {
-            echo Planning::getState($val["state"])."<br>";
-         }
-         echo sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"]));
-         echo "<br>".__('Description')."</span><br>".$val["content"];
-         echo $recall;
-
-      } else {
-         $content = "<span class='b'>";
-         if (isset($val["state"])) {
-            $content .= Planning::getState($val["state"])."<br>";
-         }
-         $content .= sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"])).
-                    "<br>".__('Description')."</span><br>".$val["content"].$recall;
-         Html::showToolTip($content, array('applyto' => "content_tracking_".$val["id"].$rand));
+      if (isset($val["state"])) {
+         $html.= "<span>";
+         $html.= Planning::getState($val["state"]);
+         $html.= "</span>";
       }
+      $html.= "<div>";
+      $html.= sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"]));
+      $html.= "</div>";
+      $html.= "<div class='event-description'>".html_entity_decode($val["content"])."</div>";
+      $html.= $recall;
+
+      return $html;
    }
 
 
@@ -1098,8 +1090,18 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (isset($this->fields["state"])) {
             echo Planning::getState($this->fields["state"])."<br>";
          }
-         if ($this->fields["users_id_tech"]) {
-            echo sprintf('%1$s %2$s',__('By'),getUserName($this->fields["users_id_tech"]));
+         if ($this->fields["users_id_tech"] || $this->fields["groups_id_tech"]) {
+            if ($this->fields["users_id_tech"]) {
+               printf('%1$s %2$s',__('By user'),getUserName($this->fields["users_id_tech"]));
+            }
+            if ($this->fields["groups_id_tech"]) {
+               $groupname = sprintf('%1$s %2$s',"<br />".__('By group'),
+                                    Dropdown::getDropdownName('glpi_groups',
+                                                              $this->fields["groups_id_tech"]));
+               if ($_SESSION['glpiis_ids_visible']) {
+                  $groupname = printf(__('%1$s (%2$s)'), $groupname, $this->fields["groups_id_tech"]);
+               }
+            }
          } else {
             _e('None');
          }
@@ -1113,8 +1115,18 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo Html::convDateTime($this->fields["begin"])."</td></tr>";
          echo "<tr><td>".__('End')."</td><td>";
          echo Html::convDateTime($this->fields["end"])."</td></tr>";
-         echo "<tr><td>".__('By')."</td><td>";
-         echo getUserName($this->fields["users_id_tech"])."</td></tr>";
+         echo "<tr><td>";
+         if ($this->fields["users_id_tech"]) {
+            printf('%1$s %2$s',__('By user'),getUserName($this->fields["users_id_tech"]));
+         }
+         if ($this->fields["groups_id_tech"]) {
+            $groupname = sprintf('%1$s %2$s',"<br />".__('By group'),
+                                  Dropdown::getDropdownName('glpi_groups',
+                                                            $this->fields["groups_id_tech"]));
+            if ($_SESSION['glpiis_ids_visible']) {
+               $groupname = printf(__('%1$s (%2$s)'), $groupname, $this->fields["groups_id_tech"]);
+            }
+         }
          if (PlanningRecall::isAvailable()
              && $_SESSION["glpiactiveprofile"]["interface"] == "central") {
             echo "<tr><td>"._x('Planning','Reminder')."</td><td>";
@@ -1165,7 +1177,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $canplan = (!$item->isStatusExists(CommonITILObject::PLANNED)
                   || $item->isAllowedStatus($item->fields['status'], CommonITILObject::PLANNED));
 
-      $rowspan = 4;
+      $rowspan = 5;
       if ($this->maybePrivate()) {
          $rowspan++;
       }
@@ -1174,19 +1186,22 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='$rowspan' class='middle'>".__('Description')."</td>";
-      echo "<td class='center middle' rowspan='$rowspan' id='content$rand_text'>".
+      echo "<td class='center middle' colspan='2' rowspan='$rowspan' id='content$rand_text'>".
            "<textarea name='content' cols='50' rows='15' id='task$rand_text'>".$this->fields["content"].
            "</textarea>";
       echo Html::scriptBlock("$(document).ready(function() { $('#content$rand').autogrow(); });");
       echo "</td>";
+      echo "<input type='hidden' name='$fkfield' value='".$this->fields[$fkfield]."'>";
+      echo "</td></tr>\n";
 
+      echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Task template', 'Task templates', 1)."</td><td>";
       TaskTemplate::dropdown(array('value'     => 0,
                                    'entity'    => $this->getEntityID(),
                                    'rand'      => $rand_template,
                                    'on_change' => 'tasktemplate_update(this.value)'));
       echo "</td>";
-
+      echo "</tr>";
       echo Html::scriptBlock('
          function tasktemplate_update(value) {
             jQuery.ajax({
@@ -1208,16 +1223,18 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
       if ($ID > 0) {
+         echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Date')."</td>";
          echo "<td>";
          Html::showDateTimeField("date", array('value'      => $this->fields["date"],
                                                'timestep'   => 1,
                                                'maybeempty' => false));
+         echo "</tr>";
       } else {
+         echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2'>&nbsp;";
+         echo "</tr>";
       }
-      echo "<input type='hidden' name='$fkfield' value='".$this->fields[$fkfield]."'>";
-      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Category')."</td><td>";
@@ -1262,11 +1279,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</td></tr>\n";
 
       if ($ID <= 0) {
-         Document_Item::showSimpleAddForItem($item);
+         Document_Item::showSimpleAddForItem($item, '', 2);
       }
-
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('By');
+      echo "<td>".__('By')."</td>";
+      echo "<td>"._n('User', 'Users', 1);
       echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open');\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png'
              title=\"".__s('Availability')."\" alt=\"".__s('Availability')."\"
@@ -1277,9 +1294,8 @@ abstract class CommonITILTask  extends CommonDBTM {
                                           "/front/planning.php?checkavailability=checkavailability".
                                           "&itemtype=".$item->getType()."&$fkfield=".$item->getID(),
                                     array('title'  => __('Availability')));
-
-      echo "</td>";
-      echo "<td class='center'>";
+      echo "<br />"._n('Group', 'Groups', 1);
+      echo "</td><td>";
       $rand_user          = mt_rand();
       $params             = array('name'   => "users_id_tech",
                                   'value'  => (($ID > -1)
@@ -1293,9 +1309,22 @@ abstract class CommonITILTask  extends CommonDBTM {
                                               => 'users_id',
                                   'to_update' => "user_available$rand_user",
                                   'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
-
-
       User::dropdown($params);
+
+      $rand_group = mt_rand();
+      $params     = array('name'      => "groups_id_tech",
+                          'value'     => (($ID > -1)
+                                          ?$this->fields["groups_id_tech"]
+                                          :Dropdown::EMPTY_VALUE),
+                          'condition' => "is_task",
+                          'rand'      => $rand_group,
+                          'entity'    => $item->fields["entities_id"]);
+
+      $params['toupdate'] = array('value_fieldname' => 'users_id',
+                                  'to_update' => "group_available$rand_group",
+                                  'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
+      echo "<br />";
+      Group::dropdown($params);
       echo "</td>\n";
       if ($canplan) {
          echo "<td>".__('Planning')."</td>";
@@ -1306,22 +1335,25 @@ abstract class CommonITILTask  extends CommonDBTM {
 
          if (Session::haveRight('planning', Planning::READMY)) {
             echo "<script type='text/javascript' >\n";
-            echo "function showPlan".$ID."() {\n";
-            echo Html::jsHide('plan');
-            $params = array('form'      => 'followups',
+            echo "function showPlan".$ID.$rand_text."() {\n";
+            echo Html::jsHide("plan$rand_text");
+            $params = array('action'    => 'add_event_classic_form',
+                            'form'      => 'followups',
                             'users_id'  => $this->fields["users_id_tech"],
+                            'groups_id' => $this->fields["groups_id_tech"],
                             'id'        => $this->fields["id"],
                             'begin'     => $this->fields["begin"],
                             'end'       => $this->fields["end"],
                             'rand_user' => $rand_user,
+                            'rand_group' => $rand_group,
                             'entity'    => $item->fields["entities_id"],
                             'itemtype'  => $this->getType(),
                             'items_id'  => $this->getID());
-            Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php",
+            Ajax::updateItemJsCode("viewplan$rand_text", $CFG_GLPI["root_doc"] . "/ajax/planning.php",
                                    $params);
             echo "}";
             echo "</script>\n";
-            echo "<div id='plan' onClick='showPlan".$ID."()'>\n";
+            echo "<div id='plan$rand_text' onClick='showPlan".$ID.$rand_text."()'>\n";
             echo "<span class='showplan'>";
          }
 
@@ -1330,33 +1362,40 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
          printf(__('From %1$s to %2$s'), Html::convDateTime($this->fields["begin"]),
                 Html::convDateTime($this->fields["end"]));
-         echo "<br>".getUserName($this->fields["users_id_tech"]);
-
+         if (isset($this->fields["users_id_tech"]) && ($this->fields["users_id_tech"] > 0)) {
+            echo "<br>".getUserName($this->fields["users_id_tech"]);
+         }
+         if (isset($this->fields["groups_id_tech"]) && ($this->fields["groups_id_tech"] > 0)) {
+            echo "<br>".Dropdown::getDropdownName('glpi_groups', $this->fields["groups_id_tech"]);
+         }
          if (Session::haveRight('planning', Planning::READMY)) {
             echo "</span>";
             echo "</div>\n";
-            echo "<div id='viewplan'></div>\n";
+            echo "<div id='viewplan$rand_text'></div>\n";
          }
 
       } else {
          if ($canplan) {
             echo "<script type='text/javascript' >\n";
-            echo "function showPlanUpdate() {\n";
-            echo Html::jsHide('plan');
-            $params = array('form'     => 'followups',
-                            'entity'   => $_SESSION["glpiactive_entity"],
+            echo "function showPlanUpdate$rand_text() {\n";
+            echo Html::jsHide("plan$rand_text");
+            $params = array('action'    => 'add_event_classic_form',
+                            'form'      => 'followups',
+                            'entity'    => $_SESSION["glpiactive_entity"],
                             'rand_user' => $rand_user,
-                            'itemtype' => $this->getType(),
-                            'items_id' => $this->getID());
-            Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
+                            'rand_group' => $rand_group,
+                            'itemtype'  => $this->getType(),
+                            'items_id'  => $this->getID());
+            Ajax::updateItemJsCode("viewplan$rand_text", $CFG_GLPI["root_doc"]."/ajax/planning.php",
+                                   $params);
             echo "};";
             echo "</script>";
 
             if ($canplan) {
-               echo "<div id='plan'  onClick='showPlanUpdate()'>\n";
+               echo "<div id='plan$rand_text'  onClick='showPlanUpdate$rand_text()'>\n";
                echo "<span class='vsubmit'>".__('Plan this task')."</span>";
                echo "</div>\n";
-               echo "<div id='viewplan'></div>\n";
+               echo "<div id='viewplan$rand_text'></div>\n";
             }
          } else {
             _e('None');

@@ -631,8 +631,8 @@ class AuthLDAP extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Filter to search in groups')."</td><td colspan='3'>";
-      echo "<input type='text' name='group_condition' value='".$this->fields["group_condition"]."'
-             size='100'>";
+      echo "<textarea cols='100' rows='1' name='group_condition'>".$this->fields["group_condition"];
+      echo "</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Group attribute containing its users') . "</td>";
@@ -749,7 +749,13 @@ class AuthLDAP extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>" . __('Picture') . "</td>";
       echo "<td><input type='text' name='picture_field' value='".
-                 $this->fields["picture_field"]."'></td><td colspan='2'></td></tr>";
+                 $this->fields["picture_field"]."'></td>";
+      echo "<td>" . __('Location') . "</td>";
+      echo "<td><input type='text' name='location_field' value='".$this->fields["location_field"]."'>";
+      echo "</td></tr>";
+
+      echo "<tr><td colspan=4 class='center green'>".__('You can use a field name or an expression using various %{fieldname}').
+           " <br />".__('Example for location: %{city} > %{roomnumber}')."</td></tr>";
 
 
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
@@ -957,7 +963,7 @@ class AuthLDAP extends CommonDBTM {
       $tab[22]['field']         = 'group_condition';
       $tab[22]['name']          = __('Filter to search in groups');
       $tab[22]['massiveaction'] = false;
-      $tab[22]['datatype']      = 'string';
+      $tab[22]['datatype']      = 'text';
 
       $tab[23]['table']         = $this->getTable();
       $tab[23]['field']         = 'group_member_field';
@@ -1035,6 +1041,7 @@ class AuthLDAP extends CommonDBTM {
                       'phone_field'               => 'phone',
                       'phone2_field'              => 'phone2',
                       'mobile_field'              => 'mobile',
+                      'location_field'            => 'locations_id',
                       'comment_field'             => 'comment',
                       'title_field'               => 'usertitles_id',
                       'category_field'            => 'usercategories_id',
@@ -1528,7 +1535,12 @@ class AuthLDAP extends CommonDBTM {
                // -> renaming case
                if ($userfound) {
                   //Get user in DB with this dn
-                  $tmpuser->getFromDBByDn($user['user_dn']);
+                  if (!$tmpuser->getFromDBByDn($user['user_dn'])) {
+                     //This should never happened
+                     //If a user_dn is present more than one time in database
+                     //Just skip user synchronization to avoid errors
+                     continue;
+                  }
                   $glpi_users[] = array('id'        => $user['id'],
                                         'user'      => $userfound['name'],
                                         'timestamp' => $user_infos[$userfound['name']]['timestamp'],
@@ -1705,11 +1717,11 @@ class AuthLDAP extends CommonDBTM {
                   Html::showMassiveActionCheckBox(__CLASS__, $dn_index,
                                                array('massive_tags'  => 'select_item_child_entities',
                                                      'name'          => "ldap_import_recursive[$dn_index]",
-                                                     'specific_tags' => array('data-glpicore-ma-tags' => 'common')));
+                                                     'specific_tags' => array('data-glpicore-ma-tags' => 'entities_id')));
                   echo "</td>";
                } else {
                   echo Html::hidden("ldap_import_recursive[$dn_index]", array('value'                 => 0,
-                                                                              'data-glpicore-ma-tags' => 'common'));
+                                                                              'data-glpicore-ma-tags' => 'entities_id'));
                }
                echo "</tr>\n";
                $dn_index++;
@@ -2021,6 +2033,7 @@ class AuthLDAP extends CommonDBTM {
       $config_ldap = new self();
       $res         = $config_ldap->getFromDB($ldap_server);
       $ldap_users  = array();
+      $input       = array();
 
       // we prevent some delay...
       if (!$res) {
@@ -2990,6 +3003,7 @@ class AuthLDAP extends CommonDBTM {
       $options[1] = __('Put in dustbin');
       $options[2] = __('Withdraw dynamic authorizations and groups');
       $options[3] = __('Disable');
+      $options[4] = __('Disable').' + '.__('Withdraw dynamic authorizations and groups') ;
       asort($options);
       return Dropdown::showFromArray('user_deleted_ldap', $options, array('value' => $value));
    }

@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -50,18 +49,18 @@ if (!defined('GLPI_ROOT')) {
 class ProjectTaskTeam extends CommonDBRelation {
 
    // From CommonDBTM
-   public $dohistory                   = true;
-   var $no_form_page                   = true;
+   public $dohistory                  = true;
+   public $no_form_page               = true;
 
    // From CommonDBRelation
-   static public $itemtype_1             = 'ProjectTask';
-   static public $items_id_1             = 'projecttasks_id';
+   static public $itemtype_1          = 'ProjectTask';
+   static public $items_id_1          = 'projecttasks_id';
 
    static public $itemtype_2          = 'itemtype';
    static public $items_id_2          = 'items_id';
    static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-   static public $available_types      = array('User', 'Group', 'Supplier', 'Contact');
+   static public $available_types     = array('User', 'Group', 'Supplier', 'Contact');
 
 
    /**
@@ -155,4 +154,3 @@ class ProjectTaskTeam extends CommonDBRelation {
    }
 
 }
-?>

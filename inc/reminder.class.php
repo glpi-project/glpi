@@ -672,12 +672,14 @@ class Reminder extends CommonDBTM {
     * @param $ID        integer  Id of the item to print
     * @param $options   array of possible options:
     *     - target filename : where to go when done.
+    *     - from_planning_ajax : set to disable planning form part
     **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
 
       $this->initForm($ID, $options);
+      $rand = mt_rand();
 
       // Show Reminder or blank form
       $onfocus = "";
@@ -688,50 +690,51 @@ class Reminder extends CommonDBTM {
 
       $canedit = $this->can($ID, UPDATE);
 
-      if ($canedit) {
-         Html::initEditorSystem('text');
-      }
-
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_2'><td>".__('Title')."</td>";
       echo "<td>";
+      if (!$ID) {
+      echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
+      }
       if ($canedit) {
          Html::autocompletionTextField($this, "name",
-                                       array('size'   => 80,
+                                       array('size'   => '80',
                                              'entity' => -1,
                                              'user'   => $this->fields["users_id"],
                                              'option' => $onfocus));
       } else {
          echo $this->fields['name'];
       }
-      echo "</td>\n";
-      echo "<td>".__('By')."</td>";
-      echo "<td>";
-      echo getUserName($this->fields["users_id"]);
-      if (!$ID) {
-      echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
+      if (isset($options['from_planning_edit_ajax']) && $options['from_planning_edit_ajax']) {
+         echo Html::hidden('from_planning_edit_ajax');
       }
-      echo "</td></tr>\n";
+      echo "</td>";
+      echo "</tr>";
+
+      if (!isset($options['from_planning_ajax'])) {
+         echo "<tr class='tab_bg_2'>";
+         echo "<td>".__('Visibility')."</td>";
+         echo "<td>";
+         echo '<table><tr><td>';
+         echo __('Begin').'</td><td>';
+         Html::showDateTimeField("begin_view_date",
+                                 array('value'      => $this->fields["begin_view_date"],
+                                       'timestep'   => 1,
+                                       'maybeempty' => true,
+                                       'canedit'    => $canedit));
+         echo '</td><td>'.__('End').'</td><td>';
+         Html::showDateTimeField("end_view_date",
+                                 array('value'      => $this->fields["end_view_date"],
+                                       'timestep'   => 1,
+                                       'maybeempty' => true,
+                                       'canedit'    => $canedit));
+         echo '</td></tr></table>';
+         echo "</td>";
+         echo "</tr>";
+      }
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Visibility')."</td>";
-      echo "<td>";
-      echo '<table><tr><td>';
-      echo __('Begin').'</td><td>';
-      Html::showDateTimeField("begin_view_date",
-                              array('value'      => $this->fields["begin_view_date"],
-                                    'timestep'   => 1,
-                                    'maybeempty' => true,
-                                    'canedit'    => $canedit));
-      echo '</td><td>'.__('End').'</td><td>';
-      Html::showDateTimeField("end_view_date",
-                              array('value'      => $this->fields["end_view_date"],
-                                    'timestep'   => 1,
-                                    'maybeempty' => true,
-                                    'canedit'    => $canedit));
-      echo '</td></tr></table>';
-      echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
       if ($canedit) {
@@ -743,74 +746,83 @@ class Reminder extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'><td >".__('Calendar')."</td>";
-      echo "<td class='center'>";
-
-      if ($canedit) {
-         echo "<script type='text/javascript' >\n";
-         echo "function showPlan() {\n";
-         echo Html::jsHide('plan');
-            $params = array('form'     => 'remind',
-                            'users_id' => $this->fields["users_id"],
-                            'itemtype' => $this->getType(),
-                            'items_id' => $this->getID());
-
-            if ($ID
-                && $this->fields["is_planned"]) {
-               $params['begin'] = $this->fields["begin"];
-               $params['end']   = $this->fields["end"];
-            }
-
-            Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
-         echo "}";
-         echo "</script>\n";
-      }
-
-      if (!$ID
-          || !$this->fields["is_planned"]) {
-
-         if (Session::haveRightsOr("planning", array(Planning::READMY, Planning::READGROUP,
-                                                     Planning::READALL))) {
-
-            echo "<div id='plan' onClick='showPlan()'>\n";
-            echo "<a href='#' class='vsubmit'>".__('Add to schedule')."</a>";
-         }
-
-      } else {
-         if ($canedit) {
-            echo "<div id='plan' onClick='showPlan()'>\n";
-            echo "<span class='showplan'>";
-         }
-
-         //TRANS: %1$s is the begin date, %2$s is the end date
-         printf(__('From %1$s to %2$s'), Html::convDateTime($this->fields["begin"]),
-                Html::convDateTime($this->fields["end"]));
-
-         if ($canedit) {
-            echo "</span>";
-         }
-      }
-
-      if ($canedit) {
-         echo "</div>\n";
-         echo "<div id='viewplan'>\n</div>\n";
-      }
-      echo "</td>";
-
-      if ($ID
-          && $this->fields["is_planned"]
-          && PlanningRecall::isAvailable()) {
-         echo "<td>"._x('Planning','Reminder')."</td>";
-         echo "<td>";
-         if ($canedit) {
-            PlanningRecall::dropdown(array('itemtype' => 'Reminder',
-                                           'items_id' => $ID));
-         } else { // No edit right : use specific Planning Recall Form
-            PlanningRecall::specificForm(array('itemtype' => 'Reminder',
-                                               'items_id' => $ID));
-         }
+      echo "<td>";
+      if (isset($options['from_planning_ajax'])
+          && $options['from_planning_ajax']) {
+         echo Html::hidden('plan[begin]', array('value' => $options['begin']));
+         echo Html::hidden('plan[end]',   array('value' => $options['end']));
+         printf(__('From %1$s to %2$s'), Html::convDateTime($options["begin"]),
+                                         Html::convDateTime($options["end"]));
          echo "</td>";
       } else {
-         echo "<td colspan='2'></td>";
+         if ($canedit) {
+            echo "<script type='text/javascript' >\n";
+            echo "function showPlan$rand() {\n";
+            echo Html::jsHide("plan$rand");
+               $params = array('action'   => 'add_event_classic_form',
+                               'form'     => 'remind',
+                               'users_id' => $this->fields["users_id"],
+                               'itemtype' => $this->getType(),
+                               'items_id' => $this->getID());
+
+               if ($ID
+                   && $this->fields["is_planned"]) {
+                  $params['begin'] = $this->fields["begin"];
+                  $params['end']   = $this->fields["end"];
+               }
+
+               Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
+            echo "}";
+            echo "</script>\n";
+         }
+
+         if (!$ID
+             || !$this->fields["is_planned"]) {
+
+            if (Session::haveRightsOr("planning", array(Planning::READMY, Planning::READGROUP,
+                                                        Planning::READALL))) {
+
+               echo "<div id='plan$rand' onClick='showPlan$rand()'>\n";
+               echo "<a href='#' class='vsubmit'>".__('Add to schedule')."</a>";
+            }
+
+         } else {
+            if ($canedit) {
+               echo "<div id='plan$rand' onClick='showPlan$rand()'>\n";
+               echo "<span class='showplan'>";
+            }
+
+            //TRANS: %1$s is the begin date, %2$s is the end date
+            printf(__('From %1$s to %2$s'), Html::convDateTime($this->fields["begin"]),
+                   Html::convDateTime($this->fields["end"]));
+
+            if ($canedit) {
+               echo "</span>";
+            }
+         }
+
+         if ($canedit) {
+            echo "</div>\n";
+            echo "<div id='viewplan$rand'>\n</div>\n";
+         }
+         echo "</td>";
+
+         if ($ID
+             && $this->fields["is_planned"]
+             && PlanningRecall::isAvailable()) {
+            echo "<td>"._x('Planning','Reminder')."</td>";
+            echo "<td>";
+            if ($canedit) {
+               PlanningRecall::dropdown(array('itemtype' => 'Reminder',
+                                              'items_id' => $ID));
+            } else { // No edit right : use specific Planning Recall Form
+               PlanningRecall::specificForm(array('itemtype' => 'Reminder',
+                                                  'items_id' => $ID));
+            }
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'></td>";
+         }
       }
       echo "</tr>\n";
 
@@ -818,7 +830,10 @@ class Reminder extends CommonDBTM {
            "<td colspan='3'>";
 
       if ($canedit) {
-         echo "<textarea cols='115' rows='15' name='text'>".$this->fields["text"]."</textarea>";
+         $rand = mt_rand();
+         echo "<textarea rows='15' name='text' id='text$rand'>".
+              $this->fields["text"]."</textarea>";
+         Html::initEditorSystem('text'.$rand);
       } else {
          echo "<div  id='kbanswer'>";
          echo Toolbox::unclean_html_cross_side_scripting_deep($this->fields["text"]);
@@ -841,13 +856,24 @@ class Reminder extends CommonDBTM {
     *    - who_group ID of the group of users (0 = undefined)
     *    - begin Date
     *    - end Date
+    *    - color
+    *    - event_type_color
+    *    - check_avaibility (boolean)
     *
     * @return array of planning item
    **/
    static function populatePlanning($options=array()) {
       global $DB, $CFG_GLPI;
 
-      $interv  = array();
+      $default_options = array(
+         'color'            => '',
+         'event_type_color' => '',
+         'check_planned'    => false,
+      );
+      $options = array_merge($default_options, $options);
+
+      $interv   = array();
+      $reminder = new self;
 
       if (!isset($options['begin']) || ($options['begin'] == 'NULL')
           || !isset($options['end']) || ($options['end'] == 'NULL')) {
@@ -896,12 +922,18 @@ class Reminder extends CommonDBTM {
          $ASSIGN  = $readpriv;
       }
 
+      $PLANNED = '';
+      if ($options['check_planned']) {
+         $PLANNED = "AND state != ".Planning::INFO;
+      }
+
       if ($ASSIGN) {
          $query2 = "SELECT DISTINCT `glpi_reminders`.*
                     FROM `glpi_reminders`
                     $joinstoadd
                     WHERE `glpi_reminders`.`is_planned` = '1'
                           AND $ASSIGN
+                          $PLANNED
                           AND `begin` < '$end'
                           AND `end` > '$begin'
                     ORDER BY `begin`";
@@ -909,10 +941,12 @@ class Reminder extends CommonDBTM {
 
          if ($DB->numrows($result2) > 0) {
             for ($i=0 ; $data=$DB->fetch_assoc($result2) ; $i++) {
-               $key                          = $data["begin"]."$$".$i;
-               $interv[$key]["itemtype"]     = 'Reminder';
-               $interv[$key]["reminders_id"] = $data["id"];
-               $interv[$key]["id"]           = $data["id"];
+               $key                               = $data["begin"]."$$"."Reminder"."$$".$data["id"];
+               $interv[$key]['color']             = $options['color'];
+               $interv[$key]['event_type_color']  = $options['event_type_color'];
+               $interv[$key]["itemtype"]          = 'Reminder';
+               $interv[$key]["reminders_id"]      = $data["id"];
+               $interv[$key]["id"]                = $data["id"];
 
                if (strcmp($begin,$data["begin"]) > 0) {
                   $interv[$key]["begin"] = $begin;
@@ -933,6 +967,16 @@ class Reminder extends CommonDBTM {
                $interv[$key]["users_id"]   = $data["users_id"];
                $interv[$key]["state"]      = $data["state"];
                $interv[$key]["state"]      = $data["state"];
+               $interv[$key]["url"]        = $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
+                                                                   $data['id'];
+               $interv[$key]["ajaxurl"]    = $CFG_GLPI["root_doc"]."/ajax/planning.php".
+                                                                   "?action=edit_event_form".
+                                                                   "&itemtype=Reminder".
+                                                                   "&id=".$data['id'].
+                                                                   "&url=".$interv[$key]["url"];
+
+               $reminder->getFromDB($data["id"]);
+               $interv[$key]["editable"]   = $reminder->canUpdateItem();
             }
          }
       }
@@ -974,6 +1018,7 @@ class Reminder extends CommonDBTM {
    static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
       global $CFG_GLPI;
 
+      $html = "";
       $rand     = mt_rand();
       $users_id = "";  // show users_id reminder
       $img      = "rdv_private.png"; // default icon for reminder
@@ -983,37 +1028,14 @@ class Reminder extends CommonDBTM {
          $img      = "rdv_public.png";
       }
 
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\"".
+      $html.= "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\"".
              self::getTypeName(1)."\">&nbsp;";
-      echo "<a id='reminder_".$val["reminders_id"].$rand."' href='".
+      $html.= "<a id='reminder_".$val["reminders_id"].$rand."' href='".
              $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'>";
 
-      switch ($type) {
-         case "in" :
-            //TRANS: %1$s is the start time of a planned item, %2$s is the end
-            $beginend = sprintf(__('From %1$s to %2$s'), date("H:i",strtotime($val["begin"])),
-                                date("H:i",strtotime($val["end"])));
-            printf(__('%1$s: %2$s'), $beginend, Html::resume_text($val["name"],80)) ;
-
-            break;
-
-         case "through" :
-            echo Html::resume_text($val["name"],80);
-            break;
-
-         case "begin" :
-            $start = sprintf(__('Start at %s'), date("H:i", strtotime($val["begin"])));
-            printf(__('%1$s: %2$s'), $start, Html::resume_text($val["name"],80)) ;
-            break;
-
-         case "end" :
-            $end = sprintf(__('End at %s'), date("H:i", strtotime($val["end"])));
-            printf(__('%1$s: %2$s'), $end,  Html::resume_text($val["name"],80)) ;
-            break;
-      }
-
-      echo $users_id;
-      echo "</a>";
+   
+      $html.= $users_id;
+      $html.= "</a>";
       $recall = '';
       if (isset($val['reminders_id'])) {
          $pr = new PlanningRecall();
@@ -1027,14 +1049,15 @@ class Reminder extends CommonDBTM {
 
 
       if ($complete) {
-         echo "<br><span class='b'>".Planning::getState($val["state"])."</span><br>";
-         echo $val["text"].$recall;
+         $html.= "<span>".Planning::getState($val["state"])."</span><br>";
+         $html.= "<div class='event-description'>".$val["text"].$recall."</div>";
       } else {
-         Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
-                              ".$val["text"].$recall,
-                           array('applyto' => "reminder_".$val["reminders_id"].$rand));
+         $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
+                                   ".$val["text"].$recall,
+                                   array('applyto' => "reminder_".$val["reminders_id"].$rand, 
+                                         'display' => false));
       }
-      echo "";
+      return $html;
    }
 
 

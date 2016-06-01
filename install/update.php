@@ -589,12 +589,10 @@ function updateDbUpTo031() {
       $glpilanguage    = $configurationValues['language'];
    }
 
-
-
    // To prevent problem of execution time
    ini_set("max_execution_time", "0");
 
-   $migration = new Migration($current_version);
+   $migration = new Migration(GLPI_VERSION);
 
    switch ($current_version) {
       case "0.31" :
@@ -791,10 +789,11 @@ function updateDbUpTo031() {
          update0901to0902();
 
       case "0.90.2" :
-         include("update_0902_091.php");
-         update0902to091();
+         include("update_0902_91.php");
+         update0902to91();
 
-      case "0.91" :
+      case "0.91": // // for change name of the version - to delete in next version
+      case "9.1" :
          break;
 
       default :
@@ -825,13 +824,19 @@ function updateDbUpTo031() {
    }
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   Config::setConfigurationValues('core', array('version'             => '0.91',
+   Config::setConfigurationValues('core', array('version'             => '9.1',
                                                 'language'            => $glpilanguage,
                                                 'founded_new_version' => ''));
 
    // Update process desactivate all plugins
    $plugin = new Plugin();
    $plugin->unactivateAll();
+
+   if (defined('GLPI_SYSTEM_CRON')) {
+      // Downstream packages may provide a good system cron
+      $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
+      $DB->queryOrDie($query);
+   }
 
    DBmysql::optimize_tables($migration);
 

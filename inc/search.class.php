@@ -185,14 +185,14 @@ class Search {
 
       if (!$CFG_GLPI['allow_search_all']) {
          foreach ($p['criteria'] as $val) {
-            if ($val['field'] == 'all') {
+            if (isset($val['field']) && $val['field'] == 'all') {
                Html::displayRightError();
             }
          }
       }
       if (!$CFG_GLPI['allow_search_view']) {
          foreach ($p['criteria'] as $val) {
-            if ($val['field'] == 'view') {
+            if (isset($val['field']) && $val['field'] == 'view') {
                Html::displayRightError();
             }
          }
@@ -227,7 +227,7 @@ class Search {
       if (count($p['criteria']) > 0) {
          foreach ($p['criteria'] as $key => $val) {
             if (!in_array($val['field'], $data['toview'])) {
-               if (($val['field'] != 'all') && ($val['field'] != 'view')) {
+               if (isset($val['field']) && ($val['field'] != 'all') && ($val['field'] != 'view')) {
                   array_push($data['toview'], $val['field']);
                } else if ($val['field'] == 'all'){
                   $data['search']['all_search'] = true;
@@ -431,7 +431,7 @@ class Search {
             // if real search (strlen >0) and not all and view search
             if (isset($criteria['value']) && (strlen($criteria['value']) > 0)) {
                // common search
-               if (($criteria['field'] != "all") && ($criteria['field'] != "view")) {
+               if (isset($criteria['field']) && ($criteria['field'] != "all") && ($criteria['field'] != "view")) {
                   $LINK    = " ";
                   $NOT     = 0;
                   $tmplink = "";
@@ -509,7 +509,7 @@ class Search {
 
                   $items = array();
 
-                  if ($criteria['field'] == "all") {
+                  if (isset($criteria['field']) && $criteria['field'] == "all") {
                      $items = $searchopt;
 
                   } else { // toview case : populate toview
@@ -5070,7 +5070,7 @@ class Search {
       foreach ($default_values as $key => $val) {
          if (!isset($params[$key])) {
             if ($usesession
-                && !isset($saved_params['criteria']) // retrieve session only if not a new request
+                && ($key == 'is_deleted' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
                 && isset($_SESSION['glpisearch'][$itemtype][$key])) {
                $params[$key] = $_SESSION['glpisearch'][$itemtype][$key];
             } else {
@@ -5640,7 +5640,7 @@ class Search {
             $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
             $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
             $PDF_TABLE .= "<td $extraparam valign='top'>";
-            $PDF_TABLE .= Html::weblink_extract(Html::clean($value));
+            $PDF_TABLE .= Html::weblink_extract(Html::clean($value, true, 2, false));
             $PDF_TABLE .= "</td>\n";
 
             break;
@@ -6075,8 +6075,12 @@ class Search {
       $value = preg_replace('/\x0A/', ' ', $value);
       $value = preg_replace('/\x0D/', NULL, $value);
       $value = str_replace("\"", "''", $value);
+      $value = str_replace("&gt;", ">", $value);
+      $value = str_replace("&lt;", "<", $value);
       $value = str_replace(';', ';;', $value);
-      $value = Html::clean($value);
+      $value = Html::clean($value, true, 2, false);
+      $value = str_replace("&gt;", ">", $value);
+      $value = str_replace("&lt;", "<", $value);
 
       return $value;
    }
@@ -6121,6 +6125,9 @@ class Search {
 
       // Unclean to permit < and > search
       $val = Toolbox::unclean_cross_side_scripting_deep($val);
+
+      // escape _ char used as wildcard in mysql likes
+      $val = str_replace('_', '\\_', $val);
 
       if (($val == 'NULL') || ($val == 'null')) {
          $SEARCH = " IS $NOT NULL ";

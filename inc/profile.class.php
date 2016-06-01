@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -57,11 +56,13 @@ class Profile extends CommonDBTM {
 
 
    /// Common fields used for all profiles type
-   static public $common_fields = array('id', 'interface', 'is_default', 'name');
+   static public $common_fields  = array('id', 'interface', 'is_default', 'name');
 
-   var $dohistory = true;
+   public $dohistory             = true;
 
-   static $rightname = 'profile';
+   static $rightname             = 'profile';
+
+
 
    function getForbiddenStandardMassiveAction() {
 
@@ -176,6 +177,16 @@ class Profile extends CommonDBTM {
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->input['id']."'";
          $DB->query($query);
+      }
+
+      // To avoid log out and login when rights change (very useful in debug mode)
+      if (isset($_SESSION['glpiactiveprofile']['id'])
+            && $_SESSION['glpiactiveprofile']['id'] == $this->input['id']) {
+
+         if (in_array('helpdesk_item_type', $this->updates)) {
+            $_SESSION['glpiactiveprofile']['helpdesk_item_type'] = importArrayFromDB($this->input['helpdesk_item_type']);
+         }
+         ///TODO other needed fields
       }
    }
 
@@ -494,6 +505,9 @@ class Profile extends CommonDBTM {
    static function currentUserHaveMoreRightThan($IDs=array()) {
       global $DB;
 
+      if (Session::isCron()) {
+         return true;
+      }
       if (count($IDs) == 0) {
          // Check all profiles (means more right than all possible profiles)
          return (countElementsInTable('glpi_profiles')
@@ -2670,4 +2684,3 @@ class Profile extends CommonDBTM {
    }
 
 }
-?>

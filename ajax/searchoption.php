@@ -73,7 +73,7 @@ if (isset($_POST["itemtype"])
    $dropdownname = "searchtype$fieldname".$_POST["itemtype"].$_POST["num"];
    $searchopt    = array();
 
-   echo "<table width='100%'><tr><td width='20%'>";
+   echo "<table><tr><td>";
    if (count($actions)>0) {
 
       // get already get search options
@@ -88,7 +88,7 @@ if (isset($_POST["itemtype"])
                                             array('value'  => $_POST["searchtype"]));
       $fieldsearch_id = Html::cleanId("dropdown_".$fieldname."[".$_POST["num"]."][searchtype]$randsearch");
    }
-   echo "</td><td width='80%'>";
+   echo "</td><td>";
    echo "<span id='span$dropdownname'>\n";
 
    $_POST['value']      = stripslashes($_POST['value']);

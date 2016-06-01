@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -45,7 +44,7 @@ if (!defined('GLPI_ROOT')) {
 class SLA extends CommonDBTM {
 
    // From CommonDBTM
-   var $dohistory                      = true;
+   public $dohistory                   = true;
 
    static $rightname                   = 'sla';
 
@@ -59,7 +58,7 @@ class SLA extends CommonDBTM {
 
 
    /**
-    * Define calendar of the ticket using the SLA when using this calendar as sla-s calendar
+    * Force calendar of the SLA if value -1: calendar of the entity
     *
     * @param $calendars_id calendars_id of the ticket
    **/
@@ -498,4 +497,3 @@ class SLA extends CommonDBTM {
    }
 
 }
-?>

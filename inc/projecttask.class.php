@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 201-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -58,7 +57,7 @@ class ProjectTask extends CommonDBChild {
    static $rightname           = 'project';
    protected $usenotepad       = true;
 
-   var $can_be_translated      = true;
+   public $can_be_translated   = true;
 
    const READMY      = 1;
    const UPDATEMY    = 1024;
@@ -1201,17 +1200,18 @@ class ProjectTask extends CommonDBChild {
       NotificationEvent::debugEvent($this);
    }
 
-
    /**
     * Populate the planning with planned project tasks
     *
     * @since version 0.85
     *
     * @param $options   array of possible options:
-    *    - who       ID of the user (0 = undefined)
+    *    - who ID of the user (0 = undefined)
     *    - who_group ID of the group of users (0 = undefined)
-    *    - begin     Date
-    *    - end       Date
+    *    - begin Date
+    *    - end Date
+    *    - color
+    *    - event_type_color
     *
     * @return array of planning item
    **/
@@ -1219,11 +1219,20 @@ class ProjectTask extends CommonDBChild {
 
       global $DB, $CFG_GLPI;
 
-      $interv  = array();
+      $interv = array();
+      $ttask  = new self;
 
       if (!isset($options['begin']) || ($options['begin'] == 'NULL')
           || !isset($options['end']) || ($options['end'] == 'NULL')) {
          return $interv;
+      }
+
+      if (!isset($options['color'])) {
+         $options['color'] = '';
+      }
+
+      if (!isset($options['event_type_color'])) {
+         $options['event_type_color'] = '';
       }
 
       $who       = $options['who'];
@@ -1260,10 +1269,7 @@ class ProjectTask extends CommonDBChild {
          if ($who_group > 0) {
             $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'Group'
                        AND `glpi_projecttaskteams`.`items_id`
-                           IN (SELECT DISTINCT `groups_id`
-                               FROM `glpi_groups`
-                               WHERE `groups_id` IN ('$who_group')
-                                     AND `glpi_groups`.`is_assign`)
+                           IN ('$who_group')
                        AND ";
          }
       }
@@ -1297,35 +1303,41 @@ class ProjectTask extends CommonDBChild {
       if ($DB->numrows($result) > 0) {
          for ($i=0 ; $data=$DB->fetch_assoc($result) ; $i++) {
             if ($task->getFromDB($data["id"])) {
-                $key = $data["plan_start_date"]."$$$".$i;
-                // Do not check entity here because webcal used non authenticated access
-//              if (Session::haveAccessToEntity($item->fields["entities_id"])) {
-                $interv[$key]['itemtype']  = 'ProjectTask';
-                $interv[$data["plan_start_date"]."$$$".$i]["url"]
-                                                = $CFG_GLPI["url_base"]."/index.php?redirect=".
-                                                   "project_".$task->fields['projects_id'];
+               $key = $data["plan_start_date"]."$$$"."ProjectTask"."$$$".$data["id"];
+               $interv[$key]['color']            = $options['color'];
+               $interv[$key]['event_type_color'] = $options['event_type_color'];
+               $interv[$key]['itemtype']         = 'ProjectTask';
+               $interv[$key]["url"]              = $CFG_GLPI["root_doc"]."/front/project.form.php?id=".
+                                                     $task->fields['projects_id'];
+               $interv[$key]["ajaxurl"]          = $CFG_GLPI["root_doc"]."/ajax/planning.php".
+                                                     "?action=edit_event_form".
+                                                     "&itemtype=ProjectTask".
+                                                     "&id=".$data['id'].
+                                                     "&url=".$interv[$key]["url"];
 
-                $interv[$key][$task->getForeignKeyField()] = $data["id"];
-                $interv[$key]["id"]                        = $data["id"];
-                $interv[$key]["users_id"]       = $data["users_id"];
+               $interv[$key][$task->getForeignKeyField()] = $data["id"];
+               $interv[$key]["id"]                        = $data["id"];
+               $interv[$key]["users_id"]                  = $data["users_id"];
 
-                if (strcmp($begin,$data["plan_start_date"]) > 0) {
-                   $interv[$key]["begin"] = $begin;
-                } else {
-                   $interv[$key]["begin"] = $data["plan_start_date"];
-                }
+               if (strcmp($begin,$data["plan_start_date"]) > 0) {
+                  $interv[$key]["begin"] = $begin;
+               } else {
+                  $interv[$key]["begin"] = $data["plan_start_date"];
+               }
 
-                if (strcmp($end,$data["plan_end_date"]) < 0) {
-                   $interv[$key]["end"] = $end;
-                } else {
-                   $interv[$key]["end"] = $data["plan_end_date"];
-                }
+               if (strcmp($end,$data["plan_end_date"]) < 0) {
+                  $interv[$key]["end"]   = $end;
+               } else {
+                  $interv[$key]["end"]   = $data["plan_end_date"];
+               }
 
-                $interv[$key]["name"]     = $task->fields["name"];
-                $interv[$key]["content"]  = Html::resume_text($task->fields["content"],
-                                                              $CFG_GLPI["cut"]);
-                $interv[$key]["status"]   = $task->fields["percent_done"];
+               $interv[$key]["name"]     = $task->fields["name"];
+               $interv[$key]["content"]  = Html::resume_text($task->fields["content"],
+                                                             $CFG_GLPI["cut"]);
+               $interv[$key]["status"]   = $task->fields["percent_done"];
 
+               $ttask->getFromDB($data["id"]);
+               $interv[$key]["editable"] = $ttask->canUpdateItem();
             }
          }
       }
@@ -1333,11 +1345,10 @@ class ProjectTask extends CommonDBChild {
       return $interv;
    }
 
-
    /**
     * Display a Planning Item
     *
-    * @since version 0.91
+    * @since version 9.1
     *
     * @param $val       array of the item to display
     * @param $who             ID of the user (0 if all)
@@ -1350,6 +1361,7 @@ class ProjectTask extends CommonDBChild {
    static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
      global $CFG_GLPI;
 
+      $html = "";
       $rand     = mt_rand();
       $users_id = "";  // show users_id project task
       $img      = "rdv_private.png"; // default icon for project task
@@ -1359,9 +1371,9 @@ class ProjectTask extends CommonDBChild {
          $img      = "rdv_public.png";
       }
 
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\"".
+      $html.= "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\"".
              self::getTypeName(1)."\">&nbsp;";
-      echo "<a id='project_task_".$val["id"].$rand."' href='".
+      $html.= "<a id='project_task_".$val["id"].$rand."' href='".
              $CFG_GLPI["root_doc"]."/front/projecttask.form.php?id=".$val["id"]."'>";
 
       switch ($type) {
@@ -1369,33 +1381,29 @@ class ProjectTask extends CommonDBChild {
             //TRANS: %1$s is the start time of a planned item, %2$s is the end
             $beginend = sprintf(__('From %1$s to %2$s'), date("H:i",strtotime($val["begin"])),
                                 date("H:i",strtotime($val["end"])));
-            printf(__('%1$s: %2$s'), $beginend, Html::resume_text($val["name"],80)) ;
+            $html.= sprintf(__('%1$s: %2$s'), $beginend, Html::resume_text($val["name"],80)) ;
             break;
 
          case "through" :
-            echo Html::resume_text($val["name"],80);
+            $html.= Html::resume_text($val["name"],80);
             break;
 
          case "begin" :
             $start = sprintf(__('Start at %s'), date("H:i", strtotime($val["begin"])));
-            printf(__('%1$s: %2$s'), $start, Html::resume_text($val["name"],80)) ;
+            $html.= sprintf(__('%1$s: %2$s'), $start, Html::resume_text($val["name"],80)) ;
             break;
 
          case "end" :
             $end = sprintf(__('End at %s'), date("H:i", strtotime($val["end"])));
-            printf(__('%1$s: %2$s'), $end,  Html::resume_text($val["name"],80)) ;
+            $html.= sprintf(__('%1$s: %2$s'), $end,  Html::resume_text($val["name"],80)) ;
             break;
       }
 
-      echo $users_id;
-      echo "</a>";
+      $html.= $users_id;
+      $html.= "</a>";
 
-      Html::showToolTip("<span class='b'>".$val["status"]." % completed</span><br>
-                              ".$val["content"],
-                           array('applyto' => "project_task_".$val["id"].$rand));
-
-      echo "";
+      $html.= "<div class='b'>".$val["status"]." % completed</div>";
+      $html.= "<div class='event-description'>".html_entity_decode($val["content"])."</div>";
+      return $html;
    }
-
 }
-?>

@@ -321,8 +321,8 @@ class Toolbox {
    **/
    static function clean_cross_side_scripting_deep($value) {
 
-      $in  = array('&lt;', '&gt;', '<', '>');
-      $out = array('&amp;lt;', '&amp;gt;', '&lt;', '&gt;');
+      $in  = array('<', '>');
+      $out = array('&lt;', '&gt;');
 
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'clean_cross_side_scripting_deep'), $value)
@@ -345,8 +345,8 @@ class Toolbox {
    **/
    static function unclean_cross_side_scripting_deep($value) {
 
-      $in  = array('&lt;', '&gt;', '<', '>');
-      $out = array('&amp;lt;', '&amp;gt;', '&lt;', '&gt;');
+      $in  = array('<', '>');
+      $out = array('&lt;', '&gt;');
 
       $value = ((array) $value === $value)
                   ? array_map(array(__CLASS__, 'unclean_cross_side_scripting_deep'), $value)
@@ -561,7 +561,7 @@ class Toolbox {
       }
 
       $skip = array('Toolbox::backtrace()');
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+      if (isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          $hide   = "Toolbox::userErrorHandlerDebug()";
          $skip[] = "Toolbox::userErrorHandlerNormal()";
       } else {
@@ -777,11 +777,13 @@ class Toolbox {
    /**
     * Compute PHP memory_limit
     *
+    * @param $ininame String name of the ini ooption to retrieve (since 9.1)
+    *
     * @return memory limit
    **/
-   static function getMemoryLimit() {
+   static function getMemoryLimit($ininame='memory_limit') {
 
-      $mem = ini_get("memory_limit");
+      $mem = ini_get($ininame);
       preg_match("/([-0-9]+)([KMG]*)/", $mem, $matches);
       $mem = "";
 
@@ -1829,7 +1831,7 @@ class Toolbox {
              && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
             $decoded_where = rawurldecode($where);
             // redirect to URL : URL must be rawurlencoded
-            if ($link = preg_match('/https?:\/\/.+/',$decoded_where)) {
+            if ($link = preg_match('/(https?:\/\/[^\/]+)\/.+/',$decoded_where, $matches)) {
                if($matches[1] !== $CFG_GLPI['url_base']) {
                   Session::addMessageAfterRedirect('Redirection failed');
                   if($_SESSION["glpiactiveprofile"]["interface"] === "helpdesk") {
@@ -2329,6 +2331,38 @@ class Toolbox {
       $string = preg_replace("/\n/", " ", $string);
       $string = preg_replace("/\r/", " ", $string);
       return $string;
+   }
+
+
+   /**
+    * Create the GLPI default schema
+    *
+    * @since 9.1
+    *
+    * @param $lang
+    *
+    * @return nothing
+   **/
+   static function createSchema($lang='en_GB') {
+      global $CFG_GLPI, $DB;
+
+      include_once (GLPI_CONFIG_DIR . "/config_db.php");
+
+      $DB = new DB();
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-9.1-empty.sql")) {
+         echo "Errors occurred inserting default database";
+      }
+      // update default language
+      Config::setConfigurationValues('core', array('language' => $lang));
+      $query = "UPDATE `glpi_users`
+                SET `language` = NULL";
+      $DB->queryOrDie($query, "4203");
+
+      if (defined('GLPI_SYSTEM_CRON')) {
+         // Downstream packages may provide a good system cron
+         $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
+         $DB->queryOrDie($query, "4203");
+      }
    }
 
 

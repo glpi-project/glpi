@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -245,7 +245,7 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
 
    if ($DB->error()) {
       echo "<hr>";
-      printf(__("Mysql error starting from %s"),"[$formattedQuery]");
+      printf(__("SQL error starting from %s"),"[$formattedQuery]");
       echo "<br>".$DB->error()."<hr>";
    }
 

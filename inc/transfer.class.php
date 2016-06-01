@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -44,21 +43,21 @@ class Transfer extends CommonDBTM {
 
    // Specific ones
    /// Already transfer item
-   var $already_transfer      = array();
+   public $already_transfer      = array();
    /// Items simulate to move - non recursive item or recursive item not visible in destination entity
-   var $needtobe_transfer     = array();
+   public $needtobe_transfer     = array();
    /// Items simulate to move - recursive item visible in destination entity
-   var $noneedtobe_transfer   = array();
+   public $noneedtobe_transfer   = array();
    /// Search in need to be transfer items
-   var $item_search           = array();
+   public $item_search           = array();
    /// Search in need to be exclude from transfer
-   var $item_recurs           = array();
+   public $item_recurs           = array();
    /// Options used to transfer
-   var $options               = array();
+   public $options               = array();
    /// Destination entity id
-   var $to                    = -1;
+   public $to                    = -1;
    /// type of initial item transfered
-   var $inittype              = 0;
+   public $inittype              = 0;
 
    static $rightname = 'transfer';
 
@@ -597,7 +596,7 @@ class Transfer extends CommonDBTM {
                $itemtable = getTableForItemType($itemtype);
                $this->item_search[$itemtype]
                      = $this->createSearchConditionUsingArray($this->needtobe_transfer[$itemtype]);
-                     
+
                // Clean DB
                $query = "SELECT `glpi_contracts_items`.`id`
                          FROM `glpi_contracts_items`
@@ -1412,10 +1411,16 @@ class Transfer extends CommonDBTM {
             $newsoftID = $ID;
 
          } else {
+            $manufacturer = '';
+            if (isset($soft->fields['manufacturers_id'])
+                && ($soft->fields['manufacturers_id'] > 0)) {
+               $manufacturer = "AND `manufacturers_id` = '".$soft->fields['manufacturers_id']."'";
+            }
             $query = "SELECT *
                       FROM `glpi_softwares`
                       WHERE `entities_id` = ".$this->to."
-                            AND `name` = '".addslashes($soft->fields['name'])."'";
+                            AND `name` = '".addslashes($soft->fields['name'])."'
+                            $manufacturer";
 
             if ($data = $DB->request($query)->next()) {
                $newsoftID = $data["id"];
@@ -3538,4 +3543,3 @@ class Transfer extends CommonDBTM {
 
 
 }
-?>

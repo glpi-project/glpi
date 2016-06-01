@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -42,23 +41,23 @@ class RuleCollection extends CommonDBTM {
    /// Rule type
    public $sub_type;
    /// process collection stop on first matched rule
-   var $stop_on_first_match                   = false;
+   public $stop_on_first_match                   = false;
    /// field used to order rules
-   var $orderby                               = "ranking";
+   public $orderby                               = "ranking";
    /// Processing several rules : use result of the previous one to computer the current one
-   var $use_output_rule_process_as_next_input = false;
+   public $use_output_rule_process_as_next_input = false;
    /// Rule collection can be replay (for dictionnary)
-   var $can_replay_rules                      = false;
+   public $can_replay_rules                      = false;
    /// List of rules of the rule collection
-   var $RuleList                              = NULL;
+   public $RuleList                              = NULL;
    /// Menu type
-   var $menu_type                             = "rule";
+   public $menu_type                             = "rule";
    /// Menu option
-   var $menu_option                           = "";
+   public $menu_option                           = "";
 
-   var $entity                                = 0;
+   public $entity                                = 0;
 
-   static $rightname                          = 'config';
+   static $rightname                             = 'config';
 
 
 
@@ -1043,252 +1042,253 @@ class RuleCollection extends CommonDBTM {
          return false;
       }
 
-      if ($_FILES["xml_file"]["type"] == "text/xml") {
-         if ($_FILES["xml_file"]["error"] != UPLOAD_ERR_OK) {
-            return false;
-         }
-         //get xml file content
-         $xml           = file_get_contents($_FILES["xml_file"]["tmp_name"]);
-         //convert a xml string into a SimpleXml object
-         $xmlE          = simplexml_load_string($xml);
-         //convert SimpleXml object into an array and store it in session
-         $rules         = json_decode(json_encode((array) $xmlE), true);
-         //check rules (check if entities, criterias and actions is always good in this glpi)
-         $entity        = new Entity();
-         $rules_refused = array();
+      if ($_FILES["xml_file"]["error"] != UPLOAD_ERR_OK) {
+         Session::addMessageAfterRedirect(__("No file was uploaded"));
+         return false;
+      }
+      //get xml file content
+      $xml           = file_get_contents($_FILES["xml_file"]["tmp_name"]);
+      //convert a xml string into a SimpleXml object
+      if (!$xmlE= simplexml_load_string($xml)) {
+         Session::addMessageAfterRedirect(__('Unauthorized file type'), false, ERROR);
+      }
+      //convert SimpleXml object into an array and store it in session
+      $rules         = json_decode(json_encode((array) $xmlE), true);
+      //check rules (check if entities, criterias and actions is always good in this glpi)
+      $entity        = new Entity();
+      $rules_refused = array();
 
-         //In case there's only one rule to import, recreate an array with key => value
-         if (isset($rules['rule']['entities_id'])) {
-            $rules['rule'] = array(0 => $rules['rule']);
+      //In case there's only one rule to import, recreate an array with key => value
+      if (isset($rules['rule']['entities_id'])) {
+         $rules['rule'] = array(0 => $rules['rule']);
+      }
+
+      foreach ($rules['rule'] as $k_rule => &$rule) {
+         $tmprule = new $rule['sub_type'];
+         //check entities
+         if ($tmprule->isEntityAssign()) {
+            $entities_found = $entity->find("`completename` = '".
+                                            $DB->escape($rule['entities_id'])."'");
+            if (empty($entities_found)) {
+               $rules_refused[$k_rule]['entity'] = true;
+            }
          }
 
-         foreach ($rules['rule'] as $k_rule => &$rule) {
-            $tmprule = new $rule['sub_type'];
-            //check entities
-            if ($tmprule->isEntityAssign()) {
-               $entities_found = $entity->find("`completename` = '".
-                                               $DB->escape($rule['entities_id'])."'");
-               if (empty($entities_found)) {
-                  $rules_refused[$k_rule]['entity'] = true;
-               }
+         //process direct attributes
+         foreach ($rule as &$val) {
+            if (is_array($val)
+                    && empty($val)) {
+               $val = "";
+            }
+         }
+
+         //check criterias
+         if (isset($rule['rulecriteria'])) {
+            //check and correct criterias array format
+            if (isset($rule['rulecriteria']['criteria'])) {
+               $rule['rulecriteria'] = array($rule['rulecriteria']);
             }
 
-            //process direct attributes
-            foreach ($rule as &$val) {
-               if (is_array($val)
-                       && empty($val)) {
-                  $val = "";
-               }
-            }
-
-            //check criterias
-            if (isset($rule['rulecriteria'])) {
-               //check and correct criterias array format
-               if (isset($rule['rulecriteria']['criteria'])) {
-                  $rule['rulecriteria'] = array($rule['rulecriteria']);
-               }
-
-               foreach ($rule['rulecriteria'] as $k_crit => $criteria) {
-                  $available_criteria = $tmprule->getCriterias();
-                  $crit               = $criteria['criteria'];
-                  //check FK (just in case of "is", "is_not" and "under" criteria)
-                  if (self::isCriteraADropdown($available_criteria,
-                                               $criteria['condition'], $crit)) {
-                     //escape pattern
-                     $criteria['pattern'] = $DB->escape($criteria['pattern']);
-                     $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
-                     $item     = new $itemtype();
-                     if ($item instanceof CommonTreeDropdown) {
-                        $found = $item->find("`completename` = '".$criteria['pattern']."'");
-                     } else {
-                        $found = $item->find("`name` = '".$criteria['pattern']."'");
-                     }
-                     if (empty($found)) {
-                        $rules_refused[$k_rule]['criterias'][] = $k_crit;
-                     } else {
-                        $tmp = array_pop($found);
-                        $rules['rule'][$k_rule]['rulecriteria'][$k_crit]['pattern'] = $tmp['id'];
-                     }
+            foreach ($rule['rulecriteria'] as $k_crit => $criteria) {
+               $available_criteria = $tmprule->getCriterias();
+               $crit               = $criteria['criteria'];
+               //check FK (just in case of "is", "is_not" and "under" criteria)
+               if (self::isCriteraADropdown($available_criteria,
+                                            $criteria['condition'], $crit)) {
+                  //escape pattern
+                  $criteria['pattern'] = $DB->escape($criteria['pattern']);
+                  $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
+                  $item     = new $itemtype();
+                  if ($item instanceof CommonTreeDropdown) {
+                     $found = $item->find("`completename` = '".$criteria['pattern']."'");
+                  } else {
+                     $found = $item->find("`name` = '".$criteria['pattern']."'");
                   }
-               }
-            }
-
-            //check actions
-            if (isset($rule['ruleaction'])) {
-               //check and correct actions array format
-               if (isset($rule['ruleaction']['field'])) {
-                  $rule['ruleaction'] = array($rule['ruleaction']);
-               }
-
-               foreach ($rule['ruleaction'] as $k_action => $action) {
-                  $available_actions = $tmprule->getActions();
-                  $act               = $action['field'];
-
-                  if (($action['action_type'] == "assign")
-                      && (isset($available_actions[$act]['type'])
-                          && ($available_actions[$act]['type'] == 'dropdown'))) {
-
-                     //pass root entity and empty array (N/A value)
-                     if (($action['field'] == "entities_id")
-                         && (($action['value'] == 0)
-                             || ($action['value'] == array()))) {
-                        continue;
-                     }
-
-                     //escape value
-                     $action['value'] = $DB->escape($action['value']);
-                     $itemtype = getItemTypeForTable($available_actions[$act]['table']);
-                     $item     = new $itemtype();
-                     if ($item instanceof CommonTreeDropdown) {
-                        $found = $item->find("`completename` = '".$action['value']."'");
-                     } else {
-                        $found = $item->find("`name` = '".$action['value']."'");
-                     }
-                     if (empty($found)) {
-                        $rules_refused[$k_rule]['actions'][] = $k_action;
-                     } else {
-                        $tmp = array_pop($found);
-                        $rules['rule'][$k_rule]['ruleaction'][$k_action]['value'] = $tmp['id'];
-                     }
+                  if (empty($found)) {
+                     $rules_refused[$k_rule]['criterias'][] = $k_crit;
+                  } else {
+                     $tmp = array_pop($found);
+                     $rules['rule'][$k_rule]['rulecriteria'][$k_crit]['pattern'] = $tmp['id'];
                   }
                }
             }
          }
 
-         //save rules for ongoing processing
-         $_SESSION['glpi_import_rules']         = $rules;
-         $_SESSION['glpi_import_rules_refused'] = $rules_refused;
-
-         //if no conflict detected, we can directly process the import
-         if (!count($rules_refused)) {
-            Html::redirect("rule.backup.php?action=process_import");
-         }
-
-         //print report
-         echo "<form name='form' method='post' action='rule.backup.php' >";
-         echo "<div class='spaced' id='tabsbody'>";
-         echo "<table class='tab_cadre'>";
-         echo "<input type='hidden' name='action' value='process_import'>";
-         echo "<tr><th colspan='3'>".__('Rules refused')."</th></tr>";
-         echo "<tr>";
-         echo "<th>"._n('Type', 'Type', 1)."</th>";
-         echo "<th>".__('Name')."</th>";
-         echo "<th>".__('Reason of rejection')."</th>";
-         echo "</tr>";
-
-         $odd = true;
-         foreach ($rules_refused as $k_rule => $refused) {
-            $odd = !$odd;
-            if ($odd) {
-               $class = " class='tab_bg_1' ";
-            } else {
-               $class = " class='tab_bg_2' ";
+         //check actions
+         if (isset($rule['ruleaction'])) {
+            //check and correct actions array format
+            if (isset($rule['ruleaction']['field'])) {
+               $rule['ruleaction'] = array($rule['ruleaction']);
             }
 
-            $sub_type = $rules['rule'][$k_rule]['sub_type'];
-            $item     = new $sub_type();
+            foreach ($rule['ruleaction'] as $k_action => $action) {
+               $available_actions = $tmprule->getActions();
+               $act               = $action['field'];
 
-            echo "<tr $class>";
-            echo "<td>".$item->getTitle()."</td>";
-            echo "<td>".$rules['rule'][$k_rule]['name']."</td>";
+               if (($action['action_type'] == "assign")
+                   && (isset($available_actions[$act]['type'])
+                       && ($available_actions[$act]['type'] == 'dropdown'))) {
+
+                  //pass root entity and empty array (N/A value)
+                  if (($action['field'] == "entities_id")
+                      && (($action['value'] == 0)
+                          || ($action['value'] == array()))) {
+                     continue;
+                  }
+
+                  //escape value
+                  $action['value'] = $DB->escape($action['value']);
+                  $itemtype = getItemTypeForTable($available_actions[$act]['table']);
+                  $item     = new $itemtype();
+                  if ($item instanceof CommonTreeDropdown) {
+                     $found = $item->find("`completename` = '".$action['value']."'");
+                  } else {
+                     $found = $item->find("`name` = '".$action['value']."'");
+                  }
+                  if (empty($found)) {
+                     $rules_refused[$k_rule]['actions'][] = $k_action;
+                  } else {
+                     $tmp = array_pop($found);
+                     $rules['rule'][$k_rule]['ruleaction'][$k_action]['value'] = $tmp['id'];
+                  }
+               }
+            }
+         }
+      }
+
+      //save rules for ongoing processing
+      $_SESSION['glpi_import_rules']         = $rules;
+      $_SESSION['glpi_import_rules_refused'] = $rules_refused;
+
+      //if no conflict detected, we can directly process the import
+      if (!count($rules_refused)) {
+         Html::redirect("rule.backup.php?action=process_import");
+      }
+
+      //print report
+      echo "<form name='form' method='post' action='rule.backup.php' >";
+      echo "<div class='spaced' id='tabsbody'>";
+      echo "<table class='tab_cadre'>";
+      echo "<input type='hidden' name='action' value='process_import'>";
+      echo "<tr><th colspan='3'>".__('Rules refused')."</th></tr>";
+      echo "<tr>";
+      echo "<th>"._n('Type', 'Type', 1)."</th>";
+      echo "<th>".__('Name')."</th>";
+      echo "<th>".__('Reason of rejection')."</th>";
+      echo "</tr>";
+
+      $odd = true;
+      foreach ($rules_refused as $k_rule => $refused) {
+         $odd = !$odd;
+         if ($odd) {
+            $class = " class='tab_bg_1' ";
+         } else {
+            $class = " class='tab_bg_2' ";
+         }
+
+         $sub_type = $rules['rule'][$k_rule]['sub_type'];
+         $item     = new $sub_type();
+
+         echo "<tr $class>";
+         echo "<td>".$item->getTitle()."</td>";
+         echo "<td>".$rules['rule'][$k_rule]['name']."</td>";
+         echo "<td>";
+
+         echo "<table class='tab_cadre' style='width:100%'>";
+         //show entity select
+         if (!isset($refused['criterias']) && !isset($refused['actions'])) {
+            if (isset($refused['entity'])) {
+               echo "<tr class='tab_bg_1_2'>";
+               echo "<td>";
+               printf(__('%1$s (%2$s)'), __('Entity not found'),
+                       $rules['rule'][$k_rule]['entities_id']);
+               echo "</td>";
+               echo "<td>";
+               echo __('Select the desired entity')."&nbsp;";
+               Dropdown::show('Entity',
+                              array('comments' => false,
+                                    'name'     => "new_entities[".
+                                                   $rules['rule'][$k_rule]['uuid']."]"));
+               echo "</td>";
+               echo "</tr>";
+            }
+         }
+
+         //show criterias refused for this rule
+         if (isset($refused['criterias'])) {
+            echo "<tr class='tab_bg_1_2'>";
+            echo "<td>".__('Criteria refused')."</td>";
             echo "<td>";
 
             echo "<table class='tab_cadre' style='width:100%'>";
-            //show entity select
-            if (!isset($refused['criterias']) && !isset($refused['actions'])) {
-               if (isset($refused['entity'])) {
-                  echo "<tr class='tab_bg_1_2'>";
-                  echo "<td>";
-                  printf(__('%1$s (%2$s)'), __('Entity not found'),
-                          $rules['rule'][$k_rule]['entities_id']);
-                  echo "</td>";
-                  echo "<td>";
-                  echo __('Select the desired entity')."&nbsp;";
-                  Dropdown::show('Entity',
-                                 array('comments' => false,
-                                       'name'     => "new_entities[".
-                                                      $rules['rule'][$k_rule]['uuid']."]"));
-                  echo "</td>";
-                  echo "</tr>";
+            echo "<tr class='tab_bg_2'>";
+            echo "<th class='center b'>"._n('Criterion', 'Criteria', 1)."</th>\n";
+            echo "<th class='center b'>".__('Condition')."</th>\n";
+            echo "<th class='center b'>".__('Reason')."</th>\n";
+            echo "</tr>\n";
+            foreach ($refused['criterias'] as $k_criteria) {
+               $criteria = $rules['rule'][$k_rule]['rulecriteria'][$k_criteria];
+
+               //fix empty empty array values
+               if (empty($criteria['value'])) {
+                  $criteria['value'] = null;
                }
-            }
-
-            //show criterias refused for this rule
-            if (isset($refused['criterias'])) {
-               echo "<tr class='tab_bg_1_2'>";
-               echo "<td>".__('Criteria refused')."</td>";
-               echo "<td>";
-
-               echo "<table class='tab_cadre' style='width:100%'>";
-               echo "<tr class='tab_bg_2'>";
-               echo "<th class='center b'>"._n('Criterion', 'Criteria', 1)."</th>\n";
-               echo "<th class='center b'>".__('Condition')."</th>\n";
-               echo "<th class='center b'>".__('Reason')."</th>\n";
-               echo "</tr>\n";
-               foreach ($refused['criterias'] as $k_criteria) {
-                  $criteria = $rules['rule'][$k_rule]['rulecriteria'][$k_criteria];
-
-                  //fix empty empty array values
-                  if (empty($criteria['value'])) {
-                     $criteria['value'] = null;
-                  }
-                  echo "<tr class='tab_bg_1'>";
-                  echo "<td>" . $item->getCriteriaName($criteria["criteria"]) . "</td>";
-                  echo "<td>" . RuleCriteria::getConditionByID($criteria["condition"],
-                                                               get_class($item),
-                                                               $criteria["criteria"]) . "</td>";
-                  echo "<td>" . $criteria["pattern"]."</td>";
-                  echo "</tr>";
-               }
-               echo "</table>\n";
-               echo "</td>";
-               echo "</tr>";
-            }
-
-            //show actions refused for this rule
-            if (isset($refused['actions'])) {
-               echo "<tr class='tab_bg_1_2'>";
-               echo "<td>".__('Actions refused')."</td>";
-               echo "<td>";
-
-               echo "<table class='tab_cadre' style='width:100%'>";
-               echo "<tr class='tab_bg_2'>";
-               echo "<th class='center b'>"._n('Field', 'Fields', Session::getPluralNumber())."</th>";
-               echo "<th class='center b'>".__('Action type')."</th>";
-               echo "<th class='center b'>".__('Value')."</th>";
-               echo "</tr>\n";
-               foreach ($refused['actions'] as $k_action) {
-                  $action = $rules['rule'][$k_rule]['ruleaction'][$k_action];
-                  //fix empty empty array values
-                  if (empty($action['value'])) {
-                     $action['value'] = null;
-                  }
-                  echo "<tr class='tab_bg_1'>";
-                  echo "<td>" . $item->getActionName($action["field"]) . "</td>";
-                  echo "<td>" . RuleAction::getActionByID($action["action_type"]) . "</td>";
-                  echo "<td>" . $action["value"]."</td>";
-                  echo "</tr>";
-               }
-               echo "</table>\n";
-               echo "</td>";
+               echo "<tr class='tab_bg_1'>";
+               echo "<td>" . $item->getCriteriaName($criteria["criteria"]) . "</td>";
+               echo "<td>" . RuleCriteria::getConditionByID($criteria["condition"],
+                                                            get_class($item),
+                                                            $criteria["criteria"]) . "</td>";
+               echo "<td>" . $criteria["pattern"]."</td>";
                echo "</tr>";
             }
             echo "</table>\n";
-            echo "</td></tr>";
+            echo "</td>";
+            echo "</tr>";
          }
 
+         //show actions refused for this rule
+         if (isset($refused['actions'])) {
+            echo "<tr class='tab_bg_1_2'>";
+            echo "<td>".__('Actions refused')."</td>";
+            echo "<td>";
 
-         //display buttons
-         $class = ($odd?" class='tab_bg_1' ":" class='tab_bg_2' ");
-         echo "<tr $class><td colspan='3' class='center'>";
-         echo "<input type='submit' name='import' value=\""._sx('button', 'Post').
-                "\" class='submit'>";
+            echo "<table class='tab_cadre' style='width:100%'>";
+            echo "<tr class='tab_bg_2'>";
+            echo "<th class='center b'>"._n('Field', 'Fields', Session::getPluralNumber())."</th>";
+            echo "<th class='center b'>".__('Action type')."</th>";
+            echo "<th class='center b'>".__('Value')."</th>";
+            echo "</tr>\n";
+            foreach ($refused['actions'] as $k_action) {
+               $action = $rules['rule'][$k_rule]['ruleaction'][$k_action];
+               //fix empty empty array values
+               if (empty($action['value'])) {
+                  $action['value'] = null;
+               }
+               echo "<tr class='tab_bg_1'>";
+               echo "<td>" . $item->getActionName($action["field"]) . "</td>";
+               echo "<td>" . RuleAction::getActionByID($action["action_type"]) . "</td>";
+               echo "<td>" . $action["value"]."</td>";
+               echo "</tr>";
+            }
+            echo "</table>\n";
+            echo "</td>";
+            echo "</tr>";
+         }
+         echo "</table>\n";
          echo "</td></tr>";
-
-         // Close for Form
-         echo "</table></div>";
-         Html::closeForm();
       }
+
+
+      //display buttons
+      $class = ($odd?" class='tab_bg_1' ":" class='tab_bg_2' ");
+      echo "<tr $class><td colspan='3' class='center'>";
+      echo "<input type='submit' name='import' value=\""._sx('button', 'Post').
+             "\" class='submit'>";
+      echo "</td></tr>";
+
+      // Close for Form
+      echo "</table></div>";
+      Html::closeForm();
 
       return true;
    }
@@ -1955,4 +1955,3 @@ class RuleCollection extends CommonDBTM {
    }
 
 }
-?>

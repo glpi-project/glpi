@@ -452,7 +452,11 @@ class RuleCriteria extends CommonDBChild {
                // Drop $result[0] : complete match result
                array_shift($results);
                // And add to $regex_result array
-               $regex_result[]               = $results[1];
+               $res = array();
+               foreach($results as $data) {
+                  $res[] = $data[0];
+               }
+               $regex_result[]               = $res;
                $criterias_results[$criteria] = $pattern;
                return true;
             }

@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -41,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 
 class Bookmark_User extends CommonDBRelation {
 
-    var $auto_message_on_action = false;
+    public $auto_message_on_action = false;
 
    static public $itemtype_1          = 'Bookmark';
    static public $items_id_1          = 'bookmarks_id';
@@ -50,4 +49,3 @@ class Bookmark_User extends CommonDBRelation {
    static public $items_id_2          = 'users_id';
 
 }
-?>

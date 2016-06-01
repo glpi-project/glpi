@@ -61,7 +61,11 @@ if (isset($_POST["add"])) {
    Event::log($_POST["id"], "reminder", 4, "tools",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
-   $remind->redirectToList();
+   if (!isset($_POST["from_planning_edit_ajax"])) {
+      $remind->redirectToList();
+   } else {
+      Html::back();
+   }
 
 } else if (isset($_POST["update"])) {
    $remind->check($_POST["id"], UPDATE);   // Right to update the reminder

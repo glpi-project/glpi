@@ -52,37 +52,37 @@ class MailCollector  extends CommonDBTM {
 
    // Specific one
    /// working charset of the mail
-   var $charset = "";
+   public $charset         = "";
    /// IMAP / POP connection
-   var $marubox = '';
+   public $marubox         = '';
    /// ID of the current message
-   var $mid = -1;
+   public $mid             = -1;
    /// structure used to store the mail structure
-   var $structure = false;
+   public $structure       = false;
    /// structure used to store files attached to a mail
-   var $files;
+   public $files;
    /// structure used to store alt files attached to a mail
-   var $altfiles;
+   public $altfiles;
    /// Tag used to recognize embedded images of a mail
-   var $tags;
+   public $tags;
    /// Message to add to body to build ticket
-   var $addtobody;
+   public $addtobody;
    /// Number of fetched emails
-   var $fetch_emails = 0;
+   public $fetch_emails    = 0;
    /// Maximum number of emails to fetch : default to 10
-   var $maxfetch_emails = 10;
+   public $maxfetch_emails = 10;
    /// Max size for attached files
-   var $filesize_max = 0;
+   public $filesize_max    = 0;
    /// Body converted
-   var $body_converted = false;
+   public $body_converted  = false;
 
-   static $rightname = 'config';
+   public $dohistory       = true;
+
+   static $rightname       = 'config';
 
    // Destination folder
    const REFUSED_FOLDER  = 'refused';
    const ACCEPTED_FOLDER = 'accepted';
-
-   public $dohistory = true;
 
 
    static function getTypeName($nb=0) {
@@ -587,7 +587,9 @@ class MailCollector  extends CommonDBTM {
                   } else {
                      $rejinput['reason'] = NotImportedEmail::MATCH_NO_RULE;
                   }
+                  $refused++;
                   $rejected->add($rejinput);
+                  $this->deleteMails($i, self::REFUSED_FOLDER);
                }
                $this->fetch_emails++;
             }
@@ -717,7 +719,8 @@ class MailCollector  extends CommonDBTM {
       $tkt['_head']                  = $head;
 
       if (!empty($this->charset)
-          && !$this->body_converted) {
+          && !$this->body_converted
+          && mb_detect_encoding($body) != 'UTF-8') {
          $body                 = Toolbox::encodeInUtf8($body,$this->charset);
          $this->body_converted = true;
       }
@@ -749,6 +752,9 @@ class MailCollector  extends CommonDBTM {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
+      // Double encoding for > and < char to avoid misinterpretations
+      $tkt['content'] = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $tkt['content']);
+
       $is_html = false;
       //If files are present and content is html
       if (isset($this->files)
@@ -760,11 +766,13 @@ class MailCollector  extends CommonDBTM {
                                                            array_merge($this->files, $this->altfiles),
                                                            $this->tags);
       }
+
+      // Clean mail content
       $striptags = true;
       if ($CFG_GLPI["use_rich_text"] && !isset($tkt['tickets_id'])) {
          $striptags = false;
       }
-      $tkt['content'] = $this->cleanMailContent($tkt['content'], $striptags);
+      $tkt['content'] = $this->cleanMailContent(Html::entities_deep($tkt['content']), $striptags);
 
       if ($is_html && !isset($tkt['tickets_id'])) {
          $tkt['content'] = nl2br($tkt['content']);
@@ -930,10 +938,8 @@ class MailCollector  extends CommonDBTM {
    function cleanMailContent($string, $striptags = true) {
       global $DB;
 
-      // delete html tags
-      if ($striptags) {
-         $string = Html::clean($string);
-      }
+      // Delete html tags
+      $string = Html::clean($string, $striptags, 2);
 
       // First clean HTML and XSS
       $string = Toolbox::clean_cross_side_scripting_deep($string);
@@ -1598,7 +1604,7 @@ class MailCollector  extends CommonDBTM {
                    && ($data = $DB->fetch_assoc($result))) {
                $mc->maxfetch_emails = $max;
 
-               $task->log("Collect mails from ".$data["host"]."\n");
+               $task->log("Collect mails from ".$data["name"]." (".$data["host"].")\n");
                $message = $mc->collect($data["id"]);
 
                $task->addVolume($mc->fetch_emails);

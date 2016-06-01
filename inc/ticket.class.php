@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -68,9 +67,9 @@ class Ticket extends CommonITILObject {
 
    // Specific ones
    /// Hardware datas used by getFromDBwithData
-   var $hardwaredatas = array();
+   public $hardwaredatas = array();
    /// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
-   var $computerfound = 0;
+   public $computerfound = 0;
 
    // Request type
    const INCIDENT_TYPE = 1;
@@ -1114,7 +1113,7 @@ class Ticket extends CommonITILObject {
 
       if (isset($this->fields['id'])
           && !empty($this->fields['date'])) {
-         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendars_id = $this->getCalendar();
          $calendar     = new Calendar();
 
          // Using calendar
@@ -1188,10 +1187,10 @@ class Ticket extends CommonITILObject {
 
          if (!empty($this->input['items_id'])) {
             $item_ticket = new Item_Ticket();
-            foreach ($this->input['items_id'] as $itemype => $items) {
+            foreach ($this->input['items_id'] as $itemtype => $items) {
                foreach ($items as $items_id) {
                   $item_ticket->add(array('items_id'      => $items_id,
-                                          'itemtype'      => $itemype,
+                                          'itemtype'      => $itemtype,
                                           'tickets_id'    => $this->fields['id'],
                                           '_disablenotif' => true));
                }
@@ -1364,7 +1363,7 @@ class Ticket extends CommonITILObject {
 
       // Set additional default dropdown
       $dropdown_fields = array('users_locations', 'items_locations');
-      foreach ($dropdown_fields as $field ) {
+      foreach ($dropdown_fields as $field) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
          }
@@ -1376,12 +1375,15 @@ class Ticket extends CommonITILObject {
 
       // Get first item location
       $item = NULL;
-      if (isset($input["items_id"]) && (count($input["items_id"]) > 0)) {
+      if (isset($input["items_id"])
+            && is_array($input["items_id"])
+            && (count($input["items_id"]) > 0)) {
          foreach($input["items_id"] as $itemtype => $items){
             foreach($items as $items_id){
                if ($item = getItemForItemtype($itemtype)) {
                   $item->getFromDB($items_id);
                   $input['items_locations'] = $item->fields['locations_id'];
+                  $input['items_groups'] = $item->fields['groups_id'];
                   break(2);
                }
             }
@@ -1412,7 +1414,11 @@ class Ticket extends CommonITILObject {
       if (isset($input["content"])) {
          $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
          $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
-         $input["content"] = Html::clean($input["content"]);
+         if (!$CFG_GLPI['use_rich_text']) {
+         $input["content"] = Html::entity_decode_deep($input["content"]);
+            $input["content"] = Html::entity_decode_deep($input["content"]);
+            $input["content"] = Html::clean($input["content"]);
+         }
       }
 
       $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
@@ -1674,10 +1680,10 @@ class Ticket extends CommonITILObject {
 
       if (!empty($this->input['items_id'])) {
          $item_ticket = new Item_Ticket();
-         foreach ($this->input['items_id'] as $itemype => $items) {
+         foreach ($this->input['items_id'] as $itemtype => $items) {
             foreach ($items as $items_id) {
                $item_ticket->add(array('items_id'      => $items_id,
-                                       'itemtype'      => $itemype,
+                                       'itemtype'      => $itemtype,
                                        'tickets_id'    => $this->fields['id'],
                                        '_disablenotif' => true));
             }
@@ -2411,7 +2417,7 @@ class Ticket extends CommonITILObject {
          $tab[47]['joinparams']       = array('jointype'  => 'item_item',
                                               'condition' => "AND NEWTABLE.`link` = ".
                                                               Ticket_Ticket::DUPLICATE_WITH);
-         $tab[47]['datatype']         = 'dropdown';
+         $tab[47]['additionalfields'] = array('tickets_id_2');
          $tab[47]['forcegroupby']     = true;
 
          $tab[41]['table']            = 'glpi_tickets_tickets';
@@ -2810,6 +2816,29 @@ class Ticket extends CommonITILObject {
                $values[$name] = $saved[$name];
             } else {
                $values[$name] = $value;
+            }
+         }
+      }
+
+      // Check category / type validity
+      if ($values['itilcategories_id']) {
+         $cat = new ITILCategory();
+         if ($cat->getFromDB($values['itilcategories_id'])) {
+            switch ($values['type']) {
+               case self::INCIDENT_TYPE :
+                  if (!$cat->getField('is_incident')) {
+                     $values['itilcategories_id'] = 0;
+                  }
+                  break;
+
+               case self::DEMAND_TYPE :
+                  if (!$cat->getField('is_request')) {
+                     $values['itilcategories_id'] = 0;
+                  }
+                  break;
+
+               default :
+                  break;
             }
          }
       }
@@ -4079,7 +4108,8 @@ class Ticket extends CommonITILObject {
       } else {
          echo $tt->getBeginHiddenFieldValue('global_validation');
 
-         if (Session::haveRightsOr('ticketvalidation', TicketValidation::getCreateRights())) {
+         if (Session::haveRightsOr('ticketvalidation', TicketValidation::getCreateRights())
+             && $canupdate) {
             TicketValidation::dropdownStatus('global_validation',
                                              array('global' => true,
                                                    'value'  => $this->fields['global_validation']));
@@ -4172,8 +4202,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          echo "<td rowspan='2'>";
          echo $tt->getBeginHiddenFieldValue('items_id');
-         if ($canupdate
-                 || $canupdate_descr) {
+         if (Session::haveRight('ticket', CREATE)) {
             Item_Ticket::itemAddForm($this, $values);
          }
          echo $tt->getEndHiddenFieldValue('items_id', $this);
@@ -4182,7 +4211,10 @@ class Ticket extends CommonITILObject {
       } else {
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue('items_id');
-         Item_Ticket::itemAddForm($this, $values);
+         if ($canupdate
+             || $canupdate_descr) {
+            Item_Ticket::itemAddForm($this, $values);
+         }
          echo $tt->getEndHiddenFieldValue('items_id', $this);
          echo "</td>";
       }
@@ -6037,16 +6069,16 @@ class Ticket extends CommonITILObject {
    **/
    function setSimpleTextContent($content) {
 
-     $text = Html::entity_decode_deep($content);
+      $content = Html::entity_decode_deep($content);
 
       // If is html content
-      if ($text != strip_tags($text)) {
-         $content = Html::clean($this->convertImageToTag($text));
+      if ($content != strip_tags($content)) {
+         $content = Html::clean($this->convertImageToTag($content), false, 1);
+         $content = Html::entity_decode_deep(Html::clean($this->convertImageToTag($content)));
       }
 
       return $content;
    }
-
 
    /**
     * Convert simple text content to rich text content, init html editor
@@ -6069,13 +6101,14 @@ class Ticket extends CommonITILObject {
          $content = $this->convertTagToImage($content);
       }
 
-      // If content does not contain <br> or <p> html tag, use nl2br
-      $content = Html::entity_decode_deep($content);
+      // Neutralize non valid HTML tags
+      $content = html::clean($content, false, 1);
 
+      // If content does not contain <br> or <p> html tag, use nl2br
       if (!preg_match("/<br\s?\/?>/", $content) && !preg_match("/<p>/", $content)) {
          $content = nl2br($content);
       }
-      return Toolbox::clean_cross_side_scripting_deep($content);
+      return $content;
    }
 
 
@@ -6241,6 +6274,7 @@ class Ticket extends CommonITILObject {
       $ticket_users_keys = $this->getTicketActors();
 
       $user              = new User();
+      $group             = new Group();
       $followup_obj      = new TicketFollowup();
       $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
 
@@ -6268,12 +6302,6 @@ class Ticket extends CommonITILObject {
       $timeline_index = 0;
       foreach ($timeline as $item) {
          $item_i = $item['item'];
-
-         // don't display empty followup (ex : solution approbation)
-         if (($item['type'] == 'TicketFollowup')
-             && empty($item_i['content'])) {
-            continue;
-         }
 
          $date = "";
          if (isset($item_i['date'])) {
@@ -6361,6 +6389,10 @@ class Ticket extends CommonITILObject {
          if (isset($item_i['taskcategories_id']) && !empty($item_i['taskcategories_id'])) {
             echo Dropdown::getDropdownName("glpi_taskcategories", $item_i['taskcategories_id'])."<br>";
          }
+         if (isset($item_i['requesttypes_id']) && !empty($item_i['requesttypes_id'])) {
+            echo Dropdown::getDropdownName("glpi_requesttypes", $item_i['requesttypes_id'])."<br>";
+         }
+
          if (isset($item_i['actiontime']) && !empty($item_i['actiontime'])) {
             echo "<span class='actiontime'>";
             echo Html::timestampToString($item_i['actiontime'], false);
@@ -6388,6 +6420,13 @@ class Ticket extends CommonITILObject {
             echo $user->getLink();
             echo "</div>";
          }
+         if (isset($item_i['groups_id_tech']) && ($item_i['groups_id_tech'] > 0)) {
+            echo "<div class='groups_id_tech'>";
+            $group->getFromDB($item_i['groups_id_tech']);
+            echo $group->getLink();
+            echo "</div>";
+         }
+
 
          // show "is_private" icon
          if (isset($item_i['is_private']) && $item_i['is_private']) {
@@ -6495,7 +6534,9 @@ class Ticket extends CommonITILObject {
          echo "</div>";
 
          echo "<div class='ticket_description'>";
-         echo Toolbox::unclean_cross_side_scripting_deep(Html::entity_decode_deep($this->fields['content']));
+
+         echo $this->setSimpleTextContent($this->fields['content']);
+
          echo "</div>";
 
          echo "</div>"; // h_content TicketContent
@@ -6503,15 +6544,15 @@ class Ticket extends CommonITILObject {
          echo "</div>"; // h_item middle
 
          echo "<div class='break'></div>";
-      }
+         }
 
       // end timeline
       echo "</div>"; // h_item $user_position
       echo "<script type='text/javascript'>read_more();</script>";
-   }
+      }
 
 
-   /**
+    /**
     * @since version 0.90
    **/
    function getTicketActors() {
@@ -6768,5 +6809,25 @@ class Ticket extends CommonITILObject {
       return $html;
    }
 
+
+   /**
+    * Get correct Calendar: Entity or Sla
+    *
+    * @since 0.90.4
+    *
+   **/
+   function getCalendar() {
+
+      if ($this->fields['slas_id'] > 0) {
+         $sla = new SLA();
+         if ($sla->getFromDB($this->fields['slas_id'])) {
+            // not -1: calendar of the entity
+            if ($sla->getField('calendars_id') >= 0) {
+               return $sla->getField('calendars_id');
+            }
+         }
+      }
+      return parent::getCalendar();
+   }
+
 }
-?>

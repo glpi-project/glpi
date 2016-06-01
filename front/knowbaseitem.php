@@ -37,8 +37,6 @@
 
 include ('../inc/includes.php');
 
-//Session::checkRightsOr('knowbase', array(READ, KnowbaseItem::READFAQ));
-//yllen: a knowbaseitem can be view without log in
 if (!Session::haveRightsOr('knowbase', array(READ, KnowbaseItem::READFAQ))) {
    Session::redirectIfNotLoggedIn();
    Html::displayRightError();

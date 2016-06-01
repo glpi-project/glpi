@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -1136,5 +1135,12 @@ class Change extends CommonITILObject {
    }
 
 
+   /**
+    * Display debug information for current object
+    *
+    * @since version 0.90.2
+    **/
+   function showDebug() {
+      NotificationEvent::debugEvent($this);
+   }
 }
-?>
