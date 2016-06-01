@@ -2923,13 +2923,13 @@ ul#menu ul.ssmenu {
 }
 
 .timeline_history .private {
-   width: 23px;
+   width: 30px;
    float: right;
    padding-top: 18px;
    background: url(../pics/timeline/private.png) no-repeat center top;
    color: #A2A2A2;
-   font-size: 0.8em;
-   text-align: center;œ
+   font-size: .75em;
+   text-align: center;
    white-space: nowrap;
 }
 .timeline_history .right .private {
