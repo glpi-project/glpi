@@ -910,11 +910,11 @@ td { }
    font-size: 11px;
    border-bottom: 1px solid #EEE;
 }
-
+/* to view link color must be the color of the palette
 .tab_cadre_fixehov th a, .tab_cadrehov th a {
    color: #2E2E2E;
 }
-
+*/
 .tab_cadre_fixehov td, .tab_cadrehov td {
    padding: 8px 5px;
 }
