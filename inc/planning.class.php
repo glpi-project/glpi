@@ -532,9 +532,9 @@ class Planning extends CommonGLPI {
          $pl_height = "$('.ui-tabs-panel').height()-30";
       }
 
-      $date_formats = array(0 => __('YYYY MMMM DD'),
-                            1 => __('DD MMMM YYYY'),
-                            2 => __('MMMM DD YYYY'));
+      $date_formats = array(0 => __('YYYY MM DD'),
+                            1 => __('DD MM YYYY'),
+                            2 => __('MM DD YYYY'));
       $date_format = $date_formats[$_SESSION["glpidate_format"]];
 
       self::initSessionForCurrentUser();
