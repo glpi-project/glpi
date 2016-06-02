@@ -4149,7 +4149,8 @@ class Search {
                   $added         = array();
                   $count_display = 0;
                   for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
-                     if (strlen(trim($data[$num][$k]['name'])) > 0) {
+                     if (isset($data[$num][$k]['name'])
+                         && (strlen(trim($data[$num][$k]['name'])) > 0)) {
                         $text = sprintf(__('%1$s - %2$s'), $data[$num][$k]['name'],
                                         Dropdown::getDropdownName('glpi_profiles',
                                                                   $data[$num][$k]['profiles_id']));
