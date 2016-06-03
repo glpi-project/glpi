@@ -112,9 +112,18 @@ class TicketTask  extends CommonITILTask {
          return true;
       }
 
-      if ($this->fields["users_id"] === Session::getLoginUserID()) {
+      // see task created or affected to me
+      if (($this->fields["users_id"] === Session::getLoginUserID())
+          || ($this->fields["users_id_tech"] === Session::getLoginUserID())) {
          return true;
       }
+
+      if ($this->fields["groups_id_tech"] && ($this->fields["groups_id_tech"] > 0)
+          && isset($_SESSION["glpigroups"])
+          && in_array($this->fields["groups_id_tech"], $_SESSION["glpigroups"])) {
+         return true;
+      }
+
       return false;
    }
 
@@ -169,8 +178,8 @@ class TicketTask  extends CommonITILTask {
     *
     * @return boolean
    **/
-   function canDeleteItem() {
-      return $this->canUpdateItem();
+   function canPurgeItem() {
+      return Session::haveRight(self::$rightname, PURGE);
    }
 
 
@@ -280,7 +289,8 @@ class TicketTask  extends CommonITILTask {
 //         echo "<input type='hidden' name='id' value='$ID'>";
       } else {
          if ($params['candel']
-             && !$this->can($ID, DELETE)
+               // no dustbin in tickettask
+          //   && !$this->can($ID, DELETE)
              && !$this->can($ID, PURGE)) {
             $params['candel'] = false;
          }

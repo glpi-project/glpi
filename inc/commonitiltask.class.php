@@ -1006,6 +1006,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $canedit = $this->canEdit($this->fields['id']);
+      $canview = $this->canViewItem();
 
       echo "<tr class='tab_bg_";
       if ($this->maybePrivate()
@@ -1023,123 +1024,116 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo " id='viewfollowup" . $this->fields[$item->getForeignKeyField()] . $this->fields["id"] .
             "$rand'>";
 
-      echo "<td>";
-      switch ($this->fields['state']) {
-         case Planning::INFO :
-            echo Html::image($CFG_GLPI['root_doc']."/pics/faqedit.png",
-                             array('title' =>_n('Information', 'Information', 1)));
-            break;
+      if ($canview) {
+         echo "<td>";
+         switch ($this->fields['state']) {
+            case Planning::INFO :
+               echo Html::image($CFG_GLPI['root_doc']."/pics/faqedit.png",
+                                array('title' =>_n('Information', 'Information', 1)));
+               break;
 
-         case Planning::TODO :
-            if (empty($this->fields['begin'])) {
-               echo Html::image($CFG_GLPI['root_doc']."/pics/redbutton.png",
-                                array('title' => __('To do')));
-            } else {
-               echo Html::image($CFG_GLPI['root_doc']."/pics/rdv.png",
-                                array('title' => __('Planned')));
-            }
-            break;
+            case Planning::TODO :
+               if (empty($this->fields['begin'])) {
+                  echo Html::image($CFG_GLPI['root_doc']."/pics/redbutton.png",
+                                   array('title' => __('To do')));
+               } else {
+                  echo Html::image($CFG_GLPI['root_doc']."/pics/rdv.png",
+                                   array('title' => __('Planned')));
+               }
+               break;
 
-         case Planning::DONE :
-            echo Html::image($CFG_GLPI['root_doc']."/pics/greenbutton.png",
-                             array('title' => __('Done')));
-            break;
-      }
-      echo "</td>";
-
-      echo "<td>";
-      $typename = $this->getTypeName(1);
-      if ($this->fields['taskcategories_id']) {
-         printf(__('%1$s - %2$s'), $typename,
-                Dropdown::getDropdownName('glpi_taskcategories',
-                                          $this->fields['taskcategories_id']));
-      } else {
-         echo $typename;
-      }
-      echo "</td>";
-
-      echo "<td>";
-      if ($canedit) {
-         echo "\n<script type='text/javascript' >\n";
-         echo "function viewEditTask" . $item->fields['id'] . $this->fields["id"] . "$rand() {\n";
-         $params = array('type'       => $this->getType(),
-                         'parenttype' => $item->getType(),
-                         $item->getForeignKeyField()
-                                      => $this->fields[$item->getForeignKeyField()],
-                         'id'         => $this->fields["id"]);
-         Ajax::updateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
-                                $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
-         echo "};";
-         echo "</script>\n";
-      }
-      //else echo "--no--";
-      echo Html::convDateTime($this->fields["date"]) . "</td>";
-      echo "<td class='left'>" . nl2br(html_entity_decode($this->fields["content"])) . "</td>";
-      echo "<td>";
-      echo Html::timestampToString($this->fields["actiontime"], 0);
-
-      echo "</td>";
-      echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
-      if ($this->maybePrivate() && $showprivate) {
-         echo "<td>".Dropdown::getYesNo($this->fields["is_private"])."</td>";
-      }
-
-      echo "<td>";
-
-      if (empty($this->fields["begin"])) {
-         if (isset($this->fields["state"])) {
-            echo Planning::getState($this->fields["state"])."<br>";
+            case Planning::DONE :
+               echo Html::image($CFG_GLPI['root_doc']."/pics/greenbutton.png",
+                                array('title' => __('Done')));
+               break;
          }
-         if ($this->fields["users_id_tech"] || $this->fields["groups_id_tech"]) {
+         echo "</td>";
+         echo "<td>";
+         $typename = $this->getTypeName(1);
+         if ($this->fields['taskcategories_id']) {
+            printf(__('%1$s - %2$s'), $typename,
+                   Dropdown::getDropdownName('glpi_taskcategories',
+                                             $this->fields['taskcategories_id']));
+         } else {
+            echo $typename;
+         }
+         echo "</td>";
+         echo "<td>";
+         if ($canedit) {
+            echo "\n<script type='text/javascript' >\n";
+            echo "function viewEditTask" . $item->fields['id'] . $this->fields["id"] . "$rand() {\n";
+            $params = array('type'       => $this->getType(),
+                            'parenttype' => $item->getType(),
+                            $item->getForeignKeyField()
+                                         => $this->fields[$item->getForeignKeyField()],
+                            'id'         => $this->fields["id"]);
+            Ajax::updateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
+                                   $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+            echo "};";
+            echo "</script>\n";
+         }
+         //else echo "--no--";
+         echo Html::convDateTime($this->fields["date"]) . "</td>";
+         echo "<td class='left'>" . nl2br(html_entity_decode($this->fields["content"])) . "</td>";
+         echo "<td>".Html::timestampToString($this->fields["actiontime"], 0)."</td>";
+         echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
+         if ($this->maybePrivate() && $showprivate) {
+            echo "<td>".Dropdown::getYesNo($this->fields["is_private"])."</td>";
+         }
+         echo "<td>";
+         if (empty($this->fields["begin"])) {
+            if (isset($this->fields["state"])) {
+               echo Planning::getState($this->fields["state"])."<br>";
+            }
+            if ($this->fields["users_id_tech"] || $this->fields["groups_id_tech"]) {
+               if ($this->fields["users_id_tech"]) {
+                  printf('%1$s %2$s',__('By user'),getUserName($this->fields["users_id_tech"]));
+               }
+               if ($this->fields["groups_id_tech"]) {
+                  $groupname = sprintf('%1$s %2$s',"<br />".__('By group'),
+                                       Dropdown::getDropdownName('glpi_groups',
+                                                                 $this->fields["groups_id_tech"]));
+                  if ($_SESSION['glpiis_ids_visible']) {
+                     $groupname = printf(__('%1$s (%2$s)'), $groupname, $this->fields["groups_id_tech"]);
+                  }
+               }
+            } else {
+               _e('None');
+            }
+         } else {
+            echo "<table width='100%'>";
+            if (isset($this->fields["state"])) {
+               echo "<tr><td>"._x('item', 'State')."</td><td>";
+               echo Planning::getState($this->fields["state"])."</td></tr>";
+            }
+            echo "<tr><td>".__('Begin')."</td><td>";
+            echo Html::convDateTime($this->fields["begin"])."</td></tr>";
+            echo "<tr><td>".__('End')."</td><td>";
+            echo Html::convDateTime($this->fields["end"])."</td></tr>";
+            echo "<tr><td>";
             if ($this->fields["users_id_tech"]) {
                printf('%1$s %2$s',__('By user'),getUserName($this->fields["users_id_tech"]));
             }
             if ($this->fields["groups_id_tech"]) {
                $groupname = sprintf('%1$s %2$s',"<br />".__('By group'),
-                                    Dropdown::getDropdownName('glpi_groups',
-                                                              $this->fields["groups_id_tech"]));
+                                     Dropdown::getDropdownName('glpi_groups',
+                                                               $this->fields["groups_id_tech"]));
                if ($_SESSION['glpiis_ids_visible']) {
-                  $groupname = printf(__('%1$s (%2$s)'), $groupname, $this->fields["groups_id_tech"]);
+                   $groupname = printf(__('%1$s (%2$s)'), $groupname,
+                                       $this->fields["groups_id_tech"]);
                }
             }
-         } else {
-            _e('None');
-         }
-      } else {
-         echo "<table width='100%'>";
-         if (isset($this->fields["state"])) {
-            echo "<tr><td>"._x('item', 'State')."</td><td>";
-            echo Planning::getState($this->fields["state"])."</td></tr>";
-         }
-         echo "<tr><td>".__('Begin')."</td><td>";
-         echo Html::convDateTime($this->fields["begin"])."</td></tr>";
-         echo "<tr><td>".__('End')."</td><td>";
-         echo Html::convDateTime($this->fields["end"])."</td></tr>";
-         echo "<tr><td>";
-         if ($this->fields["users_id_tech"]) {
-            printf('%1$s %2$s',__('By user'),getUserName($this->fields["users_id_tech"]));
-         }
-         if ($this->fields["groups_id_tech"]) {
-            $groupname = sprintf('%1$s %2$s',"<br />".__('By group'),
-                                  Dropdown::getDropdownName('glpi_groups',
-                                                            $this->fields["groups_id_tech"]));
-            if ($_SESSION['glpiis_ids_visible']) {
-               $groupname = printf(__('%1$s (%2$s)'), $groupname, $this->fields["groups_id_tech"]);
+            if (PlanningRecall::isAvailable()
+                && $_SESSION["glpiactiveprofile"]["interface"] == "central") {
+               echo "<tr><td>"._x('Planning','Reminder')."</td><td>";
+               PlanningRecall::specificForm(array('itemtype' => $this->getType(),
+                                                  'items_id' => $this->fields["id"]));
             }
-         }
-         if (PlanningRecall::isAvailable()
-             && $_SESSION["glpiactiveprofile"]["interface"] == "central") {
-            echo "<tr><td>"._x('Planning','Reminder')."</td><td>";
-            PlanningRecall::specificForm(array('itemtype' => $this->getType(),
-                                               'items_id' => $this->fields["id"]));
-
             echo "</td></tr>";
+            echo "</table>";
          }
-         echo "</table>";
+         echo "</td></tr>\n";
       }
-      echo "</td>";
-
-      echo "</tr>\n";
    }
 
 
@@ -1438,11 +1432,15 @@ abstract class CommonITILTask  extends CommonDBTM {
       $caneditall  = $this->canEditAll();
       $tmp         = array($item->getForeignKeyField() => $tID);
       $canadd      = $this->can(-1, CREATE, $tmp);
+      $canpurge    = $this->canPurgeItem();
+      $canview     = $this->canViewItem();
 
       $RESTRICT = "";
       if ($this->maybePrivate() && !$showprivate) {
          $RESTRICT = " AND (`is_private` = '0'
-                            OR `users_id` ='" . Session::getLoginUserID() . "') ";
+                            OR `users_id` ='" . Session::getLoginUserID() . "'
+                            OR `users_id_tech` ='" . Session::getLoginUserID()."'
+                            OR `groups_id_tech` IN ('".implode("','",$_SESSION["glpigroups"])."')) ";
       }
 
       $query = "SELECT `id`, `date`
@@ -1454,7 +1452,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $rand = mt_rand();
 
-      if ($caneditall || $canadd) {
+      if ($caneditall || $canadd || $canpurge) {
          echo "<div id='viewfollowup" . $tID . "$rand'></div>\n";
       }
 
