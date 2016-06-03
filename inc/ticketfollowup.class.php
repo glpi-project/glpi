@@ -142,7 +142,7 @@ class TicketFollowup  extends CommonDBTM {
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'), READ)
         // No validation for closed tickets
-        || (in_array($ticket->fields['status'],$ticket->getClosedStatusArray())
+          || (in_array($ticket->fields['status'],$ticket->getClosedStatusArray())
             && !$ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING))) {
          return false;
       }
@@ -184,7 +184,7 @@ class TicketFollowup  extends CommonDBTM {
 
       if ($item->getType() == 'Ticket') {
          $nb = 0;
-         if (Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
+         if (self::canCreate()) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb = countElementsInTable('glpi_ticketfollowups',
                                           "`tickets_id` = '".$item->getID()."'");
@@ -794,7 +794,8 @@ class TicketFollowup  extends CommonDBTM {
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRightsOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))) {
+      if (!Session::haveRightsOr(self::$rightname,
+                                 array(self::SEEPUBLIC, self::SEEPRIVATE, self::ADDMYTICKET))) {
          return false;
       }
 
