@@ -6341,7 +6341,12 @@ class Ticket extends CommonITILObject {
                       User::getThumbnailURLForPicture($user->fields['picture'])."'>";
                echo "</div>";
 
-               echo $user->getLink();
+               echo "<span class='h_user_name'>";
+               $userdata = getUserName($item_i['users_id'], 2);
+               echo $user->getLink()."&nbsp;";
+               echo Html::showToolTip($userdata["comment"],
+                                      array('link' => $userdata['link']));
+               echo "</span>";
             } else {
                _e("Requester");
             }
@@ -6351,12 +6356,17 @@ class Ticket extends CommonITILObject {
          echo "</div>"; //h_date
 
          echo "<div class='h_content ".$item['type'].
-               ((isset($item_i['status'])) ? " ".$item_i['status'] : "")."'";
+               ((isset($item_i['status'])) ? " ".$item_i['status'] : "")."'".
+               "id='viewitem".$item['type'].$item_i['id'].$rand."'>";
+         echo "<div class='edit_item_content'></div>";
+         echo "<span class='cancel_edit_item_content'></span>";
+         echo "<div class='displayed_content'>";
          if (!in_array($item['type'], array('Document_Item', 'Assign'))
              && $item_i['can_edit']) {
-            echo " ondblclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this)'";
+            echo "<span class='edit_item' ";
+            echo "onclick='javascript:viewEditSubitem".$this->fields['id']."$rand(event, \"".$item['type']."\", ".$item_i['id'].", this, \"viewitem".$item['type'].$item_i['id'].$rand."\")'";
+            echo "></span>";
          }
-         echo ">";
          if (isset($item_i['requesttypes_id'])
              && file_exists("$pics_url/".$item_i['requesttypes_id'].".png")) {
             echo "<img src='$pics_url/".$item_i['requesttypes_id'].".png' title='' class='h_requesttype' />";
@@ -6373,7 +6383,15 @@ class Ticket extends CommonITILObject {
             }
 
             echo "<div class='item_content $long_text'>";
-            echo "<p>$content</p>";
+            echo "<p>";
+            if (isset($item_i['state'])) {
+               echo "<span class='state state_".$item_i['state']."'
+                           onclick='change_task_state(".$item_i['id'].", this)'
+                           title='".Planning::getState($item_i['state'])."'>";
+               echo "</span>";
+            }
+            echo $content;
+            echo "</p>";
             if (!empty($long_text)) {
                echo "<p class='read_more'>";
                echo "<a class='read_more_button'>.....</a>";
@@ -6398,11 +6416,6 @@ class Ticket extends CommonITILObject {
             echo Html::timestampToString($item_i['actiontime'], false);
             echo "</span>";
          }
-         if (isset($item_i['state'])) {
-            echo "<span class='state state_".$item_i['state']."'>";
-            echo Planning::getState($item_i['state']);
-            echo "</span>";
-         }
          if (isset($item_i['begin'])) {
             echo "<span class='planification'>";
             echo Html::convDateTime($item_i["begin"]);
@@ -6411,19 +6424,22 @@ class Ticket extends CommonITILObject {
             echo "</span>";
          }
          if (isset($item_i['users_id_tech']) && ($item_i['users_id_tech'] > 0)) {
-            echo "<div class='users_id_tech'>";
+            echo "<div class='users_id_tech' id='users_id_tech_".$item_i['users_id_tech']."'>";
             $user->getFromDB($item_i['users_id_tech']);
-            echo "<div class='tooltip_picture_border'>";
-            echo "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
-                   User::getThumbnailURLForPicture($user->fields['picture'])."'>";
-            echo "</div>";
-            echo $user->getLink();
+            echo Html::image($CFG_GLPI['root_doc']."/pics/user.png")."&nbsp;";
+            $userdata = getUserName($item_i['users_id_tech'], 2);
+            echo $user->getLink()."&nbsp;";
+            echo Html::showToolTip($userdata["comment"],
+                                   array('link' => $userdata['link']));
             echo "</div>";
          }
          if (isset($item_i['groups_id_tech']) && ($item_i['groups_id_tech'] > 0)) {
             echo "<div class='groups_id_tech'>";
             $group->getFromDB($item_i['groups_id_tech']);
-            echo $group->getLink();
+            echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
+            echo $group->getLink()."&nbsp;";
+            echo Html::showToolTip($group->getComments(),
+                                   array('link' => $group->getLinkURL()));
             echo "</div>";
          }
 
@@ -6472,6 +6488,7 @@ class Ticket extends CommonITILObject {
             echo "<img src='$pics_url/delete.png' /></a>";
          }
 
+         echo "</div>"; // displayed_content
          echo "</div>"; //end h_content
 
          echo "</div>"; //end  h_info
@@ -6648,7 +6665,8 @@ class Ticket extends CommonITILObject {
       // javascript function for add and edit items
       echo "<script type='text/javascript' >\n";
       echo "function viewAddSubitem" . $this->fields['id'] . "$rand(itemtype) {\n";
-      $params = array('type'       => 'itemtype',
+      $params = array('action'     => 'viewsubitem',
+                      'type'       => 'itemtype',
                       'parenttype' => 'Ticket',
                       'tickets_id' => $this->fields['id'],
                       'id'         => -1);
@@ -6656,40 +6674,52 @@ class Ticket extends CommonITILObject {
          $params['load_kb_sol'] = $_GET['load_kb_sol'];
       }
       $out = Ajax::updateItemJsCode("viewitem" . $this->fields['id'] . "$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/timeline_viewsubitem.php",
+                                    $CFG_GLPI["root_doc"]."/ajax/timeline.php",
                                     $params, "", false);
       echo str_replace("\"itemtype\"", "itemtype", $out);
       echo "$('#approbation_form$rand').remove()";
       echo "};";
-      $out = "function viewEditSubitem" . $this->fields['id'] . "$rand(e, itemtype, items_id, o) {\n
+
+      echo "
+
+      function change_task_state(tasks_id, target) {
+         $.post('".$CFG_GLPI["root_doc"]."/ajax/timeline.php',
+                {'action':     'change_task_state',
+                  'tasks_id':   tasks_id,
+                  'tickets_id': ".$this->fields['id']."
+                })
+                .done(function(new_state) {
+                  $(target).removeClass('state_1 state_2')
+                           .addClass('state_'+new_state);
+                });
+      }
+
+      function viewEditSubitem" . $this->fields['id'] . "$rand(e, itemtype, items_id, o, domid) {
+               domid = (typeof domid === 'undefined')
+                         ? 'viewitem".$this->fields['id'].$rand."'
+                         : domid;
                var target = e.target || window.event.srcElement;
                if (target.nodeName == 'a') return;
-               if (target.className == 'read_more_button') return;";
-      $params = array('type'       => 'itemtype',
-                      'parenttype' => 'Ticket',
-                      'tickets_id' => $this->fields['id'],
-                      'id'         => 'items_id');
-      $out.= Ajax::updateItemJsCode("viewitem" . $this->fields['id'] . "$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/timeline_viewsubitem.php",
-                                    $params, "", false);
-      $out = str_replace("\"itemtype\"", "itemtype", $out);
-      $out = str_replace("\"items_id\"", "items_id", $out);
-      echo $out;
+               if (target.className == 'read_more_button') return;
+               $('#'+domid).addClass('edited');
+               $('#'+domid+' .displayed_content').hide();
+               $('#'+domid+' .cancel_edit_item_content').show()
+                                                        .click(function() {
+                                                            $(this).hide();
+                                                            $('#'+domid).removeClass('edited');
+                                                            $('#'+domid+' .edit_item_content').empty().hide();
+                                                            $('#'+domid+' .displayed_content').show();
+                                                        });
+               $('#'+domid+' .edit_item_content').show()
+                                                 .load('".$CFG_GLPI["root_doc"]."/ajax/timeline.php',
+                                                       {'action'    : 'viewsubitem',
+                                                        'type'      : itemtype,
+                                                        'parenttype': 'Ticket',
+                                                        'tickets_id': ".$this->fields['id'].",
+                                                        'id'        : items_id
+                                                       });
 
-      //scroll to edit form
-      echo "$('body').scrollTop(0);";
-      echo "$('.ui-tabs-panel').scrollTop(0);";
 
-      // add a mark to currently edited element
-      echo "var found_active = $('.talk_active');
-            i = found_active.length;
-            while(i--) {
-               var classes = found_active[i].className.replace( /(?:^|\s)talk_active(?!\S)/ , '' );
-               found_active[i].className = classes;
-            }
-            o.className = o.className + ' talk_active';
-
-            $('#approbation_form$rand').remove();
       };";
 
       if (isset($_GET['load_kb_sol'])) {
@@ -6784,6 +6814,7 @@ class Ticket extends CommonITILObject {
       $ticket       = new self();
       $ticket->getFromDB($tickets_id);
       $all_status   = Ticket::getAllowedStatusArray($ticket->fields['status']);
+      $rand = mt_rand();
 
       $html = "<div class='x-split-button' id='x-split-button'>
                <input type='submit' value='$locale' name='$action' class='x-button x-button-main'>
@@ -6795,9 +6826,9 @@ class Ticket extends CommonITILObject {
             $checked = "checked='checked'";
          }
          $html .= "<li>";
-         $html .= "<input type='radio' id='status_radio_$status_key' name='_status'
+         $html .= "<input type='radio' id='status_radio_$status_key$rand' name='_status'
                     $checked value='$status_key'>";
-         $html .= "<label for='status_radio_$status_key'>";
+         $html .= "<label for='status_radio_$status_key$rand'>";
          $html .= "<img src='".Ticket::getStatusIconURL($status_key)."' />&nbsp;";
          $html .= $status_label;
          $html .= "</label>";
