@@ -93,7 +93,7 @@ class ProjectTask extends CommonDBChild {
                      && (($project->fields["users_id"] === Session::getLoginUserID())
                          || $project->isInTheManagerGroup()
                          || $project->isInTheTeam()))
-                 || (Session::haveRight('projecttask', ProjectTask::READMY)
+                 || (Session::haveRight(self::$rightname, self::READMY)
                      && (($this->fields["users_id"] === Session::getLoginUserID())
                          || $this->isInTheTeam())));
       }
@@ -109,7 +109,7 @@ class ProjectTask extends CommonDBChild {
    static function canUpdate() {
 
       return (parent::canUpdate()
-              || Session::haveRight('projecttask', self::UPDATEMY));
+              || Session::haveRight(self::$rightname, self::UPDATEMY));
    }
 
 
@@ -126,7 +126,7 @@ class ProjectTask extends CommonDBChild {
       $project = new Project();
       if ($project->getFromDB($this->fields['projects_id'])) {
          return (Session::haveRight(self::$rightname, UPDATE)
-                 || (Session::haveRight('projecttask', ProjectTask::UPDATEMY)
+                 || (Session::haveRight(self::$rightname, self::UPDATEMY)
                      && (($this->fields["users_id"] === Session::getLoginUserID())
                          || $this->isInTheTeam())));
       }

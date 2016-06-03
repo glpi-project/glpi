@@ -42,9 +42,17 @@ if (!defined('GLPI_ROOT')) {
 /// TODO extends it from CommonDBChild
 abstract class CommonITILTask  extends CommonDBTM {
 
-
    // From CommonDBTM
    public $auto_message_on_action = false;
+
+   const SEEPUBLIC       =    1;
+   const UPDATEMY        =    2;
+   const UPDATEALL       = 1024;
+   //   const NOTUSED      = 2048;
+   const ADDALLTICKET    = 4096;
+   const SEEPRIVATE      = 8192;
+
+
 
    function getItilObjectItemType() {
       return str_replace('Task','',$this->getType());
