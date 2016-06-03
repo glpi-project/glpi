@@ -60,6 +60,44 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
       $this->addTarget(Notification::AUTHOR, __('Requester'));
    }
 
+   /**
+    * @see NotificationTarget::getSpecificTargets()
+   **/
+   function getSpecificTargets($data, $options) {
+      $this->addTarget(Notification::TASK_ASSIGN_TECH, __('Technician in charge of the task'));
+   }
+
+   /**
+    * @see NotificationTarget::getSpecificTargets()
+   **/
+   function getSpecificTargets($data, $options) {
+      switch ($data['type']) {
+         case Notification::USER_TYPE :
+            switch ($data['items_id']) {
+               //Send to the ITIL object followup author
+               case Notification::TASK_ASSIGN_TECH :
+                  $this->getTaskAssignUser($options);
+                  break;
+            }
+         break;
+      }
+   }
+
+   /**
+    * Get tech related to the task
+    *
+    * @param $options array
+   **/
+   function getTaskAssignUser() {
+
+      $user = new User();
+      if ($this->obj->isField('users_id_tech')
+          && $user->getFromDB($this->obj->getField('users_id_tech'))) {
+         $this->addToAddressesList(array('language' => $user->getField('language'),
+                                         'users_id' => $user->getField('id')));
+      }
+   }
+
 
    /**
     * @see NotificationTarget::getDatasForTemplate()
