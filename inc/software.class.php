@@ -282,8 +282,8 @@ class Software extends CommonDBTM {
                             'entity'    => $this->fields['entities_id'],
                             'condition' => '`is_assign`'));
       echo "</td>";
-      echo "<td rowspan='5' class='middle'>".__('Comments') . "</td>";
-      echo "<td class='center middle' rowspan='5'>";
+      echo "<td rowspan='4' class='middle'>".__('Comments') . "</td>";
+      echo "<td class='center middle' rowspan='4'>";
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 

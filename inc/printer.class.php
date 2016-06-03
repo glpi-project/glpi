@@ -387,7 +387,7 @@ class Printer  extends CommonDBTM {
 
 
       // Display auto inventory informations
-      $rowspan        = 6;
+      $rowspan        = 5;
       $inventory_show = false;
 
        if (!empty($ID)
