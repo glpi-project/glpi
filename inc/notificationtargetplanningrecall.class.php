@@ -61,9 +61,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
    }
 
    /**
-    * @see NotificationTarget::getSpecificTargets()
+    * @see NotificationTarget::getAdditionalTargets()
    **/
-   function getSpecificTargets($data, $options) {
+   function getAdditionalTargets($event='') {
       $this->addTarget(Notification::TASK_ASSIGN_TECH, __('Technician in charge of the task'));
    }
 
