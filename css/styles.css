@@ -3144,8 +3144,8 @@ ul#menu ul.ssmenu {
 
 .timeline_history .state {
    display: inline-block;
-   width: 14px;
-   height: 14px;
+   width: 20px;
+   height: 20px;
    margin-right: 3px;
    background-repeat: no-repeat;
    vertical-align: middle;
@@ -3619,4 +3619,3 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
       margin-bottom: 10px;
    }
 }
-
