@@ -42,24 +42,23 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
       unset($CFG_GLPI['glpitablesitemtype']);
 
       // Pseudo plugin class for test
-      require_once 'fixtures/pluginfoobar.php';
+      include_once 'fixtures/pluginfoobar.php';
    }
 
 
    public function dataTableKey() {
-      return array(
-         array('foo', ''),
-         array('glpi_computers', 'computers_id'),
-         array('glpi_users', 'users_id'),
-         array('glpi_plugin_foo_bars', 'plugin_foo_bars_id'),
-      );
+
+      return array(array('foo', ''),
+                   array('glpi_computers', 'computers_id'),
+                   array('glpi_users', 'users_id'),
+                   array('glpi_plugin_foo_bars', 'plugin_foo_bars_id'));
    }
 
 
    /**
     * @covers getForeignKeyFieldForTable
     * @dataProvider dataTableKey
-    */
+   **/
    public function testGetForeignKeyFieldForTable($table, $key) {
       $this->assertEquals($key, getForeignKeyFieldForTable($table));
    }
@@ -68,9 +67,9 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
    /**
     * @covers isForeignKeyField
     * @dataProvider dataTableKey
-    *
-    */
+   **/
    public function testIsForeignKeyFieldBase($table, $key) {
+
       if ($key) {
          $this->assertTrue(isForeignKeyField($key));
       }
@@ -79,9 +78,9 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
    /**
     * @covers isForeignKeyField
-    *
-    */
+   **/
    public function testIsForeignKeyFieldMore() {
+
       $this->assertFalse(isForeignKeyField('FakeId'));
       $this->assertFalse(isForeignKeyField('id_Another_Fake_Id'));
       $this->assertTrue(isForeignKeyField('users_id_tech'));
@@ -92,8 +91,9 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
    /**
     * @covers getTableNameForForeignKeyField
     * @dataProvider dataTableKey
-    */
+   **/
    public function testGetTableNameForForeignKeyField($table, $key) {
+
       if ($key) {
          $this->assertEquals($table, getTableNameForForeignKeyField($key));
       }
@@ -101,19 +101,18 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    public function dataTableType() {
-      return array(
-         array('glpi_computers', 'Computer', true),
-         array('glpi_users', 'User', true),
-         array('glpi_plugin_foo_bars', 'PluginFooBar', true),
-         array('glpi_plugin_foo_bazs', 'PluginFooBaz', false),
-      );
+
+      return array(array('glpi_computers', 'Computer', true),
+                   array('glpi_users', 'User', true),
+                   array('glpi_plugin_foo_bars', 'PluginFooBar', true),
+                   array('glpi_plugin_foo_bazs', 'PluginFooBaz', false));
    }
 
 
    /**
     * @covers getTableForItemType
     * @dataProvider dataTableType
-    */
+   **/
    public function testGetTableForItemType($table, $type, $classexists) {
       $this->assertEquals($table, getTableForItemType($type));
    }
@@ -122,8 +121,9 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
    /**
     * @covers getItemTypeForTable
     * @dataProvider dataTableType
-    */
+   **/
    public function testGetItemTypeForTable($table, $type, $classexists) {
+
       if ($classexists) {
          $this->assertEquals($type, getItemTypeForTable($table));
       } else {
@@ -135,8 +135,9 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
    /**
     * @covers getItemForItemtype
     * @dataProvider dataTableType
-    */
+   **/
    public function testGetItemForItemtype($table, $itemtype, $classexists) {
+
       if ($classexists) {
          $this->assertInstanceOf($itemtype, getItemForItemtype($itemtype));
       } else {
@@ -146,26 +147,26 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    public function dataPlural() {
-      return array(
-         array('model', 'models'),
-         array('address', 'addresses'),
-         array('computer', 'computers'),
-         array('thing', 'things'),
-         array('criteria', 'criterias'),
-         array('version', 'versions'),
-         array('config', 'configs'),
-         array('machine', 'machines'),
-         array('memory', 'memories'),
-         array('licence', 'licences'),
-      );
+
+      return array(array('model', 'models'),
+                   array('address', 'addresses'),
+                   array('computer', 'computers'),
+                   array('thing', 'things'),
+                   array('criteria', 'criterias'),
+                   array('version', 'versions'),
+                   array('config', 'configs'),
+                   array('machine', 'machines'),
+                   array('memory', 'memories'),
+                   array('licence', 'licences'));
    }
 
 
     /**
     * @covers getPlural
     * @dataProvider dataPlural
-    */
+   **/
    public function testGetPlural($singular, $plural) {
+
       $this->assertEquals($plural, getPlural($singular));
       $this->assertEquals($plural, getPlural(getPlural($singular)));
    }
@@ -174,19 +175,20 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
    /**
     * @covers getSingular
     * @dataProvider dataPlural
-    */
+   **/
    public function testGetSingular($singular, $plural) {
+
       $this->assertEquals($singular, getSingular($plural));
       $this->assertEquals($singular, getSingular(getSingular($plural)));
    }
 
 
-   /*
+   /**
     * @covers countElementsInTable
-    *
-    */
+   **/
    public function testCountElementsInTable() {
    global $DB;
+
       //the case of using an element that is not a table is not handle in the function :
       //testCountElementsInTable($table, $condition="")
       $this->assertGreaterThan(100, countElementsInTable('glpi_configs'));
@@ -198,17 +200,20 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
    }
 
 
-   /*
+   /**
     * @covers countDistinctElementsInTable
-    */
-   public function testCountDistinctElementsInTable(){
+   **/
+   public function testCountDistinctElementsInTable() {
    global $DB;
+
       //the case of using an element that is not a table is not handle in the function :
       //testCountElementsInTable($table, $condition="")
       $this->assertGreaterThan(0, countDistinctElementsInTable('glpi_configs','id'));
       $this->assertGreaterThan(0, countDistinctElementsInTable('glpi_configs','context'));
-      $this->assertEquals(1, countDistinctElementsInTable('glpi_configs','context',"name = 'version'"));
-      $this->assertEquals(0, countDistinctElementsInTable('glpi_configs', 'id', "context ='fakecontext'"));
+      $this->assertEquals(1, countDistinctElementsInTable('glpi_configs','context',
+                                                          "name = 'version'"));
+      $this->assertEquals(0, countDistinctElementsInTable('glpi_configs', 'id',
+                                                          "context ='fakecontext'"));
    }
 
 
@@ -219,21 +224,20 @@ TODO :
 */
 
 
-   /*
+   /**
     *@covers getAllDatasFromTable
-    *
-    */
-   public function testGetAllDatasFromTable(){
+   **/
+   public function testGetAllDatasFromTable() {
+
       $data = getAllDatasFromTable('glpi_configs');
       $this->assertTrue(is_array($data));
       $this->assertGreaterThan(100,count($data));
-      foreach($data as $key => $array){
+      foreach($data as $key => $array) {
          $this->assertTrue(is_array($array));
          $this->assertTrue($key == $array['id']);
       }
 
-      $data = getAllDatasFromTable('glpi_configs',"context = 'core'
-                                          AND `name` = 'version'");
+      $data = getAllDatasFromTable('glpi_configs', "context = 'core' AND `name` = 'version'");
       $this->assertEquals(1, count($data));
 
       $data = getAllDatasFromTable('glpi_configs',"", false,'name');
@@ -262,19 +266,21 @@ getUserName
 */
 
 
-   /*
+   /**
     *@covers TableExists
-    */
-   public function testTableExist(){
+   **/
+   public function testTableExist() {
+
       $this->assertTrue(TableExists('glpi_configs'));
       $this->assertFalse(TableExists('fakeTable'));
    }
 
 
-   /*
+   /**
     *@covers FieldExists
-    */
-   public function testFieldExist(){
+   **/
+   public function testFieldExist() {
+
       $this->assertTrue(FieldExists('glpi_configs','id'));
       $this->assertFalse(FieldExists('glpi_configs','fakeField'));
       $this->assertFalse(FieldExists('fakeTable','id'));
@@ -282,10 +288,11 @@ getUserName
    }
 
 
-   /*
+   /**
     * @covers isIndex
-    */
-   public function testIsIndex(){
+   **/
+   public function testIsIndex() {
+
       $this->assertFalse(isIndex('glpi_configs','fakeField'));
       $this->assertFalse(isIndex('fakeTable','id'));
       $this->assertFalse(isIndex('glpi_configs','name'));
@@ -301,14 +308,15 @@ getUserName
 */
 
 
-   /*
+   /**
     * @covers formatOutputWebLink
-    */
+   **/
    public function testFormatOutputWebLink(){
+
       $this->assertEquals('http://www.glpi-project.org/',
-                           formatOutputWebLink('www.glpi-project.org/'));
+                          formatOutputWebLink('www.glpi-project.org/'));
       $this->assertEquals('http://www.glpi-project.org/',
-                           formatOutputWebLink('http://www.glpi-project.org/'));
+                          formatOutputWebLink('http://www.glpi-project.org/'));
    }
 
 /*

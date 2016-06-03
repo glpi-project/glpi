@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -94,7 +93,7 @@ if (isset($_POST["itemtype"])
    $_POST['value']      = stripslashes($_POST['value']);
    $_POST['searchopt']  = $searchopt;
 
-   include(GLPI_ROOT."/ajax/searchoptionvalue.php");
+   include_once(GLPI_ROOT."/ajax/searchoptionvalue.php");
    echo "</span>\n";
    echo "</td></tr></table>";
 
@@ -111,4 +110,3 @@ if (isset($_POST["itemtype"])
                                  $CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",
                                  $paramsaction);
 }
-?>

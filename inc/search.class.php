@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -1846,7 +1845,7 @@ class Search {
       for ($i=0 ; $i<count($p['criteria']) ; $i++) {
          $_POST['itemtype'] = $itemtype;
          $_POST['num']      = $i ;
-         include(GLPI_ROOT.'/ajax/searchrow.php');
+         include_once(GLPI_ROOT.'/ajax/searchrow.php');
       }
 
       $metanames = array();
@@ -1857,7 +1856,7 @@ class Search {
 
             $_POST['itemtype'] = $itemtype;
             $_POST['num'] = $i ;
-            include(GLPI_ROOT.'/ajax/searchmetarow.php');
+            include_once(GLPI_ROOT.'/ajax/searchmetarow.php');
          }
       }
       echo "</table>\n";
@@ -6184,4 +6183,3 @@ class Search {
    }
 
 }
-?>

@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -40,8 +39,8 @@ if (!defined('GLPI_ROOT')) {
 }
 // GLPIMailer::__construct don't call PHPMailer::__construct
 // so PHPMailerAutoload is not registered, so need this
-require_once(GLPI_PHPMAILER_DIR . "/class.smtp.php");
-require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
+include_once(GLPI_PHPMAILER_DIR . "/class.smtp.php");
+include_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
 
 
 /** GLPIPhpMailer class
@@ -89,4 +88,3 @@ class GLPIMailer extends PHPMailer {
    }
 
 }
-?>

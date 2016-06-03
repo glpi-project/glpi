@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -268,8 +267,8 @@ function glpi_autoload($classname) {
       die("Security die. trying to load an forbidden class name");
    }
 
-   
-   
+
+
    $dir = GLPI_ROOT . "/inc/";
    if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
@@ -332,7 +331,7 @@ function glpi_autoload($classname) {
 // Use spl autoload to allow stackable autoload.
 spl_autoload_register('glpi_autoload');
 
-require_once (GLPI_ZEND_PATH . '/Loader/StandardAutoloader.php');
+include_once(GLPI_ZEND_PATH . '/Loader/StandardAutoloader.php');
 $option = array(Zend\Loader\StandardAutoloader::LOAD_NS => array('Zend' => GLPI_ZEND_PATH));
 $loader = new Zend\Loader\StandardAutoloader($option);
 $loader->register();
@@ -372,14 +371,13 @@ class SimplePie_Autoloader {
       if (empty($class) || is_numeric($class) || (strpos($class, '.') !== false)) {
          return false;
       }
-   
+
       // Only load the class if it starts with "SimplePie"
       if (strpos($class, 'SimplePie') !== 0) {
          return;
       }
       $filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) .
                   '.php';
-      require_once($filename);
+      include_once($filename);
    }
 }
-?>

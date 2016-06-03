@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -1725,7 +1724,7 @@ class Config extends CommonDBTM {
       echo "phpCas version " . phpCAS::getVersion() . " in (" .
             (dirname(GLPI_PHPCAS) ? realpath(dirname(GLPI_PHPCAS)) : "system") . ")\n";
 
-      require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
+      include_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
       $pm = new PHPMailer();
       echo "PHPMailer version " . $pm->Version . " in (" . realpath(GLPI_PHPMAILER_DIR) . ")\n";
 
@@ -1745,7 +1744,7 @@ class Config extends CommonDBTM {
       echo "TCPDF version " . TCPDF_STATIC::getTCPDFVersion() . " in (" . realpath(GLPI_TCPDF_DIR) . ")\n";
 
       // password_compat
-      require_once GLPI_PASSWORD_COMPAT;
+      include_once GLPI_PASSWORD_COMPAT;
       $check = (PasswordCompat\binary\check() ? "Ok" : "KO");
       echo "ircmaxell/password-compat in (" . realpath(dirname(GLPI_PASSWORD_COMPAT)) . "). Compatitility: $check\n";
 
@@ -2217,4 +2216,3 @@ class Config extends CommonDBTM {
    }
 
 }
-?>

@@ -35,8 +35,8 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
 }
 global $CFG_GLPI;
 
-require_once __DIR__ . '/../inc/includes.php';
-require_once __DIR__ . '/DbTestCase.php';
+include_once __DIR__ . '/../inc/includes.php';
+include_once __DIR__ . '/DbTestCase.php';
 
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
