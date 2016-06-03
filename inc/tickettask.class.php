@@ -43,14 +43,6 @@ class TicketTask  extends CommonITILTask {
 
    static $rightname = 'task';
 
-   const SEEPUBLIC       =    1;
-   const UPDATEMY        =    2;
-   const UPDATEALL       = 1024;
-//   const NOTUSED      = 2048;
-   const ADDALLTICKET    = 4096;
-   const SEEPRIVATE      = 8192;
-
-
 
 
    /**
@@ -63,7 +55,7 @@ class TicketTask  extends CommonITILTask {
 
    static function canCreate() {
 
-      return (Session::haveRight(self::$rightname, parent::ADDALLTICKET)
+      return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
               || Session::haveRight('ticket', Ticket::OWN));
    }
 
@@ -144,7 +136,7 @@ class TicketTask  extends CommonITILTask {
       if ($ticket->getFromDB($this->fields['tickets_id'])
           // No validation for closed tickets
           && !in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
-         return (Session::haveRight(self::$rightname, parent::ADDALLTICKET)
+         return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
                  || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])
                      && $ticket->haveAGroup(CommonITILActor::ASSIGN, $_SESSION['glpigroups'])));
@@ -239,7 +231,7 @@ class TicketTask  extends CommonITILTask {
 
       if ($interface == 'central') {
          $values[parent::UPDATEALL]      = __('Update all');
-         $values[parent::ADDALLTICKET]   = __('Add to all tickets');
+         $values[parent::ADDALLITEM  ]   = __('Add to all items');
          $values[parent::SEEPRIVATE]     = __('See private ones');
       }
 

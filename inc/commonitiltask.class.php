@@ -49,7 +49,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    const UPDATEMY        =    2;
    const UPDATEALL       = 1024;
    //   const NOTUSED      = 2048;
-   const ADDALLTICKET    = 4096;
+   const ADDALLITEM      = 4096;
    const SEEPRIVATE      = 8192;
 
 
@@ -1094,10 +1094,10 @@ abstract class CommonITILTask  extends CommonDBTM {
                echo Planning::getState($this->fields["state"])."<br>";
             }
             if ($this->fields["users_id_tech"] || $this->fields["groups_id_tech"]) {
-               if ($this->fields["users_id_tech"]) {
+               if (isset($this->fields["users_id_tech"])) {
                   printf('%1$s %2$s',__('By user'),getUserName($this->fields["users_id_tech"]));
                }
-               if ($this->fields["groups_id_tech"]) {
+               if (isset($this->fields["groups_id_tech"])) {
                   $groupname = sprintf('%1$s %2$s',"<br />".__('By group'),
                                        Dropdown::getDropdownName('glpi_groups',
                                                                  $this->fields["groups_id_tech"]));
