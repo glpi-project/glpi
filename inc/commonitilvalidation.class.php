@@ -1130,9 +1130,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $tab[59]['name']              = __('Approver');
       $tab[59]['datatype']          = 'itemlink';
       if (static::$itemtype == 'Ticket') {
-         $tab[58]['right']          = array('validate_request', 'validate_incident');
+         $tab[59]['right']          = array('validate_request', 'validate_incident');
       } else {
-         $tab[58]['right']             = 'validate';
+         $tab[59]['right']             = 'validate';
       }
       $tab[59]['forcegroupby']      = true;
       $tab[59]['massiveaction']     = false;
