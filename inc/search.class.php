@@ -2497,7 +2497,9 @@ class Search {
       // Default case
       if ($meta
           || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]
-              && !isset($searchopt[$ID]["computation"]))) { // Not specific computation
+              && (!isset($searchopt[$ID]["computation"])
+                  || isset($searchopt[$ID]["computationgroupby"])
+                     && $searchopt[$ID]["computationgroupby"]))) { // Not specific computation
          $TRANS = '';
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $TRANS = "IFNULL(GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
