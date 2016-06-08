@@ -41,45 +41,73 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-
-// autoloader
-spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
-
-if (!class_exists('SimplePie'))
-{
-	trigger_error('Autoloader not registered properly', E_USER_ERROR);
-}
-
 /**
- * Autoloader class
+ * Base for cache objects
+ *
+ * Classes to be used with {@see SimplePie_Cache::register()} are expected
+ * to implement this interface.
  *
  * @package SimplePie
- * @subpackage API
+ * @subpackage Caching
  */
-class SimplePie_Autoloader
+interface SimplePie_Cache_Base
 {
 	/**
-	 * Constructor
+	 * Feed cache type
+	 *
+	 * @var string
 	 */
-	public function __construct()
-	{
-		$this->path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'library';
-	}
+	const TYPE_FEED = 'spc';
 
 	/**
-	 * Autoloader
+	 * Image cache type
 	 *
-	 * @param string $class The name of the class to attempt to load.
+	 * @var string
 	 */
-	public function autoload($class)
-	{
-		// Only load the class if it starts with "SimplePie"
-		if (strpos($class, 'SimplePie') !== 0)
-		{
-			return;
-		}
+	const TYPE_IMAGE = 'spi';
 
-		$filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
-		include $filename;
-	}
+	/**
+	 * Create a new cache object
+	 *
+	 * @param string $location Location string (from SimplePie::$cache_location)
+	 * @param string $name Unique ID for the cache
+	 * @param string $type Either TYPE_FEED for SimplePie data, or TYPE_IMAGE for image data
+	 */
+	public function __construct($location, $name, $type);
+
+	/**
+	 * Save data to the cache
+	 *
+	 * @param array|SimplePie $data Data to store in the cache. If passed a SimplePie object, only cache the $data property
+	 * @return bool Successfulness
+	 */
+	public function save($data);
+
+	/**
+	 * Retrieve the data saved to the cache
+	 *
+	 * @return array Data for SimplePie::$data
+	 */
+	public function load();
+
+	/**
+	 * Retrieve the last modified time for the cache
+	 *
+	 * @return int Timestamp
+	 */
+	public function mtime();
+
+	/**
+	 * Set the last modified time to the current time
+	 *
+	 * @return bool Success status
+	 */
+	public function touch();
+
+	/**
+	 * Remove the cache
+	 *
+	 * @return bool Success status
+	 */
+	public function unlink();
 }

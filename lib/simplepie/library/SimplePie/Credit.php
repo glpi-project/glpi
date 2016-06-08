@@ -41,45 +41,115 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-
-// autoloader
-spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
-
-if (!class_exists('SimplePie'))
-{
-	trigger_error('Autoloader not registered properly', E_USER_ERROR);
-}
-
 /**
- * Autoloader class
+ * Handles `<media:credit>` as defined in Media RSS
+ *
+ * Used by {@see SimplePie_Enclosure::get_credit()} and {@see SimplePie_Enclosure::get_credits()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_credit_class()}
  *
  * @package SimplePie
  * @subpackage API
  */
-class SimplePie_Autoloader
+class SimplePie_Credit
 {
 	/**
-	 * Constructor
+	 * Credited role
+	 *
+	 * @var string
+	 * @see get_role()
 	 */
-	public function __construct()
+	var $role;
+
+	/**
+	 * Organizational scheme
+	 *
+	 * @var string
+	 * @see get_scheme()
+	 */
+	var $scheme;
+
+	/**
+	 * Credited name
+	 *
+	 * @var string
+	 * @see get_name()
+	 */
+	var $name;
+
+	/**
+	 * Constructor, used to input the data
+	 *
+	 * For documentation on all the parameters, see the corresponding
+	 * properties and their accessors
+	 */
+	public function __construct($role = null, $scheme = null, $name = null)
 	{
-		$this->path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'library';
+		$this->role = $role;
+		$this->scheme = $scheme;
+		$this->name = $name;
 	}
 
 	/**
-	 * Autoloader
+	 * String-ified version
 	 *
-	 * @param string $class The name of the class to attempt to load.
+	 * @return string
 	 */
-	public function autoload($class)
+	public function __toString()
 	{
-		// Only load the class if it starts with "SimplePie"
-		if (strpos($class, 'SimplePie') !== 0)
-		{
-			return;
-		}
+		// There is no $this->data here
+		return md5(serialize($this));
+	}
 
-		$filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
-		include $filename;
+	/**
+	 * Get the role of the person receiving credit
+	 *
+	 * @return string|null
+	 */
+	public function get_role()
+	{
+		if ($this->role !== null)
+		{
+			return $this->role;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Get the organizational scheme
+	 *
+	 * @return string|null
+	 */
+	public function get_scheme()
+	{
+		if ($this->scheme !== null)
+		{
+			return $this->scheme;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Get the credited person/entity's name
+	 *
+	 * @return string|null
+	 */
+	public function get_name()
+	{
+		if ($this->name !== null)
+		{
+			return $this->name;
+		}
+		else
+		{
+			return null;
+		}
 	}
 }
+

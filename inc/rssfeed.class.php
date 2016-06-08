@@ -848,10 +848,25 @@ class RSSFeed extends CommonDBTM {
     * @return feed object
    **/
    static function getRSSFeed($url, $cache_duration=DAY_TIMESTAMP) {
+      global $CFG_GLPI;
 
       $feed = new SimplePie();
       $feed->set_cache_location(GLPI_RSS_DIR);
       $feed->set_cache_duration($cache_duration);
+
+      // proxy support
+      if (!empty($CFG_GLPI["proxy_name"])) {
+         $prx_opt = array();
+         $prx_opt[CURLOPT_PROXY]     = $CFG_GLPI["proxy_name"];
+         $prx_opt[CURLOPT_PROXYPORT] = $CFG_GLPI["proxy_port"];
+         if(!empty($CFG_GLPI["proxy_user"])) {
+            $prx_opt[CURLOPT_HTTPAUTH]     = CURLAUTH_ANYSAFE;
+            $prx_opt[CURLOPT_PROXYUSERPWD] = $CFG_GLPI["proxy_user"].":".
+                                             Toolbox::decrypt($CFG_GLPI["proxy_passwd"],
+                                                              GLPIKEY);
+         }
+         $feed->set_curl_options($prx_opt);
+      }
 
       $feed->enable_cache(true);
       $feed->set_feed_url($url);
