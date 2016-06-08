@@ -41,45 +41,114 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-
-// autoloader
-spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
-
-if (!class_exists('SimplePie'))
-{
-	trigger_error('Autoloader not registered properly', E_USER_ERROR);
-}
-
 /**
- * Autoloader class
+ * Handles `<media:restriction>` as defined in Media RSS
+ *
+ * Used by {@see SimplePie_Enclosure::get_restriction()} and {@see SimplePie_Enclosure::get_restrictions()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_restriction_class()}
  *
  * @package SimplePie
  * @subpackage API
  */
-class SimplePie_Autoloader
+class SimplePie_Restriction
 {
 	/**
-	 * Constructor
+	 * Relationship ('allow'/'deny')
+	 *
+	 * @var string
+	 * @see get_relationship()
 	 */
-	public function __construct()
+	var $relationship;
+
+	/**
+	 * Type of restriction
+	 *
+	 * @var string
+	 * @see get_type()
+	 */
+	var $type;
+
+	/**
+	 * Restricted values
+	 *
+	 * @var string
+	 * @see get_value()
+	 */
+	var $value;
+
+	/**
+	 * Constructor, used to input the data
+	 *
+	 * For documentation on all the parameters, see the corresponding
+	 * properties and their accessors
+	 */
+	public function __construct($relationship = null, $type = null, $value = null)
 	{
-		$this->path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'library';
+		$this->relationship = $relationship;
+		$this->type = $type;
+		$this->value = $value;
 	}
 
 	/**
-	 * Autoloader
+	 * String-ified version
 	 *
-	 * @param string $class The name of the class to attempt to load.
+	 * @return string
 	 */
-	public function autoload($class)
+	public function __toString()
 	{
-		// Only load the class if it starts with "SimplePie"
-		if (strpos($class, 'SimplePie') !== 0)
-		{
-			return;
-		}
+		// There is no $this->data here
+		return md5(serialize($this));
+	}
 
-		$filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
-		include $filename;
+	/**
+	 * Get the relationship
+	 *
+	 * @return string|null Either 'allow' or 'deny'
+	 */
+	public function get_relationship()
+	{
+		if ($this->relationship !== null)
+		{
+			return $this->relationship;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Get the type
+	 *
+	 * @return string|null
+	 */
+	public function get_type()
+	{
+		if ($this->type !== null)
+		{
+			return $this->type;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Get the list of restricted things
+	 *
+	 * @return string|null
+	 */
+	public function get_value()
+	{
+		if ($this->value !== null)
+		{
+			return $this->value;
+		}
+		else
+		{
+			return null;
+		}
 	}
 }

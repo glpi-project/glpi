@@ -41,45 +41,89 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-
-// autoloader
-spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
-
-if (!class_exists('SimplePie'))
-{
-	trigger_error('Autoloader not registered properly', E_USER_ERROR);
-}
-
 /**
- * Autoloader class
+ * Manages `<media:copyright>` copyright tags as defined in Media RSS
+ *
+ * Used by {@see SimplePie_Enclosure::get_copyright()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_copyright_class()}
  *
  * @package SimplePie
  * @subpackage API
  */
-class SimplePie_Autoloader
+class SimplePie_Copyright
 {
 	/**
-	 * Constructor
+	 * Copyright URL
+	 *
+	 * @var string
+	 * @see get_url()
 	 */
-	public function __construct()
+	var $url;
+
+	/**
+	 * Attribution
+	 *
+	 * @var string
+	 * @see get_attribution()
+	 */
+	var $label;
+
+	/**
+	 * Constructor, used to input the data
+	 *
+	 * For documentation on all the parameters, see the corresponding
+	 * properties and their accessors
+	 */
+	public function __construct($url = null, $label = null)
 	{
-		$this->path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'library';
+		$this->url = $url;
+		$this->label = $label;
 	}
 
 	/**
-	 * Autoloader
+	 * String-ified version
 	 *
-	 * @param string $class The name of the class to attempt to load.
+	 * @return string
 	 */
-	public function autoload($class)
+	public function __toString()
 	{
-		// Only load the class if it starts with "SimplePie"
-		if (strpos($class, 'SimplePie') !== 0)
-		{
-			return;
-		}
+		// There is no $this->data here
+		return md5(serialize($this));
+	}
 
-		$filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
-		include $filename;
+	/**
+	 * Get the copyright URL
+	 *
+	 * @return string|null URL to copyright information
+	 */
+	public function get_url()
+	{
+		if ($this->url !== null)
+		{
+			return $this->url;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Get the attribution text
+	 *
+	 * @return string|null
+	 */
+	public function get_attribution()
+	{
+		if ($this->label !== null)
+		{
+			return $this->label;
+		}
+		else
+		{
+			return null;
+		}
 	}
 }
+

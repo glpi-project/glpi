@@ -41,45 +41,116 @@
  * @license http://www.opensource.org/licenses/bsd-license.php BSD License
  */
 
-
-// autoloader
-spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
-
-if (!class_exists('SimplePie'))
-{
-	trigger_error('Autoloader not registered properly', E_USER_ERROR);
-}
-
 /**
- * Autoloader class
+ * Manages all category-related data
+ *
+ * Used by {@see SimplePie_Item::get_category()} and {@see SimplePie_Item::get_categories()}
+ *
+ * This class can be overloaded with {@see SimplePie::set_category_class()}
  *
  * @package SimplePie
  * @subpackage API
  */
-class SimplePie_Autoloader
+class SimplePie_Category
 {
 	/**
-	 * Constructor
+	 * Category identifier
+	 *
+	 * @var string
+	 * @see get_term
 	 */
-	public function __construct()
+	var $term;
+
+	/**
+	 * Categorization scheme identifier
+	 *
+	 * @var string
+	 * @see get_scheme()
+	 */
+	var $scheme;
+
+	/**
+	 * Human readable label
+	 *
+	 * @var string
+	 * @see get_label()
+	 */
+	var $label;
+
+	/**
+	 * Constructor, used to input the data
+	 *
+	 * @param string $term
+	 * @param string $scheme
+	 * @param string $label
+	 */
+	public function __construct($term = null, $scheme = null, $label = null)
 	{
-		$this->path = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'library';
+		$this->term = $term;
+		$this->scheme = $scheme;
+		$this->label = $label;
 	}
 
 	/**
-	 * Autoloader
+	 * String-ified version
 	 *
-	 * @param string $class The name of the class to attempt to load.
+	 * @return string
 	 */
-	public function autoload($class)
+	public function __toString()
 	{
-		// Only load the class if it starts with "SimplePie"
-		if (strpos($class, 'SimplePie') !== 0)
-		{
-			return;
-		}
+		// There is no $this->data here
+		return md5(serialize($this));
+	}
 
-		$filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
-		include $filename;
+	/**
+	 * Get the category identifier
+	 *
+	 * @return string|null
+	 */
+	public function get_term()
+	{
+		if ($this->term !== null)
+		{
+			return $this->term;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Get the categorization scheme identifier
+	 *
+	 * @return string|null
+	 */
+	public function get_scheme()
+	{
+		if ($this->scheme !== null)
+		{
+			return $this->scheme;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	/**
+	 * Get the human readable label
+	 *
+	 * @return string|null
+	 */
+	public function get_label()
+	{
+		if ($this->label !== null)
+		{
+			return $this->label;
+		}
+		else
+		{
+			return $this->get_term();
+		}
 	}
 }
+
