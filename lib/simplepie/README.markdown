@@ -38,7 +38,7 @@ What comes in the package?
 9. `test/` - SimplePie's unit test suite.
 
 ### Where's `simplepie.inc`?
-For SimplePie 1.3, we've split the classes into separate files to make it easier
+Since SimplePie 1.3, we've split the classes into separate files to make it easier
 to maintain and use.
 
 If you'd like a single monolithic file, you can run `php build/compile.php` to

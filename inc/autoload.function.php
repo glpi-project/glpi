@@ -337,47 +337,6 @@ $loader = new Zend\Loader\StandardAutoloader($option);
 $loader->register();
 
 // SimplePie autoloader
+include_once(GLPI_SIMPLEPIE_PATH . '/autoloader.php');
 spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
 
-
-
-
-/**
- * Autoloader class
- *
- * @since version 0.84
- *
- * From package SimplePie
-**/
-class SimplePie_Autoloader {
-
-
-   /**
-    * Constructor
-   **/
-   public function __construct() {
-      $this->path = GLPI_SIMPLEPIE_PATH;
-   }
-
-
-   /**
-    * Autoloader
-    *
-    * @param string $class The name of the class to attempt to load.
-   **/
-   public function autoload($class) {
-
-      // empty classname or non concerted plugin or classname containing dot (leaving GLPI main treee)
-      if (empty($class) || is_numeric($class) || (strpos($class, '.') !== false)) {
-         return false;
-      }
-
-      // Only load the class if it starts with "SimplePie"
-      if (strpos($class, 'SimplePie') !== 0) {
-         return;
-      }
-      $filename = $this->path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $class) .
-                  '.php';
-      include_once($filename);
-   }
-}
