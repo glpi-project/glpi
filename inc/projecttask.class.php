@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 201-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -58,7 +57,7 @@ class ProjectTask extends CommonDBChild {
    static $rightname           = 'project';
    protected $usenotepad       = true;
 
-   var $can_be_translated      = true;
+   public $can_be_translated   = true;
 
    const READMY      = 1;
    const UPDATEMY    = 1024;
@@ -94,7 +93,7 @@ class ProjectTask extends CommonDBChild {
                      && (($project->fields["users_id"] === Session::getLoginUserID())
                          || $project->isInTheManagerGroup()
                          || $project->isInTheTeam()))
-                 || (Session::haveRight('projecttask', ProjectTask::READMY)
+                 || (Session::haveRight(self::$rightname, self::READMY)
                      && (($this->fields["users_id"] === Session::getLoginUserID())
                          || $this->isInTheTeam())));
       }
@@ -110,7 +109,7 @@ class ProjectTask extends CommonDBChild {
    static function canUpdate() {
 
       return (parent::canUpdate()
-              || Session::haveRight('projecttask', self::UPDATEMY));
+              || Session::haveRight(self::$rightname, self::UPDATEMY));
    }
 
 
@@ -127,7 +126,7 @@ class ProjectTask extends CommonDBChild {
       $project = new Project();
       if ($project->getFromDB($this->fields['projects_id'])) {
          return (Session::haveRight(self::$rightname, UPDATE)
-                 || (Session::haveRight('projecttask', ProjectTask::UPDATEMY)
+                 || (Session::haveRight(self::$rightname, self::UPDATEMY)
                      && (($this->fields["users_id"] === Session::getLoginUserID())
                          || $this->isInTheTeam())));
       }
@@ -1408,4 +1407,3 @@ class ProjectTask extends CommonDBChild {
       return $html;
    }
 }
-?>

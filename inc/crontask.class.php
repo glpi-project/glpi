@@ -867,6 +867,7 @@ class CronTask extends CommonDBTM{
       }
       $input = array('itemtype'  => $itemtype,
                      'name'      => $name,
+                     'allowmode' => self::MODE_INTERNAL | self::MODE_EXTERNAL,
                      'frequency' => $frequency);
 
       foreach (array('allowmode', 'comment', 'hourmax', 'hourmin', 'logs_lifetime', 'mode',
@@ -874,6 +875,12 @@ class CronTask extends CommonDBTM{
          if (isset($options[$key])) {
             $input[$key] = $options[$key];
          }
+      }
+      if (defined('GLPI_SYSTEM_CRON')
+          && ($input['allowmode'] & self::MODE_EXTERNAL)
+          && !isset($input['mode'])) {
+         // Downstream packages may provide a good system cron
+         $input['mode'] = self::MODE_EXTERNAL;
       }
       return $temp->add($input);
    }

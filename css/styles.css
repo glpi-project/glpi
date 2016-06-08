@@ -192,6 +192,15 @@ hr {
    display: none;
 }
 
+.unselectable {
+   -moz-user-select: none;
+   -o-user-select: none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+   -ms-user-select: none;
+   user-select: none;
+}
+
 /* ################--------------- Tabs ---------------#################### */
 
 .alltab {
@@ -884,11 +893,11 @@ td { }
    font-size: 11px;
    border-bottom: 1px solid #EEE;
 }
-
+/* to view link color must be the color of the palette
 .tab_cadre_fixehov th a, .tab_cadrehov th a {
    color: #2E2E2E;
 }
-
+*/
 .tab_cadre_fixehov td, .tab_cadrehov td {
    padding: 8px 5px;
 }
@@ -1756,6 +1765,44 @@ a.icon_nav_move:hover img {
    height: 10px;
 }
 
+/* for checkavailable */
+
+.planning {
+   text-align:center;
+   border:1px dashed #cccccc;
+   background-color: #d7d7d2;
+   font-size:9px;
+}
+
+.planning:hover {
+   border: 1px solid #999999;
+   background-color: white;
+}
+
+.available {
+   background-color: green;
+}
+
+.notavailable {
+   background-color: red;
+}
+
+.partialavailableend {
+   background-image: -webkit-linear-gradient(left, red 50%, green  0%);
+   background-image: -moz-linear-gradient(left, red 50%, green  0%);
+   background-image: -ms-linear-gradient(left, red 50%, green  0%);
+   background-image: -o-linear-gradient(left, red 50%, green  0%);
+   background-image: linear-gradient(left, red 50%, green  0%);
+}
+
+.partialavailablebegin {
+   background-image: -webkit-linear-gradient(left, green 50%, red  0%);
+   background-image: -moz-linear-gradient(left, green 50%, red  0%);
+   background-image: -ms-linear-gradient(left, green 50%, red  0%);
+   background-image: -o-linear-gradient(left, green 50%, red  0%);
+   background-image: linear-gradient(left, green 50%, red  0%);
+}
+
 /* ################--------------- Menu navigation  ---------------#################### */
 
 #menu_navigate {
@@ -2148,6 +2195,7 @@ ul#menu a.itemP, ul#menu a.itemP1 {
    text-align: center;
    text-decoration: none;
    font-size: 13px;
+   white-space: nowrap;
 }
 
 ul#menu ul.ssmenu {
@@ -2740,14 +2788,14 @@ ul#menu ul.ssmenu {
    line-height: 20px;
 }
 
-.timeline_history .h_user a {
+ .timeline_history .h_user .h_user_name {
    display: inline-block;
    margin-bottom: 5px;
    vertical-align: middle;
    width: 100%;
    text-align: center;
    margin-top: 5px;
-   font-size: 1.1em;
+   white-space: nowrap;
 }
 
 .timeline_history .h_user a:hover {
@@ -2771,21 +2819,8 @@ ul#menu ul.ssmenu {
    border-radius: 50%;
 }
 
-.timeline_history .users_id_tech .user_picture {
-   width: 31px;
-   height: 31px;
-   border-radius: 50%;
-}
-
-.timeline_history .users_id_tech .tooltip_picture_border {
-   padding: 2px;
-   border-radius: 50%;
-   border: 3px inset #DABB7C;
-   _border: 3px solid #DABB7C;
-   width:31px;
-   height:31px;
-   position: relative;
-   float: right;
+.timeline_history .users_id_tech img {
+   vertical-align: middle;
 }
 
 .timeline_history .left .h_user,
@@ -2817,13 +2852,12 @@ ul#menu ul.ssmenu {
 .timeline_history .h_content {
    max-width:50%;
    min-width: 200px;
-   float: left;
    padding: 5px 5px 5px 8px;
    margin-bottom: 10px;
    min-height: 70px;
    position: relative;
    margin-right: 0;
-   margin-left: 20px;
+   margin-left: 160px;
    word-wrap: break-word;
    white-space: pre-wrap;
 }
@@ -2889,12 +2923,12 @@ ul#menu ul.ssmenu {
 }
 
 .timeline_history .private {
-   width: 23px;
+   width: 30px;
    float: right;
    padding-top: 18px;
    background: url(../pics/timeline/private.png) no-repeat center top;
    color: #A2A2A2;
-   font-size: 0.8em;
+   font-size: .75em;
    text-align: center;
    white-space: nowrap;
 }
@@ -2909,12 +2943,44 @@ ul#menu ul.ssmenu {
    border-left: 8px solid #3C5874;
 }
 
+.timeline_history .h_content.edited {
+   max-width: 60%;
+   text-align: center;
+}
+
+.timeline_history .right .h_content.edited {
+   width: 100%;
+}
+
+.timeline_history .h_content.edited .tab_cadre_fixe {
+   width: 100%;
+   margin: 0;
+}
+
+.timeline_history .h_content .edit_item_content {
+   display: none;
+   border: 1px dotted #C0C0C0;
+}
+.timeline_history .h_content .cancel_edit_item_content {
+   display: none;
+   background-image: url(../pics/close.png);
+   width: 16px;
+   height: 16px;
+   cursor: pointer;
+   opacity: .5;
+   position: absolute;
+   top: 12px;
+   right: 12px;
+}
+.timeline_history .h_content .cancel_edit_item_content:hover {
+   opacity: 1;
+}
+
 .timeline_history .h_content.TicketFollowup {
    background-color: #E0E0E0;
    color: #535353;
    background-image: url(../pics/timeline/followup.png);
    background-repeat: no-repeat;
-   cursor: pointer;
 }
 
 .timeline_history .h_content.TicketTask {
@@ -2922,7 +2988,6 @@ ul#menu ul.ssmenu {
    color: #38301F;
    background-image: url(../pics/timeline/task.png);
    background-repeat: no-repeat;
-   cursor: pointer;
 }
 
 .timeline_history .h_content.Solution {
@@ -2930,7 +2995,6 @@ ul#menu ul.ssmenu {
    color: #425B64;
    background-image: url(../pics/timeline/solution.png);
    background-repeat: no-repeat;
-   cursor: pointer;
 }
 
 .timeline_history .h_content.Document_Item,
@@ -3002,6 +3066,20 @@ ul#menu ul.ssmenu {
    height: 20px;
 }
 
+.timeline_history .h_content .edit_item {
+   background-image: url(../pics/edit.png);
+   width: 16px;
+   height: 16px;
+   display: block;
+   float: right;
+   opacity: .5;
+}
+
+.timeline_history .h_content .edit_item:hover {
+   opacity: 1;
+   cursor: pointer;
+}
+
 .timeline_history .h_content .long_text {
    max-height: 350px;
    position: relative;
@@ -3064,19 +3142,24 @@ ul#menu ul.ssmenu {
    margin-right: 6px;
 }
 
-.timeline_history .b_right .state {
-   padding-left: 17px;
-   margin-right: 6px;
+.timeline_history .state {
+   display: inline-block;
+   width: 20px;
+   height: 20px;
+   margin-right: 3px;
    background-repeat: no-repeat;
+   vertical-align: middle;
 }
 
-.timeline_history .b_right .state.state_0 {
+.timeline_history .state.state_0 {
    background-image: url(../pics/timeline/information.png);
 }
-.timeline_history .b_right .state.state_1 {
+.timeline_history .state.state_1 {
+   cursor: pointer;
    background-image: url(../pics/timeline/todo.png);
 }
-.timeline_history .b_right .state.state_2 {
+.timeline_history .state.state_2 {
+   cursor: pointer;
    background-image: url(../pics/timeline/done.png);
 }
 
@@ -3096,6 +3179,8 @@ ul#menu ul.ssmenu {
   position: relative;
   width: 250px;
   left: 40%;
+  word-wrap: normal;
+  white-space: normal;
 }
 
 .x-button {
@@ -3534,4 +3619,3 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
       margin-bottom: 10px;
    }
 }
-

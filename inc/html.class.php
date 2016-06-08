@@ -76,15 +76,14 @@ class Html {
 
          $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
          $value = preg_replace("/(&nbsp;| |\xC2\xA0)+/", " ", $value);
-
-
-         $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                                '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
-                                '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
-                                 );
-
-         $value = preg_replace($search, '', $value);
       }
+
+      $search = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
+                      '@<style[^>]*?>.*?</style[^>]*?>@si', // Strip out style
+                      '@<title[^>]*?>.*?</title[^>]*?>@si', // Strip out title
+                      '@<!DOCTYPE[^>]*?>@si', // Strip out !DOCTYPE
+                       );
+      $value = preg_replace($search, '', $value);
 
       $value = htmLawed($value, array('elements' => ($striptags) ? 'none' : '',
                                       'keep_bad' => $keep_bad, // 1 : neutralize tag and content, 2 : remove tag and neutralize content
@@ -1774,7 +1773,7 @@ class Html {
       if ($DB->isSlave()
           && !$DB->first_connection) {
          echo "<div id='dbslave-float'>";
-         echo "<a href='#see_debug'>".__('MySQL replica: read only')."</a>";
+         echo "<a href='#see_debug'>".__('SQL replica: read only')."</a>";
          echo "</div>";
       }
 
@@ -2589,6 +2588,9 @@ class Html {
                   </label>
                </div>";
 
+      // permit to shift select checkboxes
+      $out.= Html::scriptBlock("\$('#$container_id input[type=\"checkbox\"]').shiftSelectable();");
+
       return $out;
    }
 
@@ -2734,6 +2736,10 @@ class Html {
       $out .= "&nbsp;";
       $out .= "</label>";
       $out .= "</span>";
+
+      if (!empty($criterion)) {
+         $out .= Html::scriptBlock("\$('$criterion').shiftSelectable();");
+      }
 
       return $out;
    }
@@ -3039,6 +3045,7 @@ class Html {
     *      - showyear   : should we set/diplay the year? (true by default)
     *      - display    : boolean display of return string (default true)
     *      - rand       : specific rand value (default generated one)
+    *      - yearrange  : set a year range to show in drop-down (default '')
     *
     * @return rand value used if displayes else string
    **/
@@ -3053,6 +3060,7 @@ class Html {
       $p['showyear']   = true;
       $p['display']    = true;
       $p['rand']       = mt_rand();
+      $p['yearrange']  = '';
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
@@ -3102,6 +3110,10 @@ class Html {
 
       if (!empty($p['max'])) {
          $js .= ",maxDate: '".self::convDate($p['max'])."'";
+      }
+
+      if (!empty($p['yearrange'])) {
+	 $js .= ",yearRange: '". $p['yearrange'] ."'";
       }
 
       switch ($_SESSION['glpidate_format']) {
@@ -4830,7 +4842,12 @@ class Html {
          unset($options['url']);
       }
 
-      $image = sprintf('<img src="%1$s" %2$s class="pointer">', $path, Html::parseAttributes($options));
+      $class = "";
+      if ($url) {
+         $class = "class='pointer'";
+      }
+
+      $image = sprintf('<img src="%1$s" %2$s %3$s>', $path, Html::parseAttributes($options), $class);
       if ($url) {
          return Html::link($image, $url);
       }

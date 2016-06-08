@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -42,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 /// Class MonitorModel
 class MonitorModel extends CommonDropdown {
 
-   var $additional_fields_for_dictionnary = array('manufacturer');
+   public $additional_fields_for_dictionnary = array('manufacturer');
 
 
    static function getTypeName($nb=0) {
@@ -50,4 +49,3 @@ class MonitorModel extends CommonDropdown {
    }
 
 }
-?>

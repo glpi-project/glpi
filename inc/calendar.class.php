@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -45,8 +44,8 @@ if (!defined('GLPI_ROOT')) {
 class Calendar extends CommonDropdown {
 
    // From CommonDBTM
-   var $dohistory                      = true;
-   var $can_be_translated              = false;
+   public $dohistory                   = true;
+   public $can_be_translated           = false;
 
    static protected $forward_entity_to = array('CalendarSegment');
 
@@ -631,4 +630,3 @@ class Calendar extends CommonDropdown {
    }
 
 }
-?>

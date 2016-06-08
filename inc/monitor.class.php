@@ -282,8 +282,8 @@ class Monitor extends CommonDBTM {
                             'entity'    => $this->fields["entities_id"],
                             'condition' => '`is_itemgroup`'));
       echo "</td>";
-      echo "<td rowspan='4'>" . __('Comments')."</td>";
-      echo "<td rowspan='4'>
+      echo "<td rowspan='3'>" . __('Comments')."</td>";
+      echo "<td rowspan='3'>
             <textarea cols='45' rows='10' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 

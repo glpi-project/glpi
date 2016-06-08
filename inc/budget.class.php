@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -50,7 +49,7 @@ class Budget extends CommonDropdown{
    static $rightname           = 'budget';
    protected $usenotepad       = true;
 
-   var $can_be_translated = false;
+   public $can_be_translated = false;
 
 
    static function getTypeName($nb=0) {
@@ -679,4 +678,3 @@ class Budget extends CommonDropdown{
    }
 
 }
-?>

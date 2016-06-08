@@ -143,6 +143,11 @@ class User extends CommonDBTM {
    }
 
 
+   function canPurgeItem() {
+      return $this->canDeleteItem();
+   }
+
+
    function isEntityAssign() {
       // glpi_users.entities_id is only a pref.
       return false;
@@ -1379,7 +1384,7 @@ class User extends CommonDBTM {
          $fields = Plugin::doHookFunction("retrieve_more_field_from_ldap", $fields);
 
          $fields  = array_filter($fields);
-         $f       = array_values($fields);
+         $f       = self::getLdapFieldNames($fields);
 
          $sr      = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
          $v       = AuthLDAP::get_entries_clean($ldap_connection, $sr);
@@ -1398,7 +1403,8 @@ class User extends CommonDBTM {
         $this->fields["_emails"]    = array();
 
          foreach ($fields as $k => $e) {
-            if (empty($v[0][$e][0])) {
+            $val = self::getLdapFieldValue($e, $v);
+            if (empty($val)) {
                switch ($k) {
                   case "language" :
                      // Not set value : managed but user class
@@ -1406,6 +1412,7 @@ class User extends CommonDBTM {
 
                   case "usertitles_id" :
                   case "usercategories_id" :
+                  case 'locations_id' :
                      $this->fields[$k] = 0;
                      break;
 
@@ -1432,28 +1439,30 @@ class User extends CommonDBTM {
                      break;
 
                   case "language" :
-                     $language = Config::getLanguage($v[0][$e][0]);
+                     $language = Config::getLanguage($val);
                      if ($language != '') {
                         $this->fields[$k] = $language;
                      }
                      break;
 
                   case "usertitles_id" :
-                     $this->fields[$k] = Dropdown::importExternal('UserTitle',
-                                                                  addslashes($v[0][$e][0]));
+                     $this->fields[$k] = Dropdown::importExternal('UserTitle', $val);
                      break;
 
+                  case 'locations_id' :
+                     // use import to build the location tree
+                     $this->fields[$k] = Dropdown::import('Location',
+                                                          ['completename' => $val,
+                                                           'entities_id'  => 0,
+                                                           'is_recursive' => 1]);
+                    break;
+
                   case "usercategories_id" :
-                     $this->fields[$k] = Dropdown::importExternal('UserCategory',
-                                                                  addslashes($v[0][$e][0]));
+                     $this->fields[$k] = Dropdown::importExternal('UserCategory', $val);
                      break;
 
                   default :
-                     if (!empty($v[0][$e][0])) {
-                        $this->fields[$k] = addslashes($v[0][$e][0]);
-                     } else {
-                        $this->fields[$k] = "";
-                     }
+                     $this->fields[$k] = $val;
                }
             }
          }
@@ -4206,5 +4215,56 @@ class User extends CommonDBTM {
 
       return $values;
    }
+
+
+   /**
+    * Retrieve the list of LDAP field names from a list of fields
+    * allow pattern substitution, e.g. %{name}
+    *
+    * @since 9.1
+    *
+    * @param $map array of fields
+    *
+    * @return Array of Ldap field names
+   **/
+   private static function getLdapFieldNames(Array $map) {
+
+      $ret = array ();
+      foreach ($map as $k => $v) {
+         if (preg_match_all('/%{(.*)}/U', $v, $reg)) {
+            // e.g. "%{country} > %{city} > %{site}"
+            foreach ($reg [1] as $f) {
+               $ret [] = $f;
+            }
+         } else {
+            // single field name
+            $ret [] = $v;
+         }
+      }
+      return $ret;
+   }
+
+
+   /**
+    * Retrieve the value of a fields from a LDAP result
+    * applying needed substitution of %{value}
+    *
+    * @since 9.1
+    *
+    * @param $map String with field format
+    * @param $res LDAP result
+    *
+   **/
+   private static function getLdapFieldValue($map, array $res) {
+
+      $map = Toolbox::unclean_cross_side_scripting_deep($map);
+      $ret = preg_replace_callback('/%{(.*)}/U',
+                                  function ($matches) use ($res) {
+                                     return (isset($res[0][$matches[1]][0]) ? $res[0][$matches[1]][0] : '');
+                                  }, $map );
+
+      return addslashes($ret == $map ? (isset($res[0][$map][0]) ? $res[0][$map][0] : '') : $ret);
+   }
+
+
 }
-?>

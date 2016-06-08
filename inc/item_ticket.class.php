@@ -176,7 +176,9 @@ class Item_Ticket extends CommonDBRelation{
 
                      unset($ticket->fields['items_groups']);
 
-                     $group->add(array('tickets_id' => $input['tickets_id'], 'groups_id' => $item->fields['groups_id'], 'type' => CommonITILActor::REQUESTER));
+                     if ($item->fields['groups_id'] > 0) {
+                        $group->add(array('tickets_id' => $input['tickets_id'], 'groups_id' => $item->fields['groups_id'], 'type' => CommonITILActor::REQUESTER));
+                     }
                   }
                }
             }
@@ -469,7 +471,11 @@ class Item_Ticket extends CommonDBRelation{
       $header_end .= "<th>".__('Entity')."</th>";
       $header_end .= "<th>".__('Name')."</th>";
       $header_end .= "<th>".__('Serial number')."</th>";
-      $header_end .= "<th>".__('Inventory number')."</th></tr>";
+      $header_end .= "<th>".__('Inventory number')."</th>";
+      if ($canedit && $number) {
+         $header_end .= "<th width='10'>".__('Update the item')."</th>";
+      }
+      echo "<tr>";
       echo $header_begin.$header_top.$header_end;
 
       $totalnb = 0;
@@ -540,6 +546,12 @@ class Item_Ticket extends CommonDBRelation{
                     "</td>";
                echo "<td class='center'>".
                       (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
+               if ($canedit) {
+                  echo "<td width='10'>";
+                  Html::showMassiveActionCheckBox($itemtype, $data["id"]);
+                  echo "</td>";
+               }
+
                echo "</tr>";
             }
             $totalnb += $nb;

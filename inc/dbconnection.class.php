@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -49,7 +49,33 @@ class DBConnection extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      return _n('Mysql replica', 'Mysql replicas', $nb);
+      return _n('SQL replica', 'SQL replicas', $nb);
+   }
+
+
+   /**
+    * Create GLPI main configuration file
+    *
+    * @since 9.1
+    *
+    * @param $dbhost
+    * @param $user
+    * @param $password
+    * @param $DBname
+    *
+    * @return boolean
+    *
+   **/
+   static function createMainConfig($host, $user, $password, $DBname) {
+
+      $DB_str = "<?php\n class DB extends DBmysql {
+                \n public \$dbhost     = '". $host ."';
+                \n public \$dbuser     = '". $user ."';
+                \n public \$dbpassword = '". rawurlencode($password) ."';
+                \n public \$dbdefault  = '". $DBname ."';
+                \n}\n";
+
+      return Toolbox::writeConfig('config_db.php', $DB_str);
    }
 
 
@@ -65,7 +91,7 @@ class DBConnection extends CommonDBTM {
    **/
    static function createSlaveConnectionFile($host, $user, $password, $DBname) {
 
-      $DB_str = "<?php \n class DBSlave extends DBmysql { \n var \$slave = true; \n var \$dbhost = ";
+      $DB_str = "<?php \n class DBSlave extends DBmysql { \n public \$slave = true; \n public \$dbhost = ";
       $host   = trim($host);
       if (strpos($host, ' ')) {
          $hosts = explode(' ', $host);
@@ -85,8 +111,8 @@ class DBConnection extends CommonDBTM {
       } else {
          $DB_str .= "'$host';\n";
       }
-      $DB_str .= " var \$dbuser = '" . $user . "'; \n var \$dbpassword= '" .
-                  rawurlencode($password) . "'; \n var \$dbdefault = '" . $DBname . "'; \n } \n ?>";
+      $DB_str .= " public \$dbuser = '" . $user . "'; \n public \$dbpassword= '" .
+                  rawurlencode($password) . "'; \n public \$dbdefault = '" . $DBname . "'; \n }\n";
 
       return Toolbox::writeConfig('config_db_slave.php', $DB_str);
    }
@@ -333,13 +359,13 @@ class DBConnection extends CommonDBTM {
       if (!isCommandLine()) {
          Html::nullHeader("Mysql Error", '');
          echo "<div class='center'><p class ='b'>
-                A link to the Mysql server could not be established. Please check your configuration.
+                A link to the SQL server could not be established. Please check your configuration.
                 </p><p class='b'>
                 Le serveur Mysql est inaccessible. Vérifiez votre configuration</p>
                </div>";
          Html::nullFooter();
       } else {
-         echo "A link to the Mysql server could not be established. Please check your configuration.\n";
+         echo "A link to the SQL server could not be established. Please check your configuration.\n";
          echo "Le serveur Mysql est inaccessible. Vérifiez votre configuration\n";
       }
 
@@ -352,7 +378,7 @@ class DBConnection extends CommonDBTM {
    **/
    static function cronInfo($name) {
 
-      return array('description' => __('Check the MySQL replica'),
+      return array('description' => __('Check the SQL replica'),
                    'parameter'   => __('Max delay between master and slave (minutes)'));
    }
 
@@ -383,10 +409,10 @@ class DBConnection extends CommonDBTM {
             // Quite strange, but allow simple stat
             $task->addVolume($diff);
             if ($diff > 1000000000) { // very large means slave is disconnect
-               $task->log(sprintf(__s("Mysql server: %s can't connect to the database"), $name));
+               $task->log(sprintf(__s("SQL server: %s can't connect to the database"), $name));
             } else {
                                   //TRANS: %1$s is the server name, %2$s is the time
-               $task->log(sprintf(__('Mysql server: %1$s, difference between master and slave: %2$s'),
+               $task->log(sprintf(__('SQL server: %1$s, difference between master and slave: %2$s'),
                                   $name, Html::timestampToString($diff, true)));
             }
 
@@ -421,7 +447,7 @@ class DBConnection extends CommonDBTM {
       foreach ($hosts as $num => $name) {
          $diff = self::getReplicateDelay($num);
          //TRANS: %s is namez of server Mysql
-         printf(__('%1$s: %2$s'), __('Mysql server'), $name);
+         printf(__('%1$s: %2$s'), __('SQL server'), $name);
          echo " - ";
          if ($diff > 1000000000) {
             echo __("can't connect to the database") . "<br>";

@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -50,11 +49,11 @@ class RuleRightCollection extends RuleCollection {
 
    // Specific ones
    /// Array containing results : entity + right
-   var $rules_entity_rights = array();
+   public $rules_entity_rights = array();
    /// Array containing results : only entity
-   var $rules_entity = array();
+   public $rules_entity        = array();
    /// Array containing results : only right
-   var $rules_rights = array();
+   public $rules_rights        = array();
 
 
    function getTitle() {
@@ -301,4 +300,3 @@ class RuleRightCollection extends RuleCollection {
    }
 
 }
-?>

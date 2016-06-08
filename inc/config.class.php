@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -383,7 +382,7 @@ class Config extends CommonDBTM {
                               array('value' => $CFG_GLPI['allow_search_all']));
       echo "</td><td colspan='2'></td></tr>";
 
-      echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>".__('Item locks')."</th></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Item locks')."</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Use locks') . "</td><td>";
@@ -622,7 +621,7 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       $active = DBConnection::isDBSlaveActive();
 
-      echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('Mysql replica', 'Mysql replicas', Session::getPluralNumber()) .
+      echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('SQL replica', 'SQL replicas', Session::getPluralNumber()) .
            "</th></tr>";
       $DBslave = DBConnection::getDBSlaveConf();
 
@@ -632,16 +631,16 @@ class Config extends CommonDBTM {
          $host = $DBslave->dbhost;
       }
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Mysql server') . "</td>";
+      echo "<td>" . __('SQL server (MariaDB or MySQL)') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbhost' size='40' value='$host'></td>";
       echo "<td>" . __('Database') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbdefault' value='".$DBslave->dbdefault."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Mysql user') . "</td>";
+      echo "<td>" . __('SQL user') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbuser' value='".$DBslave->dbuser."'></td>";
-      echo "<td>" . __('Mysql password') . "</td>";
+      echo "<td>" . __('SQL password') . "</td>";
       echo "<td><input type='password' name='_dbreplicate_dbpassword' value='".
                  rawurldecode($DBslave->dbpassword)."'>";
       echo "</td></tr>";
@@ -1142,7 +1141,7 @@ class Config extends CommonDBTM {
          echo "</td></tr>";
 
 
-         
+
       }
 
       // Only for user
@@ -1361,6 +1360,131 @@ class Config extends CommonDBTM {
 
 
    /**
+    * Display a report about system performance
+    * - opcode cache (opcache)
+    * - user data cache (apcu / apcu-bc)
+    *
+    * @since 9.1
+   **/
+   function showPerformanceInformations() {
+      global $CFG_GLPI;
+
+      if (!Config::canUpdate()) {
+         return false;
+      }
+
+      echo "<div class='center' id='tabsbody'>";
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr><th colspan='4'>" . __('PHP opcode cache') . "</th></tr>";
+      $ext = 'Zend OPcache';
+      if (extension_loaded($ext)) {
+         echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
+               <td>" . phpversion($ext) . "</td>
+               <td></td>
+               <td><img src='" . $CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$ext'></td></tr>";
+
+         $info = opcache_get_status(false);
+         // echo "<tr><td><pre>".print_r($info, true)."</pre></td></tr>";
+
+         // Memory
+         $used = $info['memory_usage']['used_memory'];
+         $free = $info['memory_usage']['free_memory'];
+         $rate = round(100.0 * $used / ($used + $free));
+         $max  = Toolbox::getSize($used + $free);
+         $used = Toolbox::getSize($used);
+         echo "<tr><td>" . __('Memory') . "</td>
+               <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
+         Html::displayProgressBar('100', $rate, array('simple'       => true,
+                                                      'forcepadding' => false));
+         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
+              ($rate > 5 && $rate < 75 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         // Hits
+         $hits = $info['opcache_statistics']['hits'];
+         $miss = $info['opcache_statistics']['misses'];
+         $max  = $hits+$miss;
+         $rate = round($info['opcache_statistics']['opcache_hit_rate']);
+         echo "<tr><td>" . __('Hits rate') . "</td>
+               <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
+         Html::displayProgressBar('100', $rate, array('simple'       => true,
+                                                      'forcepadding' => false));
+         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
+              ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         // Restart (1 seems ok, can happen)
+         $max = $info['opcache_statistics']['oom_restarts'];
+         echo "<tr><td>" . __('Out of memory restart') . "</td>
+               <td>$max</td><td>";
+         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
+               ($max < 2 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            echo "<tr><td></td><td colspan='3'>";
+            echo "<a class='vsubmit' href='config.form.php?reset_opcache=1'>";
+            _e('Reset');
+            echo "</a></td></tr>\n";
+         }
+      } else {
+         echo "<tr><td>" . sprintf(__('Installing the "%s" extension may improve GLPI performance'), $ext) . "</td>
+               <td></td>
+               <td><img src='" . $CFG_GLPI['root_doc'] . "/pics/ko_min.png' alt='$ext'></td></tr>";
+      }
+
+      echo "<tr><th colspan='4'>" . __('User data cache') . "</th></tr>";
+      $ext = (PHP_MAJOR_VERSION < 7 ? 'APCu' : 'apcu-bc');
+      if (function_exists('apc_fetch')) {
+         echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
+               <td>" . phpversion('apc') . "</td>
+               <td></td>
+               <td><img src='" . $CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$ext'></td></tr>";
+
+         $info = apc_sma_info(true);
+         $stat = apc_cache_info('user', true);
+         // echo "<tr><td><pre>Info:".print_r($info, true)."Stat:".print_r($stat, true)."</pre></td></tr>";
+
+         // Memory
+         $max  = $info['num_seg'] + $info['seg_size'];
+         $free = $info['avail_mem'];
+         $used = $max - $free;
+         $rate = round(100.0 * $used / $max);
+         $max  = Toolbox::getSize($used + $free);
+         $used = Toolbox::getSize($used);
+         echo "<tr><td>" . __('Memory') . "</td>
+               <td>" . sprintf(__('%1$s / %2$s'), $used, $max) . "</td><td>";
+         Html::displayProgressBar('100', $rate, array('simple'       => true,
+                                                      'forcepadding' => false));
+         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
+              ($rate > 5 && $rate < 50 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         // Hits
+         $hits = $stat['num_hits'];
+         $miss = $stat['num_misses'];
+         $max  = $hits+$miss;
+         $rate = round(100 * $hits / ($hits + $miss));
+         echo "<tr><td>" . __('Hits rate') . "</td>
+               <td>" . sprintf(__('%1$s / %2$s'), $hits, $max) . "</td><td>";
+         Html::displayProgressBar('100', $rate, array('simple'       => true,
+                                                      'forcepadding' => false));
+         echo "</td><td><img src='" . $CFG_GLPI['root_doc']."/pics/" .
+              ($rate > 90 ? 'ok_min.png' : 'ko_min.png') . "' alt='$ext'></td></tr>";
+
+         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            echo "<tr><td></td><td colspan='3'>";
+            echo "<a class='vsubmit' href='config.form.php?reset_apcu=1'>";
+            _e('Reset');
+            echo "</a></td></tr>\n";
+         }
+      } else {
+         echo "<tr><td>" . sprintf(__('Installing the "%s" extension may improve GLPI performance'), $ext) . "</td>
+               <td></td>
+               <td><img src='" . $CFG_GLPI['root_doc'] . "/pics/ko_min.png' alt='$ext'></td></tr>";
+      }
+
+      echo "</table></div>\n";
+   }
+
+   /**
     * Display a HTML report about systeme information / configuration
    **/
    function showSystemInformations() {
@@ -1394,7 +1518,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('Logs in files (SQL, email, automatic action...)') . "</td><td>";
       Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
-      echo "</td><td> " . _n('Mysql replica', 'Mysql replicas', 1) . "</td><td>";
+      echo "</td><td> " . _n('SQL replica', 'SQL replicas', 1) . "</td><td>";
       $active = DBConnection::isDBSlaveActive();
       Dropdown::showYesNo("_dbslave_status", $active);
       echo "</td></tr>";
@@ -1615,6 +1739,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th>Libraries</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
+      include_once(GLPI_HTMLAWED);
       echo "htmLawed version ".hl_version().
            " in (".self::getLibraryDir("hl_version").")\n";
 
@@ -1623,6 +1748,7 @@ class Config extends CommonDBTM {
                      ? self::getLibraryDir("phpCAS")
                      : "system").
            ")\n";
+
 
       $pm = new PHPMailer();
       echo "PHPMailer version ".$pm->Version.
@@ -1783,11 +1909,12 @@ class Config extends CommonDBTM {
             $tabs[4] = __('Assistance');
             if (Config::canUpdate()) {
                $tabs[5] = __('System');
+               $tabs[7] = __('Performance');
             }
 
             if (DBConnection::isDBSlaveActive()
                 && Config::canUpdate()) {
-               $tabs[6]  = _n('Mysql replica', 'Mysql replicas', Session::getPluralNumber());  // Slave
+               $tabs[6]  = _n('SQL replica', 'SQL replicas', Session::getPluralNumber());  // Slave
             }
             return $tabs;
       }
@@ -1836,6 +1963,10 @@ class Config extends CommonDBTM {
 
             case 5 :
                $item->showSystemInformations();
+               break;
+
+            case 7 :
+               $item->showPerformanceInformations();
                break;
 
             case 6 :
@@ -2118,4 +2249,3 @@ class Config extends CommonDBTM {
    }
 
 }
-?>

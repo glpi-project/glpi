@@ -1029,8 +1029,8 @@ abstract class CommonITILObject extends CommonDBTM {
                   && !in_array($this->fields["status"], $this->getClosedStatusArray())))) {
 
          // Compute ticket waiting time use calendar if exists
-         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
+         $calendars_id = $this->getCalendar();
          $delay_time   = 0;
 
 
@@ -4338,7 +4338,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && !empty($this->fields['date'])
           && !empty($this->fields['solvedate'])) {
 
-         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendars_id = $this->getCalendar();
          $calendar     = new Calendar();
 
          // Using calendar
@@ -4365,7 +4365,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && !empty($this->fields['date'])
           && !empty($this->fields['closedate'])) {
 
-         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendars_id = $this->getCalendar();
          $calendar     = new Calendar();
 
          // Using calendar
@@ -5364,5 +5364,16 @@ abstract class CommonITILObject extends CommonDBTM {
       // End Line for column headers
       echo Search::showEndLine($output_type);
    }
+
+
+   /**
+    * Get correct Calendar: Entity or Sla
+    *
+    * @since 0.90.4
+    *
+    **/
+   function getCalendar() {
+      return Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
+   }
+
 }
-?>

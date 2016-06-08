@@ -469,20 +469,54 @@ function displayOtherSelectOptions(select_object, other_option_name) {
  * @param    container_id    DOM element
 **/
 function checkAsCheckboxes( reference_id, container_id ) {
+   $('#' + container_id + ' input[type="checkbox"]:enabled')
+      .prop('checked', $('#' + reference_id).is(':checked'));
 
-   var ref        =  document.getElementById(reference_id);
-   var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
-
-   for (var j=0 ; j<checkboxes.length ; j++ ) {
-      checkbox = checkboxes[j];
-      if (checkbox && (checkbox.type == 'checkbox')) {
-         if (checkbox.disabled == false) {
-            checkbox.checked = ref.checked;
-         }
-      }
-   }
    return true;
 }
+
+/**
+ * Permit to use Shift key on a group of checkboxes
+ * Usage: $form.find('input[type="checkbox"]').shiftSelectable();
+ */
+$.fn.shiftSelectable = function() {
+   var lastChecked,
+       $boxes = this;
+
+   // prevent html selection
+   document.onkeydown = function(e) {
+      var keyPressed = e.keyCode;
+      if (keyPressed == 16) { // shift key
+         $('html').addClass('unselectable');
+         document.onkeyup = function() {
+            $('html').removeClass('unselectable');
+         };
+      }
+   };
+
+   $($boxes.selector).parent().click(function(evt) {
+      if ($boxes.length <= 0) {
+         $boxes = $($boxes.selector);
+      }
+      var selected_checkbox = $(this).children('input[type=checkbox]');
+
+      if(!lastChecked) {
+         lastChecked = selected_checkbox;
+         return;
+      }
+
+      if(evt.shiftKey) {
+         evt.preventDefault();
+         var start = $boxes.index(selected_checkbox),
+             end = $boxes.index(lastChecked);
+         $boxes.slice(Math.min(start, end), Math.max(start, end) + 1)
+               .prop('checked', $(lastChecked).is(':checked'))
+               .trigger('change');
+      }
+
+      lastChecked = selected_checkbox;
+   });
+};
 
 
 /**
@@ -818,13 +852,16 @@ read_more = function() {
 }
 
 
-
+var split_button_fct_called = false;
 split_button = function() {
-   var splitBtn = $('#x-split-button');
+   if (split_button_fct_called) {
+      return true;
+   }
+   split_button_fct_called = true
 
    // unfold status list
    $(document).on("click", '.x-button-drop', function(event) {
-      splitBtn.toggleClass('open');
+      $(this).parents(".x-split-button").toggleClass('open');
    });
 
    $(document).on("click", '.x-split-button', function(event) {
@@ -834,25 +871,26 @@ split_button = function() {
    //click on an element of status list
    $(document).on("click", '.x-button-drop-menu li', function(event) {
       if (event.target.children.length) {
+         var xBtnDrop = $(this).parent().siblings(".x-button-drop");
          //clean old status class
-         $('.x-button-drop').attr('class','x-button x-button-drop');
+         xBtnDrop.attr('class','x-button x-button-drop');
 
          //find status
          match = event.target.children[0].src.match(/.*\/(.*)\.png/);
          cstatus = match[1];
 
          //add status to dropdown button
-         $('.x-button-drop').addClass(cstatus);
+         xBtnDrop.addClass(cstatus);
 
          //fold status list
-         splitBtn.removeClass('open');
+         $(this).parents(".x-split-button").removeClass('open');
       }
    });
 
    //fold status list on click on document
    $(document).on("click", function(event) {
-      if (splitBtn.hasClass('open')) {
-         splitBtn.removeClass('open');
+      if ($('.x-split-button').hasClass('open')) {
+         $('.x-split-button').removeClass('open');
       }
    });
 }

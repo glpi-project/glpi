@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -198,7 +197,7 @@ if (!TableExists("glpi_configs")) {
    $glpilanguage        = $configurationValues['language'];
 }
 
-$migration = new CliMigration($current_version);
+$migration = new CliMigration(GLPI_VERSION);
 
 $migration->displayWarning("Current GLPI Data version: $current_version");
 $migration->displayWarning("Current GLPI Code version: ".GLPI_VERSION);
@@ -218,32 +217,32 @@ if (($current_version != "0.91") && (GLPI_VERSION != 9.1)) {
 switch ($current_version) {
    case "0.72.3" :
    case "0.72.4" :
-      include("../install/update_0723_078.php");
+      include_once("../install/update_0723_078.php");
       update0723to078();
 
    case "0.78" :
-      include("../install/update_078_0781.php");
+      include_once("../install/update_078_0781.php");
       update078to0781();
 
    case "0.78.1" :
-      include("../install/update_0781_0782.php");
+      include_once("../install/update_0781_0782.php");
       update0781to0782();
 
    case "0.78.2":
    case "0.78.3":
    case "0.78.4":
    case "0.78.5":
-      include("../install/update_0782_080.php");
+      include_once("../install/update_0782_080.php");
       update0782to080();
 
    case "0.80" :
-      include("../install/update_080_0801.php");
+      include_once("../install/update_080_0801.php");
       update080to0801();
       // nobreak;
 
    case "0.80.1" :
    case "0.80.2" :
-      include("../install/update_0801_0803.php");
+      include_once("../install/update_0801_0803.php");
       update0801to0803();
       // nobreak;
 
@@ -253,18 +252,18 @@ switch ($current_version) {
    case "0.80.6" :
    case "0.80.61" :
    case "0.80.7" :
-      include("../install/update_0803_083.php");
+      include_once("../install/update_0803_083.php");
       update0803to083();
       // nobreak;
 
    case "0.83" :
-      include("../install/update_083_0831.php");
+      include_once("../install/update_083_0831.php");
       update083to0831();
       // nobreak;
 
    case "0.83.1" :
    case "0.83.2" :
-      include("../install/update_0831_0833.php");
+      include_once("../install/update_0831_0833.php");
       update0831to0833();
 
    case "0.83.3" :
@@ -276,60 +275,60 @@ switch ($current_version) {
    case "0.83.8" :
    case "0.83.9" :
    case "0.83.91" :
-      include("../install/update_0831_084.php");
+      include_once("../install/update_0831_084.php");
       update0831to084();
 
    case "0.84" :
-      include("../install/update_084_0841.php");
+      include_once("../install/update_084_0841.php");
       update084to0841();
 
    case "0.84.1" :
    case "0.84.2" :
-      include("../install/update_0841_0843.php");
+      include_once("../install/update_0841_0843.php");
       update0841to0843();
 
    case "0.84.3" :
-      include("../install/update_0843_0844.php");
+      include_once("../install/update_0843_0844.php");
       update0843to0844();
 
    case "0.84.4" :
    case "0.84.5" :
-      include("../install/update_0845_0846.php");
+      include_once("../install/update_0845_0846.php");
       update0845to0846();
 
    case "0.84.6" :
    case "0.84.7" :
    case "0.84.8" :
    case "0.84.9" :
-      include("../install/update_084_085.php");
+      include_once("../install/update_084_085.php");
       update084to085();
 
    case "0.85" :
    case "0.85.1" :
    case "0.85.2" :
-      include("../install/update_085_0853.php");
+      include_once("../install/update_085_0853.php");
       update085to0853();
 
    case "0.85.3" :
    case "0.85.4" :
-      include("../install/update_0853_0855.php");
+      include_once("../install/update_0853_0855.php");
       update0853to0855();
 
    case "0.85.5" :
-      include("../install/update_0855_090.php");
+      include_once("../install/update_0855_090.php");
       update0855to090();
 
    case "0.90" :
-      include("../install/update_090_0901.php");
+      include_once("../install/update_090_0901.php");
       update090to0901();
 
     case "0.90.1" :
-      include("../install/update_0901_0902.php");
+      include_once("../install/update_0901_0902.php");
       update0901to0902();
 
    case "0.90.2" :
    case "0.90.3" :
-      include("../install/update_0902_91.php");
+      include_once("../install/update_0902_91.php");
       update0902to091();
 
    /* remember to also change --force below for last version */
@@ -356,7 +355,7 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
 } else if (in_array('--force', $_SERVER['argv'])) {
 
-   include("../install/update_0902_91.php");
+   include_once("../install/update_0902_91.php");
    update0902to91();
 
    $migration->displayWarning("\nForced migration Done.");
@@ -371,4 +370,3 @@ if (in_array('--optimize', $_SERVER['argv'])) {
    DBmysql::optimize_tables($migration);
    $migration->displayWarning("Optimize done.");
 }
-?>

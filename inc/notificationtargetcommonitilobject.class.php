@@ -888,7 +888,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $datas["documents"] = array();
          $addtodownloadurl   = '';
          if ($item->getType() == 'Ticket') {
-            $addtodownloadurl = "&amp;tickets_id=".$item->fields['id'];
+            $addtodownloadurl = "%2526tickets_id=".$item->fields['id'];
          }
          if ($result = $DB->query($query)) {
             while ($data = $DB->fetch_assoc($result)) {

@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -185,14 +184,14 @@ class Search {
 
       if (!$CFG_GLPI['allow_search_all']) {
          foreach ($p['criteria'] as $val) {
-            if ($val['field'] == 'all') {
+            if (isset($val['field']) && $val['field'] == 'all') {
                Html::displayRightError();
             }
          }
       }
       if (!$CFG_GLPI['allow_search_view']) {
          foreach ($p['criteria'] as $val) {
-            if ($val['field'] == 'view') {
+            if (isset($val['field']) && $val['field'] == 'view') {
                Html::displayRightError();
             }
          }
@@ -227,7 +226,7 @@ class Search {
       if (count($p['criteria']) > 0) {
          foreach ($p['criteria'] as $key => $val) {
             if (!in_array($val['field'], $data['toview'])) {
-               if (($val['field'] != 'all') && ($val['field'] != 'view')) {
+               if (isset($val['field']) && ($val['field'] != 'all') && ($val['field'] != 'view')) {
                   array_push($data['toview'], $val['field']);
                } else if ($val['field'] == 'all'){
                   $data['search']['all_search'] = true;
@@ -431,7 +430,7 @@ class Search {
             // if real search (strlen >0) and not all and view search
             if (isset($criteria['value']) && (strlen($criteria['value']) > 0)) {
                // common search
-               if (($criteria['field'] != "all") && ($criteria['field'] != "view")) {
+               if (isset($criteria['field']) && ($criteria['field'] != "all") && ($criteria['field'] != "view")) {
                   $LINK    = " ";
                   $NOT     = 0;
                   $tmplink = "";
@@ -509,7 +508,7 @@ class Search {
 
                   $items = array();
 
-                  if ($criteria['field'] == "all") {
+                  if (isset($criteria['field']) && $criteria['field'] == "all") {
                      $items = $searchopt;
 
                   } else { // toview case : populate toview
@@ -1412,6 +1411,11 @@ class Search {
                      && !in_array($row["id"], $_SESSION["glpiactiveentities"])) {
                   $tmpcheck = "&nbsp;";
 
+               } else if ($data['itemtype'] == 'User'
+                          && !Session::isViewAllEntities()
+                          && !Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($row["id"], false))) {
+                  $tmpcheck = "&nbsp;";
+
                } else if (($data['item'] instanceof CommonDBTM)
                            && $data['item']->maybeRecursive()
                            && !in_array($row["entities_id"], $_SESSION["glpiactiveentities"])) {
@@ -1846,7 +1850,7 @@ class Search {
       for ($i=0 ; $i<count($p['criteria']) ; $i++) {
          $_POST['itemtype'] = $itemtype;
          $_POST['num']      = $i ;
-         include(GLPI_ROOT.'/ajax/searchrow.php');
+         include_once(GLPI_ROOT.'/ajax/searchrow.php');
       }
 
       $metanames = array();
@@ -1857,7 +1861,7 @@ class Search {
 
             $_POST['itemtype'] = $itemtype;
             $_POST['num'] = $i ;
-            include(GLPI_ROOT.'/ajax/searchmetarow.php');
+            include_once(GLPI_ROOT.'/ajax/searchmetarow.php');
          }
       }
       echo "</table>\n";
@@ -2500,7 +2504,9 @@ class Search {
       // Default case
       if ($meta
           || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]
-              && !isset($searchopt[$ID]["computation"]))) { // Not specific computation
+              && (!isset($searchopt[$ID]["computation"])
+                  || isset($searchopt[$ID]["computationgroupby"])
+                     && $searchopt[$ID]["computationgroupby"]))) { // Not specific computation
          $TRANS = '';
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $TRANS = "IFNULL(GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
@@ -2554,7 +2560,7 @@ class Search {
             if (Session::isViewAllEntities()) {
                return "";
             }
-            return getEntitiesRestrictRequest("","glpi_profiles_users");
+            return getEntitiesRestrictRequest("","glpi_profiles_users", '', '', true);
 
          case 'ProjectTask' :
             $condition  = '';
@@ -4152,7 +4158,8 @@ class Search {
                   $added         = array();
                   $count_display = 0;
                   for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
-                     if (strlen(trim($data[$num][$k]['name'])) > 0) {
+                     if (isset($data[$num][$k]['name'])
+                         && (strlen(trim($data[$num][$k]['name'])) > 0)) {
                         $text = sprintf(__('%1$s - %2$s'), $data[$num][$k]['name'],
                                         Dropdown::getDropdownName('glpi_profiles',
                                                                   $data[$num][$k]['profiles_id']));
@@ -6126,6 +6133,9 @@ class Search {
       // Unclean to permit < and > search
       $val = Toolbox::unclean_cross_side_scripting_deep($val);
 
+      // escape _ char used as wildcard in mysql likes
+      $val = str_replace('_', '\\_', $val);
+
       if (($val == 'NULL') || ($val == 'null')) {
          $SEARCH = " IS $NOT NULL ";
 
@@ -6180,4 +6190,3 @@ class Search {
    }
 
 }
-?>
