@@ -334,6 +334,10 @@ textarea:focus, input:focus {
    border: 1px solid #5897fb;
 }
 
+.mce-fullscreen {
+   z-index: 2000 !important;
+}
+
 input {
    height: 17px;
    vertical-align: middle;

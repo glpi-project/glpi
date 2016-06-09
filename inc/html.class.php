@@ -1157,7 +1157,8 @@ class Html {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.min.js");
       }
 
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/tinymce/tinymce.min.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/tinymce/jquery.tinymce.min.js");
 
       // PLugins jquery
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js");
@@ -3911,6 +3912,11 @@ class Html {
    static function initEditorSystem($name, $rand='', $display=true) {
       global $CFG_GLPI;
 
+      $initPaste = "";
+      if (!empty($rand)) {
+         $initPaste = self::initImagePasteSystem($name, $rand);
+      }
+
       Html::scriptStart();
       $js = "function waitforpastedata(elem){
          var _html = elem.innerHTML;
@@ -3930,7 +3936,27 @@ class Html {
          }
       }
 
-      tinyMCE.init({
+      $(function() {
+         $('#$name').tinymce({
+            language: '".$_SESSION['glpilanguage']."',
+            theme: 'modern',
+            skin: 'light', 
+            menubar: false,
+            toolbar_items_size: 'small',
+            browser_spellcheck: true,
+            plugins: [
+               'paste autoresize anchor preview link image',
+               'advlist autolink lists fullscreen'
+            ],
+            autoresize_bottom_margin: 5,
+            paste_data_images: true,
+            toolbar: 'undo redo | styleselect | bold italic | \
+                      alignleft aligncenter alignright alignjustify | \
+                      bullist numlist outdent indent | link image | fullscreen',
+         });
+      });
+
+      /*tinyMCE.init({
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
          mode : 'exact',
          browser_spellcheck : true,
@@ -3987,7 +4013,7 @@ class Html {
                }
             });
          }
-      });
+      });*/
    ";
 
 //         invalid_elements : 'script',

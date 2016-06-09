@@ -4297,7 +4297,9 @@ class Ticket extends CommonITILObject {
          echo "<div id='content$rand_text'>";
          echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
                 $this->fields["content"]."</textarea></div>";
-         echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
+         if (!$CFG_GLPI["use_rich_text"]) {
+            echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
+         }
          echo $tt->getEndHiddenFieldValue('content', $this);
 
       } else {
@@ -4451,7 +4453,7 @@ class Ticket extends CommonITILObject {
                                               'tag' => $values['_tag_filename'])
                             ));
       echo "</td>";
-      if ($CFG_GLPI['use_rich_text']) {
+      /*if ($CFG_GLPI['use_rich_text']) {
          echo "</tr>";
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='$colspan'>";
@@ -4462,7 +4464,7 @@ class Ticket extends CommonITILObject {
             echo Html::initImagePasteSystem($content_id, $rand);
          }
          echo "</td>";
-      }
+      }*/
       echo "</tr>";
 
       echo "</table>";
