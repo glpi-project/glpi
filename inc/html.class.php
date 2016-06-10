@@ -56,7 +56,7 @@ class Html {
     *          2 : remove tag and neutralize content
     * @return clean value
    **/
-   static function clean($value, $striptags=true, $keep_bad=2, $double_escape_angle_brackets = true) {
+   static function clean($value, $striptags=true, $keep_bad=2) {
 
       include_once(GLPI_HTMLAWED);
 
@@ -90,10 +90,7 @@ class Html {
                                       'cdata'   => 1, // DROP
                                       ));
 
-
-      if ($double_escape_angle_brackets) {
-         $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
-      }
+      $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
 
       $value = str_replace(array("\r\n", "\r"), "\n", $value);
       $value = preg_replace("/(\n[ ]*){2,}/", "\n\n", $value, -1);

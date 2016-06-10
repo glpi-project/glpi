@@ -5647,7 +5647,7 @@ class Search {
             $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
             $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
             $PDF_TABLE .= "<td $extraparam valign='top'>";
-            $PDF_TABLE .= Html::weblink_extract(Html::clean($value, true, 2, false));
+            $PDF_TABLE .= Html::weblink_extract(Html::clean($value));
             $PDF_TABLE .= "</td>\n";
 
             break;
@@ -6082,12 +6082,8 @@ class Search {
       $value = preg_replace('/\x0A/', ' ', $value);
       $value = preg_replace('/\x0D/', NULL, $value);
       $value = str_replace("\"", "''", $value);
-      $value = str_replace("&gt;", ">", $value);
-      $value = str_replace("&lt;", "<", $value);
       $value = str_replace(';', ';;', $value);
-      $value = Html::clean($value, true, 2, false);
-      $value = str_replace("&gt;", ">", $value);
-      $value = str_replace("&lt;", "<", $value);
+      $value = Html::clean($value);
 
       return $value;
    }
