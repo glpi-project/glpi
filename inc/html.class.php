@@ -3918,9 +3918,10 @@ class Html {
          selector: '#$domid',
          relative_urls: false,
          remove_script_host: false,
-         entity_encoding: 'xml',
+         entity_encoding: 'numeric',
          menubar: false,
          statusbar: false,
+         forced_root_block: true,
          skin: 'light',
          plugins: [
             'table directionality searchreplace paste',
