@@ -66,13 +66,11 @@ class Html {
       $value = str_replace(array("<![if !supportLists]>", "<![endif]>"), '', $value);
 
       if ($striptags) {
-         $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-         $value         = preg_replace($specialfilter, '', $value);
-         $specialfilter = array('@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-         $value         = preg_replace($specialfilter, '', $value);
-         $specialfilter = array('@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-         $value         = preg_replace($specialfilter, '', $value);
-         $specialfilter = array('@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         // Strip ToolTips
+         $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si',
+                                '@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si',
+                                '@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si',
+                                '@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si');
          $value         = preg_replace($specialfilter, '', $value);
 
          $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
@@ -97,24 +95,6 @@ class Html {
          $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
       }
 
-/*
-      $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, ' ', $value);
-
-      $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                             '@<style[^>]*?>.*?</style[^>]*?>@si',   // Strip style tags properly
-                             '@<[\/\!]*?[^<>]*?>@si',                // Strip out HTML tags
-                             '@<![\s\S]*?--[ \t\n\r]*>@');           // Strip multi-line comments including CDATA
-
-      $value = preg_replace($search, ' ', $value);
-
-      // nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
-      $value = str_replace("&#8217;", "'", $value);
-*/
-   // Problem with this regex : may crash
-   //   $value = preg_replace("/ +/u", " ", $value);
-      // Revert back htmlawed &amp; -> &
-      //$value = str_replace("&amp;", "&", $value);
       $value = str_replace(array("\r\n", "\r"), "\n", $value);
       $value = preg_replace("/(\n[ ]*){2,}/", "\n\n", $value, -1);
 
