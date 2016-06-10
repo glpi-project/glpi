@@ -3921,7 +3921,6 @@ class Html {
          entity_encoding: 'numeric',
          menubar: false,
          statusbar: false,
-         forced_root_block: true,
          skin: 'light',
          plugins: [
             'table directionality searchreplace paste',
@@ -3966,7 +3965,7 @@ class Html {
                                               'save'         => _sx('button', 'Save'),
                                               'cancel'       => _sx('button', 'Cancel')));
 
-      return html::scriptBlock("if (!tinyMCE.isIE) { // Chrome, Firefox plugin
+      return html::scriptBlock("if (!tinyMCE.isIE || tinymce.Env.ie >= 10) { // Chrome, Firefox plugin, Internet explorer >= 10
                   tinyMCE.imagePaste = $(document).imagePaste(".json_encode($params).");
               } else { // IE plugin
                   tinyMCE.imagePaste = $(document).IE_support_imagePaste(".json_encode($params).");
