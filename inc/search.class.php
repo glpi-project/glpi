@@ -6065,6 +6065,7 @@ class Search {
       $value = str_replace("\"", "''", $value);
       $value = Html::clean($value);
       $value = str_replace("&gt;", ">", $value);
+      $value = str_replace("&lt;", "<", $value);
 
       return $value;
    }
@@ -6082,8 +6083,9 @@ class Search {
       $value = preg_replace('/\x0A/', ' ', $value);
       $value = preg_replace('/\x0D/', NULL, $value);
       $value = str_replace("\"", "''", $value);
-      $value = str_replace(';', ';;', $value);
       $value = Html::clean($value);
+      $value = str_replace("&gt;", ">", $value);
+      $value = str_replace("&lt;", "<", $value);
 
       return $value;
    }

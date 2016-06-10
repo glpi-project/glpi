@@ -81,6 +81,9 @@ class Html {
                        );
       $value = preg_replace($search, '', $value);
 
+      // Neutralize not well formatted html tags
+      $value = preg_replace("/(<)([^>]*<)/", "&lt;$2", $value);
+
       include_once(GLPI_HTMLAWED);
       $value = htmLawed($value, array('elements' => ($striptags) ? 'none' : '',
                                       'keep_bad' => $keep_bad, // 1 : neutralize tag and content, 2 : remove tag and neutralize content
@@ -3891,7 +3894,7 @@ class Html {
          selector: '#$domid',
          relative_urls: false,
          remove_script_host: false,
-         entity_encoding: 'numeric',
+         entity_encoding: 'raw',
          menubar: false,
          statusbar: false,
          skin: 'light',
