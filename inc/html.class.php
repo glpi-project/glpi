@@ -1157,7 +1157,7 @@ class Html {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.min.js");
       }
 
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tinymce.min.js");
 
       // PLugins jquery
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js");
@@ -3908,89 +3908,29 @@ class Html {
     *
     * @return nothing
    **/
-   static function initEditorSystem($name, $rand='', $display=true) {
+   static function initEditorSystem($domid, $rand='', $display=true) {
       global $CFG_GLPI;
 
       Html::scriptStart();
-      $js = "function waitforpastedata(elem){
-         var _html = elem.innerHTML;
-         if(_html != undefined) {
-            if (_html.match(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g)){
-               _html = _html.replace(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g, '');
-               tinyMCE.activeEditor.setContent(_html);
-            } else {
-               that = {
-                  e: elem
-               }
-               that.callself = function () {
-                  waitforpastedata(that.e)
-               }
-               setTimeout(that.callself,20);
-            }
-         }
-      }
-
-      tinyMCE.init({
-         language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
-         mode : 'exact',
-         browser_spellcheck : true,
-         elements: '$name',
+      $js = "tinyMCE.init({
+         language: '".$_SESSION['glpilanguage']."',
+         browser_spellcheck: true,
+         selector: '#$domid',
          relative_urls: false,
          remove_script_host: false,
-         valid_elements: '*[*]',
-         plugins : 'table,directionality,searchreplace,paste,tabfocus,autoresize',
-         paste_use_dialog : false,
-         paste_auto_cleanup_on_paste : true,
-         paste_convert_headers_to_strong : false,
-         paste_strip_class_attributes : 'all',
-         paste_remove_spans : true,
-         paste_remove_styles : true,
-         paste_retain_style_properties : '',
-         paste_block_drop : true,
-         paste_preprocess : function(pl, o) {
-            _html = o.content;
-            if (_html.match(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g)){
-               _html = _html.replace(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g, '');
-               o.content = _html;
-            }
-         },
-         theme : 'advanced',
-         entity_encoding : 'raw',
-         // directionality + search replace plugin
-         theme_advanced_buttons1_add : 'ltr,rtl,search,replace',
-         theme_advanced_toolbar_location : 'top',
-         theme_advanced_toolbar_align : 'left',
-         theme_advanced_statusbar_location : 'none',
-         theme_advanced_resizing : 'true',
-         theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
-         theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
-         theme_advanced_buttons3 : '',
-         setup : function(ed) {
-         ed.onInit.add(function(ed) {
-            // wake up the autoresize plugin
-            setTimeout(
-               function(){
-                  ed.execCommand('mceAutoResize');
-               }, 1);
-               if (tinymce.isIE) {
-                  tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
-                     return tinymce.dom.Event.cancel(e);
-                  });
-               } else {
-                  tinymce.dom.Event.add(ed.getBody().parentNode, 'drop', function(e) {
-                     tinymce.dom.Event.cancel(e);
-                     tinymce.dom.Event.stop(e);
-                  });
-                  tinymce.dom.Event.add(ed.getBody().parentNode, 'paste', function(e) {
-                     waitforpastedata(ed.getBody());
-                  });
-               }
-            });
-         }
+         entity_encoding: 'xml',
+         menubar: false,
+         statusbar: false,
+         skin: 'light',
+         plugins: [
+            'table directionality searchreplace paste',
+            'tabfocus autoresize link image',
+            'code fullscreen'
+         ],
+         toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image searchreplace code fullscreen',
       });
    ";
 
-//         invalid_elements : 'script',
       if ($display) {
          echo  Html::scriptBlock($js);
       } else {
