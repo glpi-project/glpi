@@ -57,9 +57,6 @@ class Html {
     * @return clean value
    **/
    static function clean($value, $striptags=true, $keep_bad=2) {
-
-      include_once(GLPI_HTMLAWED);
-
       $value = Html::entity_decode_deep($value);
 
       // Clean MS office tags
@@ -84,13 +81,12 @@ class Html {
                        );
       $value = preg_replace($search, '', $value);
 
+      include_once(GLPI_HTMLAWED);
       $value = htmLawed($value, array('elements' => ($striptags) ? 'none' : '',
                                       'keep_bad' => $keep_bad, // 1 : neutralize tag and content, 2 : remove tag and neutralize content
                                       'comment' => 1, // DROP
                                       'cdata'   => 1, // DROP
                                       ));
-
-      $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
 
       $value = str_replace(array("\r\n", "\r"), "\n", $value);
       $value = preg_replace("/(\n[ ]*){2,}/", "\n\n", $value, -1);
