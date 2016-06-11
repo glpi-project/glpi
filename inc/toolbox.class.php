@@ -1952,7 +1952,8 @@ class Toolbox {
    static function return_bytes_from_ini_vars($val) {
 
       $val  = trim($val);
-      $last = self::strtolower($val{strlen($val)-1});
+      $last = self::strtolower($val[strlen($val)-1]);
+      $val  = (int)$val;
 
       switch($last) {
          // Le modifieur 'G' est disponible depuis PHP 5.1.0
