@@ -47,7 +47,7 @@ if (isset($_GET["redirect"])) {
 //******************
 
 $name = "";
-Session:: checkFaqAccess();
+Session::checkFaqAccess();
 
 if (Session::getLoginUserID()) {
    Html::helpHeader(__('FAQ'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);

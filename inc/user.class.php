@@ -143,6 +143,11 @@ class User extends CommonDBTM {
    }
 
 
+   function canPurgeItem() {
+      return $this->canDeleteItem();
+   }
+
+
    function isEntityAssign() {
       // glpi_users.entities_id is only a pref.
       return false;

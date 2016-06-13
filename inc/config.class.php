@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -388,7 +387,7 @@ class Config extends CommonDBTM {
                               array('value' => $CFG_GLPI['allow_search_all']));
       echo "</td><td colspan='2'></td></tr>";
 
-      echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>".__('Item locks')."</th></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Item locks')."</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Use locks') . "</td><td>";
@@ -1824,6 +1823,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th>Libraries</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
+      include_once(GLPI_HTMLAWED);
       echo "htmLawed version ".hl_version().
            " in (".self::getLibraryDir("hl_version").")\n";
 
@@ -1832,6 +1832,7 @@ class Config extends CommonDBTM {
                      ? self::getLibraryDir("phpCAS")
                      : "system").
            ")\n";
+
 
       $pm = new PHPMailer();
       echo "PHPMailer version ".$pm->Version.
@@ -2345,4 +2346,3 @@ class Config extends CommonDBTM {
    }
 
 }
-?>

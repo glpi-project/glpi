@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -1410,6 +1409,11 @@ class Search {
                      && !in_array($row["id"], $_SESSION["glpiactiveentities"])) {
                   $tmpcheck = "&nbsp;";
 
+               } else if ($data['itemtype'] == 'User'
+                          && !Session::isViewAllEntities()
+                          && !Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($row["id"], false))) {
+                  $tmpcheck = "&nbsp;";
+
                } else if (($data['item'] instanceof CommonDBTM)
                            && $data['item']->maybeRecursive()
                            && !in_array($row["entities_id"], $_SESSION["glpiactiveentities"])) {
@@ -1844,7 +1848,7 @@ class Search {
       for ($i=0 ; $i<count($p['criteria']) ; $i++) {
          $_POST['itemtype'] = $itemtype;
          $_POST['num']      = $i ;
-         include(GLPI_ROOT.'/ajax/searchrow.php');
+         include_once(GLPI_ROOT.'/ajax/searchrow.php');
       }
 
       $metanames = array();
@@ -1855,7 +1859,7 @@ class Search {
 
             $_POST['itemtype'] = $itemtype;
             $_POST['num'] = $i ;
-            include(GLPI_ROOT.'/ajax/searchmetarow.php');
+            include_once(GLPI_ROOT.'/ajax/searchmetarow.php');
          }
       }
       echo "</table>\n";
@@ -2498,7 +2502,9 @@ class Search {
       // Default case
       if ($meta
           || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]
-              && !isset($searchopt[$ID]["computation"]))) { // Not specific computation
+              && (!isset($searchopt[$ID]["computation"])
+                  || isset($searchopt[$ID]["computationgroupby"])
+                     && $searchopt[$ID]["computationgroupby"]))) { // Not specific computation
          $TRANS = '';
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $TRANS = "IFNULL(GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
@@ -2552,7 +2558,7 @@ class Search {
             if (Session::isViewAllEntities()) {
                return "";
             }
-            return getEntitiesRestrictRequest("","glpi_profiles_users");
+            return getEntitiesRestrictRequest("","glpi_profiles_users", '', '', true);
 
          case 'ProjectTask' :
             $condition  = '';
@@ -4150,7 +4156,8 @@ class Search {
                   $added         = array();
                   $count_display = 0;
                   for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
-                     if (strlen(trim($data[$num][$k]['name'])) > 0) {
+                     if (isset($data[$num][$k]['name'])
+                         && (strlen(trim($data[$num][$k]['name'])) > 0)) {
                         $text = sprintf(__('%1$s - %2$s'), $data[$num][$k]['name'],
                                         Dropdown::getDropdownName('glpi_profiles',
                                                                   $data[$num][$k]['profiles_id']));
@@ -6181,4 +6188,3 @@ class Search {
    }
 
 }
-?>

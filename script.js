@@ -852,13 +852,16 @@ read_more = function() {
 }
 
 
-
+var split_button_fct_called = false;
 split_button = function() {
-   var splitBtn = $('#x-split-button');
+   if (split_button_fct_called) {
+      return true;
+   }
+   split_button_fct_called = true
 
    // unfold status list
    $(document).on("click", '.x-button-drop', function(event) {
-      splitBtn.toggleClass('open');
+      $(this).parents(".x-split-button").toggleClass('open');
    });
 
    $(document).on("click", '.x-split-button', function(event) {
@@ -868,25 +871,26 @@ split_button = function() {
    //click on an element of status list
    $(document).on("click", '.x-button-drop-menu li', function(event) {
       if (event.target.children.length) {
+         var xBtnDrop = $(this).parent().siblings(".x-button-drop");
          //clean old status class
-         $('.x-button-drop').attr('class','x-button x-button-drop');
+         xBtnDrop.attr('class','x-button x-button-drop');
 
          //find status
          match = event.target.children[0].src.match(/.*\/(.*)\.png/);
          cstatus = match[1];
 
          //add status to dropdown button
-         $('.x-button-drop').addClass(cstatus);
+         xBtnDrop.addClass(cstatus);
 
          //fold status list
-         splitBtn.removeClass('open');
+         $(this).parents(".x-split-button").removeClass('open');
       }
    });
 
    //fold status list on click on document
    $(document).on("click", function(event) {
-      if (splitBtn.hasClass('open')) {
-         splitBtn.removeClass('open');
+      if ($('.x-split-button').hasClass('open')) {
+         $('.x-split-button').removeClass('open');
       }
    });
 }

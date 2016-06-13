@@ -119,7 +119,7 @@ if (isset($_POST["update"])) {
                 || (Session::getLoginUserID() === $input["users_id"])) {
                unset($rr->fields["id"]);
                if ($newID = $rr->add($input)) {
-                  Event::log($reservationitems_id, "reservation", 4, "inventory",
+                  Event::log($newID, "reservation", 4, "inventory",
                            sprintf(__('%1$s adds the reservation %2$s for item %3$s'),
                                    $_SESSION["glpiname"], $newID, $reservationitems_id));
                } else {

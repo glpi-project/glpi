@@ -4842,7 +4842,12 @@ class Html {
          unset($options['url']);
       }
 
-      $image = sprintf('<img src="%1$s" %2$s class="pointer">', $path, Html::parseAttributes($options));
+      $class = "";
+      if ($url) {
+         $class = "class='pointer'";
+      }
+
+      $image = sprintf('<img src="%1$s" %2$s %3$s>', $path, Html::parseAttributes($options), $class);
       if ($url) {
          return Html::link($image, $url);
       }

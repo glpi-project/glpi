@@ -1036,6 +1036,7 @@ class Computer extends CommonDBTM {
       $tab[152]['datatype']      = 'decimal';
       $tab[152]['width']         = 2;
       $tab[152]['computation']   = "ROUND(100*TABLE.freesize/TABLE.totalsize)";
+      $tab[152]['computationgroupby'] = true;
       $tab[152]['unit']          = '%';
       $tab[152]['massiveaction'] = false;
       $tab[152]['joinparams']    = array('jointype' => 'child');

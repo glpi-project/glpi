@@ -605,7 +605,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>".__('Add a document')."</td>";
+      echo "<td>".__('Add a document')."</td>";
       echo "<td colspan='$colspan'>";
       echo "<input type='hidden' name='entities_id' value='$entity'>";
       echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
