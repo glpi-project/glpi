@@ -330,4 +330,3 @@ if (!file_exists($autoload)) {
    die('Run "composer install --no-dev" in the glpi tree');
 }
 require_once $autoload;
-

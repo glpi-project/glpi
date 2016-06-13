@@ -1090,7 +1090,7 @@ class Ticket extends CommonITILObject {
       //     - update done by someone who have update right
       //       see also updatedatemod used by ticketfollowup updates
       if (($this->fields['takeintoaccount_delay_stat'] == 0)
-          && (Session::haveRight("task", TicketTask::ADDALLTICKET)
+          && (Session::haveRight("task", CommonITILTask::ADDALLITEM)
               || Session::haveRightsOr('followup',
                                        array(TicketFollowup::ADDALLTICKET,
                                              TicketFollowup::ADDMYTICKET,
@@ -2049,7 +2049,7 @@ class Ticket extends CommonITILObject {
 
       if ($this->getFromDB($ID)) {
          if (!$no_stat_computation
-             && (Session::haveRight('task', TicketTask::ADDALLTICKET)
+             && (Session::haveRight('task', CommonITILTask::ADDALLITEM)
                  || Session::haveRightsOr('followup',
                                           array(TicketFollowup::ADDALLTICKET,
                                                 TicketFollowup::ADDMYTICKET,

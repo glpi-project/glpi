@@ -532,6 +532,8 @@ class Notification extends CommonDBTM {
          Session::addMessageAfterRedirect($message, false, ERROR);
          return false;
       }
+
+      return $input;
    }
 
 
@@ -546,6 +548,8 @@ class Notification extends CommonDBTM {
          Session::addMessageAfterRedirect($message, false, ERROR);
          return false;
       }
+
+      return $input;
    }
 
 }
