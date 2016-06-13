@@ -534,6 +534,7 @@ class Notification extends CommonDBTM {
          return false;
       }
 
+      return $input;
    }
 
 
@@ -549,6 +550,7 @@ class Notification extends CommonDBTM {
          return false;
       }
 
+      return $input;
    }
 }
 ?>
