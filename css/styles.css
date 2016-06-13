@@ -2428,12 +2428,13 @@ ul#menu ul.ssmenu {
    font-size: 11px;
    text-align: left;
    min-width: 150px;
+   column-count: 2;
 }
 
 #show_all_menu .all_menu_block {
-   float: left;
-   min-width: 150px;
-   margin-bottom: 20px;
+   width: 100%;
+   padding-bottom: 20px;
+   break-inside: avoid-column;
 }
 
 #show_all_menu .tab_bg_1 {
