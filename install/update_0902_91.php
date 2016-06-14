@@ -345,7 +345,8 @@ function update0902to91() {
                      (`context, `name`, `value`)
             VALUES ('core', 'url_base_api', '".$DB->escape($url_base_api)."'";
    $DB->query($query);
-    
+
+   
 
    /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
