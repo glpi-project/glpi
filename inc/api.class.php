@@ -699,9 +699,18 @@ abstract class API extends CommonGLPI {
          }
       }
 
-      // expand dropdown (retrieve name of dropdowns) and get hateoas
+      // expand dropdown (retrieve name of dropdowns) and get hateoas from foreign keys
       $fields = self::parseDropdowns($fields, $params);
 
+
+      // get hateoas from children
+      if ($params['get_hateoas']) {
+         $hclasses = self::getHatoasClasses($itemtype);
+         foreach($hclasses as $hclass) {
+            $fields['links'][] = array('rel' => $hclass,
+                                       'href' => self::$api_url."$itemtype/".$item->getID()."/$hclass/");
+         }
+      }
 
       return $fields;
    }
@@ -842,6 +851,15 @@ abstract class API extends CommonGLPI {
 
          // expand dropdown (retrieve name of dropdowns) and get hateoas
          $fields = self::parseDropdowns($fields, $params);
+
+         // get hateoas from children
+         if ($params['get_hateoas']) {
+            $hclasses = self::getHatoasClasses($itemtype);
+            foreach($hclasses as $hclass) {
+               $fields['links'][] = array('rel' => $hclass,
+                                          'href' => self::$api_url."$itemtype/".$fields['id']."/$hclass/");
+            }
+         }
       }
 
       return array_values($found);
@@ -1522,6 +1540,89 @@ abstract class API extends CommonGLPI {
       }
       return $fields;
    }
+
+
+   /**
+    * retrieve all child class for itemtype parameter
+    * @param  string $itemtype
+    * @return array  child classes
+    */
+   static function getHatoasClasses($itemtype) {
+      global $CFG_GLPI;
+
+      $hclasses = array();
+      if (in_array($itemtype, $CFG_GLPI["reservation_types"])) {
+         $hclasses[] = "ReservationItem";
+      }
+      if (in_array($itemtype, $CFG_GLPI["document_types"])) {
+         $hclasses[] = "Document_Item";
+      }
+      if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
+         $hclasses[] = "Contract_Item";
+      }
+      if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
+         $hclasses[] = "Infocom";
+      }
+      if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+         $hclasses[] = "Item_Ticket";
+      }if (in_array($itemtype, $CFG_GLPI["project_asset_types"])) {
+         $hclasses[] = "Item_Project";
+      }
+      if (in_array($itemtype, $CFG_GLPI["networkport_types"])) {
+         $hclasses[] = "NetworkPort";
+      }
+      if (in_array($itemtype, $CFG_GLPI["itemdevices_types"])) {
+         //$hclasses[] = "Item_Devices";
+         foreach($CFG_GLPI['device_types'] as $device_type) {
+            if ($device_type =="DeviceMemory"
+                  && !in_array($itemtype, $CFG_GLPI["itemdevicesmemory_types"])
+                || $device_type =="DevicePowerSupply"
+                  && !in_array($itemtype, $CFG_GLPI["itemdevicepowersupply_types"])
+                || $device_type =="DeviceNetworkCard"
+                  && !in_array($itemtype, $CFG_GLPI["itemdevicenetworkcard_types"])) {
+               continue;
+            }
+            $hclasses[] = $device_type;
+         }
+      }
+
+      //specific case
+      switch($itemtype) {
+         case 'Ticket':
+            $hclasses[] = "TicketFollowup";
+            $hclasses[] = "TicketTask";
+            $hclasses[] = "TicketValidation";
+            $hclasses[] = "TicketCost";
+            $hclasses[] = "Problem_Ticket";
+            $hclasses[] = "Change_Ticket";
+            $hclasses[] = "Item_Ticket";
+            break;
+         case 'Problem':
+            $hclasses[] = "ProblemTask";
+            $hclasses[] = "ProblemCost";
+            $hclasses[] = "Change_Problem";
+            $hclasses[] = "Problem_Ticket";
+            $hclasses[] = "Item_Problem";
+            break;
+         case 'Change':
+            $hclasses[] = "ChangeTask";
+            $hclasses[] = "ChangeCost";
+            $hclasses[] = "Change_Project";
+            $hclasses[] = "Change_Problem";
+            $hclasses[] = "Change_Ticket";
+            $hclasses[] = "Change_Item";
+            break;
+         case 'Project':
+            $hclasses[] = "ProjectTask";
+            $hclasses[] = "ProjectCost";
+            $hclasses[] = "Change_Project";
+            $hclasses[] = "Item_Project";
+            break;
+      }
+
+      return $hclasses;
+   }
+
 
    /**
     * Send 404 error to client
