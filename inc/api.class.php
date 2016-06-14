@@ -794,10 +794,11 @@ abstract class API extends CommonGLPI {
 
          // check parent rights
          $parent_item = new $this->parameters['parent_itemtype'];
-         if (!$parent_item->getFromDB($id)) {
+         $parent_id = $this->parameters['parent_id'];
+         if (!$parent_item->getFromDB($parent_id)) {
             return $this->messageNotfoundError();
          }
-         if (!$parent_item->can($id, READ)) {
+         if (!$parent_item->can($parent_id, READ)) {
             return $this->messageRightError();
          }
 
