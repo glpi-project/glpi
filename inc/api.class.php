@@ -62,7 +62,7 @@ abstract class API extends CommonGLPI {
       global $CFG_GLPI;
 
       // construct api url
-      self::$api_url = trim($CFG_GLPI['url_base_api'], "/")."/api/";
+      self::$api_url = trim($CFG_GLPI['url_base_api'], "/");
 
       // Don't display error in result
       set_error_handler(array('Toolbox', 'userErrorHandlerNormal'));
