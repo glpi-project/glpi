@@ -837,7 +837,7 @@ abstract class API extends CommonGLPI {
                 LIMIT ".$params['start'].", ".$params['list_limit'];
       if ($result = $DB->query($query)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $found[$data['id']] = $data;
+            $found[] = $data;
          }
       }
 
@@ -1025,12 +1025,15 @@ abstract class API extends CommonGLPI {
          }
 
          // combine cols (searchoptions_id) with values (raws data)
-         $cleaned_data['data'][$id] = array_combine($cleaned_cols, $raw);
+         $current_line = array_combine($cleaned_cols, $raw);
 
          // if all asset, provide type in returned data
          if ($itemtype == 'AllAssets') {
-            $cleaned_data['data'][$id]['itemtype'] = $current_itemtype;
+            $current_line['itemtype'] = $current_itemtype;
          }
+
+         // append to final array
+         $cleaned_data['data'][] = $current_line;
       }
 
       if (isset($params['rawdata'])
