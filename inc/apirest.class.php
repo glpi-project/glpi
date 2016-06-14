@@ -376,12 +376,13 @@ class APIRest extends API {
       }
 
       // try to retrieve session_token in header
-      if (isset($_SERVER['HTTP_AUTHORIZATION'])
-          && strpos($_SERVER['HTTP_AUTHORIZATION'], 'session_token') !== false) {
-         $auth = explode(' ', $_SERVER['HTTP_AUTHORIZATION']);
-         if (isset($auth[1])) {
-            $parameters['session_token'] = $auth[1];
-         }
+      if (isset($_SERVER['HTTP_SESSION_TOKEN'])) {
+         $parameters['session_token'] = $_SERVER['HTTP_SESSION_TOKEN'];
+      }
+
+      // try to retrieve app_token in header
+      if (isset($_SERVER['HTTP_APP_TOKEN'])) {
+         $parameters['app_token'] = $_SERVER['HTTP_APP_TOKEN'];
       }
 
       $this->parameters = $parameters;

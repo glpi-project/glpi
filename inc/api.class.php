@@ -1331,10 +1331,10 @@ abstract class API extends CommonGLPI {
 
    private function checkAppToken() {
       // check app token (if needed)
-      if (!isset($params['app_token'])) {
-         $params['app_token'] = "";
+      if (!isset($this->parameters['app_token'])) {
+         $this->parameters['app_token'] = "";
       }
-      if (!$this->apiclients_id = array_search($params['app_token'], $this->app_tokens)) {
+      if (!$this->apiclients_id = array_search($this->parameters['app_token'], $this->app_tokens)) {
          $this->returnError(__("parameter app_token missing"), 400,
                             "ERROR_APP_TOKEN_PARAMETERS_MISSING");
       }
