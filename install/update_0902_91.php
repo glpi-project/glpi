@@ -337,8 +337,15 @@ function update0902to91() {
       $query = "INSERT INTO `glpi_apiclients` VALUES (1, 1, 'full access', '', 1, NULL, NULL, NULL, '', 0, NULL);";
        $DB->queryOrDie($query, "9.1 insert first line into table glpi_apiclients");
    }
-
-
+   
+   // Setup default base URL for the API
+   $CFG_GLPI['url_base'];
+   $url_base_api = $CFG_GLPI['url_base'] . "/api";
+   $query = "INSERT INTO `glpi_configs`
+                     (`context, `name`, `value`)
+            VALUES ('core', 'url_base_api', '".$DB->escape($url_base_api)."'";
+   $DB->query($query);
+    
 
    /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
