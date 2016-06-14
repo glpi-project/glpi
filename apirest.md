@@ -81,7 +81,8 @@ Method
                    This endpoint can be optional by defining an user_token directly in [Users Configuration](../front/user.php).
 * **Method**: GET
 * **Parameters (query string)**
-   - a couple *login* & *password* : 2 parameters to login with user authentication
+   - a couple *login* & *password* : 2 parameters to login with user authentication.  
+    Important note, you can also pass this 2 parameters in [http basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication)
 
       **OR**
 

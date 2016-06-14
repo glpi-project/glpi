@@ -359,6 +359,13 @@ class APIRest extends API {
          $this->format = "html";
       }
 
+      // try to retrieve basic auth
+      if (isset($_SERVER['PHP_AUTH_USER'])
+          && isset($_SERVER['PHP_AUTH_PW'])) {
+         $parameters['login']    = $_SERVER['PHP_AUTH_USER'];
+         $parameters['password'] = $_SERVER['PHP_AUTH_PW'];
+      }
+
       $this->parameters = $parameters;
    }
 
