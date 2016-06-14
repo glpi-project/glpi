@@ -700,6 +700,10 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('API') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('URL of the API') . "</td>";
+      echo "<td colspan='3'><input type='text' name='url_base_api' size='80' value='".$CFG_GLPI["url_base_api"]."'></td>";
+      echo "</tr>";
+      echo "<tr class='tab_bg_2'>";
       echo "<td>" . __("Enable Rest API") . "</td>";
       echo "<td>";
       Dropdown::showYesNo("enable_api", $CFG_GLPI["enable_api"]);

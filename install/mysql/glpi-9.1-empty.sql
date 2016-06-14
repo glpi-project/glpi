@@ -1063,6 +1063,7 @@ INSERT INTO `glpi_configs` VALUES ('165','core','highcontrast_css','0');
 INSERT INTO `glpi_configs` VALUES ('166','core','enable_api','0');
 INSERT INTO `glpi_configs` VALUES ('167','core','enable_api_login_credentials','0');
 INSERT INTO `glpi_configs` VALUES ('168','core','enable_api_login_external_token','1');
+INSERT INTO `glpi_configs` VALUES ('169','core','url_base_api','http://localhost/glpi/api');
 
 ### Dump table glpi_consumableitems
 

@@ -463,6 +463,13 @@ function step7() {
                    AND `name`    = 'url_base'";
    $DB->query($query);
 
+   $url_base_api = "$url_base/api";
+   $query = "UPDATE `glpi_configs`
+             SET `value`     = '".$DB->escape($url_base)."'
+             WHERE `context` = 'core'
+                   AND `name`    = 'url_base_api'";
+   $DB->query($query);
+   
    echo "<h2>".__('The installation is finished')."</h2>";
    echo "<p>".__('Default logins / passwords are:')."</p>";
    echo "<p><ul><li> ".__('glpi/glpi for the administrator account')."</li>";
