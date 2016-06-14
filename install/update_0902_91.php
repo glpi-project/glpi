@@ -342,7 +342,7 @@ function update0902to91() {
    $CFG_GLPI['url_base'];
    $url_base_api = $CFG_GLPI['url_base'] . "/api";
    $query = "INSERT INTO `glpi_configs`
-                     (`context, `name`, `value`)
+                     (`context`, `name`, `value`)
             VALUES ('core', 'url_base_api', '".$DB->escape($url_base_api)."'";
    $DB->query($query);
 
