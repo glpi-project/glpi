@@ -22,7 +22,7 @@
 
  GLPI is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See thease_url_api
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
@@ -465,7 +465,7 @@ function step7() {
 
    $url_base_api = "$url_base/api";
    $query = "UPDATE `glpi_configs`
-             SET `value`     = '".$DB->escape($url_base)."'
+             SET `value`     = '".$DB->escape($url_base_api)."'
              WHERE `context` = 'core'
                    AND `name`    = 'url_base_api'";
    $DB->query($query);
