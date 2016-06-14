@@ -803,15 +803,14 @@ abstract class API extends CommonGLPI {
 
          // check parent rights
          $parent_item = new $this->parameters['parent_itemtype'];
-         $parent_id = $this->parameters['parent_id'];
-         if (!$parent_item->getFromDB($parent_id)) {
+         if (!$parent_item->getFromDB($this->parameters['parent_id'])) {
             return $this->messageNotfoundError();
          }
-         if (!$parent_item->can($parent_id, READ)) {
+         if (!$parent_item->can($this->parameters['parent_id'], READ)) {
             return $this->messageRightError();
          }
 
-         // filter with parent s fields
+         // filter with parents fields
          if (isset($item->fields[$fk_parent])) {
             $where.= " AND `$table`.`$fk_parent` = ".$this->parameters['parent_id'];
          } else if (isset($item->fields['itemtype'])
@@ -819,6 +818,7 @@ abstract class API extends CommonGLPI {
             $where.= " AND `$table`.`itemtype` = '".$this->parameters['parent_itemtype']."'
                        AND `$table`.`items_id` = ".$this->parameters['parent_id'];
          }
+         Toolbox::logDebug($where);
       }
 
       // filter with entity
