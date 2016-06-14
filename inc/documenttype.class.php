@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -108,10 +108,12 @@ class DocumentType  extends CommonDropdown {
     * @since version 0.84
    **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+      global $CFG_GLPI;
 
       if (!is_array($values)) {
          $values = array($field => $values);
       }
+
       switch ($field) {
          case 'icon' :
             if (!empty($values[$field])) {
