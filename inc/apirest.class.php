@@ -399,8 +399,10 @@ class APIRest extends API {
       http_response_code($httpcode);
       self::header($this->debug);
 
-      $json = json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
-                                     | ($this->debug?JSON_PRETTY_PRINT:0));
+      $json = json_encode($response, JSON_UNESCAPED_UNICODE
+                                   | JSON_UNESCAPED_SLASHES
+                                   | JSON_NUMERIC_CHECK
+                                   | ($this->debug?JSON_PRETTY_PRINT:0));
       if ($this->debug) {
          echo "<pre>";
          var_dump($response);
