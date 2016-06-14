@@ -192,11 +192,9 @@ class APIXmlrpc extends API {
       $parameters = array();
       $ressource = "";
 
-      if (isset($GLOBALS["HTTP_RAW_POST_DATA"])) {
-         $parameters = xmlrpc_decode_request($GLOBALS["HTTP_RAW_POST_DATA"],
-                                             $ressource,
-                                             'UTF-8');
-      }
+      $parameters = xmlrpc_decode_request(trim(file_get_contents("php://input")),
+                                          $ressource,
+                                          'UTF-8');
 
       $this->parameters = (isset($parameters[0]) && is_array($parameters[0])
                           ? $parameters[0]
