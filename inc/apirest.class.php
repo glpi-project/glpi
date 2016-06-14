@@ -366,6 +366,15 @@ class APIRest extends API {
          $parameters['password'] = $_SERVER['PHP_AUTH_PW'];
       }
 
+      // try to retrieve session token in header
+      if (isset($_SERVER['HTTP_AUTHORIZATION'])
+          && strpos($_SERVER['HTTP_AUTHORIZATION'], 'session_token') !== false) {
+         $auth = explode(' ', $_SERVER['HTTP_AUTHORIZATION']);
+         if (isset($auth[1])) {
+            $parameters['session_token'] = $auth[1];
+         }
+      }
+
       $this->parameters = $parameters;
    }
 
