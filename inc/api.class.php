@@ -818,12 +818,11 @@ abstract class API extends CommonGLPI {
             $where.= " AND `$table`.`itemtype` = '".$this->parameters['parent_itemtype']."'
                        AND `$table`.`items_id` = ".$this->parameters['parent_id'];
          }
-         Toolbox::logDebug($where);
       }
 
       // filter with entity
       if ($item->isEntityAssign()) {
-         $where.= getEntitiesRestrictRequest("AND",
+         $where.= getEntitiesRestrictRequest(" AND",
                                              $itemtype::getTable(),
                                              '',
                                              $_SESSION['glpiactiveentities']);
