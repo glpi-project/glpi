@@ -21,7 +21,7 @@
 * [Add item(s)](#add_items)
 * [Update item(s)](#update_items)
 * [Delete item(s)](#delete_items)
-
+* [Errors](#errors)
 
 ## Glossary {#glossary}
 
@@ -1024,3 +1024,137 @@ $ curl -X DELETE \
 [{"16":"true"},{"17":"false"}]
 ```
 
+
+
+## Errors {#errors}
+
+
+### ERROR_NOT_FOUND {#ERROR_NOT_FOUND}
+
+The desired ressource (itemtype-id) was not found in glpi database.
+
+
+### ERROR_BAD_ARRAY {#ERROR_BAD_ARRAY}
+
+The http body must be an an array of objects.
+
+
+### ERROR_METHOD_NOT_ALLOWED {#ERROR_METHOD_NOT_ALLOWED}
+
+You specified an inexistent or not not allowed ressource.
+
+
+### ERROR_RIGHT_MISSING {#ERROR_RIGHT_MISSING}
+
+The current logged user miss rights in his profile to do the provided action.  
+Alter thiss profile or choose a new one for the user in GLPI main interface
+
+
+### ERROR_SESSION_TOKEN_INVALID {#ERROR_SESSION_TOKEN_INVALID}
+
+The Session-Token provided in header is invalid.  
+You should redo an [Init session](#init_session).
+
+
+### ERROR_SESSION_TOKEN_MISSING {#ERROR_SESSION_TOKEN_MISSING}
+
+You miss to provide Session-Token in header of your http request.
+
+
+### ERROR_APP_TOKEN_PARAMETERS_MISSING {#ERROR_APP_TOKEN_PARAMETERS_MISSING}
+
+The current api ask to provide an App-Token header to uses its methods.
+
+
+### ERROR_NOT_DELETED {#ERROR_NOT_DELETED}
+
+You must mark the item for deletion before actualy deleting it
+
+
+### ERROR_NOT_ALLOWED_IP {#ERROR_NOT_ALLOWED_IP}
+
+We can't find an active client defined in config for your ip.  
+Go to glpi Configuration > Setup menu and API tab to check ip access.
+
+
+### ERROR_LOGIN_PARAMETERS_MISSING {#ERROR_LOGIN_PARAMETERS_MISSING}
+
+One of theses parameter(s) is missing:
+* login and password
+* or user_token
+
+
+### ERROR_LOGIN_WITH_CREDENTIALS_DISABLED {#ERROR_LOGIN_WITH_CREDENTIALS_DISABLED}
+
+The GLPI setup forbid the login with credentials, you must login with your user_token instead.
+See your personnal preferences page or setup API access in GLPI main interface.
+
+
+### ERROR_GLPI_LOGIN_USER_TOKEN {#ERROR_GLPI_LOGIN_USER_TOKEN}
+
+The user_token provided seems invalid.  
+Check your personnal preferences page in GLPI main interface.
+
+
+### ERROR_GLPI_LOGIN {#ERROR_GLPI_LOGIN}
+
+We cannot login you into glpi. This error is not relative to API part but glpi core.  
+Check the user administration and the glpi logs files (in files/_logs directory).
+
+
+### ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM {#ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM}
+
+You asked a inexistent ressource (endpoint). It's not a predefind (initSession, getFullSession, etc) nor a GLPI CommonDBTM ressources.
+
+See this documentation for predefined ones or [List itemtypes](https://forge.glpi-project.org/embedded/glpi/annotated.html) for available ressources
+
+
+### ERROR_SQL {#ERROR_SQL}
+
+We suspect an sql error.  
+This error is not relative to API part but glpi core.  
+Check the glpi logs files (in files/_logs directory).
+
+
+### ERROR_RANGE_EXCEED_TOTAL {#ERROR_RANGE_EXCEED_TOTAL}
+
+The range parameter you provided is superior to the total count of available data.
+
+
+### ERROR_GLPI_ADD {#ERROR_GLPI_ADD}
+
+We cannot add the object to glpi. This error is not relative to API part but glpi core.  
+Check the glpi logs files (in files/_logs directory).
+
+
+### ERROR_GLPI_PARTIAL_ADD {#ERROR_GLPI_PARTIAL_ADD}
+
+Some of the object you wanted to add triggers an error.  
+Maybe a missing field or rights.  
+You'll find with this error a collection of results.
+
+
+### ERROR_GLPI_UPDATE {#ERROR_GLPI_UPDATE}
+
+We cannot update the object to glpi. This error is not relative to API part but glpi core.  
+Check the glpi logs files (in files/_logs directory).
+
+
+### ERROR_GLPI_PARTIAL_UPDATE {#ERROR_GLPI_PARTIAL_UPDATE}
+
+Some of the object you wanted to update triggers an error.  
+Maybe a missing field or rights.  
+You'll find with this error a collection of results.
+
+
+### ERROR_GLPI_DELETE {#ERROR_GLPI_DELETE}
+
+We cannot delete the object to glpi. This error is not relative to API part but glpi core.  
+Check the glpi logs files (in files/_logs directory).
+
+
+### ERROR_GLPI_PARTIAL_DELETE {#ERROR_GLPI_PARTIAL_DELETE}
+
+Some of the object you wanted to delete triggers an error.  
+Maybe a missing field or rights.  
+You'll find with this error a collection of results.

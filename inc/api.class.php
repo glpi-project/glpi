@@ -1730,7 +1730,7 @@ abstract class API extends CommonGLPI {
       }
 
       if ($docmessage) {
-         $message .= "; ".sprintf(__("see documentation with your browser on %s"), self::$api_url);
+         $message .= "; ".sprintf(__("see documentation with your browser on %s"), self::$api_url."/#$statuscode");
       }
       if ($return_response) {
          return $this->returnResponse(array($statuscode, $message), $httpcode);
