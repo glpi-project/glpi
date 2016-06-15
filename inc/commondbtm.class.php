@@ -412,6 +412,9 @@ class CommonDBTM extends CommonGLPI {
             if ($values[$i] == 'NULL') {
                $query .= $values[$i];
             } else {
+               if (($this->getType() == 'ProfileRight') && ($values[$i] == '')) {
+                  $values[$i] = 0;
+               }
                $query .= "'".$values[$i]."'";
             }
 
