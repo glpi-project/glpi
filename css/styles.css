@@ -2471,6 +2471,12 @@ ul#menu ul.ssmenu {
    padding: 6px;
    height: 18px;
    padding: 5px;
+   /** Footer Fixed **/
+   position: fixed;
+   bottom: 0;
+   right: 0;
+   width: 99%;
+   z-index: 1500;
 }
 
 .copyright {
