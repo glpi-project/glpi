@@ -1726,7 +1726,7 @@ class Search {
 
       switch (static::getMetaReferenceItemtype($itemtype)) {
          case 'Computer' :
-            $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer', 'Software', 'User');
+            $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer', 'Software', 'User', 'Group');
             break;
 
          case 'Ticket' :
@@ -3840,6 +3840,10 @@ class Search {
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return "$LINK `glpi_users`
                               ON (`glpi_computers`.`users_id` = `glpi_users`.`id`) ";
+               case 'Group' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_users`
+                              ON (`glpi_computers`.`groups_id` = `glpi_groups`.`id`) ";
             }
             break;
 
@@ -3859,6 +3863,10 @@ class Search {
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return "$LINK `glpi_users`
                               ON (`glpi_monitors`.`users_id` = `glpi_users`.`id`) ";
+               case 'Group' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_groups`
+                              ON (`glpi_monitors`.`groups_id` = `glpi_groups`.`id`) ";
             }
             break;
 
@@ -3879,6 +3887,10 @@ class Search {
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return "$LINK `glpi_users`
                               ON (`glpi_printers`.`users_id` = `glpi_users`.`id`) ";
+               case 'Group' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_groups`
+                              ON (`glpi_printers`.`groups_id` = `glpi_groups`.`id`) ";
             }
             break;
 
@@ -3899,6 +3911,10 @@ class Search {
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return "$LINK `glpi_users`
                               ON (`glpi_peripherals`.`users_id` = `glpi_users`.`id`) ";
+               case 'Group' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_groups`
+                              ON (`glpi_peripherals`.`groups_id` = `glpi_groups`.`id`) ";
             }
             break;
 
@@ -3918,6 +3934,10 @@ class Search {
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return "$LINK `glpi_users`
                               ON (`glpi_phones`.`users_id` = `glpi_users`.`id`) ";
+               case 'Group' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_groups`
+                              ON (`glpi_phones`.`groups_id` = `glpi_groups`.`id`) ";
             }
             break;
 
@@ -3943,6 +3963,10 @@ class Search {
                   array_push($already_link_tables2,getTableForItemType($to_type));
                   return "$LINK `glpi_users`
                               ON (`glpi_softwares`.`users_id` = `glpi_users`.`id`) ";
+               case 'Group' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_groups`
+                              ON (`glpi_softwares`.`groups_id` = `glpi_groups`.`id`) ";
             }
             break;
       }
