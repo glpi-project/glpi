@@ -1726,7 +1726,7 @@ class Search {
 
       switch (static::getMetaReferenceItemtype($itemtype)) {
          case 'Computer' :
-            $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer', 'Software');
+            $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer', 'Software', 'User');
             break;
 
          case 'Ticket' :
@@ -1746,7 +1746,7 @@ class Search {
          case "Peripheral" :
          case "Software" :
          case "Phone" :
-            $linked = array('Computer');
+            $linked = array('Computer', 'User');
             break;
       }
       return $linked;
@@ -3836,6 +3836,10 @@ class Search {
                                   getEntitiesRestrictRequest(' AND',
                                                              "glpi_softwarelicenses_$to_type",
                                                              '', '', true).") ";
+               case 'User' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_users`
+                              ON (`glpi_computers`.`users_id` = `glpi_users`.`id`) ";
             }
             break;
 
@@ -3851,6 +3855,10 @@ class Search {
                            $LINK `glpi_computers`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`) ";
+               case 'User' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_users`
+                              ON (`glpi_monitors`.`users_id` = `glpi_users`.`id`) ";
             }
             break;
 
@@ -3867,6 +3875,10 @@ class Search {
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id` ".
                                   getEntitiesRestrictRequest("AND", 'glpi_computers').") ";
+               case 'User' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_users`
+                              ON (`glpi_printers`.`users_id` = `glpi_users`.`id`) ";
             }
             break;
 
@@ -3883,6 +3895,10 @@ class Search {
                            $LINK `glpi_computers`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers`.`id`) ";
+               case 'User' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_users`
+                              ON (`glpi_peripherals`.`users_id` = `glpi_users`.`id`) ";
             }
             break;
 
@@ -3898,6 +3914,10 @@ class Search {
                            $LINK `glpi_computers`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
                                        = `glpi_computers.id`) ";
+               case 'User' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_users`
+                              ON (`glpi_phones`.`users_id` = `glpi_users`.`id`) ";
             }
             break;
 
@@ -3919,6 +3939,10 @@ class Search {
                               ON (`glpi_computers_softwareversions_$to_type`.`computers_id`
                                        = `glpi_computers`.`id` ".
                                   getEntitiesRestrictRequest("AND", 'glpi_computers').") ";
+               case 'User' :
+                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  return "$LINK `glpi_users`
+                              ON (`glpi_softwares`.`users_id` = `glpi_users`.`id`) ";
             }
             break;
       }
