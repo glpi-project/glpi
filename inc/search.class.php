@@ -1747,7 +1747,7 @@ class Search {
          case "Peripheral" :
          case "Software" :
          case "Phone" :
-            $linked = array('Computer', 'User', 'Budget');
+            $linked = array('Computer', 'User', 'Group', 'Budget');
             break;
       }
       return $linked;
