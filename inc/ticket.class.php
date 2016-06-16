@@ -750,6 +750,7 @@ class Ticket extends CommonITILObject {
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       $slaLevel_ticket = new SlaLevel_Ticket();
+      // TODO 2 parameters mandatory since 7bda94b2fbc40c285213ebea226e9e775efd748a
       $slaLevel_ticket->deleteForTicket($this->getID());
 
       $query1 = "DELETE
@@ -1145,7 +1146,7 @@ class Ticket extends CommonITILObject {
    }
    /**
     * Manage SLT level escalation
-    * 
+    *
     * @param type $slts_id
     */
    function manageSltLevel($slts_id) {
@@ -1219,7 +1220,7 @@ class Ticket extends CommonITILObject {
       // Manage SLT Level : add actions
       foreach (array(SLT::TTR, SLT::TTO) as $sltType) {
          list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
-         if (in_array($sltField, $this->updates) 
+         if (in_array($sltField, $this->updates)
                && ($this->fields[$sltField] > 0)) {
             $this->manageSltLevel($this->fields[$sltField]);
          }
@@ -1396,7 +1397,7 @@ class Ticket extends CommonITILObject {
                      // For due_date and time_to_own : check also slts
                      foreach (array(SLT::TTR, SLT::TTO) as $sltType) {
                         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
-                        if (($key == $dateField) && isset($input[$sltField]) 
+                        if (($key == $dateField) && isset($input[$sltField])
                               && ($input[$sltField] > 0) && isset($mandatory_missing[$dateField])) {
                            unset($mandatory_missing[$dateField]);
                         }
@@ -5083,7 +5084,7 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'SLT' :
-            $restrict  = "`slts_tto_id` = '".$item->getID()."' 
+            $restrict  = "`slts_tto_id` = '".$item->getID()."'
                            OR `slts_ttr_id` = '".$item->getID()."'";
             $order     = '`glpi_tickets`.`due_date` DESC';
 
