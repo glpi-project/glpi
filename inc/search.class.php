@@ -2084,8 +2084,15 @@ class Search {
 
          case "glpi_users.name" :
             if ($itemtype!='User') {
-               return " ORDER BY ".$table.$addtable.".`realname` $order,
-                                 ".$table.$addtable.".`firstname` $order,
+               if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
+                  $name1 = 'firstname';
+                  $name2 = 'realname';
+               } else {
+                  $name1 = 'realname';
+                  $name2 = 'firstname';
+               }
+               return " ORDER BY ".$table.$addtable.".$name1 $order,
+                                 ".$table.$addtable.".$name2 $order,
                                  ".$table.$addtable.".`name` $order";
             }
             return " ORDER BY `".$table."`.`name` $order";
