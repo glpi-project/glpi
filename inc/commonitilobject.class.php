@@ -1063,6 +1063,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $this->fields['due_date'] = $sla->computeDueDate($this->fields['date'],
                                                              $this->fields["sla_waiting_duration"]);
             // Add current level to do
+            // TODO addLevelToDo deleted in 7bda94b2fbc40c285213ebea226e9e775efd748a
             $sla->addLevelToDo($this);
 
          } else {
