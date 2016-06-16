@@ -1726,7 +1726,8 @@ class Search {
 
       switch (static::getMetaReferenceItemtype($itemtype)) {
          case 'Computer' :
-            $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer', 'Software', 'User', 'Group');
+            $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer',
+                            'Software', 'User', 'Group', 'Budget');
             break;
 
          case 'Ticket' :
@@ -1746,7 +1747,7 @@ class Search {
          case "Peripheral" :
          case "Software" :
          case "Phone" :
-            $linked = array('Computer', 'User');
+            $linked = array('Computer', 'User', 'Budget');
             break;
       }
       return $linked;
@@ -3753,17 +3754,23 @@ class Search {
       }
 
       $from_table = getTableForItemType($from_type);
+      $to_table   = getTableForItemType($to_type);
+      $to_fk      = getForeignKeyFieldForTable($to_table);
 
       // Generic metacriteria
       switch ($to_type) {
          case 'User' :
-            array_push($already_link_tables2,getTableForItemType($to_type));
-            return "$LINK `glpi_users`
-                        ON (`$from_table`.`users_id` = `glpi_users`.`id`) ";
          case 'Group' :
             array_push($already_link_tables2,getTableForItemType($to_type));
-            return "$LINK `glpi_groups`
-                        ON (`$from_table`.`groups_id` = `glpi_groups`.`id`) ";
+            return "$LINK `$to_table`
+                        ON (`$from_table`.`$to_fk` = `$to_table`.`id`) ";
+         case 'Budget' :
+            array_push($already_link_tables2,getTableForItemType($to_type));
+            return "$LINK `glpi_infocoms`
+                        ON (`$from_table`.`id` = `glpi_infocoms`.`items_id`
+                            AND `glpi_infocoms`.`itemtype` = '$from_type')
+                    $LINK `$to_table`
+                        ON (`glpi_infocoms`.`$to_fk` = `$to_table`.`id`) ";
       }
 
       // specific metacriteria
@@ -3775,12 +3782,11 @@ class Search {
             } else if ($from_type == 'Problem') {
                $table = 'problems';
             }
-            $totable = getTableForItemType($to_type);
-            array_push($already_link_tables2,$totable);
+            array_push($already_link_tables2,$to_table);
             return " $LINK `glpi_items_".$table."` AS glpi_items_".$table."_to_$to_type
                         ON (`glpi_".$table."`.`id` = `glpi_items_".$table."_to_$to_type`.`".$table."_id`)
-                     $LINK `$totable`
-                        ON (`$totable`.`id` = `glpi_items_".$table."_to_$to_type`.`items_id`
+                     $LINK `$to_table`
+                        ON (`$to_table`.`id` = `glpi_items_".$table."_to_$to_type`.`items_id`
                      AND `glpi_items_".$table."_to_$to_type`.`itemtype` = '$to_type')";
 
          case 'Computer' :
