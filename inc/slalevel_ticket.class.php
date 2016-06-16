@@ -80,10 +80,11 @@ class SlaLevel_Ticket extends CommonDBTM {
 
       $query1 = "SELECT `glpi_slalevels_tickets`.`id`
                  FROM `glpi_slalevels_tickets`
-                 LEFT JOIN `glpi_slalevels` ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
+                 LEFT JOIN `glpi_slalevels`
+                       ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
                  LEFT JOIN `glpi_slts` ON (`glpi_slalevels`.`slts_id` = `glpi_slts`.`id`)
                  WHERE `glpi_slalevels_tickets`.`tickets_id` = '$tickets_id'
-                 AND `glpi_slts`.`type` = '$sltType'";
+                       AND `glpi_slts`.`type` = '$sltType'";
 
       foreach ($DB->request($query1) as $data) {
          $this->delete(array('id' => $data['id']));
@@ -122,7 +123,8 @@ class SlaLevel_Ticket extends CommonDBTM {
 
       $query = "SELECT `glpi_slalevels_tickets`.*, `glpi_slts`.`type` as type
                 FROM `glpi_slalevels_tickets`
-                LEFT JOIN `glpi_slalevels` ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
+                LEFT JOIN `glpi_slalevels`
+                     ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
                 LEFT JOIN `glpi_slts` ON (`glpi_slalevels`.`slts_id` = `glpi_slts`.`id`)
                 WHERE `glpi_slalevels_tickets`.`date` < NOW()";
 
@@ -139,8 +141,11 @@ class SlaLevel_Ticket extends CommonDBTM {
    /**
     * Do a specific SLAlevel for a ticket
     *
-    * @param $data array data of an entry of slalevels_tickets
-    * @param $sltType Type of slt
+    * @param $data          array data of an entry of slalevels_tickets
+    * @param $sltType             Type of slt
+    *
+    * @since version 9.1   2 parameters mandatory
+    *
     * @return nothing
    **/
    static function doLevelForTicket(array $data, $sltType) {
@@ -188,7 +193,8 @@ class SlaLevel_Ticket extends CommonDBTM {
 
             } else if ($ticket->fields['status'] != CommonITILObject::SOLVED) {
                // No execution if ticket has been taken into account
-               if (!($sltType == SLT::TTO && $ticket->fields['takeintoaccount_delay_stat'] > 0)) {
+               if (!(($sltType == SLT::TTO)
+                     && ($ticket->fields['takeintoaccount_delay_stat'] > 0))) {
                   // If status = solved : keep the line in case of solution not validated
                   $input['id']           = $ticket->getID();
                   $input['_auto_update'] = true;
@@ -206,8 +212,8 @@ class SlaLevel_Ticket extends CommonDBTM {
                   }
 
                   // Put next level in todo list
-                  $next                  = $slalevel->getNextSlaLevel($ticket->fields[$sltField],
-                                                                      $data['slalevels_id']);
+                  $next = $slalevel->getNextSlaLevel($ticket->fields[$sltField],
+                                                     $data['slalevels_id']);
                   $slt->addLevelToDo($ticket, $next);
                   // Action done : drop the line
                   $slalevelticket->delete(array('id' => $data['id']));
@@ -236,17 +242,20 @@ class SlaLevel_Ticket extends CommonDBTM {
     * @param $tickets_id Ticket ID
     * @param $sltType Type of slt
     *
+    * @since version 9.1    2 parameters mandatory
+    *
     */
    static function replayForTicket($tickets_id, $sltType) {
       global $DB;
 
       $query = "SELECT `glpi_slalevels_tickets`.*
                 FROM `glpi_slalevels_tickets`
-                LEFT JOIN `glpi_slalevels` ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
+                LEFT JOIN `glpi_slalevels`
+                      ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
                 LEFT JOIN `glpi_slts` ON (`glpi_slalevels`.`slts_id` = `glpi_slts`.`id`)
                 WHERE `glpi_slalevels_tickets`.`date` < NOW()
-                AND `glpi_slalevels_tickets`.`tickets_id` = '$tickets_id'
-                AND `glpi_slts`.`type` = '$sltType'";
+                      AND `glpi_slalevels_tickets`.`tickets_id` = '$tickets_id'
+                      AND `glpi_slts`.`type` = '$sltType'";
 
       $number = 0;
       do {

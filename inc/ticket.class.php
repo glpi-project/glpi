@@ -337,6 +337,8 @@ class Ticket extends CommonITILObject {
     * @param $date         begin date of the ticket
     * @param $type         type of SLT
     *
+    * @since version 9.1 (before getDatasToAddSla without type parameter)
+    *
     * @return array of datas to add in ticket
    **/
    function getDatasToAddSLT($slts_id, $entities_id, $date, $type) {
@@ -366,20 +368,25 @@ class Ticket extends CommonITILObject {
    /**
     * Delete SLT for the ticket
     *
-    * @param type $id
-    * @param type $type
-    * @param type $delete_date
+    * @since version 9.1 (before delete SLA without mandatory parameter $type)
+    *
+    * @param $id
+    * @param $type
+    * @param $delete_date      (default 0)
+    *
     * @return type
-    */
-   function deleteSLT($id, $type, $delete_date = 0) {
+   **/
+   function deleteSLT($id, $type, $delete_date=0) {
+
       switch ($type) {
-         case SLT::TTR:
+         case SLT::TTR :
             $input['slts_ttr_id'] = 0;
             if ($delete_date) {
                $input['time_to_own'] = '';
             }
             break;
-         case SLT::TTO:
+
+         case SLT::TTO :
             $input['slts_tto_id'] = 0;
             if ($delete_date) {
                $input['due_date'] = '';
@@ -395,6 +402,7 @@ class Ticket extends CommonITILObject {
 
       return $this->update($input);
    }
+
 
    /**
     * Is the current user have right to create the current ticket ?
@@ -1069,14 +1077,17 @@ class Ticket extends CommonITILObject {
       return $input;
    }
 
+
    /**
     *  SLT affect by rules : reset due_date and time_to_own
     *  Manual SLT defined : reset due date and time_to_own
     *  No manual SLT and due date defined : reset auto SLT
     *
-    * @param type $type
-    * @param type $input
-    * @param type $manual_slts_id
+    *  @since version 9.1
+    *
+    * @param $type
+    * @param $input
+    * @param $manual_slts_id
     */
    function sltAffect($type, &$input, $manual_slts_id){
 
@@ -1090,18 +1101,17 @@ class Ticket extends CommonITILObject {
       // Ticket update
       if ($this->fields['id'] > 0) {
          if (!isset($manual_slts_id[$type])
-             && isset($input[$sltField])
-             && ($input[$sltField] > 0)
+             && isset($input[$sltField]) && ($input[$sltField] > 0)
              && ($input[$sltField] != $this->fields[$sltField])) {
+
             if (isset($input[$dateField])) {
                // Unset due date
                unset($input[$dateField]);
             }
          }
 
-         if (isset($input[$sltField])
-            && ($input[$sltField] > 0)
-            && ($input[$sltField] != $this->fields[$sltField])) {
+         if (isset($input[$sltField]) && ($input[$sltField] > 0)
+             && ($input[$sltField] != $this->fields[$sltField])) {
 
             $date = $this->fields['date'];
             /// Use updated date if also done
@@ -1144,24 +1154,29 @@ class Ticket extends CommonITILObject {
          }
       }
    }
+
+
    /**
     * Manage SLT level escalation
     *
-    * @param type $slts_id
-    */
+    * @since version 9.1
+    *
+    * @param $slts_id
+   **/
    function manageSltLevel($slts_id) {
 
       $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
       // Add first level in working table
       $slalevels_id = SlaLevel::getFirstSltLevel($slts_id);
 
-      $slt          = new SLT();
+      $slt = new SLT();
       if ($slt->getFromDB($slts_id)) {
          $slt->setTicketCalendar($calendars_id);
          $slt->addLevelToDo($this, $slalevels_id);
       }
       SlaLevel_Ticket::replayForTicket($this->getID(), $slt->getField('type'));
    }
+
 
    function pre_updateInDB() {
 
@@ -1187,7 +1202,9 @@ class Ticket extends CommonITILObject {
    }
 
 
-   /// Compute take into account stat of the current ticket
+   /**
+    * Compute take into account stat of the current ticket
+   **/
    function computeTakeIntoAccountDelayStat() {
 
       if (isset($this->fields['id'])
@@ -1207,7 +1224,6 @@ class Ticket extends CommonITILObject {
    }
 
 
-
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
@@ -1221,7 +1237,7 @@ class Ticket extends CommonITILObject {
       foreach (array(SLT::TTR, SLT::TTO) as $sltType) {
          list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
          if (in_array($sltField, $this->updates)
-               && ($this->fields[$sltField] > 0)) {
+             && ($this->fields[$sltField] > 0)) {
             $this->manageSltLevel($this->fields[$sltField]);
          }
       }
@@ -1378,10 +1394,9 @@ class Ticket extends CommonITILObject {
                            }
                         }
 
-                        if (empty($input[$key])
-                            || $input[$key] == 'NULL'
+                        if (empty($input[$key]) || ($input[$key] == 'NULL')
                             || (is_array($input[$key])
-                                && $input[$key] === array(0 => "0"))) {
+                                && ($input[$key] === array(0 => "0")))) {
                            $mandatory_missing[$key] = $fieldsname[$val];
                         }
                      }
@@ -1397,8 +1412,9 @@ class Ticket extends CommonITILObject {
                      // For due_date and time_to_own : check also slts
                      foreach (array(SLT::TTR, SLT::TTO) as $sltType) {
                         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
-                        if (($key == $dateField) && isset($input[$sltField])
-                              && ($input[$sltField] > 0) && isset($mandatory_missing[$dateField])) {
+                        if (($key == $dateField)
+                            && isset($input[$sltField]) && ($input[$sltField] > 0)
+                            && isset($mandatory_missing[$dateField])) {
                            unset($mandatory_missing[$dateField]);
                         }
                      }

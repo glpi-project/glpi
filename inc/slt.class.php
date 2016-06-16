@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -31,16 +30,13 @@
  --------------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
 /**
  * SLT Class
+ * @since version 9.1
 **/
 class SLT extends CommonDBChild {
 
@@ -57,6 +53,7 @@ class SLT extends CommonDBChild {
 
    const TTR = 0;
    const TTO = 1;
+
 
    static function getTypeName($nb=0) {
       // Acronymous, no plural
@@ -88,9 +85,8 @@ class SLT extends CommonDBChild {
       return $ong;
    }
 
+
    /**
-    * @since version 0.85
-    *
     * @see CommonDBTM::post_getEmpty()
    */
    function post_getEmpty() {
@@ -118,7 +114,7 @@ class SLT extends CommonDBChild {
       }
 
       // Update tickets : clean SLT
-      list($dateField, $sltField) = SLT::getSltFieldNames($this->fields['type']);
+      list($dateField, $sltField) = self::getSltFieldNames($this->fields['type']);
       $query = "SELECT `id`
                 FROM `glpi_tickets`
                 WHERE `$sltField` = '".$this->fields['id']."'";
@@ -248,6 +244,7 @@ class SLT extends CommonDBChild {
       return true;
    }
 
+
    /**
     * Print the HTML array for SLTs linked to a SLA
     *
@@ -294,8 +291,7 @@ class SLT extends CommonDBChild {
       Session::initNavigateListItems('SLT',
       //TRANS : %1$s is the itemtype name,
       //       %2$s is the name of the item (used for headings of a list)
-                               sprintf(__('%1$s = %2$s'), $sla::getTypeName(1),
-                                       $sla->getName()));
+                                     sprintf(__('%1$s = %2$s'), $sla::getTypeName(1), $sla->getName()));
       echo "<div class='spaced'>";
       if (count($sltList)) {
          if ($canedit) {
@@ -368,6 +364,10 @@ class SLT extends CommonDBChild {
       echo "</div>";
    }
 
+
+   /**
+    * @see CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate = 0) {
 
       if (!$withtemplate) {
@@ -377,12 +377,21 @@ class SLT extends CommonDBChild {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_slts', "`slas_id` = '".$item->getField('id')."'");
                }
-               return self::createTabEntry(self::getTypeName($nb), $nb);
+               return self::createTabEntry(self::getTypeName(1), $nb);
          }
       }
       return '';
    }
 
+
+   /**
+    *
+    * @param $item            CommonGLPI item
+    * @param $tabnum          (default 1)
+    * @param $withtemplate    (default 0)
+    *
+    * @return boolean
+   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
@@ -393,11 +402,12 @@ class SLT extends CommonDBChild {
       return true;
    }
 
+
    /**
     * Get SLT data by type and ticket
     *
-    * @param type $tickets_id
-    * @param type $type
+    * @param $tickets_id
+    * @param $type
     */
    function getSltDataForTicket($tickets_id, $type) {
 
@@ -405,31 +415,32 @@ class SLT extends CommonDBChild {
          case SLT::TTR :
             $field = 'slts_ttr_id';
             break;
+
          case SLT::TTO :
             $field = 'slts_tto_id';
             break;
       }
-
       return $this->getFromDBByQuery("INNER JOIN `glpi_tickets` ON (`glpi_tickets`.`$field` = `".$this->getTable()."`.`id`) WHERE `glpi_tickets`.`id` = '".$tickets_id."' LIMIT 1");
    }
 
-    /**
-    * Get SLT datas by type
-    *
-    * @param type $tickets_id
-    * @param type $type
-    */
-   function getSltData($condition) {
 
+    /**
+    * Get SLT datas by condition
+    *
+    * @param $condition
+   **/
+   function getSltData($condition) {
       return $this->find($condition);
    }
+
 
    /**
     * Get SLT table fields
     *
-    * @param type $type
-    * @return type
-    */
+    * @param $type
+    *
+    * @return array
+   **/
    static function getSltFieldNames($type){
 
       $dateField = null;
@@ -440,23 +451,24 @@ class SLT extends CommonDBChild {
             $dateField = 'time_to_own';
             $sltField  = 'slts_tto_id';
             break;
+
          case self::TTR:
             $dateField = 'due_date';
             $sltField  = 'slts_ttr_id';
             break;
       }
-
       return array($dateField, $sltField);
    }
+
 
    /**
     * Show SLT for ticket
     *
-    * @param Ticket $ticket
-    * @param type $type
-    * @param type $tt
-    * @param type $canupdate
-    */
+    * @param $ticket      Ticket item
+    * @param $type
+    * @param $tt
+    * @param $canupdate
+   **/
    function showSltForTicket(Ticket $ticket, $type, $tt, $canupdate) {
       global $CFG_GLPI;
 
@@ -513,7 +525,8 @@ class SLT extends CommonDBChild {
                         }";
                echo Html::scriptBlock($JS);
                echo "<a class='pointer' onclick='delete_date$type();return false;'>";
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/delete.png' title='"._x('button', 'Delete permanently')."' "
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/delete.png' title='".
+                      _x('button', 'Delete permanently')."' "
                      . "alt='"._x('button', 'Delete permanently')."' class='pointer'>";
                echo "</a>";
             }
@@ -531,7 +544,9 @@ class SLT extends CommonDBChild {
             }
             echo $tt->getEndHiddenFieldValue($dateField, $ticket);
             echo "</td>";
-            if ($canupdate && !empty($this->getSltData("`type` = '$type' AND `entities_id` = '".$ticket->fields['entities_id']."'"))) {
+            if ($canupdate
+                && !empty($this->getSltData("`type` = '$type'
+                                            AND `entities_id` = '".$ticket->fields['entities_id']."'"))) {
                echo "<td>";
                echo $tt->getBeginHiddenFieldText($sltField);
                echo "<span id='slt_action$type'>";
@@ -563,14 +578,17 @@ class SLT extends CommonDBChild {
                                                    'canedit'    => $canupdate));
          echo $tt->getEndHiddenFieldValue($dateField, $ticket);
          echo "</td>";
-         if ($canupdate && !empty($this->getSltData("`type` = '$type' AND `entities_id` = '".$ticket->fields['entities_id']."'"))) {
+         if ($canupdate
+             && !empty($this->getSltData("`type` = '$type'
+                                         AND `entities_id` = '".$ticket->fields['entities_id']."'"))) {
             echo "<th>".$tt->getBeginHiddenFieldText($sltField);
             printf(__('%1$s%2$s'), __('SLT'), $tt->getMandatoryMark($sltField));
             echo $tt->getEndHiddenFieldText('slas_id')."</th>";
             echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue($sltField);
             Slt::dropdown(array('name'      => $sltField,
                                 'entity'    => $ticket->fields["entities_id"],
-                                'value'     => isset($ticket->fields[$sltField]) ? $ticket->fields[$sltField] : 0,
+                                'value'     => isset($ticket->fields[$sltField])
+                                                  ? $ticket->fields[$sltField] : 0,
                                 'condition' => "`type` = '".$type."'"));
             echo $tt->getEndHiddenFieldValue($sltField, $ticket);
             echo "</td>";
@@ -581,23 +599,27 @@ class SLT extends CommonDBChild {
       echo "</table>";
    }
 
+
    /**
     * Get SLT types
     *
     * @return array of types
-    */
+   **/
    static function getSltTypes() {
+
       return array(self::TTO => __('Time to own'),
                    self::TTR => __('Time to resolve'));
    }
+
 
    /**
     * Get SLT types name
     *
     * @param type $type
     * @return string name
-    */
+   **/
    static function getSltTypeName($type) {
+
       $types = self::getSltTypes();
       $name  = null;
       if (isset($types[$type])) {
@@ -606,12 +628,14 @@ class SLT extends CommonDBChild {
       return $name;
    }
 
+
    /**
     * Get SLT types dropdown
     *
-    * @param type $options
-    */
+    * @param $options
+   **/
    static function getSltTypeDropdown($options){
+
       $params = array('name'  => 'type');
 
       foreach ($options as $key => $val) {
@@ -620,6 +644,7 @@ class SLT extends CommonDBChild {
 
       return Dropdown::showFromArray($params['name'], self::getSltTypes(), $options);
    }
+
 
    function getSearchOptions() {
 
@@ -677,8 +702,6 @@ class SLT extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
-    *
     * @param $field
     * @param $values
     * @param $options   array
@@ -701,15 +724,15 @@ class SLT extends CommonDBChild {
                   return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
             }
             break;
+
          case 'type' :
             return self::getSltTypeName($values[$field]);
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
+
    /**
-    * @since version 0.84
-    *
     * @param $field
     * @param $name            (default '')
     * @param $values          (default '')
@@ -730,7 +753,6 @@ class SLT extends CommonDBChild {
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-
 
 
    /**
@@ -772,8 +794,6 @@ class SLT extends CommonDBChild {
 
    /**
     * Get computed resolution time
-    *
-    * @since version 0.85
     *
     * @return resolution time
    **/
@@ -872,14 +892,17 @@ class SLT extends CommonDBChild {
    /**
     * Add a level to do for a ticket
     *
-    * @param $ticket Ticket object
+    * @param $ticket          Ticket object
+    * @param $slalevels_id
     *
     * @return execution date time (NULL if sla not exists)
    **/
    function addLevelToDo(Ticket $ticket, $slalevels_id) {
+
       if ($slalevels_id > 0) {
          $toadd = array();
-         $date = $this->computeExecutionDate($ticket->fields['date'], $slalevels_id, $ticket->fields['sla_waiting_duration']);
+         $date = $this->computeExecutionDate($ticket->fields['date'], $slalevels_id,
+                                             $ticket->fields['sla_waiting_duration']);
          if ($date != null) {
             $toadd['date']         = $date;
             $toadd['slalevels_id'] = $slalevels_id;
@@ -915,8 +938,6 @@ class SLT extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
-    *
     * @see CommonDBTM::prepareInputForAdd()
    **/
    function prepareInputForAdd($input) {
@@ -929,8 +950,6 @@ class SLT extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
-    *
     * @see CommonDBTM::prepareInputForUpdate()
    **/
    function prepareInputForUpdate($input) {
@@ -942,4 +961,3 @@ class SLT extends CommonDBChild {
    }
 
 }
-?>

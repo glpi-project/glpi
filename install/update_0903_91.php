@@ -612,36 +612,56 @@ function update0903to91() {
          if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetch_assoc($result)) {
                $query = "INSERT INTO `glpi_slts`
-                          (`id`, `name`,`entities_id`, `is_recursive`, `type`, `comment`, `resolution_time`, `calendars_id`, `date_mod`, `definition_time`, `end_of_working_day`, `date_creation`, `slas_id`)
-                         VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."', '".$data['is_recursive']."', '".SLT::TTR."', '".addslashes($data['comment'])."', '".$data['resolution_time']."', '".$data['calendars_id']."', '".$data['date_mod']."', '".$data['definition_time']."', '".$data['end_of_working_day']."', '".date('Y-m-d H:i:s')."', '".$data['id']."');";
+                                (`id`, `name`,`entities_id`, `is_recursive`, `type`, `comment`,
+                                 `resolution_time`, `calendars_id`, `date_mod`, `definition_time`,
+                                 `end_of_working_day`, `date_creation`, `slas_id`)
+                         VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."',
+                                 '".$data['is_recursive']."', '".SLT::TTR."',
+                                 '".addslashes($data['comment'])."', '".$data['resolution_time']."',
+                                 '".$data['calendars_id']."', '".$data['date_mod']."',
+                                 '".$data['definition_time']."', '".$data['end_of_working_day']."',
+                                 '".date('Y-m-d H:i:s')."', '".$data['id']."');";
                $DB->queryOrDie($query, "SLA migration to SLT");
             }
          }
       }
 
       // Delete deprecated fields of SLA
-      foreach (array('resolution_time', 'calendars_id', 'definition_time', 'end_of_working_day') as $field) {
+      foreach (array('resolution_time', 'calendars_id', 'definition_time',
+                     'end_of_working_day') as $field) {
          $migration->dropField('glpi_slas', $field);
       }
 
       // Slalevels changes
       $migration->changeField('glpi_slalevels', 'slas_id', 'slts_id', 'integer');
+      $migration->dropKey('glpi_slalevels', 'slas_id');
+      $migration->addKey('glpi_slalevels', 'slts_id');
 
       // Ticket changes
       $migration->changeField("glpi_tickets", "slas_id", "slts_ttr_id", "integer");
+      $migration->dropKey('glpi_tickets', 'slas_id');
+      $migration->dropKey('glpi_tickets', 'slts_ttr_id');
+
       $migration->addField("glpi_tickets", "slts_tto_id", "integer", array('after' => 'slts_ttr_id'));
       $migration->addField("glpi_tickets", "time_to_own", "datetime", array('after' => 'due_date'));
       $migration->addKey('glpi_tickets', 'slts_tto_id');
       $migration->addKey('glpi_tickets', 'time_to_own');
 
       // Unique key for slalevel_ticket
-      $migration->addKey('glpi_slalevels_tickets', array('tickets_id', 'slalevels_id'), 'unicity', 'UNIQUE');
+      $migration->addKey('glpi_slalevels_tickets', array('tickets_id', 'slalevels_id'),
+                         'unicity', 'UNIQUE');
 
       // Sla rules criterias migration
-      $DB->queryOrDie("UPDATE `glpi_rulecriterias` SET `criteria` = 'slts_ttr_id' WHERE `criteria` = 'slas_id'", "SLA rulecriterias migration");
+      $DB->queryOrDie("UPDATE `glpi_rulecriterias`
+                       SET `criteria` = 'slts_ttr_id'
+                       WHERE `criteria` = 'slas_id'",
+                      "SLA rulecriterias migration");
 
       // Sla rules actions migration
-      $DB->queryOrDie("UPDATE `glpi_ruleactions` SET `field` = 'slts_ttr_id' WHERE `field` = 'slas_id'", "SLA ruleactions migration");
+      $DB->queryOrDie("UPDATE `glpi_ruleactions`
+                       SET `field` = 'slts_ttr_id'
+                       WHERE `field` = 'slas_id'",
+                      "SLA ruleactions migration");
    }
 
    /************** High contrast CSS **************/
