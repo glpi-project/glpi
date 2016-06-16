@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -2766,14 +2765,16 @@ abstract class CommonITILObject extends CommonDBTM {
                                                       AND TABLE.`due_date` < NOW())),
                                             1, 0)";
 
-      $tab[159]['table']               = $this->getTable();
-      $tab[159]['field']               = 'is_late';
-      $tab[159]['name']                = __('Late own');
-      $tab[159]['datatype']            = 'bool';
-      $tab[159]['massiveaction']       = false;
-      $tab[159]['computation']         = "IF(TABLE.`time_to_own` IS NOT NULL
+      $tab[159]['table']              = $this->getTable();
+      $tab[159]['field']              = 'is_late';
+      $tab[159]['name']               = __('Late own');
+      $tab[159]['datatype']           = 'bool';
+      $tab[159]['massiveaction']      = false;
+      $tab[159]['computation']        = "IF(TABLE.`time_to_own` IS NOT NULL
                                             AND TABLE.`status` <> ".self::WAITING."
-                                            AND (TABLE.`takeintoaccount_delay_stat` > TIME_TO_SEC(TIMEDIFF(TABLE.`time_to_own`, TABLE.`date`))
+                                            AND (TABLE.`takeintoaccount_delay_stat`
+                                                        > TIME_TO_SEC(TIMEDIFF(TABLE.`time_to_own`,
+                                                                               TABLE.`date`))
                                                  OR (TABLE.`takeintoaccount_delay_stat` = 0
                                                       AND TABLE.`time_to_own` < NOW())),
                                             1, 0)";
@@ -2794,6 +2795,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[7]['field']                = 'completename';
       $tab[7]['name']                 = __('Category');
       $tab[7]['datatype']             = 'dropdown';
+
       if (!Session::isCron() // no filter for cron
           && isset($_SESSION['glpiactiveprofile']['interface'])
           && ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk')) {

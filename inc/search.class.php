@@ -3973,7 +3973,7 @@ class Search {
          case "glpi_problems.due_date" :
          case "glpi_changes.due_date" :
          case "glpi_tickets.time_to_own" :
-            if (($ID <> 151 && $ID <> 158)
+            if (($ID <> 151) && ($ID <> 158)
                 && !empty($data[$num][0]['name'])
                 && ($data[$num][0]['status'] != CommonITILObject::WAITING)
                 && ($data[$num][0]['name'] < $_SESSION['glpi_currenttime'])) {
@@ -4331,7 +4331,7 @@ class Search {
             case "glpi_changes.due_date" :
             case "glpi_tickets.time_to_own" :
                // Due date + progress
-               if ($ID == 151 || $ID == 158) {
+               if (($ID == 151) || ($ID == 158)) {
                   $out = Html::convDateTime($data[$num][0]['name']);
 
                   // No due date in waiting status
@@ -4342,7 +4342,7 @@ class Search {
                      return '';
                   }
                   if (($data[$num][0]['status'] == Ticket::SOLVED)
-                            || ($data[$num][0]['status'] == Ticket::CLOSED)) {
+                      || ($data[$num][0]['status'] == Ticket::CLOSED)) {
                      return $out;
                   }
 

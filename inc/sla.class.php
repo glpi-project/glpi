@@ -137,20 +137,20 @@ class SLA extends CommonDBTM {
    /**
     *  @see CommonGLPI::getMenuContent()
     *
-    *  @since version 0.85
+    *  @since version 9.1
    **/
    static function getMenuContent() {
 
       $menu = array();
       if (Config::canUpdate()) {
-            $menu['title']                              = SLA::getTypeName(Session::getPluralNumber());
-            $menu['page']                               = '/front/sla.php';
+            $menu['title']                                  = self::getTypeName(1);
+            $menu['page']                                   = '/front/sla.php';
             $menu['links']['search'] = '/front/sla.php';
             $menu['links']['add']    = '/front/sla.form.php';
 
-            $menu['options']['slt']['title']           = SLT::getTypeName(Session::getPluralNumber());
-            $menu['options']['slt']['page']            = '/front/slt.php';
-            $menu['options']['slt']['links']['search'] = '/front/slt.php';
+            $menu['options']['slt']['title']                = SLT::getTypeName(1);
+            $menu['options']['slt']['page']                 = '/front/slt.php';
+            $menu['options']['slt']['links']['search']      = '/front/slt.php';
 
             $menu['options']['slalevel']['title']           = SlaLevel::getTypeName(Session::getPluralNumber());
             $menu['options']['slalevel']['page']            = '/front/slalevel.php';

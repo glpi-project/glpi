@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -33,15 +32,15 @@
 
 /** @file
 * @brief
+* @since version 9.1
 */
 
 include ('../inc/includes.php');
 
 Session::checkRight("sla", READ);
 
-Html::header(SLT::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "sla", "slt");
+Html::header(SLT::getTypeName(1), $_SERVER['PHP_SELF'], "config", "sla", "slt");
 
 Search::show('SLT');
 
 Html::footer();
-?>
