@@ -1050,6 +1050,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $sla = new SLA();
             if ($sla->getFromDB($this->fields['slas_id'])) {
                $sla->setTicketCalendar($calendars_id);
+               // TODO getActiveTimeBetween deleted in 7bda94b2fbc40c285213ebea226e9e775efd748a
                $delay_time_sla  = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
                                                              $_SESSION["glpi_currenttime"]);
                $this->updates[] = "sla_waiting_duration";
