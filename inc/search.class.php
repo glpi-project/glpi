@@ -4795,7 +4795,7 @@ class Search {
                   $count_display++;
                   if (!empty($data[$num][$k]['name'])) {
                      $out .= (empty($out)?'':self::LBBR);
-                     $out .= "<a href='mailto:".$data[$num][$k]['name']."'>".$data[$num][$k]['name'];
+                     $out .= "<a href='mailto:".Html::entities_deep($data[$num][$k]['name'])."'>".$data[$num][$k]['name'];
                      $out .= "</a>";
                   }
                }

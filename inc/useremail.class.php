@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -152,7 +152,7 @@ class UserEmail  extends CommonDBChild {
       if ($this->isNewID($this->getID())) {
          $value = '';
       } else {
-         $value = $this->fields['email'];
+         $value = Html::entities_deep($this->fields['email']);
       }
 
       $field_name = $field_name."[$id]";
