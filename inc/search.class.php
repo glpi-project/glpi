@@ -3842,7 +3842,7 @@ class Search {
                               ON (`glpi_computers`.`users_id` = `glpi_users`.`id`) ";
                case 'Group' :
                   array_push($already_link_tables2,getTableForItemType($to_type));
-                  return "$LINK `glpi_users`
+                  return "$LINK `glpi_groups`
                               ON (`glpi_computers`.`groups_id` = `glpi_groups`.`id`) ";
             }
             break;
