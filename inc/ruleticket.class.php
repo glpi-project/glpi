@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -365,13 +364,13 @@ class RuleTicket extends Rule {
       $criterias['items_locations']['name']                 = __('Item location');
       $criterias['items_locations']['linkfield']            = 'items_locations';
       $criterias['items_locations']['type']                 = 'dropdown';
-      
+
       $criterias['items_groups']['table']                   = 'glpi_groups';
       $criterias['items_groups']['field']                   = 'completename';
       $criterias['items_groups']['name']                    = __('Item group');
       $criterias['items_groups']['linkfield']               = 'items_groups';
       $criterias['items_groups']['type']                    = 'dropdown';
-      
+
       $criterias['locations_id']['table']                   = 'glpi_locations';
       $criterias['locations_id']['field']                   = 'completename';
       $criterias['locations_id']['name']                    = __('Ticket location');
@@ -452,19 +451,21 @@ class RuleTicket extends Rule {
       $criterias['_x-priority']['table']                    = '';
       $criterias['_x-priority']['type']                     = 'text';
 
-      $criterias['slts_ttr_id']['table']                 = 'glpi_slts';
-      $criterias['slts_ttr_id']['field']                 = 'name';
-      $criterias['slts_ttr_id']['name']                  = __('SLT')."&nbsp;".__('Time to resolve');
-      $criterias['slts_ttr_id']['linkfield']             = 'slts_ttr_id';
-      $criterias['slts_ttr_id']['type']                  = 'dropdown';
-      $criterias['slts_ttr_id']['condition']             = "`glpi_slts`.`type` = '".SLT::TTR."'";
+      $criterias['slts_ttr_id']['table']                    = 'glpi_slts';
+      $criterias['slts_ttr_id']['field']                    = 'name';
+      $criterias['slts_ttr_id']['name']                     = sprintf(__('%1$s %2$s'), __('SLT'),
+                                                                      __('Time to resolve'));
+      $criterias['slts_ttr_id']['linkfield']                = 'slts_ttr_id';
+      $criterias['slts_ttr_id']['type']                     = 'dropdown';
+      $criterias['slts_ttr_id']['condition']                = "`glpi_slts`.`type` = '".SLT::TTR."'";
 
-      $criterias['slts_tto_id']['table']            = 'glpi_slts';
-      $criterias['slts_tto_id']['field']            = 'name';
-      $criterias['slts_tto_id']['name']             = __('SLT')."&nbsp;".__('Time to own');
-      $criterias['slts_tto_id']['linkfield']        = 'slts_tto_id';
-      $criterias['slts_tto_id']['type']             = 'dropdown';
-      $criterias['slts_tto_id']['condition']        = "`glpi_slts`.`type` = '".SLT::TTO."'";
+      $criterias['slts_tto_id']['table']                    = 'glpi_slts';
+      $criterias['slts_tto_id']['field']                    = 'name';
+      $criterias['slts_tto_id']['name']                     = sprintf(__('%1$s %2$s'), __('SLT'),
+                                                                      __('Time to own'));
+      $criterias['slts_tto_id']['linkfield']                = 'slts_tto_id';
+      $criterias['slts_tto_id']['type']                     = 'dropdown';
+      $criterias['slts_tto_id']['condition']                = "`glpi_slts`.`type` = '".SLT::TTO."'";
 
       return $criterias;
    }
@@ -556,19 +557,21 @@ class RuleTicket extends Rule {
       $actions['affectobject']['force_actions']             = array('affectbyip', 'affectbyfqdn',
                                                                     'affectbymac');
 
-      $actions['slts_ttr_id']['table']                          = 'glpi_slts';
-      $actions['slts_ttr_id']['field']                          = 'name';
-      $actions['slts_ttr_id']['name']                           = __('SLT')."&nbsp;".__('Time to resolve');
-      $actions['slts_ttr_id']['linkfield']                      = 'slts_ttr_id';
-      $actions['slts_ttr_id']['type']                           = 'dropdown';
-      $actions['slts_ttr_id']['condition']                      = "`glpi_slts`.`type` = '".SLT::TTR."'";
+      $actions['slts_ttr_id']['table']                      = 'glpi_slts';
+      $actions['slts_ttr_id']['field']                      = 'name';
+      $actions['slts_ttr_id']['name']                       = sprintf(__('%1$s %2$s'), __('SLT'),
+                                                                      __('Time to resolve'));
+      $actions['slts_ttr_id']['linkfield']                  = 'slts_ttr_id';
+      $actions['slts_ttr_id']['type']                       = 'dropdown';
+      $actions['slts_ttr_id']['condition']                  = "`glpi_slts`.`type` = '".SLT::TTR."'";
 
-      $actions['slts_tto_id']['table']                          = 'glpi_slts';
-      $actions['slts_tto_id']['field']                          = 'name';
-      $actions['slts_tto_id']['name']                           = __('SLT')."&nbsp;".__('Time to own');
-      $actions['slts_tto_id']['linkfield']                      = 'slts_tto_id';
-      $actions['slts_tto_id']['type']                           = 'dropdown';
-      $actions['slts_tto_id']['condition']                      = "`glpi_slts`.`type` = '".SLT::TTO."'";
+      $actions['slts_tto_id']['table']                      = 'glpi_slts';
+      $actions['slts_tto_id']['field']                      = 'name';
+      $actions['slts_tto_id']['name']                       = sprintf(__('%1$s %2$s'), __('SLT'),
+                                                                      __('Time to own'));
+      $actions['slts_tto_id']['linkfield']                  = 'slts_tto_id';
+      $actions['slts_tto_id']['type']                       = 'dropdown';
+      $actions['slts_tto_id']['condition']                  = "`glpi_slts`.`type` = '".SLT::TTO."'";
 
       $actions['users_id_validate']['name']                 = sprintf(__('%1$s - %2$s'),
                                                                       __('Send an approval request'),
@@ -630,4 +633,3 @@ class RuleTicket extends Rule {
    }
 
 }
-?>
