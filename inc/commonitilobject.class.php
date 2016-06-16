@@ -1106,6 +1106,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // Specific for tickets
          if (isset($this->fields['slas_id']) && ($this->fields['slas_id'] > 0)) {
+            // TODO deleteLevelsToDo deleted in 7bda94b2fbc40c285213ebea226e9e775efd748a
             SLA::deleteLevelsToDo($this);
          }
       }
