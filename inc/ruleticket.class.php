@@ -452,11 +452,19 @@ class RuleTicket extends Rule {
       $criterias['_x-priority']['table']                    = '';
       $criterias['_x-priority']['type']                     = 'text';
 
-      $criterias['slas_id']['table']                        = 'glpi_slas';
-      $criterias['slas_id']['field']                        = 'name';
-      $criterias['slas_id']['name']                         = __('SLA');
-      $criterias['slas_id']['linkfield']                    = 'slas_id';
-      $criterias['slas_id']['type']                         = 'dropdown';
+      $criterias['slts_ttr_id']['table']                 = 'glpi_slts';
+      $criterias['slts_ttr_id']['field']                 = 'name';
+      $criterias['slts_ttr_id']['name']                  = __('SLT')."&nbsp;".__('Time to resolve');
+      $criterias['slts_ttr_id']['linkfield']             = 'slts_ttr_id';
+      $criterias['slts_ttr_id']['type']                  = 'dropdown';
+      $criterias['slts_ttr_id']['condition']             = "`glpi_slts`.`type` = '".SLT::TTR."'";
+
+      $criterias['slts_tto_id']['table']            = 'glpi_slts';
+      $criterias['slts_tto_id']['field']            = 'name';
+      $criterias['slts_tto_id']['name']             = __('SLT')."&nbsp;".__('Time to own');
+      $criterias['slts_tto_id']['linkfield']        = 'slts_tto_id';
+      $criterias['slts_tto_id']['type']             = 'dropdown';
+      $criterias['slts_tto_id']['condition']        = "`glpi_slts`.`type` = '".SLT::TTO."'";
 
       return $criterias;
    }
@@ -548,9 +556,19 @@ class RuleTicket extends Rule {
       $actions['affectobject']['force_actions']             = array('affectbyip', 'affectbyfqdn',
                                                                     'affectbymac');
 
-      $actions['slas_id']['table']                          = 'glpi_slas';
-      $actions['slas_id']['name']                           = __('SLA');
-      $actions['slas_id']['type']                           = 'dropdown';
+      $actions['slts_ttr_id']['table']                          = 'glpi_slts';
+      $actions['slts_ttr_id']['field']                          = 'name';
+      $actions['slts_ttr_id']['name']                           = __('SLT')."&nbsp;".__('Time to resolve');
+      $actions['slts_ttr_id']['linkfield']                      = 'slts_ttr_id';
+      $actions['slts_ttr_id']['type']                           = 'dropdown';
+      $actions['slts_ttr_id']['condition']                      = "`glpi_slts`.`type` = '".SLT::TTR."'";
+
+      $actions['slts_tto_id']['table']                          = 'glpi_slts';
+      $actions['slts_tto_id']['field']                          = 'name';
+      $actions['slts_tto_id']['name']                           = __('SLT')."&nbsp;".__('Time to own');
+      $actions['slts_tto_id']['linkfield']                      = 'slts_tto_id';
+      $actions['slts_tto_id']['type']                           = 'dropdown';
+      $actions['slts_tto_id']['condition']                      = "`glpi_slts`.`type` = '".SLT::TTO."'";
 
       $actions['users_id_validate']['name']                 = sprintf(__('%1$s - %2$s'),
                                                                       __('Send an approval request'),
