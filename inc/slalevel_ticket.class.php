@@ -50,8 +50,14 @@ class SlaLevel_Ticket extends CommonDBTM {
     *
     * @return true if succeed else false
    **/
-   function getFromDBForTicket($ID) {
-      return $this->getFromDBByQuery("WHERE `".$this->getTable()."`.`tickets_id` = '$ID'");
+   function getFromDBForTicket($ID, $sltType) {
+      $query = "LEFT JOIN `glpi_slalevels` ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
+                LEFT JOIN `glpi_slts` ON (`glpi_slalevels`.`slts_id` = `glpi_slts`.`id`)
+                WHERE `".$this->getTable()."`.`tickets_id` = '$ID'
+                AND `glpi_slts`.`type` = '$sltType'
+                LIMIT 1";
+
+      return $this->getFromDBByQuery($query);
    }
 
 
@@ -59,16 +65,22 @@ class SlaLevel_Ticket extends CommonDBTM {
     * Delete entries for a ticket
     *
     * @param $tickets_id Ticket ID
-    *
+    * @param $type Type of SLT
     * @return nothing
    **/
-   static function deleteForTicket($tickets_id) {
+   function deleteForTicket($tickets_id, $sltType) {
       global $DB;
 
-      $query1 = "DELETE
+      $query1 = "SELECT `glpi_slalevels_tickets`.`id`
                  FROM `glpi_slalevels_tickets`
-                 WHERE `tickets_id` = '$tickets_id'";
-      $DB->query($query1);
+                 LEFT JOIN `glpi_slalevels` ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
+                 LEFT JOIN `glpi_slts` ON (`glpi_slalevels`.`slts_id` = `glpi_slts`.`id`)
+                 WHERE `glpi_slalevels_tickets`.`tickets_id` = '$tickets_id'
+                 AND `glpi_slts`.`type` = '$sltType'";
+
+      foreach ($DB->request($query1) as $data) {
+         $this->delete(array('id' => $data['id']));
+      }
    }
 
 
@@ -101,13 +113,15 @@ class SlaLevel_Ticket extends CommonDBTM {
 
       $tot = 0;
 
-      $query = "SELECT *
+      $query = "SELECT `glpi_slalevels_tickets`.*, `glpi_slts`.`type` as type
                 FROM `glpi_slalevels_tickets`
+                LEFT JOIN `glpi_slalevels` ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
+                LEFT JOIN `glpi_slts` ON (`glpi_slalevels`.`slts_id` = `glpi_slts`.`id`)
                 WHERE `glpi_slalevels_tickets`.`date` < NOW()";
 
       foreach ($DB->request($query) as $data) {
          $tot++;
-         self::doLevelForTicket($data);
+         self::doLevelForTicket($data, $data['type']);
       }
 
       $task->setVolume($tot);
@@ -119,10 +133,10 @@ class SlaLevel_Ticket extends CommonDBTM {
     * Do a specific SLAlevel for a ticket
     *
     * @param $data array data of an entry of slalevels_tickets
-    *
+    * @param $sltType Type of slt
     * @return nothing
    **/
-   static function doLevelForTicket(array $data) {
+   static function doLevelForTicket(array $data, $sltType) {
 
       $ticket         = new Ticket();
       $slalevelticket = new self();
@@ -148,7 +162,7 @@ class SlaLevel_Ticket extends CommonDBTM {
          foreach($ticket->getGroups(CommonITILActor::ASSIGN) as $group) {
             $ticket->fields['_groups_id_assign'][] = $group['groups_id'];
          }
-         foreach($ticket->getGroups(CommonITILActor::OBSERVER) as $groups) {
+         foreach($ticket->getGroups(CommonITILActor::OBSERVER) as $group) {
             $ticket->fields['_groups_id_observer'][] = $group['groups_id'];
          }
 
@@ -157,40 +171,45 @@ class SlaLevel_Ticket extends CommonDBTM {
          }
 
          $slalevel = new SlaLevel();
-         $sla      = new SLA();
-         // Check if sla datas are OK
-         if (($ticket->fields['slas_id'] > 0)
-             && ($ticket->fields['slalevels_id'] == $data['slalevels_id'])) {
-
+         $slt      = new SLT();
+         // Check if slt datas are OK
+         list($dateField, $sltField) = SLT::getSltFieldNames($sltType);
+         if (($ticket->fields[$sltField] > 0)) {
             if ($ticket->fields['status'] == CommonITILObject::CLOSED) {
                // Drop line when status is closed
                $slalevelticket->delete(array('id' => $data['id']));
 
             } else if ($ticket->fields['status'] != CommonITILObject::SOLVED) {
-               // If status = solved : keep the line in case of solution not validated
-               $input['id']           = $ticket->getID();
-               $input['_auto_update'] = true;
+               // No execution if ticket has been taken into account
+               if (!($sltType == SLT::TTO && $ticket->fields['takeintoaccount_delay_stat'] > 0)) {
+                  // If status = solved : keep the line in case of solution not validated
+                  $input['id']           = $ticket->getID();
+                  $input['_auto_update'] = true;
 
-               if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'], 1, 1)
-                   && $sla->getFromDB($ticket->fields['slas_id'])) {
-                   $doit = true;
-                   if (count($slalevel->criterias)) {
-                     $doit = $slalevel->checkCriterias($ticket->fields);
-                   }
-                  // Process rules
-                  if ($doit) {
-                     $input = $slalevel->executeActions($input, array());
+                  if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'], 1, 1)
+                      && $slt->getFromDB($ticket->fields[$sltField])) {
+                     $doit = true;
+                     if (count($slalevel->criterias)) {
+                        $doit = $slalevel->checkCriterias($ticket->fields);
+                     }
+                     // Process rules
+                     if ($doit) {
+                        $input = $slalevel->executeActions($input, array());
+                     }
                   }
-               }
 
-               // Put next level in todo list
-               $next                  = $slalevel->getNextSlaLevel($ticket->fields['slas_id'],
-                                                                   $ticket->fields['slalevels_id']);
-               $input['slalevels_id'] = $next;
-               $ticket->update($input);
-               $sla->addLevelToDo($ticket);
-               // Action done : drop the line
-               $slalevelticket->delete(array('id' => $data['id']));
+                  // Put next level in todo list
+                  $next                  = $slalevel->getNextSlaLevel($ticket->fields[$sltField],
+                                                                      $data['slalevels_id']);
+                  $slt->addLevelToDo($ticket, $next);
+                  // Action done : drop the line
+                  $slalevelticket->delete(array('id' => $data['id']));
+
+                  $ticket->update($input);
+               } else {
+                  // Drop line
+                  $slalevelticket->delete(array('id' => $data['id']));
+               }
             }
          } else {
             // Drop line
@@ -208,16 +227,19 @@ class SlaLevel_Ticket extends CommonDBTM {
     * Replay all task needed for a specific ticket
     *
     * @param $tickets_id Ticket ID
+    * @param $sltType Type of slt
     *
-    * @return nothing
-   **/
-   static function replayForTicket($tickets_id) {
+    */
+   static function replayForTicket($tickets_id, $sltType) {
       global $DB;
 
-      $query = "SELECT *
+      $query = "SELECT `glpi_slalevels_tickets`.*
                 FROM `glpi_slalevels_tickets`
+                LEFT JOIN `glpi_slalevels` ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
+                LEFT JOIN `glpi_slts` ON (`glpi_slalevels`.`slts_id` = `glpi_slts`.`id`)
                 WHERE `glpi_slalevels_tickets`.`date` < NOW()
-                      AND `tickets_id` = '$tickets_id'";
+                AND `glpi_slalevels_tickets`.`tickets_id` = '$tickets_id'
+                AND `glpi_slts`.`type` = '$sltType'";
 
       $number = 0;
       do {
@@ -225,7 +247,7 @@ class SlaLevel_Ticket extends CommonDBTM {
             $number = $DB->numrows($result);
             if ($number == 1) {
                $data = $DB->fetch_assoc($result);
-               self::doLevelForTicket($data);
+               self::doLevelForTicket($data, $sltType);
             }
          }
       } while ($number == 1);
