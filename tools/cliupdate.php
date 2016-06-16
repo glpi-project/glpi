@@ -356,7 +356,7 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 } else if (in_array('--force', $_SERVER['argv'])) {
 
    include_once("../install/update_0903_91.php");
-   update0902to91();
+   update0903to91();
 
    $migration->displayWarning("\nForced migration Done.");
 
