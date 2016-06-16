@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -39,22 +38,27 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/// Class SLA
+/// Class SLALevel
 class SlaLevel_Ticket extends CommonDBTM {
 
 
    /**
     * Retrieve an item from the database
     *
-    * @param $ID ID of the item to get
+    * @param $ID        ID of the item to get
+    * @param $slttype
+    *
+    * @since version 9.1 2 mandatory parameters
     *
     * @return true if succeed else false
    **/
    function getFromDBForTicket($ID, $sltType) {
-      $query = "LEFT JOIN `glpi_slalevels` ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
+
+      $query = "LEFT JOIN `glpi_slalevels`
+                     ON (`glpi_slalevels_tickets`.`slalevels_id` = `glpi_slalevels`.`id`)
                 LEFT JOIN `glpi_slts` ON (`glpi_slalevels`.`slts_id` = `glpi_slts`.`id`)
                 WHERE `".$this->getTable()."`.`tickets_id` = '$ID'
-                AND `glpi_slts`.`type` = '$sltType'
+                      AND `glpi_slts`.`type` = '$sltType'
                 LIMIT 1";
 
       return $this->getFromDBByQuery($query);
@@ -64,8 +68,11 @@ class SlaLevel_Ticket extends CommonDBTM {
    /**
     * Delete entries for a ticket
     *
-    * @param $tickets_id Ticket ID
-    * @param $type Type of SLT
+    * @param $tickets_id    Ticket ID
+    * @param $type          Type of SLT
+    *
+    * @since 9.1 2 parameters mandatory
+    *
     * @return nothing
    **/
    function deleteForTicket($tickets_id, $sltType) {
@@ -254,4 +261,3 @@ class SlaLevel_Ticket extends CommonDBTM {
    }
 
 }
-?>

@@ -104,6 +104,8 @@ class SlaLevel extends RuleTicket {
 
    /**
     * @param $slt SLT object
+    *
+    * @since version 9.1 (before showForSLA)
    **/
    function showForSLT(SLT $slt) {
       global $DB;
@@ -421,6 +423,8 @@ class SlaLevel extends RuleTicket {
     * Get first level for a SLT
     *
     * @param $slts_id   integer  id of the SLT
+    *
+    * @since version 9.1 (before getFirst SlaLevel)
     *
     * @return id of the sla level : 0 if not exists
    **/
