@@ -412,6 +412,31 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    /**
+    * Get group assigned to the task
+    *
+    * @since version 9.1
+    *
+    * @param $options array
+    **/
+   function getTaskAssignGroup($options=array()) {
+      global $DB;
+
+      // In case of delete task pass user id
+      if (isset($options['task_groups_id_tech'])) {
+         $this->getAddressesByGroup(0, $options['task_groups_id_tech']);
+
+      } else if (isset($options['task_id'])) {
+         $tasktable = getTableForItemType($this->obj->getType().'Task');
+         foreach ($DB->request(array($tasktable, 'glpi_groups'),
+                               "`glpi_groups`.`id` = `$tasktable`.`groups_id_tech`
+                                AND `$tasktable`.`id` = '".$options['task_id']."'") as $data) {
+            $this->getAddressesByGroup(0, $data['groups_id_tech']);
+         }
+      }
+   }
+
+
+   /**
     * Get additionnals targets for ITIL objects
     *
     * @param $event  (default '')
@@ -459,6 +484,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       if (($event == 'update_task') || ($event == 'add_task') || ($event == 'delete_task')) {
          $this->addTarget(Notification::TASK_ASSIGN_TECH, __('Technician in charge of the task'));
+         $this->addTarget(Notification::TASK_ASSIGN_GROUP, __('Group in charge of the task'));
          $this->addTarget(Notification::TASK_AUTHOR, __('Task author'));
       }
 
@@ -553,6 +579,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                //Send to the ITIL object followup author
                case Notification::TASK_ASSIGN_TECH :
                   $this->getTaskAssignUser($options);
+                  break;
+
+               //Send to the ITIL object task group assigned
+               case Notification::TASK_ASSIGN_GROUP :
+                  $this->getTaskAssignGroup($options);
                   break;
 
                //Notification to the ITIL object's observer group
@@ -986,7 +1017,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##task.status##']       = Planning::getState($task['state']);
 
             $tmp['##task.user##']         = Html::clean(getUserName($task['users_id_tech']));
-
+            $tmp['##task.group##']
+               = Html::clean(Toolbox::clean_cross_side_scripting_deep(Dropdown::getDropdownName("glpi_groups",
+                                                        $task['groups_id_tech'])), true, 2, false) ;
             $tmp['##task.begin##']        = "";
             $tmp['##task.end##']          = "";
             if (!is_null($task['begin'])) {
@@ -1080,7 +1113,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'task.description'                  => __('Description'),
                     'task.category'                     => __('Category'),
                     'task.time'                         => __('Total duration'),
-                    'task.user'                         => __('By'),
+                    'task.user'                         => __('User assigned to task'),
+                    'task.group'                        => __('Group assigned to task'),
                     'task.begin'                        => __('Start date'),
                     'task.end'                          => __('End date'),
                     'task.status'                       => __('Status'),

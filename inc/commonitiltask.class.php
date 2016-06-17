@@ -231,7 +231,8 @@ abstract class CommonITILTask  extends CommonDBTM {
                           'is_private'          => $this->isPrivate(),
                           // Pass users values
                           'task_users_id'       => $this->fields['users_id'],
-                          'task_users_id_tech'  => $this->fields['users_id_tech']);
+                          'task_users_id_tech'  => $this->fields['users_id_tech'],
+                          'task_groups_id_tech' => $this->fields['groups_id_tech']);
          NotificationEvent::raiseEvent('delete_task', $item, $options);
       }
    }
@@ -486,8 +487,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       if ($donotif) {
-         $options = array('task_id'    => $this->fields["id"],
-                          'is_private' => $this->isPrivate());
+         $options = array('task_id'             => $this->fields["id"],
+                          'is_private'          => $this->isPrivate());
          NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
       }
 
