@@ -6751,9 +6751,7 @@ class Ticket extends CommonITILObject {
    static function showSubForm(CommonDBTM $item, $id, $params) {
 
       if ($item instanceof Document_Item) {
-         $ticket = new self();
-         $ticket->getFromDB($params['tickets_id']);
-         Document_Item::showAddFormForItem($ticket, '');
+         Document_Item::showAddFormForItem($params['parent'], '');
 
       } else if (method_exists($item, "showForm")) {
          $item->showForm($id, $params);
