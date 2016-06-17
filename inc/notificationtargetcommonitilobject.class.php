@@ -1024,7 +1024,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.creationdate'          => __('Opening date'),
                     $objettype.'.closedate'             => __('Closing date'),
                     $objettype.'.solvedate'             => __('Date of solving'),
-                    $objettype.'.duedate'               => __('Due date'),
+                    $objettype.'.duedate'               => __('Time to resolve'),
                     $objettype.'.authors'               => _n('Requester', 'Requesters', Session::getPluralNumber()),
                     'author.id'                         => __('Requester ID'),
                     'author.name'                       => __('Requester'),
