@@ -544,9 +544,10 @@ class SLT extends CommonDBChild {
             }
             echo $tt->getEndHiddenFieldValue($dateField, $ticket);
             echo "</td>";
+            $slt_data = $this->getSltData("`type` = '$type'
+                                           AND `entities_id` = '".$ticket->fields['entities_id']."'");
             if ($canupdate
-                && !empty($this->getSltData("`type` = '$type'
-                                            AND `entities_id` = '".$ticket->fields['entities_id']."'"))) {
+                && !empty($slt_data)) {
                echo "<td>";
                echo $tt->getBeginHiddenFieldText($sltField);
                echo "<span id='slt_action$type'>";
@@ -578,9 +579,10 @@ class SLT extends CommonDBChild {
                                                    'canedit'    => $canupdate));
          echo $tt->getEndHiddenFieldValue($dateField, $ticket);
          echo "</td>";
+         $slt_data = $this->getSltData("`type` = '$type'
+                                        AND `entities_id` = '".$ticket->fields['entities_id']."'");
          if ($canupdate
-             && !empty($this->getSltData("`type` = '$type'
-                                         AND `entities_id` = '".$ticket->fields['entities_id']."'"))) {
+             && !empty($slt_data)) {
             echo "<th>".$tt->getBeginHiddenFieldText($sltField);
             printf(__('%1$s%2$s'), __('SLT'), $tt->getMandatoryMark($sltField));
             echo $tt->getEndHiddenFieldText('slas_id')."</th>";
