@@ -986,6 +986,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##task.status##']       = Planning::getState($task['state']);
 
             $tmp['##task.user##']         = Html::clean(getUserName($task['users_id_tech']));
+            $tmp['##task.group##']        = Dropdown::getDropdownName('glpi_groups', $task['groups_id_tech']);
 
             $tmp['##task.begin##']        = "";
             $tmp['##task.end##']          = "";
@@ -1081,6 +1082,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'task.category'                     => __('Category'),
                     'task.time'                         => __('Total duration'),
                     'task.user'                         => __('By'),
+                    'task.group'                        => __('By group'),
                     'task.begin'                        => __('Start date'),
                     'task.end'                          => __('End date'),
                     'task.status'                       => __('Status'),
