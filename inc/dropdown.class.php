@@ -386,6 +386,26 @@ class Dropdown {
                                      self::getDropdownName("glpi_locations",
                                                            $data["locations_id"], false, $translate));
                      break;
+
+                  case "glpi_budgets" :
+                     if (!empty($data['locations_id'])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Location')."</span>",
+                                     self::getDropdownName("glpi_locations",
+                                                           $data["locations_id"], false, $translate));
+
+                     }
+                     if (!empty($data['begin_date'])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Start date')."</span>",
+                                     Html::convDateTime($data["begin_date"]));
+
+
+                     }
+                     if (!empty($data['end_date'])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('End date')."</span>",
+                                     Html::convDateTime($data["end_date"]));
+
+
+                     }
                }
             }
          }
