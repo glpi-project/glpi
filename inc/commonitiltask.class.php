@@ -1121,6 +1121,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                   if ($_SESSION['glpiis_ids_visible']) {
                      $groupname = printf(__('%1$s (%2$s)'), $groupname, $this->fields["groups_id_tech"]);
                   }
+                  echo $groupname;
                }
             } else {
                _e('None');
@@ -1147,6 +1148,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                    $groupname = printf(__('%1$s (%2$s)'), $groupname,
                                        $this->fields["groups_id_tech"]);
                }
+               echo $groupname;
             }
             if (PlanningRecall::isAvailable()
                 && $_SESSION["glpiactiveprofile"]["interface"] == "central") {
