@@ -506,6 +506,7 @@ class DBmysql {
     * @param $tableorsql                     table name, array of names or SQL query
     * @param $crit         string or array   of filed/values, ex array("id"=>1), if empty => all rows
     *                                        (default '')
+    * @param $debug                          for log the request (default false)
     *
     * Examples =
     *   array("id"=>NULL)
@@ -519,8 +520,8 @@ class DBmysql {
     *
     * @return DBIterator
    **/
-   public function request ($tableorsql, $crit="") {
-      return new DBmysqlIterator($this, $tableorsql, $crit);
+   public function request ($tableorsql, $crit="", $debug=false) {
+      return new DBmysqlIterator($this, $tableorsql, $crit, $debug);
    }
 
 
@@ -721,8 +722,9 @@ class DBmysqlIterator  implements Iterator {
     * @param $table                          table name
     * @param $crit         string or array   of filed/values, ex array("id"=>1), if empty => all rows
     *                                        (default '')
+    * @param $debug                          for log the request (default false)
    **/
-   function __construct ($dbconnexion, $table, $crit="") {
+   function __construct ($dbconnexion, $table, $crit="", $debug=false) {
 
       $this->conn = $dbconnexion;
       if (is_string($table) && strpos($table, " ")) {
@@ -822,6 +824,9 @@ class DBmysqlIterator  implements Iterator {
                $this->sql .= " OFFSET $start";
             }
          }
+      }
+      if ($debug) {
+         toolbox::logdebug("req", $this->sql);
       }
       $this->res = $this->conn->query($this->sql);
    }

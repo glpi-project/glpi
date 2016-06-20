@@ -553,7 +553,6 @@ class Lock {
             }
             return;
       }
-      parent::processMassiveActionsForOneItemtype($ma, $baseitem, $ids);
    }
 
 }

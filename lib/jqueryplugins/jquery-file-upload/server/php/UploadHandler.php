@@ -317,6 +317,7 @@ class UploadHandler
     function get_config_bytes($val) {
         $val = trim($val);
         $last = strtolower($val[strlen($val)-1]);
+        $val = (int)$val;
         switch($last) {
             case 'g':
                 $val *= 1024;
@@ -953,7 +954,7 @@ class UploadHandler
     protected function body($str) {
         echo $str;
     }
-    
+
     protected function header($str) {
         header($str);
     }
@@ -961,7 +962,7 @@ class UploadHandler
     protected function get_server_var($id) {
         return isset($_SERVER[$id]) ? $_SERVER[$id] : '';
     }
-    
+
     /// GLPI : set to public to be used
     public function generate_response($content, $print_response = true) {
         if ($print_response) {

@@ -411,6 +411,9 @@ class CommonDBTM extends CommonGLPI {
             if ($values[$i] == 'NULL') {
                $query .= $values[$i];
             } else {
+               if (($this->getType() == 'ProfileRight') && ($values[$i] == '')) {
+                  $values[$i] = 0;
+               }
                $query .= "'".$values[$i]."'";
             }
 
@@ -4176,6 +4179,7 @@ class CommonDBTM extends CommonGLPI {
                   $options['entity'] = $_SESSION['glpiactiveentities'];
                }
                $itemtype = getItemTypeForTable($searchoptions['table']);
+
                return $itemtype::dropdown($options);
 
             case "right" :
