@@ -6365,8 +6365,12 @@ class Ticket extends CommonITILObject {
             echo "<div class='item_content $long_text'>";
             echo "<p>";
             if (isset($item_i['state'])) {
+               $onClick = "onclick='change_task_state(".$item_i['id'].", this)'";
+               if( !$item_i['can_edit'] ) {
+                  $onClick = "style='cursor: not-allowed;'" ;
+               }
                echo "<span class='state state_".$item_i['state']."'
-                           onclick='change_task_state(".$item_i['id'].", this)'
+                           $onClick
                            title='".Planning::getState($item_i['state'])."'>";
                echo "</span>";
             }
