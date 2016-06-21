@@ -1407,7 +1407,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo Html::jsHide("plan$rand_text");
             $params = array('action'    => 'add_event_classic_form',
                             'form'      => 'followups',
-                            'entity'    => $_SESSION["glpiactive_entity"],
+                            'entity'    => $item->fields['entities_id'],
                             'rand_user' => $rand_user,
                             'rand_group' => $rand_group,
                             'itemtype'  => $this->getType(),
