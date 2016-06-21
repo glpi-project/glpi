@@ -1215,9 +1215,9 @@ class Infocom extends CommonDBChild {
    }
 
    static function addPluginInfos(CommonDBTM $item) {
-      Plugin::doHook("infocom", $item);
+      Plugin::doHookFunction("infocom", $item);
    }
-   
+
    /**
     * @param $itemtype
    **/
