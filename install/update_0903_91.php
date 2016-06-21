@@ -469,6 +469,10 @@ function update0903to91() {
    $migration->addKey("glpi_softwarelicenses", "is_deleted");
    $migration->addKey("glpi_softwarelicenses", "is_template");
 
+   $migration->addField("glpi_infocoms", "destruction_date", "datetime");
+   $migration->addField("glpi_entities", "autofill_destruction_date",
+                        "string", array('value' => '-2'));
+
    /************* Add is_recursive on assets ***/
 
    foreach (array('glpi_computers', 'glpi_monitors', 'glpi_phones', 'glpi_peripherals') as $table) {
