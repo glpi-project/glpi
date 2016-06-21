@@ -3094,6 +3094,7 @@ class Ticket extends CommonITILObject {
       }
       $opt = array('value'     => $values['itilcategories_id'],
                    'condition' => $condition,
+                   'entity'    => $_SESSION["glpiactive_entity"],
                    'on_change' => 'this.form.submit()');
 
       if ($values['itilcategories_id'] && $tt->isMandatoryField("itilcategories_id")) {
