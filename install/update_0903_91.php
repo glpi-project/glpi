@@ -302,6 +302,9 @@ function update0903to91() {
    $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
    $migration->addKey("glpi_computers_softwareversions", "date_install");
 
+   /************** Location for budgets *************/
+   $migration->addField("glpi_budgets", "locations_id", "integer");
+   $migration->addKey("glpi_budgets", "locations_id");
 
 
    /************** New Planning with fullcalendar.io *************/
