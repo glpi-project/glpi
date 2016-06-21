@@ -1045,13 +1045,12 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
 
-         // SLA case : compute sla duration
-         if (isset($this->fields['slas_id']) && ($this->fields['slas_id'] > 0)) {
-            $sla = new SLA();
-            if ($sla->getFromDB($this->fields['slas_id'])) {
-               $sla->setTicketCalendar($calendars_id);
-               // TODO getActiveTimeBetween deleted in 7bda94b2fbc40c285213ebea226e9e775efd748a
-               $delay_time_sla  = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
+         // SLT case : compute slt_ttr duration
+         if (isset($this->fields['slts_ttr_id']) && ($this->fields['slts_ttr_id'] > 0)) {
+            $slt = new SLT();
+            if ($slt->getFromDB($this->fields['slts_ttr_id'])) {
+               $slt->setTicketCalendar($calendars_id);
+               $delay_time_sla  = $slt->getActiveTimeBetween($this->fields['begin_waiting_date'],
                                                              $_SESSION["glpi_currenttime"]);
                $this->updates[] = "sla_waiting_duration";
                $this->fields["sla_waiting_duration"] += $delay_time_sla;
@@ -1059,12 +1058,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
             // Compute new due date
             $this->updates[]          = "due_date";
-            // TODO computeDueDate deleted in 7bda94b2fbc40c285213ebea226e9e775efd748a
-            $this->fields['due_date'] = $sla->computeDueDate($this->fields['date'],
+            $this->fields['due_date'] = $slt->computeDueDate($this->fields['date'],
                                                              $this->fields["sla_waiting_duration"]);
             // Add current level to do
-            // TODO addLevelToDo deleted in 7bda94b2fbc40c285213ebea226e9e775efd748a
-            $sla->addLevelToDo($this);
+            $slt->addLevelToDo($this);
 
          } else {
             // Using calendar
@@ -1106,8 +1103,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // Specific for tickets
          if (isset($this->fields['slas_id']) && ($this->fields['slas_id'] > 0)) {
-            // TODO deleteLevelsToDo deleted in 7bda94b2fbc40c285213ebea226e9e775efd748a
-            SLA::deleteLevelsToDo($this);
+            SLT::deleteLevelsToDo($this);
          }
       }
 

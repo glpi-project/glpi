@@ -758,8 +758,8 @@ class Ticket extends CommonITILObject {
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       $slaLevel_ticket = new SlaLevel_Ticket();
-      // TODO 2 parameters mandatory since 7bda94b2fbc40c285213ebea226e9e775efd748a
-      $slaLevel_ticket->deleteForTicket($this->getID());
+      $slaLevel_ticket->deleteForTicket($this->getID(), SLT::TTO);
+      $slaLevel_ticket->deleteForTicket($this->getID(), SLT::TTR);
 
       $query1 = "DELETE
                  FROM `glpi_tickets_tickets`

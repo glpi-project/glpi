@@ -51,8 +51,8 @@ class SLT extends CommonDBChild {
 
    static protected $forward_entity_to = array('SLALevel');
 
-   const TTR = 0;
-   const TTO = 1;
+   const TTR = 0; // Time to resolve
+   const TTO = 1; // Time to own
 
 
    static function getTypeName($nb=0) {
@@ -85,13 +85,30 @@ class SLT extends CommonDBChild {
       return $ong;
    }
 
+   /**
+    * @see CommonDBTM::getFromDB
+   **/
+   function getFromDB($ID) {
+      if (!parent::getFromDB($ID)) {
+         return false;
+      }
+
+      // get calendar from sla
+      $sla = new SLA;
+      if ($sla->getFromDB($this->fields['slas_id'])) {
+         $this->fields['calendars_id'] = $sla->fields['calendars_id'];
+         return true;
+      } else {
+         return false;
+      }
+   }
+
 
    /**
     * @see CommonDBTM::post_getEmpty()
    */
    function post_getEmpty() {
-
-      $this->fields['resolution_time'] = 4;
+      $this->fields['number_time'] = 4;
       $this->fields['definition_time'] = 'hour';
    }
 
@@ -194,14 +211,6 @@ class SLT extends CommonDBChild {
          echo "</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'><td>".__('Calendar')."</td>";
-      echo "<td>";
-
-      Calendar::dropdown(array('value'      => $this->fields["calendars_id"],
-                               'emptylabel' => __('24/7'),
-                               'toadd'      => array('-1' => __('Calendar of the ticket'))));
-      echo "</td></tr>";
-
       echo "<tr class='tab_bg_1'><td>".__('Type')."</td>";
       echo "<td>";
       self::getSltTypeDropdown(array('value' => $this->fields["type"]));
@@ -210,7 +219,7 @@ class SLT extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Maximum time to solve')."</td>";
       echo "<td>";
-      Dropdown::showNumber("resolution_time", array('value' => $this->fields["resolution_time"],
+      Dropdown::showNumber("number_time", array('value' => $this->fields["number_time"],
                                                     'min'   => 0));
       $possible_values = array('minute'   => _n('Minute', 'Minutes', Session::getPluralNumber()),
                                'hour'     => _n('Hour', 'Hours', Session::getPluralNumber()),
@@ -342,8 +351,8 @@ class SLT extends CommonDBChild {
             echo "<td $edit>".$slt->getLink()."</td>";
             echo "<td $edit>".$slt->getSpecificValueToDisplay('type', $slt->fields['type'])."</td>";
             echo "<td $edit>";
-            echo $slt->getSpecificValueToDisplay('resolution_time',
-                  array('resolution_time' => $slt->fields['resolution_time'],
+            echo $slt->getSpecificValueToDisplay('number_time',
+                  array('number_time'     => $slt->fields['number_time'],
                         'definition_time' => $slt->fields['definition_time']));
             echo "</td>";
             $calendar->getFromDB($val['id']);
@@ -665,14 +674,9 @@ class SLT extends CommonDBChild {
       $tab[2]['massiveaction']    = false;
       $tab[2]['datatype']         = 'number';
 
-      $tab[4]['table']            = 'glpi_calendars';
-      $tab[4]['field']            = 'name';
-      $tab[4]['name']             = __('Calendar');
-      $tab[4]['datatype']         = 'dropdown';
-
       $tab[5]['table']            = $this->getTable();
-      $tab[5]['field']            = 'resolution_time';
-      $tab[5]['name']             = __('Resolution time');
+      $tab[5]['field']            = 'number_time';
+      $tab[5]['name']             = __('Time');
       $tab[5]['datatype']         = 'specific';
       $tab[5]['massiveaction']    = false;
       $tab[5]['nosearch']         = true;
@@ -714,7 +718,7 @@ class SLT extends CommonDBChild {
          $values = array($field => $values);
       }
       switch ($field) {
-         case 'resolution_time' :
+         case 'number_time' :
             switch ($values['definition_time']) {
                case 'minute' :
                   return sprintf(_n('%d minute', '%d minutes', $values[$field]), $values[$field]);
@@ -769,7 +773,7 @@ class SLT extends CommonDBChild {
    function computeDate($start_date, $additional_delay=0) {
 
       if (isset($this->fields['id'])) {
-         $delay = $this->getResolutionTime();
+         $delay = $this->getSLTTime();
          // Based on a calendar
          if ($this->fields['calendars_id'] > 0) {
             $cal          = new Calendar();
@@ -783,7 +787,7 @@ class SLT extends CommonDBChild {
          }
 
          // No calendar defined or invalid calendar
-         if ($this->fields['resolution_time'] >= 0) {
+         if ($this->fields['number_time'] >= 0) {
             $starttime = strtotime($start_date);
             $endtime   = $starttime+$delay+$additional_delay;
             return date('Y-m-d H:i:s',$endtime);
@@ -799,17 +803,17 @@ class SLT extends CommonDBChild {
     *
     * @return resolution time
    **/
-   function getResolutionTime() {
+   function getSLTTime() {
 
       if (isset($this->fields['id'])) {
          if ($this->fields['definition_time'] == "minute") {
-            return $this->fields['resolution_time'] * MINUTE_TIMESTAMP;
+            return $this->fields['number_time'] * MINUTE_TIMESTAMP;
          }
          if ($this->fields['definition_time'] == "hour") {
-            return $this->fields['resolution_time'] * HOUR_TIMESTAMP;
+            return $this->fields['number_time'] * HOUR_TIMESTAMP;
          }
          if ($this->fields['definition_time'] == "day") {
-            return $this->fields['resolution_time'] * DAY_TIMESTAMP;
+            return $this->fields['number_time'] * DAY_TIMESTAMP;
          }
       }
       return 0;
@@ -834,7 +838,7 @@ class SLT extends CommonDBChild {
          if ($slalevel->getFromDB($slalevels_id)) { // sla level exists
             if ($slalevel->fields['slts_id'] == $this->fields['id']) { // correct slt level
                $work_in_days = ($this->fields['definition_time'] == 'day');
-               $delay        = $this->getResolutionTime();
+               $delay        = $this->getSLTTime();
 
                // Based on a calendar
                if ($this->fields['calendars_id'] > 0) {

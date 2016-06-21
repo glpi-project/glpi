@@ -592,7 +592,7 @@ function update0903to91() {
                   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
                   `type` int(11) NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
-                  `resolution_time` int(11) NOT NULL,
+                  `number_time` int(11) NOT NULL,
                   `calendars_id` int(11) NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `definition_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -616,12 +616,12 @@ function update0903to91() {
             while ($data = $DB->fetch_assoc($result)) {
                $query = "INSERT INTO `glpi_slts`
                                 (`id`, `name`,`entities_id`, `is_recursive`, `type`, `comment`,
-                                 `resolution_time`, `calendars_id`, `date_mod`, `definition_time`,
+                                 `number_time`, `date_mod`, `definition_time`,
                                  `end_of_working_day`, `date_creation`, `slas_id`)
                          VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."',
                                  '".$data['is_recursive']."', '".SLT::TTR."',
-                                 '".addslashes($data['comment'])."', '".$data['resolution_time']."',
-                                 '".$data['calendars_id']."', '".$data['date_mod']."',
+                                 '".addslashes($data['comment'])."', '".$data['number_time']."',
+                                 '".$data['date_mod']."',
                                  '".$data['definition_time']."', '".$data['end_of_working_day']."',
                                  '".date('Y-m-d H:i:s')."', '".$data['id']."');";
                $DB->queryOrDie($query, "SLA migration to SLT");
@@ -630,7 +630,7 @@ function update0903to91() {
       }
 
       // Delete deprecated fields of SLA
-      foreach (array('resolution_time', 'calendars_id', 'definition_time',
+      foreach (array('number_time', 'definition_time',
                      'end_of_working_day') as $field) {
          $migration->dropField('glpi_slas', $field);
       }

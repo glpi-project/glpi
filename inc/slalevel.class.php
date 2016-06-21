@@ -135,10 +135,10 @@ class SlaLevel extends RuleTicket {
          echo "</td><td><input  name='name' value=''>";
          echo "</td><td class='center'>".__('Execution')."</td><td>";
 
-         $resolution_time = $slt->getResolutionTime();
+         $delay = $slt->getSLTTime();
          self::dropdownExecutionTime('execution_time',
                                      array('max_time'
-                                             => $resolution_time,
+                                             => $delay,
                                            'used'
                                              => self::getAlreadyUsedExecutionTime($slt->fields['id'])));
 
@@ -305,11 +305,11 @@ class SlaLevel extends RuleTicket {
       echo "<td>".__('Execution')."</td>";
       echo "<td>";
 
-      $resolution_time = $slt->getResolutionTime();
+      $delay = $slt->getSLTTime();
 
       self::dropdownExecutionTime('execution_time',
                                   array('max_time'
-                                             => $resolution_time,
+                                             => $delay,
                                         'used'
                                              => self::getAlreadyUsedExecutionTime($slt->fields['id']),
                                         'value'

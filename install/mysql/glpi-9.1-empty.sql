@@ -6564,12 +6564,14 @@ CREATE TABLE `glpi_slas` (
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `calendars_id` int(11) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
+  KEY `calendars_id` (`calendars_id`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -6582,8 +6584,7 @@ CREATE TABLE `glpi_slts` (
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `type` int(11) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
-  `resolution_time` int(11) NOT NULL,
-  `calendars_id` int(11) NOT NULL DEFAULT '0',
+  `number_time` int(11) NOT NULL,
   `date_mod` datetime DEFAULT NULL,
   `definition_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `end_of_working_day` tinyint(1) NOT NULL DEFAULT '0',
@@ -6591,7 +6592,6 @@ CREATE TABLE `glpi_slts` (
   `slas_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `calendars_id` (`calendars_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
   KEY `slas_id` (`slas_id`)
