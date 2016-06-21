@@ -792,12 +792,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
                                 $params);
          echo "};";
          echo "</script>\n";
-         if (!in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(),
-                                                           $item->getClosedStatusArray()))) {
-            echo "<div class='center'>";
-            echo "<a class='vsubmit' href='javascript:viewAddValidation".$tID."$rand();'>";
-            echo __('Send an approval request')."</a></div><br>\n";
-         }
       }
 
       $query = "SELECT *
@@ -809,16 +803,24 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
+      $colonnes = array(_x('item', 'State'), __('Request date'), __('Approval requester'),
+                     __('Request comments'), __('Approval status'),
+                     __('Approver'), __('Approval comments'));
+      $nb_colonnes = count($colonnes);
+
+      echo "<table class='tab_cadre_fixehov'>";
+      echo "<tr class='noHover'><th colspan='".$nb_colonnes."'>".__('Approvals for the ticket').
+           "</th></tr>";
+
+      if ($canadd) {
+         if (!in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(),
+            $item->getClosedStatusArray()))) {
+               echo "<tr class='tab_bg_1 noHover'><td class='center' colspan='" . $nb_colonnes . "'>";
+               echo "<a class='vsubmit' href='javascript:viewAddValidation".$tID."$rand();'>";
+               echo __('Send an approval request')."</a></td></tr>\n";
+         }
+      }
       if ($number) {
-         $colonnes = array(_x('item', 'State'), __('Request date'), __('Approval requester'),
-                           __('Request comments'), __('Approval status'),
-                           __('Approver'), __('Approval comments'));
-         $nb_colonnes = count($colonnes);
-
-         echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr class='noHover'><th colspan='".$nb_colonnes."'>".__('Approvals for the ticket').
-              "</th></tr>";
-
          $header = "<tr>";
          foreach ($colonnes as $colonne) {
             $header .= "<th>".$colonne."</th>";
@@ -870,10 +872,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
             echo "</tr>";
          }
          echo $header;
-         echo "</table>";
       } else {
-         echo "<div class='center b'>".__('No item found')."</div>";
+         //echo "<div class='center b'>".__('No item found')."</div>";
+         echo "<tr class='tab_bg_1 noHover'><th colspan='" . $nb_colonnes . "'>";
+         echo __('No item found')."</th></tr>\n";
       }
+      echo "</table>";
    }
 
 
@@ -1130,9 +1134,9 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $tab[59]['name']              = __('Approver');
       $tab[59]['datatype']          = 'itemlink';
       if (static::$itemtype == 'Ticket') {
-         $tab[58]['right']          = array('validate_request', 'validate_incident');
+         $tab[59]['right']          = array('validate_request', 'validate_incident');
       } else {
-         $tab[58]['right']             = 'validate';
+         $tab[59]['right']             = 'validate';
       }
       $tab[59]['forcegroupby']      = true;
       $tab[59]['massiveaction']     = false;

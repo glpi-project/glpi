@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -383,7 +382,7 @@ class Config extends CommonDBTM {
                               array('value' => $CFG_GLPI['allow_search_all']));
       echo "</td><td colspan='2'></td></tr>";
 
-      echo "<tr class='tab_bg_1'><th colspan='4' class='center b'>".__('Item locks')."</th></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Item locks')."</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Use locks') . "</td><td>";
@@ -1379,13 +1378,12 @@ class Config extends CommonDBTM {
 
       echo "<tr><th colspan='4'>" . __('PHP opcode cache') . "</th></tr>";
       $ext = 'Zend OPcache';
-      if (extension_loaded($ext)) {
+      if (extension_loaded($ext) && ($info = opcache_get_status(false))) {
          echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
                <td>" . phpversion($ext) . "</td>
                <td></td>
                <td><img src='" . $CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$ext'></td></tr>";
 
-         $info = opcache_get_status(false);
          // echo "<tr><td><pre>".print_r($info, true)."</pre></td></tr>";
 
          // Memory
@@ -1427,7 +1425,7 @@ class Config extends CommonDBTM {
             echo "</a></td></tr>\n";
          }
       } else {
-         echo "<tr><td>" . sprintf(__('Installing the "%s" extension may improve GLPI performance'), $ext) . "</td>
+         echo "<tr><td>" . sprintf(__('Installing and enabling the "%s" extension may improve GLPI performance'), $ext) . "</td>
                <td></td>
                <td><img src='" . $CFG_GLPI['root_doc'] . "/pics/ko_min.png' alt='$ext'></td></tr>";
       }
@@ -1725,7 +1723,7 @@ class Config extends CommonDBTM {
       echo "phpCas version " . phpCAS::getVersion() . " in (" .
             (dirname(GLPI_PHPCAS) ? realpath(dirname(GLPI_PHPCAS)) : "system") . ")\n";
 
-      require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
+      include_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
       $pm = new PHPMailer();
       echo "PHPMailer version " . $pm->Version . " in (" . realpath(GLPI_PHPMAILER_DIR) . ")\n";
 
@@ -1745,7 +1743,7 @@ class Config extends CommonDBTM {
       echo "TCPDF version " . TCPDF_STATIC::getTCPDFVersion() . " in (" . realpath(GLPI_TCPDF_DIR) . ")\n";
 
       // password_compat
-      require_once GLPI_PASSWORD_COMPAT;
+      include_once GLPI_PASSWORD_COMPAT;
       $check = (PasswordCompat\binary\check() ? "Ok" : "KO");
       echo "ircmaxell/password-compat in (" . realpath(dirname(GLPI_PASSWORD_COMPAT)) . "). Compatitility: $check\n";
 
@@ -2217,4 +2215,3 @@ class Config extends CommonDBTM {
    }
 
 }
-?>

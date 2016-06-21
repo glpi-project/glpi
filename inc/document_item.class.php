@@ -605,7 +605,7 @@ class Document_Item extends CommonDBRelation{
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>".__('Add a document')."</td>";
+      echo "<td>".__('Add a document')."</td>";
       echo "<td colspan='$colspan'>";
       echo "<input type='hidden' name='entities_id' value='$entity'>";
       echo "<input type='hidden' name='is_recursive' value='".$item->isRecursive()."'>";
@@ -655,7 +655,8 @@ class Document_Item extends CommonDBRelation{
       $used       = array_keys($used_found);
       $used       = array_combine($used, $used);
 
-      if ($item->canAddItem('Document')
+      if (((($item->getType() == 'Ticket') && $item->canAddFollowups())
+           || $item->canAddItem('Document'))
           && ($withtemplate < 2)) {
          // Restrict entity for knowbase
          $entities = "";

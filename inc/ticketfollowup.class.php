@@ -142,7 +142,7 @@ class TicketFollowup  extends CommonDBTM {
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'), READ)
         // No validation for closed tickets
-        || (in_array($ticket->fields['status'],$ticket->getClosedStatusArray())
+          || (in_array($ticket->fields['status'],$ticket->getClosedStatusArray())
             && !$ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING))) {
          return false;
       }
@@ -186,7 +186,7 @@ class TicketFollowup  extends CommonDBTM {
 
       if ($item->getType() == 'Ticket') {
          $nb = 0;
-         if (Session::haveRight(self::$rightname, self::SEEPUBLIC)) {
+         if (self::canCreate()) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                $nb = countElementsInTable('glpi_ticketfollowups',
                                           "`tickets_id` = '".$item->getID()."'");
@@ -658,9 +658,11 @@ class TicketFollowup  extends CommonDBTM {
          $rand = mt_rand();
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td rowspan='3' class='middle right'>".__('Description')."</td>";
-         echo "<td class='center middle' rowspan='3'>";
-         echo "<textarea id='content$rand' name='content' cols='70' rows='6'>".$this->fields["content"]."</textarea>";
+         echo "<td rowspan='3'>".__('Description')."</td>";
+         echo "<td rowspan='3' style='width:60%'>";
+         echo "<textarea id='content$rand' name='content' style='width: 95%; height: 120px'>";
+         echo $this->fields["content"];
+         echo "</textarea>";
          echo Html::scriptBlock("$(document).ready(function() { $('#content$rand').autogrow(); });");
          if ($this->fields["date"]) {
             echo "</td><td>".__('Date')."</td>";
@@ -795,7 +797,8 @@ class TicketFollowup  extends CommonDBTM {
    function showSummary($ticket) {
       global $DB, $CFG_GLPI;
 
-      if (!Session::haveRightsOr(self::$rightname, array(self::SEEPUBLIC, self::SEEPRIVATE))) {
+      if (!Session::haveRightsOr(self::$rightname,
+                                 array(self::SEEPUBLIC, self::SEEPRIVATE, self::ADDMYTICKET))) {
          return false;
       }
 

@@ -141,6 +141,11 @@ class User extends CommonDBTM {
    }
 
 
+   function canPurgeItem() {
+      return $this->canDeleteItem();
+   }
+
+
    function isEntityAssign() {
       // glpi_users.entities_id is only a pref.
       return false;
@@ -3652,7 +3657,7 @@ class User extends CommonDBTM {
       $query = "SELECT `users_id` as id
                 FROM `glpi_useremails`
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_useremails`.`users_id`)
-                WHERE `glpi_useremails`.`email` = '".stripslashes($email)."'
+                WHERE `glpi_useremails`.`email` = '".$DB->escape(stripslashes($email))."'
                 ORDER BY `glpi_users`.`is_active`  DESC, is_deleted ASC";
       $result = $DB->query($query);
 

@@ -215,7 +215,8 @@ $CFG_GLPI["linkgroup_tech_types"]         = array('Computer', 'Monitor', 'Networ
 $CFG_GLPI["location_types"]               = array('CartridgeItem', 'ConsumableItem', 'Computer',
                                                   'Monitor', 'Netpoint',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
-                                                  'Printer', 'Software', 'User', 'SoftwareLicense');
+                                                  'Printer', 'Software', 'User', 'SoftwareLicense',
+                                                  'Budget');
 
 $CFG_GLPI["ticket_types"]                 = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software',
@@ -243,7 +244,7 @@ $CFG_GLPI["networkport_types"]            = array('Computer', 'NetworkEquipment'
 // Warning : the order is used for displaying different NetworkPort types ! Keep it !
 $CFG_GLPI['networkport_instantiations']   = array('NetworkPortEthernet', 'NetworkPortWifi' ,
                                                   'NetworkPortAggregate', 'NetworkPortAlias',
-                                                  'NetworkPortDialup',   'NetworkPortLocal' );
+                                                  'NetworkPortDialup',   'NetworkPortLocal');
 
 $CFG_GLPI['device_types'] = array('DeviceMotherboard', 'DeviceProcessor', 'DeviceMemory',
                                   'DeviceHardDrive', 'DeviceNetworkCard', 'DeviceDrive',

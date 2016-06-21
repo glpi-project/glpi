@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -596,38 +595,38 @@ function updateDbUpTo031() {
 
    switch ($current_version) {
       case "0.31" :
-         include("update_031_04.php");
+         include_once("update_031_04.php");
          update031to04();
 
       case "0.4" :
       case "0.41" :
-         include("update_04_042.php");
+         include_once("update_04_042.php");
          update04to042();
 
       case "0.42" :
          showLocationUpdateForm();
-         include("update_042_05.php");
+         include_once("update_042_05.php");
          update042to05();
 
       case "0.5" :
-         include("update_05_051.php");
+         include_once("update_05_051.php");
          update05to051();
 
       case "0.51" :
       case "0.51a" :
-         include("update_051_06.php");
+         include_once("update_051_06.php");
          update051to06();
 
       case "0.6" :
-         include("update_06_065.php");
+         include_once("update_06_065.php");
          update06to065();
 
       case "0.65" :
-         include("update_065_068.php");
+         include_once("update_065_068.php");
          update065to068();
 
       case "0.68" :
-         include("update_068_0681.php");
+         include_once("update_068_0681.php");
          update068to0681();
 
       case "0.68.1" :
@@ -643,71 +642,71 @@ function updateDbUpTo031() {
             exit();
          }
       case "0.68.3x": // Special version for replay upgrade process from here
-         include("update_0681_07.php");
+         include_once("update_0681_07.php");
          update0681to07();
 
       case "0.7" :
       case "0.70.1" :
       case "0.70.2" :
-         include("update_07_071.php");
+         include_once("update_07_071.php");
          update07to071();
 
       case "0.71" :
       case "0.71.1" :
-         include("update_071_0712.php");
+         include_once("update_071_0712.php");
          update071to0712();
 
       case "0.71.2" :
-         include("update_0712_0713.php");
+         include_once("update_0712_0713.php");
          update0712to0713();
 
       case "0.71.3" :
       case "0.71.4" :
       case "0.71.5" :
       case "0.71.6" :
-         include("update_0713_072.php");
+         include_once("update_0713_072.php");
          update0713to072();
 
       case "0.72" :
-         include("update_072_0721.php");
+         include_once("update_072_0721.php");
          update072to0721();
 
       case "0.72.1" :
-         include("update_0721_0722.php");
+         include_once("update_0721_0722.php");
          update0721to0722();
 
       case "0.72.2" :
       case "0.72.21" :
-         include("update_0722_0723.php");
+         include_once("update_0722_0723.php");
          update0722to0723();
 
       case "0.72.3" :
       case "0.72.4" :
-         include("update_0723_078.php");
+         include_once("update_0723_078.php");
          update0723to078();
 
       case "0.78" :
-         include("update_078_0781.php");
+         include_once("update_078_0781.php");
          update078to0781();
 
       case "0.78.1" :
-         include("update_0781_0782.php");
+         include_once("update_0781_0782.php");
          update0781to0782();
 
       case "0.78.2":
       case "0.78.3":
       case "0.78.4":
       case "0.78.5":
-         include("update_0782_080.php");
+         include_once("update_0782_080.php");
          update0782to080();
 
       case "0.80" :
-         include("update_080_0801.php");
+         include_once("update_080_0801.php");
          update080to0801();
 
       case "0.80.1" :
       case "0.80.2" :
-         include("update_0801_0803.php");
+         include_once("update_0801_0803.php");
          update0801to0803();
 
       case "0.80.3" :
@@ -716,16 +715,16 @@ function updateDbUpTo031() {
       case "0.80.6" :
       case "0.80.61" :
       case "0.80.7" :
-         include("update_0803_083.php");
+         include_once("update_0803_083.php");
          update0803to083();
 
       case "0.83" :
-         include("update_083_0831.php");
+         include_once("update_083_0831.php");
          update083to0831();
 
       case "0.83.1" :
       case "0.83.2" :
-         include("update_0831_0833.php");
+         include_once("update_0831_0833.php");
          update0831to0833();
 
       case "0.83.3" :
@@ -737,82 +736,83 @@ function updateDbUpTo031() {
       case "0.83.8" :
       case "0.83.9" :
       case "0.83.91" :
-         include("update_0831_084.php");
+         include_once("update_0831_084.php");
          update0831to084();
 
       case "0.84" :
-         include("update_084_0841.php");
+         include_once("update_084_0841.php");
          update084to0841();
 
       case "0.84.1" :
       case "0.84.2" :
-         include("update_0841_0843.php");
+         include_once("update_0841_0843.php");
          update0841to0843();
 
       case "0.84.3" :
-         include("update_0843_0844.php");
+         include_once("update_0843_0844.php");
          update0843to0844();
 
       case "0.84.4" :
       case "0.84.5" :
-         include("update_0845_0846.php");
+         include_once("update_0845_0846.php");
          update0845to0846();
 
       case "0.84.6" :
       case "0.84.7" :
       case "0.84.8" :
       case "0.84.9" :
-         include("update_084_085.php");
+         include_once("update_084_085.php");
          update084to085();
 
       case "0.85" :
       case "0.85.1" :
       case "0.85.2" :
-         include("update_085_0853.php");
+         include_once("update_085_0853.php");
          update085to0853();
 
       case "0.85.3" :
       case "0.85.4" :
-         include("update_0853_0855.php");
+         include_once("update_0853_0855.php");
          update0853to0855();
 
       case "0.85.5" :
-         include("update_0855_090.php");
+         include_once("update_0855_090.php");
          update0855to090();
 
       case "0.90" :
-         include("update_090_0901.php");
+         include_once("update_090_0901.php");
          update090to0901();
 
       case "0.90.1" :
-         include("update_0901_0902.php");
+         include_once("update_0901_0902.php");
          update0901to0902();
 
       case "0.90.2" :
-         include("update_0902_91.php");
-         update0902to91();
+      case "0.90.3" :
+         include_once("update_0903_91.php");
+         update0903to91();
 
       case "0.91": // // for change name of the version - to delete in next version
       case "9.1" :
          break;
 
       default :
-         include("update_031_04.php");
+         include_once("update_031_04.php");
          update031to04();
-         include("update_04_042.php");
+         include_once("update_04_042.php");
          update04to042();
          showLocationUpdateForm();
-         include("update_042_05.php");
+         include_once("update_042_05.php");
          update042to05();
-         include("update_05_051.php");
+         include_once("update_05_051.php");
          update05to051();
-         include("update_051_06.php");
+         include_once("update_051_06.php");
          update051to06();
-         include("update_06_065.php");
+         include_once("update_06_065.php");
          update06to065();
-         include("update_065_068.php");
+         include_once("update_065_068.php");
          update065to068();
-         include("update_068_0681.php");
+         include_once("update_068_0681.php");
          update068to0681();
          // Force update content
          $query = "UPDATE `glpi_config`
@@ -943,7 +943,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
          // Find 2 tables to manage databases before 0.78
          if (!TableExists($config_table)) {
-            include("update_to_031.php");
+            include_once("update_to_031.php");
             updateDbTo031();
             $tab = updateDbUpTo031();
 
@@ -990,4 +990,3 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 }
 
 echo "</div></div></body></html>";
-?>

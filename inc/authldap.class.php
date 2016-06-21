@@ -2916,12 +2916,12 @@ class AuthLDAP extends CommonDBTM {
       //If begin date
       if (!empty($begin_date)) {
          $stampvalue = self::date2ldapTimeStamp($begin_date);
-         $condition .= "(modifyTimestamp> = ".$stampvalue.")";
+         $condition .= "(modifyTimestamp>=".$stampvalue.")";
       }
       //If end date
       if (!empty($end_date)) {
          $stampvalue = self::date2ldapTimeStamp($end_date);
-         $condition .= "(modifyTimestamp <= ".$stampvalue.")";
+         $condition .= "(modifyTimestamp<=".$stampvalue.")";
       }
       return $condition;
    }

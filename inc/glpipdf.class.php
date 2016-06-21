@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -39,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-require_once(GLPI_TCPDF_DIR.'/tcpdf.php');
+include_once(GLPI_TCPDF_DIR.'/tcpdf.php');
 
 /**
  *  GLPIPDF class extends TCPDF
@@ -115,4 +114,3 @@ class GLPIPDF extends TCPDF {
    }
 
 }
-?>

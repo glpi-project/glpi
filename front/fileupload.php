@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -49,7 +48,7 @@ Session::checkLoginUser();
 // Load Language file
 Session::loadLanguage();
 
-require_once (GLPI_ROOT.'/lib/jqueryplugins/jquery-file-upload/server/php/UploadHandler.php');
+include_once(GLPI_ROOT.'/lib/jqueryplugins/jquery-file-upload/server/php/UploadHandler.php');
 
 $errors =  array(
         1 => __('The uploaded file exceeds the upload_max_filesize directive in php.ini'),
@@ -71,7 +70,7 @@ $errors =  array(
     );
 
 $upload_dir = GLPI_TMP_DIR.'/';
-    
+
 $upload_handler = new UploadHandler(array('upload_dir'        => $upload_dir,
                                           'param_name'        => $_GET['name'],
                                           'orient_image'      => false,
@@ -82,7 +81,7 @@ $response = $upload_handler->post(false);
 
 // clean compute display filesize
 if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
-   
+
 
    foreach ($response[$_GET['name']] as $key => &$val) {
       if (Document::isValidDoc(addslashes($val->name))) {
@@ -109,4 +108,3 @@ if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
 
 
 $upload_handler->generate_response($response);
-?>

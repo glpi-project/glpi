@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-require_once GLPI_PASSWORD_COMPAT;
+include_once GLPI_PASSWORD_COMPAT;
 
 /**
  *  Identification class used to login

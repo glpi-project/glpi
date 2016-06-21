@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -161,7 +161,7 @@ class ProblemTask extends CommonITILTask {
     * @return array of planning item
    **/
    static function populatePlanning($options=array()) {
-      return parent::genericPopulatePlanning('ProblemTask', $options);
+      return parent::genericPopulatePlanning(__CLASS__, $options);
    }
 
 
@@ -173,7 +173,7 @@ class ProblemTask extends CommonITILTask {
     * @return Already planned information
    **/
    static function getAlreadyPlannedInformation($val) {
-      return parent::genericGetAlreadyPlannedInformation('ProblemTask', $val);
+      return parent::genericGetAlreadyPlannedInformation(__CLASS__, $val);
    }
 
 
@@ -189,7 +189,7 @@ class ProblemTask extends CommonITILTask {
     * @return Nothing (display function)
    **/
    static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
-      return parent::genericDisplayPlanningItem('ProblemTask',$val, $who, $type, $complete);
+      return parent::genericDisplayPlanningItem(__CLASS__,$val, $who, $type, $complete);
    }
 
 

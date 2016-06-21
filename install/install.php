@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -452,8 +451,8 @@ function step4 ($databasename, $newdatabasename) {
 function step7() {
    global $CFG_GLPI;
 
-   require_once (GLPI_ROOT . "/inc/dbmysql.class.php");
-   require_once (GLPI_CONFIG_DIR . "/config_db.php");
+   include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
+   include_once(GLPI_CONFIG_DIR . "/config_db.php");
    $DB = new DB();
 
 
@@ -484,7 +483,7 @@ function update1($DBname) {
 
    if (DBConnection::createMainConfig($host,$user,$password,$DBname) && !empty($DBname)) {
       $from_install = true;
-      include(GLPI_ROOT ."/install/update.php");
+      include_once(GLPI_ROOT ."/install/update.php");
 
    } else { // can't create config_db file
       _e("Can't create the database connection file, please verify file permissions.");
@@ -612,5 +611,3 @@ if (!isset($_POST["install"])) {
    }
 }
 footer_html();
-
-?>

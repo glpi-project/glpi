@@ -495,7 +495,8 @@ class Group_User extends CommonDBRelation{
          }
          $header_end .= "<th>".__('Dynamic')."</th>";
          $header_end .= "<th>".__('Manager')."</th>";
-         $header_end .= "<th>".__('Delegatee')."</th></tr>";
+         $header_end .= "<th>".__('Delegatee')."</th>";
+         $header_end .= "<th>".__('Active')."</th></tr>";
          echo $header_begin.$header_top.$header_end;
 
          $tmpgrp = new Group();
@@ -532,6 +533,11 @@ class Group_User extends CommonDBRelation{
             if ($data['is_userdelegate']) {
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".
                       __('Delegatee')."\">";
+            }
+            echo "</td><td class='center'>";
+            if ($user->fields['is_active']) {
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' width='14' height='14' alt=\"".
+               __('Active')."\">";
             }
             echo "</tr>";
          }

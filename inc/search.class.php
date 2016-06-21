@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -185,14 +184,14 @@ class Search {
 
       if (!$CFG_GLPI['allow_search_all']) {
          foreach ($p['criteria'] as $val) {
-            if ($val['field'] == 'all') {
+            if (isset($val['field']) && $val['field'] == 'all') {
                Html::displayRightError();
             }
          }
       }
       if (!$CFG_GLPI['allow_search_view']) {
          foreach ($p['criteria'] as $val) {
-            if ($val['field'] == 'view') {
+            if (isset($val['field']) && $val['field'] == 'view') {
                Html::displayRightError();
             }
          }
@@ -227,7 +226,7 @@ class Search {
       if (count($p['criteria']) > 0) {
          foreach ($p['criteria'] as $key => $val) {
             if (!in_array($val['field'], $data['toview'])) {
-               if (($val['field'] != 'all') && ($val['field'] != 'view')) {
+               if (isset($val['field']) && ($val['field'] != 'all') && ($val['field'] != 'view')) {
                   array_push($data['toview'], $val['field']);
                } else if ($val['field'] == 'all'){
                   $data['search']['all_search'] = true;
@@ -431,7 +430,7 @@ class Search {
             // if real search (strlen >0) and not all and view search
             if (isset($criteria['value']) && (strlen($criteria['value']) > 0)) {
                // common search
-               if (($criteria['field'] != "all") && ($criteria['field'] != "view")) {
+               if (isset($criteria['field']) && ($criteria['field'] != "all") && ($criteria['field'] != "view")) {
                   $LINK    = " ";
                   $NOT     = 0;
                   $tmplink = "";
@@ -509,7 +508,7 @@ class Search {
 
                   $items = array();
 
-                  if ($criteria['field'] == "all") {
+                  if (isset($criteria['field']) && $criteria['field'] == "all") {
                      $items = $searchopt;
 
                   } else { // toview case : populate toview
@@ -1412,6 +1411,11 @@ class Search {
                      && !in_array($row["id"], $_SESSION["glpiactiveentities"])) {
                   $tmpcheck = "&nbsp;";
 
+               } else if ($data['itemtype'] == 'User'
+                          && !Session::isViewAllEntities()
+                          && !Session::haveAccessToOneOfEntities(Profile_User::getUserEntities($row["id"], false))) {
+                  $tmpcheck = "&nbsp;";
+
                } else if (($data['item'] instanceof CommonDBTM)
                            && $data['item']->maybeRecursive()
                            && !in_array($row["entities_id"], $_SESSION["glpiactiveentities"])) {
@@ -1846,7 +1850,7 @@ class Search {
       for ($i=0 ; $i<count($p['criteria']) ; $i++) {
          $_POST['itemtype'] = $itemtype;
          $_POST['num']      = $i ;
-         include(GLPI_ROOT.'/ajax/searchrow.php');
+         include_once(GLPI_ROOT.'/ajax/searchrow.php');
       }
 
       $metanames = array();
@@ -1857,7 +1861,7 @@ class Search {
 
             $_POST['itemtype'] = $itemtype;
             $_POST['num'] = $i ;
-            include(GLPI_ROOT.'/ajax/searchmetarow.php');
+            include_once(GLPI_ROOT.'/ajax/searchmetarow.php');
          }
       }
       echo "</table>\n";
@@ -2084,8 +2088,15 @@ class Search {
 
          case "glpi_users.name" :
             if ($itemtype!='User') {
-               return " ORDER BY ".$table.$addtable.".`realname` $order,
-                                 ".$table.$addtable.".`firstname` $order,
+               if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
+                  $name1 = 'firstname';
+                  $name2 = 'realname';
+               } else {
+                  $name1 = 'realname';
+                  $name2 = 'firstname';
+               }
+               return " ORDER BY ".$table.$addtable.".$name1 $order,
+                                 ".$table.$addtable.".$name2 $order,
                                  ".$table.$addtable.".`name` $order";
             }
             return " ORDER BY `".$table."`.`name` $order";
@@ -2500,7 +2511,9 @@ class Search {
       // Default case
       if ($meta
           || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"]
-              && !isset($searchopt[$ID]["computation"]))) { // Not specific computation
+              && (!isset($searchopt[$ID]["computation"])
+                  || isset($searchopt[$ID]["computationgroupby"])
+                     && $searchopt[$ID]["computationgroupby"]))) { // Not specific computation
          $TRANS = '';
          if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
             $TRANS = "IFNULL(GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
@@ -2554,7 +2567,7 @@ class Search {
             if (Session::isViewAllEntities()) {
                return "";
             }
-            return getEntitiesRestrictRequest("","glpi_profiles_users");
+            return getEntitiesRestrictRequest("","glpi_profiles_users", '', '', true);
 
          case 'ProjectTask' :
             $condition  = '';
@@ -3959,7 +3972,8 @@ class Search {
          case "glpi_tickets.due_date" :
          case "glpi_problems.due_date" :
          case "glpi_changes.due_date" :
-            if (($ID <> 151)
+         case "glpi_tickets.time_to_own" :
+            if (($ID <> 151) && ($ID <> 158)
                 && !empty($data[$num][0]['name'])
                 && ($data[$num][0]['status'] != CommonITILObject::WAITING)
                 && ($data[$num][0]['name'] < $_SESSION['glpi_currenttime'])) {
@@ -4152,7 +4166,8 @@ class Search {
                   $added         = array();
                   $count_display = 0;
                   for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
-                     if (strlen(trim($data[$num][$k]['name'])) > 0) {
+                     if (isset($data[$num][$k]['name'])
+                         && (strlen(trim($data[$num][$k]['name'])) > 0)) {
                         $text = sprintf(__('%1$s - %2$s'), $data[$num][$k]['name'],
                                         Dropdown::getDropdownName('glpi_profiles',
                                                                   $data[$num][$k]['profiles_id']));
@@ -4314,9 +4329,10 @@ class Search {
             case "glpi_tickets.due_date" :
             case "glpi_problems.due_date" :
             case "glpi_changes.due_date" :
+            case "glpi_tickets.time_to_own" :
                // Due date + progress
-               if ($ID == 151) {
-                  $out = Html::convDate($data[$num][0]['name']);
+               if (($ID == 151) || ($ID == 158)) {
+                  $out = Html::convDateTime($data[$num][0]['name']);
 
                   // No due date in waiting status
                   if ($data[$num][0]['status'] == CommonITILObject::WAITING) {
@@ -4329,18 +4345,30 @@ class Search {
                       || ($data[$num][0]['status'] == Ticket::CLOSED)) {
                      return $out;
                   }
+
                   $itemtype = getItemTypeForTable($table);
                   $item = new $itemtype();
                   $item->getFromDB($data['id']);
                   $percentage  = 0;
                   $totaltime   = 0;
                   $currenttime = 0;
-                  if ($item->isField('slas_id') && $item->fields['slas_id'] != 0) { // Have SLA
-                     $sla = new SLA();
-                     $sla->getFromDB($item->fields['slas_id']);
-                     $currenttime = $sla->getActiveTimeBetween($item->fields['date'],
+                  $sltField    = 'slts_id';
+
+                  switch ($table.'.'.$field) {
+                     // If ticket has been taken into account : no progression display
+                     case "glpi_tickets.time_to_own" :
+                        if (($item->fields['takeintoaccount_delay_stat'] > 0)) {
+                           return $out;
+                        }
+                        break;
+                  }
+
+                  if ($item->isField($sltField) && $item->fields[$sltField] != 0) { // Have SLT
+                     $slt = new SLT();
+                     $slt->getFromDB($item->fields[$sltField]);
+                     $currenttime = $slt->getActiveTimeBetween($item->fields['date'],
                                                                date('Y-m-d H:i:s'));
-                     $totaltime   = $sla->getActiveTimeBetween($item->fields['date'],
+                     $totaltime   = $slt->getActiveTimeBetween($item->fields['date'],
                                                                $data[$num][0]['name']);
                   } else {
                      $calendars_id = Entity::getUsedConfig('calendars_id',
@@ -4774,7 +4802,7 @@ class Search {
                   $count_display++;
                   if (!empty($data[$num][$k]['name'])) {
                      $out .= (empty($out)?'':self::LBBR);
-                     $out .= "<a href='mailto:".$data[$num][$k]['name']."'>".$data[$num][$k]['name'];
+                     $out .= "<a href='mailto:".Html::entities_deep($data[$num][$k]['name'])."'>".$data[$num][$k]['name'];
                      $out .= "</a>";
                   }
                }
@@ -6183,4 +6211,3 @@ class Search {
    }
 
 }
-?>

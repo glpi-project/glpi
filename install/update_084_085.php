@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -638,7 +638,7 @@ function update084to085() {
       $DB->queryOrDie($query, "0.85 rename global_add_tasks to task");
 
       $query  = "UPDATE `glpi_profilerights`
-                 SET `rights` = ". TicketTask::ADDALLTICKET ."
+                 SET `rights` = ". CommonITILTask::ADDALLITEM ."
                  WHERE `name` = 'task'
                        AND `rights` = '1'";
       $DB->queryOrDie($query, "0.85 update followup with global_add_tasks right");
@@ -1184,7 +1184,7 @@ function update084to085() {
 
    $migration->addField('glpi_itilcategories', 'is_change', 'bool', array('value' => 1));
    $migration->addKey('glpi_itilcategories', 'is_change');
-   
+
    if (!TableExists('glpi_changes_users')) {
       $query = "CREATE TABLE `glpi_changes_users` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1288,7 +1288,7 @@ function update084to085() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.85 add table glpi_changetasks");
    }
-   
+
    if (!TableExists('glpi_changecosts')) {
       $query = "CREATE TABLE `glpi_changecosts` (
                `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1704,7 +1704,7 @@ function update084to085() {
    $migration->addKey('glpi_tickettasks', 'begin');
    $migration->addKey('glpi_tickettasks', 'end');
 
-   
+
    // Create notification for reply to satisfaction survey based on satisfaction notif
    // Check if notifications already exists
    if (countElementsInTable('glpi_notifications',
@@ -2000,7 +2000,7 @@ function update084to085() {
    }
 
    $migration->addField("glpi_projects", 'is_deleted', "bool");
-   
+
    if (countElementsInTable("glpi_profilerights", "`name` = 'project'") == 0) {
       ProfileRight::addProfileRights(array('project'));
 
@@ -2563,7 +2563,7 @@ function update084to085() {
    //////////////////////////////////////////////////
    // Device update
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'Devices'));
-   
+
    foreach (array_merge(CommonDevice::getDeviceTypes(),
                         Item_Devices::getDeviceTypes()) as $itemtype) {
       $table = $itemtype::getTable();
@@ -2617,7 +2617,7 @@ function update084to085() {
          $migration->addKey($table, 'busID');
       }
    }
-   
+
    // Add key
    foreach (array('glpi_items_devicecases', 'glpi_items_devicecontrols', 'glpi_items_devicedrives',
                   'glpi_items_devicegraphiccards', 'glpi_items_deviceharddrives',
@@ -2630,7 +2630,7 @@ function update084to085() {
       $migration->addKey($table, array('itemtype', 'items_id'), 'item');
    }
 
-   
+
    if (!FieldExists('glpi_devicegraphiccards', 'chipset')) {
       $migration->addField('glpi_devicegraphiccards', 'chipset', 'string');
       $migration->addKey('glpi_devicegraphiccards', 'chipset');
@@ -2746,7 +2746,7 @@ function update084to085() {
                        `ip`.`mainitems_id` = `netport`.`items_id`";
    $DB->queryOrDie($query_doc_i, "0.85 update mainitems fields of ipaddresses");
 
-   
+
    // Upgrade ticket bookmarks
    $query = "SELECT *
              FROM `glpi_bookmarks`

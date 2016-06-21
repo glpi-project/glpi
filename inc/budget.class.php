@@ -129,7 +129,7 @@ class Budget extends CommonDropdown{
 
       echo "<td rowspan='$rowspan' class='middle right'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='$rowspan'>".
-           "<textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>".
+           "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>".
            "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -147,6 +147,13 @@ class Budget extends CommonDropdown{
       echo "<td>".__('End date')."</td>";
       echo "<td>";
       Html::showDateField("end_date", array('value' => $this->fields["end_date"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Location')."</td>";
+      echo "<td>";
+      Location::dropdown(array('value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -209,10 +216,10 @@ class Budget extends CommonDropdown{
       $tab[5]['name']            = __('Start date');
       $tab[5]['datatype']        = 'date';
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'end_date';
-      $tab[3]['name']            = __('End date');
-      $tab[3]['datatype']        = 'date';
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'end_date';
+      $tab[6]['name']            = __('End date');
+      $tab[6]['datatype']        = 'date';
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'value';
@@ -237,6 +244,7 @@ class Budget extends CommonDropdown{
 
       // add objectlock search options
       $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab += Location::getSearchOptionsToAdd();
 
       $tab += Notepad::getSearchOptionsToAdd();
 
