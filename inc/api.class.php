@@ -708,7 +708,7 @@ abstract class API extends CommonGLPI {
          $hclasses = self::getHatoasClasses($itemtype);
          foreach($hclasses as $hclass) {
             $fields['links'][] = array('rel' => $hclass,
-                                       'href' => self::$api_url."$itemtype/".$item->getID()."/$hclass/");
+                                       'href' => self::$api_url."/$itemtype/".$item->getID()."/$hclass/");
          }
       }
 
@@ -856,7 +856,7 @@ abstract class API extends CommonGLPI {
             $hclasses = self::getHatoasClasses($itemtype);
             foreach($hclasses as $hclass) {
                $fields['links'][] = array('rel' => $hclass,
-                                          'href' => self::$api_url."$itemtype/".$fields['id']."/$hclass/");
+                                          'href' => self::$api_url."/$itemtype/".$fields['id']."/$hclass/");
             }
          }
       }
@@ -1526,7 +1526,7 @@ abstract class API extends CommonGLPI {
                // get hateoas
                if ($params['get_hateoas']) {
                   $fields['links'][] = array('rel'  => $itemtype,
-                                             'href' => self::$api_url.$itemtype."/".$value);
+                                             'href' => self::$api_url."/$itemtype/".$value);
                }
 
                // expand dropdown
