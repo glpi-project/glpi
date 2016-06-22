@@ -1099,7 +1099,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Ticket update
-      if ($this->fields['id'] > 0) {
+      if (isset($this->fields['id']) && $this->fields['id'] > 0) {
          if (!isset($manual_slts_id[$type])
              && isset($input[$sltField]) && ($input[$sltField] > 0)
              && ($input[$sltField] != $this->fields[$sltField])) {
