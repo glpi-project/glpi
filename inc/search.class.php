@@ -572,7 +572,9 @@ class Search {
                // b - ADD LEFT JOIN
                // Link reference tables
                if (!in_array(getTableForItemType($metacriteria['itemtype']),
-                                                 $already_link_tables2)) {
+                                                 $already_link_tables2)
+                   && !in_array(getTableForItemType($metacriteria['itemtype']),
+                                                    $already_link_tables)) {
                   $FROM .= self::addMetaLeftJoin($data['itemtype'], $metacriteria['itemtype'],
                                                  $already_link_tables2,
                                                  (($metacriteria['value'] == "NULL")
