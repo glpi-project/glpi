@@ -2232,6 +2232,7 @@ class Search {
       $table       = $searchopt[$ID]["table"];
       $field       = $searchopt[$ID]["field"];
       $addtable    = "";
+      $addtable2   = "";
       $NAME        = "ITEM";
       $complexjoin = '';
 
@@ -2254,7 +2255,8 @@ class Search {
       if ($meta) {
 //          $NAME = "META";
          if (getTableForItemType($meta_type)!=$table) {
-            $addtable .= "_".$meta_type;
+            $addtable  .= "_".$meta_type;
+            $addtable2 .= "_".$meta_type;
          }
       }
 
@@ -2345,11 +2347,11 @@ class Search {
             if (($itemtype == 'User')
                 && ($ID == 20)) {
                return " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '".self::LONGSEP."') AS `".$NAME."_$num`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`entities_id` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`entities_id` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_entities_id`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_is_recursive`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`is_dynamic` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_is_dynamic`,
                         $ADDITONALFIELDS";
             }
@@ -2360,11 +2362,11 @@ class Search {
                 && ($ID == 80)) {
                return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_$num`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`profiles_id` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`profiles_id` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_profiles_id`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_is_recursive`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`is_dynamic` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_is_dynamic`,
                         $ADDITONALFIELDS";
             }
