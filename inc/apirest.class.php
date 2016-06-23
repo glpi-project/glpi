@@ -44,7 +44,10 @@ class APIRest extends API {
    protected $format = "json";
 
 
-   public static function getTypeName($nb=0) {
+   /**
+    * @see CommonGLPI::GetTypeName()
+    */
+   public static function getTypeName($nb = 0) {
       return __('Rest API');
    }
 
@@ -57,6 +60,8 @@ class APIRest extends API {
     *  - and parameters
     *
     *  And send to method corresponding identified ressource
+    *
+    * @since version 9.1
     *
     * @return     json with response or error
     */
@@ -219,7 +224,8 @@ class APIRest extends API {
                break;
 
             case "PUT": // update item(s)
-            $input = (array) ($this->parameters['input']);
+               // if id is passed by query string, add it into input parameter
+               $input = (array) ($this->parameters['input']);
                if ($id > 0 && !isset($input['id'])) {
                   $this->parameters['input']->id = $id;
                }
@@ -227,6 +233,7 @@ class APIRest extends API {
                break;
 
             case "DELETE": //delete item(s)
+               // if id is passed by query string, construct an object with it
                if ($id > 0) {
                   $code = 204;
                   //override input
@@ -245,9 +252,13 @@ class APIRest extends API {
 
    /**
     * Retrieve and check itemtype from $this->url_elements
+    *
+    * @since version 9.1
+    *
     * @param  integer $index         we'll find itemtype in this index of $this->url_elements
-    * @param  boolean $recursive     can we go depper or we trigger an http error if we fail to find itemtype
+    * @param  boolean $recursive     can we go depper or we trigger an http error if we fail to find itemtype ?
     * @param  boolean $all_assets    if we can have allasset virtual type
+    *
     * @return boolean
     */
    private function getItemtype($index = 0, $recursive = true, $all_assets = false) {
@@ -280,6 +291,9 @@ class APIRest extends API {
    /**
     * Retrieve in url_element the current id. If we have a multiple id (ex /Ticket/1/TicketFollwup/2),
     * it always find the second
+    *
+    * @since version 9.1
+    *
     * @return int id of current itemtype (or false if not found)
     */
    private function getId() {
@@ -301,6 +315,8 @@ class APIRest extends API {
 
    /**
     * Construct this->parameters from query string and http body
+    *
+    * @since version 9.1
     */
    public function parseIncomingParams() {
       $parameters = array();
@@ -392,9 +408,11 @@ class APIRest extends API {
    /**
     * Generic function to send a message and an http code to client
     *
-    * @param mixed    $response    string message or array of data to send
-    * @param integer  $httpcode        http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-    * @param array    $aditionnalheaders header to send with http response (must be an array(key => value))
+    * @since version 9.1
+    *
+    * @param mixed    $response          string message or array of data to send
+    * @param integer  $httpcode          http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+    * @param array    $aditionnalheaders headers to send with http response (must be an array(key => value))
     */
    public function returnResponse($response, $httpcode = 200, $aditionnalheaders = array()) {
 
@@ -417,7 +435,7 @@ class APIRest extends API {
       } else {
          $json = '';
       }
-      
+
       if ($this->debug) {
          echo "<pre>";
          var_dump($response);
@@ -430,6 +448,8 @@ class APIRest extends API {
 
    /**
     * Display the APIRest Documentation in Html (parsed from markdown)
+    *
+    * @since version 9.1
     *
     * @param      string  $file   relative path of documentation file
     */

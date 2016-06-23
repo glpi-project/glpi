@@ -44,7 +44,10 @@ class APIXmlrpc extends API {
    protected $format = "json";
 
 
-   public static function getTypeName($nb=0) {
+   /**
+    * @see CommonGLPI::GetTypeName()
+    */
+   public static function getTypeName($nb = 0) {
       return __('XMLRPC API');
    }
 
@@ -56,6 +59,8 @@ class APIXmlrpc extends API {
     *  - and parameters
     *
     *  And send to method corresponding identified ressource
+    *
+    * @since version 9.1
     *
     * @return     xmlrpc response
     */
@@ -186,7 +191,9 @@ class APIXmlrpc extends API {
 
 
    /**
-    * Construct this->parameters POST data
+    * Construct this->parameters from POST data
+    *
+    * @since version 9.1
     */
    public function parseIncomingParams() {
       $parameters = array();
@@ -220,9 +227,11 @@ class APIXmlrpc extends API {
    /**
     * Generic function to send a message and an http code to client
     *
-    * @param mixed    $response    string message or array of data to send
-    * @param integer  $httpcode        http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-    * @param array    $aditionnalheaders header to send with http response (must be an array(key => value))
+    * @since version 9.1
+    *
+    * @param mixed    $response          string message or array of data to send
+    * @param integer  $httpcode          http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+    * @param array    $aditionnalheaders headers to send with http response (must be an array(key => value))
     */
    protected function returnResponse($response, $httpcode = 200, $aditionnalheaders = array()) {
       if (empty($httpcode)) {
@@ -245,7 +254,11 @@ class APIXmlrpc extends API {
    /**
     * Add a space before all numeric keys to prevent their deletion by xmlrpc_encode_request function
     * see https://bugs.php.net/bug.php?id=21949
+    *
+    * @since version 9.1
+    *
     * @param  array  $response the response array to escape
+    *
     * @return array  the escaped response.
     */
    protected function escapekeys($response = array()) {
