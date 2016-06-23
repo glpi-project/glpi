@@ -1040,6 +1040,7 @@ INSERT INTO `glpi_configs` VALUES ('162','core','lock_item_list','[]');
 INSERT INTO `glpi_configs` VALUES ('163','core','lock_lockprofile_id','8');
 INSERT INTO `glpi_configs` VALUES ('164','core','set_default_requester','1');
 INSERT INTO `glpi_configs` VALUES ('165','core','highcontrast_css','0');
+INSERT INTO `glpi_configs` VALUES ('166','core','smtp_check_certificate','1');
 
 ### Dump table glpi_consumableitems
 
