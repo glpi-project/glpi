@@ -2233,7 +2233,7 @@ ul#menu ul li a {
 }
 
 /* hide menu on small screen */
-@media screen and (max-width: 1025px) {
+@media screen and (max-width: 1055px) {
    #c_menu ul#menu,
    #language_link,
    #help_link,
@@ -2259,7 +2259,7 @@ ul#menu ul li a {
 
 ul#menu > li {
    float: left;
-   width: 145px;
+   width: 135px;
    height: 30px;
    margin-top: -8px;
    padding-top: 8px;
@@ -2268,7 +2268,7 @@ ul#menu > li {
 
 ul#menu ul.ssmenu {
    position: relative;
-   width: 145px;
+   width: 135px;
    z-index: 200;
 }
 
