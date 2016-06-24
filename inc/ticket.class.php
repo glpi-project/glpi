@@ -4931,14 +4931,16 @@ class Ticket extends CommonITILObject {
          $foruser = true;
       }
 
-      $query = "SELECT `status`,
-                       COUNT(*) AS COUNT
+      $query = "SELECT `glpi_tickets`.`status`,
+                       COUNT(DISTINCT `glpi_tickets`.`id`) AS COUNT
                 FROM `glpi_tickets` ";
 
       if ($foruser) {
          $query .= " LEFT JOIN `glpi_tickets_users`
                         ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
-                            AND `glpi_tickets_users`.`type` = '".CommonITILActor::REQUESTER."')";
+                            AND `glpi_tickets_users`.`type` = '".CommonITILActor::REQUESTER."')
+                     LEFT JOIN `glpi_ticketvalidations`
+                        ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)";
 
          if (Session::haveRight(self::$rightname, self::READGROUP)
              && isset($_SESSION["glpigroups"])
@@ -4951,7 +4953,9 @@ class Ticket extends CommonITILObject {
       $query .= getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if ($foruser) {
-         $query .= " AND (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."' ";
+         $query .= " AND (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."'
+                           OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
+                           OR `glpi_ticketvalidations`.`users_id_validate` = '".Session::getLoginUserID()."'";
 
          if (Session::haveRight(self::$rightname, self::READGROUP)
              && isset($_SESSION["glpigroups"])
