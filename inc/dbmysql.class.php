@@ -731,14 +731,20 @@ class DBmysqlIterator  implements Iterator {
          $this->sql = $table;
       } else {
          // Check field, orderby, limit, start in criterias
-         $field   = "";
-         $orderby = "";
-         $limit   = 0;
-         $start   = 0;
+         $field    = "";
+         $orderby  = "";
+         $limit    = 0;
+         $start    = 0;
+         $distinct = '';
+         $where    = '';
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
                if ($key === "FIELDS") {
                   $field = $val;
+                  unset($crit[$key]);
+               } else if ($key === "DISTINCT FIELDS") {
+                  $field = $val;
+                  $distinct = "DISTINCT";
                   unset($crit[$key]);
                } else if ($key === "ORDER") {
                   $orderby = $val;
@@ -748,6 +754,9 @@ class DBmysqlIterator  implements Iterator {
                   unset($crit[$key]);
                } else if ($key === "START") {
                   $start = $val;
+                  unset($crit[$key]);
+               } else if ($key === "WHERE") {
+                  $where = $val;
                   unset($crit[$key]);
                }
             }
@@ -768,7 +777,7 @@ class DBmysqlIterator  implements Iterator {
          } else if (empty($field)) {
             $this->sql = "SELECT *";
          } else {
-            $this->sql = "SELECT `$field`";
+            $this->sql = "SELECT $distinct `$field`";
          }
 
          // FROM table list
@@ -781,6 +790,8 @@ class DBmysqlIterator  implements Iterator {
          // WHERE criteria list
          if (!empty($crit)) {
             $this->sql .= " WHERE ".$this->analyseCrit($crit);
+         } else if ($where) {
+            $this->sql .= " WHERE ".$this->analyseCrit($where);
          }
 
          // ORDER BY

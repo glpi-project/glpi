@@ -269,23 +269,18 @@ class Item_Devices extends CommonDBRelation {
       global $DB;
 
       foreach (self::getItemAffinities($itemtype) as $link_type) {
-         $query = "SELECT *
-                   FROM `".$link_type::getTable()."`
-                   WHERE `itemtype` = '$itemtype'
-                         AND `items_id` = '$oldid'";
-
-         $result_iterator = $DB->request($query);
-         if ($result_iterator->numrows() > 0) {
+         $table = $link_type::getTable();
+         foreach ($DB->request($table,
+                               "`itemtype` = '$itemtype'
+                                 AND `items_id` = '$oldid'") as $data) {
             $link = new $link_type();
-            foreach ($result_iterator as $data) {
-               unset($data['id']);
-               $data['items_id']     = $newid;
-               $data['_itemtype']    = $itemtype;
-               $data['_no_history']  = true;
-               $data                 = Toolbox::addslashes_deep($data);
+            unset($data['id']);
+            $data['items_id']     = $newid;
+            $data['_itemtype']    = $itemtype;
+            $data['_no_history']  = true;
+            $data                 = Toolbox::addslashes_deep($data);
 
-               $link->add($data);
-             }
+            $link->add($data);
          }
       }
    }
