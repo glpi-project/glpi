@@ -1178,7 +1178,9 @@ class Reservation extends CommonDBChild {
       $now = $_SESSION["glpi_currenttime"];
 
       // Print reservation in progress
-      $query = "SELECT *
+      $query = "SELECT `begin`, `end`, `items_id`, `glpi_reservationitems`.`entities_id`,
+                       `users_id`, `glpi_reservations`.`comment`, `reservationitems_id`,
+                       `completename`
                 FROM `glpi_reservations`
                 LEFT JOIN `glpi_reservationitems`
                   ON `glpi_reservations`.`reservationitems_id` = `glpi_reservationitems`.`id`
@@ -1239,7 +1241,9 @@ class Reservation extends CommonDBChild {
       echo "</table></div>\n";
 
       // Print old reservations
-      $query = "SELECT *
+      $query = "SELECT `begin`, `end`, `items_id`, `glpi_reservationitems`.`entities_id`,
+                       `users_id`, `glpi_reservations`.`comment`, `reservationitems_id`,
+                       `completename`
                 FROM `glpi_reservations`
                 LEFT JOIN `glpi_reservationitems`
                   ON `glpi_reservations`.`reservationitems_id` = `glpi_reservationitems`.`id`
