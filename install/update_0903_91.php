@@ -676,6 +676,10 @@ function update0903to91() {
       $migration->addField("glpi_slas", "calendars_id", "integer", array('after' => 'is_recursive'));
       $migration->addKey('glpi_slas', 'calendars_id');
    }
+   if (FieldExists('glpi_slts', 'resolution_time')
+       && !FieldExists('glpi_slts', 'number_time')) {
+      $migration->changeField('glpi_slts', 'resolution_time', 'number_time', 'integer');
+   }
 
    /************** High contrast CSS **************/
    Config::setConfigurationValues('core', array('highcontrast_css' => 0));
