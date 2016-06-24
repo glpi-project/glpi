@@ -265,6 +265,11 @@ class ProjectTask extends CommonDBChild {
 
    function prepareInputForUpdate($input) {
 
+      if (isset($input["plan"])) {
+         $input["plan_start_date"] = $input['plan']["begin"];
+         $input["plan_end_date"]   = $input['plan']["end"];
+      }
+
       if (isset($input['is_milestone'])
             && $input['is_milestone']){
          $input['plan_end_date'] = $input['plan_start_date'];

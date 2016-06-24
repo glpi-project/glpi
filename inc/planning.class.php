@@ -1756,7 +1756,7 @@ class Planning extends CommonGLPI {
 
          $update = array('id'   => $params['items_id'],
                          'plan' => array('begin' => $params['start'],
-                                        'end'    => $params['end']));
+                                         'end'   => $params['end']));
 
          if (isset($item->fields['users_id_tech'])) {
             $update['users_id_tech'] = $item->fields['users_id_tech'];
