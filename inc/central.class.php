@@ -114,6 +114,8 @@ class Central extends CommonGLPI {
       echo "<tr class='noHover'><td>";
       if ($showticket) {
          Ticket::showCentralCount();
+      } else {
+         Ticket::showCentralCount(true);
       }
       if ($showproblem) {
          Problem::showCentralCount();
