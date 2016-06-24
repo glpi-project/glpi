@@ -671,6 +671,12 @@ function update0903to91() {
                       "SLA ruleactions migration");
    }
 
+   // to delete in next version - fix change in update
+   if (!FieldExists('glpi_slas', 'calendars_id')) {
+      $migration->addField("glpi_slas", "calendars_id", "integer", array('after' => 'is_recursive'));
+      $migration->addKey('glpi_slas', 'calendars_id');
+   }
+
    /************** High contrast CSS **************/
    Config::setConfigurationValues('core', array('highcontrast_css' => 0));
    $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
