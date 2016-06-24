@@ -4423,7 +4423,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>".__('Opening date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['date'])."</td></tr>";
-
+      
+      echo "<tr class='tab_bg_2'><td>".__('Time to own')."</td>";
+      echo "<td>".Html::convDateTime($this->fields['time_to_own'])."</td></tr>";
+      
       echo "<tr class='tab_bg_2'><td>".__('Time to resolve')."</td>";
       echo "<td>".Html::convDateTime($this->fields['due_date'])."</td></tr>";
 
