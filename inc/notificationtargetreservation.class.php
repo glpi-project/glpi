@@ -115,11 +115,11 @@ class NotificationTargetReservation extends NotificationTarget {
 
             $this->datas['##reservation.itemurl##']
                                  = $this->formatURL($options['additionnaloption']['usertype'],
-                                                    "ReservationItem_".$reservationitem->getField('id'));
+                                                    $itemtype."_".$item->getField('id'));
 
             $this->datas['##reservation.url##']
                                  = $this->formatURL($options['additionnaloption']['usertype'],
-                                                    $itemtype."_".$item->getField('id'));
+                                                    "Reservation_".$this->obj->getField('id'));
                      }
 
       } else {
