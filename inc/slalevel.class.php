@@ -454,7 +454,7 @@ class SlaLevel extends RuleTicket {
     *
     * @return id of the sla level : 0 if not exists
    **/
-   static function getNextSlaLevel($slts_id, $slalevels_id) {
+   static function getNextSltLevel($slts_id, $slalevels_id) {
       global $DB;
 
       $query = "SELECT `execution_time`
