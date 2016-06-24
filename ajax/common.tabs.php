@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -44,7 +44,8 @@ if (isset($_GET['full_page_tab'])) {
    Html::header_nocache();
 }
 
-Session::checkLoginUser();
+// Not possible to check right for anonymous FAQ
+//Session::checkLoginUser();
 
 if (!isset($_GET['_glpi_tab'])) {
    exit();
@@ -112,7 +113,7 @@ if (isset($_GET['full_page_tab'])) {
       echo "</script>";
       $_SESSION['glpi_warned_about_full_page_tab'] = true;
    }
-   
+
    Html::footer();
 
 
