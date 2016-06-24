@@ -682,6 +682,9 @@ function update0903to91() {
    $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
 
 
+   /************** SMTP option for self-signed certificates **************/
+   Config::setConfigurationValues('core', array('smtp_check_certificate' => 1));
+
    // for group task
    $migration->addField("glpi_tickettasks", "groups_id_tech", "integer");
    $migration->addKey("glpi_tickettasks", "groups_id_tech");

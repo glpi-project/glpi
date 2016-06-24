@@ -80,6 +80,12 @@ class GLPIMailer extends PHPMailer {
          if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS) {
             $this->SMTPSecure = "tls";
          }
+
+         if (!$CFG_GLPI['smtp_check_certificate']) {
+            $this->SMTPOptions = array('ssl' => array('verify_peer'       => false,
+                                                      'verify_peer_name'  => false,
+                                                      'allow_self_signed' => true));
+         }
       }
 
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
