@@ -217,7 +217,7 @@ class SLT extends CommonDBChild {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Maximum time to solve')."</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Maximum time')."</td>";
       echo "<td>";
       Dropdown::showNumber("number_time", array('value' => $this->fields["number_time"],
                                                     'min'   => 0));
@@ -355,8 +355,14 @@ class SLT extends CommonDBChild {
                   array('number_time'     => $slt->fields['number_time'],
                         'definition_time' => $slt->fields['definition_time']));
             echo "</td>";
-            $calendar->getFromDB($val['id']);
-            echo "<td $edit>".$calendar->getLink()."</td>";
+            if (!$sla->fields['calendars_id']) {
+               $link =  __('24/7');
+            } else if ($sla->fields['calendars_id'] == -1) {
+               $link = __('Calendar of the ticket');
+            } else if ($calendar->getFromDB($sla->fields['calendars_id'])) {
+               $link = $calendar->getLink();
+            }
+            echo "<td $edit>".$link."</td>";
             echo "</tr>";
          }
          echo $header_begin.$header_bottom.$header_end;
