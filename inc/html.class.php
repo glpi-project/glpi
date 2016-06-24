@@ -1066,6 +1066,11 @@ class Html {
    static function includeHeader($title='') {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
+      // complete title with id if exist
+      if (isset($_GET['id']) && $_GET['id']) {
+         $title.= " - ".$_GET['id'];
+      }
+
       // Send UTF8 Headers
       header("Content-Type: text/html; charset=UTF-8");
       // Allow only frame from same server to prevent click-jacking
