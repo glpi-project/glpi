@@ -44,6 +44,8 @@ if (isset($_GET['full_page_tab'])) {
    Html::header_nocache();
 }
 
+Session::checkLoginUser();
+
 if (!isset($_GET['_glpi_tab'])) {
    exit();
 }
