@@ -2159,9 +2159,6 @@ class Html {
       // Display MENU ALL
       self::displayMenuAll($menu);
 
-      echo "</div>";
-
-
       // End navigation bar
       // End headline
 
