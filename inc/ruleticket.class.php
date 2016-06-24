@@ -290,6 +290,7 @@ class RuleTicket extends Rule {
                         $result = array();
                   }
                   if (!empty($result)) {
+                     $output["items_id"] = array();
                      $output["items_id"][$result["itemtype"]][] = $result["id"];
                   }
                   break;
