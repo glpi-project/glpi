@@ -5819,6 +5819,8 @@ class Html {
          });
       };
 
+      window.nativeConfirm = window.confirm;
+
       // redefine native 'confirm' function
       window.confirm = function (message, caption) {
          // if watched var isn't true, we can display dialog

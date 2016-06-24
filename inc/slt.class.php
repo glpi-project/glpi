@@ -528,7 +528,7 @@ class SLT extends CommonDBChild {
                                '_glpi_csrf_token'  => Session::getNewCSRFToken(),
                                '_glpi_simple_form' => 1);
                $JS = "  function delete_date$type(){
-                           if (confirm('".addslashes(__('Delete date too?'))."')) {
+                           if (nativeConfirm('".addslashes(__('Delete date too?'))."')) {
                               submitGetLink('".$ticket->getFormURL()."',
                                             ".json_encode(array_merge($fields,
                                                                       array('delete_date' => 1))).");
