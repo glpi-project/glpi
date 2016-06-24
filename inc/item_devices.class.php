@@ -451,8 +451,8 @@ class Item_Devices extends CommonDBRelation {
                             'display_title_for_each_group' => false));
 
       if ($canedit) {
-//          echo "<input type='submit' class='submit' name='updateall' value='" .
-//               _sx('button', 'Save')."'>";
+          echo "<input type='submit' class='submit' name='updateall' value='" .
+               _sx('button', 'Save')."'>";
 
          Html::closeForm();
       }
