@@ -4423,10 +4423,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>".__('Opening date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['date'])."</td></tr>";
-      
-      echo "<tr class='tab_bg_2'><td>".__('Time to own')."</td>";
-      echo "<td>".Html::convDateTime($this->fields['time_to_own'])."</td></tr>";
-      
+
+      // https://github.com/glpi-project/glpi/commit/77eff2647bcfc329a21cef65d648c6d5fe0fcd5e
+      // this function is also used by change and problem
+//      echo "<tr class='tab_bg_2'><td>".__('Time to own')."</td>";
+//      echo "<td>".Html::convDateTime($this->fields['time_to_own'])."</td></tr>";
+
       echo "<tr class='tab_bg_2'><td>".__('Time to resolve')."</td>";
       echo "<td>".Html::convDateTime($this->fields['due_date'])."</td></tr>";
 
