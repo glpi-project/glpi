@@ -6136,8 +6136,7 @@ class Ticket extends CommonITILObject {
       $followups = $followup_obj->find("tickets_id = ".$this->getID()." $restrict_fup", 'date DESC');
       foreach ($followups as $followups_id => $followup) {
          $followup_obj->getFromDB($followups_id);
-         $can_edit                                               = $followup_obj->canUpdateItem();
-         $followup['can_edit']                                   = $can_edit;
+         $followup['can_edit']                                   = $followup_obj->canUpdateItem();;
          $timeline[$followup['date']."_followup_".$followups_id] = array('type' => 'TicketFollowup',
                                                                          'item' => $followup);
       }
@@ -6147,8 +6146,7 @@ class Ticket extends CommonITILObject {
       $tasks = $task_obj->find("tickets_id = ".$this->getID()." $restrict_task", 'date DESC');
       foreach ($tasks as $tasks_id => $task) {
          $task_obj->getFromDB($tasks_id);
-         $can_edit                                   = $task_obj->canUpdateItem();
-         $task['can_edit']                           = $can_edit;
+         $task['can_edit']                           = $task_obj->canUpdateItem();
          $timeline[$task['date']."_task_".$tasks_id] = array('type' => 'TicketTask',
                                                              'item' => $task);
       }
