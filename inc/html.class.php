@@ -2057,13 +2057,13 @@ class Html {
            "</a></li>";
 
       echo "</ul>";
-      echo "</div>";
+      echo "</div>"; // c_preference
 
       //-- Le moteur de recherche --
       echo "<div id='c_recherche'></div>";
 
 
-      echo "</div>";
+      echo "</div>"; // c_recherche
 
       //-- Le menu principal --
       echo "<div id='c_menu'>";
@@ -2209,8 +2209,9 @@ class Html {
       if (Session::getLoginUserID()) {
          self::showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
       }
-      echo "</ul></div>";
+      echo "</ul></div>"; // fin c_ssmenu2
 
+      echo "</div>"; // fin c_menu
       echo "</div>"; // fin header
       echo "<div id='page' >";
 
