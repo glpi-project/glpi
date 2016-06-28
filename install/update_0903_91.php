@@ -306,6 +306,24 @@ function update0903to91() {
    $migration->addField("glpi_budgets", "locations_id", "integer");
    $migration->addKey("glpi_budgets", "locations_id");
 
+   if (!TableExists('glpi_budgetypes')) {
+      $query = "CREATE TABLE `glpi_budgettypes` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `comment` text COLLATE utf8_unicode_ci,
+        `date_mod` datetime DEFAULT NULL,
+        `date_creation` datetime DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        KEY `name` (`name`),
+        KEY `date_mod` (`date_mod`),
+        KEY `date_creation` (`date_creation`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "add table glpi_budgettypes");
+   }
+
+   $migration->addField("glpi_budgets", "budgettypes_id", "integer");
+   $migration->addKey("glpi_budgets", "budgettypes_id");
+
 
    /************** New Planning with fullcalendar.io *************/
    $migration->addField("glpi_users", "plannings", "text");
@@ -698,6 +716,7 @@ function update0903to91() {
    $migration->addKey("glpi_problemtasks", "groups_id_tech");
    $migration->addField("glpi_groups", "is_task", "bool", array('value' => 1,
                                                                 'after' => 'is_assign'));
+
 
 
    // ************ Keep it at the end **************
