@@ -1066,6 +1066,14 @@ class KnowbaseItem extends CommonDBTM {
          $where .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
 
+      if (KnowbaseItemTranslation::isKbTranslationActive()) {
+         $join .= "LEFT JOIN `glpi_knowbaseitemtranslations`
+                     ON (`glpi_knowbaseitems`.`id` = `glpi_knowbaseitemtranslations`.`knowbaseitems_id`
+                         AND `glpi_knowbaseitemtranslations`.`language` = '".$_SESSION['glpilanguage']."')";
+         $addselect .= ", `glpi_knowbaseitemtranslations`.`name` AS transname,
+                          `glpi_knowbaseitemtranslations`.`answer` AS transanswer ";
+      }
+
       // a search with $contains
       switch ($type) {
          case 'allmy' :
@@ -1156,14 +1164,6 @@ class KnowbaseItem extends CommonDBTM {
 
             $order  = " ORDER BY `glpi_knowbaseitems`.`name` ASC";
             break;
-      }
-
-      if (KnowbaseItemTranslation::isKbTranslationActive()) {
-         $join .= "LEFT JOIN `glpi_knowbaseitemtranslations`
-                     ON (`glpi_knowbaseitems`.`id` = `glpi_knowbaseitemtranslations`.`knowbaseitems_id`
-                         AND `glpi_knowbaseitemtranslations`.`language` = '".$_SESSION['glpilanguage']."')";
-         $addselect .= ", `glpi_knowbaseitemtranslations`.`name` AS transname,
-                          `glpi_knowbaseitemtranslations`.`answer` AS transanswer ";
       }
 
       $query = "SELECT DISTINCT `glpi_knowbaseitems`.*,
