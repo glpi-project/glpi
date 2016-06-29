@@ -575,6 +575,12 @@ input.save {
    margin-right: -5px;
 }
 
+.layout_lefttab .ui-tabs sup.tab_nb {
+   position: absolute;
+   right: 8px;
+   top: 5px;
+}
+
 .ui-tabs .ui-state-active sup.tab_nb {
    background-color: #E6E6E6;
 }
