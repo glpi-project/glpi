@@ -89,10 +89,10 @@ if (!isset($_GET['emptylabel']) || ($_GET['emptylabel'] == '')) {
 $where = "WHERE 1 ";
 
 if ($item->maybeDeleted()) {
-   $where .= " AND `is_deleted` = '0' ";
+   $where .= " AND `$table`.`is_deleted` = '0' ";
 }
 if ($item->maybeTemplate()) {
-   $where .= " AND `is_template` = '0' ";
+   $where .= " AND `$table`.`is_template` = '0' ";
 }
 
 if (!isset($_GET['page'])) {
