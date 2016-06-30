@@ -2395,8 +2395,8 @@ class Search {
          case "glpi_softwareversions.name" :
             if ($meta) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`, '".self::SHORTSEP."',
-                                                     `$table$addtable`.`id`) SEPARATOR '".self::LONGSEP."')
+                                                     `$table$addtable2`.`$field`, '".self::SHORTSEP."',
+                                                     `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."`,
                         $ADDITONALFIELDS";
             }
@@ -2408,8 +2408,8 @@ class Search {
          case "glpi_softwareversions.comment" :
             if ($meta) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`,'".self::SHORTSEP."',
-                                                     `$table$addtable`.`id`) SEPARATOR '".self::LONGSEP."')
+                                                     `$table$addtable2`.`$field`,'".self::SHORTSEP."',
+                                                     `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."`,
                         $ADDITONALFIELDS";
             }
@@ -2423,8 +2423,8 @@ class Search {
             if ($meta && ($meta_type == 'Software')) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `glpi_softwareversions$addtable`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`, '".self::SHORTSEP."',
-                                                     `$table$addtable`.`id`) SEPARATOR '".self::LONGSEP."')
+                                                     `$table$addtable2`.`$field`, '".self::SHORTSEP."',
+                                                     `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
                                      AS `".$NAME."_".$num."`,
                         $ADDITONALFIELDS";
             } else if ($itemtype == 'Software') {
