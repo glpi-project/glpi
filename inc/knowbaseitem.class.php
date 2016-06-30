@@ -1104,18 +1104,37 @@ class KnowbaseItem extends CommonDBTM {
          case 'search' :
             if (strlen($params["contains"]) > 0) {
                $search  = Toolbox::unclean_cross_side_scripting_deep($params["contains"]);
+               $search_wilcard = explode(' ', $search);
+               $search_wilcard = implode('* ', $search_wilcard).'*';
 
-               $addscore = '';
+               $addscore = array();
                if (KnowbaseItemTranslation::isKbTranslationActive()) {
-                  $addscore = ",`glpi_knowbaseitemtranslations`.`name`,
-                                 `glpi_knowbaseitemtranslations`.`answer`";
+                  $addscore = array('`glpi_knowbaseitemtranslations`.`name`',
+                                    '`glpi_knowbaseitemtranslations`.`answer`');
                }
-               $score   = " ,MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer` $addscore)
-                           AGAINST('$search' IN BOOLEAN MODE) AS SCORE ";
+               $score = " ,(MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer`)
+                           AGAINST('$search_wilcard' IN BOOLEAN MODE)";
 
-               $where_1 = $where." AND MATCH(`glpi_knowbaseitems`.`name`,
-                                             `glpi_knowbaseitems`.`answer` $addscore)
-                          AGAINST('$search' IN BOOLEAN MODE) ";
+               if (!empty($addscore)) {
+                  foreach($addscore as $addscore_field) {
+                     $score.= " + MATCH($addscore_field)
+                                        AGAINST('$search_wilcard' IN BOOLEAN MODE)";
+                  }
+               }
+               $score .=" ) AS SCORE ";
+
+               $where_1 = $where." AND (MATCH(`glpi_knowbaseitems`.`name`,
+                                             `glpi_knowbaseitems`.`answer`)
+                          AGAINST('$search_wilcard' IN BOOLEAN MODE) ";
+
+               if (!empty($addscore)) {
+                  foreach($addscore as $addscore_field) {
+                     $where_1.= "OR $addscore_field IS NOT NULL
+                                    AND MATCH($addscore_field)
+                                        AGAINST('$search_wilcard' IN BOOLEAN MODE)";
+                  }
+               }
+               $where_1.= ")";
 
                // Add visibility date
                $where_1 .= " AND (`glpi_knowbaseitems`.`begin_date` IS NULL
@@ -1152,6 +1171,7 @@ class KnowbaseItem extends CommonDBTM {
                   $where   .= " AND (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
                                  OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains)."
                                  $addwhere)";
+                  $score = "";
                } else {
                   $where = $where_1;
                }
@@ -1182,7 +1202,6 @@ class KnowbaseItem extends CommonDBTM {
                            = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
                 WHERE $where
                 $order";
-
       return $query;
    }
 
