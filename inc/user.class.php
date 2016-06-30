@@ -1116,7 +1116,9 @@ class User extends CommonDBTM {
                $oldfile   = GLPI_PICTURE_DIR . "/".$this->fields["picture"];
 
                // update picture if not exist or changed
-               if (!file_exists($oldfile) || (sha1_file($oldfile) !== sha1($img))) {
+               if (!file_exists($oldfile)
+                   || empty($this->fields["picture"])
+                   || sha1_file($oldfile) !== sha1($img)) {
                   if (!is_dir(GLPI_PICTURE_DIR . "/$sub")) {
                      mkdir(GLPI_PICTURE_DIR . "/$sub");
                   }
