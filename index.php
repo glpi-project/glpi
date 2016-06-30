@@ -104,8 +104,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<div id='boxlogin'>";
    echo "<form action='".$CFG_GLPI["root_doc"]."/front/login.php' method='post'>";
 
-   $_SESSION['namfield'] = $namfield = uniqid('field');
-   $_SESSION['pwdfield'] = $pwdfield = uniqid('field');
+   $_SESSION['namfield'] = $namfield = uniqid('fielda');
+   $_SESSION['pwdfield'] = $pwdfield = uniqid('fieldb');
 
    // Other CAS
    if (isset($_GET["noAUTO"])) {

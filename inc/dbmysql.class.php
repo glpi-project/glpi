@@ -506,6 +506,7 @@ class DBmysql {
     * @param $tableorsql                     table name, array of names or SQL query
     * @param $crit         string or array   of filed/values, ex array("id"=>1), if empty => all rows
     *                                        (default '')
+    * @param $debug                          for log the request (default false)
     *
     * Examples =
     *   array("id"=>NULL)
@@ -519,8 +520,8 @@ class DBmysql {
     *
     * @return DBIterator
    **/
-   public function request ($tableorsql, $crit="") {
-      return new DBmysqlIterator($this, $tableorsql, $crit);
+   public function request ($tableorsql, $crit="", $debug=false) {
+      return new DBmysqlIterator($this, $tableorsql, $crit, $debug);
    }
 
 
@@ -721,22 +722,29 @@ class DBmysqlIterator  implements Iterator {
     * @param $table                          table name
     * @param $crit         string or array   of filed/values, ex array("id"=>1), if empty => all rows
     *                                        (default '')
+    * @param $debug                          for log the request (default false)
    **/
-   function __construct ($dbconnexion, $table, $crit="") {
+   function __construct ($dbconnexion, $table, $crit="", $debug=false) {
 
       $this->conn = $dbconnexion;
       if (is_string($table) && strpos($table, " ")) {
          $this->sql = $table;
       } else {
          // Check field, orderby, limit, start in criterias
-         $field   = "";
-         $orderby = "";
-         $limit   = 0;
-         $start   = 0;
+         $field    = "";
+         $orderby  = "";
+         $limit    = 0;
+         $start    = 0;
+         $distinct = '';
+         $where    = '';
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
                if ($key === "FIELDS") {
                   $field = $val;
+                  unset($crit[$key]);
+               } else if ($key === "DISTINCT FIELDS") {
+                  $field = $val;
+                  $distinct = "DISTINCT";
                   unset($crit[$key]);
                } else if ($key === "ORDER") {
                   $orderby = $val;
@@ -746,6 +754,9 @@ class DBmysqlIterator  implements Iterator {
                   unset($crit[$key]);
                } else if ($key === "START") {
                   $start = $val;
+                  unset($crit[$key]);
+               } else if ($key === "WHERE") {
+                  $where = $val;
                   unset($crit[$key]);
                }
             }
@@ -766,7 +777,7 @@ class DBmysqlIterator  implements Iterator {
          } else if (empty($field)) {
             $this->sql = "SELECT *";
          } else {
-            $this->sql = "SELECT `$field`";
+            $this->sql = "SELECT $distinct `$field`";
          }
 
          // FROM table list
@@ -779,6 +790,8 @@ class DBmysqlIterator  implements Iterator {
          // WHERE criteria list
          if (!empty($crit)) {
             $this->sql .= " WHERE ".$this->analyseCrit($crit);
+         } else if ($where) {
+            $this->sql .= " WHERE ".$this->analyseCrit($where);
          }
 
          // ORDER BY
@@ -822,6 +835,9 @@ class DBmysqlIterator  implements Iterator {
                $this->sql .= " OFFSET $start";
             }
          }
+      }
+      if ($debug) {
+         toolbox::logdebug("req", $this->sql);
       }
       $this->res = $this->conn->query($this->sql);
    }

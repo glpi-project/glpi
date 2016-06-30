@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -1046,12 +1045,12 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
 
-         // SLA case : compute sla duration
-         if (isset($this->fields['slas_id']) && ($this->fields['slas_id'] > 0)) {
-            $sla = new SLA();
-            if ($sla->getFromDB($this->fields['slas_id'])) {
-               $sla->setTicketCalendar($calendars_id);
-               $delay_time_sla  = $sla->getActiveTimeBetween($this->fields['begin_waiting_date'],
+         // SLT case : compute slt_ttr duration
+         if (isset($this->fields['slts_ttr_id']) && ($this->fields['slts_ttr_id'] > 0)) {
+            $slt = new SLT();
+            if ($slt->getFromDB($this->fields['slts_ttr_id'])) {
+               $slt->setTicketCalendar($calendars_id);
+               $delay_time_sla  = $slt->getActiveTimeBetween($this->fields['begin_waiting_date'],
                                                              $_SESSION["glpi_currenttime"]);
                $this->updates[] = "sla_waiting_duration";
                $this->fields["sla_waiting_duration"] += $delay_time_sla;
@@ -1059,10 +1058,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
             // Compute new due date
             $this->updates[]          = "due_date";
-            $this->fields['due_date'] = $sla->computeDueDate($this->fields['date'],
+            $this->fields['due_date'] = $slt->computeDueDate($this->fields['date'],
                                                              $this->fields["sla_waiting_duration"]);
             // Add current level to do
-            $sla->addLevelToDo($this);
+            $slt->addLevelToDo($this);
 
          } else {
             // Using calendar
@@ -1104,7 +1103,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // Specific for tickets
          if (isset($this->fields['slas_id']) && ($this->fields['slas_id'] > 0)) {
-            SLA::deleteLevelsToDo($this);
+            SLT::deleteLevelsToDo($this);
          }
       }
 
@@ -2724,25 +2723,39 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[18]['table']               = $this->getTable();
       $tab[18]['field']               = 'due_date';
-      $tab[18]['name']                = __('Due date');
+      $tab[18]['name']                = __('Time to resolve');
       $tab[18]['datatype']            = 'datetime';
       $tab[18]['maybefuture']         = true;
       $tab[18]['massiveaction']       = false;
       $tab[18]['additionalfields']    = array('status');
 
+      $tab[155]['table']               = $this->getTable();
+      $tab[155]['field']               = 'time_to_own';
+      $tab[155]['name']                = __('Time to own');
+      $tab[155]['datatype']            = 'datetime';
+      $tab[155]['maybefuture']         = true;
+      $tab[155]['massiveaction']       = false;
+      $tab[155]['additionalfields']    = array('status');
 
 
       $tab[151]['table']              = $this->getTable();
       $tab[151]['field']              = 'due_date';
-      $tab[151]['name']               = __('Due date + Progress');
+      $tab[151]['name']               = __('Time to resolve + Progress');
       $tab[151]['massiveaction']      = false;
       $tab[151]['nosearch']           = true;
       $tab[151]['additionalfields']   = array('status');
 
+      $tab[158]['table']              = $this->getTable();
+      $tab[158]['field']              = 'time_to_own';
+      $tab[158]['name']               = __('Time to own + Progress');
+      $tab[158]['massiveaction']      = false;
+      $tab[158]['nosearch']           = true;
+      $tab[158]['additionalfields']   = array('status');
+
 
       $tab[82]['table']               = $this->getTable();
       $tab[82]['field']               = 'is_late';
-      $tab[82]['name']                = __('Late');
+      $tab[82]['name']                = __('Late resolution');
       $tab[82]['datatype']            = 'bool';
       $tab[82]['massiveaction']       = false;
       $tab[82]['computation']         = "IF(TABLE.`due_date` IS NOT NULL
@@ -2752,6 +2765,19 @@ abstract class CommonITILObject extends CommonDBTM {
                                                       AND TABLE.`due_date` < NOW())),
                                             1, 0)";
 
+      $tab[159]['table']              = $this->getTable();
+      $tab[159]['field']              = 'is_late';
+      $tab[159]['name']               = __('Late own');
+      $tab[159]['datatype']           = 'bool';
+      $tab[159]['massiveaction']      = false;
+      $tab[159]['computation']        = "IF(TABLE.`time_to_own` IS NOT NULL
+                                            AND TABLE.`status` <> ".self::WAITING."
+                                            AND (TABLE.`takeintoaccount_delay_stat`
+                                                        > TIME_TO_SEC(TIMEDIFF(TABLE.`time_to_own`,
+                                                                               TABLE.`date`))
+                                                 OR (TABLE.`takeintoaccount_delay_stat` = 0
+                                                      AND TABLE.`time_to_own` < NOW())),
+                                            1, 0)";
 
       $tab[17]['table']               = $this->getTable();
       $tab[17]['field']               = 'solvedate';
@@ -2769,6 +2795,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[7]['field']                = 'completename';
       $tab[7]['name']                 = __('Category');
       $tab[7]['datatype']             = 'dropdown';
+
       if (!Session::isCron() // no filter for cron
           && isset($_SESSION['glpiactiveprofile']['interface'])
           && ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk')) {
@@ -4396,8 +4423,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>".__('Opening date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['date'])."</td></tr>";
-
-      echo "<tr class='tab_bg_2'><td>".__('Due date')."</td>";
+      
+      if ($this->getType() == 'Ticket') {
+         echo "<tr class='tab_bg_2'><td>".__('Time to own')."</td>";
+         echo "<td>".Html::convDateTime($this->fields['time_to_own'])."</td></tr>";
+      }
+      echo "<tr class='tab_bg_2'><td>".__('Time to resolve')."</td>";
       echo "<td>".Html::convDateTime($this->fields['due_date'])."</td></tr>";
 
       if (in_array($this->fields['status'], array_merge($this->getSolvedStatusArray(),
@@ -5118,7 +5149,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                   ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
                                     Html::convDateTime($item->fields['begin_waiting_date']));
          } else if ($item->fields['due_date']) {
-            $second_col = sprintf(__('%1$s: %2$s'), __('Due date'),
+            $second_col = sprintf(__('%1$s: %2$s'), __('Time to resolve'),
                                   ($p['output_type'] == Search::HTML_OUTPUT?'<br>':'').
                                     Html::convDateTime($item->fields['due_date']));
          } else {

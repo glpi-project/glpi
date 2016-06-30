@@ -1952,7 +1952,7 @@ class Rule extends CommonDBTM {
          Html::showMassiveActionCheckBox($this->ruleactionclass, $fields["id"]);
          echo "\n<script type='text/javascript' >\n";
          echo "function viewEditAction". $fields[$this->rules_id_field].$fields["id"]."$rand() {\n";
-         $params = array('type'                => 'RuleAction',
+         $params = array('type'                => $this->ruleactionclass,
                          'parenttype'          => $this->getType(),
                          $this->rules_id_field => $fields[$this->rules_id_field],
                          'id'                  => $fields["id"]);
@@ -2076,7 +2076,7 @@ class Rule extends CommonDBTM {
          Html::showMassiveActionCheckBox($this->rulecriteriaclass, $fields["id"]);
          echo "\n<script type='text/javascript' >\n";
          echo "function viewEditCriteria". $fields[$this->rules_id_field].$fields["id"]."$rand() {\n";
-         $params = array('type'               => 'RuleCriteria',
+         $params = array('type'               => $this->rulecriteriaclass,
                         'parenttype'          => $this->getType(),
                         $this->rules_id_field => $fields[$this->rules_id_field],
                         'id'                  => $fields["id"]);

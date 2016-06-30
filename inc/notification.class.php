@@ -131,6 +131,8 @@ class Notification extends CommonDBTM {
    const TEAM_CONTACT                        = 35;
    // Notification to team suppliers
    const TEAM_SUPPLIER                       = 36;
+   //Notification to the task assigned group
+   const TASK_ASSIGN_GROUP                   = 37;
 
    // From CommonDBTM
    public $dohistory = true;

@@ -532,9 +532,9 @@ class Planning extends CommonGLPI {
          $pl_height = "$('.ui-tabs-panel').height()-30";
       }
 
-      $date_formats = array(0 => __('YYYY MM DD'),
-                            1 => __('DD MM YYYY'),
-                            2 => __('MM DD YYYY'));
+      $date_formats = array(0 => 'YYYY MMM DD',
+                            1 => 'DD MMM YYYY',
+                            2 => 'MMM DD YYYY');
       $date_format = $date_formats[$_SESSION["glpidate_format"]];
 
       self::initSessionForCurrentUser();
@@ -1756,7 +1756,7 @@ class Planning extends CommonGLPI {
 
          $update = array('id'   => $params['items_id'],
                          'plan' => array('begin' => $params['start'],
-                                        'end'    => $params['end']));
+                                         'end'   => $params['end']));
 
          if (isset($item->fields['users_id_tech'])) {
             $update['users_id_tech'] = $item->fields['users_id_tech'];

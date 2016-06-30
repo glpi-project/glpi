@@ -189,7 +189,11 @@ class NotificationMailSetting extends CommonDBTM {
                                MAIL_SMTPTLS => __('SMTP+TLS'));
          Dropdown::showFromArray("smtp_mode", $mail_methods,
                                  array('value' => $CFG_GLPI["smtp_mode"]));
-         echo "</td><td colspan='2'>&nbsp;</td>";
+         echo "</td>";
+         echo "<td >" . __("Check certificate") . "</td>";
+         echo "<td>";
+         Dropdown::showYesNo('smtp_check_certificate', $CFG_GLPI["smtp_check_certificate"]);
+         echo "</td>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_2'><td >" . __('SMTP host') . "</td>";

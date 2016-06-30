@@ -1378,13 +1378,12 @@ class Config extends CommonDBTM {
 
       echo "<tr><th colspan='4'>" . __('PHP opcode cache') . "</th></tr>";
       $ext = 'Zend OPcache';
-      if (extension_loaded($ext)) {
+      if (extension_loaded($ext) && ($info = opcache_get_status(false))) {
          echo "<tr><td>" . sprintf(__('The "%s" extension is installed'), $ext) . "</td>
                <td>" . phpversion($ext) . "</td>
                <td></td>
                <td><img src='" . $CFG_GLPI['root_doc']."/pics/ok_min.png' alt='$ext'></td></tr>";
 
-         $info = opcache_get_status(false);
          // echo "<tr><td><pre>".print_r($info, true)."</pre></td></tr>";
 
          // Memory
@@ -1426,7 +1425,7 @@ class Config extends CommonDBTM {
             echo "</a></td></tr>\n";
          }
       } else {
-         echo "<tr><td>" . sprintf(__('Installing the "%s" extension may improve GLPI performance'), $ext) . "</td>
+         echo "<tr><td>" . sprintf(__('Installing and enabling the "%s" extension may improve GLPI performance'), $ext) . "</td>
                <td></td>
                <td><img src='" . $CFG_GLPI['root_doc'] . "/pics/ko_min.png' alt='$ext'></td></tr>";
       }

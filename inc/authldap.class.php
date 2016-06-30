@@ -2081,6 +2081,9 @@ class AuthLDAP extends CommonDBTM {
                $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
                $user->fields['is_deleted_ldap'] = 0;
 
+               //Save information in database !
+               $input = $user->fields;
+
                //clean picture from input
                // (picture managed in User::post_addItem and prepareInputForUpdate)
                unset($input['picture']);
@@ -2088,8 +2091,6 @@ class AuthLDAP extends CommonDBTM {
                if ($action == self::ACTION_IMPORT) {
                   $user->fields["authtype"] = Auth::LDAP;
                   $user->fields["auths_id"] = $ldap_server;
-                  //Save information in database !
-                  $input = $user->fields;
                   // Display message after redirect
                   if ($display) {
                      $input['add'] = 1;
@@ -2099,7 +2100,6 @@ class AuthLDAP extends CommonDBTM {
                   return array('action' => self::USER_IMPORTED,
                                'id'     => $user->fields["id"]);
                }
-               $input = $user->fields;
                //Get the ID by user name
                if (!($id = User::getIdByfield('name', $login))) {
                   //In case user id as changed : get id by dn

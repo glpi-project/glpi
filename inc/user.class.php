@@ -1116,7 +1116,9 @@ class User extends CommonDBTM {
                $oldfile   = GLPI_PICTURE_DIR . "/".$this->fields["picture"];
 
                // update picture if not exist or changed
-               if (!file_exists($oldfile) || (sha1_file($oldfile) !== sha1($img))) {
+               if (!file_exists($oldfile)
+                   || empty($this->fields["picture"])
+                   || sha1_file($oldfile) !== sha1($img)) {
                   if (!is_dir(GLPI_PICTURE_DIR . "/$sub")) {
                      mkdir(GLPI_PICTURE_DIR . "/$sub");
                   }
@@ -3657,7 +3659,7 @@ class User extends CommonDBTM {
       $query = "SELECT `users_id` as id
                 FROM `glpi_useremails`
                 LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_useremails`.`users_id`)
-                WHERE `glpi_useremails`.`email` = '".stripslashes($email)."'
+                WHERE `glpi_useremails`.`email` = '".$DB->escape(stripslashes($email))."'
                 ORDER BY `glpi_users`.`is_active`  DESC, is_deleted ASC";
       $result = $DB->query($query);
 
