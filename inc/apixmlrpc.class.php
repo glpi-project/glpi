@@ -135,12 +135,12 @@ class APIXmlrpc extends API {
                           array("getItem", "getItems", "createItems", "updateItems", "deleteItems"))) {
          // check itemtype parameter
          if (!isset($this->parameters['itemtype'])) {
-            $this->returnError(__("itemtype missing"), 400, "ITEMTYPE_RESSOURCE_MISSING");
+            $this->returnError(__("missing itemtype"), 400, "ITEMTYPE_RESSOURCE_MISSING");
          }
          if (!class_exists($this->parameters['itemtype'])
              || !is_subclass_of($this->parameters['itemtype'], 'CommonDBTM')
              && $this->parameters['itemtype'] != "AllAssets" ) {
-            $this->returnError(__("itemtype is not found or not an instance of CommonDBTM"),
+            $this->returnError(__("itemtype not found or not an instance of CommonDBTM"),
                                400,
                                "ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM");
          } else
@@ -149,7 +149,7 @@ class APIXmlrpc extends API {
          if ($ressource === "getItem") {
             // check id parameter
             if (!isset($this->parameters['id'])) {
-               $this->returnError(__("id missing"), 400, "ID_RESSOURCE_MISSING");
+               $this->returnError(__("missing id"), 400, "ID_RESSOURCE_MISSING");
             }
 
             return $this->returnResponse($this->getItem($this->parameters['itemtype'],

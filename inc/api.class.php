@@ -94,7 +94,7 @@ abstract class API extends CommonGLPI {
       }
       $found_clients = $apiclient->find("`is_active` = '1' $where_ip");
       if (count($found_clients) <= 0) {
-         $this->returnError(__("Can't find an active client defined in config for your ip").
+         $this->returnError(__("There isn't an active api client matching your ip adress in the configuration,").
                             " (".$this->iptxt.")",
                             "", "ERROR_NOT_ALLOWED_IP", false);
       }
@@ -148,7 +148,7 @@ abstract class API extends CommonGLPI {
            || empty($params['password']))
          && (!isset($params['user_token'])
              || empty($params['user_token']))) {
-         $this->returnError(__("parameter(s) login, password or user_token missing"), 400,
+         $this->returnError(__("parameter(s) login, password or user_token are missing"), 400,
                             "ERROR_LOGIN_PARAMETERS_MISSING");
       }
 
@@ -168,7 +168,7 @@ abstract class API extends CommonGLPI {
          $noAuto = false;
 
       } else if (!$CFG_GLPI['enable_api_login_credentials']) {
-         $this->returnError(__("initSession with credentials is disabled"), 400,
+         $this->returnError(__("usage of initSession ressource with credentials is disabled"), 400,
                             "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED");
       }
 
@@ -841,7 +841,7 @@ abstract class API extends CommonGLPI {
          // check parent itemtype
          if (!class_exists($this->parameters['parent_itemtype'])
              || !is_subclass_of($this->parameters['parent_itemtype'], 'CommonDBTM')) {
-            $this->returnError(__("parent itemtype is not found or not an instance of CommonDBTM"),
+            $this->returnError(__("parent itemtype not found or not an instance of CommonDBTM"),
                                400,
                                "ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM");
          }
@@ -1504,7 +1504,7 @@ abstract class API extends CommonGLPI {
          $this->parameters['app_token'] = "";
       }
       if (!$this->apiclients_id = array_search($this->parameters['app_token'], $this->app_tokens)) {
-         $this->returnError(__("parameter app_token missing"), 400,
+         $this->returnError(__("missing parameter app_token"), 400,
                             "ERROR_APP_TOKEN_PARAMETERS_MISSING");
       }
    }
@@ -1875,7 +1875,7 @@ abstract class API extends CommonGLPI {
     * @since version 9.1
     */
    public function messageRightError($return_error = true) {
-      $this->returnError(__("You don't have permission to perform this action"),
+      $this->returnError(__("You don't have permission to perform this action."),
                          401,
                          "ERROR_RIGHT_MISSING",
                          false,
@@ -1903,7 +1903,7 @@ abstract class API extends CommonGLPI {
     * @since version 9.1
     */
    public function messageSessionTokenMissing($return_error = true) {
-      $this->returnError(__("parameter session_token missing or empty"),
+      $this->returnError(__("parameter session_token is missing or empty"),
                          400,
                          "ERROR_SESSION_TOKEN_MISSING",
                          true,
@@ -1934,7 +1934,7 @@ abstract class API extends CommonGLPI {
       }
 
       if ($docmessage) {
-         $message .= "; ".sprintf(__("see documentation with your browser on %s"), self::$api_url."/#$statuscode");
+         $message .= "; ".sprintf(__("view documentation in your browser at %s"), self::$api_url."/#$statuscode");
       }
       if ($return_response) {
          return $this->returnResponse(array($statuscode, $message), $httpcode);

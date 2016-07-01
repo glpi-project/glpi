@@ -66,10 +66,10 @@ class RequestType extends CommonDropdown {
                          'label' => __('Default for followup mail recipients'),
                          'type'  => 'bool'),
                    array('name'  => 'is_ticketheader',
-                         'label' => __('Ticket request source'),
+                         'label' => __('Request source visible for tickets'),
                          'type'  => 'bool'),
                    array('name'  => 'is_ticketfollowup',
-                         'label' => __('Followup request source'),
+                         'label' => __('Request source visisble for followups'),
                          'type'  => 'bool'),
                          );
    }
@@ -110,12 +110,12 @@ class RequestType extends CommonDropdown {
 
       $tab[180]['table']         = $this->getTable();
       $tab[180]['field']         = 'is_ticketheader';
-      $tab[180]['name']          = __('Ticket request source');
+      $tab[180]['name']          = __('Request source visible for tickets');
       $tab[180]['datatype']      = 'bool';
 
       $tab[181]['table']         = $this->getTable();
       $tab[181]['field']         = 'is_ticketfollowup';
-      $tab[181]['name']          = __('Followup request source');
+      $tab[181]['name']          = __('Request source visisble for followups');
       $tab[181]['datatype']      = 'bool';
 
       return $tab;

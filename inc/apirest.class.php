@@ -274,12 +274,12 @@ class APIRest extends API {
 
             return $itemtype;
          } else {
-            $this->returnError(__("endpoint is not found or not an instance of CommonDBTM"),
+            $this->returnError(__("ressource not found or not an instance of CommonDBTM"),
                                400,
                                "ERROR_RESSOURCE_NOT_FOUND_NOR_COMMONDBTM");
          }
       } else if ($recursive) {
-         $this->returnError(__("ressource missing"), 400, "ERROR_RESSOURCE_MISSING");
+         $this->returnError(__("missing ressource"), 400, "ERROR_RESSOURCE_MISSING");
       }
 
       return false;

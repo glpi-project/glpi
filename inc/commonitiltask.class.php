@@ -598,7 +598,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[8]['table']        = 'glpi_groups';
       $tab[8]['field']        = 'completename';
-      $tab[8]['name']         = __('Group assigned');
+      $tab[8]['name']         = __('Group in charge of the task');
       $tab[8]['datatype']     = 'dropdown';
       $tab[8]['condition']    = 'is_task';
 
@@ -682,7 +682,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[112]['table']          = 'glpi_groups';
       $tab[112]['field']          = 'name';
       $tab[112]['linkfield']      = 'groups_id_tech';
-      $tab[112]['name']           = __('Group assigned');
+      $tab[112]['name']           = __('Group in charge of the task');
       $tab[112]['datatype']       = 'itemlink';
       $tab[112]['condition']      = 'is_task';
       $tab[112]['forcegroupby']   = true;

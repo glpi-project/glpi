@@ -840,7 +840,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[56]['table']         = $this->getTable();
       $tab[56]['field']         = 'autofill_decommission_date';
-      $tab[56]['name']          = __('Date of decommission');
+      $tab[56]['name']          = __('Decommission date');
       $tab[56]['massiveaction'] = false;
       $tab[56]['nosearch']      = true;
       $tab[56]['datatype']      = 'specific';

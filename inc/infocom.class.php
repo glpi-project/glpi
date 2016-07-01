@@ -977,7 +977,7 @@ class Infocom extends CommonDBChild {
             // Can edit calendar ?
            $editcalendar = ($withtemplate != 2);
 
-            echo "<tr><th colspan='4'>".__('Item lifecycle')."</th></tr>";
+            echo "<tr><th colspan='4'>".__('Asset lifecycle')."</th></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Order date')."</td><td>";
             Html::showDateField("order_date", array('value'      => $ic->fields["order_date"],
@@ -1505,7 +1505,7 @@ class Infocom extends CommonDBChild {
 
       $tab[28]['table']          = 'glpi_infocoms';
       $tab[28]['field']          = 'decommission_date';
-      $tab[28]['name']           = __('Date of decommission');
+      $tab[28]['name']           = __('Decommission date');
       $tab[28]['datatype']       = 'date';
       $tab[28]['forcegroupby']   = true;
 
