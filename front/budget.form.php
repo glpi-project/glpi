@@ -1,15 +1,14 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2016 Teclib'.
 
  http://glpi-project.org
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,6 +31,7 @@
  */
 
 /** @file
+ * @since version 9.1
 * @brief
 */
 
@@ -112,4 +112,3 @@ if (isset($_POST["add"])) {
 
    Html::footer();
 }
-?>
