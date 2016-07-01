@@ -670,7 +670,7 @@ class Planning extends CommonGLPI {
                editEventTimes(event, revertFunc);
             },
             eventClick: function(event) {
-               if (event.ajaxurl && !disable_edit) {
+               if (event.ajaxurl && event.editable && !disable_edit) {
                   $('<div>')
                      .dialog({
                         modal:  true,
