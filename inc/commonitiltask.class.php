@@ -596,6 +596,12 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[7]['name']          = __('Status');
       $tab[7]['datatype']      = 'specific';
 
+      $tab[8]['table']        = 'glpi_groups';
+      $tab[8]['field']        = 'completename';
+      $tab[8]['name']         = __('Group assigned');
+      $tab[8]['datatype']     = 'dropdown';
+      $tab[8]['condition']    = 'is_task';
+
       return $tab;
    }
 
@@ -670,6 +676,18 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[95]['forcegroupby']   = true;
       $tab[95]['massiveaction']  = false;
       $tab[95]['joinparams']     = array('beforejoin'
+                                          => array('table'      => static::getTable(),
+                                                   'joinparams' => array('jointype'  => 'child')));
+
+      $tab[112]['table']          = 'glpi_groups';
+      $tab[112]['field']          = 'name';
+      $tab[112]['linkfield']      = 'groups_id_tech';
+      $tab[112]['name']           = __('Group assigned');
+      $tab[112]['datatype']       = 'itemlink';
+      $tab[112]['condition']      = 'is_task';
+      $tab[112]['forcegroupby']   = true;
+      $tab[112]['massiveaction']  = false;
+      $tab[112]['joinparams']     = array('beforejoin'
                                           => array('table'      => static::getTable(),
                                                    'joinparams' => array('jointype'  => 'child')));
 
