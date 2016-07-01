@@ -1501,7 +1501,7 @@ class AuthLDAP extends CommonDBTM {
                      FROM `glpi_users`";
 
       if ($values['mode'] != self::ACTION_IMPORT) {
-         $sql .= " WHERE `authtype` IN (-1,".Auth::LDAP.",".Auth::EXTERNAL.", ". Auth::CAS.")
+         $sql .= " WHERE `authtype` IN (-1,".Auth::NOT_YET_AUTHENTIFIED.",".Auth::LDAP.",".Auth::EXTERNAL.", ". Auth::CAS.")
                          AND `auths_id` = '".$options['authldaps_id']."'";
       }
       $sql .= " ORDER BY `name` ".$values['order'];
