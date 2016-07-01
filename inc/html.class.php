@@ -1068,7 +1068,7 @@ class Html {
 
       // complete title with id if exist
       if (isset($_GET['id']) && $_GET['id']) {
-         $title = sprintf(_('%1$s - %2$s'), $title, $_GET['id']);
+         $title = sprintf(__('%1$s - %2$s'), $title, $_GET['id']);
       }
 
       // Send UTF8 Headers
