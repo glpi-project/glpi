@@ -2089,8 +2089,8 @@ class AuthLDAP extends CommonDBTM {
                unset($input['picture']);
 
                if ($action == self::ACTION_IMPORT) {
-                  $user->fields["authtype"] = Auth::LDAP;
-                  $user->fields["auths_id"] = $ldap_server;
+                  $input["authtype"] = Auth::LDAP;
+                  $input["auths_id"] = $ldap_server;
                   // Display message after redirect
                   if ($display) {
                      $input['add'] = 1;
