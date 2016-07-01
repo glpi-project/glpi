@@ -441,7 +441,7 @@ class CommonGLPI {
                foreach ($ong as $key => $val) {
                   if ($key != 'empty') {
                      echo "<div class='alltab'>$val</div>";
-                     self::displayStandardTab($item, $key, $withtemplate);
+                     self::displayStandardTab($item, $key, $withtemplate, $options);
                   }
                }
             }
@@ -459,14 +459,24 @@ class CommonGLPI {
             if (isset($data[1])) {
                $tabnum = $data[1];
             }
+
+            $options['withtemplate'] = $withtemplate;
+
             if ($tabnum == 'main') {
-               $options['withtemplate'] = $withtemplate;
-               return $item->showForm($item->getID(), $options);
+               Plugin::doHook('pre_show_item', array('item' => $item, 'options' => &$options));
+               $ret = $item->showForm($item->getID(), $options);
+               Plugin::doHook('post_show_item', array('item' => $item, 'options' => $options));
+               return $ret;
             }
 
             if (!is_integer($itemtype) && ($itemtype != 'empty')
                 && ($obj = getItemForItemtype($itemtype))) {
-               return $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
+               $options['tabnum'] = $tabnum;
+               $options['itemtype'] = $itemtype;
+               Plugin::doHook('pre_show_tab', array( 'item' => $item, 'options' => &$options));
+               $ret = $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
+               Plugin::doHook('post_show_tab', array('item' => $item, 'options' => $options));
+               return $ret;
             }
             break;
       }
@@ -612,7 +622,9 @@ class CommonGLPI {
       }
       echo "<div class='form_content'>";
       echo "<div class='$class'>";
+      Plugin::doHook('pre_show_item', array('item' => $this, 'options' => &$options));
       $this->showForm($options['id'], $options);
+      Plugin::doHook('post_show_item', array('item' => $this, 'options' => $options));
       echo "</div>";
       echo "</div>";
    }

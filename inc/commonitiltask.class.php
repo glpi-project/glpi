@@ -1525,7 +1525,12 @@ abstract class CommonITILTask  extends CommonDBTM {
 
          while ($data = $DB->fetch_assoc($result)) {
             if ($this->getFromDB($data['id'])) {
+               $options = array( 'parent' => $item, 
+                                 'rand' => $rand, 
+                                 'showprivate' => $showprivate ) ;
+               Plugin::doHook('pre_show_item', array('item' => $this, 'options' => &$options));
                $this->showInObjectSumnary($item, $rand, $showprivate);
+               Plugin::doHook('post_show_item', array('item' => $this, 'options' => $options));
             }
          }
          echo $header;
