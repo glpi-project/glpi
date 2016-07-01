@@ -2121,7 +2121,7 @@ class AuthLDAP extends CommonDBTM {
             $users_id = User::getIdByField('name', $params['value']);
             User::manageDeletedUserInLdap($users_id);
             return array('action' => self::USER_DELETED_LDAP,
-                          'id'     => $users_id);
+                          'id'    => $users_id);
          }
 
       } else {
