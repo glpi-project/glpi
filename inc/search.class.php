@@ -2902,6 +2902,10 @@ class Search {
                   //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
                   $toadd     = self::makeTextCriteria("`$linktable`.`alternative_email`", $val,
                                                       $nott, $tmplink);
+                  if ($val == '^$') {
+                     return $link." ((`$linktable`.`users_id` IS NULL)
+                            OR `$linktable`.`alternative_email` IS NULL)";
+                  }
                }
             }
             $toadd2 = '';
