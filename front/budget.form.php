@@ -2,7 +2,7 @@
 /*
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2016 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -31,7 +31,6 @@
  */
 
 /** @file
- * @since version 9.1
 * @brief
 */
 
