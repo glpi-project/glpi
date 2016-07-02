@@ -163,10 +163,10 @@ $CFG_GLPI["unicity_types"]                = array('Budget', 'Computer', 'Contact
                                                   'SoftwareLicense', 'Supplier','User');
 
 $CFG_GLPI["state_types"]                  = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer');
+                                                  'Peripheral', 'Phone', 'Printer', 'SoftwareLicense');
 
 $CFG_GLPI["asset_types"]                  = array('Computer', 'Monitor', 'NetworkEquipment',
-                                                  'Peripheral', 'Phone', 'Printer');
+                                                  'Peripheral', 'Phone', 'Printer', 'SoftwareLicense');
 
 $CFG_GLPI["project_asset_types"]          = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer', 'Software');

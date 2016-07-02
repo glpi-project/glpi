@@ -460,6 +460,7 @@ function update0903to91() {
    $migration->addField("glpi_softwarelicenses", "is_helpdesk_visible", "bool");
    $migration->addField("glpi_softwarelicenses", "is_template", "bool");
    $migration->addField("glpi_softwarelicenses", "template_name", "string");
+   $migration->addField("glpi_softwarelicenses", "states_id", "string");
    $migration->addKey("glpi_softwarelicenses", "locations_id");
    $migration->addKey("glpi_softwarelicenses", "users_id_tech");
    $migration->addKey("glpi_softwarelicenses", "users_id");
@@ -468,10 +469,14 @@ function update0903to91() {
    $migration->addKey("glpi_softwarelicenses", "is_helpdesk_visible");
    $migration->addKey("glpi_softwarelicenses", "is_deleted");
    $migration->addKey("glpi_softwarelicenses", "is_template");
+   $migration->addKey("glpi_softwarelicenses", "states_id");
 
    $migration->addField("glpi_infocoms", "destruction_date", "datetime");
    $migration->addField("glpi_entities", "autofill_destruction_date",
                         "string", array('value' => '-2'));
+
+   $migration->addField("glpi_states", "is_visible_softwarelicense", "bool");
+   $migration->addKey("glpi_states", "is_visible_softwarelicense");
 
    /************* Add is_recursive on assets ***/
 

@@ -6844,6 +6844,7 @@ CREATE TABLE `glpi_states` (
   `is_visible_phone` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_printer` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_softwareversion` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_softwarelicense` tinyint(1) NOT NULL DEFAULT '1',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -6856,6 +6857,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_phone` (`is_visible_phone`),
   KEY `is_visible_printer` (`is_visible_printer`),
   KEY `is_visible_softwareversion` (`is_visible_softwareversion`),
+  KEY `is_visible_softwarelicense` (`is_visible_softwarelicense`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
