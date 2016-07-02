@@ -306,7 +306,7 @@ function update0903to91() {
    $migration->addField("glpi_budgets", "locations_id", "integer");
    $migration->addKey("glpi_budgets", "locations_id");
 
-   if (!TableExists('glpi_budgetypes')) {
+   if (!TableExists('glpi_budgettypes')) {
       $query = "CREATE TABLE `glpi_budgettypes` (
         `id` int(11) NOT NULL AUTO_INCREMENT,
         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -321,9 +321,14 @@ function update0903to91() {
       $DB->queryOrDie($query, "add table glpi_budgettypes");
    }
 
-   $migration->addField("glpi_budgets", "budgettypes_id", "integer");
+   $new = $migration->addField("glpi_budgets", "budgettypes_id", "integer");
    $migration->addKey("glpi_budgets", "budgettypes_id");
 
+   if ($new) {
+      $query = "UPDATE `glpi_displaypreferences`
+                SET `num`='6' WHERE `itemtype`='Budget' AND `num`='4'";
+      $DB->queryOrDie($query, "change budget display preference");
+   }
 
    /************** New Planning with fullcalendar.io *************/
    $migration->addField("glpi_users", "plannings", "text");
