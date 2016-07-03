@@ -6088,7 +6088,7 @@ class Search {
    static function csv_clean($value) {
 
       $value = str_replace("\"", "''", $value);
-      $value = Html::clean($value);
+      $value = Html::clean($value, true, 2, false);
       $value = str_replace("&gt;", ">", $value);
 
       return $value;
