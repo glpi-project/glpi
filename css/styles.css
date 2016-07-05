@@ -463,6 +463,9 @@ input.save {
 
 }
 
+.form_content .mce-fullscreen {
+   top: 105px;
+}
 
 
 
@@ -3564,7 +3567,6 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    #image_paste {
       display: none;
    }
-
 
    #searchcriterias .tab_cadre_fixe {
       display: block;
