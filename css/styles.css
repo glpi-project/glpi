@@ -1536,6 +1536,7 @@ a.icon_nav_move:hover img {
    min-height: 65px;
    background-color: #fff;
    border-radius: 5px;
+   max-width: 950px;
 }
 
 
