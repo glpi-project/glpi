@@ -1619,9 +1619,8 @@ a.icon_nav_move:hover img {
    height:14px;
    background: url(../pics/expand.png) no-repeat;
    display: inline-block;
-   margin-right: 4px;
+   margin: 0 4px 2px 0;
    vertical-align: middle;
-   margin-bottom: 2px;
    float: right;
 }
 
