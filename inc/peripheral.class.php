@@ -269,7 +269,7 @@ class Peripheral extends CommonDBTM {
       echo "</td></tr>\n";
 
       // Display auto inventory informations
-      $rowspan        = 3;
+      $rowspan        = 2;
       $inventory_show = false;
 
        if (!empty($ID)
