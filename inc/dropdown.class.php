@@ -817,6 +817,8 @@ class Dropdown {
                                                               'Phones power supply types',
                                                               Session::getPluralNumber()),
                                  'Filesystem'           => _n('File system', 'File systems',
+                                                              Session::getPluralNumber()),
+                                 'BudgetType'           => _n('Budget type', 'Budget types',
                                                               Session::getPluralNumber())
                                 ),
 
