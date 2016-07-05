@@ -1850,7 +1850,7 @@ class Search {
       for ($i=0 ; $i<count($p['criteria']) ; $i++) {
          $_POST['itemtype'] = $itemtype;
          $_POST['num']      = $i ;
-         include_once(GLPI_ROOT.'/ajax/searchrow.php');
+         include(GLPI_ROOT.'/ajax/searchrow.php');
       }
 
       $metanames = array();
@@ -1861,7 +1861,7 @@ class Search {
 
             $_POST['itemtype'] = $itemtype;
             $_POST['num'] = $i ;
-            include_once(GLPI_ROOT.'/ajax/searchmetarow.php');
+            include(GLPI_ROOT.'/ajax/searchmetarow.php');
          }
       }
       echo "</table>\n";
@@ -2088,8 +2088,15 @@ class Search {
 
          case "glpi_users.name" :
             if ($itemtype!='User') {
-               return " ORDER BY ".$table.$addtable.".`realname` $order,
-                                 ".$table.$addtable.".`firstname` $order,
+               if ($_SESSION["glpinames_format"] == User::FIRSTNAME_BEFORE) {
+                  $name1 = 'firstname';
+                  $name2 = 'realname';
+               } else {
+                  $name1 = 'realname';
+                  $name2 = 'firstname';
+               }
+               return " ORDER BY ".$table.$addtable.".$name1 $order,
+                                 ".$table.$addtable.".$name2 $order,
                                  ".$table.$addtable.".`name` $order";
             }
             return " ORDER BY `".$table."`.`name` $order";
@@ -2902,6 +2909,10 @@ class Search {
                   //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
                   $toadd     = self::makeTextCriteria("`$linktable`.`alternative_email`", $val,
                                                       $nott, $tmplink);
+                  if ($val == '^$') {
+                     return $link." ((`$linktable`.`users_id` IS NULL)
+                            OR `$linktable`.`alternative_email` IS NULL)";
+                  }
                }
             }
             $toadd2 = '';
@@ -3965,7 +3976,8 @@ class Search {
          case "glpi_tickets.due_date" :
          case "glpi_problems.due_date" :
          case "glpi_changes.due_date" :
-            if (($ID <> 151)
+         case "glpi_tickets.time_to_own" :
+            if (($ID <> 151) && ($ID <> 158)
                 && !empty($data[$num][0]['name'])
                 && ($data[$num][0]['status'] != CommonITILObject::WAITING)
                 && ($data[$num][0]['name'] < $_SESSION['glpi_currenttime'])) {
@@ -4321,9 +4333,10 @@ class Search {
             case "glpi_tickets.due_date" :
             case "glpi_problems.due_date" :
             case "glpi_changes.due_date" :
+            case "glpi_tickets.time_to_own" :
                // Due date + progress
-               if ($ID == 151) {
-                  $out = Html::convDate($data[$num][0]['name']);
+               if (($ID == 151) || ($ID == 158)) {
+                  $out = Html::convDateTime($data[$num][0]['name']);
 
                   // No due date in waiting status
                   if ($data[$num][0]['status'] == CommonITILObject::WAITING) {
@@ -4336,18 +4349,30 @@ class Search {
                       || ($data[$num][0]['status'] == Ticket::CLOSED)) {
                      return $out;
                   }
+
                   $itemtype = getItemTypeForTable($table);
                   $item = new $itemtype();
                   $item->getFromDB($data['id']);
                   $percentage  = 0;
                   $totaltime   = 0;
                   $currenttime = 0;
-                  if ($item->isField('slas_id') && $item->fields['slas_id'] != 0) { // Have SLA
-                     $sla = new SLA();
-                     $sla->getFromDB($item->fields['slas_id']);
-                     $currenttime = $sla->getActiveTimeBetween($item->fields['date'],
+                  $sltField    = 'slts_id';
+
+                  switch ($table.'.'.$field) {
+                     // If ticket has been taken into account : no progression display
+                     case "glpi_tickets.time_to_own" :
+                        if (($item->fields['takeintoaccount_delay_stat'] > 0)) {
+                           return $out;
+                        }
+                        break;
+                  }
+
+                  if ($item->isField($sltField) && $item->fields[$sltField] != 0) { // Have SLT
+                     $slt = new SLT();
+                     $slt->getFromDB($item->fields[$sltField]);
+                     $currenttime = $slt->getActiveTimeBetween($item->fields['date'],
                                                                date('Y-m-d H:i:s'));
-                     $totaltime   = $sla->getActiveTimeBetween($item->fields['date'],
+                     $totaltime   = $slt->getActiveTimeBetween($item->fields['date'],
                                                                $data[$num][0]['name']);
                   } else {
                      $calendars_id = Entity::getUsedConfig('calendars_id',
@@ -4781,7 +4806,7 @@ class Search {
                   $count_display++;
                   if (!empty($data[$num][$k]['name'])) {
                      $out .= (empty($out)?'':self::LBBR);
-                     $out .= "<a href='mailto:".$data[$num][$k]['name']."'>".$data[$num][$k]['name'];
+                     $out .= "<a href='mailto:".Html::entities_deep($data[$num][$k]['name'])."'>".$data[$num][$k]['name'];
                      $out .= "</a>";
                   }
                }
@@ -5647,7 +5672,7 @@ class Search {
             $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
             $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
             $PDF_TABLE .= "<td $extraparam valign='top'>";
-            $PDF_TABLE .= Html::weblink_extract(Html::clean($value, true, 2, false));
+            $PDF_TABLE .= Html::weblink_extract(Html::clean($value));
             $PDF_TABLE .= "</td>\n";
 
             break;
@@ -6063,8 +6088,9 @@ class Search {
    static function csv_clean($value) {
 
       $value = str_replace("\"", "''", $value);
-      $value = Html::clean($value);
+      $value = Html::clean($value, true, 2, false);
       $value = str_replace("&gt;", ">", $value);
+      $value = str_replace("&lt;", "<", $value);
 
       return $value;
    }
@@ -6082,10 +6108,7 @@ class Search {
       $value = preg_replace('/\x0A/', ' ', $value);
       $value = preg_replace('/\x0D/', NULL, $value);
       $value = str_replace("\"", "''", $value);
-      $value = str_replace("&gt;", ">", $value);
-      $value = str_replace("&lt;", "<", $value);
-      $value = str_replace(';', ';;', $value);
-      $value = Html::clean($value, true, 2, false);
+      $value = Html::clean($value);
       $value = str_replace("&gt;", ">", $value);
       $value = str_replace("&lt;", "<", $value);
 

@@ -111,8 +111,6 @@ if (isset($_GET['create_ticket'])) {
       echo "</td></tr>";
    }
 
-   
-   
    if (Session::haveRight("reminder_public", READ)) {
       echo "<tr class='noHover'><td class='top'>";
       Reminder::showListForCentral(false);

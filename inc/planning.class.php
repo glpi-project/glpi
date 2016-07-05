@@ -534,9 +534,9 @@ class Planning extends CommonGLPI {
          $pl_height = "$('.ui-tabs-panel').height()-30";
       }
 
-      $date_formats = array(0 => __('YYYY MM DD'),
-                            1 => __('DD MM YYYY'),
-                            2 => __('MM DD YYYY'));
+      $date_formats = array(0 => 'YYYY MMM DD',
+                            1 => 'DD MMM YYYY',
+                            2 => 'MMM DD YYYY');
       $date_format = $date_formats[$_SESSION["glpidate_format"]];
 
       self::initSessionForCurrentUser();
@@ -672,7 +672,7 @@ class Planning extends CommonGLPI {
                editEventTimes(event, revertFunc);
             },
             eventClick: function(event) {
-               if (event.ajaxurl && !disable_edit) {
+               if (event.ajaxurl && event.editable && !disable_edit) {
                   $('<div>')
                      .dialog({
                         modal:  true,
@@ -1258,7 +1258,7 @@ class Planning extends CommonGLPI {
       $current_group = &$_SESSION['glpi_plannings']['plannings']["group_".$params['groups_id']."_users"];
       $current_group = array('display' => true,
                              'type'    => 'group_users');
-      $users = Group_User::getGroupUsers($params['groups_id']);
+      $users = Group_User::getGroupUsers($params['groups_id'], "`glpi_users`.`is_active` = 1");
       $index_color = count($_SESSION['glpi_plannings']['plannings']);
       $group_user_index = 0;
       foreach($users as $user_data) {
@@ -1758,7 +1758,7 @@ class Planning extends CommonGLPI {
 
          $update = array('id'   => $params['items_id'],
                          'plan' => array('begin' => $params['start'],
-                                        'end'    => $params['end']));
+                                         'end'   => $params['end']));
 
          if (isset($item->fields['users_id_tech'])) {
             $update['users_id_tech'] = $item->fields['users_id_tech'];

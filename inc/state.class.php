@@ -49,7 +49,8 @@ class State extends CommonTreeDropdown {
                                            'Printer'          => 'is_visible_printer',
                                            'Peripheral'       => 'is_visible_peripheral',
                                            'Phone'            => 'is_visible_phone',
-                                           'NetworkEquipment' => 'is_visible_networkequipment');
+                                           'NetworkEquipment' => 'is_visible_networkequipment',
+                                           'SoftwareLicense'  => 'is_visible_softwarelicense');
    public $can_be_translated       = true;
 
    static $rightname               = 'state';
@@ -320,6 +321,12 @@ class State extends CommonTreeDropdown {
       $tab[27]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'),
                                      NetworkEquipment::getTypeName(Session::getPluralNumber()));
       $tab[27]['datatype'] = 'bool';
+
+      $tab[28]['table']    = $this->getTable();
+      $tab[28]['field']    = 'is_visible_softwarelicense';
+      $tab[28]['name']     = sprintf(__('%1$s - %2$s'),__('Visibility'),
+                                     SoftwareLicense::getTypeName(Session::getPluralNumber()));
+      $tab[28]['datatype'] = 'bool';
 
       return $tab;
    }

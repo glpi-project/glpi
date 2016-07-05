@@ -315,12 +315,10 @@ class Document_Item extends CommonDBRelation{
          $newitemtype = $itemtype;
       }
 
-      $query  = "SELECT `documents_id`
-                 FROM `glpi_documents_items`
-                 WHERE `items_id` = '$oldid'
-                        AND `itemtype` = '$itemtype';";
-
-      foreach ($DB->request($query) as $data) {
+      foreach ($DB->request('glpi_documents_items',
+                            array('FIELDS' => 'documents_id',
+                                  'WHERE'  => "`items_id` = '$oldid'
+                                                AND `itemtype` = '$itemtype'")) as $data) {
          $docitem = new self();
          $docitem->add(array('documents_id' => $data["documents_id"],
                              'itemtype'     => $newitemtype,
@@ -655,7 +653,8 @@ class Document_Item extends CommonDBRelation{
       $used       = array_keys($used_found);
       $used       = array_combine($used, $used);
 
-      if ($item->canAddItem('Document')
+      if (((($item->getType() == 'Ticket') && $item->canAddFollowups())
+           || $item->canAddItem('Document'))
           && ($withtemplate < 2)) {
          // Restrict entity for knowbase
          $entities = "";
