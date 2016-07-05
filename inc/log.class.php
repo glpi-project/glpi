@@ -607,8 +607,36 @@ class Log extends CommonDBTM {
             }
 
             if (empty($tmp['change'])) {
-               $tmp['change'] = sprintf(__('Change %1$s by %2$s'),
-                                        $data["old_value"], $data["new_value"]);
+               $newval = $data["new_value"];
+               $oldval = $data["old_value"];
+
+               if ($data['id_search_option'] == '70') {
+                  $newval = explode(' ', $newval);
+                  $oldval = explode(' ', $oldval);
+
+                  if ($oldval[0] == '&nbsp;') {
+                     $oldval = $data["old_value"];
+                  } else {
+                     foreach ($DB->request('glpi_users', "`name` = '".$oldval[0]."'") as $val) {
+                        $oldval = sprintf(__('%1$s %2$s'),
+                              formatUserName($val['id'], $oldval[0], $val['realname'],
+                                    $val['firstname']),
+                              $oldval[1]);
+                     }
+                  }
+
+                  if ($newval[0] == '&nbsp;') {
+                     $newval = $data["new_value"];
+                  } else {
+                     foreach ($DB->request('glpi_users', "`name` = '".$newval[0]."'") as $val) {
+                        $newval = sprintf(__('%1$s %2$s'),
+                              formatUserName($val['id'], $newval[0], $val['realname'],
+                                    $val['firstname']),
+                              $newval[1]);
+                     }
+                  }
+               }
+               $tmp['change'] = sprintf(__('Change %1$s by %2$s'), $oldval, $newval);
             }
          }
          $changes[] = $tmp;

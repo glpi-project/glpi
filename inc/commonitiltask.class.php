@@ -231,7 +231,8 @@ abstract class CommonITILTask  extends CommonDBTM {
                           'is_private'          => $this->isPrivate(),
                           // Pass users values
                           'task_users_id'       => $this->fields['users_id'],
-                          'task_users_id_tech'  => $this->fields['users_id_tech']);
+                          'task_users_id_tech'  => $this->fields['users_id_tech'],
+                          'task_groups_id_tech' => $this->fields['groups_id_tech']);
          NotificationEvent::raiseEvent('delete_task', $item, $options);
       }
    }
@@ -486,8 +487,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       if ($donotif) {
-         $options = array('task_id'    => $this->fields["id"],
-                          'is_private' => $this->isPrivate());
+         $options = array('task_id'             => $this->fields["id"],
+                          'is_private'          => $this->isPrivate());
          NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
       }
 
@@ -595,6 +596,12 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[7]['name']          = __('Status');
       $tab[7]['datatype']      = 'specific';
 
+      $tab[8]['table']        = 'glpi_groups';
+      $tab[8]['field']        = 'completename';
+      $tab[8]['name']         = __('Group assigned');
+      $tab[8]['datatype']     = 'dropdown';
+      $tab[8]['condition']    = 'is_task';
+
       return $tab;
    }
 
@@ -672,6 +679,18 @@ abstract class CommonITILTask  extends CommonDBTM {
                                           => array('table'      => static::getTable(),
                                                    'joinparams' => array('jointype'  => 'child')));
 
+      $tab[112]['table']          = 'glpi_groups';
+      $tab[112]['field']          = 'name';
+      $tab[112]['linkfield']      = 'groups_id_tech';
+      $tab[112]['name']           = __('Group assigned');
+      $tab[112]['datatype']       = 'itemlink';
+      $tab[112]['condition']      = 'is_task';
+      $tab[112]['forcegroupby']   = true;
+      $tab[112]['massiveaction']  = false;
+      $tab[112]['joinparams']     = array('beforejoin'
+                                          => array('table'      => static::getTable(),
+                                                   'joinparams' => array('jointype'  => 'child')));
+
       $tab[96]['table']          = static::getTable();
       $tab[96]['field']          = 'actiontime';
       $tab[96]['name']           = __('Duration');
@@ -697,6 +716,22 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[33]['massiveaction']  = false;
       $tab[33]['forcegroupby']   = true;
       $tab[33]['joinparams']     = array('jointype' => 'child');
+
+      $tab[173]['table']          = static::getTable();
+      $tab[173]['field']          = 'begin';
+      $tab[173]['name']           = __('Begin date');
+      $tab[173]['datatype']       = 'datetime';
+      $tab[173]['massiveaction']  = false;
+      $tab[173]['forcegroupby']   = true;
+      $tab[173]['joinparams']     = array('jointype' => 'child');
+
+      $tab[174]['table']          = static::getTable();
+      $tab[174]['field']          = 'end';
+      $tab[174]['name']           = __('End date');
+      $tab[174]['datatype']       = 'datetime';
+      $tab[174]['massiveaction']  = false;
+      $tab[174]['forcegroupby']   = true;
+      $tab[174]['joinparams']     = array('jointype' => 'child');
 
       return $tab;
    }
@@ -1104,6 +1139,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                   if ($_SESSION['glpiis_ids_visible']) {
                      $groupname = printf(__('%1$s (%2$s)'), $groupname, $this->fields["groups_id_tech"]);
                   }
+                  echo $groupname;
                }
             } else {
                _e('None');
@@ -1130,6 +1166,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                    $groupname = printf(__('%1$s (%2$s)'), $groupname,
                                        $this->fields["groups_id_tech"]);
                }
+               echo $groupname;
             }
             if (PlanningRecall::isAvailable()
                 && $_SESSION["glpiactiveprofile"]["interface"] == "central") {
@@ -1388,7 +1425,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo Html::jsHide("plan$rand_text");
             $params = array('action'    => 'add_event_classic_form',
                             'form'      => 'followups',
-                            'entity'    => $_SESSION["glpiactive_entity"],
+                            'entity'    => $item->fields['entities_id'],
                             'rand_user' => $rand_user,
                             'rand_group' => $rand_group,
                             'itemtype'  => $this->getType(),

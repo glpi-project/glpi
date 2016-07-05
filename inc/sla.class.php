@@ -95,7 +95,7 @@ class SLA extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
 
-      $rowspan = 1;
+      $rowspan = 2;
 
       $this->initForm($ID, $options);
       $this->showFormHeader($options);
@@ -106,6 +106,14 @@ class SLA extends CommonDBTM {
       echo "<td rowspan='".$rowspan."'>".__('Comments')."</td>";
       echo "<td rowspan='".$rowspan."'>
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>".__('Calendar')."</td>";
+      echo "<td>";
+
+      Calendar::dropdown(array('value'      => $this->fields["calendars_id"],
+                               'emptylabel' => __('24/7'),
+                               'toadd'      => array('-1' => __('Calendar of the ticket'))));
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -130,6 +138,11 @@ class SLA extends CommonDBTM {
       $tab[2]['name']             = __('ID');
       $tab[2]['massiveaction']    = false;
       $tab[2]['datatype']         = 'number';
+
+      $tab[4]['table']            = 'glpi_calendars';
+      $tab[4]['field']            = 'name';
+      $tab[4]['name']             = __('Calendar');
+      $tab[4]['datatype']         = 'dropdown';
 
       return $tab;
    }

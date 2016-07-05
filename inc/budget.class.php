@@ -127,15 +127,21 @@ class Budget extends CommonDropdown{
       Html::autocompletionTextField($this, "name");
       echo "</td>";
 
-      echo "<td rowspan='$rowspan' class='middle right'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='$rowspan'>".
-           "<textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>".
-           "</td></tr>";
+      echo "<td>".__('Type')."</td>";
+      echo "<td>";
+      Dropdown::show('BudgetType', array('value' => $this->fields['budgettypes_id']));
+      echo "</td></tr>";
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('price', 'Value')."</td>";
       echo "<td><input type='text' name='value' size='14'
-                 value='".Html::formatNumber($this->fields["value"], true)."'></td></tr>";
+                 value='".Html::formatNumber($this->fields["value"], true)."'></td>";
+
+                 echo "<td rowspan='$rowspan' class='middle right'>".__('Comments')."</td>";
+                 echo "<td class='center middle' rowspan='$rowspan'>".
+                      "<textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>".
+                      "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start date')."</td>";
@@ -147,6 +153,13 @@ class Budget extends CommonDropdown{
       echo "<td>".__('End date')."</td>";
       echo "<td>";
       Html::showDateField("end_date", array('value' => $this->fields["end_date"]));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Location')."</td>";
+      echo "<td>";
+      Location::dropdown(array('value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       $this->showFormButtons($options);
@@ -204,20 +217,25 @@ class Budget extends CommonDropdown{
       $tab[121]['datatype']       = 'datetime';
       $tab[121]['massiveaction']  = false;
 
+      $tab[4]['table']           = 'glpi_budgettypes';
+      $tab[4]['field']           = 'name';
+      $tab[4]['name']            = __('Type');
+      $tab[4]['datatype']        = 'dropdown';
+
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'begin_date';
       $tab[5]['name']            = __('Start date');
       $tab[5]['datatype']        = 'date';
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'end_date';
-      $tab[3]['name']            = __('End date');
-      $tab[3]['datatype']        = 'date';
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'end_date';
+      $tab[6]['name']            = __('End date');
+      $tab[6]['datatype']        = 'date';
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'value';
-      $tab[4]['name']            = _x('price', 'Value');
-      $tab[4]['datatype']        = 'decimal';
+      $tab[7]['table']           = $this->getTable();
+      $tab[7]['field']           = 'value';
+      $tab[7]['name']            = _x('price', 'Value');
+      $tab[7]['datatype']        = 'decimal';
 
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';
@@ -237,6 +255,7 @@ class Budget extends CommonDropdown{
 
       // add objectlock search options
       $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab += Location::getSearchOptionsToAdd();
 
       $tab += Notepad::getSearchOptionsToAdd();
 

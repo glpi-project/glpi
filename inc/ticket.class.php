@@ -758,8 +758,8 @@ class Ticket extends CommonITILObject {
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       $slaLevel_ticket = new SlaLevel_Ticket();
-      // TODO 2 parameters mandatory since 7bda94b2fbc40c285213ebea226e9e775efd748a
-      $slaLevel_ticket->deleteForTicket($this->getID());
+      $slaLevel_ticket->deleteForTicket($this->getID(), SLT::TTO);
+      $slaLevel_ticket->deleteForTicket($this->getID(), SLT::TTR);
 
       $query1 = "DELETE
                  FROM `glpi_tickets_tickets`
@@ -1099,7 +1099,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Ticket update
-      if ($this->fields['id'] > 0) {
+      if (isset($this->fields['id']) && $this->fields['id'] > 0) {
          if (!isset($manual_slts_id[$type])
              && isset($input[$sltField]) && ($input[$sltField] > 0)
              && ($input[$sltField] != $this->fields[$sltField])) {
@@ -3094,6 +3094,7 @@ class Ticket extends CommonITILObject {
       }
       $opt = array('value'     => $values['itilcategories_id'],
                    'condition' => $condition,
+                   'entity'    => $_SESSION["glpiactive_entity"],
                    'on_change' => 'this.form.submit()');
 
       if ($values['itilcategories_id'] && $tt->isMandatoryField("itilcategories_id")) {
@@ -4226,10 +4227,10 @@ class Ticket extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe' id='mainformtable4'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('name');
+      echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('name');
       printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));
       echo $tt->getEndHiddenFieldText('name')."</th>";
-      echo "<td width='".(100-$colsize1)."%' colspan='3'>";
+      echo "<td colspan='3'>";
       if (!$ID
           || $canupdate_descr) {
          echo $tt->getBeginHiddenFieldValue('name');
@@ -4247,7 +4248,7 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('content');
+      echo "<th style='width:$colsize1%'>".$tt->getBeginHiddenFieldText('content');
       printf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content'));
       if (!$ID
           || $canupdate_descr) {
@@ -4255,7 +4256,7 @@ class Ticket extends CommonITILObject {
          Html::showTooltip(nl2br(Html::Clean($content)));
       }
       echo $tt->getEndHiddenFieldText('content')."</th>";
-      echo "<td width='".(100-$colsize1)."%' colspan='3'>";
+      echo "<td colspan='3'>";
       if (!$ID
           || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          echo $tt->getBeginHiddenFieldValue('content');
@@ -4288,7 +4289,7 @@ class Ticket extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       if ($view_linked_tickets) {
-         echo "<th width='$colsize1%'>". _n('Linked ticket', 'Linked tickets', Session::getPluralNumber());
+         echo "<th style='width:$colsize1%'>". _n('Linked ticket', 'Linked tickets', Session::getPluralNumber());
          $rand_linked_ticket = mt_rand();
          if ($canupdate) {
             echo "&nbsp;";
@@ -4297,7 +4298,7 @@ class Ticket extends CommonITILObject {
                    class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
          }
          echo '</th>';
-         echo "<td width='".(100-$colsize1)."%' colspan='3'>";
+         echo "<td colspan='3'>";
          if ($canupdate) {
             echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
             echo "<table class='tab_format' width='100%'><tr><td width='30%'>";
@@ -4331,7 +4332,7 @@ class Ticket extends CommonITILObject {
       // View files added
       echo "<tr class='tab_bg_1'>";
       // Permit to add doc when creating a ticket
-      echo "<th width='$colsize1%'>";
+      echo "<th style='width:$colsize1%'>";
       echo $tt->getBeginHiddenFieldText('_documents_id');
       $doctitle =  sprintf(__('File (%s)'), Document::getMaxUploadSize());
       printf(__('%1$s%2$s'), $doctitle, $tt->getMandatoryMark('_documents_id'));
@@ -4341,7 +4342,7 @@ class Ticket extends CommonITILObject {
       }
       echo $tt->getEndHiddenFieldText('_documents_id');
       echo "</th>";
-      echo "<td colspan='3' width='".(100-$colsize1)."%' >";
+      echo "<td colspan='3'>";
       // Do not set values
       echo $tt->getEndHiddenFieldValue('_documents_id');
       if ($tt->isPredefinedField('_documents_id')) {
@@ -4914,14 +4915,16 @@ class Ticket extends CommonITILObject {
          $foruser = true;
       }
 
-      $query = "SELECT `status`,
-                       COUNT(*) AS COUNT
+      $query = "SELECT `glpi_tickets`.`status`,
+                       COUNT(DISTINCT `glpi_tickets`.`id`) AS COUNT
                 FROM `glpi_tickets` ";
 
       if ($foruser) {
          $query .= " LEFT JOIN `glpi_tickets_users`
                         ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`
-                            AND `glpi_tickets_users`.`type` = '".CommonITILActor::REQUESTER."')";
+                            AND `glpi_tickets_users`.`type` = '".CommonITILActor::REQUESTER."')
+                     LEFT JOIN `glpi_ticketvalidations`
+                        ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)";
 
          if (Session::haveRight(self::$rightname, self::READGROUP)
              && isset($_SESSION["glpigroups"])
@@ -4934,7 +4937,9 @@ class Ticket extends CommonITILObject {
       $query .= getEntitiesRestrictRequest("WHERE", "glpi_tickets");
 
       if ($foruser) {
-         $query .= " AND (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."' ";
+         $query .= " AND (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."'
+                           OR `glpi_tickets`.`users_id_recipient` = '".Session::getLoginUserID()."'
+                           OR `glpi_ticketvalidations`.`users_id_validate` = '".Session::getLoginUserID()."'";
 
          if (Session::haveRight(self::$rightname, self::READGROUP)
              && isset($_SESSION["glpigroups"])
@@ -6131,8 +6136,7 @@ class Ticket extends CommonITILObject {
       $followups = $followup_obj->find("tickets_id = ".$this->getID()." $restrict_fup", 'date DESC');
       foreach ($followups as $followups_id => $followup) {
          $followup_obj->getFromDB($followups_id);
-         $can_edit                                               = $followup_obj->canUpdateItem();
-         $followup['can_edit']                                   = $can_edit;
+         $followup['can_edit']                                   = $followup_obj->canUpdateItem();;
          $timeline[$followup['date']."_followup_".$followups_id] = array('type' => 'TicketFollowup',
                                                                          'item' => $followup);
       }
@@ -6142,8 +6146,7 @@ class Ticket extends CommonITILObject {
       $tasks = $task_obj->find("tickets_id = ".$this->getID()." $restrict_task", 'date DESC');
       foreach ($tasks as $tasks_id => $task) {
          $task_obj->getFromDB($tasks_id);
-         $can_edit                                   = $task_obj->canUpdateItem();
-         $task['can_edit']                           = $can_edit;
+         $task['can_edit']                           = $task_obj->canUpdateItem();
          $timeline[$task['date']."_task_".$tasks_id] = array('type' => 'TicketTask',
                                                              'item' => $task);
       }
@@ -6335,8 +6338,10 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_content ".$item['type'].
                ((isset($item_i['status'])) ? " ".$item_i['status'] : "")."'".
                "id='viewitem".$item['type'].$item_i['id'].$rand."'>";
-         echo "<div class='edit_item_content'></div>";
-         echo "<span class='cancel_edit_item_content'></span>";
+         if ($item_i['can_edit']) {
+            echo "<div class='edit_item_content'></div>";
+            echo "<span class='cancel_edit_item_content'></span>";
+         }
          echo "<div class='displayed_content'>";
          if (!in_array($item['type'], array('Document_Item', 'Assign'))
              && $item_i['can_edit']) {
@@ -6362,8 +6367,12 @@ class Ticket extends CommonITILObject {
             echo "<div class='item_content $long_text'>";
             echo "<p>";
             if (isset($item_i['state'])) {
+               $onClick = "onclick='change_task_state(".$item_i['id'].", this)'";
+               if( !$item_i['can_edit'] ) {
+                  $onClick = "style='cursor: not-allowed;'" ;
+               }
                echo "<span class='state state_".$item_i['state']."'
-                           onclick='change_task_state(".$item_i['id'].", this)'
+                           $onClick
                            title='".Planning::getState($item_i['state'])."'>";
                echo "</span>";
             }

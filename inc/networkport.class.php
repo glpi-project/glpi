@@ -1020,47 +1020,40 @@ class NetworkPort extends CommonDBChild {
 
       $np = new self();
       // ADD Ports
-      $query = "SELECT `id`
-                FROM `glpi_networkports`
-                WHERE `items_id` = '".$old_items_id."'
-                      AND `itemtype` = '".$itemtype."';";
+      foreach ($DB->request('glpi_networkports',
+                            array('FIELDS' => 'id',
+                                  'WHERE'  => "`items_id` = '$old_items_id'
+                                                AND `itemtype` = '$itemtype'")) as $data) {
+         $np->getFromDB($data["id"]);
+         $instantiation = $np->getInstantiation();
+         unset($np->fields["id"]);
+         $np->fields["items_id"] = $new_items_id;
+         $portid                 = $np->addToDB();
 
-      $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
+         if ($instantiation !== false) {
+             $input = array();
+             $input["networkports_id"] = $portid;
+             unset($instantiation->fields["id"]);
+             unset($instantiation->fields["networkports_id"]);
+             foreach ($instantiation->fields as $key => $val) {
+                 if (!empty($val)) {
+                     $input[$key] = $val;
+                 }
+             }
+             $instantiation->add($input);
+            unset($instantiation);
+         }
 
-         while ($data = $DB->fetch_assoc($result)) {
+         $npv = new NetworkPort_Vlan();
+         foreach ($DB->request($npv->getTable(),
+                               array($npv::$items_id_1 => $data["id"])) as $vlan) {
 
-            $np->getFromDB($data["id"]);
-            $instantiation = $np->getInstantiation();
-            unset($np->fields["id"]);
-            $np->fields["items_id"] = $new_items_id;
-            $portid                 = $np->addToDB();
-
-            if ($instantiation !== false) {
-                $input = array();
-                $input["networkports_id"] = $portid;
-                unset($instantiation->fields["id"]);
-                unset($instantiation->fields["networkports_id"]);
-                foreach ($instantiation->fields as $key => $val) {
-                    if (!empty($val)) {
-                        $input[$key] = $val;
-                    }
-                }
-                $instantiation->add($input);
-               unset($instantiation);
+            $input = array($npv::$items_id_1 => $portid,
+                           $npv::$items_id_2 => $vlan['vlans_id']);
+            if (isset($vlan['tagged'])) {
+               $input['tagged'] = $vlan['tagged'];
             }
-
-            $npv = new NetworkPort_Vlan();
-            foreach ($DB->request($npv->getTable(),
-                                  array($npv::$items_id_1 => $data["id"])) as $vlan) {
-
-               $input = array($npv::$items_id_1 => $portid,
-                              $npv::$items_id_2 => $vlan['vlans_id']);
-               if (isset($vlan['tagged'])) {
-                  $input['tagged'] = $vlan['tagged'];
-               }
-               $npv->add($input);
-            }
+            $npv->add($input);
          }
       }
    }

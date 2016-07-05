@@ -368,11 +368,12 @@ class Infocom extends CommonDBChild {
    **/
    static function getAutoManagemendDatesFields() {
 
-      return array('autofill_buy_date'      => 'buy_date',
-                   'autofill_use_date'      => 'use_date',
-                   'autofill_delivery_date' => 'delivery_date',
-                   'autofill_warranty_date' => 'warranty_date',
-                   'autofill_order_date'    => 'order_date');
+      return array('autofill_buy_date'         => 'buy_date',
+                   'autofill_use_date'         => 'use_date',
+                   'autofill_delivery_date'    => 'delivery_date',
+                   'autofill_warranty_date'    => 'warranty_date',
+                   'autofill_order_date'       => 'order_date',
+                   'autofill_destruction_date' => 'destruction_date');
    }
 
 
@@ -973,6 +974,48 @@ class Infocom extends CommonDBChild {
             echo "<table class='tab_cadre".(!strpos($_SERVER['PHP_SELF'],
                                                     "infocoms-show")?"_fixe":"")."'>";
 
+            // Can edit calendar ?
+           $editcalendar = ($withtemplate != 2);
+
+            echo "<tr><th colspan='4'>".__('Item lifecycle')."</th></tr>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".__('Order date')."</td><td>";
+            Html::showDateField("order_date", array('value'      => $ic->fields["order_date"],
+                                                    'maybeempty' => true,
+                                                    'canedit'    => $editcalendar));
+            echo "</td>";
+            echo "<td>".__('Date of purchase')."</td><td>";
+            Html::showDateField("buy_date", array('value'      => $ic->fields["buy_date"],
+                                                  'maybeempty' => true,
+                                                  'canedit'    => $editcalendar));
+            echo "</td></tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".__('Delivery date')."</td><td>";
+            Html::showDateField("delivery_date", array('value'      => $ic->fields["delivery_date"],
+                                                       'maybeempty' => true,
+                                                       'canedit'    => $editcalendar));
+            echo "</td>";
+            echo "<td>".__('Startup date')."</td><td>";
+            Html::showDateField("use_date", array('value'      => $ic->fields["use_date"],
+                                                  'maybeempty' => true,
+                                                  'canedit'    => $editcalendar));
+            echo "</td></tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".__('Date of last physical inventory')."</td><td>";
+            Html::showDateField("inventory_date",
+                                array('value'      => $ic->fields["inventory_date"],
+                                      'maybeempty' => true,
+                                      'canedit'    => $editcalendar));
+            echo "</td>";
+            echo "<td>".__('Date of destruction')."</td><td>";
+            Html::showDateField("destruction_date",
+                                array('value'      => $ic->fields["destruction_date"],
+                                      'maybeempty' => true,
+                                      'canedit'    => $editcalendar));
+            echo "</td></tr>";
+
             echo "<tr><th colspan='4'>".__('Financial and administrative information')."</th></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -996,21 +1039,11 @@ class Infocom extends CommonDBChild {
             }
             echo "</td></tr>";
 
-            // Can edit calendar ?
-            $editcalendar = ($withtemplate != 2);
-
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Order number')."</td>";
             echo "<td >";
             Html::autocompletionTextField($ic, "order_number", array('option' => $option));
             echo "</td>";
-            echo "<td>".__('Order date')."</td><td>";
-            Html::showDateField("order_date", array('value'      => $ic->fields["order_date"],
-                                                    'maybeempty' => true,
-                                                    'canedit'    => $editcalendar));
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
             $istemplate = '';
             if ($item->isTemplate()
                 || in_array($item->getType(),
@@ -1023,11 +1056,6 @@ class Infocom extends CommonDBChild {
                                    'Infocom', $item->getEntityID());
             Html::autocompletionTextField($ic, "immo_number", array('value'  => $objectName,
                                                                     'option' => $option));
-            echo "</td>";
-            echo "<td>".__('Date of purchase')."</td><td>";
-            Html::showDateField("buy_date", array('value'      => $ic->fields["buy_date"],
-                                                  'maybeempty' => true,
-                                                  'canedit'    => $editcalendar));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
@@ -1035,41 +1063,18 @@ class Infocom extends CommonDBChild {
             echo "<td>";
             Html::autocompletionTextField($ic, "bill", array('option' => $option));
             echo "</td>";
-            echo "<td>".__('Delivery date')."</td><td>";
-            Html::showDateField("delivery_date", array('value'      => $ic->fields["delivery_date"],
-                                                       'maybeempty' => true,
-                                                       'canedit'    => $editcalendar));
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Delivery form')."</td><td>";
             Html::autocompletionTextField($ic, "delivery_number", array('option' => $option));
-            echo "</td>";
-            echo "<td>".__('Startup date')."</td><td>";
-            Html::showDateField("use_date", array('value'      => $ic->fields["use_date"],
-                                                  'maybeempty' => true,
-                                                  'canedit'    => $editcalendar));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>"._x('price', 'Value')."</td>";
             echo "<td><input type='text' name='value' $option value='".
                    Html::formatNumber($ic->fields["value"], true)."' size='14'></td>";
-            echo "<td>".__('Date of last physical inventory')."</td><td>";
-            Html::showDateField("inventory_date",
-                                array('value'      => $ic->fields["inventory_date"],
-                                      'maybeempty' => true,
-                                      'canedit'    => $editcalendar));
-            echo "</td></tr>";
-
-            echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Warranty extension value')."</td>";
             echo "<td><input type='text' $option name='warranty_value' value='".
-                       Html::formatNumber($ic->fields["warranty_value"], true)."' size='14'></td>";
-            echo "<td rowspan='5'>".__('Comments')."</td>";
-            echo "<td rowspan='5' class='middle'>";
-            echo "<textarea cols='45' rows='9' name='comment' >".$ic->fields["comment"];
-            echo "</textarea></td></tr>\n";
+            Html::formatNumber($ic->fields["warranty_value"], true)."' size='14'></td>";
+            echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Account net value')."</td><td>";
@@ -1077,7 +1082,11 @@ class Infocom extends CommonDBChild {
                                                 $ic->fields["sink_time"], $ic->fields["sink_coeff"],
                                                 $ic->fields["warranty_date"],
                                                 $ic->fields["use_date"], $date_tax,"n"));
-            echo "</td></tr>";
+            echo "</td>";
+            echo "<td rowspan='4'>".__('Comments')."</td>";
+            echo "<td rowspan='4' class='middle'>";
+            echo "<textarea cols='45' rows='9' name='comment' >".$ic->fields["comment"];
+            echo "</textarea></td></tr>\n";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Amortization type')."</td><td >";
@@ -1178,6 +1187,11 @@ class Infocom extends CommonDBChild {
             }
             echo "</td></tr>";
 
+            //We use a static method to call the hook
+            //It's then easier for plugins to detect if the hook is available or not
+            //The just have to look for the addPluginInfos method
+            self::addPluginInfos($item);
+
             if ($canedit) {
                echo "<tr>";
                echo "<td class='tab_bg_2 center' colspan='2'>";
@@ -1200,6 +1214,9 @@ class Infocom extends CommonDBChild {
       }
    }
 
+   static function addPluginInfos(CommonDBTM $item) {
+      Plugin::doHookFunction("infocom", $item);
+   }
 
    /**
     * @param $itemtype
@@ -1430,6 +1447,13 @@ class Infocom extends CommonDBChild {
       $tab[122]['forcegroupby']        = true;
       $tab[122]['joinparams']          = $joinparams;
 
+      $tab[150]['table']               = 'glpi_infocoms';
+      $tab[150]['field']               = 'destruction_date';
+      $tab[150]['name']                = __('Date of destruction');
+      $tab[150]['datatype']            = 'date';
+      $tab[150]['forcegroupby']        = true;
+      $tab[150]['joinparams']          = $joinparams;
+
       return $tab;
    }
 
@@ -1473,11 +1497,17 @@ class Infocom extends CommonDBChild {
       $tab[25]['datatype']       = 'date';
       $tab[25]['forcegroupby']   = true;
 
-      $tab[26]['table']          = 'glpi_infocoms';
-      $tab[26]['field']          = 'inventory_date';
-      $tab[26]['name']           = __('Date of last physical inventory');
-      $tab[26]['datatype']       = 'date';
-      $tab[26]['forcegroupby']   = true;
+      $tab[27]['table']          = 'glpi_infocoms';
+      $tab[27]['field']          = 'inventory_date';
+      $tab[27]['name']           = __('Date of last physical inventory');
+      $tab[27]['datatype']       = 'date';
+      $tab[27]['forcegroupby']   = true;
+
+      $tab[28]['table']          = 'glpi_infocoms';
+      $tab[28]['field']          = 'destruction_date';
+      $tab[28]['name']           = __('Date of destruction');
+      $tab[28]['datatype']       = 'date';
+      $tab[28]['forcegroupby']   = true;
 
       $tab[6]['table']           = $this->getTable();
       $tab[6]['field']           = 'warranty_duration';
@@ -1726,6 +1756,5 @@ class Infocom extends CommonDBChild {
       }
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
-
 }
 ?>

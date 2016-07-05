@@ -192,13 +192,12 @@ class Contract_Item extends CommonDBRelation{
    static function countForContract(Contract $item) {
       global $DB;
 
-         $sql = "SELECT  DISTINCT `itemtype`
-              FROM `glpi_contracts_items`
-              WHERE `glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'";
-
       $nb = 0;
 
-      foreach ($DB->request($sql) as $data) {
+      foreach ($DB->request('glpi_contracts_items',
+                            array('DISTINCT FIELDS' => "itemtype",
+                                  'WHERE'           => "`glpi_contracts_items`.`contracts_id`
+                                                         = '".$item->getField('id')."'")) as $data) {
          $itemt = getItemForItemtype($data['itemtype']);
 
          $query = "SELECT COUNT(*) AS cpt
@@ -345,12 +344,10 @@ class Contract_Item extends CommonDBRelation{
          $newitemtype = $itemtype;
       }
 
-      $query  = "SELECT `contracts_id`
-                 FROM `glpi_contracts_items`
-                 WHERE `items_id` = '$oldid'
-                        AND `itemtype` = '$itemtype';";
-
-      foreach ($DB->request($query) as $data) {
+      foreach ($DB->request('glpi_contracts_items',
+                            array('FIELDS' => 'contracts_id',
+                                  'WHERE'  => "`items_id` = '$oldid'
+                                                AND `itemtype` = '$itemtype'")) as $data) {
          $contractitem = new self();
          $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                   'itemtype'     => $newitemtype,

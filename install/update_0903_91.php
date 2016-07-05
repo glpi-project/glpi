@@ -302,7 +302,33 @@ function update0903to91() {
    $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
    $migration->addKey("glpi_computers_softwareversions", "date_install");
 
+   /************** Location for budgets *************/
+   $migration->addField("glpi_budgets", "locations_id", "integer");
+   $migration->addKey("glpi_budgets", "locations_id");
 
+   if (!TableExists('glpi_budgettypes')) {
+      $query = "CREATE TABLE `glpi_budgettypes` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `comment` text COLLATE utf8_unicode_ci,
+        `date_mod` datetime DEFAULT NULL,
+        `date_creation` datetime DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        KEY `name` (`name`),
+        KEY `date_mod` (`date_mod`),
+        KEY `date_creation` (`date_creation`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "add table glpi_budgettypes");
+   }
+
+   $new = $migration->addField("glpi_budgets", "budgettypes_id", "integer");
+   $migration->addKey("glpi_budgets", "budgettypes_id");
+
+   if ($new) {
+      $query = "UPDATE `glpi_displaypreferences`
+                SET `num`='6' WHERE `itemtype`='Budget' AND `num`='4'";
+      $DB->queryOrDie($query, "change budget display preference");
+   }
 
    /************** New Planning with fullcalendar.io *************/
    $migration->addField("glpi_users", "plannings", "text");
@@ -496,6 +522,7 @@ function update0903to91() {
    $migration->addField("glpi_softwarelicenses", "is_helpdesk_visible", "bool");
    $migration->addField("glpi_softwarelicenses", "is_template", "bool");
    $migration->addField("glpi_softwarelicenses", "template_name", "string");
+   $migration->addField("glpi_softwarelicenses", "states_id", "string");
    $migration->addKey("glpi_softwarelicenses", "locations_id");
    $migration->addKey("glpi_softwarelicenses", "users_id_tech");
    $migration->addKey("glpi_softwarelicenses", "users_id");
@@ -504,6 +531,14 @@ function update0903to91() {
    $migration->addKey("glpi_softwarelicenses", "is_helpdesk_visible");
    $migration->addKey("glpi_softwarelicenses", "is_deleted");
    $migration->addKey("glpi_softwarelicenses", "is_template");
+   $migration->addKey("glpi_softwarelicenses", "states_id");
+
+   $migration->addField("glpi_infocoms", "destruction_date", "datetime");
+   $migration->addField("glpi_entities", "autofill_destruction_date",
+                        "string", array('value' => '-2'));
+
+   $migration->addField("glpi_states", "is_visible_softwarelicense", "bool");
+   $migration->addKey("glpi_states", "is_visible_softwarelicense");
 
    /************* Add is_recursive on assets ***/
 
@@ -628,7 +663,7 @@ function update0903to91() {
                   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
                   `type` int(11) NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
-                  `resolution_time` int(11) NOT NULL,
+                  `number_time` int(11) NOT NULL,
                   `calendars_id` int(11) NOT NULL DEFAULT '0',
                   `date_mod` datetime DEFAULT NULL,
                   `definition_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -652,12 +687,12 @@ function update0903to91() {
             while ($data = $DB->fetch_assoc($result)) {
                $query = "INSERT INTO `glpi_slts`
                                 (`id`, `name`,`entities_id`, `is_recursive`, `type`, `comment`,
-                                 `resolution_time`, `calendars_id`, `date_mod`, `definition_time`,
+                                 `number_time`, `date_mod`, `definition_time`,
                                  `end_of_working_day`, `date_creation`, `slas_id`)
                          VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."',
                                  '".$data['is_recursive']."', '".SLT::TTR."',
-                                 '".addslashes($data['comment'])."', '".$data['resolution_time']."',
-                                 '".$data['calendars_id']."', '".$data['date_mod']."',
+                                 '".addslashes($data['comment'])."', '".$data['number_time']."',
+                                 '".$data['date_mod']."',
                                  '".$data['definition_time']."', '".$data['end_of_working_day']."',
                                  '".date('Y-m-d H:i:s')."', '".$data['id']."');";
                $DB->queryOrDie($query, "SLA migration to SLT");
@@ -666,7 +701,7 @@ function update0903to91() {
       }
 
       // Delete deprecated fields of SLA
-      foreach (array('resolution_time', 'calendars_id', 'definition_time',
+      foreach (array('number_time', 'definition_time',
                      'end_of_working_day') as $field) {
          $migration->dropField('glpi_slas', $field);
       }
@@ -703,16 +738,51 @@ function update0903to91() {
                       "SLA ruleactions migration");
    }
 
+   // to delete in next version - fix change in update
+   if (!FieldExists('glpi_slas', 'calendars_id')) {
+      $migration->addField("glpi_slas", "calendars_id", "integer", array('after' => 'is_recursive'));
+      $migration->addKey('glpi_slas', 'calendars_id');
+   }
+   if (FieldExists('glpi_slts', 'resolution_time')
+       && !FieldExists('glpi_slts', 'number_time')) {
+      $migration->changeField('glpi_slts', 'resolution_time', 'number_time', 'integer');
+   }
+
    /************** High contrast CSS **************/
    Config::setConfigurationValues('core', array('highcontrast_css' => 0));
    $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
 
 
+   /************** SMTP option for self-signed certificates **************/
+   Config::setConfigurationValues('core', array('smtp_check_certificate' => 1));
+
    // for group task
    $migration->addField("glpi_tickettasks", "groups_id_tech", "integer");
+   $migration->addKey("glpi_tickettasks", "groups_id_tech");
+   $migration->addField("glpi_changetasks", "groups_id_tech", "integer");
+   $migration->addKey("glpi_changetasks", "groups_id_tech");
    $migration->addField("glpi_problemtasks", "groups_id_tech", "integer");
+   $migration->addKey("glpi_problemtasks", "groups_id_tech");
    $migration->addField("glpi_groups", "is_task", "bool", array('value' => 1,
                                                                 'after' => 'is_assign'));
+
+   // for date_mod adding to tasks and to followups
+   if (!FieldExists('glpi_tickettasks', 'date_mod')) {
+      $migration->addField("glpi_tickettasks", "date_mod", "datetime");
+      $migration->addKey("glpi_tickettasks", "date_mod");
+   }
+   if (!FieldExists('glpi_problemtasks', 'date_mod')) {
+      $migration->addField("glpi_problemtasks", "date_mod", "datetime");
+      $migration->addKey("glpi_problemtasks", "date_mod");
+   }
+   if (!FieldExists('glpi_changetasks', 'date_mod')) {
+      $migration->addField("glpi_changetasks", "date_mod", "datetime");
+      $migration->addKey("glpi_changetasks", "date_mod");
+   }
+   if (!FieldExists('glpi_ticketfollowups', 'date_mod')) {
+      $migration->addField("glpi_ticketfollowups", "date_mod", "datetime");
+      $migration->addKey("glpi_ticketfollowups", "date_mod");
+   }
 
 
    // ************ Keep it at the end **************

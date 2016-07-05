@@ -87,10 +87,10 @@ if (!isset($_POST['emptylabel']) || ($_POST['emptylabel'] == '')) {
 $where = "WHERE 1 ";
 
 if ($item->maybeDeleted()) {
-   $where .= " AND `is_deleted` = '0' ";
+   $where .= " AND `$table`.`is_deleted` = '0' ";
 }
 if ($item->maybeTemplate()) {
-   $where .= " AND `is_template` = '0' ";
+   $where .= " AND `$table`.`is_template` = '0' ";
 }
 
 if (!isset($_POST['page'])) {
