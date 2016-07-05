@@ -1171,7 +1171,6 @@ class KnowbaseItem extends CommonDBTM {
                   $where   .= " AND (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
                                  OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains)."
                                  $addwhere)";
-                  $score = "";
                } else {
                   $where = $where_1;
                }
