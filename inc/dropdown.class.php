@@ -395,6 +395,12 @@ class Dropdown {
                                                                          false, $translate));
 
                      }
+                     if (!empty($data['budgettypes_id'])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Type')."</span>",
+                                     self::getDropdownName("glpi_budgettypes",
+                                                           $data["budgettypes_id"], false, $translate));
+
+                     }
                      if (!empty($data['begin_date'])) {
                         $comment .= "<br>".sprintf(__('%1$s: %2$s'),
                                                    "<span class='b'>".__('Start date')."</span>",
