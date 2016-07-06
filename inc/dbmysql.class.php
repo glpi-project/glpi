@@ -839,7 +839,12 @@ class DBmysqlIterator  implements Iterator {
       if ($debug) {
          toolbox::logdebug("req", $this->sql);
       }
-      $this->res = $this->conn->query($this->sql);
+      $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
+   }
+
+
+   public function getSql() {
+      return preg_replace('/ +/', ' ', $this->sql);
    }
 
 
