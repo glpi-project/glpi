@@ -896,6 +896,11 @@ td { }
    background-color: #F1F1F1;
 }
 
+.tab_spaced {
+   border-collapse: separate;
+   border-spacing: 3px;
+}
+
 .tab_cadre_fixehov th, .tab_cadrehov th {
    background-color: #F8F8F8;
    color: #2E2E2E;

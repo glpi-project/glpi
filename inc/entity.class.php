@@ -1487,7 +1487,7 @@ class Entity extends CommonTreeDropdown {
       echo "</td></tr>";
       echo "</table>";
 
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe tab_spaced'>";
       echo "<tr><th colspan='4'>".__('Alarms options')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
