@@ -767,11 +767,15 @@ class DBmysqlIterator  implements Iterator {
             $this->sql = "";
             foreach ($field as $t => $f) {
                if (is_numeric($t)) {
-                  $this->sql .= (empty($this->sql) ? "SELECT " : ",") . $f;
+                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . self::quoteName($f);
                } else if (is_array($f)) {
-                  $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(",$t.",$f);
+                  $t = self::quoteName($t);
+                  $f = array_map([__CLASS__, 'quoteName'], $f);
+                  $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(", $t.",$f);
                } else {
-                  $this->sql .= (empty($this->sql) ? "SELECT " : ",") . "$t.$f";
+                  $t = self::quoteName($t);
+                  $f = self::quoteName($f);
+                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . "$t.$f";
                }
             }
          } else if (empty($field)) {
@@ -782,9 +786,11 @@ class DBmysqlIterator  implements Iterator {
 
          // FROM table list
          if (is_array($table)) {
-            $this->sql .= " FROM `".implode("`, `",$table)."`";
+            $table = array_map([__CLASS__, 'quoteName'], $table);
+            $this->sql .= ' FROM '.implode(", ",$table);
          } else {
-            $this->sql .= " FROM `$table`";
+            $table = self::quoteName($table);
+            $this->sql .= " FROM $table";
          }
 
          // WHERE criteria list
@@ -840,6 +846,11 @@ class DBmysqlIterator  implements Iterator {
          toolbox::logdebug("req", $this->sql);
       }
       $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
+   }
+
+
+   private static function quoteName($name) {
+      return ($name[0]=='`' ? $name : "`$name`");
    }
 
 
