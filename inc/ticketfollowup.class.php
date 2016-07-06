@@ -910,6 +910,12 @@ class TicketFollowup  extends CommonDBTM {
 
          while ($data = $DB->fetch_assoc($result)) {
             $this->getFromDB($data['id']);
+            $options = array( 'parent' => $ticket,
+                              'rand'   => $rand
+                           );
+            Plugin::doHook('pre_show_item', array('item' => $this, 'options' => &$options));
+            $data = array_merge( $data, $this->fields );
+
             $candelete = $this->canPurge() && $this->canPurgeItem();
             $canedit   = $this->canUpdate() && $this->canUpdateItem();
 
@@ -1004,6 +1010,7 @@ class TicketFollowup  extends CommonDBTM {
                echo "};";
                echo "</script>\n";
             }
+            Plugin::doHook('post_show_item', array('item' => $this, 'options' => $options));
          }
       }
    }

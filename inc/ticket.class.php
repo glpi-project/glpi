@@ -6281,7 +6281,14 @@ class Ticket extends CommonITILObject {
 
       $timeline_index = 0;
       foreach ($timeline as $item) {
-         $item_i = $item['item'];
+         $options = array( 'parent' => $this,
+                           'rand' => $rand
+                           ) ;
+         $obj = new $item['type'] ;
+         $obj->fields = $item['item'] ;
+         Plugin::doHook('pre_show_item', array('item' => $obj, 'options' => &$options));
+
+         $item_i = $obj->fields;
 
          $date = "";
          if (isset($item_i['date'])) {
@@ -6480,6 +6487,9 @@ class Ticket extends CommonITILObject {
          echo "</div>"; //end  h_info
 
          $timeline_index++;
+
+         Plugin::doHook('post_show_item', array('item' => $obj, 'options' => $options));
+
       } // end foreach timeline
 
       echo "<div class='break'></div>";
