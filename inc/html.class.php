@@ -3887,14 +3887,15 @@ class Html {
     *
     * @return nothing
    **/
-   static function initEditorSystem($domid, $rand='', $display=true) {
+   static function initEditorSystem($name, $rand='', $display=true) {
       global $CFG_GLPI;
 
       Html::scriptStart();
       $js = "tinyMCE.init({
          language: '".$_SESSION['glpilanguage']."',
          browser_spellcheck: true,
-         selector: '#$domid',
+         mode: 'exact',
+         elements: '$name',
          relative_urls: false,
          remove_script_host: false,
          entity_encoding: 'raw',

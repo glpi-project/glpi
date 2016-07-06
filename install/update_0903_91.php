@@ -683,7 +683,7 @@ function update0903to91() {
                                  `end_of_working_day`, `date_creation`, `slas_id`)
                          VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."',
                                  '".$data['is_recursive']."', '".SLT::TTR."',
-                                 '".addslashes($data['comment'])."', '".$data['number_time']."',
+                                 '".addslashes($data['comment'])."', '".$data['resolution_time']."',
                                  '".$data['date_mod']."',
                                  '".$data['definition_time']."', '".$data['end_of_working_day']."',
                                  '".date('Y-m-d H:i:s')."', '".$data['id']."');";
