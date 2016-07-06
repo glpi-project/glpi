@@ -42,6 +42,7 @@
 function update0903to91() {
    global $DB, $migration, $CFG_GLPI;
 
+   $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
@@ -339,7 +340,7 @@ function update0903to91() {
    Config::setConfigurationValues('core', array('enable_api'                      => 0));
    Config::setConfigurationValues('core', array('enable_api_login_credentials'    => 0));
    Config::setConfigurationValues('core', array('enable_api_login_external_token' => 1));
-   Config::setConfigurationValues('core', array('url_base_api' => $CFG_GLPI['url_base']."/api"));
+   Config::setConfigurationValues('core', array('url_base_api' => trim($current_config['url_base'], "/")."/api"));
    if (!TableExists('glpi_apiclients')) {
       $query = "CREATE TABLE `glpi_apiclients` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -360,19 +361,10 @@ function update0903to91() {
                   KEY `is_active` (`is_active`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.1 add table glpi_apiclients");
-      $query = "INSERT INTO `glpi_apiclients` VALUES (1, 1, 'full access', '', 1, NULL, NULL, NULL, '', 0, NULL);";
-       $DB->queryOrDie($query, "9.1 insert first line into table glpi_apiclients");
+      $query = "INSERT INTO `glpi_apiclients`
+                  VALUES (1, 1, 1, 'full access', NOW(), 1, NULL, NULL, NULL, '', '', 0, NULL);";
+      $DB->queryOrDie($query, "9.1 insert first line into table glpi_apiclients");
    }
-   
-   // Setup default base URL for the API
-   $CFG_GLPI['url_base'];
-   $url_base_api = $CFG_GLPI['url_base'] . "/api";
-   $query = "INSERT INTO `glpi_configs`
-                     (`context`, `name`, `value`)
-            VALUES ('core', 'url_base_api', '".$DB->escape($url_base_api)."'";
-   $DB->query($query);
-
-   
 
    /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
