@@ -739,7 +739,7 @@ function update0903to91() {
 
    // for is_active adding to glpi_taskcategories
    $migration->addField("glpi_taskcategories", "is_active", "bool", array('value' => 1));
-
+   $migration->addKey("glpi_taskcategories", "is_active");
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
