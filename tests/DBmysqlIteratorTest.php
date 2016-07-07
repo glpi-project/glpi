@@ -130,4 +130,30 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
       $it = new DBmysqlIterator(NULL, ['foo', 'bar'], ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`']]);
       $this->assertEquals('SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk`', $it->getSql(), 'FKEY tables and fields, some quoted');
    }
+
+
+   public function testLogical() {
+
+      $it = new DBmysqlIterator(NULL, ['foo'], ['AND' => ['a' => 1, 'b' => 2]]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE (`a` = 1 AND `b` = 2)', $it->getSql(), 'Logical AND');
+
+      $it = new DBmysqlIterator(NULL, ['foo'], ['OR' => ['a' => 1, 'b' => 2]]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE (`a` = 1 OR `b` = 2)', $it->getSql(), 'Logical OR');
+
+      $it = new DBmysqlIterator(NULL, ['foo'], ['NOT' => ['a' => 1, 'b' => 2]]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE NOT (`a` = 1 AND `b` = 2)', $it->getSql(), 'Logical NOT');
+
+      $crit = ['WHERE' => ['a'  => 1,
+                           'OR' => ['b'   => 2,
+                                    'NOT' => ['c'   => [2, 3],
+                                              'AND' => ['d' => 4,
+                                                        'e' => 5,
+                                                       ],
+                                             ],
+                                   ],
+                          ],
+              ];
+      $it = new DBmysqlIterator(NULL, ['foo'], $crit);
+      $this->assertEquals("SELECT * FROM `foo` WHERE `a` = 1 AND (`b` = 2 OR NOT (`c` IN ('2','3') AND (`d` = 4 AND `e` = 5)))", $it->getSql(), 'Complex case');
+   }
 }
