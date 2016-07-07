@@ -58,6 +58,9 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
 
    public function testFields() {
 
+      $it = new DBmysqlIterator(NULL, 'foo', ['DISTINCT FIELDS' => 'bar']);
+      $this->assertEquals('SELECT DISTINCT `bar` FROM `foo`', $it->getSql(), 'Single field');
+
       $it = new DBmysqlIterator(NULL, 'foo', ['FIELDS' => 'bar']);
       $this->assertEquals('SELECT `bar` FROM `foo`', $it->getSql(), 'Single field');
 
@@ -129,6 +132,13 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
 
       $it = new DBmysqlIterator(NULL, ['foo', 'bar'], ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`']]);
       $this->assertEquals('SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk`', $it->getSql(), 'FKEY tables and fields, some quoted');
+   }
+
+
+   public function testRange() {
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['START' => 5, 'LIMIT' => 10]);
+      $this->assertEquals('SELECT * FROM `foo` LIMIT 10 OFFSET 5', $it->getSql(), 'Single table, without quotes');
    }
 
 
