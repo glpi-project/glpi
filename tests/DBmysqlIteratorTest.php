@@ -91,4 +91,28 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
       $it = new DBmysqlIterator(NULL, 'foo', ['ORDER' => ['`a`', 'b ASC', 'c DESC']]);
       $this->assertEquals('SELECT * FROM `foo` ORDER BY `a`, `b` ASC, `c` DESC', $it->getSql(), "Multiple fields");
    }
+
+
+   public function testWhere() {
+      $it = new DBmysqlIterator(NULL, 'foo', ['WHERE' => ['bar' => NULL]]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE bar IS NULL', $it->getSql(), 'NULL value (WHERE)');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['bar' => NULL]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE bar IS NULL', $it->getSql(), 'NULL value');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['`bar`' => NULL]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE `bar` IS NULL', $it->getSql(), 'NULL value');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['bar' => 1]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE bar=1', $it->getSql(), 'Integer value');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['bar' => [1, 2, 4]]);
+      $this->assertEquals("SELECT * FROM `foo` WHERE bar IN ('1','2','4')", $it->getSql(), 'Multiple values');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['bar' => 'val']);
+      $this->assertEquals("SELECT * FROM `foo` WHERE bar='val'", $it->getSql(), 'String value');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['bar' => '`field`']);
+      $this->assertEquals('SELECT * FROM `foo` WHERE bar=`field`', $it->getSql(), 'Field value');
+   }
 }
