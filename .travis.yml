@@ -1,17 +1,56 @@
 language: php
 
-addons:
-  mariadb: '5.5'
-
 php:
   - 5.4
   - 5.5
   - 5.6
   - 7
+  - nightly
+
+env:
+  - DB=mysql
 
 before_script:
   - php tools/cliinstall.php --db=glpitest --user=root --tests
+  - composer self-update
+  - composer install --no-dev
 
 script:
  - phpunit --verbose
 
+matrix:
+  include:
+    - php: 5.4
+      addons:
+        mariadb: 5.5
+    - php: 5.5
+      addons:
+        mariadb: 5.5
+    - php: 5.6
+      addons:
+        mariadb: 5.5
+    - php: 5.6
+      addons:
+        mariadb: 10.0
+    - php: 5.6
+      addons:
+        mariadb: 10.1
+    - php: 7.0
+      addons:
+        mariadb: 10.0
+    - php: 7.0
+      addons:
+        mariadb: 10.1
+  allow_failures:
+    - php: nightly
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#glpi"
+    on_success: change
+    on_failure: always
