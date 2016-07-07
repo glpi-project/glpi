@@ -1,12 +1,5 @@
 language: php
 
-php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7
-  - nightly
-
 env:
   - DB=mysql
 
@@ -17,6 +10,7 @@ before_script:
   - php tools/cliinstall.php --db=glpitest --user=root --tests
 
 script:
+ - mysql -u root -e 'select version();'
  - phpunit --verbose
 
 matrix:
@@ -40,6 +34,9 @@ matrix:
       addons:
         mariadb: 10.0
     - php: 7.0
+      addons:
+        mariadb: 10.1
+    - php: nightly
       addons:
         mariadb: 10.1
   allow_failures:
