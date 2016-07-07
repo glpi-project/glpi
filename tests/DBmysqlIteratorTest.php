@@ -76,6 +76,7 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
 
 
    public function testOrder() {
+
       $it = new DBmysqlIterator(NULL, 'foo', ['ORDER' => 'bar']);
       $this->assertEquals('SELECT * FROM `foo` ORDER BY `bar`', $it->getSql(), 'Single field without quote');
 
@@ -94,6 +95,7 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
 
 
    public function testWhere() {
+
       $it = new DBmysqlIterator(NULL, 'foo', ['WHERE' => ['bar' => NULL]]);
       $this->assertEquals('SELECT * FROM `foo` WHERE `bar` IS NULL', $it->getSql(), 'NULL value (WHERE)');
 
@@ -114,5 +116,18 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
 
       $it = new DBmysqlIterator(NULL, 'foo', ['bar' => '`field`']);
       $this->assertEquals('SELECT * FROM `foo` WHERE `bar` = `field`', $it->getSql(), 'Field value');
+   }
+
+
+   public function testFkey() {
+
+      $it = new DBmysqlIterator(NULL, ['foo', 'bar'], ['FKEY' => ['id', 'fk']]);
+      $this->assertEquals('SELECT * FROM `foo`, `bar` WHERE id=fk', $it->getSql(), 'FKEY fields only');
+
+      $it = new DBmysqlIterator(NULL, ['foo', 'bar'], ['FKEY' => ['foo' => 'id', 'bar' => 'fk']]);
+      $this->assertEquals('SELECT * FROM `foo`, `bar` WHERE foo.id=bar.fk', $it->getSql(), 'FKEY tables and fields unquoted');
+
+      $it = new DBmysqlIterator(NULL, ['foo', 'bar'], ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`']]);
+      $this->assertEquals('SELECT * FROM `foo`, `bar` WHERE `foo`.id=bar.`fk`', $it->getSql(), 'FKEY tables and fields, some quoted');
    }
 }
