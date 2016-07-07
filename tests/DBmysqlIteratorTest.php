@@ -34,12 +34,14 @@
 
 class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
 
+
    public function testQuery() {
 
       $req = 'SELECT Something FROM Somewhere';
       $it = new DBmysqlIterator(NULL, $req);
       $this->assertEquals($req, $it->getSql());
    }
+
 
    public function testOnlyTable() {
 
@@ -52,6 +54,7 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
       $it = new DBmysqlIterator(NULL, ['foo', '`bar`']);
       $this->assertEquals('SELECT * FROM `foo`, `bar`', $it->getSql(), 'Multiples tables');
    }
+
 
    public function testFields() {
 
@@ -69,5 +72,23 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
 
       $it = new DBmysqlIterator(NULL, 'foo', ['FIELDS' => ['a' => ['`bar`', 'baz']]]);
       $this->assertEquals('SELECT `a`.`bar`, `a`.`baz` FROM `foo`', $it->getSql(), 'Multiple fields from single table');
+   }
+
+
+   public function testOrder() {
+      $it = new DBmysqlIterator(NULL, 'foo', ['ORDER' => 'bar']);
+      $this->assertEquals('SELECT * FROM `foo` ORDER BY `bar`', $it->getSql(), 'Single field without quote');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['ORDER' => '`baz`']);
+      $this->assertEquals('SELECT * FROM `foo` ORDER BY `baz`', $it->getSql(), "Single quoted field");
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['ORDER' => 'bar ASC']);
+      $this->assertEquals('SELECT * FROM `foo` ORDER BY `bar` ASC', $it->getSql(), 'Ascending');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['ORDER' => 'bar DESC']);
+      $this->assertEquals('SELECT * FROM `foo` ORDER BY `bar` DESC', $it->getSql(), "Descending");
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['ORDER' => ['`a`', 'b ASC', 'c DESC']]);
+      $this->assertEquals('SELECT * FROM `foo` ORDER BY `a`, `b` ASC, `c` DESC', $it->getSql(), "Multiple fields");
    }
 }
