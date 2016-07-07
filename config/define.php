@@ -340,5 +340,6 @@ $CFG_GLPI['lock_lockable_objects'] = array('Budget',  'Change', 'Contact', 'Cont
                                            'Group', 'KnowbaseItem', 'Link', 'Monitor',
                                            'NetworkEquipment', 'NetworkName', 'Peripheral', 'Phone',
                                            'Printer', 'Problem', 'Profile', 'Project', 'Reminder',
-                                           'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User') ;
+                                           'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
+                                           'SoftwareLicense') ;
 ?>

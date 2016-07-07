@@ -348,7 +348,7 @@ class SoftwareLicense extends CommonDBTM {
                            'right'  => 'own_ticket',
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
-      echo "<td>".__('Manufacturer')."</td>";
+      echo "<td>".__('Publisher')."</td>";
       echo "<td>";
       Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
@@ -388,8 +388,9 @@ class SoftwareLicense extends CommonDBTM {
                             'entity'    => $this->fields["entities_id"],
                             'condition' => '`is_itemgroup`'));
       echo "</td>";
-      echo "<td>" . __('Associable to a ticket') . "</td><td>";
-      Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
+      echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
+      echo "<td class='center middle' rowspan='4'>";
+      echo "<textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -398,11 +399,7 @@ class SoftwareLicense extends CommonDBTM {
       SoftwareVersion::dropdownForOneSoftware(array('name'         => "softwareversions_id_use",
                                                     'softwares_id' => $this->fields["softwares_id"],
                                                     'value'        => $this->fields["softwareversions_id_use"]));
-      echo "</td>";
-      echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='4'>";
-      echo "<textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td></tr>\n";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Purchase version')."</td>";
@@ -508,12 +505,6 @@ class SoftwareLicense extends CommonDBTM {
       $tab[3]['name']            = __('Serial number');
       $tab[3]['datatype']        = 'string';
 
-      $tab[162]['table']         = $this->getTable();
-      $tab[162]['field']         = 'otherserial';
-      $tab[162]['name']          = __('Inventory number');
-      $tab[162]['massiveaction'] = false;
-      $tab[162]['datatype']      = 'string';
-
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'number';
       $tab[4]['name']            = _x('quantity', 'Number');
@@ -550,15 +541,23 @@ class SoftwareLicense extends CommonDBTM {
       $tab[9]['name']            = __('Valid');
       $tab[9]['datatype']        = 'bool';
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
-
       $tab[10]['table']           = 'glpi_softwares';
       $tab[10]['field']           = 'name';
       $tab[10]['name']            = __('Software');
       $tab[10]['datatype']        = 'itemlink';
+
+      $tab[13]['table']             = $this->getTable();
+      $tab[13]['field']             = 'completename';
+      $tab[13]['name']              = __('Father');
+      $tab[13]['datatype']          = 'dropdown';
+      $tab[13]['massiveaction']     = false;
+      // Add virtual condition to relink table
+      $tab[13]['joinparams']        = array('condition' => "AND 1=1");
+
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
       $tab[24]['table']          = 'glpi_users';
       $tab[24]['field']          = 'name';
@@ -591,6 +590,25 @@ class SoftwareLicense extends CommonDBTM {
       $tab[71]['name']           = __('Group');
       $tab[71]['condition']      = '`is_itemgroup`';
       $tab[71]['datatype']       = 'dropdown';
+
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['datatype']       = 'dropdown';
+
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'is_recursive';
+      $tab[86]['name']           = __('Child entities');
+      $tab[86]['datatype']       = 'bool';
+
+      $tab[162]['table']         = $this->getTable();
+      $tab[162]['field']         = 'otherserial';
+      $tab[162]['name']          = __('Inventory number');
+      $tab[162]['massiveaction'] = false;
+      $tab[162]['datatype']      = 'string';
+
+      // add objectlock search options
+      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
       $tab += Notepad::getSearchOptionsToAdd();
 
