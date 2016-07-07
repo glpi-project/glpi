@@ -889,8 +889,8 @@ class DBmysqlIterator  implements Iterator {
                reset($value);
                list($t1,$f1) = each($value);
                list($t2,$f2) = each($value);
-               $ret .= (is_numeric($t1) ? "$f1" : "$t1.$f1") . "=" .
-                       (is_numeric($t2) ? "$f2" : "$t2.$f2");
+               $ret .= (is_numeric($t1) ? self::quoteName($f1) : self::quoteName($t1) . '.' . self::quoteName($f1)) . ' = ' .
+                       (is_numeric($t2) ? self::quoteName($f2) : self::quoteName($t2) . '.' . self::quoteName($f2));
             } else {
                trigger_error("BAD FOREIGN KEY", E_USER_ERROR);
             }

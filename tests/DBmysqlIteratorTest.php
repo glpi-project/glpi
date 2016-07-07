@@ -122,12 +122,12 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
    public function testFkey() {
 
       $it = new DBmysqlIterator(NULL, ['foo', 'bar'], ['FKEY' => ['id', 'fk']]);
-      $this->assertEquals('SELECT * FROM `foo`, `bar` WHERE id=fk', $it->getSql(), 'FKEY fields only');
+      $this->assertEquals('SELECT * FROM `foo`, `bar` WHERE `id` = `fk`', $it->getSql(), 'FKEY fields only');
 
       $it = new DBmysqlIterator(NULL, ['foo', 'bar'], ['FKEY' => ['foo' => 'id', 'bar' => 'fk']]);
-      $this->assertEquals('SELECT * FROM `foo`, `bar` WHERE foo.id=bar.fk', $it->getSql(), 'FKEY tables and fields unquoted');
+      $this->assertEquals('SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk`', $it->getSql(), 'FKEY tables and fields unquoted');
 
       $it = new DBmysqlIterator(NULL, ['foo', 'bar'], ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`']]);
-      $this->assertEquals('SELECT * FROM `foo`, `bar` WHERE `foo`.id=bar.`fk`', $it->getSql(), 'FKEY tables and fields, some quoted');
+      $this->assertEquals('SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk`', $it->getSql(), 'FKEY tables and fields, some quoted');
    }
 }
