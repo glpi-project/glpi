@@ -83,12 +83,14 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
     * @param $options array
    **/
    function getTaskAssignUser() {
-
-      $user = new User();
-      if ($this->obj->isField('users_id_tech')
-          && $user->getFromDB($this->obj->getField('users_id_tech'))) {
-         $this->addToAddressesList(array('language' => $user->getField('language'),
-                                         'users_id' => $user->getField('id')));
+      $item = new $this->obj->fields['itemtype'];
+      if($item->getFromDB($this->obj->fields['items_id'])) {
+         $user = new User();
+         if ($item->isField('users_id_tech')
+             && $user->getFromDB($item->getField('users_id_tech'))) {
+            $this->addToAddressesList(array('language' => $user->getField('language'),
+                                            'users_id' => $user->getField('id')));
+         }
       }
    }
 
@@ -99,9 +101,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
 
       $events                             = $this->getAllEvents();
-      
+
       $this->target_object = reset($this->target_object);
-      
+
       $this->datas['##recall.action##']   = $events[$event];
       $this->datas['##recall.itemtype##'] = $this->target_object->getTypeName(1);
       $this->datas['##recall.item.URL##'] = '';
