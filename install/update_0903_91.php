@@ -727,6 +727,20 @@ function update0903to91() {
                                                                 'after' => 'is_assign'));
 
 
+   // for date_mod adding to tasks and to followups
+   $migration->addField("glpi_tickettasks", "date_mod", "datetime");
+   $migration->addKey("glpi_tickettasks", "date_mod");
+   $migration->addField("glpi_problemtasks", "date_mod", "datetime");
+   $migration->addKey("glpi_problemtasks", "date_mod");
+   $migration->addField("glpi_changetasks", "date_mod", "datetime");
+   $migration->addKey("glpi_changetasks", "date_mod");
+   $migration->addField("glpi_ticketfollowups", "date_mod", "datetime");
+   $migration->addKey("glpi_ticketfollowups", "date_mod");
+
+   // for is_active adding to glpi_taskcategories
+   $migration->addField("glpi_taskcategories", "is_active", "bool", array('value' => 1));
+
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
