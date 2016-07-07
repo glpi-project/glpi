@@ -11,9 +11,10 @@ env:
   - DB=mysql
 
 before_script:
-  - php tools/cliinstall.php --db=glpitest --user=root --tests
   - composer self-update
   - composer install --no-dev
+  - mysql -u root -e 'create database glpitest;'
+  - php tools/cliinstall.php --db=glpitest --user=root --tests
 
 script:
  - phpunit --verbose
