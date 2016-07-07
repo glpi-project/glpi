@@ -89,9 +89,6 @@ $where = "WHERE 1 ";
 if ($item->maybeDeleted()) {
    $where .= " AND `$table`.`is_deleted` = '0' ";
 }
-if ($item->maybeActive()) {
-   $where .= " AND `$table`.`is_active` = '1' ";
-}
 if ($item->maybeTemplate()) {
    $where .= " AND `$table`.`is_template` = '0' ";
 }

@@ -4013,7 +4013,7 @@ class Ticket extends CommonITILObject {
       echo "<td width='$colsize4%'>";
       echo $tt->getBeginHiddenFieldValue('requesttypes_id');
       if ($canupdate) {
-         RequestType::dropdown(array('value' => $this->fields["requesttypes_id"], 'condition' => "is_ticketheader = '1'"));
+         RequestType::dropdown(array('value' => $this->fields["requesttypes_id"], 'condition' => 'is_active = 1 AND is_ticketheader = 1'));
       } else {
          echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
          echo Html::hidden('requesttypes_id', array('value' => $this->fields["requesttypes_id"]));
@@ -6853,6 +6853,31 @@ class Ticket extends CommonITILObject {
          }
       }
       return parent::getCalendar();
+   }
+
+
+   /**
+    * Select a field using standard system
+    *
+    * @since version 9.1
+    */
+   function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()){
+      switch( $field_id_or_search_options['linkfield'] ) {
+         case 'requesttypes_id':
+            $opt = 'is_ticketheader = 1';
+            if( Toolbox::in_array_recursive('glpi_ticketfollowups', $field_id_or_search_options['joinparams']) ) {
+               $opt = 'is_ticketfollowup = 1';
+            }
+            if( $field_id_or_search_options['linkfield']  == $name ) {
+               $opt .= ' AND is_active = 1' ;
+            }
+            if(isset( $options['condition'] )) {
+               $opt .=  ' AND '.$options['condition'];
+            }
+            $options['condition'] = $opt;
+            break ;
+      }
+      return parent::getValueToSelect($field_id_or_search_options, $name, $values, $options);
    }
 
 }
