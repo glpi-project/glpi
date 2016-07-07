@@ -49,6 +49,29 @@ class TaskCategory extends CommonTreeDropdown {
 
    static $rightname          = 'taskcategory';
 
+   function getAdditionalFields() {
+
+      $tab = parent::getAdditionalFields();
+
+      $tab[] = array('name'  => 'is_active',
+                         'label' => __('Active'),
+                         'type'  => 'bool');
+
+      return $tab;
+   }
+
+
+   function getSearchOptions() {
+
+      $tab                      = parent::getSearchOptions();
+
+      $tab[8]['table']         = $this->getTable();
+      $tab[8]['field']         = 'is_active';
+      $tab[8]['name']          = __('Active');
+      $tab[8]['datatype']      = 'bool';
+
+      return $tab;
+   }
 
 
    static function getTypeName($nb=0) {
