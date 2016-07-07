@@ -306,6 +306,29 @@ function update0903to91() {
    $migration->addField("glpi_budgets", "locations_id", "integer");
    $migration->addKey("glpi_budgets", "locations_id");
 
+   if (!TableExists('glpi_budgettypes')) {
+      $query = "CREATE TABLE `glpi_budgettypes` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `comment` text COLLATE utf8_unicode_ci,
+        `date_mod` datetime DEFAULT NULL,
+        `date_creation` datetime DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        KEY `name` (`name`),
+        KEY `date_mod` (`date_mod`),
+        KEY `date_creation` (`date_creation`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "add table glpi_budgettypes");
+   }
+
+   $new = $migration->addField("glpi_budgets", "budgettypes_id", "integer");
+   $migration->addKey("glpi_budgets", "budgettypes_id");
+
+   if ($new) {
+      $query = "UPDATE `glpi_displaypreferences`
+                SET `num`='6' WHERE `itemtype`='Budget' AND `num`='4'";
+      $DB->queryOrDie($query, "change budget display preference");
+   }
 
    /************** New Planning with fullcalendar.io *************/
    $migration->addField("glpi_users", "plannings", "text");
@@ -629,7 +652,7 @@ function update0903to91() {
                                  `end_of_working_day`, `date_creation`, `slas_id`)
                          VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."',
                                  '".$data['is_recursive']."', '".SLT::TTR."',
-                                 '".addslashes($data['comment'])."', '".$data['number_time']."',
+                                 '".addslashes($data['comment'])."', '".$data['resolution_time']."',
                                  '".$data['date_mod']."',
                                  '".$data['definition_time']."', '".$data['end_of_working_day']."',
                                  '".date('Y-m-d H:i:s')."', '".$data['id']."');";
@@ -703,6 +726,16 @@ function update0903to91() {
    $migration->addKey("glpi_problemtasks", "groups_id_tech");
    $migration->addField("glpi_groups", "is_task", "bool", array('value' => 1,
                                                                 'after' => 'is_assign'));
+
+   // for date_mod adding to tasks and to followups
+   $migration->addField("glpi_tickettasks", "date_mod", "datetime");
+   $migration->addKey("glpi_tickettasks", "date_mod");
+   $migration->addField("glpi_problemtasks", "date_mod", "datetime");
+   $migration->addKey("glpi_problemtasks", "date_mod");
+   $migration->addField("glpi_changetasks", "date_mod", "datetime");
+   $migration->addKey("glpi_changetasks", "date_mod");
+   $migration->addField("glpi_ticketfollowups", "date_mod", "datetime");
+   $migration->addKey("glpi_ticketfollowups", "date_mod");
 
 
    // ************ Keep it at the end **************

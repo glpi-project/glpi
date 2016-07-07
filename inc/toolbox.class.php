@@ -370,6 +370,7 @@ class Toolbox {
     * @see clean_cross_side_scripting_deep
    **/
    static function unclean_html_cross_side_scripting_deep($value) {
+      include_once(GLPI_HTMLAWED);
 
       $in  = array('<', '>');
       $out = array('&lt;', '&gt;');
@@ -379,8 +380,6 @@ class Toolbox {
                   : (is_null($value)
                       ? NULL : (is_resource($value)
                                   ? $value : str_replace($out,$in,$value)));
-
-      include_once(GLPI_HTMLAWED);
 
       // revert unclean inside <pre>
       $count = preg_match_all('/(<pre[^>]*>)(.*?)(<\/pre>)/is', $value, $matches);
@@ -394,6 +393,7 @@ class Toolbox {
       $config                      = array('safe'=>1);
       $config["elements"]          = "*+iframe";
       $config["direct_list_nest"]  = 1;
+
       $value                       = htmLawed($value, $config);
 
       return $value;

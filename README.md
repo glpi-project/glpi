@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/glpi-project/glpi.svg?branch=master)](https://secure.travis-ci.org/glpi-project/glpi)
+
 ![GLPi Logo](https://raw.githubusercontent.com/glpi-project/glpi/master/pics/logos/logo-GLPI-250-black.png)
 
 GLPi stands for **Gestionnaire Libre de Parc Informatique** is a Free Asset and IT Management Software package, that provides ITIL Service Desk features, licenses tracking and software auditing.
@@ -49,7 +51,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 
 See :
 * [releases](https://github.com/glpi-project/glpi/releases) for tarball packages.
-* [Remi's RPM repository](http://rpms.remirepo.net/) for rpms packages
+* [Remi's RPM repository](http://rpms.remirepo.net/) for RPM packages (Fedora, RHEL, CentOS)
 
 
 ## Documentation

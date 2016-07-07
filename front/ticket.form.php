@@ -57,7 +57,6 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST['update'])) {
    $track->check($_POST['id'], UPDATE);
 
-
    $track->update($_POST);
    Event::log($_POST["id"], "ticket", 4, "tracking",
               //TRANS: %s is the user login
