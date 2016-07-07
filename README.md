@@ -49,7 +49,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 
 See :
 * [releases](https://github.com/glpi-project/glpi/releases) for tarball packages.
-* [Remi's RPM repository](http://rpms.remirepo.net/) for rpms packages
+* [Remi's RPM repository](http://rpms.remirepo.net/) for RPM packages (Fedora, RHEL, CentOS)
 
 
 ## Documentation
