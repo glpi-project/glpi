@@ -897,19 +897,19 @@ class DBmysqlIterator  implements Iterator {
 
          } else if (is_array($value)) {
             // Array of Value
-            $ret .= "$name IN ('". implode("','",$value)."')";
+            $ret .= self::quoteName($name) . " IN ('". implode("','",$value)."')";
 
          } else if (is_null($value)) {
             // NULL condition
-            $ret .= "$name IS NULL";
+            $ret .= self::quoteName($name) . " IS NULL";
 
          } else if (is_numeric($value) || preg_match("/^`.*?`$/", $value)) {
             // Integer or field name
-            $ret .= "$name=$value";
+            $ret .= self::quoteName($name) . " = $value";
 
          } else {
             // String
-            $ret .= "$name='$value'";
+            $ret .= self::quoteName($name) . " = '$value'";
          }
       }
       return $ret;
