@@ -299,9 +299,18 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       echo "</td>";
-      echo "<td>".__('Type')."</td>";
+      echo "<td>".__('As child of')."</td>";
       echo "<td>";
-      SoftwareLicenseType::dropdown(array('value' => $this->fields["softwarelicensetypes_id"]));
+      if ($this->getID()) {
+         $condition = "`level`<=".$this->fields['level'];
+      } else {
+         $condition = '';
+      }
+      SoftwareLicense::dropdown(array('value'        => $this->fields["softwarelicenses_id"],
+                                      'entity'       => $this->fields["entities_id"],
+                                      'softwares_id' => $this->fields['softwares_id'],
+                                      'condition'    => $condition,
+                                      'used'         => array($this->getID())));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -314,19 +323,35 @@ class SoftwareLicense extends CommonDBTM {
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
-      echo "<td>".__('Serial number')."</td>";
+      echo "<td>".__('Status')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,"serial");
+      State::dropdown(array('value'     => $this->fields["states_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => "`is_visible_softwarelicense`"));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Location') . "</td><td>";
+      Location::dropdown(array('value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]));
+      echo "</td>";
+      echo "<td>".__('Type')."</td>";
+      echo "<td>";
+      SoftwareLicenseType::dropdown(array('value' => $this->fields["softwarelicensetypes_id"]));
+      echo "</td></tr>\n";
 
-      echo "<td>" . __('Technician in charge of the hardware') . "</td><td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Technician in charge of the hardware')."</td>";
+      echo "<td>";
       User::dropdown(array('name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
                            'right'  => 'own_ticket',
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
+      echo "<td>".__('Manufacturer')."</td>";
+      echo "<td>";
+      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
+      echo "</td></tr>\n";
 
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
@@ -334,7 +359,11 @@ class SoftwareLicense extends CommonDBTM {
                             'value'     => $this->fields['groups_id_tech'],
                             'entity'    => $this->fields['entities_id'],
                             'condition' => '`is_assign`'));
-      echo "</td></tr>";
+      echo "</td>";
+      echo "<td>".__('Serial number')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this,"serial");
+      echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td >" . __('User') . "</td>";
@@ -343,27 +372,24 @@ class SoftwareLicense extends CommonDBTM {
                            'entity' => $this->fields["entities_id"],
                            'right'  => 'all'));
       echo "</td>";
-      echo "<td>" . __('Group') . "</td><td>";
-      Group::dropdown(array('value'     => $this->fields["groups_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => '`is_itemgroup`'));
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Purchase version')."</td>";
-      echo "<td>";
-      SoftwareVersion::dropdownForOneSoftware(array('name'         => "softwareversions_id_buy",
-                                                    'softwares_id' => $this->fields["softwares_id"],
-                                                    'value'        => $this->fields["softwareversions_id_buy"]));
-      echo "</td>";
       echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'),
-                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
-           "</td>";
+                          (isset($options['withtemplate']) && $options['withtemplate']?"*":""));
+      echo "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",
                              (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
+      echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Group') . "</td><td>";
+      Group::dropdown(array('value'     => $this->fields["groups_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => '`is_itemgroup`'));
+      echo "</td>";
+      echo "<td>" . __('Associable to a ticket') . "</td><td>";
+      Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -373,16 +399,17 @@ class SoftwareLicense extends CommonDBTM {
                                                     'softwares_id' => $this->fields["softwares_id"],
                                                     'value'        => $this->fields["softwareversions_id_use"]));
       echo "</td>";
-      echo "<td rowspan='".(($ID > 0) ?'4':'3')."' class='middle'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='".(($ID > 0) ?'4':'3')."'>";
-      echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
+      echo "<td class='center middle' rowspan='4'>";
+      echo "<textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Location') . "</td><td>";
-      Location::dropdown(array('value'  => $this->fields["locations_id"],
-                               'entity' => $this->fields["entities_id"]));
-      echo "</td>";
+      echo "<td>".__('Purchase version')."</td>";
+      echo "<td>";
+      SoftwareVersion::dropdownForOneSoftware(array('name'         => "softwareversions_id_buy",
+                                                    'softwares_id' => $this->fields["softwares_id"],
+                                                    'value'        => $this->fields["softwareversions_id_buy"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -413,18 +440,6 @@ class SoftwareLicense extends CommonDBTM {
          Html::showToolTip(__('On search engine, use "Expiration contains NULL" to search licenses with no expiration date'));
       }
       Alert::displayLastAlert('SoftwareLicense', $ID);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Associable to a ticket') . "</td><td>";
-      Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
-      echo "</td></tr>\n";
-
-      echo "<td>".__('Status')."</td>";
-      echo "<td>";
-      State::dropdown(array('value'     => $this->fields["states_id"],
-                            'entity'    => $this->fields["entities_id"],
-                            'condition' => "`is_visible_softwarelicense`"));
       echo "</td></tr>\n";
 
       $this->showFormButtons($options);
