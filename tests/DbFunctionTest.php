@@ -216,13 +216,24 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
                                                           "context ='fakecontext'"));
    }
 
+   /**
+    * @covers ::countElementsInTableForMyEntities
+    */
+   public function testCountElementsInTableForMyEntities() {
+      $this->assertEquals(2, countElementsInTableForMyEntities('glpi_computers'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+   }
 
-/*
-TODO :
-   countElementsInTableForMyEntitie
-   countElementsInTableForEntity
-*/
-
+   /**
+    * @covers ::countElementsInTableForEntity
+    */
+   public function testCountElementsInTableForEntity() {
+      $this->assertEquals(2, countElementsInTableForEntity('glpi_computers', '2'));
+      $this->assertEquals(1, countElementsInTableForEntity('glpi_computers', '2', 'name="_test_pc11"'));
+      $this->assertEquals(0, countElementsInTableForEntity('glpi_computers', '2', 'name="_test_pc01"'));
+      $this->assertEquals(1, countElementsInTableForEntity('glpi_computers', '1', 'name="_test_pc01"'));
+   }
 
    /**
     *@covers ::getAllDatasFromTable
