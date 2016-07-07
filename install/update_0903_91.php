@@ -494,8 +494,8 @@ function update0903to91() {
    $migration->addKey("glpi_softwarelicenses", "is_template");
    $migration->addKey("glpi_softwarelicenses", "states_id");
 
-   $migration->addField("glpi_infocoms", "destruction_date", "datetime");
-   $migration->addField("glpi_entities", "autofill_destruction_date",
+   $migration->addField("glpi_infocoms", "decommission_date", "datetime");
+   $migration->addField("glpi_entities", "autofill_decommission_date",
                         "string", array('value' => '-2'));
 
    $migration->addField("glpi_states", "is_visible_softwarelicense", "bool");
