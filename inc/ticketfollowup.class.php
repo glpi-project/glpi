@@ -542,7 +542,7 @@ class TicketFollowup  extends CommonDBTM {
    static function showFormMassiveAction() {
 
       echo "&nbsp;".__('Source of followup')."&nbsp;";
-      RequestType::dropdown(array('value' => RequestType::getDefault('followup')));
+      RequestType::dropdown(array('value' => RequestType::getDefault('followup')), array('condition' => "`is_active`= '1'"));
 
       echo "<br>".__('Description')." ";
       echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
