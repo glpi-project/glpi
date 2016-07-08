@@ -520,7 +520,6 @@ class Log extends CommonDBTM {
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add an item'),
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
                                                    $data["new_value"]));
-
                   break;
 
                case self::HISTORY_UPDATE_SUBITEM :
@@ -612,7 +611,7 @@ class Log extends CommonDBTM {
             }
 
             if (empty($tmp['change'])) {
-               $tmp['change'] = sprintf(__('Change %1$s by %2$s'),
+               $tmp['change'] = sprintf(__('Change %1$s to %2$s'),
                                         $data["old_value"], $data["new_value"]);
             }
          }
