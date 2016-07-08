@@ -118,7 +118,7 @@ abstract class API extends CommonGLPI {
 
          if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
             header("Access-Control-Allow-Headers: ".
-                   "origin, x-requested-with, content-type, x-lang, x-range, accept");
+                   "origin, content-type, accept, session-token");
          }
          exit(0);
       }
