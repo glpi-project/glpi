@@ -6133,22 +6133,26 @@ class Ticket extends CommonITILObject {
       }
 
       //add ticket followups to timeline
-      $followups = $followup_obj->find("tickets_id = ".$this->getID()." $restrict_fup", 'date DESC');
-      foreach ($followups as $followups_id => $followup) {
-         $followup_obj->getFromDB($followups_id);
-         $followup['can_edit']                                   = $followup_obj->canUpdateItem();;
-         $timeline[$followup['date']."_followup_".$followups_id] = array('type' => 'TicketFollowup',
-                                                                         'item' => $followup);
+      if ($followup_obj->canview()) {
+         $followups = $followup_obj->find("tickets_id = ".$this->getID()." $restrict_fup", 'date DESC');
+         foreach ($followups as $followups_id => $followup) {
+            $followup_obj->getFromDB($followups_id);
+            $followup['can_edit']                                   = $followup_obj->canUpdateItem();;
+            $timeline[$followup['date']."_followup_".$followups_id] = array('type' => 'TicketFollowup',
+                                                                            'item' => $followup);
+         }
       }
 
 
       //add ticket tasks to timeline
-      $tasks = $task_obj->find("tickets_id = ".$this->getID()." $restrict_task", 'date DESC');
-      foreach ($tasks as $tasks_id => $task) {
-         $task_obj->getFromDB($tasks_id);
-         $task['can_edit']                           = $task_obj->canUpdateItem();
-         $timeline[$task['date']."_task_".$tasks_id] = array('type' => 'TicketTask',
-                                                             'item' => $task);
+      if ($task_obj->canview()) {
+         $tasks = $task_obj->find("tickets_id = ".$this->getID()." $restrict_task", 'date DESC');
+         foreach ($tasks as $tasks_id => $task) {
+            $task_obj->getFromDB($tasks_id);
+            $task['can_edit']                           = $task_obj->canUpdateItem();
+            $timeline[$task['date']."_task_".$tasks_id] = array('type' => 'TicketTask',
+                                                                'item' => $task);
+         }
       }
 
 
