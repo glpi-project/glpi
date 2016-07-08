@@ -683,6 +683,8 @@ class Plugin extends CommonDBTM {
     * activate a plugin
     *
     * @param $ID ID of the plugin
+    *
+    * @return boolean about success
    **/
    function activate($ID) {
       global $PLUGIN_HOOKS;
@@ -695,10 +697,13 @@ class Plugin extends CommonDBTM {
              || !$PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']]) {
             return false;
          }
+         // Enable autoloader early, during activation process
+         $_SESSION['glpi_plugins'][$ID] = $this->fields['directory'];
 
          $function = 'plugin_' . $this->fields['directory'] . '_check_prerequisites';
          if (function_exists($function)) {
             if (!$function()) {
+               unset($_SESSION['glpi_plugins'][$ID]);
                return false;
             }
          }
@@ -707,7 +712,6 @@ class Plugin extends CommonDBTM {
             if ($function()) {
                $this->update(array('id'    => $ID,
                                    'state' => self::ACTIVATED));
-               $_SESSION['glpi_plugins'][$ID] = $this->fields['directory'];
 
                // Initialize session for the plugin
                if (isset($PLUGIN_HOOKS['init_session'][$this->fields['directory']])
@@ -722,13 +726,17 @@ class Plugin extends CommonDBTM {
 
                   call_user_func($PLUGIN_HOOKS['change_profile'][$this->fields['directory']]);
                }
+               // reset menu
+               if (isset($_SESSION['glpimenu'])) {
+                  unset($_SESSION['glpimenu']);
+               }
+               return true;
             }
          }  // exists _check_config
-         // reset menu
-         if (isset($_SESSION['glpimenu'])) {
-            unset($_SESSION['glpimenu']);
-         }
+         // Failure so remove it
+         unset($_SESSION['glpi_plugins'][$ID]);
       } // getFromDB
+      return false;
    }
 
 
