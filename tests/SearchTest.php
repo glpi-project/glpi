@@ -54,9 +54,10 @@ class SearchTest extends DbTestCase {
 
       // do search
       $params = Search::manageParams($itemtype, $params);
-      $data = Search::getDatas($itemtype, $params, $forcedisplay);
+      $data   = Search::getDatas($itemtype, $params, $forcedisplay);
 
       // append existing errors to returned data
+      $data['last_errors'] = array();
       if (isset($DEBUG_SQL['errors'])) {
          $data['last_errors'] = implode(', ', $DEBUG_SQL['errors']);
          unset($DEBUG_SQL['errors']);
@@ -72,7 +73,7 @@ class SearchTest extends DbTestCase {
    }
 
 
-   public function testMetaComputerSoftwareLicenseNumber() {
+   public function testMetaComputerSoftwareLicense() {
       $search_params = array('is_deleted'   => 0,
                              'start'        => 0,
                              'criteria'     => array(0 => array('field'      => 'view',
@@ -82,25 +83,8 @@ class SearchTest extends DbTestCase {
                                                                 'itemtype'   => 'Software',
                                                                 'field'      => 163,
                                                                 'searchtype' => 'contains',
-                                                                'value'      => '>0')));
-
-      $data = $this->doSearch('Computer', $search_params);
-      Toolbox::logDebug($data);
-
-      // check for sql error (data key missing or empty)
-      $this->assertArrayHasKey('data', $data, $data['last_errors']);
-      $this->assertNotCount(0, $data['data'], $data['last_errors']);
-   }
-
-
-   public function testMetaComputerSoftwareLicensename() {
-      $search_params = array('is_deleted'   => 0,
-                             'start'        => 0,
-                             'search'       => 'Search',
-                             'criteria'     => array(0 => array('field'      => 'view',
-                                                                'searchtype' => 'contains',
-                                                                'value'      => '')),
-                             'metacriteria' => array(0 => array('link'       => 'AND',
+                                                                'value'      => '>0'),
+                                                     1 => array('link'       => 'AND',
                                                                 'itemtype'   => 'Software',
                                                                 'field'      => 160,
                                                                 'searchtype' => 'contains',
@@ -114,14 +98,34 @@ class SearchTest extends DbTestCase {
    }
 
 
-   public function testMetaComputerUserGroup() {
+
+   public function testMetaComputerUser() {
       $search_params = array('is_deleted'   => 0,
                              'start'        => 0,
                              'search'       => 'Search',
                              'criteria'     => array(0 => array('field'      => 'view',
                                                                 'searchtype' => 'contains',
                                                                 'value'      => '')),
+                                                     // user login
                              'metacriteria' => array(0 => array('link'       => 'AND',
+                                                                'itemtype'   => 'User',
+                                                                'field'      => 1,
+                                                                'searchtype' => 'equals',
+                                                                'value'      => 2),
+                                                     // user profile
+                                                     1 => array('link'       => 'AND',
+                                                                'itemtype'   => 'User',
+                                                                'field'      => 20,
+                                                                'searchtype' => 'equals',
+                                                                'value'      => 4),
+                                                     // user entity
+                                                     2 => array('link'       => 'AND',
+                                                                'itemtype'   => 'User',
+                                                                'field'      => 80,
+                                                                'searchtype' => 'equals',
+                                                                'value'      => 0),
+                                                     // user profile
+                                                     3 => array('link'       => 'AND',
                                                                 'itemtype'   => 'User',
                                                                 'field'      => 13,
                                                                 'searchtype' => 'equals',
