@@ -635,7 +635,9 @@ class Plugin extends CommonDBTM {
          // Run the Plugin's Uninstall Function first
          $function = 'plugin_' . $this->fields['directory'] . '_uninstall';
          if (function_exists($function)) {
+            $_SESSION['glpi_plugins']['temp'] = $this->fields['directory']; // For autoloader
             $function();
+            unset($_SESSION['glpi_plugins']['temp']);
          }
 
          $this->update(array('id'      => $ID,
@@ -658,6 +660,7 @@ class Plugin extends CommonDBTM {
          $function   = 'plugin_' . $this->fields['directory'] . '_install';
          $install_ok = false;
          if (function_exists($function)) {
+            $_SESSION['glpi_plugins']['temp'] = $this->fields['directory'];  // For autoloader
             if ($function()) {
                $function = 'plugin_' . $this->fields['directory'] . '_check_config';
                if (function_exists($function)) {
@@ -670,6 +673,7 @@ class Plugin extends CommonDBTM {
                   }
                }
             }
+            unset($_SESSION['glpi_plugins']['temp']);
          }
       }
    }
