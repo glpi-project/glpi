@@ -32,7 +32,7 @@
 
 // Generic test classe, to be extended for CommonDBTM Object
 
-class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
+class DBmysqlIteratorTest extends DbTestCase {
 
 
    public function testQuery() {
@@ -53,6 +53,15 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
 
       $it = new DBmysqlIterator(NULL, ['foo', '`bar`']);
       $this->assertEquals('SELECT * FROM `foo`, `bar`', $it->getSql(), 'Multiples tables');
+   }
+
+
+   public function testDebug() {
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
+      $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
+      $this->assertTrue(strpos($buf, 'From DBmysqlIterator') > 0, 'From in php_errors.log');
+      $this->assertTrue(strpos($buf, $it->getSql()) > 0, 'Query in php_errors.log');
    }
 
 
@@ -99,6 +108,9 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
 
    public function testWhere() {
 
+      $it = new DBmysqlIterator(NULL, 'foo', 'id=1');
+      $this->assertEquals('SELECT * FROM `foo` WHERE id=1', $it->getSql(), 'Explicit WHBERE');
+
       $it = new DBmysqlIterator(NULL, 'foo', ['WHERE' => ['bar' => NULL]]);
       $this->assertEquals('SELECT * FROM `foo` WHERE `bar` IS NULL', $it->getSql(), 'NULL value (WHERE)');
 
@@ -144,6 +156,9 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
 
    public function testLogical() {
 
+      $it = new DBmysqlIterator(NULL, ['foo'], [['a' => 1, 'b' => 2]]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE (`a` = 1 AND `b` = 2)', $it->getSql(), 'Logical implicit AND');
+
       $it = new DBmysqlIterator(NULL, ['foo'], ['AND' => ['a' => 1, 'b' => 2]]);
       $this->assertEquals('SELECT * FROM `foo` WHERE (`a` = 1 AND `b` = 2)', $it->getSql(), 'Logical AND');
 
@@ -165,5 +180,20 @@ class DBmysqlIteratorTest extends PHPUnit_Framework_TestCase {
               ];
       $it = new DBmysqlIterator(NULL, ['foo'], $crit);
       $this->assertEquals("SELECT * FROM `foo` WHERE `a` = 1 AND (`b` = 2 OR NOT (`c` IN ('2','3') AND (`d` = 4 AND `e` = 5)))", $it->getSql(), 'Complex case');
+   }
+
+
+   public function testRows() {
+      global $DB;
+
+      $it = new DBmysqlIterator(NULL, 'foo');
+      $this->assertEquals(0, $it->numrows());
+      $this->assertFalse($it->next());
+
+      $it = $DB->request('glpi_configs', ['context' => 'core', 'name' => 'version']);
+      $this->assertEquals(1, $it->numrows());
+      $row = $it->next();
+      $key = $it->key();
+      $this->assertEquals($key, $row['id']);
    }
 }
