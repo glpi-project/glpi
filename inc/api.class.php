@@ -104,6 +104,27 @@ abstract class API extends CommonGLPI {
    }
 
 
+   protected function cors($verb = 'GET') {
+      if (isset($_SERVER['HTTP_ORIGIN'])) {
+         header("Access-Control-Allow-Origin: *");
+      }
+
+      if ($this->verb == "OPTIONS") {
+         header("Access-Control-Expose-Headers: content-type, content-range, accept-range");
+
+         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+            header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
+         }
+
+         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
+            header("Access-Control-Allow-Headers: ".
+                   "origin, x-requested-with, content-type, x-lang, x-range, accept");
+         }
+         exit(0);
+      }
+   }
+
+
    /**
     * Init GLPI Session
     *

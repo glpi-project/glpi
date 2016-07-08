@@ -73,6 +73,9 @@ class APIRest extends API {
       $this->url_elements = explode('/', $path_info);
       $this->parseIncomingParams();
 
+      // Add headers for CORS
+      $this->cors($this->verb);
+
       // show debug if required
       if (isset($this->parameters['debug'])) {
          $this->debug = $this->parameters['debug'];
@@ -83,11 +86,6 @@ class APIRest extends API {
          if ($this->debug >= 2) {
             $this->showDebug();
          }
-      }
-
-      if ($this->verb == "OPTIONS") {
-         header("OK", 200);
-         die;
       }
 
       // retrieve requested ressource
