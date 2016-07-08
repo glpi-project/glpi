@@ -522,6 +522,11 @@ class Group extends CommonTreeDropdown {
                                                  'joinparams' => array('jointype' => 'child',
                                                  'condition'  => "AND NEWTABLE.`is_userdelegate` = 1")));
 
+      $tab[72]['table']         = $this->getTable();
+      $tab[72]['field']         = 'is_task';
+      $tab[72]['name']          = __('Can be in charge of a task');
+      $tab[72]['datatype']      = 'bool';
+
       return $tab;
    }
 

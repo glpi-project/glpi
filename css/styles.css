@@ -463,6 +463,9 @@ input.save {
 
 }
 
+.form_content .mce-fullscreen {
+   top: 105px;
+}
 
 
 
@@ -573,6 +576,12 @@ input.save {
    padding: 3px 2px 5px;
    box-sizing: border-box;
    margin-right: -5px;
+}
+
+.layout_lefttab .ui-tabs sup.tab_nb {
+   position: absolute;
+   right: 8px;
+   top: 5px;
 }
 
 .ui-tabs .ui-state-active sup.tab_nb {
@@ -885,6 +894,11 @@ td { }
    color: #000;
    padding: 10px 5px;
    background-color: #F1F1F1;
+}
+
+.tab_spaced {
+   border-collapse: separate;
+   border-spacing: 3px;
 }
 
 .tab_cadre_fixehov th, .tab_cadrehov th {
@@ -1530,6 +1544,7 @@ a.icon_nav_move:hover img {
    min-height: 65px;
    background-color: #fff;
    border-radius: 5px;
+   max-width: 950px;
 }
 
 
@@ -1613,9 +1628,8 @@ a.icon_nav_move:hover img {
    height:14px;
    background: url(../pics/expand.png) no-repeat;
    display: inline-block;
-   margin-right: 4px;
+   margin: 0 4px 2px 0;
    vertical-align: middle;
-   margin-bottom: 2px;
    float: right;
 }
 
@@ -2233,7 +2247,7 @@ ul#menu ul li a {
 }
 
 /* hide menu on small screen */
-@media screen and (max-width: 1025px) {
+@media screen and (max-width: 1055px) {
    #c_menu ul#menu,
    #language_link,
    #help_link,
@@ -2259,7 +2273,7 @@ ul#menu ul li a {
 
 ul#menu > li {
    float: left;
-   width: 145px;
+   width: 135px;
    height: 30px;
    margin-top: -8px;
    padding-top: 8px;
@@ -2268,7 +2282,7 @@ ul#menu > li {
 
 ul#menu ul.ssmenu {
    position: relative;
-   width: 145px;
+   width: 135px;
    z-index: 200;
 }
 
@@ -3558,7 +3572,6 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    #image_paste {
       display: none;
    }
-
 
    #searchcriterias .tab_cadre_fixe {
       display: block;

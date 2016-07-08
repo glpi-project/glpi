@@ -8,7 +8,7 @@ var timeoutglobalvar;
 
 /**
  * modifier la propriete display d'un element
- * 
+ *
  * @param objet
  * @param statut
 **/
@@ -27,7 +27,7 @@ function setdisplay(objet, statut) {
 **/
 function isIe() {
 
-   var ie     = false;	
+   var ie     = false;
    var appVer = navigator.appVersion.toLowerCase();
    var iePos  = appVer.indexOf('msie');
 
@@ -35,7 +35,7 @@ function isIe() {
       var is_minor = parseFloat(appVer.substring(iePos+5,appVer.indexOf(';',iePos)));
       var is_major = parseInt(is_minor);
    }
-   if (navigator.appName.substring(0,9) == "Microsoft") { 
+   if (navigator.appName.substring(0,9) == "Microsoft") {
       // Check if IE version is 6 or older
       if (is_major <= 6) {
          ie = true;
@@ -84,24 +84,24 @@ function completecleandisplay(id) {
    if (e) {
       setdisplay(e,'block');
 
-/*	if(document.getElementById('show_entities')){
-		var oneTime=0;
-		var divHeight = document.getElementById('show_entities').offsetHeight;
-		var divWidth = document.getElementById('show_entities').offsetWidth;
-				
-		if (divHeight>300){
+/* if(document.getElementById('show_entities')){
+      var oneTime=0;
+      var divHeight = document.getElementById('show_entities').offsetHeight;
+      var divWidth = document.getElementById('show_entities').offsetWidth;
 
-			
-			document.getElementById('show_entities').style.overflow = 'auto';
-			document.getElementById('show_entities').style.height = '400px';
-			// document.getElementById('show_entities').style.width =  divWidth + 'px';
-			document.getElementById('show_entities').style.width =  '300px';
+      if (divHeight>300){
 
-		}
 
-	
+         document.getElementById('show_entities').style.overflow = 'auto';
+         document.getElementById('show_entities').style.height = '400px';
+         // document.getElementById('show_entities').style.width =  divWidth + 'px';
+         document.getElementById('show_entities').style.width =  '300px';
 
-	}	
+      }
+
+
+
+   }
 */
 
 
@@ -133,7 +133,7 @@ function completecleanhide(id) {
 /**
  * effacer tous les menus du menu principal
  * afficher les select du document
- * 
+ *
  * @param idMenu
 **/
 function hidemenu(idMenu) {
@@ -154,7 +154,7 @@ function hidemenu(idMenu) {
 
 /**
  * masquer le menu actif par timeout
- * 
+ *
  * @param idMenu
 **/
 function afterView(idMenu) {
@@ -168,7 +168,7 @@ function afterView(idMenu) {
 
 /**
  * execute la fonction showSelect
- * 
+ *
  * @param objet
 **/
 function doShowSelect(objet) {
@@ -177,8 +177,8 @@ function doShowSelect(objet) {
       //correction du bugg sur IE
       if (isIe()) {
          if (setdisplay(objet,'block')) {
-            var selx = 0; 
-            var sely = 0; 
+            var selx = 0;
+            var sely = 0;
             var selp;
             selx = getLeft(objet);
             sely = getTop(objet);
@@ -196,7 +196,7 @@ function doShowSelect(objet) {
 
 /**
  * affiche les select du document
- * 
+ *
  * @param x
  * @param y
  * @param w
@@ -208,19 +208,19 @@ function showSelect(x,y,w,h) {
    var sel = document.getElementsByTagName("SELECT");
 
    for (var i=0 ; i<sel.length ; i++) {
-      selx = 0; 
-      sely = 0; 
+      selx = 0;
+      sely = 0;
       var selp;
       selx = getLeft(sel[i]);
       sely = getTop(sel[i]);
       selw = sel[i].offsetWidth;
       selh = sel[i].offsetHeight;
       // || Manage position error computation
-      if ((((selx + selw) > x) 
+      if ((((selx + selw) > x)
            && (selx < (x + w))
-           && ((sely + selh) > y) 
-           && (sely < (y + h))) 
-          || (selx < 0) 
+           && ((sely + selh) > y)
+           && (sely < (y + h)))
+          || (selx < 0)
           || (sely < 0)) {
          sel[i].style.visibility="visible";
       }
@@ -231,7 +231,7 @@ function showSelect(x,y,w,h) {
 
 /**
  * execute la fonction hideMenu
- * 
+ *
  * @param objet
 **/
 function doHideSelect(object) {
@@ -239,7 +239,7 @@ function doHideSelect(object) {
    var e = object;
    if (isIe()) {
       var selx = 0;
-      var sely = 0; 
+      var sely = 0;
       var selp;
 
       selx = getLeft(e);
@@ -254,7 +254,7 @@ function doHideSelect(object) {
 
 /**
  * masque les select du document
- * 
+ *
  * @param x
  * @param y
  * @param w
@@ -265,8 +265,8 @@ function hideSelect(x,y,w,h) {
    var selx,sely,selw,selh,i;
    var sel = document.getElementsByTagName("SELECT");
    for (i=0 ; i<sel.length ; i++) {
-      selx = 0; 
-      sely = 0; 
+      selx = 0;
+      sely = 0;
       var selp;
       selx = getLeft(sel[i]);
       sely = getTop(sel[i]);
@@ -276,7 +276,7 @@ function hideSelect(x,y,w,h) {
       if ((((selx + selw) > x)
            && (selx < (x + w))
            && ((sely + selh) > y)
-           && (sely < (y + h))) 
+           && (sely < (y + h)))
           || (selx < 0)
           || (sely < 0 )) {
          sel[i].style.visibility="hidden";
@@ -338,28 +338,28 @@ function menuAff(id,idMenu){
 /**
  * @param URL_List
 **/
-function jumpTo(URL_List) { 
-   var URL = URL_List.options[URL_List.selectedIndex].value;  window.location.href = URL; 
+function jumpTo(URL_List) {
+   var URL = URL_List.options[URL_List.selectedIndex].value;  window.location.href = URL;
 }
 
 
 browserName = navigator.appName;
 browserVer  = parseInt(navigator.appVersion);
 if (((browserName == "Netscape") && (browserVer >= 3))
-    || ((browserName == "Microsoft Internet Explorer") && (browserVer >= 4))){ 
+    || ((browserName == "Microsoft Internet Explorer") && (browserVer >= 4))){
    version = "n3";
-} else { 
+} else {
    version = "n2";
 }
 
 
-function historyback() { 
-   history.back(); 
+function historyback() {
+   history.back();
 }
 
 
-function historyforward() { 
-   history.forward(); 
+function historyforward() {
+   history.forward();
 }
 
 
@@ -440,7 +440,7 @@ function toggleCheckboxes( container_id ) {
 
 /**
  * display "other" text input field in case of selecting "other" option
- * 
+ *
  * @since version 0.84
  *
  * @param    select_object     DOM select object
@@ -534,9 +534,9 @@ function confirmAction(text, where){
 /**
  * Fonction permettant de connaître la position d'un objet par rapport au bord gauche de la page.
  * Cet objet peut être à l'intérieur d'un autre objet.
- * 
+ *
  * @param MyObject
- * 
+ *
  * @returns la distance par rapport au bord gauche de la page
 **/
 function getLeft(MyObject){
@@ -545,15 +545,15 @@ function getLeft(MyObject){
       return (MyObject.offsetLeft + getLeft(MyObject.offsetParent));
    }
    return (MyObject.offsetLeft);
-} 
+}
 
 
 /**
  * Fonction permettant de connaître la position d'un objet par rapport au bord haut de la page.
  * Cet objet peut être à l'intérieur d'un autre objet.
- * 
+ *
  * @param MyObject
- * 
+ *
  * @returns la distance par rapport au bord haut de la page
 **/
 function getTop(MyObject){
@@ -567,7 +567,7 @@ function getTop(MyObject){
 
 /**
  * safe function to hide an element with a specified id
- * 
+ *
  * @param id               id of the dive
  * @param img_name         name attribut of the img item
  * @param img_src_close    url of the close img
@@ -619,7 +619,7 @@ function showHideDiv(id, img_name, img_src_close, img_src_open) {
 
 /**
  * safe function to hide an element with a specified id
- * 
+ *
  * @param id
  * @param img_name
  * @param img_src_yes
@@ -645,7 +645,7 @@ function toogle(id, img_name, img_src_yes, img_src_no) {
 
 /**
  * @since version 0.84
- * 
+ *
  * @param tbl
  * @param img_name
  * @param img_src_close
@@ -661,7 +661,7 @@ function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
             if (img_name != ''){
                document[img_name].src = img_src_open;
             }
-            
+
          } else {
             tblRows[i].style.display = "none";
             if (img_name != ''){
@@ -687,7 +687,7 @@ function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
 
 /**
  * @since version 0.84
- * 
+ *
  * @param target
  * @param fields
 **/
@@ -835,7 +835,7 @@ filter_timeline = function() {
          $(this).parent().removeClass('h_hidden');
       })
 
-      //show all items when no active filter 
+      //show all items when no active filter
       if (active_classnames.length == 0) {
          $('.h_item').removeClass('h_hidden');
       }

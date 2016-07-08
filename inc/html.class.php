@@ -56,23 +56,18 @@ class Html {
     *          2 : remove tag and neutralize content
     * @return clean value
    **/
-   static function clean($value, $striptags=true, $keep_bad=2, $double_escape_angle_brackets = true) {
-
-      include_once(GLPI_HTMLAWED);
-
+   static function clean($value, $striptags=true, $keep_bad=2) {
       $value = Html::entity_decode_deep($value);
 
       // Clean MS office tags
       $value = str_replace(array("<![if !supportLists]>", "<![endif]>"), '', $value);
 
       if ($striptags) {
-         $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-         $value         = preg_replace($specialfilter, '', $value);
-         $specialfilter = array('@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-         $value         = preg_replace($specialfilter, '', $value);
-         $specialfilter = array('@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
-         $value         = preg_replace($specialfilter, '', $value);
-         $specialfilter = array('@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si'); // Strip ToolTips
+         // Strip ToolTips
+         $specialfilter = array('@<div[^>]*?tooltip_picture[^>]*?>.*?</div[^>]*?>@si',
+                                '@<div[^>]*?tooltip_text[^>]*?>.*?</div[^>]*?>@si',
+                                '@<div[^>]*?tooltip_picture_border[^>]*?>.*?</div[^>]*?>@si',
+                                '@<div[^>]*?invisible[^>]*?>.*?</div[^>]*?>@si');
          $value         = preg_replace($specialfilter, '', $value);
 
          $value = preg_replace("/<(p|br|div)( [^>]*)?".">/i", "\n", $value);
@@ -86,35 +81,16 @@ class Html {
                        );
       $value = preg_replace($search, '', $value);
 
+      // Neutralize not well formatted html tags
+      $value = preg_replace("/(<)([^>]*<)/", "&lt;$2", $value);
+
+      include_once(GLPI_HTMLAWED);
       $value = htmLawed($value, array('elements' => ($striptags) ? 'none' : '',
                                       'keep_bad' => $keep_bad, // 1 : neutralize tag and content, 2 : remove tag and neutralize content
                                       'comment' => 1, // DROP
                                       'cdata'   => 1, // DROP
                                       ));
 
-
-      if ($double_escape_angle_brackets) {
-         $value = str_replace(array('&lt;', '&gt;'), array('&amp;lt;', '&amp;gt;'), $value);
-      }
-
-/*
-      $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
-      $value         = preg_replace($specialfilter, ' ', $value);
-
-      $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                             '@<style[^>]*?>.*?</style[^>]*?>@si',   // Strip style tags properly
-                             '@<[\/\!]*?[^<>]*?>@si',                // Strip out HTML tags
-                             '@<![\s\S]*?--[ \t\n\r]*>@');           // Strip multi-line comments including CDATA
-
-      $value = preg_replace($search, ' ', $value);
-
-      // nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
-      $value = str_replace("&#8217;", "'", $value);
-*/
-   // Problem with this regex : may crash
-   //   $value = preg_replace("/ +/u", " ", $value);
-      // Revert back htmlawed &amp; -> &
-      //$value = str_replace("&amp;", "&", $value);
       $value = str_replace(array("\r\n", "\r"), "\n", $value);
       $value = preg_replace("/(\n[ ]*){2,}/", "\n\n", $value, -1);
 
@@ -1066,6 +1042,11 @@ class Html {
    static function includeHeader($title='') {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
+      // complete title with id if exist
+      if (isset($_GET['id']) && $_GET['id']) {
+         $title = sprintf(__('%1$s - %2$s'), $title, $_GET['id']);
+      }
+
       // Send UTF8 Headers
       header("Content-Type: text/html; charset=UTF-8");
       // Allow only frame from same server to prevent click-jacking
@@ -1157,7 +1138,7 @@ class Html {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.min.js");
       }
 
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js");
+      echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tinymce.min.js");
 
       // PLugins jquery
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js");
@@ -2052,13 +2033,13 @@ class Html {
            "</a></li>";
 
       echo "</ul>";
-      echo "</div>";
+      echo "</div>"; // c_preference
 
       //-- Le moteur de recherche --
       echo "<div id='c_recherche'></div>";
 
 
-      echo "</div>";
+      echo "</div>"; // c_recherche
 
       //-- Le menu principal --
       echo "<div id='c_menu'>";
@@ -2159,9 +2140,6 @@ class Html {
       // Display MENU ALL
       self::displayMenuAll($menu);
 
-      echo "</div>";
-
-
       // End navigation bar
       // End headline
 
@@ -2207,8 +2185,9 @@ class Html {
       if (Session::getLoginUserID()) {
          self::showProfileSelecter($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
       }
-      echo "</ul></div>";
+      echo "</ul></div>"; // fin c_ssmenu2
 
+      echo "</div>"; // fin c_menu
       echo "</div>"; // fin header
       echo "<div id='page' >";
 
@@ -3912,85 +3891,26 @@ class Html {
       global $CFG_GLPI;
 
       Html::scriptStart();
-      $js = "function waitforpastedata(elem){
-         var _html = elem.innerHTML;
-         if(_html != undefined) {
-            if (_html.match(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g)){
-               _html = _html.replace(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g, '');
-               tinyMCE.activeEditor.setContent(_html);
-            } else {
-               that = {
-                  e: elem
-               }
-               that.callself = function () {
-                  waitforpastedata(that.e)
-               }
-               setTimeout(that.callself,20);
-            }
-         }
-      }
-
-      tinyMCE.init({
-         language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
-         mode : 'exact',
-         browser_spellcheck : true,
+      $js = "tinyMCE.init({
+         language: '".$_SESSION['glpilanguage']."',
+         browser_spellcheck: true,
+         mode: 'exact',
          elements: '$name',
          relative_urls: false,
          remove_script_host: false,
-         valid_elements: '*[*]',
-         plugins : 'table,directionality,searchreplace,paste,tabfocus,autoresize',
-         paste_use_dialog : false,
-         paste_auto_cleanup_on_paste : true,
-         paste_convert_headers_to_strong : false,
-         paste_strip_class_attributes : 'all',
-         paste_remove_spans : true,
-         paste_remove_styles : true,
-         paste_retain_style_properties : '',
-         paste_block_drop : true,
-         paste_preprocess : function(pl, o) {
-            _html = o.content;
-            if (_html.match(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g)){
-               _html = _html.replace(/<img[^>]+src=\"data:image.*?;base64[^>]*?>/g, '');
-               o.content = _html;
-            }
-         },
-         theme : 'advanced',
-         entity_encoding : 'raw',
-         // directionality + search replace plugin
-         theme_advanced_buttons1_add : 'ltr,rtl,search,replace',
-         theme_advanced_toolbar_location : 'top',
-         theme_advanced_toolbar_align : 'left',
-         theme_advanced_statusbar_location : 'none',
-         theme_advanced_resizing : 'true',
-         theme_advanced_buttons1 : 'bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent',
-         theme_advanced_buttons2 : 'forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator',
-         theme_advanced_buttons3 : '',
-         setup : function(ed) {
-         ed.onInit.add(function(ed) {
-            // wake up the autoresize plugin
-            setTimeout(
-               function(){
-                  ed.execCommand('mceAutoResize');
-               }, 1);
-               if (tinymce.isIE) {
-                  tinymce.dom.Event.add(ed.getBody(), 'dragenter', function(e) {
-                     return tinymce.dom.Event.cancel(e);
-                  });
-               } else {
-                  tinymce.dom.Event.add(ed.getBody().parentNode, 'drop', function(e) {
-                     tinymce.dom.Event.cancel(e);
-                     tinymce.dom.Event.stop(e);
-                  });
-                  tinymce.dom.Event.add(ed.getBody().parentNode, 'paste', function(e) {
-                     waitforpastedata(ed.getBody());
-                  });
-               }
-            });
-         }
+         entity_encoding: 'raw',
+         menubar: false,
+         statusbar: false,
+         skin: 'light',
+         plugins: [
+            'table directionality searchreplace paste',
+            'tabfocus autoresize link image',
+            'code fullscreen'
+         ],
+         toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image searchreplace code fullscreen',
       });
    ";
 
-//         invalid_elements : 'script',
       if ($display) {
          echo  Html::scriptBlock($js);
       } else {
@@ -4025,7 +3945,7 @@ class Html {
                                               'save'         => _sx('button', 'Save'),
                                               'cancel'       => _sx('button', 'Cancel')));
 
-      return html::scriptBlock("if (!tinyMCE.isIE) { // Chrome, Firefox plugin
+      return html::scriptBlock("if (!tinyMCE.isIE || tinymce.Env.ie >= 10) { // Chrome, Firefox plugin, Internet explorer >= 10
                   tinyMCE.imagePaste = $(document).imagePaste(".json_encode($params).");
               } else { // IE plugin
                   tinyMCE.imagePaste = $(document).IE_support_imagePaste(".json_encode($params).");
@@ -5821,6 +5741,8 @@ class Html {
             width: 'auto'
          });
       };
+
+      window.nativeConfirm = window.confirm;
 
       // redefine native 'confirm' function
       window.confirm = function (message, caption) {

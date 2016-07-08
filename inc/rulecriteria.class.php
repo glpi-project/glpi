@@ -327,7 +327,7 @@ class RuleCriteria extends CommonDBChild {
 
 
    /**
-    * Try to match a definied rule
+    * Try to match a defined rule
     *
     * @param &$criterion         RuleCriteria object
     * @param $field              the field to match

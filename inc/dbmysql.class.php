@@ -731,14 +731,20 @@ class DBmysqlIterator  implements Iterator {
          $this->sql = $table;
       } else {
          // Check field, orderby, limit, start in criterias
-         $field   = "";
-         $orderby = "";
-         $limit   = 0;
-         $start   = 0;
+         $field    = "";
+         $orderby  = "";
+         $limit    = 0;
+         $start    = 0;
+         $distinct = '';
+         $where    = '';
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
                if ($key === "FIELDS") {
                   $field = $val;
+                  unset($crit[$key]);
+               } else if ($key === "DISTINCT FIELDS") {
+                  $field = $val;
+                  $distinct = "DISTINCT";
                   unset($crit[$key]);
                } else if ($key === "ORDER") {
                   $orderby = $val;
@@ -749,6 +755,9 @@ class DBmysqlIterator  implements Iterator {
                } else if ($key === "START") {
                   $start = $val;
                   unset($crit[$key]);
+               } else if ($key === "WHERE") {
+                  $where = $val;
+                  unset($crit[$key]);
                }
             }
          }
@@ -758,29 +767,37 @@ class DBmysqlIterator  implements Iterator {
             $this->sql = "";
             foreach ($field as $t => $f) {
                if (is_numeric($t)) {
-                  $this->sql .= (empty($this->sql) ? "SELECT " : ",") . $f;
+                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . self::quoteName($f);
                } else if (is_array($f)) {
-                  $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(",$t.",$f);
+                  $t = self::quoteName($t);
+                  $f = array_map([__CLASS__, 'quoteName'], $f);
+                  $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(", $t.",$f);
                } else {
-                  $this->sql .= (empty($this->sql) ? "SELECT " : ",") . "$t.$f";
+                  $t = self::quoteName($t);
+                  $f = self::quoteName($f);
+                  $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . "$t.$f";
                }
             }
          } else if (empty($field)) {
             $this->sql = "SELECT *";
          } else {
-            $this->sql = "SELECT `$field`";
+            $this->sql = "SELECT $distinct `$field`";
          }
 
          // FROM table list
          if (is_array($table)) {
-            $this->sql .= " FROM `".implode("`, `",$table)."`";
+            $table = array_map([__CLASS__, 'quoteName'], $table);
+            $this->sql .= ' FROM '.implode(", ",$table);
          } else {
-            $this->sql .= " FROM `$table`";
+            $table = self::quoteName($table);
+            $this->sql .= " FROM $table";
          }
 
          // WHERE criteria list
          if (!empty($crit)) {
             $this->sql .= " WHERE ".$this->analyseCrit($crit);
+         } else if ($where) {
+            $this->sql .= " WHERE ".$this->analyseCrit($where);
          }
 
          // ORDER BY
@@ -789,12 +806,7 @@ class DBmysqlIterator  implements Iterator {
             foreach ($orderby as $o) {
                $new = '';
                $tmp = explode(' ',$o);
-               // Already strip
-               if ($tmp[0][0] == '`') {
-                  $new .= $tmp[0];
-               } else {
-                  $new .= '`'.$tmp[0].'`';
-               }
+               $new .= self::quoteName($tmp[0]);
                // ASC OR DESC added
                if (isset($tmp[1]) && in_array($tmp[1],array('ASC', 'DESC'))) {
                   $new .= ' '.$tmp[1];
@@ -806,12 +818,7 @@ class DBmysqlIterator  implements Iterator {
          } else if (!empty($orderby)) {
             $this->sql .= " ORDER BY ";
             $tmp = explode(' ',$orderby);
-            // Already strip
-            if ($tmp[0][0] == '`') {
-               $this->sql .= $tmp[0];
-            } else {
-               $this->sql .= '`'.$tmp[0].'`';
-            }
+            $this->sql .= self::quoteName($tmp[0]);
             // ASC OR DESC added
             if (isset($tmp[1]) && in_array($tmp[1],array('ASC', 'DESC'))) {
                $this->sql .= ' '.$tmp[1];
@@ -828,7 +835,17 @@ class DBmysqlIterator  implements Iterator {
       if ($debug) {
          toolbox::logdebug("req", $this->sql);
       }
-      $this->res = $this->conn->query($this->sql);
+      $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
+   }
+
+
+   private static function quoteName($name) {
+      return ($name[0]=='`' ? $name : "`$name`");
+   }
+
+
+   public function getSql() {
+      return preg_replace('/ +/', ' ', $this->sql);
    }
 
 
@@ -872,27 +889,27 @@ class DBmysqlIterator  implements Iterator {
                reset($value);
                list($t1,$f1) = each($value);
                list($t2,$f2) = each($value);
-               $ret .= (is_numeric($t1) ? "$f1" : "$t1.$f1") . "=" .
-                       (is_numeric($t2) ? "$f2" : "$t2.$f2");
+               $ret .= (is_numeric($t1) ? self::quoteName($f1) : self::quoteName($t1) . '.' . self::quoteName($f1)) . ' = ' .
+                       (is_numeric($t2) ? self::quoteName($f2) : self::quoteName($t2) . '.' . self::quoteName($f2));
             } else {
                trigger_error("BAD FOREIGN KEY", E_USER_ERROR);
             }
 
          } else if (is_array($value)) {
             // Array of Value
-            $ret .= "$name IN ('". implode("','",$value)."')";
+            $ret .= self::quoteName($name) . " IN ('". implode("','",$value)."')";
 
          } else if (is_null($value)) {
             // NULL condition
-            $ret .= "$name IS NULL";
+            $ret .= self::quoteName($name) . " IS NULL";
 
          } else if (is_numeric($value) || preg_match("/^`.*?`$/", $value)) {
             // Integer or field name
-            $ret .= "$name=$value";
+            $ret .= self::quoteName($name) . " = $value";
 
          } else {
             // String
-            $ret .= "$name='$value'";
+            $ret .= self::quoteName($name) . " = '$value'";
          }
       }
       return $ret;

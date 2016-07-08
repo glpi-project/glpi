@@ -39,6 +39,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Sabre\VObject;
+
 /**
  * Contact class
 **/
@@ -412,33 +414,32 @@ class Contact extends CommonDBTM{
    **/
    function generateVcard() {
 
-      include (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
-
       if (!$this->can($this->fields['id'], READ)) {
          return false;
       }
 
       // build the Vcard
-      $vcard = new vCard();
+      $vcard = new VObject\Component\VCard([
+         'N'     => [$this->fields["name"], $this->fields["firstname"]],
+         'EMAIL' => $this->fields["email"],
+         'NOTE'  => $this->fields["comment"],
+      ]);
 
-      $vcard->setName($this->fields["name"], $this->fields["firstname"], "", "");
+      $vcard->add('TEL', $this->fields["phone"], ['type' => 'PREF;WORK;VOICE']);
+      $vcard->add('TEL', $this->fields["phone2"], ['type' => 'HOME;VOICE']);
+      $vcard->add('TEL', $this->fields["mobile"], ['type' => 'WORK;CELL']);
+      $vcard->add('URL', $this->GetWebsite(), ['type' => 'WORK']);
 
-      $vcard->setPhoneNumber($this->fields["phone"], "PREF;WORK;VOICE");
-      $vcard->setPhoneNumber($this->fields["phone2"], "HOME;VOICE");
-      $vcard->setPhoneNumber($this->fields["mobile"], "WORK;CELL");
 
       $addr = $this->GetAddress();
       if (is_array($addr)) {
-         $vcard->setAddress($addr["name"], "", $addr["address"], $addr["town"], $addr["state"],
-                            $addr["postcode"], $addr["country"], "WORK;POSTAL");
+         $addr_string = implode(";", array_filter($addr));
+         $vcard->add('ADR', $addr_string, ['type' => 'WORK;POSTAL']);
       }
-      $vcard->setEmail($this->fields["email"]);
-      $vcard->setNote($this->fields["comment"]);
-      $vcard->setURL($this->GetWebsite(), "WORK");
 
       // send the  VCard
-      $output   = $vcard->getVCard();
-      $filename = $vcard->getFileName();      // "xxx xxx.vcf"
+      $output   = $vcard->serialize();
+      $filename = $this->fields["name"]."_".$this->fields["firstname"].".vcf";
 
       @Header("Content-Disposition: attachment; filename=\"$filename\"");
       @Header("Content-Length: ".Toolbox::strlen($output));
