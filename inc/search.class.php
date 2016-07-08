@@ -2776,6 +2776,7 @@ class Search {
           && ($table != getTableForItemType($itemtype))
           && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable = "_".$searchopt[$ID]["linkfield"];
+         $table   .= $addtable;
       }
 
       if (isset($searchopt[$ID]['joinparams'])) {
@@ -2788,10 +2789,7 @@ class Search {
 
       if ($meta
           && (getTableForItemType($itemtype) != $table)) {
-         $addtable .= "_".$itemtype;
-         if ($itemtype != getItemTypeForTable($searchopt[$ID]["table"])) {
-            $table = $searchopt[$ID]["table"];
-         }
+         $table .= "_".$itemtype;
       }
 
       // Hack to allow search by ID on every sub-table
@@ -2888,8 +2886,8 @@ class Search {
             }
 
             if (in_array($searchtype, array('equals', 'notequals'))) {
-               return " $link (`$table$addtable`.`id`".$SEARCH.
-                               (($val == 0)?" OR `$table$addtable`.`id` IS".
+               return " $link (`$table`.`id`".$SEARCH.
+                               (($val == 0)?" OR `$table`.`id` IS".
                                    (($searchtype == "notequals")?" NOT":"")." NULL":'').') ';
             }
             $toadd   = '';
@@ -2919,12 +2917,12 @@ class Search {
             $toadd2 = '';
             if ($nott
                 && ($val != 'NULL') && ($val != 'null')) {
-               $toadd2 = " OR `$table$addtable`.`$field` IS NULL";
+               $toadd2 = " OR `$table`.`$field` IS NULL";
             }
-            return $link." (((`$table$addtable`.`$name1` $SEARCH
-                            $tmplink `$table$addtable`.`$name2` $SEARCH
-                            $tmplink `$table$addtable`.`$field` $SEARCH
-                            $tmplink CONCAT(`$table$addtable`.`$name1`, ' ', `$table$addtable`.`$name2`) $SEARCH )
+            return $link." (((`$table`.`$name1` $SEARCH
+                            $tmplink `$table`.`$name2` $SEARCH
+                            $tmplink `$table`.`$field` $SEARCH
+                            $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH )
                             $toadd2) $toadd)";
 
 
@@ -2932,11 +2930,11 @@ class Search {
             if ($val == 'mygroups') {
                switch ($searchtype) {
                   case 'equals' :
-                     return " $link (`$table$addtable`.`id` IN ('".implode("','",
+                     return " $link (`$table`.`id` IN ('".implode("','",
                                                                   $_SESSION['glpigroups'])."')) ";
 
                   case 'notequals' :
-                     return " $link (`$table$addtable`.`id` NOT IN ('".implode("','",
+                     return " $link (`$table`.`id` NOT IN ('".implode("','",
                                                                       $_SESSION['glpigroups'])."')) ";
 
                   case 'under' :
@@ -2945,7 +2943,7 @@ class Search {
                         $groups += getSonsOf($inittable, $g);
                      }
                      $groups = array_unique($groups);
-                     return " $link (`$table$addtable`.`id` IN ('".implode("','", $groups)."')) ";
+                     return " $link (`$table`.`id` IN ('".implode("','", $groups)."')) ";
 
                   case 'notunder' :
                      $groups = $_SESSION['glpigroups'];
@@ -2953,7 +2951,7 @@ class Search {
                         $groups += getSonsOf($inittable, $g);
                      }
                      $groups = array_unique($groups);
-                     return " $link (`$table$addtable`.`id` NOT IN ('".implode("','", $groups)."')) ";
+                     return " $link (`$table`.`id` NOT IN ('".implode("','", $groups)."')) ";
                }
             }
             break;
@@ -2984,7 +2982,7 @@ class Search {
                   }
                }
                $regs[1] .= $regs[2];
-               return $link." (INET_ATON(`$table$addtable`.`$field`) ".$regs[1]." INET_ATON('".$regs[3]."')) ";
+               return $link." (INET_ATON(`$table`.`$field`) ".$regs[1]." INET_ATON('".$regs[3]."')) ";
             }
             break;
 
@@ -3042,9 +3040,9 @@ class Search {
 
             if (count($tocheck)) {
                if ($nott) {
-                  return $link." `$table$addtable`.`$field` NOT IN ('".implode("','",$tocheck)."')";
+                  return $link." `$table`.`$field` NOT IN ('".implode("','",$tocheck)."')";
                }
-               return $link." `$table$addtable`.`$field` IN ('".implode("','",$tocheck)."')";
+               return $link." `$table`.`$field` IN ('".implode("','",$tocheck)."')";
             }
             break;
 
@@ -3058,11 +3056,11 @@ class Search {
             $toadd2 = '';
             if ($nott
                 && ($val != 'NULL') && ($val != 'null')) {
-               $toadd2 = " OR `$table$addtable`.`$field` IS NULL";
+               $toadd2 = " OR `$table`.`$field` IS NULL";
             }
 
-            return $link." (((`$table$addtable`.`tickets_id_1` $compare '$val'
-                              $tmplink `$table$addtable`.`tickets_id_2` $compare '$val')
+            return $link." (((`$table`.`tickets_id_1` $compare '$val'
+                              $tmplink `$table`.`tickets_id_2` $compare '$val')
                              AND `glpi_tickets`.`id` <> '$val')
                             $toadd2)";
 
@@ -3078,13 +3076,13 @@ class Search {
          case "glpi_projects.priority" :
             if (is_numeric($val)) {
                if ($val > 0) {
-                  return $link." `$table$addtable`.`$field` = '$val'";
+                  return $link." `$table`.`$field` = '$val'";
                }
                if ($val < 0) {
-                  return $link." `$table$addtable`.`$field` >= '".abs($val)."'";
+                  return $link." `$table`.`$field` >= '".abs($val)."'";
                }
                // Show all
-               return $link." `$table$addtable`.`$field` >= '0' ";
+               return $link." `$table`.`$field` >= '0' ";
             }
             return "";
 
@@ -3108,9 +3106,9 @@ class Search {
             }
             if (count($tocheck)) {
                if ($nott) {
-                  return $link." `$table$addtable`.`$field` NOT IN ('".implode("','",$tocheck)."')";
+                  return $link." `$table`.`$field` NOT IN ('".implode("','",$tocheck)."')";
                }
-               return $link." `$table$addtable`.`$field` IN ('".implode("','",$tocheck)."')";
+               return $link." `$table`.`$field` IN ('".implode("','",$tocheck)."')";
             }
             break;
 
@@ -3132,11 +3130,11 @@ class Search {
          }
       }
 
-      $tocompute      = "`$table$addtable`.`$field`";
-      $tocomputetrans = "`".$table.$addtable."_".$field."_trans`.`value`";
+      $tocompute      = "`$table`.`$field`";
+      $tocomputetrans = "`".$table."_".$field."_trans`.`value`";
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
-         $tocompute = str_replace("TABLE", "`$table$addtable`", $tocompute);
+         $tocompute = str_replace("TABLE", "`$table`", $tocompute);
       }
 
       // Preformat items
@@ -3144,13 +3142,13 @@ class Search {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemtypename" :
                if (in_array($searchtype, array('equals', 'notequals'))) {
-                  return " $link (`$table$addtable`.`$field`".$SEARCH.') ';
+                  return " $link (`$table`.`$field`".$SEARCH.') ';
                }
                break;
 
             case "itemlink" :
                if (in_array($searchtype, array('equals', 'notequals', 'under', 'notunder'))) {
-                  return " $link (`$table$addtable`.`id`".$SEARCH.') ';
+                  return " $link (`$table`.`id`".$SEARCH.') ';
                }
                break;
 
@@ -3165,7 +3163,7 @@ class Search {
                      if ($searchtype == 'notequals') {
                         $nott = !$nott;
                      }
-                     return self::makeTextCriteria("`$table$addtable`.`$field`", $val, $nott, $link);
+                     return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
                   }
                }
                if ($searchtype == 'lessthan') {
@@ -3188,10 +3186,10 @@ class Search {
                   }
                   $add_minus = '';
                   if (isset($searchopt[$ID]["datafields"][3])) {
-                     $add_minus = "-`$table$addtable`.`".$searchopt[$ID]["datafields"][3]."`";
+                     $add_minus = "-`$table`.`".$searchopt[$ID]["datafields"][3]."`";
                   }
-                  $date_computation = "ADDDATE(`$table$addtable`.".$searchopt[$ID]["datafields"][1].",
-                                               INTERVAL (`$table$addtable`.".$searchopt[$ID]["datafields"][2]."
+                  $date_computation = "ADDDATE(`$table`.".$searchopt[$ID]["datafields"][1].",
+                                               INTERVAL (`$table`.".$searchopt[$ID]["datafields"][2]."
                                                          $add_minus)
                                                $delay_unit)";
                }
