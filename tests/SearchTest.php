@@ -137,4 +137,29 @@ class SearchTest extends DbTestCase {
       $this->assertArrayHasKey('data', $data, $data['last_errors']);
       $this->assertNotCount(0, $data['data'], $data['last_errors']);
    }
+
+   public function testUser() {
+      $search_params = array('is_deleted'   => 0,
+                             'start'        => 0,
+                             'search'       => 'Search',
+                                                     // profile
+                             'criteria'     => array(0 => array('field'      => '20',
+                                                                'searchtype' => 'contains',
+                                                                'value'      => 'super-admin'),
+                                                     // login
+                                                     1 => array('link'       => 'AND',
+                                                                'field'      => '1',
+                                                                'searchtype' => 'contains',
+                                                                'value'      => 'glpi'),
+                                                     // entity
+                                                     2 => array('link'       => 'AND',
+                                                                'field'      => '80',
+                                                                'searchtype' => 'equals',
+                                                                'value'      => 0),
+                                                     // is not not active
+                                                     3 => array('link'       => 'AND',
+                                                                'field'      => '8',
+                                                                'searchtype' => 'notequals',
+                                                                'value'      => 0)));
+   }
 }
