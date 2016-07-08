@@ -333,27 +333,26 @@ function update0903to91() {
    /************** New Planning with fullcalendar.io *************/
    $migration->addField("glpi_users", "plannings", "text");
 
-
-
    /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
-   $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
-                  'SoftwareLicense', 'Peripheral', 'NetworkEquipment', 'User', 'Group', 'Entity',
-                  'Profile', 'Budget', 'Contact', 'Contract', 'Netpoint', 'NetworkPort', 'Rule',
-                  'Cartridge', 'CartridgeItem', 'Consumable', 'ConsumableItem', 'Ticket', 'Problem',
-                  'Change', 'Supplier', 'Document', 'AuthLDAP', 'MailCollector', 'Location',
-                  'State', 'Manufacturer', 'Blacklist', 'BlacklistedMailContent', 'ITILCategory',
-                  'TaskCategory', 'TaskTemplate', 'Project', 'Reminder', 'RSSFeed',
-                  'SolutionType', 'RequestType', 'SolutionTemplate', 'ProjectState', 'ProjectType',
-                  'ProjectTaskType', 'SoftwareLicenseType', 'CartridgeItemType', 'ConsumableItemType',
-                  'ContractType', 'ContactType', 'DeviceMemoryType', 'SupplierType', 'InterfaceType',
-                  'DeviceCaseType', 'PhonePowerSupply', 'Filesystem', 'VirtualMachineType',
-                  'VirtualMachineSystem', 'VirtualMachineState', 'DocumentCategory', 'DocumentType',
-                  'KnowbaseItemCategory', 'Calendar', 'Holiday', 'NetworkEquipmentFirmware',
-                  'Network', 'Domain', 'Vlan', 'IPNetwork', 'FQDN', 'WifiNetwork', 'NetworkName',
-                  'UserTitle', 'UserCategory', 'RuleRightParameter', 'Fieldblacklist', 'SsoVariable',
-                  'NotificationTemplate', 'Notification', 'SLA', 'FieldUnicity', 'Crontask', 'Link',
-                  'ComputerDisk', 'ComputerVirtualMachine', 'Infocom');
+   $types = array('AuthLDAP', 'Blacklist', 'BlacklistedMailContent', 'Budget',  'Calendar',
+                  'CartridgeItemType', 'Change', 'ChangeTask', 'ComputerDisk',
+                  'ComputerVirtualMachine', 'ConsumableItemType', 'Contact', 'ContactType',
+                  'Contract', 'ContractType', 'Crontask', 'DeviceCaseType', 'DeviceMemoryType',
+                  'Document', 'DocumentCategory', 'DocumentType', 'Domain',  'Entity', 'FQDN',
+                  'Fieldblacklist', 'FieldUnicity', 'Filesystem', 'Group', 'Holiday', 'Infocom',
+                  'InterfaceType', 'IPNetwork', 'ITILCategory', 'KnowbaseItemCategory', 'Location',
+                  'Link', 'MailCollector', 'Manufacturer', 'Netpoint', 'Network',
+                  'NetworkEquipmentFirmware', 'NetworkName', 'NetworkPort', 'Notification',
+                  'NotificationTemplate', 'PhonePowerSupply', 'Problem', 'ProblemTask', 'Profile',
+                  'Project', 'ProjectState', 'ProjectTaskType', 'ProjectType',  'Reminder',
+                  'RequestType', 'RSSFeed', 'Rule', 'RuleRightParameter', 'SLA',
+                  'SoftwareLicenseType', 'SoftwareVersion', 'SolutionTemplate', 'SolutionType',
+                  'SsoVariable', 'State', 'Supplier', 'SupplierType',
+                  'TaskCategory', 'TaskTemplate',  'Ticket', 'TicketFollowup', 'TicketTask',
+                  'User', 'UserCategory', 'UserTitle', 'VirtualMachineState', 'VirtualMachineSystem',
+                  'VirtualMachineType', 'Vlan', 'WifiNetwork');
+   $types = array_merge($types, $CFG_GLPI["infocom_types"]);
    $types = array_merge($types, $CFG_GLPI["dictionnary_types"]);
    $types = array_merge($types, $CFG_GLPI["device_types"]);
    $types = array_merge($types, $CFG_GLPI['networkport_instantiations']);
@@ -726,16 +725,6 @@ function update0903to91() {
    $migration->addKey("glpi_problemtasks", "groups_id_tech");
    $migration->addField("glpi_groups", "is_task", "bool", array('value' => 1,
                                                                 'after' => 'is_assign'));
-
-   // for date_mod adding to tasks and to followups
-   $migration->addField("glpi_tickettasks", "date_mod", "datetime");
-   $migration->addKey("glpi_tickettasks", "date_mod");
-   $migration->addField("glpi_problemtasks", "date_mod", "datetime");
-   $migration->addKey("glpi_problemtasks", "date_mod");
-   $migration->addField("glpi_changetasks", "date_mod", "datetime");
-   $migration->addKey("glpi_changetasks", "date_mod");
-   $migration->addField("glpi_ticketfollowups", "date_mod", "datetime");
-   $migration->addKey("glpi_ticketfollowups", "date_mod");
 
 
    // ************ Keep it at the end **************
