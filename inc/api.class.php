@@ -1094,7 +1094,7 @@ abstract class API extends CommonGLPI {
          foreach($rawdata['data']['rows'] as $row) {
             foreach ($row as $cell_key => $cell) {
                if (isset($cell['displayname'])) {
-                  $cleaned_data['data_html'][$row['id']][$cell_key] = $cell['displayname'];
+                  $cleaned_data['data_html'][][$cell_key] = $cell['displayname'];
                }
             }
          }
