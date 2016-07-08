@@ -1092,11 +1092,13 @@ abstract class API extends CommonGLPI {
       if (isset($params['giveItems'])) {
          $cleaned_data['data_html'] = array();
          foreach($rawdata['data']['rows'] as $row) {
+            $new_row = array();
             foreach ($row as $cell_key => $cell) {
                if (isset($cell['displayname'])) {
-                  $cleaned_data['data_html'][][$cell_key] = $cell['displayname'];
+                  $new_row[$cell_key] = $cell['displayname'];
                }
             }
+            $cleaned_data['data_html'][] = $new_row;
          }
       }
 
