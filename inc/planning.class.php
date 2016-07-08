@@ -39,6 +39,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Sabre\VObject;
+
 /**
  * Planning Class
 **/
@@ -670,7 +672,7 @@ class Planning extends CommonGLPI {
                editEventTimes(event, revertFunc);
             },
             eventClick: function(event) {
-               if (event.ajaxurl && !disable_edit) {
+               if (event.ajaxurl && event.editable && !disable_edit) {
                   $('<div>')
                      .dialog({
                         modal:  true,
@@ -1256,7 +1258,7 @@ class Planning extends CommonGLPI {
       $current_group = &$_SESSION['glpi_plannings']['plannings']["group_".$params['groups_id']."_users"];
       $current_group = array('display' => true,
                              'type'    => 'group_users');
-      $users = Group_User::getGroupUsers($params['groups_id']);
+      $users = Group_User::getGroupUsers($params['groups_id'], "`glpi_users`.`is_active` = 1");
       $index_color = count($_SESSION['glpi_plannings']['plannings']);
       $group_user_index = 0;
       foreach($users as $user_data) {
@@ -1886,34 +1888,26 @@ class Planning extends CommonGLPI {
           && ($who_group === 0)) {
          return false;
       }
-      include_once (GLPI_ROOT . "/lib/icalcreator/iCalcreator.php");
-      $v = new vcalendar();
+
 
       if (!empty( $CFG_GLPI["version"])) {
-         $v->setConfig( 'unique_id', "GLPI-Planning-".trim($CFG_GLPI["version"]) );
+         $unique_id = "GLPI-Planning-".trim($CFG_GLPI["version"]);
       } else {
-         $v->setConfig( 'unique_id', "GLPI-Planning-UnknownVersion" );
+         $unique_id = "GLPI-Planning-UnknownVersion";
       }
 
-      $tz     = date_default_timezone_get();
-      $v->setConfig( 'TZID', $tz );
+      // create vcalendar
+      $vcalendar = new VObject\Component\VCalendar();
 
-      $v->setProperty( "method", "PUBLISH" );
-      $v->setProperty( "version", "2.0" );
 
-      $v->setProperty( "X-WR-TIMEZONE", $tz );
-      $xprops = array( "X-LIC-LOCATION" => $tz );
-      iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
+      // $xprops = array( "X-LIC-LOCATION" => $tz );
+      // iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
 
-      $v->setProperty( "x-wr-calname", "GLPI-".$who."-".$who_group );
-      $v->setProperty( "calscale", "GREGORIAN" );
       $interv = array();
-
       $begin  = time()-MONTH_TIMESTAMP*12;
       $end    = time()+MONTH_TIMESTAMP*12;
       $begin  = date("Y-m-d H:i:s", $begin);
       $end    = date("Y-m-d H:i:s", $end);
-
       $params = array('who'       => $who,
                       'who_group' => $who_group,
                       'whogroup'  => $whogroup,
@@ -1931,56 +1925,56 @@ class Planning extends CommonGLPI {
 
       if (count($interv) > 0) {
          foreach ($interv as $key => $val) {
-            $vevent = new vevent(); //initiate EVENT
             if (isset($val['itemtype'])) {
                if (isset($val[getForeignKeyFieldForItemType($val['itemtype'])])) {
-                  $vevent->setProperty("uid",
-                                       $val['itemtype']."#".
-                                          $val[getForeignKeyFieldForItemType($val['itemtype'])]);
+                  $uid = $val['itemtype']."#".$val[getForeignKeyFieldForItemType($val['itemtype'])];
                } else {
-                  $vevent->setProperty("uid", "Other#".$key);
+                  $uid = "Other#".$key;
                }
             } else {
-               $vevent->setProperty("uid", "Other#".$key);
+               $uid = "Other#".$key;
             }
 
-            $vevent->setProperty( "dstamp", $val["begin"] );
-            $vevent->setProperty( "dtstart", $val["begin"] );
-            $vevent->setProperty( "dtend", $val["end"] );
+            $vevent['UID']     = $uid;
+            $vevent['DTSTART'] = new \DateTime($val["begin"]);
+            $vevent['DTEND']   = new \DateTime($val["end"]);
 
             if (isset($val["tickets_id"])) {
-               $vevent->setProperty("summary",
-                  // TRANS: %1$s is the ticket, %2$s is the title
-                                    sprintf(__('Ticket #%1$s %2$s'),
-                                           $val["tickets_id"], $val["name"]));
+               $summary = sprintf(__('Ticket #%1$s %2$s'), $val["tickets_id"], $val["name"]);
             } else if (isset($val["name"])) {
-               $vevent->setProperty( "summary", $val["name"] );
+               $summary = $val["name"];
             }
+            $vevent['SUMMARY'] = $summary;
 
             if (isset($val["content"])) {
-               $text = $val["content"];
+               $description = $val["content"];
                // be sure to replace nl by \r\n
-               $text = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $text);
-               $text = Html::clean($text);
-               $vevent->setProperty( "description", $text );
+               $description = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $description);
+               $description = Html::clean($description);
             } else if (isset($val["name"])) {
-               $text = $val["name"];
+               $description = $val["name"];
                // be sure to replace nl by \r\n
-               $text = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $text);
-               $text = Html::clean($text);
-               $vevent->setProperty( "description", $text );
+               $description = preg_replace("/<br( [^>]*)?".">/i", "\r\n", $description);
+               $description = Html::clean($description);
             }
+            $vevent['DESCRIPTION'] = $description;
 
             if (isset($val["url"])) {
-               $vevent->setProperty("url",$val["url"]);
+               $vevent['URL'] = $val["url"];
             }
-
-            $v->setComponent( $vevent );
          }
+         $vcalendar->add('VEVENT', $vevent);
       }
-      $v->sort();
-//       $v->parse();
-      return $v->returnCalendar();
+
+      $output   = $vcalendar->serialize();
+      $filename = date( 'YmdHis' ).'.ics';
+
+      @Header("Content-Disposition: attachment; filename=\"$filename\"");
+      @Header("Content-Length: ".Toolbox::strlen($output));
+      @Header("Connection: close");
+      @Header("content-type: text/calendar; charset=utf-8");
+
+      echo $output;
    }
 
    /**

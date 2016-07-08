@@ -222,6 +222,22 @@ CREATE TABLE `glpi_budgets` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_budgettypes
+
+DROP TABLE IF EXISTS `glpi_budgettypes`;
+CREATE TABLE `glpi_budgettypes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_calendars
 
 DROP TABLE IF EXISTS `glpi_calendars`;
@@ -568,6 +584,7 @@ CREATE TABLE `glpi_changetasks` (
   `groups_id_tech` INT(11) NOT NULL DEFAULT '0',
   `content` longtext COLLATE utf8_unicode_ci,
   `actiontime` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `changes_id` (`changes_id`),
   KEY `state` (`state`),
@@ -575,6 +592,7 @@ CREATE TABLE `glpi_changetasks` (
   KEY `users_id_tech` (`users_id_tech`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date` (`date`),
+  KEY `date_mod` (`date_mod`),
   KEY `begin` (`begin`),
   KEY `end` (`end`),
   KEY `taskcategories_id` (`taskcategories_id`)
@@ -5262,12 +5280,14 @@ CREATE TABLE `glpi_problemtasks` (
   `content` longtext COLLATE utf8_unicode_ci,
   `actiontime` int(11) NOT NULL DEFAULT '0',
   `state` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `problems_id` (`problems_id`),
   KEY `users_id` (`users_id`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date` (`date`),
+  KEY `date_mod` (`date_mod`),
   KEY `begin` (`begin`),
   KEY `end` (`end`),
   KEY `state` (`state`),
@@ -6844,6 +6864,7 @@ CREATE TABLE `glpi_states` (
   `is_visible_phone` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_printer` tinyint(1) NOT NULL DEFAULT '1',
   `is_visible_softwareversion` tinyint(1) NOT NULL DEFAULT '1',
+  `is_visible_softwarelicense` tinyint(1) NOT NULL DEFAULT '1',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -6856,6 +6877,7 @@ CREATE TABLE `glpi_states` (
   KEY `is_visible_phone` (`is_visible_phone`),
   KEY `is_visible_printer` (`is_visible_printer`),
   KEY `is_visible_softwareversion` (`is_visible_softwareversion`),
+  KEY `is_visible_softwarelicense` (`is_visible_softwarelicense`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -7014,8 +7036,10 @@ CREATE TABLE `glpi_ticketfollowups` (
   `content` longtext COLLATE utf8_unicode_ci,
   `is_private` tinyint(1) NOT NULL DEFAULT '0',
   `requesttypes_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
+  KEY `date_mod` (`date_mod`),
   KEY `users_id` (`users_id`),
   KEY `tickets_id` (`tickets_id`),
   KEY `is_private` (`is_private`),
@@ -7178,8 +7202,10 @@ CREATE TABLE `glpi_tickettasks` (
   `state` int(11) NOT NULL DEFAULT '1',
   `users_id_tech` int(11) NOT NULL DEFAULT '0',
   `groups_id_tech` INT(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
+  KEY `date_mod` (`date_mod`),
   KEY `users_id` (`users_id`),
   KEY `tickets_id` (`tickets_id`),
   KEY `is_private` (`is_private`),

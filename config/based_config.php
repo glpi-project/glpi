@@ -121,52 +121,11 @@ if (!defined("GLPI_SCRIPT_DIR")) {
    define("GLPI_SCRIPT_DIR",GLPI_ROOT . "/scripts");
 }
 
-// Default PHPMailer installation dir
-if (!defined("GLPI_PHPMAILER_DIR")) {
-   define("GLPI_PHPMAILER_DIR", GLPI_ROOT."/lib/phpmailer");
-
-   # if PHPMailer installed, use (in config_path.php)
-   # define("GLPI_PHPMAILER_DIR", "/usr/share/php/phpmailer");
-}
-
-// Default tcpdf installation dir
-if (!defined("GLPI_TCPDF_DIR")) {
-   define("GLPI_TCPDF_DIR", GLPI_ROOT."/lib/tcpdf");
-
-   # if PHPMailer installed, use (in config_path.php)
-   # define("GLPI_TCPDF_DIR", "/usr/share/php/tcpdf");
-}
-
-// Default EZ Components path to base.php
-if (!defined("GLPI_EZC_BASE")) {
-   //define("GLPI_EZC_BASE", GLPI_ROOT."/lib/ezcomponents/Base/src/base.php");
-   define("GLPI_EZC_BASE", GLPI_ROOT."/lib/zeta/Base/src/base.php");
-
-   # if EZ components installed as PEAR extension, use (in config_path.php)
-   # define("GLPI_EZC_BASE", "ezc/Base/base.php");
-}
-
-if (!defined("GLPI_ZEND_PATH")) {
-   define("GLPI_ZEND_PATH", GLPI_ROOT."/lib/Zend");
-
-   # if Zend Framework 2 available in system, use (in config_path.php)
-   # define('GLPI_ZEND_PATH', '/usr/share/php/Zend');
-}
-
-// Default SimplePie path
-if (!defined("GLPI_SIMPLEPIE_PATH")) {
-   define("GLPI_SIMPLEPIE_PATH", GLPI_ROOT."/lib/simplepie");
-
-   # if SimplePie installed, use (in config_path.php)
-   # define("GLPI_SIMPLEPIE_PATH", "/usr/share/php/simplepie");  // if not in standard include_path
-}
-
-// Default phpCAS installation dir
-if (!defined("GLPI_PHPCAS")) {
-   define("GLPI_PHPCAS", GLPI_ROOT . "/lib/phpcas/CAS.php");
-
-   # if phpCAS installed as PEAR extension, use (in config_path.php)
-   # define("GLPI_PHPCAS", "CAS.php");
+// Default patch to htmLawed
+if (!defined('GLPI_HTMLAWED')) {
+   define('GLPI_HTMLAWED', GLPI_ROOT.'/lib/htmlawed/htmLawed.php');
+   # if htmLawed available in system, use (in config_path.php)
+   # define('GLPI_HTMLAWED', '/usr/share/htmlawed/htmLawed.php');
 }
 
 // Default path to FreeSans.ttf
@@ -176,20 +135,3 @@ if (!defined("GLPI_FONT_FREESANS")) {
    # if FreeSans.ttf available in system, use (in config_path.php)
    # define("GLPI_FONT_FREESANS", '/usr/share/fonts/gnu-free/FreeSans.ttf');
 }
-
-// Default patch to htmLawed
-if (!defined('GLPI_HTMLAWED')) {
-   define('GLPI_HTMLAWED', GLPI_ROOT.'/lib/htmlawed/htmLawed.php');
-
-   # if htmLawed available in system, use (in config_path.php)
-   # define('GLPI_HTMLAWED', '/usr/share/htmlawed/htmLawed.php');
-}
-
-// Default path to password_compat
-if (!defined('GLPI_PASSWORD_COMPAT')) {
-   define('GLPI_PASSWORD_COMPAT', GLPI_ROOT.'/lib/password_compat/password.php');
-
-   # if password_compat available in system, use (in config_path.php)
-   # define('GLPI_PASSWORD_COMPAT', '/usr/share/php/password_compat/password.php');
-}
-?>

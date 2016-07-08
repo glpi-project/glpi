@@ -40,6 +40,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
+use Sabre\VObject;
+
 class User extends CommonDBTM {
 
    // From CommonDBTM
@@ -711,13 +713,9 @@ class User extends CommonDBTM {
             }
          } else {
             //ldap jpegphoto synchronisation.
-            if (isset($this->fields["authtype"])
-                && ($this->fields["authtype"] == Auth::LDAP
-                     || Auth::isAlternateAuth($this->fields['authtype']))
-                && $picture = $this->syncLdapPhoto()) {
-               if (!empty($picture)) {
-                  $input['picture'] = $picture;
-               }
+            $picture = $this->syncLdapPhoto();
+            if (!empty($picture)) {
+               $input['picture'] = $picture;
             }
          }
       }
@@ -1081,6 +1079,8 @@ class User extends CommonDBTM {
 
       if (isset($this->fields["authtype"])
           && (($this->fields["authtype"] == Auth::LDAP)
+               || ($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED
+                   && !empty($this->fields["auths_id"]))
                || Auth::isAlternateAuth($this->fields['authtype']))) {
 
          if (isset($this->fields["id"]) && ($this->fields["id"] > 0)) {
@@ -3406,29 +3406,27 @@ class User extends CommonDBTM {
    **/
    function generateVcard() {
 
-      include_once (GLPI_ROOT . "/lib/vcardclass/classes-vcard.php");
-
-      // build the Vcard
-      $vcard = new vCard();
-
+      // prepare properties for the Vcard
       if (!empty($this->fields["realname"])
           || !empty($this->fields["firstname"])) {
-         $vcard->setName($this->fields["realname"], $this->fields["firstname"], "", "");
+         $name = [$this->fields["realname"], $this->fields["firstname"], "", "", ""];
       } else {
-         $vcard->setName($this->fields["name"], "", "", "");
+         $name = [$this->fields["name"], "", "", "", ""];
       }
 
-      $vcard->setPhoneNumber($this->fields["phone"], "PREF;WORK;VOICE");
-      $vcard->setPhoneNumber($this->fields["phone2"], "HOME;VOICE");
-      $vcard->setPhoneNumber($this->fields["mobile"], "WORK;CELL");
-
-      $vcard->setEmail($this->getDefaultEmail());
-
-      $vcard->setNote($this->fields["comment"]);
+      // create vcard
+      $vcard = new VObject\Component\VCard([
+         'N'     => $name,
+         'EMAIL' => $this->getDefaultEmail(),
+         'NOTE'  => $this->fields["comment"],
+      ]);
+      $vcard->add('TEL', $this->fields["phone"], ['type' => 'PREF;WORK;VOICE']);
+      $vcard->add('TEL', $this->fields["phone2"], ['type' => 'HOME;VOICE']);
+      $vcard->add('TEL', $this->fields["mobile"], ['type' => 'WORK;CELL']);
 
       // send the  VCard
-      $output   = $vcard->getVCard();
-      $filename = $vcard->getFileName();      // "xxx xxx.vcf"
+      $output   = $vcard->serialize();
+      $filename = implode("_", array_filter($name)).".vcf";
 
       @Header("Content-Disposition: attachment; filename=\"$filename\"");
       @Header("Content-Length: ".Toolbox::strlen($output));

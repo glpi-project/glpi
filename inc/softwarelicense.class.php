@@ -420,6 +420,13 @@ class SoftwareLicense extends CommonDBTM {
       Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
       echo "</td></tr>\n";
 
+      echo "<td>".__('Status')."</td>";
+      echo "<td>";
+      State::dropdown(array('value'     => $this->fields["states_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => "`is_visible_softwarelicense`"));
+      echo "</td></tr>\n";
+
       $this->showFormButtons($options);
 
       return true;
@@ -544,6 +551,12 @@ class SoftwareLicense extends CommonDBTM {
       $tab[24]['name']           = __('Technician in charge of the hardware');
       $tab[24]['datatype']       = 'dropdown';
       $tab[24]['right']          = 'own_ticket';
+
+      $tab[31]['table']          = 'glpi_states';
+      $tab[31]['field']          = 'completename';
+      $tab[31]['name']           = __('Status');
+      $tab[31]['datatype']       = 'dropdown';
+      $tab[31]['condition']      = "`is_visible_softwarelicense`";
 
       $tab[49]['table']          = 'glpi_groups';
       $tab[49]['field']          = 'completename';

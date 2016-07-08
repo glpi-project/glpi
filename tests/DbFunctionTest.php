@@ -32,11 +32,12 @@
 
 /* Test for inc/db.function.php */
 
-class DbFunctionTest extends PHPUnit_Framework_TestCase {
+class DbFunctionTest extends DbTestCase {
 
    protected function setUp() {
       global $CFG_GLPI;
 
+      parent::setUp();
       // Clean the cache
       unset($CFG_GLPI['glpiitemtypetables']);
       unset($CFG_GLPI['glpitablesitemtype']);
@@ -56,7 +57,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-    * @covers getForeignKeyFieldForTable
+    * @covers ::getForeignKeyFieldForTable
     * @dataProvider dataTableKey
    **/
    public function testGetForeignKeyFieldForTable($table, $key) {
@@ -65,7 +66,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-    * @covers isForeignKeyField
+    * @covers ::isForeignKeyField
     * @dataProvider dataTableKey
    **/
    public function testIsForeignKeyFieldBase($table, $key) {
@@ -77,7 +78,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-    * @covers isForeignKeyField
+    * @covers ::isForeignKeyField
    **/
    public function testIsForeignKeyFieldMore() {
 
@@ -89,7 +90,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-    * @covers getTableNameForForeignKeyField
+    * @covers ::getTableNameForForeignKeyField
     * @dataProvider dataTableKey
    **/
    public function testGetTableNameForForeignKeyField($table, $key) {
@@ -110,7 +111,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-    * @covers getTableForItemType
+    * @covers ::getTableForItemType
     * @dataProvider dataTableType
    **/
    public function testGetTableForItemType($table, $type, $classexists) {
@@ -119,7 +120,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-    * @covers getItemTypeForTable
+    * @covers ::getItemTypeForTable
     * @dataProvider dataTableType
    **/
    public function testGetItemTypeForTable($table, $type, $classexists) {
@@ -133,7 +134,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-    * @covers getItemForItemtype
+    * @covers ::getItemForItemtype
     * @dataProvider dataTableType
    **/
    public function testGetItemForItemtype($table, $itemtype, $classexists) {
@@ -162,7 +163,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
     /**
-    * @covers getPlural
+    * @covers ::getPlural
     * @dataProvider dataPlural
    **/
    public function testGetPlural($singular, $plural) {
@@ -173,7 +174,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-    * @covers getSingular
+    * @covers ::getSingular
     * @dataProvider dataPlural
    **/
    public function testGetSingular($singular, $plural) {
@@ -184,7 +185,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-    * @covers countElementsInTable
+    * @covers ::countElementsInTable
    **/
    public function testCountElementsInTable() {
    global $DB;
@@ -201,7 +202,7 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-    * @covers countDistinctElementsInTable
+    * @covers ::countDistinctElementsInTable
    **/
    public function testCountDistinctElementsInTable() {
    global $DB;
@@ -216,16 +217,45 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
                                                           "context ='fakecontext'"));
    }
 
+   /**
+    * @covers ::countElementsInTableForMyEntities
+    */
+   public function testCountElementsInTableForMyEntities() {
 
-/*
-TODO :
-   countElementsInTableForMyEntitie
-   countElementsInTableForEntity
-*/
+      $this->Login();
 
+      $this->setEntity('_test_root_entity', true);
+      $this->assertEquals(6, countElementsInTableForMyEntities('glpi_computers'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+
+      $this->setEntity('_test_root_entity', false);
+      $this->assertEquals(2, countElementsInTableForMyEntities('glpi_computers'));
+      $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+
+      $this->setEntity('_test_child_1', false);
+      $this->assertEquals(2, countElementsInTableForMyEntities('glpi_computers'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+   }
 
    /**
-    *@covers getAllDatasFromTable
+    * @covers ::countElementsInTableForEntity
+    */
+   public function testCountElementsInTableForEntity() {
+
+      $e = getItemByTypeName('Entity', '_test_child_1', true);
+      $this->assertEquals(2, countElementsInTableForEntity('glpi_computers', $e));
+      $this->assertEquals(1, countElementsInTableForEntity('glpi_computers', $e, 'name="_test_pc11"'));
+      $this->assertEquals(0, countElementsInTableForEntity('glpi_computers', $e, 'name="_test_pc01"'));
+
+      $e = getItemByTypeName('Entity', '_test_root_entity', true);
+      $this->assertEquals(1, countElementsInTableForEntity('glpi_computers', $e, 'name="_test_pc01"'));
+   }
+
+   /**
+    *@covers ::getAllDatasFromTable
    **/
    public function testGetAllDatasFromTable() {
 
@@ -267,7 +297,7 @@ getUserName
 
 
    /**
-    *@covers TableExists
+    *@covers ::TableExists
    **/
    public function testTableExist() {
 
@@ -277,7 +307,7 @@ getUserName
 
 
    /**
-    *@covers FieldExists
+    *@covers ::FieldExists
    **/
    public function testFieldExist() {
 
@@ -289,7 +319,7 @@ getUserName
 
 
    /**
-    * @covers isIndex
+    * @covers ::isIndex
    **/
    public function testIsIndex() {
 
@@ -309,7 +339,7 @@ getUserName
 
 
    /**
-    * @covers formatOutputWebLink
+    * @covers ::formatOutputWebLink
    **/
    public function testFormatOutputWebLink(){
 

@@ -10,5 +10,7 @@
 /tools/composer.lock
 /tools/vendor/
 /tools/api/
+/tools/htmlcov/
+/vendor/
 /nbproject/private/
 phpunit.xml

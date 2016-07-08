@@ -267,8 +267,6 @@ function glpi_autoload($classname) {
       die("Security die. trying to load an forbidden class name");
    }
 
-
-
    $dir = GLPI_ROOT . "/inc/";
    if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
@@ -291,25 +289,20 @@ function glpi_autoload($classname) {
       }
 
    } else {
-      // Is ezComponent class ?
-      if (preg_match('/^ezc([A-Z][a-z]+)/',$classname,$matches)) {
-         include_once(GLPI_EZC_BASE);
-         ezcBase::autoload($classname);
-         return true;
-      }
+      //TODO: clean, seems uneeded, as composer autoloader is used first
 
       // Do not try to load phpcas using GLPI autoload
-      if (preg_match('/^CAS_.*/', $classname)) {
-         return false;
-      }
+      //if (preg_match('/^CAS_.*/', $classname)) {
+      //   return false;
+      //}
       // Do not try to load Zend using GLPI autoload
-      if (preg_match('/^Zend.*/', $classname)) {
-         return false;
-      }
+      //if (preg_match('/^Zend.*/', $classname)) {
+      //   return false;
+      //}
       // Do not try to load Simplepie using GLPI autoload
-      if (preg_match('/^SimplePie.*/', $classname)) {
-         return false;
-      }
+      //if (preg_match('/^SimplePie.*/', $classname)) {
+      //   return false;
+      //}
 
       $item = strtolower($classname);
    }
@@ -331,12 +324,9 @@ function glpi_autoload($classname) {
 // Use spl autoload to allow stackable autoload.
 spl_autoload_register('glpi_autoload');
 
-include_once(GLPI_ZEND_PATH . '/Loader/StandardAutoloader.php');
-$option = array(Zend\Loader\StandardAutoloader::LOAD_NS => array('Zend' => GLPI_ZEND_PATH));
-$loader = new Zend\Loader\StandardAutoloader($option);
-$loader->register();
-
-// SimplePie autoloader
-include_once(GLPI_SIMPLEPIE_PATH . '/autoloader.php');
-spl_autoload_register(array(new SimplePie_Autoloader(), 'autoload'));
-
+// composer autoload
+$autoload = dirname(__DIR__) . '/vendor/autoload.php';
+if (!file_exists($autoload)) {
+   die('Run "composer install --no-dev" in the glpi tree');
+}
+require_once $autoload;

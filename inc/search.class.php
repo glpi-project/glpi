@@ -2912,6 +2912,10 @@ class Search {
                   //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
                   $toadd     = self::makeTextCriteria("`$linktable`.`alternative_email`", $val,
                                                       $nott, $tmplink);
+                  if ($val == '^$') {
+                     return $link." ((`$linktable`.`users_id` IS NULL)
+                            OR `$linktable`.`alternative_email` IS NULL)";
+                  }
                }
             }
             $toadd2 = '';
@@ -5691,7 +5695,7 @@ class Search {
             $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
             $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
             $PDF_TABLE .= "<td $extraparam valign='top'>";
-            $PDF_TABLE .= Html::weblink_extract(Html::clean($value, true, 2, false));
+            $PDF_TABLE .= Html::weblink_extract(Html::clean($value));
             $PDF_TABLE .= "</td>\n";
 
             break;
@@ -6107,8 +6111,9 @@ class Search {
    static function csv_clean($value) {
 
       $value = str_replace("\"", "''", $value);
-      $value = Html::clean($value);
+      $value = Html::clean($value, true, 2, false);
       $value = str_replace("&gt;", ">", $value);
+      $value = str_replace("&lt;", "<", $value);
 
       return $value;
    }
@@ -6126,10 +6131,7 @@ class Search {
       $value = preg_replace('/\x0A/', ' ', $value);
       $value = preg_replace('/\x0D/', NULL, $value);
       $value = str_replace("\"", "''", $value);
-      $value = str_replace("&gt;", ">", $value);
-      $value = str_replace("&lt;", "<", $value);
-      $value = str_replace(';', ';;', $value);
-      $value = Html::clean($value, true, 2, false);
+      $value = Html::clean($value);
       $value = str_replace("&gt;", ">", $value);
       $value = str_replace("&lt;", "<", $value);
 
