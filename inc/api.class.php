@@ -1085,7 +1085,11 @@ abstract class API extends CommonGLPI {
          }
 
          // append to final array
-         $cleaned_data['data'][] = $current_line;
+         if (isset($params['withindexes'])) {
+            $cleaned_data['data'][$id] = $current_line;
+         } else {
+            $cleaned_data['data'][] = $current_line;
+         }
       }
 
       // add rows with their html
@@ -1098,7 +1102,13 @@ abstract class API extends CommonGLPI {
                   $new_row[$cell_key] = $cell['displayname'];
                }
             }
-            $cleaned_data['data_html'][] = $new_row;
+            $new_row = array_combine($cleaned_cols, $new_row);
+
+            if (isset($params['withindexes'])) {
+               $cleaned_data['data_html'][$row['id']] = $new_row;
+            } else {
+               $cleaned_data['data_html'][] = $new_row;
+            }
          }
       }
 
