@@ -1467,7 +1467,7 @@ class Planning extends CommonGLPI {
 
       echo "</td><td>";
 
-      $default_delay = floor((strtotime($end)-strtotime($begin))/15/MINUTE_TIMESTAMP)*15*MINUTE_TIMESTAMP;
+      $default_delay = floor((strtotime($end)-strtotime($begin))/$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)*$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
 
       $rand = Dropdown::showTimeStamp("plan[_duration]", array('min'        => 0,
                                                                'max'        => 50*HOUR_TIMESTAMP,
