@@ -209,6 +209,7 @@ CREATE TABLE `glpi_budgets` (
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   `locations_id` int(11) NOT NULL DEFAULT '0',
+  `budgettypes_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_recursive` (`is_recursive`),
@@ -218,7 +219,8 @@ CREATE TABLE `glpi_budgets` (
   KEY `is_template` (`is_template`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `locations_id` (`locations_id`)
+  KEY `locations_id` (`locations_id`),
+  KEY `budgettypes_id` (`budgettypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

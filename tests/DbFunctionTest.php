@@ -32,11 +32,12 @@
 
 /* Test for inc/db.function.php */
 
-class DbFunctionTest extends PHPUnit_Framework_TestCase {
+class DbFunctionTest extends DbTestCase {
 
    protected function setUp() {
       global $CFG_GLPI;
 
+      parent::setUp();
       // Clean the cache
       unset($CFG_GLPI['glpiitemtypetables']);
       unset($CFG_GLPI['glpitablesitemtype']);
@@ -216,13 +217,42 @@ class DbFunctionTest extends PHPUnit_Framework_TestCase {
                                                           "context ='fakecontext'"));
    }
 
+   /**
+    * @covers ::countElementsInTableForMyEntities
+    */
+   public function testCountElementsInTableForMyEntities() {
 
-/*
-TODO :
-   countElementsInTableForMyEntitie
-   countElementsInTableForEntity
-*/
+      $this->Login();
 
+      $this->setEntity('_test_root_entity', true);
+      $this->assertEquals(6, countElementsInTableForMyEntities('glpi_computers'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+
+      $this->setEntity('_test_root_entity', false);
+      $this->assertEquals(2, countElementsInTableForMyEntities('glpi_computers'));
+      $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+
+      $this->setEntity('_test_child_1', false);
+      $this->assertEquals(2, countElementsInTableForMyEntities('glpi_computers'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+   }
+
+   /**
+    * @covers ::countElementsInTableForEntity
+    */
+   public function testCountElementsInTableForEntity() {
+
+      $e = getItemByTypeName('Entity', '_test_child_1', true);
+      $this->assertEquals(2, countElementsInTableForEntity('glpi_computers', $e));
+      $this->assertEquals(1, countElementsInTableForEntity('glpi_computers', $e, 'name="_test_pc11"'));
+      $this->assertEquals(0, countElementsInTableForEntity('glpi_computers', $e, 'name="_test_pc01"'));
+
+      $e = getItemByTypeName('Entity', '_test_root_entity', true);
+      $this->assertEquals(1, countElementsInTableForEntity('glpi_computers', $e, 'name="_test_pc01"'));
+   }
 
    /**
     *@covers ::getAllDatasFromTable

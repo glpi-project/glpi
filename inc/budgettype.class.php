@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2016 Teclib'.
 
  http://glpi-project.org
 
@@ -39,7 +38,10 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/// Class CartridgeItemType
+/**
+ * Class BudgetType
+ * @since version 9.1
+**/
 class BudgetType extends CommonDropdown {
 
 
@@ -48,4 +50,3 @@ class BudgetType extends CommonDropdown {
    }
 
 }
-?>

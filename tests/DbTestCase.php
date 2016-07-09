@@ -45,6 +45,11 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
    protected function tearDown() {
       global $DB;
 
+      // Cleanup log directory
+      foreach(glob(GLPI_LOG_DIR . '/*.log') as $file) {
+         unlink($file);
+      }
+
       // Need Innodb -- $DB->rollback()  -- workaround:
       foreach ($DB->objcreated as $table => $ids) {
          foreach ($ids as $id) {
