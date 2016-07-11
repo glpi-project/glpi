@@ -147,7 +147,7 @@ class APIRest extends API {
       // list searchOptions of an itemtype
       } else if ($ressource === "listSearchOptions") {
          $itemtype = $this->getItemtype(1);
-         return $this->returnResponse($this->listSearchOptions($itemtype));
+         return $this->returnResponse($this->listSearchOptions($itemtype, $this->parameters));
 
       // Search on itemtype
       } else if ($ressource === "search") {

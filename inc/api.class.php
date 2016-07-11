@@ -921,26 +921,66 @@ abstract class API extends CommonGLPI {
     *
     * @return     array    all searchoptions of specified itemtype
     */
-   protected function listSearchOptions($itemtype) {
+   protected function listSearchOptions($itemtype, $params= array()) {
       $this->initEndpoint();
-      $searchoptions = Search::getOptions($itemtype);
+      $soptions = Search::getOptions($itemtype);
+
+      if (isset($params['raw'])) {
+         return $soptions;
+      }
+
       $cleaned_searchoptions = array();
-      foreach($searchoptions as $sID => $option) {
+      foreach($soptions as $sID => $option) {
          if (is_int($sID)) {
             $cleaned_searchoptions[$sID] = array('name'       => $option['name'],
                                                  'table'      => $option['table'],
                                                  'field'      => $option['field'],
-                                                 'linkfield'  => $option['linkfield'],
-                                                 'joinparams' => $option['joinparams'],
                                                  'datatype'   => isset($option['datatype'])
                                                                        ?$option['datatype']
                                                                        :"");
+            $cleaned_searchoptions[$sID]['uid'] = $this->getSearchOptionUniqID($itemtype,
+                                                                               $option);
          } else {
             $cleaned_searchoptions[$sID] = $option;
          }
       }
 
       return $cleaned_searchoptions;
+   }
+
+   private function getSearchOptionUniqID($itemtype, $option) {
+      $uid_parts = array($itemtype);
+
+      if (isset($option['joinparams'])) {
+         if (isset($option['joinparams']['beforejoin'])) {
+            $sub_parts  = $this->getSearchOptionUniqIDJoins($option['joinparams']['beforejoin']);
+            $uid_parts = array_merge($uid_parts, $sub_parts);
+         }
+      }
+
+      $sub_itemtype = getItemTypeForTable($option['table']);
+      if (isset($option['joinparams']['beforejoin']['table'])
+          || $sub_itemtype != $itemtype) {
+         $uid_parts[] = $sub_itemtype;
+      }
+      $uid_parts[] = $option['field'];
+      $uuid = implode('.', $uid_parts);
+
+      return $uuid;
+   }
+
+   private function getSearchOptionUniqIDJoins($option) {
+      $uid_parts = array();
+      if (isset($option['joinparams']['beforejoin'])) {
+         $sub_parts  = $this->getSearchOptionUniqIDJoins($option['joinparams']['beforejoin']);
+         $uid_parts = array_merge($uid_parts, $sub_parts);
+      }
+
+      if (isset($option['table'])) {
+         $uid_parts[] = getItemTypeForTable($option['table']);
+      }
+
+      return $uid_parts;
    }
 
 
@@ -989,6 +1029,9 @@ abstract class API extends CommonGLPI {
           && !$itemtype::canView()) {
          return $this->messageRightError();
       }
+
+      // retrieve searchoptions
+      $soptions = $this->listSearchOptions($itemtype);
 
       // manage forcedisplay
       if (isset($params['forcedisplay'])) {
@@ -1045,8 +1088,16 @@ abstract class API extends CommonGLPI {
 
       //prepare cols (searchoptions_id) for cleaned data
       $cleaned_cols = array();
-      foreach ($rawdata['data']['cols'] as $cols) {
-         $cleaned_cols[] = $cols['id'];
+      foreach ($rawdata['data']['cols'] as $col) {
+         $cleaned_cols[] = $col['id'];
+      }
+
+      // prepare cols wwith uid
+      if (isset($params['uid_cols'])) {
+         $uid_cols = array();
+         foreach ($cleaned_cols as $col) {
+            $uid_cols[] = $soptions[$col]['uid'];
+         }
       }
 
       foreach($rawdata['data']['rows'] as $row) {
@@ -1074,11 +1125,16 @@ abstract class API extends CommonGLPI {
             if (count($current_values) == 1) {
                $current_values = $current_values[0];
             }
+
             $clean_values[] = $current_values;
          }
 
          // combine cols (searchoptions_id) with values (raws data)
-         $current_line = array_combine($cleaned_cols, $clean_values);
+         if (isset($params['uid_cols'])) {
+            $current_line = array_combine($uid_cols, $clean_values);
+         } else {
+            $current_line = array_combine($cleaned_cols, $clean_values);
+         }
 
          // if all asset, provide type in returned data
          if ($itemtype == 'AllAssets') {

@@ -113,7 +113,8 @@ class APIXmlrpc extends API {
 
       // list searchOptions of an itemtype
       } else if ($ressource === "listSearchOptions") {
-         return $this->returnResponse($this->listSearchOptions($this->parameters['itemtype']));
+         return $this->returnResponse($this->listSearchOptions($this->parameters['itemtype'],
+                                                               $this->parameters));
 
       // Search on itemtype
       } else if ($ressource === "search") {

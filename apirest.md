@@ -676,6 +676,8 @@ $ curl -X GET \
 * **Parameters (Headers)**
    - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory
    - *App-token*: var provided by GLPI api config. Optionnal
+* **Parameters (query string)**
+   - *raw*: return searchoption uncleaned (as provided by core)
 * **Returns**
    - 200 (OK) with all searchoptions of specified itemtype (format: searchoption_id: {option_content} )
    - 401 (UNAUTHORIZED)
@@ -691,27 +693,32 @@ $ curl -X GET \
 < 200 OK
 < {
     "common": "Characteristics",
+
     1: {
-        "name": "Name",
-        "table": "glpi_computers",
-        "field": "name"
-    },
-    2: {
-        "name": "ID",
-        "table": "glpi_computers",
-        "field": "id"
-    },
-    3: {
-        "name": "Location",
-        "table": "glpi_locations",
-        "field": "completename"
-    },
-    91: {
-        "name": "Building number",
-        "table": "glpi_locations",
-        "field": "building"
-        },
-    ...
+      'name': 'Name'
+      'table': 'glpi_computers'
+      'field': 'name'
+      'linkfield': 'name'
+      'datatype': 'itemlink'
+      'uid': 'Computer.name'
+   },
+   2: {
+      'name': 'ID'
+      'table': 'glpi_computers'
+      'field': 'id'
+      'linkfield': 'id'
+      'datatype': 'number'
+      'uid': 'Computer.id'
+   },
+   3: {
+      'name': 'Location'
+      'table': 'glpi_locations'
+      'field': 'completename'
+      'linkfield': 'locations_id'
+      'datatype': 'dropdown'
+      'uid': 'Computer.Location.completename'
+   },
+   ...
 }
 ```
 
@@ -797,6 +804,7 @@ Note you can use 'AllAssets' itemtype to retrieve combined asset types.
                      Optional.
    - *rawdata*: boolean for displaying raws data of Search engine of glpi (like SQL request, and full searchoptions)
    - *withindexes*: boolean to get id of the row in indexex. By default this option is set to false, because, in json object (which are identified by index) are not considered as sorted. So, we provide array to respect to sorting.
+   - *uid_cols*: identify cols by uniqid of the searchoptions instead an numeric value (see [List searchOptions](#list_searchoptions) and uid field)
    - *giveItems*: Retrieve the data with the htmml parsing from core, new data are provided in data_html index.
 * **Returns**
    - 200 (OK) with all rows data with this format:
