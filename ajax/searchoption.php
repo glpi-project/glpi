@@ -93,7 +93,7 @@ if (isset($_POST["itemtype"])
    $_POST['value']      = stripslashes($_POST['value']);
    $_POST['searchopt']  = $searchopt;
 
-   include_once(GLPI_ROOT."/ajax/searchoptionvalue.php");
+   include(GLPI_ROOT."/ajax/searchoptionvalue.php");
    echo "</span>\n";
    echo "</td></tr></table>";
 

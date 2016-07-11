@@ -209,6 +209,7 @@ CREATE TABLE `glpi_budgets` (
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   `locations_id` int(11) NOT NULL DEFAULT '0',
+  `budgettypes_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_recursive` (`is_recursive`),
@@ -218,7 +219,8 @@ CREATE TABLE `glpi_budgets` (
   KEY `is_template` (`is_template`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `locations_id` (`locations_id`)
+  KEY `locations_id` (`locations_id`),
+  KEY `budgettypes_id` (`budgettypes_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2234,7 +2236,7 @@ CREATE TABLE `glpi_entities` (
   `inquest_duration` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
-  `autofill_destruction_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
+  `autofill_decommission_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `entities_id` (`entities_id`),
@@ -2604,7 +2606,7 @@ CREATE TABLE `glpi_infocoms` (
   `warranty_date` date DEFAULT NULL,
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
-  `destruction_date` datetime DEFAULT NULL,
+  `decommission_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`),
   KEY `buy_date` (`buy_date`),

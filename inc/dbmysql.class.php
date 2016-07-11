@@ -833,7 +833,7 @@ class DBmysqlIterator  implements Iterator {
          }
       }
       if ($debug) {
-         toolbox::logdebug("req", $this->sql);
+         toolbox::logdebug("Generated query:", $this->getSql());
       }
       $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
    }

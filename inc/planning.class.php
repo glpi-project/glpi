@@ -1258,7 +1258,13 @@ class Planning extends CommonGLPI {
       $current_group = &$_SESSION['glpi_plannings']['plannings']["group_".$params['groups_id']."_users"];
       $current_group = array('display' => true,
                              'type'    => 'group_users');
-      $users = Group_User::getGroupUsers($params['groups_id'], "`glpi_users`.`is_active` = 1");
+      $users = Group_User::getGroupUsers($params['groups_id'],
+                                         "`glpi_users`.`is_active` = 1
+                                          AND NOT `glpi_users`.`is_deleted`
+                                          AND (`glpi_users`.`begin_date` IS NULL
+                                             OR `glpi_users`.`begin_date` < NOW())
+                                          AND (`glpi_users`.`end_date` IS NULL
+                                             OR `glpi_users`.`end_date` > NOW())");
       $index_color = count($_SESSION['glpi_plannings']['plannings']);
       $group_user_index = 0;
       foreach($users as $user_data) {
@@ -1467,7 +1473,7 @@ class Planning extends CommonGLPI {
 
       echo "</td><td>";
 
-      $default_delay = floor((strtotime($end)-strtotime($begin))/15/MINUTE_TIMESTAMP)*15*MINUTE_TIMESTAMP;
+      $default_delay = floor((strtotime($end)-strtotime($begin))/$CFG_GLPI['time_step']/MINUTE_TIMESTAMP)*$CFG_GLPI['time_step']*MINUTE_TIMESTAMP;
 
       $rand = Dropdown::showTimeStamp("plan[_duration]", array('min'        => 0,
                                                                'max'        => 50*HOUR_TIMESTAMP,
@@ -1663,11 +1669,11 @@ class Planning extends CommonGLPI {
                                              Planning::$palette_bg[$index_color]:
                                              $event['color']),
                            'borderColor' => (empty($event['event_type_color'])?
-                                             self::$event_type_color[$event['itemtype']]:
+                                             self::$palette_ev[$event['itemtype']]:
                                              $event['event_type_color']),
                            'textColor'   => Planning::$palette_fg[$index_color],
                            'typeColor'   => (empty($event['event_type_color'])?
-                                             self::$event_type_color[$event['itemtype']]:
+                                             self::$palette_ev[$event['itemtype']]:
                                              $event['event_type_color']),
                            'url'         => isset($event['url'])?$event['url']:"",
                            'ajaxurl'     => isset($event['ajaxurl'])?$event['ajaxurl']:"",
