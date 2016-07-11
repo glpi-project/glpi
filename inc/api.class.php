@@ -927,13 +927,14 @@ abstract class API extends CommonGLPI {
       $cleaned_searchoptions = array();
       foreach($searchoptions as $sID => $option) {
          if (is_int($sID)) {
-            $cleaned_searchoptions[$sID] = array('name'      => $option['name'],
-                                                 'table'     => $option['table'],
-                                                 'field'     => $option['field'],
-                                                 'linkfield' => $option['linkfield'],
-                                                 'datatype'  => isset($option['datatype'])
-                                                                      ?$option['datatype']
-                                                                      :"");
+            $cleaned_searchoptions[$sID] = array('name'       => $option['name'],
+                                                 'table'      => $option['table'],
+                                                 'field'      => $option['field'],
+                                                 'linkfield'  => $option['linkfield'],
+                                                 'joinparams' => $option['joinparams'],
+                                                 'datatype'   => isset($option['datatype'])
+                                                                       ?$option['datatype']
+                                                                       :"");
          } else {
             $cleaned_searchoptions[$sID] = $option;
          }
