@@ -584,7 +584,7 @@ class SLT extends CommonDBChild {
 
       } else { // New Ticket
          echo "<td>";
-         if ($ticket->fields[$dateField] == 'NULL') {
+         if (!isset($ticket->fields[$dateField]) || $ticket->fields[$dateField] == 'NULL') {
             $ticket->fields[$dateField]='';
          }
          echo $tt->getBeginHiddenFieldValue($dateField);
