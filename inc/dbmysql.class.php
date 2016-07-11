@@ -207,6 +207,31 @@ class DBmysql {
       return $res;
    }
 
+   /**
+    * Prepare a MySQL query
+    *
+    * @param $query Query to prepare
+    *
+    * @return a statement object or FALSE if an error occurred.
+   **/
+   function prepare($query) {
+
+      $res = @$this->dbh->prepare($query);
+      if (!$res) {
+         // no translation for error logs
+         $error = "  *** MySQL prepare error:\n  SQL: ".addslashes($query)."\n  Error: ".
+                   $this->dbh->error."\n";
+         $error .= toolbox::backtrace(false, 'DBmysql->prepare()', array('Toolbox::backtrace()'));
+
+         Toolbox::logInFile("sql-errors", $error);
+
+         if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+             && $CFG_GLPI["debug_sql"]) {
+            $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
+         }
+      }
+      return $res;
+   }
 
    /**
     * Give result from a mysql result
