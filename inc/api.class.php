@@ -1058,28 +1058,27 @@ abstract class API extends CommonGLPI {
             $current_itemtype = $raw['TYPE'];
          }
 
-
-         // clean unused keys, explode multiple values and decode html entities
-         foreach ($raw as $rkey => &$rvalue) {
-            if (preg_match("/^ITEM_[0-9]+\$/", $rkey) <= 0) {
-               unset($raw[$rkey]);
+         // retrive value (and manage multiple values)
+         $clean_values = array();
+         foreach ($row as $rkey => $rvalues) {
+            // skip index who are not real columns (ex: raw, entities_id, etc)
+            if (!is_integer($rkey)) {
                continue;
             }
 
-            if (strpos($rvalue, Search::SHORTSEP) !== false) {
-               $rvalue = explode(Search::SHORTSEP, $rvalue);
-               continue;
+            // manage multiple values (ex: IP adresses)
+            $current_values = array();
+            for ($valindex= 0; $valindex < $rvalues['count']; $valindex++) {
+               $current_values[] = $rvalues[$valindex]['name'];
             }
-            if (strpos($rvalue, Search::LONGSEP) !== false) {
-               $rvalue = explode(Search::LONGSEP, $rvalue);
-               continue;
+            if (count($current_values) == 1) {
+               $current_values = $current_values[0];
             }
-
-            $rvalue = html_entity_decode($rvalue);
+            $clean_values[] = $current_values;
          }
 
          // combine cols (searchoptions_id) with values (raws data)
-         $current_line = array_combine($cleaned_cols, $raw);
+         $current_line = array_combine($cleaned_cols, $clean_values);
 
          // if all asset, provide type in returned data
          if ($itemtype == 'AllAssets') {
