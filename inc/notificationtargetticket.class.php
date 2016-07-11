@@ -338,22 +338,22 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                                                    $item->getField('locations_id'));
          $locations = new Location();
          $locations->getFromDB($item->getField('locations_id'));
-         if ($location>getField('comment')) {
+         if ($locations->getField('comment')) {
             $datas['##ticket.location.comment##'] = $locations->getField('comment');
          }
-         if ($location>getField('room')) {
+         if ($locations->getField('room')) {
             $datas['##ticket.location.room##'] = $locations->getField('room');
          }
-         if ($location>getField('building')) {
+         if ($locations->getField('building')) {
             $datas['##ticket.location.building##'] = $locations->getField('building');
          }
-         if ($location>getField('latitude')) {
+         if ($locations->getField('latitude')) {
             $datas['##ticket.location.latitude##'] = $locations->getField('latitude');
          }
-         if ($location>getField('longitude')) {
+         if ($locations->getField('longitude')) {
             $datas['##ticket.location.longitude##'] = $locations->getField('longitude');
          }
-         if ($location>getField('altitude')) {
+         if ($locations->getField('altitude')) {
             $datas['##ticket.location.altitude##'] = $locations->getField('altitude');
          }
       }
