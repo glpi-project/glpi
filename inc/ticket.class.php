@@ -6349,7 +6349,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_content ".$item['type'].
                ((isset($item_i['status'])) ? " ".$item_i['status'] : "")."'".
                "id='viewitem".$item['type'].$item_i['id'].$rand."'>";
-         if ($item_i['can_edit']) {
+         if (isset($item_i['can_edit']) && $item_i['can_edit']) {
             echo "<div class='edit_item_content'></div>";
             echo "<span class='cancel_edit_item_content'></span>";
          }
