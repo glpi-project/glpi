@@ -3732,6 +3732,23 @@ CREATE TABLE `glpi_networkportethernets` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+### Dump table glpi_networkportfiberchannels
+
+DROP TABLE IF EXISTS `glpi_networkportfiberchannels`;
+CREATE TABLE `glpi_networkportfiberchannels` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `networkports_id` int(11) NOT NULL DEFAULT '0',
+  `items_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
+  `netpoints_id` int(11) NOT NULL DEFAULT '0',
+  `wwn` varchar(16) COLLATE utf8_unicode_ci DEFAULT ',
+  `speed` int(11) NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `networkports_id` (`networkports_id`),
+  KEY `card` (`items_devicenetworkcards_id`),
+  KEY `netpoint` (`netpoints_id`),
+  KEY `wwn` (`wwn`),
+  KEY `speed` (`speed`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_networkportlocals
 
