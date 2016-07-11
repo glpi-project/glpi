@@ -492,6 +492,10 @@ class SLT extends CommonDBChild {
       echo "<table width='100%'>";
       echo "<tr class='tab_bg_1'>";
 
+      if (!isset($ticket->fields[$dateField]) || $ticket->fields[$dateField] == 'NULL') {
+         $ticket->fields[$dateField]='';
+      }
+
       if ($ticket->fields['id']) {
          if ($this->getSltDataForTicket($ticket->fields['id'], $type)) {
             echo "<td>";
@@ -584,9 +588,6 @@ class SLT extends CommonDBChild {
 
       } else { // New Ticket
          echo "<td>";
-         if (!isset($ticket->fields[$dateField]) || $ticket->fields[$dateField] == 'NULL') {
-            $ticket->fields[$dateField]='';
-         }
          echo $tt->getBeginHiddenFieldValue($dateField);
          Html::showDateTimeField($dateField, array('value'      => $ticket->fields[$dateField],
                                                    'timestep'   => 1,
