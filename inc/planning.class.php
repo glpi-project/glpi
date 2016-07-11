@@ -1669,11 +1669,11 @@ class Planning extends CommonGLPI {
                                              Planning::$palette_bg[$index_color]:
                                              $event['color']),
                            'borderColor' => (empty($event['event_type_color'])?
-                                             self::$event_type_color[$event['itemtype']]:
+                                             self::$palette_ev[$event['itemtype']]:
                                              $event['event_type_color']),
                            'textColor'   => Planning::$palette_fg[$index_color],
                            'typeColor'   => (empty($event['event_type_color'])?
-                                             self::$event_type_color[$event['itemtype']]:
+                                             self::$palette_ev[$event['itemtype']]:
                                              $event['event_type_color']),
                            'url'         => isset($event['url'])?$event['url']:"",
                            'ajaxurl'     => isset($event['ajaxurl'])?$event['ajaxurl']:"",
