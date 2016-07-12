@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -93,5 +93,6 @@ if (isset($_GET["dictionnary"])) {
    echo "RuleDictionnaryOperatingSystem : OS\n";
    echo "RuleDictionnaryOperatingSystemVersion : OS Version\n";
    echo "RuleDictionnaryOperatingSystemServicePack : OS Service Pack\n";
+   echo "RuleDictionnaryOperatingSystemArchitecture : OS Architecture\n";
 }
 ?>
