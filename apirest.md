@@ -803,9 +803,9 @@ Note you can use 'AllAssets' itemtype to retrieve combined asset types.
                      Some columns will be always presents (1-id, 2-name, 80-Entity).
                      Optional.
    - *rawdata*: boolean for displaying raws data of Search engine of glpi (like SQL request, and full searchoptions)
-   - *withindexes*: boolean to get id of the row in indexex. By default this option is set to false, because, in json object (which are identified by index) are not considered as sorted. So, we provide array to respect to sorting.
+   - *withindexes*: boolean to retrieve rows indexed by items id. By default this option is set to false, because order of json objects (which are identified by index) cannot be garrantued  (from http://json.org/ : An object is an unordered set of name/value pairs). So, we provide arrays to guarranting sorted rows.
    - *uid_cols*: identify cols by uniqid of the searchoptions instead an numeric value (see [List searchOptions](#list_searchoptions) and uid field)
-   - *giveItems*: Retrieve the data with the htmml parsing from core, new data are provided in data_html index.
+   - *giveItems*: Retrieve the data with the html parsed from core, new data are provided in data_html key.
 * **Returns**
    - 200 (OK) with all rows data with this format:
 
