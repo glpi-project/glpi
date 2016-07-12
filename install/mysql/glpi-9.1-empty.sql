@@ -6612,6 +6612,7 @@ CREATE TABLE `glpi_slas` (
 
 ### Dump table glpi_slts
 
+DROP TABLE IF EXISTS `glpi_slts`;
 CREATE TABLE `glpi_slts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
