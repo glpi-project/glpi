@@ -6308,24 +6308,34 @@ CREATE TABLE `glpi_requesttypes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_helpdesk_default` tinyint(1) NOT NULL DEFAULT '0',
+  `is_followup_default` tinyint(1) NOT NULL DEFAULT '0',
   `is_mail_default` tinyint(1) NOT NULL DEFAULT '0',
+  `is_mailfollowup_default` tinyint(1) NOT NULL DEFAULT '0',
+  `is_active` TINYINT(1) NOT NULL DEFAULT '1',
+  `is_ticketheader` TINYINT(1) NOT NULL DEFAULT '1',
+  `is_ticketfollowup` TINYINT(1) NOT NULL DEFAULT '1',
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_helpdesk_default` (`is_helpdesk_default`),
+  KEY `is_followup_default` (`is_followup_default`),
   KEY `is_mail_default` (`is_mail_default`),
+  KEY `is_mailfollowup_default` (`is_mailfollowup_default`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `is_active` (`is_active`),
+  KEY `is_ticketheader` (`is_ticketheader`),
+  KEY `is_ticketfollowup` (`is_ticketfollowup`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_requesttypes` VALUES ('1','Helpdesk','1','0',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('2','E-Mail','0','1',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('3','Phone','0','0',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('4','Direct','0','0',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('5','Written','0','0',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('6','Other','0','0',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('1','Helpdesk','1','1','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('2','E-Mail','0','0','1','1','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('3','Phone','0','0','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('4','Direct','0','0','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('5','Written','0','0','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('6','Other','0','0','0','0','1','1','1',NULL,NULL,NULL);
 
 ### Dump table glpi_reservationitems
 
