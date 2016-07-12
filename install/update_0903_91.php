@@ -511,8 +511,8 @@ function update0903to91() {
    $migration->addKey("glpi_softwarelicenses", "is_template");
    $migration->addKey("glpi_softwarelicenses", "states_id");
 
-   $migration->addField("glpi_infocoms", "destruction_date", "datetime");
-   $migration->addField("glpi_entities", "autofill_destruction_date",
+   $migration->addField("glpi_infocoms", "decommission_date", "datetime");
+   $migration->addField("glpi_entities", "autofill_decommission_date",
                         "string", array('value' => '-2'));
 
    $migration->addField("glpi_states", "is_visible_softwarelicense", "bool");
@@ -743,6 +743,35 @@ function update0903to91() {
    $migration->addKey("glpi_problemtasks", "groups_id_tech");
    $migration->addField("glpi_groups", "is_task", "bool", array('value' => 1,
                                                                 'after' => 'is_assign'));
+
+   // for date_mod adding to tasks and to followups
+   $migration->addField("glpi_tickettasks", "date_mod", "datetime");
+   $migration->addKey("glpi_tickettasks", "date_mod");
+   $migration->addField("glpi_problemtasks", "date_mod", "datetime");
+   $migration->addKey("glpi_problemtasks", "date_mod");
+   $migration->addField("glpi_changetasks", "date_mod", "datetime");
+   $migration->addKey("glpi_changetasks", "date_mod");
+   $migration->addField("glpi_ticketfollowups", "date_mod", "datetime");
+   $migration->addKey("glpi_ticketfollowups", "date_mod");
+
+
+   // for is_active adding to glpi_taskcategories
+   $migration->addField("glpi_taskcategories", "is_active", "bool", array('value' => 1));
+   $migration->addKey("glpi_taskcategories", "is_active");
+
+
+   // for is_active, is_followup_default, is_ticketheader and is_ticketfollowup in glpi_requesttypes
+   $migration->addField("glpi_requesttypes", "is_active", "bool", array('value' => 1));
+   $migration->addKey("glpi_requesttypes", "is_active");
+   $migration->addField("glpi_requesttypes", "is_ticketheader", "bool", array('value' => 1));
+   $migration->addKey("glpi_requesttypes", "is_ticketheader");
+   $migration->addField("glpi_requesttypes", "is_ticketfollowup", "bool", array('value' => 1));
+   $migration->addKey("glpi_requesttypes", "is_ticketfollowup");
+   $migration->addField("glpi_requesttypes", "is_followup_default", "bool", array('value' => 0));
+   $migration->addKey("glpi_requesttypes", "is_followup_default");
+   $migration->addField("glpi_requesttypes", "is_mailfollowup_default", "bool", array('value' => 0));
+   $migration->addKey("glpi_requesttypes", "is_mailfollowup_default");
+
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

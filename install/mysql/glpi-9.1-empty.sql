@@ -2236,7 +2236,7 @@ CREATE TABLE `glpi_entities` (
   `inquest_duration` int(11) NOT NULL DEFAULT '0',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
-  `autofill_destruction_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
+  `autofill_decommission_date` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `entities_id` (`entities_id`),
@@ -2606,7 +2606,7 @@ CREATE TABLE `glpi_infocoms` (
   `warranty_date` date DEFAULT NULL,
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
-  `destruction_date` datetime DEFAULT NULL,
+  `decommission_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`),
   KEY `buy_date` (`buy_date`),
@@ -3740,7 +3740,7 @@ CREATE TABLE `glpi_networkportfiberchannels` (
   `networkports_id` int(11) NOT NULL DEFAULT '0',
   `items_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
   `netpoints_id` int(11) NOT NULL DEFAULT '0',
-  `wwn` varchar(16) COLLATE utf8_unicode_ci DEFAULT ',
+  `wwn` varchar(16) COLLATE utf8_unicode_ci DEFAULT '',
   `speed` int(11) NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
   PRIMARY KEY (`id`),
   UNIQUE KEY `networkports_id` (`networkports_id`),
@@ -6325,24 +6325,34 @@ CREATE TABLE `glpi_requesttypes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_helpdesk_default` tinyint(1) NOT NULL DEFAULT '0',
+  `is_followup_default` tinyint(1) NOT NULL DEFAULT '0',
   `is_mail_default` tinyint(1) NOT NULL DEFAULT '0',
+  `is_mailfollowup_default` tinyint(1) NOT NULL DEFAULT '0',
+  `is_active` TINYINT(1) NOT NULL DEFAULT '1',
+  `is_ticketheader` TINYINT(1) NOT NULL DEFAULT '1',
+  `is_ticketfollowup` TINYINT(1) NOT NULL DEFAULT '1',
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_helpdesk_default` (`is_helpdesk_default`),
+  KEY `is_followup_default` (`is_followup_default`),
   KEY `is_mail_default` (`is_mail_default`),
+  KEY `is_mailfollowup_default` (`is_mailfollowup_default`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `is_active` (`is_active`),
+  KEY `is_ticketheader` (`is_ticketheader`),
+  KEY `is_ticketfollowup` (`is_ticketfollowup`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_requesttypes` VALUES ('1','Helpdesk','1','0',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('2','E-Mail','0','1',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('3','Phone','0','0',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('4','Direct','0','0',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('5','Written','0','0',NULL,NULL,NULL);
-INSERT INTO `glpi_requesttypes` VALUES ('6','Other','0','0',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('1','Helpdesk','1','1','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('2','E-Mail','0','0','1','1','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('3','Phone','0','0','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('4','Direct','0','0','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('5','Written','0','0','0','0','1','1','1',NULL,NULL,NULL);
+INSERT INTO `glpi_requesttypes` VALUES ('6','Other','0','0','0','0','1','1','1',NULL,NULL,NULL);
 
 ### Dump table glpi_reservationitems
 
@@ -6980,6 +6990,7 @@ CREATE TABLE `glpi_taskcategories` (
   `level` int(11) NOT NULL DEFAULT '0',
   `ancestors_cache` longtext COLLATE utf8_unicode_ci,
   `sons_cache` longtext COLLATE utf8_unicode_ci,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
   `is_helpdeskvisible` tinyint(1) NOT NULL DEFAULT '1',
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
@@ -6988,6 +6999,7 @@ CREATE TABLE `glpi_taskcategories` (
   KEY `taskcategories_id` (`taskcategories_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
+  KEY `is_active` (`is_active`),
   KEY `is_helpdeskvisible` (`is_helpdeskvisible`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
