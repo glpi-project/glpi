@@ -213,7 +213,7 @@ class TicketFollowup  extends CommonDBTM {
       }
 
       if (isset($_SESSION["glpiname"])) {
-         $this->fields['requesttypes_id'] = RequestType::getDefault('helpdesk');
+         $this->fields['requesttypes_id'] = RequestType::getDefault('followup');
       }
    }
 
@@ -542,7 +542,7 @@ class TicketFollowup  extends CommonDBTM {
    static function showFormMassiveAction() {
 
       echo "&nbsp;".__('Source of followup')."&nbsp;";
-      RequestType::dropdown(array('value' => RequestType::getDefault('helpdesk')));
+      RequestType::dropdown(array('value' => RequestType::getDefault('followup'), 'condition' => 'is_active = 1 AND is_ticketfollowup = 1'));
 
       echo "<br>".__('Description')." ";
       echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
@@ -681,7 +681,7 @@ class TicketFollowup  extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Source of followup')."</td><td>";
-         RequestType::dropdown(array('value' => $this->fields["requesttypes_id"]));
+         RequestType::dropdown(array('value' => $this->fields["requesttypes_id"], 'condition' => 'is_active =1 AND is_ticketfollowup = 1'));
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'>";
@@ -706,7 +706,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "<textarea name='content' cols='80' rows='6'>".$this->fields["content"]."</textarea>";
          echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
          echo "<input type='hidden' name='requesttypes_id' value='".
-                RequestType::getDefault('helpdesk')."'>";
+                RequestType::getDefault('followup')."'>";
          // Reopen case
          if ($reopen_case) {
             echo "<input type='hidden' name='add_reopen' value='1'>";
@@ -1085,7 +1085,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "<textarea name='content' cols='70' rows='6'></textarea>";
          echo "<input type='hidden' name='tickets_id' value='".$ticket->getField('id')."'>";
          echo "<input type='hidden' name='requesttypes_id' value='".
-                RequestType::getDefault('helpdesk')."'>";
+                RequestType::getDefault('followup')."'>";
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_2'>";
@@ -1119,7 +1119,7 @@ class TicketFollowup  extends CommonDBTM {
       $tab[2]['name']         = __('Request source');
       $tab[2]['forcegroupby'] = true;
       $tab[2]['datatype']     = 'dropdown';
-
+      
       $tab[3]['table']        = $this->getTable();
       $tab[3]['field']        = 'date';
       $tab[3]['name']         = __('Date');

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -50,12 +50,28 @@ class RequestType extends CommonDropdown {
 
    function getAdditionalFields() {
 
-      return array(array('name'  => 'is_helpdesk_default',
+      return array(array('name'  => 'is_active',
+                         'label' => __('Active'),
+                         'type'  => 'bool'),
+                   array('name'  => 'is_helpdesk_default',
                          'label' => __('Default for tickets'),
+                         'type'  => 'bool'),
+                   array('name'  => 'is_followup_default',
+                         'label' => __('Default for followups'),
                          'type'  => 'bool'),
                    array('name'  => 'is_mail_default',
                          'label' => __('Default for mail recipients'),
-                         'type'  => 'bool'));
+                         'type'  => 'bool'),
+                   array('name'  => 'is_mailfollowup_default',
+                         'label' => __('Default for followup mail recipients'),
+                         'type'  => 'bool'),
+                   array('name'  => 'is_ticketheader',
+                         'label' => __('Ticket request source'),
+                         'type'  => 'bool'),
+                   array('name'  => 'is_ticketfollowup',
+                         'label' => __('Followup request source'),
+                         'type'  => 'bool'),
+                         );
    }
 
 
@@ -69,11 +85,38 @@ class RequestType extends CommonDropdown {
       $tab[14]['datatype']      = 'bool';
       $tab[14]['massiveaction'] = false;
 
+      $tab[182]['table']         = $this->getTable();
+      $tab[182]['field']         = 'is_followup_default';
+      $tab[182]['name']          = __('Default for followups');
+      $tab[182]['datatype']      = 'bool';
+      $tab[182]['massiveaction'] = false;
+
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'is_mail_default';
       $tab[15]['name']          = __('Default for mail recipients');
       $tab[15]['datatype']      = 'bool';
       $tab[15]['massiveaction'] = false;
+
+      $tab[183]['table']         = $this->getTable();
+      $tab[183]['field']         = 'is_mailfollowup_default';
+      $tab[183]['name']          = __('Default for followup mail recipients');
+      $tab[183]['datatype']      = 'bool';
+      $tab[183]['massiveaction'] = false;
+
+      $tab[8]['table']          = $this->getTable();
+      $tab[8]['field']          = 'is_active';
+      $tab[8]['name']           = __('Active');
+      $tab[8]['datatype']       = 'bool';
+
+      $tab[180]['table']         = $this->getTable();
+      $tab[180]['field']         = 'is_ticketheader';
+      $tab[180]['name']          = __('Ticket request source');
+      $tab[180]['datatype']      = 'bool';
+
+      $tab[181]['table']         = $this->getTable();
+      $tab[181]['field']         = 'is_ticketfollowup';
+      $tab[181]['name']          = __('Followup request source');
+      $tab[181]['datatype']      = 'bool';
 
       return $tab;
    }
@@ -89,9 +132,23 @@ class RequestType extends CommonDropdown {
          $DB->query($query);
       }
 
+      if (isset($this->input["is_followup_default"]) && $this->input["is_followup_default"]) {
+         $query = "UPDATE `".$this->getTable()."`
+                   SET `is_followup_default` = '0'
+                   WHERE `id` <> '".$this->fields['id']."'";
+         $DB->query($query);
+      }
+
       if (isset($this->input["is_mail_default"]) && $this->input["is_mail_default"]) {
          $query = "UPDATE `".$this->getTable()."`
                    SET `is_mail_default` = '0'
+                   WHERE `id` <> '".$this->fields['id']."'";
+         $DB->query($query);
+      }
+
+      if (isset($this->input["is_mailfollowup_default"]) && $this->input["is_mailfollowup_default"]) {
+         $query = "UPDATE `".$this->getTable()."`
+                   SET `is_mailfollowup_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'";
          $DB->query($query);
       }
@@ -117,11 +174,37 @@ class RequestType extends CommonDropdown {
          }
       }
 
+      if (in_array('is_followup_default',$this->updates)) {
+
+         if ($this->input["is_followup_default"]) {
+            $query = "UPDATE `".$this->getTable()."`
+                      SET `is_followup_default` = '0'
+                      WHERE `id` <> '".$this->input['id']."'";
+            $DB->query($query);
+
+         } else {
+            Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+         }
+      }
+
       if (in_array('is_mail_default',$this->updates)) {
 
          if ($this->input["is_mail_default"]) {
             $query = "UPDATE `".$this->getTable()."`
                       SET `is_mail_default` = '0'
+                      WHERE `id` <> '".$this->input['id']."'";
+            $DB->query($query);
+
+         } else {
+            Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+         }
+      }
+
+      if (in_array('is_mailfollowup_default',$this->updates)) {
+
+         if ($this->input["is_mailfollowup_default"]) {
+            $query = "UPDATE `".$this->getTable()."`
+                      SET `is_mailfollowup_default` = '0'
                       WHERE `id` <> '".$this->input['id']."'";
             $DB->query($query);
 
@@ -142,11 +225,11 @@ class RequestType extends CommonDropdown {
    static function getDefault($source) {
       global $DB;
 
-      if (!in_array($source, array('mail', 'helpdesk'))) {
+      if (!in_array($source, array('mail', 'mailfollowup', 'helpdesk', 'followup'))) {
          return 0;
       }
 
-      foreach ($DB->request('glpi_requesttypes', array('is_'.$source.'_default' => 1)) as $data) {
+      foreach ($DB->request('glpi_requesttypes', array('is_'.$source.'_default' => 1, 'is_active' => 1)) as $data) {
          return $data['id'];
       }
       return 0;
