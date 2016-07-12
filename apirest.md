@@ -799,7 +799,7 @@ Note you can use 'AllAssets' itemtype to retrieve combined asset types.
    - *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
    - *range* (default 0-50): a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-200.
                              Optional.
-   - *forcedisplay*: array of columns to display (default empty = empty use display pref and search criteria).
+   - *forcedisplay*: array of columns to display (default empty = use display preferences and search criteria).
                      Some columns will be always presents (1-id, 2-name, 80-Entity).
                      Optional.
    - *rawdata*: boolean for displaying raws data of Search engine of glpi (like SQL request, and full searchoptions)
