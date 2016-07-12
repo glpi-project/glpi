@@ -1317,7 +1317,8 @@ class Planning extends CommonGLPI {
     */
    static function showAddGroupForm($params = array()) {
       echo __("Group")." : <br>";
-      Group::dropdown(array('entity' => $_SESSION['glpiactive_entity']));
+      Group::dropdown(array('entity'    => $_SESSION['glpiactive_entity'],
+                            'condition' => "is_task = 1"));
       echo "<br /><br />";
       echo Html::hidden('action', array('value' => 'send_add_group_form'));
       echo Html::submit(_sx('button', 'Add'));
