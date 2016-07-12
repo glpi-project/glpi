@@ -2696,36 +2696,6 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Is the object may be activated
-    *
-    * @return boolean
-    **/
-   function maybeActive() {
-
-      if (!isset($this->fields['id'])) {
-         $this->getEmpty();
-      }
-      return array_key_exists('is_active', $this->fields);
-   }
-
-
-   /**
-    * Is the object active
-    *
-    * @return boolean
-    **/
-   function isActive() {
-
-      if ($this->maybeActive()) {
-         return $this->fields["is_active"];
-      }
-      // Return integer value to be used to fill is_active field
-      return 1;
-
-   }
-
-
-   /**
     * Is the object may be a template
     *
     * @return boolean
