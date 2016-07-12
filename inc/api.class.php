@@ -935,6 +935,8 @@ abstract class API extends CommonGLPI {
             $cleaned_searchoptions[$sID] = array('name'       => $option['name'],
                                                  'table'      => $option['table'],
                                                  'field'      => $option['field'],
+                                                 //'linkfield'  => $option['linkfield'],
+                                                 //'joinparams' => $option['joinparams'],
                                                  'datatype'   => isset($option['datatype'])
                                                                        ?$option['datatype']
                                                                        :"");
@@ -951,6 +953,14 @@ abstract class API extends CommonGLPI {
    private function getSearchOptionUniqID($itemtype, $option) {
       $uid_parts = array($itemtype);
 
+      $sub_itemtype = getItemTypeForTable($option['table']);
+
+      if ((isset($option['joinparams']['beforejoin']['table'])
+          || empty($option['joinparams']))
+          && $option['linkfield'] != getForeignKeyFieldForItemType($sub_itemtype)) {
+         $uid_parts[] = $option['linkfield'];
+      }
+
       if (isset($option['joinparams'])) {
          if (isset($option['joinparams']['beforejoin'])) {
             $sub_parts  = $this->getSearchOptionUniqIDJoins($option['joinparams']['beforejoin']);
@@ -958,12 +968,13 @@ abstract class API extends CommonGLPI {
          }
       }
 
-      $sub_itemtype = getItemTypeForTable($option['table']);
       if (isset($option['joinparams']['beforejoin']['table'])
           || $sub_itemtype != $itemtype) {
          $uid_parts[] = $sub_itemtype;
       }
+
       $uid_parts[] = $option['field'];
+
       $uuid = implode('.', $uid_parts);
 
       return $uuid;
