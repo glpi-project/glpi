@@ -882,6 +882,10 @@ class Dropdown {
                                  'OperatingSystemServicePack'
                                                       => _n('Service pack', 'Service packs',
                                                             Session::getPluralNumber()),
+                                 'OperatingSystemArchitecture'
+                                                      => _n('Operating system architecture',
+                                                            'Operating system architectures',
+                                                            Session::getPluralNumber()),
                                  'AutoUpdateSystem'   => _n('Update source', 'Update sources',
                                                             Session::getPluralNumber())
                                 ),

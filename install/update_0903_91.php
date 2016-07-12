@@ -277,6 +277,24 @@ function update0903to91() {
    /************** Kernel version for os *************/
    $migration->addField("glpi_computers", "os_kernel_version", "string");
 
+   /************** os architecture *************/
+   $migration->addField("glpi_computers", "operatingsystemarchitectures_id", "integer");
+   $migration->addKey("glpi_computers", "operatingsystemarchitectures_id");
+
+   if (!TableExists('glpi_operatingsystemarchitectures')) {
+      $query = "CREATE TABLE `glpi_operatingsystemarchitectures` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `comment` text COLLATE utf8_unicode_ci,
+        `date_mod` datetime DEFAULT NULL,
+        `date_creation` datetime DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        KEY `name` (`name`),
+        KEY `date_mod` (`date_mod`),
+        KEY `date_creation` (`date_creation`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.1 add table glpi_operatingsystemarchitectures");
+   }
 
    /************** Task's templates *************/
    if (!TableExists('glpi_tasktemplates')) {

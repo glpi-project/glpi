@@ -727,6 +727,7 @@ CREATE TABLE `glpi_computers` (
   `operatingsystems_id` int(11) NOT NULL DEFAULT '0',
   `operatingsystemversions_id` int(11) NOT NULL DEFAULT '0',
   `operatingsystemservicepacks_id` int(11) NOT NULL DEFAULT '0',
+  `operatingsystemarchitectures_id` int(11) NOT NULL DEFAULT '0',
   `os_license_number` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `os_licenseid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `os_kernel_version` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -764,6 +765,7 @@ CREATE TABLE `glpi_computers` (
   KEY `operatingsystems_id` (`operatingsystems_id`),
   KEY `operatingsystemservicepacks_id` (`operatingsystemservicepacks_id`),
   KEY `operatingsystemversions_id` (`operatingsystemversions_id`),
+  KEY `operatingsystemarchitectures_id` (`operatingsystemarchitectures_id`),
   KEY `states_id` (`states_id`),
   KEY `users_id_tech` (`users_id_tech`),
   KEY `computertypes_id` (`computertypes_id`),
@@ -4759,6 +4761,22 @@ CREATE TABLE `glpi_objectlocks` (
   `date_mod` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Timestamp of the lock',
   PRIMARY KEY (`id`),
   UNIQUE KEY `item` (`itemtype`,`items_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_operatingsystemarchitectures
+
+DROP TABLE IF EXISTS `glpi_operatingsystemarchitectures`;
+CREATE TABLE `glpi_operatingsystemarchitectures` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+ `comment` text COLLATE utf8_unicode_ci,
+ `date_mod` datetime DEFAULT NULL,
+ `date_creation` datetime DEFAULT NULL,
+ PRIMARY KEY (`id`),
+ KEY `name` (`name`),
+ KEY `date_mod` (`date_mod`),
+ KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
