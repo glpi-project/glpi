@@ -1058,7 +1058,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             // Compute new due date
             $this->updates[]          = "due_date";
-            $this->fields['due_date'] = $slt->computeDueDate($this->fields['date'],
+            $this->fields['due_date'] = $slt->computeDate($this->fields['date'],
                                                              $this->fields["sla_waiting_duration"]);
             // Add current level to do
             $slt->addLevelToDo($this);

@@ -274,9 +274,47 @@ function update0903to91() {
    Config::setConfigurationValues('core', array('set_default_requester' => 1));
    $migration->addField("glpi_users", "set_default_requester", "tinyint(1) NULL DEFAULT NULL");
 
+   // ************ Networkport ethernets **************
+   if (!TableExists("glpi_networkportfiberchannels")) {
+      $query = "CREATE TABLE `glpi_networkportfiberchannels` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int(11) NOT NULL DEFAULT '0',
+                  `items_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
+                  `netpoints_id` int(11) NOT NULL DEFAULT '0',
+                  `wwn` varchar(16) COLLATE utf8_unicode_ci DEFAULT '',
+                  `speed` int(11) NOT NULL DEFAULT '10' COMMENT 'Mbit/s: 10, 100, 1000, 10000',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `networkports_id` (`networkports_id`),
+                  KEY `card` (`items_devicenetworkcards_id`),
+                  KEY `netpoint` (`netpoints_id`),
+                  KEY `wwn` (`wwn`),
+                  KEY `speed` (`speed`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->query($query);
+   }
 
    /************** Kernel version for os *************/
    $migration->addField("glpi_computers", "os_kernel_version", "string");
+
+
+   /************** os architecture *************/
+   $migration->addField("glpi_computers", "operatingsystemarchitectures_id", "integer");
+   $migration->addKey("glpi_computers", "operatingsystemarchitectures_id");
+
+   if (!TableExists('glpi_operatingsystemarchitectures')) {
+      $query = "CREATE TABLE `glpi_operatingsystemarchitectures` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `comment` text COLLATE utf8_unicode_ci,
+        `date_mod` datetime DEFAULT NULL,
+        `date_creation` datetime DEFAULT NULL,
+        PRIMARY KEY (`id`),
+        KEY `name` (`name`),
+        KEY `date_mod` (`date_mod`),
+        KEY `date_creation` (`date_creation`)
+      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.1 add table glpi_operatingsystemarchitectures");
+   }
 
 
    /************** Task's templates *************/
@@ -299,9 +337,11 @@ function update0903to91() {
       $DB->queryOrDie($query, "9.1 add table glpi_tasktemplates");
    }
 
+
    /************** Installation date for softwares *************/
    $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
    $migration->addKey("glpi_computers_softwareversions", "date_install");
+
 
    /************** Location for budgets *************/
    $migration->addField("glpi_budgets", "locations_id", "integer");
@@ -331,9 +371,9 @@ function update0903to91() {
       $DB->queryOrDie($query, "change budget display preference");
    }
 
+
    /************** New Planning with fullcalendar.io *************/
    $migration->addField("glpi_users", "plannings", "text");
-
 
 
    /************** API Rest *************/
@@ -366,25 +406,27 @@ function update0903to91() {
       $DB->queryOrDie($query, "9.1 insert first line into table glpi_apiclients");
    }
 
+
    /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
-   $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
-                  'SoftwareLicense', 'Peripheral', 'NetworkEquipment', 'User', 'Group', 'Entity',
-                  'Profile', 'Budget', 'Contact', 'Contract', 'Netpoint', 'NetworkPort', 'Rule',
-                  'Cartridge', 'CartridgeItem', 'Consumable', 'ConsumableItem', 'Ticket', 'Problem',
-                  'Change', 'Supplier', 'Document', 'AuthLDAP', 'MailCollector', 'Location',
-                  'State', 'Manufacturer', 'Blacklist', 'BlacklistedMailContent', 'ITILCategory',
-                  'TaskCategory', 'TaskTemplate', 'Project', 'Reminder', 'RSSFeed',
-                  'SolutionType', 'RequestType', 'SolutionTemplate', 'ProjectState', 'ProjectType',
-                  'ProjectTaskType', 'SoftwareLicenseType', 'CartridgeItemType', 'ConsumableItemType',
-                  'ContractType', 'ContactType', 'DeviceMemoryType', 'SupplierType', 'InterfaceType',
-                  'DeviceCaseType', 'PhonePowerSupply', 'Filesystem', 'VirtualMachineType',
-                  'VirtualMachineSystem', 'VirtualMachineState', 'DocumentCategory', 'DocumentType',
-                  'KnowbaseItemCategory', 'Calendar', 'Holiday', 'NetworkEquipmentFirmware',
-                  'Network', 'Domain', 'Vlan', 'IPNetwork', 'FQDN', 'WifiNetwork', 'NetworkName',
-                  'UserTitle', 'UserCategory', 'RuleRightParameter', 'Fieldblacklist', 'SsoVariable',
-                  'NotificationTemplate', 'Notification', 'SLA', 'FieldUnicity', 'Crontask', 'Link',
-                  'ComputerDisk', 'ComputerVirtualMachine', 'Infocom');
+   $types = array('AuthLDAP', 'Blacklist', 'BlacklistedMailContent', 'Budget',  'Calendar',
+                  'CartridgeItemType', 'Change', 'ChangeTask', 'ComputerDisk',
+                  'ComputerVirtualMachine', 'ConsumableItemType', 'Contact', 'ContactType',
+                  'Contract', 'ContractType', 'Crontask', 'DeviceCaseType', 'DeviceMemoryType',
+                  'Document', 'DocumentCategory', 'DocumentType', 'Domain',  'Entity', 'FQDN',
+                  'Fieldblacklist', 'FieldUnicity', 'Filesystem', 'Group', 'Holiday', 'Infocom',
+                  'InterfaceType', 'IPNetwork', 'ITILCategory', 'KnowbaseItemCategory', 'Location',
+                  'Link', 'MailCollector', 'Manufacturer', 'Netpoint', 'Network',
+                  'NetworkEquipmentFirmware', 'NetworkName', 'NetworkPort', 'Notification',
+                  'NotificationTemplate', 'PhonePowerSupply', 'Problem', 'ProblemTask', 'Profile',
+                  'Project', 'ProjectState', 'ProjectTaskType', 'ProjectType',  'Reminder',
+                  'RequestType', 'RSSFeed', 'Rule', 'RuleRightParameter', 'SLA',
+                  'SoftwareLicenseType', 'SoftwareVersion', 'SolutionTemplate', 'SolutionType',
+                  'SsoVariable', 'State', 'Supplier', 'SupplierType',
+                  'TaskCategory', 'TaskTemplate',  'Ticket', 'TicketFollowup', 'TicketTask',
+                  'User', 'UserCategory', 'UserTitle', 'VirtualMachineState', 'VirtualMachineSystem',
+                  'VirtualMachineType', 'Vlan', 'WifiNetwork');
+   $types = array_merge($types, $CFG_GLPI["infocom_types"]);
    $types = array_merge($types, $CFG_GLPI["dictionnary_types"]);
    $types = array_merge($types, $CFG_GLPI["device_types"]);
    $types = array_merge($types, $CFG_GLPI['networkport_instantiations']);
@@ -504,6 +546,7 @@ function update0903to91() {
       }
    }
 
+
    /************** Add more fields to software licenses */
    $new = $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
    $migration->addField("glpi_softwarelicenses", "locations_id", "integer");
@@ -525,19 +568,20 @@ function update0903to91() {
    $migration->addKey("glpi_softwarelicenses", "is_template");
    $migration->addKey("glpi_softwarelicenses", "states_id");
 
-   $migration->addField("glpi_infocoms", "destruction_date", "datetime");
-   $migration->addField("glpi_entities", "autofill_destruction_date",
+   $migration->addField("glpi_infocoms", "decommission_date", "datetime");
+   $migration->addField("glpi_entities", "autofill_decommission_date",
                         "string", array('value' => '-2'));
 
    $migration->addField("glpi_states", "is_visible_softwarelicense", "bool");
    $migration->addKey("glpi_states", "is_visible_softwarelicense");
 
-   /************* Add is_recursive on assets ***/
 
+   /************* Add is_recursive on assets ***/
    foreach (array('glpi_computers', 'glpi_monitors', 'glpi_phones', 'glpi_peripherals') as $table) {
       $migration->addField($table, "is_recursive", "bool");
       $migration->addKey($table, "is_recursive");
    }
+
 
    /************* Add antivirus table */
    if (!TableExists('glpi_computerantiviruses')) {
@@ -646,6 +690,7 @@ function update0903to91() {
       }
    }
 
+
    /** ************ New SLA structure ************ */
    if (!TableExists('glpi_slts')) {
       $query = "CREATE TABLE `glpi_slts` (
@@ -740,6 +785,7 @@ function update0903to91() {
       $migration->changeField('glpi_slts', 'resolution_time', 'number_time', 'integer');
    }
 
+
    /************** High contrast CSS **************/
    Config::setConfigurationValues('core', array('highcontrast_css' => 0));
    $migration->addField("glpi_users", "highcontrast_css", "tinyint(1) DEFAULT 0");
@@ -759,22 +805,32 @@ function update0903to91() {
                                                                 'after' => 'is_assign'));
 
    // for date_mod adding to tasks and to followups
-   if (!FieldExists('glpi_tickettasks', 'date_mod')) {
-      $migration->addField("glpi_tickettasks", "date_mod", "datetime");
-      $migration->addKey("glpi_tickettasks", "date_mod");
-   }
-   if (!FieldExists('glpi_problemtasks', 'date_mod')) {
-      $migration->addField("glpi_problemtasks", "date_mod", "datetime");
-      $migration->addKey("glpi_problemtasks", "date_mod");
-   }
-   if (!FieldExists('glpi_changetasks', 'date_mod')) {
-      $migration->addField("glpi_changetasks", "date_mod", "datetime");
-      $migration->addKey("glpi_changetasks", "date_mod");
-   }
-   if (!FieldExists('glpi_ticketfollowups', 'date_mod')) {
-      $migration->addField("glpi_ticketfollowups", "date_mod", "datetime");
-      $migration->addKey("glpi_ticketfollowups", "date_mod");
-   }
+   $migration->addField("glpi_tickettasks", "date_mod", "datetime");
+   $migration->addKey("glpi_tickettasks", "date_mod");
+   $migration->addField("glpi_problemtasks", "date_mod", "datetime");
+   $migration->addKey("glpi_problemtasks", "date_mod");
+   $migration->addField("glpi_changetasks", "date_mod", "datetime");
+   $migration->addKey("glpi_changetasks", "date_mod");
+   $migration->addField("glpi_ticketfollowups", "date_mod", "datetime");
+   $migration->addKey("glpi_ticketfollowups", "date_mod");
+
+
+   // for is_active adding to glpi_taskcategories
+   $migration->addField("glpi_taskcategories", "is_active", "bool", array('value' => 1));
+   $migration->addKey("glpi_taskcategories", "is_active");
+
+
+   // for is_active, is_followup_default, is_ticketheader and is_ticketfollowup in glpi_requesttypes
+   $migration->addField("glpi_requesttypes", "is_active", "bool", array('value' => 1));
+   $migration->addKey("glpi_requesttypes", "is_active");
+   $migration->addField("glpi_requesttypes", "is_ticketheader", "bool", array('value' => 1));
+   $migration->addKey("glpi_requesttypes", "is_ticketheader");
+   $migration->addField("glpi_requesttypes", "is_ticketfollowup", "bool", array('value' => 1));
+   $migration->addKey("glpi_requesttypes", "is_ticketfollowup");
+   $migration->addField("glpi_requesttypes", "is_followup_default", "bool", array('value' => 0));
+   $migration->addKey("glpi_requesttypes", "is_followup_default");
+   $migration->addField("glpi_requesttypes", "is_mailfollowup_default", "bool", array('value' => 0));
+   $migration->addKey("glpi_requesttypes", "is_mailfollowup_default");
 
 
    // ************ Keep it at the end **************

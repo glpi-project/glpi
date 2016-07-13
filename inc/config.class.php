@@ -1162,7 +1162,8 @@ class Config extends CommonDBTM {
          Dropdown::showYesNo("task_private", $data["task_private"]);
          echo "</td><td> " . __('Request sources by default') . "</td><td>";
          RequestType::dropdown(array('value' => $data["default_requesttypes_id"],
-                                     'name'  => "default_requesttypes_id"));
+                                     'name'  => "default_requesttypes_id",
+                                     'condition' => 'is_active = 1 AND is_ticketheader = 1'));
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td>" . __('Tasks state by default') . "</td><td>";

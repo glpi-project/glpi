@@ -35,8 +35,8 @@
 class EntityTest extends DbTestCase {
 
    /**
-    * @covers getSonsOf
-    * @covers getAncestorsOf
+    * @covers ::getSonsOf
+    * @covers ::getAncestorsOf
     */
    public function testSonsAncestors() {
 

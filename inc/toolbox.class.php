@@ -2534,5 +2534,35 @@ class Toolbox {
       return ($mime);
    }
 
+
+   /**
+    * Summary of in_array_recursive
+    *
+    * @since version 9.1
+    *
+    * @param mixed $needle
+    * @param array $haystack
+    * @param bool  $strict: If strict is set to TRUE then it will also 
+    *              check the types of the needle in the haystack.
+    * @return bool
+    */
+   static function in_array_recursive($needle, $haystack, $strict = false) {
+
+      $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($haystack));
+
+      foreach($it AS $element) {
+         if( $strict ) {
+            if($element === $needle) {
+               return true;
+            }
+         } else {
+            if($element == $needle) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
 }
 ?>

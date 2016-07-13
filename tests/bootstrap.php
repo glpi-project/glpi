@@ -135,6 +135,8 @@ function loadDataset() {
    $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
    $CFG_GLPI['root_doc']            = '/glpi';
 
+   @mkdir(GLPI_LOG_DIR, 0755, true);
+
    $conf = Config::getConfigurationValues('phpunit');
    if (isset($conf['dataset']) && $conf['dataset']==$data['_version']) {
       printf("\nGLPI dataset version %d already loaded\n\n", $data['_version']);

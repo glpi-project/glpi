@@ -16,5 +16,6 @@
     </filter>
     <php>
         <const name="GLPI_CONFIG_DIR" value="./tests" />
+        <const name="GLPI_LOG_DIR"    value="./tests/files/_log" />
     </php>
 </phpunit>

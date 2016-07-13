@@ -4311,7 +4311,7 @@ class CommonDBTM extends CommonGLPI {
                echo "<a href=\"$target_modify\">";
                echo "&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
                if (Session::isMultiEntitiesMode()) {
-                  echo "<td class='tab_bg_1 center'>$entity</td>";                  
+                  echo "<td class='tab_bg_1 center'>$entity</td>";
                }
                echo "<td class='tab_bg_2 center b'>";
                Html::showSimpleForm($target, 'purge', _x('button', 'Delete permanently'),

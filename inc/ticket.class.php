@@ -4013,7 +4013,7 @@ class Ticket extends CommonITILObject {
       echo "<td width='$colsize4%'>";
       echo $tt->getBeginHiddenFieldValue('requesttypes_id');
       if ($canupdate) {
-         RequestType::dropdown(array('value' => $this->fields["requesttypes_id"]));
+         RequestType::dropdown(array('value' => $this->fields["requesttypes_id"], 'condition' => 'is_active = 1 AND is_ticketheader = 1'));
       } else {
          echo Dropdown::getDropdownName('glpi_requesttypes', $this->fields["requesttypes_id"]);
          echo Html::hidden('requesttypes_id', array('value' => $this->fields["requesttypes_id"]));
@@ -6133,22 +6133,26 @@ class Ticket extends CommonITILObject {
       }
 
       //add ticket followups to timeline
-      $followups = $followup_obj->find("tickets_id = ".$this->getID()." $restrict_fup", 'date DESC');
-      foreach ($followups as $followups_id => $followup) {
-         $followup_obj->getFromDB($followups_id);
-         $followup['can_edit']                                   = $followup_obj->canUpdateItem();;
-         $timeline[$followup['date']."_followup_".$followups_id] = array('type' => 'TicketFollowup',
-                                                                         'item' => $followup);
+      if ($followup_obj->canview()) {
+         $followups = $followup_obj->find("tickets_id = ".$this->getID()." $restrict_fup", 'date DESC');
+         foreach ($followups as $followups_id => $followup) {
+            $followup_obj->getFromDB($followups_id);
+            $followup['can_edit']                                   = $followup_obj->canUpdateItem();;
+            $timeline[$followup['date']."_followup_".$followups_id] = array('type' => 'TicketFollowup',
+                                                                            'item' => $followup);
+         }
       }
 
 
       //add ticket tasks to timeline
-      $tasks = $task_obj->find("tickets_id = ".$this->getID()." $restrict_task", 'date DESC');
-      foreach ($tasks as $tasks_id => $task) {
-         $task_obj->getFromDB($tasks_id);
-         $task['can_edit']                           = $task_obj->canUpdateItem();
-         $timeline[$task['date']."_task_".$tasks_id] = array('type' => 'TicketTask',
-                                                             'item' => $task);
+      if ($task_obj->canview()) {
+         $tasks = $task_obj->find("tickets_id = ".$this->getID()." $restrict_task", 'date DESC');
+         foreach ($tasks as $tasks_id => $task) {
+            $task_obj->getFromDB($tasks_id);
+            $task['can_edit']                           = $task_obj->canUpdateItem();
+            $timeline[$task['date']."_task_".$tasks_id] = array('type' => 'TicketTask',
+                                                                'item' => $task);
+         }
       }
 
 
@@ -6281,7 +6285,14 @@ class Ticket extends CommonITILObject {
 
       $timeline_index = 0;
       foreach ($timeline as $item) {
-         $item_i = $item['item'];
+         $options = array( 'parent' => $this,
+                           'rand' => $rand
+                           ) ;
+         $obj = new $item['type'] ;
+         $obj->fields = $item['item'] ;
+         Plugin::doHook('pre_show_item', array('item' => $obj, 'options' => &$options));
+
+         $item_i = $obj->fields;
 
          $date = "";
          if (isset($item_i['date'])) {
@@ -6338,7 +6349,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='h_content ".$item['type'].
                ((isset($item_i['status'])) ? " ".$item_i['status'] : "")."'".
                "id='viewitem".$item['type'].$item_i['id'].$rand."'>";
-         if ($item_i['can_edit']) {
+         if (isset($item_i['can_edit']) && $item_i['can_edit']) {
             echo "<div class='edit_item_content'></div>";
             echo "<span class='cancel_edit_item_content'></span>";
          }
@@ -6480,6 +6491,9 @@ class Ticket extends CommonITILObject {
          echo "</div>"; //end  h_info
 
          $timeline_index++;
+
+         Plugin::doHook('post_show_item', array('item' => $obj, 'options' => $options));
+
       } // end foreach timeline
 
       echo "<div class='break'></div>";
@@ -6833,7 +6847,7 @@ class Ticket extends CommonITILObject {
    **/
    function getCalendar() {
 
-      if ($this->fields['slts_ttr_id'] > 0) {
+      if (isset($this->fields['slts_ttr_id']) && $this->fields['slts_ttr_id'] > 0) {
          $sla = new SLA();
          if ($sla->getFromDB($this->fields['slts_ttr_id'])) {
             // not -1: calendar of the entity
@@ -6843,6 +6857,31 @@ class Ticket extends CommonITILObject {
          }
       }
       return parent::getCalendar();
+   }
+
+
+   /**
+    * Select a field using standard system
+    *
+    * @since version 9.1
+    */
+   function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()){
+      switch( $field_id_or_search_options['linkfield'] ) {
+         case 'requesttypes_id':
+            $opt = 'is_ticketheader = 1';
+            if( Toolbox::in_array_recursive('glpi_ticketfollowups', $field_id_or_search_options['joinparams']) ) {
+               $opt = 'is_ticketfollowup = 1';
+            }
+            if( $field_id_or_search_options['linkfield']  == $name ) {
+               $opt .= ' AND is_active = 1' ;
+            }
+            if(isset( $options['condition'] )) {
+               $opt .=  ' AND '.$options['condition'];
+            }
+            $options['condition'] = $opt;
+            break ;
+      }
+      return parent::getValueToSelect($field_id_or_search_options, $name, $values, $options);
    }
 
 }

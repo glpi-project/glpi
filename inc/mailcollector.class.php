@@ -912,6 +912,7 @@ class MailCollector  extends CommonDBTM {
             }
 
          } else { // Followup only copy refuse data
+            $tkt['requesttypes_id'] = RequestType::getDefault('mailfollowup');
             $tobecopied = array('_refuse_email_no_response', '_refuse_email_with_response');
             foreach ($tobecopied as $val) {
                if (isset($output[$val])) {

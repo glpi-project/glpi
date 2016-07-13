@@ -1,8 +1,9 @@
 <?php
 /*
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015-2016 Teclib'.
+ Copyright (C) 2015 Teclib'.
 
  http://glpi-project.org
 
@@ -34,48 +35,47 @@
 * @brief
 */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access this file directly");
-}
+class RuleDictionnaryOperatingSystemArchitecture extends RuleDictionnaryDropdown {
 
-/**
- * TaskCategory class
-**/
-class TaskCategory extends CommonTreeDropdown {
 
-   // From CommonDBTM
-   public $dohistory          = true;
-   public $can_be_translated  = true;
-
-   static $rightname          = 'taskcategory';
-
-   function getAdditionalFields() {
-
-      $tab = parent::getAdditionalFields();
-
-      $tab[] = array('name'  => 'is_active',
-                         'label' => __('Active'),
-                         'type'  => 'bool');
-
-      return $tab;
+   /**
+    * Constructor
+   **/
+   function __construct() {
+      parent::__construct('RuleDictionnaryOperatingSystemArchitecture');
    }
 
 
-   function getSearchOptions() {
+   /**
+    * @see Rule::getCriterias()
+   **/
+   function getCriterias() {
 
-      $tab                      = parent::getSearchOptions();
+      static $criterias = array();
 
-      $tab[8]['table']         = $this->getTable();
-      $tab[8]['field']         = 'is_active';
-      $tab[8]['name']          = __('Active');
-      $tab[8]['datatype']      = 'bool';
+      if (count($criterias)) {
+         return $criterias;
+      }
 
-      return $tab;
+      $criterias['name']['field'] = 'name';
+      $criterias['name']['name']  = __('Operating system architecture');
+      $criterias['name']['table'] = 'glpi_operatingsystemarchitectures';
+
+      return $criterias;
    }
 
 
-   static function getTypeName($nb=0) {
-      return _n('Task category','Task categories', $nb);
+   /**
+    * @see Rule::getActions()
+   **/
+   function getActions() {
+
+      $actions                          = array();
+      $actions['name']['name']          = __('Operating system architecture');
+      $actions['name']['force_actions'] = array('append_regex_result', 'assign', 'regex_result');
+
+      return $actions;
    }
 
 }
+?>

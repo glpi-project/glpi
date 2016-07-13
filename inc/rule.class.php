@@ -474,6 +474,18 @@ class Rule extends CommonDBTM {
                               = '/front/ruledictionnaryoperatingsystemversion.form.php';
          }
 
+         $menu['dictionnary']['options']['os_arch']['title']
+                           = __('Operating system architecture');
+         $menu['dictionnary']['options']['os_arch']['page']
+                           = '/front/ruledictionnaryoperatingsystemarchitecture.php';
+         $menu['dictionnary']['options']['os_arch']['links']['search']
+                           = '/front/ruledictionnaryoperatingsystemarchitecture.php';
+
+         if (RuleDictionnaryDropdown::canCreate()) {
+            $menu['dictionnary']['options']['os_arch']['links']['add']
+                              = '/front/ruledictionnaryoperatingsystemarchitecture.form.php';
+         }
+
          $menu['dictionnary']['options']['printer']['title']
                            = _n('Printer', 'Printers', Session::getPluralNumber());
          $menu['dictionnary']['options']['printer']['page']
