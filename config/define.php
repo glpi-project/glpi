@@ -244,7 +244,8 @@ $CFG_GLPI["networkport_types"]            = array('Computer', 'NetworkEquipment'
 // Warning : the order is used for displaying different NetworkPort types ! Keep it !
 $CFG_GLPI['networkport_instantiations']   = array('NetworkPortEthernet', 'NetworkPortWifi' ,
                                                   'NetworkPortAggregate', 'NetworkPortAlias',
-                                                  'NetworkPortDialup',   'NetworkPortLocal');
+                                                  'NetworkPortDialup',   'NetworkPortLocal',
+                                                  'NetworkPortFiberchannel');
 
 $CFG_GLPI['device_types'] = array('DeviceMotherboard', 'DeviceProcessor', 'DeviceMemory',
                                   'DeviceHardDrive', 'DeviceNetworkCard', 'DeviceDrive',
