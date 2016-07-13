@@ -1068,6 +1068,9 @@ class Planning extends CommonGLPI {
          $group->getFromDB($actor[1]);
          $title = $group->getName();
       } else if($filter_data['type'] == 'event_filter') {
+         if (!$filter_key::canView()) {
+            return false;
+         }
          $title = $filter_key::getTypeName();
       }
 
@@ -1630,6 +1633,9 @@ class Planning extends CommonGLPI {
 
       $raw_events = array();
       foreach($CFG_GLPI['planning_types'] as $planning_type) {
+         if (!$planning_type::canView()) {
+            continue;
+         }
          if ($_SESSION['glpi_plannings']['filters'][$planning_type]['display']) {
             $event_type_color = $_SESSION['glpi_plannings']['filters'][$planning_type]['color'];
             foreach($_SESSION['glpi_plannings']['plannings'] as $actor => $actor_params) {
