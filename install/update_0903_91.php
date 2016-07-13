@@ -295,6 +295,7 @@ function update0903to91() {
    /************** Kernel version for os *************/
    $migration->addField("glpi_computers", "os_kernel_version", "string");
 
+
    /************** os architecture *************/
    $migration->addField("glpi_computers", "operatingsystemarchitectures_id", "integer");
    $migration->addKey("glpi_computers", "operatingsystemarchitectures_id");
@@ -313,6 +314,7 @@ function update0903to91() {
       ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.1 add table glpi_operatingsystemarchitectures");
    }
+
 
    /************** Task's templates *************/
    if (!TableExists('glpi_tasktemplates')) {
@@ -334,9 +336,11 @@ function update0903to91() {
       $DB->queryOrDie($query, "9.1 add table glpi_tasktemplates");
    }
 
+
    /************** Installation date for softwares *************/
    $migration->addField("glpi_computers_softwareversions", "date_install", "DATE");
    $migration->addKey("glpi_computers_softwareversions", "date_install");
+
 
    /************** Location for budgets *************/
    $migration->addField("glpi_budgets", "locations_id", "integer");
@@ -366,8 +370,10 @@ function update0903to91() {
       $DB->queryOrDie($query, "change budget display preference");
    }
 
+
    /************** New Planning with fullcalendar.io *************/
    $migration->addField("glpi_users", "plannings", "text");
+
 
    /************** Date mod/creation for itemtypes *************/
    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
@@ -508,6 +514,7 @@ function update0903to91() {
       }
    }
 
+
    /************** Add more fields to software licenses */
    $new = $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
    $migration->addField("glpi_softwarelicenses", "locations_id", "integer");
@@ -536,12 +543,13 @@ function update0903to91() {
    $migration->addField("glpi_states", "is_visible_softwarelicense", "bool");
    $migration->addKey("glpi_states", "is_visible_softwarelicense");
 
-   /************* Add is_recursive on assets ***/
 
+   /************* Add is_recursive on assets ***/
    foreach (array('glpi_computers', 'glpi_monitors', 'glpi_phones', 'glpi_peripherals') as $table) {
       $migration->addField($table, "is_recursive", "bool");
       $migration->addKey($table, "is_recursive");
    }
+
 
    /************* Add antivirus table */
    if (!TableExists('glpi_computerantiviruses')) {
@@ -650,6 +658,7 @@ function update0903to91() {
       }
    }
 
+
    /** ************ New SLA structure ************ */
    if (!TableExists('glpi_slts')) {
       $query = "CREATE TABLE `glpi_slts` (
@@ -743,6 +752,7 @@ function update0903to91() {
        && !FieldExists('glpi_slts', 'number_time')) {
       $migration->changeField('glpi_slts', 'resolution_time', 'number_time', 'integer');
    }
+
 
    /************** High contrast CSS **************/
    Config::setConfigurationValues('core', array('highcontrast_css' => 0));
