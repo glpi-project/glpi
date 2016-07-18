@@ -522,19 +522,21 @@ function update0903to91() {
    $migration->addField("glpi_softwarelicenses", "users_id", "integer");
    $migration->addField("glpi_softwarelicenses", "groups_id_tech", "integer");
    $migration->addField("glpi_softwarelicenses", "groups_id", "integer");
-   $migration->addField("glpi_softwarelicenses", "is_helpdesk_visible", "bool");
    $migration->addField("glpi_softwarelicenses", "is_template", "bool");
    $migration->addField("glpi_softwarelicenses", "template_name", "string");
-   $migration->addField("glpi_softwarelicenses", "states_id", "string");
+   $migration->addField("glpi_softwarelicenses", "states_id", "integer");
+   $migration->addField("glpi_softwarelicenses", "manufacturers_id", "integer");
+
    $migration->addKey("glpi_softwarelicenses", "locations_id");
    $migration->addKey("glpi_softwarelicenses", "users_id_tech");
    $migration->addKey("glpi_softwarelicenses", "users_id");
    $migration->addKey("glpi_softwarelicenses", "groups_id_tech");
    $migration->addKey("glpi_softwarelicenses", "groups_id");
-   $migration->addKey("glpi_softwarelicenses", "is_helpdesk_visible");
    $migration->addKey("glpi_softwarelicenses", "is_deleted");
    $migration->addKey("glpi_softwarelicenses", "is_template");
    $migration->addKey("glpi_softwarelicenses", "states_id");
+   $migration->addKey("glpi_softwarelicenses", "manufacturers_id");
+   $migration->addKey("glpi_softwarelicenses", "softwarelicenses_id");
 
    $migration->addField("glpi_infocoms", "decommission_date", "datetime");
    $migration->addField("glpi_entities", "autofill_decommission_date",
