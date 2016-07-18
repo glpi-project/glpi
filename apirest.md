@@ -28,7 +28,7 @@
 itemtype
 :   a GLPI type, could be an asset, an itil or a configuration object, etc.
     This type must be a class who inherits CommonDTBM GLPI class.
-    See [List itemtypes](https://forge.glpi-project.org/embedded/glpi/annotated.html).
+    See [List itemtypes](https://forge.glpi-project.org/projects/glpi/embedded/class-CommonDBTM.html).
 
 searchOption
 :   a column identifier (integer) of an itemtype (ex: 1 -> id, 2 -> name, ...).
