@@ -6715,6 +6715,8 @@ CREATE TABLE `glpi_softwarelicenses` (
   `groups_id` int(11) NOT NULL DEFAULT '0',
   `is_helpdesk_visible` tinyint(1) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+  `states_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_template` (`is_template`),
@@ -6734,7 +6736,9 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `groups_id` (`groups_id`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
   KEY `is_deleted` (`is_helpdesk_visible`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `manufacturers_id` (`manufacturers_id`),
+  KEY `states_id` (`states_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
