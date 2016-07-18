@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -126,6 +126,9 @@ if (Session::haveRight("rule_dictionnary_dropdown", READ)) {
            _n('Service pack', 'Service packs',2)."</a></td></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnaryoperatingsystemversion.php'>" . _n('Version','Versions',2) .
+         "</a></td></tr>";
+   echo "<tr class='tab_bg_1'><td class='center b'>".
+         "<a href='ruledictionnaryoperatingsystemarchitecture.php'>" . _n('Architecture','Architectures',2) .
          "</a></td></tr>";
 }
 echo "</table></td></tr>";

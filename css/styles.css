@@ -463,7 +463,7 @@ input.save {
 
 }
 
-.form_content .mce-fullscreen {
+#page .mce-fullscreen {
    top: 105px;
 }
 

@@ -373,7 +373,7 @@ class Infocom extends CommonDBChild {
                    'autofill_delivery_date'    => 'delivery_date',
                    'autofill_warranty_date'    => 'warranty_date',
                    'autofill_order_date'       => 'order_date',
-                   'autofill_destruction_date' => 'destruction_date');
+                   'autofill_decommission_date' => 'decommission_date');
    }
 
 
@@ -1009,9 +1009,9 @@ class Infocom extends CommonDBChild {
                                       'maybeempty' => true,
                                       'canedit'    => $editcalendar));
             echo "</td>";
-            echo "<td>".__('Date of destruction')."</td><td>";
-            Html::showDateField("destruction_date",
-                                array('value'      => $ic->fields["destruction_date"],
+            echo "<td>".__('Decommission date')."</td><td>";
+            Html::showDateField("decommission_date",
+                                array('value'      => $ic->fields["decommission_date"],
                                       'maybeempty' => true,
                                       'canedit'    => $editcalendar));
             echo "</td></tr>";
@@ -1448,8 +1448,8 @@ class Infocom extends CommonDBChild {
       $tab[122]['joinparams']          = $joinparams;
 
       $tab[150]['table']               = 'glpi_infocoms';
-      $tab[150]['field']               = 'destruction_date';
-      $tab[150]['name']                = __('Date of destruction');
+      $tab[150]['field']               = 'decommission_date';
+      $tab[150]['name']                = __('Decommission date');
       $tab[150]['datatype']            = 'date';
       $tab[150]['forcegroupby']        = true;
       $tab[150]['joinparams']          = $joinparams;
@@ -1504,8 +1504,8 @@ class Infocom extends CommonDBChild {
       $tab[27]['forcegroupby']   = true;
 
       $tab[28]['table']          = 'glpi_infocoms';
-      $tab[28]['field']          = 'destruction_date';
-      $tab[28]['name']           = __('Date of destruction');
+      $tab[28]['field']          = 'decommission_date';
+      $tab[28]['name']           = __('Date of decommission_date');
       $tab[28]['datatype']       = 'date';
       $tab[28]['forcegroupby']   = true;
 

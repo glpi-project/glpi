@@ -364,15 +364,18 @@ class Item_Ticket extends CommonDBRelation{
          $params[$key] = $val;
       }
 
-      $item = getItemForItemtype($itemtype);
-      $item->getFromDB($items_id);
-      $result =  "<div id='".$itemtype."_".$items_id."'>";
-      $result .= $item->getTypeName(1)." : ".$item->getLink(array('comments' => true));
-      $result .= "<input type='hidden' value='$items_id' name='items_id[$itemtype][$items_id]'>";
-      if ($params['delete']) {
-         $result .= " <img src=\"../pics/delete.png\" onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\">";
+      $result = "";
+
+      if ($item = getItemForItemtype($itemtype)) {
+         $item->getFromDB($items_id);
+         $result =  "<div id='".$itemtype."_".$items_id."'>";
+         $result .= $item->getTypeName(1)." : ".$item->getLink(array('comments' => true));
+         $result .= "<input type='hidden' value='$items_id' name='items_id[$itemtype][$items_id]'>";
+         if ($params['delete']) {
+            $result .= " <img src=\"../pics/delete.png\" onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\">";
+         }
+         $result .= "</div>";
       }
-      $result .= "</div>";
 
       return $result;
    }
