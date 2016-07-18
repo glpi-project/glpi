@@ -47,7 +47,7 @@ $item->checkGlobal(READ);
 
 $group     = "";
 $values    = array();
-$searchopt = Search::getCleanedOptions($_POST["itemtype"], READ, false);
+$searchopt = Search::getCleanedOptions($_POST["itemtype"]);
 echo "<table width='100%'><tr><td width='40%'>";
 
 foreach ($searchopt as $key => $val) {
