@@ -2438,16 +2438,46 @@ class Toolbox {
    static function checkValidReferer() {
       global $CFG_GLPI;
 
-      if (!isset($_SERVER['HTTP_REFERER'])
-          || !is_array($url = parse_url($_SERVER['HTTP_REFERER']))
-          || !isset($url['host'])
+      $isvalidReferer = true;
+
+      if (!isset($_SERVER['HTTP_REFERER'])){
+         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            Html::displayErrorAndDie(__("No HTTP_REFERER found in request. Reload previous page before doing action again."),
+                                  true);
+            $isvalidReferer = false;
+         }
+      }
+      else if (!is_array($url = parse_url($_SERVER['HTTP_REFERER']))){
+         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            Html::displayErrorAndDie(__("Error when parsing HTTP_REFERER. Reload previous page before doing action again."),
+                                  true);
+            $isvalidReferer = false;
+         }
+      }
+
+      if(!isset($url['host'])
           || (($url['host'] != $_SERVER['SERVER_NAME'])
-              && (!isset($_SERVER['HTTP_X_FORWARDED_SERVER'])
-                  || ($url['host'] != $_SERVER['HTTP_X_FORWARDED_SERVER'])))
-          || !isset($url['path'])
+            && (!isset($_SERVER['HTTP_X_FORWARDED_SERVER'])
+               || ($url['host'] != $_SERVER['HTTP_X_FORWARDED_SERVER'])))){
+         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            Html::displayErrorAndDie(__("None or Invalid host in HTTP_REFERER. Reload previous page before doing action again."),
+                                  true);
+            $isvalidReferer = false;
+         }
+      }
+
+      if(!isset($url['path'])
           || (!empty($CFG_GLPI['root_doc'])
-              && (strpos($url['path'], $CFG_GLPI['root_doc']) !== 0))) {
-         Html::displayErrorAndDie(__("The action you have requested is not allowed. Reload previous page before doing action again."),
+            && (strpos($url['path'], $CFG_GLPI['root_doc']) !== 0))) {
+         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            Html::displayErrorAndDie(__("None or Invalid path in HTTP_REFERER. Reload previous page before doing action again."),
+                                  true);
+            $isvalidReferer = false;
+         }
+      }
+
+      if(!$isvalidReferer && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE){
+            Html::displayErrorAndDie(__("The action you have requested is not allowed. Reload previous page before doing action again."),
                                   true);
       }
    }
