@@ -2500,7 +2500,6 @@ class AuthLDAP extends CommonDBTM {
     * @param $clean              (true by default)
    **/
    static function getObjectByDn($ds, $condition, $dn, $attrs=array(), $clean=true) {
-
       if ($result = @ ldap_read($ds, $dn, $condition, $attrs)) {
          if ($clean) {
             $info = self::get_entries_clean($ds, $result);

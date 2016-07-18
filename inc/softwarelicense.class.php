@@ -299,18 +299,7 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       echo "</td>";
-      echo "<td>".__('As child of')."</td>";
-      echo "<td>";
-      if ($this->getID()) {
-         $condition = "`level`<=".$this->fields['level'];
-      } else {
-         $condition = '';
-      }
-      SoftwareLicense::dropdown(array('value'        => $this->fields["softwarelicenses_id"],
-                                      'entity'       => $this->fields["entities_id"],
-                                      'softwares_id' => $this->fields['softwares_id'],
-                                      'condition'    => $condition,
-                                      'used'         => array($this->getID())));
+      echo "<td colspan='2'>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -545,14 +534,6 @@ class SoftwareLicense extends CommonDBTM {
       $tab[10]['field']           = 'name';
       $tab[10]['name']            = __('Software');
       $tab[10]['datatype']        = 'itemlink';
-
-      $tab[13]['table']             = $this->getTable();
-      $tab[13]['field']             = 'completename';
-      $tab[13]['name']              = __('Father');
-      $tab[13]['datatype']          = 'dropdown';
-      $tab[13]['massiveaction']     = false;
-      // Add virtual condition to relink table
-      $tab[13]['joinparams']        = array('condition' => "AND 1=1");
 
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';
