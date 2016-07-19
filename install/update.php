@@ -784,12 +784,10 @@ function updateDbUpTo031() {
          update090to0901();
 
       case "0.90.1" :
-         include_once("update_0901_0902.php");
-         update0901to0902();
-
       case "0.90.2" :
       case "0.90.3" :
-         include_once("update_0903_91.php");
+      case "0.90.4" :
+         include_once("update_0901_91.php");
          update0903to91();
 
       case "0.91": // // for change name of the version - to delete in next version

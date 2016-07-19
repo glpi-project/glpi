@@ -35,11 +35,11 @@
 */
 
 /**
- * Update from 0.90.3 to 9.1
+ * Update from 0.90.1 to 9.1
  *
  * @return bool for success (will die for most error)
 **/
-function update0903to91() {
+function update0901to91() {
    global $DB, $migration, $CFG_GLPI;
 
    $updateresult     = true;
