@@ -100,9 +100,9 @@ if (!isset($_GET['page'])) {
    $_GET['page_limit'] = $CFG_GLPI['dropdown_max'];
 }
 
-$start = ($_GET['page']-1)*$_GET['page_limit'];
-$limit = $_GET['page_limit'];
-// Get last item retrieve to init values
+$start = intval(($_GET['page']-1)*$_GET['page_limit']);
+$limit = intval($_GET['page_limit']);
+
 if ($_GET['page'] > 1) {
    $start--;
    $limit++;

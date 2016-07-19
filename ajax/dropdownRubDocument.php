@@ -50,23 +50,34 @@ if (isset($_POST["rubdoc"])) {
 
    // Clean used array
    if (isset($_POST['used']) && is_array($_POST['used']) && (count($_POST['used']) > 0)) {
+      $used = '';
+      foreach ($_POST['used'] as $used) {
+         if ($used !== '') {
+            $used .= ', ';
+         }
+         $used .= (int)$used;
+      }
       $query = "SELECT `id`
                 FROM `glpi_documents`
-                WHERE `id` IN (".implode(',',$_POST['used']).")
-                      AND `documentcategories_id` = '".$_POST["rubdoc"]."'";
+                WHERE `id` IN (".$used.")
+                      AND `documentcategories_id` = '".(int)$_POST["rubdoc"]."'";
 
       foreach ($DB->request($query) AS $data) {
          $used[$data['id']] = $data['id'];
       }
    }
 
+   if (!is_subclass_of($_POST['myname'], 'CommonDBTM')) {
+      throw new \RuntimeException('Invalid name provided!');
+   }
+
    Dropdown::show('Document',
                   array('name'      => $_POST['myname'],
                         'used'      => $used,
                         'width'     => '50%',
-                        'entity'    => $_POST['entity'],
-                        'rand'      => $_POST['rand'],
-                        'condition' => "glpi_documents.documentcategories_id='".$_POST["rubdoc"]."'"));
+                        'entity'    => (int)$_POST['entity'],
+                        'rand'      => (int)$_POST['rand'],
+                        'condition' => "glpi_documents.documentcategories_id='".(int)$_POST["rubdoc"]."'"));
 
 }
 ?>

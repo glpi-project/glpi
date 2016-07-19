@@ -47,6 +47,10 @@ Session::checkLoginUser();
 if ((isset($_POST['field']) && ($_POST["value"] > 0))
     || (isset($_POST['allow_email']) && $_POST['allow_email'])) {
 
+   if (preg_match('/[^a-z_\-0-9]/i', $_POST['field'])) {
+      throw new \RuntimeException('Invalid field provided!');
+   }
+
    $default_email = "";
    $emails        = array();
    if (isset($_POST['typefield']) && ($_POST['typefield'] == 'supplier')) {
@@ -77,7 +81,12 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
    if (isset($_POST['alternative_email'][$user_index]) 
        && !empty($_POST['alternative_email'][$user_index])
        && empty($default_email)) {
-      $default_email = $_POST['alternative_email'][$user_index];
+
+      if (NotificationMail::isUserAddressValid($_POST['alternative_email'][$user_index])) {
+         $default_email = $_POST['alternative_email'][$user_index];
+      } else {
+         throw new \RuntimeException('Invalid email provided!');
+      }
    }
 
    $rand = Dropdown::showYesNo($_POST['field'].'[use_notification][]', $default_notif);

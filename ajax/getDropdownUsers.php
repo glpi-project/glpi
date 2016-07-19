@@ -80,10 +80,10 @@ if (!isset($_GET['page'])) {
 }
 
 if ($one_item < 0) {
-   $start  = ($_GET['page']-1)*$_GET['page_limit'];
+   $start  = intval(($_GET['page']-1)*$_GET['page_limit']);
    $result = User::getSqlSearchResult(false, $_GET['right'], $_GET["entity_restrict"],
                                       $_GET['value'], $used, $_GET['searchText'], $start,
-                                      $_GET['page_limit']);
+                                      intval($_GET['page_limit']));
 } else {
    $query = "SELECT DISTINCT `glpi_users`.*
              FROM `glpi_users`
