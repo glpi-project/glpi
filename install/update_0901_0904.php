@@ -46,8 +46,8 @@ function update0901to0904() {
    $ADDTODISPLAYPREF = array();
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(__('Update to %s'), '0.90.2'));
-   $migration->setVersion('0.90.2');
+   $migration->displayTitle(sprintf(__('Update to %s'), '0.90.4'));
+   $migration->setVersion('0.90.4');
 
 
    $backup_tables = false;
