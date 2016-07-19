@@ -450,6 +450,7 @@ class Html {
    static function redirect($dest) {
 
       $toadd = '';
+      $dest = addslashes($dest);
       if (!strpos($dest,"?")) {
          $toadd = '?tokonq='.Toolbox::getRandomString(5);
       }

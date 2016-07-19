@@ -95,7 +95,6 @@ class Search {
       $data = self::prepareDatasForSearch($itemtype, $params);
       self::constructSQL($data);
       self::constructDatas($data);
-//       Html::printCleanArray($data);
       self::displayDatas($data);
    }
 
@@ -114,7 +113,6 @@ class Search {
 
       $data = self::prepareDatasForSearch($itemtype, $params, $forcedisplay);
       self::constructSQL($data);
-
       self::constructDatas($data);
 
       return $data;
@@ -154,7 +152,27 @@ class Search {
       $p['massiveactionparams'] = array();
 
       foreach ($params as $key => $val) {
-         $p[$key] = $val;
+         switch ($key) {
+            case 'order':
+               if (in_array($val, array('ASC', 'DESC'))) {
+                  $p[$key] = $val;
+               }
+               break;
+            case 'sort':
+               $p[$key] = (int)$val;
+               if ($p[$key] <= 0) {
+                  $p[$key] = 1;
+               }
+               break;
+            case 'is_deleted':
+               if ($val == 1) {
+                  $p[$key] = '1';
+               }
+               break;
+            default:
+               $p[$key] = $val;
+               break;
+         }
       }
 
       // Set display type for export if define
@@ -570,7 +588,9 @@ class Search {
                // b - ADD LEFT JOIN
                // Link reference tables
                if (!in_array(getTableForItemType($metacriteria['itemtype']),
-                                                 $already_link_tables2)) {
+                                                 $already_link_tables2)
+                   && !in_array(getTableForItemType($metacriteria['itemtype']),
+                                                    $already_link_tables)) {
                   $FROM .= self::addMetaLeftJoin($data['itemtype'], $metacriteria['itemtype'],
                                                  $already_link_tables2,
                                                  (($metacriteria['value'] == "NULL")
@@ -1724,7 +1744,8 @@ class Search {
 
       switch (static::getMetaReferenceItemtype($itemtype)) {
          case 'Computer' :
-            $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer', 'Software');
+            $linked = array('Monitor', 'Peripheral', 'Phone', 'Printer',
+                            'Software', 'User', 'Group', 'Budget');
             break;
 
          case 'Ticket' :
@@ -1744,7 +1765,7 @@ class Search {
          case "Peripheral" :
          case "Software" :
          case "Phone" :
-            $linked = array('Computer');
+            $linked = array('Computer', 'User', 'Group', 'Budget');
             break;
       }
       return $linked;
@@ -2234,6 +2255,7 @@ class Search {
       $table       = $searchopt[$ID]["table"];
       $field       = $searchopt[$ID]["field"];
       $addtable    = "";
+      $addtable2   = "";
       $NAME        = "ITEM";
       $complexjoin = '';
 
@@ -2256,7 +2278,8 @@ class Search {
       if ($meta) {
 //          $NAME = "META";
          if (getTableForItemType($meta_type)!=$table) {
-            $addtable .= "_".$meta_type;
+            $addtable  .= "_".$meta_type;
+            $addtable2 .= "_".$meta_type;
          }
       }
 
@@ -2337,21 +2360,21 @@ class Search {
             break;
 
          case "glpi_softwarelicenses.number" :
-            return " FLOOR(SUM(`$table$addtable`.`$field`)
-                           * COUNT(DISTINCT `$table$addtable`.`id`)
-                           / COUNT(`$table$addtable`.`id`)) AS `".$NAME."_".$num."`,
-                     MIN(`$table$addtable`.`$field`) AS `".$NAME."_".$num."_min`,
+            return " FLOOR(SUM(`$table$addtable2`.`$field`)
+                           * COUNT(DISTINCT `$table$addtable2`.`id`)
+                           / COUNT(`$table$addtable2`.`id`)) AS `".$NAME."_".$num."`,
+                     MIN(`$table$addtable2`.`$field`) AS `".$NAME."_".$num."_min`,
                       $ADDITONALFIELDS";
 
          case "glpi_profiles.name" :
             if (($itemtype == 'User')
                 && ($ID == 20)) {
                return " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '".self::LONGSEP."') AS `".$NAME."_$num`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`entities_id` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`entities_id` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_entities_id`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_is_recursive`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`is_dynamic` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_is_dynamic`,
                         $ADDITONALFIELDS";
             }
@@ -2362,11 +2385,11 @@ class Search {
                 && ($ID == 80)) {
                return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_$num`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`profiles_id` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`profiles_id` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_profiles_id`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`is_recursive` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_recursive` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_is_recursive`,
-                        GROUP_CONCAT(`glpi_profiles_users`.`is_dynamic` SEPARATOR '".self::LONGSEP."')
+                        GROUP_CONCAT(`glpi_profiles_users$addtable2`.`is_dynamic` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_is_dynamic`,
                         $ADDITONALFIELDS";
             }
@@ -2388,8 +2411,8 @@ class Search {
          case "glpi_softwareversions.name" :
             if ($meta) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`, '".self::SHORTSEP."',
-                                                     `$table$addtable`.`id`) SEPARATOR '".self::LONGSEP."')
+                                                     `$table$addtable2`.`$field`, '".self::SHORTSEP."',
+                                                     `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."`,
                         $ADDITONALFIELDS";
             }
@@ -2401,8 +2424,8 @@ class Search {
          case "glpi_softwareversions.comment" :
             if ($meta) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`,'".self::SHORTSEP."',
-                                                     `$table$addtable`.`id`) SEPARATOR '".self::LONGSEP."')
+                                                     `$table$addtable2`.`$field`,'".self::SHORTSEP."',
+                                                     `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."`,
                         $ADDITONALFIELDS";
             }
@@ -2416,8 +2439,8 @@ class Search {
             if ($meta && ($meta_type == 'Software')) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `glpi_softwareversions$addtable`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`, '".self::SHORTSEP."',
-                                                     `$table$addtable`.`id`) SEPARATOR '".self::LONGSEP."')
+                                                     `$table$addtable2`.`$field`, '".self::SHORTSEP."',
+                                                     `$table$addtable2`.`id`) SEPARATOR '".self::LONGSEP."')
                                      AS `".$NAME."_".$num."`,
                         $ADDITONALFIELDS";
             } else if ($itemtype == 'Software') {
@@ -3761,6 +3784,27 @@ class Search {
          $LINK = " LEFT JOIN ";
       }
 
+      $from_table = getTableForItemType($from_type);
+      $to_table   = getTableForItemType($to_type);
+      $to_fk      = getForeignKeyFieldForTable($to_table);
+
+      // Generic metacriteria
+      switch ($to_type) {
+         case 'User' :
+         case 'Group' :
+            array_push($already_link_tables2,getTableForItemType($to_type));
+            return "$LINK `$to_table`
+                        ON (`$from_table`.`$to_fk` = `$to_table`.`id`) ";
+         case 'Budget' :
+            array_push($already_link_tables2,getTableForItemType($to_type));
+            return "$LINK `glpi_infocoms`
+                        ON (`$from_table`.`id` = `glpi_infocoms`.`items_id`
+                            AND `glpi_infocoms`.`itemtype` = '$from_type')
+                    $LINK `$to_table`
+                        ON (`glpi_infocoms`.`$to_fk` = `$to_table`.`id`) ";
+      }
+
+      // specific metacriteria
       switch (static::getMetaReferenceItemtype($from_type)) {
          case 'Ticket' :
          case 'Problem' :
@@ -3769,12 +3813,11 @@ class Search {
             } else if ($from_type == 'Problem') {
                $table = 'problems';
             }
-            $totable = getTableForItemType($to_type);
-            array_push($already_link_tables2,$totable);
+            array_push($already_link_tables2,$to_table);
             return " $LINK `glpi_items_".$table."` AS glpi_items_".$table."_to_$to_type
                         ON (`glpi_".$table."`.`id` = `glpi_items_".$table."_to_$to_type`.`".$table."_id`)
-                     $LINK `$totable`
-                        ON (`$totable`.`id` = `glpi_items_".$table."_to_$to_type`.`items_id`
+                     $LINK `$to_table`
+                        ON (`$to_table`.`id` = `glpi_items_".$table."_to_$to_type`.`items_id`
                      AND `glpi_items_".$table."_to_$to_type`.`itemtype` = '$to_type')";
 
          case 'Computer' :

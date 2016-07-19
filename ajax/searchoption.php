@@ -50,6 +50,12 @@ if (isset($_POST["itemtype"])
     && isset($_POST["field"])
     && isset($_POST["num"]) ) {
 
+   if (!is_subclass_of($_POST['itemtype'], 'CommonDBTM')) {
+      throw new \RuntimeException('Invalid itemtype provided!');
+   }
+
+   $_POST['num'] = (int)$_POST['num'];
+
    if (isset($_POST['meta']) && $_POST['meta']) {
       $fieldname = 'metacriteria';
    } else {

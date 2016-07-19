@@ -6288,11 +6288,14 @@ class Ticket extends CommonITILObject {
          $options = array( 'parent' => $this,
                            'rand' => $rand
                            ) ;
-         $obj = new $item['type'] ;
-         $obj->fields = $item['item'] ;
-         Plugin::doHook('pre_show_item', array('item' => $obj, 'options' => &$options));
+         if( $obj = getItemForItemtype($item['type']) ){
+            $obj->fields = $item['item'] ;
+         } else {
+            $obj = $item ;
+         }
+         Plugin::doHook('pre_show_item', array('item' => &$obj, 'options' => &$options));
 
-         $item_i = $obj->fields;
+         $item_i = $item['item'];
 
          $date = "";
          if (isset($item_i['date'])) {

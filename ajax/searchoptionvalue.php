@@ -107,6 +107,11 @@ if (isset($_POST['searchtype'])) {
                case "glpi_ticketvalidations.status" :
                   $options2['all'] = true;
                   break;
+
+
+               case "glpi_users.name" :
+                  $options2['right'] = 'all';
+                  break;
             }
 
             // Standard datatype usage

@@ -322,14 +322,12 @@ switch ($current_version) {
       include_once("../install/update_090_0901.php");
       update090to0901();
 
-    case "0.90.1" :
-      include_once("../install/update_0901_0902.php");
-      update0901to0902();
-
+   case "0.90.1" :
    case "0.90.2" :
    case "0.90.3" :
-      include_once("../install/update_0903_91.php");
-      update0902to091();
+   case "0.90.4" :
+      include_once("../install/update_0901_91.php");
+      update0901to091();
 
    /* remember to also change --force below for last version */
 
