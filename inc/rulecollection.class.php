@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -1130,8 +1130,7 @@ class RuleCollection extends CommonDBTM {
 
                      //pass root entity and empty array (N/A value)
                      if (($action['field'] == "entities_id")
-                         && (($action['value'] == 0)
-                             || ($action['value'] == array()))) {
+                         && (empty($action['value']))) {
                         continue;
                      }
 
@@ -1140,7 +1139,7 @@ class RuleCollection extends CommonDBTM {
                      $itemtype = getItemTypeForTable($available_actions[$act]['table']);
                      $item     = new $itemtype();
                      if ($item instanceof CommonTreeDropdown) {
-                        $found = $item->find("`completename` = '".$action['value']."'");
+                        $found = $item->find("`completename` = '".str_replace("&amp;gt;", ">", $action['value'])."'");
                      } else {
                         $found = $item->find("`name` = '".$action['value']."'");
                      }
