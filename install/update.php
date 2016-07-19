@@ -787,11 +787,11 @@ function updateDbUpTo031() {
          update090to0901();
 
       case "0.90.1" :
-         include("update_0901_0902.php");
-         update0901to0902();
-
       case "0.90.2" :
       case "0.90.3" :
+         include("update_0901_0904.php");
+         update0901to0902();
+
       case "0.90.4" :
          break;
 
