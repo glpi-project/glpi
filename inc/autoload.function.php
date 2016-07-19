@@ -284,20 +284,7 @@ function glpi_autoload($classname) {
 
    $dir = GLPI_ROOT . "/inc/";
 
-   if (strstr($classname, '\\')) {
-      $ns = explode('\\', $classname);
-      if ($ns[0] == 'Glpi') {
-         /* Glpi\Event => /inc/events.class.php */
-         unset($ns[0]);
-
-      } else if (count($ns) > 2 && $ns[0] == 'Plugin') {
-         /* Plugin\Foo\Bar => /plugins/foo/inc/bar.class.php */
-         $dir = GLPI_ROOT . "/plugins/".strtolower($ns[1])."/inc/";
-         unset($ns[0], $ns[1]);
-      }
-      $item = strtolower(implode('/', $ns));
-
-   } else if ($plug = isPluginItemType($classname)) {
+   if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
       $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
       $item     = strtolower($plug['class']);

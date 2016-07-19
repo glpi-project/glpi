@@ -791,20 +791,20 @@ class Auth extends CommonGLPI {
          if ($this->auth_succeded) {
             if (GLPI_DEMO_MODE) {
                // not translation in GLPI_DEMO_MODE
-               Glpi\Event::log(-1, "system", 3, "login", $login_name." log in from ".$ip);
+               Event::log(-1, "system", 3, "login", $login_name." log in from ".$ip);
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
-               Glpi\Event::log(-1, "system", 3, "login", sprintf(__('%1$s log in from IP %2$s'),
+               Event::log(-1, "system", 3, "login", sprintf(__('%1$s log in from IP %2$s'),
                                                             $login_name, $ip));
             }
 
          } else {
             if (GLPI_DEMO_MODE) {
-               Glpi\Event::log(-1, "system", 3, "login", "login",
+               Event::log(-1, "system", 3, "login", "login",
                           "Connection failed for " . $login_name . " ($ip)");
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
-               Glpi\Event::log(-1, "system", 3, "login", sprintf(__('Failed login for %1$s from IP %2$s'),
+               Event::log(-1, "system", 3, "login", sprintf(__('Failed login for %1$s from IP %2$s'),
                                                             $login_name, $ip));
             }
          }

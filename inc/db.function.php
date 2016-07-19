@@ -129,7 +129,6 @@ function getItemTypeForTable($table) {
       if (preg_match('/^plugin_([a-z0-9]+)_/', $table, $matches)) {
          $table  = preg_replace('/^plugin_[a-z0-9]+_/', '', $table);
          $prefix = "Plugin".Toolbox::ucfirst($matches[1]);
-         $pref2  = "Plugin\\".Toolbox::ucfirst($matches[1]).'\\';
       }
 
       if (strstr($table,'_')) {
@@ -139,15 +138,14 @@ function getItemTypeForTable($table) {
             $split[$key] = Toolbox::ucfirst(getSingular($part));
          }
          $table = implode('_', $split);
-         $tab2  = implode('\\', $split);
 
       } else {
          $table = Toolbox::ucfirst(getSingular($table));
-         $tab2  = $table;
       }
 
+      $itemtype = $prefix.$table;
       // Get real existence of itemtype
-      if (($item = getItemForItemtype($prefix.$table)) || ($item = getItemForItemtype($pref2.$tab2))) {
+      if (($item = getItemForItemtype($itemtype))) {
          $itemtype                                   = get_class($item);
          $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
          $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
@@ -177,25 +175,12 @@ function getTableForItemType($itemtype) {
    } else {
       $prefix = "glpi_";
 
-      if (strstr($itemtype, '\\')) {
-         $ns = explode('\\', $itemtype);
-         if ($ns[0] == 'Glpi') {
-            /* Glpi\Event => glpi_events */
-            unset($ns[0]);
-         } else if (count($ns) > 2 && $ns[0] == 'Plugin') {
-            /* Plugin\Foo\Bar => glpi_plugin_foo_bars */
-            $prefix = "glpi_plugin_".strtolower($ns[1])."_";
-            unset($ns[0], $ns[1]);
-         }
-         $table = strtolower(implode('_', $ns));
-
-      } else if ($plug = isPluginItemType($itemtype)) {
+      if ($plug = isPluginItemType($itemtype)) {
          /* PluginFooBar => glpi_plugin_foor_bars */
          $prefix .= "plugin_".strtolower($plug['plugin'])."_";
          $table   = strtolower($plug['class']);
 
       } else {
-         /* User => glpi_users */
          $table = strtolower($itemtype);
       }
 

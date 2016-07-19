@@ -35,12 +35,6 @@
 * @brief
 */
 
-namespace Glpi;
-use \Session;
-use \Html;
-use \Ajax;
-use \Toolbox;
-
 
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
@@ -49,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Event Class
 **/
-class Event extends \CommonDBTM {
+class Event extends CommonDBTM {
 
    static $rightname = 'logs';
 
@@ -437,9 +431,4 @@ class Event extends \CommonDBTM {
               '<span class="b">'.$nb_login.'</span>', $date);
     }
 
-}
-
-// Compatibility - to be dropped later
-if (!class_exists('Event', false)) {
-   class_alias('Glpi\\Event', 'Event');
 }

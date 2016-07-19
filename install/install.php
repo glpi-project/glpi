@@ -22,7 +22,7 @@
 
  GLPI is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See thease_url_api
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
  You should have received a copy of the GNU General Public License
@@ -469,7 +469,7 @@ function step7() {
              WHERE `context` = 'core'
                    AND `name`    = 'url_base_api'";
    $DB->query($query);
-   
+
    echo "<h2>".__('The installation is finished')."</h2>";
    echo "<p>".__('Default logins / passwords are:')."</p>";
    echo "<p><ul><li> ".__('glpi/glpi for the administrator account')."</li>";
