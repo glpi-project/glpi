@@ -152,7 +152,27 @@ class Search {
       $p['massiveactionparams'] = array();
 
       foreach ($params as $key => $val) {
-         $p[$key] = $val;
+         switch ($key) {
+            case 'order':
+               if (in_array($val, array('ASC', 'DESC'))) {
+                  $p[$key] = $val;
+               }
+               break;
+            case 'sort':
+               $p[$key] = (int)$val;
+               if ($p[$key] <= 0) {
+                  $p[$key] = 1;
+               }
+               break;
+            case 'is_deleted':
+               if ($val == 1) {
+                  $p[$key] = '1';
+               }
+               break;
+            default:
+               $p[$key] = $val;
+               break;
+         }
       }
 
       // Set display type for export if define

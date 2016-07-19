@@ -58,8 +58,8 @@ if (!isset($_POST['page'])) {
    $_POST['page_limit'] = $CFG_GLPI['dropdown_max'];
 }
 
-$start = ($_POST['page']-1)*$_POST['page_limit'];
-$limit = $_POST['page_limit'];
+$start = intval(($_POST['page']-1)*$_POST['page_limit']);
+$limit = intval($_POST['page_limit']);
 
 $LIMIT = "LIMIT $start,$limit";
 
