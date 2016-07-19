@@ -50,16 +50,16 @@ if (isset($_POST["rubdoc"])) {
 
    // Clean used array
    if (isset($_POST['used']) && is_array($_POST['used']) && (count($_POST['used']) > 0)) {
-      $used = '';
-      foreach ($_POST['used'] as $used) {
-         if ($used !== '') {
-            $used .= ', ';
+      $used_qry = '';
+      foreach ($_POST['used'] as $current_used) {
+         if ($used_qry !== '') {
+            $used_qry .= ', ';
          }
-         $used .= (int)$used;
+         $used_qry .= (int)$current_used;
       }
       $query = "SELECT `id`
                 FROM `glpi_documents`
-                WHERE `id` IN (".$used.")
+                WHERE `id` IN (".$used_qry.")
                       AND `documentcategories_id` = '".(int)$_POST["rubdoc"]."'";
 
       foreach ($DB->request($query) AS $data) {
