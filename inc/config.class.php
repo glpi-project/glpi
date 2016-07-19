@@ -71,6 +71,11 @@ class Config extends CommonDBTM {
       if (static::canView()) {
          $menu['title']   = _x('setup', 'General');
          $menu['page']    = '/front/config.form.php';
+
+         $menu['options']['apiclient']['title']           = APIClient::getTypeName(Session::getPluralNumber());
+         $menu['options']['apiclient']['page']            = '/front/config.form.php?forcetab=Config$7';
+         $menu['options']['apiclient']['links']['search'] = '/front/config.form.php?forcetab=Config$7';
+         $menu['options']['apiclient']['links']['add']    = '/front/apiclient.form.php';
       }
       if (count($menu)) {
          return $menu;
@@ -673,6 +678,87 @@ class Config extends CommonDBTM {
 
 
    /**
+    * Print the config form for External API
+    *
+    * @since 9.1
+    * @return Nothing (display)
+   **/
+   function showFormAPI() {
+      global $DB, $CFG_GLPI;
+
+      if (!self::canView()) {
+         return false;
+      }
+
+      $canedit = Config::canUpdate();
+      if ($canedit) {
+         echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
+      }
+      echo "<div class='center spaced' id='tabsbody'>";
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr><th colspan='4'>" . __('API') . "</th></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('URL of the API') . "</td>";
+      echo "<td colspan='3'><input type='text' name='url_base_api' size='80' value='".$CFG_GLPI["url_base_api"]."'></td>";
+      echo "</tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __("Enable Rest API") . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("enable_api", $CFG_GLPI["enable_api"]);
+      echo "</td>";
+      if ($CFG_GLPI["enable_api"]) {
+         echo "<td colspan='2'>";
+         echo "<a href='".APIRest::$api_url."'>".__("API inline Documentation")."</a>";
+         echo "</td>";
+      }
+      echo "</tr>";
+
+      echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>";
+      echo __("Enable login with credentials")."&nbsp;";
+      Html::showToolTip(__("Allow to login to api and get a session token with user credentials"));
+      echo "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("enable_api_login_credentials", $CFG_GLPI["enable_api_login_credentials"]);
+      echo "</td>";
+      echo "<td>";
+      echo __("Enable login with external token")."&nbsp;";
+      Html::showToolTip(__("Allow to login to api and get a session token with user external token. See Remote access key in user Settings tab "));
+      echo "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("enable_api_login_external_token", $CFG_GLPI["enable_api_login_external_token"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
+      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+      echo "<br><br><br>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan='4'>";
+      echo "<hr>";
+      $buttons["apiclient.form.php"] = __('Add API client');
+      $title                    = "";
+      Html::displayTitle("",
+                         self::getTypeName(Session::getPluralNumber()),
+                         "",
+                         $buttons);
+      Search::show("APIClient");
+      echo "</td>";
+      echo "</tr>";
+
+
+      echo "</table></div>";
+      Html::closeForm();
+   }
+
+
+   /**
     * Print the config form for connections
     *
     * @return Nothing (display)
@@ -1149,14 +1235,16 @@ class Config extends CommonDBTM {
       if (array_key_exists('personal_token', $data)) {
          echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access key') ."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . __('Remote access key');
+         echo "<tr class='tab_bg_1'><td colspan='2'>";
          if (!empty($data["personal_token"])) {
             //TRANS: %s is the generation date
             echo "<br>".sprintf(__('generated on %s'),
                                 Html::convDateTime($data["personal_token_date"]));
          }
 
-         echo "</td><td colspan='3'>";
+         echo "</td><td>";
+         echo $data["personal_token"];
+         echo "</td><td>";
          echo "<input type='checkbox' name='_reset_personal_token'>&nbsp;".__('Regenerate');
          echo "</td></tr>";
       }
@@ -1781,6 +1869,9 @@ class Config extends CommonDBTM {
       // sabre/vobject
       echo "sabre/vobject in (".self::getLibraryDir("Sabre\VObject\Component").")\n";
 
+      // vcard
+      echo "guzzlehttp/guzzle in (".self::getLibraryDir("JeroenDesloovere\VCard\VCard").")\n";
+
       echo "\n</pre></td></tr>";
    }
 
@@ -1856,6 +1947,11 @@ class Config extends CommonDBTM {
          $globaldir  = Html::cleanParametersURL($_SERVER['REQUEST_URI']);
          $globaldir  = preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$globaldir);
 
+         // api exception
+         if (strpos($globaldir, 'api/') !== false) {
+            $globaldir = preg_replace("/(.*\/)api\/.*/", "$1", $globaldir);
+         }
+
          $CFG_GLPI["root_doc"] = str_replace($glpidir,"",$globaldir);
          $CFG_GLPI["root_doc"] = preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
          // urldecode for space redirect to encoded URL : change entity
@@ -1910,6 +2006,7 @@ class Config extends CommonDBTM {
             if (Config::canUpdate()) {
                $tabs[5] = __('System');
                $tabs[7] = __('Performance');
+               $tabs[8] = __('API');
             }
 
             if (DBConnection::isDBSlaveActive()
@@ -1965,12 +2062,16 @@ class Config extends CommonDBTM {
                $item->showSystemInformations();
                break;
 
+            case 6 :
+               $item->showFormDBSlave();
+               break;
+
             case 7 :
                $item->showPerformanceInformations();
                break;
 
-            case 6 :
-               $item->showFormDBSlave();
+            case 8 :
+               $item->showFormAPI();
                break;
 
          }

@@ -42,6 +42,7 @@
 function update0901to91() {
    global $DB, $migration, $CFG_GLPI;
 
+   $current_config   = Config::getConfigurationValues('core');
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
@@ -373,6 +374,37 @@ function update0901to91() {
 
    /************** New Planning with fullcalendar.io *************/
    $migration->addField("glpi_users", "plannings", "text");
+
+
+   /************** API Rest *************/
+   Config::setConfigurationValues('core', array('enable_api'                      => 0));
+   Config::setConfigurationValues('core', array('enable_api_login_credentials'    => 0));
+   Config::setConfigurationValues('core', array('enable_api_login_external_token' => 1));
+   Config::setConfigurationValues('core', array('url_base_api' => trim($current_config['url_base'], "/")."/api"));
+   if (!TableExists('glpi_apiclients')) {
+      $query = "CREATE TABLE `glpi_apiclients` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `entities_id` INT NOT NULL DEFAULT '0',
+                  `is_recursive` TINYINT(1) NOT NULL DEFAULT '0',
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `date_mod` DATETIME DEFAULT NULL,
+                  `is_active` TINYINT(1) NOT NULL DEFAULT '0',
+                  `ipv4_range_start` BIGINT NULL ,
+                  `ipv4_range_end` BIGINT NULL ,
+                  `ipv6` VARCHAR( 255 ) NULL,
+                  `app_token` VARCHAR( 255 ) NULL,
+                  `app_token_date` DATETIME DEFAULT NULL,
+                  `dolog_method` TINYINT NOT NULL DEFAULT '0',
+                  `comment` TEXT NULL ,
+                  PRIMARY KEY (`id`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `is_active` (`is_active`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.1 add table glpi_apiclients");
+      $query = "INSERT INTO `glpi_apiclients`
+                  VALUES (1, 1, 1, 'full access', NOW(), 1, NULL, NULL, NULL, '', '', 0, NULL);";
+      $DB->queryOrDie($query, "9.1 insert first line into table glpi_apiclients");
+   }
 
 
    /************** Date mod/creation for itemtypes *************/

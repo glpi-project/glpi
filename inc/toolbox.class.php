@@ -1520,11 +1520,25 @@ class Toolbox {
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
-      if ($plug = isPluginItemType($itemtype)) {
+      if (strstr($itemtype, '\\')) {
+         $ns = explode('\\', $itemtype);
+         if ($ns[0] == 'Glpi') {
+            /* Glpi\Event => /front/events */
+            unset($ns[0]);
+         } else if (count($ns) > 2 && $ns[0] == 'Plugin') {
+            /* Plugin\Foo\Bar => /plugins/foo/front/bar */
+            $dir .= "/plugins/".strtolower($ns[1]);
+            unset($ns[0], $ns[1]);
+         }
+         $item = strtolower(implode('/', $ns));
+
+      } else if ($plug = isPluginItemType($itemtype)) {
+         /* PluginFooBar => /plugins/foo/front/bar */
          $dir .= "/plugins/".strtolower($plug['plugin']);
          $item = strtolower($plug['class']);
 
       } else { // Standard case
+         /* User => /front/user */
          $item = strtolower($itemtype);
       }
 
@@ -1545,7 +1559,19 @@ class Toolbox {
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
-      if ($plug = isPluginItemType($itemtype)) {
+      if (strstr($itemtype, '\\')) {
+         $ns = explode('\\', $itemtype);
+         if ($ns[0] == 'Glpi') {
+            /* Glpi\Event => /front/events */
+            unset($ns[0]);
+         } else if (count($ns) > 2 && $ns[0] == 'Plugin') {
+            /* Plugin\Foo\Bar => /plugins/foo/front/bar */
+            $dir .= "/plugins/".strtolower($ns[1]);
+            unset($ns[0], $ns[1]);
+         }
+         $item = strtolower(implode('/', $ns));
+
+      } else if ($plug = isPluginItemType($itemtype)) {
          $dir .=  "/plugins/".strtolower($plug['plugin']);
          $item = strtolower($plug['class']);
 

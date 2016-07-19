@@ -3633,3 +3633,90 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
       margin-bottom: 10px;
    }
 }
+
+/* ################--------------- Documentation  ---------------#################### */
+
+.documentation {
+   background-color: white;
+   max-width: 700px;
+   margin: 0 auto;
+   padding: 10px 20px;
+}
+
+.documentation h1 {
+   color: #300000;
+}
+
+.documentation > ul:nth-child(2) {
+   list-style-type: disc;
+   margin-top: 40px;
+}
+
+.documentation > ul:nth-child(2) > li {
+   margin-left: 30px;
+}
+
+.documentation h2 {
+   color: #940000;
+   margin-top: 70px;
+   border-bottom: 1px solid #A87A7A;
+}
+
+.documentation li {
+   margin-left: 10px;
+   padding: 5px 0 5px 5px;
+}
+
+.documentation > ul > li > ul > li {
+   border-left: 1px solid grey;
+}
+
+.documentation > ul > li > ul > li > ul > li {
+   list-style-type: disc;
+   margin-left: 35px;
+}
+
+.documentation pre {
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   font-size: 13px;
+}
+
+.documentation dt {
+   font-weight: bold;
+   margin-top: 20px;
+}
+
+.documentation dd {
+   margin-left: 20px;
+}
+
+@media screen and (max-width: 900px) {
+   .documentation {
+      margin-left: 0 !important;
+   }
+}
+
+
+@media screen and (min-width: 900px) {
+   .documentation #summary {
+      position: fixed;
+      top: 40px;
+      left: 15px;
+      margin-top: 0;
+   }
+   .documentation #summary + ul {
+      width: 200px;
+      position: fixed;
+      top: 70px;
+      left: 10px;
+      bottom: 0;
+      overflow: auto;
+   }
+}
+
+@media screen and (max-width: 1100px) {
+   .documentation {
+      margin-left: 200px;
+   }
+}

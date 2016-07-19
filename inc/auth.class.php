@@ -70,6 +70,7 @@ class Auth extends CommonGLPI {
    const EXTERNAL = 4;
    const CAS      = 5;
    const X509     = 6;
+   const API      = 7;
    const NOT_YET_AUTHENTIFIED = 0;
 
 
@@ -489,6 +490,18 @@ class Auth extends CommonGLPI {
                }
             }
             break;
+
+         case self::API:
+            if ($CFG_GLPI['enable_api_login_external_token']) {
+               $user = new User();
+               if ($user->getFromDBbyToken($_REQUEST['user_token'])) {
+                  $this->user->fields['name'] = $user->fields['name'];
+                  return true;
+               }
+            } else {
+               $this->addToError(__("Login with external token disabled"));
+            }
+            break;
       }
       return false;
    }
@@ -751,7 +764,7 @@ class Auth extends CommonGLPI {
 
                // update user and Blank PWD to clean old database for the external auth
                $this->user->update($input);
-               if ($this->extauth) {
+               if ($this->extauth && $this->user->fields["authtype"] != self::API) {
                   $this->user->blankPassword();
                }
             } else if ($CFG_GLPI["is_users_auto_add"]) {
@@ -778,20 +791,20 @@ class Auth extends CommonGLPI {
          if ($this->auth_succeded) {
             if (GLPI_DEMO_MODE) {
                // not translation in GLPI_DEMO_MODE
-               Event::log(-1, "system", 3, "login", $login_name." log in from ".$ip);
+               Glpi\Event::log(-1, "system", 3, "login", $login_name." log in from ".$ip);
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
-               Event::log(-1, "system", 3, "login", sprintf(__('%1$s log in from IP %2$s'),
+               Glpi\Event::log(-1, "system", 3, "login", sprintf(__('%1$s log in from IP %2$s'),
                                                             $login_name, $ip));
             }
 
          } else {
             if (GLPI_DEMO_MODE) {
-               Event::log(-1, "system", 1, "login", "login",
+               Glpi\Event::log(-1, "system", 3, "login", "login",
                           "Connection failed for " . $login_name . " ($ip)");
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
-               Event::log(-1, "system", 1, "login", sprintf(__('Failed login for %1$s from IP %2$s'),
+               Glpi\Event::log(-1, "system", 3, "login", sprintf(__('Failed login for %1$s from IP %2$s'),
                                                             $login_name, $ip));
             }
          }
@@ -925,6 +938,9 @@ class Auth extends CommonGLPI {
          case self::DB_GLPI :
             return __('GLPI internal database');
 
+         case self::API: 
+            return __("API");
+
          case self::NOT_YET_AUTHENTIFIED :
             return __('Not yet authenticated');
       }
@@ -991,6 +1007,11 @@ class Auth extends CommonGLPI {
 
       // Using CAS server
       if (!empty($CFG_GLPI["cas_host"])) {
+         return true;
+      }
+
+      // Using API login with personnal token
+      if (!empty($_REQUEST['user_token'])) {
          return true;
       }
 
@@ -1062,6 +1083,11 @@ class Auth extends CommonGLPI {
          } else {
             return self::CAS;
          }
+      }
+
+      // using user token for api login
+      if (!empty($_REQUEST['user_token'])) {
+         return self::API;
       }
    return false;
    }
