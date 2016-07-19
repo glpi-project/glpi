@@ -67,7 +67,7 @@ if (isset($_POST["rubdoc"])) {
       }
    }
 
-   if (!is_subclass_of($_POST['myname'], 'CommonDBTM')) {
+   if (preg_match('/[^a-z_\-0-9]/i', $_POST['myname'])) {
       throw new \RuntimeException('Invalid name provided!');
    }
 
