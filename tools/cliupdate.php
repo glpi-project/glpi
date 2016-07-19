@@ -328,6 +328,7 @@ switch ($current_version) {
    /* !!!! remember to also change --force below for last version !!! */
 
    case "0.90.2" :
+   case "0.90.3" :
    case GLPI_VERSION :
       break;
 
