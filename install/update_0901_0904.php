@@ -35,11 +35,11 @@
 */
 
 /**
- * Update from 0.90.1 to 0.90.2
+ * Update from 0.90.1 to 0.90.4
  *
  * @return bool for success (will die for most error)
 **/
-function update0901to0902() {
+function update0901to0904() {
    global $DB, $migration;
 
    $updateresult     = true;
