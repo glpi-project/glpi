@@ -812,7 +812,6 @@ INSERT INTO `glpi_configs` VALUES ('15','core','use_anonymous_followups','0');
 INSERT INTO `glpi_configs` VALUES ('16','core','language','en_GB');
 INSERT INTO `glpi_configs` VALUES ('17','core','priority_1','#fff2f2');
 INSERT INTO `glpi_configs` VALUES ('18','core','priority_2','#ffe0e0');
-INSERT INTO `glpi_configs` VALUES ('18','core','priority_2','#ffe0e0');
 INSERT INTO `glpi_configs` VALUES ('19','core','priority_3','#ffcece');
 INSERT INTO `glpi_configs` VALUES ('20','core','priority_4','#ffbfbf');
 INSERT INTO `glpi_configs` VALUES ('21','core','priority_5','#ffadad');
@@ -5345,9 +5344,16 @@ INSERT INTO `glpi_profilerights` VALUES ('685','6','location','0');
 INSERT INTO `glpi_profilerights` VALUES ('653','7','tickettemplate','31');
 INSERT INTO `glpi_profilerights` VALUES ('654','7','ticketrecurrent','31');
 INSERT INTO `glpi_profilerights` VALUES ('655','7','ticketcost','31');
+INSERT INTO `glpi_profilerights` VALUES ('658','7','ticketvalidation','15384');
 INSERT INTO `glpi_profilerights` VALUES ('659','1','change','0');
 INSERT INTO `glpi_profilerights` VALUES ('660','2','change','1057');
-INSERT INTO `glpi_profilerights` VALUES ('658','7','ticketvalidation','15384');
+INSERT INTO `glpi_profilerights` VALUES ('750','1','license','0');
+INSERT INTO `glpi_profilerights` VALUES ('751','2','license','33');
+INSERT INTO `glpi_profilerights` VALUES ('752','3','license','127');
+INSERT INTO `glpi_profilerights` VALUES ('753','4','license','255');
+INSERT INTO `glpi_profilerights` VALUES ('754','5','license','0');
+INSERT INTO `glpi_profilerights` VALUES ('755','6','license','127');
+INSERT INTO `glpi_profilerights` VALUES ('756','7','license','127');
 
 ### Dump table glpi_profiles
 
@@ -6060,6 +6066,7 @@ CREATE TABLE `glpi_softwarelicenses` (
   `is_valid` tinyint(1) NOT NULL DEFAULT '1',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `serial` (`serial`),
