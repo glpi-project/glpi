@@ -1407,7 +1407,9 @@ class ProjectTask extends CommonDBChild {
       $html.= $users_id;
       $html.= "</a>";
 
-      $html.= "<div class='b'>".$val["status"]." % completed</div>";
+      $html.= "<div class='b'>";
+      $html.= sprintf(__('%1$s  : %2$s'), __('Percent done'), $val["status"]."%") ;
+      $html.= "</div>";
       $html.= "<div class='event-description'>".html_entity_decode($val["content"])."</div>";
       return $html;
    }
