@@ -3891,9 +3891,14 @@ class Html {
    static function initEditorSystem($name, $rand='', $display=true) {
       global $CFG_GLPI;
 
+      $language = $_SESSION['glpilanguage'];
+      if (!file_exists($CFG_GLPI['root_doc']."/lib/tiny_mce/langs/$language.js")) {
+         $language = "en_GB";
+      }
+
       Html::scriptStart();
       $js = "tinyMCE.init({
-         language: '".$_SESSION['glpilanguage']."',
+         language: '$language',
          browser_spellcheck: true,
          mode: 'exact',
          elements: '$name',
