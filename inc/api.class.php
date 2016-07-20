@@ -1911,19 +1911,6 @@ abstract class API extends CommonGLPI {
    }
 
 
-   /**
-    * Send 401 error to client
-    *
-    * @since version 9.1
-    */
-   public function messageNotDeletedError($return_error = true) {
-      $this->returnError(__("You must mark the item for deletion before actualy deleting it"),
-                         401,
-                         "ERROR_NOT_DELETED",
-                         false,
-                         $return_error);
-   }
-
 
    /**
     * Generic function to send a error message and an error code to client
