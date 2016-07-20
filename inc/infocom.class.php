@@ -1505,7 +1505,7 @@ class Infocom extends CommonDBChild {
 
       $tab[28]['table']          = 'glpi_infocoms';
       $tab[28]['field']          = 'decommission_date';
-      $tab[28]['name']           = __('Date of decommission_date');
+      $tab[28]['name']           = __('Date of decommission');
       $tab[28]['datatype']       = 'date';
       $tab[28]['forcegroupby']   = true;
 
