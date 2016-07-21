@@ -35,11 +35,11 @@
 */
 
 /**
- * Update from 0.90.1 to 9.1
+ * Update from 0.90.5 to 9.1
  *
  * @return bool for success (will die for most error)
 **/
-function update0901to91() {
+function update0905to91() {
    global $DB, $migration, $CFG_GLPI;
 
    $current_config   = Config::getConfigurationValues('core');

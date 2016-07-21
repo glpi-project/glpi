@@ -1423,7 +1423,15 @@ abstract class CommonITILObject extends CommonDBTM {
                      $input3[$key] = $val[$key_assign];
                   }
                }
-               $input3['_from_object'] = true;
+
+               //empty supplier
+               if ($input3['suppliers_id'] == 0
+                   && (!isset($input3['alternative_email'])
+                       || empty($input3['alternative_email']))) {
+                  continue;
+               }
+
+                $input3['_from_object'] = true;
                $supplieractors->add($input3);
             }
          }
