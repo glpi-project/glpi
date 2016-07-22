@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-22 09:33+0200\n"
-"PO-Revision-Date: 2016-07-22 07:34+0000\n"
+"POT-Creation-Date: 2016-07-22 09:44+0200\n"
+"PO-Revision-Date: 2016-07-22 07:45+0000\n"
 "Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/glpi/GLPI/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
@@ -3556,8 +3556,8 @@ msgid "parameter(s) login, password or user_token are missing"
 msgstr "oturum açma, parola ya da user_token parametreleri eksik"
 
 #: inc/api.class.php:171
-msgid "usage of initSession ressource with credentials is disabled"
-msgstr "initSession kaynağının kimlik doğrulama bilgileri ile kullanımı devre dışı"
+msgid "usage of initSession resource with credentials is disabled"
+msgstr ""
 
 #: inc/api.class.php:180
 msgid "parameter user_token seems invalid"
@@ -3579,13 +3579,14 @@ msgstr "app_token parametresi eksik"
 msgid "API Documentation"
 msgstr "API Belgeleri"
 
-#: inc/api.class.php:1836
-msgid "Not found"
-msgstr "Bulunamadı"
+#: inc/api.class.php:1836 inc/html.class.php:525 inc/html.class.php:3949
+#: inc/profile_user.class.php:427
+msgid "Item not found"
+msgstr "Öge bulunamadı"
 
 #: inc/api.class.php:1850
-msgid "input parameter must be an an array of objects"
-msgstr "giriş parametresi bir nesne dizisi olmalıdır"
+msgid "input parameter must be an array of objects"
+msgstr ""
 
 #: inc/api.class.php:1864
 msgid "Method Not Allowed"
@@ -3696,12 +3697,12 @@ msgid "Rest API"
 msgstr "Rest API"
 
 #: inc/apirest.class.php:277
-msgid "ressource not found or not an instance of CommonDBTM"
-msgstr "kaynak bulunamadı ya da CommonDBTM kopyası değil"
+msgid "resource not found or not an instance of CommonDBTM"
+msgstr ""
 
 #: inc/apirest.class.php:282
-msgid "missing ressource"
-msgstr "kaynak eksik"
+msgid "missing resource"
+msgstr ""
 
 #: inc/apixmlrpc.class.php:51
 msgid "XMLRPC API"
@@ -10116,11 +10117,6 @@ msgid "%1$s%2$s second"
 msgid_plural "%1$s%2$s seconds"
 msgstr[0] "%1$s%2$s saniye"
 
-#: inc/html.class.php:525 inc/html.class.php:3949
-#: inc/profile_user.class.php:427
-msgid "Item not found"
-msgstr "Öge bulunamadı"
-
 #: inc/html.class.php:997
 msgid "Progress"
 msgstr "İşlem"
@@ -13705,8 +13701,8 @@ msgid "Request source visible for tickets"
 msgstr "İstek kaynağı çağrılarda görüntülensin"
 
 #: inc/requesttype.class.php:72 inc/requesttype.class.php:118
-msgid "Request source visisble for followups"
-msgstr "İstek kaynağı izlemelerde görüntülensin"
+msgid "Request source visible for followups"
+msgstr ""
 
 #: inc/requesttype.class.php:173 inc/requesttype.class.php:186
 #: inc/requesttype.class.php:199 inc/requesttype.class.php:212

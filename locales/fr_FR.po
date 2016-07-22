@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-22 09:33+0200\n"
-"PO-Revision-Date: 2016-07-22 07:34+0000\n"
+"POT-Creation-Date: 2016-07-22 09:44+0200\n"
+"PO-Revision-Date: 2016-07-22 07:46+0000\n"
 "Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>\n"
 "Language-Team: French (France) (http://www.transifex.com/glpi/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -3620,7 +3620,7 @@ msgid "parameter(s) login, password or user_token are missing"
 msgstr "le(s) paramètre(s) login, password ou user_token sont manquants"
 
 #: inc/api.class.php:171
-msgid "usage of initSession ressource with credentials is disabled"
+msgid "usage of initSession resource with credentials is disabled"
 msgstr "l'utilisation de la ressource initSession avec les identifiants est desactivée"
 
 #: inc/api.class.php:180
@@ -3643,12 +3643,13 @@ msgstr "le paramètre app_token est manquant"
 msgid "API Documentation"
 msgstr "Documentation de l'API"
 
-#: inc/api.class.php:1836
-msgid "Not found"
-msgstr "non trouvé"
+#: inc/api.class.php:1836 inc/html.class.php:525 inc/html.class.php:3949
+#: inc/profile_user.class.php:427
+msgid "Item not found"
+msgstr "Élément introuvable"
 
 #: inc/api.class.php:1850
-msgid "input parameter must be an an array of objects"
+msgid "input parameter must be an array of objects"
 msgstr "le paramètre input doit être un tableau d'objets"
 
 #: inc/api.class.php:1864
@@ -3762,11 +3763,11 @@ msgid "Rest API"
 msgstr "API Rest"
 
 #: inc/apirest.class.php:277
-msgid "ressource not found or not an instance of CommonDBTM"
+msgid "resource not found or not an instance of CommonDBTM"
 msgstr "la ressource n'a pas été trouvée ou n'est pas une instance de CommonDBTM"
 
 #: inc/apirest.class.php:282
-msgid "missing ressource"
+msgid "missing resource"
 msgstr "ressource manquante"
 
 #: inc/apixmlrpc.class.php:51
@@ -10323,11 +10324,6 @@ msgid_plural "%1$s%2$s seconds"
 msgstr[0] "%1$s%2$s seconde"
 msgstr[1] "%1$s%2$s secondes"
 
-#: inc/html.class.php:525 inc/html.class.php:3949
-#: inc/profile_user.class.php:427
-msgid "Item not found"
-msgstr "Élément introuvable"
-
 #: inc/html.class.php:997
 msgid "Progress"
 msgstr "Progression"
@@ -13968,7 +13964,7 @@ msgid "Request source visible for tickets"
 msgstr "Source de la demande visible pour les tickets"
 
 #: inc/requesttype.class.php:72 inc/requesttype.class.php:118
-msgid "Request source visisble for followups"
+msgid "Request source visible for followups"
 msgstr "Source de la demande visible pour les suivis"
 
 #: inc/requesttype.class.php:173 inc/requesttype.class.php:186

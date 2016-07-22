@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-22 09:33+0200\n"
-"PO-Revision-Date: 2016-07-22 07:33+0000\n"
+"POT-Creation-Date: 2016-07-22 09:44+0200\n"
+"PO-Revision-Date: 2016-07-22 07:45+0000\n"
 "Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>\n"
 "Language-Team: Hungarian (Hungary) (http://www.transifex.com/glpi/GLPI/language/hu_HU/)\n"
 "MIME-Version: 1.0\n"
@@ -3609,7 +3609,7 @@ msgid "parameter(s) login, password or user_token are missing"
 msgstr "hiányzó login, jelszó vagy user_token paraméter(ek)"
 
 #: inc/api.class.php:171
-msgid "usage of initSession ressource with credentials is disabled"
+msgid "usage of initSession resource with credentials is disabled"
 msgstr ""
 
 #: inc/api.class.php:180
@@ -3632,13 +3632,14 @@ msgstr "hiányzó app_token paraméter"
 msgid "API Documentation"
 msgstr "API dokumentáció"
 
-#: inc/api.class.php:1836
-msgid "Not found"
-msgstr "Nem található"
+#: inc/api.class.php:1836 inc/html.class.php:525 inc/html.class.php:3949
+#: inc/profile_user.class.php:427
+msgid "Item not found"
+msgstr "Nem található elem"
 
 #: inc/api.class.php:1850
-msgid "input parameter must be an an array of objects"
-msgstr "a bemenő paraméternek tömbnek kell lennie"
+msgid "input parameter must be an array of objects"
+msgstr ""
 
 #: inc/api.class.php:1864
 msgid "Method Not Allowed"
@@ -3751,12 +3752,12 @@ msgid "Rest API"
 msgstr "Rest API"
 
 #: inc/apirest.class.php:277
-msgid "ressource not found or not an instance of CommonDBTM"
+msgid "resource not found or not an instance of CommonDBTM"
 msgstr ""
 
 #: inc/apirest.class.php:282
-msgid "missing ressource"
-msgstr "hiányzó erőforrás"
+msgid "missing resource"
+msgstr ""
 
 #: inc/apixmlrpc.class.php:51
 msgid "XMLRPC API"
@@ -10312,11 +10313,6 @@ msgid_plural "%1$s%2$s seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/html.class.php:525 inc/html.class.php:3949
-#: inc/profile_user.class.php:427
-msgid "Item not found"
-msgstr "Nem található elem"
-
 #: inc/html.class.php:997
 msgid "Progress"
 msgstr "Folyamatban"
@@ -13957,7 +13953,7 @@ msgid "Request source visible for tickets"
 msgstr ""
 
 #: inc/requesttype.class.php:72 inc/requesttype.class.php:118
-msgid "Request source visisble for followups"
+msgid "Request source visible for followups"
 msgstr ""
 
 #: inc/requesttype.class.php:173 inc/requesttype.class.php:186

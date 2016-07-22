@@ -20,8 +20,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-22 09:33+0200\n"
-"PO-Revision-Date: 2016-07-22 07:34+0000\n"
+"POT-Creation-Date: 2016-07-22 09:44+0200\n"
+"PO-Revision-Date: 2016-07-22 07:45+0000\n"
 "Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/glpi/GLPI/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
@@ -3620,8 +3620,8 @@ msgid "parameter(s) login, password or user_token are missing"
 msgstr "os parâmetros login, senha ou user_token estão faltando"
 
 #: inc/api.class.php:171
-msgid "usage of initSession ressource with credentials is disabled"
-msgstr "o uso do recurso InitSession com credenciais está desabilitado"
+msgid "usage of initSession resource with credentials is disabled"
+msgstr ""
 
 #: inc/api.class.php:180
 msgid "parameter user_token seems invalid"
@@ -3643,13 +3643,14 @@ msgstr "faltando o parâmetro app_token"
 msgid "API Documentation"
 msgstr "Documentação da API"
 
-#: inc/api.class.php:1836
-msgid "Not found"
-msgstr "Não localizada"
+#: inc/api.class.php:1836 inc/html.class.php:525 inc/html.class.php:3949
+#: inc/profile_user.class.php:427
+msgid "Item not found"
+msgstr "Item não encontrado"
 
 #: inc/api.class.php:1850
-msgid "input parameter must be an an array of objects"
-msgstr "o parâmetro de entrada deve ser um vetor de objetos"
+msgid "input parameter must be an array of objects"
+msgstr ""
 
 #: inc/api.class.php:1864
 msgid "Method Not Allowed"
@@ -3762,12 +3763,12 @@ msgid "Rest API"
 msgstr "API Rest"
 
 #: inc/apirest.class.php:277
-msgid "ressource not found or not an instance of CommonDBTM"
-msgstr "recurso não localizado ou não é uma instância de CommonDBTM"
+msgid "resource not found or not an instance of CommonDBTM"
+msgstr ""
 
 #: inc/apirest.class.php:282
-msgid "missing ressource"
-msgstr "faltando recurso"
+msgid "missing resource"
+msgstr ""
 
 #: inc/apixmlrpc.class.php:51
 msgid "XMLRPC API"
@@ -10323,11 +10324,6 @@ msgid_plural "%1$s%2$s seconds"
 msgstr[0] "%1$s%2$s segundo"
 msgstr[1] "%1$s%2$s segundos"
 
-#: inc/html.class.php:525 inc/html.class.php:3949
-#: inc/profile_user.class.php:427
-msgid "Item not found"
-msgstr "Item não encontrado"
-
 #: inc/html.class.php:997
 msgid "Progress"
 msgstr "Progresso"
@@ -13968,8 +13964,8 @@ msgid "Request source visible for tickets"
 msgstr "Origem da requisição visível para os chamados"
 
 #: inc/requesttype.class.php:72 inc/requesttype.class.php:118
-msgid "Request source visisble for followups"
-msgstr "Origem da requisição visível para os acompanhamentos"
+msgid "Request source visible for followups"
+msgstr ""
 
 #: inc/requesttype.class.php:173 inc/requesttype.class.php:186
 #: inc/requesttype.class.php:199 inc/requesttype.class.php:212

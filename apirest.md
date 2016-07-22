@@ -1039,7 +1039,7 @@ $ curl -X DELETE \
 ## Errors {#errors}
 
 
-### ERROR_NOT_FOUND {#ERROR_NOT_FOUND}
+### ERROR_ITEM_NOT_FOUND {#ERROR_ITEM_NOT_FOUND}
 
 The desired resource (itemtype-id) was not found in the GLPI database.
 

@@ -1833,9 +1833,9 @@ abstract class API extends CommonGLPI {
     * @since version 9.1
     */
    public function messageNotfoundError($return_error = true) {
-      $this->returnError(__("Not found"),
+      $this->returnError(__("Item not found"),
                          404,
-                         "ERROR_NOT_FOUND",
+                         "ERROR_ITEM_NOT_FOUND",
                          false,
                          $return_error);
    }
@@ -1847,7 +1847,7 @@ abstract class API extends CommonGLPI {
     * @since version 9.1
     */
    public function messageBadArrayError($return_error = true) {
-      $this->returnError(__("input parameter must be an an array of objects"),
+      $this->returnError(__("input parameter must be an array of objects"),
                          400,
                          "ERROR_BAD_ARRAY",
                          true,

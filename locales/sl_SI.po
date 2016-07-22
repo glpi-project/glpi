@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-22 09:33+0200\n"
-"PO-Revision-Date: 2016-07-22 07:33+0000\n"
+"POT-Creation-Date: 2016-07-22 09:44+0200\n"
+"PO-Revision-Date: 2016-07-22 07:45+0000\n"
 "Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>\n"
 "Language-Team: Slovenian (Slovenia) (http://www.transifex.com/glpi/GLPI/language/sl_SI/)\n"
 "MIME-Version: 1.0\n"
@@ -3715,7 +3715,7 @@ msgid "parameter(s) login, password or user_token are missing"
 msgstr ""
 
 #: inc/api.class.php:171
-msgid "usage of initSession ressource with credentials is disabled"
+msgid "usage of initSession resource with credentials is disabled"
 msgstr ""
 
 #: inc/api.class.php:180
@@ -3738,12 +3738,13 @@ msgstr ""
 msgid "API Documentation"
 msgstr ""
 
-#: inc/api.class.php:1836
-msgid "Not found"
-msgstr ""
+#: inc/api.class.php:1836 inc/html.class.php:525 inc/html.class.php:3949
+#: inc/profile_user.class.php:427
+msgid "Item not found"
+msgstr "Predmeta ni mogoče najti"
 
 #: inc/api.class.php:1850
-msgid "input parameter must be an an array of objects"
+msgid "input parameter must be an array of objects"
 msgstr ""
 
 #: inc/api.class.php:1864
@@ -3861,11 +3862,11 @@ msgid "Rest API"
 msgstr ""
 
 #: inc/apirest.class.php:277
-msgid "ressource not found or not an instance of CommonDBTM"
+msgid "resource not found or not an instance of CommonDBTM"
 msgstr ""
 
 #: inc/apirest.class.php:282
-msgid "missing ressource"
+msgid "missing resource"
 msgstr ""
 
 #: inc/apixmlrpc.class.php:51
@@ -10704,11 +10705,6 @@ msgstr[1] "%1$s%2$s sekunda"
 msgstr[2] "%1$s%2$s sekundi"
 msgstr[3] "%1$s%2$s sekunde"
 
-#: inc/html.class.php:525 inc/html.class.php:3949
-#: inc/profile_user.class.php:427
-msgid "Item not found"
-msgstr "Predmeta ni mogoče najti"
-
 #: inc/html.class.php:997
 msgid "Progress"
 msgstr "Napredek"
@@ -14461,7 +14457,7 @@ msgid "Request source visible for tickets"
 msgstr ""
 
 #: inc/requesttype.class.php:72 inc/requesttype.class.php:118
-msgid "Request source visisble for followups"
+msgid "Request source visible for followups"
 msgstr ""
 
 #: inc/requesttype.class.php:173 inc/requesttype.class.php:186
