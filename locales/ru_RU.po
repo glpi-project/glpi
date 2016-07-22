@@ -17,6 +17,7 @@
 # Mr GreyWolf, 2016
 # Nelly Mahu-Lasson <nini.lasson@orange.fr>, 2012
 # Nikolay <techobsl@yandex.ru>, 2016
+# Nikolay <techobsl@yandex.ru>, 2016
 # sayanvd <sayanvd@yandex.ru>, 2013
 # Nikolay <techobsl@yandex.ru>, 2016
 # Андрей Михайлович <ramzes1401ss3@gmail.com>, 2015
@@ -24,8 +25,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-20 11:25+0200\n"
-"PO-Revision-Date: 2016-07-20 09:25+0000\n"
+"POT-Creation-Date: 2016-07-22 09:33+0200\n"
+"PO-Revision-Date: 2016-07-22 07:34+0000\n"
 "Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>\n"
 "Language-Team: Russian (Russia) (http://www.transifex.com/glpi/GLPI/language/ru_RU/)\n"
 "MIME-Version: 1.0\n"
@@ -36,7 +37,7 @@ msgstr ""
 
 #: apirest.php:49 apixmlrpc.php:48 inc/api.class.php:75
 msgid "API disabled"
-msgstr ""
+msgstr "API отключено"
 
 #: index.php:73
 msgid "GLPI - Authentication"
@@ -60,7 +61,7 @@ msgstr "Пароль"
 #: index.php:130 ajax/dropdownMassiveActionAuthMethods.php:70
 #: ajax/dropdownMassiveActionField.php:58 inc/authldap.class.php:1125
 #: inc/authldap.class.php:2005 inc/change_ticket.class.php:150
-#: inc/commonitilobject.class.php:2545
+#: inc/commonitilobject.class.php:2553
 #: inc/computer_softwarelicense.class.php:124
 #: inc/computer_softwareversion.class.php:114
 #: inc/computer_softwareversion.class.php:126 inc/knowbaseitem.class.php:965
@@ -122,8 +123,8 @@ msgstr "Перейти на часто задаваемые вопросы (FAQ)
 #: inc/commondbtm.class.php:3069 inc/commondbtm.class.php:3141
 #: inc/commondbtm.class.php:3566 inc/commondbtm.class.php:3572
 #: inc/commonglpi.class.php:860 inc/commonitilcost.class.php:196
-#: inc/commonitilobject.class.php:1682 inc/commonitilobject.class.php:5132
-#: inc/commonitilobject.class.php:5282 inc/commonitiltask.class.php:1097
+#: inc/commonitilobject.class.php:1690 inc/commonitilobject.class.php:5140
+#: inc/commonitilobject.class.php:5290 inc/commonitiltask.class.php:1097
 #: inc/computer_softwarelicense.class.php:485
 #: inc/computer_softwareversion.class.php:461 inc/consumable.class.php:686
 #: inc/contract.class.php:384 inc/contract.class.php:392
@@ -192,8 +193,8 @@ msgstr "%1$s - Сетевая точка %2$s"
 #: inc/cartridge.class.php:734 inc/cartridgeitem.class.php:529
 #: inc/change_item.class.php:219 inc/commondbtm.class.php:3136
 #: inc/commondbtm.class.php:4298 inc/commonglpi.class.php:872
-#: inc/commonitilcost.class.php:510 inc/commonitilobject.class.php:5281
-#: inc/commonitilobject.class.php:5286 inc/commonitiltask.class.php:1140
+#: inc/commonitilcost.class.php:510 inc/commonitilobject.class.php:5289
+#: inc/commonitilobject.class.php:5294 inc/commonitiltask.class.php:1140
 #: inc/commonitiltask.class.php:1166 inc/computer.class.php:909
 #: inc/computer.class.php:1027 inc/computer_item.class.php:461
 #: inc/computer_softwarelicense.class.php:542
@@ -256,8 +257,8 @@ msgstr "%1$s (%2$s)"
 #: ajax/uemailUpdate.php:74 front/change_supplier.form.php:46
 #: front/change_user.form.php:47 front/problem_supplier.form.php:46
 #: front/problem_user.form.php:47 front/supplier_ticket.form.php:46
-#: front/ticket_user.form.php:46 inc/commonitilobject.class.php:2394
-#: inc/commonitilobject.class.php:3042 inc/commonitilobject.class.php:3235
+#: front/ticket_user.form.php:46 inc/commonitilobject.class.php:2402
+#: inc/commonitilobject.class.php:3050 inc/commonitilobject.class.php:3243
 msgid "Email followup"
 msgstr "Сопровождение по электронной почте"
 
@@ -305,9 +306,9 @@ msgstr "Сопровождение по электронной почте"
 #: inc/commondbtm.class.php:3468 inc/commondbtm.class.php:3562
 #: inc/commonglpi.class.php:1390 inc/commonglpi.class.php:1393
 #: inc/commonglpi.class.php:1396 inc/commonglpi.class.php:1399
-#: inc/commonglpi.class.php:1402 inc/commonitilobject.class.php:2402
-#: inc/commonitilobject.class.php:3243 inc/commonitilobject.class.php:3485
-#: inc/commonitilobject.class.php:5126 inc/commonitilobject.class.php:5152
+#: inc/commonglpi.class.php:1402 inc/commonitilobject.class.php:2410
+#: inc/commonitilobject.class.php:3251 inc/commonitilobject.class.php:3493
+#: inc/commonitilobject.class.php:5134 inc/commonitilobject.class.php:5160
 #: inc/commonitiltask.class.php:1034 inc/config.class.php:1324
 #: inc/config.class.php:1387 inc/contract.class.php:1048
 #: inc/contract.class.php:1125 inc/contract.class.php:1158
@@ -507,7 +508,7 @@ msgstr "%1$s: %2$s"
 #: inc/authldap.class.php:2774 inc/authldap.class.php:2776
 #: inc/authldap.class.php:2778 inc/blacklist.class.php:230
 #: inc/commonitilactor.class.php:188 inc/commonitilactor.class.php:268
-#: inc/commonitilobject.class.php:2402 inc/commonitilobject.class.php:3243
+#: inc/commonitilobject.class.php:2410 inc/commonitilobject.class.php:3251
 #: inc/contact.class.php:210 inc/contact.class.php:326
 #: inc/contact_supplier.class.php:367 inc/db.function.php:1287
 #: inc/dropdown.class.php:363 inc/dropdown.class.php:378
@@ -837,8 +838,8 @@ msgstr "Без ограничений"
 #: inc/cartridgeitem.class.php:372 inc/change_item.class.php:174
 #: inc/commondbtm.class.php:3497 inc/commondbtm.class.php:4290
 #: inc/commondevice.class.php:246 inc/commondropdown.class.php:446
-#: inc/commonitilcost.class.php:154 inc/commonitilobject.class.php:2807
-#: inc/commonitilobject.class.php:5376 inc/commontreedropdown.class.php:432
+#: inc/commonitilcost.class.php:154 inc/commonitilobject.class.php:2815
+#: inc/commonitilobject.class.php:5384 inc/commontreedropdown.class.php:432
 #: inc/commontreedropdown.class.php:632 inc/computer.class.php:859
 #: inc/computer_item.class.php:451 inc/computer_item.class.php:596
 #: inc/computer_softwarelicense.class.php:294
@@ -912,8 +913,8 @@ msgstr[3] "Организаций"
 #: ajax/ticketassigninformation.php:67 ajax/ticketassigninformation.php:68
 #: ajax/ticketassigninformation.php:89 ajax/ticketassigninformation.php:90
 #: ajax/ticketassigninformation.php:113 ajax/ticketassigninformation.php:114
-#: inc/change.class.php:492 inc/commonitilobject.class.php:3484
-#: inc/commonitilobject.class.php:3485 inc/problem.class.php:527
+#: inc/change.class.php:492 inc/commonitilobject.class.php:3492
+#: inc/commonitilobject.class.php:3493 inc/problem.class.php:527
 #: inc/ticket.class.php:2712 install/update_084_085.php:2070
 msgid "Processing"
 msgstr "В работе"
@@ -1150,7 +1151,7 @@ msgid "Size"
 msgstr "Размер"
 
 #: front/backup.php:623 front/report.contract.php:67 front/report.year.php:68
-#: inc/commonitilobject.class.php:4422 inc/commonitilobject.class.php:5372
+#: inc/commonitilobject.class.php:4430 inc/commonitilobject.class.php:5380
 #: inc/commonitiltask.class.php:571 inc/commonitiltask.class.php:704
 #: inc/commonitiltask.class.php:1266 inc/commonitiltask.class.php:1536
 #: inc/crontask.class.php:1069 inc/crontask.class.php:1126
@@ -1194,8 +1195,8 @@ msgstr "Удалить файл %s?"
 #: inc/change_ticket.class.php:298 inc/commondbrelation.class.php:1110
 #: inc/commondbtm.class.php:2112 inc/commondbtm.class.php:2122
 #: inc/commondbtm.class.php:4317 inc/commondbtm.class.php:4402
-#: inc/commonitilobject.class.php:2334 inc/commonitilobject.class.php:2417
-#: inc/commonitilobject.class.php:3261
+#: inc/commonitilobject.class.php:2342 inc/commonitilobject.class.php:2425
+#: inc/commonitilobject.class.php:3269
 #: inc/computer_softwarelicense.class.php:464
 #: inc/computer_softwareversion.class.php:487
 #: inc/computer_softwareversion.class.php:782
@@ -1615,8 +1616,8 @@ msgstr "Задача %s выполнена"
 #: inc/authldap.class.php:928 inc/authldap.class.php:2773
 #: inc/authldap.class.php:2775 inc/authldap.class.php:2777
 #: inc/commonglpi.class.php:500 inc/commonitilcost.class.php:519
-#: inc/commonitilobject.class.php:5185 inc/commonitilobject.class.php:5205
-#: inc/commonitilobject.class.php:5294 inc/commonitilobject.class.php:5340
+#: inc/commonitilobject.class.php:5193 inc/commonitilobject.class.php:5213
+#: inc/commonitilobject.class.php:5302 inc/commonitilobject.class.php:5348
 #: inc/contact_supplier.class.php:390 inc/contractcost.class.php:381
 #: inc/contract_item.class.php:110 inc/contract_item.class.php:495
 #: inc/crontask.class.php:800 inc/crontask.class.php:808
@@ -2033,10 +2034,10 @@ msgstr[3] "Версий"
 #: front/dictionnary.php:131
 msgid "Architecture"
 msgid_plural "Architectures"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Архитиктура"
+msgstr[1] "Архитиктура"
+msgstr[2] "Архитиктуры"
+msgstr[3] "Архитиктуры"
 
 #: front/display.options.php:43 inc/commonglpi.class.php:1301
 #: inc/commonglpi.class.php:1356 inc/commonglpi.class.php:1357
@@ -2182,7 +2183,7 @@ msgid "Hardware type"
 msgstr "Тип аппаратного обеспечения"
 
 #: front/find_num.php:97 front/item_ticket.form.php:54
-#: inc/commonitilobject.class.php:5383 inc/item_ticket.class.php:1221
+#: inc/commonitilobject.class.php:5391 inc/item_ticket.class.php:1221
 #: inc/notificationtargetticket.class.php:712
 #: inc/notificationtargetticket.class.php:715
 #: inc/notificationtargetticket.class.php:718
@@ -2205,7 +2206,7 @@ msgstr[3] "Связанные элементы"
 #: inc/cartridge.class.php:962 inc/cartridgeitem.class.php:283
 #: inc/commondbrelation.class.php:283 inc/commondbtm.class.php:3495
 #: inc/commondropdown.class.php:434 inc/commonitilcost.class.php:108
-#: inc/commonitilobject.class.php:2683 inc/commonitilobject.class.php:5126
+#: inc/commonitilobject.class.php:2691 inc/commonitilobject.class.php:5134
 #: inc/commontreedropdown.class.php:607 inc/computerantivirus.class.php:139
 #: inc/computer.class.php:712 inc/computer_softwarelicense.class.php:86
 #: inc/consumable.class.php:540 inc/consumableitem.class.php:244
@@ -2987,7 +2988,7 @@ msgid "Others authentication methods"
 msgstr "Другие способы аутентификации"
 
 #: front/setup.notification.php:43 front/setup.notification.php:67
-#: front/setup.notification.php:80 inc/commonitilobject.class.php:3038
+#: front/setup.notification.php:80 inc/commonitilobject.class.php:3046
 #: inc/entity.class.php:317 inc/event.class.php:162
 #: inc/notification.class.php:145 inc/notification.class.php:161
 #: inc/notification.class.php:163 inc/notificationevent.class.php:220
@@ -3085,7 +3086,7 @@ msgstr "%1$s обновлено версий %2$s"
 
 #: front/stat.global.php:40 front/stat.graph.php:40 front/stat.item.php:40
 #: front/stat.location.php:40 front/stat.php:40 front/stat.tracking.php:40
-#: inc/change.class.php:204 inc/commonitilobject.class.php:2859
+#: inc/change.class.php:204 inc/commonitilobject.class.php:2867
 #: inc/crontask.class.php:932 inc/crontasklog.class.php:83
 #: inc/problem.class.php:183 inc/problem.class.php:194
 #: inc/profile.class.php:1080 inc/profile.class.php:1948 inc/stat.class.php:56
@@ -3126,12 +3127,12 @@ msgid "Number"
 msgstr "Количество"
 
 #: front/stat.global.php:149 front/stat.graph.php:390
-#: inc/commonitilobject.class.php:4470 inc/stat.class.php:482
+#: inc/commonitilobject.class.php:4478 inc/stat.class.php:482
 msgid "Closure"
 msgstr "Закрыто"
 
 #: front/stat.global.php:150 front/stat.graph.php:391
-#: inc/commonitilobject.class.php:4459 inc/stat.class.php:481
+#: inc/commonitilobject.class.php:4467 inc/stat.class.php:481
 msgid "Resolution"
 msgstr "Pешение"
 
@@ -3140,7 +3141,7 @@ msgid "Real duration"
 msgstr "Pеальная продолжительность"
 
 #: front/stat.global.php:155 front/stat.graph.php:396
-#: inc/commonitilobject.class.php:4448 inc/stat.class.php:479
+#: inc/commonitilobject.class.php:4456 inc/stat.class.php:479
 msgid "Take into account"
 msgstr "Учет занял"
 
@@ -3201,7 +3202,7 @@ msgid "Satisfaction"
 msgstr "Удовлетворенность"
 
 #: front/stat.graph.php:86 front/stat.graph.php:94
-#: inc/commonitilobject.class.php:2991 inc/commonitilobject.class.php:3140
+#: inc/commonitilobject.class.php:2999 inc/commonitilobject.class.php:3148
 #: inc/commonitiltask.class.php:583 inc/commonitiltask.class.php:673
 #: inc/ruleticket.class.php:389 inc/ruleticket.class.php:504
 #: install/update_05_051.php:77
@@ -3209,7 +3210,7 @@ msgid "Technician"
 msgstr "Специалист"
 
 #: front/stat.graph.php:102 front/stat.tracking.php:114
-#: inc/commonitilobject.class.php:3165 inc/commonitilobject.class.php:3298
+#: inc/commonitilobject.class.php:3173 inc/commonitilobject.class.php:3306
 #: inc/contact_supplier.class.php:223 inc/contract_item.class.php:453
 #: inc/contract_supplier.class.php:362 inc/infocom.class.php:1022
 #: inc/infocom.class.php:1390 inc/infocom.class.php:1532
@@ -3227,7 +3228,7 @@ msgstr[3] "Поставщиков"
 #: inc/authldap.class.php:1283 inc/authldap.class.php:1337
 #: inc/authldap.class.php:3086 inc/commondbtm.class.php:2906
 #: inc/commonitilactor.class.php:180 inc/commonitilactor.class.php:260
-#: inc/commonitilobject.class.php:3129 inc/commonitilobject.class.php:3290
+#: inc/commonitilobject.class.php:3137 inc/commonitilobject.class.php:3298
 #: inc/commonitiltask.class.php:1328 inc/commonitilvalidation.class.php:622
 #: inc/commonitilvalidation.class.php:1234 inc/computer.class.php:510
 #: inc/computer.class.php:806 inc/computer_softwarelicense.class.php:500
@@ -3270,8 +3271,8 @@ msgstr[3] "Пользователи"
 #: front/stat.tracking.php:86 front/stat.tracking.php:88
 #: inc/auth.class.php:1351 inc/authldap.class.php:743
 #: inc/authldap.class.php:899 inc/authldap.class.php:2785
-#: inc/change.class.php:727 inc/commonitilobject.class.php:2796
-#: inc/commonitilobject.class.php:5385 inc/commonitiltask.class.php:1279
+#: inc/change.class.php:727 inc/commonitilobject.class.php:2804
+#: inc/commonitilobject.class.php:5393 inc/commonitiltask.class.php:1279
 #: inc/commonitiltask.class.php:1566
 #: inc/computer_softwareversion.class.php:755 inc/db.function.php:1314
 #: inc/knowbaseitem.class.php:817 inc/knowbaseitem.class.php:962
@@ -3291,8 +3292,8 @@ msgstr "Категория"
 #: front/stat.graph.php:167 front/stat.graph.php:175
 #: front/stat.tracking.php:83 front/stat.tracking.php:110
 #: inc/authldap.class.php:1680 inc/authldap.class.php:3087
-#: inc/commondbtm.class.php:2915 inc/commonitilobject.class.php:3147
-#: inc/commonitilobject.class.php:3293 inc/commonitiltask.class.php:1359
+#: inc/commondbtm.class.php:2915 inc/commonitilobject.class.php:3155
+#: inc/commonitilobject.class.php:3301 inc/commonitiltask.class.php:1359
 #: inc/commonitilvalidation.class.php:623
 #: inc/commonitilvalidation.class.php:1235 inc/computer.class.php:522
 #: inc/computer.class.php:812 inc/computer_softwarelicense.class.php:499
@@ -3326,8 +3327,8 @@ msgstr[2] "Групп"
 msgstr[3] "Групп"
 
 #: front/stat.graph.php:183 front/stat.tracking.php:92
-#: inc/change.class.php:743 inc/commonitilobject.class.php:2707
-#: inc/commonitilobject.class.php:5379 inc/commonitiltask.class.php:1034
+#: inc/change.class.php:743 inc/commonitilobject.class.php:2715
+#: inc/commonitilobject.class.php:5387 inc/commonitiltask.class.php:1034
 #: inc/notificationtargetcommonitilobject.class.php:1055
 #: inc/notificationtargetproject.class.php:572 inc/problem.class.php:1154
 #: inc/project.class.php:413 inc/project.class.php:555
@@ -3337,7 +3338,7 @@ msgid "Priority"
 msgstr "Приоритет"
 
 #: front/stat.graph.php:190 front/stat.tracking.php:90
-#: inc/change.class.php:719 inc/commonitilobject.class.php:2695
+#: inc/change.class.php:719 inc/commonitilobject.class.php:2703
 #: inc/config.class.php:868
 #: inc/notificationtargetcommonitilobject.class.php:1053
 #: inc/problem.class.php:1132 inc/ruleticket.class.php:436
@@ -3348,7 +3349,7 @@ msgstr "Срочность"
 
 #: front/stat.graph.php:197 front/stat.tracking.php:91
 #: inc/change.class.php:425 inc/change.class.php:734
-#: inc/commonitilobject.class.php:2701 inc/config.class.php:850
+#: inc/commonitilobject.class.php:2709 inc/config.class.php:850
 #: inc/notificationtargetchange.class.php:272
 #: inc/notificationtargetcommonitilobject.class.php:1054
 #: inc/problem.class.php:1146 inc/ruleticket.class.php:439
@@ -3367,8 +3368,8 @@ msgid "Title"
 msgstr "Должность"
 
 #: front/stat.graph.php:212 front/stat.tracking.php:93
-#: inc/commonitilobject.class.php:2842 inc/commonitilobject.class.php:4132
-#: inc/commonitilobject.class.php:4208 inc/dropdown.class.php:769
+#: inc/commonitilobject.class.php:2850 inc/commonitilobject.class.php:4140
+#: inc/commonitilobject.class.php:4216 inc/dropdown.class.php:769
 #: inc/notificationtargetcommonitilobject.class.php:1079
 #: inc/solutiontemplate.class.php:62 inc/solutiontemplate.class.php:84
 #: inc/solutiontype.class.php:47
@@ -3446,9 +3447,9 @@ msgid "Number closed"
 msgstr "Количество закрытых заявок"
 
 #: front/stat.tracking.php:81 front/stat.tracking.php:103
-#: inc/commonitilobject.class.php:2528 inc/commonitilobject.class.php:2890
-#: inc/commonitilobject.class.php:2896 inc/commonitilobject.class.php:3664
-#: inc/commonitilobject.class.php:5380 inc/commonitilvalidation.class.php:1118
+#: inc/commonitilobject.class.php:2536 inc/commonitilobject.class.php:2898
+#: inc/commonitilobject.class.php:2904 inc/commonitilobject.class.php:3672
+#: inc/commonitilobject.class.php:5388 inc/commonitilvalidation.class.php:1118
 #: inc/group.class.php:267 inc/group.class.php:461
 #: inc/notificationtargetchange.class.php:299
 #: inc/notificationtargetcommonitilobject.class.php:452
@@ -3471,7 +3472,7 @@ msgstr[1] "Заказчики"
 msgstr[2] "Заказчик"
 msgstr[3] "Заказчик"
 
-#: front/stat.tracking.php:82 inc/commonitilobject.class.php:2941
+#: front/stat.tracking.php:82 inc/commonitilobject.class.php:2949
 #: inc/commonitiltask.class.php:662 inc/commonitiltask.class.php:1538
 #: inc/knowbaseitem.class.php:678 inc/knowbaseitem.class.php:849
 #: inc/knowbaseitem.class.php:1319 inc/notepad.class.php:192
@@ -3502,7 +3503,7 @@ msgstr "Дерево местонахождения"
 #: front/stat.tracking.php:104 inc/cartridgeitem.class.php:273
 #: inc/commondbrelation.class.php:279 inc/commondbtm.class.php:3161
 #: inc/commondevice.class.php:214 inc/commondropdown.class.php:424
-#: inc/commonitilcost.class.php:97 inc/commonitilobject.class.php:2661
+#: inc/commonitilcost.class.php:97 inc/commonitilobject.class.php:2669
 #: inc/commonitiltask.class.php:556 inc/commontreedropdown.class.php:597
 #: inc/computerantivirus.class.php:128 inc/computer.class.php:702
 #: inc/computer_softwarelicense.class.php:82 inc/consumableitem.class.php:234
@@ -3532,8 +3533,8 @@ msgstr "Дерево местонахождения"
 msgid "Characteristics"
 msgstr "Характеристики"
 
-#: front/stat.tracking.php:105 inc/commonitilobject.class.php:2530
-#: inc/commonitilobject.class.php:2985 inc/commonitilobject.class.php:3867
+#: front/stat.tracking.php:105 inc/commonitilobject.class.php:2538
+#: inc/commonitilobject.class.php:2993 inc/commonitilobject.class.php:3875
 #: inc/group.class.php:273 inc/group.class.php:466
 #: inc/notificationtargetcommonitilobject.class.php:1146
 msgid "Assigned to"
@@ -3722,20 +3723,20 @@ msgstr "Уведомление отправлено на %s"
 #: inc/api.class.php:97
 msgid ""
 "There isn't an active api client matching your ip adress in the "
-"configuration,"
+"configuration"
 msgstr ""
 
 #: inc/api.class.php:151
 msgid "parameter(s) login, password or user_token are missing"
-msgstr ""
+msgstr "параметр(ы) логин, пароль или user_token отсутствуют"
 
 #: inc/api.class.php:171
 msgid "usage of initSession ressource with credentials is disabled"
-msgstr ""
+msgstr "использование initSession ресурса с учетными данными отключен"
 
 #: inc/api.class.php:180
 msgid "parameter user_token seems invalid"
-msgstr ""
+msgstr "параметр user_token возможно недействителен"
 
 #: inc/api.class.php:768 inc/api.class.php:1878 inc/html.class.php:537
 msgid "You don't have permission to perform this action."
@@ -3743,48 +3744,48 @@ msgstr "У Вас нет прав для выполнения этой опер�
 
 #: inc/api.class.php:844
 msgid "parent itemtype not found or not an instance of CommonDBTM"
-msgstr ""
+msgstr "родительский тип элемента не найден или не является экземпляром CommonDBTM"
 
 #: inc/api.class.php:1507
 msgid "missing parameter app_token"
-msgstr ""
+msgstr "отсутствует параметр app_token"
 
 #: inc/api.class.php:1663
 msgid "API Documentation"
-msgstr ""
+msgstr "Документация API"
 
 #: inc/api.class.php:1836
 msgid "Not found"
-msgstr ""
+msgstr "Не найден"
 
 #: inc/api.class.php:1850
 msgid "input parameter must be an an array of objects"
-msgstr ""
+msgstr "входной параметр должен быть массивом объектов"
 
 #: inc/api.class.php:1864
 msgid "Method Not Allowed"
-msgstr ""
+msgstr "Метод не разрешен"
 
 #: inc/api.class.php:1892
 msgid "session_token seems invalid"
-msgstr ""
+msgstr "session_token возможно недействительный"
 
 #: inc/api.class.php:1906
 msgid "parameter session_token is missing or empty"
-msgstr ""
+msgstr "парметр session_token отсутствует или пустой"
 
 #: inc/api.class.php:1937
 #, php-format
 msgid "view documentation in your browser at %s"
-msgstr ""
+msgstr "просмотр документации в вашем браузере в %s"
 
 #: inc/apiclient.class.php:57
 msgid "API client"
 msgid_plural "API clients"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Клиент API"
+msgstr[1] "Клиент API"
+msgstr[2] "Клиенты API"
+msgstr[3] "Клиенты API"
 
 #: inc/apiclient.class.php:89 inc/authldap.class.php:354
 #: inc/authldap.class.php:983 inc/authmail.class.php:127
@@ -3810,7 +3811,7 @@ msgstr "Активен"
 
 #: inc/apiclient.class.php:96
 msgid "Log connections"
-msgstr ""
+msgstr "Лог соединений"
 
 #: inc/apiclient.class.php:100 inc/log.class.php:82
 #: inc/notificationtargetcommonitilobject.class.php:1132
@@ -3849,23 +3850,23 @@ msgstr[3] "Журналы"
 
 #: inc/apiclient.class.php:110
 msgid "Filter access"
-msgstr ""
+msgstr "Фильтер доступа"
 
 #: inc/apiclient.class.php:116
 msgid "Leave these parameters empty to disable api access restriction"
-msgstr ""
+msgstr "Оставьте эти параметры пустыми, чтобы отключить ограничения доступа api"
 
 #: inc/apiclient.class.php:122
 msgid "IPv4 address range"
-msgstr ""
+msgstr "IPv4 диапазон адресов"
 
 #: inc/apiclient.class.php:134
 msgid "IPv6 address"
-msgstr ""
+msgstr "IPv6 адресс"
 
 #: inc/apiclient.class.php:142
 msgid "Application token"
-msgstr ""
+msgstr "Токен приложения"
 
 #: inc/apiclient.class.php:147 inc/config.class.php:1248
 msgid "Regenerate"
@@ -3873,31 +3874,31 @@ msgstr "Обновить"
 
 #: inc/apirest.class.php:51
 msgid "Rest API"
-msgstr ""
+msgstr "Rest API"
 
 #: inc/apirest.class.php:277
 msgid "ressource not found or not an instance of CommonDBTM"
-msgstr ""
+msgstr "средство не найдено или не является экземпляром CommonDBTM"
 
 #: inc/apirest.class.php:282
 msgid "missing ressource"
-msgstr ""
+msgstr "отсутствует средство"
 
 #: inc/apixmlrpc.class.php:51
 msgid "XMLRPC API"
-msgstr ""
+msgstr "XMLRPC API"
 
 #: inc/apixmlrpc.class.php:138
 msgid "missing itemtype"
-msgstr ""
+msgstr "отсутствует тип элемента"
 
 #: inc/apixmlrpc.class.php:143
 msgid "itemtype not found or not an instance of CommonDBTM"
-msgstr ""
+msgstr "Тип элемента не найден или не является экземпляром CommonDBTM"
 
 #: inc/apixmlrpc.class.php:152
 msgid "missing id"
-msgstr ""
+msgstr "отсутствует ID"
 
 #: inc/auth.class.php:115
 msgid "Others"
@@ -3918,7 +3919,7 @@ msgstr "Пустой пароль"
 
 #: inc/auth.class.php:502
 msgid "Login with external token disabled"
-msgstr ""
+msgstr "Логин с внешним токем отключен"
 
 #: inc/auth.class.php:659 inc/auth.class.php:667
 msgid "Empty login or password"
@@ -3978,7 +3979,7 @@ msgstr "Встроенная GLPI"
 
 #: inc/auth.class.php:942 inc/config.class.php:700 inc/config.class.php:2009
 msgid "API"
-msgstr ""
+msgstr "API"
 
 #: inc/auth.class.php:945
 msgid "Not yet authenticated"
@@ -4163,8 +4164,8 @@ msgstr "Значения по умолчанию"
 #: inc/authldap.class.php:344 inc/authldap.class.php:940
 #: inc/authmail.class.php:132 inc/budget.class.php:210
 #: inc/change.class.php:678 inc/commondevice.class.php:234
-#: inc/commondropdown.class.php:461 inc/commonitilobject.class.php:2790
-#: inc/commonitilobject.class.php:5373 inc/commontreedropdown.class.php:647
+#: inc/commondropdown.class.php:461 inc/commonitilobject.class.php:2798
+#: inc/commonitilobject.class.php:5381 inc/commontreedropdown.class.php:647
 #: inc/computerantivirus.class.php:170 inc/computer.class.php:818
 #: inc/contact.class.php:391 inc/contract.class.php:611
 #: inc/crontask.class.php:1368 inc/document.class.php:818
@@ -5438,8 +5439,8 @@ msgstr "Анализ"
 msgid "Plans"
 msgstr "Планы"
 
-#: inc/change.class.php:202 inc/commonitilobject.class.php:2838
-#: inc/commonitilobject.class.php:2847
+#: inc/change.class.php:202 inc/commonitilobject.class.php:2846
+#: inc/commonitilobject.class.php:2855
 #: inc/notificationtargetcommonitilobject.class.php:1080
 #: inc/problem.class.php:180 inc/problem.class.php:193
 #: inc/ticket.class.php:600 inc/ticket.class.php:6637
@@ -5499,7 +5500,7 @@ msgctxt "status"
 msgid "Accepted"
 msgstr "Принята"
 
-#: inc/change.class.php:481 inc/commonitilobject.class.php:4479
+#: inc/change.class.php:481 inc/commonitilobject.class.php:4487
 #: inc/problem.class.php:519 inc/ticket.class.php:2705
 msgid "Pending"
 msgstr "Ожидающие решения"
@@ -5545,8 +5546,8 @@ msgctxt "status"
 msgid "Solved + Closed"
 msgstr "Закрыто + Решено"
 
-#: inc/change.class.php:643 inc/commonitilobject.class.php:2714
-#: inc/commonitilobject.class.php:4424
+#: inc/change.class.php:643 inc/commonitilobject.class.php:2722
+#: inc/commonitilobject.class.php:4432
 #: inc/notificationtargetcommonitilobject.class.php:1057
 #: inc/notificationtargetcommonitilobject.class.php:1112
 #: inc/notificationtargetproject.class.php:583
@@ -5557,15 +5558,15 @@ msgstr "Закрыто + Решено"
 msgid "Opening date"
 msgstr "Дата открытия"
 
-#: inc/change.class.php:660 inc/commonitilobject.class.php:2726
-#: inc/commonitilobject.class.php:4431 inc/commonitilobject.class.php:5152
+#: inc/change.class.php:660 inc/commonitilobject.class.php:2734
+#: inc/commonitilobject.class.php:4439 inc/commonitilobject.class.php:5160
 #: inc/notificationtargetcommonitilobject.class.php:1060
 #: inc/problem.class.php:1073 inc/ruleticket.class.php:458
 #: inc/ruleticket.class.php:564 inc/slalevel.class.php:207
 #: inc/slalevel.class.php:392 inc/slt.class.php:629 inc/ticket.class.php:2327
 #: inc/ticket.class.php:3842 inc/ticket.class.php:3844
 msgid "Time to resolve"
-msgstr ""
+msgstr "Время для решения"
 
 #: inc/change.class.php:672 inc/change.class.php:681
 #: inc/commonitiltask.class.php:1325 inc/problem.class.php:1085
@@ -5583,15 +5584,15 @@ msgstr "Кем"
 msgid "Date of solving"
 msgstr "Дата решения"
 
-#: inc/change.class.php:698 inc/commonitilobject.class.php:2720
-#: inc/commonitilobject.class.php:4441
+#: inc/change.class.php:698 inc/commonitilobject.class.php:2728
+#: inc/commonitilobject.class.php:4449
 #: inc/notificationtargetcommonitilobject.class.php:1058
 #: inc/problem.class.php:1111
 msgid "Closing date"
 msgstr "Дата закрытия"
 
 #: inc/change.class.php:713 inc/commondbtm.class.php:2890
-#: inc/commonitilobject.class.php:2689 inc/commonitilobject.class.php:5371
+#: inc/commonitilobject.class.php:2697 inc/commonitilobject.class.php:5379
 #: inc/commonitiltask.class.php:596 inc/commonitiltask.class.php:712
 #: inc/commonitiltask.class.php:1289 inc/commonitilvalidation.class.php:1024
 #: inc/computer.class.php:438 inc/computer.class.php:730
@@ -5626,7 +5627,7 @@ msgstr[1] "Статус"
 msgstr[2] "Статусы"
 msgstr[3] "Статусы"
 
-#: inc/change.class.php:741 inc/commonitilobject.class.php:2813
+#: inc/change.class.php:741 inc/commonitilobject.class.php:2821
 #: inc/commonitiltask.class.php:590 inc/crontask.class.php:988
 #: inc/crontask.class.php:1070
 #: inc/notificationtargetcommonitilobject.class.php:1056
@@ -5638,7 +5639,7 @@ msgid "Total duration"
 msgstr "Общая продолжительность"
 
 #: inc/change.class.php:764 inc/commonitilcost.class.php:101
-#: inc/commonitilobject.class.php:2665 inc/commonitilobject.class.php:5386
+#: inc/commonitilobject.class.php:2673 inc/commonitilobject.class.php:5394
 #: inc/contractcost.class.php:134 inc/notificationtargetchange.class.php:368
 #: inc/notificationtargetchange.class.php:373
 #: inc/notificationtargetcommonitilobject.class.php:1046
@@ -5656,8 +5657,8 @@ msgstr "Общая продолжительность"
 msgid "Title"
 msgstr "Заголовок"
 
-#: inc/change.class.php:772 inc/commonitilobject.class.php:2673
-#: inc/commonitilobject.class.php:4151 inc/commonitilobject.class.php:4214
+#: inc/change.class.php:772 inc/commonitilobject.class.php:2681
+#: inc/commonitilobject.class.php:4159 inc/commonitilobject.class.php:4222
 #: inc/commonitiltask.class.php:560 inc/commonitiltask.class.php:622
 #: inc/commonitiltask.class.php:1227 inc/commonitiltask.class.php:1537
 #: inc/commonitiltask.class.php:1569 inc/crontask.class.php:428
@@ -5799,7 +5800,7 @@ msgstr[3] "Связей Заявка/Изменение"
 msgid "Add a ticket"
 msgstr "Добавить заявку"
 
-#: inc/change_ticket.class.php:300 inc/commonitilobject.class.php:4183
+#: inc/change_ticket.class.php:300 inc/commonitilobject.class.php:4191
 #: inc/problem_ticket.class.php:348
 msgid "Solve tickets"
 msgstr "Решённые заявки"
@@ -5819,8 +5820,8 @@ msgid "Item not linked to an object"
 msgstr "Объект не связан с элементом"
 
 #: inc/commondbchild.class.php:733 inc/commondevice.class.php:352
-#: inc/commondevice.class.php:356 inc/commonitilobject.class.php:3674
-#: inc/commonitilobject.class.php:3783 inc/commonitilobject.class.php:3880
+#: inc/commondevice.class.php:356 inc/commonitilobject.class.php:3682
+#: inc/commonitilobject.class.php:3791 inc/commonitilobject.class.php:3888
 #: inc/dropdown.class.php:211 inc/html.class.php:1667 inc/html.class.php:1671
 #: inc/html.class.php:2181 inc/html.class.php:2182 inc/infocom.class.php:705
 #: inc/netpoint.class.php:149 inc/reminder.class.php:1139
@@ -6122,7 +6123,7 @@ msgctxt "button"
 msgid "Merge"
 msgstr "Объединить"
 
-#: inc/commonglpi.class.php:71 inc/commonitilobject.class.php:5254
+#: inc/commonglpi.class.php:71 inc/commonitilobject.class.php:5262
 #: inc/item_ticket.class.php:656 inc/item_ticket.class.php:739
 #: inc/rule.class.php:2190 inc/ticket.class.php:5371
 msgid "General"
@@ -6321,7 +6322,7 @@ msgstr[2] "Заявки"
 msgstr[3] "Заявки"
 
 #: inc/commonitilobject.class.php:640 inc/commonitilobject.class.php:696
-#: inc/commonitilobject.class.php:3245 inc/mailcollector.class.php:152
+#: inc/commonitilobject.class.php:3253 inc/mailcollector.class.php:152
 #: inc/mailcollector.class.php:177 inc/notificationmailsetting.class.php:144
 #: inc/notificationmailsetting.class.php:157 inc/user.class.php:3961
 msgid "Invalid email address"
@@ -6333,183 +6334,183 @@ msgid "Invalid dates. Update cancelled."
 msgstr "Неверная дата. Поправки аннулированы."
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
-#: inc/commonitilobject.class.php:1659
+#: inc/commonitilobject.class.php:1667
 #, php-format
 msgid "Document Ticket %d"
 msgstr "Документ заявки %d"
 
-#: inc/commonitilobject.class.php:1802
+#: inc/commonitilobject.class.php:1810
 msgctxt "priority"
 msgid "Major"
 msgstr "Наивысший"
 
-#: inc/commonitilobject.class.php:1805
+#: inc/commonitilobject.class.php:1813
 msgctxt "priority"
 msgid "Very high"
 msgstr "Очень высокий"
 
-#: inc/commonitilobject.class.php:1808
+#: inc/commonitilobject.class.php:1816
 msgctxt "priority"
 msgid "High"
 msgstr "Высокий"
 
-#: inc/commonitilobject.class.php:1811
+#: inc/commonitilobject.class.php:1819
 msgctxt "priority"
 msgid "Medium"
 msgstr "Средний"
 
-#: inc/commonitilobject.class.php:1814
+#: inc/commonitilobject.class.php:1822
 msgctxt "priority"
 msgid "Low"
 msgstr "Низкий"
 
-#: inc/commonitilobject.class.php:1817
+#: inc/commonitilobject.class.php:1825
 msgctxt "priority"
 msgid "Very low"
 msgstr "Очень низкий"
 
-#: inc/commonitilobject.class.php:1821
+#: inc/commonitilobject.class.php:1829
 msgctxt "priority"
 msgid "All"
 msgstr "Все"
 
-#: inc/commonitilobject.class.php:1823
+#: inc/commonitilobject.class.php:1831
 msgctxt "priority"
 msgid "At least very low"
 msgstr "По крайней мере очень низко"
 
-#: inc/commonitilobject.class.php:1825
+#: inc/commonitilobject.class.php:1833
 msgctxt "priority"
 msgid "At least low"
 msgstr "По крайней мере низко"
 
-#: inc/commonitilobject.class.php:1827
+#: inc/commonitilobject.class.php:1835
 msgctxt "priority"
 msgid "At least medium"
 msgstr "По крайней мере средне"
 
-#: inc/commonitilobject.class.php:1829
+#: inc/commonitilobject.class.php:1837
 msgctxt "priority"
 msgid "At least high"
 msgstr "По крайней мере высоко"
 
-#: inc/commonitilobject.class.php:1831
+#: inc/commonitilobject.class.php:1839
 msgctxt "priority"
 msgid "At least very high"
 msgstr "По крайней мере очень высоко"
 
-#: inc/commonitilobject.class.php:1916
+#: inc/commonitilobject.class.php:1924
 msgctxt "urgency"
 msgid "Very high"
 msgstr "Очень высокая"
 
-#: inc/commonitilobject.class.php:1919
+#: inc/commonitilobject.class.php:1927
 msgctxt "urgency"
 msgid "High"
 msgstr "Высокая"
 
-#: inc/commonitilobject.class.php:1922
+#: inc/commonitilobject.class.php:1930
 msgctxt "urgency"
 msgid "Medium"
 msgstr "Средняя"
 
-#: inc/commonitilobject.class.php:1925
+#: inc/commonitilobject.class.php:1933
 msgctxt "urgency"
 msgid "Low"
 msgstr "Низкая"
 
-#: inc/commonitilobject.class.php:1928
+#: inc/commonitilobject.class.php:1936
 msgctxt "urgency"
 msgid "Very low"
 msgstr "Очень низкая"
 
-#: inc/commonitilobject.class.php:1932
+#: inc/commonitilobject.class.php:1940
 msgctxt "urgency"
 msgid "All"
 msgstr "Все"
 
-#: inc/commonitilobject.class.php:1934
+#: inc/commonitilobject.class.php:1942
 msgctxt "urgency"
 msgid "At least very low"
 msgstr "По крайней мере очень низко"
 
-#: inc/commonitilobject.class.php:1936
+#: inc/commonitilobject.class.php:1944
 msgctxt "urgency"
 msgid "At least low"
 msgstr "По крайней мере низко"
 
-#: inc/commonitilobject.class.php:1938
+#: inc/commonitilobject.class.php:1946
 msgctxt "urgency"
 msgid "At least medium"
 msgstr "По крайней мере средне"
 
-#: inc/commonitilobject.class.php:1940
+#: inc/commonitilobject.class.php:1948
 msgctxt "urgency"
 msgid "At least high"
 msgstr "По крайней мере высоко"
 
-#: inc/commonitilobject.class.php:1942
+#: inc/commonitilobject.class.php:1950
 msgctxt "urgency"
 msgid "At least very high"
 msgstr "По крайней мере очень высоко"
 
-#: inc/commonitilobject.class.php:2028
+#: inc/commonitilobject.class.php:2036
 msgctxt "impact"
 msgid "Very high"
 msgstr "Очень высокое"
 
-#: inc/commonitilobject.class.php:2031
+#: inc/commonitilobject.class.php:2039
 msgctxt "impact"
 msgid "High"
 msgstr "Высокое"
 
-#: inc/commonitilobject.class.php:2034
+#: inc/commonitilobject.class.php:2042
 msgctxt "impact"
 msgid "Medium"
 msgstr "Среднее"
 
-#: inc/commonitilobject.class.php:2037
+#: inc/commonitilobject.class.php:2045
 msgctxt "impact"
 msgid "Low"
 msgstr "Низкое"
 
-#: inc/commonitilobject.class.php:2040
+#: inc/commonitilobject.class.php:2048
 msgctxt "impact"
 msgid "Very low"
 msgstr "Очень низкое"
 
-#: inc/commonitilobject.class.php:2044
+#: inc/commonitilobject.class.php:2052
 msgctxt "impact"
 msgid "All"
 msgstr "Все"
 
-#: inc/commonitilobject.class.php:2046
+#: inc/commonitilobject.class.php:2054
 msgctxt "impact"
 msgid "At least very low"
 msgstr "По крайней мере очень низко"
 
-#: inc/commonitilobject.class.php:2048
+#: inc/commonitilobject.class.php:2056
 msgctxt "impact"
 msgid "At least low"
 msgstr "По крайней мере низко"
 
-#: inc/commonitilobject.class.php:2050
+#: inc/commonitilobject.class.php:2058
 msgctxt "impact"
 msgid "At least medium"
 msgstr "По крайней мере средне"
 
-#: inc/commonitilobject.class.php:2052
+#: inc/commonitilobject.class.php:2060
 msgctxt "impact"
 msgid "At least high"
 msgstr "По крайней мере высоко"
 
-#: inc/commonitilobject.class.php:2054
+#: inc/commonitilobject.class.php:2062
 msgctxt "impact"
 msgid "At least very high"
 msgstr "По крайней мере очень высоко"
 
-#: inc/commonitilobject.class.php:2529 inc/commonitilobject.class.php:2949
-#: inc/commonitilobject.class.php:2955 inc/commonitilobject.class.php:3772
+#: inc/commonitilobject.class.php:2537 inc/commonitilobject.class.php:2957
+#: inc/commonitilobject.class.php:2963 inc/commonitilobject.class.php:3780
 #: inc/notificationtargetcommonitilobject.class.php:474
 #: inc/notificationtargetcommonitilobject.class.php:1081
 #: inc/ruleticket.class.php:408 inc/ruleticket.class.php:527
@@ -6521,51 +6522,51 @@ msgstr[1] "Наблюдатели"
 msgstr[2] "Наблюдатели"
 msgstr[3] "Наблюдатели"
 
-#: inc/commonitilobject.class.php:2734 inc/commonitilobject.class.php:4428
+#: inc/commonitilobject.class.php:2742 inc/commonitilobject.class.php:4436
 #: inc/ruleticket.class.php:466 inc/ruleticket.class.php:572
 #: inc/slt.class.php:628 inc/ticket.class.php:2318 inc/ticket.class.php:3830
 #: inc/ticket.class.php:3832
 msgid "Time to own"
-msgstr ""
+msgstr "Время владения"
 
-#: inc/commonitilobject.class.php:2743
+#: inc/commonitilobject.class.php:2751
 msgid "Time to resolve + Progress"
-msgstr ""
-
-#: inc/commonitilobject.class.php:2750
-msgid "Time to own + Progress"
-msgstr ""
+msgstr "Время для решения + Прогресса"
 
 #: inc/commonitilobject.class.php:2758
+msgid "Time to own + Progress"
+msgstr "Время владения + Прогресса"
+
+#: inc/commonitilobject.class.php:2766
 msgid "Time to resolve exceedeed"
 msgstr ""
 
-#: inc/commonitilobject.class.php:2770
+#: inc/commonitilobject.class.php:2778
 msgid "Time to own exceedeed"
 msgstr ""
 
-#: inc/commonitilobject.class.php:2784 inc/commonitilobject.class.php:4436
+#: inc/commonitilobject.class.php:2792 inc/commonitilobject.class.php:4444
 #: inc/ticket.class.php:3883
 msgid "Resolution date"
 msgstr "Дата решения"
 
-#: inc/commonitilobject.class.php:2821
+#: inc/commonitilobject.class.php:2829
 msgid "Last edit by"
 msgstr "Последние изменения"
 
-#: inc/commonitilobject.class.php:2863
+#: inc/commonitilobject.class.php:2871
 msgid "Resolution time"
 msgstr "Время решения"
 
-#: inc/commonitilobject.class.php:2870
+#: inc/commonitilobject.class.php:2878
 msgid "Closing time"
 msgstr "Время закрытия"
 
-#: inc/commonitilobject.class.php:2877
+#: inc/commonitilobject.class.php:2885
 msgid "Waiting time"
 msgstr "Время ожидания"
 
-#: inc/commonitilobject.class.php:2917 inc/commonitilobject.class.php:3150
+#: inc/commonitilobject.class.php:2925 inc/commonitilobject.class.php:3158
 #: inc/notificationtargetcommonitilobject.class.php:469
 #: inc/notificationtargetcommonitilobject.class.php:1075
 #: inc/ruleticket.class.php:383 inc/ruleticket.class.php:495
@@ -6576,7 +6577,7 @@ msgstr[1] "Группы заказчика"
 msgstr[2] "Группы заказчика"
 msgstr[3] "Группы заказчика"
 
-#: inc/commonitilobject.class.php:2971 inc/commonitilobject.class.php:3154
+#: inc/commonitilobject.class.php:2979 inc/commonitilobject.class.php:3162
 #: inc/notificationtargetcommonitilobject.class.php:473
 #: inc/notificationtargetcommonitilobject.class.php:1077
 #: inc/ruleticket.class.php:414 inc/ruleticket.class.php:536
@@ -6587,43 +6588,43 @@ msgstr[1] "Группа наблюдателей"
 msgstr[2] "Группы наблюдателей"
 msgstr[3] "Группы наблюдателей"
 
-#: inc/commonitilobject.class.php:3008
+#: inc/commonitilobject.class.php:3016
 #: inc/notificationtargetcommonitilobject.class.php:1074
 #: inc/ruleticket.class.php:402 inc/ruleticket.class.php:521
 msgid "Assigned to a supplier"
 msgstr "Назначенный поставщик"
 
-#: inc/commonitilobject.class.php:3024 inc/ruleticket.class.php:395
+#: inc/commonitilobject.class.php:3032 inc/ruleticket.class.php:395
 #: inc/ruleticket.class.php:513
 msgid "Technician group"
 msgstr "Группа специалистов"
 
-#: inc/commonitilobject.class.php:3052
+#: inc/commonitilobject.class.php:3060
 msgid "Email for followup"
 msgstr "Email для сопровождения"
 
-#: inc/commonitilobject.class.php:3132
+#: inc/commonitilobject.class.php:3140
 msgid "Requester user"
 msgstr "Пользователь заказчик"
 
-#: inc/commonitilobject.class.php:3136
+#: inc/commonitilobject.class.php:3144
 msgid "Watcher user"
 msgstr "Наблюдающий пользователь"
 
-#: inc/commonitilobject.class.php:3158
+#: inc/commonitilobject.class.php:3166
 #: inc/notificationtargetcommonitilobject.class.php:472
 msgid "Group in charge of the ticket"
 msgstr "Группа отвечающая за заявку"
 
-#: inc/commonitilobject.class.php:3655 inc/planning.class.php:1175
+#: inc/commonitilobject.class.php:3663 inc/planning.class.php:1175
 msgid "Actor"
 msgstr "Участники"
 
-#: inc/commonitilobject.class.php:3796 inc/commonitilobject.class.php:3890
+#: inc/commonitilobject.class.php:3804 inc/commonitilobject.class.php:3898
 msgid "Associate myself"
 msgstr "Связать меня с этой заявкой"
 
-#: inc/commonitilobject.class.php:4104 inc/commonitilobject.class.php:4189
+#: inc/commonitilobject.class.php:4112 inc/commonitilobject.class.php:4197
 #: inc/dropdown.class.php:773 inc/profile.class.php:1445
 #: inc/solutiontemplate.class.php:55
 msgid "Solution template"
@@ -6633,15 +6634,15 @@ msgstr[1] "Шаблоны решений"
 msgstr[2] "Шаблонов решения"
 msgstr[3] "Шаблонов решения"
 
-#: inc/commonitilobject.class.php:4123 inc/commonitilobject.class.php:4126
+#: inc/commonitilobject.class.php:4131 inc/commonitilobject.class.php:4134
 msgid "Search a solution"
 msgstr "Искать решение"
 
-#: inc/commonitilobject.class.php:4146
+#: inc/commonitilobject.class.php:4154
 msgid "Save and add to the knowledge base"
 msgstr "Сохранить и добавить в базу знаний"
 
-#: inc/commonitilobject.class.php:4445 inc/slt.class.php:686
+#: inc/commonitilobject.class.php:4453 inc/slt.class.php:686
 msgid "Time"
 msgid_plural "Times"
 msgstr[0] "Время"
@@ -6649,52 +6650,52 @@ msgstr[1] "Время"
 msgstr[2] "Время"
 msgstr[3] "Время"
 
-#: inc/commonitilobject.class.php:5140
+#: inc/commonitilobject.class.php:5148
 #, php-format
 msgid "Closed on %s"
 msgstr "Закрыто в %s"
 
-#: inc/commonitilobject.class.php:5144
+#: inc/commonitilobject.class.php:5152
 #, php-format
 msgid "Solved on %s"
 msgstr "Решена %s"
 
-#: inc/commonitilobject.class.php:5148
+#: inc/commonitilobject.class.php:5156
 #, php-format
 msgid "Put on hold on %s"
 msgstr "Отложить %s"
 
-#: inc/commonitilobject.class.php:5156 inc/project.class.php:648
+#: inc/commonitilobject.class.php:5164 inc/project.class.php:648
 #, php-format
 msgid "Opened on %s"
 msgstr "Открыта %s"
 
-#: inc/commonitilobject.class.php:5318 inc/mailcollector.class.php:800
+#: inc/commonitilobject.class.php:5326 inc/mailcollector.class.php:800
 #: inc/reservation.class.php:1013
 #, php-format
 msgid "From %s"
 msgstr "Отправитель %s"
 
-#: inc/commonitilobject.class.php:5321 inc/reservation.class.php:1010
+#: inc/commonitilobject.class.php:5329 inc/reservation.class.php:1010
 #, php-format
 msgid "To %s"
 msgstr "До %s"
 
 #. TRANS: %s is user name
-#: inc/commonitilobject.class.php:5325 inc/commonitiltask.class.php:1009
+#: inc/commonitilobject.class.php:5333 inc/commonitiltask.class.php:1009
 #, php-format
 msgid "By %s"
 msgstr "Кем %s"
 
-#: inc/commonitilobject.class.php:5354 inc/project.class.php:726
+#: inc/commonitilobject.class.php:5362 inc/project.class.php:726
 msgid "No item in progress."
 msgstr "Нет объекта в работе"
 
-#: inc/commonitilobject.class.php:5381
+#: inc/commonitilobject.class.php:5389
 msgid "Assigned"
 msgstr "Назначено"
 
-#: inc/commonitilobject.class.php:5387
+#: inc/commonitilobject.class.php:5395
 msgid "Planification"
 msgstr "Планификация"
 
@@ -7809,15 +7810,15 @@ msgstr "Всегда"
 
 #: inc/config.class.php:703
 msgid "URL of the API"
-msgstr ""
+msgstr "URL API"
 
 #: inc/config.class.php:707
 msgid "Enable Rest API"
-msgstr ""
+msgstr "Включен Rest API"
 
 #: inc/config.class.php:713
 msgid "API inline Documentation"
-msgstr ""
+msgstr "Встроенная документация API"
 
 #: inc/config.class.php:722
 msgid "Enable login with credentials"
@@ -12020,7 +12021,7 @@ msgstr "Автоматически сгенерированно GLPI %s"
 #: install/update_084_085.php:2656 install/update_084_085.php:2731
 #: install/update_084_085.php:2848 install/update_0841_0843.php:155
 #: install/update_0843_0844.php:120 install/update_085_0853.php:142
-#: install/update_0855_090.php:91 install/update_0901_91.php:647
+#: install/update_0855_090.php:91 install/update_0905_91.php:647
 #, php-format
 msgid "Data migration - %s"
 msgstr "Миграция данных - %s"
@@ -15272,7 +15273,7 @@ msgstr "Месторасположение заявки"
 #: inc/slt.class.php:579 inc/slt.class.php:603 inc/ticket.class.php:2313
 #: inc/ticket.class.php:2318 inc/ticket.class.php:2327
 msgid "SLT"
-msgstr ""
+msgstr "SLT"
 
 #: inc/ruleticket.class.php:595
 msgid "Approval request to requester group manager"
@@ -15360,7 +15361,7 @@ msgstr "Выполнение"
 
 #: inc/slalevel.class.php:234
 msgid "Automatic reminders of SLT"
-msgstr ""
+msgstr "Автоматические напоминания SLT"
 
 #: inc/slalevel.class.php:360
 #, php-format
@@ -15386,7 +15387,7 @@ msgstr "Автоматические действия в SLA"
 
 #: inc/slt.class.php:220 inc/slt.class.php:325
 msgid "Maximum time"
-msgstr ""
+msgstr "Максимальное время"
 
 #: inc/slt.class.php:224
 msgid "Minute"
@@ -15402,7 +15403,7 @@ msgstr "Конец рабочего дня"
 
 #: inc/slt.class.php:295
 msgid "Add a new SLT"
-msgstr ""
+msgstr "Добавить новый SLT"
 
 #: inc/slt.class.php:512
 #, php-format
@@ -15411,7 +15412,7 @@ msgstr "Следующая эскалация: %s"
 
 #: inc/slt.class.php:535
 msgid "Also delete date ?"
-msgstr ""
+msgstr "Дату удалить тоже?"
 
 #: inc/slt.class.php:573
 msgid ""
@@ -15427,7 +15428,7 @@ msgid "Merging"
 msgstr "Объединение"
 
 #. TRANS: a noun, (ex : this software is an upgrade of..)
-#: inc/software.class.php:308 install/update.php:907
+#: inc/software.class.php:308 install/update.php:911
 msgid "Upgrade"
 msgstr "Обновление"
 
@@ -16867,7 +16868,7 @@ msgstr "Я прочел и НЕ ПРИНИМАЮ все пункты лицен�
 
 #: install/install.php:131 install/install.php:175 install/install.php:186
 #: install/install.php:228 install/install.php:303 install/install.php:324
-#: install/install.php:364 install/install.php:501 install/update.php:925
+#: install/install.php:364 install/install.php:501 install/update.php:929
 msgid "Continue"
 msgstr "Продолжить"
 
@@ -16918,7 +16919,7 @@ msgstr "Сервер вернул: %s"
 msgid "The server or/and user field is empty"
 msgstr "Поле сервера и/или пользователя пустое"
 
-#: install/install.php:270 install/update.php:933
+#: install/install.php:270 install/update.php:937
 msgid "Database connection successful"
 msgstr "Соединение с БД установлено"
 
@@ -16991,7 +16992,7 @@ msgid "You can delete or modify these accounts as well as the initial data."
 msgstr "Вы можете изменить или удалить эти учетные записи."
 
 #: install/install.php:480 install/update_content.php:375
-#: install/update.php:977
+#: install/update.php:981
 msgid "Use GLPI"
 msgstr "Запустить GLPI"
 
@@ -17051,7 +17052,8 @@ msgstr "Поставщик услуг"
 #: install/update_0841_0843.php:50 install/update_0843_0844.php:50
 #: install/update_0845_0846.php:50 install/update_085_0853.php:50
 #: install/update_0853_0855.php:46 install/update_0855_090.php:50
-#: install/update_090_0901.php:50 install/update_0901_91.php:50
+#: install/update_090_0901.php:50 install/update_0901_0905.php:50
+#: install/update_0905_91.php:50
 #, php-format
 msgid "Update to %s"
 msgstr "Обновить до %s"
@@ -17077,21 +17079,21 @@ msgctxt "ticket"
 msgid "New"
 msgstr "Новая"
 
-#: install/update_0901_91.php:72
+#: install/update_0905_91.php:72
 #, php-format
 msgid "Add of - %s to database"
 msgstr "Добавлены - %s в базу данных"
 
-#: install/update_0901_91.php:411
+#: install/update_0905_91.php:411
 msgid "date_mod and date_creation"
 msgstr "date_mod и date_creation"
 
-#: install/update_0901_91.php:438
+#: install/update_0905_91.php:438
 #, php-format
 msgid "Add date_mod to %s"
 msgstr "Добавить date_mod к %s"
 
-#: install/update_0901_91.php:447
+#: install/update_0905_91.php:447
 #, php-format
 msgid "Add date_creation to %s"
 msgstr "Добавить date_creation к %s"
@@ -17146,26 +17148,26 @@ msgstr "Новая иерархия"
 msgid "This is the new hierarchy. If it's complete approve it."
 msgstr "Это новая иерархия. Если все правильно, подтвердите."
 
-#: install/update.php:915
+#: install/update.php:919
 msgid "Impossible to accomplish an update by this way!"
 msgstr "Обновление этим путем невозможно!!"
 
-#: install/update.php:917
+#: install/update.php:921
 msgid "Go back to GLPI"
 msgstr "Вернуться в GLPI"
 
-#: install/update.php:922
+#: install/update.php:926
 #, php-format
 msgid "Caution! You will update the GLPI database named: %s"
 msgstr "Внимание! Вы будете обновлять базу данных GLPI с именем: %s"
 
-#: install/update.php:955
+#: install/update.php:959
 msgid ""
 "All users having administrators rights have have been updated to 'super-"
 "admin' rights with the creation of his new user type."
 msgstr "Теперь все администраторы имеют права 'super-admin'. Этот тип пользователя также был добавлен."
 
-#: install/update.php:985
+#: install/update.php:989
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"

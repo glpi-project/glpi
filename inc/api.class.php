@@ -94,7 +94,7 @@ abstract class API extends CommonGLPI {
       }
       $found_clients = $apiclient->find("`is_active` = '1' $where_ip");
       if (count($found_clients) <= 0) {
-         $this->returnError(__("There isn't an active api client matching your ip adress in the configuration,").
+         $this->returnError(__("There isn't an active api client matching your ip adress in the configuration").
                             " (".$this->iptxt.")",
                             "", "ERROR_NOT_ALLOWED_IP", false);
       }
