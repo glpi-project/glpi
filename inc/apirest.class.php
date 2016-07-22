@@ -55,11 +55,11 @@ class APIRest extends API {
    /**
     * parse url and http body to retrieve :
     *  - HTTP VERB (GET/POST/DELETE/PUT)
-    *  - Ressource : Rest endpoint
+    *  - Resource : Rest endpoint
     *  - Identifier
     *  - and parameters
     *
-    *  And send to method corresponding identified ressource
+    *  And send to method corresponding identified resource
     *
     * @since version 9.1
     *
@@ -88,8 +88,8 @@ class APIRest extends API {
          }
       }
 
-      // retrieve requested ressource
-      $ressource = trim(strval($this->url_elements[0]));
+      // retrieve requested resource
+      $resource = trim(strval($this->url_elements[0]));
 
       // retrieve session (if exist)
       $this->retrieveSession();
@@ -100,57 +100,57 @@ class APIRest extends API {
       }
 
       // inline documentation (api/)
-      if (strlen($ressource) == 0 || $ressource == "api") {
+      if (strlen($resource) == 0 || $resource == "api") {
          return $this->inlineDocumentation("apirest.md");
 
       ## DECLARE ALL ENDPOINTS ##
       // login into glpi
-      } else if ($ressource === "initSession") {
+      } else if ($resource === "initSession") {
          $this->session_write = true;
          return $this->returnResponse($this->initSession($this->parameters));
 
       // logout from glpi
-      } else if ($ressource === "killSession") {
+      } else if ($resource === "killSession") {
          $this->session_write = true;
          return $this->returnResponse($this->killSession());
 
       // change active entities
-      } else if ($ressource === "changeActiveEntities") {
+      } else if ($resource === "changeActiveEntities") {
          $this->session_write = true;
          return $this->returnResponse($this->changeActiveEntities($this->parameters));
 
       // get all entities of logged user
-      } else if ($ressource === "getMyEntities") {
+      } else if ($resource === "getMyEntities") {
          return $this->returnResponse($this->getMyEntities($this->parameters));
 
       // get curent active entity
-      } else if ($ressource === "getActiveEntities") {
+      } else if ($resource === "getActiveEntities") {
          return $this->returnResponse($this->getActiveEntities($this->parameters));
 
       // change active profile
-      } else if ($ressource === "changeActiveProfile") {
+      } else if ($resource === "changeActiveProfile") {
          $this->session_write = true;
          return $this->returnResponse($this->changeActiveProfile($this->parameters));
 
       // get all profiles of current logged user
-      } else if ($ressource === "getMyProfiles") {
+      } else if ($resource === "getMyProfiles") {
          return $this->returnResponse($this->getMyProfiles($this->parameters));
 
       // get current active profile
-      } else if ($ressource === "getActiveProfile") {
+      } else if ($resource === "getActiveProfile") {
          return $this->returnResponse($this->getActiveProfile($this->parameters));
 
       // get complete php session
-      } else if ($ressource === "getFullSession") {
+      } else if ($resource === "getFullSession") {
          return $this->returnResponse($this->getFullSession($this->parameters));
 
       // list searchOptions of an itemtype
-      } else if ($ressource === "listSearchOptions") {
+      } else if ($resource === "listSearchOptions") {
          $itemtype = $this->getItemtype(1);
          return $this->returnResponse($this->listSearchOptions($itemtype, $this->parameters));
 
       // Search on itemtype
-      } else if ($ressource === "search") {
+      } else if ($resource === "search") {
          self::checkSessionToken();
 
          $itemtype = $this->getItemtype(1, true, true);
@@ -274,12 +274,12 @@ class APIRest extends API {
 
             return $itemtype;
          } else {
-            $this->returnError(__("ressource not found or not an instance of CommonDBTM"),
+            $this->returnError(__("resource not found or not an instance of CommonDBTM"),
                                400,
-                               "ERROR_RESSOURCE_NOT_FOUND_NOR_COMMONDBTM");
+                               "ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM");
          }
       } else if ($recursive) {
-         $this->returnError(__("missing ressource"), 400, "ERROR_RESSOURCE_MISSING");
+         $this->returnError(__("missing resource"), 400, "ERROR_RESOURCE_MISSING");
       }
 
       return false;

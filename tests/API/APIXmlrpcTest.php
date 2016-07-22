@@ -40,9 +40,9 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/apixmlrpc.php";
    }
 
-   protected function doHttpRequest($ressource = "", $params = array()) {
+   protected function doHttpRequest($resource = "", $params = array()) {
       $headers = array("Content-Type" => "text/xml");
-      $request = xmlrpc_encode_request($ressource, $params);
+      $request = xmlrpc_encode_request($resource, $params);
       return $this->http_client->post($this->base_uri,['body'    => $request,
                                                        'headers' => $headers]);
    }

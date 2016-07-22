@@ -168,7 +168,7 @@ abstract class API extends CommonGLPI {
          $noAuto = false;
 
       } else if (!$CFG_GLPI['enable_api_login_credentials']) {
-         $this->returnError(__("usage of initSession ressource with credentials is disabled"), 400,
+         $this->returnError(__("usage of initSession resource with credentials is disabled"), 400,
                             "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED");
       }
 

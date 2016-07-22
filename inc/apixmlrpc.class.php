@@ -54,70 +54,70 @@ class APIXmlrpc extends API {
 
    /**
     * parse POST var to retrieve
-    *  - Ressource
+    *  - Resource
     *  - Identifier
     *  - and parameters
     *
-    *  And send to method corresponding identified ressource
+    *  And send to method corresponding identified resource
     *
     * @since version 9.1
     *
     * @return     xmlrpc response
     */
    public function call() {
-      $ressource = $this->parseIncomingParams();
+      $resource = $this->parseIncomingParams();
 
       // retrieve session (if exist)
       $this->retrieveSession();
 
       $code = 200;
 
-      if ($ressource === "initSession") {
+      if ($resource === "initSession") {
          $this->session_write = true;
          return $this->returnResponse($this->initSession($this->parameters));
 
       // logout from glpi
-      } else if ($ressource === "killSession") {
+      } else if ($resource === "killSession") {
          $this->session_write = true;
          return $this->returnResponse($this->killSession());
 
       // change active entities
-      } else if ($ressource === "changeActiveEntities") {
+      } else if ($resource === "changeActiveEntities") {
          $this->session_write = true;
          return $this->returnResponse($this->changeActiveEntities($this->parameters));
 
       // get all entities of logged user
-      } else if ($ressource === "getMyEntities") {
+      } else if ($resource === "getMyEntities") {
          return $this->returnResponse($this->getMyEntities($this->parameters));
 
       // get curent active entity
-      } else if ($ressource === "getActiveEntities") {
+      } else if ($resource === "getActiveEntities") {
          return $this->returnResponse($this->getActiveEntities($this->parameters));
 
       // change active profile
-      } else if ($ressource === "changeActiveProfile") {
+      } else if ($resource === "changeActiveProfile") {
          $this->session_write = true;
          return $this->returnResponse($this->changeActiveProfile($this->parameters));
 
       // get all profiles of current logged user
-      } else if ($ressource === "getMyProfiles") {
+      } else if ($resource === "getMyProfiles") {
          return $this->returnResponse($this->getMyProfiles($this->parameters));
 
       // get current active profile
-      } else if ($ressource === "getActiveProfile") {
+      } else if ($resource === "getActiveProfile") {
          return $this->returnResponse($this->getActiveProfile($this->parameters));
 
       // get complete php session
-      } else if ($ressource === "getFullSession") {
+      } else if ($resource === "getFullSession") {
          return $this->returnResponse($this->getFullSession($this->parameters));
 
       // list searchOptions of an itemtype
-      } else if ($ressource === "listSearchOptions") {
+      } else if ($resource === "listSearchOptions") {
          return $this->returnResponse($this->listSearchOptions($this->parameters['itemtype'],
                                                                $this->parameters));
 
       // Search on itemtype
-      } else if ($ressource === "search") {
+      } else if ($resource === "search") {
          self::checkSessionToken();
 
          //search
@@ -131,11 +131,11 @@ class APIXmlrpc extends API {
          return $this->returnResponse($response, $code);
 
       // commonDBTM manipulation
-      } else if (in_array($ressource,
+      } else if (in_array($resource,
                           array("getItem", "getItems", "createItems", "updateItems", "deleteItems"))) {
          // check itemtype parameter
          if (!isset($this->parameters['itemtype'])) {
-            $this->returnError(__("missing itemtype"), 400, "ITEMTYPE_RESSOURCE_MISSING");
+            $this->returnError(__("missing itemtype"), 400, "ITEMTYPE_RESOURCE_MISSING");
          }
          if (!class_exists($this->parameters['itemtype'])
              || !is_subclass_of($this->parameters['itemtype'], 'CommonDBTM')
@@ -146,10 +146,10 @@ class APIXmlrpc extends API {
          } else
 
          // get an CommonDBTM item
-         if ($ressource === "getItem") {
+         if ($resource === "getItem") {
             // check id parameter
             if (!isset($this->parameters['id'])) {
-               $this->returnError(__("missing id"), 400, "ID_RESSOURCE_MISSING");
+               $this->returnError(__("missing id"), 400, "ID_RESOURCE_MISSING");
             }
 
             return $this->returnResponse($this->getItem($this->parameters['itemtype'],
@@ -157,23 +157,23 @@ class APIXmlrpc extends API {
                                                         $this->parameters));
 
          // get a collection of a CommonDBTM item
-         } else if ($ressource === "getItems") {
+         } else if ($resource === "getItems") {
             return $this->returnResponse($this->getItems($this->parameters['itemtype'],
                                                          $this->parameters));
 
          // create one or many CommonDBTM items
-         } else if ($ressource === "createItems") {
+         } else if ($resource === "createItems") {
             return $this->returnResponse($this->createItems($this->parameters['itemtype'],
                                                             $this->parameters),
                                                             201);
 
          // update one or many CommonDBTM items
-         } else if ($ressource === "updateItems") {
+         } else if ($resource === "updateItems") {
             return $this->returnResponse($this->updateItems($this->parameters['itemtype'],
                                                             $this->parameters));
 
          // delete one or many CommonDBTM items
-         } else if ($ressource === "deleteItems") {
+         } else if ($resource === "deleteItems") {
             if (isset($this->parameters['id'])) {
                $code = 204;
                //override input
@@ -198,10 +198,10 @@ class APIXmlrpc extends API {
     */
    public function parseIncomingParams() {
       $parameters = array();
-      $ressource = "";
+      $resource = "";
 
       $parameters = xmlrpc_decode_request(trim(file_get_contents("php://input")),
-                                          $ressource,
+                                          $resource,
                                           'UTF-8');
 
       $this->parameters = (isset($parameters[0]) && is_array($parameters[0])
@@ -222,7 +222,7 @@ class APIXmlrpc extends API {
          }
       }
 
-      return $ressource;
+      return $resource;
    }
 
    /**

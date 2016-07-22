@@ -1338,7 +1338,7 @@ class Toolbox {
             return false;
       }
 
-      //create new img ressource for store thumbnail
+      //create new img resource for store thumbnail
       $source_dest = imagecreatetruecolor($new_width, $new_height);
 
       //resize image
