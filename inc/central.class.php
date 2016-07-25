@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -194,7 +194,7 @@ class Central extends CommonGLPI {
          if (!empty($crashedtables)) {
             $tables = array();
             foreach ($crashedtables as $crashedtable) {
-               $tables[] = $crashtable['table'];
+               $tables[] = $crashedtable['table'];
             }
             echo "<tr><th colspan='2'>";
             $message = __('The following MySQL tables are marked as crashed:');
