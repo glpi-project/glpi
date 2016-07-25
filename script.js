@@ -932,3 +932,9 @@ if ($(window).width() <= 700) {
       lastScrollTop = st;
    }
 }
+
+
+// prevent jquery ui dialog to keep focus
+$(function(){
+   $.ui.dialog.prototype._focusTabbable = function(){};
+});
