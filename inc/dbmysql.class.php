@@ -677,9 +677,9 @@ class DBmysql {
       global $DB;
       $crashed_tables = array();
 
-      $result = $DB->list_tables();
+      $result_tables = $DB->list_tables();
 
-      while ($line = $DB->fetch_row($result)) {
+      while ($line = $DB->fetch_row($result_tables)) {
          $query  = "CHECK TABLE `".$line[0]."` FAST";
          $result  = $DB->query($query);
          if ($DB->numrows($result) > 0) {
