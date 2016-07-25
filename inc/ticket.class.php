@@ -508,15 +508,19 @@ class Ticket extends CommonITILObject {
          if ($_SESSION['glpishow_count_on_tabs']) {
             switch ($item->getType()) {
                case 'User' :
-                  $nb = countElementsInTable('glpi_tickets_users',
-                                             "`users_id` = '".$item->getID()."'
-                                                AND `type` = ".CommonITILActor::REQUESTER);
+                  $nb = countElementsInTable(array('glpi_tickets', 'glpi_tickets_users'),
+                                             getEntitiesRestrictRequest("", 'glpi_tickets').
+                                               "AND `glpi_tickets_users`.`tickets_id` = `glpi_tickets`.`id`
+                                                AND `glpi_tickets_users`.`users_id` = '".$item->getID()."'
+                                                AND `glpi_tickets_users`.`type` = ".CommonITILActor::REQUESTER);
                   $title = __('Created tickets');
                   break;
 
                case 'Supplier' :
-                  $nb = countElementsInTable('glpi_suppliers_tickets',
-                                             "`suppliers_id` = '".$item->getID()."'");
+                  $nb = countElementsInTable(array('glpi_tickets', 'glpi_suppliers_tickets'),
+                                             getEntitiesRestrictRequest("", 'glpi_tickets').
+                                               "AND `glpi_suppliers_tickets`.`tickets_id` = `glpi_tickets`.`id`
+                                                AND `glpi_suppliers_tickets`.`suppliers_id` = '".$item->getID()."'");
                   break;
 
                case 'SLA' :
@@ -525,9 +529,11 @@ class Ticket extends CommonITILObject {
                   break;
 
                case 'Group' :
-                  $nb = countElementsInTable('glpi_groups_tickets',
-                                             "`groups_id` = '".$item->getID()."'
-                                               AND `type` = ".CommonITILActor::REQUESTER);
+                  $nb = countElementsInTable(array('glpi_tickets', 'glpi_groups_tickets'),
+                                             getEntitiesRestrictRequest("", 'glpi_tickets').
+                                               "AND `glpi_groups_tickets`.`tickets_id` = `glpi_tickets`.`id`
+                                                AND `glpi_groups_tickets`.`groups_id` = '".$item->getID()."'
+                                                AND `glpi_groups_tickets`.`type` = ".CommonITILActor::REQUESTER);
                   $title = __('Created tickets');
                   break;
 
