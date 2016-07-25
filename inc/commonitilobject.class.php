@@ -446,14 +446,16 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function countActiveObjectsForUser($users_id) {
 
-      $linkclass = new $this->userlinkclass();
-      $itemtable = $this->getTable();
-      $itemtype  = $this->getType();
-      $itemfk    = $this->getForeignKeyField();
-      $linktable = $linkclass->getTable();
+      $linkclass      = new $this->userlinkclass();
+      $itemtable      = $this->getTable();
+      $itemtype       = $this->getType();
+      $itemfk         = $this->getForeignKeyField();
+      $linktable      = $linkclass->getTable();
+      $where_entities = getEntitiesRestrictRequest("", $itemtable);
 
       return countElementsInTable(array($itemtable,$linktable),
-                                  "`$linktable`.`$itemfk` = `$itemtable`.`id`
+                                  "$where_entities
+                                    AND `$linktable`.`$itemfk` = `$itemtable`.`id`
                                     AND `$linktable`.`users_id` = '$users_id'
                                     AND `$linktable`.`type` = '".CommonITILActor::REQUESTER."'
                                     AND `$itemtable`.`is_deleted` = 0
@@ -476,14 +478,16 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function countActiveObjectsForTech($users_id) {
 
-      $linkclass = new $this->userlinkclass();
-      $itemtable = $this->getTable();
-      $itemtype  = $this->getType();
-      $itemfk    = $this->getForeignKeyField();
-      $linktable = $linkclass->getTable();
+      $linkclass      = new $this->userlinkclass();
+      $itemtable      = $this->getTable();
+      $itemtype       = $this->getType();
+      $itemfk         = $this->getForeignKeyField();
+      $linktable      = $linkclass->getTable();
+      $where_entities = getEntitiesRestrictRequest("", $itemtable);
 
       return countElementsInTable(array($itemtable,$linktable),
-                                  "`$linktable`.`$itemfk` = `$itemtable`.`id`
+                                  "$where_entities
+                                    AND `$linktable`.`$itemfk` = `$itemtable`.`id`
                                     AND `$linktable`.`users_id` = '$users_id'
                                     AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."'
                                     AND `$itemtable`.`is_deleted` = 0
@@ -506,14 +510,16 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    function countActiveObjectsForTechGroup($groups_id) {
 
-      $linkclass = new $this->grouplinkclass();
-      $itemtable = $this->getTable();
-      $itemtype  = $this->getType();
-      $itemfk    = $this->getForeignKeyField();
-      $linktable = $linkclass->getTable();
+      $linkclass      = new $this->grouplinkclass();
+      $itemtable      = $this->getTable();
+      $itemtype       = $this->getType();
+      $itemfk         = $this->getForeignKeyField();
+      $linktable      = $linkclass->getTable();
+      $where_entities = getEntitiesRestrictRequest("", $itemtable);
 
       return countElementsInTable(array($itemtable,$linktable),
-                                  "`$linktable`.`$itemfk` = `$itemtable`.`id`
+                                  "$where_entities
+                                    AND `$linktable`.`$itemfk` = `$itemtable`.`id`
                                     AND `$linktable`.`groups_id` = '$groups_id'
                                     AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."'
                                     AND `$itemtable`.`is_deleted` = 0
@@ -536,22 +542,24 @@ abstract class CommonITILObject extends CommonDBTM {
     **/
    function countActiveObjectsForSupplier($suppliers_id) {
 
-      $linkclass = new $this->supplierlinkclass();
-      $itemtable = $this->getTable();
-      $itemtype  = $this->getType();
-      $itemfk    = $this->getForeignKeyField();
-      $linktable = $linkclass->getTable();
+      $linkclass      = new $this->supplierlinkclass();
+      $itemtable      = $this->getTable();
+      $itemtype       = $this->getType();
+      $itemfk         = $this->getForeignKeyField();
+      $linktable      = $linkclass->getTable();
+      $where_entities = getEntitiesRestrictRequest("", $itemtable);
 
       return countElementsInTable(array($itemtable,$linktable),
-            "`$linktable`.`$itemfk` = `$itemtable`.`id`
-            AND `$linktable`.`suppliers_id` = '$suppliers_id'
-            AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."'
-            AND `$itemtable`.`is_deleted` = 0
-            AND `$itemtable`.`status`
-            NOT IN ('".implode("', '",
-            array_merge($this->getSolvedStatusArray(),
-                  $this->getClosedStatusArray())
-      )."')");
+                                  "$where_entities
+                                    AND `$linktable`.`$itemfk` = `$itemtable`.`id`
+                                    AND `$linktable`.`suppliers_id` = '$suppliers_id'
+                                    AND `$linktable`.`type` = '".CommonITILActor::ASSIGN."'
+                                    AND `$itemtable`.`is_deleted` = 0
+                                    AND `$itemtable`.`status`
+                                    NOT IN ('".implode("', '",
+                                                       array_merge($this->getSolvedStatusArray(),
+                                                                   $this->getClosedStatusArray())
+                                                      )."')");
    }
 
 
