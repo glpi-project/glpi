@@ -198,7 +198,7 @@ class Central extends CommonGLPI {
          if (!empty($crashedtables)) {
             $tables = array();
             foreach ($crashedtables as $crashedtable) {
-               $tables[] = $crashtable['table'];
+               $tables[] = $crashedtable['table'];
             }
             echo "<tr><th colspan='2'>";
             $message = __('The following SQL tables are marked as crashed:');
