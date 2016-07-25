@@ -169,7 +169,7 @@ if (($ok_master || $ok_slave )
       if (!empty($CFG_GLPI["cas_port"])) {
          $url .= ':'.intval($CFG_GLPI["cas_port"]);
       }
-      $url .= $CFG_GLPI["cas_uri"];
+      $url .= '/'.$CFG_GLPI["cas_uri"];
       $data = Toolbox::getURLContent($url);
       if (!empty($data)) {
          echo "_OK";
