@@ -59,7 +59,7 @@ $RELATION = array("glpi_authldaps"
                   "glpi_calendars"
                         => array('_glpi_calendarsegments'   => 'calendars_id',
                                  '_glpi_calendars_holidays' => 'calendars_id',
-                                 'glpi_slts'                => 'calendars_id',
+                                 'glpi_slas'                => 'calendars_id',
                                  'glpi_entities'            => 'calendars_id',),
 
                   "glpi_cartridgeitems"
