@@ -381,6 +381,7 @@ class Project extends CommonDBTM {
       $tab[1]['name']            = __('Name');
       $tab[1]['datatype']        = 'itemlink';
       $tab[1]['massiveaction']   = false; // implicit key==1
+      $tab[1]['forcegroupby']    = true;
 
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'id';
