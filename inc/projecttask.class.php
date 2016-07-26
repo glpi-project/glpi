@@ -361,10 +361,10 @@ class ProjectTask extends CommonDBChild {
          $projects_id     = $this->fields['projects_id'];
          $projecttasks_id = $this->fields['projecttasks_id'];
       } else {
+         $this->check(-1, CREATE, $options);
          $projects_id     = $options['projects_id'];
          $projecttasks_id = $options['projecttasks_id'];
          $recursive       = $this->fields['is_recursive'];
-         $this->check(-1, CREATE, $options);
       }
 
       $this->showFormHeader($options);
