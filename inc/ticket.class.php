@@ -4206,23 +4206,22 @@ class Ticket extends CommonITILObject {
          }
          echo $tt->getEndHiddenFieldValue('itemtype', $this);
       } else {
-         if ($canupdate
-             || $canupdate_descr) {
          // display associated elements
-            $item_tickets = getAllDatasFromTable(getTableForItemType('Item_Ticket'),
-                                                 "`tickets_id`='".$ID."'");
-            $i = 0;
-            foreach ($item_tickets as $itdata) {
-               if ($i >= 5) {
-                  echo "<i><a href='".$this->getFormURL()."?id=".$ID."&amp;forcetab=Item_Ticket$1'>".
-                           __('Display all items')." (".count($item_tickets).")</a></i>";
-                  break;
-               }
-               $item = new $itdata['itemtype'];
-               $item->getFromDB($itdata['items_id']);
-               echo $item->getTypeName(1).": ".$item->getLink(array('comments' => true))."<br/>";
-               $i++;
+         $item_tickets = getAllDatasFromTable(
+                           getTableForItemType('Item_Ticket'),
+                           "`tickets_id`='".$ID."'");
+         $i = 0;
+         foreach ($item_tickets as $itdata) {
+            if ($i >= 5) {
+               echo "<i><a href='".$this->getFormURL()."?id=".$ID.
+                       "&amp;forcetab=Item_Ticket$1'>"
+               .__('Display all items')." (".count($item_tickets).")</a></i>";
+               break;
             }
+            $item = new $itdata['itemtype'];
+            $item->getFromDB($itdata['items_id']);
+            echo $item->getTypeName(1).": ".$item->getLink(array('comments' => true))."<br/>";
+            $i++;
          }
 
       }
