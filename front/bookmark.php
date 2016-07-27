@@ -51,7 +51,9 @@ if (!isset($_GET["type"])) {
 if (!isset($_GET["itemtype"])) {
    $_GET["itemtype"] = -1;
 } else {
-   $_GET['itemtype'] = (int)$_GET['itemtype'];
+   if (!is_subclass_of($_GET['itemtype'], 'CommonDBTM')) {
+       throw new \RuntimeException('Invalid name provided!');
+   }
 }
 
 if (!isset($_GET["url"])) {
