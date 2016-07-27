@@ -4197,10 +4197,8 @@ class Ticket extends CommonITILObject {
       } else {
          echo "<td>";
          echo $tt->getBeginHiddenFieldValue('items_id');
-         if ($canupdate
-             || $canupdate_descr) {
-            Item_Ticket::itemAddForm($this, $values);
-         }
+         $value['_canupdate'] = $canupdate || $canupdate_descr;
+         Item_Ticket::itemAddForm($this, $values);
          echo $tt->getEndHiddenFieldValue('items_id', $this);
          echo "</td>";
       }

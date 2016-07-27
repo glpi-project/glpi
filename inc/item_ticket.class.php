@@ -217,10 +217,14 @@ class Item_Ticket extends CommonDBRelation{
    static function itemAddForm(Ticket $ticket, $options=array()){
       global $CFG_GLPI;
 
-      $params = array('id'                  => (isset($ticket->fields['id']) && $ticket->fields['id'] != '') ? $ticket->fields['id'] : 0,
+      $params = array('id'                  => (isset($ticket->fields['id'])
+                                                && $ticket->fields['id'] != '')
+                                                   ? $ticket->fields['id']
+                                                   : 0,
                       '_users_id_requester' => 0,
                       'items_id'            => array(),
-                      'itemtype'            => '');
+                      'itemtype'            => '',
+                      '_canupdate'          => false);
 
       $opt = array();
 
@@ -234,14 +238,16 @@ class Item_Ticket extends CommonDBRelation{
          return false;
       }
 
-      $canedit = ($ticket->can($params['id'], UPDATE));
+      $canedit = ($ticket->can($params['id'], UPDATE)
+                  && $params['_canupdate']);
 
       // Ticket update case
       if ($params['id'] > 0) {
          // Get requester
          $class        = new $ticket->userlinkclass();
          $tickets_user = $class->getActors($params['id']);
-         if (isset($tickets_user[CommonITILActor::REQUESTER]) && (count($tickets_user[CommonITILActor::REQUESTER]) == 1)) {
+         if (isset($tickets_user[CommonITILActor::REQUESTER])
+             && (count($tickets_user[CommonITILActor::REQUESTER]) == 1)) {
             foreach ($tickets_user[CommonITILActor::REQUESTER] as $user_id_single) {
                $params['_users_id_requester'] = $user_id_single['users_id'];
             }
@@ -251,7 +257,8 @@ class Item_Ticket extends CommonDBRelation{
          $used = self::getUsedItems($params['id']);
          foreach ($used as $itemtype => $items) {
             foreach ($items as $items_id) {
-               if (!isset($params['items_id'][$itemtype]) || !in_array($items_id, $params['items_id'][$itemtype])) {
+               if (!isset($params['items_id'][$itemtype])
+                   || !in_array($items_id, $params['items_id'][$itemtype])) {
                   $params['items_id'][$itemtype][] = $items_id;
                }
             }
