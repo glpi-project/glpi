@@ -159,7 +159,7 @@ class Search {
                }
                break;
             case 'sort':
-               $p[$key] = (int)$val;
+               $p[$key] = intval($val);
                if ($p[$key] <= 0) {
                   $p[$key] = 1;
                }
