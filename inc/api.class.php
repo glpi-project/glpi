@@ -950,6 +950,20 @@ abstract class API extends CommonGLPI {
       return $cleaned_searchoptions;
    }
 
+
+   /**
+    * Generate an unique id of a searchoption based on:
+    *  - itemtype
+    *  - linkfield
+    *  - joinparams
+    *  - field
+    *
+    * It permits to identify a searchoption with an named index instead a numeric one
+    *
+    * @param  CommonDBTM $itemtype current itemtype called on ressource listSearchOption
+    * @param  array $option        current option to generate an unique id
+    * @return string               the unique id
+    */
    private function getSearchOptionUniqID($itemtype, $option) {
       $uid_parts = array($itemtype);
 
@@ -957,7 +971,8 @@ abstract class API extends CommonGLPI {
 
       if ((isset($option['joinparams']['beforejoin']['table'])
           || empty($option['joinparams']))
-          && $option['linkfield'] != getForeignKeyFieldForItemType($sub_itemtype)) {
+             && $option['linkfield'] != getForeignKeyFieldForItemType($sub_itemtype)
+             && $option['linkfield'] != $option['field']) {
          $uid_parts[] = $option['linkfield'];
       }
 
@@ -980,6 +995,11 @@ abstract class API extends CommonGLPI {
       return $uuid;
    }
 
+   /**
+    * Generate subpart of a unique id of a search option with parsing joinparams recursively
+    * @param  array $option ['joinparams']['beforejoin'] subpart of a searchoption
+    * @return array         unique id parts
+    */
    private function getSearchOptionUniqIDJoins($option) {
       $uid_parts = array();
       if (isset($option['joinparams']['beforejoin'])) {
