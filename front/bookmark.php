@@ -45,7 +45,7 @@ Html::popHeader(__('Setup'), $_SERVER['PHP_SELF'], true);
 if (!isset($_GET["type"])) {
    $_GET["type"] = -1;
 } else {
-    $_GET['type'] = (int)$_GET['type'];
+    $_GET['type'] = intval($_GET['type']);
 }
 
 if (!isset($_GET["itemtype"])) {
