@@ -57,7 +57,7 @@ if (isset($_POST["itemtype"])
       throw new \RuntimeException('Invalid itemtype provided!');
    }
 
-   $_POST['num'] = (int)$_POST['num'];
+   $_POST['num'] = intval($_POST['num']);
 
    if (isset($_POST['meta']) && $_POST['meta']) {
       $fieldname = 'metacriteria';

@@ -55,12 +55,12 @@ if (isset($_POST["rubdoc"])) {
          if ($used_qry !== '') {
             $used_qry .= ', ';
          }
-         $used_qry .= (int)$current_used;
+         $used_qry .= intval($current_used);
       }
       $query = "SELECT `id`
                 FROM `glpi_documents`
                 WHERE `id` IN (".$used_qry.")
-                      AND `documentcategories_id` = '".(int)$_POST["rubdoc"]."'";
+                      AND `documentcategories_id` = '".intval($_POST["rubdoc"])."'";
 
       foreach ($DB->request($query) AS $data) {
          $used[$data['id']] = $data['id'];
@@ -75,9 +75,9 @@ if (isset($_POST["rubdoc"])) {
                   array('name'      => $_POST['myname'],
                         'used'      => $used,
                         'width'     => '50%',
-                        'entity'    => (int)$_POST['entity'],
-                        'rand'      => (int)$_POST['rand'],
-                        'condition' => "glpi_documents.documentcategories_id='".(int)$_POST["rubdoc"]."'"));
+                        'entity'    => intval($_POST['entity']),
+                        'rand'      => intval($_POST['rand']),
+                        'condition' => "glpi_documents.documentcategories_id='".intval($_POST["rubdoc"])."'"));
 
 }
 ?>
