@@ -339,7 +339,7 @@ class Item_Ticket extends CommonDBRelation{
       }
       echo "</div>";
 
-      foreach (array('id', '_users_id_requester', 'items_id', 'itemtype') as $key) {
+      foreach (array('id', '_users_id_requester', 'items_id', 'itemtype', '_canupdate') as $key) {
          $opt[$key] = $params[$key];
       }
 
