@@ -3144,6 +3144,7 @@ class Ticket extends CommonITILObject {
             echo "<td>".sprintf(__('%1$s%2$s'), __('Hardware type'),
                                 $tt->getMandatoryMark('items_id'))."</td>";
             echo "<td>";
+            $values['_canupdate'] = Session::haveRight('ticket', CREATE);
             Item_Ticket::itemAddForm($this, $values);
             echo "</td></tr>";
          }
