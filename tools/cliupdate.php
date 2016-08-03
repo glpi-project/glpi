@@ -331,7 +331,7 @@ switch ($current_version) {
 
    case "0.90.5" :
       include_once("../install/update_0905_91.php");
-      update0905to091();
+      update0905to91();
 
    /* remember to also change --force below for last version */
 
