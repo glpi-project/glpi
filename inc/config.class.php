@@ -1533,7 +1533,7 @@ class Config extends CommonDBTM {
          // echo "<tr><td><pre>Info:".print_r($info, true)."Stat:".print_r($stat, true)."</pre></td></tr>";
 
          // Memory
-         $max  = $info['num_seg'] + $info['seg_size'];
+         $max  = $info['num_seg'] * $info['seg_size'];
          $free = $info['avail_mem'];
          $used = $max - $free;
          $rate = round(100.0 * $used / $max);
