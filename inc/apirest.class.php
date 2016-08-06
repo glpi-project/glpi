@@ -96,7 +96,7 @@ class APIRest extends API {
 
       // retrieve param who permit session writing
       if (isset($this->parameters['session_write'])) {
-         $this->session_write = boolval($this->parameters['session_write']);
+         $this->session_write = (bool)$this->parameters['session_write'];
       }
 
       // inline documentation (api/)
