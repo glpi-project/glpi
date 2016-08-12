@@ -5218,9 +5218,9 @@ class Ticket extends CommonITILObject {
                                     'items_id' => $item->getID()));
       }
       echo "</div><div>";
-      echo "<table class='tab_cadre_fixehov'>";
 
       if ($number > 0) {
+         echo "<table class='tab_cadre_fixehov'>";
          if (Session::haveRight(self::$rightname, self::READALL)) {
             Session::initNavigateListItems('Ticket',
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
@@ -5238,6 +5238,7 @@ class Ticket extends CommonITILObject {
          }
 
       } else {
+         echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".__('No ticket found.')."</th></tr>";
       }
 
