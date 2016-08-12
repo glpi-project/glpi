@@ -2012,6 +2012,7 @@ CREATE TABLE `glpi_entities` (
   `default_consumables_alarm_threshold` int(11) NOT NULL DEFAULT '-2',
   `delay_send_emails` int(11) NOT NULL DEFAULT '-2',
   `is_notif_enable_default` int(11) NOT NULL DEFAULT '-2',
+  `inquest_duration` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `entities_id` (`entities_id`)
