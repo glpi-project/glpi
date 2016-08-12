@@ -1109,7 +1109,8 @@ class KnowbaseItem extends CommonDBTM {
                $search_wilcard = implode('* ', $search_wilcard).'*';
 
                $addscore = array();
-               if (KnowbaseItemTranslation::isKbTranslationActive()) {
+               if (KnowbaseItemTranslation::isKbTranslationActive()
+                   && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)) {
                   $addscore = array('`glpi_knowbaseitemtranslations`.`name`',
                                     '`glpi_knowbaseitemtranslations`.`answer`');
                }
