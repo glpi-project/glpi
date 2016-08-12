@@ -456,9 +456,9 @@ class Contract_Item extends CommonDBRelation{
       $header_end .= "<th>".__('Start date')."</th>";
       $header_end .= "<th>".__('Initial contract period')."</th>";
       $header_end .= "</tr>";
-      echo $header_begin.$header_top.$header_end;
 
       if ($number > 0) {
+         echo $header_begin.$header_top.$header_end;
          Session::initNavigateListItems(__CLASS__,
                               //TRANS : %1$s is the itemtype name,
                               //         %2$s is the name of the item (used for headings of a list)
@@ -505,6 +505,10 @@ class Contract_Item extends CommonDBRelation{
             echo "</tr>";
          }
          echo $header_begin.$header_bottom.$header_end;
+         echo "</table>";
+      } else {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".__('No item found.')."</th></tr></table>";
       }
 
       echo "</table>";

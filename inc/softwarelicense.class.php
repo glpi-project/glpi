@@ -681,9 +681,6 @@ class SoftwareLicense extends CommonDBTM {
          echo "</div>";
       }
 
-      // Display the pager
-      Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
-
       $rand  = mt_rand();
       $query = "SELECT `glpi_softwarelicenses`.*,
                        `buyvers`.`name` AS buyname,
@@ -707,6 +704,8 @@ class SoftwareLicense extends CommonDBTM {
 
       if ($result = $DB->query($query)) {
          if ($num_displayed = $DB->numrows($result)) {
+            // Display the pager
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
             if ($showmassiveactions) {
                Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $massiveactionparams
@@ -819,12 +818,12 @@ class SoftwareLicense extends CommonDBTM {
 
                Html::closeForm();
             }
-
+            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
          } else {
-            _e('No item found');
+            echo "<table class='tab_cadre_fixe'><tr><th>".__('No item found.')."</th></tr></table>";
          }
       }
-      Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
+
 
       echo "</div>";
    }
