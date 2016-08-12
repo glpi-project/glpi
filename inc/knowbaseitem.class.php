@@ -1071,7 +1071,8 @@ class KnowbaseItem extends CommonDBTM {
          $where .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
 
-      if (KnowbaseItemTranslation::isKbTranslationActive()) {
+      if (KnowbaseItemTranslation::isKbTranslationActive()
+          && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)) {
          $join .= "LEFT JOIN `glpi_knowbaseitemtranslations`
                      ON (`glpi_knowbaseitems`.`id` = `glpi_knowbaseitemtranslations`.`knowbaseitems_id`
                          AND `glpi_knowbaseitemtranslations`.`language` = '".$_SESSION['glpilanguage']."')";
@@ -1164,7 +1165,8 @@ class KnowbaseItem extends CommonDBTM {
                                    /* 9 */   "/\-/");
                   $contains = preg_replace($search1,"", $params["contains"]);
                   $addwhere = '';
-                  if (KnowbaseItemTranslation::isKbTranslationActive()) {
+                  if (KnowbaseItemTranslation::isKbTranslationActive()
+                      && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)) {
                      $addwhere = " OR `glpi_knowbaseitemtranslations`.`name` ".Search::makeTextSearch($contains)."
                                     OR `glpi_knowbaseitemtranslations`.`answer` ".Search::makeTextSearch($contains);
                   }
@@ -1504,7 +1506,8 @@ class KnowbaseItem extends CommonDBTM {
       }
 
 
-      if (KnowbaseItemTranslation::isKbTranslationActive()) {
+      if (KnowbaseItemTranslation::isKbTranslationActive()
+          && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)) {
          $join .= "LEFT JOIN `glpi_knowbaseitemtranslations`
                      ON (`glpi_knowbaseitems`.`id` = `glpi_knowbaseitemtranslations`.`knowbaseitems_id`
                            AND `glpi_knowbaseitemtranslations`.`language` = '".$_SESSION['glpilanguage']."')";
