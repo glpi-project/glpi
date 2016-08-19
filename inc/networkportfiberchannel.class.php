@@ -333,7 +333,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
      $tab[22]['forcegroupby']  = true;
      $tab[22]['massiveaction'] = false;
      $tab[22]['joinparams']    = array('jointype'   => 'standard',
-                                       'beforejoin' => array('table' => 'glpi_networkportFiberchannels',
+                                       'beforejoin' => array('table' => 'glpi_networkportfiberchannels',
                                                              'joinparams'
                                                                      => $joinparams));
   }
