@@ -109,9 +109,11 @@ abstract class API extends CommonGLPI {
          header("Access-Control-Allow-Origin: *");
       }
 
-      if ($this->verb == "OPTIONS") {
+      if ($this->verb == 'GET' || $this->verb == 'OPTIONS') {
          header("Access-Control-Expose-Headers: content-type, content-range, accept-range");
+      }
 
+      if ($this->verb == "OPTIONS") {
          if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
             header("Access-Control-Allow-Methods: PUT, GET, POST, DELETE, OPTIONS");
          }
