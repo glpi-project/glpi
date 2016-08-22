@@ -310,6 +310,7 @@ class Report extends CommonGLPI{
                        PORT_1.`id` AS id_1,
                        PORT_1.`name` AS port_1,
                        PORT_1.`mac` AS mac_1,
+                       PORT_1.`logical_number` AS logical_1,
                        GROUP_CONCAT(ADDR_1.`name` SEPARATOR ',') AS ip_1,
                        PORT_2.`itemtype` AS itemtype_2,
                        PORT_2.`items_id` AS items_id_2,
@@ -368,6 +369,7 @@ class Report extends CommonGLPI{
          }
          echo "<th>".__('Device type')."</th>";
          echo "<th>".__('Device name')."</th>";
+         echo "<th>".__('Port Number')."</th>";
          echo "<th>".NetworkPort::getTypeName(1)."</th>";
          echo "<th>".__('MAC address')."</th>";
          echo "<th>".IPAddress::getTypeName(0)."</th>";
@@ -406,6 +408,7 @@ class Report extends CommonGLPI{
                echo "<td> ".NOT_AVAILABLE." </td>";
                echo "<td> ".NOT_AVAILABLE." </td>";
             }
+            echo "<td>".(empty($line["logical_$idx"]) ? NOT_AVAILABLE : $line["logical_$idx"])."</td>";
             echo "<td>".(empty($line["port_$idx"]) ? NOT_AVAILABLE : $line["port_$idx"])."</td>";
             echo "<td>".(empty($line["mac_$idx"]) ? NOT_AVAILABLE : $line["mac_$idx"])."</td>";
             echo "<td>".(empty($line["ip_$idx"]) ? NOT_AVAILABLE : $line["ip_$idx"])."</td>";
