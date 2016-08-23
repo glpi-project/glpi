@@ -1171,7 +1171,7 @@ You'll find with this error, a collection of results.
 
 
 
-## Servers configuration {servers_configuration}
+## Servers configuration {#servers_configuration}
 
 You'll find below some examples to configure your web server to redirect your http://.../glpi/api/ urls to the apirest.php file.
 
@@ -1192,7 +1192,7 @@ server {
 
    index index.html index.htm index.nginx-debian.html index.php;
 
-   server_name _;
+   server_name localhost;
 
    location / {
       try_files $uri $uri/ =404;
