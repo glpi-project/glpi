@@ -69,6 +69,71 @@ class APIClient extends CommonDBTM {
       return $ong;
    }
 
+   function getSearchOptions() {
+      $tab = array();
+
+      $tab['common']             = self::GetTypeName();
+
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
+
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'is_active';
+      $tab[3]['name']            = __('Active');
+      $tab[3]['datatype']        = 'bool';
+
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'dolog_method';
+      $tab[4]['name']            = __('Log connections');
+      $tab[4]['datatype']        = 'specific';
+
+      $tab['filter']             = __("Filter access");
+
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'ipv4_range_start';
+      $tab[5]['name']            = __('IPv4 address range')." - ".__("Start");
+      $tab[5]['datatype']        = 'specific';
+
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'ipv4_range_end';
+      $tab[6]['name']            = __('IPv4 address range')." - ".__("End");
+      $tab[6]['datatype']        = 'specific';
+
+      $tab[7]['table']           = $this->getTable();
+      $tab[7]['field']           = 'ipv6';
+      $tab[7]['name']            = __('IPv6 address');
+      $tab[7]['datatype']        = 'text';
+
+      $tab[8]['table']           = $this->getTable();
+      $tab[8]['field']           = 'app_token';
+      $tab[8]['name']            = __('Application token');
+      $tab[8]['massiveaction']   = false;
+      $tab[8]['datatype']        = 'text';
+
+      return $tab;
+   }
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+      switch ($field) {
+         case 'dolog_method':
+            $methods = self::getLogMethod();
+            return $methods[$values[$field]];
+         case 'ipv4_range_start':
+         case 'ipv4_range_end':
+            return long2ip($values[$field]);
+      }
+
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+
    function showForm ($ID, $options=array()) {
 
       $this->initForm($ID, $options);
@@ -96,10 +161,7 @@ class APIClient extends CommonDBTM {
       echo "<td >".__('Log connections')."</td>";
       echo "<td>";
       Dropdown::showFromArray("dolog_method",
-                              array(self::DOLOG_DISABLED   => __('Disabled'),
-                                    self::DOLOG_HISTORICAL => __('Historical'),
-                                    self::DOLOG_LOGS       => _n('Log', 'Logs',
-                                                                 Session::getPluralNumber())),
+                              self::getLogMethod(),
                               array('value' => $this->fields["dolog_method"]));
       echo "</td>";
       echo "</tr>";
@@ -121,10 +183,10 @@ class APIClient extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('IPv4 address range')."</td>";
       echo "<td colspan='3'>";
-      echo "<input type='text' name='_ipv4_range_start' value='".
+      echo "<input type='text' name='ipv4_range_start' value='".
             ($this->fields["ipv4_range_start"] ? long2ip($this->fields["ipv4_range_start"]) : '') .
             "' size='17'> - ";
-      echo "<input type='text' name='_ipv4_range_end' value='" .
+      echo "<input type='text' name='ipv4_range_end' value='" .
             ($this->fields["ipv4_range_end"] ? long2ip($this->fields["ipv4_range_end"]) : '') .
             "' size='17'>";
       echo "</td>";
@@ -156,17 +218,23 @@ class APIClient extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
-      if (isset($input['_ipv4_range_start']) && isset($input['_ipv4_range_end'])) {
-         if (empty($input['_ipv4_range_start'])) {
+      if (isset($input['ipv4_range_start'])) {
+         $input['ipv4_range_start'] = ip2long($input['ipv4_range_start']);
+      }
+
+      if (isset($input['ipv4_range_end'])) {
+         $input['ipv4_range_end'] = ip2long($input['ipv4_range_end']);
+      }
+
+      if (isset($input['ipv4_range_start']) && isset($input['ipv4_range_end'])) {
+         if (empty($input['ipv4_range_start'])) {
             $input['ipv4_range_start'] = "NULL";
             $input['ipv4_range_end'] = "NULL";
          } else {
-            $input['ipv4_range_start'] = ip2long($input['_ipv4_range_start']);
-            if (empty($input['_ipv4_range_end'])) {
+            if (empty($input['ipv4_range_end'])) {
                $input['ipv4_range_end'] = $input['ipv4_range_start'];
-            } else {
-               $input['ipv4_range_end'] = ip2long($input['_ipv4_range_end']);
             }
+
             if ($input['ipv4_range_end'] < $input['ipv4_range_start']) {
                $tmp = $input['ipv4_range_end'];
                $input['ipv4_range_end'] = $input['ipv4_range_start'];
@@ -181,6 +249,13 @@ class APIClient extends CommonDBTM {
       }
 
       return $input;
+   }
+
+   static function getLogMethod() {
+      return array(self::DOLOG_DISABLED   => __('Disabled'),
+                   self::DOLOG_HISTORICAL => __('Historical'),
+                   self::DOLOG_LOGS       => _n('Log', 'Logs',
+                                                Session::getPluralNumber()));
    }
 
    /**
