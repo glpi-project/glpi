@@ -1037,7 +1037,7 @@ class Toolbox {
       }
       echo "</tr>";
 
-      // Test for GD extension.
+      // Test for zlib extension.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Zlib extension test')."</td>";
 
       if (!extension_loaded('zlib')) {
