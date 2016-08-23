@@ -73,8 +73,8 @@ class Config extends CommonDBTM {
          $menu['page']    = '/front/config.form.php';
 
          $menu['options']['apiclient']['title']           = APIClient::getTypeName(Session::getPluralNumber());
-         $menu['options']['apiclient']['page']            = '/front/config.form.php?forcetab=Config$7';
-         $menu['options']['apiclient']['links']['search'] = '/front/config.form.php?forcetab=Config$7';
+         $menu['options']['apiclient']['page']            = '/front/config.form.php?forcetab=Config$8';
+         $menu['options']['apiclient']['links']['search'] = '/front/config.form.php?forcetab=Config$8';
          $menu['options']['apiclient']['links']['add']    = '/front/apiclient.form.php';
       }
       if (count($menu)) {
