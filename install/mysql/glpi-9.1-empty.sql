@@ -122,7 +122,7 @@ CREATE TABLE `glpi_apiclients` (
   KEY `date_mod` (`date_mod`),
   KEY `is_active` (`is_active`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-INSERT INTO `glpi_apiclients` VALUES (1, 0, 1, 'full access', NULL, 1, NULL, NULL, NULL, '', NULL, 0, NULL);
+INSERT INTO `glpi_apiclients` VALUES (1, 0, 1, 'full access from localhost', NULL, 1, INET_ATON('127.0.0.1'), INET_ATON('127.0.0.1'), '::1', '', NULL, 0, NULL);
 
 
 ### Dump table glpi_autoupdatesystems
