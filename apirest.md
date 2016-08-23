@@ -22,6 +22,7 @@
 * [Update item(s)](#update_items)
 * [Delete item(s)](#delete_items)
 * [Errors](#errors)
+* [Servers configuration](#servers_configuration)
 
 ## Glossary {#glossary}
 
@@ -1167,3 +1168,64 @@ Check the GLPI logs files (in files/_logs directory).
 
 Some of the objects you want to delete triggers an error, maybe a missing field or rights.  
 You'll find with this error, a collection of results.
+
+
+
+## Servers configuration {servers_configuration}
+
+You'll find below some examples to configure your web server to redirect your http://.../glpi/api/ urls to the apirest.php file.
+
+Note, we provide an .htaccess for apache so this server doesn't need more configuration to redirect url. You still need to enable rewrite module and permit glpi's htaccess to override apache configuration (see Apache AllowOverride directive).
+
+
+### Nginx
+
+This example of configuration was achieved on ubuntu with php7 fpm.
+
+```
+server {
+   listen 80 default_server;
+   listen [::]:80 default_server;
+
+   # change here to match your glpi directory
+   root /var/www/html/glpi/;
+
+   index index.html index.htm index.nginx-debian.html index.php;
+
+   server_name _;
+
+   location / {
+      try_files $uri $uri/ =404;
+      autoindex on;
+   }
+
+   location /api {
+      rewrite ^/api/(.*)$ /apirest.php/$1 last;
+   }
+
+   location ~ [^/]\.php(/|$) {
+      fastcgi_pass unix:/run/php/php7.0-fpm.sock;
+
+      # regex to split $uri to $fastcgi_script_name and $fastcgi_path
+      fastcgi_split_path_info ^(.+\.php)(/.+)$;
+
+      # Check that the PHP script exists before passing it
+      try_files $fastcgi_script_name =404;
+
+      # Bypass the fact that try_files resets $fastcgi_path_info
+      # # see: http://trac.nginx.org/nginx/ticket/321
+      set $path_info $fastcgi_path_info;
+      fastcgi_param  PATH_INFO $path_info;
+
+      fastcgi_param  PATH_TRANSLATED    $document_root$fastcgi_script_name;
+      fastcgi_param  SCRIPT_FILENAME    $document_root$fastcgi_script_name;
+      fastcgi_param  SERVER_NAME        $host;
+
+      include fastcgi_params;
+
+      # allow directory index
+      fastcgi_index index.php;
+   }
+}
+
+```
