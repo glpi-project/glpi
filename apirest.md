@@ -104,7 +104,7 @@ Examples usage (CURL):
 $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Authorization: Basic Z2xwaTpnbHBp" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/initSession'
 
 < 200 OK
@@ -115,7 +115,7 @@ $ curl -X GET \
 $ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Authorization: user_token {mystringapikey}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/initSession'
 
 < 200 OK
@@ -141,8 +141,8 @@ Example usage (CURL):
 ```bash
 $ curl -X GET \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/killSession'
 
 < 200 OK
@@ -169,8 +169,8 @@ Example usage (CURL):
 ```bash
 $ curl -X POST \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"entities_id": 1, "is_recursive": true}' \
 'http://path/to/glpi/api/changeActiveEntities'
 
@@ -195,8 +195,8 @@ Example usage (CURL):
 ```bash
 $ curl -X POST \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/getMyEntities'
 
 < 200 OK
@@ -230,8 +230,8 @@ Example usage (CURL):
 ```bash
 $ curl -X POST \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/getMyEntities'
 
 < 200 OK
@@ -266,8 +266,8 @@ Example usage (CURL):
 ```bash
 $ curl -X POST \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"profiles_id": 4}' \
 'http://path/to/glpi/api/changeActiveProfile'
 
@@ -292,8 +292,8 @@ Example usage (CURL):
 ```bash
 $ curl -X POST \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/getMyProfiles'
 
 < 200 OK
@@ -327,8 +327,8 @@ Example usage (CURL):
 ```bash
 $ curl -X POST \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/getActiveProfile'
 
 < 200 OK
@@ -359,8 +359,8 @@ Example usage (CURL):
 ```bash
 $ curl -X POST \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/getFullSession'
 
 < 200 OK
@@ -408,8 +408,8 @@ Example usage (CURL):
 ```bash
 $ curl -X GET \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/Computer/71?expand_drodpowns=true'
 
 < 200 OK
@@ -511,8 +511,8 @@ Example usage (CURL):
 ```bash
 $ curl -X GET \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/Computer/?expand_drodpowns=true'
 
 < 200 OK
@@ -631,8 +631,8 @@ Example usage (CURL):
 ```bash
 $ curl -X GET \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/User/2/Log'
 
 < 200 OK
@@ -687,8 +687,8 @@ Example usage (CURL):
 ```bash
 $ curl -X GET \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/listSearchOptions/Computer'
 < 200 OK
 < {
@@ -840,8 +840,8 @@ Example usage (CURL):
 ```bash
 curl -g -X GET \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/search/Monitor'\
 \&criteria\[0\]\[link\]\=AND\
 \&criteria\[0\]\[itemtype\]\=Monitor\
@@ -894,8 +894,8 @@ Examples usage (CURL):
 ```bash
 $ curl -X POST \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": {"name": "My single computer", "serial": "12345"}}' \
 'http://path/to/glpi/api/Computer/'
 
@@ -906,8 +906,8 @@ $ curl -X POST \
 
 $ curl -X POST \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": [{"name": "My first computer", "serial": "12345"}, {"name": "My 2nd computer", "serial": "67890"}, {"name": "My 3rd computer", "serial": "qsd12sd"}]}' \
 'http://path/to/glpi/api/Computer/'
 
@@ -942,8 +942,8 @@ Example usage (CURL):
 ```bash
 $ curl -X PUT \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": {"otherserial": "xcvbn"}}' \
 'http://path/to/glpi/api/Computer/10'
 
@@ -953,8 +953,8 @@ $ curl -X PUT \
 
 $ curl -X PUT \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": {"id": 11,  "otherserial": "abcde"}}' \
 'http://path/to/glpi/api/Computer/'
 
@@ -964,8 +964,8 @@ $ curl -X PUT \
 
 $ curl -X PUT \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": [{"id": 16,  "otherserial": "abcde"}, {"id": 17,  "otherserial": "fghij"}]}' \
 'http://path/to/glpi/api/Computer/'
 
@@ -1006,8 +1006,8 @@ Example usage (CURL):
 ```bash
 $ curl -X DELETE \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/api/Computer/16?force_purge=true'
 
 < 204 OK
@@ -1015,8 +1015,8 @@ $ curl -X DELETE \
 
 $ curl -X DELETE \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": {"id": 11}, "force_purge": true}' \
 'http://path/to/glpi/api/Computer/'
 
@@ -1026,8 +1026,8 @@ $ curl -X DELETE \
 
 $ curl -X DELETE \
 -H 'Content-Type: application/json' \
--H "Session-Token {83af7e620c83a50a18d3eac2f6ed05a3ca0bea62}" \
--H "App-Token {f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7}" \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 -d '{"input": [{"id": 16}, {"id": 17}]}' \
 'http://path/to/glpi/api/Computer/'
 
