@@ -1326,7 +1326,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<td colspan='2'>";
       echo Html::image($CFG_GLPI['root_doc']."/pics/user.png")."&nbsp;";
       echo _n('User', 'Users', 1);
-      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open');\">";
       $rand_user          = mt_rand();
       $params             = array('name'   => "users_id_tech",
                                   'value'  => (($ID > -1)
@@ -1343,6 +1342,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                   'url'       => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
       User::dropdown($params);
 
+      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('planningcheck'.$rand).".dialog('open');\">";
       echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reservation-3.png'
              title=\"".__s('Availability')."\" alt=\"".__s('Availability')."\"
              class='calendrier'>";
