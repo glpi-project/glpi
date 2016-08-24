@@ -6,12 +6,12 @@
 * [Important](#important)
 * [Init session](#init_session)
 * [Kill session](#kill_session)
-* [Change active entities](#change_active_entities)
-* [Get my entities](#get_my_entities)
-* [Get active entities](#get_active_entities)
-* [Change active profile](#change_active_profile)
 * [Get my profiles](#get_my_profiles)
 * [Get active profile](#get_active_profile)
+* [Change active profile](#change_active_profile)
+* [Get my entities](#get_my_entities)
+* [Get active entities](#get_active_entities)
+* [Change active entities](#change_active_entities)
 * [Get full session](#get_full_session)
 * [Get an item](#get_item)
 * [Get all items](#get_items)
@@ -149,17 +149,83 @@ $ curl -X GET \
 ```
 
 
-## Change active entities {#change_active_entities}
+## Get my profiles {#get_my_profiles}
 
-* **URL**: [apirest.php/changeActiveEntities/](changeActiveEntities/?entities_id=1&is_recursive=0&debug)
-* **Description**: Change active entity to the entities_id one. See [getMyEntities](#get_my_entities) endpoint for possible entities.
+* **URL**: [apirest.php/getMyProfiles/](getMyProfiles/?debug)
+* **Description**: Return all the profiles associated to logged user.
+* **Method**: GET
+* **Parameters (Headers)**
+   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
+* **Returns**
+   - 200 (OK) with an array of all profiles.
+   - 400 (Bad Request) with a message indicating an error in input parameter.
+
+Example usage (CURL):
+
+```bash
+$ curl -X POST \
+-H 'Content-Type: application/json' \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getMyProfiles'
+
+< 200 OK
+< [ 4:
+   {
+      'name': "Super-admin",
+      'entities': {
+         ...
+      },
+      ...
+   },
+   ....
+]
+```
+
+
+## Get active profile {#get_active_profile}
+
+* **URL**: [apirest.php/getActiveProfile/](getActiveProfile/?debug)
+* **Description**: return the current active profile.
+* **Method**: GET
+* **Parameters (Headers)**
+   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
+* **Returns**
+   - 200 (OK) with an array representing current profile.
+   - 400 (Bad Request) with a message indicating an error in input parameter.
+
+Example usage (CURL):
+
+```bash
+$ curl -X POST \
+-H 'Content-Type: application/json' \
+-H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+'http://path/to/glpi/apirest.php/getActiveProfile'
+
+< 200 OK
+< {
+      'name': "Super-admin",
+      'entities': {
+         ...
+      },
+      ...
+   }
+```
+
+
+## Change active profile {#change_active_profile}
+
+* **URL**: [apirest.php/changeActiveProfile/](changeActiveProfile/?profiles_id=4&debug)
+* **Description**: Change active profile to the profiles_id one. See [getMyProfiles](#get_my_profiless) endpoint for possible profiles.
 * **Method**: POST
 * **Parameters (Headers)**
    - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (JSON Payload)**
-   - *entities_id*: (default 'all') ID of the new active entity ("all" => load all possible entities). Optional.
-   - *is_recursive*: (default false) Also display sub entities of the active entity.  Optional.
+   - *profiles_id*: (default 'all') ID of the new active profile. Mandatory.
 * **Returns**
    - 200 (OK).
    - 400 (Bad Request) with a message indicating an error in input parameter.
@@ -171,8 +237,8 @@ $ curl -X POST \
 -H 'Content-Type: application/json' \
 -H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
--d '{"entities_id": 1, "is_recursive": true}' \
-'http://path/to/glpi/apirest.php/changeActiveEntities'
+-d '{"profiles_id": 4}' \
+'http://path/to/glpi/apirest.php/changeActiveProfile'
 
 < 200 OK
 ```
@@ -247,16 +313,17 @@ $ curl -X POST \
 ```
 
 
-## Change active profile {#change_active_profile}
+## Change active entities {#change_active_entities}
 
-* **URL**: [apirest.php/changeActiveProfile/](changeActiveProfile/?profiles_id=4&debug)
-* **Description**: Change active profile to the profiles_id one. See [getMyProfiles](#get_my_profiless) endpoint for possible profiles.
+* **URL**: [apirest.php/changeActiveEntities/](changeActiveEntities/?entities_id=1&is_recursive=0&debug)
+* **Description**: Change active entity to the entities_id one. See [getMyEntities](#get_my_entities) endpoint for possible entities.
 * **Method**: POST
 * **Parameters (Headers)**
    - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (JSON Payload)**
-   - *profiles_id*: (default 'all') ID of the new active profile. Mandatory.
+   - *entities_id*: (default 'all') ID of the new active entity ("all" => load all possible entities). Optional.
+   - *is_recursive*: (default false) Also display sub entities of the active entity.  Optional.
 * **Returns**
    - 200 (OK).
    - 400 (Bad Request) with a message indicating an error in input parameter.
@@ -268,77 +335,10 @@ $ curl -X POST \
 -H 'Content-Type: application/json' \
 -H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
--d '{"profiles_id": 4}' \
-'http://path/to/glpi/apirest.php/changeActiveProfile'
+-d '{"entities_id": 1, "is_recursive": true}' \
+'http://path/to/glpi/apirest.php/changeActiveEntities'
 
 < 200 OK
-```
-
-
-## Get my profiles {#get_my_profiles}
-
-* **URL**: [apirest.php/getMyProfiles/](getMyProfiles/?debug)
-* **Description**: Return all the profiles associated to logged user.
-* **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Returns**
-   - 200 (OK) with an array of all profiles.
-   - 400 (Bad Request) with a message indicating an error in input parameter.
-
-Example usage (CURL):
-
-```bash
-$ curl -X POST \
--H 'Content-Type: application/json' \
--H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
--H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getMyProfiles'
-
-< 200 OK
-< [ 4:
-   {
-      'name': "Super-admin",
-      'entities': {
-         ...
-      },
-      ...
-   },
-   ....
-]
-```
-
-
-## Get active profile {#get_active_profile}
-
-* **URL**: [apirest.php/getActiveProfile/](getActiveProfile/?debug)
-* **Description**: return the current active profile.
-* **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Returns**
-   - 200 (OK) with an array representing current profile.
-   - 400 (Bad Request) with a message indicating an error in input parameter.
-
-Example usage (CURL):
-
-```bash
-$ curl -X POST \
--H 'Content-Type: application/json' \
--H "Session-Token 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
--H "App-Token f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getActiveProfile'
-
-< 200 OK
-< {
-      'name': "Super-admin",
-      'entities': {
-         ...
-      },
-      ...
-   }
 ```
 
 
