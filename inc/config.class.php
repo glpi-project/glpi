@@ -690,11 +690,12 @@ class Config extends CommonDBTM {
          return false;
       }
 
+      echo "<div class='center spaced' id='tabsbody'>";
+
       $canedit = Config::canUpdate();
       if ($canedit) {
          echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
       }
-      echo "<div class='center spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='4'>" . __('API') . "</th></tr>";
@@ -740,22 +741,21 @@ class Config extends CommonDBTM {
       echo "<br><br><br>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='4'>";
+      echo "</table>";
+      Html::closeForm();
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><td>";
       echo "<hr>";
       $buttons["apiclient.form.php"] = __('Add API client');
-      $title                    = "";
+      $title = "";
       Html::displayTitle("",
                          self::getTypeName(Session::getPluralNumber()),
                          "",
                          $buttons);
       Search::show("APIClient");
-      echo "</td>";
-      echo "</tr>";
-
-
+      echo "</td></tr>";
       echo "</table></div>";
-      Html::closeForm();
    }
 
 

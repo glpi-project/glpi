@@ -463,7 +463,7 @@ function step7() {
                    AND `name`    = 'url_base'";
    $DB->query($query);
 
-   $url_base_api = "$url_base/api";
+   $url_base_api = "$url_base/apirest.php/";
    $query = "UPDATE `glpi_configs`
              SET `value`     = '".$DB->escape($url_base_api)."'
              WHERE `context` = 'core'

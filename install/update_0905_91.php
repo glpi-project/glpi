@@ -380,7 +380,7 @@ function update0905to91() {
    Config::setConfigurationValues('core', array('enable_api'                      => 0));
    Config::setConfigurationValues('core', array('enable_api_login_credentials'    => 0));
    Config::setConfigurationValues('core', array('enable_api_login_external_token' => 1));
-   Config::setConfigurationValues('core', array('url_base_api' => trim($current_config['url_base'], "/")."/api"));
+   Config::setConfigurationValues('core', array('url_base_api' => trim($current_config['url_base'], "/")."/apirest.php/"));
    if (!TableExists('glpi_apiclients')) {
       $query = "CREATE TABLE `glpi_apiclients` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,

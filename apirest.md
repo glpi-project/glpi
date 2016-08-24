@@ -1173,9 +1173,27 @@ You'll find with this error, a collection of results.
 
 ## Servers configuration {#servers_configuration}
 
-You'll find below some examples to configure your web server to redirect your http://.../glpi/api/ urls to the apirest.php file.
+By default, you can use http://path/to/glpi/apirest.php without any additional configuration.
 
-Note, we provide an .htaccess for apache so this server doesn't need more configuration to redirect url. You still need to enable rewrite module and permit glpi's htaccess to override apache configuration (see Apache AllowOverride directive).
+You'll find below some examples to configure your web server to redirect your http://.../glpi/api/ url to the apirest.php file.
+
+### Apache Httpd
+
+We provide in root .htaccess of glpi an example to enable api url rewriting.
+
+You need to uncomment (removing #) theses lines:
+
+```
+#<IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{REQUEST_FILENAME} !-f
+#   RewriteCond %{REQUEST_FILENAME} !-d
+#   RewriteRule api/(.*)$ apirest.php/$1
+#</IfModule>
+```
+
+By enabling url rewriting, you could use api with this url : http://path/to/glpi/api/.
+You need also to enable rewrite module in apache httpd and permit glpi's .htaccess to override server configuration (see AllowOverride directive).
 
 
 ### Nginx
