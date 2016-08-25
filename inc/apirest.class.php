@@ -373,6 +373,20 @@ class APIRest extends API {
          $this->format = "html";
       }
 
+      // retrieve HTTP headers
+      $headers = array();
+      if (function_exists('getallheaders')) {
+         //apache specific
+         $headers = getallheaders();
+      } else {
+         // other servers
+         foreach ($_SERVER as $server_key => $server_value) {
+            if (substr($server_key, 0, 5) == 'HTTP_') {
+               $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($server_key, 5)))))] = $server_value;
+            }
+         }
+      }
+
       // try to retrieve basic auth
       if (isset($_SERVER['PHP_AUTH_USER'])
           && isset($_SERVER['PHP_AUTH_PW'])) {
@@ -381,22 +395,22 @@ class APIRest extends API {
       }
 
       // try to retrieve user_token in header
-      if (isset($_SERVER['HTTP_AUTHORIZATION'])
-          && strpos($_SERVER['HTTP_AUTHORIZATION'], 'user_token') !== false) {
-         $auth = explode(' ', $_SERVER['HTTP_AUTHORIZATION']);
+      if (isset($headers['Authorization'])
+          && strpos($headers['Authorization'], 'user_token') !== false) {
+         $auth = explode(' ', $headers['Authorization']);
          if (isset($auth[1])) {
             $parameters['user_token'] = $auth[1];
          }
       }
 
       // try to retrieve session_token in header
-      if (isset($_SERVER['HTTP_SESSION_TOKEN'])) {
-         $parameters['session_token'] = $_SERVER['HTTP_SESSION_TOKEN'];
+      if (isset($headers['Session-Token'])) {
+         $parameters['session_token'] = $headers['Session-Token'];
       }
 
       // try to retrieve app_token in header
-      if (isset($_SERVER['HTTP_APP_TOKEN'])) {
-         $parameters['app_token'] = $_SERVER['HTTP_APP_TOKEN'];
+      if (isset($headers['App-Token'])) {
+         $parameters['app_token'] = $headers['App-Token'];
       }
 
       $this->parameters = $parameters;
