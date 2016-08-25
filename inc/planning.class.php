@@ -1923,7 +1923,7 @@ class Planning extends CommonGLPI {
       $end    = date("Y-m-d H:i:s", $end);
       $params = array('who'       => $who,
                       'who_group' => $who_group,
-                      'whogroup'  => $whogroup,
+                      'whogroup'  => $who_group,
                       'begin'     => $begin,
                       'end'       => $end);
 
@@ -1975,8 +1975,8 @@ class Planning extends CommonGLPI {
             if (isset($val["url"])) {
                $vevent['URL'] = $val["url"];
             }
+            $vcalendar->add('VEVENT', $vevent);
          }
-         $vcalendar->add('VEVENT', $vevent);
       }
 
       $output   = $vcalendar->serialize();
