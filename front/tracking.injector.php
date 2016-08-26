@@ -63,6 +63,9 @@ if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
 
 if (isset($_POST['add'])) {
    if ($newID = $track->add($_POST)) {
+      if ($_SESSION['glpibackcreated']) {
+         Html::redirect($track->getFormURL()."?id=".$newID);
+      }
       if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
          echo "<div class='center spaced'>".
                 __('Your ticket has been registered, its treatment is in progress.');
