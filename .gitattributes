@@ -8,4 +8,4 @@ pics/logos/*.eps export-ignore
 ISSUE_TEMPLATE.md export-ignore
 tests/ export-ignore
 phpunit.xml.dist export-ignore
-.travis.yml
+.travis.yml export-ignore
