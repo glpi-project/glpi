@@ -2360,11 +2360,19 @@ class Search {
             break;
 
          case "glpi_softwarelicenses.number" :
-            return " FLOOR(SUM(`$table$addtable2`.`$field`)
-                           * COUNT(DISTINCT `$table$addtable2`.`id`)
-                           / COUNT(`$table$addtable2`.`id`)) AS `".$NAME."_".$num."`,
-                     MIN(`$table$addtable2`.`$field`) AS `".$NAME."_".$num."_min`,
-                      $ADDITONALFIELDS";
+            if ($meta) {
+               return " FLOOR(SUM(`$table$addtable2`.`$field`)
+                              * COUNT(DISTINCT `$table$addtable2`.`id`)
+                              / COUNT(`$table$addtable2`.`id`)) AS `".$NAME."_".$num."`,
+                        MIN(`$table$addtable2`.`$field`) AS `".$NAME."_".$num."_min`,
+                         $ADDITONALFIELDS";
+            } else {
+               return " FLOOR(SUM(`$table$addtable`.`$field`)
+                              * COUNT(DISTINCT `$table$addtable`.`id`)
+                              / COUNT(`$table$addtable`.`id`)) AS `".$NAME."_".$num."`,
+                        MIN(`$table$addtable`.`$field`) AS `".$NAME."_".$num."_min`,
+                         $ADDITONALFIELDS";
+            }
 
          case "glpi_profiles.name" :
             if (($itemtype == 'User')
