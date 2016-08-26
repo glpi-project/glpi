@@ -1026,9 +1026,9 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td class='left b'>".__('GD extension test')."</td>";
 
       if (!extension_loaded('gd')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
                      __('GD extension of your parser PHP is not installed')."></td>";
-         $error = 2;
+         $error = 1;
 
       } else {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
