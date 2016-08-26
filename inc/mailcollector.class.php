@@ -879,6 +879,11 @@ class MailCollector  extends CommonDBTM {
       if ($this->addtobody) {
          $tkt['content'] .= $this->addtobody;
       }
+
+      if (!Toolbox::seems_utf8($tkt['name'])) {
+         $tkt['name'] = Toolbox::encodeInUtf8($tkt['name']);
+      }
+
       $tkt['name'] = $this->textCleaner($head['subject']);
       if (!isset($tkt['tickets_id'])) {
          // Which entity ?
