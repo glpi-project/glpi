@@ -1202,7 +1202,7 @@ We provide in root .htaccess of glpi an example to enable api url rewriting.
 
 You need to uncomment (removing #) theses lines:
 
-```
+```apache
 #<IfModule mod_rewrite.c>
 #   RewriteEngine On
 #   RewriteCond %{REQUEST_FILENAME} !-f
@@ -1219,7 +1219,7 @@ You need also to enable rewrite module in apache httpd and permit glpi's .htacce
 
 This example of configuration was achieved on ubuntu with php7 fpm.
 
-```
+```nginx
 server {
    listen 80 default_server;
    listen [::]:80 default_server;
