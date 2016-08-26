@@ -433,7 +433,7 @@ $ curl -X GET \
 
 < 200 OK
 < {
-    "id": "71",
+    "id": 71,
     "entities_id": "Root Entity",
     "name": "adelaunay-ThinkPad-Edge-E320",
     "serial": "12345",
@@ -455,11 +455,11 @@ $ curl -X GET \
     "networks_id": " ",
     "computermodels_id": "1298A8G",
     "computertypes_id": "Notebook",
-    "is_template": "0",
+    "is_template": 0,
     "template_name": null,
     "manufacturers_id": "LENOVO",
-    "is_deleted": "0",
-    "is_dynamic": "1",
+    "is_deleted": 0,
+    "is_dynamic": 1,
     "users_id": "adelaunay",
     "groups_id": " ",
     "states_id": "Production",
@@ -539,7 +539,7 @@ $ curl -X GET \
 < Accept-Range: 990
 < [
    {
-      "id": "34",
+      "id": 34,
       "entities_id": "Root Entity",
       "name": "glpi",
       "serial": "VMware-42 01 f4 65 27 59 a9 fb-11 bc cd b8 64 68 1f 4b",
@@ -561,11 +561,11 @@ $ curl -X GET \
       "networks_id": "&nbsp;",
       "computermodels_id": "VMware Virtual Platform",
       "computertypes_id": "Other",
-      "is_template": "0",
+      "is_template": 0,
       "template_name": null,
       "manufacturers_id": "VMware, Inc.",
-      "is_deleted": "0",
-      "is_dynamic": "1",
+      "is_deleted": 0,
+      "is_dynamic": 1,
       "users_id": "&nbsp;",
       "groups_id": "&nbsp;",
       "states_id": "Production",
@@ -601,7 +601,7 @@ $ curl -X GET \
       }]
    },
    {
-      "id": "35",
+      "id": 35,
       "entities_id": "Root Entity",
       "name": "mavm1",
       "serial": "VMware-42 20 d3 04 ac 49 ed c8-ea 15 50 49 e1 40 0f 6c",
@@ -659,25 +659,25 @@ $ curl -X GET \
 < Accept-Range: 990
 < [
    {
-      "id": "22117",
+      "id": 22117,
       "itemtype": "User",
-      "items_id": "2",
+      "items_id": 2,
       "itemtype_link": "Profile",
-      "linked_action": "17",
+      "linked_action": 17,
       "user_name": "glpi (27)",
       "date_mod": "2015-10-13 10:00:59",
-      "id_search_option": "0",
+      "id_search_option": 0,
       "old_value": "",
       "new_value": "super-admin (4)"
    }, {
-      "id": "22118",
+      "id": 22118,
       "itemtype": "User",
-      "items_id": "2",
+      "items_id": 2,
       "itemtype_link": "",
-      "linked_action": "0",
+      "linked_action": 0,
       "user_name": "glpi (2)",
       "date_mod": "2015-10-13 10:01:22",
-      "id_search_option": "80",
+      "id_search_option": 80,
       "old_value": "Root entity (0)",
       "new_value": "Root entity > my entity (1)"
    }, {
@@ -774,7 +774,7 @@ Note: you can use 'AllAssets' itemtype to retrieve a combination of all asset's 
                   "link":       'AND',
                   "field":      31,
                   "searchtype": 'equals',
-                  "value":      '1'
+                  "value":      1
                 }
             ]
          ...
@@ -932,7 +932,7 @@ $ curl -X POST \
 
 < 201 OK
 < Link: http://path/to/glpi/api/Computer/8,http://path/to/glpi/api/Computer/9
-< [ {"id":"8"}, {"id":false}, {"id":"9"} ]
+< [ {"id":8}, {"id":false}, {"id":9} ]
 ```
 
 
@@ -967,7 +967,7 @@ $ curl -X PUT \
 'http://path/to/glpi/apirest.php/Computer/10'
 
 < 200 OK
-[{"10":"true"}]
+[{"10":true}]
 
 
 $ curl -X PUT \
@@ -978,7 +978,7 @@ $ curl -X PUT \
 'http://path/to/glpi/apirest.php/Computer/'
 
 < 200 OK
-[{"11":"true"}]
+[{"11":true}]
 
 
 $ curl -X PUT \
@@ -989,7 +989,7 @@ $ curl -X PUT \
 'http://path/to/glpi/apirest.php/Computer/'
 
 < 200 OK
-[{"8":"true"},{"2":"true"}]
+[{"8":true},{"2":true}]
 ```
 
 
@@ -1040,7 +1040,7 @@ $ curl -X DELETE \
 'http://path/to/glpi/apirest.php/Computer/'
 
 < 200 OK
-[{"11":"true"}]
+[{"11":true}]
 
 
 $ curl -X DELETE \
@@ -1051,7 +1051,7 @@ $ curl -X DELETE \
 'http://path/to/glpi/apirest.php/Computer/'
 
 < 207 OK
-[{"16":"true"},{"17":"false"}]
+[{"16":true},{"17":false}]
 ```
 
 
