@@ -1,6 +1,6 @@
 {
     "name": "glpi/glpi",
-    "description": "GLPI depdendencies",
+    "description": "GLPI dependencies",
     "license": "GPL-2.0",
     "type": "project",
     "homepage": "http://www.glpi-project.org/",
