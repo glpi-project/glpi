@@ -600,7 +600,9 @@ class Stat extends CommonGLPI {
                }
                if ($nb_answersatisfaction > 0) {
                   $avgsatisfaction = round(array_sum($satisfaction)/$nb_answersatisfaction,1);
-                  $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction);
+                  if ($output_type == Search::HTML_OUTPUT) {
+                     $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction);
+                  }
                } else {
                   $avgsatisfaction = '&nbsp;';
                }
