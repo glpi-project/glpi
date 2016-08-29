@@ -529,7 +529,7 @@ class Notification extends CommonDBTM {
    **/
    function prepareInputForAdd($input) {
 
-      if (empty($input["itemtype"])) {
+      if (isset($input["itemtype"]) && empty($input["itemtype"])) {
          $message = __('Field itemtype is mandatory');
          Session::addMessageAfterRedirect($message, false, ERROR);
          return false;
@@ -545,7 +545,7 @@ class Notification extends CommonDBTM {
    **/
    function prepareInputForUpdate($input) {
 
-      if (empty($input["itemtype"])) {
+      if (isset($input["itemtype"]) && empty($input["itemtype"])) {
          $message = __('Field itemtype is mandatory');
          Session::addMessageAfterRedirect($message, false, ERROR);
          return false;
