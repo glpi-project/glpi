@@ -1218,7 +1218,7 @@ abstract class API extends CommonGLPI {
       }
 
       $cleaned_data['content-range'] = implode('-', $params['range']).
-                                       "/".$cleaned_data['count'];
+                                       "/".$cleaned_data['totalcount'];
 
       // return data
       return $cleaned_data;
