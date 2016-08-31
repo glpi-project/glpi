@@ -41,7 +41,7 @@ itemtype
 
 searchOption
 :   A column identifier (integer) of an itemtype (ex: 1 -> id, 2 -> name, ...).
-    See [List searchOptions](#list_searchoptions) endpoint.
+    See [List searchOptions](#list-searchoptions) endpoint.
 
 JSON Payload
 :   content of HTTP Request in json format (HTTP body)
@@ -68,17 +68,17 @@ App(lication) token
 * you should always precise a Content-Type header in your HTTP calls.
    Currently, the api supports:
    - application/json
-   - multipart/form-data (for files upload, see [Add item(s)](#add_items) endpoint.
+   - multipart/form-data (for files upload, see [Add item(s)](#add-items) endpoint.
 
 * GET requests must have an empty body. You must pass all parameters in URL.
   Failing to do so will trigger an HTTP 400 response.
 
 * By default, sessions used in this API are read-only.
   Only Some methods have write access to session:
-   - [initSession](#init_session)
-   - [killSession](#kill_session)
-   - [changeActiveEntities](#change_active_entities)
-   - [changeActiveProfile](#change_active_profiles)
+   - [initSession](#init-session)
+   - [killSession](#kill-session)
+   - [changeActiveEntities](#change-active-entities)
+   - [changeActiveProfile](#change-active-profiles)
 
   You could pass an additional parameter "session_write=true" to bypass this default.
   This read-only mode allow to use this API with parallel calls.
@@ -149,7 +149,7 @@ $ curl -X GET \
 * **Description**: Destroy a session identified by a session token.
 * **Method**: GET
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**
    - 200 (OK).
@@ -174,7 +174,7 @@ $ curl -X GET \
 * **Description**: Return all the profiles associated to logged user.
 * **Method**: GET
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**
    - 200 (OK) with an array of all profiles.
@@ -209,7 +209,7 @@ $ curl -X POST \
 * **Description**: return the current active profile.
 * **Method**: GET
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**
    - 200 (OK) with an array representing current profile.
@@ -238,10 +238,10 @@ $ curl -X POST \
 ## Change active profile
 
 * **URL**: [apirest.php/changeActiveProfile/](changeActiveProfile/?profiles_id=4&debug)
-* **Description**: Change active profile to the profiles_id one. See [getMyProfiles](#get_my_profiless) endpoint for possible profiles.
+* **Description**: Change active profile to the profiles_id one. See [getMyProfiles](#get-my-profiles) endpoint for possible profiles.
 * **Method**: POST
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (JSON Payload)**
    - *profiles_id*: (default 'all') ID of the new active profile. Mandatory.
@@ -269,7 +269,7 @@ $ curl -X POST \
 * **Description**: return all the possible entities of the current logged user (and for current active profile).
 * **Method**: GET
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**
    - 200 (OK) with an array of all entities (with id and name).
@@ -301,7 +301,7 @@ $ curl -X POST \
 * **Description**: return active entities of current logged user
 * **Method**: GET
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**
    - 200 (OK) with an array with 3 keys:
@@ -335,10 +335,10 @@ $ curl -X POST \
 ## Change active entities
 
 * **URL**: [apirest.php/changeActiveEntities/](changeActiveEntities/?entities_id=1&is_recursive=0&debug)
-* **Description**: Change active entity to the entities_id one. See [getMyEntities](#get_my_entities) endpoint for possible entities.
+* **Description**: Change active entity to the entities_id one. See [getMyEntities](#get-my-entities) endpoint for possible entities.
 * **Method**: POST
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (JSON Payload)**
    - *entities_id*: (default 'all') ID of the new active entity ("all" => load all possible entities). Optional.
@@ -367,7 +367,7 @@ $ curl -X POST \
 * **Description**: return the current php $_SESSION
 * **Method**: GET
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Returns**
    - 200 (OK) with an array representing the php session.
@@ -398,7 +398,7 @@ $ curl -X POST \
 * **Description**: Return the instance fields of itemtype identified by id
 * **Method**: GET
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (query string)**
    - *id*: unique identifier of the itemtype. Mandatory.
@@ -508,7 +508,7 @@ $ curl -X GET \
 * **Description**: Return a collection of rows of the itemtype
 * **Method**: GET
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (query string)**
    - *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
@@ -627,7 +627,7 @@ $ curl -X GET \
 * **Description**: Return a collection of rows of the sub_itemtype for the identified item
 * **Method**: GET
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (query string)**
    - id: unique identifier of the parent itemtype. Mandatory.
@@ -693,7 +693,7 @@ $ curl -X GET \
 * **Description**: List the searchoptions of provided itemtype. To use with [Search items](#search_items)
 * **Method**: GET
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (query string)**
    - *raw*: return searchoption uncleaned (as provided by core)
@@ -750,7 +750,7 @@ $ curl -X GET \
 Note: you can use 'AllAssets' itemtype to retrieve a combination of all asset's types.
 * **Method**: GET
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (query string)**
    - *criteria*: array of criterion objects to filter search. Optional.  
@@ -823,7 +823,7 @@ Note: you can use 'AllAssets' itemtype to retrieve a combination of all asset's 
    - *withindexes* (default false): a boolean to retrieve rows indexed by items id.  
    By default this option is set to false, because order of json objects (which are identified by index) cannot be garrantued  (from http://json.org/ : An object is an unordered set of name/value pairs).  
    So, we provide arrays to guarantying sorted rows.
-   - *uid_cols* (default false): a boolean to identify cols by the 'uniqid' of the searchoptions instead of a numeric value (see [List searchOptions](#list_searchoptions) and 'uid' field)
+   - *uid_cols* (default false): a boolean to identify cols by the 'uniqid' of the searchoptions instead of a numeric value (see [List searchOptions](#list-searchoptions) and 'uid' field)
    - *giveItems* (default false): a boolean to retrieve the data with the html parsed from core, new data are provided in data_html key.
 * **Returns**
    - 200 (OK) with all rows data with this format:
@@ -887,7 +887,7 @@ curl -g -X GET \
 * **Description**: Add an object (or multiple objects) into GLPI.
 * **Method**: POST
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (JSON Payload)**
    - *input*: an object with fields of itemtype to be inserted.  
@@ -943,7 +943,7 @@ $ curl -X POST \
 * **Description**: update an object (or multiple objects) existing in GLPI.
 * **Method**: PUT
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (JSON Payload)**
    - *id*: the unique identifier of the itemtype passed in URL. You **could skip** this parameter by passing it in the input payload.
@@ -1000,7 +1000,7 @@ $ curl -X PUT \
 * **Description**: delete an object existing in GLPI
 * **Method**: DELETE
 * **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init_session) endpoint. Mandatory.
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
    - *App-token*: authorization string provided by the GLPI api configuration. Optional.
 * **Parameters (query string)**
    - *id*: unique identifier of the itemtype passed in the URL. You **could skip** this parameter by passing it in the input payload.
@@ -1083,7 +1083,7 @@ Alter this profile or choose a new one for the user in GLPI main interface.
 ### ERROR_SESSION_TOKEN_INVALID
 
 The Session-Token provided in header is invalid.  
-You should redo an [Init session](#init_session) request.
+You should redo an [Init session](#init-session) request.
 
 
 ### ERROR_SESSION_TOKEN_MISSING
