@@ -1,30 +1,30 @@
 # GLPI REST API:  Documentation
 
-## Summary {#summary}
+## Summary
 
 * [Glossary](#glossary)
 * [Important](#important)
-* [Init session](#init_session)
-* [Kill session](#kill_session)
-* [Get my profiles](#get_my_profiles)
-* [Get active profile](#get_active_profile)
-* [Change active profile](#change_active_profile)
-* [Get my entities](#get_my_entities)
-* [Get active entities](#get_active_entities)
-* [Change active entities](#change_active_entities)
-* [Get full session](#get_full_session)
-* [Get an item](#get_item)
-* [Get all items](#get_items)
-* [Get all sub items](#get_sub_items)
-* [List searchOptions](#list_searchoptions)
-* [Search items](#search_items)
-* [Add item(s)](#add_items)
-* [Update item(s)](#update_items)
-* [Delete item(s)](#delete_items)
+* [Init session](#init-session)
+* [Kill session](#kill-session)
+* [Get my profiles](#get-my-profiles)
+* [Get active profile](#get-active-profile)
+* [Change active profile](#change-active-profile)
+* [Get my entities](#get-my-entities)
+* [Get active entities](#get-active-entities)
+* [Change active entities](#change-active-entities)
+* [Get full session](#get-full-session)
+* [Get an item](#get-an-item)
+* [Get all items](#get-all-items)
+* [Get sub items](#get-sub-items)
+* [List searchOptions](#list-searchoptions)
+* [Search items](#search-items)
+* [Add item(s)](#add-items)
+* [Update item(s)](#update-items)
+* [Delete item(s)](#delete-items)
 * [Errors](#errors)
-* [Servers configuration](#servers_configuration)
+* [Servers configuration](#servers-configuration)
 
-## Glossary {#glossary}
+## Glossary
 
 Endpoint
 :   Resource available though the api.
@@ -63,7 +63,7 @@ App(lication) token
     On api call, it will try to find an api client matching your ip and the app toekn (if provided).
     You can define an api client with an app token in general configuration for each of your external applications to identify them (each api client have its own history).
 
-## Important {#important}
+## Important
 
 * you should always precise a Content-Type header in your HTTP calls.
    Currently, the api supports:
@@ -92,7 +92,7 @@ App(lication) token
 * Session and App tokens could be provided in query string instead of header parameters.
 
 
-## Init session {#init_session}
+## Init session
 
 * **URL**: apirest.php/initSession/
 * **Description**: Request a session token to uses other api endpoints.
@@ -143,7 +143,7 @@ $ curl -X GET \
 }
 ```
 
-## Kill session {#kill_session}
+## Kill session
 
 * **URL**: apirest.php/killSession/
 * **Description**: Destroy a session identified by a session token.
@@ -168,7 +168,7 @@ $ curl -X GET \
 ```
 
 
-## Get my profiles {#get_my_profiles}
+## Get my profiles
 
 * **URL**: [apirest.php/getMyProfiles/](getMyProfiles/?debug)
 * **Description**: Return all the profiles associated to logged user.
@@ -203,7 +203,7 @@ $ curl -X POST \
 ```
 
 
-## Get active profile {#get_active_profile}
+## Get active profile
 
 * **URL**: [apirest.php/getActiveProfile/](getActiveProfile/?debug)
 * **Description**: return the current active profile.
@@ -235,7 +235,7 @@ $ curl -X POST \
 ```
 
 
-## Change active profile {#change_active_profile}
+## Change active profile
 
 * **URL**: [apirest.php/changeActiveProfile/](changeActiveProfile/?profiles_id=4&debug)
 * **Description**: Change active profile to the profiles_id one. See [getMyProfiles](#get_my_profiless) endpoint for possible profiles.
@@ -263,7 +263,7 @@ $ curl -X POST \
 ```
 
 
-## Get my entities {#get_my_entities}
+## Get my entities
 
 * **URL**: [apirest.php/getMyEntities/](getMyEntities/?debug)
 * **Description**: return all the possible entities of the current logged user (and for current active profile).
@@ -295,7 +295,7 @@ $ curl -X POST \
 ```
 
 
-## Get active entities {#get_active_entities}
+## Get active entities
 
 * **URL**: [apirest.php/getActiveEntities/](getActiveEntities/?debug)
 * **Description**: return active entities of current logged user
@@ -332,7 +332,7 @@ $ curl -X POST \
 ```
 
 
-## Change active entities {#change_active_entities}
+## Change active entities
 
 * **URL**: [apirest.php/changeActiveEntities/](changeActiveEntities/?entities_id=1&is_recursive=0&debug)
 * **Description**: Change active entity to the entities_id one. See [getMyEntities](#get_my_entities) endpoint for possible entities.
@@ -361,7 +361,7 @@ $ curl -X POST \
 ```
 
 
-## Get full session {#get_full_session}
+## Get full session
 
 * **URL**: [apirest.php/getFullSession/](getFullSession/?debug)
 * **Description**: return the current php $_SESSION
@@ -392,7 +392,7 @@ $ curl -X POST \
 ```
 
 
-## Get an item {#get_item}
+## Get an item
 
 * **URL**: [apirest.php/:itemtype/:id](User/2?debug)
 * **Description**: Return the instance fields of itemtype identified by id
@@ -502,7 +502,7 @@ $ curl -X GET \
 
 
 
-## Get all items {#get_items}
+## Get all items
 
 * **URL**: [apirest.php/:itemtype/](Computer/?debug)
 * **Description**: Return a collection of rows of the itemtype
@@ -621,7 +621,7 @@ $ curl -X GET \
 ]
 ```
 
-## Get sub items {#get_sub_items}
+## Get sub items
 
 * **URL**: [apirest.php/:itemtype/:id/:sub_itemtype](User/2/Log?debug)
 * **Description**: Return a collection of rows of the sub_itemtype for the identified item
@@ -687,7 +687,7 @@ $ curl -X GET \
 ```
 
 
-## List searchOptions {#list_searchoptions}
+## List searchOptions
 
 * **URL**: [apirest.php/listSearchOptions/:itemtype](listSearchOptions/Computer?debug)
 * **Description**: List the searchoptions of provided itemtype. To use with [Search items](#search_items)
@@ -743,7 +743,7 @@ $ curl -X GET \
 
 
 
-## Search items {#search_items}
+## Search items
 
 * **URL**: [apirest.php/search/:itemtype/](search/Computer/?debug)
 * **Description**: Expose the GLPI searchEngine and combine criteria to retrieve a list of elements of specified itemtype.  
@@ -881,7 +881,7 @@ curl -g -X GET \
 ```
 
 
-## Add item(s) {#add_items}
+## Add item(s)
 
 * **URL**: apirest.php/:itemtype/
 * **Description**: Add an object (or multiple objects) into GLPI.
@@ -937,7 +937,7 @@ $ curl -X POST \
 
 
 
-## Update item(s) {#update_items}
+## Update item(s)
 
 * **URL**: apirest.php/:itemtype/(:id)
 * **Description**: update an object (or multiple objects) existing in GLPI.
@@ -994,7 +994,7 @@ $ curl -X PUT \
 
 
 
-## Delete item(s) {#delete_items}
+## Delete item(s)
 
 * **URL**: apirest.php/:itemtype/(:id)
 * **Description**: delete an object existing in GLPI
@@ -1056,141 +1056,141 @@ $ curl -X DELETE \
 
 
 
-## Errors {#errors}
+## Errors
 
 
-### ERROR_ITEM_NOT_FOUND {#ERROR_ITEM_NOT_FOUND}
+### ERROR_ITEM_NOT_FOUND
 
 The desired resource (itemtype-id) was not found in the GLPI database.
 
 
-### ERROR_BAD_ARRAY {#ERROR_BAD_ARRAY}
+### ERROR_BAD_ARRAY
 
 The HTTP body must be an an array of objects.
 
 
-### ERROR_METHOD_NOT_ALLOWED {#ERROR_METHOD_NOT_ALLOWED}
+### ERROR_METHOD_NOT_ALLOWED
 
 You specified an inexistent or not not allowed resource.
 
 
-### ERROR_RIGHT_MISSING {#ERROR_RIGHT_MISSING}
+### ERROR_RIGHT_MISSING
 
 The current logged user miss rights in his profile to do the provided action.  
 Alter this profile or choose a new one for the user in GLPI main interface.
 
 
-### ERROR_SESSION_TOKEN_INVALID {#ERROR_SESSION_TOKEN_INVALID}
+### ERROR_SESSION_TOKEN_INVALID
 
 The Session-Token provided in header is invalid.  
 You should redo an [Init session](#init_session) request.
 
 
-### ERROR_SESSION_TOKEN_MISSING {#ERROR_SESSION_TOKEN_MISSING}
+### ERROR_SESSION_TOKEN_MISSING
 
 You miss to provide Session-Token in header of your HTTP request.
 
 
-### ERROR_APP_TOKEN_PARAMETERS_MISSING {#ERROR_APP_TOKEN_PARAMETERS_MISSING}
+### ERROR_APP_TOKEN_PARAMETERS_MISSING
 
 The current API requires an App-Token header for using its methods.
 
 
-### ERROR_NOT_DELETED {#ERROR_NOT_DELETED}
+### ERROR_NOT_DELETED
 
 You must mark the item for deletion before actually deleting it
 
 
-### ERROR_NOT_ALLOWED_IP {#ERROR_NOT_ALLOWED_IP}
+### ERROR_NOT_ALLOWED_IP
 
 We can't find an active client defined in configuration for your IP.  
 Go to the GLPI Configuration > Setup menu and API tab to check IP access.
 
 
-### ERROR_LOGIN_PARAMETERS_MISSING {#ERROR_LOGIN_PARAMETERS_MISSING}
+### ERROR_LOGIN_PARAMETERS_MISSING
 
 One of theses parameter(s) is missing:
 * login and password
 * or user_token
 
 
-### ERROR_LOGIN_WITH_CREDENTIALS_DISABLED {#ERROR_LOGIN_WITH_CREDENTIALS_DISABLED}
+### ERROR_LOGIN_WITH_CREDENTIALS_DISABLED
 
 The GLPI setup forbid the login with credentials, you must login with your user_token instead.
 See your personal preferences page or setup API access in GLPI main interface.
 
 
-### ERROR_GLPI_LOGIN_USER_TOKEN {#ERROR_GLPI_LOGIN_USER_TOKEN}
+### ERROR_GLPI_LOGIN_USER_TOKEN
 
 The provided user_token seems invalid.  
 Check your personal preferences page in GLPI main interface.
 
 
-### ERROR_GLPI_LOGIN {#ERROR_GLPI_LOGIN}
+### ERROR_GLPI_LOGIN
 
 We cannot login you into GLPI. This error is not relative to API but GLPI core.  
 Check the user administration and the GLPI logs files (in files/_logs directory).
 
 
-### ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM {#ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM}
+### ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM
 
 You asked a inexistent resource (endpoint). It's not a predefined (initSession, getFullSession, etc) nor a GLPI CommonDBTM resources.
 
 See this documentation for predefined ones or [List itemtypes](https://forge.glpi-project.org/embedded/glpi/annotated.html) for available resources
 
 
-### ERROR_SQL {#ERROR_SQL}
+### ERROR_SQL
 
 We suspect an SQL error.  
 This error is not relative to API but to GLPI core.  
 Check the GLPI logs files (in files/_logs directory).
 
 
-### ERROR_RANGE_EXCEED_TOTAL {#ERROR_RANGE_EXCEED_TOTAL}
+### ERROR_RANGE_EXCEED_TOTAL
 
 The range parameter you provided is superior to the total count of available data.
 
 
-### ERROR_GLPI_ADD {#ERROR_GLPI_ADD}
+### ERROR_GLPI_ADD
 
 We cannot add the object to GLPI. This error is not relative to API but to GLPI core.  
 Check the GLPI logs files (in files/_logs directory).
 
 
-### ERROR_GLPI_PARTIAL_ADD {#ERROR_GLPI_PARTIAL_ADD}
+### ERROR_GLPI_PARTIAL_ADD
 
 Some of the object you wanted to add triggers an error.  
 Maybe a missing field or rights.  
 You'll find with this error a collection of results.
 
 
-### ERROR_GLPI_UPDATE {#ERROR_GLPI_UPDATE}
+### ERROR_GLPI_UPDATE
 
 We cannot update the object to GLPI. This error is not relative to API but to GLPI core.  
 Check the GLPI logs files (in files/_logs directory).
 
 
-### ERROR_GLPI_PARTIAL_UPDATE {#ERROR_GLPI_PARTIAL_UPDATE}
+### ERROR_GLPI_PARTIAL_UPDATE
 
 Some of the object you wanted to update triggers an error.  
 Maybe a missing field or rights.  
 You'll find with this error a collection of results.
 
 
-### ERROR_GLPI_DELETE {#ERROR_GLPI_DELETE}
+### ERROR_GLPI_DELETE
 
 We cannot delete the object to GLPI. This error is not relative to API but to GLPI core.  
 Check the GLPI logs files (in files/_logs directory).
 
 
-### ERROR_GLPI_PARTIAL_DELETE {#ERROR_GLPI_PARTIAL_DELETE}
+### ERROR_GLPI_PARTIAL_DELETE
 
 Some of the objects you want to delete triggers an error, maybe a missing field or rights.  
 You'll find with this error, a collection of results.
 
 
 
-## Servers configuration {#servers_configuration}
+## Servers configuration
 
 By default, you can use http://path/to/glpi/apirest.php without any additional configuration.
 

@@ -1698,7 +1698,13 @@ abstract class API extends CommonGLPI {
 
       echo "<div class='documentation'>";
       $documentation = file_get_contents(GLPI_ROOT.'/'.$file);
-      echo ParsedownExtra::instance()->text($documentation);
+      $md = new Michelf\MarkdownExtra();
+      $md->code_class_prefix = "language-";
+      $md->header_id_func = function($headerName) {
+         $headerName = str_replace(array('(', ')'), '', $headerName);
+         return rawurlencode(strtolower(strtr($headerName, [' ' => '-'])));
+      };
+      echo $md->transform($documentation);
       echo "</div>";
 
       Html::nullFooter();
