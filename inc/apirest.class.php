@@ -190,13 +190,14 @@ class APIRest extends API {
                   }
                } else {
                   // return collection of items
-                  $response = $this->getItems($itemtype, $this->parameters);
+                  $totalcount = 0;
+                  $response = $this->getItems($itemtype, $this->parameters, $totalcount);
 
                   //add pagination headers
                   if (!isset($this->parameters['range'])) {
                      $this->parameters['range'] = "0-50";
                   }
-                  $additionalheaders["Content-Range"] = $this->parameters['range']."/".count($response);
+                  $additionalheaders["Content-Range"] = $this->parameters['range']."/".$totalcount;
                   $additionalheaders["Accept-Range"]  = $itemtype." ".Toolbox::get_max_input_vars();
                }
                break;

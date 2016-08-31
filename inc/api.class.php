@@ -783,10 +783,11 @@ abstract class API extends CommonGLPI {
     * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
     * - 'only_id'          (default: false): keep only id in fields list. Optionnal
     * - 'range'            (default: 0-50): limit the list to start-end attributes
+    * @param      integer $totalcount output parameter who receive the total count of the query resulat. As this function paginate results (with a mysql LIMIT), we can have the full range.
     *
     * @return     array collection of fields
     */
-   protected function getItems($itemtype, $params = array()) {
+   protected function getItems($itemtype, $params = array(), &$totalcount = 0) {
       global $DB;
       $this->initEndpoint();
 
@@ -886,7 +887,7 @@ abstract class API extends CommonGLPI {
       }
 
       // build query
-      $query = "SELECT DISTINCT `$table`.id,  `$table`.*
+      $query = "SELECT SQL_CALC_FOUND_ROWS DISTINCT `$table`.id,  `$table`.*
                 FROM `$table`
                 $join
                 WHERE $where
@@ -898,6 +899,11 @@ abstract class API extends CommonGLPI {
          }
       }
 
+      // get result full row counts
+      $query_numtotalrow = "Select FOUND_ROWS()";
+      $result_numtotalrow = $DB->query($query_numtotalrow);
+      $data_numtotalrow = $DB->fetch_assoc($result_numtotalrow);
+      $totalcount = $data_numtotalrow['FOUND_ROWS()'];
 
       foreach ($found as $key => &$fields) {
          // only keep id in field list
