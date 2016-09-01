@@ -815,7 +815,7 @@ abstract class API extends CommonGLPI {
          if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
             $range = explode("-", $params['range']);
             $params['start']      = $range[0];
-            $params['list_limit'] = $range[1]-$range[0];
+            $params['list_limit'] = $range[1]-$range[0]+1;
          } else {
             $this->returnError("range must be in format : [start-end] with integers");
          }
@@ -1095,7 +1095,7 @@ abstract class API extends CommonGLPI {
          if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
             $range = explode("-", $params['range']);
             $params['start']      = $range[0];
-            $params['list_limit'] = $range[1]-$range[0];
+            $params['list_limit'] = $range[1]-$range[0]+1;
             $params['range']      = $range;
          } else {
             $this->returnError("range must be in format : [start-end] with integers");
