@@ -111,6 +111,10 @@ class APIXmlrpc extends API {
       } else if ($resource === "getFullSession") {
          return $this->returnResponse($this->getFullSession($this->parameters));
 
+      // get multiple items (with various itemtype)
+      } else if ($resource === "getMultipleItems") {
+         return $this->returnResponse($this->getMultipleItems($this->parameters));
+
       // list searchOptions of an itemtype
       } else if ($resource === "listSearchOptions") {
          return $this->returnResponse($this->listSearchOptions($this->parameters['itemtype'],

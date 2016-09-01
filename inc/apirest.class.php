@@ -149,6 +149,10 @@ class APIRest extends API {
          $itemtype = $this->getItemtype(1);
          return $this->returnResponse($this->listSearchOptions($itemtype, $this->parameters));
 
+      // get multiple items (with various itemtype)
+      } else if ($resource === "getMultipleItems") {
+         return $this->returnResponse($this->getMultipleItems($this->parameters));
+
       // Search on itemtype
       } else if ($resource === "search") {
          self::checkSessionToken();

@@ -16,6 +16,7 @@
 * [Get an item](#get-an-item)
 * [Get all items](#get-all-items)
 * [Get sub items](#get-sub-items)
+* [Get multiple items](#get-multiple-items)
 * [List searchOptions](#list-searchoptions)
 * [Search items](#search-items)
 * [Add item(s)](#add-items)
@@ -687,6 +688,64 @@ $ curl -X GET \
 ```
 
 
+## Get multiple items
+
+* **URL**: apirest.php/getMultipleItems
+* **Description**: Virtually call [Get an item](#get-an-item) for each line in input. So, you can have a ticket, an user in the same query.
+* **Method**: GET
+* **Parameters (Headers)**
+   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
+* **Parameters (query string)**
+   - *items*: items to retrieve. Mandatory.  
+              Each line of this array should contains two keys:
+               - itemtype
+               - items_id
+   - *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
+   - *get_hateoas* (default: true): Show relations of the item in a links attribute. Optional.
+   - *with_components*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
+   - *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
+   - *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
+   - *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
+   - *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
+   - *with_infocoms*: Retrieve financial and administrative informations. Optional.
+   - *with_contracts*: Retrieve associated contracts. Optional.
+   - *with_documents*: Retrieve associated external documents. Optional.
+   - *with_tickets*: Retrieve associated itil tickets. Optional.
+   - *with_problems*: Retrieve associated itil problems. Optional.
+   - *with_changes*: Retrieve associated itil changes. Optional.
+   - *with_notes*: Retrieve Notes. Optional.
+   - *with_logs*: Retrieve historical. Optional.
+* **Returns**
+   - 200 (OK) with item data (Last-Modified header should contain the date of last modification of the item).
+   - 401 (UNAUTHORIZED).
+   - 404 (NOT FOUND).
+
+Example usage (CURL):
+
+```bash
+$ curl -X GET \
+-H 'Content-Type: application/json' \
+-H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
+-H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
+-d '{"items": [{"itemtype": "User", "items_id": 2}, {"itemtype": "Entity", "items_id": 0}]}' \
+'http://path/to/glpi/apirest.php/getMultipleItems?items\[0\]\[itemtype\]\=User&items\[0\]\[items_id\]\=2&items\[1\]\[itemtype\]\=Entity&items\[1\]\[items_id\]\=0'
+
+< 200 OK
+< Content-Range: 0-50/200
+< Accept-Range: 990
+< [{
+   "id": 2,
+   "name": "glpi",
+   ...
+}, {
+   "id": 0,
+   "name": "Root Entity",
+   ...
+}]
+```
+
+
 ## List searchOptions
 
 * **URL**: [apirest.php/listSearchOptions/:itemtype](listSearchOptions/Computer?debug)
@@ -861,8 +920,8 @@ curl -g -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/search/Monitor'\
-\&criteria\[0\]\[link\]\=AND\
+'http://path/to/glpi/apirest.php/search/Monitor?\
+criteria\[0\]\[link\]\=AND\
 \&criteria\[0\]\[itemtype\]\=Monitor\
 \&criteria\[0\]\[field\]\=23\
 \&criteria\[0\]\[searchtype\]\=contains\
@@ -872,7 +931,7 @@ curl -g -X GET \
 \&criteria\[1\]\[field\]\=1\
 \&criteria\[1\]\[searchtype\]\=contains\
 \&criteria\[1\]\[value\]\=W2\
-\&range\=0-2\&&forcedisplay\[0\]\=1
+\&range\=0-2\&&forcedisplay\[0\]\=1'
 
 < 200 OK
 < Content-Range: 0-2/2

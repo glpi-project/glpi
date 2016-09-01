@@ -927,6 +927,56 @@ abstract class API extends CommonGLPI {
       return array_values($found);
    }
 
+   /**
+    * Return a collection of items queried in input ($items)
+    *
+    * Call self::getItem for each line of $items
+    *
+    * @since version 9.1
+    *
+    * @param      array   $params   array with theses options :
+    *    - items:               array containing lines with itemtype and items_id keys
+    *                               Ex: [
+    *                                      [itemtype => 'Ticket', id => 102],
+    *                                      [itemtype => 'User',   id => 10],
+    *                                      [itemtype => 'User',   id => 11],
+    *                                   ]
+    *    - 'expand_dropdowns':  show dropdown's names instead of id. default: false. Optionnal
+    *    - 'get_hateoas':       show relation of current item in a links attribute. default: true. Optionnal
+    *    - 'with_components':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
+    *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optionnal.
+    *    - 'with_softwares':    Only for Computer, retrieve the associated softwares installations. Optionnal.
+    *    - 'with_connections':  Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
+    *    - 'with_networkports': Retrieve all network connections and advanced network informations. Optionnal.
+    *    - 'with_infocoms':     Retrieve financial and administrative informations. Optionnal.
+    *    - 'with_contracts':    Retrieve associated contracts. Optionnal.
+    *    - 'with_documents':    Retrieve associated external documents. Optionnal.
+    *    - 'with_tickets':      Retrieve associated itil tickets. Optionnal.
+    *    - 'with_problems':     Retrieve associated itil problems. Optionnal.
+    *    - 'with_changes':      Retrieve associated itil changes. Optionnal.
+    *    - 'with_notes':        Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
+    *    - 'with_logs':         Retrieve historical. Optionnal.
+    *
+    * @return     array    collection of glpi object's fields
+    */
+   protected function getMultipleItems($params = array()) {
+      if (!is_array($params['items'])) {
+         return $this->messageBadArrayError();
+      }
+
+      $allitems = [];
+      foreach($params['items'] as $item) {
+         if (!isset($item['items_id']) && !isset($item['itemtype'])) {
+            return $this->messageBadArrayError();
+         }
+
+         $fields = $this->getItem($item['itemtype'], $item['items_id'], $params);
+         $allitems[] = $fields;
+      }
+
+      return $allitems;
+   }
+
 
    /**
     * List the searchoptions of provided itemtype. To use with searchItems function

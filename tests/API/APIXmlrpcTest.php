@@ -249,6 +249,36 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
    /**
      * @depends testInitSessionCredentials
      */
+   public function testGetMultipleItems($session_token) {
+      // Get the User 'glpi' and the root entity in the same query
+      $res = $this->doHttpRequest('getMultipleItems', ['session_token'    => $session_token,
+                                                       'items'            => [['itemtype' => 'User',
+                                                                               'items_id' => 2],
+                                                                              ['itemtype' => 'Entity',
+                                                                               'items_id' => 0]],
+                                                       'expand_dropdowns' => true,
+                                                       'with_logs'        => true]);
+      $this->assertEquals(200, $res->getStatusCode());
+
+      $data = xmlrpc_decode($res->getBody());
+
+      $this->assertEquals(true, is_array($data));
+      $this->assertEquals(2, count($data));
+
+      foreach($data as $item) {
+         $this->assertArrayHasKey('id', $item);
+         $this->assertArrayHasKey('name', $item);
+         $this->assertArrayHasKey('entities_id', $item);
+         $this->assertArrayHasKey('links', $item);
+         $this->assertFalse(is_numeric($item['entities_id'])); // for expand_dropdowns
+         $this->assertArrayHasKey('_logs', $item); // with_logs == true
+      }
+   }
+
+
+   /**
+     * @depends testInitSessionCredentials
+     */
    public function testListSearchOptions($session_token) {
       // test retrieve all users
       $res = $this->doHttpRequest('listSearchOptions', ['session_token' => $session_token,
