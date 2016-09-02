@@ -6572,14 +6572,6 @@ class Ticket extends CommonITILObject {
                       LEFT JOIN `glpi_groups_users` gu ON gu.`groups_id` = gt.`groups_id`
                       LEFT JOIN `glpi_users` usr ON gu.`users_id` = usr.`id`
                       WHERE gt.`tickets_id` = ".$this->getId()."
-                      UNION
-                      SELECT usr.`id` AS users_id, '2' AS type
-                      FROM `glpi_profiles` prof
-                      LEFT JOIN `glpi_profiles_users` pu ON pu.`profiles_id` = prof.`id`
-                      LEFT JOIN `glpi_users` usr ON usr.`id` = pu.`users_id`
-                      LEFT JOIN `glpi_profilerights` pr ON pr.`profiles_id` = prof.`id`
-                      WHERE pr.`name` = 'ticket'
-                            AND pr.`rights` & ".Ticket::OWN." = ".Ticket::OWN."
                      ) AS allactors
                 WHERE `type` != ".CommonItilActor::OBSERVER."
                 GROUP BY `users_id`
