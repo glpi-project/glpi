@@ -88,6 +88,14 @@ switch($_POST['action']) {
             $_REQUEST['load_kb_sol'] = 0;
          }
          $ticket->showSolutionForm($_REQUEST['load_kb_sol']);
+
+         // show approbation form on top when ticket is solved
+         if ($ticket->fields["status"] == CommonITILObject::SOLVED) {
+            echo "<div class='approbation_form'>";
+            $followup_obj = new TicketFollowup();
+            $followup_obj->showApprobationForm($ticket);
+            echo "</div>";
+         }
       }
       Html::ajaxFooter();
       break;
