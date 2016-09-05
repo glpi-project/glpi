@@ -559,7 +559,7 @@ class Computer extends CommonDBTM {
       echo "<br /><a href='#' id='toggle_os_information'>".__("More information")."</a>";
       echo "</td>";
       if ($inventory_show) {
-         echo "<td rowspan='4' colspan='2'>";
+         echo "<td rowspan='5' colspan='2'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
       }
