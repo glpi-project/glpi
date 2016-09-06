@@ -432,7 +432,6 @@ class APIRest extends API {
     * @param array    $aditionnalheaders headers to send with http response (must be an array(key => value))
     */
    public function returnResponse($response, $httpcode = 200, $aditionnalheaders = array()) {
-
       if (empty($httpcode)) {
          $httpcode = 200;
       }
@@ -448,10 +447,15 @@ class APIRest extends API {
          $json = json_encode($response, JSON_UNESCAPED_UNICODE
                                       | JSON_UNESCAPED_SLASHES
                                       | JSON_NUMERIC_CHECK
-                                      | ($this->debug?JSON_PRETTY_PRINT:0));
+                                      | ($this->debug
+                                          ? JSON_PRETTY_PRINT
+                                          : 0));
       } else {
          $json = '';
       }
+
+      // clean json
+      $json = trim($json, '"');
 
       if ($this->debug) {
          echo "<pre>";

@@ -374,21 +374,22 @@ abstract class API extends CommonGLPI {
     * @param      string   $itemtype  itemtype (class) of object
     * @param      integer  $id        identifier of object
     * @param      array   $params   array with theses options :
-    *    - 'expand_dropdowns' : show dropdown's names instead of id. default: false. Optionnal
-    *    - 'get_hateoas' :      show relation of current item in a links attribute. default: true. Optionnal
-    *    - 'with_components' :  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
-    *    - 'with_disks' :       Only for Computer, retrieve the associated filesystems. Optionnal.
-    *    - 'with_softwares' :   Only for Computer, retrieve the associated softwares installations. Optionnal.
-    *    - 'with_connections' : Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
-    *    - 'with_networkports' :Retrieve all network connections and advanced network informations. Optionnal.
-    *    - 'with_infocoms' :    Retrieve financial and administrative informations. Optionnal.
-    *    - 'with_contracts' :   Retrieve associated contracts. Optionnal.
-    *    - 'with_documents' :   Retrieve associated external documents. Optionnal.
-    *    - 'with_tickets' :     Retrieve associated itil tickets. Optionnal.
-    *    - 'with_problems' :    Retrieve associated itil problems. Optionnal.
-    *    - 'with_changes' :     Retrieve associated itil changes. Optionnal.
-    *    - 'with_notes' :       Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
-    *    - 'with_logs' :        Retrieve historical. Optionnal.
+    *    - 'expand_dropdowns': Show dropdown's names instead of id. default: false. Optionnal
+    *    - 'get_hateoas':      Show relation of current item in a links attribute. default: true. Optionnal
+    *    - 'get_sha1':         Get a sha1 signature instead of the full answer. default: false. Optionnal
+    *    - 'with_components':  Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
+    *    - 'with_disks':       Only for Computer, retrieve the associated filesystems. Optionnal.
+    *    - 'with_softwares':   Only for Computer, retrieve the associated softwares installations. Optionnal.
+    *    - 'with_connections': Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optionnal.
+    *    - 'with_networkports':Retrieve all network connections and advanced network informations. Optionnal.
+    *    - 'with_infocoms':    Retrieve financial and administrative informations. Optionnal.
+    *    - 'with_contracts':   Retrieve associated contracts. Optionnal.
+    *    - 'with_documents':   Retrieve associated external documents. Optionnal.
+    *    - 'with_tickets':     Retrieve associated itil tickets. Optionnal.
+    *    - 'with_problems':    Retrieve associated itil problems. Optionnal.
+    *    - 'with_changes':     Retrieve associated itil changes. Optionnal.
+    *    - 'with_notes':       Retrieve Notes (if exists, not all itemtypes have notes). Optionnal.
+    *    - 'with_logs':        Retrieve historical. Optionnal.
     *
     * @return     array    fields of found object
     */
@@ -399,6 +400,7 @@ abstract class API extends CommonGLPI {
       // default params
       $default = array('expand_dropdowns'  => false,
                        'get_hateoas'       => true,
+                       'get_sha1'          => false,
                        'with_components'   => false,
                        'with_disks'        => false,
                        'with_softwares'    => false,
@@ -759,6 +761,11 @@ abstract class API extends CommonGLPI {
          }
       }
 
+      // get sha1 footprint if needed
+      if ($params['get_sha1']) {
+         $fields = sha1(json_encode($fields));
+      }
+
       return $fields;
    }
 
@@ -941,8 +948,9 @@ abstract class API extends CommonGLPI {
     *                                      [itemtype => 'User',   id => 10],
     *                                      [itemtype => 'User',   id => 11],
     *                                   ]
-    *    - 'expand_dropdowns':  show dropdown's names instead of id. default: false. Optionnal
-    *    - 'get_hateoas':       show relation of current item in a links attribute. default: true. Optionnal
+    *    - 'expand_dropdowns':  Show dropdown's names instead of id. default: false. Optionnal
+    *    - 'get_hateoas':       Show relation of current item in a links attribute. default: true. Optionnal
+    *    - 'get_sha1':          Get a sha1 signature instead of the full answer. default: false. Optionnal
     *    - 'with_components':   Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], Optionnal.
     *    - 'with_disks':        Only for Computer, retrieve the associated filesystems. Optionnal.
     *    - 'with_softwares':    Only for Computer, retrieve the associated softwares installations. Optionnal.
