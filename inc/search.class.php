@@ -4144,7 +4144,9 @@ class Search {
                   $count_display = 0;
                   $added         = array();
                   for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
-                     if (strlen(trim($data[$num][$k]['name'])) > 0) {
+                     if (strlen(trim($data[$num][$k]['name'])) > 0
+                         && !in_array($data[$num][$k]['name']."-".$data[$num][$k]['entities_id'],
+                                      $added)) {
                         $text = sprintf(__('%1$s - %2$s'), $data[$num][$k]['name'],
                                         Dropdown::getDropdownName('glpi_entities',
                                                                   $data[$num][$k]['entities_id']));
@@ -4161,14 +4163,12 @@ class Search {
                         if (!empty($comp)) {
                            $text = sprintf(__('%1$s %2$s'), $text, "(".$comp.")");
                         }
-                        if (!in_array($text,$added)) {
-                           if ($count_display) {
-                              $out .= self::LBBR;
-                           }
-                           $count_display++;
-                           $out     .= $text;
-                           $added[]  = $text;
+                        if ($count_display) {
+                           $out .= self::LBBR;
                         }
+                        $count_display++;
+                        $out     .= $text;
+                        $added[]  = $data[$num][$k]['name']."-".$data[$num][$k]['entities_id'];
                      }
                   }
                   return $out;
@@ -4183,7 +4183,9 @@ class Search {
                   $count_display = 0;
                   for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
                      if (isset($data[$num][$k]['name'])
-                         && (strlen(trim($data[$num][$k]['name'])) > 0)) {
+                         && (strlen(trim($data[$num][$k]['name'])) > 0)
+                         && !in_array($data[$num][$k]['name']."-".$data[$num][$k]['profiles_id'],
+                                      $added)) {
                         $text = sprintf(__('%1$s - %2$s'), $data[$num][$k]['name'],
                                         Dropdown::getDropdownName('glpi_profiles',
                                                                   $data[$num][$k]['profiles_id']));
@@ -4200,14 +4202,12 @@ class Search {
                         if (!empty($comp)) {
                            $text = sprintf(__('%1$s %2$s'), $text, "(".$comp.")");
                         }
-                        if (!in_array($text,$added)) {
-                           if ($count_display) {
-                              $out .= self::LBBR;
-                           }
-                           $count_display++;
-                           $out    .= $text;
-                           $added[] = $text;
+                        if ($count_display) {
+                           $out .= self::LBBR;
                         }
+                        $count_display++;
+                        $out    .= $text;
+                        $added[] = $data[$num][$k]['name']."-".$data[$num][$k]['profiles_id'];
                      }
                   }
                   return $out;
