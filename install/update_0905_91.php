@@ -52,7 +52,16 @@ function update0905to91() {
 
 
    $backup_tables = false;
-   $newtables     = array('glpi_objectlocks');
+   $newtables     = array(
+      'glpi_objectlocks',
+      'glpi_networkportfiberchannels',
+      'glpi_operatingsystemarchitectures',
+      'glpi_tasktemplates',
+      'glpi_budgettypes',
+      'glpi_apiclients',
+      'glpi_computerantiviruses',
+      'glpi_slts'
+   );
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
