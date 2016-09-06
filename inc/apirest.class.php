@@ -454,9 +454,6 @@ class APIRest extends API {
          $json = '';
       }
 
-      // clean json
-      $json = trim($json, '"');
-
       if ($this->debug) {
          echo "<pre>";
          var_dump($response);
