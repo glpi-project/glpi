@@ -469,6 +469,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                                 'name' => "My computer 2"
                                              ],[
                                                 'name' => "My computer 3"]]]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(201, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
@@ -591,6 +592,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'Session-Token' => $session_token],
                                           'query' => [
                                              'force_purge'   => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(204, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
