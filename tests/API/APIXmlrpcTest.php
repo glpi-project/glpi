@@ -359,7 +359,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($id);
-      $this->assertEquals(true, boolval($computers_exist));
+      $this->assertEquals(true, (bool) $computers_exist);
 
       return $id;
    }
@@ -394,9 +394,9 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($first_computer['id']);
-      $this->assertEquals(true, boolval($computers_exist));
+      $this->assertEquals(true, (bool) $computers_exist);
       $computers_exist = $computer->getFromDB($secnd_computer['id']);
-      $this->assertEquals(true, boolval($computers_exist));
+      $this->assertEquals(true, (bool) $computers_exist);
 
       return $data;
    }
@@ -419,11 +419,11 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(false, $data);
       $computer = array_shift($data);
       $this->assertArrayHasKey($computers_id, $computer);
-      $this->assertEquals(true, boolval($computer[$computers_id]));
+      $this->assertEquals(true, (bool) $computer[$computers_id]);
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($computers_id);
-      $this->assertEquals(true, boolval($computers_exist));
+      $this->assertEquals(true, (bool) $computers_exist);
       $this->assertEquals("abcdef", $computer->fields['serial']);
    }
 
@@ -450,10 +450,10 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       foreach($data as $index => $row) {
          $computers_id = $computers_id_collection[$index]['id'];
          $this->assertArrayHasKey($computers_id, $row);
-         $this->assertEquals(true, boolval($row[$computers_id]));
+         $this->assertEquals(true, (bool) $row[$computers_id]);
 
          $computers_exist = $computer->getFromDB($computers_id);
-         $this->assertEquals(true, boolval($computers_exist));
+         $this->assertEquals(true, (bool) $computers_exist);
          $this->assertEquals("abcdef", $computer->fields['otherserial']);
       }
    }
@@ -475,7 +475,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($computers_id);
-      $this->assertEquals(false, boolval($computers_exist));
+      $this->assertEquals(false, (bool) $computers_exist);
    }
 
 
@@ -499,10 +499,10 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       foreach($data as $index => $row) {
          $computers_id = $computers_id_collection[$index]['id'];
          $this->assertArrayHasKey($computers_id, $row);
-         $this->assertEquals(true, boolval($row[$computers_id]));
+         $this->assertEquals(true, (bool) $row[$computers_id]);
 
          $computers_exist = $computer->getFromDB($computers_id);
-         $this->assertEquals(false, boolval($computers_exist));
+         $this->assertEquals(false, (bool) $computers_exist);
       }
    }
 
