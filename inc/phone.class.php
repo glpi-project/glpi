@@ -271,11 +271,11 @@ class Phone extends CommonDBTM {
       $rowspan        = 6;
       $inventory_show = false;
 
-       if (!empty($ID)
-           && $this->fields["is_dynamic"]) {
-          $inventory_show = true;
-          $rowspan       -= 2;
-       }
+      if (!empty($ID)
+            && $this->fields["is_dynamic"]) {
+         $inventory_show = true;
+         $rowspan       -= 1;
+      }
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
@@ -327,8 +327,8 @@ class Phone extends CommonDBTM {
       echo "</td></tr></table>\n";
       echo "</td>";
       if ($inventory_show) {
-         echo "<td rowspan='2'>".__('Automatic inventory')."</td>";
-         echo "<td rowspan='2'>";
+         echo "<td rowspan='1'>".__('Automatic inventory')."</td>";
+         echo "<td rowspan='1'>";
          Plugin::doHook("autoinventory_information", $this);
          echo "</td>";
       }

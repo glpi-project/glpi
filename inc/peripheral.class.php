@@ -294,16 +294,15 @@ class Peripheral extends CommonDBTM {
       echo "<td>".__('Brand')."</td>\n";
       echo "<td>";
       Html::autocompletionTextField($this, "brand");
-      echo "</td></tr>\n";
+      echo "</td>\n";
 
       if ($inventory_show) {
-         echo "<tr class='tab_bg_1'>";
          echo "<td rowspan='1'>".__('Automatic inventory')."</td>";
          echo "<td rowspan='1'>";
          Plugin::doHook("autoinventory_information", $this);
-         echo "</td>";
-         echo "</tr>\n";
-      }
+         echo "</td>\n";
+      } 
+      echo "</tr>\n";
 
       $this->showFormButtons($options);
 
