@@ -692,8 +692,8 @@ class Reminder extends CommonDBTM {
 
       $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_2'><td>".__('Title')."</td>";
-      echo "<td>";
+      echo "<tr class='tab_bg_2'><td colspan='2'>".__('Title')."</td>";
+      echo "<td colspan='2'>";
       if (!$ID) {
       echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
       }
@@ -714,8 +714,8 @@ class Reminder extends CommonDBTM {
 
       if (!isset($options['from_planning_ajax'])) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td>".__('Visibility')."</td>";
-         echo "<td>";
+         echo "<td colspan='2'>".__('Visibility')."</td>";
+         echo "<td colspan='2'>";
          echo '<table><tr><td>';
          echo __('Begin').'</td><td>';
          Html::showDateTimeField("begin_view_date",
@@ -735,8 +735,8 @@ class Reminder extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Status')."</td>";
-      echo "<td>";
+      echo "<td colspan='2'>".__('Status')."</td>";
+      echo "<td colspan='2'>";
       if ($canedit) {
          Planning::dropdownState("state", $this->fields["state"]);
       } else {
@@ -745,8 +745,8 @@ class Reminder extends CommonDBTM {
       echo "</td>\n";
       echo "</tr>\n";
 
-      echo "<tr class='tab_bg_2'><td >".__('Calendar')."</td>";
-      echo "<td>";
+      echo "<tr class='tab_bg_2'><td  colspan='2'>".__('Calendar')."</td>";
+      echo "<td colspan='2'>";
       if (isset($options['from_planning_ajax'])
           && $options['from_planning_ajax']) {
          echo Html::hidden('plan[begin]', array('value' => $options['begin']));
@@ -820,8 +820,6 @@ class Reminder extends CommonDBTM {
                                                   'items_id' => $ID));
             }
             echo "</td>";
-         } else {
-            echo "<td colspan='2'></td>";
          }
       }
       echo "</tr>\n";
