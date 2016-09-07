@@ -84,7 +84,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(200, $res->getStatusCode());
       $this->assertContains( "application/json; charset=UTF-8", $res->getHeader('content-type') );
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('session_token', $data);
       return $data['session_token'];
@@ -108,7 +109,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('session_token', $data);
    }
@@ -139,7 +141,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey(0, $data); // check presence of root entity
    }
@@ -155,7 +158,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('active_entity', $data);
       $this->assertArrayHasKey('active_entity_recursive', $data);
@@ -188,7 +192,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey(4, $data);  // check presence of super-admin profile
    }
@@ -204,7 +209,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('id', $data);
       $this->assertArrayHasKey('name', $data);
@@ -222,7 +228,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('glpiID', $data);
       $this->assertArrayHasKey('glpiname', $data);
@@ -246,7 +253,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertArrayHasKey('id', $data);
       $this->assertArrayHasKey('name', $data);
       $this->assertArrayHasKey('entities_id', $data);
@@ -263,7 +271,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('id', $data);
       $this->assertArrayHasKey('name', $data);
@@ -284,7 +293,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'expand_dropdowns' => true]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
 
       $this->assertGreaterThanOrEqual(4, count($data));
       $this->assertArrayHasKey('id', $data[0]);
@@ -303,7 +313,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertGreaterThanOrEqual(4, count($data));
       $this->assertArrayHasKey('id', $data[0]);
@@ -328,7 +339,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'with_logs'        => true,
                                              'expand_dropdowns' => true]]);
       $this->assertEquals(200, $res->getStatusCode());
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
 
       $this->assertEquals(true, is_array($data));
       $this->assertEquals(2, count($data));
@@ -354,7 +366,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertGreaterThanOrEqual(128, count($data));
       $this->assertEquals('Name', $data[1]['name']);
@@ -386,7 +399,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertContains('User', $headers['Accept-Range'][0]);
       $this->assertArrayHasKey('Content-Range', $headers);
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('totalcount', $data);
       $this->assertArrayHasKey('count', $data);
@@ -442,7 +456,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(201, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('id', $data);
       $id = $data['id'];
@@ -472,7 +487,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(201, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $first_computer = $data[0];
       $secnd_computer = $data[1];
@@ -509,7 +525,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $computer = array_shift($data);
       $this->assertArrayHasKey($computers_id, $computer);
@@ -536,7 +553,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $computer = array_shift($data);
       $this->assertArrayHasKey($computers_id, $computer);
@@ -568,7 +586,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       foreach($data as $index => $row) {
          $computers_id = $computers_id_collection[$index]['id'];
@@ -595,7 +614,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(204, $res->getStatusCode());
 
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertEquals(NULL, $data);
 
       $computer = new Computer;
@@ -622,7 +642,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'force_purge'   => true]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
-      $data = json_decode($res->getBody(), true);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       foreach($data as $index => $row) {
          $computers_id = $computers_id_collection[$index]['id'];
