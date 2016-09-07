@@ -127,6 +127,10 @@ class DBmysql {
          $this->error     = 1;
       } else {
          $this->dbh->set_charset(isset($this->dbenc) ? $this->dbenc : "utf8");
+
+         if (GLPI_FORCE_EMPTY_SQL_MODE) {
+            $this->dbh->query("SET SESSION sql_mode = ''");
+         }
          $this->connected = true;
       }
    }
