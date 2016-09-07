@@ -38,8 +38,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
    protected function setUp() {
       global $CFG_GLPI;
+
       $this->http_client = new GuzzleHttp\Client();
-      $this->base_uri    = trim($CFG_GLPI['url_base_api'], "/")."/";
+      $this->base_uri    = "http://localhost:8000/apirest.php/";
 
       // enable api config
       $config = new Config;

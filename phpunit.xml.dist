@@ -5,7 +5,6 @@
     <testsuites>
         <testsuite name="GLPI">
             <directory suffix="Test.php">./tests</directory>
-            <exclude>./tests/API/</exclude>
         </testsuite>
     </testsuites>
     <filter>
