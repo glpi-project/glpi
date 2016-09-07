@@ -350,16 +350,8 @@ class NetworkEquipment extends CommonDBTM {
       Network::dropdown(array('value' => $this->fields["networks_id"]));
       echo "</td></tr>";
 
-      // Display auto inventory informations
-      $rowspan        = 6;
-      $inventory_show = false;
-
-       if (!empty($ID)
-           && $this->fields["is_dynamic"]) {
-          $inventory_show = true;
-          $rowspan       -= 3;
-       }
-
+      $rowspan        = 5;
+      
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
@@ -388,14 +380,6 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>";
       NetworkEquipmentFirmware::dropdown(array('value' => $this->fields["networkequipmentfirmwares_id"]));
       echo "</td>";
-      if ($inventory_show) {
-         echo "<td rowspan='2'>".__('Automatic inventory')."</td>";
-         echo "<td rowspan='2'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td>";
-      } else {
-         echo "<td colspan='2'></td>";
-      }
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -403,6 +387,14 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "ram");
       echo "</td></tr>";
+      
+      // Display auto inventory informations
+      if (!empty($ID)
+         && $this->fields["is_dynamic"]) {
+         echo "<tr class='tab_bg_1'><td colspan='4'>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td></tr>";
+      }
 
       $this->showFormButtons($options);
 

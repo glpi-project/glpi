@@ -626,13 +626,6 @@ class Computer extends CommonDBTM {
 
       // Display auto inventory informations
       $rowspan        = 4;
-      $inventory_show = false;
-
-      if (!empty($ID)
-          && Plugin::haveImport()
-          && $this->fields["is_dynamic"]) {
-         $inventory_show = true;
-      }
 
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
@@ -660,16 +653,12 @@ class Computer extends CommonDBTM {
       echo "<td >";
       AutoUpdateSystem::dropdown(array('value' => $this->fields["autoupdatesystems_id"]));
       echo "</td></tr>";
-
-
-      if (Plugin::haveImport() && $inventory_show) {
-         //echo "<td>".__('Automatic inventory')."</td>";
+      // Display auto inventory informations
+      if (!empty($ID)
+          && Plugin::haveImport()
+          && $this->fields["is_dynamic"]) {
          echo "<tr class='tab_bg_1'><td colspan='4'>";
-         if ($ID && $this->fields['is_dynamic']) {
-            Plugin::doHook("autoinventory_information", $this);
-         } else {
-            _e('No');
-         }
+         Plugin::doHook("autoinventory_information", $this);
          echo "</td></tr>";
       }
 

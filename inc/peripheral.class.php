@@ -268,16 +268,7 @@ class Peripheral extends CommonDBTM {
                                        'target'       => $target));
       echo "</td></tr>\n";
 
-      // Display auto inventory informations
       $rowspan        = 2;
-      $inventory_show = false;
-
-       if (!empty($ID)
-           && $this->fields["is_dynamic"]) {
-          $inventory_show = true;
-          $rowspan       -= 1;
-       }
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>\n";
       echo "<td>";
@@ -294,16 +285,17 @@ class Peripheral extends CommonDBTM {
       echo "<td>".__('Brand')."</td>\n";
       echo "<td>";
       Html::autocompletionTextField($this, "brand");
-      echo "</td>\n";
-
-      if ($inventory_show) {
-         echo "<td rowspan='1'>".__('Automatic inventory')."</td>";
-         echo "<td rowspan='1'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td>\n";
-      } 
+      echo "</td>\n"; 
       echo "</tr>\n";
-
+      
+      // Display auto inventory informations
+      if (!empty($ID)
+         && $this->fields["is_dynamic"]) {
+         echo "<tr class='tab_bg_1'><td colspan='4'>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td></tr>";
+      }
+      
       $this->showFormButtons($options);
 
       return true;

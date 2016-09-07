@@ -267,16 +267,7 @@ class Phone extends CommonDBTM {
                                        'target'       => $target));
       echo "</td></tr>\n";
 
-      // Display auto inventory informations
       $rowspan        = 6;
-      $inventory_show = false;
-
-      if (!empty($ID)
-            && $this->fields["is_dynamic"]) {
-         $inventory_show = true;
-         $rowspan       -= 1;
-      }
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
@@ -326,14 +317,15 @@ class Phone extends CommonDBTM {
       Dropdown::showYesNo("have_hp", $this->fields["have_hp"]);
       echo "</td></tr></table>\n";
       echo "</td>";
-      if ($inventory_show) {
-         echo "<td rowspan='1'>".__('Automatic inventory')."</td>";
-         echo "<td rowspan='1'>";
-         Plugin::doHook("autoinventory_information", $this);
-         echo "</td>";
-      }
 
       echo "</tr>\n";
+      
+      if (!empty($ID)
+         && $this->fields["is_dynamic"]) {
+         echo "<tr class='tab_bg_1'><td colspan='4'>";
+         Plugin::doHook("autoinventory_information", $this);
+         echo "</td></tr>";
+      }
 
       $this->showFormButtons($options);
 

@@ -294,9 +294,7 @@ class ComputerAntivirus extends CommonDBChild {
          echo "<td colspan='2'></td>";
       }
       echo "</tr>\n";
-
-      echo "<table class='tab_cadre_fixe' cellpadding='1'>";
-
+      
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
