@@ -11,7 +11,7 @@ before_script:
   - cp tests/config_db.php config/
 
 script:
- - php -S localhost 8000 &
+ - php -S localhost:8000 &
  - mysql -u root -e 'select version();'
  - phpunit --verbose
 
