@@ -439,6 +439,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                           'json' => [
                                              'input'         => [
                                                 'name' => "My computer 1"]]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(201, $res->getStatusCode());
 
       $data = json_decode($res->getBody(), true);
