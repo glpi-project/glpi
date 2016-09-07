@@ -207,7 +207,7 @@ class Computer extends CommonDBTM {
       echo "<td>".__('Serial number')."</td>";
       echo "<td >";
       Html::autocompletionTextField($comp, 'os_license_number');
-      echo "</td></tr>";
+      echo "</td><td colspan='2'></td></tr>";
 
       $comp->showFormButtons(array('candel' => false));
 
@@ -664,7 +664,7 @@ class Computer extends CommonDBTM {
 
       if (Plugin::haveImport() && $inventory_show) {
          //echo "<td>".__('Automatic inventory')."</td>";
-         echo '<tr><td colspan="4">';
+         echo "<tr class='tab_bg_1'><td colspan='4'>";
          if ($ID && $this->fields['is_dynamic']) {
             Plugin::doHook("autoinventory_information", $this);
          } else {
