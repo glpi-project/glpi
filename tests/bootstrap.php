@@ -42,6 +42,7 @@ define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
 function loadDataset() {
+   global $CFG_GLPI;
 
    // Unit test data definition
    $data = [
@@ -134,6 +135,12 @@ function loadDataset() {
    $_SESSION['glpicronuserrunning'] = "cron_phpunit";
    $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
    $CFG_GLPI['root_doc']            = '/glpi';
+
+   // need to set theses in DB, because tests for API use http call and this bootstrap file is not called
+   Config::setConfigurationValues('core', ['url_base'     => 'http://localhost:8088',
+                                           'url_base_api' => 'http://localhost:8088/apirest.php']);
+   $CFG_GLPI['url_base']      = 'http://localhost:8088';
+   $CFG_GLPI['url_base_api'] = 'http://localhost:8088/apirest.php';
 
    @mkdir(GLPI_LOG_DIR, 0755, true);
 

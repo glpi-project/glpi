@@ -38,7 +38,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       global $CFG_GLPI;
 
       $this->http_client = new GuzzleHttp\Client();
-      $this->base_uri    = "http://localhost:8000/apixmlrpc.php";
+      $this->base_uri    = trim($CFG_GLPI['url_base'], "/")."/apixmlrpc.php";
    }
 
    protected function doHttpRequest($resource = "", $params = array()) {

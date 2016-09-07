@@ -9,11 +9,11 @@ before_script:
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --db=glpitest --user=root --tests
   - cp tests/config_db.php config/
+  - php -S localhost:8088 > /dev/null 2>&1 &
 
 script:
- - php -S localhost:8000 &
- - mysql -u root -e 'select version();'
- - phpunit --verbose
+  - mysql -u root -e 'select version();'
+  - phpunit --verbose
 
 matrix:
   include:
