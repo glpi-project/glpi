@@ -8,10 +8,10 @@ before_script:
   - composer install --no-dev
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --db=glpitest --user=root --tests
-  - php -S localhost 8000 &
-  - cp tests/config_db config/
+  - cp tests/config_db.php config/
 
 script:
+ - php -S localhost 8000 &
  - mysql -u root -e 'select version();'
  - phpunit --verbose
 
