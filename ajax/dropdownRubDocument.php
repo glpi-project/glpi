@@ -71,6 +71,10 @@ if (isset($_POST["rubdoc"])) {
       throw new \RuntimeException('Invalid name provided!');
    }
 
+   if (!isset($_POST['entity']) || $_POST['entity'] === '') {
+      $_POST['entity'] = $_SESSION['glpiactive_entity'];
+   }
+
    Dropdown::show('Document',
                   array('name'      => $_POST['myname'],
                         'used'      => $used,
