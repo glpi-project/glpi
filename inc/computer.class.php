@@ -775,10 +775,10 @@ class Computer extends CommonDBTM {
       $tab[44]['name']           = __('Product ID of the operating system');
       $tab[44]['datatype']       = 'string';
 
-      $tab[45]['table']          = 'glpi_operatingsystemarchitectures';
-      $tab[45]['field']          = 'name';
-      $tab[45]['name']           = __('Operating system architecture');
-      $tab[45]['datatype']       = 'dropdown';
+      $tab[61]['table']          = 'glpi_operatingsystemarchitectures';
+      $tab[61]['field']          = 'name';
+      $tab[61]['name']           = __('Operating system architecture');
+      $tab[61]['datatype']       = 'dropdown';
 
       $tab[47]['table']          = $this->getTable();
       $tab[47]['field']          = 'uuid';
