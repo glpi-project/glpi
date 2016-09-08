@@ -2228,6 +2228,7 @@ class CommonDBTM extends CommonGLPI {
       $params['withtemplate'] = '';
       $params['formoptions']  = '';
       $params['canedit']      = true;
+      $params['formtitle']    = null;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2279,81 +2280,84 @@ class CommonDBTM extends CommonGLPI {
       echo "<div class='spaced' id='tabsbody'>";
       echo "<table class='tab_cadre_fixe' id='mainformtable'>";
 
-      echo "<tr class='headerRow'><th colspan='".$params['colspan']."'>";
+      if ($params['formtitle'] !== '' && $params['formtitle'] !== false) {
+         echo "<tr class='headerRow'><th colspan='".$params['colspan']."'>";
 
-      $name = '';
-      if (!empty($params['withtemplate']) && ($params['withtemplate'] == 2)
-          && !$this->isNewID($ID)) {
+         if (!empty($params['withtemplate']) && ($params['withtemplate'] == 2)
+            && !$this->isNewID($ID)) {
 
-         echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
+            echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
 
-         //TRANS: %s is the template name
-         printf(__('Created from the template %s'), $this->fields["template_name"]);
+            //TRANS: %s is the template name
+            printf(__('Created from the template %s'), $this->fields["template_name"]);
 
-      } else if (!empty($params['withtemplate']) && ($params['withtemplate'] == 1)) {
-         echo "<input type='hidden' name='is_template' value='1'>\n";
-         _e('Template name');
-         Html::autocompletionTextField($this, "template_name", array('size' => 25));
-      } else if ($this->isNewID($ID)) {
-         printf(__('%1$s - %2$s'), __('New item'), $this->getTypeName(1));
-      } else {
-         $nametype =  $this->getTypeName(1);
-         if ($_SESSION['glpiis_ids_visible'] || empty($nametype)) {
-            //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-            $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
+         } else if (!empty($params['withtemplate']) && ($params['withtemplate'] == 1)) {
+            echo "<input type='hidden' name='is_template' value='1'>\n";
+            _e('Template name');
+            Html::autocompletionTextField($this, "template_name", array('size' => 25));
+         } else if ($this->isNewID($ID)) {
+            $nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
+            printf(__('%1$s - %2$s'), __('New item'), $nametype);
+         } else {
+            $nametype = $params['formtitle'] !== null ? $params['formtitle'] : $this->getTypeName(1);
+            if ($_SESSION['glpiis_ids_visible'] || empty($nametype)) {
+               //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
+               $nametype = sprintf(__('%1$s - ID %2$d'), $nametype, $ID);
+            }
+            echo $nametype;
          }
-         echo $nametype;
-      }
-      $entityname = '';
-      if (isset($this->fields["entities_id"])
-          && Session::isMultiEntitiesMode()
-          && $this->isEntityAssign()) {
-         $entityname = Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]);
-      }
+         $entityname = '';
+         if (isset($this->fields["entities_id"])
+            && Session::isMultiEntitiesMode()
+            && $this->isEntityAssign()) {
+            $entityname = Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]);
+         }
 
-      echo "</th><th colspan='".$params['colspan']."'>";
-      if (get_class($this) == 'Entity') {
-         // is recursive but cannot be change
+         echo "</th><th colspan='".$params['colspan']."'>";
+         if (get_class($this) == 'Entity') {
+            // is recursive but cannot be change
 
-      } else {
-         if ($this->maybeRecursive()) {
-            if (Session::isMultiEntitiesMode()) {
-               echo "<table class='tab_format'><tr class='headerRow responsive_hidden'><th>".$entityname."</th>";
-               echo "<th class='right'>".__('Child entities')."</th><th>";
-               if ($params['canedit']) {
-                  if ( $this instanceof CommonDBChild) {
-                     echo Dropdown::getYesNo($this->isRecursive());
-                     if (isset($this->fields["is_recursive"])) {
-                        echo "<input type='hidden' name='is_recursive' value='".$this->fields["is_recursive"]."'>";
+         } else {
+            if ($this->maybeRecursive()) {
+               if (Session::isMultiEntitiesMode()) {
+                  echo "<table class='tab_format'><tr class='headerRow responsive_hidden'><th>".$entityname."</th>";
+                  echo "<th class='right'>".__('Child entities')."</th><th>";
+                  if ($params['canedit']) {
+                     if ( $this instanceof CommonDBChild) {
+                        echo Dropdown::getYesNo($this->isRecursive());
+                        if (isset($this->fields["is_recursive"])) {
+                           echo "<input type='hidden' name='is_recursive' value='".$this->fields["is_recursive"]."'>";
+                        }
+                        $comment = __("Can't change this attribute. It's inherited from its parent.");
+                        // CommonDBChild : entity data is get or copy from parent
+
+                     } else if (!$this->can($ID,'recursive')) {
+                        echo Dropdown::getYesNo($this->fields["is_recursive"]);
+                        $comment = __('You are not allowed to change the visibility flag for child entities.');
+
+                     } else if ( !$this->canUnrecurs()) {
+                        echo Dropdown::getYesNo($this->fields["is_recursive"]);
+                        $comment = __('Flag change forbidden. Linked items found.');
+
+                     } else {
+                        Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
+                        $comment = __('Change visibility in child entities');
                      }
-                     $comment = __("Can't change this attribute. It's inherited from its parent.");
-                     // CommonDBChild : entity data is get or copy from parent
-
-                  } else if (!$this->can($ID,'recursive')) {
-                     echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                     $comment = __('You are not allowed to change the visibility flag for child entities.');
-
-                  } else if ( !$this->canUnrecurs()) {
-                     echo Dropdown::getYesNo($this->fields["is_recursive"]);
-                     $comment = __('Flag change forbidden. Linked items found.');
-
+                     echo " ";
+                     Html::showToolTip($comment);
                   } else {
-                     Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
-                     $comment = __('Change visibility in child entities');
+                     echo Dropdown::getYesNo($this->fields["is_recursive"]);
                   }
-                  echo " ";
-                  Html::showToolTip($comment);
+                  echo "</th></tr></table>";
                } else {
-                  echo Dropdown::getYesNo($this->fields["is_recursive"]);
+                  echo $entityname;
+                  echo "<input type='hidden' name='is_recursive' value='0'>";
                }
-               echo "</th></tr></table>";
             } else {
                echo $entityname;
-               echo "<input type='hidden' name='is_recursive' value='0'>";
             }
-         } else {
-            echo $entityname;
          }
+         echo "</th></tr>\n";
       }
 
       // If in modal : do not display link on message after redirect
@@ -2361,7 +2365,6 @@ class CommonDBTM extends CommonGLPI {
          echo "<input type='hidden' name='_no_message_link' value='1'>";
       }
 
-      echo "</th></tr>\n";
    }
 
 

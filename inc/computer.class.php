@@ -159,9 +159,7 @@ class Computer extends CommonDBTM {
       echo "<div class='center'>";
 
       $comp->initForm($ID);
-      $comp->showFormHeader();
-
-      echo "<table class='tab_cadre_fixe'>";
+      $comp->showFormHeader(['formtitle' => false]);
 
       echo "<tr class='headerRow'><th colspan='".$colspan."'>";
       echo __('Operating system');
