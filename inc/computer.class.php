@@ -207,7 +207,7 @@ class Computer extends CommonDBTM {
       Html::autocompletionTextField($comp, 'os_license_number');
       echo "</td><td colspan='2'></td></tr>";
 
-      $comp->showFormButtons(array('candel' => false));
+      $comp->showFormButtons(array('candel' => false, 'formfooter' => false));
 
       echo "</table>";
       echo "</div>";

@@ -2044,6 +2044,7 @@ class CommonDBTM extends CommonGLPI {
       $params['candel']       = true;
       $params['canedit']      = true;
       $params['addbuttons']   = array();
+      $params['formfooter']   = null;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2051,7 +2052,9 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
-      $this->showDates($params);
+      if ($params['formfooter'] === null) {
+          $this->showDates($params);
+      }
 
       if (!$params['canedit']
           || !$this->canEdit($ID)) {
