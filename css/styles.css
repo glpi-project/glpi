@@ -2449,7 +2449,8 @@ ul#menu ul.ssmenu {
    font-size: 11px;
    text-align: left;
    min-width: 150px;
-   column-count: 2;
+   column-count: 3;
+   -moz-column-count:3;
 }
 
 #show_all_menu .all_menu_block {
