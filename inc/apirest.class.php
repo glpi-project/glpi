@@ -71,7 +71,14 @@ class APIRest extends API {
       $this->verb         = $_SERVER['REQUEST_METHOD'];
       $path_info          = str_replace("api/", "", trim($_SERVER['PATH_INFO'], '/'));
       $this->url_elements = explode('/', $path_info);
-      $this->parseIncomingParams();
+
+
+      // retrieve requested resource
+      $resource = trim(strval($this->url_elements[0]));
+      $is_inline_doc = strlen($resource) == 0 || $resource == "api";
+
+      // retrieve paramaters (in body, query_string, headers)
+      $this->parseIncomingParams($is_inline_doc);
 
       // Add headers for CORS
       $this->cors($this->verb);
@@ -88,9 +95,6 @@ class APIRest extends API {
          }
       }
 
-      // retrieve requested resource
-      $resource = trim(strval($this->url_elements[0]));
-
       // retrieve session (if exist)
       $this->retrieveSession();
 
@@ -100,7 +104,7 @@ class APIRest extends API {
       }
 
       // inline documentation (api/)
-      if (strlen($resource) == 0 || $resource == "api") {
+      if ($is_inline_doc) {
          return $this->inlineDocumentation("apirest.md");
 
       ## DECLARE ALL ENDPOINTS ##
@@ -324,7 +328,7 @@ class APIRest extends API {
     *
     * @since version 9.1
     */
-   public function parseIncomingParams() {
+   public function parseIncomingParams($skip_check_content_type = false) {
       $parameters = array();
 
       // first of all, pull the GET vars
@@ -342,6 +346,12 @@ class APIRest extends API {
       $content_type = "";
       if(isset($_SERVER['CONTENT_TYPE'])) {
          $content_type = $_SERVER['CONTENT_TYPE'];
+      } else if(isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+         $content_type = $_SERVER['HTTP_CONTENT_TYPE'];
+      } else {
+         if (!$skip_check_content_type) {
+            $this->returnError("No Content-Type header found", 400, "ERROR_CONTENT_TYPE_NOT_FOUND");
+         }
       }
 
       if (strpos($content_type, "application/json") !== false) {

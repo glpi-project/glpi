@@ -52,6 +52,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
 
    protected function doHttpRequest($method = "get", $relative_uri = "", $params = array()) {
+      if (!empty($relative_uri)) {
+         $params['headers']['Content-Type'] = "application/json";
+      }
       $method = strtolower($method);
       if (in_array($method, array('get', 'post', 'delete', 'put', 'options', 'patch'))) {
          try {
