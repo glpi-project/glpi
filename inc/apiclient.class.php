@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015-2016 Teclib'.
+ Copyright (C) 2016 Teclib'.
 
  http://glpi-project.org
 
@@ -32,10 +31,11 @@
  */
 
 /** @file
-* @brief
+* @since version 9.1
 */
 
 class APIClient extends CommonDBTM {
+
    const DOLOG_DISABLED   = 0;
    const DOLOG_LOGS       = 1;
    const DOLOG_HISTORICAL = 2;
@@ -45,17 +45,22 @@ class APIClient extends CommonDBTM {
    // From CommonDBTM
    public $dohistory                   = true;
 
+
+
    static function canCreate() {
       return Session::haveRight(static::$rightname, UPDATE);
    }
+
 
    static function canPurge() {
       return Session::haveRight(static::$rightname, UPDATE);
    }
 
+
    static function getTypeName($nb = 0) {
       return _n("API client", "API clients", $nb);
    }
+
 
    /**
     * @see CommonGLPI::defineTabs()
@@ -69,7 +74,9 @@ class APIClient extends CommonDBTM {
       return $ong;
    }
 
+
    function getSearchOptions() {
+
       $tab = array();
 
       $tab['common']             = self::GetTypeName();
@@ -121,11 +128,14 @@ class APIClient extends CommonDBTM {
       return $tab;
    }
 
+
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
       switch ($field) {
-         case 'dolog_method':
+         case 'dolog_method' :
             $methods = self::getLogMethod();
             return $methods[$values[$field]];
+
          case 'ipv4_range_start':
          case 'ipv4_range_end':
             return long2ip($values[$field]);
@@ -133,6 +143,7 @@ class APIClient extends CommonDBTM {
 
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
+
 
    function showForm ($ID, $options=array()) {
 
@@ -147,15 +158,13 @@ class APIClient extends CommonDBTM {
       echo "<td rowspan='3'>".__('Comments')."</td>";
       echo "<td rowspan='3'>";
       echo "<textarea name='comment' >".$this->fields["comment"]."</textarea>";
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td >".__('Active')."</td>";
       echo "<td>";
       Dropdown::showYesNo("is_active",$this->fields["is_active"]);
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td >".__('Log connections')."</td>";
@@ -163,22 +172,18 @@ class APIClient extends CommonDBTM {
       Dropdown::showFromArray("dolog_method",
                               self::getLogMethod(),
                               array('value' => $this->fields["dolog_method"]));
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='4'>";
-      echo "<div class='center'>";
-      echo __("Filter access");
-      echo "</div>";
-      echo "</th>";
-      echo "</tr>";
+      echo "<div class='center'>". __("Filter access")."</div>";
+      echo "</th></tr>";
+
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='4'>";
       echo "<i>".__('Leave these parameters empty to disable api access restriction')."</i>";
       echo "<br><br><br>";
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('IPv4 address range')."</td>";
@@ -189,20 +194,16 @@ class APIClient extends CommonDBTM {
       echo "<input type='text' name='ipv4_range_end' value='" .
             ($this->fields["ipv4_range_end"] ? long2ip($this->fields["ipv4_range_end"]) : '') .
             "' size='17'>";
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('IPv6 address')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "ipv6");
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Application token')." (app_token)";
-      echo "</td>";
+      echo "<td>".sprintf(__('%1$s (%2$s)'),  __('Application token'), "app_token")."</td>";
       echo "<td colspan='2'>";
       Html::autocompletionTextField($this, "app_token");
       echo "<br><input type='checkbox' name='_reset_app_token' id='app_token'>&nbsp;";
@@ -212,12 +213,14 @@ class APIClient extends CommonDBTM {
       $this->showFormButtons($options);
    }
 
+
    function prepareInputForAdd($input) {
       return $this->prepareInputForUpdate($input);
    }
 
 
    function prepareInputForUpdate($input) {
+
       if (isset($input['ipv4_range_start'])) {
          $input['ipv4_range_start'] = ip2long($input['ipv4_range_start']);
       }
@@ -251,17 +254,20 @@ class APIClient extends CommonDBTM {
       return $input;
    }
 
+
    static function getLogMethod() {
+
       return array(self::DOLOG_DISABLED   => __('Disabled'),
                    self::DOLOG_HISTORICAL => __('Historical'),
                    self::DOLOG_LOGS       => _n('Log', 'Logs',
                                                 Session::getPluralNumber()));
    }
 
+
    /**
-   * Get app token checking that it is unique
-   *
-   * @return string app token
+    * Get app token checking that it is unique
+    *
+    * @return string app token
    **/
    static function getUniqueAppToken() {
       global $DB;
