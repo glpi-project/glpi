@@ -547,10 +547,10 @@ class Planning extends CommonGLPI {
          $header = "{
             left:   'prev,next,today',
             center: 'title',
-            right:  'month,agendaWeek,agendaDay'
+            right:  'month,agendaWeek,agendaDay,listYear'
          }";
       } else {
-         $default_view = "basicDay";
+         $default_view = "listYear";
          $header = "false";
          $pl_height = "400";
       }
@@ -606,7 +606,7 @@ class Planning extends CommonGLPI {
                   .after('<span class=\"event_type\" style=\"background-color: '+event.typeColor+'\">&nbsp;</span>');
 
                var content = event.content;
-               if(view.name !== 'month' && !event.allDay){
+               if(view.name !== 'month' && view.name !== 'listYear' && !event.allDay){
                   element
                      .append('<div class=\"content\">'+content+'</div>');
                }
