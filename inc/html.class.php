@@ -1822,13 +1822,7 @@ class Html {
 
          echo "</td>";
       }
-      echo "<td class='right'>";
-      echo "<a href='http://glpi-project.org/'>";
-      echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"]." Copyright (C)".
-           " 2015-2016 by Teclib'".
-           " - Copyright (C) 2003-2015 INDEPNET Development Team".
-           "</span>";
-      echo "</a></td>";
+      echo "<td class='right'>" . self::getCopyrightMessage() . "</td>";
       echo "</tr></table></div>";
 
       if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE) { // debug mode traduction
@@ -2211,14 +2205,8 @@ class Html {
       echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
 
       echo "<div id='footer'>";
-      echo "<table width='100%'><tr><td class='right'>";
-      echo "<a href='http://glpi-project.org/'>";
-      echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"].
-           " Copyright (C) ".
-           "2015-2016 by Teclib'".
-           " - Copyright (C) 2003-2015 INDEPNET Development Team".
-           "</span>";
-      echo "</a></td></tr></table></div>";
+      echo "<table width='100%'><tr><td class='right'>" . self::getCopyrightMessage();
+      echo "</td></tr></table></div>";
 
       if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE) { // debug mode traduction
          echo "<div id='debug-float'>";
@@ -2291,14 +2279,7 @@ class Html {
       if (!isCommandLine()) {
          echo "</div></div>";
 
-         echo "<div id='footer-login'>";
-         echo "<a href='http://glpi-project.org/' title='Powered By Teclib'>";
-         echo "GLPI version ".(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"").
-              " Copyright (C) ".
-              "2015-2016 by Teclib'".
-              " - Copyright (C) 2003-2015 INDEPNET Development Team";
-         echo "</a></div>";
-
+         echo "<div id='footer-login'>" . self::getCopyrightMessage() . "</div>";
          echo "</body></html>";
       }
       closeDBConnections();
@@ -5791,5 +5772,22 @@ class Html {
          }).text('".Toolbox::addslashes_deep($msg)."');
          " ;
    }
+
+   /**
+    * Get copyright message as HTML (used in footers)
+    *
+    * @since 9.1
+    *
+    * @return text
+    */
+   static function getCopyrightMessage() {
+      $message = "<a href=\"http://glpi-project.org/\" title=\"Powered By Teclib\" class=\"copyright\">";
+      $message .= "GLPI " .
+         (isset($CFG_GLPI["version"]) ? $CFG_GLPI['version'] : GLPI_VERSION) .
+         " Copyright (C) 2015-" . GLPI_YEAR . " Teclib'".
+         " - Copyright (C) 2003-2015 INDEPNET Development Team".
+         "</a>";
+      return $message;
+   }
 }
-?>
+
