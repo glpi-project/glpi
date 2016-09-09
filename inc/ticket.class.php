@@ -4149,8 +4149,7 @@ class Ticket extends CommonITILObject {
       echo "<td>";
       $idajax = 'change_priority_' . mt_rand();
 
-      if ($canupdate
-          && $canpriority
+      if ($canpriority
           && !$tt->isHiddenField('priority')) {
          $idpriority = parent::dropdownPriority(array('value'     => $this->fields["priority"],
                                                       'withmajor' => true));
