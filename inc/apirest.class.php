@@ -77,11 +77,12 @@ class APIRest extends API {
       $resource = trim(strval($this->url_elements[0]));
       $is_inline_doc = strlen($resource) == 0 || $resource == "api";
 
+      // Add headers for CORS
+      $this->cors($this->verb);
+
       // retrieve paramaters (in body, query_string, headers)
       $this->parseIncomingParams($is_inline_doc);
 
-      // Add headers for CORS
-      $this->cors($this->verb);
 
       // show debug if required
       if (isset($this->parameters['debug'])) {
