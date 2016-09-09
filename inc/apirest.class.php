@@ -327,8 +327,11 @@ class APIRest extends API {
     * Construct this->parameters from query string and http body
     *
     * @param $skip_check_content_type   (default false)
-   **/
-   public function parseIncomingParams($skip_check_content_type = false) {
+    *
+    * @param bool $is_inline_doc    Is the current request asks to display inline documentation ?
+    *  This will remove the default behavior who set content-type to application/json
+    */
+   public function parseIncomingParams($is_inline_doc = false) {
 
       $parameters = array();
 
@@ -351,8 +354,8 @@ class APIRest extends API {
       } else if(isset($_SERVER['HTTP_CONTENT_TYPE'])) {
          $content_type = $_SERVER['HTTP_CONTENT_TYPE'];
       } else {
-         if (!$skip_check_content_type) {
-            $this->returnError("No Content-Type header found", 400, "ERROR_CONTENT_TYPE_NOT_FOUND");
+         if (!$is_inline_doc) {
+            $content_type = "application/json";
          }
       }
 
