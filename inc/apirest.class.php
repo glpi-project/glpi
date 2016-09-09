@@ -350,7 +350,7 @@ class APIRest extends API {
          $content_type = $_SERVER['HTTP_CONTENT_TYPE'];
       } else {
          if (!$skip_check_content_type) {
-            $this->returnError("No Content-Type header found", 400, "ERROR_CONTENT_TYPE_NOT_FOUND");
+            $content_type = "application/json";
          }
       }
 
