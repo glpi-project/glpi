@@ -233,7 +233,8 @@ class APIRest extends API {
             case "PUT": // update item(s)
                // if id is passed by query string, add it into input parameter
                $input = (array) ($this->parameters['input']);
-               if ($id > 0 && !isset($input['id'])) {
+               if (($id > 0 || $id == 0 && $itemtype == "Entity") 
+                     && !isset($input['id'])) {
                   $this->parameters['input']->id = $id;
                }
                $response = $this->updateItems($itemtype, $this->parameters);
