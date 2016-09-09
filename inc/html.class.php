@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
@@ -1825,7 +1825,7 @@ class Html {
       echo "<td class='right'>";
       echo "<a href='http://glpi-project.org/'>";
       echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"]." Copyright (C)".
-           " 2015".
+           " 2015-2016".
            /*"-".date("Y").*/ // TODO, decomment this in 2016
            " by Teclib'".
            " - Copyright (C) 2003-2015 INDEPNET Development Team".

@@ -3,7 +3,7 @@
  * @version $Id: timeline_viewsubitem.php 23588 2015-07-10 11:09:46Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2015-2016 Teclib'.
 
  http://glpi-project.org
 
