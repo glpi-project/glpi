@@ -328,7 +328,7 @@ class APIRest extends API {
     *
     * @since version 9.1
     *
-    * @param bool $is_inline_doc    Is the current request ask for display inline documentation.
+    * @param bool $is_inline_doc    Is the current request asks to display inline documentation ?
     *  This will remove the default behavior who set content-type to application/json
     */
    public function parseIncomingParams($is_inline_doc = false) {
