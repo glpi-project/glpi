@@ -582,6 +582,7 @@ class Planning extends CommonGLPI {
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     '".$CFG_GLPI['planning_begin']."',
             maxTime:     '".$CFG_GLPI['planning_end']."',
+            listDayAltFormat: false,
             windowResize: function(view) {
                $(this).fullCalendar('option', 'height', $pl_height);
             },
@@ -602,8 +603,9 @@ class Planning extends CommonGLPI {
                $('#planning_datepicker').datepicker('setDate', new Date(currentdate));
             },
             eventRender: function(event, element, view) {
-               element.find('.fc-content')
-                  .after('<span class=\"event_type\" style=\"background-color: '+event.typeColor+'\">&nbsp;</span>');
+               var eventtype_marker = '<span class=\"event_type\" style=\"background-color: '+event.typeColor+'\"></span>';
+               element.find('.fc-content').after(eventtype_marker);
+               element.find('.fc-list-item-title > a').prepend(eventtype_marker);
 
                var content = event.content;
                if(view.name !== 'month' && view.name !== 'listYear' && !event.allDay){
@@ -611,12 +613,22 @@ class Planning extends CommonGLPI {
                      .append('<div class=\"content\">'+content+'</div>');
                }
 
+               // add a class to element for past events
+               var past_event = event.end.isBefore(moment());
+               if (past_event) {
+                  element.addClass('past_event');
+               }
+
                // add tooltip to event
                if (!disable_qtip) {
+                  var qtip_position = {
+                     viewport: 'auto'
+                  };
+                  if (view.name === 'listYear') {
+                     qtip_position.target= element.find('a');
+                  }
                   element.qtip({
-                     position: {
-                        viewport: $(window)
-                     },
+                     position: qtip_position,
                      content: content,
                      style: {
                         classes: 'qtip-shadow qtip-bootstrap'
@@ -638,6 +650,11 @@ class Planning extends CommonGLPI {
                      }
                   });
                }
+            },
+            eventAfterAllRender: function(view) {
+               // scroll div to last past event
+               var last_past_event = $('#planning .past_event').last();
+               $('#planning .fc-scroller').scrollTop(last_past_event.prop('offsetTop')-25);
             },
             eventSources: [{
                url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
