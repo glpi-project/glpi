@@ -374,7 +374,7 @@ class ComputerAntivirus extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixehov'>";
-         $colspan = 5;
+         $colspan = 7;
          if (Plugin::haveImport()) {
             $colspan++;
          }
