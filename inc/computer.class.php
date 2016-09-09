@@ -69,8 +69,11 @@ class Computer extends CommonDBTM {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
+    *
+    * @since version 9.1
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
       if (static::canView()) {
          switch ($item->getType()) {
             case __CLASS__ :
@@ -136,12 +139,14 @@ class Computer extends CommonDBTM {
     * @param $item         CommonGLPI object
     * @param $tabnum       (default 1)
     * @param $withtemplate (default 0)
+    *
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       self::showOperatingSystem($item);
       return true;
    }
+
 
    /**
     * Print the computer's operating system form
