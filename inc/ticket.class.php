@@ -2250,6 +2250,35 @@ class Ticket extends CommonITILObject {
 
       $tab += $this->getSearchOptionsMain();
 
+      $tab[155]['table']               = $this->getTable();
+      $tab[155]['field']               = 'time_to_own';
+      $tab[155]['name']                = __('Time to own');
+      $tab[155]['datatype']            = 'datetime';
+      $tab[155]['maybefuture']         = true;
+      $tab[155]['massiveaction']       = false;
+      $tab[155]['additionalfields']    = array('status');
+
+      $tab[158]['table']              = $this->getTable();
+      $tab[158]['field']              = 'time_to_own';
+      $tab[158]['name']               = __('Time to own + Progress');
+      $tab[158]['massiveaction']      = false;
+      $tab[158]['nosearch']           = true;
+      $tab[158]['additionalfields']   = array('status');
+
+      $tab[159]['table']              = $this->getTable();
+      $tab[159]['field']              = 'is_late';
+      $tab[159]['name']               = __('Time to own exceedeed');
+      $tab[159]['datatype']           = 'bool';
+      $tab[159]['massiveaction']      = false;
+      $tab[159]['computation']        = "IF(TABLE.`time_to_own` IS NOT NULL
+                                            AND TABLE.`status` <> ".self::WAITING."
+                                            AND (TABLE.`takeintoaccount_delay_stat`
+                                                        > TIME_TO_SEC(TIMEDIFF(TABLE.`time_to_own`,
+                                                                               TABLE.`date`))
+                                                 OR (TABLE.`takeintoaccount_delay_stat` = 0
+                                                      AND TABLE.`time_to_own` < NOW())),
+                                            1, 0)";
+
       $tab[14]['table']             = $this->getTable();
       $tab[14]['field']             = 'type';
       $tab[14]['name']              = __('Type');
