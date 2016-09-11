@@ -4007,7 +4007,6 @@ class Search {
                             array $addobjectparams=array()) {
       global $CFG_GLPI, $DB;
 
-      toolbox::logdebug("it", $itemtype, "is", $ID, "data", $data, "num", $num);
       $searchopt = &self::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
           && ($CFG_GLPI["union_search_type"][$itemtype] == $searchopt[$ID]["table"])) {
