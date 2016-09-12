@@ -2495,7 +2495,7 @@ ul#menu ul.ssmenu {
    padding: 5px;
 }
 
-.copyright {
+a.copyright {
    font-size: 9px;
    color :#000;
 }

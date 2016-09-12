@@ -188,14 +188,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Event::getCountLogin();
       echo "</div>";
    }
-   echo "<div id='footer-login'>";
-   echo "<a href='http://glpi-project.org/' title='Powered By Teclib'>";
-   echo "GLPI version ".(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"")." Copyright (C) ".
-        "2015".
-        //"-".date("Y"). // TODO, decomment this in 2016
-        " By Teclib'. <br />".
-        "Copyright (C) 2003-2015 INDEPNET Development Team";
-   echo "</a></div>";
+   echo "<div id='footer-login'>" . Html::getCopyrightMessage() . "</div>";
 
 }
 // call cron
