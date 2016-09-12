@@ -1730,10 +1730,21 @@ a.icon_nav_move:hover img {
    margin-left: 4px;
 }
 
-#planning .past_event .ui-widget-content,
-#planning .past_event .ui-widget-content a {
+#planning .event_past .ui-widget-content,
+#planning .event_past .ui-widget-content a {
    color: #CCCCCC;
 }
+#planning .event_past.event_todo .ui-widget-content,
+#planning .event_past.event_todo .ui-widget-content a {
+   color: #FF0000;
+}
+
+#planning .event_today.event_todo .ui-widget-content,
+#planning .event_today.event_todo .ui-widget-content a {
+   color: #FFA100;
+}
+
+
 #planning .fc-event {
    font-weight: normal;
 }
@@ -1784,7 +1795,7 @@ a.icon_nav_move:hover img {
    display: inline-block
 }
 
-#planning .past_event .fc-list-item-title .event_type {
+#planning .event_past .fc-list-item-title .event_type {
    opacity: .5;
 }
 

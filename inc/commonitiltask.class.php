@@ -763,6 +763,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *    - end Date
     *    - color
     *    - event_type_color
+    *    - display_done_events (boolean)
     *
     * @return array of planning item
    **/
@@ -790,6 +791,10 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if (!isset($options['event_type_color'])) {
          $options['event_type_color'] = '';
+      }
+
+      if (!isset($options['display_done_events'])) {
+         $options['display_done_events'] = true;
       }
 
       $who       = $options['who'];
@@ -846,6 +851,11 @@ abstract class CommonITILTask  extends CommonDBTM {
                      AND ";
       }
 
+      $DONE_EVENTS = '';
+      if (!$options['display_done_events']) {
+         $DONE_EVENTS = "`".$item->getTable()."`.`state` != ".Planning::DONE." AND";
+      }
+
       $addrestrict = '';
       if ($parentitem->maybeDeleted()) {
          $addrestrict = 'AND NOT `'.$parentitem->getTable().'`.`is_deleted`';
@@ -856,6 +866,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                 INNER JOIN `".$parentitem->getTable()."`
                   ON (`".$parentitem->getTable()."`.`id` = `".$item->getTable()."`.`".$parentitem->getForeignKeyField()."`)
                 WHERE $ASSIGN
+                      $DONE_EVENTS
                       '$begin' < `".$item->getTable()."`.`end`
                       AND '$end' > `".$item->getTable()."`.`begin`
                       $addrestrict
