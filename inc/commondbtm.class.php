@@ -2520,6 +2520,7 @@ class CommonDBTM extends CommonGLPI {
 
       // Check item exists
       if (!$this->isNewID($ID)
+          && (!isset($this->fields['id']) || $this->fields['id'] != $ID)
           && !$this->getFromDB($ID)) {
          // Gestion timeout session
          Session::redirectIfNotLoggedIn();

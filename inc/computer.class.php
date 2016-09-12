@@ -69,8 +69,11 @@ class Computer extends CommonDBTM {
 
    /**
     * @see CommonGLPI::getTabNameForItem()
+    *
+    * @since version 9.1
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
       if (static::canView()) {
          switch ($item->getType()) {
             case __CLASS__ :
@@ -136,6 +139,8 @@ class Computer extends CommonDBTM {
     * @param $item         CommonGLPI object
     * @param $tabnum       (default 1)
     * @param $withtemplate (default 0)
+    *
+    * @since version 9.1
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
@@ -143,10 +148,13 @@ class Computer extends CommonDBTM {
       return true;
    }
 
+
    /**
     * Print the computer's operating system form
     *
     * @param $comp Computer object
+    *
+    * @since version 9.1
     *
     * @return Nothing (call to classes members)
    **/
@@ -170,7 +178,6 @@ class Computer extends CommonDBTM {
       echo "<td>";
       OperatingSystem::dropdown(array('value' => $comp->fields["operatingsystems_id"]));
       echo "</td>";
-
       echo "<td>".__('Version')."</td>";
       echo "<td >";
       OperatingSystemVersion::dropdown(array('value' => $comp->fields["operatingsystemversions_id"]));
@@ -183,7 +190,6 @@ class Computer extends CommonDBTM {
       OperatingSystemArchitecture::dropdown(array('value'
                                                  => $comp->fields["operatingsystemarchitectures_id"]));
       echo "</td>";
-
       echo "<td>".__('Service pack')."</td>";
       echo "<td >";
       OperatingSystemServicePack::dropdown(array('value'
@@ -195,7 +201,6 @@ class Computer extends CommonDBTM {
       echo "<td >";
       Html::autocompletionTextField($comp, 'os_kernel_version');
       echo "</td>";
-
       echo "<td>".__('Product ID')."</td>";
       echo "<td >";
       Html::autocompletionTextField($comp, 'os_licenseid');
@@ -208,10 +213,9 @@ class Computer extends CommonDBTM {
       echo "</td><td colspan='2'></td></tr>";
 
       $comp->showFormButtons(array('candel' => false, 'formfooter' => false));
-
-      echo "</table>";
-      echo "</div>";
    }
+
+
    function post_restoreItem() {
 
       $comp_softvers = new Computer_SoftwareVersion();

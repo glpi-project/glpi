@@ -80,7 +80,7 @@ class NotificationEvent extends CommonDBTM {
     *
     * @since version 0.83
     *
-    * @param itemtype string name of the type
+    * @param $itemtype string name of the type
     * @param $event   string name of the event
     *
     * @return string

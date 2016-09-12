@@ -1292,8 +1292,9 @@ class Ticket extends CommonITILObject {
          // Setting a solution type means the ticket is solved
          if ((in_array("solutiontypes_id", $this->updates)
               || in_array("solution", $this->updates))
-             && (in_array($this->input["status"], $this->getSolvedStatusArray())
-                 || in_array($this->input["status"], $this->getClosedStatusArray()))) { // auto close case
+             && (isset($this->input["status"])
+                 && (in_array($this->input["status"], $this->getSolvedStatusArray())
+                     || in_array($this->input["status"], $this->getClosedStatusArray())))) { // auto close case
             Ticket_Ticket::manageLinkedTicketsOnSolved($this->fields['id']);
          }
 
@@ -4148,8 +4149,7 @@ class Ticket extends CommonITILObject {
       echo "<td>";
       $idajax = 'change_priority_' . mt_rand();
 
-      if ($canupdate
-          && $canpriority
+      if ($canpriority
           && !$tt->isHiddenField('priority')) {
          $idpriority = parent::dropdownPriority(array('value'     => $this->fields["priority"],
                                                       'withmajor' => true));
