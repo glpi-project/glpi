@@ -2,7 +2,7 @@
 /*
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015-2016 Teclib'.
+ Copyright (C) 2016 Teclib'.
 
  http://glpi-project.org
 
@@ -38,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
 
-/// Class SolutionTemplate
 /**
  * Template for task
  * @since version 9.1

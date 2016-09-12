@@ -1,9 +1,8 @@
 <?php
 /*
- * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015-2016 Teclib'.
+ Copyright (C) 2016 Teclib'.
 
  http://glpi-project.org
 
@@ -32,22 +31,23 @@
  */
 
 /** @file
-* @brief
+* @since version 9.1
 */
 
 class APIRest extends API {
+
    protected $request_uri;
    protected $url_elements;
    protected $verb;
    protected $parameters;
-   protected $debug = 0;
-   protected $format = "json";
+   protected $debug           = 0;
+   protected $format          = "json";
 
 
    /**
     * @see CommonGLPI::GetTypeName()
-    */
-   public static function getTypeName($nb = 0) {
+   **/
+   public static function getTypeName($nb=0) {
       return __('Rest API');
    }
 
@@ -61,11 +61,10 @@ class APIRest extends API {
     *
     *  And send to method corresponding identified resource
     *
-    * @since version 9.1
-    *
     * @return     json with response or error
-    */
+   **/
    public function call() {
+
       //parse http request and find parts
       $this->request_uri  = $_SERVER['REQUEST_URI'];
       $this->verb         = $_SERVER['REQUEST_METHOD'];
@@ -74,8 +73,8 @@ class APIRest extends API {
 
 
       // retrieve requested resource
-      $resource = trim(strval($this->url_elements[0]));
-      $is_inline_doc = strlen($resource) == 0 || $resource == "api";
+      $resource      = trim(strval($this->url_elements[0]));
+      $is_inline_doc = (strlen($resource) == 0) || ($resource == "api");
 
       // retrieve paramaters (in body, query_string, headers)
       $this->parseIncomingParams($is_inline_doc);
@@ -163,12 +162,12 @@ class APIRest extends API {
 
          $itemtype = $this->getItemtype(1, true, true);
          //clean stdObjects in parameter
-         $params = json_decode(json_encode($this->parameters), true);
+         $params   = json_decode(json_encode($this->parameters), true);
          //search
          $response =  $this->searchItems($itemtype, $params);
 
          //add pagination headers
-         $additionalheaders = array();
+         $additionalheaders                  = array();
          $additionalheaders["Content-Range"] = $response['content-range'];
          $additionalheaders["Accept-Range"]  = $itemtype." ".Toolbox::get_max_input_vars();
 
@@ -189,8 +188,9 @@ class APIRest extends API {
          $code              = 200;
          switch ($this->verb) {
             default:
-            case "GET": // retrieve item(s)
-               if ($id > 0 || $id == 0 && $itemtype == "Entity") {
+            case "GET" : // retrieve item(s)
+               if (($id > 0)
+                   || (($id == 0) && ($itemtype == "Entity"))) {
                   $response = $this->getItem($itemtype, $id, $this->parameters);
                   if (isset($response['date_mod'])) {
                      $datemod = strtotime($response['date_mod']);
@@ -210,9 +210,9 @@ class APIRest extends API {
                }
                break;
 
-            case "POST": // create item(s)
+            case "POST" : // create item(s)
                $response = $this->createItems($itemtype, $this->parameters);
-               $code = 201;
+               $code     = 201;
                if (count($response) == 1) {
                   // add a location targetting created element
                   $additionalheaders['location'] = self::$api_url.$itemtype."/".$response['id'];
@@ -221,7 +221,7 @@ class APIRest extends API {
                   $additionalheaders['link'] = "";
                   foreach($response as $created_item) {
                      if ($created_item['id']) {
-                        $additionalheaders['link'].= self::$api_url.$itemtype.
+                        $additionalheaders['link'] .= self::$api_url.$itemtype.
                                                      "/".$created_item['id'].",";
                      }
                   }
@@ -230,7 +230,7 @@ class APIRest extends API {
                }
                break;
 
-            case "PUT": // update item(s)
+            case "PUT" : // update item(s)
                // if id is passed by query string, add it into input parameter
                $input = (array) ($this->parameters['input']);
                if ($id > 0 && !isset($input['id'])) {
@@ -239,12 +239,12 @@ class APIRest extends API {
                $response = $this->updateItems($itemtype, $this->parameters);
                break;
 
-            case "DELETE": //delete item(s)
+            case "DELETE" : //delete item(s)
                // if id is passed by query string, construct an object with it
                if ($id !== false) {
                   $code = 204;
                   //override input
-                  $this->parameters['input'] = new stdClass();
+                  $this->parameters['input']     = new stdClass();
                   $this->parameters['input']->id = $id;
                }
                $response = $this->deleteItems($itemtype, $this->parameters);
@@ -263,33 +263,34 @@ class APIRest extends API {
    /**
     * Retrieve and check itemtype from $this->url_elements
     *
-    * @since version 9.1
-    *
-    * @param  integer $index         we'll find itemtype in this index of $this->url_elements
-    * @param  boolean $recursive     can we go depper or we trigger an http error if we fail to find itemtype ?
-    * @param  boolean $all_assets    if we can have allasset virtual type
+    * @param $index       integer    we'll find itemtype in this index of $this->url_elements
+    *                                (default o)
+    * @param $recursive   boolean    can we go depper or we trigger an http error if we fail to find itemtype?
+    *                                (default true)
+    * @param $all_assets  boolean    if we can have allasset virtual type (default false)
     *
     * @return boolean
-    */
-   private function getItemtype($index = 0, $recursive = true, $all_assets = false) {
+   **/
+   private function getItemtype($index=0, $recursive=true, $all_assets= false) {
+
       if (isset($this->url_elements[$index]))  {
-         if (class_exists($this->url_elements[$index])
-               && is_subclass_of($this->url_elements[$index], 'CommonDBTM')
-             || $all_assets
-               && $this->url_elements[$index] == "AllAssets" ) {
+         if ((class_exists($this->url_elements[$index])
+              && is_subclass_of($this->url_elements[$index], 'CommonDBTM'))
+             || ($all_assets
+                 && $this->url_elements[$index] == "AllAssets")) {
             $itemtype = $this->url_elements[$index];
 
-            if ($recursive && $additional_itemtype = $this->getItemtype(2, false)) {
+            if ($recursive
+                && ($additional_itemtype = $this->getItemtype(2, false))) {
                $this->parameters['parent_itemtype'] = $itemtype;
-               $itemtype = $additional_itemtype;
+               $itemtype                            = $additional_itemtype;
             }
-
             return $itemtype;
-         } else {
-            $this->returnError(__("resource not found or not an instance of CommonDBTM"),
-                               400,
-                               "ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM");
          }
+         $this->returnError(__("resource not found or not an instance of CommonDBTM"),
+                            400,
+                            "ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM");
+
       } else if ($recursive) {
          $this->returnError(__("missing resource"), 400, "ERROR_RESOURCE_MISSING");
       }
@@ -302,11 +303,10 @@ class APIRest extends API {
     * Retrieve in url_element the current id. If we have a multiple id (ex /Ticket/1/TicketFollwup/2),
     * it always find the second
     *
-    * @since version 9.1
-    *
     * @return int id of current itemtype (or false if not found)
-    */
+   **/
    private function getId() {
+
       $id            = isset($this->url_elements[1]) && is_numeric($this->url_elements[1])
                        ?intval($this->url_elements[1])
                        :false;
@@ -343,7 +343,8 @@ class APIRest extends API {
       $body = trim(file_get_contents("php://input"));
       if (strlen($body) > 0 && $this->verb == "GET") {
          // GET method requires an empty body
-         $this->returnError("GET Request should not have json payload (http body)", 400, "ERROR_JSON_PAYLOAD_FORBIDDEN");
+         $this->returnError("GET Request should not have json payload (http body)", 400,
+                            "ERROR_JSON_PAYLOAD_FORBIDDEN");
       }
 
       $content_type = "";
@@ -363,27 +364,30 @@ class APIRest extends API {
                $parameters[$param_name] = $param_value;
             }
          } else if (strlen($body) > 0) {
-            $this->returnError("JSON payload seems not valid", 400, "ERROR_JSON_PAYLOAD_INVALID", false);
+            $this->returnError("JSON payload seems not valid", 400, "ERROR_JSON_PAYLOAD_INVALID",
+                               false);
          }
          $this->format = "json";
 
-      } elseif (strpos($content_type, "multipart/form-data") !== false) {
+      } else if (strpos($content_type, "multipart/form-data") !== false) {
          if (count($_FILES) <= 0) {
             // likely uploaded files is too big so $_REQUEST will be empty also.
             // see http://us.php.net/manual/en/ini.core.php#ini.post-max-size
-            $this->returnError("The file seems too big", 400, "ERROR_UPLOAD_FILE_TOO_BIG_POST_MAX_SIZE", false);
+            $this->returnError("The file seems too big", 400,
+                               "ERROR_UPLOAD_FILE_TOO_BIG_POST_MAX_SIZE", false);
          }
 
          // with this content_type, php://input is empty... (see http://php.net/manual/en/wrappers.php.php)
-         if(!$uploadManifest = json_decode(stripcslashes($_REQUEST['uploadManifest']))) {
-            $this->returnError("JSON payload seems not valid", 400, "ERROR_JSON_PAYLOAD_INVALID", false);
+         if (!$uploadManifest = json_decode(stripcslashes($_REQUEST['uploadManifest']))) {
+            $this->returnError("JSON payload seems not valid", 400, "ERROR_JSON_PAYLOAD_INVALID",
+                               false);
          }
          foreach($uploadManifest as $field => $value) {
             $parameters[$field] = $value;
          }
          $this->format = "json";
 
-      } elseif (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
+      } else if (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
          parse_str($body, $postvars);
          foreach($postvars as $field => $value) {
             $parameters[$field] = $value;
@@ -403,7 +407,9 @@ class APIRest extends API {
          // other servers
          foreach ($_SERVER as $server_key => $server_value) {
             if (substr($server_key, 0, 5) == 'HTTP_') {
-               $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($server_key, 5)))))] = $server_value;
+               $headers[str_replace(' ', '-',
+                                    ucwords(strtolower(str_replace('_', ' ',
+                                                                   substr($server_key, 5)))))] = $server_value;
             }
          }
       }
@@ -417,7 +423,7 @@ class APIRest extends API {
 
       // try to retrieve user_token in header
       if (isset($headers['Authorization'])
-          && strpos($headers['Authorization'], 'user_token') !== false) {
+          && (strpos($headers['Authorization'], 'user_token') !== false)) {
          $auth = explode(' ', $headers['Authorization']);
          if (isset($auth[1])) {
             $parameters['user_token'] = $auth[1];
@@ -441,13 +447,13 @@ class APIRest extends API {
    /**
     * Generic function to send a message and an http code to client
     *
-    * @since version 9.1
-    *
-    * @param mixed    $response          string message or array of data to send
-    * @param integer  $httpcode          http code (see : https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
-    * @param array    $aditionnalheaders headers to send with http response (must be an array(key => value))
+    * @param $response           string    message or array of data to send
+    * @param $httpcode           integer   http code (default 200)
+    *                                      (see: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+    * @param $aditionnalheaders  array     headers to send with http response (must be an array(key => value))
     */
-   public function returnResponse($response, $httpcode = 200, $aditionnalheaders = array()) {
+   public function returnResponse($response, $httpcode=200, $aditionnalheaders=array()) {
+
       if (empty($httpcode)) {
          $httpcode = 200;
       }
@@ -480,13 +486,12 @@ class APIRest extends API {
       exit;
    }
 
+
    /**
     * Display the APIRest Documentation in Html (parsed from markdown)
     *
-    * @since version 9.1
-    *
-    * @param      string  $file   relative path of documentation file
-    */
+    * @param $file    string   relative path of documentation file (default 'apirest.md')
+   **/
    public function inlineDocumentation($file = "apirest.md") {
       global $CFG_GLPI;
 

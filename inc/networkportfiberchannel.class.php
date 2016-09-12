@@ -3,7 +3,7 @@
 * @version $Id$
 -------------------------------------------------------------------------
 GLPI - Gestionnaire Libre de Parc Informatique
-Copyright (C) 2015-2016 Teclib'.
+Copyright (C) 2016 Teclib'.
 
 http://glpi-project.org
 
@@ -32,8 +32,8 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 */
 
 /** @file
-+* @brief
-+*/
+* @brief
+*/
 
 if (!defined('GLPI_ROOT')) {
   die("Sorry. You can't access directly to this file");
@@ -64,7 +64,6 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
            $input['speed'] = $speed;
         }
      }
-
      return $input;
   }
 
@@ -79,6 +78,9 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
   }
 
 
+  /**
+   * @see NetworkPortInstantiation::showInstantiationForm()
+  */
   function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
      if (!$options['several']) {
@@ -105,16 +107,13 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
      Dropdown::showFromArray('speed', $standard_speeds,
                              array('value' => $this->fields['speed'],
                                    'other' => $speed));
-     echo "</td>";
-     echo "</tr>\n";
+     echo "</td></tr>\n";
 
      echo "<tr class='tab_bg_1'>\n";
      $this->showMacField($netport, $options);
-
      echo "<td>".__('Connected to').'</td><td>';
      self::showConnection($netport, true);
-     echo "</td>";
-     echo "</tr>\n";
+     echo "</td></tr>\n";
  }
 
 
@@ -164,7 +163,6 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
      parent::getInstantiationHTMLTable($netport, $row, $father, $options);
      Netpoint::getHTMLTableCellsForItem($row, $this, $father, $options);
-
   }
 
 
@@ -178,6 +176,7 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
   }
 
 
+  // TODO why this? you don't have search engine for this object
   function getSearchOptions() {
 
      $tab                      = array();
@@ -229,24 +228,24 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
         //TRANS: %d is the speed
         return sprintf(__('%d Mbit/s'), $val);
-     } else {
-        $val = preg_replace( '/\s+/', '', strtolower($val));
+     }
 
-        $number = sscanf($val, "%f%s", $speed, $unit);
-        if ($number != 2) {
-           return false;
-        }
+     $val = preg_replace( '/\s+/', '', strtolower($val));
 
-        if (($unit == 'mbit/s') || ($unit == 'mb/s')) {
-           return (int)$speed;
-        }
-
-        if (($unit == 'gbit/s') || ($unit == 'gb/s')) {
-           return (int)($speed * 1000);
-        }
-
+     $number = sscanf($val, "%f%s", $speed, $unit);
+     if ($number != 2) {
         return false;
      }
+
+     if (($unit == 'mbit/s') || ($unit == 'mb/s')) {
+        return (int)$speed;
+     }
+
+     if (($unit == 'gbit/s') || ($unit == 'gb/s')) {
+        return (int)($speed * 1000);
+     }
+
+     return false;
   }
 
 
@@ -339,4 +338,3 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
   }
 
 }
-?>
