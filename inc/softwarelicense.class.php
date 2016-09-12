@@ -1069,7 +1069,7 @@ class SoftwareLicense extends CommonDBTM {
             }
             Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
          } else {
-            echo "<table class='tab_cadre_fixe'><tr><th>".__('No item found.')."</th></tr></table>";
+            echo "<table class='tab_cadre_fixe'><tr><th>".__('No item found')."</th></tr></table>";
          }
       }
 
