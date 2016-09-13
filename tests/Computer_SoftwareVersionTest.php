@@ -49,25 +49,25 @@ class Computer_SoftwareVersionTest extends DbTestCase {
    public function testPrepareInputForAdd() {
       $this->Login();
 
-      $c01 = getItemByTypeName('Computer', '_test_pc01');
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
       // Do some installations
       $ins = new Computer_SoftwareVersion();
       $this->assertGreaterThan(0, $ins->add([
-         'computers_id'        => $c01->getID(),
+         'computers_id'        => $computer1->getID(),
          'softwareversions_id' => $ver,
       ]));
 
       $input = [
-         'computers_id' => $c01->getID(),
+         'computers_id' => $computer1->getID(),
          'name'         => 'A name'
       ];
 
       $expected = [
-         'computers_id'         => $c01->getID(),
+         'computers_id'         => $computer1->getID(),
          'name'                 => 'A name',
-         'is_template_computer' => $c01->getField('is_template'),
-         'is_deleted_computer'  => $c01->getField('is_deleted'),
+         'is_template_computer' => $computer1->getField('is_template'),
+         'is_deleted_computer'  => $computer1->getField('is_deleted'),
          'entities_id'          => '1',
          'is_recursive'         => '0'
       ];
@@ -85,27 +85,27 @@ class Computer_SoftwareVersionTest extends DbTestCase {
    public function testPrepareInputForUpdate() {
       $this->Login();
 
-      $c01 = getItemByTypeName('Computer', '_test_pc01');
-      $c11 = getItemByTypeName('Computer', '_test_pc11', true);
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
+      $computer11 = getItemByTypeName('Computer', '_test_pc11', true);
       $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
 
       // Do some installations
       $ins = new Computer_SoftwareVersion();
       $this->assertGreaterThan(0, $ins->add([
-         'computers_id'        => $c01->getID(),
+         'computers_id'        => $computer1->getID(),
          'softwareversions_id' => $ver,
       ]));
 
       $input = [
-         'computers_id' => $c01->getID(),
+         'computers_id' => $computer1->getID(),
          'name'         => 'Another name'
       ];
 
       $expected = [
-         'computers_id'         => $c01->getID(),
+         'computers_id'         => $computer1->getID(),
          'name'                 => 'Another name',
-         'is_template_computer' => $c01->getField('is_template'),
-         'is_deleted_computer'  => $c01->getField('is_deleted')
+         'is_template_computer' => $computer1->getField('is_template'),
+         'is_deleted_computer'  => $computer1->getField('is_deleted')
       ];
 
       $this->assertEquals($expected, $ins->prepareInputForUpdate($input));
@@ -119,23 +119,23 @@ class Computer_SoftwareVersionTest extends DbTestCase {
 
       $this->Login();
 
-      $c01 = getItemByTypeName('Computer', '_test_pc01', true);
-      $c11 = getItemByTypeName('Computer', '_test_pc11', true);
-      $c12 = getItemByTypeName('Computer', '_test_pc12', true);
+      $computer1 = getItemByTypeName('Computer', '_test_pc01', true);
+      $computer11 = getItemByTypeName('Computer', '_test_pc11', true);
+      $computer12 = getItemByTypeName('Computer', '_test_pc12', true);
       $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
 
       // Do some installations
       $ins = new Computer_SoftwareVersion();
       $this->assertGreaterThan(0, $ins->add([
-         'computers_id'        => $c01,
+         'computers_id'        => $computer1,
          'softwareversions_id' => $ver,
       ]));
       $this->assertGreaterThan(0, $ins->add([
-         'computers_id'        => $c11,
+         'computers_id'        => $computer11,
          'softwareversions_id' => $ver,
       ]));
       $this->assertGreaterThan(0, $ins->add([
-         'computers_id'        => $c12,
+         'computers_id'        => $computer12,
          'softwareversions_id' => $ver,
       ]));
 
@@ -155,48 +155,48 @@ class Computer_SoftwareVersionTest extends DbTestCase {
     */
    public function testUpdateDatasFromComputer() {
       $c00 = 1566671;
-      $c01 = getItemByTypeName('Computer', '_test_pc01');
+      $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $ver1 = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
       $ver2 = getItemByTypeName('SoftwareVersion', '_test_softver_2', true);
 
       // Do some installations
-      $csv = new Computer_SoftwareVersion();
-      $csv01 = $csv->add([
-         'computers_id'        => $c01->getID(),
+      $softver = new Computer_SoftwareVersion();
+      $softver01 = $softver->add([
+         'computers_id'        => $computer1->getID(),
          'softwareversions_id' => $ver1,
       ]);
-      $this->assertGreaterThan(0, $csv01);
-      $csv02 = $csv->add([
-         'computers_id'        => $c01->getID(),
+      $this->assertGreaterThan(0, $softver01);
+      $softver02 = $softver->add([
+         'computers_id'        => $computer1->getID(),
          'softwareversions_id' => $ver2,
       ]);
-      $this->assertGreaterThan(0, $csv02);
+      $this->assertGreaterThan(0, $softver02);
 
-      foreach ([$csv01, $csv02] as $tcsv) {
+      foreach ([$softver01, $softver02] as $tsoftver) {
          $o = new Computer_SoftwareVersion();
-         $o->getFromDb($tcsv);
+         $o->getFromDb($tsoftver);
          $this->assertEquals('0', $o->getField('is_deleted_computer'));
       }
 
       //computer that does not exists
-      $this->assertFalse($csv->updateDatasForComputer($c00));
+      $this->assertFalse($softver->updateDatasForComputer($c00));
 
       //update existing computer
-      $input = $c01->fields;
+      $input = $computer1->fields;
       $input['is_deleted'] = '1';
-      $this->assertTrue($c01->update($input));
+      $this->assertTrue($computer1->update($input));
 
-      $this->assertEquals(2, $csv->updateDatasForComputer($c01->getID()));
+      $this->assertEquals(2, $softver->updateDatasForComputer($computer1->getID()));
 
       //check if all has been updated
-      foreach ([$csv01, $csv02] as $tcsv) {
+      foreach ([$softver01, $softver02] as $tsoftver) {
          $o = new Computer_SoftwareVersion();
-         $o->getFromDb($tcsv);
+         $o->getFromDb($tsoftver);
          $this->assertEquals('1', $o->getField('is_deleted_computer'));
       }
 
       //restore computer state
       $input['is_deleted'] = '0';
-      $this->assertTrue($c01->update($input));
+      $this->assertTrue($computer1->update($input));
    }
 }
