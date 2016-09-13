@@ -1730,6 +1730,21 @@ a.icon_nav_move:hover img {
    margin-left: 4px;
 }
 
+#planning .event_past .ui-widget-content,
+#planning .event_past .ui-widget-content a {
+   color: #CCCCCC;
+}
+#planning .event_past.event_todo .ui-widget-content,
+#planning .event_past.event_todo .ui-widget-content a {
+   color: #FF0000;
+}
+
+#planning .event_today.event_todo .ui-widget-content,
+#planning .event_today.event_todo .ui-widget-content a {
+   color: #FFA100;
+}
+
+
 #planning .fc-event {
    font-weight: normal;
 }
@@ -1771,6 +1786,17 @@ a.icon_nav_move:hover img {
    bottom: 0;
    top: 0;
    right: 0;
+}
+
+#planning .fc-list-item-title .event_type {
+   height: 12px;
+   width: 6px;
+   margin-right: 3px;
+   display: inline-block
+}
+
+#planning .event_past .fc-list-item-title .event_type {
+   opacity: .5;
 }
 
 #planning .planning-select-helper {

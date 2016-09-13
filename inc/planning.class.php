@@ -547,10 +547,10 @@ class Planning extends CommonGLPI {
          $header = "{
             left:   'prev,next,today',
             center: 'title',
-            right:  'month,agendaWeek,agendaDay'
+            right:  'month,agendaWeek,agendaDay,listYear'
          }";
       } else {
-         $default_view = "basicDay";
+         $default_view = "listYear";
          $header = "false";
          $pl_height = "400";
       }
@@ -570,6 +570,7 @@ class Planning extends CommonGLPI {
             });
 
          var window_focused = true;
+         var loaded = false;
          window.onblur = function() { window_focused = false; }
          window.onfocus = function() { window_focused = true; }
 
@@ -582,6 +583,7 @@ class Planning extends CommonGLPI {
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     '".$CFG_GLPI['planning_begin']."',
             maxTime:     '".$CFG_GLPI['planning_end']."',
+            listDayAltFormat: false,
             windowResize: function(view) {
                $(this).fullCalendar('option', 'height', $pl_height);
             },
@@ -602,21 +604,40 @@ class Planning extends CommonGLPI {
                $('#planning_datepicker').datepicker('setDate', new Date(currentdate));
             },
             eventRender: function(event, element, view) {
-               element.find('.fc-content')
-                  .after('<span class=\"event_type\" style=\"background-color: '+event.typeColor+'\">&nbsp;</span>');
+               var eventtype_marker = '<span class=\"event_type\" style=\"background-color: '+event.typeColor+'\"></span>';
+               element.find('.fc-content').after(eventtype_marker);
+               element.find('.fc-list-item-title > a').prepend(eventtype_marker);
 
                var content = event.content;
-               if(view.name !== 'month' && !event.allDay){
+               if(view.name !== 'month' && view.name !== 'listYear' && !event.allDay){
                   element
                      .append('<div class=\"content\">'+content+'</div>');
                }
 
+               // add classes to current event
+               added_classes = event.end.isBefore(moment())      ? ' event_past'   : '';
+               added_classes+= event.end.isAfter(moment())       ? ' event_future' : '';
+               added_classes+= event.end.isSame(moment(), 'day') ? ' event_today'  : '';
+               if (event.state != '') {
+                  added_classes+= event.state == 0 ? ' event_info'
+                                : event.state == 1 ? ' event_todo'
+                                : event.state == 2 ? ' event_done'
+                                : '';
+               }
+               if (added_classes != '') {
+                  element.addClass(added_classes);
+               }
+
                // add tooltip to event
                if (!disable_qtip) {
+                  var qtip_position = {
+                     viewport: 'auto'
+                  };
+                  if (view.name === 'listYear') {
+                     qtip_position.target= element.find('a');
+                  }
                   element.qtip({
-                     position: {
-                        viewport: $(window)
-                     },
+                     position: qtip_position,
                      content: content,
                      style: {
                         classes: 'qtip-shadow qtip-bootstrap'
@@ -639,11 +660,44 @@ class Planning extends CommonGLPI {
                   });
                }
             },
+            viewRender: function(view, element) {
+               // force refetch events from ajax on view change (don't refetch on firt load)
+               if (loaded) {
+                  $('#planning').fullCalendar('refetchEvents')
+               }
+            },
+            eventAfterAllRender: function(view) {
+               // set a var to force refetch events (see viewRender callback)
+               loaded = true;
+
+               // scroll div to first element needed to be viewed
+               var scrolltoevent = $('#planning .event_past.event_todo').first();
+               if (scrolltoevent.length == 0) {
+                  scrolltoevent = $('#planning .event_today').first();
+               }
+               if (scrolltoevent.length == 0) {
+                  scrolltoevent = $('#planning .event_future').first();
+               }
+               if (scrolltoevent.length == 0) {
+                  scrolltoevent = $('#planning .event_past').last();
+               }
+               if (scrolltoevent.length) {
+                  $('#planning .fc-scroller').scrollTop(scrolltoevent.prop('offsetTop')-25);
+               }
+            },
             eventSources: [{
                url:  '".$CFG_GLPI['root_doc']."/ajax/planning.php',
                type: 'POST',
-               data: {
-                  action: 'get_events'
+               data: function() {
+                  var view_name = $('#planning').fullCalendar('getView').name;
+                  var display_done_events = 1;
+                  if (view_name == 'listYear') {
+                     display_done_events = 0;
+                  }
+                  return {
+                     'action': 'get_events',
+                     'display_done_events': display_done_events
+                  };
                },
                success: function(data) {
                   if (!$fullview_str && data.length == 0) {
@@ -1611,18 +1665,21 @@ class Planning extends CommonGLPI {
     *
     * @since 9.1
     *
-    * @param array $options: must contains this keys :
-    *  - begin : planning start .
+    * @param array $options with this keys:
+    *  - begin: mandatory, planning start.
     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-    *  - end : planning end .
+    *  - end: mandatory, planning end.
     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+    *  - display_done_events: default true, show also events tagged as done
     * @return array $events : array with events in fullcalendar.io format
     */
    static function constructEventsArray($options = array()) {
       global $CFG_GLPI;
 
-      $param['start'] = '';
-      $param['end']   = '';
+      $param['start']               = '';
+      $param['end']                 = '';
+      $param['display_done_events'] = true;
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $param[$key] = $val;
@@ -1688,8 +1745,10 @@ class Planning extends CommonGLPI {
                            'parentitemtype'    => isset($event['parentitemtype'])?
                                                    $event['parentitemtype']:"",
                            'items_id'    => $event['id'],
-                           'priority'    => isset($event['priority'])?$event['priority']:"");
+                           'priority'    => isset($event['priority'])?$event['priority']:"",
+                           'state'       => isset($event['state'])?$event['state']:"");
       }
+
 
       return $events;
    }

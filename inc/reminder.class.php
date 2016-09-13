@@ -856,7 +856,8 @@ class Reminder extends CommonDBTM {
     *    - end Date
     *    - color
     *    - event_type_color
-    *    - check_avaibility (boolean)
+    *    - check_planned (boolean)
+    *    - display_done_events (boolean)
     *
     * @return array of planning item
    **/
@@ -864,9 +865,10 @@ class Reminder extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $default_options = array(
-         'color'            => '',
-         'event_type_color' => '',
-         'check_planned'    => false,
+         'color'               => '',
+         'event_type_color'    => '',
+         'check_planned'       => false,
+         'display_done_events' => true,
       );
       $options = array_merge($default_options, $options);
 
@@ -925,6 +927,11 @@ class Reminder extends CommonDBTM {
          $PLANNED = "AND state != ".Planning::INFO;
       }
 
+      $DONE_EVENTS = '';
+      if (!$options['display_done_events']) {
+         $DONE_EVENTS = "AND state != ".Planning::DONE;
+      }
+
       if ($ASSIGN) {
          $query2 = "SELECT DISTINCT `glpi_reminders`.*
                     FROM `glpi_reminders`
@@ -932,6 +939,7 @@ class Reminder extends CommonDBTM {
                     WHERE `glpi_reminders`.`is_planned` = '1'
                           AND $ASSIGN
                           $PLANNED
+                          $DONE_EVENTS
                           AND `begin` < '$end'
                           AND `end` > '$begin'
                     ORDER BY `begin`";
