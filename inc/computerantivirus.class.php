@@ -106,11 +106,7 @@ class ComputerAntivirus extends CommonDBChild {
    static function cloneComputer ($oldid, $newid) {
       global $DB;
 
-      $query  = "SELECT *
-                 FROM `glpi_computerantiviruses`
-                 WHERE `computers_id` = '$oldid'";
-
-      foreach ($DB->request($query) as $data) {
+      foreach($DB->request('glpi_computerantiviruses', array('computers_id' => $oldid)) as $data) {
          $antirivus            = new self();
          unset($data['id']);
          $data['computers_id'] = $newid;
@@ -367,21 +363,17 @@ class ComputerAntivirus extends CommonDBChild {
 
       echo "<div class='spaced center'>";
 
-      $query = "SELECT `glpi_computerantiviruses`.*
-                FROM `glpi_computerantiviruses`
-                WHERE `computers_id` = '$ID'
-                      AND `is_deleted` = '0'";
-
-      if ($result = $DB->query($query)) {
+      if ($result = $DB->request('glpi_computerantiviruses', array('computers_id' => $ID,
+                                                                   'is_deleted'   => 0))) {
          echo "<table class='tab_cadre_fixehov'>";
          $colspan = 7;
          if (Plugin::haveImport()) {
             $colspan++;
          }
-         echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName($DB->numrows($result)).
+         echo "<tr class='noHover'><th colspan='$colspan'>".self::getTypeName($result->numrows()).
               "</th></tr>";
 
-         if ($DB->numrows($result)) {
+         if ($result->numrows() != 0) {
 
             $header = "<tr><th>".__('Name')."</th>";
             if (Plugin::haveImport()) {
@@ -403,7 +395,7 @@ class ComputerAntivirus extends CommonDBChild {
                                                    Computer::getTypeName(1), $comp->getName()));
 
             $antivirus = new self();
-            while ($data = $DB->fetch_assoc($result)) {
+            foreach($result as $data) {
                $antivirus->getFromDB($data['id']);
                echo "<tr class='tab_bg_2'>";
                echo "<td>".$antivirus->getLink()."</td>";
