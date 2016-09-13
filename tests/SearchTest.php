@@ -73,6 +73,39 @@ class SearchTest extends DbTestCase {
    }
 
 
+   /**
+    * Get all classes in folder inc/
+    */
+   private function getClasses($function=false) {
+      $classes = array();
+      foreach (new DirectoryIterator('inc/') as $fileInfo) {
+         if($fileInfo->isDot()) continue;
+
+         $php_file = file_get_contents("inc/".$fileInfo->getFilename());
+         $tokens = token_get_all($php_file);
+         $class_token = false;
+         foreach ($tokens as $token) {
+           if (is_array($token)) {
+             if ($token[0] == T_CLASS) {
+                $class_token = true;
+             } else if ($class_token && $token[0] == T_STRING) {
+                if ($function) {
+                   if (method_exists($token[1], $function)) {
+                      $classes[] = $token[1];
+                   }
+                } else {
+                   $classes[] = $token[1];
+                }
+                $class_token = false;
+             }
+           }
+         }
+      }
+      return $classes;
+   }
+
+
+
    public function testMetaComputerSoftwareLicense() {
       $search_params = array('is_deleted'   => 0,
                              'start'        => 0,
@@ -161,5 +194,115 @@ class SearchTest extends DbTestCase {
                                                                 'field'      => '8',
                                                                 'searchtype' => 'notequals',
                                                                 'value'      => 0)));
+   }
+
+
+
+   /**
+    * This test will add all serachoptions in each itemtype and check if the
+    * search give a SQL error
+    */
+   public function testSearchOptions() {
+
+      $displaypref = new DisplayPreference();
+      // save table glpi_displaypreferences
+      $dp = getAllDatasFromTable($displaypref->getTable());
+
+      $itemtypeslist = $this->getClasses('getSearchOptions');
+      foreach ($itemtypeslist as $itemtype) {
+         $number = 0;
+         if (!file_exists('front/'.strtolower($itemtype).'.php')
+                 || substr($itemtype, 0, 4) === "Rule"
+                 || substr($itemtype, 0, 6) === "Common"
+                 || substr($itemtype, 0, 2) === "DB"
+                 || $itemtype == 'SlaLevel'
+                 || $itemtype == 'Reservation'
+                 || $itemtype == 'Event'
+                 || $itemtype == 'KnowbaseItem'
+                 || $itemtype == 'NetworkPortMigration') {
+            // it's the case where not have search possible in this itemtype
+            continue;
+         }
+         $item = getItemForItemtype($itemtype);
+         foreach ($item->getSearchOptions() as $key=>$data) {
+            if (is_int($key)) {
+               $input = array(
+                   'itemtype' => $itemtype,
+                   'users_id' => 0,
+                   'num' => $key,
+               );
+               $displaypref->add($input);
+               $number++;
+            }
+         }
+         $this->assertEquals($number, countElementsInTable($displaypref->getTable(),
+                 "`itemtype`='".$itemtype."' AND `users_id`=0"));
+
+         // do a search query
+         $search_params = array('is_deleted'   => 0,
+                                'start'        => 0,
+                                'criteria'     => array(),
+                                'metacriteria' => array());
+         $data = $this->doSearch($itemtype, $search_params);
+         // check for sql error (data key missing or empty)
+         $this->assertArrayHasKey('data', $data, $data['last_errors']);
+         $this->assertNotCount(0, $data['data'], $data['last_errors']);
+      }
+      // restore displaypreference table
+      foreach (getAllDatasFromTable($displaypref->getTable()) as $line) {
+         $displaypref->delete($line, true);
+      }
+      $this->assertEquals(0, countElementsInTable($displaypref->getTable()));
+      foreach ($dp as $input) {
+         $displaypref->add($input);
+      }
+   }
+
+
+
+   /**
+    * Test search with all meta to not have SQL errors
+    */
+   public function test_search_all_meta() {
+      $itemtypeslist = array('Computer', 'Problem', 'Ticket', 'Printer', 'Monitor',
+          'Peripheral', 'Software', 'Phone');
+      foreach ($itemtypeslist as $itemtype) {
+         // do a search query
+         $search_params = array('is_deleted'   => 0,
+                                'start'        => 0,
+                                'criteria'     => array(0 => array('field'      => 'view',
+                                                                   'searchtype' => 'contains',
+                                                                   'value'      => '')),
+                                'metacriteria' => array());
+         $metacriteria = array();
+         $metaList = Search::getMetaItemtypeAvailable($itemtype);
+         foreach ($metaList as $metaitemtype) {
+            $item = getItemForItemtype($metaitemtype);
+            foreach ($item->getSearchOptions() as $key=>$data) {
+               if (is_int($key)) {
+                  if (isset($data['datatype']) && $data['datatype'] == 'bool') {
+                     $metacriteria[] = array(
+                         'link'       => 'AND',
+                         'field'      => $key,
+                         'searchtype' => 'equals',
+                         'value'      => 0,
+                     );
+                  } else {
+                     $metacriteria[] = array(
+                         'link'       => 'AND',
+                         'field'      => $key,
+                         'searchtype' => 'contains',
+                         'value'      => 'f',
+                     );
+                  }
+               }
+            }
+         }
+         $search_params['metacriteria'] = $metacriteria;
+         $data = $this->doSearch($itemtype, $search_params);
+         // check for sql error (data key missing or empty)
+         $this->assertArrayHasKey('data', $data, $data['last_errors']);
+         $this->assertNotCount(0, $data['data'], $data['last_errors']);
+      }
    }
 }

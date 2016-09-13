@@ -594,7 +594,8 @@ class Search {
                   $FROM .= self::addMetaLeftJoin($data['itemtype'], $metacriteria['itemtype'],
                                                  $already_link_tables2,
                                                  (($metacriteria['value'] == "NULL")
-                                                  || (strstr($metacriteria['link'], "NOT"))));
+                                                  || (strstr($metacriteria['link'], "NOT"))),
+                                                 $sopt["joinparams"]);
                }
 
                // Link items tables
@@ -2273,6 +2274,7 @@ class Search {
 
       if (!empty($complexjoin)) {
          $addtable .= "_".$complexjoin;
+         $addtable2 .= "_".$complexjoin;
       }
 
       if ($meta) {
@@ -2377,6 +2379,11 @@ class Search {
          case "glpi_profiles.name" :
             if (($itemtype == 'User')
                 && ($ID == 20)) {
+
+               $addtable2 = '';
+               if ($meta) {
+                  $addtable2 = "_".$meta_type;
+               }
                return " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '".self::LONGSEP."') AS `".$NAME."_$num`,
                         GROUP_CONCAT(`glpi_profiles_users$addtable2`.`entities_id` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_".$num."_entities_id`,
@@ -2391,6 +2398,11 @@ class Search {
          case "glpi_entities.completename" :
             if (($itemtype == 'User')
                 && ($ID == 80)) {
+               
+               $addtable2 = '';
+               if ($meta) {
+                  $addtable2 = "_".$meta_type;
+               }
                return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '".self::LONGSEP."')
                                     AS `".$NAME."_$num`,
                         GROUP_CONCAT(`glpi_profiles_users$addtable2`.`profiles_id` SEPARATOR '".self::LONGSEP."')
@@ -3505,7 +3517,6 @@ class Search {
                }
             }
 
-
             return "";
       }
    }
@@ -3528,7 +3539,6 @@ class Search {
    **/
    static function addLeftJoin($itemtype, $ref_table, array &$already_link_tables, $new_table,
                                $linkfield, $meta=0, $meta_type=0, $joinparams=array(), $field='') {
-      global $CFG_GLPI;
 
       // Rename table for meta left join
       $AS = "";
@@ -3773,8 +3783,7 @@ class Search {
     * @return Meta Left join string
    **/
    static function addMetaLeftJoin($from_type, $to_type, array &$already_link_tables2,
-                                   $nullornott) {
-      global $CFG_GLPI;
+                                   $nullornott, $joinparams=array()) {
 
       $LINK = " INNER JOIN ";
       if ($nullornott) {
@@ -3784,6 +3793,11 @@ class Search {
       $from_table = getTableForItemType($from_type);
       $to_table   = getTableForItemType($to_type);
       $to_fk      = getForeignKeyFieldForTable($to_table);
+
+      $complexjoin = self::computeComplexJoinID($joinparams);
+      if ($complexjoin != '') {
+         $complexjoin .= '_';
+      }
 
       // Generic metacriteria
       switch ($to_type) {
@@ -3869,21 +3883,21 @@ class Search {
                   array_push($already_link_tables2,"glpi_softwareversions_$to_type");
                   array_push($already_link_tables2,"glpi_softwarelicenses_$to_type");
                   return " $LINK `glpi_computers_softwareversions`
-                                    AS `glpi_computers_softwareversions_$to_type`
-                              ON (`glpi_computers_softwareversions_$to_type`.`computers_id`
+                                    AS `glpi_computers_softwareversions_$complexjoin$to_type`
+                              ON (`glpi_computers_softwareversions_$complexjoin$to_type`.`computers_id`
                                        = `glpi_computers`.`id`
-                                  AND `glpi_computers_softwareversions_$to_type`.`is_deleted` = '0')
-                           $LINK `glpi_softwareversions` AS `glpi_softwareversions_$to_type`
-                              ON (`glpi_computers_softwareversions_$to_type`.`softwareversions_id`
-                                       = `glpi_softwareversions_$to_type`.`id`)
+                                  AND `glpi_computers_softwareversions_$complexjoin$to_type`.`is_deleted` = '0')
+                           $LINK `glpi_softwareversions` AS `glpi_softwareversions_$complexjoin$to_type`
+                              ON (`glpi_computers_softwareversions_$complexjoin$to_type`.`softwareversions_id`
+                                       = `glpi_softwareversions_$complexjoin$to_type`.`id`)
                            $LINK `glpi_softwares`
-                              ON (`glpi_softwareversions_$to_type`.`softwares_id`
+                              ON (`glpi_softwareversions_$complexjoin$to_type`.`softwares_id`
                                        = `glpi_softwares`.`id`)
-                           LEFT JOIN `glpi_softwarelicenses` AS `glpi_softwarelicenses_$to_type`
+                           LEFT JOIN `glpi_softwarelicenses` AS `glpi_softwarelicenses_$complexjoin$to_type`
                               ON (`glpi_softwares`.`id`
-                                       = `glpi_softwarelicenses_$to_type`.`softwares_id`".
+                                       = `glpi_softwarelicenses_$complexjoin$to_type`.`softwares_id`".
                                   getEntitiesRestrictRequest(' AND',
-                                                             "glpi_softwarelicenses_$to_type",
+                                                             "glpi_softwarelicenses_$complexjoin$to_type",
                                                              '', '', true).") ";
             }
             break;
