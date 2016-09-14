@@ -2015,7 +2015,7 @@ class Profile extends CommonDBTM {
       $tab['other']              = __('Other');
 
       $tab[4]['table']           = 'glpi_profilerights';
-      $tab[4]['field']           = 'right';
+      $tab[4]['field']           = 'rights';
       $tab[4]['name']            = __('Update password');
       $tab[4]['datatype']        = 'bool';
       $tab[4]['joinparams']     = array('jointype' => 'child',
