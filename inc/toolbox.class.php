@@ -1874,6 +1874,11 @@ class Toolbox {
                         Html::redirect($CFG_GLPI["root_doc"]."/front/preference.php?$forcetab");
                         break;
 
+                     case "reservation" :
+                        Html::redirect($CFG_GLPI["root_doc"]."/front/reservation.form.php?id=".
+                                       $data[1]."&$forcetab");
+                        break;
+
                      default :
                         Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
                         break;
