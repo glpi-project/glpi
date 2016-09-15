@@ -191,16 +191,18 @@ $ curl -X POST \
 'http://path/to/glpi/apirest.php/getMyProfiles'
 
 < 200 OK
-< [ 4:
-   {
-      'name': "Super-admin",
-      'entities': {
+< {
+   'myprofiles': [
+      {
+         'id': 1
+         'name': "Super-admin",
+         'entities': {
+            ...
+         },
          ...
       },
-      ...
-   },
-   ....
-]
+      ....
+   ]
 ```
 
 
@@ -322,13 +324,11 @@ $ curl -X POST \
 
 < 200 OK
 < {
-   'active_entity':           1
-   'active_entity_recursive': true,
-   'active_entities':         [
-      {'1':1},
-      {'71':71},
-      ...
-   ]
+   'active_entity': {
+      'id': 1,
+      'active_entity_recursive': true,
+      'active_entities': [1, 71,...]
+   }
 }
 ```
 

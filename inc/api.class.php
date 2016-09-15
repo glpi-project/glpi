@@ -297,9 +297,10 @@ abstract class API extends CommonGLPI {
 
       $this->initEndpoint();
 
-      return array("active_entity"           => $_SESSION['glpiactive_entity'],
-                   "active_entity_recursive" => $_SESSION['glpiactive_entity_recursive'],
-                   "active_entities"         => $_SESSION['glpiactiveentities']);
+      return array("active_entity" => array(
+                     "id"                      => $_SESSION['glpiactive_entity'],
+                     "active_entity_recursive" => $_SESSION['glpiactive_entity_recursive'],
+                     "active_entities"         => array_values($_SESSION['glpiactiveentities'])));
 
    }
 
@@ -335,7 +336,19 @@ abstract class API extends CommonGLPI {
    protected function getMyProfiles() {
 
       $this->initEndpoint();
-      return $_SESSION['glpiprofiles'];
+
+      $myprofiles = array();
+      foreach($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
+         // append if of the profile into values 
+         $profile = ['id' => $profiles_id] + $profile;
+
+         // don't keep keys for entities
+         $profile['entities'] = array_values($profile['entities']);
+
+         // don't keep keys for profiles
+         $myprofiles[] = $profile;
+      }
+      return array('myprofiles' => $myprofiles);
    }
 
 
