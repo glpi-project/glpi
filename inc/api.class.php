@@ -1668,22 +1668,22 @@ abstract class API extends CommonGLPI {
    **/
    private function getGlpiLastMessage() {
 
-      $all_messages = array();
-      $messages     = "";
-      if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])
-          && !empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
-         $messages = $_SESSION["MESSAGE_AFTER_REDIRECT"];
+      $all_messages             = [];
 
+      $messages_after_redirect  = [];
+
+      if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])
+          && count($_SESSION["MESSAGE_AFTER_REDIRECT"]) > 0) {
+         $messages_after_redirect = $_SESSION["MESSAGE_AFTER_REDIRECT"];
          // Clean messages
-         $_SESSION["MESSAGE_AFTER_REDIRECT"] = "";
+         $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
       };
 
-      // split in array
-      $all_messages = preg_split( "/ (<br>|<\/h3>) /", $messages );
-
       // clean html
-      foreach($all_messages as &$message) {
-         $message = Html::clean($message);
+      foreach($messages_after_redirect as $type => $messages) {
+         foreach ($messages as $message) {
+            $all_messages[] = Html::clean($message);
+         }
       }
 
       return end($all_messages);

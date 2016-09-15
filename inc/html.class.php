@@ -539,55 +539,91 @@ class Html {
 
 
    /**
-    * Display a div containing a message set in session in the previous page
+    * Display a div containing messages set in session in the previous page
    **/
    static function displayMessageAfterRedirect() {
 
       // Affichage du message apres redirection
       if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])
-          && !empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
+          && count($_SESSION["MESSAGE_AFTER_REDIRECT"]) > 0) {
 
-         echo "<div id='message_after_redirect' title='".__('Information')."'>";
-         echo $_SESSION["MESSAGE_AFTER_REDIRECT"];
-         echo "</div>";
+         foreach($_SESSION['MESSAGE_AFTER_REDIRECT'] as $msgtype => $messages) {
+            //get messages
+            if (count($messages) > 0) {
+               $html_messages = implode('<br/>', $messages);
+            } else {
+               continue;
+            }
 
-         echo Html::scriptBlock("
-            $(document).ready(function() {
-               $('#message_after_redirect').dialog({
-                  dialogClass: 'message_after_redirect',
-                  minHeight: 40,
-                  minWidth: 200,
-                  position: {
-                     my: 'right bottom',
-                     at: 'right-20 bottom-20',
-                     of: window,
-                     collision: 'none'
-                  },
-                  autoOpen: false,
-                  show: {
-                    effect: 'slide',
-                    direction: 'down',
-                    'duration': 800
-                  }
-               })
-               .dialog('open');
+            //set title and css class
+            switch ($msgtype) {
+               case ERROR:
+                  $title = _('Error');
+                  $class = 'err_msg';
+                  break;
+               case WARNING:
+                  $title = _('Warning');
+                  $class = 'warn_msg';
+                  break;
+               case INFO:
+                  $title = _('Information');
+                  $class = 'info_msg';
+                  break;
+            }
 
-               // close dialog on outside click
-               $(document.body).on('click', function(e){
-                  if ($('#message_after_redirect').dialog('isOpen')
-                      && !$(e.target).is('.ui-dialog, a')
-                      && !$(e.target).closest('.ui-dialog').length) {
-                     $('#message_after_redirect').dialog('close');
-                     // redo focus on initial element
-                     e.target.focus();
-                  }
+
+            echo "<div id=\"message_after_redirect_$msgtype\" title=\"$title\">";
+            echo $html_messages;
+            echo "</div>";
+
+            $scriptblock = "
+               $(document).ready(function() {
+                  $('#message_after_redirect_$msgtype').dialog({
+                     dialogClass: 'message_after_redirect $class',
+                     minHeight: 40,
+                     minWidth: 200,
+                     position: {
+                        my: 'right bottom',
+                        at: 'right-20 bottom-20',
+                        of: window,
+                        collision: 'none'
+                     },
+                     autoOpen: false,
+                     show: {
+                       effect: 'slide',
+                       direction: 'down',
+                       'duration': 800
+                     }
+                  })
+                  .dialog('open');";
+
+            //do not autoclose errors
+            if ($msgtype != ERROR) {
+               $scriptblock .= "
+
+                  // close dialog on outside click
+                  $(document.body).on('click', function(e){
+                     if ($('#message_after_redirect_$msgtype').dialog('isOpen')
+                         && !$(e.target).is('.ui-dialog, a')
+                         && !$(e.target).closest('.ui-dialog').length) {
+                        $('#message_after_redirect_$msgtype').dialog('close');
+                        // redo focus on initial element
+                        e.target.focus();
+                     }
+                  });";
+            }
+
+            $scriptblock .= "
+
                });
-            });
-         ");
+            ";
+
+            echo Html::scriptBlock($scriptblock);
+         }
       }
 
       // Clean message
-      $_SESSION["MESSAGE_AFTER_REDIRECT"] = "";
+      $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
    }
 
 
@@ -597,7 +633,7 @@ class Html {
       echo Html::scriptBlock("
       displayAjaxMessageAfterRedirect = function() {
          // attach MESSAGE_AFTER_REDIRECT to body
-         $('#message_after_redirect').remove();
+         $('.message_after_redirect').remove();
          $.ajax({
             url:  '".$CFG_GLPI['root_doc']."/ajax/displayMessageAfterRedirect.php',
             success: function(html) {

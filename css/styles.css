@@ -1941,18 +1941,50 @@ a.icon_nav_move:hover img {
 }
 
 /* ################--------------- box (redirect and other)  ---------------#################### */
-.message_after_redirect {
+.ui-widget-content.message_after_redirect {
    font-family:"Myriad Pro","Myriad Web","Tahoma","Helvetica","Arial",sans-serif;
    color:#393939;
-   font-size: 11px !important;
-   background: none !important;
-   background-color: #CDE4CB !important;
+   font-size: 11px;
+   background: #CDE4CB;
 }
 
 .message_after_redirect h3 {
    font-size:11px;
    font-weight:bold;
    zoom:1;
+}
+
+/* ##### ERROR messages ##### */
+.ui-widget-content.message_after_redirect.err_msg {
+   background-color: #ff9999;
+}
+
+.message_after_redirect.err_msg div.ui-widget-header {
+   color: white;
+   background: rgba(255, 0, 0, .8);
+   border-color: rgba(255, 0, 0, 0.8);
+}
+
+/* ##### WARNING messages ##### */
+.ui-widget-content.message_after_redirect.warn_msg {
+   background-color: #ffdb99;
+}
+
+.message_after_redirect.warn_msg div.ui-widget-header {
+   color: white;
+   background: rgba(255, 165, 0, .8);
+   border-color: rgba(255, 165, 0, 0.8);
+}
+
+/* ##### INFO messages ##### */
+.ui-widget-content.message_after_redirect.info_msg {
+   background-color: #a3abc0;
+}
+
+.message_after_redirect.info_msg div.ui-widget-header {
+   color: white;
+   background: rgba(27, 47, 98, .8);
+   border-color: rgba(27, 47, 98, 0.8);
 }
 
 /* ################--------------- Login Null Header  ---------------#################### */

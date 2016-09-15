@@ -1020,7 +1020,7 @@ class Session {
     *
     * @param $msg             Message to add
     * @param $check_once      Check if the message is not already added (false by default)
-    * @param $message_type    Message type (INFO, ERROR) (default INFO)
+    * @param $message_type    Message type (INFO, WARNING, ERROR) (default INFO)
     * @param $reset           Clear previous added message (false by default)
    **/
    static function addMessageAfterRedirect($msg, $check_once=false, $message_type=INFO,
@@ -1037,28 +1037,20 @@ class Session {
          } else {
 
             if ($reset) {
-               $_SESSION["MESSAGE_AFTER_REDIRECT"] = '';
+               $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
             }
-            $toadd = "";
+            $toadd = [];
 
             if ($check_once) {
-               if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"], $msg) === false) {
-                  $toadd = $msg.'<br>';
+               if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type], $msg) === false) {
+                  $toadd[] = $msg;
                }
             } else {
-               $toadd = $msg.'<br>';
+               $toadd[] = $msg;
             }
 
-            if (!empty($toadd)) {
-               switch ($message_type) {
-                  case ERROR :
-                  case WARNING :
-                     $_SESSION["MESSAGE_AFTER_REDIRECT"] .= "<h3><span class='red'>$toadd</span></h3>";
-                     break;
-
-                  default: // INFO
-                     $_SESSION["MESSAGE_AFTER_REDIRECT"] .= "<h3>$toadd</h3>";
-               }
+            if (count($toadd) > 0) {
+               $_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type] = $toadd;
             }
          }
       }
@@ -1237,4 +1229,3 @@ class Session {
    }
 
 }
-?>
