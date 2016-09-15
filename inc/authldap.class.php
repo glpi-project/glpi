@@ -2022,7 +2022,7 @@ class AuthLDAP extends CommonDBTM {
     * @param $ldap_server        ID of the LDAP server to use
     * @param $display            display message information on redirect (false by default)
     *
-    * @return  nothing
+    * @return  array with state, else false
    **/
    static function ldapImportUserByServerId($params=array(), $action, $ldap_server,
                                             $display=false) {
