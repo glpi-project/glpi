@@ -285,7 +285,7 @@ class Item_Ticket extends CommonDBRelation{
       echo "<div id='itemAddForm$rand'>";
 
       // Show associated item dropdowns
-      if ($canedit) {
+      if ($canedit && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
          echo "<div style='float:left'>";
          $p = array('used'       => $params['items_id'],
                     'rand'       => $rand,
@@ -378,7 +378,7 @@ class Item_Ticket extends CommonDBRelation{
          $result =  "<div id='".$itemtype."_".$items_id."'>";
          $result .= $item->getTypeName(1)." : ".$item->getLink(array('comments' => true));
          $result .= "<input type='hidden' value='$items_id' name='items_id[$itemtype][$items_id]'>";
-         if ($params['delete']) {
+         if ($params['delete'] && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
             $result .= " <img src=\"../pics/delete.png\" onclick=\"itemAction".$params['rand']."('delete', '$itemtype', '$items_id');\">";
          }
          $result .= "</div>";
