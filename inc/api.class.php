@@ -339,7 +339,13 @@ abstract class API extends CommonGLPI {
 
       $myprofiles = array();
       foreach($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
+         // append if of the profile into values 
          $profile = ['id' => $profiles_id] + $profile;
+
+         // don't keep keys for entities
+         $profile['entities'] = array_values($profile['entities']);
+
+         // don't keep keys for profiles
          $myprofiles[] = $profile;
       }
       return array('myprofiles' => $myprofiles);
