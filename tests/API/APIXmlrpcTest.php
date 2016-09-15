@@ -115,9 +115,10 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('active_entity', $data);
-      $this->assertArrayHasKey('active_entity_recursive', $data);
-      $this->assertArrayHasKey('active_entities', $data);
-      $this->assertTrue(is_array($data['active_entities']), $data);
+      $this->assertArrayHasKey('id', $data['active_entity']);
+      $this->assertArrayHasKey('active_entity_recursive', $data['active_entity']);
+      $this->assertArrayHasKey('active_entities', $data['active_entity']);
+      $this->assertTrue(is_array($data['active_entity']['active_entities']));
    }
 
 
@@ -140,7 +141,9 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey(4, $data);  // check presence of super-admin profile
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('myprofiles', $data);  // check presence of root key
+      $this->assertArrayHasKey('id', $data['myprofiles'][0]);  // check presence of id key in first entity
    }
 
 
