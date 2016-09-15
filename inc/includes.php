@@ -127,7 +127,7 @@ if (!isset($AJAX_INCLUDE) && !isset($PLUGINS_INCLUDED)) {
 
 
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
-   $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
+   $_SESSION["MESSAGE_AFTER_REDIRECT"]=[];
 }
 
 // Manage force tab
