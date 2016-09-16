@@ -297,10 +297,15 @@ abstract class API extends CommonGLPI {
 
       $this->initEndpoint();
 
+      $actives_entities = [];
+      foreach (array_values($_SESSION['glpiactiveentities']) as $active_entity) {
+         $actives_entities[] = ['id' => $active_entity];
+      }
+
       return array("active_entity" => array(
                      "id"                      => $_SESSION['glpiactive_entity'],
                      "active_entity_recursive" => $_SESSION['glpiactive_entity_recursive'],
-                     "active_entities"         => array_values($_SESSION['glpiactiveentities'])));
+                     "active_entities"         => $actives_entities));
 
    }
 
