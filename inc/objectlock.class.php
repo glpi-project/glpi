@@ -351,6 +351,7 @@ class ObjectLock extends CommonDBTM {
       $ret = false;
       if ($CFG_GLPI["lock_use_lock_item"]
           && ($CFG_GLPI["lock_lockprofile_id"] > 0)
+          && $_SESSION['glpiactiveprofile']['interface'] !== 'helpdesk'
           && in_array($this->itemtype, $CFG_GLPI['lock_item_list'])
           && $this->getFromDBByQuery("WHERE itemtype = '".$this->itemtype."'
                                       AND items_id = ".$this->itemid." ")) {
