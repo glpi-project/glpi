@@ -578,14 +578,25 @@ class Html {
 
             $scriptblock = "
                $(document).ready(function() {
+                  var _of = window;
+                  var _at = 'right-20 bottom-20';
+                  //calculate relative dialog position
+                  $('.message_after_redirect').each(function() {
+                     var _this = $(this);
+                     if (_this.attr('aria-describedby') != 'message_after_redirect_$msgtype') {
+                        _of = _this;
+                        _at = 'right top-' + (10 + _this.outerHeight());
+                     }
+                  });
+
                   $('#message_after_redirect_$msgtype').dialog({
                      dialogClass: 'message_after_redirect $class',
                      minHeight: 40,
                      minWidth: 200,
                      position: {
                         my: 'right bottom',
-                        at: 'right-20 bottom-20',
-                        of: window,
+                        at: _at,
+                        of: _of,
                         collision: 'none'
                      },
                      autoOpen: false,
