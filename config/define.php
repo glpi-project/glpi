@@ -339,7 +339,8 @@ $CFG_GLPI['layout_excluded_pages'] = array("profile.form.php",
                                            "config.form.php",
                                            "common.tabs.php",
                                            "transfer.form.php",
-                                           "entity.form.php");
+                                           "entity.form.php",
+                                           "queuedmail.form.php");
 
 $CFG_GLPI['lock_lockable_objects'] = array('Budget',  'Change', 'Contact', 'Contract', 'Document',
                                            'CartridgeItem', 'Computer', 'ConsumableItem', 'Entity',
