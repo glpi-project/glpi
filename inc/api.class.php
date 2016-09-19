@@ -570,10 +570,15 @@ abstract class API extends CommonGLPI {
                            netp.`mac`,
                            netp.`comment`,
                            netp.`is_dynamic`,
-                           netp_subtable.*
+                           netp_subtable.*,
+                           GROUP_CONCAT(ipadr.name) as ip
                          FROM glpi_networkports AS netp
                          LEFT JOIN ".$networkport_type::getTable()." AS netp_subtable
                            ON netp_subtable.`networkports_id` = netp.`id`
+                         LEFT JOIN glpi_networknames AS netn
+                           ON netn.itemtype = 'NetworkPort' AND netn.items_id = netp.id
+                         LEFT JOIN glpi_ipaddresses AS ipadr
+                           ON ipadr.itemtype = 'NetworkName' AND ipadr.items_id = netn.id
                          WHERE netp.`instantiation_type` = '$networkport_type'
                                AND netp.`items_id` = '$id'
                                AND netp.`itemtype` = '$itemtype'
