@@ -196,9 +196,9 @@ $ curl -X POST \
       {
          'id': 1
          'name': "Super-admin",
-         'entities': {
+         'entities': [
             ...
-         },
+         ],
          ...
       },
       ....
@@ -230,10 +230,9 @@ $ curl -X POST \
 < 200 OK
 < {
       'name': "Super-admin",
-      'entities': {
+      'entities': [
          ...
-      },
-      ...
+      ]
    }
 ```
 
@@ -288,8 +287,7 @@ $ curl -X POST \
 'http://path/to/glpi/apirest.php/getMyEntities'
 
 < 200 OK
-< [ 71:
-   {
+< [{
       'id':   71
       'name': "my_entity"
    },
@@ -327,7 +325,10 @@ $ curl -X POST \
    'active_entity': {
       'id': 1,
       'active_entity_recursive': true,
-      'active_entities': [1, 71,...]
+      'active_entities': [
+        {"id":1},
+        {"id":71},...
+      ]
    }
 }
 ```
