@@ -1042,7 +1042,7 @@ class Session {
             $toadd = [];
 
             if ($check_once) {
-               if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type], $msg) === false) {
+               if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type]) || in_array($msg, $_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type]) === false) {
                   $toadd[] = $msg;
                }
             } else {
