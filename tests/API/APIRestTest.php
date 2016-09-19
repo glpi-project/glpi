@@ -380,7 +380,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals('glpi_computers', $data[1]['table']);
       $this->assertEquals('name', $data[1]['field']);
       $this->assertEquals('itemlink', $data[1]['datatype']);
-      $this->assertArrayHasKey('available_searchtypes', $data[1]);
+      $this->assertEquals(array('contains', 'equals', 'notequals'),
+                                 $data[1]['available_searchtypes']);
    }
 
 
