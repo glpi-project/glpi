@@ -275,11 +275,11 @@ abstract class API extends CommonGLPI {
 
       $myentities = array();
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
-         $myentities[$entity['id']] = array('id'   => $entity['id'],
+         $myentities[] = array('id'   => $entity['id'],
                                             'name' => Dropdown::getDropdownName("glpi_entities",
                                                                                 $entity['id']));
       }
-      return $myentities;
+      return array('myentities' => $myentities);
    }
 
 

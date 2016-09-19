@@ -287,12 +287,15 @@ $ curl -X POST \
 'http://path/to/glpi/apirest.php/getMyEntities'
 
 < 200 OK
-< [{
-      'id':   71
-      'name': "my_entity"
-   },
+< {
+   'myentities': [
+     {
+       'id':   71
+       'name': "my_entity"
+     },
    ....
-]
+   ]
+  }
 ```
 
 
