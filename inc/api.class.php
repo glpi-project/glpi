@@ -1015,25 +1015,30 @@ abstract class API extends CommonGLPI {
          return $soptions;
       }
 
-      $cleaned_searchoptions = array();
+      $cleaned_soptions = array();
       foreach($soptions as $sID => $option) {
          if (is_int($sID)) {
-            $cleaned_searchoptions[$sID] = array('name'       => $option['name'],
-                                                 'table'      => $option['table'],
-                                                 'field'      => $option['field'],
-                                                 //'linkfield'  => $option['linkfield'],
-                                                 //'joinparams' => $option['joinparams'],
-                                                 'datatype'   => isset($option['datatype'])
+            $available_searchtypes = Search::getActionsFor($itemtype, $sID);
+            unset($available_searchtypes['searchopt']);
+            $available_searchtypes = array_keys($available_searchtypes);
+
+            $cleaned_soptions[$sID] = array('name'                  => $option['name'],
+                                            'table'                 => $option['table'],
+                                            'field'                 => $option['field'],
+                                            //'linkfield'           => $option['linkfield'],
+                                            //'joinparams'          => $option['joinparams'],
+                                            'datatype'              => isset($option['datatype'])
                                                                        ?$option['datatype']
-                                                                       :"");
-            $cleaned_searchoptions[$sID]['uid'] = $this->getSearchOptionUniqID($itemtype,
+                                                                       :"",
+                                            'available_searchtypes' => $available_searchtypes);
+            $cleaned_soptions[$sID]['uid'] = $this->getSearchOptionUniqID($itemtype,
                                                                                $option);
          } else {
-            $cleaned_searchoptions[$sID] = $option;
+            $cleaned_soptions[$sID] = $option;
          }
       }
 
-      return $cleaned_searchoptions;
+      return $cleaned_soptions;
    }
 
 
