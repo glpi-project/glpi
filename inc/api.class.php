@@ -582,7 +582,8 @@ abstract class API extends CommonGLPI {
                          WHERE netp.`instantiation_type` = '$networkport_type'
                                AND netp.`items_id` = '$id'
                                AND netp.`itemtype` = '$itemtype'
-                               AND netp.`is_deleted` = '0'";
+                               AND netp.`is_deleted` = '0'
+                         GROUP BY netp.id";
                if ($result = $DB->query($query)) {
                   while ($data = $DB->fetch_assoc($result)) {
                      $fields['_networkports'][$networkport_type][] = $data;
