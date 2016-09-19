@@ -3267,7 +3267,7 @@ class User extends CommonDBTM {
                         'right'               => $p['right'],
                         'on_change'           => $p['on_change'],
                         'used'                => $p['used'],
-                        'entity_restrict'     => $p['entity'],
+                        'entity_restrict'     => (is_array($p['entity']) ? json_encode(array_values($p['entity'])) : $p['entity']),
                         'specific_tags'       => $p['specific_tags']);
 
       $output   = Html::jsAjaxDropdown($p['name'], $field_id,
