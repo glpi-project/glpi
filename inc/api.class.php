@@ -1025,8 +1025,6 @@ abstract class API extends CommonGLPI {
             $cleaned_soptions[$sID] = array('name'                  => $option['name'],
                                             'table'                 => $option['table'],
                                             'field'                 => $option['field'],
-                                            //'linkfield'           => $option['linkfield'],
-                                            //'joinparams'          => $option['joinparams'],
                                             'datatype'              => isset($option['datatype'])
                                                                        ?$option['datatype']
                                                                        :"",
