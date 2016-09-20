@@ -399,7 +399,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                                 'instantiation_type'       => "NetworkPortEthernet",
                                                 'name'                     => "test port",
                                                 'logical_number'           => 1,
-                                                'logical_number'           => 1,
                                                 'items_id'                 => $computers_id,
                                                 'itemtype'                 => "Computer",
                                                 'NetworkName_name'         => "testname",
