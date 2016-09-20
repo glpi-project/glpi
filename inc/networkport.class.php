@@ -186,10 +186,16 @@ class NetworkPort extends CommonDBChild {
       return true;
    }
 
+   /**
+    * @see CommonDBTM::prepareInputForUpdate
+    */
    function prepareInputForUpdate($input) {
       return $this->splitInputForElements($input);
    }
 
+   /**
+    * @see CommonDBTM::post_updateItem
+    */
    function post_updateItem($history=1) {
       global $DB;
 
@@ -353,6 +359,9 @@ class NetworkPort extends CommonDBChild {
    }
 
 
+   /**
+    * @see CommonDBTM::prepareInputForAdd
+    */
    function prepareInputForAdd($input) {
 
       if (isset($input["logical_number"]) && (strlen($input["logical_number"]) == 0)) {
@@ -364,6 +373,9 @@ class NetworkPort extends CommonDBChild {
       return parent::prepareInputForAdd($input);
    }
 
+   /**
+    * @see CommonDBTM::post_addItem
+    */
    function post_addItem() {
       $this->updateDependencies(1);
    }
