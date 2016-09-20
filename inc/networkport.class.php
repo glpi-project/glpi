@@ -186,6 +186,10 @@ class NetworkPort extends CommonDBChild {
       return true;
    }
 
+   function prepareInputForUpdate($input) {
+      return $this->splitInputForElements($input);
+   }
+
    function post_updateItem($history=1) {
       global $DB;
 
@@ -210,6 +214,8 @@ class NetworkPort extends CommonDBChild {
          }
       }
       parent::post_updateItem($history);
+
+      $this->updateDependencies(1);
    }
 
 
@@ -353,7 +359,13 @@ class NetworkPort extends CommonDBChild {
          unset($input["logical_number"]);
       }
 
+      $input = $this->splitInputForElements($input);
+
       return parent::prepareInputForAdd($input);
+   }
+
+   function post_addItem() {
+      $this->updateDependencies(1);
    }
 
 

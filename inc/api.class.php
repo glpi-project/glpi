@@ -1330,7 +1330,7 @@ abstract class API extends CommonGLPI {
          $idCollection = array();
          $failed       = 0;
          foreach($input as $object) {
-            $object = get_object_vars($object);
+            $object = self::inputObjectToArray($object);
             //check rights
             if (!$item->can(-1, CREATE, $object)) {
                $idCollection[] = array('error' => $this->messageRightError(false));
@@ -1358,7 +1358,7 @@ abstract class API extends CommonGLPI {
          return $idCollection;
 
       } else if (is_object($input)) {
-         $input = get_object_vars($input);
+         $input = self::inputObjectToArray($input);
 
          //check rights
          if (!$item->can(-1, CREATE, $input)) {
@@ -1380,6 +1380,28 @@ abstract class API extends CommonGLPI {
       } else {
          $this->messageBadArrayError();
       }
+   }
+
+   /**
+    * Transform all stdobject retrieved from a json_decode into arrays
+    *
+    * @since 9.1
+    *
+    * @param  mixed $input can be an object or array
+    * @return array the cleaned input
+    */
+   private function inputObjectToArray($input) {
+      if (is_object($input)) {
+         $input = get_object_vars($input);
+      }
+
+      if (is_array($input)) {
+         foreach ($input as $key => &$sub_input) {
+            $sub_input = self::inputObjectToArray($sub_input);
+         }
+      }
+
+      return $input;
    }
 
 
