@@ -1106,7 +1106,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
          // Specific for tickets
-         if (isset($this->fields['slas_id']) && ($this->fields['slas_id'] > 0)) {
+         if (isset($this->fields['slts_ttr_id']) && ($this->fields['slts_ttr_id'] > 0)) {
             SLT::deleteLevelsToDo($this);
          }
       }

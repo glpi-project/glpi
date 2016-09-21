@@ -7182,6 +7182,7 @@ CREATE TABLE `glpi_tickets` (
   `global_validation` int(11) NOT NULL DEFAULT '1',
   `slts_tto_id` int(11) NOT NULL DEFAULT '0',
   `slts_ttr_id` int(11) NOT NULL DEFAULT '0',
+  `ttr_slalevels_id` int(11) NOT NULL DEFAULT '0',
   `due_date` datetime DEFAULT NULL,
   `time_to_own` datetime DEFAULT NULL,
   `begin_waiting_date` datetime DEFAULT NULL,

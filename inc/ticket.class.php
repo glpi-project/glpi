@@ -351,12 +351,15 @@ class Ticket extends CommonITILObject {
       $slt = new SLT();
       if ($slt->getFromDB($slts_id)) {
          $slt->setTicketCalendar($calendars_id);
+         if ($slt->fields['type'] == SLT::TTR) {
+            $data["ttr_slalevels_id"] = SlaLevel::getFirstSltLevel($slts_id);
+         }
          // Compute due_date
          $data[$dateField]             = $slt->computeDate($date);
          $data['sla_waiting_duration'] = 0;
 
       } else {
-         $data["slalevels_id"]         = 0;
+         $data["ttr_slalevels_id"]     = 0;
          $data[$sltField]              = 0;
          $data['sla_waiting_duration'] = 0;
       }
