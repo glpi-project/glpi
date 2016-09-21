@@ -63,7 +63,7 @@ class RuleRight extends Rule {
    **/
    function maxActionsCount() {
       // Unlimited
-      return 4;
+      return 5;
    }
 
 
@@ -118,7 +118,8 @@ class RuleRight extends Rule {
    function executeActions($output, $params) {
       global $CFG_GLPI;
 
-      $entity       = '';
+      $entity       = array();
+	  $group		= -1;
       $right        = '';
       $is_recursive = 0;
       $continue     = true;
@@ -151,6 +152,9 @@ class RuleRight extends Rule {
                         $continue                   = false;
                         $output_src["_stop_import"] = true;
                         break;
+					case "groups_id" :
+						$output["groups_id"] = $action->fields["value"];
+						break;
                   } // switch (field)
                   break;
 
@@ -336,6 +340,10 @@ class RuleRight extends Rule {
       $actions['_ignore_user_import']['name']               = __('To be unaware of import');
       $actions['_ignore_user_import']['type']               = 'yesonly';
       $actions['_ignore_user_import']['table']              = '';
+	  
+	  $actions['groups_id']['name']                         = __('Group');
+	  $actions['groups_id']['type']                         = 'dropdown';
+	  $actions['groups_id']['table']                        = 'glpi_groups';
 
       return $actions;
    }
