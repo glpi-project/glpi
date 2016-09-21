@@ -1463,7 +1463,7 @@ class Ticket extends CommonITILObject {
             $input[$field] = 0;
          }
       }
-      if (!isset($input['itemtype']) || !($input['items_id'] > 0)) {
+      if (!isset($input['itemtype']) || !isset($input['items_id']) || !($input['items_id'] > 0)) {
          $input['itemtype'] = '';
       }
 
