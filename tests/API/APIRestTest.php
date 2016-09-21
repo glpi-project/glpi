@@ -512,7 +512,14 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('id', $data);
       $this->assertArrayHasKey('name', $data);
       $this->assertArrayHasKey('_networkports', $data);
-      $this->assertEquals('1.2.3.4', $data['_networkports']['NetworkPortEthernet'][0]['ip']);
+      $this->assertArrayHasKey('NetworkName', $data['_networkports']['NetworkPortEthernet'][0]);
+      $networkname = $data['_networkports']['NetworkPortEthernet'][0]['NetworkName'];
+      $this->assertArrayHasKey('IPAddress', $networkname);
+      $this->assertArrayHasKey('FQDN', $networkname);
+      $this->assertArrayHasKey('id', $networkname['IPAddress'][0]);
+      $this->assertArrayHasKey('name', $networkname['IPAddress'][0]);
+      $this->assertArrayHasKey('IPNetwork', $networkname['IPAddress'][0]);
+      $this->assertEquals('1.2.3.4', $networkname['IPAddress'][0]['name']);
    }
 
 
