@@ -876,20 +876,6 @@ class Toolbox {
       }
       echo "</tr>";
 
-      // Check for mysql extension in php
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('MySQL Improved extension test')."</td>";
-      if (class_exists("mysqli")) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png'
-                    alt=\"". __s('Ok - the MySQLi class exist - Perfect!')."\"
-                    title=\"". __s('Ok - the MySQLi class exist - Perfect!')."\"></td>";
-      } else {
-         echo "<td class='red'>";
-         echo "<img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-               __('You must install the MySQL Improved extension for PHP.')."</td>";
-         $error = 2;
-      }
-      echo "</tr>";
-
       // session test
       echo "<tr class='tab_bg_1'><td class='b left'>".__('Sessions test')."</td>";
 
@@ -941,111 +927,81 @@ class Toolbox {
       }
       echo "</tr>";
 
-      // Test for ctype extension loaded or not (forhtmlawed)
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Test ctype functions')."</td>";
+      $extensions_to_check = [
+         'mysqli'   => [
+            'required'  => true
+         ],
+         'ctype'    => [
+            'required'  => true,
+            'function'  => ['ctype_digit']
+         ],
+         'fileinfo' => [
+            'required'  => true,
+            'class'     => 'finfo'
+         ],
+         'json'     => [
+            'required'  => true,
+            'function'  => 'json_encode'
+         ],
+         'mbstring' => [
+            'required'  => true,
+         ],
+         'zlib'     => [
+            'required'  => true,
+         ],
+         'curl'      => [
+            'required'  => true,
+        ],
+         'gd'       => [
+            'required'  => false,
+         ],
+         'ldap'       => [
+            'required'  => false,
+         ],
+         'imap'       => [
+            'required'  => false,
+         ]
+      ];
 
-      if (!function_exists('ctype_digit')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                    __("GLPI can't work correctly without the ctype functions")."></td>";
-         $error = 2;
+      //check for PHP extensions
+      foreach ($extensions_to_check as $ext => $params) {
+         $success = true;
 
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                    __s('The functionality is found - Perfect!')."\" title=\"".
-                    __s('The functionality is found - Perfect!')."\"></td>";
+         if (isset($params['function'])) {
+            if (!function_exists($func)) {
+                $success = false;
+            }
+         } elseif (isset($param['class'])) {
+            if (!class_exists($params['class'])) {
+               $success = false;
+            }
+         } else {
+            if (extension_loaded($ext)) {
+               $success = false;
+            }
+         }
+
+         echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
+         if ($success === false) {
+             $msg = sprintf(__('%s extension is installed'), $ext);
+            echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
+                    alt=\"$msg\"
+                    title=\"$msg\"></td>";
+         } else {
+            if (isset($params['required']) && $params['required'] === true) {
+               if ($error < 2) {
+                  $error = 2;
+               }
+               echo "<td class=\"red\"><img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\"> " . sprintf(__('%s extension is missing'), $ext) . "</td>";
+            } else {
+               if ($error < 1) {
+                  $error = 1;
+               }
+               echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . sprintf(__('%s extension is not present'), $ext) . "</td>";
+            }
+         }
+         echo "</tr>";
       }
-      echo "</tr>";
-
-      // Test for fileinfo extension loaded or not
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Fileinfo extension test')."</td>";
-
-      if (!class_exists('finfo')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                    __("Fileinfo extension of your parser PHP is not installed")."</td>";
-         $error = 2;
-
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                    __s('The functionality is found - Perfect!')."\" title=\"".
-                    __s('The functionality is found - Perfect!')."\"></td>";
-      }
-      echo "</tr>";
-
-      // Test for json_encode function.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Test json functions')."</td>";
-
-      if (!function_exists('json_encode') || !function_exists('json_decode')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                    __("GLPI can't work correctly without the json_encode and json_decode functions").
-                   "</td>";
-         $error = 2;
-
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-               __s('The functionality is found - Perfect!'). "\" title=\"".
-               __s('The functionality is found - Perfect!')."\"></td>";
-      }
-      echo "</tr>";
-
-      // Test for mbstring extension.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Mbstring extension test')."</td>";
-
-      if (!extension_loaded('mbstring')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-               __('Mbstring extension of your parser PHP is not installed')."></td>";
-         $error = 2;
-
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-               __s('The functionality is found - Perfect!'). "\" title=\"".
-               __s('The functionality is found - Perfect!')."\"></td>";
-      }
-      echo "</tr>";
-
-      // Test for GD extension.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('GD extension test')."</td>";
-
-      if (!extension_loaded('gd')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
-                     __('GD extension of your parser PHP is not installed')."></td>";
-         $error = 1;
-
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                     __s('The functionality is found - Perfect!'). "\" title=\"".
-                     __s('The functionality is found - Perfect!')."\"></td>";
-      }
-      echo "</tr>";
-
-      // Test for zlib extension.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Zlib extension test')."</td>";
-
-      if (!extension_loaded('zlib')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                     __('Zlib extension of your parser PHP is not installed')."></td>";
-         $error = 2;
-
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                     __s('The functionality is found - Perfect!'). "\" title=\"".
-                     __s('The functionality is found - Perfect!')."\"></td>";
-      }
-      echo "</tr>";
-
-      // Test for curl extension.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Curl extension test')."</td>";
-
-      if (!extension_loaded('curl')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                     __('Curl extension of your parser PHP is not installed')."></td>";
-         $error = 2;
-
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                     __s('The functionality is found - Perfect!'). "\" title=\"".
-                     __s('The functionality is found - Perfect!')."\"></td>";
-      }
-      echo "</tr>";
 
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
