@@ -876,7 +876,7 @@ class Toolbox {
       }
       echo "</tr>";
 
-      // Check for mysql extension ni php
+      // Check for mysql extension in php
       echo "<tr class='tab_bg_1'><td class='left b'>".__('MySQL Improved extension test')."</td>";
       if (class_exists("mysqli")) {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png'
@@ -1023,6 +1023,21 @@ class Toolbox {
       if (!extension_loaded('zlib')) {
          echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
                      __('Zlib extension of your parser PHP is not installed')."></td>";
+         $error = 2;
+
+      } else {
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
+                     __s('The functionality is found - Perfect!'). "\" title=\"".
+                     __s('The functionality is found - Perfect!')."\"></td>";
+      }
+      echo "</tr>";
+
+      // Test for curl extension.
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('Curl extension test')."</td>";
+
+      if (!extension_loaded('curl')) {
+         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
+                     __('Curl extension of your parser PHP is not installed')."></td>";
          $error = 2;
 
       } else {
