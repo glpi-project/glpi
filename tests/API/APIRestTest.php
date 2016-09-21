@@ -147,8 +147,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $body = $res->getBody();
       $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey('id', $data[0]); // check presence of first entity
-      $this->assertEquals(0, $data[0]['id']); // check presence of root entity
+      $this->assertArrayHasKey('myentities', $data); // check presence of first entity
+      $this->assertArrayHasKey('id', $data['myentities'][0]); // check presence of first entity
+      $this->assertEquals(0, $data['myentities'][0]['id']); // check presence of root entity
    }
 
 

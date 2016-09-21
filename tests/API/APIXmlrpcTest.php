@@ -101,7 +101,10 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey(0, $data); // check presence of root entity
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('myentities', $data); // check presence of first entity
+      $this->assertArrayHasKey('id', $data['myentities'][0]); // check presence of first entity
+      $this->assertEquals(0, $data['myentities'][0]['id']); // check presence of root entity
    }
 
 
