@@ -891,7 +891,7 @@ abstract class API extends CommonGLPI {
 
       // filter with entity
       if ($item->isEntityAssign()) {
-         $where.= "AND (". getEntitiesRestrictRequest("",
+         $where.= " AND (". getEntitiesRestrictRequest("",
                                              $itemtype::getTable(),
                                              '',
                                              $_SESSION['glpiactiveentities'],
