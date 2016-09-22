@@ -884,12 +884,14 @@ class Planning extends CommonGLPI {
       $filters = &$_SESSION['glpi_plannings']['filters'];
       $index_color = 0;
       foreach($CFG_GLPI['planning_types'] as $planning_type) {
-         if (!isset($filters[$planning_type])) {
-            $filters[$planning_type] = array('color'   => self::$palette_ev[$index_color],
-                                             'display' => true,
-                                             'type'    => 'event_filter');
+         if ($planning_type::canView()) {
+            if (!isset($filters[$planning_type])) {
+               $filters[$planning_type] = array('color'   => self::$palette_ev[$index_color],
+                                                'display' => true,
+                                                'type'    => 'event_filter');
+            }
+            $index_color++;
          }
-         $index_color++;
       }
 
       // computer color index for plannings
@@ -1227,10 +1229,16 @@ class Planning extends CommonGLPI {
       $rand = mt_rand();
       echo "<form action='".self::getFormURL()."'>";
       echo __("Actor").": <br>";
+
+      $planning_types = ['user' => __("User")];
+
+      if (Session::haveRightsOr('planning', array(self::READGROUP, self::READALL))) {
+         $planning_types['group_users'] = __('All users of a group');
+         $planning_types['group']       = __('Group');
+      }
+
       Dropdown::showFromArray('planning_type',
-                              array('user'        => __("User"),
-                                    'group_users' => __('All users of a group'),
-                                    'group'       => __('Group')),
+                              $planning_types,
                               array('display_emptychoice' => true,
                                     'rand'                =>  $rand));
       echo Html::scriptBlock("
@@ -1265,9 +1273,23 @@ class Planning extends CommonGLPI {
          }
       }
       echo __("User")." :<br>";
-      User::dropdown(array('entity' => $_SESSION['glpiactive_entity'],
-                           'right'  => 'planning',
-                           'used'   => $used));
+
+      // show only users with right to add planning events
+      $rights = array('change', 'problem', 'reminder', 'task', 'projecttask');
+      // Can we see only personnal planning ?
+      if (!Session::haveRightsOr('planning', array(self::READALL, self::READGROUP))) {
+         $rights = 'id';
+      }
+      // Can we see user of my groups ?
+      if (Session::haveRight('planning', self::READGROUP)
+          && !Session::haveRight('planning', self::READALL)) {
+         $rights = 'groups';
+      }
+
+      User::dropdown(array('entity'      => $_SESSION['glpiactive_entity'],
+                           'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
+                           'right'       => $rights,
+                           'used'        => $used));
       echo "<br /><br />";
       echo Html::hidden('action', array('value' => 'send_add_user_form'));
       echo Html::submit(_sx('button', 'Add'));
@@ -1297,7 +1319,16 @@ class Planning extends CommonGLPI {
     */
    static function showAddGroupUsersForm() {
       echo __("Group")." : <br>";
-      Group::dropdown(array('entity' => $_SESSION['glpiactive_entity']));
+
+      $condition = "is_task = 1";
+      // filter groups
+      if (!Session::haveRight('planning', self::READALL)) {
+         $condition.= " AND id IN(".implode(',', $_SESSION['glpigroups']).")";
+      }
+
+      Group::dropdown(array('entity'      => $_SESSION['glpiactive_entity'],
+                            'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
+                            'condition'   => $condition));
       echo "<br /><br />";
       echo Html::hidden('action', array('value' => 'send_add_group_users_form'));
       echo Html::submit(_sx('button', 'Add'));
@@ -1373,9 +1404,17 @@ class Planning extends CommonGLPI {
     * @return Nothing (display function)
     */
    static function showAddGroupForm($params = array()) {
+
+      $condition = "is_task = 1";
+      // filter groups
+      if (!Session::haveRight('planning', self::READALL)) {
+         $condition.= " AND id IN(".implode(',', $_SESSION['glpigroups']).")";
+      }
+
       echo __("Group")." : <br>";
-      Group::dropdown(array('entity'    => $_SESSION['glpiactive_entity'],
-                            'condition' => "is_task = 1"));
+      Group::dropdown(array('entity'      => $_SESSION['glpiactive_entity'],
+                            'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
+                            'condition'   => $condition));
       echo "<br /><br />";
       echo Html::hidden('action', array('value' => 'send_add_group_form'));
       echo Html::submit(_sx('button', 'Add'));

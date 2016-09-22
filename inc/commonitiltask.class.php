@@ -878,7 +878,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if ($DB->numrows($result) > 0) {
          for ($i=0 ; $data=$DB->fetch_assoc($result) ; $i++) {
-            if ($item->getFromDB($data["id"])) {
+            if ($item->getFromDB($data["id"])
+                && $item->canViewItem()) {
                if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()],0)) {
                   $key = $data["begin"]."$$$".$itemtype."$$$".$data["id"];
                   $interv[$key]['color']            = $options['color'];
