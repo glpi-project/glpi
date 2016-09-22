@@ -852,9 +852,9 @@ abstract class API extends CommonGLPI {
 
       //specific case for restriction
       $already_linked_table = array();
-      $where = "1=1 ";
       $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
-      $where.= Search::addDefaultWhere($itemtype);
+      $where = Search::addDefaultWhere($itemtype);
+      if ($where == '') $where = "1=1 ";
 
       // add filter for a parent itemtype
       if (isset($this->parameters['parent_itemtype'])
@@ -891,7 +891,7 @@ abstract class API extends CommonGLPI {
 
       // filter with entity
       if ($item->isEntityAssign()) {
-         $where.= "AND (". getEntitiesRestrictRequest("",
+         $where.= " AND (". getEntitiesRestrictRequest("",
                                              $itemtype::getTable(),
                                              '',
                                              $_SESSION['glpiactiveentities'],
