@@ -101,7 +101,10 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey(0, $data); // check presence of root entity
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('myentities', $data); // check presence of first entity
+      $this->assertArrayHasKey('id', $data['myentities'][0]); // check presence of first entity
+      $this->assertEquals(0, $data['myentities'][0]['id']); // check presence of root entity
    }
 
 
@@ -156,9 +159,10 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey('id', $data);
-      $this->assertArrayHasKey('name', $data);
-      $this->assertArrayHasKey('interface', $data);
+      $this->assertArrayHasKey('active_profile', $data);
+      $this->assertArrayHasKey('id', $data['active_profile']);
+      $this->assertArrayHasKey('name', $data['active_profile']);
+      $this->assertArrayHasKey('interface', $data['active_profile']);
    }
 
 
@@ -171,11 +175,12 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey('glpiID', $data);
-      $this->assertArrayHasKey('glpiname', $data);
-      $this->assertArrayHasKey('glpiroot', $data);
-      $this->assertArrayHasKey('glpilanguage', $data);
-      $this->assertArrayHasKey('glpilist_limit', $data);
+      $this->assertArrayHasKey('session', $data);
+      $this->assertArrayHasKey('glpiID', $data['session']);
+      $this->assertArrayHasKey('glpiname', $data['session']);
+      $this->assertArrayHasKey('glpiroot', $data['session']);
+      $this->assertArrayHasKey('glpilanguage', $data['session']);
+      $this->assertArrayHasKey('glpilist_limit', $data['session']);
    }
 
 

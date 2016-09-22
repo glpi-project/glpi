@@ -275,11 +275,11 @@ abstract class API extends CommonGLPI {
 
       $myentities = array();
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
-         $myentities[$entity['id']] = array('id'   => $entity['id'],
+         $myentities[] = array('id'   => $entity['id'],
                                             'name' => Dropdown::getDropdownName("glpi_entities",
                                                                                 $entity['id']));
       }
-      return $myentities;
+      return array('myentities' => $myentities);
    }
 
 
@@ -367,7 +367,7 @@ abstract class API extends CommonGLPI {
    protected function getActiveProfile() {
 
       $this->initEndpoint();
-      return $_SESSION['glpiactiveprofile'];
+      return ["active_profile" => $_SESSION['glpiactiveprofile']];
    }
 
 
@@ -381,7 +381,7 @@ abstract class API extends CommonGLPI {
    protected function getFullSession() {
 
       $this->initEndpoint();
-      return $_SESSION;
+      return ['session' => $_SESSION];
    }
 
 
