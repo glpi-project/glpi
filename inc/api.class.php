@@ -854,6 +854,7 @@ abstract class API extends CommonGLPI {
       $already_linked_table = array();
       $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
       $where = Search::addDefaultWhere($itemtype);
+      if ($where == '') $where = "1=1 ";
 
       // add filter for a parent itemtype
       if (isset($this->parameters['parent_itemtype'])
