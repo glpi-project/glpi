@@ -852,9 +852,8 @@ abstract class API extends CommonGLPI {
 
       //specific case for restriction
       $already_linked_table = array();
-      $where = "1=1 ";
       $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
-      $where.= Search::addDefaultWhere($itemtype);
+      $where = Search::addDefaultWhere($itemtype);
 
       // add filter for a parent itemtype
       if (isset($this->parameters['parent_itemtype'])
