@@ -367,7 +367,7 @@ abstract class API extends CommonGLPI {
    protected function getActiveProfile() {
 
       $this->initEndpoint();
-      return $_SESSION['glpiactiveprofile'];
+      return ["active_profile" => $_SESSION['glpiactiveprofile']];
    }
 
 
@@ -381,7 +381,7 @@ abstract class API extends CommonGLPI {
    protected function getFullSession() {
 
       $this->initEndpoint();
-      return $_SESSION;
+      return ['session' => $_SESSION];
    }
 
 
