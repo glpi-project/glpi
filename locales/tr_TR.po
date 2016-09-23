@@ -3,14 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2016
 # Kaya Zeren <kayazeren@gmail.com>, 2016
 # Mehmet Fatih ULUÇAM <mulucam@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-15 09:44+0200\n"
-"PO-Revision-Date: 2016-09-15 07:44+0000\n"
+"POT-Creation-Date: 2016-09-23 10:57+0200\n"
+"PO-Revision-Date: 2016-09-23 09:04+0000\n"
 "Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>\n"
 "Language-Team: Turkish (Turkey) (http://www.transifex.com/glpi/GLPI/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
@@ -74,7 +75,7 @@ msgstr "Web tarayıcınızın JavaScript işlevini etkinleştirmelisiniz"
 msgid "You must accept cookies to reach this application"
 msgstr "Bu uygulamayı kullanabilmek için çerezleri kabul etmelisiniz"
 
-#: index.php:162 inc/config.class.php:2100
+#: index.php:162 inc/config.class.php:2107
 msgid "Checking write permissions for session files"
 msgstr "Oturum dosyalarının yazma izni denetleniyor"
 
@@ -108,7 +109,7 @@ msgstr "Sık sorulan sorulara erişim"
 #: inc/commondbtm.class.php:3576 inc/commondbtm.class.php:3582
 #: inc/commonglpi.class.php:860 inc/commonitilcost.class.php:196
 #: inc/commonitilobject.class.php:1694 inc/commonitilobject.class.php:5113
-#: inc/commonitilobject.class.php:5263 inc/commonitiltask.class.php:1108
+#: inc/commonitilobject.class.php:5263 inc/commonitiltask.class.php:1109
 #: inc/computer_softwarelicense.class.php:485
 #: inc/computer_softwareversion.class.php:461 inc/consumable.class.php:686
 #: inc/contract.class.php:384 inc/contract.class.php:392
@@ -119,17 +120,17 @@ msgstr "Sık sorulan sorulara erişim"
 #: inc/contract.class.php:775 inc/contract.class.php:783
 #: inc/contract.class.php:791 inc/contract.class.php:799
 #: inc/contract.class.php:1293 inc/contract.class.php:1294
-#: inc/crontask.class.php:420 inc/dbmysql.class.php:577
-#: inc/dbmysql.class.php:590 inc/dbmysql.class.php:602
+#: inc/crontask.class.php:420 inc/dbmysql.class.php:582
+#: inc/dbmysql.class.php:595 inc/dbmysql.class.php:607
 #: inc/document.class.php:220 inc/document_item.class.php:497
-#: inc/html.class.php:1048 inc/html.class.php:1811 inc/infocom.class.php:493
+#: inc/html.class.php:1095 inc/html.class.php:1858 inc/infocom.class.php:493
 #: inc/infocom.class.php:957 inc/ipaddress.class.php:246
 #: inc/ipnetwork.class.php:978 inc/item_ticket.class.php:788
 #: inc/item_ticket.class.php:791 inc/item_ticket.class.php:794
 #: inc/item_ticket.class.php:869 inc/item_ticket.class.php:871
 #: inc/item_ticket.class.php:874 inc/item_ticket.class.php:928
 #: inc/item_ticket.class.php:930 inc/item_ticket.class.php:971
-#: inc/networkport.class.php:554 inc/networkportinstantiation.class.php:495
+#: inc/networkport.class.php:578 inc/networkportinstantiation.class.php:495
 #: inc/networkportinstantiation.class.php:688
 #: inc/networkportinstantiation.class.php:722
 #: inc/notificationtargetcommonitilobject.class.php:654
@@ -179,7 +180,7 @@ msgstr "%1$s - Ağ prizi %2$s"
 #: inc/commondbtm.class.php:3146 inc/commondbtm.class.php:4308
 #: inc/commonglpi.class.php:872 inc/commonitilcost.class.php:510
 #: inc/commonitilobject.class.php:5262 inc/commonitilobject.class.php:5267
-#: inc/commonitiltask.class.php:1151 inc/commonitiltask.class.php:1177
+#: inc/commonitiltask.class.php:1152 inc/commonitiltask.class.php:1178
 #: inc/computer.class.php:925 inc/computer.class.php:1043
 #: inc/computer_item.class.php:461 inc/computer_softwarelicense.class.php:542
 #: inc/computer_softwareversion.class.php:550
@@ -199,7 +200,7 @@ msgstr "%1$s - Ağ prizi %2$s"
 #: inc/document_item.class.php:509 inc/dropdown.class.php:384
 #: inc/glpipdf.class.php:105 inc/group_user.class.php:239
 #: inc/group_user.class.php:244 inc/group_user.class.php:461
-#: inc/group_user.class.php:551 inc/html.class.php:4261
+#: inc/group_user.class.php:551 inc/html.class.php:4308
 #: inc/ipnetwork_vlan.class.php:187 inc/item_devicegraphiccard.class.php:57
 #: inc/item_deviceharddrive.class.php:58 inc/item_devicememory.class.php:59
 #: inc/item_deviceprocessor.class.php:58 inc/item_problem.class.php:222
@@ -212,7 +213,7 @@ msgstr "%1$s - Ağ prizi %2$s"
 #: inc/mailcollector.class.php:251 inc/mailcollector.class.php:1459
 #: inc/mailcollector.class.php:1467 inc/networkalias.class.php:328
 #: inc/networkequipment.class.php:386 inc/networkequipment.class.php:512
-#: inc/networkport.class.php:681 inc/networkport_vlan.class.php:192
+#: inc/networkport.class.php:705 inc/networkport_vlan.class.php:192
 #: inc/notificationevent.class.php:185
 #: inc/notificationtargetcommonitilobject.class.php:1162
 #: inc/notificationtargetcommonitilobject.class.php:1164
@@ -293,7 +294,7 @@ msgstr "E-posta izleme"
 #: inc/commonglpi.class.php:1402 inc/commonitilobject.class.php:2414
 #: inc/commonitilobject.class.php:3224 inc/commonitilobject.class.php:3466
 #: inc/commonitilobject.class.php:5107 inc/commonitilobject.class.php:5133
-#: inc/commonitiltask.class.php:1045 inc/config.class.php:1325
+#: inc/commonitiltask.class.php:1046 inc/config.class.php:1325
 #: inc/config.class.php:1388 inc/contract.class.php:1048
 #: inc/contract.class.php:1125 inc/contract.class.php:1158
 #: inc/contract.class.php:1161 inc/contract.class.php:1178
@@ -324,7 +325,7 @@ msgstr "E-posta izleme"
 #: inc/log.class.php:502 inc/log.class.php:511 inc/log.class.php:520
 #: inc/log.class.php:531 inc/log.class.php:541 inc/log.class.php:551
 #: inc/log.class.php:561 inc/mailcollector.class.php:1458
-#: inc/mailcollector.class.php:1466 inc/networkport.class.php:683
+#: inc/mailcollector.class.php:1466 inc/networkport.class.php:707
 #: inc/networkportmigration.class.php:236 inc/notificationmail.class.php:185
 #: inc/notificationtargetchange.class.php:301
 #: inc/notificationtargetchange.class.php:303
@@ -463,8 +464,8 @@ msgstr "E-posta izleme"
 #: inc/projecttask.class.php:1375 inc/projecttask.class.php:1389
 #: inc/projecttask.class.php:1398 inc/projecttask.class.php:1403
 #: inc/projecttask.class.php:1411 inc/queuedmail.class.php:409
-#: inc/registeredid.class.php:117 inc/reminder.class.php:1006
-#: inc/reminder.class.php:1033 inc/reservationitem.class.php:638
+#: inc/registeredid.class.php:117 inc/reminder.class.php:1008
+#: inc/reminder.class.php:1035 inc/reservationitem.class.php:638
 #: inc/reservationitem.class.php:643 inc/reservationitem.class.php:661
 #: inc/rule.class.php:3101 inc/rulemailcollector.class.php:137
 #: inc/slt.class.php:517 inc/softwarelicense.class.php:760
@@ -473,7 +474,7 @@ msgstr "E-posta izleme"
 #: inc/ticket.class.php:1777 inc/ticket.class.php:3822
 #: inc/ticket.class.php:5361 inc/ticket.class.php:5614
 #: inc/ticket.class.php:5704 inc/ticket_ticket.class.php:69
-#: inc/toolbox.class.php:1051 inc/user.class.php:1970 inc/user.class.php:2171
+#: inc/toolbox.class.php:1066 inc/user.class.php:1970 inc/user.class.php:2171
 #: inc/user.class.php:3391 inc/vlan.class.php:171 inc/vlan.class.php:173
 #: install/update_0681_07.php:541 install/update_0681_07.php:564
 #: install/update_0681_07.php:571 install/update_0681_07.php:578
@@ -519,7 +520,7 @@ msgstr[0] "E-posta"
 #: inc/change_project.class.php:174 inc/change_project.class.php:269
 #: inc/change_ticket.class.php:285 inc/change_ticket.class.php:387
 #: inc/commondbrelation.class.php:1108 inc/commondbtm.class.php:2076
-#: inc/commonitiltask.class.php:1600 inc/commontreedropdown.class.php:417
+#: inc/commonitiltask.class.php:1601 inc/commontreedropdown.class.php:417
 #: inc/computer_softwarelicense.class.php:398
 #: inc/computer_softwareversion.class.php:849
 #: inc/contact_supplier.class.php:197 inc/contact_supplier.class.php:334
@@ -532,9 +533,9 @@ msgstr[0] "E-posta"
 #: inc/item_ticket.class.php:303 inc/item_ticket.class.php:455
 #: inc/item_ticket.class.php:1103 inc/link_itemtype.class.php:105
 #: inc/netpoint.class.php:279 inc/netpoint.class.php:302
-#: inc/networkport.class.php:515 inc/notepad.class.php:260
-#: inc/planning.class.php:1273 inc/planning.class.php:1303
-#: inc/planning.class.php:1381 inc/problem_ticket.class.php:331
+#: inc/networkport.class.php:539 inc/notepad.class.php:260
+#: inc/planning.class.php:1298 inc/planning.class.php:1337
+#: inc/planning.class.php:1423 inc/problem_ticket.class.php:331
 #: inc/problem_ticket.class.php:441 inc/profile_user.class.php:149
 #: inc/profile_user.class.php:307 inc/project.class.php:1053
 #: inc/projecttask.class.php:1010 inc/projecttask_ticket.class.php:196
@@ -581,8 +582,8 @@ msgstr "Ekle"
 #: inc/monitor.class.php:455 inc/netpoint.class.php:343
 #: inc/networkalias.class.php:141 inc/networkalias.class.php:406
 #: inc/networkequipment.class.php:362 inc/networkequipment.class.php:502
-#: inc/networkname.class.php:149 inc/networkport.class.php:829
-#: inc/networkport.class.php:990 inc/networkportmigration.class.php:285
+#: inc/networkname.class.php:149 inc/networkport.class.php:853
+#: inc/networkport.class.php:1014 inc/networkportmigration.class.php:285
 #: inc/notification.class.php:210 inc/notification.class.php:371
 #: inc/notificationtargetchange.class.php:304
 #: inc/notificationtargetchange.class.php:309
@@ -637,8 +638,8 @@ msgid "All"
 msgstr "Tümü"
 
 #: ajax/dropdownMassiveActionAddValidator.php:114
-#: ajax/dropdownValidator.php:136 inc/commonitiltask.class.php:1156
-#: inc/commonitiltask.class.php:1457 inc/dbconnection.class.php:458
+#: ajax/dropdownValidator.php:136 inc/commonitiltask.class.php:1157
+#: inc/commonitiltask.class.php:1458 inc/dbconnection.class.php:458
 #: inc/dropdown.class.php:1935 inc/group_user.class.php:181
 #: inc/group_user.class.php:268 inc/htmltablemain.class.php:244
 #: inc/item_devices.class.php:626 inc/planningrecall.class.php:252
@@ -648,8 +649,8 @@ msgstr "Hiçbiri"
 
 #: ajax/dropdownMassiveAction.php:47 ajax/massiveaction.php:51
 #: front/massiveaction.php:53 front/tracking.injector.php:84
-#: inc/authldap.class.php:1219 inc/html.class.php:524 inc/html.class.php:803
-#: inc/massiveaction.class.php:809
+#: inc/authldap.class.php:1219 inc/html.class.php:524 inc/html.class.php:565
+#: inc/html.class.php:850 inc/massiveaction.class.php:809
 msgid "Warning"
 msgstr "Uyarı"
 
@@ -675,13 +676,13 @@ msgstr "İlk harfleri yazın (kullanıcı adı, öge adı, seri numarası ya da 
 
 #: ajax/entitytreesons.php:79 ajax/entitytreesons.php:82
 #: ajax/entitytreesons.php:114 ajax/entitytreesons.php:117
-#: inc/entity.class.php:868 inc/html.class.php:1706
+#: inc/entity.class.php:868 inc/html.class.php:1753
 #: inc/reservation.class.php:443 inc/ticket.class.php:5083
 #: inc/ticket.class.php:5262
 msgid "Show all"
 msgstr "Tümüne bakın"
 
-#: ajax/massiveaction.php:74 inc/html.class.php:2845
+#: ajax/massiveaction.php:74 inc/html.class.php:2892
 #: inc/mailcollector.class.php:206 inc/ruleaction.class.php:92
 #: inc/ruleaction.class.php:661 inc/rule.class.php:1084
 msgid "Action"
@@ -689,7 +690,7 @@ msgid_plural "Actions"
 msgstr[0] "Eylem"
 
 #: ajax/planningcheck.php:53 ajax/planningcheck.php:60 front/planning.php:61
-#: inc/commonitiltask.class.php:1358 inc/commonitiltask.class.php:1365
+#: inc/commonitiltask.class.php:1359 inc/commonitiltask.class.php:1366
 #: inc/planning.class.php:341
 msgid "Availability"
 msgstr "Kullanabilirlik"
@@ -864,7 +865,7 @@ msgstr "Kısıtlama yok"
 #: inc/profile_user.class.php:878 inc/profile_user.class.php:1018
 #: inc/project.class.php:516 inc/project.class.php:552
 #: inc/projectcost.class.php:169 inc/projecttask.class.php:719
-#: inc/queuedmail.class.php:297 inc/reminder.class.php:1316
+#: inc/queuedmail.class.php:297 inc/reminder.class.php:1318
 #: inc/reservation.class.php:1206 inc/reservation.class.php:1269
 #: inc/reservationitem.class.php:236 inc/rssfeed.class.php:1145
 #: inc/rule.class.php:746 inc/rulecollection.class.php:489
@@ -967,8 +968,8 @@ msgid "URL"
 msgstr "İnternet adresi"
 
 #: ajax/timeline.php:81 ajax/viewsubitem.php:59 inc/html.class.php:514
-#: inc/html.class.php:517 inc/html.class.php:520 inc/html.class.php:793
-#: inc/html.class.php:796 inc/html.class.php:799
+#: inc/html.class.php:517 inc/html.class.php:520 inc/html.class.php:840
+#: inc/html.class.php:843 inc/html.class.php:846
 msgid "Access denied"
 msgstr "Erişim engellendi"
 
@@ -999,7 +1000,7 @@ msgid ""
 msgstr "Veritabanı sürümü ile karşılaştırıldığında daha eski bir GLPI sürümüne ait dosyaları kullanmaya çalışıyorsunuz. Lütfen veritabanı sürümüne uygun GLPI dosyalarını yükleyin."
 
 #: front/allassets.php:44 inc/bookmark.class.php:692 inc/config.class.php:482
-#: inc/html.class.php:1369 inc/stat.class.php:1538 inc/stat.class.php:1550
+#: inc/html.class.php:1416 inc/stat.class.php:1538 inc/stat.class.php:1550
 #: inc/stat.class.php:1559
 msgid "Global"
 msgstr "Genel"
@@ -1109,7 +1110,7 @@ msgid "XML Dump"
 msgstr "XML Dökümü"
 
 #: front/backup.php:621 inc/document.class.php:426 inc/document.class.php:788
-#: inc/document_item.class.php:775 inc/html.class.php:5256
+#: inc/document_item.class.php:775 inc/html.class.php:5303
 #: inc/notificationtargetcommonitilobject.class.php:1185
 #: inc/notificationtargetproject.class.php:654
 #: inc/notificationtargetprojecttask.class.php:538 inc/ticket.class.php:3285
@@ -1125,7 +1126,7 @@ msgstr "Boyut"
 #: front/backup.php:623 front/report.contract.php:67 front/report.year.php:68
 #: inc/commonitilobject.class.php:4403 inc/commonitilobject.class.php:5353
 #: inc/commonitiltask.class.php:571 inc/commonitiltask.class.php:704
-#: inc/commonitiltask.class.php:1277 inc/commonitiltask.class.php:1547
+#: inc/commonitiltask.class.php:1278 inc/commonitiltask.class.php:1548
 #: inc/crontask.class.php:1069 inc/crontask.class.php:1126
 #: inc/document_item.class.php:782 inc/event.class.php:270
 #: inc/event.class.php:325 inc/knowbaseitem.class.php:1570
@@ -1176,7 +1177,7 @@ msgstr "%s dosyası silinsin mi?"
 #: inc/knowbaseitem.class.php:1691 inc/massiveaction.class.php:536
 #: inc/massiveaction.class.php:566 inc/netpoint.class.php:330
 #: inc/notepad.class.php:316 inc/problem_ticket.class.php:346
-#: inc/profile_user.class.php:332 inc/reminder.class.php:1235
+#: inc/profile_user.class.php:332 inc/reminder.class.php:1237
 #: inc/reservation.class.php:762 inc/rssfeed.class.php:1063
 #: inc/rule.class.php:2771 inc/slt.class.php:548 inc/slt.class.php:549
 #: inc/ticket.class.php:4430 inc/ticket.class.php:6523
@@ -1212,7 +1213,7 @@ msgstr "İndirin"
 #: front/documenttype.list.php:43 front/dropdown.php:42 front/plugin.php:94
 #: front/rulesengine.test.php:66 front/rule.test.php:67
 #: front/setup.auth.php:48 inc/auth.class.php:118 inc/config.class.php:58
-#: inc/event.class.php:157 inc/html.class.php:1256 inc/html.class.php:1722
+#: inc/event.class.php:157 inc/html.class.php:1303 inc/html.class.php:1769
 #: inc/notification.class.php:168 inc/notificationmailsetting.class.php:78
 #: inc/profile.class.php:107 inc/profile.class.php:1465
 #: inc/profile.class.php:1699
@@ -1285,7 +1286,7 @@ msgstr "%s bir ögeyi geri yükledi"
 #: front/knowbaseitem.form.php:84 front/link.form.php:61
 #: front/mailcollector.form.php:66 front/monitor.form.php:87
 #: front/networkalias.form.php:67 front/networkequipment.form.php:87
-#: front/networkname.form.php:60 front/networkport.form.php:104
+#: front/networkname.form.php:60 front/networkport.form.php:100
 #: front/networkportmigration.form.php:55 front/notepad.form.php:56
 #: front/notification.form.php:61 front/notificationtemplate.form.php:65
 #: front/notificationtemplatetranslation.form.php:61
@@ -1311,7 +1312,7 @@ msgstr "%s bir ögeyi çöpe attı"
 #: front/mailcollector.form.php:75 front/monitor.form.php:96
 #: front/networkalias.form.php:80 front/networkequipment.form.php:96
 #: front/networkname.form.php:73 front/networkname.form.php:81
-#: front/networkport.form.php:119 front/notepad.form.php:65
+#: front/networkport.form.php:113 front/notepad.form.php:65
 #: front/notification.form.php:70 front/notificationtemplate.form.php:74
 #: front/notificationtemplatetranslation.form.php:70
 #: front/peripheral.form.php:96 front/phone.form.php:96
@@ -1600,10 +1601,10 @@ msgstr "%s görevi tamamlandı"
 #: inc/project.class.php:679 inc/project.class.php:709
 #: inc/projectcost.class.php:379 inc/projecttask.class.php:891
 #: inc/projecttask_ticket.class.php:393 inc/projecttask_ticket.class.php:402
-#: inc/reminder.class.php:1163 inc/reminder.class.php:1288
-#: inc/reminder.class.php:1296 inc/reminder.class.php:1319
-#: inc/reminder.class.php:1321 inc/reminder.class.php:1344
-#: inc/reminder.class.php:1350 inc/reservation.class.php:476
+#: inc/reminder.class.php:1165 inc/reminder.class.php:1290
+#: inc/reminder.class.php:1298 inc/reminder.class.php:1321
+#: inc/reminder.class.php:1323 inc/reminder.class.php:1346
+#: inc/reminder.class.php:1352 inc/reservation.class.php:476
 #: inc/rssfeed.class.php:1117 inc/rssfeed.class.php:1125
 #: inc/rssfeed.class.php:1148 inc/rssfeed.class.php:1150
 #: inc/rssfeed.class.php:1173 inc/rssfeed.class.php:1179
@@ -1621,8 +1622,8 @@ msgstr "%s görevi tamamlandı"
 #: inc/search.class.php:4243 inc/search.class.php:4631
 #: inc/search.class.php:4795 inc/ticket.class.php:5371
 #: inc/ticket.class.php:5425 inc/ticket_ticket.class.php:185
-#: inc/ticket_ticket.class.php:187 inc/toolbox.class.php:1052
-#: inc/toolbox.class.php:1211 inc/useremail.class.php:170
+#: inc/ticket_ticket.class.php:187 inc/toolbox.class.php:1067
+#: inc/toolbox.class.php:1226 inc/useremail.class.php:170
 #: install/update_0681_07.php:546 install/update_0681_07.php:549
 #: install/update_0681_07.php:554 install/update_0681_07.php:557
 #, php-format
@@ -1664,7 +1665,7 @@ msgid "Component"
 msgid_plural "Components"
 msgstr[0] "Bileşen"
 
-#: front/dictionnary.php:43 inc/html.class.php:1252 inc/profile.class.php:106
+#: front/dictionnary.php:43 inc/html.class.php:1299 inc/profile.class.php:106
 #: inc/profile.class.php:1338 inc/profile.class.php:1776
 #: inc/reservationitem.class.php:733
 msgid "Administration"
@@ -1695,8 +1696,8 @@ msgstr[0] "Yazılım"
 
 #: front/dictionnary.php:58 inc/cartridgeitem.class.php:203
 #: inc/cartridgeitem.class.php:299 inc/commondevice.class.php:151
-#: inc/commondevice.class.php:224 inc/computerantivirus.class.php:307
-#: inc/computerantivirus.class.php:390 inc/computer.class.php:563
+#: inc/commondevice.class.php:224 inc/computerantivirus.class.php:238
+#: inc/computerantivirus.class.php:317 inc/computer.class.php:563
 #: inc/computer.class.php:856 inc/consumableitem.class.php:163
 #: inc/consumableitem.class.php:260 inc/dropdown.class.php:755
 #: inc/manufacturer.class.php:49 inc/manufacturer.class.php:191
@@ -1798,7 +1799,7 @@ msgstr[0] "Telefon modeli"
 #: inc/bookmark.class.php:322 inc/budget.class.php:130
 #: inc/budget.class.php:222 inc/budget.class.php:300
 #: inc/cartridgeitem.class.php:193 inc/cartridgeitem.class.php:294
-#: inc/change_item.class.php:173 inc/commonitiltask.class.php:1547
+#: inc/change_item.class.php:173 inc/commonitiltask.class.php:1548
 #: inc/computer.class.php:550 inc/computer.class.php:736
 #: inc/computer_item.class.php:446 inc/consumableitem.class.php:153
 #: inc/consumableitem.class.php:255 inc/contact.class.php:220
@@ -1820,7 +1821,7 @@ msgstr[0] "Telefon modeli"
 #: inc/location.class.php:262 inc/location.class.php:273
 #: inc/monitor.class.php:205 inc/monitor.class.php:395
 #: inc/networkequipment.class.php:285 inc/networkequipment.class.php:442
-#: inc/networkname.class.php:188 inc/networkport.class.php:995
+#: inc/networkname.class.php:188 inc/networkport.class.php:1019
 #: inc/notification.class.php:219 inc/notification.class.php:359
 #: inc/notificationtarget.class.php:1214
 #: inc/notificationtargetcontract.class.php:165
@@ -1842,7 +1843,7 @@ msgstr[0] "Telefon modeli"
 #: inc/projecttask.class.php:418 inc/projecttask.class.php:636
 #: inc/projecttask.class.php:750 inc/projecttask.class.php:1042
 #: inc/projecttask_ticket.class.php:311 inc/queuedmail.class.php:279
-#: inc/queuedmail.class.php:560 inc/reminder.class.php:1254
+#: inc/queuedmail.class.php:560 inc/reminder.class.php:1256
 #: inc/rssfeed.class.php:1082 inc/rulecollection.class.php:1175
 #: inc/ruledictionnarycomputertype.class.php:58
 #: inc/ruledictionnarycomputertype.class.php:71
@@ -2103,18 +2104,18 @@ msgstr[0] "İlişkilendirilmiş bileşenler"
 #: inc/commondbtm.class.php:3505 inc/commondropdown.class.php:434
 #: inc/commonitilcost.class.php:108 inc/commonitilobject.class.php:2695
 #: inc/commonitilobject.class.php:5107 inc/commontreedropdown.class.php:607
-#: inc/computerantivirus.class.php:137 inc/computer.class.php:728
-#: inc/computer_softwarelicense.class.php:86 inc/consumable.class.php:540
-#: inc/consumableitem.class.php:244 inc/contact.class.php:300
-#: inc/contract.class.php:582 inc/contractcost.class.php:141
-#: inc/contract_item.class.php:156 inc/crontask.class.php:1292
-#: inc/document.class.php:782 inc/entity.class.php:459 inc/event.class.php:324
+#: inc/computer.class.php:728 inc/computer_softwarelicense.class.php:86
+#: inc/consumable.class.php:540 inc/consumableitem.class.php:244
+#: inc/contact.class.php:300 inc/contract.class.php:582
+#: inc/contractcost.class.php:141 inc/contract_item.class.php:156
+#: inc/crontask.class.php:1292 inc/document.class.php:782
+#: inc/entity.class.php:459 inc/event.class.php:324
 #: inc/fieldunicity.class.php:324 inc/group_user.class.php:619
 #: inc/infocom.class.php:1468 inc/infocom.class.php:1596
 #: inc/knowbaseitem.class.php:1559 inc/link.class.php:212
 #: inc/log.class.php:287 inc/monitor.class.php:387
 #: inc/networkequipment.class.php:434 inc/networkname.class.php:194
-#: inc/networkport.class.php:962 inc/networkport.class.php:1001
+#: inc/networkport.class.php:986 inc/networkport.class.php:1025
 #: inc/notificationtargetchange.class.php:365
 #: inc/notificationtargetchange.class.php:370
 #: inc/notificationtargetcommonitilobject.class.php:1045
@@ -2196,7 +2197,7 @@ msgstr "Seri numarası"
 msgid "Inventory number"
 msgstr "Stok numarası"
 
-#: front/find_num.php:103 inc/computerantivirus.class.php:280
+#: front/find_num.php:103 inc/computerantivirus.class.php:211
 #: inc/computer.class.php:66 inc/computerdisk.class.php:167
 #: inc/computer_softwarelicense.class.php:98
 #: inc/computervirtualmachine.class.php:148
@@ -2235,7 +2236,7 @@ msgstr "%s bir gruba bir kullanıcı ekledi"
 #: front/helpdesk.faq.php:53 front/helpdesk.faq.php:57
 #: front/helpdesk.faq.php:59 front/knowbaseitem.form.php:143
 #: front/knowbaseitem.form.php:145 front/knowbaseitem.form.php:149
-#: front/knowbaseitem.form.php:152 inc/html.class.php:2073
+#: front/knowbaseitem.form.php:152 inc/html.class.php:2120
 #: inc/itilcategory.class.php:230 inc/knowbaseitem.class.php:85
 #: inc/profile.class.php:740
 msgid "FAQ"
@@ -2252,10 +2253,10 @@ msgstr "Kimlik Doğrulama"
 msgid "New ticket"
 msgstr "Yeni çağrı"
 
-#: front/helpdesk.public.php:101 inc/html.class.php:1454
-#: inc/html.class.php:1606 inc/html.class.php:1607 inc/html.class.php:1901
-#: inc/html.class.php:1975 inc/html.class.php:2082 inc/html.class.php:2143
-#: inc/html.class.php:2144
+#: front/helpdesk.public.php:101 inc/html.class.php:1501
+#: inc/html.class.php:1653 inc/html.class.php:1654 inc/html.class.php:1948
+#: inc/html.class.php:2022 inc/html.class.php:2129 inc/html.class.php:2190
+#: inc/html.class.php:2191
 msgid "Home"
 msgstr "Anasayfa"
 
@@ -2304,7 +2305,7 @@ msgstr "LDAP dizinine bağlanılamadı"
 #: front/ldap.group.import.php:78 front/rule.backup.php:82
 #: front/rule.common.php:105 front/tracking.injector.php:87
 #: front/transfer.action.php:54 front/transfer.action.php:61
-#: inc/html.class.php:773 inc/html.class.php:775 inc/stat.class.php:410
+#: inc/html.class.php:820 inc/html.class.php:822 inc/stat.class.php:410
 #: inc/user.class.php:3923 inc/user.class.php:3972 install/install.php:263
 #: install/install.php:353
 msgid "Back"
@@ -2402,7 +2403,7 @@ msgid "%s sets unitary management"
 msgstr "%s bölünmez yönetimi ayarladı"
 
 #. TRANS: %s is the user login
-#: front/networkname.form.php:48 front/networkport.form.php:67
+#: front/networkname.form.php:48 front/networkport.form.php:65
 #, php-format
 msgid "%s adds an item"
 msgstr "%s bir öge ekledi"
@@ -2414,7 +2415,7 @@ msgid "%s associates a network name to an item"
 msgstr "%s bir ögeye bir ağ adı verebilir"
 
 #. TRANS: %s is the user login
-#: front/networkport.form.php:95
+#: front/networkport.form.php:91
 #, php-format
 msgid "%s adds several network ports"
 msgstr "%s birkaç ağ kapısı ekledi"
@@ -2437,12 +2438,12 @@ msgstr "Ağ kapısı kullanılamıyor..."
 msgid "List of available tags"
 msgstr "Varolan etiketlerin listesi"
 
-#: front/planning.php:126 inc/commonitiltask.class.php:1387
-#: inc/commonitiltask.class.php:1553 inc/event.class.php:145
+#: front/planning.php:126 inc/commonitiltask.class.php:1388
+#: inc/commonitiltask.class.php:1554 inc/event.class.php:145
 #: inc/event.class.php:153 inc/planning.class.php:78
 #: inc/profile.class.php:1083 inc/profile.class.php:1939
 #: inc/project.class.php:920 inc/projecttask.class.php:441
-#: inc/reminder.class.php:439 inc/reminder.class.php:1171
+#: inc/reminder.class.php:439 inc/reminder.class.php:1173
 #: inc/reservationitem.class.php:176
 msgid "Planning"
 msgstr "Planlama"
@@ -2497,12 +2498,12 @@ msgstr "Sözleşmeli donanım listesi"
 #: inc/commondropdown.class.php:235 inc/commondropdown.class.php:428
 #: inc/commonitilcost.class.php:340 inc/commonitilcost.class.php:488
 #: inc/commontreedropdown.class.php:405 inc/commontreedropdown.class.php:430
-#: inc/commontreedropdown.class.php:613 inc/computerantivirus.class.php:131
-#: inc/computerantivirus.class.php:297 inc/computerantivirus.class.php:386
-#: inc/computer.class.php:177 inc/computer.class.php:528
-#: inc/computer.class.php:722 inc/computerdisk.class.php:184
-#: inc/computerdisk.class.php:269 inc/computer_item.class.php:447
-#: inc/computer_item.class.php:592 inc/computer_softwarelicense.class.php:493
+#: inc/commontreedropdown.class.php:613 inc/computerantivirus.class.php:228
+#: inc/computerantivirus.class.php:313 inc/computer.class.php:177
+#: inc/computer.class.php:528 inc/computer.class.php:722
+#: inc/computerdisk.class.php:184 inc/computerdisk.class.php:269
+#: inc/computer_item.class.php:447 inc/computer_item.class.php:592
+#: inc/computer_softwarelicense.class.php:493
 #: inc/computer_softwareversion.class.php:325
 #: inc/computer_softwareversion.class.php:799
 #: inc/computer_softwareversion.class.php:914
@@ -2533,8 +2534,8 @@ msgstr "Sözleşmeli donanım listesi"
 #: inc/netpoint.class.php:342 inc/networkalias.class.php:129
 #: inc/networkalias.class.php:309 inc/networkequipment.class.php:263
 #: inc/networkequipment.class.php:428 inc/networkname.class.php:129
-#: inc/networkport.class.php:614 inc/networkport.class.php:853
-#: inc/networkport.class.php:955 inc/networkport_vlan.class.php:175
+#: inc/networkport.class.php:638 inc/networkport.class.php:877
+#: inc/networkport.class.php:979 inc/networkport_vlan.class.php:175
 #: inc/notification.class.php:205 inc/notification.class.php:334
 #: inc/notificationtarget.class.php:1211
 #: inc/notificationtargetcommonitilobject.class.php:1091
@@ -2643,7 +2644,7 @@ msgstr[0] "Sözleşme tipi"
 #: inc/dropdown.class.php:406
 #: inc/notificationtargetcommonitilobject.class.php:1118
 #: inc/notificationtargetplanningrecall.class.php:192
-#: inc/notificationtargetreservation.class.php:170 inc/planning.class.php:1512
+#: inc/notificationtargetreservation.class.php:170 inc/planning.class.php:1554
 #: inc/reservation.class.php:695 inc/reservation.class.php:1087
 #: inc/reservation.class.php:1135 inc/reservation.class.php:1203
 #: inc/reservation.class.php:1266 inc/reservationitem.class.php:391
@@ -2817,8 +2818,8 @@ msgid "Blacklist"
 msgid_plural "Blacklists"
 msgstr[0] "Kara liste"
 
-#: front/search.php:41 inc/entity.class.php:873 inc/html.class.php:1520
-#: inc/html.class.php:1679 inc/html.class.php:1683
+#: front/search.php:41 inc/entity.class.php:873 inc/html.class.php:1567
+#: inc/html.class.php:1726 inc/html.class.php:1730
 msgid "Search"
 msgstr "Arama"
 
@@ -2887,7 +2888,7 @@ msgid ""
 "using the above configuration."
 msgstr "Bildirimler ayarlanamadı: lütfen yukarıdaki ayarları kullanarak e-posta izlemeyi yapılandırın."
 
-#: front/setup.templates.php:63 inc/html.class.php:1698
+#: front/setup.templates.php:63 inc/html.class.php:1745
 msgid "Manage templates..."
 msgstr "Kalıp yönetimi..."
 
@@ -3072,7 +3073,7 @@ msgstr[0] "Sağlayıcı"
 #: inc/authldap.class.php:3086 inc/commondbtm.class.php:2916
 #: inc/commonitilactor.class.php:180 inc/commonitilactor.class.php:260
 #: inc/commonitilobject.class.php:3110 inc/commonitilobject.class.php:3271
-#: inc/commonitiltask.class.php:1339 inc/commonitilvalidation.class.php:622
+#: inc/commonitiltask.class.php:1340 inc/commonitilvalidation.class.php:622
 #: inc/commonitilvalidation.class.php:1234 inc/computer.class.php:609
 #: inc/computer.class.php:822 inc/computer_softwarelicense.class.php:500
 #: inc/computer_softwareversion.class.php:332 inc/config.class.php:514
@@ -3090,13 +3091,13 @@ msgstr[0] "Sağlayıcı"
 #: inc/notificationtargetticket.class.php:735
 #: inc/notificationtargetuser.class.php:55 inc/peripheral.class.php:255
 #: inc/peripheral.class.php:399 inc/phone.class.php:254
-#: inc/phone.class.php:434 inc/planning.class.php:1231
-#: inc/planning.class.php:1267 inc/printer.class.php:357
+#: inc/phone.class.php:434 inc/planning.class.php:1236
+#: inc/planning.class.php:1278 inc/printer.class.php:357
 #: inc/printer.class.php:552 inc/profile.class.php:1317
 #: inc/profile.class.php:1853 inc/profile_user.class.php:299
 #: inc/profile_user.class.php:339 inc/profile_user.class.php:487
 #: inc/profile_user.class.php:870 inc/project.class.php:905
-#: inc/reminder.class.php:1269 inc/reservationitem.class.php:203
+#: inc/reminder.class.php:1271 inc/reservationitem.class.php:203
 #: inc/rssfeed.class.php:1097 inc/rulecollection.class.php:810
 #: inc/rulemailcollector.class.php:137 inc/ruleticket.class.php:579
 #: inc/search.class.php:5331 inc/software.class.php:291
@@ -3112,8 +3113,8 @@ msgstr[0] "Kullanıcı"
 #: inc/auth.class.php:1351 inc/authldap.class.php:743
 #: inc/authldap.class.php:899 inc/authldap.class.php:2785
 #: inc/change.class.php:727 inc/commonitilobject.class.php:2777
-#: inc/commonitilobject.class.php:5366 inc/commonitiltask.class.php:1290
-#: inc/commonitiltask.class.php:1577
+#: inc/commonitilobject.class.php:5366 inc/commonitiltask.class.php:1291
+#: inc/commonitiltask.class.php:1578
 #: inc/computer_softwareversion.class.php:755 inc/db.function.php:1314
 #: inc/knowbaseitem.class.php:817 inc/knowbaseitem.class.php:962
 #: inc/knowbaseitem.class.php:1262 inc/knowbaseitem.class.php:1324
@@ -3133,7 +3134,7 @@ msgstr "Kategori"
 #: front/stat.tracking.php:83 front/stat.tracking.php:110
 #: inc/authldap.class.php:1680 inc/authldap.class.php:3087
 #: inc/commondbtm.class.php:2925 inc/commonitilobject.class.php:3128
-#: inc/commonitilobject.class.php:3274 inc/commonitiltask.class.php:1370
+#: inc/commonitilobject.class.php:3274 inc/commonitiltask.class.php:1371
 #: inc/commonitilvalidation.class.php:623
 #: inc/commonitilvalidation.class.php:1235 inc/computer.class.php:621
 #: inc/computer.class.php:828 inc/computer_softwarelicense.class.php:499
@@ -3148,11 +3149,11 @@ msgstr "Kategori"
 #: inc/notificationtargetproject.class.php:618
 #: inc/notificationtargetticket.class.php:736 inc/peripheral.class.php:273
 #: inc/peripheral.class.php:405 inc/phone.class.php:272
-#: inc/phone.class.php:440 inc/planning.class.php:1233
-#: inc/planning.class.php:1299 inc/planning.class.php:1376
+#: inc/phone.class.php:440 inc/planning.class.php:1240
+#: inc/planning.class.php:1324 inc/planning.class.php:1417
 #: inc/printer.class.php:377 inc/printer.class.php:558
 #: inc/profile.class.php:1324 inc/profile.class.php:1862
-#: inc/project.class.php:912 inc/reminder.class.php:1285
+#: inc/project.class.php:912 inc/reminder.class.php:1287
 #: inc/reservationitem.class.php:210 inc/rssfeed.class.php:1114
 #: inc/rulemailcollector.class.php:138 inc/ruleticket.class.php:585
 #: inc/search.class.php:5345 inc/software.class.php:299
@@ -3165,7 +3166,7 @@ msgstr[0] "Grup"
 
 #: front/stat.graph.php:183 front/stat.tracking.php:92
 #: inc/change.class.php:743 inc/commonitilobject.class.php:2719
-#: inc/commonitilobject.class.php:5360 inc/commonitiltask.class.php:1045
+#: inc/commonitilobject.class.php:5360 inc/commonitiltask.class.php:1046
 #: inc/notificationtargetcommonitilobject.class.php:1055
 #: inc/notificationtargetproject.class.php:572 inc/problem.class.php:1154
 #: inc/project.class.php:413 inc/project.class.php:555
@@ -3228,8 +3229,8 @@ msgstr[0] "İstek kaynağı"
 #: inc/commonglpi.class.php:834 inc/commonglpi.class.php:835
 #: inc/commonglpi.class.php:846 inc/commonglpi.class.php:1028
 #: inc/commonglpi.class.php:1029 inc/commonglpi.class.php:1032
-#: inc/html.class.php:3990 inc/html.class.php:3991 inc/html.class.php:4149
-#: inc/html.class.php:4150 inc/reservation.class.php:474
+#: inc/html.class.php:4037 inc/html.class.php:4038 inc/html.class.php:4196
+#: inc/html.class.php:4197 inc/reservation.class.php:474
 #: inc/reservation.class.php:475
 msgid "Previous"
 msgstr "Önceki"
@@ -3238,8 +3239,8 @@ msgstr "Önceki"
 #: inc/commonglpi.class.php:887 inc/commonglpi.class.php:888
 #: inc/commonglpi.class.php:899 inc/commonglpi.class.php:1041
 #: inc/commonglpi.class.php:1042 inc/commonglpi.class.php:1045
-#: inc/html.class.php:4011 inc/html.class.php:4012 inc/html.class.php:4200
-#: inc/html.class.php:4201 inc/reservation.class.php:479
+#: inc/html.class.php:4058 inc/html.class.php:4059 inc/html.class.php:4247
+#: inc/html.class.php:4248 inc/reservation.class.php:479
 #: inc/reservation.class.php:480
 msgid "Next"
 msgstr "Sonraki"
@@ -3301,7 +3302,7 @@ msgid_plural "Requesters"
 msgstr[0] "İsteyen"
 
 #: front/stat.tracking.php:82 inc/commonitilobject.class.php:2922
-#: inc/commonitiltask.class.php:662 inc/commonitiltask.class.php:1549
+#: inc/commonitiltask.class.php:662 inc/commonitiltask.class.php:1550
 #: inc/knowbaseitem.class.php:678 inc/knowbaseitem.class.php:849
 #: inc/knowbaseitem.class.php:1322 inc/notepad.class.php:192
 #: inc/notificationtargetcommonitilobject.class.php:453
@@ -3333,17 +3334,16 @@ msgstr "Konum ağacı"
 #: inc/commondevice.class.php:214 inc/commondropdown.class.php:424
 #: inc/commonitilcost.class.php:97 inc/commonitilobject.class.php:2673
 #: inc/commonitiltask.class.php:556 inc/commontreedropdown.class.php:597
-#: inc/computerantivirus.class.php:127 inc/computer.class.php:718
-#: inc/computer_softwarelicense.class.php:82 inc/consumableitem.class.php:234
-#: inc/contact.class.php:285 inc/contract.class.php:572
-#: inc/contractcost.class.php:130 inc/crontask.class.php:1282
-#: inc/document.class.php:772 inc/entity.class.php:449
-#: inc/group_user.class.php:615 inc/infocom.class.php:1464
-#: inc/knowbaseitem.class.php:1555 inc/link.class.php:202
-#: inc/mailcollector.class.php:344 inc/monitor.class.php:377
-#: inc/networkequipment.class.php:424 inc/networkport.class.php:431
-#: inc/networkport.class.php:567 inc/networkport.class.php:951
-#: inc/networkportethernet.class.php:186
+#: inc/computer.class.php:718 inc/computer_softwarelicense.class.php:82
+#: inc/consumableitem.class.php:234 inc/contact.class.php:285
+#: inc/contract.class.php:572 inc/contractcost.class.php:130
+#: inc/crontask.class.php:1282 inc/document.class.php:772
+#: inc/entity.class.php:449 inc/group_user.class.php:615
+#: inc/infocom.class.php:1464 inc/knowbaseitem.class.php:1555
+#: inc/link.class.php:202 inc/mailcollector.class.php:344
+#: inc/monitor.class.php:377 inc/networkequipment.class.php:424
+#: inc/networkport.class.php:455 inc/networkport.class.php:591
+#: inc/networkport.class.php:975 inc/networkportethernet.class.php:186
 #: inc/networkportfiberchannel.class.php:183 inc/networkportwifi.class.php:137
 #: inc/notification.class.php:330 inc/notificationtemplate.class.php:147
 #: inc/notificationtemplatetranslation.class.php:281
@@ -3437,11 +3437,11 @@ msgstr "%s çağrılar arasındaki bağlantıyı sildi"
 msgid "Your ticket has been registered, its treatment is in progress."
 msgstr "Çağrınız kaydedildi. Üzerinde çalışılıyor."
 
-#: front/tracking.injector.php:76 inc/config.class.php:2143
-#: inc/config.class.php:2163 inc/html.class.php:5614
+#: front/tracking.injector.php:76 inc/config.class.php:2150
+#: inc/config.class.php:2170 inc/html.class.php:5661
 #: inc/itilcategory.class.php:326 inc/itilcategory.class.php:335
-#: inc/toolbox.class.php:1105 inc/toolbox.class.php:1139
-#: inc/toolbox.class.php:1140
+#: inc/toolbox.class.php:1120 inc/toolbox.class.php:1154
+#: inc/toolbox.class.php:1155
 msgid "OK"
 msgstr "Tamam"
 
@@ -3522,10 +3522,10 @@ msgstr "Her hafta"
 msgid "Each month"
 msgstr "Her Ay"
 
-#: inc/alert.class.php:156 inc/computerantivirus.class.php:288
+#: inc/alert.class.php:156 inc/computerantivirus.class.php:219
 #: inc/computerdisk.class.php:175 inc/computervirtualmachine.class.php:156
 #: inc/config.class.php:369 inc/config.class.php:384 inc/config.class.php:1023
-#: inc/config.class.php:1890 inc/dropdown.class.php:684
+#: inc/config.class.php:1897 inc/dropdown.class.php:684
 #: inc/dropdown.class.php:709 inc/entity.class.php:1610
 #: inc/entity.class.php:1656 inc/entity.class.php:1688
 #: inc/entity.class.php:2243 inc/entity.class.php:2329
@@ -3566,44 +3566,44 @@ msgstr "initSession kaynağının kimlik doğrulama bilgileri ile kullanımı de
 msgid "parameter user_token seems invalid"
 msgstr "user_token parametresi geçersiz görünüyor"
 
-#: inc/api.class.php:768 inc/api.class.php:1968 inc/html.class.php:537
+#: inc/api.class.php:861 inc/api.class.php:2086 inc/html.class.php:537
 msgid "You don't have permission to perform this action."
 msgstr "Bu işlemi yapma izniniz yok."
 
-#: inc/api.class.php:848
+#: inc/api.class.php:941
 msgid "parent itemtype not found or not an instance of CommonDBTM"
 msgstr "üst öge tipi bulunamadı ya da CommonDBTM kopyası değil"
 
-#: inc/api.class.php:1593
+#: inc/api.class.php:1711
 msgid "missing parameter app_token"
 msgstr "app_token parametresi eksik"
 
-#: inc/api.class.php:1743
+#: inc/api.class.php:1861
 msgid "API Documentation"
 msgstr "API Belgeleri"
 
-#: inc/api.class.php:1923 inc/html.class.php:525 inc/html.class.php:3924
+#: inc/api.class.php:2041 inc/html.class.php:525 inc/html.class.php:3971
 #: inc/profile_user.class.php:427
 msgid "Item not found"
 msgstr "Öge bulunamadı"
 
-#: inc/api.class.php:1938
+#: inc/api.class.php:2056
 msgid "input parameter must be an array of objects"
 msgstr "giriş parametresi bir nesne dizisi olmalıdır"
 
-#: inc/api.class.php:1953
+#: inc/api.class.php:2071
 msgid "Method Not Allowed"
 msgstr "Yönteme İzin Verilmiyor"
 
-#: inc/api.class.php:1982
+#: inc/api.class.php:2100
 msgid "session_token seems invalid"
 msgstr "session_token parametresi geçersiz görünüyor"
 
-#: inc/api.class.php:1997
+#: inc/api.class.php:2115
 msgid "parameter session_token is missing or empty"
 msgstr "session_token parametresi eksik ya da boş"
 
-#: inc/api.class.php:2032
+#: inc/api.class.php:2150
 #, php-format
 msgid "view documentation in your browser at %s"
 msgstr "%s adresindeki belgeleri web tarayıcınızda bakın"
@@ -3616,22 +3616,22 @@ msgstr[0] "API istemcisi"
 #: inc/apiclient.class.php:97 inc/apiclient.class.php:164
 #: inc/authldap.class.php:354 inc/authldap.class.php:983
 #: inc/authmail.class.php:127 inc/authmail.class.php:178
-#: inc/computerantivirus.class.php:150 inc/computerantivirus.class.php:212
-#: inc/computerantivirus.class.php:301 inc/computerantivirus.class.php:393
-#: inc/fieldunicity.class.php:76 inc/fieldunicity.class.php:364
-#: inc/group_user.class.php:499 inc/group_user.class.php:540
-#: inc/mailcollector.class.php:262 inc/mailcollector.class.php:354
-#: inc/notification.class.php:214 inc/notification.class.php:366
-#: inc/notificationtarget.class.php:1213 inc/requesttype.class.php:54
-#: inc/requesttype.class.php:108 inc/reservationitem.class.php:156
-#: inc/rssfeed.class.php:442 inc/rssfeed.class.php:685 inc/rule.class.php:736
-#: inc/rule.class.php:866 inc/rule.class.php:2789
-#: inc/rulecollection.class.php:486 inc/rulecollection.class.php:517
-#: inc/ruleright.class.php:332 inc/slalevel.class.php:145
-#: inc/slalevel.class.php:178 inc/slalevel.class.php:294
-#: inc/taskcategory.class.php:57 inc/taskcategory.class.php:70
-#: inc/ticketrecurrent.class.php:140 inc/ticketrecurrent.class.php:244
-#: inc/user.class.php:1924 inc/user.class.php:2594
+#: inc/computerantivirus.class.php:143 inc/computerantivirus.class.php:232
+#: inc/computerantivirus.class.php:320 inc/fieldunicity.class.php:76
+#: inc/fieldunicity.class.php:364 inc/group_user.class.php:499
+#: inc/group_user.class.php:540 inc/mailcollector.class.php:262
+#: inc/mailcollector.class.php:354 inc/notification.class.php:214
+#: inc/notification.class.php:366 inc/notificationtarget.class.php:1213
+#: inc/requesttype.class.php:54 inc/requesttype.class.php:108
+#: inc/reservationitem.class.php:156 inc/rssfeed.class.php:442
+#: inc/rssfeed.class.php:685 inc/rule.class.php:736 inc/rule.class.php:866
+#: inc/rule.class.php:2789 inc/rulecollection.class.php:486
+#: inc/rulecollection.class.php:517 inc/ruleright.class.php:332
+#: inc/slalevel.class.php:145 inc/slalevel.class.php:178
+#: inc/slalevel.class.php:294 inc/taskcategory.class.php:57
+#: inc/taskcategory.class.php:70 inc/ticketrecurrent.class.php:140
+#: inc/ticketrecurrent.class.php:244 inc/user.class.php:1924
+#: inc/user.class.php:2594
 msgid "Active"
 msgstr "Etkin"
 
@@ -3652,20 +3652,20 @@ msgstr "IPv4 adres aralığı"
 #: inc/calendarsegment.class.php:350 inc/calendarsegment.class.php:378
 #: inc/contract.class.php:294 inc/contract.class.php:309
 #: inc/contract.class.php:327 inc/crontask.class.php:1141
-#: inc/dbmysql.class.php:577 inc/holiday.class.php:59 inc/holiday.class.php:81
-#: inc/html.class.php:3987 inc/html.class.php:3988 inc/html.class.php:4144
-#: inc/html.class.php:4145 inc/planning.class.php:345
+#: inc/dbmysql.class.php:582 inc/holiday.class.php:59 inc/holiday.class.php:81
+#: inc/html.class.php:4034 inc/html.class.php:4035 inc/html.class.php:4191
+#: inc/html.class.php:4192 inc/planning.class.php:345
 msgid "Start"
 msgstr "Başlangıç"
 
 #: inc/apiclient.class.php:114 inc/calendar_holiday.class.php:138
 #: inc/calendarsegment.class.php:352 inc/calendarsegment.class.php:379
-#: inc/commonitiltask.class.php:1166 inc/contract.class.php:298
+#: inc/commonitiltask.class.php:1167 inc/contract.class.php:298
 #: inc/contract.class.php:314 inc/contract.class.php:331
 #: inc/contract.class.php:1410 inc/crontask.class.php:1151
-#: inc/dbmysql.class.php:602 inc/holiday.class.php:62 inc/holiday.class.php:86
-#: inc/html.class.php:4014 inc/html.class.php:4015 inc/html.class.php:4206
-#: inc/html.class.php:4207 inc/planning.class.php:350
+#: inc/dbmysql.class.php:607 inc/holiday.class.php:62 inc/holiday.class.php:86
+#: inc/html.class.php:4061 inc/html.class.php:4062 inc/html.class.php:4253
+#: inc/html.class.php:4254 inc/planning.class.php:350
 #: inc/reminder.class.php:726
 msgid "End"
 msgstr "Bitiş"
@@ -3823,7 +3823,7 @@ msgstr "Diğer"
 msgid "GLPI internal database"
 msgstr "GLPI iç veritabanı"
 
-#: inc/auth.class.php:942 inc/config.class.php:701 inc/config.class.php:2010
+#: inc/auth.class.php:942 inc/config.class.php:701 inc/config.class.php:2017
 msgid "API"
 msgstr "API"
 
@@ -3994,7 +3994,7 @@ msgstr "Ön ayar"
 msgid "Active Directory"
 msgstr "Active Directory"
 
-#: inc/authldap.class.php:338 inc/config.class.php:2004
+#: inc/authldap.class.php:338 inc/config.class.php:2011
 msgid "Default values"
 msgstr "Varsayılan değerler"
 
@@ -4003,10 +4003,9 @@ msgstr "Varsayılan değerler"
 #: inc/change.class.php:678 inc/commondevice.class.php:234
 #: inc/commondropdown.class.php:461 inc/commonitilobject.class.php:2771
 #: inc/commonitilobject.class.php:5354 inc/commontreedropdown.class.php:647
-#: inc/computerantivirus.class.php:168 inc/computer.class.php:834
-#: inc/contact.class.php:391 inc/contract.class.php:611
-#: inc/crontask.class.php:1368 inc/document.class.php:828
-#: inc/entity.class.php:529 inc/group.class.php:491
+#: inc/computer.class.php:834 inc/contact.class.php:391
+#: inc/contract.class.php:611 inc/crontask.class.php:1368
+#: inc/document.class.php:828 inc/entity.class.php:529 inc/group.class.php:491
 #: inc/knowbaseitem.class.php:1608 inc/link.class.php:223
 #: inc/mailcollector.class.php:381 inc/monitor.class.php:443
 #: inc/networkequipment.class.php:490 inc/notepad.class.php:202
@@ -4035,7 +4034,7 @@ msgstr "Varsayılan sunucu"
 
 #: inc/authldap.class.php:359 inc/authldap.class.php:831
 #: inc/authldapreplicate.class.php:104 inc/authmail.class.php:116
-#: inc/config.class.php:1675 inc/toolbox.class.php:2062
+#: inc/config.class.php:1675 inc/toolbox.class.php:2082
 msgid "Server"
 msgstr "Sunucu"
 
@@ -4061,7 +4060,7 @@ msgid "Password (for non-anonymous binds)"
 msgstr "Parola (anonim olmayan bağlantılar için)"
 
 #: inc/authldap.class.php:384 inc/config.class.php:541
-#: inc/config.class.php:1687 inc/html.class.php:3033 inc/html.class.php:3253
+#: inc/config.class.php:1687 inc/html.class.php:3080 inc/html.class.php:3300
 #: inc/mailcollector.class.php:275 inc/notificationmailsetting.class.php:215
 #: inc/user.class.php:1887 inc/user.class.php:2204 inc/user.class.php:2205
 msgid "Clear"
@@ -4219,13 +4218,12 @@ msgstr "Birimler için arama süzgeci"
 
 #: inc/authldap.class.php:946 inc/budget.class.php:216
 #: inc/commondevice.class.php:240 inc/commondropdown.class.php:469
-#: inc/commontreedropdown.class.php:655 inc/computerantivirus.class.php:174
-#: inc/computer.class.php:840 inc/contact.class.php:397
-#: inc/contract.class.php:617 inc/crontask.class.php:1374
-#: inc/document.class.php:834 inc/entity.class.php:535 inc/group.class.php:497
-#: inc/link.class.php:229 inc/monitor.class.php:449
-#: inc/networkequipment.class.php:496 inc/notepad.class.php:184
-#: inc/notificationtargetproject.class.php:566
+#: inc/commontreedropdown.class.php:655 inc/computer.class.php:840
+#: inc/contact.class.php:397 inc/contract.class.php:617
+#: inc/crontask.class.php:1374 inc/document.class.php:834
+#: inc/entity.class.php:535 inc/group.class.php:497 inc/link.class.php:229
+#: inc/monitor.class.php:449 inc/networkequipment.class.php:496
+#: inc/notepad.class.php:184 inc/notificationtargetproject.class.php:566
 #: inc/notificationtargetproject.class.php:587
 #: inc/notificationtargetprojecttask.class.php:467
 #: inc/notificationtargetprojecttask.class.php:488
@@ -4326,7 +4324,7 @@ msgid "To change"
 msgstr "Değiştirmek için"
 
 #: inc/authldap.class.php:2743 inc/entity.class.php:864
-#: inc/html.class.php:3657 inc/rulecollection.class.php:1207
+#: inc/html.class.php:3704 inc/rulecollection.class.php:1207
 msgid "Select the desired entity"
 msgstr "İstediğiniz birimi seçin"
 
@@ -4367,12 +4365,12 @@ msgstr "Tarihe göre süzme kullanılsın"
 msgid "View updated users"
 msgstr "Güncellenmiş kullanıcılara bakın"
 
-#: inc/authldap.class.php:3052 inc/networkport.class.php:846
+#: inc/authldap.class.php:3052 inc/networkport.class.php:870
 #: inc/software.class.php:310
 msgid "from"
 msgstr "başlangıç"
 
-#: inc/authldap.class.php:3059 inc/networkport.class.php:848
+#: inc/authldap.class.php:3059 inc/networkport.class.php:872
 msgid "to"
 msgstr "bitiş"
 
@@ -4386,7 +4384,7 @@ msgstr "LDAP dizin yansısı ekleyin"
 
 #. TRANS: for mail connection system
 #: inc/authmail.class.php:121 inc/mailcollector.class.php:359
-#: inc/toolbox.class.php:2164
+#: inc/toolbox.class.php:2184
 msgid "Connection string"
 msgstr "Bağlantı dizgesi"
 
@@ -4418,7 +4416,7 @@ msgid_plural "Update Sources"
 msgstr[0] "Güncelleme Kaynağı"
 
 #: inc/backup.class.php:77 inc/commondbtm.class.php:4409 inc/log.class.php:667
-#: inc/profile.class.php:2232 inc/reminder.class.php:1384
+#: inc/profile.class.php:2232 inc/reminder.class.php:1386
 #: inc/report.class.php:454 inc/rssfeed.class.php:1214 inc/stat.class.php:1634
 msgid "Read"
 msgstr "Okuma"
@@ -4491,7 +4489,7 @@ msgstr "Önce"
 #: inc/commontreedropdown.class.php:531
 #: inc/computer_softwarelicense.class.php:468
 #: inc/computer_softwareversion.class.php:486 inc/group.class.php:390
-#: inc/networkport.class.php:1138 inc/rule.class.php:636
+#: inc/networkport.class.php:1162 inc/rule.class.php:636
 msgctxt "button"
 msgid "Move"
 msgstr "Taşıyın"
@@ -4512,8 +4510,8 @@ msgstr "%1$s - Kod %2$d"
 msgid "New item"
 msgstr "Yeni öge"
 
-#: inc/bookmark.class.php:331 inc/commonitiltask.class.php:1307
-#: inc/commonitiltask.class.php:1551
+#: inc/bookmark.class.php:331 inc/commonitiltask.class.php:1308
+#: inc/commonitiltask.class.php:1552
 #: inc/notificationtargetcommonitilobject.class.php:1111
 #: inc/notificationtargetplanningrecall.class.php:188
 #: inc/notificationtargetticket.class.php:739 inc/ticket.class.php:6485
@@ -4662,7 +4660,7 @@ msgstr[0] "İlişkili öge"
 #: inc/change_project.class.php:290 inc/change_ticket.class.php:318
 #: inc/change_ticket.class.php:416 inc/commondbtm.class.php:3533
 #: inc/commonitilcost.class.php:502 inc/commonitilvalidation.class.php:833
-#: inc/computerantivirus.class.php:402 inc/computerdisk.class.php:285
+#: inc/computerantivirus.class.php:329 inc/computerdisk.class.php:285
 #: inc/computer_softwarelicense.class.php:484
 #: inc/computer_softwareversion.class.php:467
 #: inc/computer_softwareversion.class.php:743
@@ -4674,7 +4672,7 @@ msgstr[0] "İlişkili öge"
 #: inc/ipaddress.class.php:275 inc/item_devices.class.php:392
 #: inc/item_devices.class.php:409 inc/item_project.class.php:251
 #: inc/netpoint.class.php:353 inc/networkalias.class.php:411
-#: inc/networkname.class.php:754 inc/networkport.class.php:532
+#: inc/networkname.class.php:754 inc/networkport.class.php:556
 #: inc/notificationtarget.class.php:1223
 #: inc/notificationtemplatetranslation.class.php:192
 #: inc/problem.class.php:1411 inc/problem_ticket.class.php:364
@@ -4841,7 +4839,7 @@ msgstr "Stoğa dönüş"
 msgid "Worn cartridges"
 msgstr "Yıpranmış kartuşlar"
 
-#: inc/cartridge.class.php:695 inc/commonitiltask.class.php:1161
+#: inc/cartridge.class.php:695 inc/commonitiltask.class.php:1162
 #: inc/commonitilvalidation.class.php:751
 #: inc/commonitilvalidation.class.php:806 inc/consumable.class.php:541
 #: inc/notificationtargetproject.class.php:577
@@ -5068,7 +5066,7 @@ msgstr "Uyumlu bir yazıcı modeli ekleyin"
 
 #: inc/cartridgeitem_printermodel.class.php:206
 #: inc/commonitilcost.class.php:563 inc/commonitilvalidation.class.php:878
-#: inc/computerantivirus.class.php:430 inc/computerdisk.class.php:317
+#: inc/computerantivirus.class.php:357 inc/computerdisk.class.php:317
 #: inc/computer_softwarelicense.class.php:318
 #: inc/computer_softwarelicense.class.php:407
 #: inc/computer_softwarelicense.class.php:573
@@ -5139,7 +5137,7 @@ msgstr "Geliştirme için önerilen eksiksiz SQL kipi tam olarak etkinleştirilm
 msgid "The following SQL tables are marked as crashed:"
 msgstr "Şu SQL tabloları hasarlı olarak işaretlenmiş:"
 
-#: inc/central.class.php:215 inc/central.class.php:216 inc/html.class.php:1759
+#: inc/central.class.php:215 inc/central.class.php:216 inc/html.class.php:1806
 msgid "SQL replica: read only"
 msgstr "SQL yansısı: salt okunur"
 
@@ -5313,9 +5311,9 @@ msgid "Time to resolve"
 msgstr "Çözülme süresi"
 
 #: inc/change.class.php:672 inc/change.class.php:681
-#: inc/commonitiltask.class.php:1336 inc/problem.class.php:1085
+#: inc/commonitiltask.class.php:1337 inc/problem.class.php:1085
 #: inc/problem.class.php:1094 inc/projecttask.class.php:1375
-#: inc/reminder.class.php:1033 inc/reservation.class.php:682
+#: inc/reminder.class.php:1035 inc/reservation.class.php:682
 #: inc/reservation.class.php:1089 inc/reservation.class.php:1137
 #: inc/reservation.class.php:1207 inc/reservation.class.php:1270
 #: inc/rssfeed.class.php:673 inc/ticket.class.php:3892
@@ -5338,7 +5336,7 @@ msgstr "Kapanış tarihi"
 #: inc/change.class.php:713 inc/commondbtm.class.php:2900
 #: inc/commonitilobject.class.php:2701 inc/commonitilobject.class.php:5352
 #: inc/commonitiltask.class.php:596 inc/commonitiltask.class.php:712
-#: inc/commonitiltask.class.php:1300 inc/commonitilvalidation.class.php:1024
+#: inc/commonitiltask.class.php:1301 inc/commonitilvalidation.class.php:1024
 #: inc/computer.class.php:537 inc/computer.class.php:746
 #: inc/computer_softwarelicense.class.php:498
 #: inc/computer_softwareversion.class.php:330
@@ -5401,8 +5399,8 @@ msgstr "Başlık"
 #: inc/change.class.php:772 inc/commonitilobject.class.php:2685
 #: inc/commonitilobject.class.php:4132 inc/commonitilobject.class.php:4195
 #: inc/commonitiltask.class.php:560 inc/commonitiltask.class.php:622
-#: inc/commonitiltask.class.php:1238 inc/commonitiltask.class.php:1548
-#: inc/commonitiltask.class.php:1580 inc/crontask.class.php:428
+#: inc/commonitiltask.class.php:1239 inc/commonitiltask.class.php:1549
+#: inc/commonitiltask.class.php:1581 inc/crontask.class.php:428
 #: inc/crontask.class.php:1072 inc/crontask.class.php:1130
 #: inc/crontask.class.php:1298 inc/notificationtargetchange.class.php:369
 #: inc/notificationtargetchange.class.php:374
@@ -5531,7 +5529,7 @@ msgstr "Çağrı ekleyin"
 msgid "Solve tickets"
 msgstr "Çağrıları çözün"
 
-#: inc/change_ticket.class.php:302 inc/commonitiltask.class.php:1537
+#: inc/change_ticket.class.php:302 inc/commonitiltask.class.php:1538
 #: inc/problem.class.php:403 inc/problem_ticket.class.php:350
 #: inc/ticket.class.php:2211
 msgid "Add a new task"
@@ -5548,10 +5546,10 @@ msgstr "Öge bir nesneye bağlanmamış"
 #: inc/commondbchild.class.php:733 inc/commondevice.class.php:352
 #: inc/commondevice.class.php:356 inc/commonitilobject.class.php:3655
 #: inc/commonitilobject.class.php:3764 inc/commonitilobject.class.php:3861
-#: inc/dropdown.class.php:211 inc/html.class.php:1667 inc/html.class.php:1671
-#: inc/html.class.php:2173 inc/html.class.php:2174 inc/infocom.class.php:705
-#: inc/netpoint.class.php:149 inc/reminder.class.php:1145
-#: inc/reminder.class.php:1146 inc/rssfeed.class.php:971
+#: inc/dropdown.class.php:211 inc/html.class.php:1714 inc/html.class.php:1718
+#: inc/html.class.php:2220 inc/html.class.php:2221 inc/infocom.class.php:705
+#: inc/netpoint.class.php:149 inc/reminder.class.php:1147
+#: inc/reminder.class.php:1148 inc/rssfeed.class.php:971
 #: inc/rssfeed.class.php:972 inc/ruleaction.class.php:389
 #: inc/ruleticket.class.php:83 inc/ruleticket.class.php:85
 #: inc/ticket.class.php:3377 inc/ticket.class.php:4332
@@ -5642,7 +5640,7 @@ msgstr "%s kalıbından oluşturuldu"
 #: inc/config.class.php:1307 inc/config.class.php:1692
 #: inc/entity.class.php:1135 inc/entity.class.php:1223
 #: inc/entity.class.php:1378 inc/entity.class.php:1738
-#: inc/entity.class.php:2050 inc/html.class.php:3926
+#: inc/entity.class.php:2050 inc/html.class.php:3973
 #: inc/infocom.class.php:1199 inc/item_devices.class.php:450
 #: inc/planningrecall.class.php:322 inc/profile.class.php:708
 #: inc/profile.class.php:758 inc/profile.class.php:827
@@ -5787,7 +5785,7 @@ msgid "Purge"
 msgstr "Temizle"
 
 #: inc/commondbtm.class.php:4417 inc/displaypreference.class.php:306
-#: inc/planning.class.php:1164
+#: inc/planning.class.php:1169
 msgid "Delete"
 msgstr "Sil"
 
@@ -5820,13 +5818,13 @@ msgid ""
 "If you confirm the deletion, all uses of this dropdown will be blanked."
 msgstr "Silmeyi onaylarsanız, bu açılan kutunun kullanıldığı yerler boş kalır."
 
-#: inc/commondropdown.class.php:559 inc/html.class.php:5700
+#: inc/commondropdown.class.php:559 inc/html.class.php:5747
 msgctxt "button"
 msgid "Confirm"
 msgstr "Onaylayın"
 
 #: inc/commondropdown.class.php:562 inc/commondropdown.class.php:592
-#: inc/html.class.php:3927 inc/html.class.php:5711
+#: inc/html.class.php:3974 inc/html.class.php:5758
 msgctxt "button"
 msgid "Cancel"
 msgstr "İptal"
@@ -5951,8 +5949,8 @@ msgstr "Başlangıç tarihi"
 
 #: inc/commonitilcost.class.php:129 inc/commonitilcost.class.php:196
 #: inc/commonitilcost.class.php:353 inc/commonitilcost.class.php:492
-#: inc/commonitiltask.class.php:696 inc/commonitiltask.class.php:1315
-#: inc/commonitiltask.class.php:1548 inc/commonitiltask.class.php:1587
+#: inc/commonitiltask.class.php:696 inc/commonitiltask.class.php:1316
+#: inc/commonitiltask.class.php:1549 inc/commonitiltask.class.php:1588
 #: inc/contract.class.php:392 inc/contract.class.php:604
 #: inc/crontask.class.php:1128
 #: inc/notificationtargetcommonitilobject.class.php:1099
@@ -6007,7 +6005,7 @@ msgid "Item duration"
 msgstr "Öge süresi"
 
 #: inc/commonitilcost.class.php:485 inc/document_item.class.php:492
-#: inc/entity.class.php:1719 inc/event.class.php:151 inc/html.class.php:2057
+#: inc/entity.class.php:1719 inc/event.class.php:151 inc/html.class.php:2104
 #: inc/notificationtargetchange.class.php:338
 #: inc/notificationtargetchange.class.php:353
 #: inc/notificationtargetchange.class.php:365
@@ -6309,7 +6307,7 @@ msgstr "İzleyen kullanıcı"
 msgid "Group in charge of the ticket"
 msgstr "Çağrıdan sorumlu grup"
 
-#: inc/commonitilobject.class.php:3636 inc/planning.class.php:1229
+#: inc/commonitilobject.class.php:3636 inc/planning.class.php:1234
 msgid "Actor"
 msgstr "Aktör"
 
@@ -6376,7 +6374,7 @@ msgid "To %s"
 msgstr "Kime: %s"
 
 #. TRANS: %s is user name
-#: inc/commonitilobject.class.php:5306 inc/commonitiltask.class.php:1020
+#: inc/commonitilobject.class.php:5306 inc/commonitiltask.class.php:1021
 #, php-format
 msgid "By %s"
 msgstr "%s tarafından"
@@ -6453,56 +6451,56 @@ msgid "Private task"
 msgstr "Özel görev"
 
 #. TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
-#: inc/commonitiltask.class.php:960
+#: inc/commonitiltask.class.php:961
 #, php-format
 msgid "%1$s: from %2$s to %3$s:"
 msgstr "%1$s: Başlangıç %2$s Bitiş %3$s:"
 
-#: inc/commonitiltask.class.php:1032 inc/reminder.class.php:1050
+#: inc/commonitiltask.class.php:1033 inc/reminder.class.php:1052
 #, php-format
 msgid "Recall on %s"
 msgstr "%s zamanında hatırlatılsın"
 
-#: inc/commonitiltask.class.php:1086 inc/html.class.php:550
-#: inc/html.class.php:5610 inc/planning.class.php:165
+#: inc/commonitiltask.class.php:1087 inc/html.class.php:569
+#: inc/html.class.php:5657 inc/planning.class.php:165
 #: inc/planning.class.php:185 inc/ticketrecurrent.class.php:88
 msgid "Information"
 msgid_plural "Information"
 msgstr[0] "Bilgiler"
 
-#: inc/commonitiltask.class.php:1092 inc/planning.class.php:168
+#: inc/commonitiltask.class.php:1093 inc/planning.class.php:168
 #: inc/planning.class.php:186
 msgid "To do"
 msgstr "Yapılacaklar"
 
-#: inc/commonitiltask.class.php:1095
+#: inc/commonitiltask.class.php:1096
 msgid "Planned"
 msgstr "Planlanan"
 
-#: inc/commonitiltask.class.php:1101 inc/planning.class.php:171
+#: inc/commonitiltask.class.php:1102 inc/planning.class.php:171
 #: inc/planning.class.php:187
 msgid "Done"
 msgstr "Yapılmışlar"
 
-#: inc/commonitiltask.class.php:1144 inc/commonitiltask.class.php:1170
+#: inc/commonitiltask.class.php:1145 inc/commonitiltask.class.php:1171
 msgid "By user"
 msgstr "Kullanıcıya göre"
 
-#: inc/commonitiltask.class.php:1147 inc/commonitiltask.class.php:1173
+#: inc/commonitiltask.class.php:1148 inc/commonitiltask.class.php:1174
 msgid "By group"
 msgstr "Gruba göre"
 
-#: inc/commonitiltask.class.php:1164 inc/reminder.class.php:720
+#: inc/commonitiltask.class.php:1165 inc/reminder.class.php:720
 msgid "Begin"
 msgstr "Başlangıç"
 
-#: inc/commonitiltask.class.php:1184 inc/commonitiltask.class.php:1466
-#: inc/planning.class.php:1561 inc/reminder.class.php:813
+#: inc/commonitiltask.class.php:1185 inc/commonitiltask.class.php:1467
+#: inc/planning.class.php:1603 inc/reminder.class.php:813
 msgctxt "Planning"
 msgid "Reminder"
 msgstr "Anımsatıcı"
 
-#: inc/commonitiltask.class.php:1248 inc/dropdown.class.php:767
+#: inc/commonitiltask.class.php:1249 inc/dropdown.class.php:767
 #: inc/tasktemplate.class.php:56
 msgid "Task template"
 msgid_plural "Task templates"
@@ -6510,18 +6508,18 @@ msgstr[0] "Görev kalıbı"
 
 #. TRANS: %1$s is the start time of a planned item, %2$s is the end
 #. TRANS: %1$s is the begin date, %2$s is the end date
-#: inc/commonitiltask.class.php:1419 inc/projecttask.class.php:1387
+#: inc/commonitiltask.class.php:1420 inc/projecttask.class.php:1387
 #: inc/reminder.class.php:754 inc/reminder.class.php:796
-#: inc/reminder.class.php:1004 inc/reminder.class.php:1172
+#: inc/reminder.class.php:1006 inc/reminder.class.php:1174
 #, php-format
 msgid "From %1$s to %2$s"
 msgstr "İlk: %1$s Son: %2$s"
 
-#: inc/commonitiltask.class.php:1452
+#: inc/commonitiltask.class.php:1453
 msgid "Plan this task"
 msgstr "Görevi planlayın"
 
-#: inc/commonitiltask.class.php:1542
+#: inc/commonitiltask.class.php:1543
 msgid "No task found."
 msgstr "Henüz bir görev yok."
 
@@ -6700,64 +6698,63 @@ msgstr "%s alt ögeleri"
 msgid "Father"
 msgstr "Baba"
 
-#: inc/computerantivirus.class.php:52 inc/computerantivirus.class.php:191
-#: inc/computerantivirus.class.php:195
+#: inc/computerantivirus.class.php:52 inc/computerantivirus.class.php:122
+#: inc/computerantivirus.class.php:126
 msgid "Antivirus"
 msgid_plural "Antiviruses"
 msgstr[0] "Antivirüsler"
 
-#: inc/computerantivirus.class.php:144 inc/computerantivirus.class.php:203
-#: inc/computerantivirus.class.php:317 inc/computerantivirus.class.php:391
+#: inc/computerantivirus.class.php:134 inc/computerantivirus.class.php:248
+#: inc/computerantivirus.class.php:318
 msgid "Antivirus version"
 msgstr "Antivirüs sürümü"
 
-#: inc/computerantivirus.class.php:156 inc/computerantivirus.class.php:311
-#: inc/computerantivirus.class.php:394
-msgid "Up to date"
+#: inc/computerantivirus.class.php:153
+msgid "Is up to date"
 msgstr "Güncel"
 
-#: inc/computerantivirus.class.php:162 inc/computerantivirus.class.php:231
-#: inc/computerantivirus.class.php:321 inc/computerantivirus.class.php:392
+#: inc/computerantivirus.class.php:162 inc/computerantivirus.class.php:252
+#: inc/computerantivirus.class.php:319
 msgid "Signature database version"
 msgstr "İmza veritabanının sürümü"
 
-#: inc/computerantivirus.class.php:180 inc/computerantivirus.class.php:239
-#: inc/computerantivirus.class.php:327 inc/computerantivirus.class.php:395
+#: inc/computerantivirus.class.php:170 inc/computerantivirus.class.php:258
+#: inc/computerantivirus.class.php:322
 #: inc/notificationtargetinfocom.class.php:98
 #: inc/notificationtargetsoftwarelicense.class.php:92
 msgid "Expiration date"
 msgstr "Sona erme tarihi"
 
-#: inc/computerantivirus.class.php:222
-msgid "Is up to date"
-msgstr "Güncel"
-
-#: inc/computerantivirus.class.php:283 inc/computerantivirus.class.php:388
+#: inc/computerantivirus.class.php:214 inc/computerantivirus.class.php:315
 #: inc/computerdisk.class.php:170 inc/computerdisk.class.php:271
 #: inc/computer_item.class.php:449 inc/computer_item.class.php:594
 #: inc/computer_softwareversion.class.php:803
 #: inc/computervirtualmachine.class.php:151
 #: inc/computervirtualmachine.class.php:338 inc/ipaddress.class.php:1024
 #: inc/item_devices.class.php:371 inc/networkname.class.php:497
-#: inc/networkport.class.php:435 inc/networkport.class.php:619
+#: inc/networkport.class.php:459 inc/networkport.class.php:643
 msgid "Automatic inventory"
 msgstr "Otomatik envanter"
 
-#: inc/computerantivirus.class.php:364
+#: inc/computerantivirus.class.php:242 inc/computerantivirus.class.php:321
+msgid "Up to date"
+msgstr "Güncel"
+
+#: inc/computerantivirus.class.php:295
 msgid "Add an antivirus"
 msgstr "Antivirüs ekle"
 
 #: inc/computer.class.php:80
 msgid "Operating System"
-msgstr ""
+msgstr "İşletim Sistemi"
 
 #: inc/computer.class.php:200
 msgid "Kernel version"
-msgstr ""
+msgstr "Çekirdek Sürümü"
 
 #: inc/computer.class.php:204
 msgid "Product ID"
-msgstr ""
+msgstr "Ürün Kodu"
 
 #: inc/computer.class.php:281 inc/computer_item.class.php:184
 msgid ""
@@ -6899,7 +6896,7 @@ msgstr[0] "Bellek tipi"
 #: inc/devicememory.class.php:58 inc/item_devicegraphiccard.class.php:58
 #: inc/item_deviceharddrive.class.php:59 inc/item_devicememory.class.php:60
 #: inc/networkequipment.class.php:386 inc/networkequipment.class.php:512
-#: inc/toolbox.class.php:1052 inc/toolbox.class.php:1202
+#: inc/toolbox.class.php:1067 inc/toolbox.class.php:1217
 msgid "Mio"
 msgstr "MB"
 
@@ -6922,8 +6919,8 @@ msgid_plural "Network interfaces"
 msgstr[0] "Ağ arayüzü"
 
 #: inc/computer.class.php:948 inc/item_devicenetworkcard.class.php:59
-#: inc/item_devicenetworkcard.class.php:60 inc/networkport.class.php:886
-#: inc/networkport.class.php:973 inc/report.class.php:374
+#: inc/item_devicenetworkcard.class.php:60 inc/networkport.class.php:910
+#: inc/networkport.class.php:997 inc/report.class.php:374
 #: inc/report.class.php:377 inc/ruleimportcomputer.class.php:95
 msgid "MAC address"
 msgstr "MAC adresi"
@@ -7093,7 +7090,7 @@ msgid "Affected computers"
 msgstr "Etkilenen bilgisayarlar"
 
 #: inc/computer_softwarelicense.class.php:671
-#: inc/computer_softwareversion.class.php:1164 inc/html.class.php:1714
+#: inc/computer_softwareversion.class.php:1164 inc/html.class.php:1761
 msgid "Summary"
 msgstr "Özet"
 
@@ -7159,7 +7156,7 @@ msgid "Maintenance mode activated. Backdoor using: %s"
 msgstr "Bakım kipi etkin. Kullanılan arka kapı: %s"
 
 #: inc/config.class.php:260 inc/config.class.php:1589
-#: inc/config.class.php:2003 inc/profile.class.php:1411
+#: inc/config.class.php:2010 inc/profile.class.php:1411
 #: inc/profile.class.php:1749
 msgid "General setup"
 msgstr "Genel ayarlar"
@@ -7261,8 +7258,8 @@ msgstr "Ögeler kilitlenirken kullanılacak profil"
 msgid "List of items to lock"
 msgstr "Kilitlenecek ögelerin listesi"
 
-#: inc/config.class.php:446 inc/config.class.php:2005 inc/entity.class.php:323
-#: inc/entity.class.php:771 inc/event.class.php:150 inc/html.class.php:1232
+#: inc/config.class.php:446 inc/config.class.php:2012 inc/entity.class.php:323
+#: inc/entity.class.php:771 inc/event.class.php:150 inc/html.class.php:1279
 #: inc/profile.class.php:101 inc/profile.class.php:821
 #: inc/profile.class.php:1530 inc/transfer.class.php:3302
 msgid "Assets"
@@ -7371,7 +7368,7 @@ msgid "GLPI server time zone"
 msgstr "GLPI sunucusunun saat dilimi"
 
 #: inc/config.class.php:629 inc/config.class.php:1610
-#: inc/config.class.php:2015 inc/dbconnection.class.php:52
+#: inc/config.class.php:2022 inc/dbconnection.class.php:52
 msgid "SQL replica"
 msgid_plural "SQL replicas"
 msgstr[0] "SQL yansısı"
@@ -7447,9 +7444,9 @@ msgid "Add API client"
 msgstr "API istemcisi ekle"
 
 #: inc/config.class.php:781 inc/config.class.php:1148
-#: inc/config.class.php:2006 inc/dropdown.class.php:762
+#: inc/config.class.php:2013 inc/dropdown.class.php:762
 #: inc/entity.class.php:321 inc/entity.class.php:720 inc/event.class.php:152
-#: inc/html.class.php:1237 inc/profile.class.php:97 inc/profile.class.php:102
+#: inc/html.class.php:1284 inc/profile.class.php:97 inc/profile.class.php:102
 #: inc/profile.class.php:660 inc/profile.class.php:985
 #: inc/profile.class.php:1907 inc/search.class.php:5376
 msgid "Assistance"
@@ -7503,7 +7500,7 @@ msgstr "Anonim izleme yapılabilsin (alıcı)"
 msgid "Matrix of calculus for priority"
 msgstr "Öncelik hesaplama matrisi"
 
-#: inc/config.class.php:956 inc/config.class.php:1993
+#: inc/config.class.php:956 inc/config.class.php:2000
 msgid "Personalization"
 msgstr "Kişiselleştirme"
 
@@ -7753,8 +7750,8 @@ msgstr "\"%s\" eklentisi yüklendi"
 #: inc/ipnetwork.class.php:150 inc/ipnetwork.class.php:153
 #: inc/ipnetwork.class.php:973 inc/knowbaseitem.class.php:1748
 #: inc/knowbaseitem.class.php:1805 inc/notepad.class.php:297
-#: inc/notificationtargetcontract.class.php:167 inc/reminder.class.php:1291
-#: inc/reminder.class.php:1346 inc/rssfeed.class.php:1120
+#: inc/notificationtargetcontract.class.php:167 inc/reminder.class.php:1293
+#: inc/reminder.class.php:1348 inc/rssfeed.class.php:1120
 #: inc/rssfeed.class.php:1175 inc/ruleticket.class.php:85
 #: inc/search.class.php:1664 inc/stat.class.php:1407
 #, php-format
@@ -7865,116 +7862,116 @@ msgstr "Yüklü sistem ve ayarları hakkında bilgiler"
 msgid "To copy/paste in your support request"
 msgstr "Destek çağrınızda kopyala/yapıştır için"
 
-#: inc/config.class.php:1888
+#: inc/config.class.php:1895
 msgid "Yes - Restrict to unit management for manual add"
 msgstr "Evet - Birim yönetimi yalnız el ile yapılabilsin"
 
-#: inc/config.class.php:1889
+#: inc/config.class.php:1896
 msgid "Yes - Restrict to global management for manual add"
 msgstr "Evet - Genel yönetim yalnız el ile yapılabilsin"
 
-#: inc/config.class.php:1998 inc/preference.class.php:48
+#: inc/config.class.php:2005 inc/preference.class.php:48
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: inc/config.class.php:2008 inc/event.class.php:143
+#: inc/config.class.php:2015 inc/event.class.php:143
 msgid "System"
 msgstr "Sistem"
 
-#: inc/config.class.php:2009
+#: inc/config.class.php:2016
 msgid "Performance"
 msgstr "Başarım"
 
-#: inc/config.class.php:2094
+#: inc/config.class.php:2101
 msgid "Checking write permissions for setting files"
 msgstr "Ayar dosyalarının yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2096
+#: inc/config.class.php:2103
 msgid "Checking write permissions for document files"
 msgstr "Belge dosyalarının yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2098
+#: inc/config.class.php:2105
 msgid "Checking write permissions for dump files"
 msgstr "Döküm dosyalarının yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2102
+#: inc/config.class.php:2109
 msgid "Checking write permissions for automatic actions files"
 msgstr "Otomatik işlem dosyalarının yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2104
+#: inc/config.class.php:2111
 msgid "Checking write permissions for graphic files"
 msgstr "Çizelge dosyalarının yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2106
+#: inc/config.class.php:2113
 msgid "Checking write permissions for lock files"
 msgstr "Kilit dosyalarının yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2108
+#: inc/config.class.php:2115
 msgid "Checking write permissions for plugins document files"
 msgstr "Uygulama eki dosyalarının yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2110
+#: inc/config.class.php:2117
 msgid "Checking write permissions for temporary files"
 msgstr "Geçici dosyaların yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2112
+#: inc/config.class.php:2119
 msgid "Checking write permissions for rss files"
 msgstr "RSS dosyalarının yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2114
+#: inc/config.class.php:2121
 msgid "Checking write permissions for upload files"
 msgstr "Yüklenen dosyaların yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2116
+#: inc/config.class.php:2123
 msgid "Checking write permissions for pictures files"
 msgstr "Görsel dosyalarının yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2124
+#: inc/config.class.php:2131
 msgid "The directory could not be created."
 msgstr "Klasör oluşturulamadı."
 
-#: inc/config.class.php:2125
+#: inc/config.class.php:2132
 msgid "The directory was created but could not be removed."
 msgstr "Klasör oluşturuldu ama kaldırılamadı."
 
-#: inc/config.class.php:2126 inc/config.class.php:2177
+#: inc/config.class.php:2133 inc/config.class.php:2184
 msgid "The file could not be created."
 msgstr "Dosya oluşturulamadı."
 
-#: inc/config.class.php:2127
+#: inc/config.class.php:2134
 msgid "The file was created but can't be deleted."
 msgstr "Dosya oluşturuldu ama silinemedi."
 
-#: inc/config.class.php:2132 inc/config.class.php:2137
-#: inc/config.class.php:2174 inc/config.class.php:2178
+#: inc/config.class.php:2139 inc/config.class.php:2144
+#: inc/config.class.php:2181 inc/config.class.php:2185
 #: inc/rssfeed.class.php:636
 #, php-format
 msgid "Check permissions to the directory: %s"
 msgstr "%s klasörünün izinleri denetleniyor"
 
-#: inc/config.class.php:2147 inc/config.class.php:2149
+#: inc/config.class.php:2154 inc/config.class.php:2156
 msgid "A file and a directory have be created and deleted - Perfect!"
 msgstr "Bir klasör ve dosya oluşturulup silinebildi - Mükemmel!"
 
-#: inc/config.class.php:2158
+#: inc/config.class.php:2165
 msgid "Checking write permissions for log files"
 msgstr "Günlük dosyalarının yazma izinleri denetleniyor"
 
-#: inc/config.class.php:2167 inc/config.class.php:2168
+#: inc/config.class.php:2174 inc/config.class.php:2175
 msgid "A file was created - Perfect!"
 msgstr "Bir dosya oluşturulabildi - Mükemmel!"
 
-#: inc/config.class.php:2190 inc/config.class.php:2207
-#: inc/config.class.php:2208 inc/config.class.php:2211
-#: inc/config.class.php:2212
+#: inc/config.class.php:2197 inc/config.class.php:2214
+#: inc/config.class.php:2215 inc/config.class.php:2218
+#: inc/config.class.php:2219
 msgid "Web access to files directory is protected"
 msgstr "Files klasörü web erişimine karşı korunuyor"
 
-#: inc/config.class.php:2196 inc/config.class.php:2200
+#: inc/config.class.php:2203 inc/config.class.php:2207
 msgid "Web access to the files directory, should not be allowed"
 msgstr "Files klasörü web erişimine karşı korunmalıdır"
 
-#: inc/config.class.php:2197 inc/config.class.php:2201
+#: inc/config.class.php:2204 inc/config.class.php:2208
 msgid "Check the .htaccess file and the web server configuration."
 msgstr ".htaccess dosyasını ve web sunucu ayarlarını denetleyin."
 
@@ -8531,7 +8528,7 @@ msgstr "En kısa süre"
 #: inc/crontask.class.php:974 inc/crontask.class.php:979
 #: inc/crontask.class.php:984 inc/crontask.class.php:989
 #: inc/crontask.class.php:1081 inc/crontask.class.php:1163
-#: inc/html.class.php:1807
+#: inc/html.class.php:1854
 #, php-format
 msgid "%s second"
 msgid_plural "%s seconds"
@@ -8746,12 +8743,12 @@ msgstr "Birincil ve ikincil arasındaki fark"
 msgid "%1$s - Error during the database query: %2$s - Error is %3$s"
 msgstr "%1$s - Veritabanı sorgulama hatası: %2$s - Hata: %3$s"
 
-#: inc/dbmysql.class.php:575
+#: inc/dbmysql.class.php:580
 msgid "Optimizing tables"
 msgstr "Tablolar iyileştiriliyor"
 
-#: inc/dbmysql.class.php:577 inc/dbmysql.class.php:590
-#: inc/dbmysql.class.php:602
+#: inc/dbmysql.class.php:582 inc/dbmysql.class.php:595
+#: inc/dbmysql.class.php:607
 msgid "optimize"
 msgstr "iyileştirin"
 
@@ -9027,7 +9024,7 @@ msgid "Number of documents"
 msgstr "Belge sayısı"
 
 #: inc/document.class.php:805 inc/document_item.class.php:780
-#: inc/html.class.php:5256 inc/notificationtemplatetranslation.class.php:339
+#: inc/html.class.php:5303 inc/notificationtemplatetranslation.class.php:339
 msgid "Tag"
 msgstr "Etiket"
 
@@ -9156,8 +9153,8 @@ msgid_plural "Document types"
 msgstr[0] "Belge tipi"
 
 #: inc/documenttype.class.php:158 inc/documenttype.class.php:159
-#: inc/html.class.php:1503 inc/html.class.php:1504 inc/html.class.php:1505
-#: inc/html.class.php:2023 inc/html.class.php:2024 inc/html.class.php:2025
+#: inc/html.class.php:1550 inc/html.class.php:1551 inc/html.class.php:1552
+#: inc/html.class.php:2070 inc/html.class.php:2071 inc/html.class.php:2072
 msgid "Help"
 msgstr "Yardım"
 
@@ -9254,14 +9251,14 @@ msgid "Peripheral model"
 msgid_plural "Peripheral models"
 msgstr[0] "Çevre birimi modeli"
 
-#: inc/dropdown.class.php:854 inc/event.class.php:155 inc/html.class.php:1241
+#: inc/dropdown.class.php:854 inc/event.class.php:155 inc/html.class.php:1288
 #: inc/infocom.class.php:150 inc/profile.class.php:104
 #: inc/profile.class.php:880 inc/profile.class.php:1622
 #: inc/transfer.class.php:3415
 msgid "Management"
 msgstr "Yönetim"
 
-#: inc/dropdown.class.php:861 inc/event.class.php:154 inc/html.class.php:1245
+#: inc/dropdown.class.php:861 inc/event.class.php:154 inc/html.class.php:1292
 #: inc/profile.class.php:99 inc/profile.class.php:105
 #: inc/profile.class.php:752 inc/profile.class.php:939
 #: inc/profile.class.php:1669
@@ -9279,7 +9276,7 @@ msgid "Update source"
 msgid_plural "Update sources"
 msgstr[0] "Güncelleme kaynağı"
 
-#: inc/dropdown.class.php:893 inc/networkport.class.php:880
+#: inc/dropdown.class.php:893 inc/networkport.class.php:904
 msgid "Networking"
 msgstr "Ağ"
 
@@ -9293,7 +9290,7 @@ msgstr[0] "Belenim"
 
 #: inc/dropdown.class.php:899 inc/netpoint.class.php:62
 #: inc/netpoint.class.php:274 inc/netpoint.class.php:288
-#: inc/netpoint.class.php:405 inc/networkport.class.php:985
+#: inc/netpoint.class.php:405 inc/networkport.class.php:1009
 #: inc/networkportethernet.class.php:141 inc/networkportethernet.class.php:365
 #: inc/networkportfiberchannel.class.php:139
 #: inc/networkportfiberchannel.class.php:331
@@ -9302,7 +9299,7 @@ msgid "Network outlet"
 msgid_plural "Network outlets"
 msgstr[0] "Ağ prizi"
 
-#: inc/dropdown.class.php:905 inc/networkport.class.php:921
+#: inc/dropdown.class.php:905 inc/networkport.class.php:945
 #: inc/networkportinstantiation.class.php:131 inc/vlan.class.php:53
 msgid "VLAN"
 msgstr "Sanal ağ"
@@ -9465,7 +9462,7 @@ msgid "All pages in CSV"
 msgstr "Tüm sayfalar CSV"
 
 #: inc/dropdown.class.php:2110 inc/dropdown.class.php:2111
-#: inc/planning.class.php:1183 inc/planning.class.php:1187
+#: inc/planning.class.php:1188 inc/planning.class.php:1192
 #: inc/rule.class.php:580 inc/rulecollection.class.php:807
 msgctxt "button"
 msgid "Export"
@@ -9782,7 +9779,7 @@ msgid "Reminders frequency for alarms on consumables"
 msgstr "Sarf malzemesi uyarılarının anımsatılma sıklığı"
 
 #: inc/entity.class.php:1701 inc/event.class.php:146 inc/event.class.php:159
-#: inc/html.class.php:2065 inc/profile.class.php:743
+#: inc/html.class.php:2112 inc/profile.class.php:743
 #: inc/profile.class.php:1682 inc/reservation.class.php:59
 #: inc/reservationitem.class.php:729 inc/transfer.class.php:3331
 #: install/update_0723_078.php:4828
@@ -9852,8 +9849,8 @@ msgstr[0] "Kural"
 msgid "Security"
 msgstr "Güvenlik"
 
-#: inc/event.class.php:163 inc/html.class.php:1249 inc/html.class.php:2096
-#: inc/html.class.php:2120 inc/plugin.class.php:64 inc/search.class.php:5442
+#: inc/event.class.php:163 inc/html.class.php:1296 inc/html.class.php:2143
+#: inc/html.class.php:2167 inc/plugin.class.php:64 inc/search.class.php:5442
 msgid "Plugin"
 msgid_plural "Plugins"
 msgstr[0] "Uygulama ekleri"
@@ -10108,231 +10105,235 @@ msgid "%1$s%2$s second"
 msgid_plural "%1$s%2$s seconds"
 msgstr[0] "%1$s%2$s saniye"
 
-#: inc/html.class.php:997
+#: inc/html.class.php:561 inc/rssfeed.class.php:448 inc/rssfeed.class.php:637
+msgid "Error"
+msgstr "Hata"
+
+#: inc/html.class.php:1044
 msgid "Progress"
 msgstr "İşlem"
 
-#: inc/html.class.php:1262 inc/html.class.php:1476 inc/html.class.php:1477
-#: inc/html.class.php:1478 inc/html.class.php:1997 inc/html.class.php:1998
-#: inc/html.class.php:1999
+#: inc/html.class.php:1309 inc/html.class.php:1523 inc/html.class.php:1524
+#: inc/html.class.php:1525 inc/html.class.php:2044 inc/html.class.php:2045
+#: inc/html.class.php:2046
 msgid "My settings"
 msgstr "Ayarlarım"
 
-#: inc/html.class.php:1468 inc/html.class.php:1469 inc/html.class.php:1470
-#: inc/html.class.php:1989 inc/html.class.php:1991 inc/html.class.php:1992
+#: inc/html.class.php:1515 inc/html.class.php:1516 inc/html.class.php:1517
+#: inc/html.class.php:2036 inc/html.class.php:2038 inc/html.class.php:2039
 msgid "Logout"
 msgstr "Oturumu kapatın"
 
-#: inc/html.class.php:1493 inc/html.class.php:1496 inc/html.class.php:1497
-#: inc/html.class.php:2013 inc/html.class.php:2016 inc/html.class.php:2017
+#: inc/html.class.php:1540 inc/html.class.php:1543 inc/html.class.php:1544
+#: inc/html.class.php:2060 inc/html.class.php:2063 inc/html.class.php:2064
 msgid "Load a bookmark"
 msgstr "Yer imi yükleyin"
 
-#: inc/html.class.php:1819 inc/toolbox.class.php:1390
-#: inc/toolbox.class.php:1394
+#: inc/html.class.php:1866 inc/toolbox.class.php:1405
+#: inc/toolbox.class.php:1409
 msgid "You will find it on the GLPI-PROJECT.org site."
 msgstr "GLPI-PROJECT.org sitesinde bulabilirsiniz."
 
-#: inc/html.class.php:1821 inc/toolbox.class.php:1388
-#: inc/toolbox.class.php:1392 inc/toolbox.class.php:1400
-#: inc/toolbox.class.php:1403
+#: inc/html.class.php:1868 inc/toolbox.class.php:1403
+#: inc/toolbox.class.php:1407 inc/toolbox.class.php:1415
+#: inc/toolbox.class.php:1418
 #, php-format
 msgid "A new version is available: %s."
 msgstr "Yeni bir sürüm yayınlanmış: %s."
 
-#: inc/html.class.php:2047 inc/profile.class.php:1911
+#: inc/html.class.php:2094 inc/profile.class.php:1911
 #: inc/ticket.class.php:5025
 msgid "Create a ticket"
 msgstr "Çağrı açın"
 
-#: inc/html.class.php:2121
+#: inc/html.class.php:2168
 msgid "Plugins"
 msgstr "Uygulama ekleri"
 
-#: inc/html.class.php:2164 inc/html.class.php:2165 inc/ticket.class.php:184
+#: inc/html.class.php:2211 inc/html.class.php:2212 inc/ticket.class.php:184
 #: inc/ticket.class.php:185 inc/ticket.class.php:2880
 #: inc/ticket.class.php:2881
 msgid "Ticket waiting for your approval"
 msgstr "Çağrı onayınızı bekliyor"
 
-#: inc/html.class.php:2463
+#: inc/html.class.php:2510
 msgid "Check all"
 msgstr "Tümünü seçin"
 
-#: inc/html.class.php:2467
+#: inc/html.class.php:2514
 msgid "Uncheck all"
 msgstr "Tümünü bırakın"
 
-#: inc/html.class.php:2537 inc/html.class.php:2541
+#: inc/html.class.php:2584 inc/html.class.php:2588
 msgid "Check all as"
 msgstr "Tümü şu şekilde seçilsin"
 
-#: inc/html.class.php:2901
+#: inc/html.class.php:2948
 msgid "Selection too large, massive action disabled."
 msgstr "Seçim çok büyük, toplu işlem devre dışı bırakıldı."
 
-#: inc/html.class.php:2903
+#: inc/html.class.php:2950
 msgid ""
 "To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
 " configuration."
 msgstr "Sınırı arttırmak için: php ayarlarından max_input_vars ya da suhosin.post.max_vars değerlerini değiştirin."
 
-#: inc/html.class.php:3439
+#: inc/html.class.php:3486
 msgid "Now"
 msgstr "Şimdi"
 
-#: inc/html.class.php:3441 inc/html.class.php:3444
+#: inc/html.class.php:3488 inc/html.class.php:3491
 #: inc/ticketfollowup.class.php:897
 msgid "Today"
 msgstr "Bugün"
 
-#: inc/html.class.php:3448
+#: inc/html.class.php:3495
 msgid "Specify a date"
 msgstr "Tarih belirtin"
 
-#: inc/html.class.php:3453 inc/slalevel.class.php:375
+#: inc/html.class.php:3500 inc/slalevel.class.php:375
 #, php-format
 msgid "- %d hour"
 msgid_plural "- %d hours"
 msgstr[0] "- %d saat"
 
-#: inc/html.class.php:3458 inc/slalevel.class.php:387
+#: inc/html.class.php:3505 inc/slalevel.class.php:387
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
 msgstr[0] "- %d gün"
 
-#: inc/html.class.php:3462
+#: inc/html.class.php:3509
 msgid "last Sunday"
 msgstr "geçen Pazar"
 
-#: inc/html.class.php:3463
+#: inc/html.class.php:3510
 msgid "last Monday"
 msgstr "geçen Pazartesi"
 
-#: inc/html.class.php:3464
+#: inc/html.class.php:3511
 msgid "last Tuesday"
 msgstr "geçen Salı"
 
-#: inc/html.class.php:3465
+#: inc/html.class.php:3512
 msgid "last Wednesday"
 msgstr "geçen Çarşamba"
 
-#: inc/html.class.php:3466
+#: inc/html.class.php:3513
 msgid "last Thursday"
 msgstr "geçen Perşembe"
 
-#: inc/html.class.php:3467
+#: inc/html.class.php:3514
 msgid "last Friday"
 msgstr "geçen Cuma"
 
-#: inc/html.class.php:3468
+#: inc/html.class.php:3515
 msgid "last Saturday"
 msgstr "geçen Cumartesi"
 
-#: inc/html.class.php:3472
+#: inc/html.class.php:3519
 #, php-format
 msgid "- %d week"
 msgid_plural "- %d weeks"
 msgstr[0] "- %d hafta"
 
-#: inc/html.class.php:3476
+#: inc/html.class.php:3523
 msgid "Beginning of the month"
 msgstr "Ayın başlangıcı"
 
-#: inc/html.class.php:3480
+#: inc/html.class.php:3527
 #, php-format
 msgid "- %d month"
 msgid_plural "- %d months"
 msgstr[0] "- %d ay"
 
-#: inc/html.class.php:3484
+#: inc/html.class.php:3531
 msgid "Beginning of the year"
 msgstr "Yılın başlangıcı"
 
-#: inc/html.class.php:3488
+#: inc/html.class.php:3535
 #, php-format
 msgid "- %d year"
 msgid_plural "- %d years"
 msgstr[0] "- %d yıl"
 
-#: inc/html.class.php:3494 inc/slalevel.class.php:371
+#: inc/html.class.php:3541 inc/slalevel.class.php:371
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
 msgstr[0] "+ %d saat"
 
-#: inc/html.class.php:3499 inc/slalevel.class.php:383
+#: inc/html.class.php:3546 inc/slalevel.class.php:383
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
 msgstr[0] "+ %d gün"
 
-#: inc/html.class.php:3503
+#: inc/html.class.php:3550
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
 msgstr[0] "+ %d hafta"
 
-#: inc/html.class.php:3507
+#: inc/html.class.php:3554
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
 msgstr[0] "+ %d ay"
 
-#: inc/html.class.php:3511
+#: inc/html.class.php:3558
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
 msgstr[0] "+ %d yıl"
 
-#: inc/html.class.php:3923
+#: inc/html.class.php:3970
 msgctxt "button"
 msgid "Drag and drop or paste image"
 msgstr "Görseli sürükleyip bırakın ya da yapıştırın"
 
-#: inc/html.class.php:3925
+#: inc/html.class.php:3972
 msgid "Item is too large"
 msgstr "Öge çok büyük"
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
-#: inc/html.class.php:4005 inc/html.class.php:4193
+#: inc/html.class.php:4052 inc/html.class.php:4240
 #, php-format
 msgid "From %1$d to %2$d on %3$d"
 msgstr "İlk: %1$d Son: %2$d Toplam: %3$d"
 
-#: inc/html.class.php:4077
+#: inc/html.class.php:4124
 msgid "Empty array"
 msgstr "Boş dizi"
 
-#: inc/html.class.php:4228 inc/html.class.php:4233
+#: inc/html.class.php:4275 inc/html.class.php:4280
 msgid "Display (number of items)"
 msgstr "Satır sayısı"
 
 #. TRANS %1$d %2$d are numbers (displayed, total)
-#: inc/html.class.php:4255
+#: inc/html.class.php:4302
 #, php-format
 msgid "%1$d on %2$d"
 msgstr "%1$d / %2$d"
 
-#: inc/html.class.php:5072
+#: inc/html.class.php:5119
 msgid "Drag and drop your file here, or"
 msgstr "Dosyanızı sürükleyip buraya bırakın ya da"
 
-#: inc/html.class.php:5212
+#: inc/html.class.php:5259
 msgctxt "button"
 msgid "Paste image"
 msgstr "Görsel yapıştırın"
 
-#: inc/html.class.php:5242
+#: inc/html.class.php:5289
 msgid "Upload successful"
 msgstr "Güncellendi"
 
-#: inc/html.class.php:5375
+#: inc/html.class.php:5422
 msgid "Check/uncheck all"
 msgstr "Tümünü seçin/bırakın"
 
-#: inc/html.class.php:5420 inc/html.class.php:5527 inc/profile.class.php:2675
+#: inc/html.class.php:5467 inc/html.class.php:5574 inc/profile.class.php:2675
 msgid "Select/unselect all"
 msgstr "Tümünü seçin/bırakın"
 
@@ -10533,7 +10534,7 @@ msgstr "Ağ zaten görünür birimler içinde tanımlanmış"
 msgid "Invalid gateway address"
 msgstr "Ağ geçidi adresi geçersiz"
 
-#: inc/ipnetwork_vlan.class.php:138 inc/networkport.class.php:941
+#: inc/ipnetwork_vlan.class.php:138 inc/networkport.class.php:965
 #: inc/networkport_vlan.class.php:139
 msgid "Associate a VLAN"
 msgstr "Sanal ağı ilişkilendirin"
@@ -10799,12 +10800,12 @@ msgstr "Görünürlük başlangıç tarihi"
 msgid "Visibility end date"
 msgstr "Görünürlük bitiş tarihi"
 
-#: inc/knowbaseitem.class.php:1660 inc/reminder.class.php:1207
+#: inc/knowbaseitem.class.php:1660 inc/reminder.class.php:1209
 #: inc/rssfeed.class.php:1036
 msgid "Add a target"
 msgstr "Hedef ekleyin"
 
-#: inc/knowbaseitem.class.php:1695 inc/reminder.class.php:1239
+#: inc/knowbaseitem.class.php:1695 inc/reminder.class.php:1241
 #: inc/rssfeed.class.php:1067
 msgid ""
 "Caution! You are not the author of this element. Delete targets can result "
@@ -10813,7 +10814,7 @@ msgstr "Dikkat! Oluşturulan bu bileşenin yöneticisi değilsiniz. Hedefler sil
 
 #: inc/knowbaseitem.class.php:1711 inc/notificationevent.class.php:228
 #: inc/notificationtarget.class.php:223 inc/notificationtarget.class.php:320
-#: inc/reminder.class.php:1255 inc/rssfeed.class.php:1083
+#: inc/reminder.class.php:1257 inc/rssfeed.class.php:1083
 msgid "Recipient"
 msgid_plural "Recipients"
 msgstr[0] "Alıcı"
@@ -10822,8 +10823,8 @@ msgstr[0] "Alıcı"
 #: inc/knowbaseitem.class.php:1753 inc/knowbaseitem.class.php:1780
 #: inc/knowbaseitem.class.php:1810 inc/profile_user.class.php:244
 #: inc/profile_user.class.php:409 inc/profile_user.class.php:566
-#: inc/profile_user.class.php:913 inc/reminder.class.php:1297
-#: inc/reminder.class.php:1322 inc/reminder.class.php:1351
+#: inc/profile_user.class.php:913 inc/reminder.class.php:1299
+#: inc/reminder.class.php:1324 inc/reminder.class.php:1353
 #: inc/rssfeed.class.php:1126 inc/rssfeed.class.php:1151
 #: inc/rssfeed.class.php:1180 inc/rule.class.php:1872
 #: inc/search.class.php:4195 inc/search.class.php:4234
@@ -10833,7 +10834,7 @@ msgstr "R"
 #: inc/knowbaseitem.class.php:1799 inc/notificationtarget.class.php:721
 #: inc/profile.class.php:76 inc/profile.class.php:1327
 #: inc/profile_user.class.php:359 inc/profile_user.class.php:485
-#: inc/profile_user.class.php:893 inc/reminder.class.php:1340
+#: inc/profile_user.class.php:893 inc/reminder.class.php:1342
 #: inc/rssfeed.class.php:1169 inc/ruleright.class.php:97
 #: inc/ruleright.class.php:324 inc/rulerightcollection.class.php:164
 #: inc/user.class.php:2032 inc/user.class.php:2678 inc/user.class.php:2714
@@ -11306,8 +11307,8 @@ msgstr "Veritabanı düzenindeki değişiklik - %s"
 msgid "Task completed."
 msgstr "Görev tamamlandı."
 
-#: inc/migration.class.php:618 inc/notificationtemplate.class.php:242
-#: inc/notificationtemplate.class.php:311
+#: inc/migration.class.php:618 inc/notificationtemplate.class.php:245
+#: inc/notificationtemplate.class.php:317
 #, php-format
 msgid "Automatically generated by GLPI %s"
 msgstr "GLPI %s tarafından otomatik olarak oluşturuldu"
@@ -11459,51 +11460,51 @@ msgstr "Kaynak kapısı"
 msgid "Alias port"
 msgstr "Diğer ad kapısı"
 
-#: inc/networkport.class.php:430
+#: inc/networkport.class.php:454
 msgid "Global displays"
 msgstr "Genel görünümler"
 
-#: inc/networkport.class.php:433 inc/networkport.class.php:439
-#: inc/networkport.class.php:585
+#: inc/networkport.class.php:457 inc/networkport.class.php:463
+#: inc/networkport.class.php:609
 msgid "Internet information"
 msgstr "İnternet bilgileri"
 
-#: inc/networkport.class.php:437
+#: inc/networkport.class.php:461
 msgid "Common options"
 msgstr "Genel ayarlar"
 
-#: inc/networkport.class.php:498
+#: inc/networkport.class.php:522
 msgid "Network port type to be added"
 msgstr "Eklenecek ağ kapısı tipi"
 
-#: inc/networkport.class.php:512
+#: inc/networkport.class.php:536
 msgid "Add several ports"
 msgstr "Bir kaç kapı ekleyin"
 
-#: inc/networkport.class.php:549
+#: inc/networkport.class.php:573
 #, php-format
 msgid "%1$s: %2$d"
 msgstr "%1$s: %2$d"
 
-#: inc/networkport.class.php:596 inc/networkport.class.php:685
+#: inc/networkport.class.php:620 inc/networkport.class.php:709
 msgid "Network ports waiting for manual migration"
 msgstr "El ile aktarılmayı bekleyen ağ kapıları"
 
-#: inc/networkport.class.php:772
+#: inc/networkport.class.php:796
 msgid "No network port found"
 msgstr "Ağ kapısı bulunamadı"
 
-#: inc/networkport.class.php:836 inc/networkport.class.php:842
-#: inc/networkport.class.php:968
+#: inc/networkport.class.php:860 inc/networkport.class.php:866
+#: inc/networkport.class.php:992
 msgid "Port number"
 msgid_plural "Ports number"
 msgstr[0] "Kapı numarası"
 
-#: inc/networkport.class.php:894 inc/networkport.class.php:978
+#: inc/networkport.class.php:918 inc/networkport.class.php:1002
 msgid "Network port type"
 msgstr "Ağ kapısı tipi"
 
-#: inc/networkport.class.php:942
+#: inc/networkport.class.php:966
 msgid "Dissociate a VLAN"
 msgstr "Sanal ağı ayırın"
 
@@ -12780,23 +12781,23 @@ msgstr "Uyarı: Salt Okunur!"
 msgid "Request write on "
 msgstr "İstek yazımı"
 
-#: inc/objectlock.class.php:547
+#: inc/objectlock.class.php:548
 msgid "Locked by"
 msgstr "Kilitleyen"
 
-#: inc/objectlock.class.php:559
+#: inc/objectlock.class.php:560
 msgid "Locked date"
 msgstr "Kilitleme Tarihi"
 
-#: inc/objectlock.class.php:584
+#: inc/objectlock.class.php:585
 msgid "Unlock"
 msgstr "Kilidi Aç"
 
-#: inc/objectlock.class.php:601
+#: inc/objectlock.class.php:602
 msgid "Unlock forgotten locked objects"
 msgstr "Unutulmuş kilitli nesnelerin kilidini açın"
 
-#: inc/objectlock.class.php:602
+#: inc/objectlock.class.php:603
 msgid "Timeout to force unlock (hours)"
 msgstr "Kİlidin açılacağı zaman aşımı (saat)"
 
@@ -12838,65 +12839,65 @@ msgstr "Uygun"
 msgid "Unavailable"
 msgstr "Uygun değil"
 
-#: inc/planning.class.php:918
+#: inc/planning.class.php:923
 msgid "Events type"
 msgstr "Etkinlik tipi"
 
-#: inc/planning.class.php:919
+#: inc/planning.class.php:924
 msgid "Plannings"
 msgstr "Planlamalar"
 
-#: inc/planning.class.php:924
+#: inc/planning.class.php:929
 msgid "Toggle filters"
 msgstr "Süzgeçleri değiştir"
 
-#: inc/planning.class.php:1183
+#: inc/planning.class.php:1188
 msgid "Ical"
 msgstr "Ical"
 
-#: inc/planning.class.php:1187
+#: inc/planning.class.php:1192
 msgid "Webcal"
 msgstr "Webcal"
 
-#: inc/planning.class.php:1232
+#: inc/planning.class.php:1239
 msgid "All users of a group"
 msgstr "Bir grubun tüm kullanıcıları"
 
-#: inc/planning.class.php:1345
+#: inc/planning.class.php:1379
 msgid "View this item in his context"
 msgstr "Bu ögeyi kendi bağlamında görüntüle"
 
-#: inc/planning.class.php:1414
+#: inc/planning.class.php:1456
 msgid "Event type"
 msgstr "Etkinlik tipi"
 
-#: inc/planning.class.php:1524
+#: inc/planning.class.php:1566
 msgid "Period"
 msgstr "Aralık"
 
-#: inc/planning.class.php:1539 inc/reservation.class.php:709
+#: inc/planning.class.php:1581 inc/reservation.class.php:709
 #: inc/reservationitem.class.php:405
 msgid "Specify an end date"
 msgstr "Bitiş tarihini belirtin"
 
-#: inc/planning.class.php:1931
+#: inc/planning.class.php:1973
 msgid "Your planning"
 msgstr "Planlamanız"
 
-#: inc/planning.class.php:2015
+#: inc/planning.class.php:2057
 #, php-format
 msgid "Ticket #%1$s %2$s"
 msgstr "Çağrı #%1$s %2$s"
 
-#: inc/planning.class.php:2057
+#: inc/planning.class.php:2099
 msgid "See personnal planning"
 msgstr "Kişisel planlamanıza bakın"
 
-#: inc/planning.class.php:2058
+#: inc/planning.class.php:2100
 msgid "See schedule of people in my groups"
 msgstr "Gruplarınızdaki kişilerin planlarına bakın"
 
-#: inc/planning.class.php:2059
+#: inc/planning.class.php:2101
 msgid "See all plannings"
 msgstr "Tüm planlara bakın"
 
@@ -13169,8 +13170,8 @@ msgid "Default ticket template"
 msgstr "Varsayılan çağrı kalıbı"
 
 #: inc/profile.class.php:746 inc/profile.class.php:922
-#: inc/profile.class.php:2035 inc/reminder.class.php:1129
-#: inc/reminder.class.php:1131
+#: inc/profile.class.php:2035 inc/reminder.class.php:1131
+#: inc/reminder.class.php:1133
 msgid "Public reminder"
 msgid_plural "Public reminders"
 msgstr[0] "Herkese açık anımsatıcı"
@@ -13380,86 +13381,86 @@ msgstr[0] "Üyeler"
 msgid "Invalid items (no start or end date): %s"
 msgstr "Geçersiz ögeler (başlangıç ya da bitiş tarihi olmayan): %s"
 
-#: inc/project.class.php:1323 inc/toolbox.class.php:2233
+#: inc/project.class.php:1323 inc/toolbox.class.php:2253
 msgid "January"
 msgstr "Ocak"
 
-#: inc/project.class.php:1323 inc/toolbox.class.php:2234
+#: inc/project.class.php:1323 inc/toolbox.class.php:2254
 msgid "February"
 msgstr "Şubat"
 
-#: inc/project.class.php:1323 inc/toolbox.class.php:2235
+#: inc/project.class.php:1323 inc/toolbox.class.php:2255
 msgid "March"
 msgstr "Mart"
 
-#: inc/project.class.php:1323 inc/toolbox.class.php:2236
+#: inc/project.class.php:1323 inc/toolbox.class.php:2256
 msgid "April"
 msgstr "Nisan"
 
-#: inc/project.class.php:1323 inc/toolbox.class.php:2237
+#: inc/project.class.php:1323 inc/toolbox.class.php:2257
 msgid "May"
 msgstr "Mayıs"
 
-#: inc/project.class.php:1324 inc/toolbox.class.php:2238
+#: inc/project.class.php:1324 inc/toolbox.class.php:2258
 msgid "June"
 msgstr "Haziran"
 
-#: inc/project.class.php:1324 inc/toolbox.class.php:2239
+#: inc/project.class.php:1324 inc/toolbox.class.php:2259
 msgid "July"
 msgstr "Temmuz"
 
-#: inc/project.class.php:1324 inc/toolbox.class.php:2240
+#: inc/project.class.php:1324 inc/toolbox.class.php:2260
 msgid "August"
 msgstr "Ağustos"
 
-#: inc/project.class.php:1324 inc/toolbox.class.php:2241
+#: inc/project.class.php:1324 inc/toolbox.class.php:2261
 msgid "September"
 msgstr "Eylül"
 
-#: inc/project.class.php:1325 inc/toolbox.class.php:2242
+#: inc/project.class.php:1325 inc/toolbox.class.php:2262
 msgid "October"
 msgstr "Ekim"
 
-#: inc/project.class.php:1325 inc/toolbox.class.php:2243
+#: inc/project.class.php:1325 inc/toolbox.class.php:2263
 msgid "November"
 msgstr "Kasım"
 
-#: inc/project.class.php:1325 inc/toolbox.class.php:2244
+#: inc/project.class.php:1325 inc/toolbox.class.php:2264
 msgid "December"
 msgstr "Aralık"
 
 #: inc/project.class.php:1327 inc/reservation.class.php:534
-#: inc/toolbox.class.php:2219
+#: inc/toolbox.class.php:2239
 msgid "Sunday"
 msgstr "Pazar"
 
 #: inc/project.class.php:1327 inc/reservation.class.php:528
-#: inc/toolbox.class.php:2220
+#: inc/toolbox.class.php:2240
 msgid "Monday"
 msgstr "Pazartesi"
 
 #: inc/project.class.php:1328 inc/reservation.class.php:529
-#: inc/toolbox.class.php:2221
+#: inc/toolbox.class.php:2241
 msgid "Tuesday"
 msgstr "Salı"
 
 #: inc/project.class.php:1328 inc/reservation.class.php:530
-#: inc/toolbox.class.php:2222
+#: inc/toolbox.class.php:2242
 msgid "Wednesday"
 msgstr "Çarşamba"
 
 #: inc/project.class.php:1329 inc/reservation.class.php:531
-#: inc/toolbox.class.php:2223
+#: inc/toolbox.class.php:2243
 msgid "Thursday"
 msgstr "Perşembe"
 
 #: inc/project.class.php:1329 inc/reservation.class.php:532
-#: inc/toolbox.class.php:2224
+#: inc/toolbox.class.php:2244
 msgid "Friday"
 msgstr "Cuma"
 
 #: inc/project.class.php:1330 inc/reservation.class.php:533
-#: inc/toolbox.class.php:2225
+#: inc/toolbox.class.php:2245
 msgid "Saturday"
 msgstr "Cumartesi"
 
@@ -13609,7 +13610,7 @@ msgid "Reminder"
 msgid_plural "Reminders"
 msgstr[0] "Anımsatıcı"
 
-#: inc/reminder.class.php:66 inc/reminder.class.php:1105
+#: inc/reminder.class.php:66 inc/reminder.class.php:1107
 msgid "Personal reminder"
 msgid_plural "Personal reminders"
 msgstr[0] "Kişisel anımsatıcı"
@@ -13679,7 +13680,7 @@ msgstr "Aygıt adı"
 
 #: inc/report.class.php:372
 msgid "Port Number"
-msgstr ""
+msgstr "Kapı Numarası"
 
 #: inc/requesttype.class.php:57 inc/requesttype.class.php:84
 msgid "Default for tickets"
@@ -13845,10 +13846,6 @@ msgstr "Ayırtın"
 msgid "Personal RSS feed"
 msgid_plural "Personal RSS feed"
 msgstr[0] "Kişisel RSS akışı"
-
-#: inc/rssfeed.class.php:448 inc/rssfeed.class.php:637
-msgid "Error"
-msgstr "Hata"
 
 #: inc/rssfeed.class.php:454 inc/rssfeed.class.php:706
 msgid "Number of items displayed"
@@ -14547,7 +14544,7 @@ msgstr "Hesabınız devre dışı bırakıldığından ya da silindiğinden, bu 
 msgid "tree structure"
 msgstr "ağaç yapısı"
 
-#: inc/session.class.php:1218
+#: inc/session.class.php:1210
 msgid "The action you have requested is not allowed."
 msgstr "Yapmak istediğiniz işleme izin verilmiyor."
 
@@ -15434,6 +15431,7 @@ msgstr "ctype işlevleri olmadan GLPI doğru çalışmaz"
 #: inc/toolbox.class.php:1000 inc/toolbox.class.php:1001
 #: inc/toolbox.class.php:1015 inc/toolbox.class.php:1016
 #: inc/toolbox.class.php:1030 inc/toolbox.class.php:1031
+#: inc/toolbox.class.php:1045 inc/toolbox.class.php:1046
 msgid "The functionality is found - Perfect!"
 msgstr "İşlevler var - Mükemmel!"
 
@@ -15479,187 +15477,195 @@ msgid "Zlib extension of your parser PHP is not installed"
 msgstr "PHP işleyiciniz için Zlib eklentisi yüklenmemiş"
 
 #: inc/toolbox.class.php:1036
+msgid "Curl extension test"
+msgstr "Curl eklentisi sınaması"
+
+#: inc/toolbox.class.php:1040
+msgid "Curl extension of your parser PHP is not installed"
+msgstr "PHP işleyiciniz için Curl eklentisi yüklenmemiş"
+
+#: inc/toolbox.class.php:1051
 msgid "Allocated memory test"
 msgstr "Ayrılmış bellek sınaması"
 
-#: inc/toolbox.class.php:1044 inc/toolbox.class.php:1045
+#: inc/toolbox.class.php:1059 inc/toolbox.class.php:1060
 msgid "Unlimited memory - Perfect!"
 msgstr "Bellek sınırlaması yok - Mükemmel!"
 
-#: inc/toolbox.class.php:1051
+#: inc/toolbox.class.php:1066
 msgid "Allocated memory"
 msgstr "Ayrılmış bellek"
 
-#: inc/toolbox.class.php:1054
+#: inc/toolbox.class.php:1069
 msgid "A minimum of 64Mio is commonly required for GLPI."
 msgstr "GLPI için genellikle en az 64 MB gereklidir."
 
-#: inc/toolbox.class.php:1055
+#: inc/toolbox.class.php:1070
 msgid "Try increasing the memory_limit parameter in the php.ini file."
 msgstr "php.ini dosyanızdaki memory_limit değerini arttırmayı deneyin."
 
-#: inc/toolbox.class.php:1062 inc/toolbox.class.php:1063
+#: inc/toolbox.class.php:1077 inc/toolbox.class.php:1078
 msgid "Allocated memory > 64Mio - Perfect!"
 msgstr "Ayrılmış bellek > 64MB - Mükemmel!"
 
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
-#: inc/toolbox.class.php:1103
+#: inc/toolbox.class.php:1118
 #, php-format
 msgid "SELinux mode is %s"
 msgstr "SELinux kipi %s"
 
-#: inc/toolbox.class.php:1129
+#: inc/toolbox.class.php:1144
 msgid "Some features may require this to be on"
 msgstr "Bazı özellikler için bu seçenek etkinleştirilmelidir"
 
 #. TRANS: %s is an option name
-#: inc/toolbox.class.php:1136
+#: inc/toolbox.class.php:1151
 #, php-format
 msgid "SELinux boolean configuration for %s"
 msgstr "%s için SELinux ikili ayarları"
 
 #. TRANS: list of unit (o for octet)
-#: inc/toolbox.class.php:1202
+#: inc/toolbox.class.php:1217
 msgid "o"
 msgstr "B"
 
-#: inc/toolbox.class.php:1202
+#: inc/toolbox.class.php:1217
 msgid "Kio"
 msgstr "KB"
 
-#: inc/toolbox.class.php:1202
+#: inc/toolbox.class.php:1217
 msgid "Gio"
 msgstr "GB"
 
-#: inc/toolbox.class.php:1202
+#: inc/toolbox.class.php:1217
 msgid "Tio"
 msgstr "TB"
 
-#: inc/toolbox.class.php:1410 inc/toolbox.class.php:1412
-#: inc/toolbox.class.php:1417 inc/toolbox.class.php:1419
+#: inc/toolbox.class.php:1425 inc/toolbox.class.php:1427
+#: inc/toolbox.class.php:1432 inc/toolbox.class.php:1434
 msgid "You have the latest available version"
 msgstr "Son sürümü kullanıyorsunuz"
 
 #. TRANS: %s is the error string
-#: inc/toolbox.class.php:1663
+#: inc/toolbox.class.php:1678
 #, php-format
 msgid "Connection failed. If you use a proxy, please configure it. (%s)"
 msgstr "Bağlanılamadı. Vekil sunucu kullanıyorsanız, ayarları denetleyin. (%s)"
 
 #. TRANS: %s is the error string
-#: inc/toolbox.class.php:1683
+#: inc/toolbox.class.php:1698
 #, php-format
 msgid "Failed to connect to the proxy server (%s)"
 msgstr "Vekil sunucuya bağlanılamadı (%s)"
 
-#: inc/toolbox.class.php:1748
+#: inc/toolbox.class.php:1763
 msgid "No data available on the web site"
 msgstr "Web sitesinde sürüm bilgisi bulunamadı"
 
 #. TRANS: %s is the error string
-#: inc/toolbox.class.php:1751
+#: inc/toolbox.class.php:1766
 #, php-format
 msgid "Impossible to connect to site (%s)"
 msgstr "Web sitesine bağlanılamadı (%s)"
 
-#: inc/toolbox.class.php:2066
+#: inc/toolbox.class.php:2086
 msgid "Connection options"
 msgstr "Bağlantı ayarları"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2068
+#: inc/toolbox.class.php:2088
 msgid "IMAP"
 msgstr "IMAP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2070
+#: inc/toolbox.class.php:2090
 msgid "POP"
 msgstr "POP"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2078
+#: inc/toolbox.class.php:2098
 msgid "SSL"
 msgstr "SSL"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2087
+#: inc/toolbox.class.php:2107
 msgid "TLS"
 msgstr "TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2089
+#: inc/toolbox.class.php:2109
 msgid "NO-TLS"
 msgstr "NO-TLS"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2105
+#: inc/toolbox.class.php:2125
 msgid "NO-VALIDATE-CERT"
 msgstr "NO-VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2107
+#: inc/toolbox.class.php:2127
 msgid "VALIDATE-CERT"
 msgstr "VALIDATE-CERT"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2122
+#: inc/toolbox.class.php:2142
 msgid "NORSH"
 msgstr "NORSH"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2131
+#: inc/toolbox.class.php:2151
 msgid "SECURE"
 msgstr "SECURE"
 
 #. TRANS: imap_open option see http://www.php.net/manual/en/function.imap-
 #. open.php
-#: inc/toolbox.class.php:2140
+#: inc/toolbox.class.php:2160
 msgid "DEBUG"
 msgstr "DEBUG"
 
-#: inc/toolbox.class.php:2153
+#: inc/toolbox.class.php:2173
 msgid "Incoming mail folder (optional, often INBOX)"
 msgstr "Gelen e-posta kutusu (iteğe bağlı, genellikle Gelen Kutusu)"
 
 #. TRANS: for mail connection system
-#: inc/toolbox.class.php:2158
+#: inc/toolbox.class.php:2178
 msgid "Port (optional)"
 msgstr "Kapı (isteğe bağlı)"
 
-#: inc/toolbox.class.php:2426
+#: inc/toolbox.class.php:2446
 msgid ""
 "No HTTP_REFERER found in request. Reload previous page before doing action "
 "again."
 msgstr "İstekte HTTP_REFERER parametresi eksik. İşlemi yeniden yapmadan önce önceki sayfayı yeniden yükleyin."
 
-#: inc/toolbox.class.php:2433
+#: inc/toolbox.class.php:2453
 msgid ""
 "Error when parsing HTTP_REFERER. Reload previous page before doing action "
 "again."
 msgstr "HTTP_REFERER parametresi işlenirken bir sorun çıktı. İşlemi yeniden yapmadan önce önceki sayfayı yeniden yükleyin."
 
-#: inc/toolbox.class.php:2444
+#: inc/toolbox.class.php:2464
 msgid ""
 "None or Invalid host in HTTP_REFERER. Reload previous page before doing "
 "action again."
 msgstr "HTTP_REFERER parametresindeki sunucu eksik ya da geçersiz. İşlemi yeniden yapmadan önce önceki sayfayı yeniden yükleyin."
 
-#: inc/toolbox.class.php:2454
+#: inc/toolbox.class.php:2474
 msgid ""
 "None or Invalid path in HTTP_REFERER. Reload previous page before doing "
 "action again."
 msgstr "HTTP_REFERER parametresindeki yol eksik ya da geçersiz. İşlemi yeniden yapmadan önce önceki sayfayı yeniden yükleyin."
 
-#: inc/toolbox.class.php:2461
+#: inc/toolbox.class.php:2481
 msgid ""
 "The action you have requested is not allowed. Reload previous page before "
 "doing action again."
