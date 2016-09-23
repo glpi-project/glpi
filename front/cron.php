@@ -78,8 +78,8 @@ if (!isCommandLine()) {
          // Only check first parameter when numeric is passed
          break;
       } else {
-         // Task name
-         CronTask::launch($mode, $CFG_GLPI['cron_limit'], $_SERVER['argv'][$i]);
+         // Single Task name
+         CronTask::launch($mode, 1, $_SERVER['argv'][$i]);
       }
    }
 
