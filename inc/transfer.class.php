@@ -2321,7 +2321,9 @@ class Transfer extends CommonDBTM {
       global $DB;
 
       $job   = new Ticket();
-      $query = "SELECT *
+      $rel   = new Item_Ticket();
+
+      $query = "SELECT `glpi_tickets`.*, `glpi_items_tickets`.`id` as _relid
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_items_tickets`
                    ON `glpi_items_tickets`.`tickets_id` = `glpi_tickets`.`id`
@@ -2338,12 +2340,18 @@ class Transfer extends CommonDBTM {
                      $input                = $this->transferHelpdeskAdditionalInformations($data);
                      $input['id']          = $data['id'];
                      $input['entities_id'] = $this->to;
+
+                     $job->update($input);
+
+                     $input = array();
+                     $input['id']          = $data['_relid'];
                      $input['items_id']    = $newID;
                      $input['itemtype']    = $itemtype;
 
-                     $job->update($input);
+                     $rel->update($input);
+
                      $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
-                     $this->transferTaskCategory('Ticket', $input['id'], $input['id']);
+                     $this->transferTaskCategory('Ticket', $data['id'], $data['id']);
                   }
                   break;
 
@@ -2351,9 +2359,7 @@ class Transfer extends CommonDBTM {
                case 1 :
                   // Same Item / Copy Item : keep and clean ref
                   while ($data = $DB->fetch_assoc($result)) {
-                     $job->update(array('id'       => $data['id'],
-                                        'itemtype' => 0,
-                                        'items_id' => 0));
+                     $rel->delete(array('id'       => $data['relid']));
                      $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
                   }
                   break;
