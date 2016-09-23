@@ -174,7 +174,7 @@ abstract class API extends CommonGLPI {
 
       } else if (!$CFG_GLPI['enable_api_login_credentials']) {
          $this->returnError(__("usage of initSession resource with credentials is disabled"), 400,
-                            "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED");
+                            "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED", false);
       }
 
       // login on glpi
@@ -182,9 +182,9 @@ abstract class API extends CommonGLPI {
          $err = Html::clean($auth->getErr());
          if (isset($params['user_token'])
              && !empty($params['user_token'])) {
-            return $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN");
+            return $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN", false);
          }
-         return $this->returnError($err, 401, "ERROR_GLPI_LOGIN");
+         return $this->returnError($err, 401, "ERROR_GLPI_LOGIN", false);
       }
 
       // stop session and return session key
