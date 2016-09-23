@@ -562,7 +562,9 @@ abstract class API extends CommonGLPI {
             $fields['_networkports'] = self::arrayRightError();
          } else {
             foreach (NetworkPort::getNetworkPortInstantiations() as $networkport_type) {
+               $netport_table = $networkport_type::getTable();
                $query = "SELECT
+                           netp.`id` as netport_id,
                            netp.`entities_id`,
                            netp.`is_recursive`,
                            netp.`logical_number`,
@@ -572,14 +574,87 @@ abstract class API extends CommonGLPI {
                            netp.`is_dynamic`,
                            netp_subtable.*
                          FROM glpi_networkports AS netp
-                         LEFT JOIN ".$networkport_type::getTable()." AS netp_subtable
+                         LEFT JOIN `$netport_table` AS netp_subtable
                            ON netp_subtable.`networkports_id` = netp.`id`
                          WHERE netp.`instantiation_type` = '$networkport_type'
-                               AND netp.`items_id` = '$id'
-                               AND netp.`itemtype` = '$itemtype'
-                               AND netp.`is_deleted` = '0'";
+                           AND netp.`items_id` = '$id'
+                           AND netp.`itemtype` = '$itemtype'
+                           AND netp.`is_deleted` = '0'";
                if ($result = $DB->query($query)) {
                   while ($data = $DB->fetch_assoc($result)) {
+                     if (isset($data['netport_id'])) {
+                        // append network name
+                        $query_netn = "SELECT
+                              GROUP_CONCAT(CONCAT(ipadr.`id`, '".Search::SHORTSEP."' , ipadr.`name`)
+                                           SEPARATOR '".Search::LONGSEP."') as ipadresses,
+                              netn.`id` as networknames_id,
+                              netn.`name` as networkname,
+                              netn.`fqdns_id`,
+                              fqdn.`name` as fqdn_name,
+                              fqdn.`fqdn`
+                           FROM `glpi_networknames` AS netn
+                           LEFT JOIN `glpi_ipaddresses` AS ipadr
+                              ON ipadr.`itemtype` = 'NetworkName' AND ipadr.`items_id` = netn.`id`
+                           LEFT JOIN `glpi_fqdns` AS fqdn
+                              ON fqdn.`id` = netn.`fqdns_id`
+                           LEFT JOIN `glpi_ipaddresses_ipnetworks` ipadnet
+                              ON ipadnet.`ipaddresses_id` = ipadr.`id`
+                           LEFT JOIN `glpi_ipnetworks` `ipnet`
+                              ON ipnet.`id` = ipadnet.`ipnetworks_id`
+                           WHERE netn.`itemtype` = 'NetworkPort'
+                             AND netn.`items_id` = ".$data['netport_id']."
+                           GROUP BY netn.`id`, netn.`name`, netn.fqdns_id, fqdn.name, fqdn.fqdn";
+                        if ($result_netn = $DB->query($query_netn)) {
+                           $data_netn = $DB->fetch_assoc($result_netn);
+
+                           $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
+                           $ipadresses = array();
+                           foreach($raw_ipadresses as $ipadress) {
+                              $ipadress = explode(Search::SHORTSEP, $ipadress);
+
+                              //find ip network attached to these ip
+                              $ipnetworks = array();
+                              $query_ipnet = "SELECT
+                                    ipnet.`id`,
+                                    ipnet.`completename`,
+                                    ipnet.`name`,
+                                    ipnet.`address`,
+                                    ipnet.`netmask`,
+                                    ipnet.`gateway`,
+                                    ipnet.`ipnetworks_id`,
+                                    ipnet.`comment`
+                                 FROM `glpi_ipnetworks` ipnet
+                                 INNER JOIN `glpi_ipaddresses_ipnetworks` ipadnet
+                                    ON ipnet.`id` = ipadnet.`ipnetworks_id`
+                                    AND ipadnet.`ipaddresses_id` = ".$ipadress[0];
+                              if ($result_ipnet = $DB->query($query_ipnet)) {
+                                 while ($data_ipnet = $DB->fetch_assoc($result_ipnet)) {
+                                    $ipnetworks[] = $data_ipnet;
+                                 }
+                              }
+
+                              $ipadresses[] = array(
+                                 'id'        => $ipadress[0],
+                                 'name'      => $ipadress[1],
+                                 'IPNetwork' => $ipnetworks
+                              );
+                           }
+
+
+                           $data['NetworkName'] = array(
+                              'id'         => $data_netn['networknames_id'],
+                              'name'       => $data_netn['networkname'],
+                              'fqdns_id'   => $data_netn['fqdns_id'],
+                              'FQDN'       => array(
+                                 'id'   => $data_netn['fqdns_id'],
+                                 'name' => $data_netn['fqdn_name'],
+                                 'fqdn' => $data_netn['fqdn']
+                              ),
+                              'IPAddress' => $ipadresses
+                           );
+                        }
+                     }
+
                      $fields['_networkports'][$networkport_type][] = $data;
                   }
                }
@@ -1327,7 +1402,7 @@ abstract class API extends CommonGLPI {
          $idCollection = array();
          $failed       = 0;
          foreach($input as $object) {
-            $object = get_object_vars($object);
+            $object = self::inputObjectToArray($object);
             //check rights
             if (!$item->can(-1, CREATE, $object)) {
                $idCollection[] = array('error' => $this->messageRightError(false));
@@ -1355,7 +1430,7 @@ abstract class API extends CommonGLPI {
          return $idCollection;
 
       } else if (is_object($input)) {
-         $input = get_object_vars($input);
+         $input = self::inputObjectToArray($input);
 
          //check rights
          if (!$item->can(-1, CREATE, $input)) {
@@ -1377,6 +1452,28 @@ abstract class API extends CommonGLPI {
       } else {
          $this->messageBadArrayError();
       }
+   }
+
+   /**
+    * Transform all stdobject retrieved from a json_decode into arrays
+    *
+    * @since 9.1
+    *
+    * @param  mixed $input can be an object or array
+    * @return array the cleaned input
+    */
+   private function inputObjectToArray($input) {
+      if (is_object($input)) {
+         $input = get_object_vars($input);
+      }
+
+      if (is_array($input)) {
+         foreach ($input as $key => &$sub_input) {
+            $sub_input = self::inputObjectToArray($sub_input);
+         }
+      }
+
+      return $input;
    }
 
 

@@ -59,9 +59,7 @@ if (isset($_POST["add"])) {
 
    if (!isset($_POST["several"])) {
       $np->check(-1, UPDATE, $_POST);
-      $np->splitInputForElements($_POST);
       $newID = $np->add($_POST);
-      $np->updateDependencies(1);
       Event::log($newID, "networkport", 5, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s adds an item'), $_SESSION["glpiname"]));
@@ -85,9 +83,7 @@ if (isset($_POST["add"])) {
          unset($np->fields["id"]);
 
          if ($np->can(-1, CREATE, $input)) {
-            $np->splitInputForElements($input);
             $np->add($input);
-            $np->updateDependencies(1);
          }
       }
       Event::log(0, "networkport", 5, "inventory",
@@ -111,9 +107,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["update"])) {
    $np->check($_POST['id'], UPDATE);
 
-   $np->splitInputForElements($_POST);
    $np->update($_POST);
-   $np->updateDependencies(1);
    Event::log($_POST["id"], "networkport", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
