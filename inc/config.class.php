@@ -1809,7 +1809,9 @@ class Config extends CommonDBTM {
          return realpath(dirname((new ReflectionClass($libstring))->getFileName()));
 
       } elseif (function_exists($libstring)) {
-         return realpath(dirname((new ReflectionFunction($libstring))->getFileName()));
+         // Internal function have no file name
+         $path = (new ReflectionFunction($libstring))->getFileName();
+         return ($path ? realpath(dirname($path)) : false);
 
       }
       return false;
@@ -1829,49 +1831,54 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       include_once(GLPI_HTMLAWED);
-      echo "htmLawed version ".hl_version().
-           " in (".self::getLibraryDir("hl_version").")\n";
-
-      echo "phpCas version ".phpCAS::getVersion().
-           " in (".(self::getLibraryDir("phpCAS")
-                     ? self::getLibraryDir("phpCAS")
-                     : "system").
-           ")\n";
-
-
       $pm = new PHPMailer();
-      echo "PHPMailer version ".$pm->Version.
-           " in (" . self::getLibraryDir("PHPMailer") . ")\n";
-
-      // EZ component
-      echo "ZetaComponent ezcGraph installed in (".self::getLibraryDir("ezcGraph")."): ".
-           (class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
-
-      // Zend
-      echo "Zend Framework in (".self::getLibraryDir("Zend\Loader\StandardAutoloader").")\n";
-
-      // SimplePie :
       $sp = new SimplePie();
-      echo "SimplePie version ".SIMPLEPIE_VERSION.
-           " in (".self::getLibraryDir($sp).")\n";
 
-      // TCPDF
-      echo "TCPDF version ".TCPDF_STATIC::getTCPDFVersion().
-           " in (".self::getLibraryDir("TCPDF").")\n";
+      $deps = [[ 'name'    => 'htmLawed',
+                 'version' => hl_version() ,
+                 'check'   => 'hl_version' ],
+               [ 'name'    => 'phpCas',
+                 'version' => phpCAS::getVersion() ,
+                 'check'   => 'phpCAS' ],
+               [ 'name'    => 'PHPMailer',
+                 'version' => $pm->Version ,
+                 'check'   => 'PHPMailer' ],
+               [ 'name'    => 'Zend Framework',
+                 'check'   => 'Zend\\Loader\\StandardAutoloader' ],
+               [ 'name'    => 'zetacomponents/graph',
+                 'check'   => 'ezcGraph' ],
+               [ 'name'    => 'SimplePie',
+                 'version' => SIMPLEPIE_VERSION,
+                 'check'   => $sp ],
+               [ 'name'    => 'TCPDF',
+                 'version' => TCPDF_STATIC::getTCPDFVersion(),
+                 'check'   => 'TCPDF' ],
+               [ 'name'    => 'ircmaxell/password-compat',
+                 'check'   => 'password_hash' ],
+               [ 'name'    => 'ramsey/array_column',
+                 'check'   => 'array_column' ],
+               [ 'name'    => 'michelf/php-markdown',
+                 'check'   => 'Michelf\\Markdown' ],
+               [ 'name'    => 'true/punycode',
+                 'check'   => 'TrueBV\\Punycode' ],
+               [ 'name'    => 'iacaml/autolink',
+                 'check'   => 'autolink' ],
+               [ 'name'    => 'sabre/vobject',
+                 'check'   => 'Sabre\\VObject\\Component' ],
+               [ 'name'    => 'guzzlehttp/guzzle',
+                 'check'   => 'GuzzleHttp\\Client' ],
+      ];
 
-      // password_compat
-      $check = (PasswordCompat\binary\check() ? "Ok" : "KO");
-      echo "ircmaxell/password-compat in (".
-           self::getLibraryDir("PasswordCompat\binary\check")."). Compatitility: $check\n";
-
-      // autolink
-      echo "iacaml/autolink in (".self::getLibraryDir("autolink").")\n";
-
-      // sabre/vobject
-      echo "sabre/vobject in (".self::getLibraryDir("Sabre\VObject\Component").")\n";
-
-      // vcard
-      echo "guzzlehttp/guzzle in (".self::getLibraryDir("JeroenDesloovere\VCard\VCard").")\n";
+      foreach ($deps as $dep) {
+         $path = self::getLibraryDir($dep['check']);
+         if ($path) {
+            echo "{$dep['name']} ";
+            if (isset($dep['version'])) {
+               echo "version {$dep['version']} ";
+            }
+            echo "in ($path)\n";
+         }
+      }
 
       echo "\n</pre></td></tr>";
    }
