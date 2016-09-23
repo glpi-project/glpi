@@ -2353,9 +2353,7 @@ class Transfer extends CommonDBTM {
                case 1 :
                   // Same Item / Copy Item : keep and clean ref
                   while ($data = $DB->fetch_assoc($result)) {
-                     $rel->update(array('id'       => $data['relid'],
-                                        'itemtype' => 0,
-                                        'items_id' => 0));
+                     $rel->delete(array('id'       => $data['relid']));
                      $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
                   }
                   break;
