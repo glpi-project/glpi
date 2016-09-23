@@ -769,6 +769,7 @@ function update0905to91() {
       $migration->addField("glpi_tickets", "time_to_own", "datetime", array('after' => 'due_date'));
       $migration->addKey('glpi_tickets', 'slts_tto_id');
       $migration->addKey('glpi_tickets', 'time_to_own');
+      $migration->changeField('glpi_tickets', 'slalevels_id', 'ttr_slalevels_id', 'integer');
 
       // Unique key for slalevel_ticket
       $migration->addKey('glpi_slalevels_tickets', array('tickets_id', 'slalevels_id'),

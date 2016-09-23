@@ -2215,13 +2215,13 @@ class Entity extends CommonTreeDropdown {
       }
 
       if (strstr($url,"[SLALEVEL_ID]")) {
-         $url = str_replace("[SLALEVEL_ID]", $ticket->fields['slalevels_id'], $url);
+         $url = str_replace("[SLALEVEL_ID]", $ticket->fields['ttr_slalevels_id'], $url);
       }
 
       if (strstr($url,"[SLALEVEL_NAME]")) {
          $url = str_replace("[SLALEVEL_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_slalevels',
-                                                                $ticket->fields['slalevels_id'])),
+                                                                $ticket->fields['ttr_slalevels_id'])),
                             $url);
       }
 
