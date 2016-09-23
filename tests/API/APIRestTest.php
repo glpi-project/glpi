@@ -272,6 +272,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       foreach($data as $item) {
          $this->assertArrayHasKey('id', $item);
          $this->assertArrayHasKey('name', $item);
+         $this->assertArrayNotHasKey('password', $item);
          $this->assertArrayHasKey('entities_id', $item);
          $this->assertArrayHasKey('links', $item);
          $this->assertFalse(is_numeric($item['entities_id'])); // for expand_dropdowns
@@ -546,7 +547,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertGreaterThanOrEqual(4, count($data));
       $this->assertArrayHasKey('id', $data[0]);
       $this->assertArrayHasKey('name', $data[0]);
-      $this->assertArrayHasKey('password', $data[0]);
+      $this->assertArrayNotHasKey('password', $data[0]);
       $this->assertArrayHasKey('is_active', $data[0]);
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 

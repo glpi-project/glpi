@@ -40,6 +40,10 @@ abstract class API extends CommonGLPI {
    // permit writing to $_SESSION
    protected $session_write = false;
 
+   // avoid disclosure of critical fields
+   protected $excluded_fields = array('password', 'passwd', 'rootdn_passwd',
+                                      'smtp_passwd', 'proxy_passwd');
+
    static $api_url = "";
    protected $format;
    protected $iptxt         = "";
@@ -444,6 +448,11 @@ abstract class API extends CommonGLPI {
       }
 
       $fields =  $item->fields;
+
+      // avoid disclosure of critical fields
+      foreach($this->excluded_fields as $key) {
+         unset($fields[$key]);
+      }
 
       // retrieve devices
       if (isset($params['with_devices'])
@@ -1003,6 +1012,11 @@ abstract class API extends CommonGLPI {
          // only keep id in field list
          if ($params['only_id']) {
             $fields = array('id' => $fields['id']);
+         }
+
+         // avoid disclosure of critical fields
+         foreach($this->excluded_fields as $key) {
+            unset($fields[$key]);
          }
 
          // expand dropdown (retrieve name of dropdowns) and get hateoas
