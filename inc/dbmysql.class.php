@@ -126,7 +126,7 @@ class DBmysql {
          $this->connected = false;
          $this->error     = 1;
       } else {
-         mysqli_set_charset($this->dbh, isset($this->dbenc) ? $this->dbenc : "utf8");
+         $this->dbh->set_charset(isset($this->dbenc) ? $this->dbenc : "utf8");
          $this->connected = true;
       }
    }
