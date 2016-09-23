@@ -214,7 +214,7 @@ class CronTask extends CommonDBTM{
          return false;
       }
 
-      if (PHP_SAPI == "cli" && function_exists('pcntl_signal')) {
+      if (isCommandLine() && function_exists('pcntl_signal')) {
          pcntl_signal(SIGTERM, [$this, 'signal']);
       }
 
