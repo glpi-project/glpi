@@ -47,7 +47,7 @@ include_once (GLPI_ROOT."/config/define.php");
  * @return boolean
 **/
 function isCommandLine() {
-   return (!isset($_SERVER["SERVER_NAME"]));
+   return (PHP_SAPI == 'cli');
 }
 
 /**
