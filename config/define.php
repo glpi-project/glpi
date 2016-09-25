@@ -299,7 +299,7 @@ $CFG_GLPI['planning_add_types']           = array('Reminder');
 $CFG_GLPI["globalsearch_types"]           = array('Computer', 'Contact', 'Document',  'Monitor',
                                                   'NetworkEquipment', 'Peripheral', 'Phone',
                                                   'Printer', 'Software', 'Supplier', 'Ticket',
-                                                  'SoftwareLicense');
+                                                  'SoftwareLicense', 'User');
 
 // New config options which can be missing during migration
 $CFG_GLPI["number_format"]  = 0;
