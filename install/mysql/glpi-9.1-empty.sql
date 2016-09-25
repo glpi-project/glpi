@@ -6780,10 +6780,16 @@ CREATE TABLE `glpi_softwarelicensetypes` (
   `comment` text COLLATE utf8_unicode_ci,
   `date_mod` datetime DEFAULT NULL,
   `date_creation` datetime DEFAULT NULL,
+  `softwarelicensetypes_id` int(11) NOT NULL DEFAULT '0',
+  `completename` text COLLATE utf8_unicode_ci,
+  `level` int(11) NOT NULL DEFAULT '0',
+  `ancestors_cache` longtext COLLATE utf8_unicode_ci,
+  `sons_cache` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `softwarelicensetypes_id` (`softwarelicensetypes_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_softwarelicensetypes` VALUES ('1','OEM','',NULL,NULL);

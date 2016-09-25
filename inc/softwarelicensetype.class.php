@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class SoftwareLicenseType
-class SoftwareLicenseType extends CommonDropdown {
+class SoftwareLicenseType extends CommontreeDropdown {
 
 
    static function getTypeName($nb=0) {
