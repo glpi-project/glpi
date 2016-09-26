@@ -336,12 +336,12 @@ function glpi_autoload($classname) {
    }
 }
 
-// Use spl autoload to allow stackable autoload.
-spl_autoload_register('glpi_autoload');
-
 // composer autoload
 $autoload = dirname(__DIR__) . '/vendor/autoload.php';
 if (!file_exists($autoload)) {
    die('Run "composer install --no-dev" in the glpi tree');
 }
 require_once $autoload;
+
+// Use spl autoload to allow stackable autoload.
+spl_autoload_register('glpi_autoload', false, true);
