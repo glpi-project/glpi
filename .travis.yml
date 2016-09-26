@@ -8,8 +8,7 @@ before_script:
   - composer install --no-dev
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --lang=en_US --db=glpitest --user=root --tests
-  - cp tests/config_db.php config/
-  - php -S localhost:8088 > /dev/null 2>&1 &
+  - php -S localhost:8088 tests/router.php &>/dev/null &
 
 script:
   - mysql -u root -e 'select version();'
