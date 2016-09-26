@@ -1992,6 +1992,9 @@ class CommonDBTM extends CommonGLPI {
          echo "<th colspan='$colspan'>";
          printf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
          echo "</th>";
+      } else {
+         echo "<th colspan='$colspan'>";
+         echo "</th>";
       }
 
       if (isset($options['withtemplate']) && $options['withtemplate']) {
@@ -2005,6 +2008,9 @@ class CommonDBTM extends CommonGLPI {
          echo "<th colspan='$colspan'>";
          //TRANS: %s is the datetime of update
          printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+         echo "</th>";
+      } else {
+         echo "<th colspan='$colspan'>";
          echo "</th>";
       }
 
