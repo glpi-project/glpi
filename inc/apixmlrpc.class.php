@@ -128,7 +128,7 @@ class APIXmlrpc extends API {
          $response =  $this->searchItems($this->parameters['itemtype'], $this->parameters);
 
          // diffent http return codes for complete or partial response
-         if ($response['count'] < $response['count']) {
+         if ($response['count'] < $response['totalcount']) {
             $code = 206; // partial content
          }
 

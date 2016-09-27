@@ -173,7 +173,7 @@ class APIRest extends API {
          $additionalheaders["Accept-Range"]  = $itemtype." ".Toolbox::get_max_input_vars();
 
          // diffent http return codes for complete or partial response
-         if ($response['count'] >= $response['count']) {
+         if ($response['count'] >= $response['totalcount']) {
             $code = 200; // full content
          } else {
             $code = 206; // partial content
