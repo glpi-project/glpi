@@ -190,6 +190,7 @@ class NetworkPort extends CommonDBChild {
     * @see CommonDBTM::prepareInputForUpdate
     */
    function prepareInputForUpdate($input) {
+      $input = parent::prepareInputForUpdate($input);
       return $this->splitInputForElements($input);
    }
 
@@ -249,6 +250,7 @@ class NetworkPort extends CommonDBChild {
     * @see updateDependencies for the update
    **/
    function splitInputForElements($input) {
+      global $DB;
 
       if (isset($this->input_for_instantiation)
           || isset($this->input_for_NetworkName)
@@ -261,8 +263,10 @@ class NetworkPort extends CommonDBChild {
       $this->input_for_NetworkName        = array();
       $this->input_for_NetworkPortConnect = array();
 
+      $fields = $DB->list_fields($this->getTable());
+
       foreach ($input as $field => $value) {
-         if (array_key_exists($field, $this->fields)) {
+         if (array_key_exists($field, $fields)) {
             continue;
          }
          if (preg_match('/^NetworkName_/',$field)) {
@@ -296,7 +300,6 @@ class NetworkPort extends CommonDBChild {
     * @see splitInputForElements() for preparing the input
    **/
    function updateDependencies($history=1) {
-
       $instantiation = $this->getInstantiation();
       if (($instantiation !== false)
           && (count($this->input_for_instantiation) > 0)) {
@@ -377,6 +380,7 @@ class NetworkPort extends CommonDBChild {
     * @see CommonDBTM::post_addItem
     */
    function post_addItem() {
+      parent::post_addItem();
       $this->updateDependencies(1);
    }
 
