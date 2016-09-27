@@ -418,7 +418,7 @@ function step4 ($databasename, $newdatabasename) {
             echo "<p>".__('Database created')."</p>";
 
             if ($link->select_db($newdatabasename)
-                && Toolbox::createMainConfig($host,$user,$password,$newdatabasename)) {
+                && DBConnection::createMainConfig($host,$user,$password,$newdatabasename)) {
 
                Toolbox::createSchema($_SESSION["glpilanguage"]);
                echo "<p>".__('OK - database was initialized')."</p>";
