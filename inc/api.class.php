@@ -953,6 +953,7 @@ abstract class API extends CommonGLPI {
          }
 
          $fk_parent = getForeignKeyFieldForItemType($this->parameters['parent_itemtype']);
+         $fk_child = getForeignKeyFieldForItemType($itemtype);
 
          // check parent rights
          $parent_item = new $this->parameters['parent_itemtype'];
@@ -970,6 +971,10 @@ abstract class API extends CommonGLPI {
                  && isset($item->fields['items_id'])) {
             $where.= " AND `$table`.`itemtype` = '".$this->parameters['parent_itemtype']."'
                        AND `$table`.`items_id` = ".$this->parameters['parent_id'];
+         } else if(isset($parent_item->fields[$fk_child])) {
+            $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
+            $join.= " LEFT JOIN `$parentTable` ON `$parentTable`.`$fk_child` = `$table`.`id` ";
+            $where.= " AND `$parentTable`.`$fk_child` = `$table`.`id`";
          }
       }
 
