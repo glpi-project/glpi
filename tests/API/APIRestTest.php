@@ -315,11 +315,53 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                           'query' => [
                                              'sort'          => 19,
                                              'order'         => 'DESC',
-                                             'range'         => '0-2',
+                                             'range'         => '0-10',
                                              'forcedisplay'  => '81',
                                              'rawdata'       => true]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
+
+      $headers = $res->getHeaders();
+      $this->assertArrayHasKey('Accept-Range', $headers);
+      $this->assertContains('User', $headers['Accept-Range'][0]);
+      $this->assertArrayHasKey('Content-Range', $headers);
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('totalcount', $data);
+      $this->assertArrayHasKey('count', $data);
+      $this->assertArrayHasKey('sort', $data);
+      $this->assertArrayHasKey('order', $data);
+      $this->assertArrayHasKey('rawdata', $data);
+      $this->assertEquals(8, count($data['rawdata']));
+
+      $first_user = array_shift($data['data']);
+      $second_user = array_shift($data['data']);
+      $this->assertArrayHasKey(81, $first_user);
+      $this->assertArrayHasKey(81, $second_user);
+      $first_user_date_mod = strtotime($first_user[19]);
+      $second_user_date_mod = strtotime($second_user[19]);
+      $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
+   }
+
+
+   /**
+     * @depends testInitSessionCredentials
+     */
+   public function testListSearchPartial($session_token) {
+      // test retrieve partial users
+      $res = $this->doHttpRequest('GET', 'search/User/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'sort'          => 19,
+                                             'order'         => 'DESC',
+                                             'range'         => '0-2',
+                                             'forcedisplay'  => '81',
+                                             'rawdata'       => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(206, $res->getStatusCode());
 
       $headers = $res->getHeaders();
       $this->assertArrayHasKey('Accept-Range', $headers);

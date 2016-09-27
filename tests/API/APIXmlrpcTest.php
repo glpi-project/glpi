@@ -314,10 +314,43 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
                                              'itemtype'      => 'User',
                                              'sort'          => 19,
                                              'order'         => 'DESC',
-                                             'range'         => '0-2',
+                                             'range'         => '0-10',
                                              'forcedisplay'  => '81',
                                              'rawdata'       => true]);
       $this->assertEquals(200, $res->getStatusCode());
+
+      $data = xmlrpc_decode($res->getBody());
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('totalcount', $data);
+      $this->assertArrayHasKey('count', $data);
+      $this->assertArrayHasKey('sort', $data);
+      $this->assertArrayHasKey('order', $data);
+      $this->assertArrayHasKey('rawdata', $data);
+      $this->assertEquals(8, count($data['rawdata']));
+
+      $first_user = array_shift($data['data']);
+      $second_user = array_shift($data['data']);
+      $this->assertArrayHasKey(81, $first_user);
+      $this->assertArrayHasKey(81, $second_user);
+      $first_user_date_mod = strtotime($first_user[19]);
+      $second_user_date_mod = strtotime($second_user[19]);
+      $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
+   }
+
+
+   /**
+     * @depends testInitSessionCredentials
+     */
+   public function testListSearchPartial($session_token) {
+      // test retrieve partial users
+      $res = $this->doHttpRequest('search', ['session_token' => $session_token,
+                                             'itemtype'      => 'User',
+                                             'sort'          => 19,
+                                             'order'         => 'DESC',
+                                             'range'         => '0-2',
+                                             'forcedisplay'  => '81',
+                                             'rawdata'       => true]);
+      $this->assertEquals(206, $res->getStatusCode());
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
