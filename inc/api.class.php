@@ -820,7 +820,7 @@ abstract class API extends CommonGLPI {
          if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
             $fields['_notes'] = self::arrayRightError();
          } else {
-            $fields['_notes'] = Notepad::getAllForItem($itemtype);
+            $fields['_notes'] = Notepad::getAllForItem($item);
          }
       }
 

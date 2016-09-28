@@ -47,7 +47,7 @@ include_once (GLPI_ROOT."/config/define.php");
  * @return boolean
 **/
 function isCommandLine() {
-   return (!isset($_SERVER["SERVER_NAME"]));
+   return (PHP_SAPI == 'cli');
 }
 
 /**
@@ -336,12 +336,12 @@ function glpi_autoload($classname) {
    }
 }
 
-// Use spl autoload to allow stackable autoload.
-spl_autoload_register('glpi_autoload');
-
 // composer autoload
 $autoload = dirname(__DIR__) . '/vendor/autoload.php';
 if (!file_exists($autoload)) {
    die('Run "composer install --no-dev" in the glpi tree');
 }
 require_once $autoload;
+
+// Use spl autoload to allow stackable autoload.
+spl_autoload_register('glpi_autoload', false, true);

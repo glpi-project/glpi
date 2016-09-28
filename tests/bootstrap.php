@@ -137,10 +137,10 @@ function loadDataset() {
    $CFG_GLPI['root_doc']            = '/glpi';
 
    // need to set theses in DB, because tests for API use http call and this bootstrap file is not called
-   Config::setConfigurationValues('core', ['url_base'     => 'http://localhost:8088',
-                                           'url_base_api' => 'http://localhost:8088/apirest.php']);
-   $CFG_GLPI['url_base']      = 'http://localhost:8088';
-   $CFG_GLPI['url_base_api'] = 'http://localhost:8088/apirest.php';
+   Config::setConfigurationValues('core', ['url_base'     => GLPI_URI,
+                                           'url_base_api' => GLPI_URI . '/apirest.php']);
+   $CFG_GLPI['url_base']      = GLPI_URI;
+   $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
 
    @mkdir(GLPI_LOG_DIR, 0755, true);
 

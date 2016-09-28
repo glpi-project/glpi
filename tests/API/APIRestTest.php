@@ -419,6 +419,22 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('id', $data);
       $netports_id = $data['id'];
 
+      $res = $this->doHttpRequest('POST', 'Notepad/',
+                                          ['headers' => [
+                                                'Session-Token' => $session_token],
+                                          'json' => [
+                                             'input'            => [ 
+                                                'itemtype'                 => 'Computer',
+                                                'items_id'                 => $computers_id,
+                                                'content'                  => 'note about a computer'
+                                          ]]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(201, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('id', $data);
+
       return $computers_id;
    }
 
@@ -528,6 +544,33 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals('1.2.3.4', $networkname['IPAddress'][0]['name']);
    }
 
+   /**
+     * @depends testInitSessionCredentials
+     * @depends testCreateItem
+     */
+   public function testGetItemWithNotes($session_token, $computers_id) {
+      // Get the previously created 'computer 1'
+      $res = $this->doHttpRequest('GET', "Computer/$computers_id",
+            ['headers' => [
+                  'Session-Token'     => $session_token],
+                  'query' => [
+                        'with_notes' => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('id', $data);
+      $this->assertArrayHasKey('name', $data);
+      $this->assertArrayHasKey('_notes', $data);
+      $notes = $data['_notes'];
+      $this->assertArrayHasKey('id', $notes[0]);
+      $this->assertArrayHasKey('itemtype', $notes[0]);
+      $this->assertArrayHasKey('items_id', $notes[0]);
+      $this->assertArrayHasKey('id', $notes[0]);
+      $this->assertArrayHasKey('users_id', $notes[0]);
+      $this->assertArrayHasKey('content', $notes[0]);
+   }
 
    /**
      * @depends testInitSessionCredentials
