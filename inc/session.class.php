@@ -1039,18 +1039,15 @@ class Session {
             if ($reset) {
                $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
             }
-            $toadd = [];
 
-            if ($check_once) {
-               if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type]) || in_array($msg, $_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type]) === false) {
-                  $toadd[] = $msg;
-               }
-            } else {
-               $toadd[] = $msg;
+            if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type])) {
+               $_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type] = array();
             }
 
-            if (count($toadd) > 0) {
-               $_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type] = $toadd;
+            if (!$check_once
+                || !isset($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type])
+                || in_array($msg, $_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type]) === false) {
+               array_push($_SESSION["MESSAGE_AFTER_REDIRECT"][$message_type], $msg);
             }
          }
       }
