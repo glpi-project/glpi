@@ -341,7 +341,8 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>";
       Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
-
+      
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
       Group::dropdown(array('name'      => 'groups_id_tech',
@@ -426,7 +427,7 @@ class SoftwareLicense extends CommonDBTM {
          Html::showToolTip(__('On search engine, use "Expiration contains NULL" to search licenses with no expiration date'));
       }
       Alert::displayLastAlert('SoftwareLicense', $ID);
-      echo "</td></tr>\n";
+      echo "</td><td colspan='2'></td></tr>\n";
 
       $this->showFormButtons($options);
 
