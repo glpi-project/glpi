@@ -57,7 +57,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
       //test all messages types
       Session::addMessageAfterRedirect($err_msg, false, ERROR);
-      Session::addMessageAfterRedirect($warn_msg, false, WARN);
+      Session::addMessageAfterRedirect($warn_msg, false, WARNING);
       Session::addMessageAfterRedirect($info_msg, false, INFO);
 
       $expected = [
@@ -65,6 +65,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
         WARNING => [$warn_msg],
         INFO    => [$info_msg]
       ];
+      $this->assertEquals($expected, $_SESSION['MESSAGE_AFTER_REDIRECT']);
 
       $this->expectOutputRegex('/' . str_replace('.', '\.', $err_msg)  . '/');
       $this->expectOutputRegex('/' . str_replace('.', '\.', $warn_msg)  . '/');
@@ -81,6 +82,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
       $expected = [
         ERROR   => [$err_msg, $err_msg, $err_msg]
       ];
+      $this->assertEquals($expected, $_SESSION['MESSAGE_AFTER_REDIRECT']);
 
       $this->expectOutputRegex('/' . str_replace('.', '\.', $err_msg)  . '/');
       Html::displayMessageAfterRedirect();
@@ -97,6 +99,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
       $expected = [
         ERROR   => [$err_msg, $err_msg_bis]
       ];
+      $this->assertEquals($expected, $_SESSION['MESSAGE_AFTER_REDIRECT']);
 
       $this->expectOutputRegex('/' . str_replace('.', '\.', $err_msg)  . '/');
       $this->expectOutputRegex('/' . str_replace('.', '\.', $err_msg_bis)  . '/');
@@ -110,8 +113,9 @@ class SessionTest extends PHPUnit_Framework_TestCase {
       Session::addMessageAfterRedirect($info_msg, false, INFO, true);
 
       $expected = [
-        ERROR   => [$info_msg]
+         INFO   => [$info_msg]
       ];
+      $this->assertEquals($expected, $_SESSION['MESSAGE_AFTER_REDIRECT']);
 
       $this->expectOutputRegex('/' . str_replace(['.', ')'], ['\.', '\)'], $info_msg)  . '/');
       Html::displayMessageAfterRedirect();
