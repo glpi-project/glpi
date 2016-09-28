@@ -630,12 +630,14 @@ function update0905to91() {
    if ($new) {
       //new right for software license
       //copy the software right value to the new license right
-      foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {
-         $query = "INSERT INTO `glpi_profilerights`
-                          (`id`, `profiles_id`, `name`, `rights`)
-                   VALUES (NULL, '".$profrights['profiles_id']."', 'license',
-                           '".$profrights['rights']."')";
-         $DB->queryOrDie($query, "9.1 add right for softwarelicense");
+      if (countElementsInTable("glpi_profilerights", "`name` = 'license'") == 0) {
+         foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {
+            $query = "INSERT INTO `glpi_profilerights`
+                             (`id`, `profiles_id`, `name`, `rights`)
+                      VALUES (NULL, '".$profrights['profiles_id']."', 'license',
+                              '".$profrights['rights']."')";
+            $DB->queryOrDie($query, "9.1 add right for softwarelicense");
+         }
       }
    }
 
