@@ -734,7 +734,8 @@ function update0905to91() {
                                 (`id`, `name`,`entities_id`, `is_recursive`, `type`, `comment`,
                                  `number_time`, `date_mod`, `definition_time`,
                                  `end_of_working_day`, `date_creation`, `slas_id`)
-                         VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."',
+                         VALUES ('".$data['id']."', '".Toolbox::addslashes_deep($data['name'])."',
+                                 '".$data['entities_id']."',
                                  '".$data['is_recursive']."', '".SLT::TTR."',
                                  '".addslashes($data['comment'])."', '".$data['resolution_time']."',
                                  '".$data['date_mod']."',
