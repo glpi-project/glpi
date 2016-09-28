@@ -3192,7 +3192,8 @@ class User extends CommonDBTM {
       $p['toupdate']       = '';
       $p['rand']           = mt_rand();
       $p['display']        = true;
-      $p['_user_index']   = 0;
+      $p['_user_index']    = 0;
+      $p['specific_tags']  = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
