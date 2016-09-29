@@ -254,6 +254,7 @@ class APIXmlrpc extends API {
       $out = xmlrpc_encode_request(NULL, $response, array('encoding' => 'UTF-8',
                                                           'escaping' => 'markup'));
       echo $out;
+      exit;
    }
 
    /**
