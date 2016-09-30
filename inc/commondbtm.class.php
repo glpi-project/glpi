@@ -781,6 +781,11 @@ class CommonDBTM extends CommonGLPI {
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
+      // Manage the _no_history
+      if (!isset($this->input['_no_history'])) {
+         $this->input['_no_history'] = !$history;
+      }
+
       if (isset($this->input['add'])) {
          // Input from the interface
          // Save this data to be available if add fail
@@ -1039,6 +1044,11 @@ class CommonDBTM extends CommonGLPI {
 
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
+
+      // Manage the _no_history
+      if (!isset($this->input['_no_history'])) {
+         $this->input['_no_history'] = !$history;
+      }
 
       // Plugin hook - $this->input can be altered
       Plugin::doHook("pre_item_update", $this);
