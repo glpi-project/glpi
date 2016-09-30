@@ -696,13 +696,28 @@ class Toolbox {
          }
       }
 
+      $etag = md5_file($file);
+      $lastModified = filemtime($file);
+      
       // Now send the file with header() magic
-      header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+      header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
+      header("Etag: $etag");
       header('Pragma: private'); /// IE BUG + SSL
       header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
       header("Content-disposition: filename=\"$filename\"");
       header("Content-type: ".$mime);
 
+      // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
+      // http://tools.ietf.org/html/rfc7232#section-3.3
+      if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag){
+         header("HTTP/1.1 304 Not Modified");
+         exit;
+      }
+      if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified){
+         header("HTTP/1.1 304 Not Modified");
+         exit;
+      }
+    
       readfile($file) or die ("Error opening file $file");
    }
 
