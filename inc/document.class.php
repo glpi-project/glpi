@@ -453,42 +453,7 @@ class Document extends CommonDBTM {
 
       $file = GLPI_DOC_DIR."/".$this->fields['filepath'];
 
-      if (!file_exists($file)) {
-         die("Error file ".$file." does not exist");
-      }
-
-      // don't download picture files, see them inline
-      $attachment = "";
-      $filename_parts = explode(".", $this->fields['filename']);
-      $extension = array_pop($filename_parts);
-      $extension = strtolower($extension);
-      if (!in_array($extension, array('jpg', 'png', 'gif', 'bmp'))) {
-         $attachment = " attachment;";
-      }
-
-      $etag = md5_file($file);
-      $lastModified = filemtime($file);
-      
-      // Now send the file with header() magic
-      header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
-      header("Etag: $etag");
-      header('Pragma: private'); /// IE BUG + SSL
-      header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-      header("Content-disposition:$attachment filename=\"".$this->fields['filename']."\"");
-      header("Content-type: ".$this->fields['mime']);
-
-      // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
-      // http://tools.ietf.org/html/rfc7232#section-3.3
-      if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag){
-         header("HTTP/1.1 304 Not Modified");
-         exit;
-      }
-      if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified){
-         header("HTTP/1.1 304 Not Modified");
-         exit;
-      }
-    
-      readfile($file) or die ("Error opening file $file");
+      Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime']);
    }
 
 

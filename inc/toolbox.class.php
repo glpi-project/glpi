@@ -651,10 +651,11 @@ class Toolbox {
     *
     * @param $file      string: storage filename
     * @param $filename  string: file title
+    * @param $mime      string: file mime type
     *
     * @return nothing
    **/
-   static function sendFile($file, $filename) {
+   static function sendFile($file, $filename, $mime = null) {
 
       // Test securite : document in DOC_DIR
       $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
@@ -669,31 +670,30 @@ class Toolbox {
          die("Error file $file does not exist");
       }
 
-      $splitter = explode("/", $file);
-      $mime     = "application/octetstream";
+      // if $mime is defined, ignore mime type by extension
+      if($mime === null && preg_match('/\.(...)$/', $file, $regs)){
+         $mimeTypeMap = [
+            'sql' => 'text/x-sql',
+            'xml' => 'text/xml',
+            'csv' => 'text/csv',
+            'svg' => 'image/svg+xml',
+            'png' => 'image/png',
+         ];
 
-      if (preg_match('/\.(...)$/', $file, $regs)) {
-         switch ($regs[1]) {
-            case "sql" :
-               $mime = "text/x-sql";
-               break;
+         $ext = strtolower($regs[1]);
 
-            case "xml" :
-               $mime = "text/xml";
-               break;
-
-            case "csv" :
-               $mime = "text/csv";
-               break;
-
-            case "svg" :
-               $mime = "image/svg+xml";
-               break;
-
-            case "png" :
-               $mime = "image/png";
-               break;
+         if(isset($mimeTypeMap[$ext])){
+            $mime = $mimeTypeMap[$ext];
+         }else{
+            $mime = 'application/octetstream';
          }
+      }
+
+      // don't download picture files, see them inline
+      $attachment = "";
+      // if not begin 'image/'
+      if(strncmp($mime, 'image/', 6) !== 0){
+         $attachment = ' attachment;';
       }
 
       $etag = md5_file($file);
@@ -704,7 +704,7 @@ class Toolbox {
       header("Etag: $etag");
       header('Pragma: private'); /// IE BUG + SSL
       header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-      header("Content-disposition: filename=\"$filename\"");
+      header("Content-disposition:$attachment filename=\"$filename\"");
       header("Content-type: ".$mime);
 
       // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
