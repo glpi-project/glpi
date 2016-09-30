@@ -919,9 +919,12 @@ abstract class API extends CommonGLPI {
             $range = explode("-", $params['range']);
             $params['start']      = $range[0];
             $params['list_limit'] = $range[1]-$range[0]+1;
+            $params['range']      = $range;
          } else {
             $this->returnError("range must be in format : [start-end] with integers");
          }
+      } else{
+         $params['range'] = array(0,50);
       }
 
       // check parameters
@@ -1007,6 +1010,12 @@ abstract class API extends CommonGLPI {
       $result_numtotalrow = $DB->query($query_numtotalrow);
       $data_numtotalrow = $DB->fetch_assoc($result_numtotalrow);
       $totalcount = $data_numtotalrow['FOUND_ROWS()'];
+
+      if ($params['range'][0] > $totalcount) {
+         $this->returnError("Provided range exceed total count of data: ".$totalcount,
+                            400,
+                            "ERROR_RANGE_EXCEED_TOTAL");
+      }
 
       foreach ($found as $key => &$fields) {
          // only keep id in field list
@@ -1294,6 +1303,11 @@ abstract class API extends CommonGLPI {
          $this->returnError("Provided range exceed total count of data: ".$cleaned_data['totalcount'],
                             400,
                             "ERROR_RANGE_EXCEED_TOTAL");
+      }
+      
+      // fix end range
+      if ($params['range'][1] > $cleaned_data['totalcount'] - 1) {
+         $params['range'][1] = $cleaned_data['totalcount'] - 1;
       }
 
       //prepare cols (searchoptions_id) for cleaned data
