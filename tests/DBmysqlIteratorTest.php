@@ -125,6 +125,28 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   public function testOperators() {
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['a' => 1]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE `a` = 1', $it->getSql(), 'Operator, implicit =');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['a' => ['=', 1]]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE `a` = 1', $it->getSql(), 'Operator, explicit =');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['a' => ['>', 1]]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE `a` > 1', $it->getSql(), 'Operator, >');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['a' => ['LIKE', '%bar%']]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE `a` LIKE \'%bar%\'', $it->getSql(), 'Operator, LIKE');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['NOT' => ['a' => ['LIKE', '%bar%']]]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE NOT (`a` LIKE \'%bar%\')', $it->getSql(), 'Operator, NOT / LIKE');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['a' => ['NOT LIKE', '%bar%']]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE `a` NOT LIKE \'%bar%\'', $it->getSql(), 'Operator, NOT LIKE');
+   }
+
+
    public function testWhere() {
 
       $it = new DBmysqlIterator(NULL, 'foo', 'id=1');
@@ -143,7 +165,10 @@ class DBmysqlIteratorTest extends DbTestCase {
       $this->assertEquals('SELECT * FROM `foo` WHERE `bar` = 1', $it->getSql(), 'Integer value');
 
       $it = new DBmysqlIterator(NULL, 'foo', ['bar' => [1, 2, 4]]);
-      $this->assertEquals("SELECT * FROM `foo` WHERE `bar` IN ('1','2','4')", $it->getSql(), 'Multiple values');
+      $this->assertEquals("SELECT * FROM `foo` WHERE `bar` IN (1, 2, 4)", $it->getSql(), 'Multiple integer values');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['bar' => ['a', 'b', 'c']]);
+      $this->assertEquals("SELECT * FROM `foo` WHERE `bar` IN ('a', 'b', 'c')", $it->getSql(), 'Multiple string values');
 
       $it = new DBmysqlIterator(NULL, 'foo', ['bar' => 'val']);
       $this->assertEquals("SELECT * FROM `foo` WHERE `bar` = 'val'", $it->getSql(), 'String value');
@@ -198,7 +223,7 @@ class DBmysqlIteratorTest extends DbTestCase {
                           ],
               ];
       $it = new DBmysqlIterator(NULL, ['foo'], $crit);
-      $this->assertEquals("SELECT * FROM `foo` WHERE `a` = 1 AND (`b` = 2 OR NOT (`c` IN ('2','3') AND (`d` = 4 AND `e` = 5)))", $it->getSql(), 'Complex case');
+      $this->assertEquals("SELECT * FROM `foo` WHERE `a` = 1 AND (`b` = 2 OR NOT (`c` IN (2, 3) AND (`d` = 4 AND `e` = 5)))", $it->getSql(), 'Complex case');
    }
 
 
