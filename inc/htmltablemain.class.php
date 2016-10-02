@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -212,7 +212,6 @@ class HTMLTableMain extends HTMLTableBase {
          $colspan              = $header['']->getColSpan();
          $totalNumberOfColumn += $colspan;
       }
-
 
       foreach ($this->itemtypes as $itemtype => $title) {
          Session::initNavigateListItems($itemtype, $title);

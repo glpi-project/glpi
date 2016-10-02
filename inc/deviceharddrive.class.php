@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 class DeviceHardDrive extends CommonDevice {
 
    static protected $forward_entity_to = array('Item_DeviceHardDrive', 'Infocom');
-   
+
    static function getTypeName($nb=0) {
       return _n('Hard drive', 'Hard drives', $nb);
    }

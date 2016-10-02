@@ -622,7 +622,6 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
          $row      = $DB->fetch_assoc($result);
          $parentID = $row[$parentIDfield];
 
-
          if ($wholename == "") {
             $name = $row["name"];
          } else {
@@ -1194,7 +1193,6 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
    if (isset($_SESSION["glpiis_ids_visible"]) && !$force_config) {
       $id_visible = $_SESSION["glpiis_ids_visible"];
    }
-
 
    if (strlen($realname) > 0) {
       $temp = $realname;

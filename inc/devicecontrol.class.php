@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 class DeviceControl extends CommonDevice {
 
    static protected $forward_entity_to = array('Item_DeviceControl', 'Infocom');
-   
+
    static function getTypeName($nb=0) {
       return _n('Controller', 'Controllers', $nb);
    }

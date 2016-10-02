@@ -885,7 +885,6 @@ class Cartridge extends CommonDBChild {
       $number = $DB->numrows($result);
       $i      = 0;
 
-
       if ($canedit && !$old) {
          echo "<div class='firstbloc'>";
          echo "<form method='post' action=\"".static::getFormURL()."\">";

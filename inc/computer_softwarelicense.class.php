@@ -340,7 +340,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       $canedit         = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
       $canshowcomputer = Computer::canView();
 
-
       if (isset($_GET["start"])) {
          $start = $_GET["start"];
       } else {

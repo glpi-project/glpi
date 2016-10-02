@@ -313,7 +313,6 @@ class Link extends CommonDBTM {
          $link = str_replace("[FIRSTNAME]",$item->getField('firstname'),$link);
       }
 
-
       $replace_IP  = strstr($link,"[IP]");
       $replace_MAC = strstr($link,"[MAC]");
 

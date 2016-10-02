@@ -283,7 +283,6 @@ class TicketFollowup  extends CommonDBTM {
              $this->input['_job']->update($update);
           }
 
-
          // Add log entry in the ticket
          $changes[0] = 0;
          $changes[1] = '';
@@ -328,7 +327,6 @@ class TicketFollowup  extends CommonDBTM {
                                               Toolbox::addslashes_deep($name['data']));
          }
       }
-
 
       // Pass old assign From Ticket in case of assign change
 //       if (isset($input["_old_assign"])) {
@@ -1119,7 +1117,7 @@ class TicketFollowup  extends CommonDBTM {
       $tab[2]['name']         = __('Request source');
       $tab[2]['forcegroupby'] = true;
       $tab[2]['datatype']     = 'dropdown';
-      
+
       $tab[3]['table']        = $this->getTable();
       $tab[3]['field']        = 'date';
       $tab[3]['name']         = __('Date');
@@ -1135,7 +1133,6 @@ class TicketFollowup  extends CommonDBTM {
       $tab[5]['name']         = __('User');
       $tab[5]['datatype']     = 'dropdown';
       $tab[5]['right']        = 'all';
-
 
       return $tab;
    }

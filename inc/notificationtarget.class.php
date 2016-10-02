@@ -440,7 +440,6 @@ class NotificationTarget extends CommonDBChild {
       // Default USER TYPE is ANONYMOUS
       $notificationoption = array('usertype' => self::ANONYMOUS_USER);
 
-
       if (isset($data['language'])) {
          $new_lang = trim($data['language']);
       }

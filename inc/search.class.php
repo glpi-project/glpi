@@ -261,7 +261,6 @@ class Search {
          $data['search']['no_search'] = false;
       }
 
-
       // Add order item
       if (!in_array($p['sort'], $data['toview'])) {
          array_push($data['toview'], $p['sort']);
@@ -282,7 +281,6 @@ class Search {
       }
       $data['toview']    = $tmpview;
       $data['tocompute'] = $data['toview'];
-
 
       // Force item to display
       if ($forcetoview) {
@@ -556,7 +554,6 @@ class Search {
          }
       }
 
-
       //// 4 - ORDER
       $ORDER = " ORDER BY `id` ";
       foreach ($data['tocompute'] as $key => $val) {
@@ -660,7 +657,6 @@ class Search {
       if (!empty($itemtable)) {
          $SELECT .= "`$itemtable`.`id` AS id ";
       }
-
 
       //// 7 - Manage GROUP BY
       $GROUPBY = "";
@@ -785,7 +781,6 @@ class Search {
       if (!empty($HAVING)) {
          $HAVING = ' HAVING '.$HAVING;
       }
-
 
       // Create QUERY
       if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
@@ -1169,7 +1164,6 @@ class Search {
          $parameters .= "&amp;_in_modal=1";
       }
 
-
       // Global search header
       if ($data['display_type'] == self::GLOBAL_SEARCH) {
          if ($data['item']) {
@@ -1360,7 +1354,6 @@ class Search {
                               $val["name"]);
             }
 
-
             $headers_line .= self::showHeaderItem($data['display_type'],
                                                    $name,
                                                    $header_num, $linkto,
@@ -1460,7 +1453,6 @@ class Search {
                                       $item_num, $row_num);
                }
             }
-
 
             if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
                if (!isset($typenames[$row["TYPE"]])) {
@@ -1832,7 +1824,6 @@ class Search {
       $p['actionname']   = 'search';
       $p['actionvalue']  = _sx('button', 'Search');
 
-
       foreach ($params as $key => $val) {
          $p[$key] = $val;
       }
@@ -2063,7 +2054,6 @@ class Search {
 
       $table     = $searchopt[$ID]["table"];
       $field     = $searchopt[$ID]["field"];
-
 
       $addtable = '';
 
@@ -2296,7 +2286,6 @@ class Search {
          }
       }
 
-
       $tocompute      = "`$table$addtable`.`$field`";
       $tocomputeid    = "`$table$addtable`.`id`";
 
@@ -2398,7 +2387,7 @@ class Search {
          case "glpi_entities.completename" :
             if (($itemtype == 'User')
                 && ($ID == 80)) {
-               
+
                $addtable2 = '';
                if ($meta) {
                   $addtable2 = "_".$meta_type;
@@ -2961,7 +2950,6 @@ class Search {
                             $tmplink `$table`.`$field` $SEARCH
                             $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH )
                             $toadd2) $toadd)";
-
 
          case "glpi_groups.completename" :
             if ($val == 'mygroups') {
@@ -3577,7 +3565,6 @@ class Search {
          $nt         = $nt.$addmetanum;
       }
 
-
       // Auto link
       if (($ref_table == $new_table)
           && empty($complexjoin)) {
@@ -4017,7 +4004,6 @@ class Search {
          }
       }
 
-
       switch ($table.".".$field) {
          case "glpi_tickets.priority" :
          case "glpi_problems.priority" :
@@ -4097,7 +4083,6 @@ class Search {
          $field     = $searchopt[$ID]["field"];
          $linkfield = $searchopt[$ID]["linkfield"];
 
-
          /// TODO try to clean all specific cases using SpecificToDisplay
 
          switch ($table.'.'.$field) {
@@ -4139,7 +4124,6 @@ class Search {
                            $out .= getUserName($data[$num][$k]['name'], $showuserlink);
                            $count_display++;
                         }
-
 
                         // Manage alternative_email for tickets_users
                         if (($itemtype == 'Ticket')
@@ -4712,7 +4696,6 @@ class Search {
          }
       }
 
-
       //// Default case
 
       // Link with plugin tables : need to know left join structure
@@ -4787,7 +4770,6 @@ class Search {
                      } else {
                         $text = nl2br($data[$num][$k]['name']);
                      }
-
 
                      if (self::$output_type == self::HTML_OUTPUT
                          && (Toolbox::strlen($text) > $CFG_GLPI['cut'])) {
@@ -4996,8 +4978,6 @@ class Search {
          }
       }
       return $out;
-
-
 
       // Trans in group concat
       if (count($split) == 3 && !empty($split[1])) {
@@ -5845,7 +5825,6 @@ class Search {
 
             //set auto page breaks
             $pdf->SetAutoPageBreak(TRUE, 15);
-
 
             // For standard language
             //$pdf->setFontSubsetting($subsetting);

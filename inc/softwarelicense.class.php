@@ -341,7 +341,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>";
       Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
@@ -888,7 +888,6 @@ class SoftwareLicense extends CommonDBTM {
          $start = 0;
       }
 
-
       if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
          $order = "DESC";
       } else {
@@ -900,7 +899,6 @@ class SoftwareLicense extends CommonDBTM {
       } else {
          $sort = "`entity` $order, `name`";
       }
-
 
       // Righ type is enough. Can add a License on a software we have Read access
       $canedit             = Software::canUpdate();
@@ -971,12 +969,10 @@ class SoftwareLicense extends CommonDBTM {
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                         (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
-
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                           (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
             echo "<table class='tab_cadre_fixehov'>";
-
 
             $header_begin  = "<tr><th>";
             $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
@@ -1067,7 +1063,6 @@ class SoftwareLicense extends CommonDBTM {
             echo "<table class='tab_cadre_fixe'><tr><th>".__('No item found')."</th></tr></table>";
          }
       }
-
 
       echo "</div>";
    }

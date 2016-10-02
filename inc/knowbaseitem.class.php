@@ -700,8 +700,6 @@ class KnowbaseItem extends CommonDBTM {
                                                 'canedit'    => $canedit));
       echo "</td></tr>";
 
-
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Subject')."</td>";
       echo "<td colspan='3'>";
@@ -1062,7 +1060,6 @@ class KnowbaseItem extends CommonDBTM {
             break;
       }
 
-
       if (empty($where)) {
          $where = '1 = 1';
       }
@@ -1402,7 +1399,6 @@ class KnowbaseItem extends CommonDBTM {
                }
                echo Search::showItem($output_type, $categ, $item_num, $row_num);
 
-
                if (isset($options['item_itemtype'])
                    && isset($options['item_items_id'])
                    && ($output_type == Search::HTML_OUTPUT)) {
@@ -1419,7 +1415,6 @@ class KnowbaseItem extends CommonDBTM {
                                __('Use as a solution')."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
                }
-
 
                // End Line
                echo Search::showEndLine($output_type);
@@ -1488,7 +1483,6 @@ class KnowbaseItem extends CommonDBTM {
          }
       }
 
-
       // Only published
       $faq_limit .= " AND (`glpi_entities_knowbaseitems`.`entities_id` IS NOT NULL
                            OR `glpi_knowbaseitems_profiles`.`profiles_id` IS NOT NULL
@@ -1501,11 +1495,9 @@ class KnowbaseItem extends CommonDBTM {
                       AND (`glpi_knowbaseitems`.`end_date` IS NULL
                            OR `glpi_knowbaseitems`.`end_date` > NOW()) ";
 
-
       if ($faq) { // FAQ
          $faq_limit .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
-
 
       if (KnowbaseItemTranslation::isKbTranslationActive()
           && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)) {
@@ -1515,7 +1507,6 @@ class KnowbaseItem extends CommonDBTM {
          $addselect .= ", `glpi_knowbaseitemtranslations`.`name` AS transname,
                           `glpi_knowbaseitemtranslations`.`answer` AS transanswer ";
       }
-
 
       $query = "SELECT DISTINCT `glpi_knowbaseitems`.* $addselect
                 FROM `glpi_knowbaseitems`
@@ -1677,7 +1668,6 @@ class KnowbaseItem extends CommonDBTM {
          Html::closeForm();
          echo "</div>";
       }
-
 
       echo "<div class='spaced'>";
       if ($canedit && $nb) {

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -219,7 +219,7 @@ class NotificationTemplate extends CommonDBTM {
       } else {
          $additionnaloption =  array();
       }
-      
+
       $tid  = $language;
       $tid .= serialize($additionnaloption);
 

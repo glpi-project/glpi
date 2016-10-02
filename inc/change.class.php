@@ -263,7 +263,6 @@ class Change extends CommonITILObject {
    function cleanDBonPurge() {
       global $DB;
 
-
       $query1 = "DELETE
                  FROM `glpi_changetasks`
                  WHERE `changes_id` = '".$this->fields['id']."'";
@@ -637,7 +636,6 @@ class Change extends CommonITILObject {
       }
 
       $this->showFormHeader($options);
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<th class='left' width='$colsize1%'>".__('Opening date')."</th>";
@@ -1033,7 +1031,6 @@ class Change extends CommonITILObject {
             $order      = '`glpi_changes`.`date_mod` DESC';
             break;
       }
-
 
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_changes`

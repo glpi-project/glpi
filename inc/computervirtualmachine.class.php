@@ -161,7 +161,6 @@ class ComputerVirtualMachine extends CommonDBChild {
       }
       echo "</tr>\n";
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
@@ -215,7 +214,6 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<td>";
       Html::autocompletionTextField($this, "vcpu");
       echo "</td></tr>";
-
 
       $this->showFormButtons($options);
 
@@ -397,9 +395,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          }
          echo $header;
       }
-
-
-
       echo "</table>";
       echo "</div>";
    }

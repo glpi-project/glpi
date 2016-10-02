@@ -86,7 +86,6 @@ class Supplier extends CommonDBTM {
                        AND `itemtype` = '".__CLASS__."'";
       $DB->query($query1);
 
-
       $cs  = new Contract_Supplier();
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 

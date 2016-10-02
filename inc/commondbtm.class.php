@@ -1246,7 +1246,6 @@ class CommonDBTM extends CommonGLPI {
                                             $this->getTypeName(1), $this->fields['id']);
          }
 
-
          if (isset($this->input['_no_message_link'])) {
             $display = $this->getNameID();
          } else {
@@ -1321,7 +1320,6 @@ class CommonDBTM extends CommonGLPI {
          $force = 1;
       }
 
-
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -1340,7 +1338,6 @@ class CommonDBTM extends CommonGLPI {
       } else {
          Plugin::doHook("pre_item_delete", $this);
       }
-
 
       if (!is_array($this->input)) {
          // $input clear by a hook to cancel delete
@@ -2173,7 +2170,6 @@ class CommonDBTM extends CommonGLPI {
          }
          echo "</tr>";
       }
-
 
       // Close for Form
       echo "</table></div>";

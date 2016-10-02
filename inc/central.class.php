@@ -208,7 +208,6 @@ class Central extends CommonGLPI {
          }
       }
 
-
       if ($DB->isSlave()
           && !$DB->first_connection) {
          echo "<tr><th colspan='2'>";

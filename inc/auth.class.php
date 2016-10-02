@@ -938,7 +938,7 @@ class Auth extends CommonGLPI {
          case self::DB_GLPI :
             return __('GLPI internal database');
 
-         case self::API: 
+         case self::API:
             return __("API");
 
          case self::NOT_YET_AUTHENTIFIED :
@@ -1251,7 +1251,6 @@ class Auth extends CommonGLPI {
       echo "<td class='center'>". sprintf(__('Restrict %s field for x509 authentication (separator $)'),'O') ."</td>";
       echo "<td><input type='text' name='x509_o_restrict' value=\"".$CFG_GLPI["x509_o_restrict"]."\">";
       echo "</td></tr>\n";
-
 
       //Other configuration
       echo "<tr><th>" . __('Other authentication sent in the HTTP request')."</th><th>";

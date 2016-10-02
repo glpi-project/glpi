@@ -512,7 +512,6 @@ class MassiveAction {
          return false;
       }
 
-
       if (!is_null($checkitem)) {
          $canupdate = $checkitem->canUpdate();
          $candelete = $checkitem->canDelete();

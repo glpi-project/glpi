@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -62,7 +62,6 @@ class NotificationTargetMailCollector extends NotificationTarget {
 
       $events                                  = $this->getEvents();
       $this->datas['##mailcollector.action##'] = $events[$event];
-
 
       foreach ($options['items'] as $id => $mailcollector) {
          $tmp                             = array();

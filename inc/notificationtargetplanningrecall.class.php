@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -151,7 +151,6 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
          $this->datas['##recall.item.date_mod##']
                      = Html::convDateTime($this->target_object->getField('date_mod'));
       }
-
 
       $this->datas['##recall.item.user##'] = '';
       $user_tmp                            = new User();

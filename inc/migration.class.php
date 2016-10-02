@@ -387,7 +387,6 @@ class Migration {
          $params['comment'] = " COMMENT '".addslashes($params['comment'])."'";
       }
 
-
       if (FieldExists($table, $oldfield, false)) {
          // in order the function to be replayed
          // Drop new field if name changed

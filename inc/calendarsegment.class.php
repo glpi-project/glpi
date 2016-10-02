@@ -327,14 +327,12 @@ class CalendarSegment extends CommonDBChild {
       $canedit = $calendar->can($ID, UPDATE);
       $rand    = mt_rand();
 
-
       $query = "SELECT *
                 FROM `glpi_calendarsegments`
                 WHERE `calendars_id` = '$ID'
                 ORDER BY `day`, `begin`, `end`";
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
-
 
       if ($canedit) {
          echo "<div class='firstbloc'>";

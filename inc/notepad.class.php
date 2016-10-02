@@ -280,7 +280,6 @@ class Notepad extends CommonDBChild {
 
             echo "<div class='boxnotecontent'>";
 
-
             echo "<div class='boxnotefloatright'>";
             $username = NOT_AVAILABLE;
             if ($note['users_id_lastupdater']) {
@@ -296,7 +295,6 @@ class Notepad extends CommonDBChild {
                               Html::convDateTime($note['date']));
             printf(__('%1$s / %2$s'), $update, $create);
             echo "</div>"; // floatright
-
 
             echo "<div class='boxnotetext $classtoadd' ";
             if ($canedit) {

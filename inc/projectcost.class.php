@@ -366,7 +366,6 @@ class ProjectCost extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'),
                                                 Project::getTypeName(1), $project->getName()));
 
-
             while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2' ".
                      ($canedit

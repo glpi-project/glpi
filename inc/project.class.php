@@ -695,7 +695,6 @@ class Project extends CommonDBTM {
 
          echo Search::showItem($p['output_type'], $fifth_col, $item_num, $p['row_num'], $align);
 
-
          // Eigth column
          $eigth_column = "<span class='b'>".$item->fields["name"]."</span>&nbsp;";
 
@@ -716,8 +715,6 @@ class Project extends CommonDBTM {
 
          echo Search::showItem($p['output_type'], $eigth_column, $item_num, $p['row_num'],
                                $align_desc."width='200'");
-
-
 
          // Finish Line
          echo Search::showEndLine($p['output_type']);
@@ -1231,7 +1228,6 @@ class Project extends CommonDBTM {
    */
    static function showGantt($ID) {
       global $DB;
-
 
       if ($ID > 0) {
          $project = new Project();

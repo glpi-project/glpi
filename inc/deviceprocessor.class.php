@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -83,8 +83,6 @@ class DeviceProcessor extends CommonDevice {
       $tab[12]['field']    = 'frequence';
       $tab[12]['name']     = __('Frequency');
       $tab[12]['datatype'] = 'string';
-
-
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'nbcores_default';

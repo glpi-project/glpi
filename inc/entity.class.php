@@ -960,7 +960,6 @@ class Entity extends CommonTreeDropdown {
          .focus();
      ";
 
-
       echo "</script>";
 
       echo "<div id='tree_projectcategory$rand' ></div>";
@@ -1036,7 +1035,6 @@ class Entity extends CommonTreeDropdown {
                        `glpi_entities`.`$field`
                 FROM `glpi_entities`
                 ORDER BY `glpi_entities`.`level` ASC";
-
 
       foreach ($DB->request($query) as $entitydatas) {
          if ((is_null($entitydatas[$field])
@@ -1256,7 +1254,6 @@ class Entity extends CommonTreeDropdown {
       echo "<tr><th colspan='4'>".__('Autofill dates for financial and administrative information').
            "</th></tr>";
 
-
       $options[0] = __('No autofill');
       if ($ID > 0) {
          $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
@@ -1466,7 +1463,6 @@ class Entity extends CommonTreeDropdown {
                                  'value'          =>  $entity->getField('is_notif_enable_default'),
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)));
 
-
       if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
          echo "<font class='green'><br>";
@@ -1477,7 +1473,6 @@ class Entity extends CommonTreeDropdown {
       echo "<td colspan='2'>&nbsp;</td>";
 
       echo "</tr>";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='middle right'>" . __('Email signature') . "</td>";
@@ -1570,7 +1565,6 @@ class Entity extends CommonTreeDropdown {
 
       }
       echo "</td></tr>";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='3'>";

@@ -361,7 +361,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       // is ticket deleted
       $datas['##ticket.isdeleted##'] = Dropdown::getYesNo($item->getField('is_deleted'));
 
-
       //Tags associated with the object linked to the ticket
       $datas['##ticket.itemtype##']                 = '';
       $datas['##ticket.item.name##']                = '';
@@ -585,7 +584,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $datas['##ticket.numberoffollowups##'] = count($datas['followups']);
 
-
          // Approbation of solution
          $restrict .= " LIMIT 1";
          $replysolved = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
@@ -800,8 +798,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'events' => array('validation', 'validation_answer')));
       }
 
-
-
       // Events for ticket satisfaction
       $tags = array('satisfaction.datebegin'    => __('Creation date of the satisfaction survey'),
                     'satisfaction.dateanswered' => __('Response date to the satisfaction survey'),
@@ -851,7 +847,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'foreach' => true));
       }
 
-
       //Tags with just lang
       $tags = array('ticket.linkedtickets'    => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
                     'ticket.problems'         => _n('Problem', 'Problems', Session::getPluralNumber()),
@@ -868,7 +863,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'value' => false,
                                    'lang'  => true));
       }
-
 
       //Foreach tag for alertnotclosed
       $this->addTagToList(array('tag'     => 'tickets',

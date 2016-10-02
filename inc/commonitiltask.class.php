@@ -302,7 +302,6 @@ abstract class CommonITILTask  extends CommonDBTM {
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
-
       if (in_array("begin",$this->updates)) {
          PlanningRecall::managePlanningUpdates($this->getType(), $this->getID(),
                                                $this->fields["begin"]);
@@ -583,7 +582,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[5]['name']         = __('Technician');
       $tab[5]['datatype']     = 'dropdown';
       $tab[5]['right']        = 'own_ticket';
-
 
       $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'actiontime';
@@ -1036,7 +1034,6 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       }
 
-
       if (isset($val["state"])) {
          $html.= "<span>";
          $html.= Planning::getState($val["state"]);
@@ -1272,7 +1269,6 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       ');
 
-
       if ($ID > 0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Date')."</td>";
@@ -1364,7 +1360,6 @@ abstract class CommonITILTask  extends CommonDBTM {
                                           "/front/planning.php?checkavailability=checkavailability".
                                           "&itemtype=".$item->getType()."&$fkfield=".$item->getID(),
                                     array('title'  => __('Availability')));
-
 
       echo "<br />";
       echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
@@ -1556,8 +1551,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
          while ($data = $DB->fetch_assoc($result)) {
             if ($this->getFromDB($data['id'])) {
-               $options = array( 'parent' => $item, 
-                                 'rand' => $rand, 
+               $options = array( 'parent' => $item,
+                                 'rand' => $rand,
                                  'showprivate' => $showprivate ) ;
                Plugin::doHook('pre_show_item', array('item' => $this, 'options' => &$options));
                $this->showInObjectSumnary($item, $rand, $showprivate);

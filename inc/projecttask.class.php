@@ -663,7 +663,6 @@ class ProjectTask extends CommonDBChild {
       $tab[24]['name']              = __('Creator');
       $tab[24]['datatype']          = 'dropdown';
 
-
       $tab[7]['table']              = $this->getTable();
       $tab[7]['field']              = 'plan_start_date';
       $tab[7]['name']               = __('Planned start date');
@@ -792,7 +791,6 @@ class ProjectTask extends CommonDBChild {
 
       echo "<div class='spaced'>";
 
-
       if ($canedit) {
          echo "<div class='center firstbloc'>";
          echo "<a class='vsubmit' href='projecttask.form.php?projects_id=$ID'>".
@@ -833,7 +831,6 @@ class ProjectTask extends CommonDBChild {
                                AND `namet3`.`field` = 'name')";
          $where     .= " AND `namet3`.`items_id` = `glpi_projectstates`.`id` ";
       }
-
 
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
@@ -1138,7 +1135,6 @@ class ProjectTask extends CommonDBChild {
                }
             }
          }
-
 
          $parents = 0;
          if ($task->fields['projecttasks_id'] > 0) {

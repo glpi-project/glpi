@@ -1261,7 +1261,6 @@ class Document extends CommonDBTM {
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
 
-
       $p['name']    = 'documents_id';
       $p['entity']  = '';
       $p['used']    = array();

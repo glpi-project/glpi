@@ -93,7 +93,6 @@ class DBmysql {
    **/
    function connect($choice=NULL) {
 
-
       $this->connected = false;
 
       if (is_array($this->dbhost)) {

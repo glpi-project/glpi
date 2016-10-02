@@ -932,7 +932,6 @@ class Computer extends CommonDBTM {
       $tab[35]['computation']    = "(SUM(TABLE.`size`) / COUNT(TABLE.`id`))
                                     * COUNT(DISTINCT TABLE.`id`)";
 
-
       $tab[11]['table']          = 'glpi_devicenetworkcards';
       $tab[11]['field']          = 'designation';
       $tab[11]['name']           = _n('Network interface', 'Network interfaces', 1);
@@ -980,7 +979,6 @@ class Computer extends CommonDBTM {
       $tab[14]['joinparams']     = array('beforejoin'
                                           => array('table'      => 'glpi_items_devicemotherboards',
                                                    'joinparams' => $items_device_joinparams));
-
 
       $tab[15]['table']          = 'glpi_deviceharddrives';
       $tab[15]['field']          = 'designation';

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,13 +32,13 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryOperatingSystemCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_operatingsystems";
    public $menu_option = "os";
-   
+
    /**
     * @see RuleCollection::getTitle()
    **/

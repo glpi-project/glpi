@@ -571,7 +571,6 @@ class Html {
                   break;
             }
 
-
             echo "<div id=\"message_after_redirect_$msgtype\" title=\"$title\">";
             echo $html_messages;
             echo "</div>";
@@ -738,7 +737,6 @@ class Html {
             echo "<li><a href='#debugserver$rand'>SERVER VARIABLE</a></li>";
          }
          echo "</ul>";
-
 
          if ($CFG_GLPI["debug_sql"]) {
             echo "<div id='debugsql$rand'>";
@@ -1421,7 +1419,6 @@ class Html {
             }
          }
 
-
          //  PLUGINS
 //          if (isset($PLUGIN_HOOKS["menu_entry"]) && count($PLUGIN_HOOKS["menu_entry"])) {
 //             $plugins = array();
@@ -1492,7 +1489,6 @@ class Html {
 
       $already_used_shortcut = array('1');
 
-
       echo "<div id='header'>";
       echo "<div id='header_top'>";
       echo "<div id='c_logo'>";
@@ -1517,7 +1513,6 @@ class Html {
              "\"  alt=\"".__s('Logout')."\" class='button-icon' />";
       echo "</a>";
       echo "</li>\n";
-
 
       echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                  __s('My settings')."\">";
@@ -1552,12 +1547,10 @@ class Html {
                   "\"  alt=\"".__s('Help')."\" class='button-icon' />";
            "</a></li>";
 
-
       echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
                  "/front/preference.php?forcetab=User\$1' title=\"".
                  addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
                  Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
-
 
       /// Search engine
       echo "<li id='c_recherche'>\n";
@@ -1570,11 +1563,8 @@ class Html {
       }
       echo "</li>";
 
-
       echo "</ul>";
       echo "</div>\n";
-
-
 
       echo "</div>";
 
@@ -1603,7 +1593,6 @@ class Html {
             }
             echo "<a href='$link' class='itemP'>".$data['title']."</a>";
             echo "<ul class='ssmenu'>";
-
 
             // list menu item
             foreach ($data['content'] as $key => $val) {
@@ -1643,7 +1632,6 @@ class Html {
 
       // End navigation bar
       // End headline
-
 
       //  Le fil d ariane
       echo "<div id='c_ssmenu2' >";
@@ -1785,9 +1773,6 @@ class Html {
 
       // Add common items
 
-
-
-
       // Profile selector
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -1821,7 +1806,6 @@ class Html {
                });
             });";
       echo Html::scriptEnd();
-
 
       // call static function callcron() every 5min
       CronTask::callCron();
@@ -2078,7 +2062,6 @@ class Html {
       //-- Le moteur de recherche --
       echo "<div id='c_recherche'></div>";
 
-
       echo "</div>"; // c_recherche
 
       //-- Le menu principal --
@@ -2190,7 +2173,6 @@ class Html {
            "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"". __s('Home')."\">".
              __('Home')."</a></li>";
 
-
       if (TicketValidation::getValidateRights()) {
          $opt                              = array();
          $opt['reset']                     = 'reset';
@@ -2203,7 +2185,6 @@ class Html {
          $opt['criteria'][1]['searchtype'] = 'equals';
          $opt['criteria'][1]['value']      = Session::getLoginUserID();
          $opt['criteria'][1]['link']       = 'AND';
-
 
          $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($opt,'&amp;');
@@ -2445,7 +2426,6 @@ class Html {
          autoOpen: false
          });";
       echo Html::scriptEnd();
-
 
       /// Button to toggle responsive menu
       echo "<a href='#' onClick=\"".self::jsGetElementbyID('show_all_menu').".dialog('open');\"
@@ -2928,7 +2908,6 @@ class Html {
          $p['extraparams']['hidden']['_is_modal'] = 1;
       }
 
-
       if ($p['fixed']) {
          $width= '950px';
       } else {
@@ -3361,7 +3340,6 @@ class Html {
       $js .= "});";
 
       $output .= Html::scriptBlock($js);
-
 
       if ($p['display']) {
          echo $output;

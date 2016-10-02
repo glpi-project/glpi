@@ -265,7 +265,6 @@ class CommonGLPI {
             $menu['page']            = static::getSearchURL(false);
             $menu['links']['search'] = static::getSearchURL(false);
 
-
             if (!in_array('add', $forbidden)
                 && $type::canCreate()) {
 
@@ -853,7 +852,6 @@ class CommonGLPI {
             _e('List');
          }
          echo "</a></td>";
-
 
          $name = $this->getTypeName(1);
          if (isset($this->fields['id']) && ($this instanceof CommonDBTM)) {

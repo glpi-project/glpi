@@ -102,7 +102,7 @@ class ComputerDisk extends CommonDBChild {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Log', $ong, $options);
-      
+
       return $ong;
    }
 
@@ -234,7 +234,6 @@ class ComputerDisk extends CommonDBChild {
          return false;
       }
       $canedit = $comp->canEdit($ID);
-
 
       if ($canedit
           && !(!empty($withtemplate) && ($withtemplate == 2))) {

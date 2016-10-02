@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,13 +32,13 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_peripheralmodels";
    public $menu_option = "model.peripheral";
-   
+
    /**
     * @see RuleCollection::getTitle()
    **/

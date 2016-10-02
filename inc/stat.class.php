@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -447,7 +447,6 @@ class Stat extends CommonGLPI {
             echo Search::showHeaderItem($output_type, __('Closed'), $header_num);
          }
 
-
          if ($itemtype =='Ticket') {
             if ($output_type != Search::HTML_OUTPUT) {
                echo Search::showHeaderItem($output_type, __('Number of opened satisfaction survey'),
@@ -481,7 +480,6 @@ class Stat extends CommonGLPI {
             echo Search::showHeaderItem($output_type, __('Resolution'), $header_num);
             echo Search::showHeaderItem($output_type, __('Closure'), $header_num);
          }
-
 
          if ($output_type != Search::HTML_OUTPUT) {
             echo Search::showHeaderItem($output_type,
@@ -865,7 +863,6 @@ class Stat extends CommonGLPI {
          case 'locations_id' :
             $WHERE .= " AND `$table`.`$param` = '$value'";
             break;
-
 
          case "device":
             $devtable = getTableForItemType('Computer_'.$value2);
@@ -1280,7 +1277,6 @@ class Stat extends CommonGLPI {
                $graph->renderer->options->depth             = 0.07;
                break;
          }
-
 
          if (!empty($param['title'])) {
             $posttoadd = "";

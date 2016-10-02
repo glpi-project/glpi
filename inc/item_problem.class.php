@@ -126,7 +126,6 @@ class Item_Problem extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='problemitem_form$rand' id='problemitem_form$rand' method='post'

@@ -396,7 +396,6 @@ class RuleCollection extends CommonDBTM {
    function showListRules($target, $options=array()) {
       global $CFG_GLPI;
 
-
       $p['inherited'] = 1;
       $p['childrens'] = 0;
       $p['active']    = false;
@@ -1278,7 +1277,6 @@ class RuleCollection extends CommonDBTM {
          echo "</td></tr>";
       }
 
-
       //display buttons
       $class = ($odd?" class='tab_bg_1' ":" class='tab_bg_2' ");
       echo "<tr $class><td colspan='3' class='center'>";
@@ -1341,7 +1339,6 @@ class RuleCollection extends CommonDBTM {
          $params   = Toolbox::addslashes_deep($current_rule);
          unset($params['rulecriteria']);
          unset($params['ruleaction']);
-
 
          if (!$item->isEntityAssign()) {
             $params['entities_id'] = 0;

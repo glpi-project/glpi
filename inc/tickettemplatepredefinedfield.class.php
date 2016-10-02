@@ -232,12 +232,10 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $ticket        = new Ticket();
       $rand          = mt_rand();
 
-
       $query = "SELECT `glpi_tickettemplatepredefinedfields`.*
                 FROM `glpi_tickettemplatepredefinedfields`
                 WHERE (`tickettemplates_id` = '$ID')
                 ORDER BY 'id'";
-
 
       $display_options = array('relative_dates' => true,
                                'comments'       => true,
@@ -347,7 +345,6 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          } else {
             echo "<tr><th colspan='3'>".__('No item found')."</th></tr>";
          }
-
 
          echo "</table>";
          if ($canedit && $numrows) {

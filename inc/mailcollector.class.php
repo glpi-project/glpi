@@ -281,7 +281,6 @@ class MailCollector  extends CommonDBTM {
       Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
       echo "</td></tr>\n";
 
-
       if ($type != "pop") {
          echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
          echo "<td><input size='30' type='text' name='accepted' value=\"".$this->fields['accepted']."\">";
@@ -291,7 +290,6 @@ class MailCollector  extends CommonDBTM {
          echo "<td><input size='30' type='text' name='refused' value=\"".$this->fields['refused']."\">";
          echo "</td></tr>\n";
       }
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td width='200px'> ". __('Maximum size of each file imported by the mails receiver').
@@ -644,7 +642,6 @@ class MailCollector  extends CommonDBTM {
       // For RuleTickets
       $tkt['_mailgate']    = $options['mailgates_id'];
 
-
       // Use mail date if it's defined
       if ($this->fields['use_mail_date']) {
          $tkt['date'] = $head['date'];
@@ -873,7 +870,6 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-
       // Add message from getAttached
       if ($this->addtobody) {
          $tkt['content'] .= $this->addtobody;
@@ -1084,7 +1080,6 @@ class MailCollector  extends CommonDBTM {
          if (imap_num_msg($this->marubox) == 0) {
              $errors = imap_errors();
          }
-
 
          if ($this->fields['errors'] > 0) {
             $this->update(array('id'     => $this->getID(),
@@ -1450,7 +1445,6 @@ class MailCollector  extends CommonDBTM {
             }
             $i++;
          }
-
 
          $filename = $this->decodeMimeString($filename);
 

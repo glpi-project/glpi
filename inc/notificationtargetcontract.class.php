@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -173,7 +173,6 @@ class NotificationTargetContract extends NotificationTarget {
                                    'label' => $label,
                                    'value' => true));
       }
-
 
       //Tags without lang
       $tags = array('contract.url' => sprintf(__('%1$s: %2$s'), _n('Contract', 'Contracts', 1),

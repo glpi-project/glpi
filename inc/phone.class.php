@@ -135,10 +135,8 @@ class Phone extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-
       $ci = new Computer_Item();
       $ci->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
-
 
       $ip = new Item_Problem();
       $ip->cleanDBonItemDelete(__CLASS__, $this->fields['id']);
@@ -319,7 +317,7 @@ class Phone extends CommonDBTM {
       echo "</td>";
 
       echo "</tr>\n";
-      
+
       if (!empty($ID)
          && $this->fields["is_dynamic"]) {
          echo "<tr class='tab_bg_1'><td colspan='4'>";

@@ -631,7 +631,6 @@ class IPAddress extends CommonDBChild {
          }
          // END OF EXTREMITY CHECKS
 
-
          // The number of empty singletons depends on the type of contraction
          switch ($empty_count) {
 
@@ -1261,7 +1260,6 @@ class IPAddress extends CommonDBChild {
                                               Dropdown::getYesNo($address->fields['is_dynamic']),
                                               $this_cell);
                }
-
 
                IPNetwork::getHTMLTableCellsForItem($row, $address, $this_cell, $options);
             }

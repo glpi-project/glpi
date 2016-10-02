@@ -580,7 +580,6 @@ class Reminder extends CommonDBTM {
 
       $input["begin"] = $input["end"] = "NULL";
 
-
       if (isset($input['plan'])) {
          if (!empty($input['plan']["begin"])
              && !empty($input['plan']["end"])
@@ -676,7 +675,6 @@ class Reminder extends CommonDBTM {
     **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
-
 
       $this->initForm($ID, $options);
       $rand = mt_rand();
@@ -1041,7 +1039,6 @@ class Reminder extends CommonDBTM {
       $html.= "<a id='reminder_".$val["reminders_id"].$rand."' href='".
              $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'>";
 
-   
       $html.= $users_id;
       $html.= "</a>";
       $recall = '';
@@ -1055,14 +1052,13 @@ class Reminder extends CommonDBTM {
          }
       }
 
-
       if ($complete) {
          $html.= "<span>".Planning::getState($val["state"])."</span><br>";
          $html.= "<div class='event-description'>".$val["text"].$recall."</div>";
       } else {
          $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
                                    ".$val["text"].$recall,
-                                   array('applyto' => "reminder_".$val["reminders_id"].$rand, 
+                                   array('applyto' => "reminder_".$val["reminders_id"].$rand,
                                          'display' => false));
       }
       return $html;

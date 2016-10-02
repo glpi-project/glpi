@@ -682,7 +682,6 @@ class Document_Item extends CommonDBRelation{
          $result = $DB->query($q);
          $nb     = $DB->result($result,0,0);
 
-
          if ($item->getType() == 'Document') {
             $used[$item->getID()] = $item->getID();
          }
@@ -865,7 +864,6 @@ class Document_Item extends CommonDBRelation{
             $used[$data['id']]           = $data['id'];
          }
       }
-
 
       echo "<div class='spaced'>";
       if ($canedit

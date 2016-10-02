@@ -199,7 +199,6 @@ class Infocom extends CommonDBChild {
          case 'alert' :
             return self::getAlertName($values[$field]);
 
-
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
@@ -1432,7 +1431,6 @@ class Infocom extends CommonDBChild {
       $tab[58]['joinparams']           = $joinparams;
       $tab[58]['datatype']             = 'decimal';
 
-
       $tab[59]['table']                = 'glpi_infocoms';
       $tab[59]['field']                = 'alert';
       $tab[59]['name']                 = __('Email alarms');
@@ -1607,7 +1605,6 @@ class Infocom extends CommonDBChild {
       $tab[80]['name']           = __('Entity');
       $tab[80]['massiveaction']  = false;
       $tab[80]['datatype']       = 'dropdown';
-
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';

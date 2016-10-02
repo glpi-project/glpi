@@ -337,7 +337,6 @@ class NetworkPortInstantiation extends CommonDBChild {
          NetworkName::getHTMLTableCellsForItem($row, $netport, $father, $options);
       }
 
-
       return NULL;
    }
 

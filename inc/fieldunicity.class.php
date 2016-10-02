@@ -238,7 +238,6 @@ class FieldUnicity extends CommonDropdown {
    static function selectCriterias(CommonDBTM $unicity) {
       global $DB;
 
-
       echo "<span id='span_fields'>";
 
       if (!isset($unicity->fields['itemtype']) || !$unicity->fields['itemtype']) {

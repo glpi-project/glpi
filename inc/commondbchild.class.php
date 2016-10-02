@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -496,7 +496,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
 
       $items_for_log = $this->getItemsForLog(static::$itemtype, static::$items_id);
 
-
       // Whatever case : we log the changes
       $oldvalues = $this->oldvalues;
       unset($oldvalues[static::$itemtype]);
@@ -589,7 +588,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
           && $this->isDynamic()) {
          $item = $this->getItem();
 
-
          if (($item !== false)
              && $item->dohistory) {
             $changes[0] = '0';
@@ -619,7 +617,6 @@ abstract class CommonDBChild extends CommonDBConnexity {
       if ($this->useDeletedToLockIfDynamic()
           && $this->isDynamic()) {
          $item = $this->getItem();
-
 
          if (($item !== false)
              && $item->dohistory) {

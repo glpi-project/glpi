@@ -646,7 +646,6 @@ class NetworkPort extends CommonDBChild {
             $c_dynamic->setHTMLClass('center');
          }
 
-
          if ($display_options['characteristics']) {
             if (empty($portType)) {
                NetworkPortMigration::getMigrationInstantiationHTMLTableHeaders($t_group, $c_instant,
@@ -691,7 +690,6 @@ class NetworkPort extends CommonDBChild {
                       ORDER BY `name`,
                                `logical_number`";
          }
-
 
          if ($result = $DB->query($query)) {
             echo "<div class='spaced'>";
@@ -949,7 +947,6 @@ class NetworkPort extends CommonDBChild {
       $tab[88]['forcegroupby']  = true;
       $tab[88]['massiveaction'] = false;
       $tab[88]['joinparams']    = array('beforejoin' => $netportjoin);
-
 
       return $tab;
    }

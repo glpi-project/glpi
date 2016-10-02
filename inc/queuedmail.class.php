@@ -273,7 +273,6 @@ class QueuedMail extends CommonDBTM {
       $tab[15]['datatype']        = 'integer';
       $tab[15]['massiveaction']   = false;
 
-
       $tab[20]['table']          = $this->getTable();
       $tab[20]['field']          = 'itemtype';
       $tab[20]['name']           = __('Type');
@@ -629,7 +628,6 @@ class QueuedMail extends CommonDBTM {
       echo "<td>".__('Additional headers')."</td>";
       echo "<td>".self::getSpecificValueToDisplay('headers', $this->fields)."</td>";
       echo "</tr>";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Subject')."</td>";

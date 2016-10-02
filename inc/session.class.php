@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -571,7 +571,7 @@ class Session {
       if (empty($newfile) || !is_file(GLPI_ROOT . $newfile)) {
          $newfile = "/locales/en_GB.mo";
       }
-      
+
       if (isset($CFG_GLPI["languages"][$trytoload][5])) {
         $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
@@ -584,7 +584,6 @@ class Session {
          // toolbox::logDebug($e->getMessage());
       }
       $TRANSLATE->addTranslationFile('gettext', GLPI_ROOT.$newfile, 'glpi', $trytoload);
-
 
       // Load plugin dicts
       if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {

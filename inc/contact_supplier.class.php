@@ -272,7 +272,6 @@ class Contact_Supplier extends CommonDBRelation{
          echo $header_begin.$header_bottom.$header_end;
       }
 
-
       echo "</table>";
       if ($canedit && $number) {
          $massiveactionparams['ontop'] = false;

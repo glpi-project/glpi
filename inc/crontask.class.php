@@ -1190,7 +1190,6 @@ class CronTask extends CommonDBTM{
                      $content = __($data['content']);
                }
 
-
                echo "<td class='right'>".sprintf(_n('%s second', '%s seconds',
                                                     intval($data['elapsed'])),
                                                  number_format($data['elapsed'], 3)).
@@ -1364,7 +1363,6 @@ class CronTask extends CommonDBTM{
       $tab[8]['massiveaction'] = false;
       $tab[8]['datatype']      = 'itemtypename';
       $tab[8]['types']         = self::getUsedItemtypes();
-
 
       $tab[16]['table']        = $this->getTable();
       $tab[16]['field']        = 'comment';

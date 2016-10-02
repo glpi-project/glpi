@@ -333,14 +333,12 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                                    'events' => array('validation', 'validation_answer')));
       }
 
-
       //Foreach global tags
       $tags = array('tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
                     'problems'    => _n('Problem', 'Problems', Session::getPluralNumber()),
                     'items'       => _n('Item', 'Items', Session::getPluralNumber()),
                     'validations' => _n('Validation','Validations', Session::getPluralNumber()),
                     'documents'   => _n('Document', 'Documents', Session::getPluralNumber()));
-
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,

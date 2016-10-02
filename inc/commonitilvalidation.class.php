@@ -833,8 +833,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->fields["name"]));
 
-
-
          while ($row = $DB->fetch_assoc($result)) {
             $canedit = $this->canEdit($row["id"]);
             Session::addToNavigateListItems($this->getType(), $row["id"]);

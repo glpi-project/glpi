@@ -71,7 +71,6 @@ class APIRest extends API {
       $path_info          = str_replace("api/", "", trim($_SERVER['PATH_INFO'], '/'));
       $this->url_elements = explode('/', $path_info);
 
-
       // retrieve requested resource
       $resource      = trim(strval($this->url_elements[0]));
       $is_inline_doc = (strlen($resource) == 0) || ($resource == "api");
@@ -81,7 +80,6 @@ class APIRest extends API {
 
       // retrieve paramaters (in body, query_string, headers)
       $this->parseIncomingParams($is_inline_doc);
-
 
       // show debug if required
       if (isset($this->parameters['debug'])) {
@@ -234,7 +232,7 @@ class APIRest extends API {
             case "PUT" : // update item(s)
                // if id is passed by query string, add it into input parameter
                $input = (array) ($this->parameters['input']);
-               if (($id > 0 || $id == 0 && $itemtype == "Entity") 
+               if (($id > 0 || $id == 0 && $itemtype == "Entity")
                      && !isset($input['id'])) {
                   $this->parameters['input']->id = $id;
                }

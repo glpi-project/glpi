@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -79,7 +79,7 @@ class TicketValidation  extends CommonITILValidation {
               if (in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
                 return false;
               }
-          
+
               if ($ticket->fields['type'] == Ticket::INCIDENT_TYPE) {
                  return Session::haveRight(self::$rightname, self::CREATEINCIDENT);
               }

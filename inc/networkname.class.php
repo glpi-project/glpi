@@ -159,7 +159,6 @@ class NetworkName extends FQDNLabel {
       IPNetwork::showIPNetworkProperties($this->getEntityID());
       echo "</td></tr>\n";
 
-
       $this->showFormButtons($options);
 
       return true;

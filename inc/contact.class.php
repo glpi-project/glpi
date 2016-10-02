@@ -430,7 +430,6 @@ class Contact extends CommonDBTM{
       $vcard->add('TEL', $this->fields["mobile"], ['type' => 'WORK;CELL']);
       $vcard->add('URL', $this->GetWebsite(), ['type' => 'WORK']);
 
-
       $addr = $this->GetAddress();
       if (is_array($addr)) {
          $addr_string = implode(";", array_filter($addr));

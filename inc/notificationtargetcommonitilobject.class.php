@@ -253,7 +253,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $supplierlinktable = getTableForItemType($this->obj->supplierlinkclass);
          $fkfield           = $this->obj->getForeignKeyField();
 
-
          $query = "SELECT DISTINCT `glpi_suppliers`.`email` AS email,
                                    `glpi_suppliers`.`name` AS name
                    FROM `$supplierlinktable`
@@ -703,7 +702,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                               $objettype."_".$item->getField("id")."_".
                                                         $item->getType().$tab);
 
-
       $entity = new Entity();
       if ($entity->getFromDB($this->getEntity())) {
          $datas["##$objettype.entity##"]      = $entity->getField('completename');
@@ -808,7 +806,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          }
          $datas["##$objettype.assigntousers##"] = implode(', ',$users);
       }
-
 
       $datas["##$objettype.assigntosupplier##"] = '';
       if ($item->countSuppliers(CommonITILActor::ASSIGN)) {
@@ -988,7 +985,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $datas['costs'][]             = $tmp;
          }
          $datas["##$objettype.numberofcosts##"] = count($datas['costs']);
-
 
          //Task infos
          $tasktype = $item->getType().'Task';

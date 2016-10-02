@@ -132,7 +132,6 @@ class Budget extends CommonDropdown{
       Dropdown::show('BudgetType', array('value' => $this->fields['budgettypes_id']));
       echo "</td></tr>";
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('price', 'Value')."</td>";
       echo "<td><input type='text' name='value' size='14'
@@ -422,8 +421,6 @@ class Budget extends CommonDropdown{
                 } else {
                    $query .= " `".$item->getTable()."`.`name`";
                 }
-
-
                break;
             }
 

@@ -895,7 +895,6 @@ class Config extends CommonDBTM {
                $pri = $CFG_GLPI['priority_matrix'][$urgency][$impact];
             }
 
-
             if ($isurgency[$urgency] && $isimpact[$impact]) {
                $bgcolor=$_SESSION["glpipriority_$pri"];
                echo "<td class='center' bgcolor='$bgcolor'>";
@@ -1005,7 +1004,6 @@ class Config extends CommonDBTM {
       echo "</td>";
 
       echo "</tr>";
-
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
@@ -1227,9 +1225,6 @@ class Config extends CommonDBTM {
          Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
                              $data['ticket_timeline_keep_replaced_tabs']);
          echo "</td></tr>";
-
-
-
       }
 
       // Only for user
@@ -1720,7 +1715,6 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
       echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
       echo "\n</pre></td></tr>";
-
 
       echo "<tr><th>Server</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";

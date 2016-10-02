@@ -506,7 +506,6 @@ class Transfer extends CommonDBTM {
       $this->item_search['NetworkEquipment']
             = $this->createSearchConditionUsingArray($this->needtobe_transfer['NetworkEquipment']);
 
-
       // Devices
       if ($this->options['keep_device']) {
          foreach (Item_Devices::getConcernedItems() as $itemtype) {
@@ -563,7 +562,6 @@ class Transfer extends CommonDBTM {
          $this->item_recurs[$itemtype]
                = $this->createSearchConditionUsingArray($this->noneedtobe_transfer[$itemtype]);
       }
-
 
       // Tickets
       if ($this->options['keep_ticket']) {

@@ -360,7 +360,6 @@ class User extends CommonDBTM {
                       AND `itemtype` = 'User'";
       $DB->query($query);
 
-
       $gu = new Group_User();
       $gu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
@@ -384,7 +383,6 @@ class User extends CommonDBTM {
                  WHERE `items_id` = '".$this->fields['id']."'
                        AND `itemtype` = '".__CLASS__."'";
       $DB->query($query1);
-
 
       $kiu = new KnowbaseItem_User();
       $kiu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
@@ -599,7 +597,6 @@ class User extends CommonDBTM {
          }
       }
 
-
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
       $rulesplayed = $this->applyRightRules();
@@ -610,7 +607,6 @@ class User extends CommonDBTM {
          $this->update(array('id'      => $this->fields['id'],
                              'picture' => $picture));
       }
-
 
       // Add default profile
       if (!$rulesplayed) {
@@ -785,7 +781,6 @@ class User extends CommonDBTM {
          $input['personal_token']      = self::getUniquePersonalToken();
          $input['personal_token_date'] = $_SESSION['glpi_currenttime'];
       }
-
 
       // Manage preferences fields
       if (Session::getLoginUserID() === $input['id']) {
@@ -1983,7 +1978,6 @@ class User extends CommonDBTM {
 
       echo "</tr>";
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Mobile phone') . "</td><td>";
       Html::autocompletionTextField($this, "mobile");
@@ -2251,7 +2245,6 @@ class User extends CommonDBTM {
 
          }
 
-
          echo "<tr class='tab_bg_1'><td>" .  __('Phone') . "</td><td>";
 
          if ($extauth
@@ -2292,8 +2285,6 @@ class User extends CommonDBTM {
             echo "<td colspan='2'>&nbsp;</td>";
          }
          echo "</tr>";
-
-
 
          echo "<tr class='tab_bg_1'><td>" .  __('Phone 2') . "</td><td>";
 
@@ -2980,7 +2971,6 @@ class User extends CommonDBTM {
 
             break;
 
-
          case "all" :
             $where = " `glpi_users`.`id` > '0' ".
                      getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
@@ -3076,7 +3066,6 @@ class User extends CommonDBTM {
             }
             $where .= ')';
       }
-
 
       $where .= " AND `glpi_users`.`is_deleted` = '0'
                   AND `glpi_users`.`is_active` = '1'
@@ -3593,7 +3582,6 @@ class User extends CommonDBTM {
                $result    = $DB->query($query);
 
                $type_name = $item->getTypeName();
-
 
                if ($DB->numrows($result) > 0) {
                   while ($data = $DB->fetch_assoc($result)) {

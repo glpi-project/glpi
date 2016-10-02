@@ -387,7 +387,6 @@ class ReservationItem extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
       echo "<th colspan='3'>".__('Find a free item in a specific period')."</th></tr>";
 
-
       echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
       Html::showDateTimeField("reserve[begin]", array('value'      =>  $_POST['reserve']["begin"],
                                                       'maybeempty' => false));
@@ -452,7 +451,6 @@ class ReservationItem extends CommonDBChild {
       echo "</table>";
       Html::closeForm();
       echo "</div>";
-
 
       // GET method passed to form creation
       echo "<div id='nosearch' class='center'>";

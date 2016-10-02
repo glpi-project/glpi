@@ -1805,7 +1805,6 @@ class Toolbox {
                Html::redirect($CFG_GLPI["root_doc"].$decoded_where);
             }
 
-
             $data = explode("_", $where);
             $forcetab = '';
             // forcetab for simple items
@@ -2125,7 +2124,6 @@ class Toolbox {
                               array('value'               => $svalue,
                                     'width'               => '12%',
                                     'display_emptychoice' => true));
-
 
       echo "<input type=hidden name=imap_string value='".$value."'>";
       echo "</td></tr>\n";

@@ -866,8 +866,6 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-
-
       // Check dates change interval due to the fact that second are not displayed in form
       if ((($key = array_search('date',$this->updates)) !== false)
           && (substr($this->fields["date"],0,16) == substr($this->oldvalues['date'],0,16))) {
@@ -1020,9 +1018,6 @@ abstract class CommonITILObject extends CommonDBTM {
           }
       }
 
-
-
-
       // Manage come back to waiting state
       if (!is_null($this->fields['begin_waiting_date'])
           && (($key = array_search('status',$this->updates)) !== false)
@@ -1036,7 +1031,6 @@ abstract class CommonITILObject extends CommonDBTM {
          $calendars_id = $this->getCalendar();
          $delay_time   = 0;
 
-
          // Compute ticket waiting time use calendar if exists
          // Using calendar
          if (($calendars_id > 0)
@@ -1047,7 +1041,6 @@ abstract class CommonITILObject extends CommonDBTM {
             $delay_time = strtotime($_SESSION["glpi_currenttime"])
                            -strtotime($this->fields['begin_waiting_date']);
          }
-
 
          // SLT case : compute slt_ttr duration
          if (isset($this->fields['slts_ttr_id']) && ($this->fields['slts_ttr_id'] > 0)) {
@@ -1095,7 +1088,6 @@ abstract class CommonITILObject extends CommonDBTM {
          $this->updates[]                    = "begin_waiting_date";
          $this->fields["begin_waiting_date"] = 'NULL';
       }
-
 
       // Set begin waiting date if needed
       if ((($key = array_search('status', $this->updates)) !== false)
@@ -1441,7 +1433,6 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-
       // Additional actors
       $this->addAdditionalActors($this->input);
 
@@ -1619,7 +1610,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       $docadded  = array();
 
-
       foreach ($this->input['_filename'] as $key => $file) {
          $doc       = new Document();
          $docitem   = new Document_Item();
@@ -1796,9 +1786,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $values[2] = static::getPriorityName(2);
       $values[1] = static::getPriorityName(1);
 
-
       return Dropdown::showFromArray($p['name'],$values, $p);
-
    }
 
 
@@ -1989,7 +1977,6 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
       $values = array();
-
 
       if ($p['showtype'] == 'search') {
          $values[0]  = static::getImpactName(0);
@@ -2375,7 +2362,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $supplier     = new Supplier();
       $linksupplier = new $this->supplierlinkclass();
 
-
       $itemtype     = $this->getType();
       $typename     = self::getActorFieldNameType($type);
 
@@ -2720,7 +2706,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[3]['searchtype']           = 'equals';
       $tab[3]['datatype']             = 'specific';
 
-
       $tab[15]['table']               = $this->getTable();
       $tab[15]['field']               = 'date';
       $tab[15]['name']                = __('Opening date');
@@ -2982,7 +2967,6 @@ abstract class CommonITILObject extends CommonDBTM {
                                                              => 'AND NEWTABLE.`type`
                                                                   = '.CommonITILActor::ASSIGN)));
 
-
       $tab[6]['table']          = 'glpi_suppliers';
       $tab[6]['field']          = 'name';
       $tab[6]['datatype']       = 'dropdown';
@@ -3026,7 +3010,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[35]['joinparams']    = array('jointype'  => 'child',
                                         'condition' => 'AND NEWTABLE.`type`
                                                             = '.CommonITILActor::REQUESTER);
-
 
       $tab[34]['table']         = getTableForItemType($this->userlinkclass);
       $tab[34]['field']         = 'alternative_email';
@@ -3266,7 +3249,6 @@ abstract class CommonITILObject extends CommonDBTM {
    function showActorAddForm($type, $rand_type, $entities_id, $is_hidden=array(),
                              $withgroup=true, $withsupplier=false, $inobject=true) {
       global $CFG_GLPI;
-
 
       $types = array('user'  => __('User'));
 
@@ -3635,7 +3617,6 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<div class='tab_actors tab_cadre_fixe' id='mainformtable5'>";
       echo "<div class='responsive_hidden actor_title'>".__('Actor')."</div>";
 
-
       // ====== Requesters BLOC ======
       //
       //
@@ -3727,7 +3708,6 @@ abstract class CommonITILObject extends CommonDBTM {
                                   'entity'    => $this->fields["entities_id"],
                                   'condition' => '`is_requester`'));
 
-
          } else { // predefined value
             if (isset($options["_groups_id_requester"]) && $options["_groups_id_requester"]) {
                echo self::getActorIcon('group', CommonITILActor::REQUESTER)."&nbsp;";
@@ -3742,8 +3722,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</div>"; // end .actor-content
       echo "</span>"; // end .actor-bloc
-
-
 
       // ====== Observers BLOC ======
 
@@ -3834,9 +3812,6 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</div>"; // end .actor-content
       echo "</span>"; // end .actor-bloc
-
-
-
 
       // ====== Assign BLOC ======
 
@@ -3997,8 +3972,6 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</div>"; // end .actor-content
       echo "</span>"; // end .actor-bloc
 
-
-
       echo "</div>"; // tab_actors
    }
 
@@ -4054,7 +4027,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $canedit = $this->canSolve();
       $options = array();
-
 
       if ($knowbase_id_toload > 0) {
          $kb = new KnowbaseItem();
@@ -4959,7 +4931,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $linkclass = new $this->supplierlinkclass();
       $linktable = $linkclass->getTable();
 
-
       $query = "SELECT DISTINCT `glpi_suppliers`.`id` AS suppliers_id_assign,
                                 `glpi_suppliers`.`name` AS name
                 FROM `".$this->getTable()."`
@@ -5050,7 +5021,6 @@ abstract class CommonITILObject extends CommonDBTM {
     */
    static function showShort($id, $options=array()) {
       global $CFG_GLPI, $DB;
-
 
       $p['output_type']            = Search::HTML_OUTPUT;
       $p['row_num']                = 0;
@@ -5196,7 +5166,6 @@ abstract class CommonITILObject extends CommonDBTM {
             $fifth_col .= "<br>";
          }
 
-
          foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $d) {
             $fifth_col .= Dropdown::getDropdownName("glpi_suppliers", $d["suppliers_id"]);
             $fifth_col .= "<br>";
@@ -5281,7 +5250,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
          echo Search::showItem($p['output_type'], $eigth_column, $item_num, $p['row_num'],
                                $align_desc." width='200'");
-
 
          //tenth column
          $tenth_column  = '';

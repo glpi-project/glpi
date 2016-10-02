@@ -285,9 +285,9 @@ class Peripheral extends CommonDBTM {
       echo "<td>".__('Brand')."</td>\n";
       echo "<td>";
       Html::autocompletionTextField($this, "brand");
-      echo "</td>\n"; 
+      echo "</td>\n";
       echo "</tr>\n";
-      
+
       // Display auto inventory informations
       if (!empty($ID)
          && $this->fields["is_dynamic"]) {
@@ -295,7 +295,7 @@ class Peripheral extends CommonDBTM {
          Plugin::doHook("autoinventory_information", $this);
          echo "</td></tr>";
       }
-      
+
       $this->showFormButtons($options);
 
       return true;

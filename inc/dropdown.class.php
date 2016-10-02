@@ -112,7 +112,6 @@ class Dropdown {
       $params['specific_tags']        = array();
       $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php" ;
 
-
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
@@ -150,7 +149,6 @@ class Dropdown {
             $params['entity'] = getSonsOf('glpi_entities',$params['entity']);
          }
       }
-
 
       $field_id = Html::cleanId("dropdown_".$params['name'].$params['rand']);
 
@@ -405,7 +403,6 @@ class Dropdown {
                         $comment .= "<br>".sprintf(__('%1$s: %2$s'),
                                                    "<span class='b'>".__('Start date')."</span>",
                                                    Html::convDateTime($data["begin_date"]));
-
 
                      }
                      if (!empty($data['end_date'])) {
@@ -944,7 +941,6 @@ class Dropdown {
                                                      'Fields storage of the login in the HTTP request',
                                                      Session::getPluralNumber())
                                 )
-
 
                  ); //end $opt
 
@@ -1552,7 +1548,6 @@ class Dropdown {
       $params['display']             = true;
       $params['display_emptychoice'] = true;
       $params['width']               = '80%';
-
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {

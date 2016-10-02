@@ -118,7 +118,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $fields[] = "0 AS is_1";
       }
 
-
       // Check item 2 type
       $condition_id_2 = "`".static::$items_id_2."` = '$items_id'";
       $fields[]       = "`".static::$items_id_2."` as items_id_2";
@@ -428,7 +427,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
          $check_entity = false; // If no item, then, we cannot check entities
       }
 
-
       if ($OneWriteIsEnough) {
          if ((!$can1 && !$can2)
              || ($can1 && !$view2)
@@ -440,7 +438,6 @@ abstract class CommonDBRelation extends CommonDBConnexity {
             return false;
          }
       }
-
 
       // Check coherency of entities
       if ($check_entity && static::$check_entity_coherency) {

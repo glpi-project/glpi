@@ -476,7 +476,6 @@ class Problem extends CommonITILObject {
       $tab[62]['massiveaction'] = false;
       $tab[62]['datatype']      = 'text';
 
-
       $tab += Notepad::getSearchOptionsToAdd();
 
       $tab += ProblemTask::getSearchOptionsToAdd();
@@ -610,7 +609,6 @@ class Problem extends CommonITILObject {
                             AND `glpi_problems_users`.`type` = '".CommonITILActor::ASSIGN."')";
       $is_deleted      = " `glpi_problems`.`is_deleted` = 0 ";
 
-
       if ($showgroupproblems) {
          $search_users_id = " 0 = 1 ";
          $search_assign   = " 0 = 1 ";
@@ -648,7 +646,6 @@ class Problem extends CommonITILObject {
                              AND (`status` IN ('".self::PLANNED."','".self::ASSIGNED."')) ".
                              getEntitiesRestrictRequest("AND", "glpi_problems");
             break;
-
 
          default :
             $query .= "WHERE $is_deleted
@@ -1382,7 +1379,6 @@ class Problem extends CommonITILObject {
             $order      = '`glpi_problems`.`date_mod` DESC';
             break;
       }
-
 
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_problems`
