@@ -774,6 +774,7 @@ class DBmysqlIterator  implements Iterator {
          $distinct = '';
          $where    = '';
          $count    = '';
+         $join     = '';
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
                if ($key === "FIELDS") {
@@ -797,6 +798,15 @@ class DBmysqlIterator  implements Iterator {
                   unset($crit[$key]);
                } else if ($key === "WHERE") {
                   $where = $val;
+                  unset($crit[$key]);
+               } else if ($key === 'JOIN') {
+                  if (is_array($val)) {
+                     foreach ($val as $jointable => $joincrit) {
+                        $join .= " LEFT JOIN " .  self::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
+                     }
+                  } else {
+                     trigger_error("BAD JOIN, value sould be [ table => criteria ]", E_USER_ERROR);
+                  }
                   unset($crit[$key]);
                }
             }
@@ -834,6 +844,9 @@ class DBmysqlIterator  implements Iterator {
             $table = self::quoteName($table);
             $this->sql .= " FROM $table";
          }
+
+         // JOIN
+         $this->sql .= $join;
 
          // WHERE criteria list
          if (!empty($crit)) {
@@ -882,6 +895,11 @@ class DBmysqlIterator  implements Iterator {
 
 
    private static function quoteName($name) {
+
+      if (strpos($name, '.')) {
+         $n = explode('.', $name, 2);
+         return self::quoteName($n[0]) . '.' . self::quoteName($n[1]);
+      }
       return ($name[0]=='`' ? $name : "`$name`");
    }
 
@@ -937,7 +955,7 @@ class DBmysqlIterator  implements Iterator {
                $ret .= (is_numeric($t1) ? self::quoteName($f1) : self::quoteName($t1) . '.' . self::quoteName($f1)) . ' = ' .
                        (is_numeric($t2) ? self::quoteName($f2) : self::quoteName($t2) . '.' . self::quoteName($f2));
             } else {
-               trigger_error("BAD FOREIGN KEY", E_USER_ERROR);
+               trigger_error("BAD FOREIGN KEY, should be [ key1, key2 ]", E_USER_ERROR);
             }
 
          } else if (is_array($value)) {
