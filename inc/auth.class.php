@@ -417,9 +417,9 @@ class Auth extends CommonGLPI {
             if (isset($_SERVER[$ssovariable])) {
                $login_string = $_SERVER[$ssovariable];
             }
-//             else {
-//                $login_string = $_REQUEST[$ssovariable];
-//             }
+            // else {
+            //    $login_string = $_REQUEST[$ssovariable];
+            // }
             $login        = $login_string;
             $pos          = stripos($login_string,"\\");
             if (!$pos === false) {
@@ -601,8 +601,7 @@ class Auth extends CommonGLPI {
                       && $authldap->fields['is_active']) {
                      $ldapservers[] = $authldap->fields;
                   }
-               //User has never beeen authenticated : try all active ldap server to find the right one
-               } else {
+               } else { // User has never beeen authenticated : try all active ldap server to find the right one
                   foreach (getAllDatasFromTable('glpi_authldaps', "`is_active`='1'") as $ldap_config) {
                      $ldapservers[] = $ldap_config;
                   }
@@ -756,7 +755,7 @@ class Auth extends CommonGLPI {
                $this->auth_succeded = false;
             }
          } else {
-             if ($this->user_present) {
+            if ($this->user_present) {
                // First stripslashes to avoid double slashes
                $input = Toolbox::stripslashes_deep($this->user->fields);
                // Then ensure addslashes
@@ -1089,7 +1088,7 @@ class Auth extends CommonGLPI {
       if (!empty($_REQUEST['user_token'])) {
          return self::API;
       }
-   return false;
+      return false;
    }
 
 
@@ -1152,16 +1151,16 @@ class Auth extends CommonGLPI {
    }
 
 
-    /**
+   /**
      * Determine if a login is valid
      *
      * @param $login string: login to check
      *
      * @return boolean
     **/
-    static function isValidLogin($login) {
-       return preg_match( "/^[[:alnum:]@.\-_ ]+$/iu", $login);
-    }
+   static function isValidLogin($login) {
+      return preg_match( "/^[[:alnum:]@.\-_ ]+$/iu", $login);
+   }
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {

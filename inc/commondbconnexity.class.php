@@ -247,11 +247,11 @@ abstract class CommonDBConnexity extends CommonDBTM {
          }
 
          // Solution 2 : simple check ! Can we update the item with new values ?
-//       if (!$new_item->can($input['id'], 'w')) {
-//          Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
-//                                           INFO, true);
-//          return false;
-//       }
+         // if (!$new_item->can($input['id'], 'w')) {
+         //    Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
+         //                                     INFO, true);
+         //    return false;
+         // }
       }
 
       return true;

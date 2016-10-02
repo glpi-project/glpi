@@ -531,7 +531,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             return false;
          }
 
-        $startIndex = (($version == 4) ? 3 : 0);
+         $startIndex = (($version == 4) ? 3 : 0);
 
          if ($relation == "equals") {
             for ($i = $startIndex ; $i < 4 ; ++$i) {
@@ -1025,8 +1025,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
          echo "</table>";
          echo "</div>";
-
-     }
+      }
    }
 }
 ?>

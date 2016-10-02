@@ -93,9 +93,9 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
       $datas['##change.backoutplancontent##'] = $item->getField("backoutplancontent");
       $datas['##change.checklistcontent##']   = $item->getField("checklistcontent");
 
-//       $datas["##problem.impacts##"]  = $item->getField('impactcontent');
-//       $datas["##problem.causes##"]   = $item->getField('causecontent');
-//       $datas["##problem.symptoms##"] = $item->getField('symptomcontent');
+      // $datas["##problem.impacts##"]  = $item->getField('impactcontent');
+      // $datas["##problem.causes##"]   = $item->getField('causecontent');
+      // $datas["##problem.symptoms##"] = $item->getField('symptomcontent');
 
       // Complex mode
       if (!$simple) {
@@ -274,9 +274,9 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject {
                     'change.rolloutplancontent' => __('Deployment plan'),
                     'change.backoutplancontent' => __('Backup plan'),
                     'change.checklistcontent'   => __('Checklist'),
-//                     'problem.impacts'           => __('Impacts'),
-//                     'problem.causes'            => __('Causes'),
-//                     'problem.symptoms'          => __('Symptoms'),
+                    // 'problem.impacts'           => __('Impacts'),
+                    // 'problem.causes'            => __('Causes'),
+                    // 'problem.symptoms'          => __('Symptoms'),
                     'item.name'                 => __('Associated item'),
                     'item.serial'               => __('Serial number'),
                     'item.otherserial'          => __('Inventory number'),

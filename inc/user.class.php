@@ -701,11 +701,11 @@ class User extends CommonDBTM {
                   } else {
                      Session::addMessageAfterRedirect(__('Potential upload attack or file too large. Moving temporary file failed.'),
                                                      false, ERROR);
-                 }
-              } else {
-                Session::addMessageAfterRedirect(__('The file is not an image file.'),
-                                                false, ERROR);
-              }
+                  }
+               } else {
+                  Session::addMessageAfterRedirect(__('The file is not an image file.'),
+                                                   false, ERROR);
+               }
             }
          } else {
             //ldap jpegphoto synchronisation.
@@ -1390,12 +1390,12 @@ class User extends CommonDBTM {
             return false;
          }
 
-        //Store user's dn
-        $this->fields['user_dn']    = addslashes($userdn);
-        //Store date_sync
-        $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
-        // Empty array to ensure than syncDynamicEmails will be done
-        $this->fields["_emails"]    = array();
+         //Store user's dn
+         $this->fields['user_dn']    = addslashes($userdn);
+         //Store date_sync
+         $this->fields['date_sync']  = $_SESSION['glpi_currenttime'];
+         // Empty array to ensure than syncDynamicEmails will be done
+         $this->fields["_emails"]    = array();
 
          foreach ($fields as $k => $e) {
             $val = self::getLdapFieldValue($e, $v);
@@ -1870,7 +1870,7 @@ class User extends CommonDBTM {
          echo "<div class='user_picture_border_small' id='picture$rand'>";
          echo "<img class='user_picture_small' alt=\"".__s('Picture')."\" src='".
                 User::getThumbnailURLForPicture($this->fields['picture'])."'>";
-//         echo "<img src='".self::getURLForPicture($this->fields["picture"])."' class='user_picture'/>";
+         // echo "<img src='".self::getURLForPicture($this->fields["picture"])."' class='user_picture'/>";
          echo "</div>";
          $full_picture = "<div class='user_picture_border'>";
          $full_picture .= "<img class='user_picture' alt=\"".__s('Picture')."\" src='".
@@ -1916,11 +1916,11 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       if (!GLPI_DEMO_MODE) {
-        echo "<td>".__('Active')."</td><td>";
-        Dropdown::showYesNo('is_active',$this->fields['is_active']);
-        echo "</td>";
+         echo "<td>".__('Active')."</td><td>";
+         Dropdown::showYesNo('is_active',$this->fields['is_active']);
+         echo "</td>";
       } else {
-        echo "<td colspan='2'></td>";
+         echo "<td colspan='2'></td>";
       }
       echo "<td>" . _n('Email','Emails', Session::getPluralNumber());
       UserEmail::showAddEmailButton($this);
@@ -1931,18 +1931,18 @@ class User extends CommonDBTM {
 
       if (!GLPI_DEMO_MODE) {
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>".__('Valid since')."</td><td>";
-        Html::showDateTimeField("begin_date", array('value'       => $this->fields["begin_date"],
-                                                    'timestep'    => 1,
-                                                    'maybeempty'  => true));
-        echo "</td>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('Valid since')."</td><td>";
+         Html::showDateTimeField("begin_date", array('value'       => $this->fields["begin_date"],
+                                                     'timestep'    => 1,
+                                                     'maybeempty'  => true));
+         echo "</td>";
 
-        echo "<td>".__('Valid until')."</td><td>";
-        Html::showDateTimeField("end_date", array('value'       => $this->fields["end_date"],
-                                                    'timestep'    => 1,
-                                                    'maybeempty'  => true));
-        echo "</td></tr>";
+         echo "<td>".__('Valid until')."</td><td>";
+         Html::showDateTimeField("end_date", array('value'       => $this->fields["end_date"],
+                                                   'timestep'    => 1,
+                                                   'maybeempty'  => true));
+         echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'>";
@@ -2321,7 +2321,7 @@ class User extends CommonDBTM {
          Location::dropdown(array('value'  => $this->fields['locations_id'],
                                   'entity' => $entities));
 
-        if (Config::canUpdate()) {
+         if (Config::canUpdate()) {
             echo "<td>" . __('Use GLPI in mode') . "</td><td>";
             $modes[Session::NORMAL_MODE]      = __('Normal');
             //$modes[Session::TRANSLATION_MODE] = __('Translation');
@@ -3824,7 +3824,7 @@ class User extends CommonDBTM {
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>";
 
-        echo "</table>";
+         echo "</table>";
          Html::closeForm();
 
       } else {
@@ -3884,12 +3884,11 @@ class User extends CommonDBTM {
 
                $input['id'] = $this->fields['id'];
                if (Config::validatePassword($input["password"]) && $this->update($input)) {
-                 _e('Reset password successful.');
-                 //
-                 $input2['password_forget_token']      = '';
-                 $input2['password_forget_token_date'] = NULL;
-                 $input2['id']                         = $this->fields['id'];
-                 $this->update($input2);
+                  _e('Reset password successful.');
+                  $input2['password_forget_token']      = '';
+                  $input2['password_forget_token_date'] = NULL;
+                  $input2['id']                         = $this->fields['id'];
+                  $this->update($input2);
                } else {
                   // Force display on error
                   Html::displayMessageAfterRedirect();
@@ -4188,7 +4187,7 @@ class User extends CommonDBTM {
     *
     * @see commonDBTM::getRights()
    **/
-    function getRights($interface='central') {
+   function getRights($interface='central') {
 
       $values = parent::getRights();
       //TRANS: short for : Add users from an external source
@@ -4247,9 +4246,9 @@ class User extends CommonDBTM {
 
       $map = Toolbox::unclean_cross_side_scripting_deep($map);
       $ret = preg_replace_callback('/%{(.*)}/U',
-                                  function ($matches) use ($res) {
-                                     return (isset($res[0][$matches[1]][0]) ? $res[0][$matches[1]][0] : '');
-                                  }, $map );
+                                    function ($matches) use ($res) {
+                                       return (isset($res[0][$matches[1]][0]) ? $res[0][$matches[1]][0] : '');
+                                    }, $map );
 
       return addslashes($ret == $map ? (isset($res[0][$map][0]) ? $res[0][$map][0] : '') : $ret);
    }

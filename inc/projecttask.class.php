@@ -1016,13 +1016,6 @@ class ProjectTask extends CommonDBChild {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed' => $nb,
                                       'container'     => 'mass'.__CLASS__.$rand);
-//                     'specific_actions'
-//                         => array('delete' => _x('button', 'Delete permanently')) );
-//
-//          if ($this->fields['users_id'] != Session::getLoginUserID()) {
-//             $massiveactionparams['confirm']
-//                = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
-//          }
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -1086,7 +1079,7 @@ class ProjectTask extends CommonDBChild {
       $todisplay = array();
 
       $task = new self();
-//       echo $ID.'<br>';
+      // echo $ID.'<br>';
       if ($task->getFromDB($ID)) {
          $subtasks = array();
          foreach ($DB->request('glpi_projecttasks',
@@ -1360,7 +1353,7 @@ class ProjectTask extends CommonDBChild {
     * @return Nothing (display function)
     **/
    static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
-     global $CFG_GLPI;
+      global $CFG_GLPI;
 
       $html = "";
       $rand     = mt_rand();

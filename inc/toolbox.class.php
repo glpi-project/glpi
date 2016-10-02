@@ -106,7 +106,7 @@ class Toolbox {
                                      : ($str{0}.$str{1})).substr($str,2);
       }
       return ucfirst($str);
-    }
+   }
 
 
    /**
@@ -273,15 +273,14 @@ class Toolbox {
    **/
    static function encrypt($string, $key) {
 
-     $result = '';
-     for($i=0 ; $i<strlen($string) ; $i++) {
-       $char    = substr($string, $i, 1);
-       $keychar = substr($key, ($i % strlen($key))-1, 1);
-       $char    = chr(ord($char)+ord($keychar));
-       $result .= $char;
-     }
-
-     return base64_encode($result);
+      $result = '';
+      for($i=0 ; $i<strlen($string) ; $i++) {
+         $char    = substr($string, $i, 1);
+         $keychar = substr($key, ($i % strlen($key))-1, 1);
+         $char    = chr(ord($char)+ord($keychar));
+         $result .= $char;
+      }
+      return base64_encode($result);
    }
 
 
@@ -295,17 +294,17 @@ class Toolbox {
    **/
    static function decrypt($string, $key) {
 
-     $result = '';
-     $string = base64_decode($string);
+      $result = '';
+      $string = base64_decode($string);
 
-     for($i=0 ; $i<strlen($string) ; $i++) {
-       $char    = substr($string, $i, 1);
-       $keychar = substr($key, ($i % strlen($key))-1, 1);
-       $char    = chr(ord($char)-ord($keychar));
-       $result .= $char;
-     }
+      for($i=0 ; $i<strlen($string) ; $i++) {
+         $char    = substr($string, $i, 1);
+         $keychar = substr($key, ($i % strlen($key))-1, 1);
+         $char    = chr(ord($char)-ord($keychar));
+         $result .= $char;
+      }
 
-     return Toolbox::unclean_cross_side_scripting_deep($result);
+      return Toolbox::unclean_cross_side_scripting_deep($result);
    }
 
 
@@ -951,7 +950,7 @@ class Toolbox {
          ],
          'curl'      => [
             'required'  => true,
-        ],
+         ],
          'gd'       => [
             'required'  => false,
          ],
@@ -1257,11 +1256,11 @@ class Toolbox {
             || ($img_height > $max_size)) {
             $source_aspect_ratio = $img_width / $img_height;
             if ($source_aspect_ratio < 1) {
-            $new_width  = $max_size * $source_aspect_ratio;
-            $new_height = $max_size;
+               $new_width  = $max_size * $source_aspect_ratio;
+               $new_height = $max_size;
             } else {
-            $new_width  = $max_size;
-            $new_height = $max_size / $source_aspect_ratio;
+               $new_width  = $max_size;
+               $new_height = $max_size / $source_aspect_ratio;
             }
          }
       }
@@ -1455,7 +1454,7 @@ class Toolbox {
       }
 
       return 0;
-}
+   }
 
 
    /**
@@ -1801,7 +1800,7 @@ class Toolbox {
             }
             // Redirect based on GLPI_ROOT : URL must be rawurlencoded
             if ($decoded_where[0] == '/') {
-//                echo $decoded_where;exit();
+               // echo $decoded_where;exit();
                Html::redirect($CFG_GLPI["root_doc"].$decoded_where);
             }
 
@@ -1834,8 +1833,8 @@ class Toolbox {
                            }
                            Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
                                           $data[1]."&$forcetab");
-                        // redirect to list
-                        } else if (!empty($data[0])) {
+
+                        } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
                               Html::redirect($item->getSearchURL()."?$forcetab");
                            }
@@ -1887,8 +1886,8 @@ class Toolbox {
                               }
                               Html::redirect($item->getFormURL()."?id=".$data[1]."&$forcetab");
                            }
-                        // redirect to list
-                        } else if (!empty($data[0])) {
+
+                        } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
                               Html::redirect($item->getSearchURL()."?$forcetab");
                            }

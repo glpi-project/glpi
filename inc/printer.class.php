@@ -701,7 +701,7 @@ class Printer  extends CommonDBTM {
    }
 
 
-  /**
+   /**
     * Add a printer. If already exist in dustbin restore it
     *
     * @param $name          the printer's name (need to be addslashes)

@@ -73,20 +73,20 @@ class TicketValidation  extends CommonITILValidation {
    function canCreateItem() {
 
       if ($this->canChildItem('canViewItem', 'canView')) {
-          $ticket = new Ticket();
-          if ($ticket->getFromDB($this->fields['tickets_id'])) {
-              // No validation for closed tickets
-              if (in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
-                return false;
-              }
+         $ticket = new Ticket();
+         if ($ticket->getFromDB($this->fields['tickets_id'])) {
+            // No validation for closed tickets
+            if (in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
+               return false;
+            }
 
-              if ($ticket->fields['type'] == Ticket::INCIDENT_TYPE) {
-                 return Session::haveRight(self::$rightname, self::CREATEINCIDENT);
-              }
-              if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
-                 return Session::haveRight(self::$rightname, self::CREATEREQUEST);
-              }
-          }
+            if ($ticket->fields['type'] == Ticket::INCIDENT_TYPE) {
+               return Session::haveRight(self::$rightname, self::CREATEINCIDENT);
+            }
+            if ($ticket->fields['type'] == Ticket::DEMAND_TYPE) {
+               return Session::haveRight(self::$rightname, self::CREATEREQUEST);
+            }
+         }
       }
    }
 

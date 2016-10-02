@@ -171,19 +171,19 @@ class PlanningRecall extends CommonDBChild {
       } else {
          // Recall does not exists : create it
          if ($pr->can(-1, CREATE, $data)) {
-               if ($item = getItemForItemtype($data['itemtype'])) {
-                  $item->getFromDB($data['items_id']);
-                  if ($item->getFromDB($data['items_id'])
-                      && isset($item->fields[$data['field']])
-                      && !empty($item->fields[$data['field']])) {
-                     $data['when'] = date("Y-m-d H:i:s",
-                                          strtotime($item->fields[$data['field']])
-                                                      - $data['before_time']);
-                     if ($data['before_time'] >= 0) {
-                        $pr->add($data);
-                     }
+            if ($item = getItemForItemtype($data['itemtype'])) {
+               $item->getFromDB($data['items_id']);
+               if ($item->getFromDB($data['items_id'])
+                       && isset($item->fields[$data['field']])
+                        && !empty($item->fields[$data['field']])) {
+                  $data['when'] = date("Y-m-d H:i:s",
+                                       strtotime($item->fields[$data['field']])
+                                                   - $data['before_time']);
+                  if ($data['before_time'] >= 0) {
+                     $pr->add($data);
                   }
                }
+            }
          }
       }
    }

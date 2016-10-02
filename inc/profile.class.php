@@ -422,7 +422,8 @@ class Profile extends CommonDBTM {
    static function getUnderActiveProfileRestrictRequest($separator="AND") {
 
       // I don't understand usefull of this code (yllen)
-/*      if (in_array('reservation', self::$helpdesk_rights)
+      /*
+      if (in_array('reservation', self::$helpdesk_rights)
           && !Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
          return false;
       }
@@ -449,7 +450,7 @@ class Profile extends CommonDBTM {
                                             TicketValidation::VALIDATEINCIDENT))) {
          return false;
       }
-*/
+      */
 
       $query = $separator ." ";
 
@@ -1053,16 +1054,16 @@ class Profile extends CommonDBTM {
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
       // Linear_HIT
-//      self::getLinearRightChoice(self::getHelpdeskItemtypes(),
-//                                     array('field'         => 'helpdesk_item_type',
-//                                           'value'         => $this->fields['helpdesk_item_type'],
-//                                           'check_all'     => true,
-//                                           'zero_on_empty' => false,
-//                                           'max_per_line'  => 4,
-//                                           'check_method'  =>
-//                                           function ($element, $field) {
-//                                              return in_array($element,$field);
-//                                           }));
+      // self::getLinearRightChoice(self::getHelpdeskItemtypes(),
+      //                               array('field'         => 'helpdesk_item_type',
+      //                                     'value'         => $this->fields['helpdesk_item_type'],
+      //                                     'check_all'     => true,
+      //                                     'zero_on_empty' => false,
+      //                                     'max_per_line'  => 4,
+      //                                     'check_method'  =>
+      //                                     function ($element, $field) {
+      //                                        return in_array($element,$field);
+      //                                     }));
       echo "</td>";
       echo "</tr>\n";
       echo "</table>";
@@ -2288,8 +2289,8 @@ class Profile extends CommonDBTM {
    **/
    static function getInterfaces() {
 
-     return array('central'  => __('Standard interface'),
-                  'helpdesk' => __('Simplified interface'));
+      return array('central'  => __('Standard interface'),
+                   'helpdesk' => __('Simplified interface'));
    }
 
 
@@ -2543,23 +2544,23 @@ class Profile extends CommonDBTM {
       }
 
       uksort($columns, function ($a, $b) {
-                           $a = explode('_', $a);
-                           $b = explode('_', $b);
+         $a = explode('_', $a);
+         $b = explode('_', $b);
 
-                           // For standard rights sort by right
-                           if (($a[0] < 1024)
-                               || ($b[0] < 1024)) {
-                              if ($a[0] > $b[0]) {
-                                 return true;
-                              }
-                              if ($a[0] < $b[0]) {
-                                 return false;
-                              }
-                              return ($a[1] > $b[1]);
-                              // For extra right sort by type
-                           }
-                           return ($a[1] > $b[1]);
-                        });
+         // For standard rights sort by right
+         if (($a[0] < 1024)
+             || ($b[0] < 1024)) {
+            if ($a[0] > $b[0]) {
+               return true;
+            }
+            if ($a[0] < $b[0]) {
+               return false;
+            }
+            return ($a[1] > $b[1]);
+            // For extra right sort by type
+         }
+         return ($a[1] > $b[1]);
+      });
 
       return Html::showCheckboxMatrix($columns, $rows,
                                       array('title'                => $param['title'],

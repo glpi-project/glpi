@@ -261,9 +261,9 @@ class Ajax {
       global $CFG_GLPI;
 
       //TRANS: %s is the character used as wildcard in ajax search
-//       return "<input title=\"".sprintf(__s('Search (%s for all)'), $CFG_GLPI["ajax_wildcard"]).
-//              "\" type='text' ondblclick=\"this.value='".
-//              $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
+      // return "<input title=\"".sprintf(__s('Search (%s for all)'), $CFG_GLPI["ajax_wildcard"]).
+      //        "\" type='text' ondblclick=\"this.value='".
+      //        $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
       return "<input title=\"".sprintf(__s('Search (%s for all)'), '*').
              "\" type='text' ondblclick=\"this.value='*';\" id='search_$id' name='____data_$id' size='$size'>\n";
    }
@@ -310,18 +310,10 @@ class Ajax {
                  str_replace(array("<sup class='tab_nb'>", '</sup>'),'',$val['title'])."\" ";
             echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
             // extract sup information
-//             $title = '';
-//             $limit = 16;
+            // $title = '';
+            // $limit = 16;
             // No title strip for horizontal menu
-//             if ($orientation == 'vertical') {
-//                if (preg_match('/(.*)(<sup>.*<\/sup>)/',$val['title'], $regs)) {
-//                   $title = Html::resume_text(trim($regs[1]),$limit-2).$regs[2];
-//                } else {
-//                   $title = Html::resume_text(trim($val['title']),$limit);
-//                }
-//             } else {
-               $title = $val['title'];
-//             }
+            $title = $val['title'];
             echo $title."</a></li>";
             $current ++;
          }
@@ -444,19 +436,15 @@ class Ajax {
       global $CFG_GLPI;
 
       if (count($forceloadfor) == 0) {
-//          $forceloadfor = array($CFG_GLPI['ajax_wildcard']);
          $forceloadfor = array('*');
       }
       // Need to define min size for text search
       if ($minsize < 0) {
-//          $minsize = $CFG_GLPI['ajax_min_textsearch_load'];
          $minsize = 0;
       }
       if ($buffertime < 0) {
          $buffertime = 0;
-//         $buffertime = $CFG_GLPI['ajax_buffertime_load'];
       }
-
       return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters,
                                      array("dblclick", "keyup"),  $minsize, $buffertime,
                                      $forceloadfor, $display);
@@ -492,37 +480,37 @@ class Ajax {
                $output .= "var last$zone$event = 0;";
             }
             $output .= Html::jsGetElementbyID(Html::cleanId($zone)).".on(
-                '$event',
-                function(event) {";
-                  /// TODO manage buffer time !! ?
-                  if ($buffertime > 0) {
-//                      $output.= "var elapsed = new Date().getTime() - last$zone$event;
-//                            last$zone$event = new Date().getTime();
-//                            if (elapsed < $buffertime) {
-//                               return;
-//                            }";
-                  }
+               '$event',
+               function(event) {";
+                  // TODO manage buffer time !! ?
+            if ($buffertime > 0) {
+               // $output.= "var elapsed = new Date().getTime() - last$zone$event;
+               //       last$zone$event = new Date().getTime();
+               //       if (elapsed < $buffertime) {
+               //          return;
+               //       }";
+            }
 
-                  $condition = '';
-                  if ($minsize >= 0) {
-                     $condition = Html::jsGetElementbyID(Html::cleanId($zone)).".val().length >= $minsize ";
-                  }
-                  if (count($forceloadfor)) {
-                     foreach ($forceloadfor as $value) {
-                        if (!empty($condition)) {
-                           $condition .= " || ";
-                        }
-                        $condition .= Html::jsGetElementbyID(Html::cleanId($zone)).".val() == '$value'";
-                     }
-                  }
+            $condition = '';
+            if ($minsize >= 0) {
+               $condition = Html::jsGetElementbyID(Html::cleanId($zone)).".val().length >= $minsize ";
+            }
+            if (count($forceloadfor)) {
+               foreach ($forceloadfor as $value) {
                   if (!empty($condition)) {
-                     $output .= "if ($condition) {";
+                     $condition .= " || ";
                   }
-                  $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
-                  if (!empty($condition)) {
-                     $output .= "}";
-                  }
-               $output .=  "}";
+                  $condition .= Html::jsGetElementbyID(Html::cleanId($zone)).".val() == '$value'";
+               }
+            }
+            if (!empty($condition)) {
+               $output .= "if ($condition) {";
+            }
+            $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
+            if (!empty($condition)) {
+               $output .= "}";
+            }
+            $output .=  "}";
             $output .=");\n";
          }
       }
@@ -585,9 +573,9 @@ class Ajax {
                   }
                }
 
-             $output .= self::updateItemOnSelectEvent("dropdown_".$options["name"].$options["rand"],
-                                                      $data['to_update'], $data['url'],
-                                                      $paramsupdate, $display);
+               $output .= self::updateItemOnSelectEvent("dropdown_".$options["name"].$options["rand"],
+                                                        $data['to_update'], $data['url'],
+                                                        $paramsupdate, $display);
             }
          }
       }

@@ -77,7 +77,7 @@ class NotificationTargetUser extends NotificationTarget {
                                 'language' => $this->obj->getField('language'),
                                 'usertype' => $usertype);
                   $this->addToAddressesList($data);
-         }
+            }
       }
    }
 

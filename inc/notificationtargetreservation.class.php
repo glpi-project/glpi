@@ -120,7 +120,7 @@ class NotificationTargetReservation extends NotificationTarget {
             $this->datas['##reservation.url##']
                                  = $this->formatURL($options['additionnaloption']['usertype'],
                                                     "Reservation_".$this->obj->getField('id'));
-                     }
+         }
 
       } else {
          $this->datas['##reservation.entity##'] = Dropdown::getDropdownName('glpi_entities',

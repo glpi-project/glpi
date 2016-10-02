@@ -153,13 +153,13 @@ class Report extends CommonGLPI{
       foreach ($optgroup as $opt => $title) {
          $group = $title;
          foreach ($names as $key => $val) {
-             if ($opt == $val["plug"]) {
+            if ($opt == $val["plug"]) {
                $file                  = $CFG_GLPI["root_doc"]."/plugins/".$key;
                $values[$group][$file] = $val["name"];
                if (stripos($_SERVER['REQUEST_URI'],$file) !== false) {
                   $selected = $file;
                }
-             }
+            }
          }
       }
 
@@ -384,10 +384,10 @@ class Report extends CommonGLPI{
 
             // To ensure that the NetworkEquipment remain the first item, we test its type
             if ($line['itemtype_2'] == 'NetworkEquipment') {
-              $idx = 2;
-           } else {
-              $idx = 1;
-           }
+               $idx = 2;
+            } else {
+               $idx = 1;
+            }
 
             if (!empty($extra)) {
                echo "<td>".(empty($line['extra']) ? NOT_AVAILABLE : $line['extra'])."</td>";

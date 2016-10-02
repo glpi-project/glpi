@@ -113,7 +113,7 @@ class Infocom extends CommonDBChild {
    }
 
 
-    function post_getEmpty() {
+   function post_getEmpty() {
 
       $this->fields["alert"] = Entity::getUsedConfig("use_infocoms_alert",
                                                      $this->fields["entities_id"],
@@ -332,7 +332,7 @@ class Infocom extends CommonDBChild {
             case 0 :
                break;
 
-             case self::COPY_WARRANTY_DATE :
+            case self::COPY_WARRANTY_DATE :
                if (isset($infocoms['warranty_date'])) {
                   $infocoms[$field] = $infocoms['warranty_date'];
                }
@@ -974,7 +974,7 @@ class Infocom extends CommonDBChild {
                                                     "infocoms-show")?"_fixe":"")."'>";
 
             // Can edit calendar ?
-           $editcalendar = ($withtemplate != 2);
+            $editcalendar = ($withtemplate != 2);
 
             echo "<tr><th colspan='4'>".__('Asset lifecycle')."</th></tr>";
             echo "<tr class='tab_bg_1'>";
@@ -1222,22 +1222,6 @@ class Infocom extends CommonDBChild {
    **/
    static function getSearchOptionsToAdd($itemtype) {
 
-//                if ($itemtype == 'CartridgeItem') {
-//                   // Return the infocom linked to the Cartridge, not the template linked to the Type
-//                   $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_cartridges",
-//                                              $linkfield);
-//                   $specific_leftjoin =  $out."
-//                         LEFT JOIN `$new_table` $AS ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
-//                                                       AND `$nt`.`itemtype` = 'Cartridge') ";
-//                }
-//                if ($itemtype == 'ConsumableItem') {
-//                   // Return the infocom linked to the Comsumable, not the template linked to the Type
-//                   $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_consumables",
-//                                              $linkfield);
-//                   $specific_leftjoin =  $out."
-//                         LEFT JOIN `$new_table` $AS ON (glpi_consumables.`id` = `$nt`.`items_id`
-//                                                       AND `$nt`.`itemtype` = 'Consumable') ";
-//                }
       $specific_itemtype = '';
       $beforejoin        = array();
       switch ($itemtype) {

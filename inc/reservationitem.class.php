@@ -107,14 +107,6 @@ class ReservationItem extends CommonDBChild {
    }
 
 
-   /**
-    * @since 0.84
-   **/
-//   static function canView() {
-//      return true;
-//   }
-
-
    // From CommonDBTM
    /**
     * Retrieve an item from the database for a specific item

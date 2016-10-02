@@ -362,7 +362,7 @@ class ContractCost extends CommonDBChild {
             echo "<th>".__('Cost')."</th>";
             echo "</tr>";
 
-         Session::initNavigateListItems(__CLASS__,
+            Session::initNavigateListItems(__CLASS__,
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),

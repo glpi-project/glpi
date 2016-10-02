@@ -287,11 +287,6 @@ class FieldUnicity extends CommonDropdown {
          $values = array();
          foreach ($DB->list_fields(getTableForItemType($itemtype)) as $field) {
             $searchOption = $target->getSearchOptionByField('field', $field['Field']);
-//             if (empty($searchOption)) {
-//                if ($table = getTableNameForForeignKeyField($field['Field'])) {
-//                   $searchOption = $target->getSearchOptionByField('field', 'name', $table);
-//                }
-//             }
             if (!empty($searchOption)
                 && !in_array($field['Type'], $blacklisted_types)
                 && !in_array($field['Field'], $target->getUnallowedFieldsForUnicity())) {

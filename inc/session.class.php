@@ -120,7 +120,7 @@ class Session {
                $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
                $_SESSION["glpicrontimer"]       = time();
                // Default tab
-//               $_SESSION['glpi_tab']=1;
+               // $_SESSION['glpi_tab']=1;
                $_SESSION['glpi_tabs']           = array();
                $auth->user->computePreferences();
                foreach ($CFG_GLPI['user_pref_field'] as $field) {
@@ -257,31 +257,31 @@ class Session {
    }
 
 
-    /** Initialise a list of items to use navigate through search results
-     *
-     * @param $itemtype    device type
-     * @param $title       list title (default '')
-    **/
-    static function initNavigateListItems($itemtype, $title="") {
+   /** Initialise a list of items to use navigate through search results
+    *
+    * @param $itemtype    device type
+    * @param $title       list title (default '')
+   **/
+   static function initNavigateListItems($itemtype, $title="") {
 
-       if (empty($title)) {
-          $title = __('List');
-       }
-       $url = '';
+      if (empty($title)) {
+         $title = __('List');
+      }
+      $url = '';
 
-       if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'],"tabs") > 0)) {
-          if (isset($_SERVER['HTTP_REFERER'])) {
-             $url = $_SERVER['HTTP_REFERER'];
-          }
+      if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'],"tabs") > 0)) {
+         if (isset($_SERVER['HTTP_REFERER'])) {
+            $url = $_SERVER['HTTP_REFERER'];
+         }
 
-       } else {
-          $url = $_SERVER['REQUEST_URI'];
-       }
+      } else {
+         $url = $_SERVER['REQUEST_URI'];
+      }
 
-       $_SESSION['glpilisttitle'][$itemtype] = $title;
-       $_SESSION['glpilistitems'][$itemtype] = array();
-       $_SESSION['glpilisturl'][$itemtype]   = $url;
-    }
+      $_SESSION['glpilisttitle'][$itemtype] = $title;
+      $_SESSION['glpilistitems'][$itemtype] = array();
+      $_SESSION['glpilisturl'][$itemtype]   = $url;
+   }
 
 
    /**
@@ -573,7 +573,7 @@ class Session {
       }
 
       if (isset($CFG_GLPI["languages"][$trytoload][5])) {
-        $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
+         $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
       $TRANSLATE = new Zend\I18n\Translator\Translator;
       try {
@@ -596,14 +596,14 @@ class Session {
 
       // TRANSLATION_MODE deleted : maybe find another solution ?
       // Debug display lang element with item
-//       if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
-//          foreach ($LANG as $module => $tab) {
-//             foreach ($tab as $num => $val) {
-//                $LANG[$module][$num] = "".$LANG[$module][$num].
-//                                       "/<span style='font-size:12px; color:red;'>$module/$num</span>";
-//             }
-//          }
-//       }
+      // if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
+      //    foreach ($LANG as $module => $tab) {
+      //       foreach ($tab as $num => $val) {
+      //          $LANG[$module][$num] = "".$LANG[$module][$num].
+      //                                 "/<span style='font-size:12px; color:red;'>$module/$num</span>";
+      //       }
+      //    }
+      // }
 
       $TRANSLATE->setLocale($trytoload);
 

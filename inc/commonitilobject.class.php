@@ -714,7 +714,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   break;
 
                case "group" :
-                   if (!empty($this->grouplinkclass)
+                  if (!empty($this->grouplinkclass)
                        && ($input['_itil_observer']['groups_id'] > 0)) {
                      $groupactors = new $this->grouplinkclass();
                      if (isset($input['_auto_update'])
@@ -904,7 +904,7 @@ abstract class CommonITILObject extends CommonDBTM {
                $this->updates[] = 'status';
             }
 
-  //          $this->fields['status'] = self::INCOMING;
+            // $this->fields['status'] = self::INCOMING;
             // Don't change status if it's a new status allow
             if (in_array($this->oldvalues['status'], $this->getNewStatusArray())
                 && !in_array($this->input['status'], $this->getNewStatusArray())) {
@@ -1015,7 +1015,7 @@ abstract class CommonITILObject extends CommonDBTM {
                unset($this->updates[$key]);
                unset($this->oldvalues['solvedate']);
             }
-          }
+         }
       }
 
       // Manage come back to waiting state
@@ -1459,7 +1459,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $supplieractors = new $this->supplierlinkclass();
       }
 
-     // Additional groups actors
+      // Additional groups actors
       if (!is_null($groupactors)) {
          // Requesters
          if (isset($input['_additional_groups_requesters'])
@@ -1571,11 +1571,9 @@ abstract class CommonITILObject extends CommonDBTM {
                }
             }
          }
-//          print_r($input);exit();
          if (isset($input["_additional_requesters"])
              && is_array($input["_additional_requesters"])
              && count($input["_additional_requesters"])) {
-//             echo "ii";exit();
             $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
                             'type'                                 => CommonITILActor::REQUESTER,
                             '_from_object'                         => true);
@@ -1702,14 +1700,14 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Ticket update
       if (isset($this->input['content'])) {
-        if ($CFG_GLPI["use_rich_text"]) {
+         if ($CFG_GLPI["use_rich_text"]) {
             $this->input['content'] = $this->convertTagToImage($this->input['content'], true,
                                                                 $docadded);
             $this->input['_forcenotif'] = true;
-        } else {
+         } else {
             $this->fields['content'] = $this->setSimpleTextContent($this->input['content']);
             $this->updateInDB(array('content'));
-        }
+         }
       }
 
       return $docadded;
@@ -1779,7 +1777,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (($p['showtype'] == 'search')
           || $p['withmajor']) {
          $values[6] = static::getPriorityName(6);
-     }
+      }
       $values[5] = static::getPriorityName(5);
       $values[4] = static::getPriorityName(4);
       $values[3] = static::getPriorityName(3);
@@ -2591,17 +2589,17 @@ abstract class CommonITILObject extends CommonDBTM {
                if ($item->can($id, UPDATE)) {
                   $linkclass = new $item->userlinkclass();
                   foreach ($linkclass->getActors($id) as $type => $users) {
-                    foreach ($users as $data) {
+                     foreach ($users as $data) {
                         $data['use_notification'] = $input['use_notification'];
                         $linkclass->update($data);
-                    }
+                     }
                   }
                   $linkclass = new $this->supplierlinkclass();
                   foreach ($linkclass->getActors($id) as $type => $users) {
-                    foreach ($users as $data) {
+                     foreach ($users as $data) {
                         $data['use_notification'] = $input['use_notification'];
                         $linkclass->update($data);
-                    }
+                     }
                   }
 
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -4044,8 +4042,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $this->showFormHeader($options);
 
       $show_template = $canedit;
-//                        && $this->getField('solutiontypes_id') == 0
-//                        && empty($this->fields['solution']);
       $rand_template = mt_rand();
       $rand_text     = $rand_type = 0;
       if ($canedit) {
@@ -4060,16 +4056,14 @@ abstract class CommonITILObject extends CommonDBTM {
                                           'entity'   => $this->getEntityID(),
                                           'rand'     => $rand_template,
                                           // Load type and solution from bookmark
-                                          'toupdate'
-	                                         => array('value_fieldname'
-	                                                               => 'value',
-                                                     'to_update'  => 'solution'.$rand_text,
-                                                     'url'        => $CFG_GLPI["root_doc"].
-                                                                     "/ajax/solution.php",
-                                                     'moreparams'
-	                                                     => array('type_id'
-                                                                  => 'dropdown_solutiontypes_id'.
-                                                                       $rand_type))));
+                                          'toupdate' => array(
+                                              'value_fieldname' => 'value',
+                                              'to_update'       => 'solution'.$rand_text,
+                                              'url'             => $CFG_GLPI["root_doc"].
+                                                                   "/ajax/solution.php",
+                                              'moreparams' => array(
+                                                  'type_id' => 'dropdown_solutiontypes_id'.
+                                                               $rand_type))));
 
          echo "</td><td colspan='2'>";
          if (Session::haveRightsOr('knowbase', array(READ, KnowbaseItem::READFAQ))) {
@@ -4285,23 +4279,23 @@ abstract class CommonITILObject extends CommonDBTM {
    static function isPossibleToAssignType($itemtype) {
       global $PLUGIN_HOOKS;
 
-      /// TODO : assign_to_ticket to assign_to_itil
-//       // Plugin case
-//       if ($plug = isPluginItemType($itemtype)) {
-//          //If it's not a core's type, then check plugins
-//          $types = array();
-//          if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
-//             $types = Plugin::doOneHook($plug['plugin'], 'AssignToTicket', $types);
-//             if (array_key_exists($itemtype,$types)) {
-//                return true;
-//             }
-//          }
-//       // standard case
-//       } else {
-//          if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-//             return true;
-//          }
-//       }
+      // TODO : assign_to_ticket to assign_to_itil
+      // Plugin case
+      // if ($plug = isPluginItemType($itemtype)) {
+      //    //If it's not a core's type, then check plugins
+      //    $types = array();
+      //    if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
+      //       $types = Plugin::doOneHook($plug['plugin'], 'AssignToTicket', $types);
+      //       if (array_key_exists($itemtype,$types)) {
+      //          return true;
+      //       }
+      //    }
+      // // standard case
+      // } else {
+      //    if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+      //       return true;
+      //    }
+      // }
       if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
          return true;
       }

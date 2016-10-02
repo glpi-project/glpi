@@ -78,7 +78,7 @@ abstract class HTMLTableEntity {
       $this->html_id    = $origin->html_id;
       $this->html_style = $origin->html_style;
       $this->html_class = $origin->html_class;
-    }
+   }
 
 
    /**

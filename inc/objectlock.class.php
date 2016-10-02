@@ -303,39 +303,39 @@ class ObjectLock extends CommonDBTM {
       //if( $CFG_GLPI["lock_use_lock_item"] &&
       //    $CFG_GLPI["lock_lockprofile_id"] > 0 &&
       //    in_array($this->itemtype, $CFG_GLPI['lock_item_list']) ) {
-         if (!($gotIt = $this->getFromDBByQuery("WHERE itemtype = '".$this->itemtype."'
-                                                       AND items_id = ".$this->itemid." " ))
+      if (!($gotIt = $this->getFromDBByQuery("WHERE itemtype = '".$this->itemtype."'"
+              . " AND items_id = ".$this->itemid." " ))
                && $id = $this->add(array('itemtype' => $this->itemtype,
                                           'items_id' => $this->itemid,
                                           'users_id' => Session::getLoginUserID()))) {
-            // add a script to unlock the Object
-            echo Html::scriptBlock( "$(document).ready( function() {
-                     $(window).on('beforeunload', function() {
-                        //debugger ;
-                         $.ajax({
-                             url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
-                             async: false,
-                             cache: false,
-                             data: 'unlock=1&id=$id'
-                             });
-                         }) ;
-                     }) ;" );
-            $ret = true;
-         } else { // can't add a lock as another one is already existing
-            if (!$gotIt)
-               $this->getFromDBByQuery("WHERE itemtype = '".$this->itemtype."'
-                                              AND items_id = ".$this->itemid." " );
-            // open the object as read-only as it is already locked by someone
-            self::setReadonlyProfile();
-            if ($this->fields['users_id'] != Session::getLoginUserID()) {
-               $this->setLockedByMessage();
-            } else {
-               $this->setLockedByYouMessage();
-            }
-            // and if autolock was set for this item then unset it
-            unset($_SESSION['glpilock_autolock_items'][ $this->itemtype ][ $this->itemid ]);
+         // add a script to unlock the Object
+         echo Html::scriptBlock( "$(document).ready( function() {
+                  $(window).on('beforeunload', function() {
+                     //debugger ;
+                      $.ajax({
+                          url: '".$CFG_GLPI['root_doc']."/ajax/unlockobject.php',
+                          async: false,
+                          cache: false,
+                          data: 'unlock=1&id=$id'
+                          });
+                      }) ;
+                  }) ;" );
+         $ret = true;
+      } else { // can't add a lock as another one is already existing
+         if (!$gotIt)
+            $this->getFromDBByQuery("WHERE itemtype = '".$this->itemtype."'
+                                           AND items_id = ".$this->itemid." " );
+         // open the object as read-only as it is already locked by someone
+         self::setReadonlyProfile();
+         if ($this->fields['users_id'] != Session::getLoginUserID()) {
+            $this->setLockedByMessage();
+         } else {
+            $this->setLockedByYouMessage();
          }
-     // }
+         // and if autolock was set for this item then unset it
+         unset($_SESSION['glpilock_autolock_items'][ $this->itemtype ][ $this->itemid ]);
+      }
+      // }
       return $ret;
    }
 

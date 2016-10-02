@@ -292,9 +292,6 @@ class Change extends CommonITILObject {
 
    function prepareInputForUpdate($input) {
 
-      // Get change : need for comparison
-//       $this->getFromDB($input['id']);
-
       $input = parent::prepareInputForUpdate($input);
       return $input;
    }
@@ -483,7 +480,7 @@ class Change extends CommonITILObject {
                    self::SOLVED        => __('Applied'),
                    self::OBSERVED      => __('Review'),
                    self::CLOSED        => _x('status', 'Closed'),
-   );
+      );
 
       if ($withmetaforsearch) {
          $tab['notold']    = _x('status', 'Not solved');
@@ -557,7 +554,7 @@ class Change extends CommonITILObject {
       global $CFG_GLPI, $DB;
 
       if (!static::canView()) {
-        return false;
+         return false;
       }
 
       // In percent
@@ -1063,8 +1060,8 @@ class Change extends CommonITILObject {
 
          //TRANS : %d is the number of problems
          echo sprintf(_n('Last %d change','Last %d changes',$number), $number);
-//             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-//                    Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
+         // echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+         //            Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
 
          echo "</th></tr>";
 

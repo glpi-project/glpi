@@ -246,11 +246,13 @@ class RuleMailCollector extends Rule {
                         //Case 2:
                         if (isset($this->criterias_results['ONE_PROFILE'])) {
                            $profile = $this->criterias_results['ONE_PROFILE'];
-                        //Case 3
+
                         } else if (isset($this->criterias_results['UNIQUE_PROFILE'])) {
+                           //Case 3
                            $profile = $this->criterias_results['UNIQUE_PROFILE'];
-                        //Case 1
+
                         } else if (isset($this->criterias_results['PROFILES'])) {
+                           //Case 1
                            $profile = $this->criterias_results['PROFILES'];
                         }
 
@@ -319,8 +321,8 @@ class RuleMailCollector extends Rule {
                         if ($entity_found > -1) {
                            $output['entities_id'] = $entity_found;
                            break;
-                         }
-                      }
+                        }
+                     }
                   } // switch (field)
                break;
                default:

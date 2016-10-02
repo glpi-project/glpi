@@ -1516,7 +1516,7 @@ class Rule extends CommonDBTM {
                if (!$doactions) {
                   break;
                }
-             }
+            }
          }
 
       } else { // OR MATCHING
@@ -1606,8 +1606,8 @@ class Rule extends CommonDBTM {
                }
             }
 
-         // Positive condition : Need to match one
          } else {
+            // Positive condition : Need to match one
             $res = false;
             foreach ($input[$criteria->fields["criteria"]] as $crit) {
                $value = $this->getCriteriaValue($criteria->fields["criteria"],
@@ -2296,7 +2296,7 @@ class Rule extends CommonDBTM {
       }
       //Not a standard condition
       if (!$tested) {
-        $display = $this->displayAdditionalRuleCondition($condition, $crit, $name, $value, $test);
+         $display = $this->displayAdditionalRuleCondition($condition, $crit, $name, $value, $test);
       }
 
       if (($condition == self::PATTERN_EXISTS)

@@ -230,7 +230,7 @@ class Notepad extends CommonDBChild {
       global $CFG_GLPI;
 
       if (!Session::haveRight($item::$rightname, READNOTE)) {
-        return false;
+         return false;
       }
       $notes   = static::getAllForItem($item);
       $rand    = mt_rand();
@@ -320,7 +320,7 @@ class Notepad extends CommonDBChild {
             echo "</div>"; // boxnoteright
             echo "</div>"; // boxnote
 
-             if ($canedit) {
+            if ($canedit) {
                 echo "<div class='boxnote starthidden' id='edit$id'>";
                 echo "<form name='update_form$id$rand' id='update_form$id$rand' ";
                 echo " method='post' action='".Toolbox::getItemTypeFormURL('Notepad')."'>";
@@ -337,10 +337,9 @@ class Notepad extends CommonDBChild {
 
                 Html::closeForm();
                 echo "</div>"; // boxnote
-             }
+            }
          }
       }
-
       return true;
    }
 }

@@ -74,7 +74,7 @@ class IPNetwork_Vlan extends CommonDBRelation {
    }
 
 
-  /**
+   /**
     * @param $portID
     * @param $vlanID
    **/

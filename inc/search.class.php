@@ -478,8 +478,7 @@ class Search {
                                               $criteria['searchtype'], $criteria['value']);
                   }
 
-               // view and all search
-               } else {
+               } else { // view and all search
                   $LINK       = " OR ";
                   $NOT        = 0;
                   $globallink = " AND ";
@@ -1051,7 +1050,7 @@ class Search {
             // Parse datas
             foreach ($newrow['raw'] as $key => $val) {
                // For compatibility keep data at the top for the moment
-//                $newrow[$key] = $val;
+               // $newrow[$key] = $val;
 
                $keysplit = explode('_', $key);
                if (isset($keysplit[1])  && $keysplit[0] == 'ITEM') {
@@ -1301,7 +1300,7 @@ class Search {
          $headers_line_top .= self::showNewLine($data['display_type']);
 
          if ($data['display_type'] == self::HTML_OUTPUT) {
-//          $headers_line_bottom .= self::showBeginHeader($data['display_type']);
+            // $headers_line_bottom .= self::showBeginHeader($data['display_type']);
             $headers_line_bottom .= self::showNewLine($data['display_type']);
          }
 
@@ -1376,7 +1375,7 @@ class Search {
          }
 
          $headers_line_top    .= self::showEndHeader($data['display_type']);
-//          $headers_line_bottom .= self::showEndHeader($data['display_type']);
+         // $headers_line_bottom .= self::showEndHeader($data['display_type']);
 
          echo $headers_line_top;
 
@@ -2017,7 +2016,7 @@ class Search {
          }
       }
 
-/*
+      /*
       $ADD="";
       if (($NOT && $val!="NULL")
          || $val=='^$') {
@@ -2027,7 +2026,7 @@ class Search {
 
       return " $LINK (`$NAME$num`".self::makeTextSearch($val,$NOT)."
                      $ADD ) ";
-*/
+      */
       return self::makeTextCriteria("`$NAME$num`",$val,$NOT,$LINK);
    }
 
@@ -2268,7 +2267,7 @@ class Search {
       }
 
       if ($meta) {
-//          $NAME = "META";
+         // $NAME = "META";
          if (getTableForItemType($meta_type)!=$table) {
             $addtable  .= "_".$meta_type;
             $addtable2 .= "_".$meta_type;
@@ -2482,7 +2481,7 @@ class Search {
          $tocompute = str_replace("TABLE", "`$table$addtable`", $tocompute);
       }
       // Preformat items
-       if (isset($searchopt[$ID]["datatype"])) {
+      if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "count" :
                return " COUNT(DISTINCT `$table$addtable`.`$field`) AS `".$NAME."_".$num."`,
@@ -2705,57 +2704,57 @@ class Search {
             }
             return $condition;
 
-            case 'Change' :
-            case 'Problem':
-               if ($itemtype == 'Change') {
-                  $right       = 'change';
-                  $table       = 'changes';
-                  $groupetable = "`glpi_changes_groups_";
-               } else if ($itemtype == 'Problem') {
-                  $right       = 'problem';
-                  $table       = 'problems';
-                  $groupetable = "`glpi_groups_problems";
+         case 'Change' :
+         case 'Problem':
+            if ($itemtype == 'Change') {
+               $right       = 'change';
+               $table       = 'changes';
+               $groupetable = "`glpi_changes_groups_";
+            } else if ($itemtype == 'Problem') {
+               $right       = 'problem';
+               $table       = 'problems';
+               $groupetable = "`glpi_groups_problems";
+            }
+            // Same structure in addDefaultJoin
+            $condition = '';
+            if (!Session::haveRight("$right", $itemtype::READALL)) {
+               $searchopt       = &self::getOptions($itemtype);
+               if (Session::haveRight("$right", $itemtype::READMY)) {
+                  $requester_table      = '`glpi_'.$table.'_users_'.
+                                          self::computeComplexJoinID($searchopt[4]['joinparams']
+                                                                     ['beforejoin']['joinparams']).'`';
+                  $requestergroup_table = $groupetable.
+                                          self::computeComplexJoinID($searchopt[71]['joinparams']
+                                                                     ['beforejoin']['joinparams']).'`';
+
+                  $observer_table       = '`glpi_'.$table.'_users_'.
+                                          self::computeComplexJoinID($searchopt[66]['joinparams']
+                                                                     ['beforejoin']['joinparams']).'`';
+                  $observergroup_table  = $groupetable.
+                                          self::computeComplexJoinID($searchopt[65]['joinparams']
+                                                                    ['beforejoin']['joinparams']).'`';
+
+                  $assign_table         = '`glpi_'.$table.'_users_'.
+                                          self::computeComplexJoinID($searchopt[5]['joinparams']
+                                                                     ['beforejoin']['joinparams']).'`';
+                  $assigngroup_table    = $groupetable.
+                                          self::computeComplexJoinID($searchopt[8]['joinparams']
+                                                                     ['beforejoin']['joinparams']).'`';
                }
-               // Same structure in addDefaultJoin
-               $condition = '';
-               if (!Session::haveRight("$right", $itemtype::READALL)) {
-                  $searchopt       = &self::getOptions($itemtype);
-                  if (Session::haveRight("$right", $itemtype::READMY)) {
-                     $requester_table      = '`glpi_'.$table.'_users_'.
-                                             self::computeComplexJoinID($searchopt[4]['joinparams']
-                                                                        ['beforejoin']['joinparams']).'`';
-                     $requestergroup_table = $groupetable.
-                                             self::computeComplexJoinID($searchopt[71]['joinparams']
-                                                                        ['beforejoin']['joinparams']).'`';
+               $condition = "(";
 
-                     $observer_table       = '`glpi_'.$table.'_users_'.
-                                             self::computeComplexJoinID($searchopt[66]['joinparams']
-                                                                        ['beforejoin']['joinparams']).'`';
-                     $observergroup_table  = $groupetable.
-                                             self::computeComplexJoinID($searchopt[65]['joinparams']
-                                                                       ['beforejoin']['joinparams']).'`';
-
-                     $assign_table         = '`glpi_'.$table.'_users_'.
-                                             self::computeComplexJoinID($searchopt[5]['joinparams']
-                                                                        ['beforejoin']['joinparams']).'`';
-                     $assigngroup_table    = $groupetable.
-                                             self::computeComplexJoinID($searchopt[8]['joinparams']
-                                                                        ['beforejoin']['joinparams']).'`';
-                  }
-                  $condition = "(";
-
-                  if (Session::haveRight("$right", $itemtype::READMY)) {
-                     $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
-                                    OR $observer_table.users_id = '".Session::getLoginUserID()."'
-                                    OR $assign_table.users_id = '".Session::getLoginUserID()."'
-                                    OR `glpi_".$table."`.`users_id_recipient` = '".Session::getLoginUserID()."'";
-                  } else {
-                     $condition .= "0=1";
-                  }
-
-                  $condition .= ") ";
+               if (Session::haveRight("$right", $itemtype::READMY)) {
+                  $condition .= " $requester_table.users_id = '".Session::getLoginUserID()."'
+                                 OR $observer_table.users_id = '".Session::getLoginUserID()."'
+                                 OR $assign_table.users_id = '".Session::getLoginUserID()."'
+                                 OR `glpi_".$table."`.`users_id_recipient` = '".Session::getLoginUserID()."'";
+               } else {
+                  $condition .= "0=1";
                }
-               return $condition;
+
+               $condition .= ") ";
+            }
+            return $condition;
 
          default :
             // Plugin can override core definition for its type
@@ -2890,7 +2889,7 @@ class Search {
       }
 
       switch ($inittable.".".$field) {
-// //          case "glpi_users_validation.name" :
+         // case "glpi_users_validation.name" :
 
          case "glpi_users.name" :
             if ($itemtype == 'User') { // glpi_users case / not link table
@@ -3125,7 +3124,8 @@ class Search {
                case 'all' :
                   $tocheck = CommonITILValidation::getAllValidationStatusArray();
                   break;
-               }
+
+            }
             if (count($tocheck) == 0) {
                $tocheck = array($val);
             }
@@ -3192,10 +3192,10 @@ class Search {
                   }
                }
                if ($searchtype == 'lessthan') {
-                 $val = '<'.$val;
+                  $val = '<'.$val;
                }
                if ($searchtype == 'morethan') {
-                 $val = '>'.$val;
+                  $val = '>'.$val;
                }
                if ($searchtype) {
                   $date_computation = $tocompute;
@@ -3259,7 +3259,7 @@ class Search {
                if ($searchtype == 'notequals') {
                   $nott = !$nott;
                }
-            // No break here : use number comparaison case
+               // No break here : use number comparaison case
 
             case "count" :
             case "number" :
@@ -3351,10 +3351,10 @@ class Search {
 
       switch ($itemtype) {
          // No link
-          case 'User' :
-             return self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                      "glpi_profiles_users", "profiles_users_id", 0, 0,
-                                      array('jointype' => 'child'));
+         case 'User' :
+            return self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                     "glpi_profiles_users", "profiles_users_id", 0, 0,
+                                     array('jointype' => 'child'));
 
          case 'Reminder' :
             return Reminder::addVisibilityJoins();
@@ -3440,58 +3440,58 @@ class Search {
             }
             return $out;
 
-            case 'Change' :
-            case 'Problem' :
-               if ($itemtype == 'Change') {
-                  $right       = 'change';
-                  $table       = 'changes';
-                  $groupetable = "glpi_changes_groups";
-                  $linkfield   = "changes_groups_id";
-               } else if ($itemtype == 'Problem') {
-                  $right       = 'problem';
-                  $table       = 'problems';
-                  $groupetable = "glpi_groups_problems";
-                  $linkfield   = "groups_problems_id";
-               }
+         case 'Change' :
+         case 'Problem' :
+            if ($itemtype == 'Change') {
+               $right       = 'change';
+               $table       = 'changes';
+               $groupetable = "glpi_changes_groups";
+               $linkfield   = "changes_groups_id";
+            } else if ($itemtype == 'Problem') {
+               $right       = 'problem';
+               $table       = 'problems';
+               $groupetable = "glpi_groups_problems";
+               $linkfield   = "groups_problems_id";
+            }
 
-               // Same structure in addDefaultWhere
-               $out = '';
-               if (!Session::haveRight("$right", $itemtype::READALL)) {
-                  $searchopt = &self::getOptions($itemtype);
+            // Same structure in addDefaultWhere
+            $out = '';
+            if (!Session::haveRight("$right", $itemtype::READALL)) {
+               $searchopt = &self::getOptions($itemtype);
 
-                  if (Session::haveRight("$right", $itemtype::READMY)) {
-                     // show mine : requester
+               if (Session::haveRight("$right", $itemtype::READMY)) {
+                  // show mine : requester
+                  $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                            "glpi_".$table."_users", $table."_users_id", 0, 0,
+                                            $searchopt[4]['joinparams']['beforejoin']['joinparams']);
+                  if (count($_SESSION['glpigroups'])) {
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                               "glpi_".$table."_users", $table."_users_id", 0, 0,
-                                               $searchopt[4]['joinparams']['beforejoin']['joinparams']);
-                     if (count($_SESSION['glpigroups'])) {
-                        $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                  $groupetable, $linkfield, 0, 0,
-                                                  $searchopt[71]['joinparams']['beforejoin']['joinparams']);
-                     }
+                                               $groupetable, $linkfield, 0, 0,
+                                               $searchopt[71]['joinparams']['beforejoin']['joinparams']);
+                  }
 
-                     // show mine : observer
+                  // show mine : observer
+                  $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                            "glpi_".$table."_users", $table."_users_id", 0, 0,
+                                            $searchopt[66]['joinparams']['beforejoin']['joinparams']);
+                  if (count($_SESSION['glpigroups'])) {
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                               "glpi_".$table."_users", $table."_users_id", 0, 0,
-                                               $searchopt[66]['joinparams']['beforejoin']['joinparams']);
-                     if (count($_SESSION['glpigroups'])) {
-                        $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                  $groupetable, $linkfield, 0, 0,
-                                                  $searchopt[65]['joinparams']['beforejoin']['joinparams']);
-                     }
+                                               $groupetable, $linkfield, 0, 0,
+                                               $searchopt[65]['joinparams']['beforejoin']['joinparams']);
+                  }
 
-                     // show mine : assign
+                  // show mine : assign
+                  $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
+                                            "glpi_".$table."_users", $table."_users_id", 0, 0,
+                                            $searchopt[5]['joinparams']['beforejoin']['joinparams']);
+                  if (count($_SESSION['glpigroups'])) {
                      $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                               "glpi_".$table."_users", $table."_users_id", 0, 0,
-                                               $searchopt[5]['joinparams']['beforejoin']['joinparams']);
-                     if (count($_SESSION['glpigroups'])) {
-                        $out .= self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                                  $groupetable, $linkfield, 0, 0,
-                                                  $searchopt[8]['joinparams']['beforejoin']['joinparams']);
-                     }
+                                               $groupetable, $linkfield, 0, 0,
+                                               $searchopt[8]['joinparams']['beforejoin']['joinparams']);
                   }
                }
-               return $out;
+            }
+            return $out;
 
          default :
             // Plugin can override core definition for its type
@@ -3539,9 +3539,6 @@ class Search {
       }
 
       // Multiple link possibilies case
-//       if ($new_table=="glpi_users"
-//           || $new_table=="glpi_groups"
-//           || $new_table=="glpi_users_validation") {
       if (!empty($linkfield) && ($linkfield != getForeignKeyFieldForTable($new_table))) {
          $nt .= "_".$linkfield;
          $AS  = " AS `$nt`";
@@ -3553,8 +3550,6 @@ class Search {
          $nt .= "_".$complexjoin;
          $AS  = " AS `$nt`";
       }
-
-//       }
 
       $addmetanum = "";
       $rt         = $ref_table;
@@ -4075,9 +4070,9 @@ class Search {
       }
 
       $NAME = "ITEM_";
-//       if ($meta) {
-//          $NAME = "META_";
-//       }
+      // if ($meta) {
+      //    $NAME = "META_";
+      // }
       if (isset($searchopt[$ID]["table"])) {
          $table     = $searchopt[$ID]["table"];
          $field     = $searchopt[$ID]["field"];
@@ -4537,7 +4532,7 @@ class Search {
                                  $data[$num][0]["id"]."'>". $name."</a></div>";
                   } else {
                      $out .= $name."</div>";
-                     }
+                  }
                }
                return $out;
 
@@ -5453,14 +5448,14 @@ class Search {
                }
             }
             // Set default datatype
-//             if (!isset($val['datatype']) || empty($val['datatype'])) {
-//                if ((strcmp($itemtable,$val['table']) != 0)
-//                    && ($val['field'] == 'name' || $val['field'] == 'completename')) {
-//                   $search[$itemtype][$key]['datatype'] = 'dropdown';
-//                } else {
-//                   $search[$itemtype][$key]['datatype'] = 'string';
-//                }
-//             }
+            // if (!isset($val['datatype']) || empty($val['datatype'])) {
+            //    if ((strcmp($itemtable,$val['table']) != 0)
+            //        && ($val['field'] == 'name' || $val['field'] == 'completename')) {
+            //       $search[$itemtype][$key]['datatype'] = 'dropdown';
+            //    } else {
+            //       $search[$itemtype][$key]['datatype'] = 'string';
+            //    }
+            // }
             // Add default joinparams
             if (!isset($val['joinparams'])) {
                $search[$itemtype][$key]['joinparams'] = array();
@@ -5590,12 +5585,12 @@ class Search {
             }
          }
 
-//          switch ($searchopt[$field_num]['table']) {
-//             case 'glpi_users_validation' :
-//                return array('equals'    => __('is'),
-//                             'notequals' => __('is not'),
-//                             'searchopt' => $searchopt[$field_num]);
-//          }
+         // switch ($searchopt[$field_num]['table']) {
+         //    case 'glpi_users_validation' :
+         //       return array('equals'    => __('is'),
+         //                    'notequals' => __('is not'),
+         //                    'searchopt' => $searchopt[$field_num]);
+         // }
 
          switch ($searchopt[$field_num]['field']) {
             case 'id' :
@@ -5741,7 +5736,7 @@ class Search {
                for ( $i=0 ; $i<$limitto ; $i++) {
                   $out .= $values[$i].$line_delimiter;
                }
-//                $rand=mt_rand();
+               // $rand=mt_rand();
                $out .= "...&nbsp;";
                $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
                $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);

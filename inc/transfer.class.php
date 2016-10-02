@@ -1824,8 +1824,7 @@ class Transfer extends CommonDBTM {
                         $DB->query($query);
                      }
 
-                  // Same Item -> update links
-                  } else {
+                  } else { // Same Item -> update links
                      // Copy Item -> copy links
                      if ($item_ID != $newcontractID) {
                         $query = "INSERT INTO `glpi_contracts_items`
@@ -1899,7 +1898,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
-            // Foreach get item
+               // Foreach get item
                while ($data = $DB->fetch_assoc($result)) {
                   $need_clean_process = false;
                   $item_ID            = $data['documents_id'];
@@ -1995,8 +1994,7 @@ class Transfer extends CommonDBTM {
                         $DB->query($query);
                      }
 
-                  // Same Item -> update links
-                  } else {
+                  } else { // Same Item -> update links
                      // Copy Item -> copy links
                      if ($item_ID != $newdocID) {
                         $query = "INSERT INTO `glpi_documents_items`
@@ -2531,9 +2529,9 @@ class Transfer extends CommonDBTM {
       $input               = array();
       $suppliers_id_assign = 0;
 
-//       if ($data['suppliers_id_assign'] > 0) {
-//          $suppliers_id_assign = $this->transferSingleSupplier($data['suppliers_id_assign']);
-//       }
+      // if ($data['suppliers_id_assign'] > 0) {
+      //   $suppliers_id_assign = $this->transferSingleSupplier($data['suppliers_id_assign']);
+      // }
 
       // Transfer ticket category
       $catid = 0;
@@ -2896,8 +2894,7 @@ class Transfer extends CommonDBTM {
                         $DB->query($query);
                      }
 
-                  // Same Item -> update links
-                  } else {
+                  } else { // Same Item -> update links
                      // Copy Item -> copy links
                      if ($item_ID != $newcontactID) {
                         $query = "INSERT INTO `glpi_contacts_suppliers`
@@ -3009,8 +3006,7 @@ class Transfer extends CommonDBTM {
                $result = $DB->query($query);
             }
 
-         // Keep devices
-         default :
+         default : // Keep devices
             foreach (Item_Devices::getItemAffinities($itemtype) as $itemdevicetype) {
                $itemdevicetable = getTableForItemType($itemdevicetype);
                $devicetype      = $itemdevicetype::getDeviceType();
@@ -3220,8 +3216,8 @@ class Transfer extends CommonDBTM {
                         }
                      }
                   }
-               }
 
+            }
          }
       }
    }
@@ -3467,7 +3463,7 @@ class Transfer extends CommonDBTM {
    }
 
 
-/// Display items to transfers
+   // Display items to transfers
    function showTransferList() {
       global $DB, $CFG_GLPI;
 

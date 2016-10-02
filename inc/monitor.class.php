@@ -304,7 +304,7 @@ class Monitor extends CommonDBTM {
       Dropdown::showYesNo("have_speaker", $this->fields["have_speaker"]);
       echo "</td></tr>";
 
-     // sub-d?
+      // sub-d?
       echo "<tr><td width='20%'>".__('Sub-D')."</td><td width='30%'>";
       Dropdown::showYesNo("have_subd", $this->fields["have_subd"]);
       // bnc?

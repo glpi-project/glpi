@@ -693,7 +693,7 @@ class Reminder extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td colspan='2'>".__('Title')."</td>";
       echo "<td colspan='2'>";
       if (!$ID) {
-      echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
+         echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
       }
       if ($canedit) {
          Html::autocompletionTextField($this, "name",
@@ -763,13 +763,13 @@ class Reminder extends CommonDBTM {
                                'itemtype' => $this->getType(),
                                'items_id' => $this->getID());
 
-               if ($ID
-                   && $this->fields["is_planned"]) {
-                  $params['begin'] = $this->fields["begin"];
-                  $params['end']   = $this->fields["end"];
-               }
+            if ($ID
+                && $this->fields["is_planned"]) {
+               $params['begin'] = $this->fields["begin"];
+               $params['end']   = $this->fields["end"];
+            }
 
-               Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
+            Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
             echo "}";
             echo "</script>\n";
          }

@@ -46,7 +46,7 @@ class NetworkPortAlias extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-     return __('Alias port');
+      return __('Alias port');
    }
 
 
@@ -113,6 +113,6 @@ class NetworkPortAlias extends NetworkPortInstantiation {
       parent::getInstantiationHTMLTable($netport, $row, $father, $options);
       return NULL;
 
-    }
+   }
 }
 ?>

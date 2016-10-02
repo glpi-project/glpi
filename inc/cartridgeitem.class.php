@@ -486,7 +486,7 @@ class CartridgeItem extends CommonDBTM {
                   }
                }
             }
-          }
+         }
       }
    }
 
@@ -539,7 +539,7 @@ class CartridgeItem extends CommonDBTM {
    }
 
 
-  function getEvents() {
+   function getEvents() {
       return array('alert' => __('Send alarms on cartridges'));
    }
 

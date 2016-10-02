@@ -140,7 +140,7 @@ class NotificationTargetProject extends NotificationTarget {
                   break;
 
             }
-         }
+      }
    }
 
 

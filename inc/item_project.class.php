@@ -309,8 +309,8 @@ class Item_Project extends CommonDBRelation{
             break;
 
          default :
-         // Not defined and used now
-//            Project::showListForItem($item);
+            // Not defined and used now
+            // Project::showListForItem($item);
       }
       return true;
    }

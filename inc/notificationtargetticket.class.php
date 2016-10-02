@@ -649,8 +649,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                $datas['##ticket.urlsatisfaction##']
                            = $this->formatURL($options['additionnaloption']['usertype'],
                                               "ticket_".$item->getField("id").'_Ticket$3');
-            // external inquest
-            } else if ($inquest->fields['type'] == 2) {
+
+            } else if ($inquest->fields['type'] == 2) { // external inquest
                $datas['##ticket.urlsatisfaction##'] = Entity::generateLinkSatisfaction($item);
             }
 
@@ -666,7 +666,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                        = $inquest->fields['comment'];
          }
       }
-
       return $datas;
    }
 
@@ -763,19 +762,19 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'events' => NotificationTarget::TAG_FOR_ALL_EVENTS));
       }
 
-     //Events specific for validation
-     $tags = array('validation.author'            => __('Requester'),
-                   'validation.status'            => __('Status of the approval request'),
-                   'validation.submissiondate'    => sprintf(__('%1$s: %2$s'), __('Request'),
-                                                             __('Date')),
-                   'validation.commentsubmission' => sprintf(__('%1$s: %2$s'), __('Request'),
-                                                             __('Comments')),
-                   'validation.validationdate'    => sprintf(__('%1$s: %2$s'), __('Validation'),
-                                                             __('Date')),
-                   'validation.validator'         => __('Decision-maker'),
-                   'validation.commentvalidation' => sprintf(__('%1$s: %2$s'), __('Validation'),
-                                                             __('Comments'))
-                   );
+      //Events specific for validation
+      $tags = array('validation.author'            => __('Requester'),
+                    'validation.status'            => __('Status of the approval request'),
+                    'validation.submissiondate'    => sprintf(__('%1$s: %2$s'), __('Request'),
+                                                              __('Date')),
+                    'validation.commentsubmission' => sprintf(__('%1$s: %2$s'), __('Request'),
+                                                              __('Comments')),
+                    'validation.validationdate'    => sprintf(__('%1$s: %2$s'), __('Validation'),
+                                                              __('Date')),
+                    'validation.validator'         => __('Decision-maker'),
+                    'validation.commentvalidation' => sprintf(__('%1$s: %2$s'), __('Validation'),
+                                                              __('Comments'))
+                    );
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
@@ -831,14 +830,14 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'events' => array('satisfaction')));
       }
 
-     //Foreach global tags
-     $tags = array('followups'     => _n('Followup', 'Followups', Session::getPluralNumber()),
-                   'validations'   => _n('Validation','Validations', Session::getPluralNumber()),
-                   'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
-                   'problems'      => _n('Problem', 'Problems', Session::getPluralNumber()),
-                   'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),
-                   'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()),
-                   'documents'     => _n('Document', 'Documents', Session::getPluralNumber()));
+      //Foreach global tags
+      $tags = array('followups'     => _n('Followup', 'Followups', Session::getPluralNumber()),
+                    'validations'   => _n('Validation','Validations', Session::getPluralNumber()),
+                    'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
+                    'problems'      => _n('Problem', 'Problems', Session::getPluralNumber()),
+                    'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),
+                    'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()),
+                    'documents'     => _n('Document', 'Documents', Session::getPluralNumber()));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,

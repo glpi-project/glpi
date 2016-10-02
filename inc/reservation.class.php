@@ -768,8 +768,8 @@ class Reservation extends CommonDBChild {
             }
             if (($resa->fields["users_id"] == Session::getLoginUserID())
                 || Session::haveRight(static::$rightname, UPDATE)) {
-              echo "<td class='top center'>";
-              echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
+               echo "<td class='top center'>";
+               echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
                      class='submit'>";
                echo "</td>";
             }

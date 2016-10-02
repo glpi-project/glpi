@@ -493,8 +493,8 @@ class Supplier extends CommonDBTM {
                             'criteria'   => array(0 => array('value'      => '$$$$'.$instID,
                                                              'searchtype' => 'contains',
                                                              'field'      => 53)));
-              $link = $linktype::getSearchURL();
-              $link.= (strpos($link,'?') ? '&amp;':'?');
+               $link = $linktype::getSearchURL();
+               $link.= (strpos($link,'?') ? '&amp;':'?');
 
                echo "<a href='$link" .
                      Toolbox::append_params($opt). "'>" . __('Device list')."</a></td>";

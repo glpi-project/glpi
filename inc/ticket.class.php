@@ -235,7 +235,7 @@ class Ticket extends CommonITILObject {
 
 
    static function canView() {
-/*
+      /*
       if (isset($_SESSION['glpiactiveprofile']['interface'])
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          return true;
@@ -621,8 +621,8 @@ class Ticket extends CommonITILObject {
             }
             return $ong;
 
-      //   default :
-      //      return _n('Ticket','Tickets', Session::getPluralNumber());
+         //   default :
+         //      return _n('Ticket','Tickets', Session::getPluralNumber());
       }
 
       return '';
@@ -939,7 +939,7 @@ class Ticket extends CommonITILObject {
                     && (empty($input[$key]) || ($input[$key] == 'NULL'))
                     // Take only into account already set items : do not block old tickets
                     && (!empty($this->fields[$key]))
-               )) {
+                )) {
                $mandatory_missing[$key] = $fieldsname[$val];
             }
          }
@@ -1129,8 +1129,7 @@ class Ticket extends CommonITILObject {
                }
             }
          }
-      // Ticket add
-      } else {
+      } else { // Ticket add
          if (!isset($manual_slts_id[$type])
              && isset($input[$dateField]) && ($input[$dateField] != 'NULL')) {
             // Valid due date
@@ -1506,7 +1505,7 @@ class Ticket extends CommonITILObject {
          $input["content"] = preg_replace('/\\\\r\\\\n/',"\n",$input['content']);
          $input["content"] = preg_replace('/\\\\n/',"\n",$input['content']);
          if (!$CFG_GLPI['use_rich_text']) {
-         $input["content"] = Html::entity_decode_deep($input["content"]);
+            $input["content"] = Html::entity_decode_deep($input["content"]);
             $input["content"] = Html::entity_decode_deep($input["content"]);
             $input["content"] = Html::clean($input["content"]);
          }
@@ -1660,7 +1659,7 @@ class Ticket extends CommonITILObject {
          if (isset($this->input["_followup"]['is_private'])) {
             $toadd["is_private"] = $this->input["_followup"]['is_private'];
          }
-//          $toadd['_no_notif'] = true;
+         // $toadd['_no_notif'] = true;
 
          $fup->add($toadd);
       }
@@ -1685,7 +1684,7 @@ class Ticket extends CommonITILObject {
             $toadd['is_private'] = $_SESSION['glpitask_private'];
          }
 
-//          $toadd['_no_notif'] = true;
+         // $toadd['_no_notif'] = true;
 
          $task->add($toadd);
       }
@@ -2176,7 +2175,7 @@ class Ticket extends CommonITILObject {
       if (Session::haveRight(self::$rightname, self::READALL)) {
          $search['criteria'][0]['value'] = 'notold';
       }
-     return $search;
+      return $search;
    }
 
 
@@ -3202,12 +3201,12 @@ class Ticket extends CommonITILObject {
             echo "</div>";
 
          } else { // predefined value
-           if (isset($values["_users_id_observer"]) && $values["_users_id_observer"]) {
+            if (isset($values["_users_id_observer"]) && $values["_users_id_observer"]) {
                echo self::getActorIcon('user', CommonITILActor::OBSERVER)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_users", $values["_users_id_observer"]);
                echo "<input type='hidden' name='_users_id_observer' value=\"".
                       $values["_users_id_observer"]."\">";
-           }
+            }
          }
          echo "</td></tr>";
       }
@@ -3275,7 +3274,6 @@ class Ticket extends CommonITILObject {
                             'values' => array('filename' => $values['_filename'],
                                               'tag' => $values['_tag_filename'])
                      ));
-//       "<div id='uploadfiles'><input type='file' name='filename[]' value='' size='60'></div>";
       echo "</td>";
       if ($CFG_GLPI['use_rich_text']) {
          echo "<td width='$width '>";
@@ -5320,7 +5318,7 @@ class Ticket extends CommonITILObject {
       $rand = mt_rand();
       if ($job->getFromDBwithData($ID, 0)) {
          $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
-   //      $rand    = mt_rand();
+         // $rand    = mt_rand();
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
                                                                $job->fields["id"])."</td>";
@@ -5765,7 +5763,7 @@ class Ticket extends CommonITILObject {
          ksort($this->input['_filename']);
          ksort($this->input['_tag']);
 
-//         $this->input['_forcenotif'] = 1;
+         // $this->input['_forcenotif'] = 1;
       }
 
    }
@@ -5807,29 +5805,29 @@ class Ticket extends CommonITILObject {
                $ok   = Toolbox::getMime($fullpath, 'image');
             }
             if (isset($image['tag'])) {
-                if ($ok || empty($mime)) {
-               // Replace tags by image in textarea
-               $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
-                       "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'/>";
+               if ($ok || empty($mime)) {
+                  // Replace tags by image in textarea
+                  $img = "<img alt='".$image['tag']."' src='".$CFG_GLPI['root_doc'].
+                          "/front/document.send.php?docid=".$id."&tickets_id=".$this->fields['id']."'/>";
 
-               // Replace tag by the image
-               $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
-                                            Html::entities_deep($img), $content_text);
+                  // Replace tag by the image
+                  $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
+                                               Html::entities_deep($img), $content_text);
 
-               // Replace <br> TinyMce bug
-               $content_text = str_replace(array('&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'),
-                                           '&gt;&lt;', $content_text);
+                  // Replace <br> TinyMce bug
+                  $content_text = str_replace(array('&gt;rn&lt;','&gt;\r\n&lt;','&gt;\r&lt;','&gt;\n&lt;'),
+                                              '&gt;&lt;', $content_text);
 
-               // If the tag is from another ticket : link document to ticket
-               /// TODO : comment maybe not used
-//                if($image['tickets_id'] != $this->fields['id']){
-//                   $docitem = new Document_Item();
-//                   $docitem->add(array('documents_id'  => $image['id'],
-//                                       '_do_notif'     => false,
-//                                       '_disablenotif' => true,
-//                                       'itemtype'      => $this->getType(),
-//                                       'items_id'      => $this->fields['id']));
-//                }
+                  // If the tag is from another ticket : link document to ticket
+                  // TODO : comment maybe not used
+                  // if($image['tickets_id'] != $this->fields['id']){
+                  //    $docitem = new Document_Item();
+                  //    $docitem->add(array('documents_id'  => $image['id'],
+                  //                        '_do_notif'     => false,
+                  //                        '_disablenotif' => true,
+                  //                        'itemtype'      => $this->getType(),
+                  //                        'items_id'      => $this->fields['id']));
+                  // }
                } else {
                   // Remove tag
                   $content_text = preg_replace('/'.Document::getImageTag($image['tag']).'/',
@@ -5945,8 +5943,7 @@ class Ticket extends CommonITILObject {
 
          $content = $html;
 
-      // If is text content
-      } else {
+      } else { // If is text content
          $doc = new Document();
          $doc_data = array();
 
@@ -5984,7 +5981,7 @@ class Ticket extends CommonITILObject {
       if (Session::getLoginUserID()) {
          $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
       } else {
-        // Anonymous access from Crontask
+         // Anonymous access from Crontask
          $query .= " AND `glpi_documents`.`entities_id`= '0' ";
       }
       $result = $DB->query($query);
@@ -5995,8 +5992,8 @@ class Ticket extends CommonITILObject {
                // Image document
                if (!empty($data['tag'])) {
                   $item->documents[] = $data['id'];
-               // Other document
                } else if ($CFG_GLPI['attach_ticket_documents_to_mail']) {
+                  // Other document
                   $item->documents[] = $data['id'];
                }
             }
@@ -6017,7 +6014,7 @@ class Ticket extends CommonITILObject {
     *
     * @return htlm content
    **/
- function cleanTagOrImage($content, $tags) {
+   function cleanTagOrImage($content, $tags) {
       global $CFG_GLPI;
 
       // RICH TEXT : delete img tag
@@ -6028,8 +6025,7 @@ class Ticket extends CommonITILObject {
             $content = preg_replace("/<img.*alt=['|\"]".$tag."['|\"][^>]*\>/", "<p></p>", $content);
          }
 
-      // SIMPLE TEXT : delete tag
-      } else {
+      } else { // SIMPLE TEXT : delete tag
          foreach ($tags as $tag) {
             $content = preg_replace('/'.Document::getImageTag($tag).'/', '\r\n', $content);
          }
@@ -6200,10 +6196,10 @@ class Ticket extends CommonITILObject {
       }
 
       // add ticket validation to timeline
-       if ((($this->fields['type'] == Ticket::DEMAND_TYPE)
+      if ((($this->fields['type'] == Ticket::DEMAND_TYPE)
             && (Session::haveRight('ticketvalidation', TicketValidation::VALIDATEREQUEST)
                 || Session::haveRight('ticketvalidation', TicketValidation::CREATEREQUEST)))
-           || (($this->fields['type'] == Ticket::INCIDENT_TYPE)
+            || (($this->fields['type'] == Ticket::INCIDENT_TYPE)
                && (Session::haveRight('ticketvalidation', TicketValidation::VALIDATEINCIDENT)
                    || Session::haveRight('ticketvalidation', TicketValidation::CREATEINCIDENT)))) {
 
@@ -6557,15 +6553,15 @@ class Ticket extends CommonITILObject {
          echo "</div>"; // h_item middle
 
          echo "<div class='break'></div>";
-         }
+      }
 
       // end timeline
       echo "</div>"; // h_item $user_position
       echo "<script type='text/javascript'>read_more();</script>";
-      }
+   }
 
 
-    /**
+   /**
     * @since version 0.90
    **/
    function getTicketActors() {

@@ -245,8 +245,8 @@ class Profile_User extends CommonDBRelation {
                }
                $entname = sprintf(__('%1$s%2$s'), $entname, ")</span>");
             }
-             echo "<td>".$entname."</td>";
-         echo "</tr>";
+            echo "<td>".$entname."</td>";
+            echo "</tr>";
          }
          echo $header_begin.$header_bottom.$header_end;
          echo "</table>";

@@ -116,7 +116,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
                   break;
 
             }
-         }
+      }
    }
 
 

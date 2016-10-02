@@ -242,25 +242,24 @@ abstract class CommonDBChild extends CommonDBConnexity {
       }
 
       switch ($elementToDisplay) {
-      case 'Type' :
-         $masterItem = $recursiveItems[count($recursiveItems) - 1];
-         echo $masterItem->getTypeName(1);
-         break;
+         case 'Type' :
+            $masterItem = $recursiveItems[count($recursiveItems) - 1];
+            echo $masterItem->getTypeName(1);
+            break;
 
-      case 'Name' :
-      case 'Link' :
-         $items_elements  = array();
-         foreach ($recursiveItems as $item) {
-            if ($elementToDisplay == 'Name') {
-               $items_elements[] = $item->getName();
-            } else {
-               $items_elements[] = $item->getLink();
+         case 'Name' :
+         case 'Link' :
+            $items_elements  = array();
+            foreach ($recursiveItems as $item) {
+               if ($elementToDisplay == 'Name') {
+                  $items_elements[] = $item->getName();
+               } else {
+                  $items_elements[] = $item->getLink();
+               }
             }
-         }
-         echo implode(' &lt; ', $items_elements);
-         break;
+            echo implode(' &lt; ', $items_elements);
+            break;
       }
-
    }
 
 
@@ -537,7 +536,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
                          static::$log_history_add);
          }
       }
-  }
+   }
 
    /**
     * Actions done after the DELETE of the item in the database
@@ -781,7 +780,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       $lower_name = strtolower(get_called_class());
       $div_id     = "add_".$lower_name."_to_".$item->getType()."_".$items_id;
 
-     // To be sure not to load bad datas from this table
+      // To be sure not to load bad datas from this table
       if ($items_id == 0) {
          $items_id = -99;
       }

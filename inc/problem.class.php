@@ -267,7 +267,7 @@ class Problem extends CommonITILObject {
    function prepareInputForUpdate($input) {
 
       // Get problem : need for comparison
-//       $this->getFromDB($input['id']);
+      // $this->getFromDB($input['id']);
 
       $input = parent::prepareInputForUpdate($input);
       return $input;
@@ -388,7 +388,7 @@ class Problem extends CommonITILObject {
                       'sort'     => 19,
                       'order'    => 'DESC');
 
-     return $search;
+      return $search;
    }
 
 
@@ -922,7 +922,7 @@ class Problem extends CommonITILObject {
       $rand      = mt_rand();
       if ($problem->getFromDBwithData($ID, 0)) {
          $bgcolor = $_SESSION["glpipriority_".$problem->fields["priority"]];
-   //      $rand    = mt_rand();
+         // $rand    = mt_rand();
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
                                                                $problem->fields["id"])."</td>";
@@ -989,7 +989,7 @@ class Problem extends CommonITILObject {
       global $CFG_GLPI, $DB;
 
       if (!static::canView()) {
-        return false;
+         return false;
       }
 
       // In percent
@@ -1411,8 +1411,8 @@ class Problem extends CommonITILObject {
 
          //TRANS : %d is the number of problems
          echo sprintf(_n('Last %d problem','Last %d problems',$number), $number);
-//             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-//                    Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
+         // echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+         //         Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
 
          echo "</th></tr>";
 

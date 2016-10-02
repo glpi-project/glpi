@@ -150,7 +150,7 @@ class Link extends CommonDBTM {
          echo "&nbsp;";
          $i++;
          if (($i%8 == 0) && ($count > 1)) {
-         echo "<br>";
+            echo "<br>";
          }
       }
       echo "</td></tr>";

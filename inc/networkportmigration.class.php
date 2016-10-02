@@ -224,7 +224,7 @@ class NetworkPortMigration extends CommonDBChild {
                   __('you may have to add a network')."</a>";
          }
          echo "</td></tr>\n";
-       }
+      }
 
       if ($this->fields['invalid_gateway'] == 1) {
          $number_real_errors ++;
@@ -255,21 +255,21 @@ class NetworkPortMigration extends CommonDBChild {
          echo "</td></tr>\n";
       }
 
-       if ($number_real_errors == 0) {
+      if ($number_real_errors == 0) {
          echo "<tr class='tab_bg_1'><th colspan='3'>" .
               __('I don\'t understand why this migration error is not deleted.');
          echo "</th><th>";
          Html::showSimpleForm($this->getFormURL(), 'delete', __('You can delete this migration error'),
                            array('id' => $this->getID()));
          echo "</th></tr>\n";
-       } else {
+      } else {
          echo "<tr class='tab_bg_1'><th>" . __('At all events') . "</th>\n";
          echo "<td colspan='3'>";
          Html::showSimpleForm($this->getFormURL(), 'delete', __('You can delete this migration error'),
                array('id' => $this->getID()));
 
          echo "</td></tr>\n";
-       }
+      }
 
       echo "<tr class='tab_bg_1'><td colspan='4'>&nbsp;</td></tr>\n";
 

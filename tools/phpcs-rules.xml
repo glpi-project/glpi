@@ -3,11 +3,14 @@
   <!-- white spaces at end of line or empty line have spaces -->
   <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
 
+  <!-- No tab in indent -->
+  <rule ref="Generic.WhiteSpace.DisallowTabIndent" />
+
   <!-- Indent 3 -->
-  <!--<rule ref="PEAR.WhiteSpace.ScopeIndent">
+  <rule ref="Generic.WhiteSpace.ScopeIndent">
     <properties>
       <property name="indent" value="3"/>
     </properties>
-  </rule>-->
+  </rule>
 
 </ruleset>

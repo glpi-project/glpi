@@ -686,6 +686,8 @@ class SoftwareLicense extends CommonDBTM {
 
       return $tab;
    }
+
+
    /**
     * Give cron information
     *
@@ -693,7 +695,7 @@ class SoftwareLicense extends CommonDBTM {
     *
     * @return arrray of information
    **/
-      static function cronInfo($name) {
+   static function cronInfo($name) {
       return array('description' => __('Send alarms on expired licenses'));
    }
 
@@ -760,7 +762,7 @@ class SoftwareLicense extends CommonDBTM {
                   //TRANS: %1$s is the entity, %2$s is the message
                   $task->log(sprintf(__('%1$s: %2$s')."\n", $entityname, $message));
                   $task->addVolume(1);
-                } else {
+               } else {
                   Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'),
                                                            $entityname, $message));
                }
@@ -786,7 +788,7 @@ class SoftwareLicense extends CommonDBTM {
                }
             }
          }
-       }
+      }
       return $cron_status;
    }
 

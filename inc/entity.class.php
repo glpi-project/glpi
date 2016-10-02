@@ -143,7 +143,7 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-  /**
+   /**
    * @since version 0.84
    **/
    static function canUpdate() {
@@ -1214,7 +1214,7 @@ class Entity extends CommonTreeDropdown {
          echo "</td></tr>";
       }
 
-     if ($canedit) {
+      if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='2'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
@@ -1556,7 +1556,7 @@ class Entity extends CommonTreeDropdown {
                                   'max'   => 100,
                                   'step'  => 1,
                                   'toadd' => $toadd));
-         if ($entity->fields['default_consumables_alarm_threshold'] == self::CONFIG_PARENT) {
+      if ($entity->fields['default_consumables_alarm_threshold'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('default_consumables_alarm_threshold',
                                     $entity->getField('entities_id'));
          echo "<font class='green'><br>";
@@ -2104,7 +2104,7 @@ class Entity extends CommonTreeDropdown {
 
          }
       }
-/*
+      /*
       switch ($fieldval) {
          case "tickettype" :
             // Default is Incident if not set
@@ -2356,8 +2356,8 @@ class Entity extends CommonTreeDropdown {
 
                case 0 :
                   return __('Never');
-             }
-           return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
+            }
+            return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
 
          case 'auto_assign_mode' :
             return self::getAutoAssignMode($values[$field]);

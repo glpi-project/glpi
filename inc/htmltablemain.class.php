@@ -261,12 +261,9 @@ class HTMLTableMain extends HTMLTableBase {
          foreach ($this->groups as $group) {
             $group->displayGroup($totalNumberOfColumn, $p);
          }
-     }
-
+      }
       echo "</table>\n";
-
    }
-
 
 }
 ?>

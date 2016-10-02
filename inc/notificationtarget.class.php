@@ -264,8 +264,8 @@ class NotificationTarget extends CommonDBChild {
          if (isset($options['entities_id'])) {
             $entity = $options['entities_id'];
 
-         //Item which raises the event contains an entityID
          } else if ($item->getEntityID() >= 0) {
+            //Item which raises the event contains an entityID
             $entity = $item->getEntityID();
 
          }
@@ -1113,7 +1113,7 @@ class NotificationTarget extends CommonDBChild {
             $tag = "##FOREACH".$p['tag']."## ##ENDFOREACH".$p['tag']."##";
             $this->tag_descriptions[self::TAG_VALUE][$tag] = $p;
 
-          } else {
+         } else {
             if ($p['value']) {
                $tag = "##".$p['tag']."##";
                $this->tag_descriptions[self::TAG_VALUE][$tag] = $p;
@@ -1245,7 +1245,7 @@ class NotificationTarget extends CommonDBChild {
             }
          }
       } else {
-      echo "<tr class='tab_bg_2'><td class='b center'>".__('No item found')."</td></tr>";
+         echo "<tr class='tab_bg_2'><td class='b center'>".__('No item found')."</td></tr>";
       }
       echo "</table>";
    }

@@ -1024,59 +1024,60 @@ class Html {
    }
 
 
-    /**
-     * Display a simple progress bar
-     *
-     * @param $width       Width    of the progress bar
-     * @param $percent     Percent  of the progress bar
-     * @param $options     array of possible options:
-     *            - title : string title to display (default Progesssion)
-     *            - simple : display a simple progress bar (no title / only percent)
-     *            - forcepadding : boolean force str_pad to force refresh (default true)
-     *
-     * @return nothing
-    **/
-    static function displayProgressBar($width, $percent, $options=array()) {
-       global $CFG_GLPI;
+   /**
+    * Display a simple progress bar
+    *
+    * @param $width       Width    of the progress bar
+    * @param $percent     Percent  of the progress bar
+    * @param $options     array of possible options:
+    *            - title : string title to display (default Progesssion)
+    *            - simple : display a simple progress bar (no title / only percent)
+    *            - forcepadding : boolean force str_pad to force refresh (default true)
+    *
+    * @return nothing
+   **/
+   static function displayProgressBar($width, $percent, $options=array()) {
+      global $CFG_GLPI;
 
-       $param['title']        = __('Progress');
-       $param['simple']       = false;
-       $param['forcepadding'] = true;
+      $param['title']        = __('Progress');
+      $param['simple']       = false;
+      $param['forcepadding'] = true;
 
-       if (is_array($options) && count($options)) {
-          foreach ($options as $key => $val) {
-             $param[$key] = $val;
-          }
-       }
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $param[$key] = $val;
+         }
+      }
 
-       $percentwidth = floor($percent*$width/100);
-       $output       = "<div class='center'><table class='tab_cadre' width='".($width+20)."px'>";
+      $percentwidth = floor($percent*$width/100);
+      $output       = "<div class='center'><table class='tab_cadre' width='".($width+20)."px'>";
 
-       if (!$param['simple']) {
-          $output .= "<tr><th class='center'>".$param['title']."&nbsp;".$percent."%</th></tr>";
-       }
-       $output .= "<tr><td>
-                   <table class='tabcompact'><tr><td class='center' style='background:url(".$CFG_GLPI["root_doc"].
-                    "/pics/loader.png) repeat-x; padding: 0px;font-size: 10px;' width='".
-                    $percentwidth." px' height='12'>";
+      if (!$param['simple']) {
+         $output .= "<tr><th class='center'>".$param['title']."&nbsp;".$percent."%</th></tr>";
+      }
+      $output .= "<tr><td>
+                  <table class='tabcompact'><tr><td class='center' style='background:url(".$CFG_GLPI["root_doc"].
+                   "/pics/loader.png) repeat-x; padding: 0px;font-size: 10px;' width='".
+                   $percentwidth." px' height='12'>";
 
-       if ($param['simple']) {
-          $output .= $percent."%";
-       } else {
-          $output .= '&nbsp;';
-       }
+      if ($param['simple']) {
+         $output .= $percent."%";
+      } else {
+         $output .= '&nbsp;';
+      }
 
-       $output .= "</td></tr></table></td>";
-       $output .= "</tr></table>";
-       $output .= "</div>";
+      $output .= "</td></tr></table></td>";
+      $output .= "</tr></table>";
+      $output .= "</div>";
 
-       if (!$param['forcepadding']) {
-          echo $output;
-       } else {
-          echo Toolbox::str_pad($output, 4096);
-          self::glpi_flush();
-       }
-    }
+      if (!$param['forcepadding']) {
+         echo $output;
+      } else {
+         echo Toolbox::str_pad($output, 4096);
+         self::glpi_flush();
+      }
+   }
+
 
    /**
     * Include common HTML headers
@@ -1419,70 +1420,8 @@ class Html {
             }
          }
 
-         //  PLUGINS
-//          if (isset($PLUGIN_HOOKS["menu_entry"]) && count($PLUGIN_HOOKS["menu_entry"])) {
-//             $plugins = array();
-//
-//             foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
-//                if ($active) { // true or a string
-//                   $plugins[$plugin] = Plugin::getInfo($plugin);
-//                }
-//             }
-//
-//             if (count($plugins)) {
-//                $list = array();
-//
-//                foreach ($plugins as $key => $val) {
-//                   $list[$key] = $val["name"];
-//                }
-//                asort($list);
-//
-//                foreach ($list as $key => $val) {
-//                   $menu['plugins']['content'][$key]['title'] = $val;
-//                   $menu['plugins']['content'][$key]['page']  = '/plugins/'.$key.'/';
-//
-//                   if (is_string($PLUGIN_HOOKS["menu_entry"][$key])) {
-//                      $menu['plugins']['content'][$key]['page'] .= $PLUGIN_HOOKS["menu_entry"][$key];
-//                   }
-//
-//                   // Set default link for plugins
-//                   if (!isset($menu['plugins']['default'])) {
-//                      $menu['plugins']['default'] = $menu['plugins']['content'][$key]['page'];
-//                   }
-//
-//                   if (($sector == "plugins")
-//                      && ($item == $key)) {
-//
-//                      if (isset($PLUGIN_HOOKS["submenu_entry"][$key])
-//                         && is_array($PLUGIN_HOOKS["submenu_entry"][$key])) {
-//
-//                         foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link) {
-//                            // New complete option management
-//                            if ($name == "options") {
-//                               $menu['plugins']['content'][$key]['options'] = $link;
-//                            } else { // Keep it for compatibility
-//
-//                               if (is_array($link)) {
-//                                  // Simple link option
-//                                  if (isset($link[$option])) {
-//                                     $menu['plugins']['content'][$key]['links'][$name]
-//                                                    ='/plugins/'.$key.'/'.$link[$option];
-//                                  }
-//                               } else {
-//                                  $menu['plugins']['content'][$key]['links'][$name]
-//                                                    ='/plugins/'.$key.'/'.$link;
-//                               }
-//                            }
-//                         }
-//                      }
-//                   }
-//                }
-//             }
-//          }
-
-
          $_SESSION['glpimenu'] = $menu;
-//          echo 'menu load';
+         // echo 'menu load';
       } else {
          $menu = $_SESSION['glpimenu'];
       }
@@ -1687,9 +1626,9 @@ class Html {
              && is_array($menu[$sector]['content'][$item]['options'][$option]['links'])) {
             $links = $menu[$sector]['content'][$item]['options'][$option]['links'];
 
-         // Without option case : only item links
          } else if (isset($menu[$sector]['content'][$item]['links'])
                     && is_array($menu[$sector]['content'][$item]['links'])) {
+            // Without option case : only item links
 
             $links = $menu[$sector]['content'][$item]['links'];
          }
@@ -1718,7 +1657,7 @@ class Html {
                              array('alt' => __('Search')));
          }
          echo "</span>";
-        // Links
+         // Links
          if (count($links) > 0) {
             foreach ($links as $key => $val) {
 
@@ -1995,7 +1934,7 @@ class Html {
             $body_class = "";
          }
       }
-     echo "<body class='$body_class'>";
+      echo "<body class='$body_class'>";
 
       // Main Headline
       echo "<div id='header'>";
@@ -3095,7 +3034,7 @@ class Html {
       }
 
       if (!empty($p['yearrange'])) {
-	 $js .= ",yearRange: '". $p['yearrange'] ."'";
+         $js .= ",yearRange: '". $p['yearrange'] ."'";
       }
 
       switch ($_SESSION['glpidate_format']) {
@@ -3583,12 +3522,12 @@ class Html {
          $year   = date("Y", $specifictime);
 
          switch ($val) {
-               case "BEGINYEAR":
-                  $month = 1;
-                  break;
+            case "BEGINYEAR":
+               $month = 1;
+               break;
 
-               case "BEGINMONTH":
-                  break;
+            case "BEGINMONTH":
+               break;
          }
 
          return date($format_use, mktime ($hour, $minute, $second, $month, $day, $year));
@@ -3782,9 +3721,9 @@ class Html {
       $js .= Html::jsGetElementbyID($param['applyto']).".qtip({
          position: { viewport: $(window) },
          content: {text: ".Html::jsGetElementbyID($param['contentid']);
-         if (!$param['autoclose']) {
-            $js .=", title: {text: ' ',button: true}";
-         }
+      if (!$param['autoclose']) {
+         $js .=", title: {text: ' ',button: true}";
+      }
       $js .= "}, style: { classes: 'qtip-shadow qtip-bootstrap'}";
       if (!$param['autoclose']) {
          $js .= ",show: {
@@ -3852,12 +3791,12 @@ class Html {
          $parameters['itemtype'] = $item->getType();
          $parameters['field']    = $field;
 
-               if ($params['entity'] >= 0) {
-                  $parameters['entity_restrict']    = $params['entity'];
-               }
-               if ($params['user'] >= 0) {
-                  $parameters['user_restrict']    = $params['user'];
-               }
+         if ($params['entity'] >= 0) {
+            $parameters['entity_restrict']    = $params['entity'];
+         }
+         if ($params['user'] >= 0) {
+            $parameters['user_restrict']    = $params['user'];
+         }
 
          $js = "  $( '#text$name' ).autocomplete({
                         source: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php?".Toolbox::append_params($parameters,'&')."',
@@ -4354,28 +4293,6 @@ class Html {
 
       return $link;
 
-//       global $SIMPLE_FORMS;
-//       $id = 'minimal_form'.mt_rand();
-//
-//       $SIMPLE_FORMS .= "<form method='post' id='$id' name='$id' action='$action'>";
-//       if (is_array($fields) && count($fields)) {
-//          foreach ($fields as $name => $value) {
-//             $SIMPLE_FORMS .= "<input type='hidden' name='$name' value='$value'>";
-//          }
-//       }
-//       $SIMPLE_FORMS .= "<input type='hidden' name='$btname' value='$btname'>";
-//
-//       echo "<a href='#' class='vsubmit' class='submit' $btoption
-//             onClick=\"document.$id.submit()\">";
-//       $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
-//       if (empty($btimage)) {
-//          echo $btlabel;
-//       } else {
-//          echo "<img src='$btimage' title='$btlabel' alt='$btlabel'>";
-//       }
-//       echo "</a>";
-//
-//       $SIMPLE_FORMS .= Html::closeForm(false);
    }
 
 
@@ -4696,11 +4613,11 @@ class Html {
                               } else {
                                  $.ajax('$url', {
                                  data: {";
-         foreach ($params as $key => $val) {
-            $js .= "$key: ".json_encode($val).",\n";
-         }
+      foreach ($params as $key => $val) {
+         $js .= "$key: ".json_encode($val).",\n";
+      }
 
-         $js .= "            _one_id: id},
+      $js .= "            _one_id: id},
                                  dataType: 'json',
                                  type: 'POST',
                                  }).done(function(data) { callback(data); });
@@ -5301,25 +5218,25 @@ class Html {
                deleteImagePasted(elementsIdToRemove, tag.tag);\n
             }).appendTo(p);\n
             ";
-         if ($p['multiple']) {
-            $script.= "             fileindex".$p['rand']." = fileindex".$p['rand']."+1;\n";
-         }
+      if ($p['multiple']) {
+         $script.= "             fileindex".$p['rand']." = fileindex".$p['rand']."+1;\n";
+      }
 
-         $script .= "}
+      $script .= "}
          function deleteImagePasted(elementsIdToRemove, tagToRemove){\n
             // Remove file display lines
             $.each(elementsIdToRemove, function (index, id) {\n
                 $('#'+id).remove();\n
             });\n
             ";
-   if ($p['imagePaste']) {
+      if ($p['imagePaste']) {
+         $script.= "
+               // TINYMCE : Remove tag from textarea
+               if (tinyMCE != undefined) {
+                  tinyMCE.activeEditor.setContent(tinyMCE.activeEditor.getContent().replace('<p>'+tagToRemove+'</p>', ''));\n
+               }";
+      }
       $script.= "
-            // TINYMCE : Remove tag from textarea
-            if (tinyMCE != undefined) {
-               tinyMCE.activeEditor.setContent(tinyMCE.activeEditor.getContent().replace('<p>'+tagToRemove+'</p>', ''));\n
-            }";
-   }
-   $script.= "
             // File counter
             if (fileindex".$p['rand']." > 0) {\n
                fileindex".$p['rand']."--;\n

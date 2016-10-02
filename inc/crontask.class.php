@@ -177,10 +177,10 @@ class CronTask extends CommonDBTM{
       $types= array();
       foreach  ($DB->request("SELECT DISTINCT(`itemtype`)
                             FROM `glpi_crontasks`") as $data) {
-        $types[] = $data['itemtype'];
+         $types[] = $data['itemtype'];
       }
       return $types;
-    }
+   }
 
    /**
     * Signal handler callback

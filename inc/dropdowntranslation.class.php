@@ -132,21 +132,21 @@ class DropdownTranslation extends CommonDBChild {
             }
          }
          // If only completename for sons : drop
-//          foreach (getSonsOf(getTableForItemType($this->fields['itemtype']),
-//                                                 $this->fields['items_id']) as $son) {
-//
-//             if ($this->getNumberOfTranslations($this->fields['itemtype'], $son,
-//                                               'name', $this->fields['language']) == 0) {
-//
-//                $completenames_id = self::getTranslationID($son, $this->fields['itemtype'],
-//                                                               'completename',
-//                                                               $this->fields['language']);
-//                if ($completenames_id) {
-//                   $translation = new self();
-//                   $translation->delete(array('id' => $completenames_id));
-//                }
-//             }
-//          }
+         // foreach (getSonsOf(getTableForItemType($this->fields['itemtype']),
+         //                                        $this->fields['items_id']) as $son) {
+
+         //    if ($this->getNumberOfTranslations($this->fields['itemtype'], $son,
+         //                                      'name', $this->fields['language']) == 0) {
+
+         //       $completenames_id = self::getTranslationID($son, $this->fields['itemtype'],
+         //                                                      'completename',
+         //                                                      $this->fields['language']);
+         //       if ($completenames_id) {
+         //          $translation = new self();
+         //          $translation->delete(array('id' => $completenames_id));
+         //       }
+         //    }
+         // }
          // Then update all sons records
          if (!isset($this->input['_no_completename'])) {
             $translation->generateCompletename($this->fields, false);
@@ -295,16 +295,16 @@ class DropdownTranslation extends CommonDBChild {
             }
          }
 
-        $query = "SELECT `id`
-                FROM `".$item->getTable()."`
-                WHERE `$foreignKey` = '".$item->getID()."'";
+         $query = "SELECT `id`
+                   FROM `".$item->getTable()."`
+                   WHERE `$foreignKey` = '".$item->getID()."'";
 
-        foreach ($DB->request($query) as $tmp) {
+         foreach ($DB->request($query) as $tmp) {
             $input2 = $input;
             $input2['items_id'] = $tmp['id'];
             $this->generateCompletename($input2, $add);
-        }
-     }
+         }
+      }
    }
 
 
@@ -685,12 +685,12 @@ class DropdownTranslation extends CommonDBChild {
     *
     * @return the value translated if a translation is available, or the same value if not
    **/
-    static function regenerateAllCompletenameTranslationsFor($itemtype, $items_id) {
-        foreach (self::getTranslationsForAnItem($itemtype, $items_id, 'completename') as $data) {
-            $dt = new DropdownTranslation();
-            $dt->generateCompletename($data, false);
-        }
-    }
+   static function regenerateAllCompletenameTranslationsFor($itemtype, $items_id) {
+      foreach (self::getTranslationsForAnItem($itemtype, $items_id, 'completename') as $data) {
+         $dt = new DropdownTranslation();
+         $dt->generateCompletename($data, false);
+      }
+   }
 
    /**
     * Check if there's at least one translation for this itemtype

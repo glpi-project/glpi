@@ -658,9 +658,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-  function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-     $nb = 0;
+      $nb = 0;
       switch ($item->getType()) {
          case 'SoftwareLicense' :
             if (!$withtemplate) {

@@ -146,11 +146,11 @@ class Migration {
          $log_file_name = 'migration_to_'.$this->version;
       }
 
-     // Do not log if more than 3 log error
-     if ($this->log_errors < 3
+      // Do not log if more than 3 log error
+      if ($this->log_errors < 3
          && !Toolbox::logInFile($log_file_name, $message . ' @ ', true)) {
          $this->log_errors++;
-     }
+      }
    }
 
 
@@ -515,9 +515,9 @@ class Migration {
       if (!TableExists($newtable)
           && TableExists($oldtable)) {
 
-//          // Try to do a flush tables if RELOAD privileges available
-//          $query = "FLUSH TABLES `$oldtable`, `$newtable`";
-//          $DB->query($query);
+         // Try to do a flush tables if RELOAD privileges available
+         // $query = "FLUSH TABLES `$oldtable`, `$newtable`";
+         // $DB->query($query);
 
          $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
          $DB->queryOrDie($query, $this->version." create $newtable");

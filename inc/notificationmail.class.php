@@ -106,9 +106,9 @@ class NotificationMail implements NotificationInterface {
          } else if (!preg_match('/\\./', $domain) || !preg_match("/[a-zA-Z0-9]$/", $domain)) {
             // domain has no dots or do not end by alphenum char
                $isValid = false;
-            }
          }
-         return $isValid;
+      }
+      return $isValid;
    }
 
 

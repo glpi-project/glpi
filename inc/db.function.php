@@ -245,7 +245,7 @@ function getPlural($string) {
                   '([aeiou]{2})ses$'   => '\1ses', // Case like aliases
                   '([aeiou]{2})s$'     => '\1ses', // Case like aliases
                   'x$'                 =>'xes',
-//                   's$'           =>'ses',
+                  // 's$'                 =>'ses',
                   '([^s])$'            => '\1s',   // Add at the end if not exists
                   );
 

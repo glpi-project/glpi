@@ -899,9 +899,9 @@ class Cartridge extends CommonDBChild {
             Dropdown::showNumber("nbcart", array('value' => 1,
                                                  'min'   => 1,
                                                  'max'   => 5));
-           $installok = true;
-           echo "</td><td><input type='submit' name='install' value=\""._sx('button','Install')."\"
-                         ".($installok?'':'disabled')." class='submit'>";
+            $installok = true;
+            echo "</td><td><input type='submit' name='install' value=\""._sx('button','Install')."\"
+                          ".($installok?'':'disabled')." class='submit'>";
 
          } else {
             _e('No cartridge available');

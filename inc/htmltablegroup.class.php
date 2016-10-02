@@ -102,7 +102,7 @@ class HTMLTableGroup extends HTMLTableBase {
       if (isset($this->ordered_headers)) {
          throw new Exception('Implementation error: must define all headers before any row');
       }
-    }
+   }
 
 
    private function completeHeaders() {

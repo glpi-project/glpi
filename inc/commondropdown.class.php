@@ -176,7 +176,7 @@ abstract class CommonDropdown extends CommonDBTM {
    function displayHeader() {
 
       if (empty($this->third_level_menu)) {
-        $this->third_level_menu = $this->getType();
+         $this->third_level_menu = $this->getType();
       }
       Html::header($this->getTypeName(Session::getPluralNumber()), '', $this->first_level_menu, $this->second_level_menu,
                    $this->third_level_menu);
@@ -392,7 +392,7 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       if (isset($_REQUEST['_in_modal'])) {
-        echo "<input type='hidden' name='_in_modal' value='1'>";
+         echo "<input type='hidden' name='_in_modal' value='1'>";
       }
       $this->showFormButtons($options);
 

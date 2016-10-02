@@ -124,7 +124,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
-        return false;
+         return false;
       }
 
       $comp = new Computer();

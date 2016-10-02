@@ -307,8 +307,8 @@ class Planning extends CommonGLPI {
                }
                foreach ($item->getGroups(CommonITILActor::ASSIGN) as $data) {
                   foreach (Group_User::getGroupUsers($data['groups_id']) as $data2) {
-                  $users[$data2['id']] = formatUserName($data2["id"], $data2["name"],
-                                                        $data2["realname"], $data2["firstname"]);
+                     $users[$data2['id']] = formatUserName($data2["id"], $data2["name"],
+                                                           $data2["realname"], $data2["firstname"]);
                   }
                }
             }
@@ -323,8 +323,8 @@ class Planning extends CommonGLPI {
                $group_id = $task->fields['groups_id_tech'];
                if ($group_id) {
                   foreach (Group_User::getGroupUsers($group_id) as $data2) {
-                  $users[$data2['id']] = formatUserName($data2["id"], $data2["name"],
-                                                        $data2["realname"], $data2["firstname"]);
+                     $users[$data2['id']] = formatUserName($data2["id"], $data2["name"],
+                                                           $data2["realname"], $data2["firstname"]);
                   }
                }
             }

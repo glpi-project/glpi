@@ -1897,9 +1897,10 @@ class CommonDBTM extends CommonGLPI {
                            }
                         }
 
-                     // Search for another N->N Relation
                      } else if (($othertable != $this->getTable())
                               && isset($rel[$tablename])) {
+
+                        // Search for another N->N Relation
                         $itemtype = getItemTypeForTable($othertable);
                         $item     = new $itemtype();
 
@@ -2284,8 +2285,8 @@ class CommonDBTM extends CommonGLPI {
 
                echo "<input type='hidden' name='entities_id' value='$entity'>";
 
-            // For Rules except ruleticket and slalevel
             } else if ($this->getType() != 'User') {
+               // For Rules except ruleticket and slalevel
                echo "<input type='hidden' name='entities_id' value='0'>";
 
             }
@@ -2449,8 +2450,6 @@ class CommonDBTM extends CommonGLPI {
              && ($this->fields['users_id'] === Session::getLoginUserID())) {
             return true;
          }
-  //       if (!static::canCreate()) echo 'ii';
-  //       if (!$this->canCreateItem()) echo 'jj';
          return (static::canCreate() && $this->canCreateItem());
 
       }
@@ -2494,7 +2493,7 @@ class CommonDBTM extends CommonGLPI {
             }
             return (static::canPurge() && $this->canPurgeItem());
 
-        case CREATE :
+         case CREATE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -3376,10 +3375,10 @@ class CommonDBTM extends CommonGLPI {
     * @return input the data checked
    **/
    function filterValues($display=true) {
-   // MoYo : comment it because do not understand why filtering is disable
-//       if (in_array('CommonDBRelation', class_parents($this))) {
-//          return true;
-//       }
+      // MoYo : comment it because do not understand why filtering is disable
+      // if (in_array('CommonDBRelation', class_parents($this))) {
+      //    return true;
+      // }
       //Type mismatched fields
       $fails = array();
       if (isset($this->input) && is_array($this->input) && count($this->input)) {
@@ -3475,7 +3474,7 @@ class CommonDBTM extends CommonGLPI {
                      // Copy value if check have update it
                      $this->input[$key] = $value;
                      break;
-                }
+               }
             }
 
             if ($unset) {
@@ -3697,7 +3696,7 @@ class CommonDBTM extends CommonGLPI {
                         $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                         if ($p['unicity_error_message']) {
                            if (!$fields['action_refuse']) {
-                           $show_other_messages = ($fields['action_refuse']?true:false);
+                              $show_other_messages = ($fields['action_refuse']?true:false);
                            } else {
                               $show_other_messages = true;
                            }

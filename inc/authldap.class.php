@@ -166,7 +166,7 @@ class AuthLDAP extends CommonDBTM {
          }
       }
 
-         if (isset($input["_blank_passwd"]) && $input["_blank_passwd"]) {
+      if (isset($input["_blank_passwd"]) && $input["_blank_passwd"]) {
          $input['rootdn_passwd'] = '';
       }
 
@@ -342,9 +342,9 @@ class AuthLDAP extends CommonDBTM {
          echo "<td><input type='text' name='name' value='". $this->fields["name"] ."'></td>";
          if ($ID > 0) {
             echo "<td>".__('Last update')."</td><td>".Html::convDateTime($this->fields["date_mod"]);
-          } else {
-          echo "<td colspan='2'>&nbsp;";
-          }
+         } else {
+            echo "<td colspan='2'>&nbsp;";
+         }
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('Default server') . "</td>";
@@ -1543,9 +1543,9 @@ class AuthLDAP extends CommonDBTM {
                                         'timestamp' => $user_infos[$userfound['name']]['timestamp'],
                                         'date_sync' => $tmpuser->fields['date_sync'],
                                         'dn'        => $user['user_dn']);
-               //If entry was modified or if script should synchronize all the users
                } else if (($values['action'] == self::ACTION_ALL)
                           || (($ldap_users[$user['name']] - strtotime($user['date_sync'])) > 0)) {
+                  //If entry was modified or if script should synchronize all the users
                   $glpi_users[] = array('id'        => $user['id'],
                                         'user'      => $user['name'],
                                         'timestamp' => $user_infos[$user['name']]['timestamp'],
@@ -1553,16 +1553,16 @@ class AuthLDAP extends CommonDBTM {
                                         'dn'        => $user['user_dn']);
                }
 
-            // Only manage deleted user if ALL (because of entity visibility in delegated mode)
-             } else if (($values['action'] == self::ACTION_ALL)
+            } else if (($values['action'] == self::ACTION_ALL)
                         && !$limitexceeded) {
+               // Only manage deleted user if ALL (because of entity visibility in delegated mode)
 
-                //If user is marked as coming from LDAP, but is not present in it anymore
-                if (!$user['is_deleted']
-                    && ($user['auths_id'] == $options['ldapservers_id'])) {
-                   User::manageDeletedUserInLdap($user['id']);
-                   $results[self::USER_DELETED_LDAP] ++;
-                }
+               //If user is marked as coming from LDAP, but is not present in it anymore
+               if (!$user['is_deleted']
+                   && ($user['auths_id'] == $options['ldapservers_id'])) {
+                  User::manageDeletedUserInLdap($user['id']);
+                  $results[self::USER_DELETED_LDAP] ++;
+               }
             }
          }
       }
@@ -2370,8 +2370,7 @@ class AuthLDAP extends CommonDBTM {
             //Change user login
             $auth->user->fields['name'] = $login;
             $auth->user_present         = true;
-         //The user is a new user
-         } else {
+         } else { // The user is a new user
             $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
          }
          $auth->user->getFromLDAP($auth->ldap_connection, $ldap_method, $user_dn, $login,
@@ -2411,8 +2410,8 @@ class AuthLDAP extends CommonDBTM {
             }
          }
 
-      //Check if the ldap server indicated as the last good one still exists !
       } else if (array_key_exists($auths_id, $auth->authtypes["ldap"])) {
+         // Check if the ldap server indicated as the last good one still exists !
          //A specific ldap directory is given, test it and only this one !
          $auth = self::ldapAuth($auth, $login, $password, $auth->authtypes["ldap"][$auths_id],
                                 $user_dn);
@@ -2654,8 +2653,7 @@ class AuthLDAP extends CommonDBTM {
                $_SESSION['ldap_import']['ldap_filter'] = self::buildLdapFilter($authldap);
             }
          }
-      //Unset all values in session
-      } else {
+      } else { // Unset all values in session
          unset($_SESSION['ldap_import']);
       }
    }
@@ -2810,7 +2808,7 @@ class AuthLDAP extends CommonDBTM {
                   }
                   $field_counter = 0;
                   echo "</tr>";
-                }
+               }
             }
             break;
       }
@@ -2879,9 +2877,8 @@ class AuthLDAP extends CommonDBTM {
                }
                $counter++;
                $filter .= '('.$authldap->fields[$criteria].'='.($begin?'':'*').$value.($end?'':'*').')';
-             }
-          }
-
+            }
+         }
       } else {
          $filter = "(".$authldap->getField("login_field")."=*)";
       }
@@ -3082,8 +3079,8 @@ class AuthLDAP extends CommonDBTM {
          $ong[1]  = _sx('button','Test');                     // test connexion
          $ong[2]  = _n('User', 'Users', Session::getPluralNumber());
          $ong[3]  = _n('Group', 'Groups', Session::getPluralNumber());
-/// TODO clean fields entity_XXX if not used
-//          $ong[4]  = __('Entity');                  // params for entity config
+         // TODO clean fields entity_XXX if not used
+         // $ong[4]  = __('Entity');                  // params for entity config
          $ong[5]  = __('Advanced information');   // params for entity advanced config
          $ong[6]  = _n('Replicate', 'Replicates', Session::getPluralNumber());
 

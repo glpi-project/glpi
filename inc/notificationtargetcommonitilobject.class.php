@@ -199,36 +199,37 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    }
 
 
-    function getOldAssignTechnicianAddress() {
+   function getOldAssignTechnicianAddress() {
       global $CFG_GLPI;
 
-       if (isset($this->options['_old_user'])
+      if (isset($this->options['_old_user'])
            && ($this->options['_old_user']['type'] == CommonITILActor::ASSIGN)
            && $this->options['_old_user']['use_notification']) {
 
-            $user = new User();
-            $user->getFromDB($this->options['_old_user']['users_id']);
+         $user = new User();
+         $user->getFromDB($this->options['_old_user']['users_id']);
 
-            $author_email = UserEmail::getDefaultForUser($user->fields['id']);
-            $author_lang  = $user->fields["language"];
-            $author_id    = $user->fields['id'];
+         $author_email = UserEmail::getDefaultForUser($user->fields['id']);
+         $author_lang  = $user->fields["language"];
+         $author_id    = $user->fields['id'];
 
-            if (!empty($this->options['_old_user']['alternative_email'])
-                && ($this->options['_old_user']['alternative_email'] != $author_email)
-                && NotificationMail::isUserAddressValid($this->options['_old_user']['alternative_email'])) {
-               $author_email = $this->options['_old_user']['alternative_email'];
-            }
-            if (empty($author_lang)) {
-               $author_lang = $CFG_GLPI["language"];
-            }
-            if (empty($author_id)) {
-               $author_id = -1;
-            }
-            $this->addToAddressesList(array('email'    => $author_email,
-                                            'language' => $author_lang,
-                                            'users_id' => $author_id));
+         if (!empty($this->options['_old_user']['alternative_email'])
+             && ($this->options['_old_user']['alternative_email'] != $author_email)
+             && NotificationMail::isUserAddressValid($this->options['_old_user']['alternative_email'])) {
+
+            $author_email = $this->options['_old_user']['alternative_email'];
+         }
+         if (empty($author_lang)) {
+            $author_lang = $CFG_GLPI["language"];
+         }
+         if (empty($author_id)) {
+            $author_id = -1;
+         }
+         $this->addToAddressesList(array('email'    => $author_email,
+                                         'language' => $author_lang,
+                                         'users_id' => $author_id));
       }
-    }
+   }
 
 
    /**
@@ -236,7 +237,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    **/
    function getRecipientAddress() {
       return $this->getUserByField("users_id_recipient");
-  }
+   }
 
 
    /**
@@ -606,7 +607,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                   break;
 
             }
-         }
+      }
    }
 
 

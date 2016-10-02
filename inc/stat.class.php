@@ -328,13 +328,6 @@ class Stat extends CommonGLPI {
                $export_data['opensatisfaction'][$value[$i]['link']] = $nb_opensatisfaction;
             }
 
-            //answer satisfaction
-//             $answersatisfaction    = self::constructEntryValues("inter_answersatisfaction",
-//                                                                 $date1, $date2, $type,
-//                                                                 $value[$i]["id"], $value2);
-//             $nb_answersatisfaction = array_sum($answersatisfaction);
-//             $export_data['opensatisfaction'][$value[$i]['link']] = $nb_answersatisfaction;
-
          }
       }
       return $export_data;
@@ -535,23 +528,12 @@ class Stat extends CommonGLPI {
             $solved    = self::constructEntryValues($itemtype, "inter_solved", $date1, $date2,
                                                     $type, $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
-//             if (($nb_opened > 0)
-//                 && ($nb_solved > 0)) {
-//                //TRANS: %2$d is the percentage. %% to display %
-//                $nb_solved = sprintf(__('%1$s (%2$d%%)'), $nb_solved,
-//                                     round($nb_solved*100/$nb_opened));
-//             }
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
 
             //le nombre d'intervention resolues - the number of solved intervention
             $solved_late    = self::constructEntryValues($itemtype, "inter_solved_late", $date1,
                                                          $date2, $type, $value[$i]["id"], $value2);
             $nb_solved_late = array_sum($solved_late);
-//             if (($nb_solved > 0)
-//                 && ($nb_solved_late > 0)) {
-//                $nb_solved_late = sprintf(__('%1$s (%2$d%%)'), $nb_solved_late,
-//                                          round($nb_solved_late*100/$nb_solved));
-//             }
             echo Search::showItem($output_type, $nb_solved_late, $item_num, $row_num);
 
             //le nombre d'intervention closes - the number of closed intervention
@@ -559,11 +541,6 @@ class Stat extends CommonGLPI {
                                                     $type, $value[$i]["id"], $value2);
             $nb_closed = array_sum($closed);
 
-//             if (($nb_opened > 0)
-//                 && ($nb_closed > 0)) {
-//                $nb_closed = sprintf(__('%1$s (%2$d%%)'), $nb_closed,
-//                                     round($nb_closed*100/$nb_opened));
-//             }
             echo Search::showItem($output_type, $nb_closed, $item_num, $row_num);
 
             if ($itemtype =='Ticket') {
@@ -572,10 +549,6 @@ class Stat extends CommonGLPI {
                                                                  $date1, $date2, $type,
                                                                  $value[$i]["id"], $value2);
                $nb_opensatisfaction = array_sum($opensatisfaction);
-//                if ($nb_opensatisfaction > 0) {
-//                   $nb_opensatisfaction = sprintf(__('%1$s (%2$d%%)'), $nb_opensatisfaction,
-//                                                  round($nb_opensatisfaction*100/$nb_closed));
-//                }
                echo Search::showItem($output_type, $nb_opensatisfaction, $item_num, $row_num);
 
                //Satisfaction answer
@@ -584,10 +557,6 @@ class Stat extends CommonGLPI {
                                                                    $date1, $date2, $type,
                                                                    $value[$i]["id"], $value2);
                $nb_answersatisfaction = array_sum($answersatisfaction);
-//                if ($nb_answersatisfaction > 0) {
-//                   $nb_answersatisfaction = sprintf(__('%1$s (%2$d%%)'), $nb_answersatisfaction,
-//                                                    round($nb_answersatisfaction*100/$nb_opensatisfaction));
-//                }
                echo Search::showItem($output_type, $nb_answersatisfaction, $item_num, $row_num);
 
                //Satisfaction rate
@@ -1095,34 +1064,12 @@ class Stat extends CommonGLPI {
             $date             = $row['date_unix'];
             //$visites = round($row['total_visites']);
             $entrees["$date"] = $row['total_visites'];
-        }
+         }
       }
-
-      // Remplissage de $entrees pour les mois ou il n'y a rien
-//       $min=-1;
-//       $max=0;
-//       if (count($entrees)==0) {
-//          return $entrees;
-//       }
-//       foreach ($entrees as $key => $val) {
-//          $time=strtotime($key."-01");
-//          if ($min>$time || $min<0) {
-//             $min=$time;
-//          }
-//          if ($max<$time) {
-//             $max=$time;
-//          }
-//       }
 
       $end_time   = strtotime(date("Y-m",strtotime($end))."-01");
       $begin_time = strtotime(date("Y-m",strtotime($begin))."-01");
 
-//       if ($max<$end_time) {
-//          $max=$end_time;
-//       }
-//       if ($min>$begin_time) {
-//          $min=$begin_time;
-//       }
       $current = $begin_time;
 
       while ($current <= $end_time) {
@@ -1603,13 +1550,13 @@ class Stat extends CommonGLPI {
       foreach ($optgroup as $opt => $title) {
          $group = $title;
          foreach ($names as $key => $val) {
-             if ($opt == $val["plug"]) {
+            if ($opt == $val["plug"]) {
                $file                  = $CFG_GLPI["root_doc"]."/plugins/".$key;
                $values[$group][$file] = $val["name"];
                if (stripos($_SERVER['REQUEST_URI'],$file) !== false) {
                   $selected = $file;
                }
-             }
+            }
          }
       }
 

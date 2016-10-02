@@ -333,7 +333,7 @@ class Change_Item extends CommonDBRelation{
       }
       return true;
 
-    }
+   }
 
 }
 ?>

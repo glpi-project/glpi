@@ -77,7 +77,7 @@ class Item_Ticket extends CommonDBRelation{
       // Not item linked for closed tickets
       if ($ticket->getFromDB($this->fields['tickets_id'])
           && in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
-        return false;
+         return false;
       }
 
       return parent::canCreateItem();
@@ -686,7 +686,7 @@ class Item_Ticket extends CommonDBRelation{
             // Display default value if itemtype is displayed
             if ($found_type
                 && $itemtype) {
-                if (($item = getItemForItemtype($itemtype))
+               if (($item = getItemForItemtype($itemtype))
                     && $items_id) {
                   if ($item->getFromDB($items_id)) {
                      Dropdown::showFromArray('items_id', array($items_id => $item->getName()),
@@ -1020,7 +1020,7 @@ class Item_Ticket extends CommonDBRelation{
     *    - width        : specific width needed (default 80%)
     *
    **/
- static function dropdown($options = array()) {
+   static function dropdown($options = array()) {
       global $DB;
 
       // Default values

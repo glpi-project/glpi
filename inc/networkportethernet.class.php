@@ -116,7 +116,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       self::showConnection($netport, true);
       echo "</td>";
       echo "</tr>\n";
-  }
+   }
 
 
    /**
@@ -142,7 +142,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $header, $options);
       return $header;
-  }
+   }
 
 
    /**
@@ -170,9 +170,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    }
 
 
-  /**
-   * @see NetworkPortInstantiation::getInstantiationHTMLTable()
-  **/
+   /**
+    * @see NetworkPortInstantiation::getInstantiationHTMLTable()
+   **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father=NULL, array $options=array()) {
 

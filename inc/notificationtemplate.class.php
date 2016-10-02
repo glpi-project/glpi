@@ -101,7 +101,7 @@ class NotificationTemplate extends CommonDBTM {
          return false;
       }
 
-     $spotted = false;
+      $spotted = false;
 
       if (empty($ID)) {
          if ($this->getEmpty()) {

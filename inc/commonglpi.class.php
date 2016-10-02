@@ -176,11 +176,6 @@ class CommonGLPI {
 
             $onglets[-2] = __('Debug');
       }
-//       // Single tab
-//       if (empty($onglets)) {
-//          $onglets['empty'] = $this->getTypeName(1);
-//       }
-
       return $onglets;
    }
 
@@ -639,7 +634,7 @@ class CommonGLPI {
    }
 
 
-  /**
+   /**
     * Show header of forms : navigation headers
     *
     * @param $options array of parameters to add to URLs and ajax
@@ -787,7 +782,7 @@ class CommonGLPI {
             $glpilisturl = $this->getSearchURL();
          }
 
-//          echo "<div id='menu_navigate'>";
+         // echo "<div id='menu_navigate'>";
 
          $next = $prev = $first = $last = -1;
          $current = false;
@@ -906,10 +901,10 @@ class CommonGLPI {
                                      __s('Last')."\" title=\"".__s('Last')."\"></td>";
          }
 
-//          echo "</ul></div>";
+         // echo "</ul></div>";
          // End pager
          echo "</tr></table></div>";
-//          echo "<div class='sep'></div>";
+         // echo "<div class='sep'></div>";
       }
    }
 
@@ -993,10 +988,6 @@ class CommonGLPI {
          }
          $cleantarget = HTML::cleanParametersURL($target);
          echo "<ul>";
-//          echo "<li><a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"].
-//                     "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
-//          echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
-//          echo "</a></li>";
          echo "<li><a href=\"javascript:toggleTableDisplay('mainformtable','tabsbodyimg','".
                     $CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"].
                     "/pics/deplier_up.png')\">";

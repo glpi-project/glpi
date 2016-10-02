@@ -82,8 +82,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          if ($item->getFromDB($this->fields[$item->getForeignKeyField()])) {
             return $item;
          }
-     }
-     return false;
+      }
+      return false;
    }
 
 
@@ -246,7 +246,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          PlanningRecall::manageDatas($input['_planningrecall']);
       }
 
-//      $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
+      // $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
 
       if (isset($input['update'])
           && ($uid = Session::getLoginUserID())) { // Change from task form
@@ -333,7 +333,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                 $update['id']            = $this->input['_job']->fields['id'];
                 $update['_disablenotif'] = true;
                 $this->input['_job']->update($update);
-             }
+            }
 
             if (!empty($this->fields['begin'])
                 && $item->isStatusExists(CommonITILObject::PLANNED)
@@ -455,18 +455,14 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       }
 
-//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-//          $donotif = false;
-//       }
-
       $this->input["_job"]->updateDateMod($this->input[$this->input["_job"]->getForeignKeyField()]);
 
       if (isset($this->input["actiontime"]) && ($this->input["actiontime"] > 0)) {
          $this->input["_job"]->updateActionTime($this->input[$this->input["_job"]->getForeignKeyField()]);
       }
 
-     //change status only if input change
-     if (isset($this->input['_status'])
+      //change status only if input change
+      if (isset($this->input['_status'])
          && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
          $update['status']        = $this->input['_status'];
          $update['id']            = $this->input['_job']->fields['id'];

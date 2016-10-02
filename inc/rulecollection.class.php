@@ -320,7 +320,7 @@ class RuleCollection extends CommonDBTM {
    }
 
 
-  /**
+   /**
     * Indicates if the rule can be affected to an entity or if it's global
    **/
    function isRuleRecursive() {
@@ -329,7 +329,7 @@ class RuleCollection extends CommonDBTM {
       return $rule->maybeRecursive();
    }
 
-  /**
+   /**
     * Indicates if the rule use conditions
    **/
    function isRuleUseConditions() {
@@ -338,7 +338,7 @@ class RuleCollection extends CommonDBTM {
       return $rule->useConditions();
    }
 
-  /**
+   /**
     * Indicates if the rule use conditions
    **/
    function getDefaultRuleConditionForList() {
@@ -1713,7 +1713,7 @@ class RuleCollection extends CommonDBTM {
       echo "<br><table class='tab_cadrehov'>";
       $this->showTestResults($rule, $output, $global_result);
       echo "</table></div>";
-}
+   }
 
 
    /**

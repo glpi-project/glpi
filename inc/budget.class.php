@@ -416,12 +416,12 @@ class Budget extends CommonDropdown{
                                   getEntitiesRestrictRequest(" AND", $item->getTable())."
                                   ".($item->maybeTemplate()?" AND NOT `".$item->getTable()."`.`is_template`":'')."
                             ORDER BY `".$item->getTable()."`.`entities_id`,";
-                if ($item instanceof Item_Devices) {
-                   $query .= " `".$item->getTable()."`.`itemtype`";
-                } else {
-                   $query .= " `".$item->getTable()."`.`name`";
-                }
-               break;
+                  if ($item instanceof Item_Devices) {
+                     $query .= " `".$item->getTable()."`.`itemtype`";
+                  } else {
+                     $query .= " `".$item->getTable()."`.`name`";
+                  }
+                  break;
             }
 
             if ($result_linked = $DB->query($query)) {
@@ -482,7 +482,7 @@ class Budget extends CommonDropdown{
                      echo "</td></tr>";
                   }
                }
-            $num += $nb;
+               $num += $nb;
             }
          }
       }

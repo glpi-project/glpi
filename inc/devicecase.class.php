@@ -122,8 +122,8 @@ class DeviceCase extends CommonDevice {
     * @see CommonDevice::getImportCriteria()
     *
     * @since version 0.84
-    **/
-    function getImportCriteria() {
+   **/
+   function getImportCriteria() {
 
       return array('designation'        => 'equal',
                    'manufacturers_id'   => 'equal',

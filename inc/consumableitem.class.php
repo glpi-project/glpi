@@ -108,9 +108,9 @@ class ConsumableItem extends CommonDBTM {
 
    function post_getEmpty() {
 
-     $this->fields["alarm_threshold"] = Entity::getUsedConfig("consumables_alert_repeat",
-                                                              $this->fields["entities_id"],
-                                                              "default_consumables_alarm_threshold", 10);
+      $this->fields["alarm_threshold"] = Entity::getUsedConfig(
+              "consumables_alert_repeat", $this->fields["entities_id"],
+              "default_consumables_alarm_threshold", 10);
    }
 
 
@@ -429,7 +429,7 @@ class ConsumableItem extends CommonDBTM {
                   }
                }
             }
-          }
+         }
       }
       return $cron_status;
    }
