@@ -195,7 +195,7 @@ class Alert extends CommonDBTM {
    static function alertExists($itemtype='', $items_id='', $type='') {
       global $DB;
 
-      $iter = $DB->request(getTableForItemType(__CLASS__), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
+      $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
       if ($row = $iter->next()) {
          return $row['id'];
       }
@@ -213,7 +213,7 @@ class Alert extends CommonDBTM {
    static function getAlertDate($itemtype='', $items_id='', $type='') {
       global $DB;
 
-      $iter = $DB->request(getTableForItemType(__CLASS__), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
+      $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
       if ($row = $iter->next()) {
          return $row['date'];
       }
