@@ -198,6 +198,10 @@ class DbFunctionTest extends DbTestCase {
       $this->assertEquals(1, countElementsInTable('glpi_configs', "context = 'core'
                                                    AND `name` = 'version'"));
       $this->assertEquals(0, countElementsInTable('glpi_configs', "context = 'fakecontext'"));
+      // Using iterator
+      $this->assertEquals(1, countElementsInTable('glpi_configs', ['context' => 'core', 'name' => 'version']));
+      $this->assertGreaterThan(100, countElementsInTable('glpi_configs', ['context' => 'core']));
+      $this->assertEquals(0, countElementsInTable('glpi_configs', ['context' => 'fakecontext']));
    }
 
 
