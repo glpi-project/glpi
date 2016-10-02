@@ -282,11 +282,11 @@ class ReservationItem extends CommonDBChild {
          echo "</td>";
       } else {
          echo "<td class='center'>";
-               Html::showSimpleForm(static::getFormURL(), 'add', __('Authorize reservations'),
-                                    array('items_id'     => $item->getID(),
-                                          'itemtype'     => $item->getType(),
-                                          'entities_id'  => $item->getEntityID(),
-                                          'is_recursive' => $item->isRecursive(),));
+            Html::showSimpleForm(static::getFormURL(), 'add', __('Authorize reservations'),
+                                 array('items_id'     => $item->getID(),
+                                       'itemtype'     => $item->getType(),
+                                       'entities_id'  => $item->getEntityID(),
+                                       'is_recursive' => $item->isRecursive(),));
          echo "</td>";
       }
       echo "</tr></table>";
