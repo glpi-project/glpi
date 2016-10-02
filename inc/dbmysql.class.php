@@ -923,6 +923,8 @@ class DBmysqlIterator  implements Iterator {
    **/
    private function analyseCrit ($crit, $bool="AND") {
 
+      static $operators = ['=', '<', '<=', '>', '>=', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX'];
+
       if (!is_array($crit)) {
 //          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
 //             trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
@@ -959,9 +961,21 @@ class DBmysqlIterator  implements Iterator {
             }
 
          } else if (is_array($value)) {
-            // Array of Value
-            $ret .= self::quoteName($name) . " IN ('". implode("','",$value)."')";
-
+            if (count($value) == 2 && in_array($value[0], $operators)) {
+               if (is_numeric($value[1]) || preg_match("/^`.*?`$/", $value[1])) {
+                  $ret .= self::quoteName($name) . " {$value[0]} {$value[1]}";
+               } else {
+                  $ret .= self::quoteName($name) . " {$value[0]} '{$value[1]}'";
+               }
+            } else {
+               // Array of Values
+               foreach ($value as $k => $v) {
+                  if (!is_numeric($v)) {
+                     $value[$k] = "'$v'";
+                  }
+               }
+               $ret .= self::quoteName($name) . ' IN (' . implode(', ', $value) . ')';
+            }
          } else if (is_null($value)) {
             // NULL condition
             $ret .= self::quoteName($name) . " IS NULL";
