@@ -112,6 +112,19 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   public function testJoin() {
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+      $this->assertEquals('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)', $it->getSql(), 'Left join using FK table => field');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['bar.id', 'foo.fk']]]]);
+      $this->assertEquals('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)', $it->getSql(), 'Left join using FK table.field');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['id', 'fk'], 'val' => 1]]]);
+      $this->assertEquals('SELECT * FROM `foo` LEFT JOIN `bar` ON (`id` = `fk` AND `val` = 1)', $it->getSql(), 'Left join using FK fields + other crit');
+   }
+
+
    public function testWhere() {
 
       $it = new DBmysqlIterator(NULL, 'foo', 'id=1');
