@@ -1544,8 +1544,12 @@ class Toolbox {
       $alphabet  = "1234567890abcdefghijklmnopqrstuvwxyz";
       $rndstring = "";
 
-      for ($a=0 ; $a<=$length ; $a++) {
-         $b          = rand(0, strlen($alphabet) - 1);
+      for ($a=0 ; $a<$length ; $a++) {
+         if (function_exists('random_int')) { // PHP 7+
+            $b = random_int(0, strlen($alphabet) - 1);
+         } else {
+            $b = mt_rand(0, strlen($alphabet) - 1);
+         }
          $rndstring .= $alphabet[$b];
       }
       return $rndstring;
