@@ -106,6 +106,12 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   public function testCount() {
+      $it = new DBmysqlIterator(NULL, 'foo', ['COUNT' => 'cpt']);
+      $this->assertEquals('SELECT COUNT(*) AS cpt FROM `foo`', $it->getSql(), 'Simple count');
+   }
+
+
    public function testWhere() {
 
       $it = new DBmysqlIterator(NULL, 'foo', 'id=1');

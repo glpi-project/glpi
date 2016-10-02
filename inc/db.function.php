@@ -298,27 +298,24 @@ function getSingular($string) {
  * Count the number of elements in a table.
  *
  * @param $table        string/array   table names
- * @param $condition    string         condition to use (default '')
+ * @param $condition    string/array   condition to use (default '') or array of criteria
  *
  * @return int nb of elements in table
 **/
 function countElementsInTable($table, $condition="") {
    global $DB;
 
-   if (is_array($table)) {
-      $table = implode('`,`',$table);
+   if (!is_array($condition)) {
+      if (empty($condition)) {
+         $condition = [];
+      } else {
+         $condition = ['WHERE' => $condition]; // Deprecated use case
+      }
    }
+   $condition['COUNT'] = 'cpt';
 
-   $query = "SELECT COUNT(*) AS cpt
-             FROM `$table`";
-
-   if (!empty($condition)) {
-      $query .= " WHERE $condition ";
-   }
-
-   $result = $DB->query($query);
-   $ligne  = $DB->fetch_assoc($result);
-   return $ligne['cpt'];
+   $row = $DB->request($table, $condition)->next();
+   return ($row ? $row['cpt'] : 0);
 }
 
 /**
