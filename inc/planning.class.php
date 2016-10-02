@@ -609,6 +609,7 @@ class Planning extends CommonGLPI {
                element.find('.fc-list-item-title > a').prepend(eventtype_marker);
 
                var content = event.content;
+               var tooltip = event.tooltip;
                if(view.name !== 'month' && view.name !== 'listYear' && !event.allDay){
                   element
                      .append('<div class=\"content\">'+content+'</div>');
@@ -641,7 +642,7 @@ class Planning extends CommonGLPI {
                   }
                   element.qtip({
                      position: qtip_position,
-                     content: content,
+                     content: tooltip,
                      style: {
                         classes: 'qtip-shadow qtip-bootstrap'
                      },
@@ -1753,7 +1754,8 @@ class Planning extends CommonGLPI {
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
                         $event['users_id_tech']:
                         $event['users_id']);
-         $content = Planning::displayPlanningItem($event, $users_id, 'in', true);
+         $content = Planning::displayPlanningItem($event, $users_id, 'in', false);
+         $tooltip = Planning::displayPlanningItem($event, $users_id, 'in', true);
 
          $begin = date('c', strtotime($event['begin']));
          $end = date('c', strtotime($event['end']));
@@ -1768,6 +1770,7 @@ class Planning extends CommonGLPI {
          $index_color = array_search("user_$users_id", array_keys($_SESSION['glpi_plannings']));
          $events[] = array('title'       => $event['name'],
                            'content'     => $content,
+                           'tooltip'     => $tooltip,
                            'start'       => $begin,
                            'end'         => $end,
                            'editable'    => isset($event['editable'])?$event['editable']:false,
