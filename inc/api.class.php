@@ -977,7 +977,7 @@ abstract class API extends CommonGLPI {
          } else if(isset($parent_item->fields[$fk_child])) {
             $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
             $join.= " LEFT JOIN `$parentTable` ON `$parentTable`.`$fk_child` = `$table`.`id` ";
-            $where.= " AND `$parentTable`.`$fk_child` = `$table`.`id`";
+            $where.= " AND `$parentTable`.`id` = '" . $this->parameters['parent_id'] . "'" ;
          }
       }
 
