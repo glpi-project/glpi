@@ -971,7 +971,7 @@ abstract class API extends CommonGLPI {
          if (isset($item->fields[$fk_parent])) {
             $where.= " AND `$table`.`$fk_parent` = ".$this->parameters['parent_id'];
          } else if (isset($item->fields['itemtype'])
-                 && isset($item->fields['items_id'])) { 
+                 && isset($item->fields['items_id'])) {
             $where.= " AND `$table`.`itemtype` = '".$this->parameters['parent_itemtype']."'
                        AND `$table`.`items_id` = ".$this->parameters['parent_id'];
          } else if(isset($parent_item->fields[$fk_child])) {
