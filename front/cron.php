@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,7 @@
 */
 
 // Ensure current directory when run from crontab
-chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
+chdir(__DIR__);
 
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
@@ -78,8 +78,8 @@ if (!isCommandLine()) {
          // Only check first parameter when numeric is passed
          break;
       } else {
-         // Task name
-         CronTask::launch($mode, $CFG_GLPI['cron_limit'], $_SERVER['argv'][$i]);
+         // Single Task name
+         CronTask::launch($mode, 1, $_SERVER['argv'][$i]);
       }
    }
 
