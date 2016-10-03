@@ -310,4 +310,3 @@ class TicketTask  extends CommonITILTask {
       Html::closeForm();
    }
 }
-?>

@@ -1309,4 +1309,3 @@ class Plugin extends CommonDBTM {
    }
 
 }
-?>

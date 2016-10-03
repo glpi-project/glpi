@@ -669,4 +669,3 @@ class Log extends CommonDBTM {
    }
 
 }
-?>

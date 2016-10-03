@@ -47,4 +47,3 @@ class UserTitle extends CommonDropdown {
       return _n('User title', 'Users titles',$nb);
    }
 }
-?>

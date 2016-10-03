@@ -1393,4 +1393,3 @@ class CommonGLPI {
    }
 
 }
-?>

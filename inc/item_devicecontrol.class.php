@@ -60,4 +60,3 @@ class Item_DeviceControl extends Item_Devices {
    }
 
 }
-?>

@@ -115,4 +115,3 @@ class RuleDictionnaryPrinter extends Rule {
    }
 
 }
-?>

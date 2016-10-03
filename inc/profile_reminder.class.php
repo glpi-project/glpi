@@ -75,4 +75,3 @@ class Profile_Reminder extends CommonDBRelation {
    }
 
 }
-?>

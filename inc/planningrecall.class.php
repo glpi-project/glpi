@@ -388,4 +388,3 @@ class PlanningRecall extends CommonDBChild {
    }
 
 }
-?>

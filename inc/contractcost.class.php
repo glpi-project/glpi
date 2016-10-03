@@ -413,4 +413,3 @@ class ContractCost extends CommonDBChild {
    }
 
 }
-?>

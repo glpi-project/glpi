@@ -727,4 +727,3 @@ class DropdownTranslation extends CommonDBChild {
    }
 
 }
-?>

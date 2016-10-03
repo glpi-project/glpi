@@ -278,4 +278,3 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
    }
 
 }
-?>

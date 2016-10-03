@@ -57,4 +57,3 @@ class SlaLevelCriteria extends RuleCriteria {
    }
 
 }
-?>

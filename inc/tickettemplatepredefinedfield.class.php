@@ -358,4 +358,3 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    }
 
 }
-?>

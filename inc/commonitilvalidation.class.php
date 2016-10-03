@@ -1460,4 +1460,3 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 }
-?>

@@ -266,4 +266,3 @@ class HTMLTableMain extends HTMLTableBase {
    }
 
 }
-?>

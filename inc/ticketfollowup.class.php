@@ -1165,4 +1165,3 @@ class TicketFollowup  extends CommonDBTM {
       return $values;
    }
 }
-?>

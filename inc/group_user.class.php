@@ -715,4 +715,3 @@ class Group_User extends CommonDBRelation{
 
 
 }
-?>

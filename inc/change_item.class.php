@@ -336,4 +336,3 @@ class Change_Item extends CommonDBRelation{
    }
 
 }
-?>

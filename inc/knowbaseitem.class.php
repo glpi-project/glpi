@@ -1841,4 +1841,3 @@ class KnowbaseItem extends CommonDBTM {
    }
 
 }
-?>

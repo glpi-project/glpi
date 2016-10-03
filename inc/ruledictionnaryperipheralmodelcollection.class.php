@@ -47,4 +47,3 @@ class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCo
    }
 
 }
-?>

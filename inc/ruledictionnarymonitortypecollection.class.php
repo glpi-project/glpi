@@ -51,4 +51,3 @@ class RuleDictionnaryMonitorTypeCollection extends RuleDictionnaryDropdownCollec
    }
 
 }
-?>

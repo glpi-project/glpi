@@ -177,4 +177,3 @@ class RuleImportEntity extends Rule {
    }
 
 }
-?>

@@ -356,4 +356,3 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 }
-?>

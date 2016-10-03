@@ -66,4 +66,3 @@ class ProblemCost extends CommonITILCost {
    }
 
 }
-?>

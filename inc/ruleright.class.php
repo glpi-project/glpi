@@ -357,4 +357,3 @@ class RuleRight extends Rule {
    }
 
 }
-?>

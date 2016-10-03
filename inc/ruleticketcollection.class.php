@@ -120,4 +120,3 @@ class RuleTicketCollection extends RuleCollection {
    }
 
 }
-?>

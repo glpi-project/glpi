@@ -686,4 +686,3 @@ class QueuedMail extends CommonDBTM {
    }
 
 }
-?>

@@ -56,4 +56,3 @@ class Change_Group extends CommonITILActor {
 
 
 }
-?>

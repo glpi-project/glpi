@@ -109,4 +109,3 @@ class NotificationTargetCartridgeItem extends NotificationTarget {
    }
 
 }
-?>

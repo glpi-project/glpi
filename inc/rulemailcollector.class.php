@@ -337,4 +337,3 @@ class RuleMailCollector extends Rule {
    }
 
 }
-?>

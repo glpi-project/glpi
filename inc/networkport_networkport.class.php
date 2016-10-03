@@ -93,4 +93,3 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
    }
 
 }
-?>

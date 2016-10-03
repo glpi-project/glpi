@@ -213,4 +213,3 @@ class DeviceNetworkCard extends CommonDevice {
    }
 
 }
-?>

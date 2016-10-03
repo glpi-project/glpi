@@ -192,4 +192,3 @@ class NotificationMail implements NotificationInterface {
    }
 
 }
-?>

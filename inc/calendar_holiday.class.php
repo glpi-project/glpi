@@ -224,4 +224,3 @@ class Calendar_Holiday extends CommonDBRelation {
       return true;
    }
 }
-?>

@@ -210,4 +210,3 @@ class HTMLTableRow extends HTMLTableEntity {
       return $this->group->getHeaderByName($name, $sub_name);
    }
 }
-?>

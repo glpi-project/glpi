@@ -48,4 +48,3 @@ class PhoneType extends CommonDropdown {
    }
 
 }
-?>

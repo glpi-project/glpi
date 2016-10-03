@@ -75,4 +75,3 @@ class Item_DeviceNetworkCard extends Item_Devices {
    }
 
 }
-?>

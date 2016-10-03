@@ -82,4 +82,3 @@ class RuleDictionnaryPhoneModel extends RuleDictionnaryDropdown {
    }
 
 }
-?>

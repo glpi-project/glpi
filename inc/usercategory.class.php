@@ -47,4 +47,3 @@ class UserCategory extends CommonDropdown {
       return _n('User category', 'User categories',$nb);
    }
 }
-?>

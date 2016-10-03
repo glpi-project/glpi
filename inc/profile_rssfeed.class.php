@@ -75,4 +75,3 @@ class Profile_RSSFeed extends CommonDBRelation {
    }
 
 }
-?>

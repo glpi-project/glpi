@@ -61,4 +61,3 @@ class Preference extends CommonGLPI {
       return $ong;
    }
 }
-?>

@@ -1738,4 +1738,3 @@ class Infocom extends CommonDBChild {
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 }
-?>

@@ -131,4 +131,3 @@ class DeviceCase extends CommonDevice {
    }
 
 }
-?>

@@ -48,4 +48,3 @@ class ComputerType extends CommonDropdown {
       return _n('Computer type', 'Computer types', $nb);
    }
 }
-?>

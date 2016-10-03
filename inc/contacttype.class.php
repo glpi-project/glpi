@@ -47,4 +47,3 @@ class ContactType extends CommonDropdown {
       return _n('Contact type', 'Contact types', $nb);
    }
 }
-?>

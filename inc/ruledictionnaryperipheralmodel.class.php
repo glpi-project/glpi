@@ -82,4 +82,3 @@ class RuleDictionnaryPeripheralModel extends RuleDictionnaryDropdown {
    }
 
 }
-?>

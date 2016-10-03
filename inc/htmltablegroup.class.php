@@ -286,5 +286,3 @@ class HTMLTableGroup extends HTMLTableBase {
       }
    }
 }
-
-?>

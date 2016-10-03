@@ -1305,4 +1305,3 @@ class MassiveAction {
       $this->updateProgressBars();
    }
 }
-?>

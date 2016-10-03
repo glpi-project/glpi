@@ -314,4 +314,3 @@ class Central extends CommonGLPI {
    }
 
 }
-?>

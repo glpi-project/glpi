@@ -55,4 +55,3 @@ class Problem_Supplier extends CommonITILActor {
 
 
 }
-?>

@@ -47,4 +47,3 @@ class RuleDictionnaryOperatingSystemServicePackCollection extends RuleDictionnar
    }
 
 }
-?>

@@ -1385,4 +1385,3 @@ class Item_Ticket extends CommonDBRelation{
       }
    }
 }
-?>

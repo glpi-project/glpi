@@ -115,4 +115,3 @@ class AuthLdapReplicate extends CommonDBTM {
    }
 
 }
-?>

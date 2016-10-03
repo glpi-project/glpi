@@ -270,4 +270,3 @@ class NotImportedEmail extends CommonDBTM {
 
 
 }
-?>

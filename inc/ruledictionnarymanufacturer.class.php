@@ -77,4 +77,3 @@ class RuleDictionnaryManufacturer extends RuleDictionnaryDropdown {
    }
 
 }
-?>

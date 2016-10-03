@@ -1465,4 +1465,3 @@ class Contract extends CommonDBTM {
    }
 
 }
-?>

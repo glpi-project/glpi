@@ -707,4 +707,3 @@ class NotificationTargetProject extends NotificationTarget {
    }
 
 }
-?>

@@ -73,4 +73,3 @@ class Control extends CommonGLPI {
       return false;
    }
 }
-?>

@@ -846,4 +846,3 @@ abstract class CommonDBChild extends CommonDBConnexity {
       return $this->update($input);
    }
 }
-?>

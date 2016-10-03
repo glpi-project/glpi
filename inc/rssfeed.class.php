@@ -1218,4 +1218,3 @@ class RSSFeed extends CommonDBTM {
       return $values;
    }
 }
-?>

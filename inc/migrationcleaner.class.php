@@ -91,4 +91,3 @@ class MigrationCleaner extends CommonGLPI {
    }
 
 }
-?>

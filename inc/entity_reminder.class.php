@@ -75,4 +75,3 @@ class Entity_Reminder extends CommonDBRelation {
    }
 
 }
-?>

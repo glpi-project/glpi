@@ -585,4 +585,3 @@ class Link extends CommonDBTM {
       return $tab;
    }
 }
-?>

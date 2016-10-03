@@ -50,4 +50,3 @@ class Problem_User extends CommonITILActor {
 
 
 }
-?>

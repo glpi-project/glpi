@@ -47,4 +47,3 @@ class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollec
    }
 
 }
-?>

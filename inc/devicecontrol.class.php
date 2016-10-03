@@ -133,4 +133,3 @@ class DeviceControl extends CommonDevice {
       }
    }
 }
-?>

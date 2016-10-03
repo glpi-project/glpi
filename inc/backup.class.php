@@ -82,4 +82,3 @@ class Backup extends CommonGLPI {
    }
 
 }
-?>

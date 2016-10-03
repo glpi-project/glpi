@@ -47,4 +47,3 @@ class RuleDictionnaryOperatingSystemCollection extends RuleDictionnaryDropdownCo
    }
 
 }
-?>

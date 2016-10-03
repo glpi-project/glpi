@@ -53,4 +53,3 @@ class TicketCost extends CommonITILCost {
    static $rightname        = 'ticketcost';
 
 }
-?>

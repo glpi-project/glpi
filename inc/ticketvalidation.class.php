@@ -119,4 +119,3 @@ class TicketValidation  extends CommonITILValidation {
    }
 
 }
-?>

@@ -75,4 +75,3 @@ class Group_RSSFeed extends CommonDBRelation {
    }
 
 }
-?>

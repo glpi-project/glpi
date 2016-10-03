@@ -338,4 +338,3 @@ class Item_Problem extends CommonDBRelation{
    }
 
 }
-?>

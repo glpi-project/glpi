@@ -47,4 +47,3 @@ class DeviceCaseType extends CommonDropdown {
       return  _n('Case type', 'Case types', $nb);
    }
 }
-?>

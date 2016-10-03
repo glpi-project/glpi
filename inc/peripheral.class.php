@@ -468,4 +468,3 @@ class Peripheral extends CommonDBTM {
    }
 
 }
-?>

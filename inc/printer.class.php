@@ -794,4 +794,3 @@ class Printer  extends CommonDBTM {
    }
 
 }
-?>

@@ -48,4 +48,3 @@ class SoftwareLicenseType extends CommonDropdown {
    }
 
 }
-?>

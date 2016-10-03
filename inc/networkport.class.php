@@ -1164,4 +1164,3 @@ class NetworkPort extends CommonDBChild {
    }
 
 }
-?>

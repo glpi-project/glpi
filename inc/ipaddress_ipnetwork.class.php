@@ -108,4 +108,3 @@ class IPAddress_IPNetwork extends CommonDBRelation {
    }
 
 }
-?>

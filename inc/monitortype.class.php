@@ -48,4 +48,3 @@ class MonitorType extends CommonDropdown {
    }
 
 }
-?>

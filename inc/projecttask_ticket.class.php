@@ -410,4 +410,3 @@ class ProjectTask_Ticket extends CommonDBRelation{
    }
 
 }
-?>

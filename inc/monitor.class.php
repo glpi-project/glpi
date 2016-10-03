@@ -539,4 +539,3 @@ class Monitor extends CommonDBTM {
    }
 
 }
-?>

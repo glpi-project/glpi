@@ -52,4 +52,3 @@ class ProjectTaskType extends CommonDropdown {
    }
 
 }
-?>

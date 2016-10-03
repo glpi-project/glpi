@@ -48,4 +48,3 @@ class SupplierType extends CommonDropdown {
    }
 
 }
-?>

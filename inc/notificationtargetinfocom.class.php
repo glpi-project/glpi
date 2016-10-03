@@ -113,4 +113,3 @@ class NotificationTargetInfocom extends NotificationTarget {
    }
 
 }
-?>

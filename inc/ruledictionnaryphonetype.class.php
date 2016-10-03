@@ -78,4 +78,3 @@ class RuleDictionnaryPhoneType extends RuleDictionnaryDropdown {
    }
 
 }
-?>

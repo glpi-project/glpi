@@ -47,4 +47,3 @@ class RuleDictionnaryNetworkEquipmentModelCollection extends RuleDictionnaryDrop
    }
 
 }
-?>

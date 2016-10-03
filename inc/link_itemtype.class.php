@@ -202,4 +202,3 @@ class Link_Itemtype extends CommonDBChild {
    }
 
 }
-?>

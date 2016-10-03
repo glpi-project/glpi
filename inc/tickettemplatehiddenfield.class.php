@@ -274,4 +274,3 @@ class TicketTemplateHiddenField extends CommonDBChild {
    }
 
 }
-?>

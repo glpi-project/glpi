@@ -264,4 +264,3 @@ abstract class FQDNLabel extends CommonDBChild {
       return array();
    }
 }
-?>

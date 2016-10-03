@@ -142,4 +142,3 @@ class RuleMailCollectorCollection extends RuleCollection {
    }
 
 }
-?>

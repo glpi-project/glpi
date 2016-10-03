@@ -75,4 +75,3 @@ class Group_KnowbaseItem extends CommonDBRelation {
    }
 
 }
-?>

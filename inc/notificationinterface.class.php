@@ -68,5 +68,3 @@ interface NotificationInterface {
    **/
    static function testNotification();
 }
-
-?>

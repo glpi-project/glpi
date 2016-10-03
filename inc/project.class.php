@@ -1347,4 +1347,3 @@ class Project extends CommonDBTM {
       NotificationEvent::debugEvent($this);
    }
 }
-?>

@@ -482,4 +482,3 @@ class Problem_Ticket extends CommonDBRelation{
 
 
 }
-?>

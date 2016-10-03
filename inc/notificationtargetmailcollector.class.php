@@ -118,4 +118,3 @@ class NotificationTargetMailCollector extends NotificationTarget {
    }
 
 }
-?>

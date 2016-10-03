@@ -77,4 +77,3 @@ class RuleSoftwareCategoryCollection extends RuleCollection {
    }
 
 }
-?>

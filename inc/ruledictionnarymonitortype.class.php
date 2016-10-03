@@ -78,4 +78,3 @@ class RuleDictionnaryMonitorType extends RuleDictionnaryDropdown {
    }
 
 }
-?>

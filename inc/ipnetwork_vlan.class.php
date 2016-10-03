@@ -252,4 +252,3 @@ class IPNetwork_Vlan extends CommonDBRelation {
    }
 
 }
-?>

@@ -563,4 +563,3 @@ class CartridgeItem extends CommonDBTM {
    }
 
 }
-?>

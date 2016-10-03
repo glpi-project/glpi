@@ -81,4 +81,3 @@ class RuleDictionnaryPrinterModel extends RuleDictionnaryDropdown {
    }
 
 }
-?>

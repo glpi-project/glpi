@@ -415,4 +415,3 @@ class ProjectCost extends CommonDBChild {
       echo "</div>";
    }
 }
-?>

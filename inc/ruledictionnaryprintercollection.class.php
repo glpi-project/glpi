@@ -343,4 +343,3 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    }
 
 }
-?>

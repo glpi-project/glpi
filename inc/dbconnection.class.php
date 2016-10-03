@@ -495,4 +495,3 @@ class DBConnection extends CommonDBTM {
    }
 
 }
-?>

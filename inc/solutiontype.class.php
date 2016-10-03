@@ -48,4 +48,3 @@ class SolutionType extends CommonDropdown {
    }
 
 }
-?>

@@ -526,4 +526,3 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 }
-?>

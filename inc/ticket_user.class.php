@@ -50,4 +50,3 @@ class Ticket_User extends CommonITILActor {
 
 
 }
-?>

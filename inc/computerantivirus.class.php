@@ -363,6 +363,3 @@ class ComputerAntivirus extends CommonDBChild {
    }
 
 }
-
-
-?>

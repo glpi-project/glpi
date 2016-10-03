@@ -136,4 +136,3 @@ class IPNetmask extends IPAddress {
       return true;
    }
 }
-?>

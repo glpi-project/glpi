@@ -192,4 +192,3 @@ class DeviceGraphicCard extends CommonDevice {
    }
 
 }
-?>

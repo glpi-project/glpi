@@ -75,4 +75,3 @@ class Reminder_User extends CommonDBRelation {
    }
 
 }
-?>

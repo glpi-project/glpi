@@ -58,4 +58,3 @@ class Item_DeviceCase extends Item_Devices {
    }
 
 }
-?>

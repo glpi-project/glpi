@@ -274,4 +274,3 @@ class HTMLTableCell extends HTMLTableEntity {
       return false;
    }
 }
-?>

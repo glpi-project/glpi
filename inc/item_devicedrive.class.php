@@ -59,4 +59,3 @@ class Item_DeviceDrive extends Item_Devices {
                    'busID'  => parent::getSpecificities('busID'));
    }
 }
-?>

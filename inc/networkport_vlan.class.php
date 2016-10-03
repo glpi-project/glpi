@@ -303,4 +303,3 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 }
-?>

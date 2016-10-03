@@ -78,4 +78,3 @@ class RuleDictionnaryPrinterType extends RuleDictionnaryDropdown {
    }
 
 }
-?>

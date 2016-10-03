@@ -13,4 +13,7 @@
     </properties>
   </rule>
 
+  <!-- Remove closingTag -->
+  <rule ref="Zend.Files.ClosingTag" />
+
 </ruleset>

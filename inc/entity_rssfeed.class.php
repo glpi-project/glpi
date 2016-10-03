@@ -75,4 +75,3 @@ class Entity_RSSFeed extends CommonDBRelation {
    }
 
 }
-?>

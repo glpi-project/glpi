@@ -343,4 +343,3 @@ class Notepad extends CommonDBChild {
       return true;
    }
 }
-?>

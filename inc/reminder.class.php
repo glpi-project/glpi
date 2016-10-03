@@ -1387,4 +1387,3 @@ class Reminder extends CommonDBTM {
    }
 
 }
-?>

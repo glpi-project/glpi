@@ -1359,4 +1359,3 @@ class Document extends CommonDBTM {
    }
 
 }
-?>

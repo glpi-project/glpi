@@ -98,4 +98,3 @@ class HTMLTableSubHeader extends HTMLTableHeader {
       $this->setColSpan($this->header->getColSpan() / $numberOfSubHeaders);
    }
 }
-?>

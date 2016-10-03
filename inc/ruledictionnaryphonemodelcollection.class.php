@@ -47,4 +47,3 @@ class RuleDictionnaryPhoneModelCollection extends RuleDictionnaryDropdownCollect
    }
 
 }
-?>

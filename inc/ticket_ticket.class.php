@@ -326,4 +326,3 @@ class Ticket_Ticket extends CommonDBRelation {
       }
    }
 }
-?>

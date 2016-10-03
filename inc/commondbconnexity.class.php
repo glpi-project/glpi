@@ -740,4 +740,3 @@ abstract class CommonDBConnexity extends CommonDBTM {
    }
 
 }
-?>

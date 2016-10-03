@@ -354,4 +354,3 @@ class AuthMail extends CommonDBTM {
    }
 
 }
-?>

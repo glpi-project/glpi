@@ -47,4 +47,3 @@ class ContractType extends CommonDropdown {
       return _n('Contract type', 'Contract types', $nb);
    }
 }
-?>

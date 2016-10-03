@@ -68,4 +68,3 @@ class RuleImportComputerCollection extends RuleCollection {
 
 
 }
-?>

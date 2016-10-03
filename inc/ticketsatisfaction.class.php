@@ -289,4 +289,3 @@ class TicketSatisfaction extends CommonDBTM {
    }
 
 }
-?>

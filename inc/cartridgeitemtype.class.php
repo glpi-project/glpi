@@ -48,4 +48,3 @@ class CartridgeItemType extends CommonDropdown {
    }
 
 }
-?>

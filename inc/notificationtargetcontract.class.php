@@ -199,4 +199,3 @@ class NotificationTargetContract extends NotificationTarget {
    }
 
 }
-?>

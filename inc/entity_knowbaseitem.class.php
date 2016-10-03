@@ -75,4 +75,3 @@ class Entity_KnowbaseItem extends CommonDBRelation {
    }
 
 }
-?>

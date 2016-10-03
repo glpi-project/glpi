@@ -181,4 +181,3 @@ class Knowbase extends CommonGLPI {
 
 
 }
-?>

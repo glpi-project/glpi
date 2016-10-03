@@ -449,4 +449,3 @@ class Contact extends CommonDBTM{
    }
 
 }
-?>

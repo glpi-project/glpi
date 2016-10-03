@@ -78,4 +78,3 @@ class RuleDictionnaryPeripheralType extends RuleDictionnaryDropdown {
    }
 
 }
-?>

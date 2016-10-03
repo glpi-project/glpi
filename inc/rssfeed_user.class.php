@@ -75,4 +75,3 @@ class RSSFeed_User extends CommonDBRelation {
    }
 
 }
-?>

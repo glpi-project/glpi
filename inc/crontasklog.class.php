@@ -111,4 +111,3 @@ class CronTaskLog extends CommonDBTM{
    }
 
 }
-?>

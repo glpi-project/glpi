@@ -48,4 +48,3 @@ class VirtualMachineState extends CommonDropdown {
    }
 
 }
-?>

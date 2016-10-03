@@ -469,4 +469,3 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 }
-?>

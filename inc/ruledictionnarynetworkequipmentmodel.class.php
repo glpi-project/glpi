@@ -81,4 +81,3 @@ class RuleDictionnaryNetworkEquipmentModel extends RuleDictionnaryDropdown {
    }
 
 }
-?>

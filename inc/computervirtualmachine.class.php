@@ -471,4 +471,3 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 }
-?>

@@ -322,4 +322,3 @@ class ComputerDisk extends CommonDBChild {
    }
 
 }
-?>

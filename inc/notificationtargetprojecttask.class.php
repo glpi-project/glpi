@@ -584,4 +584,3 @@ class NotificationTargetProjectTask extends NotificationTarget {
    }
 
 }
-?>

@@ -1777,4 +1777,3 @@ class CronTask extends CommonDBTM{
       }
    }
 }
-?>

@@ -1579,4 +1579,3 @@ class Stat extends CommonGLPI {
    }
 
 }
-?>

@@ -758,4 +758,3 @@ class ReservationItem extends CommonDBChild {
    }
 
 }
-?>

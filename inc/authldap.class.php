@@ -3174,4 +3174,3 @@ class AuthLDAP extends CommonDBTM {
                      && function_exists('ldap_control_paged_result_response'));
    }
 }
-?>

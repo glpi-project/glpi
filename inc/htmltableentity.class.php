@@ -187,4 +187,3 @@ abstract class HTMLTableEntity {
       }
    }
 }
-?>

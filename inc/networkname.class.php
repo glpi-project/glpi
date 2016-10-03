@@ -840,4 +840,3 @@ class NetworkName extends FQDNLabel {
    }
 
 }
-?>

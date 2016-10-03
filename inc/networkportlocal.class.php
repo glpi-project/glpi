@@ -52,4 +52,3 @@ class NetworkPortLocal extends NetworkPortInstantiation {
       return __('Local loop port');
    }
 }
-?>

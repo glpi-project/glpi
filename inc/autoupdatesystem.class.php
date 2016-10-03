@@ -48,4 +48,3 @@ class AutoUpdateSystem extends CommonDropdown {
    }
 
 }
-?>

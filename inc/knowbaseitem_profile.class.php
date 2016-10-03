@@ -75,4 +75,3 @@ class KnowbaseItem_Profile extends CommonDBRelation {
    }
 
 }
-?>

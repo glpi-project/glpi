@@ -63,4 +63,3 @@ class Item_DeviceGraphicCard extends Item_Devices {
                    'busID'  => parent::getSpecificities('busID'));
    }
 }
-?>

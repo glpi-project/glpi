@@ -313,4 +313,3 @@ class Change_Project extends CommonDBRelation{
 
 
 }
-?>

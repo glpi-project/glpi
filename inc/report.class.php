@@ -455,4 +455,3 @@ class Report extends CommonGLPI{
    }
 
 }
-?>

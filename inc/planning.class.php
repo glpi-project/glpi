@@ -2095,4 +2095,3 @@ class Planning extends CommonGLPI {
       return $values;
    }
 }
-?>

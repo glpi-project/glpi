@@ -412,4 +412,3 @@ class Contact_Supplier extends CommonDBRelation{
       echo "</div>";
    }
 }
-?>

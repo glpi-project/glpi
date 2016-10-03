@@ -47,4 +47,3 @@ class Network extends CommonDropdown {
       return _n('Network', 'Networks', $nb);
    }
 }
-?>

@@ -68,4 +68,3 @@ class Item_DevicePowerSupply extends Item_Devices {
    }
 
 }
-?>

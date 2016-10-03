@@ -544,4 +544,3 @@ class Supplier extends CommonDBTM {
 
 
 }
-?>

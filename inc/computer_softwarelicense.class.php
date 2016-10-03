@@ -721,4 +721,3 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 }
-?>

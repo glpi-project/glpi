@@ -50,4 +50,3 @@ class Group_Problem extends CommonITILActor {
 
 
 }
-?>

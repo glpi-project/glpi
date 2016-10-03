@@ -177,4 +177,3 @@ abstract class HTMLTableHeader extends HTMLTableEntity {
       return $this->father;
    }
 }
-?>

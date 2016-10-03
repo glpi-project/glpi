@@ -146,4 +146,3 @@ class NotificationTargetUser extends NotificationTarget {
    }
 
 }
-?>

@@ -76,4 +76,3 @@ class Supplier_Ticket extends CommonITILActor {
    }
 
 }
-?>

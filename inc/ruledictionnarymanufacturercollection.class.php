@@ -51,4 +51,3 @@ class RuleDictionnaryManufacturerCollection extends RuleDictionnaryDropdownColle
    }
 
 }
-?>

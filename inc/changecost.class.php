@@ -65,4 +65,3 @@ class ChangeCost extends CommonITILCost {
       return Session::haveRight('change', UPDATE);
    }
 }
-?>

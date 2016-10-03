@@ -316,4 +316,3 @@ class Item_Project extends CommonDBRelation{
    }
 
 }
-?>

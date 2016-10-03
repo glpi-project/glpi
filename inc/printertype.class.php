@@ -48,4 +48,3 @@ class PrinterType extends CommonDropdown {
    }
 
 }
-?>

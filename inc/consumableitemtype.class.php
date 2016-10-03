@@ -47,4 +47,3 @@ class ConsumableItemType extends CommonDropdown {
       return _n('Consumable type', 'Consumable types',$nb);
    }
 }
-?>

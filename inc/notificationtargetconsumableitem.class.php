@@ -110,4 +110,3 @@ class NotificationTargetConsumableItem extends NotificationTarget {
    }
 
 }
-?>

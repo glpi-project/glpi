@@ -54,4 +54,3 @@ class Change_User extends CommonITILActor {
 
 
 }
-?>

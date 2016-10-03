@@ -100,4 +100,3 @@ class RuleSoftwareCategory extends Rule {
    }
 
 }
-?>

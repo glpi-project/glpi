@@ -199,4 +199,3 @@ class DeviceMemory extends CommonDevice {
    }
 
 }
-?>

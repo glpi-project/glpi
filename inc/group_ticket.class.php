@@ -56,4 +56,3 @@ class Group_Ticket extends CommonITILActor {
 
 
 }
-?>

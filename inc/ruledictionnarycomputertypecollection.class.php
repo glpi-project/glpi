@@ -51,4 +51,3 @@ class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownColle
    }
 
 }
-?>

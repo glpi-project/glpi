@@ -51,4 +51,3 @@ class ChangeValidation  extends CommonITILValidation {
    static $rightname                 = 'changevalidation';
 
 }
-?>

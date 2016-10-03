@@ -438,4 +438,3 @@ class Change_Ticket extends CommonDBRelation{
 
 
 }
-?>

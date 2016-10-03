@@ -52,4 +52,3 @@ class ProjectType extends CommonDropdown {
    }
 
 }
-?>

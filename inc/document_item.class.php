@@ -1020,4 +1020,3 @@ class Document_Item extends CommonDBRelation{
    }
 
 }
-?>
