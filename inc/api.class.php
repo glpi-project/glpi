@@ -898,7 +898,7 @@ abstract class API extends CommonGLPI {
       $default = array('expand_dropdowns' => false,
                        'get_hateoas'      => true,
                        'only_id'          => false,
-                       'range'            => "0-50",
+                       'range'            => "0-".$_SESSION['glpilist_limit'],
                        'sort'             => "id",
                        'order'            => "ASC");
       $params = array_merge($default, $params);
@@ -924,7 +924,7 @@ abstract class API extends CommonGLPI {
             $this->returnError("range must be in format : [start-end] with integers");
          }
       } else{
-         $params['range'] = array(0,50);
+         $params['range'] = array(0, $_SESSION['glpilist_limit']);
       }
 
       // check parameters
@@ -1276,7 +1276,7 @@ abstract class API extends CommonGLPI {
             $this->returnError("range must be in format : [start-end] with integers");
          }
       } else{
-         $params['range'] = array(0,50);
+         $params['range'] = array(0, $_SESSION['glpilist_limit']);
       }
 
       // force reset
