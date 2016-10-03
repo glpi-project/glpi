@@ -1,3 +1,0 @@
-test:app:
-  script:
-  - phpunit --verbose --debug
