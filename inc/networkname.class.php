@@ -105,7 +105,7 @@ class NetworkName extends FQDNLabel {
          $options['entities_id'] = $lastItem->getField('entities_id');
       }
 
-     $this->showFormHeader($options);
+      $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'><td>";
       if (count($recursiveItems) > 0) {
@@ -158,7 +158,6 @@ class NetworkName extends FQDNLabel {
       echo "<tr class='tab_bg_1'><td>&nbsp;</td><td>";
       IPNetwork::showIPNetworkProperties($this->getEntityID());
       echo "</td></tr>\n";
-
 
       $this->showFormButtons($options);
 
@@ -397,7 +396,7 @@ class NetworkName extends FQDNLabel {
             return;
          }
 
-        switch ($DB->numrows($result)) {
+         switch ($DB->numrows($result)) {
             case 1 :
                $nameID = $DB->fetch_assoc($result);
                $name->getFromDB($nameID['id']);
@@ -450,11 +449,11 @@ class NetworkName extends FQDNLabel {
 
       // MoYo : really need to display it here ?
       // make confure because not updatable
-//       echo "<td>".IPNetwork::getTypeName(Session::getPluralNumber())."&nbsp;";
-//       Html::showToolTip(__('IP network is not included in the database. However, you can see current available networks.'));
-//       echo "</td><td>";
-//       IPNetwork::showIPNetworkProperties($name->getEntityID());
-//       echo "</td>\n";
+      // echo "<td>".IPNetwork::getTypeName(Session::getPluralNumber())."&nbsp;";
+      // Html::showToolTip(__('IP network is not included in the database. However, you can see current available networks.'));
+      // echo "</td><td>";
+      // IPNetwork::showIPNetworkProperties($name->getEntityID());
+      // echo "</td>\n";
       echo "<td colspan='2'>&nbsp;</td>";
 
       echo "</tr>\n";
@@ -562,7 +561,7 @@ class NetworkName extends FQDNLabel {
                       ORDER BY $ORDER";
             break;
 
-        case 'NetworkPort' :
+         case 'NetworkPort' :
             $query = "SELECT `id`
                       FROM `glpi_networknames`
                       WHERE `itemtype` = '".$item->getType()."'
@@ -570,7 +569,7 @@ class NetworkName extends FQDNLabel {
                             AND `glpi_networknames`.`is_deleted` = '0'";
             break;
 
-        case 'NetworkEquipment' :
+         case 'NetworkEquipment' :
             $query = "SELECT `glpi_networknames`.`id`
                       FROM `glpi_networknames`, `glpi_networkports`
                       WHERE `glpi_networkports`.`itemtype` = '".$item->getType()."'
@@ -627,7 +626,7 @@ class NetworkName extends FQDNLabel {
                } else {
                   $father_for_children = $name_cell;
                }
-           } else {
+            } else {
                $father_for_children = $father;
             }
 
@@ -841,4 +840,3 @@ class NetworkName extends FQDNLabel {
    }
 
 }
-?>

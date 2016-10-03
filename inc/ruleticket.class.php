@@ -500,7 +500,6 @@ class RuleTicket extends Rule {
       $actions['_groups_id_requester']['permitseveral']     = array('append');
       $actions['_groups_id_requester']['appendto']          = '_additional_groups_requesters';
 
-
       $actions['_users_id_assign']['name']                  = __('Technician');
       $actions['_users_id_assign']['type']                  = 'dropdown_assign';
       $actions['_users_id_assign']['force_actions']         = array('assign', 'append');

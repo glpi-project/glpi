@@ -244,4 +244,3 @@ class Alert extends CommonDBTM {
    }
 
 }
-?>

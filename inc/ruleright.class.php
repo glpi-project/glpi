@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -315,7 +315,6 @@ class RuleRight extends Rule {
       $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
       $actions['_affect_entity_by_domain']['duplicatewith'] = 'entities_id';
 
-
       $actions['_affect_entity_by_completename']['name']          = __('Entity from complete name');
       $actions['_affect_entity_by_completename']['type']          = 'text';
       $actions['_affect_entity_by_completename']['force_actions'] = array('regex_result');
@@ -358,4 +357,3 @@ class RuleRight extends Rule {
    }
 
 }
-?>

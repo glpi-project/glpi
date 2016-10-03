@@ -77,7 +77,7 @@ class Item_Ticket extends CommonDBRelation{
       // Not item linked for closed tickets
       if ($ticket->getFromDB($this->fields['tickets_id'])
           && in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
-        return false;
+         return false;
       }
 
       return parent::canCreateItem();
@@ -416,7 +416,6 @@ class Item_Ticket extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='ticketitem_form$rand' id='ticketitem_form$rand' method='post'
@@ -687,7 +686,7 @@ class Item_Ticket extends CommonDBRelation{
             // Display default value if itemtype is displayed
             if ($found_type
                 && $itemtype) {
-                if (($item = getItemForItemtype($itemtype))
+               if (($item = getItemForItemtype($itemtype))
                     && $items_id) {
                   if ($item->getFromDB($items_id)) {
                      Dropdown::showFromArray('items_id', array($items_id => $item->getName()),
@@ -990,14 +989,12 @@ class Item_Ticket extends CommonDBRelation{
          Dropdown::showFromArray('my_items', $my_devices, array('rand' => $rand));
          echo "</div>";
 
-
          // Auto update summary of active or just solved tickets
          $params = array('my_items' => '__VALUE__');
 
          Ajax::updateItemOnSelectEvent("dropdown_my_items$rand","item_ticket_selection_information",
                                        $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
                                        $params);
-
       }
    }
 
@@ -1023,7 +1020,7 @@ class Item_Ticket extends CommonDBRelation{
     *    - width        : specific width needed (default 80%)
     *
    **/
- static function dropdown($options = array()) {
+   static function dropdown($options = array()) {
       global $DB;
 
       // Default values
@@ -1388,4 +1385,3 @@ class Item_Ticket extends CommonDBRelation{
       }
    }
 }
-?>

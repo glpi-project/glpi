@@ -307,8 +307,8 @@ class Planning extends CommonGLPI {
                }
                foreach ($item->getGroups(CommonITILActor::ASSIGN) as $data) {
                   foreach (Group_User::getGroupUsers($data['groups_id']) as $data2) {
-                  $users[$data2['id']] = formatUserName($data2["id"], $data2["name"],
-                                                        $data2["realname"], $data2["firstname"]);
+                     $users[$data2['id']] = formatUserName($data2["id"], $data2["name"],
+                                                           $data2["realname"], $data2["firstname"]);
                   }
                }
             }
@@ -323,8 +323,8 @@ class Planning extends CommonGLPI {
                $group_id = $task->fields['groups_id_tech'];
                if ($group_id) {
                   foreach (Group_User::getGroupUsers($group_id) as $data2) {
-                  $users[$data2['id']] = formatUserName($data2["id"], $data2["name"],
-                                                        $data2["realname"], $data2["firstname"]);
+                     $users[$data2['id']] = formatUserName($data2["id"], $data2["name"],
+                                                           $data2["realname"], $data2["firstname"]);
                   }
                }
             }
@@ -418,10 +418,8 @@ class Planning extends CommonGLPI {
             echo $timeheader;
             echo "</tr>";
 
-
             $day_begin = strtotime($realbegin);
             $day_end   = strtotime($realend);
-
 
             for ($time=$day_begin ; $time<$day_end ; $time+=DAY_TIMESTAMP) {
                $current_day   = date('Y-m-d', $time);
@@ -1141,7 +1139,6 @@ class Planning extends CommonGLPI {
                                'title'         => $title,
                                'checked'       => $filter_data['display']));
 
-
       if ($filter_data['type'] != 'event_filter') {
          $icon_type = explode('_', $filter_data['type']);
          echo "<img class='actor_icon' src='".$CFG_GLPI['root_doc']."/pics/".$icon_type[0].".png'>";
@@ -1160,7 +1157,6 @@ class Planning extends CommonGLPI {
          }
       }
 
-
       if ($filter_data['type'] != 'event_filter') {
          echo "<span class='filter_option'>";
          echo "<img class='pointer' src='".$CFG_GLPI['root_doc']."/pics/down.png' />";
@@ -1176,7 +1172,6 @@ class Planning extends CommonGLPI {
             } else if (isset($url['scheme']) && ($url["scheme"] == 'https')) {
                $port = 443;
             }
-
 
             $cal_url = "/front/planning.php?genical=1&uID=".$uID."&gID=".$gID.
                        //"&limititemtype=$limititemtype".
@@ -1791,7 +1786,6 @@ class Planning extends CommonGLPI {
                            'state'       => isset($event['state'])?$event['state']:"");
       }
 
-
       return $events;
    }
 
@@ -2003,7 +1997,6 @@ class Planning extends CommonGLPI {
          return false;
       }
 
-
       if (!empty( $CFG_GLPI["version"])) {
          $unique_id = "GLPI-Planning-".trim($CFG_GLPI["version"]);
       } else {
@@ -2012,7 +2005,6 @@ class Planning extends CommonGLPI {
 
       // create vcalendar
       $vcalendar = new VObject\Component\VCalendar();
-
 
       // $xprops = array( "X-LIC-LOCATION" => $tz );
       // iCalUtilityFunctions::createTimezone( $v, $tz, $xprops );
@@ -2103,4 +2095,3 @@ class Planning extends CommonGLPI {
       return $values;
    }
 }
-?>

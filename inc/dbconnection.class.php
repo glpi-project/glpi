@@ -288,8 +288,7 @@ class DBConnection extends CommonDBTM {
                $res = self::switchToMaster();
             }
 
-         // Slave DB configured
-         } else {
+         } else { // Slave DB configured
             // Try to connect to slave if wanted
             if ($use_slave) {
                $res = self::switchToSlave();
@@ -496,4 +495,3 @@ class DBConnection extends CommonDBTM {
    }
 
 }
-?>

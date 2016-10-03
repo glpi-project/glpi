@@ -140,7 +140,7 @@ class Change_Ticket extends CommonDBRelation{
                return true;
             }
             return false;
-            
+
          case "solveticket" :
             $change = new Change();
             $input = $ma->getInput();
@@ -298,7 +298,7 @@ class Change_Ticket extends CommonDBRelation{
                     'specific_actions' => array('purge' => _x('button', 'Delete permanently'),
                                                  __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'solveticket'
                                                         => __('Solve tickets'),
-                                                 __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task' 
+                                                 __CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'add_task'
                                                         => __('Add a new task')),
                      'container'        => 'mass'.__CLASS__.$rand,
                      'extraparams'      => array('changes_id' => $change->getID()),
@@ -396,7 +396,6 @@ class Change_Ticket extends CommonDBRelation{
          echo "</div>";
       }
 
-
       echo "<div class='spaced'>";
       if ($canedit && $numrows) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -439,4 +438,3 @@ class Change_Ticket extends CommonDBRelation{
 
 
 }
-?>

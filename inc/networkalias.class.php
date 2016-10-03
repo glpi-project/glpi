@@ -498,4 +498,3 @@ class NetworkAlias extends FQDNLabel {
       return $tab;
    }
 }
-?>

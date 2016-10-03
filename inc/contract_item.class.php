@@ -755,4 +755,3 @@ class Contract_Item extends CommonDBRelation{
    }
 
 }
-?>

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -78,7 +78,7 @@ abstract class HTMLTableEntity {
       $this->html_id    = $origin->html_id;
       $this->html_style = $origin->html_style;
       $this->html_class = $origin->html_class;
-    }
+   }
 
 
    /**
@@ -187,4 +187,3 @@ abstract class HTMLTableEntity {
       }
    }
 }
-?>

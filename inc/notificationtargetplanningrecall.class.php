@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -152,7 +152,6 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
                      = Html::convDateTime($this->target_object->getField('date_mod'));
       }
 
-
       $this->datas['##recall.item.user##'] = '';
       $user_tmp                            = new User();
       if ($user_tmp->getFromDB($this->target_object->getField('users_id'))) {
@@ -224,4 +223,3 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
    }
 
 }
-?>

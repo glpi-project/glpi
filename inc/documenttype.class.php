@@ -163,4 +163,3 @@ class DocumentType  extends CommonDropdown {
                                     array('title' => static::getTypeName(Session::getPluralNumber())));
    }
 }
-?>

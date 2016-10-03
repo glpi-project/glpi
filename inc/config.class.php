@@ -344,24 +344,8 @@ class Config extends CommonDBTM {
                                                      'max'   => 200,
                                                      'step'  => 1,
                                                      'toadd' => array(0 => __('Never'))));
-//       echo "</td><td>".__('Buffer time for dynamic search in dropdowns')."</td><td>";
-//       Dropdown::showNumber('ajax_buffertime_load',
-//                            array('value' => $CFG_GLPI["ajax_buffertime_load"],
-//                                  'min'   => 100,
-//                                  'max'   => 5000,
-//                                  'step'  => 100,
-//                                  'unit'  => 'millisecond'));
       echo "<td colspan='2'></td>";
       echo "</td></tr>";
-
-//      echo "<tr class='tab_bg_2'>";
-//       echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
-//       Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
-//       echo "</td><td>". __('Character to force the full display of dropdowns (wildcard)')."</td>";
-//       echo "<td><input type='text' size='1' name='ajax_wildcard' value='" .
-//                   $CFG_GLPI["ajax_wildcard"] . "'>";
-//      echo "</td>";
-//      echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Search engine')."</td></tr>";
       echo "<tr class='tab_bg_2'>";
@@ -895,7 +879,6 @@ class Config extends CommonDBTM {
                $pri = $CFG_GLPI['priority_matrix'][$urgency][$impact];
             }
 
-
             if ($isurgency[$urgency] && $isimpact[$impact]) {
                $bgcolor=$_SESSION["glpipriority_$pri"];
                echo "<td class='center' bgcolor='$bgcolor'>";
@@ -1006,14 +989,13 @@ class Config extends CommonDBTM {
 
       echo "</tr>";
 
-
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
          echo "<td>" . __('Display the complete name in tree dropdowns') . "</td><td>";
          Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
          echo "</td>";
       } else {
-        echo "<td colspan='2'>&nbsp;</td>";
+         echo "<td colspan='2'>&nbsp;</td>";
       }
 
       if (!$userpref
@@ -1227,9 +1209,6 @@ class Config extends CommonDBTM {
          Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
                              $data['ticket_timeline_keep_replaced_tabs']);
          echo "</td></tr>";
-
-
-
       }
 
       // Only for user
@@ -1720,7 +1699,6 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
       echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
       echo "\n</pre></td></tr>";
-
 
       echo "<tr><th>Server</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";

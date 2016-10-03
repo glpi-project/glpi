@@ -93,7 +93,6 @@ class DBmysql {
    **/
    function connect($choice=NULL) {
 
-
       $this->connected = false;
 
       if (is_array($this->dbhost)) {
@@ -181,7 +180,7 @@ class DBmysql {
              && $CFG_GLPI["debug_sql"]) {
             $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
          }
-         }
+      }
 
       if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
           && $CFG_GLPI["debug_sql"]) {
@@ -608,7 +607,7 @@ class DBmysql {
       }
 
       return $nb;
-    }
+   }
 
 
    /**

@@ -234,7 +234,6 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             echo "</div>";
          }
 
-
          echo "<div class='spaced'>";
          if ($canedit && $numrows) {
             Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
@@ -279,7 +278,6 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             }
             echo $header_begin.$header_bottom.$header_end;
 
-
          } else {
             echo "<tr><th colspan='2'>".__('No item found')."</th></tr>";
          }
@@ -295,4 +293,3 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    }
 
 }
-?>

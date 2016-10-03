@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -153,13 +153,13 @@ class Report extends CommonGLPI{
       foreach ($optgroup as $opt => $title) {
          $group = $title;
          foreach ($names as $key => $val) {
-             if ($opt == $val["plug"]) {
+            if ($opt == $val["plug"]) {
                $file                  = $CFG_GLPI["root_doc"]."/plugins/".$key;
                $values[$group][$file] = $val["name"];
                if (stripos($_SERVER['REQUEST_URI'],$file) !== false) {
                   $selected = $file;
                }
-             }
+            }
          }
       }
 
@@ -216,7 +216,6 @@ class Report extends CommonGLPI{
       }
 
       echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".__('Operating system')."</td></tr>";
-
 
       # 2. Get some more number data (operating systems per computer)
 
@@ -385,10 +384,10 @@ class Report extends CommonGLPI{
 
             // To ensure that the NetworkEquipment remain the first item, we test its type
             if ($line['itemtype_2'] == 'NetworkEquipment') {
-              $idx = 2;
-           } else {
-              $idx = 1;
-           }
+               $idx = 2;
+            } else {
+               $idx = 1;
+            }
 
             if (!empty($extra)) {
                echo "<td>".(empty($line['extra']) ? NOT_AVAILABLE : $line['extra'])."</td>";
@@ -456,4 +455,3 @@ class Report extends CommonGLPI{
    }
 
 }
-?>

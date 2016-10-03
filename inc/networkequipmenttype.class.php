@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -47,4 +47,3 @@ class NetworkEquipmentType extends CommonDropdown {
       return _n('Networking equipment type', 'Networking equipment types', $nb);
    }
 }
-?>

@@ -9,10 +9,13 @@ before_script:
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --lang=en_US --db=glpitest --user=root --tests
   - php -S localhost:8088 tests/router.php &>/dev/null &
+  - pear install pear/PHP_CodeSniffer
+  - phpenv rehash
 
 script:
   - mysql -u root -e 'select version();'
   - phpunit --verbose
+  - phpcs --standard=tools/phpcs-rules.xml inc/
 
 matrix:
   include:

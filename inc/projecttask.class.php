@@ -663,7 +663,6 @@ class ProjectTask extends CommonDBChild {
       $tab[24]['name']              = __('Creator');
       $tab[24]['datatype']          = 'dropdown';
 
-
       $tab[7]['table']              = $this->getTable();
       $tab[7]['field']              = 'plan_start_date';
       $tab[7]['name']               = __('Planned start date');
@@ -792,7 +791,6 @@ class ProjectTask extends CommonDBChild {
 
       echo "<div class='spaced'>";
 
-
       if ($canedit) {
          echo "<div class='center firstbloc'>";
          echo "<a class='vsubmit' href='projecttask.form.php?projects_id=$ID'>".
@@ -833,7 +831,6 @@ class ProjectTask extends CommonDBChild {
                                AND `namet3`.`field` = 'name')";
          $where     .= " AND `namet3`.`items_id` = `glpi_projectstates`.`id` ";
       }
-
 
       $query = "SELECT `glpi_projecttasks`.*,
                        `glpi_projecttasktypes`.`name` AS tname,
@@ -1019,13 +1016,6 @@ class ProjectTask extends CommonDBChild {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed' => $nb,
                                       'container'     => 'mass'.__CLASS__.$rand);
-//                     'specific_actions'
-//                         => array('delete' => _x('button', 'Delete permanently')) );
-//
-//          if ($this->fields['users_id'] != Session::getLoginUserID()) {
-//             $massiveactionparams['confirm']
-//                = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
-//          }
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -1089,7 +1079,7 @@ class ProjectTask extends CommonDBChild {
       $todisplay = array();
 
       $task = new self();
-//       echo $ID.'<br>';
+      // echo $ID.'<br>';
       if ($task->getFromDB($ID)) {
          $subtasks = array();
          foreach ($DB->request('glpi_projecttasks',
@@ -1138,7 +1128,6 @@ class ProjectTask extends CommonDBChild {
                }
             }
          }
-
 
          $parents = 0;
          if ($task->fields['projecttasks_id'] > 0) {
@@ -1364,7 +1353,7 @@ class ProjectTask extends CommonDBChild {
     * @return Nothing (display function)
     **/
    static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
-     global $CFG_GLPI;
+      global $CFG_GLPI;
 
       $html = "";
       $rand     = mt_rand();

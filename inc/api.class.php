@@ -348,7 +348,7 @@ abstract class API extends CommonGLPI {
 
       $myprofiles = array();
       foreach($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
-         // append if of the profile into values 
+         // append if of the profile into values
          $profile = ['id' => $profiles_id] + $profile;
 
          // don't keep keys for entities
@@ -478,7 +478,6 @@ abstract class API extends CommonGLPI {
          $fields['_devices'] = $all_devices;
       }
 
-
       // retrieve computer disks
       if (isset($params['with_disks'])
           && $params['with_disks']
@@ -531,7 +530,6 @@ abstract class API extends CommonGLPI {
             }
          }
       }
-
 
       // retrieve item connections
       if (isset($params['with_connections'])
@@ -649,7 +647,6 @@ abstract class API extends CommonGLPI {
                               );
                            }
 
-
                            $data['NetworkName'] = array(
                               'id'         => $data_netn['networknames_id'],
                               'name'       => $data_netn['networkname'],
@@ -708,8 +705,6 @@ abstract class API extends CommonGLPI {
             }
          }
       }
-
-
 
       // retrieve item contracts
       if (isset($params['with_documents'])
@@ -903,7 +898,6 @@ abstract class API extends CommonGLPI {
                        'order'            => "ASC");
       $params = array_merge($default, $params);
 
-
       if (!$itemtype::canView()) {
          return $this->messageRightError();
       }
@@ -932,7 +926,6 @@ abstract class API extends CommonGLPI {
       if (!isset($item->fields[$params['sort']])) {
          $this->returnError("sort param is not a field of $table");
       }
-
 
       //specific case for restriction
       $already_linked_table = array();

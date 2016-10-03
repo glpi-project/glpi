@@ -245,7 +245,7 @@ function getPlural($string) {
                   '([aeiou]{2})ses$'   => '\1ses', // Case like aliases
                   '([aeiou]{2})s$'     => '\1ses', // Case like aliases
                   'x$'                 =>'xes',
-//                   's$'           =>'ses',
+                  // 's$'                 =>'ses',
                   '([^s])$'            => '\1s',   // Add at the end if not exists
                   );
 
@@ -621,7 +621,6 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
       if ($DB->numrows($result)>0) {
          $row      = $DB->fetch_assoc($result);
          $parentID = $row[$parentIDfield];
-
 
          if ($wholename == "") {
             $name = $row["name"];
@@ -1194,7 +1193,6 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
    if (isset($_SESSION["glpiis_ids_visible"]) && !$force_config) {
       $id_visible = $_SESSION["glpiis_ids_visible"];
    }
-
 
    if (strlen($realname) > 0) {
       $temp = $realname;

@@ -124,12 +124,6 @@ class Fieldblacklist extends CommonDropdown {
             if (isset($values['itemtype']) && !empty($values['itemtype'])) {
                $target       = getItemForItemtype($values['itemtype']);
                $searchOption = $target->getSearchOptionByField('field', $values[$field]);
-//                if (empty($searchOption)) {
-//                   if ($table = getTableNameForForeignKeyField($values[$field])) {
-//                      $searchOption = $target->getSearchOptionByField('field', 'name', $table);
-//                   }
-//                   echo $table.'--';
-//                }
                return $searchOption['name'];
             }
             break;
@@ -139,10 +133,6 @@ class Fieldblacklist extends CommonDropdown {
                $target = getItemForItemtype($values['itemtype']);
                if (isset($values['field']) && !empty($values['field'])) {
                   $searchOption = $target->getSearchOptionByField('field', $values['field']);
-                  // MoYo : do not know why this part ?
-//                   if ($table = getTableNameForForeignKeyField($values['field'])) {
-//                      $searchOption = $target->getSearchOptionByField('field', 'name', $table);
-//                   }
                   return $target->getValueToDisplay($searchOption, $values[$field]);
                }
             }
@@ -325,12 +315,12 @@ class Fieldblacklist extends CommonDropdown {
          foreach ($DB->list_fields($target->getTable()) as $field) {
             $searchOption = $target->getSearchOptionByField('field', $field['Field']);
 
-         // MoYo : do not know why  this part ?
-//             if (empty($searchOption)) {
-//                if ($table = getTableNameForForeignKeyField($field['Field'])) {
-//                   $searchOption = $target->getSearchOptionByField('field', 'name', $table);
-//                }
-//             }
+            // MoYo : do not know why  this part ?
+            // if (empty($searchOption)) {
+            //    if ($table = getTableNameForForeignKeyField($field['Field'])) {
+            //       $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+            //    }
+            // }
 
             if (!empty($searchOption)
                 && !in_array($field['Type'], $target->getUnallowedFieldsForUnicity())
@@ -363,45 +353,7 @@ class Fieldblacklist extends CommonDropdown {
                $options['entity_sons'] = $this->fields['is_recursive'];
             }
             echo $item->getValueToSelect($searchOption, 'value', $this->fields['value'], $options);
-//             if (isset($searchOption['linkfield'])) {
-//                $linkfield = $searchOption['linkfield'];
-//             } else {
-//                $linkfield = $searchOption['field'];
-//             }
-//
-//             if ($linkfield == $this->fields['field']) {
-//                $value = $this->fields['value'];
-//             } else {
-//                $value = '';
-//             }
          }
-
-//          //If field is a foreign key on another table or not
-//          $table = getTableNameForForeignKeyField($linkfield);
-//          if ($table == '') {
-//             if (isset($searchOption['datatype'])) {
-//                $datatype = $searchOption['datatype'];
-//             } else {
-//                $datatype = 'text';
-//             }
-//
-//             switch ($datatype) {
-//                case 'text' :
-//                case 'string' :
-//                default :
-//                   Html::autocompletionTextField($this, 'value', array('value' => $value));
-//                   break;
-//
-//                case 'bool':
-//                   Dropdown::showYesNo('value',$value);
-//                   break;
-//             }
-//
-//          } else {
-//             $itemtype = getItemTypeForTable($table);
-//             Dropdown::show($itemtype, array('name'  => 'value',
-//                                             'value' => $value));
-//          }
       }
       echo "</span>";
    }

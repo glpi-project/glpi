@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,7 +32,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -168,7 +168,6 @@ class HTMLTableRow extends HTMLTableEntity {
    **/
    function displayRow($headers) {
 
-
       echo "\t<tbody";
       $this->displayEntityAttributs();
       echo ">\n";
@@ -211,4 +210,3 @@ class HTMLTableRow extends HTMLTableEntity {
       return $this->group->getHeaderByName($name, $sub_name);
    }
 }
-?>

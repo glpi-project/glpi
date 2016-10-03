@@ -695,7 +695,6 @@ class Project extends CommonDBTM {
 
          echo Search::showItem($p['output_type'], $fifth_col, $item_num, $p['row_num'], $align);
 
-
          // Eigth column
          $eigth_column = "<span class='b'>".$item->fields["name"]."</span>&nbsp;";
 
@@ -716,8 +715,6 @@ class Project extends CommonDBTM {
 
          echo Search::showItem($p['output_type'], $eigth_column, $item_num, $p['row_num'],
                                $align_desc."width='200'");
-
-
 
          // Finish Line
          echo Search::showEndLine($p['output_type']);
@@ -1063,13 +1060,6 @@ class Project extends CommonDBTM {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
          $massiveactionparams = array('num_displayed' => $nb,
                                       'container'     => 'mass'.__CLASS__.$rand);
-//                     'specific_actions'
-//                         => array('delete' => _x('button', 'Delete permanently')) );
-//
-//          if ($this->fields['users_id'] != Session::getLoginUserID()) {
-//             $massiveactionparams['confirm']
-//                = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
-//          }
          Html::showMassiveActions($massiveactionparams);
       }
       echo "<table class='tab_cadre_fixehov'>";
@@ -1232,7 +1222,6 @@ class Project extends CommonDBTM {
    static function showGantt($ID) {
       global $DB;
 
-
       if ($ID > 0) {
          $project = new Project();
          if ($project->getFromDB($ID) && $project->canView()) {
@@ -1305,12 +1294,12 @@ class Project extends CommonDBTM {
                                  );
                      break;
                }
-            $data[] = $temp;
+               $data[] = $temp;
             } else {
                $invalid[] = $val['link'];
             }
          }
-//       Html::printCleanArray($data);
+         // Html::printCleanArray($data);
       }
 
       if (count($invalid)) {
@@ -1319,7 +1308,6 @@ class Project extends CommonDBTM {
       }
 
       if (count($data)) {
-//       exit();
          $months = array(__('January'), __('February'), __('March'), __('April'), __('May'),
                          __('June'), __('July'), __('August'), __('September'),
                          __('October'), __('November'), __('December'));
@@ -1340,10 +1328,10 @@ class Project extends CommonDBTM {
                                  months: ".json_encode($months).",
                                  dow: ".json_encode($dow).",
                                  onItemClick: function(data) {
-   //                                         alert('Item clicked - show some details');
+                                 //    alert('Item clicked - show some details');
                                  },
                                  onAddClick: function(dt, rowId) {
-   //                                         alert('Empty space clicked - add an item!');
+                                 //    alert('Empty space clicked - add an item!');
                                  },
                            });";
          echo Html::scriptBlock($js);
@@ -1359,4 +1347,3 @@ class Project extends CommonDBTM {
       NotificationEvent::debugEvent($this);
    }
 }
-?>

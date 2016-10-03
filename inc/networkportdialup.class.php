@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -46,7 +46,7 @@ class NetworkPortDialup extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-     return __('Connection by dial line - Dialup Port');
+      return __('Connection by dial line - Dialup Port');
    }
 
 
@@ -65,9 +65,9 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    }
 
 
-  /**
+   /**
    * @see NetworkPortInstantiation::getInstantiationHTMLTable()
-  **/
+   **/
    function getInstantiationHTMLTable(NetworkPort $netport, HTMLTableRow $row,
                                       HTMLTableCell $father=NULL, array $options=array()) {
 
@@ -91,4 +91,3 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    }
 
 }
-?>
