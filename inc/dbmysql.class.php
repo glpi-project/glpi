@@ -761,9 +761,9 @@ class DBmysqlIterator  implements Iterator {
 
       $this->conn = $dbconnexion;
       if (is_string($table) && strpos($table, " ")) {
-//          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-//             trigger_error("Deprecated usage of SQL in DB/request (full query)", E_USER_DEPRECATED);
-//          }
+         //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+         //   trigger_error("Deprecated usage of SQL in DB/request (full query)", E_USER_DEPRECATED);
+         //}
          $this->sql = $table;
       } else {
          // Check field, orderby, limit, start in criterias
@@ -943,9 +943,9 @@ class DBmysqlIterator  implements Iterator {
       static $operators = ['=', '<', '<=', '>', '>=', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX'];
 
       if (!is_array($crit)) {
-//          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-//             trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
-//          }
+         //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+         //  trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
+         //}
          return $crit;
       }
       $ret = "";
