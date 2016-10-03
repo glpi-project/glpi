@@ -245,6 +245,22 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
 
+      // test retrieve partial users
+      $res = $this->doHttpRequest('getItems', ['session_token'    => $session_token,
+                                               'itemtype'         => 'User',
+                                               'range'            => '0-1',
+                                               'expand_dropdowns' => true]);
+      $this->assertEquals(206, $res->getStatusCode());
+      $data = xmlrpc_decode($res->getBody());
+
+      $this->assertGreaterThanOrEqual(2, count($data));
+      $this->assertArrayHasKey('id', $data[0]);
+      $this->assertArrayHasKey('name', $data[0]);
+      $this->assertArrayNotHasKey('password', $data[0]);
+      $this->assertArrayHasKey('is_active', $data[0]);
+      $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
+
+
       // Test only_id param
       $res = $this->doHttpRequest('getItems', ['session_token' => $session_token,
                                                'itemtype'      => 'User',

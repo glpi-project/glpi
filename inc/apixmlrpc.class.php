@@ -116,12 +116,17 @@ class APIXmlrpc extends API {
          //search
          $response =  $this->searchItems($this->parameters['itemtype'], $this->parameters);
 
+         //add pagination headers
+         $additionalheaders                  = array();
+         $additionalheaders["Content-Range"] = $response['content-range'];
+         $additionalheaders["Accept-Range"]  = $this->parameters['itemtype']." ".Toolbox::get_max_input_vars();
+
          // diffent http return codes for complete or partial response
          if ($response['count'] < $response['totalcount']) {
             $code = 206; // partial content
          }
 
-         return $this->returnResponse($response, $code);
+         return $this->returnResponse($response, $code, $additionalheaders);
 
       } else if (in_array($resource,
                           array("getItem", "getItems", "createItems", "updateItems", "deleteItems"))) {
@@ -146,18 +151,57 @@ class APIXmlrpc extends API {
                $this->returnError(__("missing id"), 400, "ID_RESOURCE_MISSING");
             }
 
-            return $this->returnResponse($this->getItem($this->parameters['itemtype'],
-                                                        $this->parameters['id'],
-                                                        $this->parameters));
+            $response = $this->getItem($this->parameters['itemtype'], $this->parameters['id'], $this->parameters);
+
+            $additionalheaders = array();
+            if (isset($response['date_mod'])) {
+               $datemod = strtotime($response['date_mod']);
+               $additionalheaders['Last-Modified'] = gmdate("D, d M Y H:i:s", $datemod)." GMT";
+            }
+            return $this->returnResponse($response, 200, $additionalheaders);
 
          } else if ($resource === "getItems") { // get a collection of a CommonDBTM item
-            return $this->returnResponse($this->getItems($this->parameters['itemtype'],
-                                                         $this->parameters));
+            // return collection of items
+            $totalcount = 0;
+            $response = $this->getItems($this->parameters['itemtype'], $this->parameters, $totalcount);
+
+            //add pagination headers
+            $range = [0, $_SESSION['glpilist_limit']];
+            if (isset($this->parameters['range'])) {
+               $range = explode("-", $this->parameters['range']);
+               // fix end range
+               if($range[1] > $totalcount - 1){
+                  $range[1] = $totalcount - 1;
+               }
+               if($range[1] - $range[0] + 1 < $totalcount){
+                  $code = 206; // partial content
+               }
+            }
+            $additionalheaders                  = array();
+            $additionalheaders["Content-Range"] = implode('-', $range)."/".$totalcount;
+            $additionalheaders["Accept-Range"]  = $this->parameters['itemtype']." ".Toolbox::get_max_input_vars();
+            return $this->returnResponse($response, $code, $additionalheaders);
 
          } else if ($resource === "createItems") { // create one or many CommonDBTM items
-            return $this->returnResponse($this->createItems($this->parameters['itemtype'],
-                                                            $this->parameters),
-                                                            201);
+            $response = $this->createItems($this->parameters['itemtype'], $this->parameters);
+
+            $additionalheaders = array();
+            if (count($response) == 1) {
+               // add a location targetting created element
+               $additionalheaders['location'] = self::$api_url.$this->parameters['itemtype']."/".$response['id'];
+            } else {
+               // add a link header targetting created elements
+               $additionalheaders['link'] = "";
+               foreach($response as $created_item) {
+                  if ($created_item['id']) {
+                     $additionalheaders['link'] .= self::$api_url.$this->parameters['itemtype'].
+                                                  "/".$created_item['id'].",";
+                  }
+               }
+               // remove last comma
+               $additionalheaders['link'] = trim($additionalheaders['link'], ",");
+            }
+            return $this->returnResponse($response, 201);
 
          } else if ($resource === "updateItems") { // update one or many CommonDBTM items
             return $this->returnResponse($this->updateItems($this->parameters['itemtype'],
