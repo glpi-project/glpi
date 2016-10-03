@@ -894,6 +894,14 @@ class DBmysqlIterator  implements Iterator {
    }
 
 
+   /**
+    * Quote field name
+    *
+    * @since 9.1
+    *
+    * @param string $name of field to quote (or table.field)
+    * @return string
+   **/
    private static function quoteName($name) {
 
       if (strpos($name, '.')) {
@@ -904,6 +912,11 @@ class DBmysqlIterator  implements Iterator {
    }
 
 
+   /**
+    * Retrieve the SQL statement
+    *
+    * @since 9.1
+   **/
    public function getSql() {
       return preg_replace('/ +/', ' ', $this->sql);
    }
@@ -918,8 +931,12 @@ class DBmysqlIterator  implements Iterator {
 
 
    /**
-    * @param $crit
-    * @param $bool (default AND)
+    * Generate the SQL statement for a array of criteria
+    *
+    * @param array  $crit
+    * @param string $bool (default AND)
+    *
+    * @return string
    **/
    private function analyseCrit ($crit, $bool="AND") {
 
