@@ -201,10 +201,18 @@ class APIRest extends API {
                   $response = $this->getItems($itemtype, $this->parameters, $totalcount);
 
                   //add pagination headers
-                  if (!isset($this->parameters['range'])) {
-                     $this->parameters['range'] = "0-50";
+                  $range = [0, $_SESSION['glpilist_limit']];
+                  if (isset($this->parameters['range'])) {
+                     $range = explode("-", $this->parameters['range']);
+                     // fix end range
+                     if($range[1] > $totalcount - 1){
+                        $range[1] = $totalcount - 1;
+                     }
+                     if($range[1] - $range[0] + 1 < $totalcount){
+                         $code = 206; // partial content
+                     }
                   }
-                  $additionalheaders["Content-Range"] = $this->parameters['range']."/".$totalcount;
+                  $additionalheaders["Content-Range"] = implode('-', $range)."/".$totalcount;
                   $additionalheaders["Accept-Range"]  = $itemtype." ".Toolbox::get_max_input_vars();
                }
                break;

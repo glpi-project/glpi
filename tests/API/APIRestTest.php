@@ -637,6 +637,40 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
 
+      // test retrieve partial users
+      $res = $this->doHttpRequest('GET', 'User/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'range' => '0-1',
+                                             'expand_dropdowns' => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(206, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+
+      $this->assertEquals(2, count($data));
+      $this->assertArrayHasKey('id', $data[0]);
+      $this->assertArrayHasKey('name', $data[0]);
+      $this->assertArrayNotHasKey('password', $data[0]);
+      $this->assertArrayHasKey('is_active', $data[0]);
+      $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
+
+
+      // test retrieve invalid range of users
+      try {
+         $res = $this->doHttpRequest('GET', 'User/',
+                                            ['headers' => [
+                                                'Session-Token' => $session_token],
+                                             'query' => [
+                                                'range' => '100-105',
+                                                'expand_dropdowns' => true]]);
+      } catch (ClientException $e) {
+         $response = $e->getResponse();
+         $this->assertEquals(400, $response->getStatusCode());
+      }
+
+
       // Test only_id param
       $res = $this->doHttpRequest('GET', 'User/',
                                          ['headers' => [
