@@ -110,6 +110,6 @@ cd $INIT_PWD;
 
 
 echo "Deleting temp directory";
-# \rm -rf /tmp/glpi;
+\rm -rf /tmp/glpi;
 
 echo "The Tarball is in the /tmp directory";
