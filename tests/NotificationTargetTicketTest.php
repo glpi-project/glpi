@@ -46,7 +46,7 @@ class NotificationTargetTicketTest extends DbTestCase {
 
       $tkt = getItemByTypeName('Ticket', '_ticket01');
       $notiftargetticket = new NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt );
-      $notiftargetticket->getTags( ) ;
+      $notiftargetticket->getTags();
 
       // basic test for ##task.categorycomment## tag
       $expected = [
@@ -97,16 +97,16 @@ class NotificationTargetTicketTest extends DbTestCase {
                      ]
                   ];
 
-      $ret = $notiftargetticket->getDatasForObject( $tkt, array() ) ;
+      $ret = $notiftargetticket->getDatasForObject( $tkt, array() );
 
       $this->assertEquals($expected, $ret['tasks']);
 
       // test of the getDatasForObject for default language fr_FR
-      $CFG_GLPI['translate_dropdowns'] = 1 ;
-      $_SESSION["glpilanguage"] = Session::loadLanguage( 'fr_FR' ) ;
+      $CFG_GLPI['translate_dropdowns'] = 1;
+      $_SESSION["glpilanguage"] = Session::loadLanguage( 'fr_FR' );
       $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
 
-      $ret = $notiftargetticket->getDatasForObject( $tkt, array() ) ;
+      $ret = $notiftargetticket->getDatasForObject( $tkt, array() );
 
       $expected = [
                      [
@@ -130,7 +130,7 @@ class NotificationTargetTicketTest extends DbTestCase {
       $this->assertEquals($expected, $ret['tasks']);
 
       // switch back to default language
-      $_SESSION["glpilanguage"] = Session::loadLanguage( 'en_US' ) ;
+      $_SESSION["glpilanguage"] = Session::loadLanguage( 'en_US' );
 
    }
 }

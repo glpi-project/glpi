@@ -83,7 +83,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $options         array of options given to NetworkPort::showForm
     * @param $recursiveItems        list of the items on which this port is attached
    **/
-   function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
+   function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems) {
 
       echo "<tr><td colspan='4' class='center'>".__('No options available for this port type.').
            "</td></tr>";
@@ -94,7 +94,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       // Try to get mac address from the instantiation ...
       if (!empty($input['mac'])) {
-         $input['mac'] = strtolower($input['mac']) ;
+         $input['mac'] = strtolower($input['mac']);
       }
       return $input;
    }
@@ -452,7 +452,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $options         array of options given to NetworkPort::showForm
     * @param $recursiveItems        list of the items on which this port is attached
    **/
-   function showNetworkCardField(NetworkPort $netport, $options=array(), $recursiveItems) {
+   function showNetworkCardField(NetworkPort $netport, $options=[], $recursiveItems=[]) {
       global $DB;
 
       echo "<td>" . __('Network card') . "</td>\n";
@@ -561,7 +561,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $options         array of options given to NetworkPort::showForm
     * @param $recursiveItems        list of the items on which this port is attached
    **/
-   function showNetpointField(NetworkPort $netport, $options=array(), $recursiveItems) {
+   function showNetpointField(NetworkPort $netport, $options=[], $recursiveItems=[]) {
 
       echo "<td>" . __('Network outlet') . "</td>\n";
       echo "<td>";

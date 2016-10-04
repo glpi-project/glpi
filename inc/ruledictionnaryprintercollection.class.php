@@ -241,8 +241,8 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
     * @param $params          array
     * @param &$printers_ids   array containing replay printer need to be dustbined
    **/
-   function replayDictionnaryOnOnePrinter(array &$new_printers, array $res_rule, $params=array(),
-                                          array &$printers_ids) {
+   function replayDictionnaryOnOnePrinter(array &$new_printers, array $res_rule,
+                                          array $params, array &$printers_ids) {
       global $DB;
 
       $p['id']           = 0;

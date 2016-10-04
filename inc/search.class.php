@@ -397,7 +397,7 @@ class Search {
 
       // Add deleted if item have it
       if ($data['item'] && $data['item']->maybeDeleted()) {
-         $LINK = " AND " ;
+         $LINK = " AND ";
          if ($first) {
             $LINK  = " ";
             $first = false;
@@ -407,7 +407,7 @@ class Search {
 
       // Remove template items
       if ($data['item'] && $data['item']->maybeTemplate()) {
-         $LINK = " AND " ;
+         $LINK = " AND ";
          if ($first) {
             $LINK  = " ";
             $first = false;
@@ -417,7 +417,7 @@ class Search {
 
       // Add Restrict to current entities
       if ($entity_restrict) {
-         $LINK = " AND " ;
+         $LINK = " AND ";
          if ($first) {
             $LINK  = " ";
             $first = false;
@@ -698,7 +698,7 @@ class Search {
          $first     = true;
 
          if (!empty($COMMONWHERE)) {
-            $LINK = " AND " ;
+            $LINK = " AND ";
             if ($first) {
                $LINK  = " WHERE ";
                $first = false;
@@ -1862,9 +1862,9 @@ class Search {
       echo "<table class='tab_format' id='$searchcriteriatableid'>";
 
       // Display normal search parameters
-      for ($i=0 ; $i<count($p['criteria']) ; $i++) {
+      for ($i=0; $i<count($p['criteria']); $i++) {
          $_POST['itemtype'] = $itemtype;
-         $_POST['num']      = $i ;
+         $_POST['num']      = $i;
          include(GLPI_ROOT.'/ajax/searchrow.php');
       }
 
@@ -1872,10 +1872,10 @@ class Search {
       $linked =  self::getMetaItemtypeAvailable($itemtype);
 
       if (is_array($linked) && (count($linked) > 0)) {
-         for ($i=0 ; $i<count($p['metacriteria']) ; $i++) {
+         for ($i=0; $i<count($p['metacriteria']); $i++) {
 
             $_POST['itemtype'] = $itemtype;
-            $_POST['num'] = $i ;
+            $_POST['num'] = $i;
             include(GLPI_ROOT.'/ajax/searchmetarow.php');
          }
       }
@@ -4110,7 +4110,7 @@ class Search {
                      $showuserlink = 1;
                   }
 
-                  for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                  for ($k=0; $k<$data[$num]['count']; $k++) {
 
                      if ((isset($data[$num][$k]['name']) && ($data[$num][$k]['name'] > 0))
                          || (isset($data[$num][$k][2]) && ($data[$num][$k][2] != ''))) {
@@ -4140,7 +4140,7 @@ class Search {
                         if (($itemtype == 'Ticket')
                             && isset($data[$num][$k][2])) {
                            $split = explode(self::LONGSEP, $data[$num][$k][2]);
-                           for ($l=0 ; $l<count($split) ; $l++) {
+                           for ($l=0; $l<count($split); $l++) {
                               $split2 = explode(" ", $split[$l]);
                               if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
                                  if ($count_display) {
@@ -4178,7 +4178,7 @@ class Search {
 
                   $count_display = 0;
                   $added         = array();
-                  for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                  for ($k=0; $k<$data[$num]['count']; $k++) {
                      if (strlen(trim($data[$num][$k]['name'])) > 0
                          && !in_array($data[$num][$k]['name']."-".$data[$num][$k]['entities_id'],
                                       $added)) {
@@ -4216,7 +4216,7 @@ class Search {
                   $out           = "";
                   $added         = array();
                   $count_display = 0;
-                  for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+                  for ($k=0; $k<$data[$num]['count']; $k++) {
                      if (isset($data[$num][$k]['name'])
                          && (strlen(trim($data[$num][$k]['name'])) > 0)
                          && !in_array($data[$num][$k]['name']."-".$data[$num][$k]['profiles_id'],
@@ -4266,7 +4266,7 @@ class Search {
             case "glpi_tickets_tickets.tickets_id_1" :
                $out        = "";
                $displayed  = array();
-               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+               for ($k=0; $k<$data[$num]['count']; $k++) {
 
                   $linkid = ($data[$num][$k]['tickets_id_2'] == $data['id'])
                                  ? $data[$num][$k]['name']
@@ -4633,7 +4633,7 @@ class Search {
 
             case 'glpi_ticketvalidations.status' :
                $out   = '';
-               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+               for ($k=0; $k<$data[$num]['count']; $k++) {
                   if ($data[$num][$k]['name']) {
                      $status  = TicketValidation::getStatus($data[$num][$k]['name']);
                      $bgcolor = TicketValidation::getStatusColor($data[$num][$k]['name']);
@@ -4742,7 +4742,7 @@ class Search {
                   $separate = self::LBHR;
                }
 
-               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+               for ($k=0; $k<$data[$num]['count']; $k++) {
                   if (isset($data[$num][$k]['id'])) {
                      if ($count_display) {
                         $out .= $separate;
@@ -4769,7 +4769,7 @@ class Search {
 
                $out           = '';
                $count_display = 0;
-               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+               for ($k=0; $k<$data[$num]['count']; $k++) {
                   if (strlen(trim($data[$num][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= $separate;
@@ -4801,7 +4801,7 @@ class Search {
             case "date" :
             case "date_delay" :
                $out   = '';
-               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+               for ($k=0; $k<$data[$num]['count']; $k++) {
                   if (is_null($data[$num][$k]['name'])
                       && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
                      $out .= (empty($out)?'':self::LBBR).$searchopt[$ID]['emptylabel'];
@@ -4813,7 +4813,7 @@ class Search {
 
             case "datetime" :
                $out   = '';
-               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+               for ($k=0; $k<$data[$num]['count']; $k++) {
                   if (is_null($data[$num][$k]['name'])
                       && isset($searchopt[$ID]['emptylabel']) && $searchopt[$ID]['emptylabel']) {
                      $out .= (empty($out)?'':self::LBBR).$searchopt[$ID]['emptylabel'];
@@ -4834,7 +4834,7 @@ class Search {
                }
 
                $out   = '';
-               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+               for ($k=0; $k<$data[$num]['count']; $k++) {
                    $out .= (empty($out)?'':'<br>').Html::timestampToString($data[$num][$k]['name'],
                                                                            $withseconds,
                                                                            $withdays);
@@ -4844,7 +4844,7 @@ class Search {
             case "email" :
                $out           = '';
                $count_display = 0;
-               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+               for ($k=0; $k<$data[$num]['count']; $k++) {
                   if ($count_display) {
                      $out .= self::LBBR;
                   }
@@ -4874,7 +4874,7 @@ class Search {
             case "number" :
                $out           = "";
                $count_display = 0;
-               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+               for ($k=0; $k<$data[$num]['count']; $k++) {
                   if (strlen(trim($data[$num][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= self::LBBR;
@@ -4895,7 +4895,7 @@ class Search {
             case "decimal" :
                $out           = "";
                $count_display = 0;
-               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+               for ($k=0; $k<$data[$num]['count']; $k++) {
                   if (strlen(trim($data[$num][$k]['name'])) > 0) {
 
                      if ($count_display) {
@@ -4917,7 +4917,7 @@ class Search {
             case "bool" :
                $out           = "";
                $count_display = 0;
-               for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+               for ($k=0; $k<$data[$num]['count']; $k++) {
                   if (strlen(trim($data[$num][$k]['name'])) > 0) {
                      if ($count_display) {
                         $out .= self::LBBR;
@@ -4949,7 +4949,7 @@ class Search {
       if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
          $separate = self::LBHR;
       }
-      for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
+      for ($k=0; $k<$data[$num]['count']; $k++) {
          if (strlen(trim($data[$num][$k]['name'])) > 0) {
             if ($count_display) {
                $out .= $separate;
@@ -5749,7 +5749,7 @@ class Search {
             }
             $limitto = 20;
             if (count($values) > $limitto) {
-               for ($i=0 ; $i<$limitto ; $i++) {
+               for ($i=0; $i<$limitto; $i++) {
                   $out .= $values[$i].$line_delimiter;
                }
                // $rand=mt_rand();

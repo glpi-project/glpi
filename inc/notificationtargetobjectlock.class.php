@@ -119,7 +119,7 @@ class NotificationTargetObjectLock extends NotificationTarget {
       $this->datas['##objectlock.id##']       = $options['item']->fields['items_id'];
       $this->datas['##objectlock.type##']     = $options['item']->fields['itemtype'];
       $this->datas['##objectlock.date_mod##'] = Html::convDateTime($options['item']->fields['date_mod'],
-                                                                   $user->fields['date_format'] ) ;
+                                                                   $user->fields['date_format']);
       $this->datas['##objectlock.lockedby.lastname##']
                                               = $user->fields['realname'];
       $this->datas['##objectlock.lockedby.firstname##']
@@ -130,7 +130,7 @@ class NotificationTargetObjectLock extends NotificationTarget {
                                               = $_SESSION['glpifirstname'];
       $this->datas['##objectlock.url##']      = $CFG_GLPI['url_base']."/?redirect=".
                                                    $options['item']->fields['itemtype']. "_".
-                                                   $options['item']->fields['items_id'] ;
+                                                   $options['item']->fields['items_id'];
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -154,10 +154,10 @@ class NotificationTargetObjectLock extends NotificationTarget {
                          'name'  => formatUserName(0, $_SESSION["glpiname"], $_SESSION["glpirealname"],
                                                    $_SESSION["glpifirstname"]));
       } else {
-         $ret = parent::getSender( $options ) ;
+         $ret = parent::getSender($options);
       }
 
-      return $ret ;
+      return $ret;
    }
 
 }

@@ -1228,7 +1228,7 @@ class KnowbaseItem extends CommonDBVisible {
 
             // Num of the row (1=header_line)
             $row_num = 1;
-            for ($i=0 ; $i<$numrows_limit ; $i++) {
+            for ($i=0; $i<$numrows_limit; $i++) {
                $data = $DB->fetch_assoc($result_limit);
 
                Session::addToNavigateListItems('KnowbaseItem', $data["id"]);
@@ -1253,7 +1253,7 @@ class KnowbaseItem extends CommonDBVisible {
                   $toadd = '';
                   if (isset($options['item_itemtype'])
                       && isset($options['item_items_id'])) {
-                     $href  = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open');\"" ;
+                     $href  = " href='#' onClick=\"".Html::jsGetElementbyID('kbshow'.$data["id"]).".dialog('open');\"";
                      $toadd = Ajax::createIframeModalWindow('kbshow'.$data["id"],
                                                             $CFG_GLPI["root_doc"].
                                                                "/front/knowbaseitem.form.php?id=".$data["id"],
@@ -1587,8 +1587,7 @@ class KnowbaseItem extends CommonDBVisible {
     *
     * @return string
     */
-   public function getAnswer()
-   {
+   public function getAnswer() {
       if (KnowbaseItemTranslation::canBeTranslated($this)) {
          $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
       } else {

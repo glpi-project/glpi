@@ -171,7 +171,7 @@ class HTMLTableRow extends HTMLTableEntity {
       echo "\t<tbody";
       $this->displayEntityAttributs();
       echo ">\n";
-      for ($i = 0 ; $i < $this->numberOfSubRows ; $i++) {
+      for ($i = 0; $i < $this->numberOfSubRows; $i++) {
          if (isset($this->linesWithAttributs[$i])) {
             $options = $this->linesWithAttributs[$i];
          } else {

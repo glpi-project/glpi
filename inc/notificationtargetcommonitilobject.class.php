@@ -1002,7 +1002,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $datas['tasks'] = array();
          foreach ($tasks as $task) {
             $tmp                          = array();
-            $tmp['##task.id##']           = $task['id'] ;
+            $tmp['##task.id##']           = $task['id'];
             if ($taskobj->maybePrivate()) {
                $tmp['##task.isprivate##'] = Dropdown::getYesNo($task['is_private']);
             }
@@ -1012,7 +1012,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                          $task['taskcategories_id'], true, true, false);
             $tmp['##task.categoryid##']      = $task['taskcategories_id'];
             $tmp['##task.category##']        = $tmp_taskcatinfo['name'];
-            $tmp['##task.categorycomment##'] = $tmp_taskcatinfo['comment'] ;
+            $tmp['##task.categorycomment##'] = $tmp_taskcatinfo['comment'];
 
             $tmp['##task.date##']         = Html::convDateTime($task['date']);
             $tmp['##task.description##']  = $task['content'];
@@ -1022,7 +1022,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $tmp['##task.user##']         = Html::clean(getUserName($task['users_id_tech']));
             $tmp['##task.group##']
                = Html::clean(Toolbox::clean_cross_side_scripting_deep(Dropdown::getDropdownName("glpi_groups",
-                                                        $task['groups_id_tech'])), true, 2, false) ;
+                                                        $task['groups_id_tech'])), true, 2, false);
             $tmp['##task.begin##']        = "";
             $tmp['##task.end##']          = "";
             if (!is_null($task['begin'])) {

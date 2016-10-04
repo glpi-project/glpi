@@ -575,11 +575,12 @@ class Session {
       if (isset($CFG_GLPI["languages"][$trytoload][5])) {
          $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
       }
-      $TRANSLATE = new Zend\I18n\Translator\Translator;
       try {
+         $TRANSLATE = new Zend\I18n\Translator\Translator;
          $cache = Zend\Cache\StorageFactory::factory(array('adapter' => 'apc'));
          $TRANSLATE->setCache($cache);
       } catch (Exception $e) {
+         $TRANSLATE = new Zend\I18n\Translator\Translator;
          // ignore when APC not available
          // toolbox::logDebug($e->getMessage());
       }

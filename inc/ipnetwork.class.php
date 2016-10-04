@@ -548,13 +548,13 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          $startIndex = (($version == 4) ? 3 : 0);
 
          if ($relation == "equals") {
-            for ($i = $startIndex ; $i < 4 ; ++$i) {
+            for ($i = $startIndex; $i < 4; ++$i) {
                $WHERE .= " AND (`".$addressDB[$i]."` & '".$netmaskPa[$i]."')=
                                ('".$addressPa[$i]."' & '".$netmaskPa[$i]."')
                            AND ('".$netmaskPa[$i]."' = `".$netmaskDB[$i]."`)";
             }
          } else {
-            for ($i = $startIndex ; $i < 4 ; ++$i) {
+            for ($i = $startIndex; $i < 4; ++$i) {
                if ($relation == "is contained by") {
                   $globalNetmask = "'".$netmaskPa[$i]."'";
                } else {
@@ -617,7 +617,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       }
 
       $ORDER = array();
-      for ($i = $startIndex ; $i < 4 ; ++$i) {
+      for ($i = $startIndex; $i < 4; ++$i) {
          $ORDER[] = "BIT_COUNT(`".$netmaskDB[$i]."`) $ORDER_ORIENTATION";
       }
 
@@ -681,7 +681,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $this->computeNetworkRange($start);
 
       $result = array();
-      for ($i = ($version == 4 ? 3 : 0) ; $i < 4 ; ++$i) {
+      for ($i = ($version == 4 ? 3 : 0); $i < 4; ++$i) {
          $result[] = "(`$tableName`.`".$binaryFieldPrefix."_$i` & '".$this->fields["netmask_$i"]."')
                        = ('".$start[$i]."')";
       }
@@ -727,7 +727,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @return string :
     *           - "different version" : there is different versions between elements
     *           - "?" : There is holes inside the netmask and both networks can partially intersect
-    *           - "different" : the networks are fully different ;
+    *           - "different" : the networks are fully different;
     *           - "equals" : both networks are equals
     *           - "first contains second" "second contains first" : one include the other
     */
@@ -768,7 +768,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $startIndex = (($version == 4) ? 3 : 0);
       $first      = true;
       $second     = true;
-      for ($i = $startIndex ; $i < 4 ; ++$i) {
+      for ($i = $startIndex; $i < 4; ++$i) {
          $and     = ($firstNetmask[$i] & $secondNetmask[$i]);
          // Be carefull : php integers are 32 bits SIGNED.
          // Thus, checking equality must be done by XOR ...
@@ -791,7 +791,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          $mask   = &$secondNetmask;
       }
 
-      for ($i = $startIndex ; $i < 4 ; ++$i) {
+      for ($i = $startIndex; $i < 4; ++$i) {
          if ((($firstAddress[$i] & $mask[$i]) ^ ($secondAddress[$i] & $mask[$i])) != 0) {
             return "different";
          }
@@ -851,7 +851,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       }
       $start = array();
       $end   = array();
-      for ($i = 0 ; $i < 4 ; ++$i) {
+      for ($i = 0; $i < 4; ++$i) {
          $start[$i] = IPAddress::convertNegativeIntegerToPositiveFloat($address[$i] & $netmask[$i]);
          $end[$i]   = IPAddress::convertNegativeIntegerToPositiveFloat($address[$i] | ~$netmask[$i]);
       }

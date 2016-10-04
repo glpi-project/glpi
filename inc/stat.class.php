@@ -294,7 +294,7 @@ class Stat extends CommonGLPI {
          $end_display = $start+$_SESSION['glpilist_limit'];
          $numrows     = count($value);
 
-         for ($i=$start ; $i< $numrows && $i<($end_display) ; $i++) {
+         for ($i=$start; $i< $numrows && $i<($end_display); $i++) {
             //le nombre d'intervention - the number of intervention
             $opened    = self::constructEntryValues($itemtype, "inter_total", $date1, $date2,
                                                     $type, $value[$i]["id"], $value2);
@@ -489,7 +489,7 @@ class Stat extends CommonGLPI {
          echo Search::showEndLine($output_type);
          $row_num = 1;
 
-         for ($i=$start ; ($i<$numrows) && ($i<$end_display) ; $i++) {
+         for ($i=$start; ($i<$numrows) && ($i<$end_display); $i++) {
             $row_num  ++;
             $item_num = 1;
             echo Search::showNewLine($output_type, $i%2);
@@ -1435,7 +1435,7 @@ class Stat extends CommonGLPI {
             $start = 0;
          }
 
-         for ($i=$start ; ($i<$numrows) && ($i<$end_display) ; $i++) {
+         for ($i=$start; ($i<$numrows) && ($i<$end_display); $i++) {
             $item_num = 1;
             // Get data and increment loop variables
             $data = $DB->fetch_assoc($result);

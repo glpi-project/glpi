@@ -600,7 +600,7 @@ class DBmysql {
                $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), $table));
             }
 
-            $query = "OPTIMIZE TABLE `".$table."` ;";
+            $query = "OPTIMIZE TABLE `".$table."`;";
             $DB->query($query);
             $nb++;
          }

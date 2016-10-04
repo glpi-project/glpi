@@ -950,7 +950,9 @@ abstract class API extends CommonGLPI {
       $already_linked_table = array();
       $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
       $where = Search::addDefaultWhere($itemtype);
-      if ($where == '') $where = "1=1 ";
+      if ($where == '') {
+         $where = "1=1 ";
+      }
 
       // add filter for a parent itemtype
       if (isset($this->parameters['parent_itemtype'])
@@ -986,7 +988,7 @@ abstract class API extends CommonGLPI {
          } else if (isset($parent_item->fields[$fk_child])) {
             $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
             $join.= " LEFT JOIN `$parentTable` ON `$parentTable`.`$fk_child` = `$table`.`id` ";
-            $where.= " AND `$parentTable`.`id` = '" . $this->parameters['parent_id'] . "'" ;
+            $where.= " AND `$parentTable`.`id` = '" . $this->parameters['parent_id'] . "'";
          } else if (isset($parent_item->fields['itemtype'])
                  && isset($parent_item->fields['items_id'])) {
             $parentTable = getTableForItemType($this->parameters['parent_itemtype']);

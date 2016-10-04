@@ -453,7 +453,7 @@ class MailCollector  extends CommonDBTM {
             // Get Total Number of Unread Email in mail box
             $tot = $this->getTotalMails(); //Total Mails in Inbox Return integer value
 
-            for ($i=1 ; $i<=$tot ; $i++) {
+            for ($i=1; $i<=$tot; $i++) {
                $head = $this->getHeaders($i);
                if (isset($rejected[$head['message_id']])) {
                   if ($action == 1) {
@@ -527,7 +527,7 @@ class MailCollector  extends CommonDBTM {
             $refused     = 0;
             $blacklisted = 0;
 
-            for ($i=1 ; ($i <= $tot) && ($this->fetch_emails < $this->maxfetch_emails) ; $i++) {
+            for ($i=1; ($i <= $tot) && ($this->fetch_emails < $this->maxfetch_emails); $i++) {
                $tkt = $this->buildTicket($i, array('mailgates_id' => $mailgateID,
                                                    'play_rules'   => true));
 
@@ -1053,7 +1053,7 @@ class MailCollector  extends CommonDBTM {
          $decodedStr      = '';
          $mimeStrs        = imap_mime_header_decode($mimeStr);
 
-         for ($n=sizeOf($mimeStrs),$i=0 ; $i<$n ; $i++) {
+         for ($n=sizeOf($mimeStrs),$i=0; $i<$n; $i++) {
             $mimeStr          = $mimeStrs[$i];
             $mimeStr->charset = Toolbox::strtolower($mimeStr->charset);
 
@@ -1182,7 +1182,7 @@ class MailCollector  extends CommonDBTM {
     * from      => From address of mail
     * fromName  => Form Name of Mail
    **/
-   function getHeaders($mid) { // Get Header info
+   function getHeaders($mid) {
 
       $mail_header  = imap_header($this->marubox, $mid);
       $sender       = $mail_header->from[0];
@@ -1336,7 +1336,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @return an integer (Total Mail)
    **/
-   function getTotalMails() {//Get Total Number off Unread Email In Mailbox
+   function getTotalMails() {
 
       $headers = imap_headers($this->marubox);
       return count($headers);
@@ -1450,7 +1450,7 @@ class MailCollector  extends CommonDBTM {
             if (($message = $this->getDecodedFetchbody($structure, $mid, $part))
                     && (preg_match( "/Subject: *([^\r\n]*)/i", $message, $matches))) {
                $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";
-               $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;
+               $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename);
             }
          }
 
@@ -1541,7 +1541,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @param $mid : mail Id
    **/
-   function getBody($mid) {// Get Message Body
+   function getBody($mid) {
 
       $this->getStructure($mid);
       $body = $this->get_part($this->marubox, $mid, "TEXT/HTML", $this->structure);
@@ -1822,7 +1822,7 @@ class MailCollector  extends CommonDBTM {
    static function showMaxFilesize($name, $value=0) {
 
       $sizes[0] = __('No import');
-      for ($index=1 ; $index<100 ; $index++) {
+      for ($index=1; $index<100; $index++) {
          $sizes[$index*1048576] = sprintf(__('%s Mio'), $index);
       }
       Dropdown::showFromArray($name, $sizes, array('value' => $value));

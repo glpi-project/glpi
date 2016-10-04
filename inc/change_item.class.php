@@ -91,7 +91,7 @@ class Change_Item extends CommonDBRelation{
 
       $nb = countElementsInTable(array('glpi_changes_items', 'glpi_changes'), $restrict);
 
-      return $nb ;
+      return $nb;
    }
 
 
@@ -176,7 +176,7 @@ class Change_Item extends CommonDBRelation{
       echo $header_begin.$header_top.$header_end;
 
       $totalnb = 0;
-      for ($i=0 ; $i<$number ; $i++) {
+      for ($i=0; $i<$number; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -209,7 +209,7 @@ class Change_Item extends CommonDBRelation{
             $result_linked = $DB->query($query);
             $nb            = $DB->numrows($result_linked);
 
-            for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
+            for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
                $link     = $itemtype::getFormURLWithID($data['id']);
                $linkname = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]

@@ -50,11 +50,11 @@ class Document_Item extends CommonDBRelation{
    // From CommonDBRelation
    static public $itemtype_1    = 'Document';
    static public $items_id_1    = 'documents_id';
-   static public $take_entity_1 = true ;
+   static public $take_entity_1 = true;
 
    static public $itemtype_2    = 'itemtype';
    static public $items_id_2    = 'items_id';
-   static public $take_entity_2 = false ;
+   static public $take_entity_2 = false;
 
 
    /**
@@ -228,7 +228,7 @@ class Document_Item extends CommonDBRelation{
          }
          $nb += countElementsInTable(array('glpi_documents_items'), $restrict);
       }
-      return $nb ;
+      return $nb;
    }
 
 
@@ -410,7 +410,7 @@ class Document_Item extends CommonDBRelation{
       $header_end .= "</tr>";
       echo $header_begin.$header_top.$header_end;
 
-      for ($i=0 ; $i < $number ; $i++) {
+      for ($i=0; $i < $number; $i++) {
          $itemtype=$DB->result($result, $i, "itemtype");
          if (!($item = getItemForItemtype($itemtype))) {
             continue;

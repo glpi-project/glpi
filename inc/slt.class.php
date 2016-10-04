@@ -456,7 +456,7 @@ class SLT extends CommonDBChild {
     *
     * @return array
    **/
-   static function getSltFieldNames($type){
+   static function getSltFieldNames($type) {
 
       $dateField = null;
       $sltField  = null;
@@ -654,7 +654,7 @@ class SLT extends CommonDBChild {
     *
     * @param $options
    **/
-   static function getSltTypeDropdown($options){
+   static function getSltTypeDropdown($options) {
 
       $params = array('name'  => 'type');
 

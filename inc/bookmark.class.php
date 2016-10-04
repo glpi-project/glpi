@@ -828,7 +828,7 @@ class Bookmark extends CommonDBTM {
     *
     * @return true if all ok
    **/
-   function moveBookmark($items= array(), $ref_ID, $action='after') {
+   function moveBookmark(array $items, $ref_ID, $action='after') {
       global $DB;
 
       if (count($items)) {

@@ -1250,11 +1250,10 @@ abstract class CommonITILObject extends CommonDBTM {
           && count($this->input['_documents_id'])) {
          $docitem = new Document_Item();
          foreach ($this->input['_documents_id'] as $docID) {
-            if ($docitem->add(array('documents_id' => $docID,
-                                    '_do_notif'    => false,
-                                    'itemtype'     => $this->getType(),
-                                    'items_id'     => $this->fields['id']))) {
-            }
+            $docitem->add(array('documents_id' => $docID,
+                                '_do_notif'    => false,
+                                'itemtype'     => $this->getType(),
+                                'items_id'     => $this->fields['id']));
          }
       }
 

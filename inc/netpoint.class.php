@@ -89,7 +89,7 @@ class Netpoint extends CommonDropdown {
    function executeAddMulti(array $input) {
 
       $this->check(-1, CREATE, $input);
-      for ($i=$input["_from"] ; $i<=$input["_to"] ; $i++) {
+      for ($i=$input["_from"]; $i<=$input["_to"]; $i++) {
          $input["name"] = $input["_before"].$i.$input["_after"];
          $this->add($input);
       }
@@ -415,7 +415,7 @@ class Netpoint extends CommonDropdown {
     * @param $options   array
    **/
    static function getHTMLTableCellsForItem(HTMLTableRow $row=NULL, CommonDBTM $item=NULL,
-                                            HTMLTableCell $father=NULL, array $options) {
+                                            HTMLTableCell $father=NULL, $options=[]) {
 
       $column_name = __CLASS__;
 
