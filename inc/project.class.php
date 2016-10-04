@@ -133,8 +133,7 @@ class Project extends CommonDBTM {
                $ong    = array();
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
-                                             "`".$this->getForeignKeyField()."` = '".
-                                                $item->getID()."'");
+                                            [$this->getForeignKeyField() => $item->getID() ]);
                }
                $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
                $ong[2] = __('GANTT');

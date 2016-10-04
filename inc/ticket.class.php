@@ -578,8 +578,8 @@ class Ticket extends CommonITILObject {
                      foreach ($linkeditems as $type => $tab) {
                         foreach ($tab as $ID) {
                            $nb += countElementsInTable('glpi_items_tickets',
-                                                       " `itemtype` = '$type'
-                                                         AND `items_id` = '$ID'");
+                                                      ['itemtype' => $type,
+                                                       'items_id' => $ID]);
                         }
                      }
                   }

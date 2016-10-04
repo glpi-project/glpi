@@ -150,7 +150,7 @@ class Group extends CommonTreeDropdown {
                $ong = array();
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
-                                             "`groups_id` = '".$item->getID()."'");
+                                             ['groups_id' => $item->getID() ]);
                }
                $ong[4] = self::createTabEntry(__('Child groups'), $nb);
 

@@ -89,8 +89,8 @@ class Log extends CommonDBTM {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable('glpi_logs',
-                                       "itemtype = '".$item->getType()."'
-                                          AND items_id = '".$item->getID()."'");
+                                      ['itemtype' => $item->getType(),
+                                       'items_id' => $item->getID() ]);
          }
          return self::createTabEntry(self::getTypeName(1), $nb);
       }
@@ -266,7 +266,7 @@ class Log extends CommonDBTM {
 
       // Total Number of events
       $number = countElementsInTable("glpi_logs",
-                                     "`items_id`='$items_id' AND `itemtype`='$itemtype'");
+                                    ['items_id' => $items_id, 'itemtype' => $itemtype ]);
 
       // No Events in database
       if ($number < 1) {

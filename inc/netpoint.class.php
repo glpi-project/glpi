@@ -225,7 +225,7 @@ class Netpoint extends CommonDropdown {
             case 'Location' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb =  countElementsInTable($this->getTable(),
-                                              "locations_id = '".$item->getID()."'");
+                                             ['locations_id' => $item->getID() ]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
@@ -263,7 +263,7 @@ class Netpoint extends CommonDropdown {
       } else {
          $start = 0;
       }
-      $number = countElementsInTable('glpi_netpoints', "`locations_id`='$ID'");
+      $number = countElementsInTable('glpi_netpoints', ['locations_id' => $ID ]);
 
       if ($canedit) {
          echo "<div class='first-bloc'>";

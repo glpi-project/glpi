@@ -1200,9 +1200,7 @@ class Cartridge extends CommonDBChild {
 
    static function countForCartridgeItem(CartridgeItem $item) {
 
-      $restrict = "`glpi_cartridges`.`cartridgeitems_id` = '".$item->getField('id') ."'";
-
-      return countElementsInTable(array('glpi_cartridges'), $restrict);
+      return countElementsInTable(array('glpi_cartridges'), ['glpi_cartridges.cartridgeitems_id' => $item->getField('id') ]);
    }
 
 
@@ -1211,9 +1209,7 @@ class Cartridge extends CommonDBChild {
    **/
    static function countForPrinter(Printer $item) {
 
-      $restrict = "`glpi_cartridges`.`printers_id` = '".$item->getField('id') ."'";
-
-      return countElementsInTable(array('glpi_cartridges'), $restrict);
+      return countElementsInTable(array('glpi_cartridges'), ['glpi_cartridges.printers_id' => $item->getField('id')]);
    }
 
 
