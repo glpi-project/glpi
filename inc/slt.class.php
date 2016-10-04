@@ -600,8 +600,10 @@ class SLT extends CommonDBChild {
          if ($canupdate
              && !empty($slt_data)) {
             echo "<th>".$tt->getBeginHiddenFieldText($sltField);
-            printf(__('%1$s%2$s'), __('SLT'), $tt->getMandatoryMark($sltField));
-            echo $tt->getEndHiddenFieldText('slas_id')."</th>";
+            if (!$tt->isHiddenField($sltField) || $tt->isPredefinedField($sltField)) {
+               echo "<th>".sprintf(__('%1$s%2$s'), __('SLT'), $tt->getMandatoryMark($sltField))."</th>";
+            }
+            echo $tt->getEndHiddenFieldText($sltField);
             echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue($sltField);
             Slt::dropdown(array('name'      => $sltField,
                                 'entity'    => $ticket->fields["entities_id"],
