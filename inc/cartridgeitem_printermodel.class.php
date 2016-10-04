@@ -96,7 +96,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
 
       return countElementsInTable(array('glpi_printermodels', static::getTable()),
                                         [static::getTable().'cartridgeitems_id' => $item->getField('id'),
-                    		         'FKEY' => [static::getTable() => 'printermodels_id', 'glpi_printermodels' => 'id']]);
+                                         'FKEY' => [static::getTable() => 'printermodels_id', 'glpi_printermodels' => 'id']]);
    }
 
 
