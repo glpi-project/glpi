@@ -129,12 +129,12 @@ class CartridgeItem extends CommonDBTM {
    *
    * @return number of cartridges
    **/
-   static function getCount() {
+   static function getCount($id) {
       global $DB;
 
       $query = "SELECT *
                 FROM `glpi_cartridges`
-                WHERE `cartridgeitems_id` = '".$this->fields["id"]."'";
+                WHERE `cartridgeitems_id` = '".$id."'";
 
       if ($result = $DB->query($query)) {
          $number = $DB->numrows($result);

@@ -51,6 +51,9 @@
   <!-- Ensures that there is no whitespace before a semicolon -->
   <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
 
+  <!-- Ensures that $this is not used in static methods -->
+  <rule ref="Squiz.Scope.StaticThisUsage"/>
+
   <!-- TODO disallow the direct usage of $_REQUEST, $_GET, $_POST and $_FILES -->
   <!-- <rule ref="MySource.PHP.GetRequestData"/> -->
 
