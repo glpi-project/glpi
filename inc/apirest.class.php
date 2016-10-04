@@ -293,6 +293,7 @@ class APIRest extends API {
                $this->parameters['parent_itemtype'] = $itemtype;
                $itemtype                            = $additional_itemtype;
             }
+            $itemtype = ucfirst($itemtype);
             return $itemtype;
          }
          $this->returnError(__("resource not found or not an instance of CommonDBTM"),
