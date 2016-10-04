@@ -2657,7 +2657,7 @@ abstract class CommonITILObject extends CommonDBTM {
                         $linkclass->update($data);
                      }
                   }
-                  $linkclass = new $this->supplierlinkclass();
+                  $linkclass = new $item->supplierlinkclass();
                   foreach ($linkclass->getActors($id) as $type => $users) {
                      foreach ($users as $data) {
                         $data['use_notification'] = $input['use_notification'];

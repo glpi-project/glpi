@@ -284,7 +284,7 @@ class RuleAction extends CommonDBChild {
                 && $generic_rule->getFromDB($values['rules_id'])) {
                if ($rule = getItemForItemtype($generic_rule->fields["sub_type"])) {
                   /// TODO review it : need to pass display param and others...
-                  return $this->displayActionSelectPattern($values);
+                  return $rule->displayActionSelectPattern($values);
                }
             }
             break;

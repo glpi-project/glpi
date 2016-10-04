@@ -80,8 +80,9 @@ class NetworkAlias extends FQDNLabel {
 
       $networkAlias = new self();
       if ($networkalias->can($ID, READ)) {
-         return FQDNLabel::getInternetNameFromLabelAndDomainID($this->fields["name"],
-                                                               $this->fields["fqdns_id"]);
+         return FQDNLabel::getInternetNameFromLabelAndDomainID(
+                 $networkAlias->fields["name"],
+                 $networkAlias->fields["fqdns_id"]);
       }
       return "";
    }
