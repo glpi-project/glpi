@@ -558,15 +558,15 @@ class Html {
             //set title and css class
             switch ($msgtype) {
                case ERROR:
-                  $title = _('Error');
+                  $title = __('Error');
                   $class = 'err_msg';
                   break;
                case WARNING:
-                  $title = _('Warning');
+                  $title = __('Warning');
                   $class = 'warn_msg';
                   break;
                case INFO:
-                  $title = _('Information');
+                  $title = __('Information');
                   $class = 'info_msg';
                   break;
             }
