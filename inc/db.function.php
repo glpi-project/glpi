@@ -245,7 +245,7 @@ function getPlural($string) {
                   '([aeiou]{2})ses$'   => '\1ses', // Case like aliases
                   '([aeiou]{2})s$'     => '\1ses', // Case like aliases
                   'x$'                 =>'xes',
-//                   's$'           =>'ses',
+                  // 's$'                 =>'ses',
                   '([^s])$'            => '\1s',   // Add at the end if not exists
                   );
 
@@ -298,27 +298,24 @@ function getSingular($string) {
  * Count the number of elements in a table.
  *
  * @param $table        string/array   table names
- * @param $condition    string         condition to use (default '')
+ * @param $condition    string/array   condition to use (default '') or array of criteria
  *
  * @return int nb of elements in table
 **/
 function countElementsInTable($table, $condition="") {
    global $DB;
 
-   if (is_array($table)) {
-      $table = implode('`,`',$table);
+   if (!is_array($condition)) {
+      if (empty($condition)) {
+         $condition = [];
+      } else {
+         $condition = ['WHERE' => $condition]; // Deprecated use case
+      }
    }
+   $condition['COUNT'] = 'cpt';
 
-   $query = "SELECT COUNT(*) AS cpt
-             FROM `$table`";
-
-   if (!empty($condition)) {
-      $query .= " WHERE $condition ";
-   }
-
-   $result = $DB->query($query);
-   $ligne  = $DB->fetch_assoc($result);
-   return $ligne['cpt'];
+   $row = $DB->request($table, $condition)->next();
+   return ($row ? $row['cpt'] : 0);
 }
 
 /**
@@ -621,7 +618,6 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
       if ($DB->numrows($result)>0) {
          $row      = $DB->fetch_assoc($result);
          $parentID = $row[$parentIDfield];
-
 
          if ($wholename == "") {
             $name = $row["name"];
@@ -1194,7 +1190,6 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
    if (isset($_SESSION["glpiis_ids_visible"]) && !$force_config) {
       $id_visible = $_SESSION["glpiis_ids_visible"];
    }
-
 
    if (strlen($realname) > 0) {
       $temp = $realname;

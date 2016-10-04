@@ -315,11 +315,53 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                           'query' => [
                                              'sort'          => 19,
                                              'order'         => 'DESC',
-                                             'range'         => '0-2',
+                                             'range'         => '0-10',
                                              'forcedisplay'  => '81',
                                              'rawdata'       => true]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
+
+      $headers = $res->getHeaders();
+      $this->assertArrayHasKey('Accept-Range', $headers);
+      $this->assertContains('User', $headers['Accept-Range'][0]);
+      $this->assertArrayHasKey('Content-Range', $headers);
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('totalcount', $data);
+      $this->assertArrayHasKey('count', $data);
+      $this->assertArrayHasKey('sort', $data);
+      $this->assertArrayHasKey('order', $data);
+      $this->assertArrayHasKey('rawdata', $data);
+      $this->assertEquals(8, count($data['rawdata']));
+
+      $first_user = array_shift($data['data']);
+      $second_user = array_shift($data['data']);
+      $this->assertArrayHasKey(81, $first_user);
+      $this->assertArrayHasKey(81, $second_user);
+      $first_user_date_mod = strtotime($first_user[19]);
+      $second_user_date_mod = strtotime($second_user[19]);
+      $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
+   }
+
+
+   /**
+     * @depends testInitSessionCredentials
+     */
+   public function testListSearchPartial($session_token) {
+      // test retrieve partial users
+      $res = $this->doHttpRequest('GET', 'search/User/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'sort'          => 19,
+                                             'order'         => 'DESC',
+                                             'range'         => '0-2',
+                                             'forcedisplay'  => '81',
+                                             'rawdata'       => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(206, $res->getStatusCode());
 
       $headers = $res->getHeaders();
       $this->assertArrayHasKey('Accept-Range', $headers);
@@ -593,6 +635,40 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayNotHasKey('password', $data[0]);
       $this->assertArrayHasKey('is_active', $data[0]);
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
+
+
+      // test retrieve partial users
+      $res = $this->doHttpRequest('GET', 'User/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'range' => '0-1',
+                                             'expand_dropdowns' => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(206, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+
+      $this->assertEquals(2, count($data));
+      $this->assertArrayHasKey('id', $data[0]);
+      $this->assertArrayHasKey('name', $data[0]);
+      $this->assertArrayNotHasKey('password', $data[0]);
+      $this->assertArrayHasKey('is_active', $data[0]);
+      $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
+
+
+      // test retrieve invalid range of users
+      try {
+         $res = $this->doHttpRequest('GET', 'User/',
+                                            ['headers' => [
+                                                'Session-Token' => $session_token],
+                                             'query' => [
+                                                'range' => '100-105',
+                                                'expand_dropdowns' => true]]);
+      } catch (ClientException $e) {
+         $response = $e->getResponse();
+         $this->assertEquals(400, $response->getStatusCode());
+      }
 
 
       // Test only_id param

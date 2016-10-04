@@ -987,9 +987,9 @@ class RSSFeed extends CommonDBTM {
                echo "<a target='_blank' href='$link'>".$item->feed->get_title().'</a>';
             }
             $link = $item->get_permalink();
-//                echo "<br>";
-//                echo $item->get_title();
-//                echo "</td><td>";
+            // echo "<br>";
+            // echo $item->get_title();
+            // echo "</td><td>";
 
             $rand = mt_rand();
             echo "<div id='rssitem$rand' class='pointer rss'>";
@@ -997,7 +997,7 @@ class RSSFeed extends CommonDBTM {
                echo "<a target='_blank' href='$link'>";
             }
             echo $item->get_title();
-//                echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 300);
+            // echo Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($item->get_content())), 300);
             if (!is_null($link)) {
                echo "</a>";
             }
@@ -1218,4 +1218,3 @@ class RSSFeed extends CommonDBTM {
       return $values;
    }
 }
-?>

@@ -86,7 +86,6 @@ class Supplier extends CommonDBTM {
                        AND `itemtype` = '".__CLASS__."'";
       $DB->query($query1);
 
-
       $cs  = new Contract_Supplier();
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
@@ -494,8 +493,8 @@ class Supplier extends CommonDBTM {
                             'criteria'   => array(0 => array('value'      => '$$$$'.$instID,
                                                              'searchtype' => 'contains',
                                                              'field'      => 53)));
-              $link = $linktype::getSearchURL();
-              $link.= (strpos($link,'?') ? '&amp;':'?');
+               $link = $linktype::getSearchURL();
+               $link.= (strpos($link,'?') ? '&amp;':'?');
 
                echo "<a href='$link" .
                      Toolbox::append_params($opt). "'>" . __('Device list')."</a></td>";
@@ -545,4 +544,3 @@ class Supplier extends CommonDBTM {
 
 
 }
-?>

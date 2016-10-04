@@ -174,7 +174,7 @@ abstract class API extends CommonGLPI {
 
       } else if (!$CFG_GLPI['enable_api_login_credentials']) {
          $this->returnError(__("usage of initSession resource with credentials is disabled"), 400,
-                            "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED");
+                            "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED", false);
       }
 
       // login on glpi
@@ -182,9 +182,9 @@ abstract class API extends CommonGLPI {
          $err = Html::clean($auth->getErr());
          if (isset($params['user_token'])
              && !empty($params['user_token'])) {
-            return $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN");
+            return $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN", false);
          }
-         return $this->returnError($err, 401, "ERROR_GLPI_LOGIN");
+         return $this->returnError($err, 401, "ERROR_GLPI_LOGIN", false);
       }
 
       // stop session and return session key
@@ -348,7 +348,7 @@ abstract class API extends CommonGLPI {
 
       $myprofiles = array();
       foreach($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
-         // append if of the profile into values 
+         // append if of the profile into values
          $profile = ['id' => $profiles_id] + $profile;
 
          // don't keep keys for entities
@@ -478,7 +478,6 @@ abstract class API extends CommonGLPI {
          $fields['_devices'] = $all_devices;
       }
 
-
       // retrieve computer disks
       if (isset($params['with_disks'])
           && $params['with_disks']
@@ -531,7 +530,6 @@ abstract class API extends CommonGLPI {
             }
          }
       }
-
 
       // retrieve item connections
       if (isset($params['with_connections'])
@@ -649,7 +647,6 @@ abstract class API extends CommonGLPI {
                               );
                            }
 
-
                            $data['NetworkName'] = array(
                               'id'         => $data_netn['networknames_id'],
                               'name'       => $data_netn['networkname'],
@@ -708,8 +705,6 @@ abstract class API extends CommonGLPI {
             }
          }
       }
-
-
 
       // retrieve item contracts
       if (isset($params['with_documents'])
@@ -898,11 +893,10 @@ abstract class API extends CommonGLPI {
       $default = array('expand_dropdowns' => false,
                        'get_hateoas'      => true,
                        'only_id'          => false,
-                       'range'            => "0-50",
+                       'range'            => "0-".$_SESSION['glpilist_limit'],
                        'sort'             => "id",
                        'order'            => "ASC");
       $params = array_merge($default, $params);
-
 
       if (!$itemtype::canView()) {
          return $this->messageRightError();
@@ -919,9 +913,12 @@ abstract class API extends CommonGLPI {
             $range = explode("-", $params['range']);
             $params['start']      = $range[0];
             $params['list_limit'] = $range[1]-$range[0]+1;
+            $params['range']      = $range;
          } else {
             $this->returnError("range must be in format : [start-end] with integers");
          }
+      } else{
+         $params['range'] = array(0, $_SESSION['glpilist_limit']);
       }
 
       // check parameters
@@ -932,7 +929,6 @@ abstract class API extends CommonGLPI {
       if (!isset($item->fields[$params['sort']])) {
          $this->returnError("sort param is not a field of $table");
       }
-
 
       //specific case for restriction
       $already_linked_table = array();
@@ -1007,6 +1003,12 @@ abstract class API extends CommonGLPI {
       $result_numtotalrow = $DB->query($query_numtotalrow);
       $data_numtotalrow = $DB->fetch_assoc($result_numtotalrow);
       $totalcount = $data_numtotalrow['FOUND_ROWS()'];
+
+      if ($params['range'][0] > $totalcount) {
+         $this->returnError("Provided range exceed total count of data: ".$totalcount,
+                            400,
+                            "ERROR_RANGE_EXCEED_TOTAL");
+      }
 
       foreach ($found as $key => &$fields) {
          // only keep id in field list
@@ -1267,7 +1269,7 @@ abstract class API extends CommonGLPI {
             $this->returnError("range must be in format : [start-end] with integers");
          }
       } else{
-         $params['range'] = array(0,50);
+         $params['range'] = array(0, $_SESSION['glpilist_limit']);
       }
 
       // force reset
@@ -1294,6 +1296,11 @@ abstract class API extends CommonGLPI {
          $this->returnError("Provided range exceed total count of data: ".$cleaned_data['totalcount'],
                             400,
                             "ERROR_RANGE_EXCEED_TOTAL");
+      }
+
+      // fix end range
+      if ($params['range'][1] > $cleaned_data['totalcount'] - 1) {
+         $params['range'][1] = $cleaned_data['totalcount'] - 1;
       }
 
       //prepare cols (searchoptions_id) for cleaned data

@@ -498,4 +498,3 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</table></div>";
    }
 }
-?>

@@ -216,7 +216,6 @@ class Profile extends CommonDBTM {
       $gpu = new Profile_User();
       $gpu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
-
       Rule::cleanForItemAction($this);
       // PROFILES and UNIQUE_PROFILE in RuleMailcollector
       Rule::cleanForItemCriteria($this, 'PROFILES');
@@ -422,9 +421,9 @@ class Profile extends CommonDBTM {
    **/
    static function getUnderActiveProfileRestrictRequest($separator="AND") {
 
-
       // I don't understand usefull of this code (yllen)
-/*      if (in_array('reservation', self::$helpdesk_rights)
+      /*
+      if (in_array('reservation', self::$helpdesk_rights)
           && !Session::haveRight('reservation', ReservationItem::RESERVEANITEM)) {
          return false;
       }
@@ -451,7 +450,7 @@ class Profile extends CommonDBTM {
                                             TicketValidation::VALIDATEINCIDENT))) {
          return false;
       }
-*/
+      */
 
       $query = $separator ." ";
 
@@ -857,7 +856,6 @@ class Profile extends CommonDBTM {
       $matrix_options = array('canedit'       => $canedit,
                               'default_class' => 'tab_bg_2');
 
-
       $rights = array(array('itemtype'  => 'SoftwareLicense',
                             'label'     => _n('License', 'Licenses', Session::getPluralNumber()),
                             'field'     => 'license'),
@@ -879,7 +877,6 @@ class Profile extends CommonDBTM {
                             'field'     => 'budget'));
       $matrix_options['title'] = __('Management');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
-
 
       if ($canedit
           && $closeform) {
@@ -917,7 +914,6 @@ class Profile extends CommonDBTM {
       $matrix_options = array('canedit'       => $canedit,
                               'default_class' => 'tab_bg_2');
 
-
       $rights = array(array('itemtype'  => 'Reminder',
                             'label'     => _n('Public reminder', 'Public reminders', Session::getPluralNumber()),
                             'field'     => 'reminder_public'),
@@ -938,7 +934,6 @@ class Profile extends CommonDBTM {
                             'field'     => 'reservation'));
       $matrix_options['title'] = __('Tools');
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
-
 
       $rights = array(array('itemtype'   => 'Project',
                             'label'      => _n('Project', 'Projects', Session::getPluralNumber()),
@@ -1002,7 +997,6 @@ class Profile extends CommonDBTM {
 
       echo "</table>";
 
-
       $matrix_options = array('canedit'       => $canedit,
                               'default_class' => 'tab_bg_2');
 
@@ -1036,7 +1030,6 @@ class Profile extends CommonDBTM {
       $matrix_options['title'] = _n('Validation', 'Validations', Session::getPluralNumber());
       $this->displayRightsChoiceMatrix($rights, $matrix_options);
 
-
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr class='tab_bg_5'><th colspan='2'>".__('Association')."</th>";
@@ -1061,20 +1054,19 @@ class Profile extends CommonDBTM {
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       self::dropdownHelpdeskItemtypes(array('values' => $this->fields["helpdesk_item_type"]));
       // Linear_HIT
-//      self::getLinearRightChoice(self::getHelpdeskItemtypes(),
-//                                     array('field'         => 'helpdesk_item_type',
-//                                           'value'         => $this->fields['helpdesk_item_type'],
-//                                           'check_all'     => true,
-//                                           'zero_on_empty' => false,
-//                                           'max_per_line'  => 4,
-//                                           'check_method'  =>
-//                                           function ($element, $field) {
-//                                              return in_array($element,$field);
-//                                           }));
+      // self::getLinearRightChoice(self::getHelpdeskItemtypes(),
+      //                               array('field'         => 'helpdesk_item_type',
+      //                                     'value'         => $this->fields['helpdesk_item_type'],
+      //                                     'check_all'     => true,
+      //                                     'zero_on_empty' => false,
+      //                                     'max_per_line'  => 4,
+      //                                     'check_method'  =>
+      //                                     function ($element, $field) {
+      //                                        return in_array($element,$field);
+      //                                     }));
       echo "</td>";
       echo "</tr>\n";
       echo "</table>";
-
 
       $rights = array(array('itemtype'   => 'Stat',
                             'label'      => __('Statistics'),
@@ -2003,7 +1995,6 @@ class Profile extends CommonDBTM {
       $tab[112]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'problem'");
 
-
       $tab[111]['table']         = $this->getTable();
       $tab[111]['field']         = 'change_status';
       $tab[111]['name']          = __('Life cycle of changes');
@@ -2019,7 +2010,6 @@ class Profile extends CommonDBTM {
       $tab[115]['rightname']     = 'change';
       $tab[115]['joinparams']    = array('jointype' => 'child',
                                          'condition' => "AND `NEWTABLE`.`name`= 'change'");
-
 
       $tab['other']              = __('Other');
 
@@ -2299,8 +2289,8 @@ class Profile extends CommonDBTM {
    **/
    static function getInterfaces() {
 
-     return array('central'  => __('Standard interface'),
-                  'helpdesk' => __('Simplified interface'));
+      return array('central'  => __('Standard interface'),
+                   'helpdesk' => __('Simplified interface'));
    }
 
 
@@ -2492,7 +2482,6 @@ class Profile extends CommonDBTM {
 
       foreach ($rights as $info) {
 
-
          if (is_string($info)) {
             $rows[] = $info;
             continue;
@@ -2555,23 +2544,23 @@ class Profile extends CommonDBTM {
       }
 
       uksort($columns, function ($a, $b) {
-                           $a = explode('_', $a);
-                           $b = explode('_', $b);
+         $a = explode('_', $a);
+         $b = explode('_', $b);
 
-                           // For standard rights sort by right
-                           if (($a[0] < 1024)
-                               || ($b[0] < 1024)) {
-                              if ($a[0] > $b[0]) {
-                                 return true;
-                              }
-                              if ($a[0] < $b[0]) {
-                                 return false;
-                              }
-                              return ($a[1] > $b[1]);
-                              // For extra right sort by type
-                           }
-                           return ($a[1] > $b[1]);
-                        });
+         // For standard rights sort by right
+         if (($a[0] < 1024)
+             || ($b[0] < 1024)) {
+            if ($a[0] > $b[0]) {
+               return true;
+            }
+            if ($a[0] < $b[0]) {
+               return false;
+            }
+            return ($a[1] > $b[1]);
+            // For extra right sort by type
+         }
+         return ($a[1] > $b[1]);
+      });
 
       return Html::showCheckboxMatrix($columns, $rows,
                                       array('title'                => $param['title'],

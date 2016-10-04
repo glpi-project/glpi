@@ -491,7 +491,7 @@ class Group_User extends CommonDBRelation{
          }
          $header_end .= "<th>".User::getTypeName(1)."</th>";
          if ($tree) {
-           $header_end .= "<th>".Group::getTypeName(1)."</th>";
+            $header_end .= "<th>".Group::getTypeName(1)."</th>";
          }
          $header_end .= "<th>".__('Dynamic')."</th>";
          $header_end .= "<th>".__('Manager')."</th>";
@@ -604,7 +604,7 @@ class Group_User extends CommonDBRelation{
    }
 
 
-  /**
+   /**
     * Get search function for the class
     *
     * @return array of search option
@@ -715,4 +715,3 @@ class Group_User extends CommonDBRelation{
 
 
 }
-?>

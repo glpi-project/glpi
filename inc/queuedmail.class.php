@@ -136,13 +136,13 @@ class QueuedMail extends CommonDBTM {
       if (isset($input['headers']) && is_array($input['headers']) && count($input['headers'])) {
          $input["headers"] = exportArrayToDB($input['headers']);
       } else {
-        $input['headers'] = '';
+         $input['headers'] = '';
       }
 
       if (isset($input['documents']) && is_array($input['documents']) && count($input['documents'])) {
          $input["documents"] = exportArrayToDB($input['documents']);
       } else {
-        $input['documents'] = '';
+         $input['documents'] = '';
       }
 
       // Force items_id to integer
@@ -273,7 +273,6 @@ class QueuedMail extends CommonDBTM {
       $tab[15]['datatype']        = 'integer';
       $tab[15]['massiveaction']   = false;
 
-
       $tab[20]['table']          = $this->getTable();
       $tab[20]['field']          = 'itemtype';
       $tab[20]['name']           = __('Type');
@@ -354,7 +353,7 @@ class QueuedMail extends CommonDBTM {
          $mmail->AddCustomHeader("In-Reply-To: <GLPI-".$this->fields["itemtype"]."-".
                                  $this->fields["items_id"].">");
 
-      $mmail->SetFrom($this->fields['sender'], $this->fields['sendername']);
+         $mmail->SetFrom($this->fields['sender'], $this->fields['sendername']);
 
          if ($this->fields['replyto']) {
             $mmail->AddReplyTo($this->fields['replyto'], $this->fields['replytoname']);
@@ -549,7 +548,7 @@ class QueuedMail extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!Session::haveRight("queuedmail", READ)) {
-        return false;
+         return false;
       }
 
       $this->check($ID, READ);
@@ -630,7 +629,6 @@ class QueuedMail extends CommonDBTM {
       echo "<td>".self::getSpecificValueToDisplay('headers', $this->fields)."</td>";
       echo "</tr>";
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Subject')."</td>";
       echo "<td colspan=3>".$this->fields['name']."</td>";
@@ -688,4 +686,3 @@ class QueuedMail extends CommonDBTM {
    }
 
 }
-?>

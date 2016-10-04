@@ -241,4 +241,3 @@ class NotificationEvent extends CommonDBTM {
    }
 
 }
-?>

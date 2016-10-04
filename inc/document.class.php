@@ -342,7 +342,7 @@ class Document extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
-//       $options['formoptions'] = " enctype='multipart/form-data'";
+      // $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
 
       $showuserlink = 0;
@@ -1071,7 +1071,7 @@ class Document extends CommonDBTM {
                break;
 
             case 4 :
-//                Session::addMessageAfterRedirect(__('No file specified.'),false,ERROR);
+               // Session::addMessageAfterRedirect(__('No file specified.'),false,ERROR);
                break;
          }
 
@@ -1199,7 +1199,7 @@ class Document extends CommonDBTM {
          if (count($uploaded_files) > 1) {
             Dropdown::showFromArray($myname, $uploaded_files, array('display_emptychoice' => true));
          } else {
-           _e('No file available');
+            _e('No file available');
          }
 
       } else {
@@ -1260,7 +1260,6 @@ class Document extends CommonDBTM {
    **/
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
-
 
       $p['name']    = 'documents_id';
       $p['entity']  = '';
@@ -1360,4 +1359,3 @@ class Document extends CommonDBTM {
    }
 
 }
-?>

@@ -695,4 +695,3 @@ class RuleAction extends CommonDBChild {
    }
 
 }
-?>

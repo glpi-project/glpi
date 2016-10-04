@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,7 +32,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -46,7 +46,7 @@ class NetworkPortAlias extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-     return __('Alias port');
+      return __('Alias port');
    }
 
 
@@ -113,6 +113,5 @@ class NetworkPortAlias extends NetworkPortInstantiation {
       parent::getInstantiationHTMLTable($netport, $row, $father, $options);
       return NULL;
 
-    }
+   }
 }
-?>

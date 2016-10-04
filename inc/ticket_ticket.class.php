@@ -106,8 +106,8 @@ class Ticket_Ticket extends CommonDBRelation {
                            $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                      } else {
-                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
-                      $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                      }
                   }
                }
@@ -296,7 +296,7 @@ class Ticket_Ticket extends CommonDBRelation {
    }
 
 
-  /**
+   /**
     * Affect the same solution for duplicates tickets
     *
     * @param $ID ID of the ticket id
@@ -326,4 +326,3 @@ class Ticket_Ticket extends CommonDBRelation {
       }
    }
 }
-?>

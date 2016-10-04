@@ -292,4 +292,3 @@ class UserEmail  extends CommonDBChild {
    }
 
 }
-?>

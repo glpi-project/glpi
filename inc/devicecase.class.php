@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -122,8 +122,8 @@ class DeviceCase extends CommonDevice {
     * @see CommonDevice::getImportCriteria()
     *
     * @since version 0.84
-    **/
-    function getImportCriteria() {
+   **/
+   function getImportCriteria() {
 
       return array('designation'        => 'equal',
                    'manufacturers_id'   => 'equal',
@@ -131,4 +131,3 @@ class DeviceCase extends CommonDevice {
    }
 
 }
-?>

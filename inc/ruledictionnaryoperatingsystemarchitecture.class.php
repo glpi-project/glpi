@@ -78,4 +78,3 @@ class RuleDictionnaryOperatingSystemArchitecture extends RuleDictionnaryDropdown
    }
 
 }
-?>

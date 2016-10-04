@@ -321,4 +321,3 @@ class Change_Problem extends CommonDBRelation{
 
 
 }
-?>

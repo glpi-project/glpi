@@ -98,7 +98,6 @@ class Calendar_Holiday extends CommonDBRelation {
          }
       }
 
-
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
@@ -225,4 +224,3 @@ class Calendar_Holiday extends CommonDBRelation {
       return true;
    }
 }
-?>

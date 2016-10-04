@@ -580,7 +580,6 @@ class Reminder extends CommonDBTM {
 
       $input["begin"] = $input["end"] = "NULL";
 
-
       if (isset($input['plan'])) {
          if (!empty($input['plan']["begin"])
              && !empty($input['plan']["end"])
@@ -677,7 +676,6 @@ class Reminder extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-
       $this->initForm($ID, $options);
       $rand = mt_rand();
 
@@ -695,7 +693,7 @@ class Reminder extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td colspan='2'>".__('Title')."</td>";
       echo "<td colspan='2'>";
       if (!$ID) {
-      echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
+         echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
       }
       if ($canedit) {
          Html::autocompletionTextField($this, "name",
@@ -765,13 +763,13 @@ class Reminder extends CommonDBTM {
                                'itemtype' => $this->getType(),
                                'items_id' => $this->getID());
 
-               if ($ID
-                   && $this->fields["is_planned"]) {
-                  $params['begin'] = $this->fields["begin"];
-                  $params['end']   = $this->fields["end"];
-               }
+            if ($ID
+                && $this->fields["is_planned"]) {
+               $params['begin'] = $this->fields["begin"];
+               $params['end']   = $this->fields["end"];
+            }
 
-               Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
+            Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
             echo "}";
             echo "</script>\n";
          }
@@ -1041,7 +1039,6 @@ class Reminder extends CommonDBTM {
       $html.= "<a id='reminder_".$val["reminders_id"].$rand."' href='".
              $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'>";
 
-   
       $html.= $users_id;
       $html.= "</a>";
       $recall = '';
@@ -1055,14 +1052,13 @@ class Reminder extends CommonDBTM {
          }
       }
 
-
       if ($complete) {
          $html.= "<span>".Planning::getState($val["state"])."</span><br>";
          $html.= "<div class='event-description'>".$val["text"].$recall."</div>";
       } else {
          $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
                                    ".$val["text"].$recall,
-                                   array('applyto' => "reminder_".$val["reminders_id"].$rand, 
+                                   array('applyto' => "reminder_".$val["reminders_id"].$rand,
                                          'display' => false));
       }
       return $html;
@@ -1391,4 +1387,3 @@ class Reminder extends CommonDBTM {
    }
 
 }
-?>

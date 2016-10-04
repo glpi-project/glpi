@@ -208,4 +208,3 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
    }
 
 }
-?>

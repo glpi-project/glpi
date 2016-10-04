@@ -525,6 +525,7 @@ $ curl -X GET \
    - *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
 * **Returns**
    - 200 (OK) with items data.
+   - 206 (PARTIAL CONTENT) with items data defined by range.
    - 401 (UNAUTHORIZED).
 
    and theses headers:

@@ -1817,6 +1817,10 @@ a.icon_nav_move:hover img {
    height: 10px;
 }
 
+#planning .fc-divider {
+   border:1px dashed #cccccc;
+}
+
 /* for checkavailable */
 
 .planning {

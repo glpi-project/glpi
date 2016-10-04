@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -140,7 +140,7 @@ class NotificationTargetProject extends NotificationTarget {
                   break;
 
             }
-         }
+      }
    }
 
 
@@ -272,7 +272,6 @@ class NotificationTargetProject extends NotificationTarget {
       $this->datas["##project.effectiveduration##"]
             = Html::timestampToString(ProjectTask::getTotalEffectiveDurationForProject($item->getID()),
                                       false);
-
 
       $entity = new Entity();
       $this->datas["##project.entity##"] = '';
@@ -444,7 +443,6 @@ class NotificationTargetProject extends NotificationTarget {
 
       $this->datas['##project.numberofchanges##'] = count($this->datas['changes']);
 
-
       // Document
       $query = "SELECT `glpi_documents`.*
                 FROM `glpi_documents`
@@ -452,7 +450,6 @@ class NotificationTargetProject extends NotificationTarget {
                   ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
                 WHERE `glpi_documents_items`.`itemtype` =  'Project'
                       AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
-
 
       $this->datas["documents"] = array();
       if ($result = $DB->query($query)) {
@@ -624,7 +621,6 @@ class NotificationTargetProject extends NotificationTarget {
                                    'value' => true));
       }
 
-
       //Tags without lang
       $tags = array('change.id'               => sprintf(__('%1$s: %2$s'), __('Change'), __('ID')),
                     'change.date'             => sprintf(__('%1$s: %2$s'), __('Change'), __('Date')),
@@ -670,7 +666,6 @@ class NotificationTargetProject extends NotificationTarget {
                                                         __('Type'))
                      );
 
-
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
                                    'label' => $label,
@@ -712,4 +707,3 @@ class NotificationTargetProject extends NotificationTarget {
    }
 
 }
-?>

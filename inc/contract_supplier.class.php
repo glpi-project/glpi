@@ -414,4 +414,3 @@ class Contract_Supplier extends CommonDBRelation {
    }
 
 }
-?>

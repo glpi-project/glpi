@@ -267,7 +267,7 @@ class Problem extends CommonITILObject {
    function prepareInputForUpdate($input) {
 
       // Get problem : need for comparison
-//       $this->getFromDB($input['id']);
+      // $this->getFromDB($input['id']);
 
       $input = parent::prepareInputForUpdate($input);
       return $input;
@@ -388,7 +388,7 @@ class Problem extends CommonITILObject {
                       'sort'     => 19,
                       'order'    => 'DESC');
 
-     return $search;
+      return $search;
    }
 
 
@@ -475,7 +475,6 @@ class Problem extends CommonITILObject {
       $tab[62]['name']          = __('Symptoms');
       $tab[62]['massiveaction'] = false;
       $tab[62]['datatype']      = 'text';
-
 
       $tab += Notepad::getSearchOptionsToAdd();
 
@@ -610,7 +609,6 @@ class Problem extends CommonITILObject {
                             AND `glpi_problems_users`.`type` = '".CommonITILActor::ASSIGN."')";
       $is_deleted      = " `glpi_problems`.`is_deleted` = 0 ";
 
-
       if ($showgroupproblems) {
          $search_users_id = " 0 = 1 ";
          $search_assign   = " 0 = 1 ";
@@ -648,7 +646,6 @@ class Problem extends CommonITILObject {
                              AND (`status` IN ('".self::PLANNED."','".self::ASSIGNED."')) ".
                              getEntitiesRestrictRequest("AND", "glpi_problems");
             break;
-
 
          default :
             $query .= "WHERE $is_deleted
@@ -925,7 +922,7 @@ class Problem extends CommonITILObject {
       $rand      = mt_rand();
       if ($problem->getFromDBwithData($ID, 0)) {
          $bgcolor = $_SESSION["glpipriority_".$problem->fields["priority"]];
-   //      $rand    = mt_rand();
+         // $rand    = mt_rand();
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
                                                                $problem->fields["id"])."</td>";
@@ -992,7 +989,7 @@ class Problem extends CommonITILObject {
       global $CFG_GLPI, $DB;
 
       if (!static::canView()) {
-        return false;
+         return false;
       }
 
       // In percent
@@ -1383,7 +1380,6 @@ class Problem extends CommonITILObject {
             break;
       }
 
-
       $query = "SELECT ".self::getCommonSelect()."
                 FROM `glpi_problems`
                 LEFT JOIN `glpi_items_problems`
@@ -1415,8 +1411,8 @@ class Problem extends CommonITILObject {
 
          //TRANS : %d is the number of problems
          echo sprintf(_n('Last %d problem','Last %d problems',$number), $number);
-//             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-//                    Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
+         // echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+         //         Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
 
          echo "</th></tr>";
 
@@ -1519,4 +1515,3 @@ class Problem extends CommonITILObject {
    }
 
 }
-?>

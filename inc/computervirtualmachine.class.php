@@ -124,7 +124,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
-        return false;
+         return false;
       }
 
       $comp = new Computer();
@@ -160,7 +160,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<td colspan='2'></td>";
       }
       echo "</tr>\n";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
@@ -215,7 +214,6 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<td>";
       Html::autocompletionTextField($this, "vcpu");
       echo "</td></tr>";
-
 
       $this->showFormButtons($options);
 
@@ -397,9 +395,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          }
          echo $header;
       }
-
-
-
       echo "</table>";
       echo "</div>";
    }
@@ -476,4 +471,3 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 }
-?>
