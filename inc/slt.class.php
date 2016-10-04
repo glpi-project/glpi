@@ -390,7 +390,7 @@ class SLT extends CommonDBChild {
          switch ($item->getType()) {
             case 'SLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_slts', "`slas_id` = '".$item->getField('id')."'");
+                  $nb = countElementsInTable('glpi_slts', ['slas_id' => $item->getField('id')]);
                }
                return self::createTabEntry(self::getTypeName(1), $nb);
          }

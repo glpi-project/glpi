@@ -273,10 +273,10 @@ class Lock {
       $nb    = 0;
       foreach ($types as $old => $type) {
          $nb += countElementsInTable(getTableForItemType($type),
-                                     "`items_id`='$ID'
-                                         AND `itemtype`='$itemtype'
-                                         AND `is_dynamic`='1'
-                                         AND `is_deleted`='1'");
+                                     ['items_id'   => $ID,
+                                      'itemtype'   => $itemtype,
+                                      'is_dynamic' => 1,
+                                      'is_deleted' => 1 ]);
       }
       if ($nb) {
          $header = true;

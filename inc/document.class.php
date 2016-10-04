@@ -161,7 +161,7 @@ class Document extends CommonDBTM {
          if (is_file(GLPI_DOC_DIR."/".$this->fields["filepath"])
              && !is_dir(GLPI_DOC_DIR."/".$this->fields["filepath"])
              && (countElementsInTable($this->getTable(),
-                                     "`sha1sum`='".$this->fields["sha1sum"]."'") <= 1)) {
+                                     ['sha1sum' => $this->fields["sha1sum"] ]) <= 1)) {
 
             if (unlink(GLPI_DOC_DIR."/".$this->fields["filepath"])) {
                Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
@@ -902,8 +902,8 @@ class Document extends CommonDBTM {
           && !empty($input['current_filepath'])
           && is_file(GLPI_DOC_DIR."/".$input['current_filepath'])
           && (countElementsInTable('glpi_documents',
-                                   "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".
-                                             $input['current_filepath'])."'") <= 1)) {
+                                  ['sha1sum' => sha1_file(GLPI_DOC_DIR."/".
+                                             $input['current_filepath']) ]) <= 1)) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
             Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
@@ -983,8 +983,8 @@ class Document extends CommonDBTM {
           && !empty($input['current_filepath'])
           && is_file(GLPI_DOC_DIR."/".$input['current_filepath'])
           && (countElementsInTable('glpi_documents',
-                                   "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".
-                                             $input['current_filepath'])."'") <= 1)) {
+                                  ['sha1sum' => sha1_file(GLPI_DOC_DIR."/".
+                                             $input['current_filepath']) ]) <= 1)) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
             Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
@@ -1070,8 +1070,8 @@ class Document extends CommonDBTM {
       if (isset($input['current_filepath'])
           && !empty($input['current_filepath'])
           && (countElementsInTable('glpi_documents',
-                                  "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".
-                                             $input['current_filepath'])."'") <= 1)) {
+                                  ['sha1sum'=> sha1_file(GLPI_DOC_DIR."/".
+                                             $input['current_filepath']) ]) <= 1)) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
             Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),

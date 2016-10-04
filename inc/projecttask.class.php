@@ -935,14 +935,14 @@ class ProjectTask extends CommonDBChild {
             case 'Project' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
-                                             "projects_id = '".$item->getID()."'");
+                                            ['projects_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
             case __CLASS__ :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
-                                             "projecttasks_id = '".$item->getID()."'");
+                                            ['projecttasks_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }

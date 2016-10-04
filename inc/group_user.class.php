@@ -678,7 +678,7 @@ class Group_User extends CommonDBRelation{
                if (Group::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = countElementsInTable($this->getTable(),
-                                                "users_id = '".$item->getID()."'");
+                                               ['users_id' => $item->getID()]);
                   }
                   return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb);
                }
@@ -688,7 +688,7 @@ class Group_User extends CommonDBRelation{
                if (User::canView()) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = countElementsInTable("glpi_groups_users",
-                                                "`groups_id` = '".$item->getID()."'" );
+                                               ['groups_id' => $item->getID()]);
                   }
                   return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb);
                }

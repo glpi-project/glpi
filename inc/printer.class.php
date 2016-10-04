@@ -120,13 +120,8 @@ class Printer  extends CommonDBTM {
          return false;
       }
 
-      $entities = "(".$this->fields['entities_id'];
-
-      foreach (getAncestorsOf("glpi_entities",$this->fields['entities_id']) as $papa) {
-         $entities .= ",$papa";
-      }
-
-      $entities .= ")";
+      $entities = getAncestorsOf("glpi_entities",$this->fields['entities_id']);
+      $entities[] = $this->fields['entities_id'];
 
       // RELATION : printers -> _port -> _wire -> _port -> device
 
@@ -155,8 +150,8 @@ class Printer  extends CommonDBTM {
                   // For each itemtype which are entity dependant
                   if ($item->isEntityAssign()) {
 
-                     if (countElementsInTable($itemtable, "`id` IN (".$data["ids"].")
-                                              AND `entities_id` NOT IN $entities") > 0) {
+                     if (countElementsInTable($itemtable, ['id' => $data["ids"],
+                                              'NOT' => [ 'entities_id' => $entities]]) > 0) {
                         return false;
                      }
                   }
