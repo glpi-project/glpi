@@ -1741,9 +1741,10 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
 }
 
 /**
- * Get SQL request to restrict to current entities of the user
+ * Get criteria to restrict to current entities of the user
  *
- * @param $separator          separator in the begin of the request (default AND)
+ * @since 9.2
+ *
  * @param $table              table where apply the limit (if needed, multiple tables queries)
  *                            (default '')
  * @param $field              field where apply the limit (id != entities_id) (default '')
@@ -1755,12 +1756,10 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
  *                            when have acces to all entities (used for reminders)
  *                            (false by default)
  *
- * @return array
+ * @return array of criteria
  **/
-function getEntitiesRestrictCriteria($separator='AND', $table='', $field='', $value='',
+function getEntitiesRestrictCriteria($table='', $field='', $value='',
                                      $is_recursive=false, $complete_request=false) {
-
-   $query = $separator ." ( ";
 
    // !='0' needed because consider as empty
    if (!$complete_request
@@ -1769,11 +1768,7 @@ function getEntitiesRestrictCriteria($separator='AND', $table='', $field='', $va
        && isset($_SESSION['glpishowallentities'])
        && $_SESSION['glpishowallentities']) {
 
-       // Not ADD "AND 1" if not needed
-      if (trim($separator) == 'AND') {
-         return array();
-      }
-      return [$separator => '1'];
+      return [];
    }
 
    if (empty($field)) {
@@ -1823,5 +1818,5 @@ function getEntitiesRestrictCriteria($separator='AND', $table='', $field='', $va
    } else {
       $crit = [$field => $child];
    }
-   return [$separator => $crit];
+   return $crit;
 }
