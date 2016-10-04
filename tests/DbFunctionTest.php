@@ -230,18 +230,24 @@ class DbFunctionTest extends DbTestCase {
 
       $this->setEntity('_test_root_entity', true);
       $this->assertEquals(6, countElementsInTableForMyEntities('glpi_computers'));
-      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"')); // SQL restrict
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc11'])); // Criteria
       $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc01']));
 
       $this->setEntity('_test_root_entity', false);
       $this->assertEquals(2, countElementsInTableForMyEntities('glpi_computers'));
       $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc11']));
       $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc01']));
 
       $this->setEntity('_test_child_1', false);
       $this->assertEquals(2, countElementsInTableForMyEntities('glpi_computers'));
       $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc11']));
       $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+      $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc01']));
    }
 
    /**
@@ -414,7 +420,6 @@ TODO :
    importArrayFromDB
    get_hour_from_sql
    getDbRelations
-   getEntitiesRestrictRequest
 */
 
 }

@@ -351,8 +351,8 @@ function countDistinctElementsInTable($table, $field, $condition="") {
 /**
  * Count the number of elements in a table for a specific entity
  *
- * @param $table        string   table name
- * @param $condition    string   additional condition (default '')
+ * @param $table        string         table name
+ * @param $condition    string/array   additional condition (default '') or criteria
  *
  * @return int nb of elements in table
 **/
@@ -362,12 +362,13 @@ function countElementsInTableForMyEntities($table, $condition='') {
    $itemtype = getItemTypeForTable($table);
    $item     = new $itemtype();
 
-   if (!empty($condition)) {
-      $condition .= " AND ";
+   $criteria = getEntitiesRestrictCriteria($table, '', '', $item->maybeRecursive());
+   if (is_array($condition)) {
+      $criteria = array_merge($condition, $criteria);
+   } else if ($condition) {
+      $criteria[] = $condition;
    }
-
-   $condition .= getEntitiesRestrictRequest("", $table, '', '', $item->maybeRecursive());
-   return countElementsInTable($table, $condition);
+   return countElementsInTable($table, $criteria);
 }
 
 
