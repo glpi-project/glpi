@@ -69,6 +69,7 @@ if ($_POST['softwares_id'] > 0) {
    $result = $DB->query($query);
    $number = $DB->numrows($result);
 
+   $values = array();
    if ($number) {
       while ($data = $DB->fetch_assoc($result)) {
          $ID = $data['id'];
