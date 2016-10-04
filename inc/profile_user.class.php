@@ -956,7 +956,7 @@ class Profile_User extends CommonDBRelation {
             case 'User' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
-                                            ['users_id' => $item->getID() ]);
+                                             ['users_id' => $item->getID()]);
                }
                return self::createTabEntry(_n('Authorization','Authorizations',
                                            Session::getPluralNumber()), $nb);

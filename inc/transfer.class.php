@@ -1674,7 +1674,7 @@ class Transfer extends CommonDBTM {
          if ((countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_buy'=>$old]) == 0)
              && (countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_use'=>$old]) == 0)
              && (countElementsInTable("glpi_computers_softwareversions",
-                                     ['softwareversions_id'=>$old]) == 0)) {
+                                      ['softwareversions_id'=>$old]) == 0)) {
 
             $vers->delete(array('id' => $old));
          }

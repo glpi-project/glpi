@@ -1167,7 +1167,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_computers_softwareversions',
                                             ['computers_id' => $item->getID(),
-                                             'is_deleted' => 0 ]);
+                                             'is_deleted'   => 0 ]);
                }
                return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()), $nb);
             }

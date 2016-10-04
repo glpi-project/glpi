@@ -803,7 +803,7 @@ class CronTask extends CommonDBTM{
             Toolbox::logInFile('cron', __('A minimum of 64 Mio is commonly required for GLPI.')."\n");
          }
          // If no task in CLI mode, call cron.php from command line is not really usefull ;)
-         if (!countElementsInTable($crontask->getTable(), ['mode' => abs($mode) ])) {
+         if (!countElementsInTable($crontask->getTable(), ['mode' => abs($mode)])) {
             Toolbox::logInFile('cron',
                                __('No task with Run mode = CLI, fix your tasks configuration')."\n");
          }
@@ -963,11 +963,11 @@ class CronTask extends CommonDBTM{
       echo "<tr><th colspan='2'>&nbsp;".__('Statistics')."</th></tr>\n";
 
       $nbstart = countElementsInTable('glpi_crontasklogs',
-                                     ['crontasks_id' => $this->fields['id'],
-                                      'state' => CronTaskLog::STATE_START ]);
+                                      ['crontasks_id' => $this->fields['id'],
+                                       'state'        => CronTaskLog::STATE_START ]);
       $nbstop  = countElementsInTable('glpi_crontasklogs',
                                       ['crontasks_id' => $this->fields['id'],
-                                      'state' => CronTaskLog::STATE_STOP ]);
+                                       'state'        => CronTaskLog::STATE_STOP ]);
 
       echo "<tr class='tab_bg_2'><td>".__('Run count')."</td><td class='right'>";
       if ($nbstart == $nbstop) {
@@ -1071,8 +1071,8 @@ class CronTask extends CommonDBTM{
 
       // Total Number of events
       $number = countElementsInTable('glpi_crontasklogs',
-                                    ['crontasks_id' => $this->fields['id'],
-                                     'state' => CronTaskLog::STATE_STOP ]);
+                                     ['crontasks_id' => $this->fields['id'],
+                                      'state'        => CronTaskLog::STATE_STOP ]);
 
       echo "<br><div class='center'>";
       if ($number < 1) {

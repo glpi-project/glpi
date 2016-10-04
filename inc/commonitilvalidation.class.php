@@ -1362,7 +1362,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
       $stats = array();
       foreach ($tab as $status => $name) {
          $validations = countElementsInTable(static::getTable(),[static::$items_id => $tID,
-                                                                'status' => $status]);
+                                                                 'status'          => $status]);
          if ($validations > 0) {
             if (!isset($stats[$status])) {
                $stats[$status] = 0;

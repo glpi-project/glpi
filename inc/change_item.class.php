@@ -85,8 +85,8 @@ class Change_Item extends CommonDBRelation{
    static function countForItem(CommonDBTM $item) {
 
       $restrict = "`glpi_changes_items`.`changes_id` = `glpi_changes`.`id`
-                    AND `glpi_changes_items`.`items_id` = '".$item->getField('id')."'
-                    AND `glpi_changes_items`.`itemtype` = '".$item->getType()."'".
+                   AND `glpi_changes_items`.`items_id` = '".$item->getField('id')."'
+                   AND `glpi_changes_items`.`itemtype` = '".$item->getType()."'".
                    getEntitiesRestrictRequest(" AND ", "glpi_changes", '', '', true);
 
       $nb = countElementsInTable(array('glpi_changes_items', 'glpi_changes'), $restrict);
@@ -266,7 +266,7 @@ class Change_Item extends CommonDBRelation{
             case 'Change' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_changes_items',
-                                             ['changes_id' => $item->getID() ]);
+                                             ['changes_id' => $item->getID()]);
                }
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
@@ -297,7 +297,7 @@ class Change_Item extends CommonDBRelation{
                      // Direct one
                      $nb = countElementsInTable('glpi_changes_items',
                                                    ['itemtype' => $item->getType(),
-                                                    'items_id' => $item->getID() ]);
+                                                    'items_id' => $item->getID()]);
                      // Linked items
                      $linkeditems = $item->getLinkedItems();
 
@@ -306,7 +306,7 @@ class Change_Item extends CommonDBRelation{
                            foreach ($tab as $ID) {
                               $nb += countElementsInTable('glpi_changes_items',
                                                           ['itemtype' => $type,
-                                                           'items_id' => $ID ]);
+                                                           'items_id' => $ID]);
                            }
                         }
                      }

@@ -81,7 +81,7 @@ class Change_Problem extends CommonDBRelation{
             case 'Change' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_changes_problems',
-                                             ['changes_id' => $item->getID() ]);
+                                             ['changes_id' => $item->getID()]);
                }
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 

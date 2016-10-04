@@ -120,13 +120,8 @@ class Printer  extends CommonDBTM {
          return false;
       }
 
-      $entities = "(".$this->fields['entities_id'];
-
-      foreach (getAncestorsOf("glpi_entities",$this->fields['entities_id']) as $papa) {
-         $entities .= ",$papa";
-      }
-
-      $entities .= ")";
+      $entities = getAncestorsOf("glpi_entities",$this->fields['entities_id']);
+      $entities[] = $this->fields['entities_id'];
 
       // RELATION : printers -> _port -> _wire -> _port -> device
 

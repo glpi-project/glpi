@@ -338,7 +338,7 @@ class SoftwareVersion extends CommonDBChild {
          switch ($item->getType()) {
             case 'Software' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(), ['softwares_id' => $item->getID() ]);
+                  $nb = countElementsInTable($this->getTable(), ['softwares_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }

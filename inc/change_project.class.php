@@ -91,14 +91,14 @@ class Change_Project extends CommonDBRelation{
             case 'Change' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_changes_projects',
-                                            ['changes_id' => $item->getID() ]);
+                                            ['changes_id' => $item->getID()]);
                }
                return self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Project' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_changes_projects',
-                                            ['projects_id' => $item->getID() ]);
+                                            ['projects_id' => $item->getID()]);
                }
                return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
          }

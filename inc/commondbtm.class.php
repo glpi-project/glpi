@@ -596,7 +596,7 @@ class CommonDBTM extends CommonGLPI {
 
          if ($DB->numrows($result)) {
             while ($data=$DB->fetch_assoc($result)) {
-               $cnt = countElementsInTable('glpi_items_tickets', ['tickets_id' => $data['tickets_id'] ]);
+               $cnt = countElementsInTable('glpi_items_tickets', ['tickets_id' => $data['tickets_id']]);
                $job->getFromDB($data['tickets_id']);
                if ($cnt == 1) {
                   if ($CFG_GLPI["keep_tickets_on_delete"] == 1) {
@@ -1817,7 +1817,7 @@ class CommonDBTM extends CommonGLPI {
          return true;
       }
 
-      $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
+      $entities = getAncestorsOf('glpi_entities', $this->fields['entities_id']);
       $entities[] = $this->fields['entities_id'];
       $RELATION  = getDbRelations();
 
@@ -1877,10 +1877,10 @@ class CommonDBTM extends CommonGLPI {
 
                               if ($item->isEntityAssign()) {
                                  if (countElementsInTable(array($tablename, $itemtable),
-                                                          [ "$tablename.$field" => $ID,
-                                                            "$tablename.$typefield" => $itemtype,
-                                                            "$tablename.$devfield" => $itemtable.'.id',
-                                                            'NOT' => [$itemtable.'.entities_id' => $entities ]]) > '0') {
+                                                          ["$tablename.$field"     => $ID,
+                                                           "$tablename.$typefield" => $itemtype,
+                                                           'FKEY' => [$tablename => $devfield, $itemtable => 'id'],
+                                                           'NOT'  => [$itemtable.'.entities_id' => $entities ]]) > '0') {
                                     return false;
                                  }
                               }
@@ -1899,9 +1899,9 @@ class CommonDBTM extends CommonGLPI {
                            if (is_array($rel[$tablename])) {
                               foreach ($rel[$tablename] as $otherfield) {
                                  if (countElementsInTable(array($tablename, $othertable),
-                                                          [ "$tablename.$field" => $ID,
-                                                            "$tablename.$otherfield" => $othertable.'.id',
-                                                            'NOT' => [$othertable.'.entities_id' => $entities ]]) > '0') {
+                                                          ["$tablename.$field" => $ID,
+                                                           'FKEY' => [$tablename => $otherfield, $othertable => 'id'],
+                                                           'NOT'  => [$othertable.'.entities_id' => $entities ]]) > '0') {
                                     return false;
                                  }
                               }
@@ -1909,9 +1909,9 @@ class CommonDBTM extends CommonGLPI {
                            } else {
                               $otherfield = $rel[$tablename];
                               if (countElementsInTable(array($tablename, $othertable),
-                                                       [ "$tablename.$field" => $ID,
-                                                         "$tablename.$otherfield" => $othertable.'.id',
-                                                         'NOT' => [ $othertable.'.entities_id' => $entities ]]) > '0') {
+                                                       ["$tablename.$field" => $ID,
+                                                        'FKEY' => [$tablename => $otherfield, $othertable =>'id'],
+                                                        'NOT'  => [ $othertable.'.entities_id' => $entities ]]) > '0') {
                                  return false;
                               }
                            }
@@ -1929,8 +1929,8 @@ class CommonDBTM extends CommonGLPI {
           && countElementsInTable(array('glpi_documents_items', 'glpi_documents'),
                                   ['glpi_documents_items.items_id'=> $ID,
                                    'glpi_documents_items.itemtype'=> $this->getType(),
-                                   'glpi_documents_items.documents_id'=>'glpi_documents.id',
-                                   'NOT' => ['glpi_documents.entities_id' => $entities]]) > '0') {
+                                   'FKEY' => ['glpi_documents_items' => 'documents_id','glpi_documents' => 'id'],
+                                   'NOT'  => ['glpi_documents.entities_id' => $entities]]) > '0') {
          return false;
       }
       // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item

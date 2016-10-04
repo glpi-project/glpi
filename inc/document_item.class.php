@@ -104,8 +104,8 @@ class Document_Item extends CommonDBRelation{
       // Avoid duplicate entry
       if (countElementsInTable($this->getTable(),
                               ['documents_id' => $input['documents_id'],
-                               'itemtype' => $input['itemtype'],
-                               'items_id' => $input['items_id'] ]) > 0) {
+                               'itemtype'     => $input['itemtype'],
+                               'items_id'     => $input['items_id']]) > 0) {
          return false;
       }
       return parent::prepareInputForAdd($input);
@@ -238,7 +238,7 @@ class Document_Item extends CommonDBRelation{
    static function countForDocument(Document $item) {
       return countElementsInTable(array('glpi_documents_items'),
                                  ['glpi_documents_items.documents_id' => $item->getField('id'),
-                                  'NOT' => ['glpi_documents_items.itemtype' => $item->getType() ]]);
+                                  'NOT' => ['glpi_documents_items.itemtype' => $item->getType()]]);
    }
 
 

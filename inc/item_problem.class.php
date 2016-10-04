@@ -75,8 +75,8 @@ class Item_Problem extends CommonDBRelation{
 
       // Avoid duplicate entry
       if (countElementsInTable($this->getTable(),['problems_id' => $input['problems_id'],
-                                                  'itemtype' => $input['itemtype'],
-                                                  'items_id' => $input['items_id'] ])>0) {
+                                                  'itemtype'    => $input['itemtype'],
+                                                  'items_id'    => $input['items_id']])>0) {
          return false;
       }
       return parent::prepareInputForAdd($input);
@@ -270,7 +270,7 @@ class Item_Problem extends CommonDBRelation{
             case 'Problem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_items_problems',
-                                             ['problems_id' => $item->getID() ]);
+                                             ['problems_id' => $item->getID()]);
                }
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
@@ -301,7 +301,7 @@ class Item_Problem extends CommonDBRelation{
                      // Direct one
                      $nb = countElementsInTable('glpi_items_problems',
                                                ['itemtype' => $item->getType(),
-                                                'items_id' => $item->getID() ]);
+                                                'items_id' => $item->getID()]);
                      // Linked items
                      $linkeditems = $item->getLinkedItems();
 
@@ -310,7 +310,7 @@ class Item_Problem extends CommonDBRelation{
                            foreach ($tab as $ID) {
                               $nb += countElementsInTable('glpi_items_problems',
                                                          ['itemtype' => $type,
-                                                          'items_id' => $ID ]);
+                                                          'items_id' => $ID]);
                            }
                         }
                      }

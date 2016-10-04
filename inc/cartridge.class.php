@@ -1200,7 +1200,7 @@ class Cartridge extends CommonDBChild {
 
    static function countForCartridgeItem(CartridgeItem $item) {
 
-      return countElementsInTable(array('glpi_cartridges'), ['glpi_cartridges.cartridgeitems_id' => $item->getField('id') ]);
+      return countElementsInTable(array('glpi_cartridges'), ['glpi_cartridges.cartridgeitems_id' => $item->getField('id')]);
    }
 
 

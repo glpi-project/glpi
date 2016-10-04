@@ -78,8 +78,8 @@ class Computer_Item extends CommonDBRelation{
    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_computers_items',
-                                  ['itemtype' => $item->getType(),
-                                   'items_id' => $item->getField('id'),
+                                  ['itemtype'   => $item->getType(),
+                                   'items_id'   => $item->getField('id'),
                                    'is_deleted' => 0 ]);
    }
 
@@ -94,8 +94,8 @@ class Computer_Item extends CommonDBRelation{
    static function countForComputer(Computer $comp) {
 
       return countElementsInTable('glpi_computers_items',
-                                 ['computers_id' => $comp->getField('id'),
-                                  'is_deleted' => 0 ]);
+                                  ['computers_id' => $comp->getField('id'),
+                                   'is_deleted'   => 0 ]);
    }
 
 
@@ -112,9 +112,9 @@ class Computer_Item extends CommonDBRelation{
    static function countForAll(Computer $comp, CommonDBTM $item) {
 
       return countElementsInTable('glpi_computers_items',
-                                 ['computers_id' => $comp->getField('id'),
-                                  'itemtype' => $item->getType(),
-                                  'items_id' => $item->getField('id') ]);
+                                  ['computers_id' => $comp->getField('id'),
+                                   'itemtype'     => $item->getType(),
+                                   'items_id'     => $item->getField('id')]);
    }
 
 

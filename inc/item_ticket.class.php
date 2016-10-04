@@ -126,8 +126,8 @@ class Item_Ticket extends CommonDBRelation{
 
       // Avoid duplicate entry
       if (countElementsInTable($this->getTable(), ['tickets_id' => $input['tickets_id'],
-                   'itemtype' => $input['itemtype'],
-                   'items_id' => $input['items_id']]) > 0) {
+                                                   'itemtype'   => $input['itemtype'],
+                                                   'items_id'   => $input['items_id']]) > 0) {
          return false;
       }
 
@@ -590,7 +590,7 @@ class Item_Ticket extends CommonDBRelation{
                    && (count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]) > 0)) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = countElementsInTable('glpi_items_tickets',
-                                               ['tickets_id' => $item->getID() ]);
+                                                ['tickets_id' => $item->getID() ]);
                   }
                   return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
                }

@@ -199,11 +199,8 @@ class NetworkEquipment extends CommonDBTM {
       if (!parent::canUnrecurs()) {
          return false;
       }
-      $entities = "(".$this->fields['entities_id'];
-      foreach (getAncestorsOf("glpi_entities", $this->fields['entities_id']) as $papa) {
-         $entities .= ",$papa";
-      }
-      $entities .= ")";
+      $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
+      $entities[] = $this->fields['entities_id'];
 
       // RELATION : networking -> _port -> _wire -> _port -> device
 
@@ -231,7 +228,7 @@ class NetworkEquipment extends CommonDBTM {
                   // For each itemtype which are entity dependant
                   if ($item->isEntityAssign()) {
                      if (countElementsInTable($itemtable, ['id' => $data["ids"],
-                                               'NOT' => ['entities_id' => $entities ]]) > 0) {
+                                              'NOT' => ['entities_id' => $entities ]]) > 0) {
                          return false;
                      }
                   }

@@ -553,8 +553,8 @@ class Ticket extends CommonITILObject {
 
                case 'SLT' :
                   $nb = countElementsInTable('glpi_tickets',
-                                             "`slts_tto_id` = '".$item->getID()."'
-                                               OR `slts_ttr_id` = '".$item->getID()."'");
+                                             ['slts_tto_id' => $item->getID(),
+                                              'slts_ttr_id' => $item->getID()]);
                   break;
 
                case 'Group' :
@@ -569,8 +569,8 @@ class Ticket extends CommonITILObject {
                default :
                   // Direct one
                   $nb = countElementsInTable('glpi_items_tickets',
-                                             " `itemtype` = '".$item->getType()."'
-                                                AND `items_id` = '".$item->getID()."'");
+                                             ['itemtype' => $item->getType(),
+                                              'items_id' => $item->getID()]);
                   // Linked items
                   $linkeditems = $item->getLinkedItems();
 
@@ -578,8 +578,8 @@ class Ticket extends CommonITILObject {
                      foreach ($linkeditems as $type => $tab) {
                         foreach ($tab as $ID) {
                            $nb += countElementsInTable('glpi_items_tickets',
-                                                      ['itemtype' => $type,
-                                                       'items_id' => $ID]);
+                                                       ['itemtype' => $type,
+                                                        'items_id' => $ID]);
                         }
                      }
                   }
