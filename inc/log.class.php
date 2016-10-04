@@ -157,7 +157,7 @@ class Log extends CommonDBTM {
                if ($val2['table'] == $item->getTable()) {
                   $changes = array($id_search_option, addslashes($oldval), $values[$key]);
                } else {
-                  // other cases ; link field -> get data from dropdown
+                  // other cases; link field -> get data from dropdown
                   if ($val2["table"] != 'glpi_auth_tables') {
                      $changes = array($id_search_option,
                                       addslashes(sprintf(__('%1$s (%2$s)'),

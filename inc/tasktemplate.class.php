@@ -104,7 +104,7 @@ class TaskTemplate extends CommonDropdown {
       switch ($field['type']) {
          case 'actiontime' :
             $toadd = array();
-            for ($i=9 ; $i<=100 ; $i++) {
+            for ($i=9; $i<=100; $i++) {
                $toadd[] = $i*HOUR_TIMESTAMP;
             }
             Dropdown::showTimeStamp("actiontime",

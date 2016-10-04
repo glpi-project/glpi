@@ -1147,7 +1147,7 @@ class Html {
       }
 
       // surcharge CSS hack for IE
-      echo "<!--[if lte IE 6]>" ;
+      echo "<!--[if lte IE 6]>";
       echo Html::css($CFG_GLPI["root_doc"]."/css/styles_ie.css");
       echo "<![endif]-->";
       echo Html::css($CFG_GLPI["root_doc"]."/css/print.css", array('media' => 'print'));
@@ -3408,12 +3408,12 @@ class Html {
       }
 
       if ($params['with_time']) {
-         for ($i=1 ; $i<=24 ; $i++) {
+         for ($i=1; $i<=24; $i++) {
             $dates['-'.$i.'HOUR'] = sprintf(_n('- %d hour', '- %d hours', $i), $i);
          }
       }
 
-      for ($i=1 ; $i<=7 ; $i++) {
+      for ($i=1; $i<=7; $i++) {
          $dates['-'.$i.'DAY'] = sprintf(_n('- %d day', '- %d days', $i), $i);
       }
 
@@ -3427,7 +3427,7 @@ class Html {
          $dates['LASTSATURDAY']  = __('last Saturday');
       }
 
-      for ($i=1 ; $i<=10 ; $i++) {
+      for ($i=1; $i<=10; $i++) {
          $dates['-'.$i.'WEEK'] = sprintf(_n('- %d week', '- %d weeks', $i), $i);
       }
 
@@ -3435,7 +3435,7 @@ class Html {
          $dates['BEGINMONTH']  = __('Beginning of the month');
       }
 
-      for ($i=1 ; $i<=12 ; $i++) {
+      for ($i=1; $i<=12; $i++) {
          $dates['-'.$i.'MONTH'] = sprintf(_n('- %d month', '- %d months', $i), $i);
       }
 
@@ -3443,30 +3443,30 @@ class Html {
          $dates['BEGINYEAR']  = __('Beginning of the year');
       }
 
-      for ($i=1 ; $i<=10 ; $i++) {
+      for ($i=1; $i<=10; $i++) {
          $dates['-'.$i.'YEAR'] = sprintf(_n('- %d year', '- %d years', $i), $i);
       }
 
       if ($params['with_future']) {
          if ($params['with_time']) {
-            for ($i=1 ; $i<=24 ; $i++) {
+            for ($i=1; $i<=24; $i++) {
                $dates[$i.'HOUR'] = sprintf(_n('+ %d hour', '+ %d hours', $i), $i);
             }
          }
 
-         for ($i=1 ; $i<=7 ; $i++) {
+         for ($i=1; $i<=7; $i++) {
             $dates[$i.'DAY'] = sprintf(_n('+ %d day', '+ %d days', $i), $i);
          }
 
-         for ($i=1 ; $i<=10 ; $i++) {
+         for ($i=1; $i<=10; $i++) {
             $dates[$i.'WEEK'] = sprintf(_n('+ %d week', '+ %d weeks', $i), $i);
          }
 
-         for ($i=1 ; $i<=12 ; $i++) {
+         for ($i=1; $i<=12; $i++) {
             $dates[$i.'MONTH'] = sprintf(_n('+ %d month', '+ %d months', $i), $i);
          }
 
-         for ($i=1 ; $i<=10 ; $i++) {
+         for ($i=1; $i<=10; $i++) {
             $dates[$i.'YEAR'] = sprintf(_n('+ %d year', '+ %d years', $i), $i);
          }
       }
@@ -4139,7 +4139,7 @@ class Html {
          }
          $split = explode("&amp;", $parameters);
 
-         for ($i=0 ; $i<count($split) ; $i++) {
+         for ($i=0; $i<count($split); $i++) {
             $pos    = Toolbox::strpos($split[$i], '=');
             $length = Toolbox::strlen($split[$i]);
             echo Html::hidden(Toolbox::substr($split[$i], 0, $pos), array('value' => urldecode(Toolbox::substr($split[$i], $pos+1))));
@@ -4147,7 +4147,7 @@ class Html {
 
          Dropdown::showOutputFormat();
          Html::closeForm();
-         echo "</td>" ;
+         echo "</td>";
       }
 
       echo "<td width='20%' class='tab_bg_2 b'>";
@@ -5110,7 +5110,7 @@ class Html {
     *
     * @return nothing (print the image paste)
    **/
-   static function fileScript($options=array()){
+   static function fileScript($options=array()) {
       global $CFG_GLPI;
 
       $randupload             = mt_rand();
@@ -5293,7 +5293,7 @@ class Html {
     *
     * @return string
    **/
-   static function generateImageName(){
+   static function generateImageName() {
       return 'pastedImage'.str_replace('-', '', Html::convDateTime(date('Y-m-d', time())));
    }
 
@@ -5732,7 +5732,7 @@ class Html {
                   }
             }
          }).text('".Toolbox::addslashes_deep($msg)."');
-         " ;
+         ";
    }
 
    /**

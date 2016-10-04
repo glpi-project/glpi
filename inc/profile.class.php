@@ -465,7 +465,7 @@ class Profile extends CommonDBTM {
       }
 
       if ($_SESSION['glpiactiveprofile']['interface']=='central') {
-         $query .= " (`glpi_profiles`.`interface` = 'helpdesk') " ;
+         $query .= " (`glpi_profiles`.`interface` = 'helpdesk') ";
       }
 
       $query .= " OR (`glpi_profiles`.`interface` = '" .

@@ -970,7 +970,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $interv = array();
 
       if ($DB->numrows($result) > 0) {
-         for ($i=0 ; $data=$DB->fetch_assoc($result) ; $i++) {
+         for ($i=0; $data=$DB->fetch_assoc($result); $i++) {
             if ($item->getFromDB($data["id"])
                 && $item->canViewItem()) {
                if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()], 0)) {
@@ -1407,7 +1407,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<td>". __('Duration')."</td><td>";
 
       $toadd = array();
-      for ($i=9 ; $i<=100 ; $i++) {
+      for ($i=9; $i<=100; $i++) {
          $toadd[] = $i*HOUR_TIMESTAMP;
       }
 
@@ -1648,7 +1648,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             if ($this->getFromDB($data['id'])) {
                $options = array( 'parent' => $item,
                                  'rand' => $rand,
-                                 'showprivate' => $showprivate ) ;
+                                 'showprivate' => $showprivate );
                Plugin::doHook('pre_show_item', array('item' => $this, 'options' => &$options));
                $this->showInObjectSumnary($item, $rand, $showprivate);
                Plugin::doHook('post_show_item', array('item' => $this, 'options' => $options));
@@ -1678,7 +1678,7 @@ abstract class CommonITILTask  extends CommonDBTM {
        echo "<br>".__('Duration');
 
       $toadd = array();
-      for ($i=9 ; $i<=100 ; $i++) {
+      for ($i=9; $i<=100; $i++) {
          $toadd[] = $i*HOUR_TIMESTAMP;
       }
 

@@ -974,7 +974,9 @@ class TicketFollowup  extends CommonDBTM {
             }
             echo ">";
             $content = nl2br($data['content']);
-            if (empty($content)) $content = NOT_AVAILABLE;
+            if (empty($content)) {
+               $content = NOT_AVAILABLE;
+            }
             echo $content.'</div>'; // boxnotetext
 
             echo "</div>"; // boxnotecontent

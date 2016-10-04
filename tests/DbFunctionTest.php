@@ -326,7 +326,7 @@ class DbFunctionTest extends DbTestCase {
    /**
     * @covers ::formatOutputWebLink
    **/
-   public function testFormatOutputWebLink(){
+   public function testFormatOutputWebLink() {
 
       $this->assertEquals('http://www.glpi-project.org/',
                           formatOutputWebLink('www.glpi-project.org/'));

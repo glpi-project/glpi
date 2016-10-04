@@ -249,7 +249,7 @@ class Contract_Item extends CommonDBRelation{
 
       $data    = array();
       $totalnb = 0;
-      for ($i=0 ; $i<$number ; $i++) {
+      for ($i=0; $i<$number; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -558,7 +558,7 @@ class Contract_Item extends CommonDBRelation{
       $data    = array();
       $totalnb = 0;
       $used    = array();
-      for ($i=0 ; $i<$number ; $i++) {
+      for ($i=0; $i<$number; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
          if (!($item = getItemForItemtype($itemtype))) {
             continue;

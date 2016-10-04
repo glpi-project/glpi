@@ -339,7 +339,7 @@ class Budget extends CommonDropdown{
 
       $num       = 0;
       $itemtypes = array();
-      for ($i = 0; $i < $number ; $i++) {
+      for ($i = 0; $i < $number; $i++) {
          $itemtypes[] = $DB->result($result, $i, "itemtype");
       }
       $itemtypes[] = 'Contract';
@@ -481,7 +481,7 @@ class Budget extends CommonDropdown{
                        "</td></tr>";
 
                } else if ($nb) {
-                  for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
+                  for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
                      $name = NOT_AVAILABLE;
                      if ($item->getFromDB($data["id"])) {
                         if ($item instanceof Item_Devices) {

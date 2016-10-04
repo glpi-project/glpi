@@ -122,7 +122,7 @@ class Planning extends CommonGLPI {
    function defineTabs($options=array()) {
 
       $ong               = array();
-      $ong['no_all_tab'] = true ;
+      $ong['no_all_tab'] = true;
 
       $this->addStandardTab(__CLASS__, $ong, $options);
 
@@ -405,7 +405,7 @@ class Planning extends CommonGLPI {
             }
             $colsize    = floor((100-15)/($end_hour-$begin_hour));
             $timeheader = '';
-            for ($i=$begin_hour ; $i<$end_hour ; $i++) {
+            for ($i=$begin_hour; $i<$end_hour; $i++) {
                $from       = ($i<10?'0':'').$i;
                $timeheader.= "<th width='$colsize%' colspan='4'>".$from.":00</th>";
                $colnumber += 4;
@@ -422,12 +422,12 @@ class Planning extends CommonGLPI {
             $day_begin = strtotime($realbegin);
             $day_end   = strtotime($realend);
 
-            for ($time=$day_begin ; $time<$day_end ; $time+=DAY_TIMESTAMP) {
+            for ($time=$day_begin; $time<$day_end; $time+=DAY_TIMESTAMP) {
                $current_day   = date('Y-m-d', $time);
                echo "<tr><th>".Html::convDate($current_day)."</th>";
                $begin_quarter = $begin_hour*4;
                $end_quarter   = $end_hour*4;
-               for ($i=$begin_quarter ; $i<$end_quarter ; $i++) {
+               for ($i=$begin_quarter; $i<$end_quarter; $i++) {
                   $begin_time = date("Y-m-d H:i:s", strtotime($current_day)+($i)*HOUR_TIMESTAMP/4);
                   $end_time   = date("Y-m-d H:i:s", strtotime($current_day)+($i+1)*HOUR_TIMESTAMP/4);
                   // Init activity interval
@@ -1570,7 +1570,7 @@ class Planning extends CommonGLPI {
          }
 
       } else {
-         $ts = $CFG_GLPI['time_step'] * 60 ; // passage en minutes
+         $ts = $CFG_GLPI['time_step'] * 60; // passage en minutes
          $time = time() + $ts - 60;
          $time = floor($time / $ts) * $ts;
          $begin = date("Y-m-d H:i", $time);

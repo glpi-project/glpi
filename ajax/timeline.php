@@ -70,9 +70,9 @@ switch ($_POST['action']) {
              && isset($_POST["id"])
              && $parent->getFromDB($_POST[$parent->getForeignKeyField()])) {
 
-            $ol = ObjectLock::isLocked( $_POST['parenttype'], $parent->getID() ) ;
+            $ol = ObjectLock::isLocked( $_POST['parenttype'], $parent->getID() );
             if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
-               ObjectLock::setReadOnlyProfile( ) ;
+               ObjectLock::setReadOnlyProfile( );
             }
 
             Ticket::showSubForm($item, $_POST["id"], array('parent' => $parent,

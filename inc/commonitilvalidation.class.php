@@ -1460,7 +1460,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
     * @param $item       CommonITILObject
     * @param $type
     */
-   static function alertValidation(CommonITILObject $item, $type){
+   static function alertValidation(CommonITILObject $item, $type) {
       global $CFG_GLPI;
 
       // No alert for new item

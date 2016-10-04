@@ -819,7 +819,7 @@ class Problem extends CommonITILObject {
             echo "<tr><th></th>";
             echo "<th>".__('Requester')."</th>";
             echo "<th>".__('Description')."</th></tr>";
-            for ($i = 0 ; $i < $number ; $i++) {
+            for ($i = 0; $i < $number; $i++) {
                $ID = $DB->result($result, $i, "id");
                self::showVeryShort($ID, $forcetab);
             }

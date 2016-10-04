@@ -274,7 +274,7 @@ class Toolbox {
    static function encrypt($string, $key) {
 
       $result = '';
-      for ($i=0 ; $i<strlen($string) ; $i++) {
+      for ($i=0; $i<strlen($string); $i++) {
          $char    = substr($string, $i, 1);
          $keychar = substr($key, ($i % strlen($key))-1, 1);
          $char    = chr(ord($char)+ord($keychar));
@@ -297,7 +297,7 @@ class Toolbox {
       $result = '';
       $string = base64_decode($string);
 
-      for ($i=0 ; $i<strlen($string) ; $i++) {
+      for ($i=0; $i<strlen($string); $i++) {
          $char    = substr($string, $i, 1);
          $keychar = substr($key, ($i % strlen($key))-1, 1);
          $char    = chr(ord($char)-ord($keychar));
@@ -1691,7 +1691,7 @@ class Toolbox {
 
       fwrite($fp, $request);
 
-      $header = true ;
+      $header = true;
       $redir  = false;
       $errstr = "";
       while (!feof($fp)) {
@@ -1721,14 +1721,12 @@ class Toolbox {
                   $errstr = "Too deep";
                   break;
 
-               } else if (preg_match("/^HTTP.*200.*OK/", $buf)) {
-                  // HTTP 200 = OK
-
                } else if (preg_match("/^HTTP.*302/", $buf)) {
                   // HTTP 302 = Moved Temporarily
                   $redir = true;
 
-               } else if (preg_match("/^HTTP/", $buf)) {
+               } else if (preg_match("/^HTTP/", $buf)
+                       && !preg_match("/^HTTP.*200.*OK/", $buf)) {
                   // Other HTTP status = error
                   $errstr = trim($buf);
                   break;
@@ -2571,8 +2569,7 @@ class Toolbox {
     *
     * @return string
     */
-   public static function removeHtmlSpecialChars($string)
-   {
+   public static function removeHtmlSpecialChars($string) {
       $string = htmlentities($string, ENT_NOQUOTES, 'utf-8');
       $string = preg_replace(
          '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#',
@@ -2591,8 +2588,7 @@ class Toolbox {
     *
     * @return string
     */
-   public static function slugify($string)
-   {
+   public static function slugify($string) {
       $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
       $string = self::removeHtmlSpecialChars($string);
       $string = preg_replace('~[^0-9a-z]+~i', '-', $string);

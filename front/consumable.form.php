@@ -45,7 +45,7 @@ $constype = new ConsumableItem();
 if (isset($_POST["add_several"])) {
    $constype->check($_POST["consumableitems_id"], UPDATE);
 
-   for ($i=0 ; $i<$_POST["to_add"] ; $i++) {
+   for ($i=0; $i<$_POST["to_add"]; $i++) {
       unset($con->fields["id"]);
       $con->add($_POST);
    }

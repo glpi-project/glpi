@@ -501,7 +501,7 @@ class Group_User extends CommonDBRelation{
 
          $tmpgrp = new Group();
 
-         for ($i=$start, $j=0 ; ($i < $number) && ($j < $_SESSION['glpilist_limit']) ; $i++, $j++) {
+         for ($i=$start, $j=0; ($i < $number) && ($j < $_SESSION['glpilist_limit']); $i++, $j++) {
             $data = $used[$i];
             $user->getFromDB($data["id"]);
             Session::addToNavigateListItems('User', $data["id"]);

@@ -90,13 +90,13 @@ if ($_POST['page'] == 1) {
 
 $values = array();
 if (!empty($_POST['searchText'])) {
-   for ($i=$_POST['min'] ; $i<=$_POST['max'] ; $i+=$_POST['step']) {
+   for ($i=$_POST['min']; $i<=$_POST['max']; $i+=$_POST['step']) {
       if (strstr($i, $_POST['searchText'])) {
          $values[$i] = $i;
       }
    }
 } else {
-   for ($i=$_POST['min'] ; $i<=$_POST['max'] ; $i+=$_POST['step']) {
+   for ($i=$_POST['min']; $i<=$_POST['max']; $i+=$_POST['step']) {
       $values[$i] = $i;
    }
 }

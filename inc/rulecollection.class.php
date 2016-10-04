@@ -496,7 +496,7 @@ class RuleCollection extends CommonDBTM {
          Session::initNavigateListItems($ruletype);
       }
 
-      for ($i=$p['start'],$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {
+      for ($i=$p['start'],$j=0; isset($this->RuleList->list[$j]); $i++,$j++) {
          $this->RuleList->list[$j]->showMinimalForm($target, $i==0, $i==$nb-1, $display_entities, $p['condition']);
          Session::addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
       }
@@ -1390,7 +1390,9 @@ class RuleCollection extends CommonDBTM {
                   $criteria['rules_id'] = $rules_id;
                   //fix array in value key
                   //(simplexml bug, empty xml node are converted in empty array instead of null)
-                  if (is_array($criteria['pattern'])) $criteria['pattern'] = null;
+                  if (is_array($criteria['pattern'])) {
+                     $criteria['pattern'] = null;
+                  }
                   $criteria = Toolbox::addslashes_deep($criteria);
                   $ruleCriteria->add($criteria);
                }
@@ -1402,7 +1404,9 @@ class RuleCollection extends CommonDBTM {
                   $action['rules_id'] = $rules_id;
                   //fix array in value key
                   //(simplexml bug, empty xml node are converted in empty array instead of null)
-                  if (is_array($action['value'])) $action['value'] = null;
+                  if (is_array($action['value'])) {
+                     $action['value'] = null;
+                  }
                   $action = Toolbox::addslashes_deep($action);
                   $ruleAction->add($action);
                }

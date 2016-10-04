@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="glpi">
+  <!-- use http://edorian.github.io/php-coding-standard-generator/#phpcs -->
+
   <!-- white spaces at end of line or empty line have spaces -->
   <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
 
@@ -33,6 +35,24 @@
 
   <!-- No white spaces after opening bracket and before closing bracket in IF -->
   <rule ref="PSR2.ControlStructures.ControlStructureSpacing" />
+
+  <!-- Empty statement -->
+  <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
+
+  <!-- inline control structure forbidden because it's hard to read the code -->
+  <rule ref="Generic.ControlStructures.InlineControlStructure"/>
+
+  <!-- Open Brace on the same line as the function -->
+  <rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
+
+  <!-- Ensure that parameters defined for a function that have a default value come at the end of the function signature -->
+  <rule ref="PEAR.Functions.ValidDefaultValue"/>
+
+  <!-- Ensures that there is no whitespace before a semicolon -->
+  <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
+
+  <!-- TODO disallow the direct usage of $_REQUEST, $_GET, $_POST and $_FILES -->
+  <!-- <rule ref="MySource.PHP.GetRequestData"/> -->
 
     <!-- White space after IF, ELSE, FOREACH, SWITCH keyword -->
   <rule ref="Squiz.ControlStructures.ControlSignature" />

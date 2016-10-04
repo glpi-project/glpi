@@ -355,7 +355,7 @@ class SlaLevel extends RuleTicket {
       }
 
       $possible_values = array();
-      for ($i=10 ; $i<60 ; $i+=10) {
+      for ($i=10; $i<60; $i+=10) {
          if (!in_array($i*MINUTE_TIMESTAMP, $p['used'])) {
             $possible_values[$i*MINUTE_TIMESTAMP] = sprintf(_n('+ %d minute', '+ %d minutes', $i), $i);
          }
@@ -366,7 +366,7 @@ class SlaLevel extends RuleTicket {
          }
       }
 
-      for ($i=1 ; $i<24 ; $i++) {
+      for ($i=1; $i<24; $i++) {
          if (!in_array($i*HOUR_TIMESTAMP, $p['used'])) {
             $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('+ %d hour', '+ %d hours', $i), $i);
          }
@@ -378,7 +378,7 @@ class SlaLevel extends RuleTicket {
          }
       }
 
-      for ($i=1 ; $i<30 ; $i++) {
+      for ($i=1; $i<30; $i++) {
          if (!in_array($i*DAY_TIMESTAMP, $p['used'])) {
             $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('+ %d day', '+ %d days', $i), $i);
          }
@@ -471,7 +471,7 @@ class SlaLevel extends RuleTicket {
                              AND `id` <> '$slalevels_id'
                              AND `execution_time` > '$execution_time'
                              AND `is_active` = 1
-                      ORDER BY `execution_time` ASC LIMIT 1 ;";
+                      ORDER BY `execution_time` ASC LIMIT 1;";
 
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result)) {

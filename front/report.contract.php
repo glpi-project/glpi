@@ -68,7 +68,7 @@ echo "<td class='center' width='20%'>". __('Date')."</td>";
 echo "<td width='30%'>";
 $y      = date("Y");
 $values = array( 0 => __('All'));
-for ($i=($y-10) ; $i<($y+10) ; $i++) {
+for ($i=($y-10); $i<($y+10); $i++) {
    $values[$i] = $i;
 }
 Dropdown::showFromArray('year', $values, array('value'    => $y,

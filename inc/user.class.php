@@ -1249,13 +1249,13 @@ class User extends CommonDBTM {
          $sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
          $v  = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
-         for ($i=0 ; $i<count($v['count']) ; $i++) {
+         for ($i=0; $i<count($v['count']); $i++) {
             //Try to find is DN in present and needed: if yes, then extract only the OU from it
             if ((($ldap_method["group_field"] == 'dn') || in_array('ou', $group_fields))
                 && isset($v[$i]['dn'])) {
 
                $v[$i]['ou'] = array();
-               for ($tmp=$v[$i]['dn'] ; count($tmptab = explode(',', $tmp, 2))==2 ; $tmp=$tmptab[1]) {
+               for ($tmp=$v[$i]['dn']; count($tmptab = explode(',', $tmp, 2))==2; $tmp=$tmptab[1]) {
                   $v[$i]['ou'][] = $tmptab[1];
                }
 
@@ -1594,7 +1594,7 @@ class User extends CommonDBTM {
       //Get the result of the search as an array
       $info = AuthLDAP::get_entries_clean($ds, $sr);
       //Browse all the groups
-      for ($i = 0 ; $i < count($info) ; $i++) {
+      for ($i = 0; $i < count($info); $i++) {
          //Get the cn of the group and add it to the list of groups
          if (isset($info[$i]["dn"]) && ($info[$i]["dn"] != '')) {
             $listgroups[$i] = $info[$i]["dn"];
@@ -2061,7 +2061,7 @@ class User extends CommonDBTM {
          }
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' class='center'>" ;
+         echo "<td colspan='2' class='center'>";
          if ($this->fields["last_login"]) {
             printf(__('Last login on %s'), HTML::convDateTime($this->fields["last_login"]));
          }
@@ -3301,8 +3301,8 @@ class User extends CommonDBTM {
     *    - value
     *    - right          : string / limit user who have specific right :
     *                           id -> only current user (default case);
-    *                           interface -> central ;
-    *                           all -> all users ;
+    *                           interface -> central;
+    *                           all -> all users;
     *                           specific right like Ticket::READALL, CREATE.... (is array passed one of all passed right is needed)
     *    - comments       : boolean / is the comments displayed near the dropdown (default true)
     *    - entity         : integer or array / restrict to a defined entity or array of entities
@@ -3349,7 +3349,7 @@ class User extends CommonDBTM {
       $p['display']        = true;
       $p['_user_index']   = 0;
       $p['specific_tags']  = array();
-      $p['url']            = $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php" ;
+      $p['url']            = $CFG_GLPI['root_doc']."/ajax/getDropdownUsers.php";
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {

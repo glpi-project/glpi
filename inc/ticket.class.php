@@ -1092,7 +1092,7 @@ class Ticket extends CommonITILObject {
     * @param $input
     * @param $manual_slts_id
     */
-   function sltAffect($type, &$input, $manual_slts_id){
+   function sltAffect($type, &$input, $manual_slts_id) {
 
       list($dateField, $sltField) = SLT::getSltFieldNames($type);
 
@@ -5034,7 +5034,7 @@ class Ticket extends CommonITILObject {
             echo "<th>".__('Requester')."</th>";
             echo "<th>"._n('Associated element', 'Associated elements', Session::getPluralNumber())."</th>";
             echo "<th>".__('Description')."</th></tr>";
-            for ($i = 0 ; $i < $number ; $i++) {
+            for ($i = 0; $i < $number; $i++) {
                $ID = $DB->result($result, $i, "id");
                self::showVeryShort($ID, $forcetab);
             }
@@ -6423,11 +6423,11 @@ class Ticket extends CommonITILObject {
       foreach ($timeline as $item) {
          $options = array( 'parent' => $this,
                            'rand' => $rand
-                           ) ;
+                           );
          if ($obj = getItemForItemtype($item['type'])) {
-            $obj->fields = $item['item'] ;
+            $obj->fields = $item['item'];
          } else {
-            $obj = $item ;
+            $obj = $item;
          }
          Plugin::doHook('pre_show_item', array('item' => &$obj, 'options' => &$options));
 
@@ -6523,7 +6523,7 @@ class Ticket extends CommonITILObject {
             if (isset($item_i['state'])) {
                $onClick = "onclick='change_task_state(".$item_i['id'].", this)'";
                if (!$item_i['can_edit']) {
-                  $onClick = "style='cursor: not-allowed;'" ;
+                  $onClick = "style='cursor: not-allowed;'";
                }
                echo "<span class='state state_".$item_i['state']."'
                            $onClick
@@ -6998,7 +6998,7 @@ class Ticket extends CommonITILObject {
     *
     * @since version 9.1
     */
-   function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()){
+   function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()) {
       if (isset($field_id_or_search_options['linkfield'])) {
          switch ($field_id_or_search_options['linkfield']) {
             case 'requesttypes_id':
@@ -7007,13 +7007,13 @@ class Ticket extends CommonITILObject {
                   $opt = 'is_ticketfollowup = 1';
                }
                if ($field_id_or_search_options['linkfield']  == $name) {
-                  $opt .= ' AND is_active = 1' ;
+                  $opt .= ' AND is_active = 1';
                }
                if (isset( $options['condition'] )) {
                   $opt .=  ' AND '.$options['condition'];
                }
                $options['condition'] = $opt;
-               break ;
+               break;
          }
       }
       return parent::getValueToSelect($field_id_or_search_options, $name, $values, $options);

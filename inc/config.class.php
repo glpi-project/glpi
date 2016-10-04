@@ -200,8 +200,8 @@ class Config extends CommonDBTM {
       if (isset($input['_matrix'])) {
          $tab = array();
 
-         for ($urgency=1 ; $urgency<=5 ; $urgency++) {
-            for ($impact=1 ; $impact<=5 ; $impact++) {
+         for ($urgency=1; $urgency<=5; $urgency++) {
+            for ($impact=1; $impact<=5; $impact++) {
                $priority               = $input["_matrix_${urgency}_${impact}"];
                $tab[$urgency][$impact] = $priority;
             }
@@ -211,7 +211,7 @@ class Config extends CommonDBTM {
          $input['urgency_mask']    = 0;
          $input['impact_mask']     = 0;
 
-         for ($i=1 ; $i<=5 ; $i++) {
+         for ($i=1; $i<=5; $i++) {
             if ($input["_urgency_${i}"]) {
                $input['urgency_mask'] += (1<<$i);
             }
@@ -401,7 +401,7 @@ class Config extends CommonDBTM {
                                  'display_emptychoice'   => true,
                                  'value'                 => $CFG_GLPI['lock_lockprofile_id']));
       } else {
-         echo dropdown::getDropdownName( Profile::getTable(), $CFG_GLPI['lock_lockprofile_id']) ;
+         echo dropdown::getDropdownName(Profile::getTable(), $CFG_GLPI['lock_lockprofile_id']);
       }
       echo "</td></tr>";
 
@@ -853,7 +853,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='b right' colspan='2'>".__('Impact')."</td>";
 
-      for ($impact=5 ; $impact>=1 ; $impact--) {
+      for ($impact=5; $impact>=1; $impact--) {
          echo "<td class='center'>".Ticket::getImpactName($impact).'<br>';
 
          if ($impact==3) {
@@ -871,12 +871,12 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='b' colspan='2'>".__('Urgency')."</td>";
 
-      for ($impact=5 ; $impact>=1 ; $impact--) {
+      for ($impact=5; $impact>=1; $impact--) {
          echo "<td>&nbsp;</td>";
       }
       echo "</tr>";
 
-      for ($urgency=5 ; $urgency>=1 ; $urgency--) {
+      for ($urgency=5; $urgency>=1; $urgency--) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".Ticket::getUrgencyName($urgency)."&nbsp;</td>";
          echo "<td>";
@@ -891,7 +891,7 @@ class Config extends CommonDBTM {
          }
          echo "</td>";
 
-         for ($impact=5 ; $impact>=1 ; $impact--) {
+         for ($impact=5; $impact>=1; $impact--) {
             $pri = round(($urgency+$impact)/2);
 
             if (isset($CFG_GLPI['priority_matrix'][$urgency][$impact])) {
