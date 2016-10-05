@@ -173,11 +173,8 @@ abstract class CommonDevice extends CommonDropdown {
       if (!parent::canUnrecurs()) {
          return false;
       }
-      $entities = "(".$this->fields['entities_id'];
-      foreach (getAncestorsOf("glpi_entities", $this->fields['entities_id']) as $papa) {
-         $entities .= ",$papa";
-      }
-      $entities .= ")";
+      $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
+      $entities[] = $this->fields['entities_id'];
 
       // RELATION : device -> item_device -> item
       $linktype  = static::getItem_DeviceType();

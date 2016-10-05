@@ -217,7 +217,8 @@ class Software extends CommonDBTM {
       if ($soft->getFromDB($ID)) {
          $valid = 1;
          if (countElementsInTable('glpi_softwarelicenses',
-                                  ['softwares_id'=>$ID, 'not' => [ 'is_valid']]) > 0) {
+                                  ['softwares_id'=>$ID,
+                                   'NOT' => [ 'is_valid']]) > 0) {
             $valid = 0;
          }
          if ($valid != $soft->fields['is_valid']) {
