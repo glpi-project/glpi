@@ -77,9 +77,16 @@ if (!isset($_POST['page'])) {
    $_POST['page_limit'] = $CFG_GLPI['dropdown_max'];
 }
 
+if (isset($_POST['entity_restrict'])) {
+   $entity_restrict = json_decode($_POST['entity_restrict']);
+   if (json_last_error() != JSON_ERROR_NONE) {
+      $entity_restrict = $_POST['entity_restrict'];
+   }
+}
+
 if ($one_item < 0) {
    $start  = intval(($_POST['page']-1)*$_POST['page_limit']);
-   $result = User::getSqlSearchResult(false, $_POST['right'], $_POST["entity_restrict"],
+   $result = User::getSqlSearchResult(false, $_POST['right'], $entity_restrict,
                                       $_POST['value'], $used, $_POST['searchText'], $start,
                                       intval($_POST['page_limit']));
 } else {
