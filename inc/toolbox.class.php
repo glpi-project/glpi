@@ -697,7 +697,7 @@ class Toolbox {
 
       $etag = md5_file($file);
       $lastModified = filemtime($file);
-      
+
       // Now send the file with header() magic
       header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
       header("Etag: $etag");
@@ -716,7 +716,7 @@ class Toolbox {
          header("HTTP/1.1 304 Not Modified");
          exit;
       }
-    
+
       readfile($file) or die ("Error opening file $file");
    }
 
