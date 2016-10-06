@@ -32,7 +32,7 @@
  */
 
 // Ensure current directory when run from crontab
-chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
+chdir(__DIR__);
 
 include ('../inc/includes.php');
 

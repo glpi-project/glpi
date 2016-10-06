@@ -337,7 +337,7 @@ function glpi_autoload($classname) {
 }
 
 // composer autoload
-$autoload = dirname(__DIR__) . '/vendor/autoload.php';
+$autoload = GLPI_ROOT . '/vendor/autoload.php';
 if (!file_exists($autoload)) {
    die('Run "composer install --no-dev" in the glpi tree');
 }
