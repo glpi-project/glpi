@@ -60,12 +60,12 @@ class ComputerTest extends DbTestCase {
       $CFG_GLPI['state_autoupdate_mode']  = -1;
       $CFG_GLPI['is_location_autoupdate'] = 1;
       $in = ['id'           => $computer->getField('id'),
-             'contact'      => 'unittest',
-             'contact_num'  => '123456',
-             'users_id'     => 11,
-             'groups_id'    => 22,
-             'states_id'    => 33,
-             'locations_id' => 44,
+             'contact'      => $this->getUniqueString(),
+             'contact_num'  => $this->getUniqueString(),
+             'users_id'     => $this->getUniqueInteger(),
+             'groups_id'    => $this->getUniqueInteger(),
+             'states_id'    => $this->getUniqueInteger(),
+             'locations_id' => $this->getUniqueInteger(),
       ];
       $this->assertTrue($computer->update($in));
       $this->assertTrue($computer->getFromDB($computer->getID()));
@@ -84,12 +84,12 @@ class ComputerTest extends DbTestCase {
       $CFG_GLPI['state_autoupdate_mode']  = 0;
       $CFG_GLPI['is_location_autoupdate'] = 0;
       $in2 = ['id'          => $computer->getField('id'),
-             'contact'      => 'testunit',
-             'contact_num'  => '654321',
-             'users_id'     => 111,
-             'groups_id'    => 222,
-             'states_id'    => 333,
-             'locations_id' => 444,
+             'contact'      => $this->getUniqueString(),
+             'contact_num'  => $this->getUniqueString(),
+             'users_id'     => $this->getUniqueInteger(),
+             'groups_id'    => $this->getUniqueInteger(),
+             'states_id'    => $this->getUniqueInteger(),
+             'locations_id' => $this->getUniqueInteger(),
       ];
       $this->assertTrue($computer->update($in2));
       $this->assertTrue($computer->getFromDB($computer->getID()));
