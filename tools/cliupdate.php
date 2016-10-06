@@ -38,7 +38,7 @@ if (in_array('--help', $_SERVER['argv'])) {
    die("usage: ".$_SERVER['argv'][0]."  [ --upgrade | --force ] [ --optimize ] [ --fr ]\n");
 }
 
-chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
+chdir(__DIR__);
 
 if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', realpath('..'));
