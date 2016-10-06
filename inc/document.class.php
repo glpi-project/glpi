@@ -1184,9 +1184,10 @@ class Document extends CommonDBTM {
 
       if (is_dir(GLPI_UPLOAD_DIR)) {
 
+         $uploaded_files = [];
          if ($handle = opendir(GLPI_UPLOAD_DIR)) {
             while (false !== ($file = readdir($handle))) {
-               if (($file != ".") && ($file != "..")) {
+               if (($file != '.') && ($file != '..') && ($file != 'remove.txt')) {
                   $dir = self::isValidDoc($file);
                   if (!empty($dir)) {
                      $uploaded_files[$file] = $file;
@@ -1196,7 +1197,7 @@ class Document extends CommonDBTM {
             closedir($handle);
          }
 
-         if (count($uploaded_files) > 1) {
+         if (count($uploaded_files)) {
             Dropdown::showFromArray($myname, $uploaded_files, array('display_emptychoice' => true));
          } else {
            _e('No file available');
