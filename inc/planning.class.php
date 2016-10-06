@@ -1126,7 +1126,8 @@ class Planning extends CommonGLPI {
          $group->getFromDB($actor[1]);
          $title = $group->getName();
       } else if($filter_data['type'] == 'event_filter') {
-         if (!$filter_key::canView()) {
+         if (!$filter_key::canView()
+               || !($item = getItemForItemtype($filter_key))) {
             return false;
          }
          $title = $filter_key::getTypeName();
