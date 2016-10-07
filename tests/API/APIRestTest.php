@@ -68,6 +68,30 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       }
    }
 
+   public function testCORS() {
+      $res = $this->doHttpRequest('OPTIONS', '',
+                                         ['headers' => [
+                                             'Origin' => "http://localhost",
+                                             'Access-Control-Request-Method'  => 'GET',
+                                             'Access-Control-Request-Headers' => 'X-Requested-With'
+                                         ]]);
+      
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $headers = $res->getHeaders();
+      $this->assertArrayHasKey('Access-Control-Allow-Methods', $headers);
+      $this->assertArrayHasKey('Access-Control-Allow-Headers', $headers);
+      $this->assertContains('GET',           $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('PUT',           $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('POST',          $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('DELETE',        $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('OPTIONS',       $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('origin',        $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('content-type',  $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('accept',        $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('session-token', $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('authorization', $headers['Access-Control-Allow-Headers'][0]);
+   }
 
    /**
     * @group api
