@@ -37,12 +37,17 @@ class ToolboxTest extends PHPUnit_Framework_TestCase {
    /**
     * @covers Toolbox::getRandomString
     */
-    public function testGetRandomString() {
-       for ($len=20 ; $len<50 ; $len+=5) {
-           $this->assertEquals($len, strlen(Toolbox::getRandomString($len)));
-       }
-        for ($len=20 ; $len<50 ; $len+=5) {
-           $this->assertEquals($len, strlen(Toolbox::getRandomString($len, true)));
-       }
-    }
+   public function testGetRandomString() {
+
+      for($len = 20; $len < 50; $len += 5) {
+         // Low strength
+         $str = Toolbox::getRandomString($len);
+         $this->assertEquals($len, strlen($str));
+         $this->assertTrue(ctype_alnum($str));
+         // High strength
+         $str = Toolbox::getRandomString($len, true);
+         $this->assertEquals($len, strlen($str));
+         $this->assertTrue(ctype_alnum ($str) );
+      }
+   }
 }
