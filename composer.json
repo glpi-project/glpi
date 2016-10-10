@@ -33,7 +33,8 @@
         "zetacomponents/graph": "~1.5",
         "ramsey/array_column": "^1.1.3",
         "michelf/php-markdown": "^1.6",
-        "true/punycode": "^2.1"
+        "true/punycode": "^2.1",
+        "ircmaxell/random-lib": "^1.2"
     },
     "suggest": {
         "ext-ldap": "Used ot provide LDAP authentication and synchronization",

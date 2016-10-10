@@ -41,5 +41,8 @@ class ToolboxTest extends PHPUnit_Framework_TestCase {
        for ($len=20 ; $len<50 ; $len+=5) {
            $this->assertEquals($len, strlen(Toolbox::getRandomString($len)));
        }
+        for ($len=20 ; $len<50 ; $len+=5) {
+           $this->assertEquals($len, strlen(Toolbox::getRandomString($len, true)));
+       }
     }
 }
