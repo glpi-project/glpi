@@ -600,8 +600,10 @@ class SLT extends CommonDBChild {
          if ($canupdate
              && !empty($slt_data)) {
             echo "<th>".$tt->getBeginHiddenFieldText($sltField);
-            printf(__('%1$s%2$s'), __('SLT'), $tt->getMandatoryMark($sltField));
-            echo $tt->getEndHiddenFieldText('slas_id')."</th>";
+            if (!$tt->isHiddenField($sltField) || $tt->isPredefinedField($sltField)) {
+               echo "<th>".sprintf(__('%1$s%2$s'), __('SLT'), $tt->getMandatoryMark($sltField))."</th>";
+            }
+            echo $tt->getEndHiddenFieldText($sltField);
             echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue($sltField);
             Slt::dropdown(array('name'      => $sltField,
                                 'entity'    => $ticket->fields["entities_id"],
@@ -910,8 +912,10 @@ class SLT extends CommonDBChild {
     *
     * @return execution date time (NULL if sla not exists)
    **/
-   function addLevelToDo(Ticket $ticket, $slalevels_id) {
+   function addLevelToDo(Ticket $ticket, $slalevels_id = 0) {
 
+      $slalevels_id = ($slalevels_id ? $slalevels_id
+                                     : $ticket->fields["ttr_slalevels_id"]);
       if ($slalevels_id > 0) {
          $toadd = array();
          $date = $this->computeExecutionDate($ticket->fields['date'], $slalevels_id,
@@ -937,7 +941,7 @@ class SLT extends CommonDBChild {
    static function deleteLevelsToDo(Ticket $ticket) {
       global $DB;
 
-      if ($ticket->fields["slalevels_id"] > 0) {
+      if ($ticket->fields["ttr_slalevels_id"] > 0) {
          $query = "SELECT *
                    FROM `glpi_slalevels_tickets`
                    WHERE `tickets_id` = '".$ticket->fields["id"]."'";

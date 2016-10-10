@@ -47,7 +47,7 @@ include_once (GLPI_ROOT."/config/define.php");
  * @return boolean
 **/
 function isCommandLine() {
-   return (!isset($_SERVER["SERVER_NAME"]));
+   return (PHP_SAPI == 'cli');
 }
 
 /**
@@ -331,17 +331,17 @@ function glpi_autoload($classname) {
 
    } else if (!isset($notfound["x$classname"])) {
       // trigger an error to get a backtrace, but only once (use prefix 'x' to handle empty case)
-//          trigger_error("GLPI autoload : file $dir$item.class.php not founded trying to load class '$classname'");
+      // trigger_error("GLPI autoload : file $dir$item.class.php not founded trying to load class '$classname'");
       $notfound["x$classname"] = true;
    }
 }
 
-// Use spl autoload to allow stackable autoload.
-spl_autoload_register('glpi_autoload');
-
 // composer autoload
-$autoload = dirname(__DIR__) . '/vendor/autoload.php';
+$autoload = GLPI_ROOT . '/vendor/autoload.php';
 if (!file_exists($autoload)) {
    die('Run "composer install --no-dev" in the glpi tree');
 }
 require_once $autoload;
+
+// Use spl autoload to allow stackable autoload.
+spl_autoload_register('glpi_autoload', false, true);

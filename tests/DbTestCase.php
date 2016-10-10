@@ -71,6 +71,29 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
       }
    }
 
+   /**
+    * Get a unique random string
+    */
+   protected function getUniqueString() {
+      static $str = NULL;
+
+      if (is_null($this->str)) {
+         return $this->str = uniqid('str');
+      }
+      return $this->str .= 'x';
+   }
+
+   /**
+    * Get a unique random integer
+    */
+   protected function getUniqueInteger() {
+      static $int = NULL;
+
+      if (is_null($this->int)) {
+         return $this->int = mt_rand(1000,10000);
+      }
+      return $this->int++;
+   }
 
    /**
     * change current entity

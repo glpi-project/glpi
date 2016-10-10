@@ -109,7 +109,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @param $thisName           string item name (need to be addslashes : comes from input)
    **/
    static function getCompleteNameFromParents($parentCompleteName, $thisName) {
-     return addslashes($parentCompleteName). " > ".$thisName;
+      return addslashes($parentCompleteName). " > ".$thisName;
    }
 
 
@@ -131,12 +131,12 @@ abstract class CommonTreeDropdown extends CommonDropdown {
           && $parent->getFromDB($input[$this->getForeignKeyField()])) {
          $input['level']        = $parent->fields['level']+1;
          // Sometimes (internet address), the complete name may be different ...
-/*         if ($input[$this->getForeignKeyField()]==0) { // Root entity case
+         /* if ($input[$this->getForeignKeyField()]==0) { // Root entity case
             $input['completename'] =  $input['name'];
          } else {*/
          $input['completename'] = self::getCompleteNameFromParents($parent->fields['completename'],
                                                                    $input['name']);
-//          }
+         // }
       } else {
          $input[$this->getForeignKeyField()] = 0;
          $input['level']                     = 1;
@@ -147,7 +147,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    function prepareInputForAdd($input) {
-     return $this->adaptTreeFieldsFromUpdateOrAdd($input);
+      return $this->adaptTreeFieldsFromUpdateOrAdd($input);
    }
 
 
@@ -181,7 +181,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          // Can't move a parent under a child
          if (in_array($input[$this->getForeignKeyField()],
              getSonsOf($this->getTable(), $input['id']))) {
-         return false;
+             return false;
          }
          // Parent changes => clear ancestors and update its level and completename
          if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
@@ -219,9 +219,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $query = "SELECT `id`, `name`
                    FROM `".$this->getTable()."`
                    WHERE `".$this->getForeignKeyField()."` = '$ID'";
-        if (Session::haveTranslations($this->getType(), 'completename')) {
+         if (Session::haveTranslations($this->getType(), 'completename')) {
             DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $ID);
-        }
+         }
 
          foreach ($DB->request($query) as $data) {
             $query = "UPDATE `".$this->getTable()."`

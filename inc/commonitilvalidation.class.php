@@ -203,7 +203,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             $restrict = "`".static::$items_id."` = '".$item->getID()."'";
             // No rights for create only count asign ones
             if (!Session::haveRightsOr(static::$rightname, static::getCreateRights())) {
-              $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."'";
+               $restrict .= " AND `users_id_validate` = '".Session::getLoginUserID()."'";
             }
             $nb = countElementsInTable(static::getTable(),$restrict);
          }
@@ -309,7 +309,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
             return false;
          }
          if ($input["status"] == self::WAITING) {
-//             $input["comment_validation"] = '';
+            // $input["comment_validation"] = '';
             $input["validation_date"] = 'NULL';
          } else {
             $input["validation_date"] = $_SESSION["glpi_currenttime"];
@@ -832,8 +832,6 @@ abstract class CommonITILValidation  extends CommonDBChild {
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->fields["name"]));
-
-
 
          while ($row = $DB->fetch_assoc($result)) {
             $canedit = $this->canEdit($row["id"]);
@@ -1462,4 +1460,3 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 }
-?>

@@ -344,24 +344,8 @@ class Config extends CommonDBTM {
                                                      'max'   => 200,
                                                      'step'  => 1,
                                                      'toadd' => array(0 => __('Never'))));
-//       echo "</td><td>".__('Buffer time for dynamic search in dropdowns')."</td><td>";
-//       Dropdown::showNumber('ajax_buffertime_load',
-//                            array('value' => $CFG_GLPI["ajax_buffertime_load"],
-//                                  'min'   => 100,
-//                                  'max'   => 5000,
-//                                  'step'  => 100,
-//                                  'unit'  => 'millisecond'));
       echo "<td colspan='2'></td>";
       echo "</td></tr>";
-
-//      echo "<tr class='tab_bg_2'>";
-//       echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
-//       Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
-//       echo "</td><td>". __('Character to force the full display of dropdowns (wildcard)')."</td>";
-//       echo "<td><input type='text' size='1' name='ajax_wildcard' value='" .
-//                   $CFG_GLPI["ajax_wildcard"] . "'>";
-//      echo "</td>";
-//      echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Search engine')."</td></tr>";
       echo "<tr class='tab_bg_2'>";
@@ -895,7 +879,6 @@ class Config extends CommonDBTM {
                $pri = $CFG_GLPI['priority_matrix'][$urgency][$impact];
             }
 
-
             if ($isurgency[$urgency] && $isimpact[$impact]) {
                $bgcolor=$_SESSION["glpipriority_$pri"];
                echo "<td class='center' bgcolor='$bgcolor'>";
@@ -1006,14 +989,13 @@ class Config extends CommonDBTM {
 
       echo "</tr>";
 
-
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
          echo "<td>" . __('Display the complete name in tree dropdowns') . "</td><td>";
          Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
          echo "</td>";
       } else {
-        echo "<td colspan='2'>&nbsp;</td>";
+         echo "<td colspan='2'>&nbsp;</td>";
       }
 
       if (!$userpref
@@ -1227,9 +1209,6 @@ class Config extends CommonDBTM {
          Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
                              $data['ticket_timeline_keep_replaced_tabs']);
          echo "</td></tr>";
-
-
-
       }
 
       // Only for user
@@ -1721,7 +1700,6 @@ class Config extends CommonDBTM {
       echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
       echo "\n</pre></td></tr>";
 
-
       echo "<tr><th>Server</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
       echo wordwrap("Operating system: ".php_uname()."\n", $width, "\n\t");
@@ -1809,7 +1787,9 @@ class Config extends CommonDBTM {
          return realpath(dirname((new ReflectionClass($libstring))->getFileName()));
 
       } elseif (function_exists($libstring)) {
-         return realpath(dirname((new ReflectionFunction($libstring))->getFileName()));
+         // Internal function have no file name
+         $path = (new ReflectionFunction($libstring))->getFileName();
+         return ($path ? realpath(dirname($path)) : false);
 
       }
       return false;
@@ -1829,49 +1809,54 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       include_once(GLPI_HTMLAWED);
-      echo "htmLawed version ".hl_version().
-           " in (".self::getLibraryDir("hl_version").")\n";
-
-      echo "phpCas version ".phpCAS::getVersion().
-           " in (".(self::getLibraryDir("phpCAS")
-                     ? self::getLibraryDir("phpCAS")
-                     : "system").
-           ")\n";
-
-
       $pm = new PHPMailer();
-      echo "PHPMailer version ".$pm->Version.
-           " in (" . self::getLibraryDir("PHPMailer") . ")\n";
-
-      // EZ component
-      echo "ZetaComponent ezcGraph installed in (".self::getLibraryDir("ezcGraph")."): ".
-           (class_exists('ezcGraph') ? 'OK' : 'KO'). "\n";
-
-      // Zend
-      echo "Zend Framework in (".self::getLibraryDir("Zend\Loader\StandardAutoloader").")\n";
-
-      // SimplePie :
       $sp = new SimplePie();
-      echo "SimplePie version ".SIMPLEPIE_VERSION.
-           " in (".self::getLibraryDir($sp).")\n";
 
-      // TCPDF
-      echo "TCPDF version ".TCPDF_STATIC::getTCPDFVersion().
-           " in (".self::getLibraryDir("TCPDF").")\n";
+      $deps = [[ 'name'    => 'htmLawed',
+                 'version' => hl_version() ,
+                 'check'   => 'hl_version' ],
+               [ 'name'    => 'phpCas',
+                 'version' => phpCAS::getVersion() ,
+                 'check'   => 'phpCAS' ],
+               [ 'name'    => 'PHPMailer',
+                 'version' => $pm->Version ,
+                 'check'   => 'PHPMailer' ],
+               [ 'name'    => 'Zend Framework',
+                 'check'   => 'Zend\\Loader\\StandardAutoloader' ],
+               [ 'name'    => 'zetacomponents/graph',
+                 'check'   => 'ezcGraph' ],
+               [ 'name'    => 'SimplePie',
+                 'version' => SIMPLEPIE_VERSION,
+                 'check'   => $sp ],
+               [ 'name'    => 'TCPDF',
+                 'version' => TCPDF_STATIC::getTCPDFVersion(),
+                 'check'   => 'TCPDF' ],
+               [ 'name'    => 'ircmaxell/password-compat',
+                 'check'   => 'password_hash' ],
+               [ 'name'    => 'ramsey/array_column',
+                 'check'   => 'array_column' ],
+               [ 'name'    => 'michelf/php-markdown',
+                 'check'   => 'Michelf\\Markdown' ],
+               [ 'name'    => 'true/punycode',
+                 'check'   => 'TrueBV\\Punycode' ],
+               [ 'name'    => 'iacaml/autolink',
+                 'check'   => 'autolink' ],
+               [ 'name'    => 'sabre/vobject',
+                 'check'   => 'Sabre\\VObject\\Component' ],
+               [ 'name'    => 'guzzlehttp/guzzle',
+                 'check'   => 'GuzzleHttp\\Client' ],
+      ];
 
-      // password_compat
-      $check = (PasswordCompat\binary\check() ? "Ok" : "KO");
-      echo "ircmaxell/password-compat in (".
-           self::getLibraryDir("PasswordCompat\binary\check")."). Compatitility: $check\n";
-
-      // autolink
-      echo "iacaml/autolink in (".self::getLibraryDir("autolink").")\n";
-
-      // sabre/vobject
-      echo "sabre/vobject in (".self::getLibraryDir("Sabre\VObject\Component").")\n";
-
-      // vcard
-      echo "guzzlehttp/guzzle in (".self::getLibraryDir("JeroenDesloovere\VCard\VCard").")\n";
+      foreach ($deps as $dep) {
+         $path = self::getLibraryDir($dep['check']);
+         if ($path) {
+            echo "{$dep['name']} ";
+            if (isset($dep['version'])) {
+               echo "version {$dep['version']} ";
+            }
+            echo "in ($path)\n";
+         }
+      }
 
       echo "\n</pre></td></tr>";
    }

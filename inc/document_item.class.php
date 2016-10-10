@@ -79,7 +79,8 @@ class Document_Item extends CommonDBRelation{
          // Not item linked for closed tickets
          if ($ticket->getFromDB($this->fields['items_id'])
              && in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
-           return false;
+
+            return false;
          }
       }
 
@@ -111,7 +112,7 @@ class Document_Item extends CommonDBRelation{
    }
 
 
-  /**
+   /**
     * @since version 0.90.2
     *
     * @see CommonDBTM::pre_deleteItem()
@@ -456,7 +457,7 @@ class Document_Item extends CommonDBRelation{
 
             if ($itemtype =='KnowbaseItem') {
                if (Session::getLoginUserID()) {
-                 $where = "AND ".KnowbaseItem::addVisibilityRestrict();
+                  $where = "AND ".KnowbaseItem::addVisibilityRestrict();
                } else {
                   // Anonymous access
                   if (Session::isMultiEntitiesMode()) {
@@ -682,7 +683,6 @@ class Document_Item extends CommonDBRelation{
          $result = $DB->query($q);
          $nb     = $DB->result($result,0,0);
 
-
          if ($item->getType() == 'Document') {
             $used[$item->getID()] = $item->getID();
          }
@@ -866,7 +866,6 @@ class Document_Item extends CommonDBRelation{
          }
       }
 
-
       echo "<div class='spaced'>";
       if ($canedit
           && $number
@@ -1021,4 +1020,3 @@ class Document_Item extends CommonDBRelation{
    }
 
 }
-?>

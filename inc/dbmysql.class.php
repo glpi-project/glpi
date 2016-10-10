@@ -93,7 +93,6 @@ class DBmysql {
    **/
    function connect($choice=NULL) {
 
-
       $this->connected = false;
 
       if (is_array($this->dbhost)) {
@@ -125,7 +124,7 @@ class DBmysql {
          $this->connected = false;
          $this->error     = 1;
       } else {
-         $this->dbh->query("SET NAMES '" . (isset($this->dbenc) ? $this->dbenc : "utf8") . "'");
+         $this->dbh->set_charset(isset($this->dbenc) ? $this->dbenc : "utf8");
 
          if (GLPI_FORCE_EMPTY_SQL_MODE) {
             $this->dbh->query("SET SESSION sql_mode = ''");
@@ -181,7 +180,7 @@ class DBmysql {
              && $CFG_GLPI["debug_sql"]) {
             $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
          }
-         }
+      }
 
       if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
           && $CFG_GLPI["debug_sql"]) {
@@ -608,7 +607,7 @@ class DBmysql {
       }
 
       return $nb;
-    }
+   }
 
 
    /**
@@ -762,6 +761,9 @@ class DBmysqlIterator  implements Iterator {
 
       $this->conn = $dbconnexion;
       if (is_string($table) && strpos($table, " ")) {
+         //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+         //   trigger_error("Deprecated usage of SQL in DB/request (full query)", E_USER_DEPRECATED);
+         //}
          $this->sql = $table;
       } else {
          // Check field, orderby, limit, start in criterias
@@ -771,6 +773,8 @@ class DBmysqlIterator  implements Iterator {
          $start    = 0;
          $distinct = '';
          $where    = '';
+         $count    = '';
+         $join     = '';
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
                if ($key === "FIELDS") {
@@ -779,6 +783,9 @@ class DBmysqlIterator  implements Iterator {
                } else if ($key === "DISTINCT FIELDS") {
                   $field = $val;
                   $distinct = "DISTINCT";
+                  unset($crit[$key]);
+               } else if ($key === "COUNT") {
+                  $count = $val;
                   unset($crit[$key]);
                } else if ($key === "ORDER") {
                   $orderby = $val;
@@ -792,12 +799,23 @@ class DBmysqlIterator  implements Iterator {
                } else if ($key === "WHERE") {
                   $where = $val;
                   unset($crit[$key]);
+               } else if ($key === 'JOIN') {
+                  if (is_array($val)) {
+                     foreach ($val as $jointable => $joincrit) {
+                        $join .= " LEFT JOIN " .  self::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
+                     }
+                  } else {
+                     trigger_error("BAD JOIN, value sould be [ table => criteria ]", E_USER_ERROR);
+                  }
+                  unset($crit[$key]);
                }
             }
          }
 
          // SELECT field list
-         if (is_array($field)) {
+         if ($count) {
+            $this->sql = "SELECT COUNT(*) AS $count";
+         } else if (is_array($field)) {
             $this->sql = "";
             foreach ($field as $t => $f) {
                if (is_numeric($t)) {
@@ -815,7 +833,7 @@ class DBmysqlIterator  implements Iterator {
          } else if (empty($field)) {
             $this->sql = "SELECT *";
          } else {
-            $this->sql = "SELECT $distinct `$field`";
+            $this->sql = "SELECT $distinct " . self::quoteName($field);
          }
 
          // FROM table list
@@ -826,6 +844,9 @@ class DBmysqlIterator  implements Iterator {
             $table = self::quoteName($table);
             $this->sql .= " FROM $table";
          }
+
+         // JOIN
+         $this->sql .= $join;
 
          // WHERE criteria list
          if (!empty($crit)) {
@@ -873,11 +894,29 @@ class DBmysqlIterator  implements Iterator {
    }
 
 
+   /**
+    * Quote field name
+    *
+    * @since 9.1
+    *
+    * @param string $name of field to quote (or table.field)
+    * @return string
+   **/
    private static function quoteName($name) {
+
+      if (strpos($name, '.')) {
+         $n = explode('.', $name, 2);
+         return self::quoteName($n[0]) . '.' . self::quoteName($n[1]);
+      }
       return ($name[0]=='`' ? $name : "`$name`");
    }
 
 
+   /**
+    * Retrieve the SQL statement
+    *
+    * @since 9.1
+   **/
    public function getSql() {
       return preg_replace('/ +/', ' ', $this->sql);
    }
@@ -892,12 +931,21 @@ class DBmysqlIterator  implements Iterator {
 
 
    /**
-    * @param $crit
-    * @param $bool (default AND)
+    * Generate the SQL statement for a array of criteria
+    *
+    * @param array  $crit
+    * @param string $bool (default AND)
+    *
+    * @return string
    **/
    private function analyseCrit ($crit, $bool="AND") {
 
+      static $operators = ['=', '<', '<=', '>', '>=', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX'];
+
       if (!is_array($crit)) {
+         //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+         //  trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
+         //}
          return $crit;
       }
       $ret = "";
@@ -926,13 +974,25 @@ class DBmysqlIterator  implements Iterator {
                $ret .= (is_numeric($t1) ? self::quoteName($f1) : self::quoteName($t1) . '.' . self::quoteName($f1)) . ' = ' .
                        (is_numeric($t2) ? self::quoteName($f2) : self::quoteName($t2) . '.' . self::quoteName($f2));
             } else {
-               trigger_error("BAD FOREIGN KEY", E_USER_ERROR);
+               trigger_error("BAD FOREIGN KEY, should be [ key1, key2 ]", E_USER_ERROR);
             }
 
          } else if (is_array($value)) {
-            // Array of Value
-            $ret .= self::quoteName($name) . " IN ('". implode("','",$value)."')";
-
+            if (count($value) == 2 && in_array($value[0], $operators)) {
+               if (is_numeric($value[1]) || preg_match("/^`.*?`$/", $value[1])) {
+                  $ret .= self::quoteName($name) . " {$value[0]} {$value[1]}";
+               } else {
+                  $ret .= self::quoteName($name) . " {$value[0]} '{$value[1]}'";
+               }
+            } else {
+               // Array of Values
+               foreach ($value as $k => $v) {
+                  if (!is_numeric($v)) {
+                     $value[$k] = "'$v'";
+                  }
+               }
+               $ret .= self::quoteName($name) . ' IN (' . implode(', ', $value) . ')';
+            }
          } else if (is_null($value)) {
             // NULL condition
             $ret .= self::quoteName($name) . " IS NULL";

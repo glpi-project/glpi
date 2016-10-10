@@ -266,7 +266,6 @@ class Contract extends CommonDBTM {
                                                       'toadd' => array(0 => __('Unlimited'))));
       echo "</td></tr>";
 
-
       if (Entity::getUsedConfig("use_contracts_alert", $this->fields["entities_id"])) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Email alarms')."</td>";
@@ -487,7 +486,6 @@ class Contract extends CommonDBTM {
       $tab[138]['massiveaction'] = false;
       $tab[138]['joinparams']    = $joinparams;
       $tab[138]['datatype']      = 'specific';
-
 
       return $tab;
    }
@@ -743,7 +741,6 @@ class Contract extends CommonDBTM {
                                              => array('table'      => 'glpi_contracts_suppliers',
                                                       'joinparams' => array('jointype' => 'child')));
 
-
       // add objectlock search options
       $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
 
@@ -803,7 +800,6 @@ class Contract extends CommonDBTM {
       $tab[45]['joinparams']        = array('beforejoin'
                                              => array('table'      => 'glpi_contractcosts',
                                                       'joinparams' => array('jointype' => 'child')));
-
 
       return $tab;
    }
@@ -1259,7 +1255,6 @@ class Contract extends CommonDBTM {
                                AND DATEDIFF(`glpi_contracts`.`begin_date`, CURDATE() ) < '0' ))";
       }
 
-
       $query = "SELECT `glpi_contracts`.*
                 FROM `glpi_contracts`
                 LEFT JOIN `glpi_entities` ON (`glpi_contracts`.`entities_id` = `glpi_entities`.`id`)
@@ -1268,7 +1263,6 @@ class Contract extends CommonDBTM {
                          `glpi_contracts`.`name` ASC,
                          `glpi_contracts`.`begin_date` DESC";
       $result = $DB->query($query);
-
 
       $group  = '';
       $prev   = -1;
@@ -1471,4 +1465,3 @@ class Contract extends CommonDBTM {
    }
 
 }
-?>

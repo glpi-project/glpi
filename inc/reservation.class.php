@@ -80,7 +80,6 @@ class Reservation extends CommonDBChild {
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-
       if ($item->getType() == 'User') {
          self::showForUser($_GET["id"]);
       } else {
@@ -769,8 +768,8 @@ class Reservation extends CommonDBChild {
             }
             if (($resa->fields["users_id"] == Session::getLoginUserID())
                 || Session::haveRight(static::$rightname, UPDATE)) {
-              echo "<td class='top center'>";
-              echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
+               echo "<td class='top center'>";
+               echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
                      class='submit'>";
                echo "</td>";
             }
@@ -1306,4 +1305,3 @@ class Reservation extends CommonDBChild {
 
 
 }
-?>

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -102,7 +102,7 @@ class HTMLTableGroup extends HTMLTableBase {
       if (isset($this->ordered_headers)) {
          throw new Exception('Implementation error: must define all headers before any row');
       }
-    }
+   }
 
 
    private function completeHeaders() {
@@ -286,5 +286,3 @@ class HTMLTableGroup extends HTMLTableBase {
       }
    }
 }
-
-?>

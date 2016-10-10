@@ -781,6 +781,11 @@ class CommonDBTM extends CommonGLPI {
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
+      // Manage the _no_history
+      if (!isset($this->input['_no_history'])) {
+         $this->input['_no_history'] = !$history;
+      }
+
       if (isset($this->input['add'])) {
          // Input from the interface
          // Save this data to be available if add fail
@@ -1040,6 +1045,11 @@ class CommonDBTM extends CommonGLPI {
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
+      // Manage the _no_history
+      if (!isset($this->input['_no_history'])) {
+         $this->input['_no_history'] = !$history;
+      }
+
       // Plugin hook - $this->input can be altered
       Plugin::doHook("pre_item_update", $this);
       if ($this->input && is_array($this->input)) {
@@ -1236,7 +1246,6 @@ class CommonDBTM extends CommonGLPI {
                                             $this->getTypeName(1), $this->fields['id']);
          }
 
-
          if (isset($this->input['_no_message_link'])) {
             $display = $this->getNameID();
          } else {
@@ -1311,7 +1320,6 @@ class CommonDBTM extends CommonGLPI {
          $force = 1;
       }
 
-
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
 
@@ -1330,7 +1338,6 @@ class CommonDBTM extends CommonGLPI {
       } else {
          Plugin::doHook("pre_item_delete", $this);
       }
-
 
       if (!is_array($this->input)) {
          // $input clear by a hook to cancel delete
@@ -1890,9 +1897,10 @@ class CommonDBTM extends CommonGLPI {
                            }
                         }
 
-                     // Search for another N->N Relation
                      } else if (($othertable != $this->getTable())
                               && isset($rel[$tablename])) {
+
+                        // Search for another N->N Relation
                         $itemtype = getItemTypeForTable($othertable);
                         $item     = new $itemtype();
 
@@ -1992,6 +2000,9 @@ class CommonDBTM extends CommonGLPI {
          echo "<th colspan='$colspan'>";
          printf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
          echo "</th>";
+      } else {
+         echo "<th colspan='$colspan'>";
+         echo "</th>";
       }
 
       if (isset($options['withtemplate']) && $options['withtemplate']) {
@@ -2005,6 +2016,9 @@ class CommonDBTM extends CommonGLPI {
          echo "<th colspan='$colspan'>";
          //TRANS: %s is the datetime of update
          printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+         echo "</th>";
+      } else {
+         echo "<th colspan='$colspan'>";
          echo "</th>";
       }
 
@@ -2158,7 +2172,6 @@ class CommonDBTM extends CommonGLPI {
          echo "</tr>";
       }
 
-
       // Close for Form
       echo "</table></div>";
       Html::closeForm();
@@ -2272,8 +2285,8 @@ class CommonDBTM extends CommonGLPI {
 
                echo "<input type='hidden' name='entities_id' value='$entity'>";
 
-            // For Rules except ruleticket and slalevel
             } else if ($this->getType() != 'User') {
+               // For Rules except ruleticket and slalevel
                echo "<input type='hidden' name='entities_id' value='0'>";
 
             }
@@ -2437,8 +2450,6 @@ class CommonDBTM extends CommonGLPI {
              && ($this->fields['users_id'] === Session::getLoginUserID())) {
             return true;
          }
-  //       if (!static::canCreate()) echo 'ii';
-  //       if (!$this->canCreateItem()) echo 'jj';
          return (static::canCreate() && $this->canCreateItem());
 
       }
@@ -2482,7 +2493,7 @@ class CommonDBTM extends CommonGLPI {
             }
             return (static::canPurge() && $this->canPurgeItem());
 
-        case CREATE :
+         case CREATE :
             // Personnal item
             if ($this->isPrivate()
                 && ($this->fields['users_id'] === Session::getLoginUserID())) {
@@ -3364,10 +3375,10 @@ class CommonDBTM extends CommonGLPI {
     * @return input the data checked
    **/
    function filterValues($display=true) {
-   // MoYo : comment it because do not understand why filtering is disable
-//       if (in_array('CommonDBRelation', class_parents($this))) {
-//          return true;
-//       }
+      // MoYo : comment it because do not understand why filtering is disable
+      // if (in_array('CommonDBRelation', class_parents($this))) {
+      //    return true;
+      // }
       //Type mismatched fields
       $fails = array();
       if (isset($this->input) && is_array($this->input) && count($this->input)) {
@@ -3463,7 +3474,7 @@ class CommonDBTM extends CommonGLPI {
                      // Copy value if check have update it
                      $this->input[$key] = $value;
                      break;
-                }
+               }
             }
 
             if ($unset) {
@@ -3685,7 +3696,7 @@ class CommonDBTM extends CommonGLPI {
                         $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                         if ($p['unicity_error_message']) {
                            if (!$fields['action_refuse']) {
-                           $show_other_messages = ($fields['action_refuse']?true:false);
+                              $show_other_messages = ($fields['action_refuse']?true:false);
                            } else {
                               $show_other_messages = true;
                            }

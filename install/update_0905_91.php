@@ -52,16 +52,9 @@ function update0905to91() {
 
 
    $backup_tables = false;
-   $newtables     = array(
-      'glpi_objectlocks',
-      'glpi_networkportfiberchannels',
-      'glpi_operatingsystemarchitectures',
-      'glpi_tasktemplates',
-      'glpi_budgettypes',
-      'glpi_apiclients',
-      'glpi_computerantiviruses',
-      'glpi_slts'
-   );
+   // table already exist but deleted during the migration
+   // not table created during the migration
+   $newtables     = array();
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -312,16 +305,16 @@ function update0905to91() {
 
    if (!TableExists('glpi_operatingsystemarchitectures')) {
       $query = "CREATE TABLE `glpi_operatingsystemarchitectures` (
-        `id` int(11) NOT NULL AUTO_INCREMENT,
-        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-        `comment` text COLLATE utf8_unicode_ci,
-        `date_mod` datetime DEFAULT NULL,
-        `date_creation` datetime DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        KEY `name` (`name`),
-        KEY `date_mod` (`date_mod`),
-        KEY `date_creation` (`date_creation`)
-      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date_creation` (`date_creation`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.1 add table glpi_operatingsystemarchitectures");
    }
 
@@ -358,16 +351,16 @@ function update0905to91() {
 
    if (!TableExists('glpi_budgettypes')) {
       $query = "CREATE TABLE `glpi_budgettypes` (
-        `id` int(11) NOT NULL AUTO_INCREMENT,
-        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-        `comment` text COLLATE utf8_unicode_ci,
-        `date_mod` datetime DEFAULT NULL,
-        `date_creation` datetime DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        KEY `name` (`name`),
-        KEY `date_mod` (`date_mod`),
-        KEY `date_creation` (`date_creation`)
-      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date_creation` (`date_creation`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "add table glpi_budgettypes");
    }
 
@@ -408,10 +401,12 @@ function update0905to91() {
                   PRIMARY KEY (`id`),
                   KEY `date_mod` (`date_mod`),
                   KEY `is_active` (`is_active`)
-                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "9.1 add table glpi_apiclients");
+
       $query = "INSERT INTO `glpi_apiclients`
-                VALUES (1, 0, 1, 'full access from localhost', NOW(), 1, INET_ATON('127.0.0.1'), INET_ATON('127.0.0.1'), '::1', '', NULL, 0, NULL);";
+                VALUES (1, 0, 1, 'full access from localhost', NOW(), 1, INET_ATON('127.0.0.1'),
+                        INET_ATON('127.0.0.1'), '::1', '', NULL, 0, NULL);";
       $DB->queryOrDie($query, "9.1 insert first line into table glpi_apiclients");
    }
 
@@ -491,6 +486,7 @@ function update0905to91() {
          case 'glpi_tickettemplatepredefinedfields' :
             $columns = array('num', 'value', 'tickettemplates_id');
             break;
+
          default :
             $columns = array('num', 'tickettemplates_id');
             break;
@@ -557,7 +553,7 @@ function update0905to91() {
 
 
    /************** Add more fields to software licenses */
-   $new = $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
+   $migration->addField("glpi_softwarelicenses", "is_deleted", "bool");
    $migration->addField("glpi_softwarelicenses", "locations_id", "integer");
    $migration->addField("glpi_softwarelicenses", "users_id_tech", "integer");
    $migration->addField("glpi_softwarelicenses", "users_id", "integer");
@@ -598,36 +594,36 @@ function update0905to91() {
    /************* Add antivirus table */
    if (!TableExists('glpi_computerantiviruses')) {
       $query = "CREATE TABLE `glpi_computerantiviruses` (
-        `id` int(11) NOT NULL AUTO_INCREMENT,
-        `computers_id` int(11) NOT NULL DEFAULT '0',
-        `name` varchar(255) DEFAULT NULL,
-        `manufacturers_id` int(11) NOT NULL DEFAULT '0',
-        `antivirus_version` varchar(255) DEFAULT NULL,
-        `signature_version` varchar(255) DEFAULT NULL,
-        `is_active` tinyint(1) NOT NULL DEFAULT '0',
-        `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-        `is_uptodate` tinyint(1) NOT NULL DEFAULT '0',
-        `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
-        `date_expiration` datetime DEFAULT NULL,
-        `date_mod` datetime DEFAULT NULL,
-        `date_creation` datetime DEFAULT NULL,
-        PRIMARY KEY (`id`),
-        KEY `name` (`name`),
-        KEY `antivirus_version` (`antivirus_version`),
-        KEY `signature_version` (`signature_version`),
-        KEY `is_active` (`is_active`),
-        KEY `is_uptodate` (`is_uptodate`),
-        KEY `is_dynamic` (`is_dynamic`),
-        KEY `is_deleted` (`is_deleted`),
-        KEY `computers_id` (`computers_id`),
-        KEY `date_expiration` (`date_expiration`),
-        KEY `date_mod` (`date_mod`),
-        KEY `date_creation` (`date_creation`)
-      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `computers_id` int(11) NOT NULL DEFAULT '0',
+                  `name` varchar(255) DEFAULT NULL,
+                  `manufacturers_id` int(11) NOT NULL DEFAULT '0',
+                  `antivirus_version` varchar(255) DEFAULT NULL,
+                  `signature_version` varchar(255) DEFAULT NULL,
+                  `is_active` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_uptodate` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+                  `date_expiration` datetime DEFAULT NULL,
+                  `date_mod` datetime DEFAULT NULL,
+                  `date_creation` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `antivirus_version` (`antivirus_version`),
+                  KEY `signature_version` (`signature_version`),
+                  KEY `is_active` (`is_active`),
+                  KEY `is_uptodate` (`is_uptodate`),
+                  KEY `is_dynamic` (`is_dynamic`),
+                  KEY `is_deleted` (`is_deleted`),
+                  KEY `computers_id` (`computers_id`),
+                  KEY `date_expiration` (`date_expiration`),
+                  KEY `date_mod` (`date_mod`),
+                  KEY `date_creation` (`date_creation`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
       $DB->queryOrDie($query, "Add antivirus table");
    }
 
-   if ($new) {
+   if (countElementsInTable("glpi_profilerights", "`name` = 'license'") == 0) {
       //new right for software license
       //copy the software right value to the new license right
       foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {
@@ -738,7 +734,8 @@ function update0905to91() {
                                 (`id`, `name`,`entities_id`, `is_recursive`, `type`, `comment`,
                                  `number_time`, `date_mod`, `definition_time`,
                                  `end_of_working_day`, `date_creation`, `slas_id`)
-                         VALUES ('".$data['id']."', '".$data['name']."', '".$data['entities_id']."',
+                         VALUES ('".$data['id']."', '".Toolbox::addslashes_deep($data['name'])."',
+                                 '".$data['entities_id']."',
                                  '".$data['is_recursive']."', '".SLT::TTR."',
                                  '".addslashes($data['comment'])."', '".$data['resolution_time']."',
                                  '".$data['date_mod']."',
@@ -750,6 +747,9 @@ function update0905to91() {
       }
 
       // Delete deprecated fields of SLA
+      // save table before delete fields
+      $migration->copyTable('glpi_slas', 'backup_glpi_slas');
+
       foreach (array('number_time', 'definition_time',
                      'end_of_working_day') as $field) {
          $migration->dropField('glpi_slas', $field);
@@ -757,18 +757,24 @@ function update0905to91() {
 
       // Slalevels changes
       $migration->changeField('glpi_slalevels', 'slas_id', 'slts_id', 'integer');
+      $migration->migrationOneTable('glpi_slalevels');
       $migration->dropKey('glpi_slalevels', 'slas_id');
       $migration->addKey('glpi_slalevels', 'slts_id');
 
       // Ticket changes
       $migration->changeField("glpi_tickets", "slas_id", "slts_ttr_id", "integer");
+      $migration->migrationOneTable('glpi_slalevels');
       $migration->dropKey('glpi_tickets', 'slas_id');
-      $migration->dropKey('glpi_tickets', 'slts_ttr_id');
+      $migration->addKey('glpi_tickets', 'slts_ttr_id');
 
       $migration->addField("glpi_tickets", "slts_tto_id", "integer", array('after' => 'slts_ttr_id'));
       $migration->addField("glpi_tickets", "time_to_own", "datetime", array('after' => 'due_date'));
       $migration->addKey('glpi_tickets', 'slts_tto_id');
       $migration->addKey('glpi_tickets', 'time_to_own');
+      $migration->changeField('glpi_tickets', 'slalevels_id', 'ttr_slalevels_id', 'integer');
+      $migration->migrationOneTable('glpi_tickets');
+      $migration->dropKey('glpi_tickets', 'slalevels_id');
+      $migration->addKey('glpi_tickets', 'ttr_slalevels_id');
 
       // Unique key for slalevel_ticket
       $migration->addKey('glpi_slalevels_tickets', array('tickets_id', 'slalevels_id'),
@@ -848,7 +854,7 @@ function update0905to91() {
    $query = "UPDATE `glpi_entities`
              SET `autoclose_delay` = 0
              WHERE `autoclose_delay` = '-1'
-               AND `id` = 0";
+                   AND `id` = 0";
    $DB->queryOrDie($query, "glpi_entities root_entity change autoclose_delay value from -1 to 0");
 
 

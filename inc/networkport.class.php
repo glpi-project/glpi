@@ -158,7 +158,7 @@ class NetworkPort extends CommonDBChild {
    **/
    function switchInstantiationType($new_instantiation_type) {
 
-     // First, check if the new instantiation is a valid one ...
+      // First, check if the new instantiation is a valid one ...
       if (!in_array($new_instantiation_type, self::getNetworkPortInstantiations())) {
          return false;
       }
@@ -186,6 +186,16 @@ class NetworkPort extends CommonDBChild {
       return true;
    }
 
+   /**
+    * @see CommonDBTM::prepareInputForUpdate
+    */
+   function prepareInputForUpdate($input) {
+      return $this->splitInputForElements($input);
+   }
+
+   /**
+    * @see CommonDBTM::post_updateItem
+    */
    function post_updateItem($history=1) {
       global $DB;
 
@@ -210,6 +220,8 @@ class NetworkPort extends CommonDBChild {
          }
       }
       parent::post_updateItem($history);
+
+      $this->updateDependencies(!$this->input['_no_history']);
    }
 
 
@@ -249,6 +261,8 @@ class NetworkPort extends CommonDBChild {
       $this->input_for_NetworkName        = array();
       $this->input_for_NetworkPortConnect = array();
 
+      $this->getEmpty();
+
       foreach ($input as $field => $value) {
          if (array_key_exists($field, $this->fields)) {
             continue;
@@ -283,14 +297,14 @@ class NetworkPort extends CommonDBChild {
     *
     * @see splitInputForElements() for preparing the input
    **/
-   function updateDependencies($history=1) {
+   function updateDependencies($history=true) {
 
       $instantiation = $this->getInstantiation();
       if (($instantiation !== false)
           && (count($this->input_for_instantiation) > 0)) {
          $this->input_for_instantiation['networkports_id'] = $this->getID();
          if ($instantiation->isNewID($instantiation->getID())) {
-            $instantiation->add($this->input_for_instantiation, $history);
+            $instantiation->add($this->input_for_instantiation, [], $history);
          } else {
             $instantiation->update($this->input_for_instantiation, $history);
          }
@@ -317,7 +331,7 @@ class NetworkPort extends CommonDBChild {
 
             if ($empty_networkName) {
                // If the NetworkName is empty, then delete it !
-               $network_name->delete($this->input_for_NetworkName, $history);
+               $network_name->delete($this->input_for_NetworkName, true, $history);
             } else {
                // Else, update it
                $network_name->update($this->input_for_NetworkName, $history);
@@ -328,7 +342,7 @@ class NetworkPort extends CommonDBChild {
             if (!$empty_networkName) { // Only create a NetworkName if it is not empty
                $this->input_for_NetworkName['itemtype'] = 'NetworkPort';
                $this->input_for_NetworkName['items_id'] = $this->getID();
-               $network_name->add($this->input_for_NetworkName, $history);
+               $network_name->add($this->input_for_NetworkName, [], $history);
             }
          }
       }
@@ -339,7 +353,7 @@ class NetworkPort extends CommonDBChild {
              && isset($this->input_for_NetworkPortConnect['networkports_id_2'])
              && !empty($this->input_for_NetworkPortConnect['networkports_id_2'])) {
                $nn  = new NetworkPort_NetworkPort();
-               $nn->add($this->input_for_NetworkPortConnect);
+               $nn->add($this->input_for_NetworkPortConnect, [], $history);
          }
       }
       unset($this->input_for_NetworkPortConnect);
@@ -347,13 +361,25 @@ class NetworkPort extends CommonDBChild {
    }
 
 
+   /**
+    * @see CommonDBTM::prepareInputForAdd
+    */
    function prepareInputForAdd($input) {
 
       if (isset($input["logical_number"]) && (strlen($input["logical_number"]) == 0)) {
          unset($input["logical_number"]);
       }
 
+      $input = $this->splitInputForElements($input);
+
       return parent::prepareInputForAdd($input);
+   }
+
+   /**
+    * @see CommonDBTM::post_addItem
+    */
+   function post_addItem() {
+      $this->updateDependencies(!$this->input['_no_history']);
    }
 
 
@@ -373,7 +399,7 @@ class NetworkPort extends CommonDBChild {
 
       $names = new NetworkName();
       $names->cleanDBonItemDelete ($this->getType(), $this->getID());
-  }
+   }
 
 
    /**
@@ -620,7 +646,6 @@ class NetworkPort extends CommonDBChild {
             $c_dynamic->setHTMLClass('center');
          }
 
-
          if ($display_options['characteristics']) {
             if (empty($portType)) {
                NetworkPortMigration::getMigrationInstantiationHTMLTableHeaders($t_group, $c_instant,
@@ -665,7 +690,6 @@ class NetworkPort extends CommonDBChild {
                       ORDER BY `name`,
                                `logical_number`";
          }
-
 
          if ($result = $DB->query($query)) {
             echo "<div class='spaced'>";
@@ -748,7 +772,7 @@ class NetworkPort extends CommonDBChild {
 
                }
 
-              $canedit = $save_canedit;
+               $canedit = $save_canedit;
             }
             echo "</div>";
          }
@@ -924,7 +948,6 @@ class NetworkPort extends CommonDBChild {
       $tab[88]['massiveaction'] = false;
       $tab[88]['joinparams']    = array('beforejoin' => $netportjoin);
 
-
       return $tab;
    }
 
@@ -1031,16 +1054,16 @@ class NetworkPort extends CommonDBChild {
          $portid                 = $np->addToDB();
 
          if ($instantiation !== false) {
-             $input = array();
-             $input["networkports_id"] = $portid;
-             unset($instantiation->fields["id"]);
-             unset($instantiation->fields["networkports_id"]);
-             foreach ($instantiation->fields as $key => $val) {
-                 if (!empty($val)) {
-                     $input[$key] = $val;
-                 }
-             }
-             $instantiation->add($input);
+            $input = array();
+            $input["networkports_id"] = $portid;
+            unset($instantiation->fields["id"]);
+            unset($instantiation->fields["networkports_id"]);
+            foreach ($instantiation->fields as $key => $val) {
+               if (!empty($val)) {
+                  $input[$key] = $val;
+               }
+            }
+            $instantiation->add($input);
             unset($instantiation);
          }
 
@@ -1095,7 +1118,7 @@ class NetworkPort extends CommonDBChild {
          }
          return $aliases.$aggregates;
       }
-     return '';
+      return '';
    }
 
 
@@ -1141,4 +1164,3 @@ class NetworkPort extends CommonDBChild {
    }
 
 }
-?>

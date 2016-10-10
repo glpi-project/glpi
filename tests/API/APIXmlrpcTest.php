@@ -101,7 +101,10 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey(0, $data); // check presence of root entity
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('myentities', $data); // check presence of first entity
+      $this->assertArrayHasKey('id', $data['myentities'][0]); // check presence of first entity
+      $this->assertEquals(0, $data['myentities'][0]['id']); // check presence of root entity
    }
 
 
@@ -156,9 +159,10 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey('id', $data);
-      $this->assertArrayHasKey('name', $data);
-      $this->assertArrayHasKey('interface', $data);
+      $this->assertArrayHasKey('active_profile', $data);
+      $this->assertArrayHasKey('id', $data['active_profile']);
+      $this->assertArrayHasKey('name', $data['active_profile']);
+      $this->assertArrayHasKey('interface', $data['active_profile']);
    }
 
 
@@ -171,11 +175,12 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey('glpiID', $data);
-      $this->assertArrayHasKey('glpiname', $data);
-      $this->assertArrayHasKey('glpiroot', $data);
-      $this->assertArrayHasKey('glpilanguage', $data);
-      $this->assertArrayHasKey('glpilist_limit', $data);
+      $this->assertArrayHasKey('session', $data);
+      $this->assertArrayHasKey('glpiID', $data['session']);
+      $this->assertArrayHasKey('glpiname', $data['session']);
+      $this->assertArrayHasKey('glpiroot', $data['session']);
+      $this->assertArrayHasKey('glpilanguage', $data['session']);
+      $this->assertArrayHasKey('glpilist_limit', $data['session']);
    }
 
 
@@ -229,7 +234,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertGreaterThanOrEqual(4, count($data));
       $this->assertArrayHasKey('id', $data[0]);
       $this->assertArrayHasKey('name', $data[0]);
-      $this->assertArrayHasKey('password', $data[0]);
+      $this->assertArrayNotHasKey('password', $data[0]);
       $this->assertArrayHasKey('is_active', $data[0]);
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
@@ -273,6 +278,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
          $this->assertArrayHasKey('id', $item);
          $this->assertArrayHasKey('name', $item);
          $this->assertArrayHasKey('entities_id', $item);
+         $this->assertArrayNotHasKey('password', $item);
          $this->assertArrayHasKey('links', $item);
          $this->assertFalse(is_numeric($item['entities_id'])); // for expand_dropdowns
          $this->assertArrayHasKey('_logs', $item); // with_logs == true
@@ -308,10 +314,43 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
                                              'itemtype'      => 'User',
                                              'sort'          => 19,
                                              'order'         => 'DESC',
-                                             'range'         => '0-2',
+                                             'range'         => '0-10',
                                              'forcedisplay'  => '81',
                                              'rawdata'       => true]);
       $this->assertEquals(200, $res->getStatusCode());
+
+      $data = xmlrpc_decode($res->getBody());
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('totalcount', $data);
+      $this->assertArrayHasKey('count', $data);
+      $this->assertArrayHasKey('sort', $data);
+      $this->assertArrayHasKey('order', $data);
+      $this->assertArrayHasKey('rawdata', $data);
+      $this->assertEquals(8, count($data['rawdata']));
+
+      $first_user = array_shift($data['data']);
+      $second_user = array_shift($data['data']);
+      $this->assertArrayHasKey(81, $first_user);
+      $this->assertArrayHasKey(81, $second_user);
+      $first_user_date_mod = strtotime($first_user[19]);
+      $second_user_date_mod = strtotime($second_user[19]);
+      $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
+   }
+
+
+   /**
+     * @depends testInitSessionCredentials
+     */
+   public function testListSearchPartial($session_token) {
+      // test retrieve partial users
+      $res = $this->doHttpRequest('search', ['session_token' => $session_token,
+                                             'itemtype'      => 'User',
+                                             'sort'          => 19,
+                                             'order'         => 'DESC',
+                                             'range'         => '0-2',
+                                             'forcedisplay'  => '81',
+                                             'rawdata'       => true]);
+      $this->assertEquals(206, $res->getStatusCode());
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);

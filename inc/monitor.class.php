@@ -117,7 +117,6 @@ class Monitor extends CommonDBTM {
    function post_addItem() {
       global $DB;
 
-
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Devices
@@ -305,7 +304,7 @@ class Monitor extends CommonDBTM {
       Dropdown::showYesNo("have_speaker", $this->fields["have_speaker"]);
       echo "</td></tr>";
 
-     // sub-d?
+      // sub-d?
       echo "<tr><td width='20%'>".__('Sub-D')."</td><td width='30%'>";
       Dropdown::showYesNo("have_subd", $this->fields["have_subd"]);
       // bnc?
@@ -505,7 +504,6 @@ class Monitor extends CommonDBTM {
       $tab[23]['name']           = __('Manufacturer');
       $tab[23]['datatype']       = 'dropdown';
 
-
       $tab[24]['table']          = 'glpi_users';
       $tab[24]['field']          = 'name';
       $tab[24]['linkfield']      = 'users_id_tech';
@@ -541,4 +539,3 @@ class Monitor extends CommonDBTM {
    }
 
 }
-?>

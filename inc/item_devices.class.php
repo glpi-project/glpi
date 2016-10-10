@@ -49,7 +49,7 @@ class Item_Devices extends CommonDBRelation {
    static public $items_id_1            = 'items_id';
    static public $mustBeAttached_1      = false;
    static public $take_entity_1         = false ;
-//    static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
+   // static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
 
    static protected $notable            = true;
 
@@ -634,7 +634,6 @@ class Item_Devices extends CommonDBRelation {
 
          }
 
-
          if (Session::haveRight('device', UPDATE)) {
             $mode = __s('Update');
          } else {
@@ -677,8 +676,6 @@ class Item_Devices extends CommonDBRelation {
          }
          $content = implode('<br>', $content);
          $current_row->addCell($document_column, $content, $spec_cell);
-
-
 
          if ($item->isDynamic()) {
             $previous_cell = $current_row->addCell($dynamics_column,

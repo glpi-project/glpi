@@ -325,4 +325,3 @@ class ProfileRight extends CommonDBChild {
    }
 
 }
-?>

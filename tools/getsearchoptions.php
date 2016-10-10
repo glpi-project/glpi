@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -38,7 +38,7 @@
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
 // Ensure current directory when run from crontab
-chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
+chdir(__DIR__);
 
 if (isset($_SERVER['argv'])) {
    for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {

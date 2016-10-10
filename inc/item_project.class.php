@@ -126,7 +126,6 @@ class Item_Project extends CommonDBRelation{
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
-
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='projectitem_form$rand' id='projectitem_form$rand' method='post'
@@ -310,11 +309,10 @@ class Item_Project extends CommonDBRelation{
             break;
 
          default :
-         // Not defined and used now
-//            Project::showListForItem($item);
+            // Not defined and used now
+            // Project::showListForItem($item);
       }
       return true;
    }
 
 }
-?>

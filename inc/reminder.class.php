@@ -580,7 +580,6 @@ class Reminder extends CommonDBTM {
 
       $input["begin"] = $input["end"] = "NULL";
 
-
       if (isset($input['plan'])) {
          if (!empty($input['plan']["begin"])
              && !empty($input['plan']["end"])
@@ -677,7 +676,6 @@ class Reminder extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-
       $this->initForm($ID, $options);
       $rand = mt_rand();
 
@@ -695,7 +693,7 @@ class Reminder extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td colspan='2'>".__('Title')."</td>";
       echo "<td colspan='2'>";
       if (!$ID) {
-      echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
+         echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>\n";
       }
       if ($canedit) {
          Html::autocompletionTextField($this, "name",
@@ -765,13 +763,13 @@ class Reminder extends CommonDBTM {
                                'itemtype' => $this->getType(),
                                'items_id' => $this->getID());
 
-               if ($ID
-                   && $this->fields["is_planned"]) {
-                  $params['begin'] = $this->fields["begin"];
-                  $params['end']   = $this->fields["end"];
-               }
+            if ($ID
+                && $this->fields["is_planned"]) {
+               $params['begin'] = $this->fields["begin"];
+               $params['end']   = $this->fields["end"];
+            }
 
-               Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
+            Ajax::updateItemJsCode("viewplan$rand", $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
             echo "}";
             echo "</script>\n";
          }
@@ -947,42 +945,44 @@ class Reminder extends CommonDBTM {
 
          if ($DB->numrows($result2) > 0) {
             for ($i=0 ; $data=$DB->fetch_assoc($result2) ; $i++) {
-               $key                               = $data["begin"]."$$"."Reminder"."$$".$data["id"];
-               $interv[$key]['color']             = $options['color'];
-               $interv[$key]['event_type_color']  = $options['event_type_color'];
-               $interv[$key]["itemtype"]          = 'Reminder';
-               $interv[$key]["reminders_id"]      = $data["id"];
-               $interv[$key]["id"]                = $data["id"];
+               if ($reminder->getFromDB($data["id"])
+                   && $reminder->canViewItem()) {
+                  $key                               = $data["begin"]."$$"."Reminder"."$$".$data["id"];
+                  $interv[$key]['color']             = $options['color'];
+                  $interv[$key]['event_type_color']  = $options['event_type_color'];
+                  $interv[$key]["itemtype"]          = 'Reminder';
+                  $interv[$key]["reminders_id"]      = $data["id"];
+                  $interv[$key]["id"]                = $data["id"];
 
-               if (strcmp($begin,$data["begin"]) > 0) {
-                  $interv[$key]["begin"] = $begin;
-               } else {
-                  $interv[$key]["begin"] = $data["begin"];
+                  if (strcmp($begin,$data["begin"]) > 0) {
+                     $interv[$key]["begin"] = $begin;
+                  } else {
+                     $interv[$key]["begin"] = $data["begin"];
+                  }
+
+                  if (strcmp($end,$data["end"]) < 0) {
+                     $interv[$key]["end"] = $end;
+                  } else {
+                     $interv[$key]["end"] = $data["end"];
+                  }
+                  $interv[$key]["name"] = Html::resume_text($data["name"], $CFG_GLPI["cut"]);
+                  $interv[$key]["text"]
+                     = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
+                                         $CFG_GLPI["cut"]);
+
+                  $interv[$key]["users_id"]   = $data["users_id"];
+                  $interv[$key]["state"]      = $data["state"];
+                  $interv[$key]["state"]      = $data["state"];
+                  $interv[$key]["url"]        = $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
+                                                                      $data['id'];
+                  $interv[$key]["ajaxurl"]    = $CFG_GLPI["root_doc"]."/ajax/planning.php".
+                                                                      "?action=edit_event_form".
+                                                                      "&itemtype=Reminder".
+                                                                      "&id=".$data['id'].
+                                                                      "&url=".$interv[$key]["url"];
+
+                  $interv[$key]["editable"]   = $reminder->canUpdateItem();
                }
-
-               if (strcmp($end,$data["end"]) < 0) {
-                  $interv[$key]["end"] = $end;
-               } else {
-                  $interv[$key]["end"] = $data["end"];
-               }
-               $interv[$key]["name"] = Html::resume_text($data["name"], $CFG_GLPI["cut"]);
-               $interv[$key]["text"]
-                  = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
-                                      $CFG_GLPI["cut"]);
-
-               $interv[$key]["users_id"]   = $data["users_id"];
-               $interv[$key]["state"]      = $data["state"];
-               $interv[$key]["state"]      = $data["state"];
-               $interv[$key]["url"]        = $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".
-                                                                   $data['id'];
-               $interv[$key]["ajaxurl"]    = $CFG_GLPI["root_doc"]."/ajax/planning.php".
-                                                                   "?action=edit_event_form".
-                                                                   "&itemtype=Reminder".
-                                                                   "&id=".$data['id'].
-                                                                   "&url=".$interv[$key]["url"];
-
-               $reminder->getFromDB($data["id"]);
-               $interv[$key]["editable"]   = $reminder->canUpdateItem();
             }
          }
       }
@@ -1039,7 +1039,6 @@ class Reminder extends CommonDBTM {
       $html.= "<a id='reminder_".$val["reminders_id"].$rand."' href='".
              $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'>";
 
-   
       $html.= $users_id;
       $html.= "</a>";
       $recall = '';
@@ -1053,14 +1052,13 @@ class Reminder extends CommonDBTM {
          }
       }
 
-
       if ($complete) {
          $html.= "<span>".Planning::getState($val["state"])."</span><br>";
          $html.= "<div class='event-description'>".$val["text"].$recall."</div>";
       } else {
          $html.= Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
                                    ".$val["text"].$recall,
-                                   array('applyto' => "reminder_".$val["reminders_id"].$rand, 
+                                   array('applyto' => "reminder_".$val["reminders_id"].$rand,
                                          'display' => false));
       }
       return $html;
@@ -1389,4 +1387,3 @@ class Reminder extends CommonDBTM {
    }
 
 }
-?>

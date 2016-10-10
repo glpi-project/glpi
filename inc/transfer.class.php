@@ -506,7 +506,6 @@ class Transfer extends CommonDBTM {
       $this->item_search['NetworkEquipment']
             = $this->createSearchConditionUsingArray($this->needtobe_transfer['NetworkEquipment']);
 
-
       // Devices
       if ($this->options['keep_device']) {
          foreach (Item_Devices::getConcernedItems() as $itemtype) {
@@ -563,7 +562,6 @@ class Transfer extends CommonDBTM {
          $this->item_recurs[$itemtype]
                = $this->createSearchConditionUsingArray($this->noneedtobe_transfer[$itemtype]);
       }
-
 
       // Tickets
       if ($this->options['keep_ticket']) {
@@ -1826,8 +1824,7 @@ class Transfer extends CommonDBTM {
                         $DB->query($query);
                      }
 
-                  // Same Item -> update links
-                  } else {
+                  } else { // Same Item -> update links
                      // Copy Item -> copy links
                      if ($item_ID != $newcontractID) {
                         $query = "INSERT INTO `glpi_contracts_items`
@@ -1901,7 +1898,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
-            // Foreach get item
+               // Foreach get item
                while ($data = $DB->fetch_assoc($result)) {
                   $need_clean_process = false;
                   $item_ID            = $data['documents_id'];
@@ -1997,8 +1994,7 @@ class Transfer extends CommonDBTM {
                         $DB->query($query);
                      }
 
-                  // Same Item -> update links
-                  } else {
+                  } else { // Same Item -> update links
                      // Copy Item -> copy links
                      if ($item_ID != $newdocID) {
                         $query = "INSERT INTO `glpi_documents_items`
@@ -2315,7 +2311,9 @@ class Transfer extends CommonDBTM {
       global $DB;
 
       $job   = new Ticket();
-      $query = "SELECT *
+      $rel   = new Item_Ticket();
+
+      $query = "SELECT `glpi_tickets`.*, `glpi_items_tickets`.`id` as _relid
                 FROM `glpi_tickets`
                 LEFT JOIN `glpi_items_tickets`
                    ON `glpi_items_tickets`.`tickets_id` = `glpi_tickets`.`id`
@@ -2332,12 +2330,18 @@ class Transfer extends CommonDBTM {
                      $input                = $this->transferHelpdeskAdditionalInformations($data);
                      $input['id']          = $data['id'];
                      $input['entities_id'] = $this->to;
+
+                     $job->update($input);
+
+                     $input = array();
+                     $input['id']          = $data['_relid'];
                      $input['items_id']    = $newID;
                      $input['itemtype']    = $itemtype;
 
-                     $job->update($input);
+                     $rel->update($input);
+
                      $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
-                     $this->transferTaskCategory('Ticket', $input['id'], $input['id']);
+                     $this->transferTaskCategory('Ticket', $data['id'], $data['id']);
                   }
                   break;
 
@@ -2345,9 +2349,7 @@ class Transfer extends CommonDBTM {
                case 1 :
                   // Same Item / Copy Item : keep and clean ref
                   while ($data = $DB->fetch_assoc($result)) {
-                     $job->update(array('id'       => $data['id'],
-                                        'itemtype' => 0,
-                                        'items_id' => 0));
+                     $rel->delete(array('id'       => $data['relid']));
                      $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
                   }
                   break;
@@ -2527,9 +2529,9 @@ class Transfer extends CommonDBTM {
       $input               = array();
       $suppliers_id_assign = 0;
 
-//       if ($data['suppliers_id_assign'] > 0) {
-//          $suppliers_id_assign = $this->transferSingleSupplier($data['suppliers_id_assign']);
-//       }
+      // if ($data['suppliers_id_assign'] > 0) {
+      //   $suppliers_id_assign = $this->transferSingleSupplier($data['suppliers_id_assign']);
+      // }
 
       // Transfer ticket category
       $catid = 0;
@@ -2892,8 +2894,7 @@ class Transfer extends CommonDBTM {
                         $DB->query($query);
                      }
 
-                  // Same Item -> update links
-                  } else {
+                  } else { // Same Item -> update links
                      // Copy Item -> copy links
                      if ($item_ID != $newcontactID) {
                         $query = "INSERT INTO `glpi_contacts_suppliers`
@@ -3005,8 +3006,7 @@ class Transfer extends CommonDBTM {
                $result = $DB->query($query);
             }
 
-         // Keep devices
-         default :
+         default : // Keep devices
             foreach (Item_Devices::getItemAffinities($itemtype) as $itemdevicetype) {
                $itemdevicetable = getTableForItemType($itemdevicetype);
                $devicetype      = $itemdevicetype::getDeviceType();
@@ -3216,8 +3216,8 @@ class Transfer extends CommonDBTM {
                         }
                      }
                   }
-               }
 
+            }
          }
       }
    }
@@ -3463,7 +3463,7 @@ class Transfer extends CommonDBTM {
    }
 
 
-/// Display items to transfers
+   // Display items to transfers
    function showTransferList() {
       global $DB, $CFG_GLPI;
 

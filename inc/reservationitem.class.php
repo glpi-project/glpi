@@ -107,14 +107,6 @@ class ReservationItem extends CommonDBChild {
    }
 
 
-   /**
-    * @since 0.84
-   **/
-//   static function canView() {
-//      return true;
-//   }
-
-
    // From CommonDBTM
    /**
     * Retrieve an item from the database for a specific item
@@ -290,11 +282,11 @@ class ReservationItem extends CommonDBChild {
          echo "</td>";
       } else {
          echo "<td class='center'>";
-               Html::showSimpleForm(static::getFormURL(), 'add', __('Authorize reservations'),
-                                    array('items_id'     => $item->getID(),
-                                          'itemtype'     => $item->getType(),
-                                          'entities_id'  => $item->getEntityID(),
-                                          'is_recursive' => $item->isRecursive(),));
+         Html::showSimpleForm(static::getFormURL(), 'add', __('Authorize reservations'),
+                              array('items_id'     => $item->getID(),
+                                    'itemtype'     => $item->getType(),
+                                    'entities_id'  => $item->getEntityID(),
+                                    'is_recursive' => $item->isRecursive(),));
          echo "</td>";
       }
       echo "</tr></table>";
@@ -387,7 +379,6 @@ class ReservationItem extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
       echo "<th colspan='3'>".__('Find a free item in a specific period')."</th></tr>";
 
-
       echo "<tr class='tab_bg_2'><td>".__('Start date')."</td><td>";
       Html::showDateTimeField("reserve[begin]", array('value'      =>  $_POST['reserve']["begin"],
                                                       'maybeempty' => false));
@@ -452,7 +443,6 @@ class ReservationItem extends CommonDBChild {
       echo "</table>";
       Html::closeForm();
       echo "</div>";
-
 
       // GET method passed to form creation
       echo "<div id='nosearch' class='center'>";
@@ -768,4 +758,3 @@ class ReservationItem extends CommonDBChild {
    }
 
 }
-?>

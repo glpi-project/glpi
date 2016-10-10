@@ -398,7 +398,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $number = $DB->result($result,0,0);
       }
 
-
       echo "<div class='center'>";
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
@@ -467,11 +466,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                            sprintf(__('%1$s = %2$s'),
                                                   Software::getTypeName(1), $title));
 
-
             $sort_img = "<img src='".$CFG_GLPI["root_doc"]."/pics/".
                           ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt=''
                           title=''>";
-
 
             if ($canedit) {
                $rand = mt_rand();
@@ -715,7 +712,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $result = $DB->query($query);
       $i      = 0;
 
-
       if ((empty($withtemplate) || ($withtemplate != 2))
           && $canedit) {
          echo "<form method='post' action='".
@@ -784,7 +780,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             Html::showMassiveActions($massiveactionparams);
          }
          echo "<table class='tab_cadre_fixehov'>";
-
 
          $header_begin  = "<tr>";
          $header_top    = '';
@@ -1052,7 +1047,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    private static function displaySoftsByLicense($data, $computers_id, $withtemplate, $canedit) {
       global $CFG_GLPI;
 
-
       $ID = $data['linkID'];
 
       $multiple  = false;
@@ -1143,9 +1137,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-  function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-     $nb = 0;
+      $nb = 0;
       switch ($item->getType()) {
          case 'Software' :
             if (!$withtemplate) {
@@ -1211,4 +1205,3 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 }
-?>

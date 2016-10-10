@@ -179,7 +179,6 @@ abstract class CommonDevice extends CommonDropdown {
       }
       $entities .= ")";
 
-
       // RELATION : device -> item_device -> item
       $linktype  = static::getItem_DeviceType();
       $linktable = getTableForItemType($linktype);

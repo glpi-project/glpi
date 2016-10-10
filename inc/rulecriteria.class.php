@@ -639,4 +639,3 @@ class RuleCriteria extends CommonDBChild {
    }
 
 }
-?>

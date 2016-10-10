@@ -320,7 +320,7 @@ class RuleCollection extends CommonDBTM {
    }
 
 
-  /**
+   /**
     * Indicates if the rule can be affected to an entity or if it's global
    **/
    function isRuleRecursive() {
@@ -329,7 +329,7 @@ class RuleCollection extends CommonDBTM {
       return $rule->maybeRecursive();
    }
 
-  /**
+   /**
     * Indicates if the rule use conditions
    **/
    function isRuleUseConditions() {
@@ -338,7 +338,7 @@ class RuleCollection extends CommonDBTM {
       return $rule->useConditions();
    }
 
-  /**
+   /**
     * Indicates if the rule use conditions
    **/
    function getDefaultRuleConditionForList() {
@@ -395,7 +395,6 @@ class RuleCollection extends CommonDBTM {
    **/
    function showListRules($target, $options=array()) {
       global $CFG_GLPI;
-
 
       $p['inherited'] = 1;
       $p['childrens'] = 0;
@@ -1278,7 +1277,6 @@ class RuleCollection extends CommonDBTM {
          echo "</td></tr>";
       }
 
-
       //display buttons
       $class = ($odd?" class='tab_bg_1' ":" class='tab_bg_2' ");
       echo "<tr $class><td colspan='3' class='center'>";
@@ -1341,7 +1339,6 @@ class RuleCollection extends CommonDBTM {
          $params   = Toolbox::addslashes_deep($current_rule);
          unset($params['rulecriteria']);
          unset($params['ruleaction']);
-
 
          if (!$item->isEntityAssign()) {
             $params['entities_id'] = 0;
@@ -1716,7 +1713,7 @@ class RuleCollection extends CommonDBTM {
       echo "<br><table class='tab_cadrehov'>";
       $this->showTestResults($rule, $output, $global_result);
       echo "</table></div>";
-}
+   }
 
 
    /**

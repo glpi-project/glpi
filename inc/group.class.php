@@ -246,8 +246,8 @@ class Group extends CommonTreeDropdown {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='9' class='middle'>".__('Comments')."</td>";
-      echo "<td class='middle' rowspan='9'>";
+      echo "<td rowspan='10' class='middle'>".__('Comments')."</td>";
+      echo "<td class='middle' rowspan='10'>";
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
@@ -819,4 +819,3 @@ class Group extends CommonTreeDropdown {
    }
 
 }
-?>

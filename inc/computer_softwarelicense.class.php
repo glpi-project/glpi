@@ -340,7 +340,6 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       $canedit         = Session::haveRightsOr("software", array(CREATE, UPDATE, DELETE, PURGE));
       $canshowcomputer = Computer::canView();
 
-
       if (isset($_GET["start"])) {
          $start = $_GET["start"];
       } else {
@@ -659,9 +658,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * @see CommonGLPI::getTabNameForItem()
    **/
-  function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-     $nb = 0;
+      $nb = 0;
       switch ($item->getType()) {
          case 'SoftwareLicense' :
             if (!$withtemplate) {
@@ -722,4 +721,3 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 }
-?>

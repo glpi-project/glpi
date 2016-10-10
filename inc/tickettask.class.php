@@ -278,7 +278,7 @@ class TicketTask  extends CommonITILTask {
 
       if ($this->isNewID($ID)) {
          echo Ticket::getSplittedSubmitButtonHtml($this->fields['tickets_id'], 'add');
-//         echo "<input type='hidden' name='id' value='$ID'>";
+         // echo "<input type='hidden' name='id' value='$ID'>";
       } else {
          if ($params['candel']
                // no dustbin in tickettask
@@ -310,4 +310,3 @@ class TicketTask  extends CommonITILTask {
       Html::closeForm();
    }
 }
-?>

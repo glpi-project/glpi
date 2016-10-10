@@ -469,7 +469,8 @@ $RELATION = array("glpi_authldaps"
 
                   "glpi_slalevels"
                         => array('glpi_slalevelactions'   => 'slalevels_id',
-                                 'glpi_tickets'           => 'slalevels_id',
+                                 'glpi_slalevelcriterias' => 'slalevels_id',
+                                 'glpi_tickets'           => 'ttr_slalevels_id',
                                  'glpi_slalevels_tickets' => 'slalevels_id'),
 
                   "glpi_slts"
@@ -656,4 +657,3 @@ $RELATION = array("glpi_authldaps"
                                            ),
                 );
 
-?>

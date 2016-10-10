@@ -236,185 +236,75 @@ class Computer extends CommonDBTM {
    function post_updateItem($history=1) {
       global $DB, $CFG_GLPI;
 
-      for ($i=0 ; $i<count($this->updates) ; $i++) {
+      $changes = [];
+      for ($i=0; $i<count($this->updates); $i++) {
          // Update contact of attached items
-         if ((($this->updates[$i] == "contact") || ($this->updates[$i] == "contact_num"))
-             && $CFG_GLPI["is_contact_autoupdate"]) {
-
-            $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
-
-            $update_done = false;
-            $updates3[0] = "contact";
-            $updates3[1] = "contact_num";
-
-            foreach ($items as $t) {
-               $query = "SELECT *
-                         FROM `glpi_computers_items`
-                         WHERE `computers_id` = '".$this->fields["id"]."'
-                               AND `itemtype` = '".$t."'
-                               AND NOT `is_deleted`";
-               if ($result = $DB->query($query)) {
-                  $resultnum = $DB->numrows($result);
-                  $item      = new $t();
-                  if ($resultnum > 0) {
-                     for ($j=0 ; $j<$resultnum ; $j++) {
-                        $tID = $DB->result($result, $j, "items_id");
-                        $item->getFromDB($tID);
-                        if (!$item->getField('is_global')) {
-                           if ($item->getField('contact') != $this->fields['contact']
-                               || ($item->getField('contact_num') != $this->fields['contact_num'])) {
-
-                              $tmp["id"]          = $item->getField('id');
-                              $tmp['contact']     = $this->fields['contact'];
-                              $tmp['contact_num'] = $this->fields['contact_num'];
-                              $item->update($tmp);
-                              $update_done        = true;
-                           }
-                        }
-                     }
+         if ($this->updates[$i] == 'contact_num' && $CFG_GLPI['is_contact_autoupdate']) {
+            $changes['contact_num'] = $this->fields['contact_num'];
+         }
+         if ($this->updates[$i] == 'contact' && $CFG_GLPI['is_contact_autoupdate']) {
+            $changes['contact'] = $this->fields['contact'];
+         }
+         // Update users and groups of attached items
+         if ($this->updates[$i] == 'users_id'
+             && $this->fields['users_id']
+             && $CFG_GLPI['is_user_autoupdate']) {
+            $changes['users_id'] = $this->fields['users_id'];
+         }
+         if ($this->updates[$i] == 'groups_id'
+             && $this->fields['groups_id']
+             && $CFG_GLPI['is_group_autoupdate']) {
+            $changes['groups_id'] = $this->fields['groups_id'];
+         }
+         // Update state of attached items
+         if (($this->updates[$i] == 'states_id')
+             && ($CFG_GLPI['state_autoupdate_mode'] < 0)) {
+            $changes['states_id'] = $this->fields['states_id'];
+         }
+         // Update loction of attached items
+         if ($this->updates[$i] == 'locations_id'
+             && $this->fields['locations_id']
+             && $CFG_GLPI['is_location_autoupdate']) {
+            $changes['locations_id'] = $this->fields['locations_id'];
+         }
+      }
+      // Propagates the changes to linked item
+      if (count($changes)) {
+         $update_done = false;
+         foreach (['Monitor', 'Peripheral', 'Phone', 'Printer'] as $t) {
+            $crit = ['FIELDS'       => ['items_id'],
+                     'itemtype'     => $t,
+                     'computers_id' => $this->fields["id"],
+                     'is_deleted'   => 0];
+            $item      = new $t();
+            foreach ($DB->request('glpi_computers_items', $crit) as $data) {
+               $tID = $data['items_id'];
+               $item->getFromDB($tID);
+               if (!$item->getField('is_global')) {
+                  $changes['id'] = $item->getField('id');
+                  if ($item->update($changes)) {
+                     $update_done = true;
                   }
                }
             }
-
-            if ($update_done) {
+         }
+         if ($update_done) {
+            if (isset($changes['contact']) || isset($changes['contact_num'])) {
                Session::addMessageAfterRedirect(
                   __('Alternate username updated. The connected items have been updated using this alternate username.'),
                   true);
             }
-         }
-
-         // Update users and groups of attached items
-         if ((($this->updates[$i] == "users_id")
-              && ($this->fields["users_id"] != 0)
-              && $CFG_GLPI["is_user_autoupdate"])
-             || (($this->updates[$i] == "groups_id")
-                 && ($this->fields["groups_id"] != 0)
-                 && $CFG_GLPI["is_group_autoupdate"])) {
-
-            $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
-
-            $update_done = false;
-            $updates4[0] = "users_id";
-            $updates4[1] = "groups_id";
-
-            foreach ($items as $t) {
-               $query = "SELECT *
-                         FROM `glpi_computers_items`
-                         WHERE `computers_id` = '".$this->fields["id"]."'
-                               AND `itemtype` = '".$t."'
-                               AND NOT `is_deleted`";
-
-               if ($result = $DB->query($query)) {
-                  $resultnum = $DB->numrows($result);
-                  $item      = new $t();
-                  if ($resultnum > 0) {
-                     for ($j=0 ; $j<$resultnum ; $j++) {
-                        $tID = $DB->result($result, $j, "items_id");
-                        $item->getFromDB($tID);
-                        if (!$item->getField('is_global')) {
-                           if (($item->getField('users_id') != $this->fields["users_id"])
-                               || ($item->getField('groups_id') != $this->fields["groups_id"])) {
-
-                              $tmp["id"] = $item->getField('id');
-
-                              if ($CFG_GLPI["is_user_autoupdate"]) {
-                                 $tmp["users_id"] = $this->fields["users_id"];
-                              }
-                              if ($CFG_GLPI["is_group_autoupdate"]) {
-                                 $tmp["groups_id"] = $this->fields["groups_id"];
-                              }
-                              $item->update($tmp);
-                              $update_done = true;
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-            if ($update_done) {
+            if (isset($changes['groups_id']) || isset($changes['users_id'])) {
                Session::addMessageAfterRedirect(
                   __('User or group updated. The connected items have been moved in the same values.'),
                   true);
             }
-         }
-
-         // Update state of attached items
-         if (($this->updates[$i] == "states_id")
-             && ($CFG_GLPI["state_autoupdate_mode"] < 0)) {
-            $items       = array('Monitor', 'Peripheral', 'Phone', 'Printer');
-            $update_done = false;
-
-            foreach ($items as $t) {
-               $query = "SELECT *
-                         FROM `glpi_computers_items`
-                         WHERE `computers_id` = '".$this->fields["id"]."'
-                               AND `itemtype` = '".$t."'
-                               AND NOT `is_deleted`";
-
-               if ($result = $DB->query($query)) {
-                  $resultnum = $DB->numrows($result);
-                  $item      = new $t();
-
-                  if ($resultnum > 0) {
-                     for ($j=0 ; $j<$resultnum ; $j++) {
-                        $tID = $DB->result($result, $j, "items_id");
-                        $item->getFromDB($tID);
-                        if (!$item->getField('is_global')) {
-                           if ($item->getField('states_id') != $this->fields["states_id"]) {
-                              $tmp["id"]        = $item->getField('id');
-                              $tmp["states_id"] = $this->fields["states_id"];
-                              $item->update($tmp);
-                              $update_done      = true;
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-            if ($update_done) {
+            if (isset($changes['states_id'])) {
                Session::addMessageAfterRedirect(
-                     __('Status updated. The connected items have been updated using this status.'),
-                     true);
+                  __('Status updated. The connected items have been updated using this status.'),
+                  true);
             }
-         }
-
-         // Update loction of attached items
-         if (($this->updates[$i] == "locations_id")
-             && ($this->fields["locations_id"] != 0)
-             && $CFG_GLPI["is_location_autoupdate"]) {
-
-            $items       = array('Monitor', 'Peripheral', 'Phone', 'Printer');
-            $update_done = false;
-            $updates2[0] = "locations_id";
-
-            foreach ($items as $t) {
-               $query = "SELECT *
-                         FROM `glpi_computers_items`
-                         WHERE `computers_id` = '".$this->fields["id"]."'
-                               AND `itemtype` = '".$t."'
-                               AND NOT `is_deleted`";
-
-               if ($result = $DB->query($query)) {
-                  $resultnum = $DB->numrows($result);
-                  $item      = new $t();
-
-                  if ($resultnum > 0) {
-                     for ($j=0 ; $j<$resultnum ; $j++) {
-                        $tID = $DB->result($result, $j, "items_id");
-                        $item->getFromDB($tID);
-                        if (!$item->getField('is_global')) {
-                           if ($item->getField('locations_id') != $this->fields["locations_id"]) {
-                              $tmp["id"]           = $item->getField('id');
-                              $tmp["locations_id"] = $this->fields["locations_id"];
-                              $item->update($tmp);
-                              $update_done         = true;
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-            if ($update_done) {
+            if (isset($changes['locations_id'])) {
                Session::addMessageAfterRedirect(
                   __('Location updated. The connected items have been moved in the same location.'),
                   true);
@@ -932,7 +822,6 @@ class Computer extends CommonDBTM {
       $tab[35]['computation']    = "(SUM(TABLE.`size`) / COUNT(TABLE.`id`))
                                     * COUNT(DISTINCT TABLE.`id`)";
 
-
       $tab[11]['table']          = 'glpi_devicenetworkcards';
       $tab[11]['field']          = 'designation';
       $tab[11]['name']           = _n('Network interface', 'Network interfaces', 1);
@@ -980,7 +869,6 @@ class Computer extends CommonDBTM {
       $tab[14]['joinparams']     = array('beforejoin'
                                           => array('table'      => 'glpi_items_devicemotherboards',
                                                    'joinparams' => $items_device_joinparams));
-
 
       $tab[15]['table']          = 'glpi_deviceharddrives';
       $tab[15]['field']          = 'designation';

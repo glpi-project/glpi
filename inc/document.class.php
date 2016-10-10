@@ -342,7 +342,7 @@ class Document extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
-//       $options['formoptions'] = " enctype='multipart/form-data'";
+      // $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
 
       $showuserlink = 0;
@@ -453,27 +453,7 @@ class Document extends CommonDBTM {
 
       $file = GLPI_DOC_DIR."/".$this->fields['filepath'];
 
-      if (!file_exists($file)) {
-         die("Error file ".$file." does not exist");
-      }
-
-      // don't download picture files, see them inline
-      $attachment = "";
-      $filename_parts = explode(".", $this->fields['filename']);
-      $extension = array_pop($filename_parts);
-      $extension = strtolower($extension);
-      if (!in_array($extension, array('jpg', 'png', 'gif', 'bmp'))) {
-         $attachment = " attachment;";
-      }
-
-      // Now send the file with header() magic
-      header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
-      header('Pragma: private'); /// IE BUG + SSL
-      header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-      header("Content-disposition:$attachment filename=\"".$this->fields['filename']."\"");
-      header("Content-type: ".$this->fields['mime']);
-
-      readfile($file) or die ("Error opening file $file");
+      Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime']);
    }
 
 
@@ -1071,7 +1051,7 @@ class Document extends CommonDBTM {
                break;
 
             case 4 :
-//                Session::addMessageAfterRedirect(__('No file specified.'),false,ERROR);
+               // Session::addMessageAfterRedirect(__('No file specified.'),false,ERROR);
                break;
          }
 
@@ -1184,9 +1164,10 @@ class Document extends CommonDBTM {
 
       if (is_dir(GLPI_UPLOAD_DIR)) {
 
+         $uploaded_files = [];
          if ($handle = opendir(GLPI_UPLOAD_DIR)) {
             while (false !== ($file = readdir($handle))) {
-               if (($file != ".") && ($file != "..")) {
+               if (($file != '.') && ($file != '..') && ($file != 'remove.txt')) {
                   $dir = self::isValidDoc($file);
                   if (!empty($dir)) {
                      $uploaded_files[$file] = $file;
@@ -1196,10 +1177,10 @@ class Document extends CommonDBTM {
             closedir($handle);
          }
 
-         if (count($uploaded_files) > 1) {
+         if (count($uploaded_files)) {
             Dropdown::showFromArray($myname, $uploaded_files, array('display_emptychoice' => true));
          } else {
-           _e('No file available');
+            _e('No file available');
          }
 
       } else {
@@ -1260,7 +1241,6 @@ class Document extends CommonDBTM {
    **/
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
-
 
       $p['name']    = 'documents_id';
       $p['entity']  = '';
@@ -1360,4 +1340,3 @@ class Document extends CommonDBTM {
    }
 
 }
-?>

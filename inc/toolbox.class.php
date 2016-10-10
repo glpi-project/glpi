@@ -106,7 +106,7 @@ class Toolbox {
                                      : ($str{0}.$str{1})).substr($str,2);
       }
       return ucfirst($str);
-    }
+   }
 
 
    /**
@@ -273,15 +273,14 @@ class Toolbox {
    **/
    static function encrypt($string, $key) {
 
-     $result = '';
-     for($i=0 ; $i<strlen($string) ; $i++) {
-       $char    = substr($string, $i, 1);
-       $keychar = substr($key, ($i % strlen($key))-1, 1);
-       $char    = chr(ord($char)+ord($keychar));
-       $result .= $char;
-     }
-
-     return base64_encode($result);
+      $result = '';
+      for($i=0 ; $i<strlen($string) ; $i++) {
+         $char    = substr($string, $i, 1);
+         $keychar = substr($key, ($i % strlen($key))-1, 1);
+         $char    = chr(ord($char)+ord($keychar));
+         $result .= $char;
+      }
+      return base64_encode($result);
    }
 
 
@@ -295,17 +294,17 @@ class Toolbox {
    **/
    static function decrypt($string, $key) {
 
-     $result = '';
-     $string = base64_decode($string);
+      $result = '';
+      $string = base64_decode($string);
 
-     for($i=0 ; $i<strlen($string) ; $i++) {
-       $char    = substr($string, $i, 1);
-       $keychar = substr($key, ($i % strlen($key))-1, 1);
-       $char    = chr(ord($char)-ord($keychar));
-       $result .= $char;
-     }
+      for($i=0 ; $i<strlen($string) ; $i++) {
+         $char    = substr($string, $i, 1);
+         $keychar = substr($key, ($i % strlen($key))-1, 1);
+         $char    = chr(ord($char)-ord($keychar));
+         $result .= $char;
+      }
 
-     return Toolbox::unclean_cross_side_scripting_deep($result);
+      return Toolbox::unclean_cross_side_scripting_deep($result);
    }
 
 
@@ -651,10 +650,11 @@ class Toolbox {
     *
     * @param $file      string: storage filename
     * @param $filename  string: file title
+    * @param $mime      string: file mime type
     *
     * @return nothing
    **/
-   static function sendFile($file, $filename) {
+   static function sendFile($file, $filename, $mime = null) {
 
       // Test securite : document in DOC_DIR
       $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
@@ -669,39 +669,53 @@ class Toolbox {
          die("Error file $file does not exist");
       }
 
-      $splitter = explode("/", $file);
-      $mime     = "application/octetstream";
+      // if $mime is defined, ignore mime type by extension
+      if($mime === null && preg_match('/\.(...)$/', $file, $regs)){
+         $mimeTypeMap = [
+            'sql' => 'text/x-sql',
+            'xml' => 'text/xml',
+            'csv' => 'text/csv',
+            'svg' => 'image/svg+xml',
+            'png' => 'image/png',
+         ];
 
-      if (preg_match('/\.(...)$/', $file, $regs)) {
-         switch ($regs[1]) {
-            case "sql" :
-               $mime = "text/x-sql";
-               break;
+         $ext = strtolower($regs[1]);
 
-            case "xml" :
-               $mime = "text/xml";
-               break;
-
-            case "csv" :
-               $mime = "text/csv";
-               break;
-
-            case "svg" :
-               $mime = "image/svg+xml";
-               break;
-
-            case "png" :
-               $mime = "image/png";
-               break;
+         if(isset($mimeTypeMap[$ext])){
+            $mime = $mimeTypeMap[$ext];
+         }else{
+            $mime = 'application/octetstream';
          }
       }
 
+      // don't download picture files, see them inline
+      $attachment = "";
+      // if not begin 'image/'
+      if(strncmp($mime, 'image/', 6) !== 0){
+         $attachment = ' attachment;';
+      }
+
+      $etag = md5_file($file);
+      $lastModified = filemtime($file);
+
       // Now send the file with header() magic
-      header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+      header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
+      header("Etag: $etag");
       header('Pragma: private'); /// IE BUG + SSL
       header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-      header("Content-disposition: filename=\"$filename\"");
+      header("Content-disposition:$attachment filename=\"$filename\"");
       header("Content-type: ".$mime);
+
+      // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
+      // http://tools.ietf.org/html/rfc7232#section-3.3
+      if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag){
+         header("HTTP/1.1 304 Not Modified");
+         exit;
+      }
+      if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified){
+         header("HTTP/1.1 304 Not Modified");
+         exit;
+      }
 
       readfile($file) or die ("Error opening file $file");
    }
@@ -876,20 +890,6 @@ class Toolbox {
       }
       echo "</tr>";
 
-      // Check for mysql extension ni php
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('MySQL Improved extension test')."</td>";
-      if (class_exists("mysqli")) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png'
-                    alt=\"". __s('Ok - the MySQLi class exist - Perfect!')."\"
-                    title=\"". __s('Ok - the MySQLi class exist - Perfect!')."\"></td>";
-      } else {
-         echo "<td class='red'>";
-         echo "<img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-               __('You must install the MySQL Improved extension for PHP.')."</td>";
-         $error = 2;
-      }
-      echo "</tr>";
-
       // session test
       echo "<tr class='tab_bg_1'><td class='b left'>".__('Sessions test')."</td>";
 
@@ -941,96 +941,81 @@ class Toolbox {
       }
       echo "</tr>";
 
-      // Test for ctype extension loaded or not (forhtmlawed)
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Test ctype functions')."</td>";
+      $extensions_to_check = [
+         'mysqli'   => [
+            'required'  => true
+         ],
+         'ctype'    => [
+            'required'  => true,
+            'function'  => ['ctype_digit']
+         ],
+         'fileinfo' => [
+            'required'  => true,
+            'class'     => 'finfo'
+         ],
+         'json'     => [
+            'required'  => true,
+            'function'  => 'json_encode'
+         ],
+         'mbstring' => [
+            'required'  => true,
+         ],
+         'zlib'     => [
+            'required'  => true,
+         ],
+         'curl'      => [
+            'required'  => true,
+         ],
+         'gd'       => [
+            'required'  => false,
+         ],
+         'ldap'       => [
+            'required'  => false,
+         ],
+         'imap'       => [
+            'required'  => false,
+         ]
+      ];
 
-      if (!function_exists('ctype_digit')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                    __("GLPI can't work correctly without the ctype functions")."></td>";
-         $error = 2;
+      //check for PHP extensions
+      foreach ($extensions_to_check as $ext => $params) {
+         $success = true;
 
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                    __s('The functionality is found - Perfect!')."\" title=\"".
-                    __s('The functionality is found - Perfect!')."\"></td>";
+         if (isset($params['function'])) {
+            if (!function_exists($func)) {
+                $success = false;
+            }
+         } elseif (isset($param['class'])) {
+            if (!class_exists($params['class'])) {
+               $success = false;
+            }
+         } else {
+            if (extension_loaded($ext)) {
+               $success = false;
+            }
+         }
+
+         echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
+         if ($success === false) {
+             $msg = sprintf(__('%s extension is installed'), $ext);
+            echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
+                    alt=\"$msg\"
+                    title=\"$msg\"></td>";
+         } else {
+            if (isset($params['required']) && $params['required'] === true) {
+               if ($error < 2) {
+                  $error = 2;
+               }
+               echo "<td class=\"red\"><img src=\"{$CFG_GLPI['root_doc']}/pics/ko_min.png\"> " . sprintf(__('%s extension is missing'), $ext) . "</td>";
+            } else {
+               if ($error < 1) {
+                  $error = 1;
+               }
+               echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/warning_min.png\"> " . sprintf(__('%s extension is not present'), $ext) . "</td>";
+            }
+         }
+         echo "</tr>";
       }
-      echo "</tr>";
-
-      // Test for fileinfo extension loaded or not
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Fileinfo extension test')."</td>";
-
-      if (!class_exists('finfo')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                    __("Fileinfo extension of your parser PHP is not installed")."</td>";
-         $error = 2;
-
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                    __s('The functionality is found - Perfect!')."\" title=\"".
-                    __s('The functionality is found - Perfect!')."\"></td>";
-      }
-      echo "</tr>";
-
-      // Test for json_encode function.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Test json functions')."</td>";
-
-      if (!function_exists('json_encode') || !function_exists('json_decode')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                    __("GLPI can't work correctly without the json_encode and json_decode functions").
-                   "</td>";
-         $error = 2;
-
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-               __s('The functionality is found - Perfect!'). "\" title=\"".
-               __s('The functionality is found - Perfect!')."\"></td>";
-      }
-      echo "</tr>";
-
-      // Test for mbstring extension.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Mbstring extension test')."</td>";
-
-      if (!extension_loaded('mbstring')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-               __('Mbstring extension of your parser PHP is not installed')."></td>";
-         $error = 2;
-
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-               __s('The functionality is found - Perfect!'). "\" title=\"".
-               __s('The functionality is found - Perfect!')."\"></td>";
-      }
-      echo "</tr>";
-
-      // Test for GD extension.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('GD extension test')."</td>";
-
-      if (!extension_loaded('gd')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/warning_min.png'>".
-                     __('GD extension of your parser PHP is not installed')."></td>";
-         $error = 1;
-
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                     __s('The functionality is found - Perfect!'). "\" title=\"".
-                     __s('The functionality is found - Perfect!')."\"></td>";
-      }
-      echo "</tr>";
-
-      // Test for zlib extension.
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Zlib extension test')."</td>";
-
-      if (!extension_loaded('zlib')) {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                     __('Zlib extension of your parser PHP is not installed')."></td>";
-         $error = 2;
-
-      } else {
-         echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                     __s('The functionality is found - Perfect!'). "\" title=\"".
-                     __s('The functionality is found - Perfect!')."\"></td>";
-      }
-      echo "</tr>";
 
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
@@ -1286,11 +1271,11 @@ class Toolbox {
             || ($img_height > $max_size)) {
             $source_aspect_ratio = $img_width / $img_height;
             if ($source_aspect_ratio < 1) {
-            $new_width  = $max_size * $source_aspect_ratio;
-            $new_height = $max_size;
+               $new_width  = $max_size * $source_aspect_ratio;
+               $new_height = $max_size;
             } else {
-            $new_width  = $max_size;
-            $new_height = $max_size / $source_aspect_ratio;
+               $new_width  = $max_size;
+               $new_height = $max_size / $source_aspect_ratio;
             }
          }
       }
@@ -1484,7 +1469,7 @@ class Toolbox {
       }
 
       return 0;
-}
+   }
 
 
    /**
@@ -1573,8 +1558,12 @@ class Toolbox {
       $alphabet  = "1234567890abcdefghijklmnopqrstuvwxyz";
       $rndstring = "";
 
-      for ($a=0 ; $a<=$length ; $a++) {
-         $b          = rand(0, strlen($alphabet) - 1);
+      for ($a=0 ; $a<$length ; $a++) {
+         if (function_exists('random_int')) { // PHP 7+
+            $b = random_int(0, strlen($alphabet) - 1);
+         } else {
+            $b = mt_rand(0, strlen($alphabet) - 1);
+         }
          $rndstring .= $alphabet[$b];
       }
       return $rndstring;
@@ -1826,10 +1815,9 @@ class Toolbox {
             }
             // Redirect based on GLPI_ROOT : URL must be rawurlencoded
             if ($decoded_where[0] == '/') {
-//                echo $decoded_where;exit();
+               // echo $decoded_where;exit();
                Html::redirect($CFG_GLPI["root_doc"].$decoded_where);
             }
-
 
             $data = explode("_", $where);
             $forcetab = '';
@@ -1860,8 +1848,8 @@ class Toolbox {
                            }
                            Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
                                           $data[1]."&$forcetab");
-                        // redirect to list
-                        } else if (!empty($data[0])) {
+
+                        } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
                               Html::redirect($item->getSearchURL()."?$forcetab");
                            }
@@ -1913,8 +1901,8 @@ class Toolbox {
                               }
                               Html::redirect($item->getFormURL()."?id=".$data[1]."&$forcetab");
                            }
-                        // redirect to list
-                        } else if (!empty($data[0])) {
+
+                        } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
                               Html::redirect($item->getSearchURL()."?$forcetab");
                            }
@@ -2150,7 +2138,6 @@ class Toolbox {
                               array('value'               => $svalue,
                                     'width'               => '12%',
                                     'display_emptychoice' => true));
-
 
       echo "<input type=hidden name=imap_string value='".$value."'>";
       echo "</td></tr>\n";
@@ -2555,4 +2542,3 @@ class Toolbox {
    }
 
 }
-?>

@@ -626,4 +626,3 @@ abstract class CommonITILCost extends CommonDBChild {
    }
 
 }
-?>

@@ -148,10 +148,10 @@ class Log extends CommonDBTM {
                   $changes          =  array($id_search_option, addslashes($oldval), $values[$key]);
                }
 
-            // Linkfield or standard field not massive action enable
             } else if (($val2['linkfield'] == $key)
                 || (($key == $val2['field'])
                     && ($val2['table'] == $item->getTable()))) {
+               // Linkfield or standard field not massive action enable
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                if ($val2['table'] == $item->getTable()) {
@@ -669,4 +669,3 @@ class Log extends CommonDBTM {
    }
 
 }
-?>

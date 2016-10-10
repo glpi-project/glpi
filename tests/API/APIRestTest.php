@@ -147,8 +147,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $body = $res->getBody();
       $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey('id', $data[0]); // check presence of first entity
-      $this->assertEquals(0, $data[0]['id']); // check presence of root entity
+      $this->assertArrayHasKey('myentities', $data); // check presence of first entity
+      $this->assertArrayHasKey('id', $data['myentities'][0]); // check presence of first entity
+      $this->assertEquals(0, $data['myentities'][0]['id']); // check presence of root entity
    }
 
 
@@ -218,9 +219,10 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $body = $res->getBody();
       $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey('id', $data);
-      $this->assertArrayHasKey('name', $data);
-      $this->assertArrayHasKey('interface', $data);
+      $this->assertArrayHasKey('active_profile', $data);
+      $this->assertArrayHasKey('id', $data['active_profile']);
+      $this->assertArrayHasKey('name', $data['active_profile']);
+      $this->assertArrayHasKey('interface', $data['active_profile']);
    }
 
 
@@ -237,96 +239,12 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $body = $res->getBody();
       $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey('glpiID', $data);
-      $this->assertArrayHasKey('glpiname', $data);
-      $this->assertArrayHasKey('glpiroot', $data);
-      $this->assertArrayHasKey('glpilanguage', $data);
-      $this->assertArrayHasKey('glpilist_limit', $data);
-   }
-
-
-   /**
-     * @depends testInitSessionCredentials
-     */
-   public function testGetItem($session_token) {
-      // Get the User 'glpi'
-      $res = $this->doHttpRequest('GET', 'User/2/',
-                                         ['headers' => [
-                                             'Session-Token' => $session_token],
-                                          'query' => [
-                                             'expand_dropdowns' => true,
-                                             'with_logs'        => true]]);
-      $this->assertNotEquals(null, $res, $this->last_error);
-      $this->assertEquals(200, $res->getStatusCode());
-
-      $body = $res->getBody();
-      $data = json_decode($body, true);
-      $this->assertArrayHasKey('id', $data);
-      $this->assertArrayHasKey('name', $data);
-      $this->assertArrayHasKey('entities_id', $data);
-      $this->assertArrayHasKey('links', $data);
-      $this->assertFalse(is_numeric($data['entities_id'])); // for expand_dropdowns
-      $this->assertArrayHasKey('_logs', $data); // with_logs == true
-
-      // Get the root-entity
-      $res = $this->doHttpRequest('GET', 'Entity/0',
-                                         ['headers' => [
-                                             'Session-Token' => $session_token],
-                                          'query' => [
-                                             'get_hateoas'   => false]]);
-      $this->assertNotEquals(null, $res, $this->last_error);
-      $this->assertEquals(200, $res->getStatusCode());
-
-      $body = $res->getBody();
-      $data = json_decode($body, true);
-      $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey('id', $data);
-      $this->assertArrayHasKey('name', $data);
-      $this->assertArrayHasKey('completename', $data);
-      $this->assertArrayNotHasKey('links', $data); // get_hateoas == false
-   }
-
-
-   /**
-     * @depends testInitSessionCredentials
-     */
-   public function testGetItems($session_token) {
-      // test retrieve all users
-      $res = $this->doHttpRequest('GET', 'User/',
-                                         ['headers' => [
-                                             'Session-Token' => $session_token],
-                                          'query' => [
-                                             'expand_dropdowns' => true]]);
-      $this->assertNotEquals(null, $res, $this->last_error);
-      $this->assertEquals(200, $res->getStatusCode());
-      $body = $res->getBody();
-      $data = json_decode($body, true);
-
-      $this->assertGreaterThanOrEqual(4, count($data));
-      $this->assertArrayHasKey('id', $data[0]);
-      $this->assertArrayHasKey('name', $data[0]);
-      $this->assertArrayHasKey('password', $data[0]);
-      $this->assertArrayHasKey('is_active', $data[0]);
-      $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
-
-
-      // Test only_id param
-      $res = $this->doHttpRequest('GET', 'User/',
-                                         ['headers' => [
-                                             'Session-Token' => $session_token],
-                                          'query' => [
-                                             'only_id'       => true]]);
-      $this->assertNotEquals(null, $res, $this->last_error);
-      $this->assertEquals(200, $res->getStatusCode());
-
-      $body = $res->getBody();
-      $data = json_decode($body, true);
-      $this->assertNotEquals(false, $data);
-      $this->assertGreaterThanOrEqual(4, count($data));
-      $this->assertArrayHasKey('id', $data[0]);
-      $this->assertArrayNotHasKey('name', $data[0]);
-      $this->assertArrayNotHasKey('password', $data[0]);
-      $this->assertArrayNotHasKey('is_active', $data[0]);
+      $this->assertArrayHasKey('session', $data);
+      $this->assertArrayHasKey('glpiID', $data['session']);
+      $this->assertArrayHasKey('glpiname', $data['session']);
+      $this->assertArrayHasKey('glpiroot', $data['session']);
+      $this->assertArrayHasKey('glpilanguage', $data['session']);
+      $this->assertArrayHasKey('glpilist_limit', $data['session']);
    }
 
 
@@ -354,6 +272,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       foreach($data as $item) {
          $this->assertArrayHasKey('id', $item);
          $this->assertArrayHasKey('name', $item);
+         $this->assertArrayNotHasKey('password', $item);
          $this->assertArrayHasKey('entities_id', $item);
          $this->assertArrayHasKey('links', $item);
          $this->assertFalse(is_numeric($item['entities_id'])); // for expand_dropdowns
@@ -396,11 +315,53 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                           'query' => [
                                              'sort'          => 19,
                                              'order'         => 'DESC',
-                                             'range'         => '0-2',
+                                             'range'         => '0-10',
                                              'forcedisplay'  => '81',
                                              'rawdata'       => true]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
+
+      $headers = $res->getHeaders();
+      $this->assertArrayHasKey('Accept-Range', $headers);
+      $this->assertContains('User', $headers['Accept-Range'][0]);
+      $this->assertArrayHasKey('Content-Range', $headers);
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('totalcount', $data);
+      $this->assertArrayHasKey('count', $data);
+      $this->assertArrayHasKey('sort', $data);
+      $this->assertArrayHasKey('order', $data);
+      $this->assertArrayHasKey('rawdata', $data);
+      $this->assertEquals(8, count($data['rawdata']));
+
+      $first_user = array_shift($data['data']);
+      $second_user = array_shift($data['data']);
+      $this->assertArrayHasKey(81, $first_user);
+      $this->assertArrayHasKey(81, $second_user);
+      $first_user_date_mod = strtotime($first_user[19]);
+      $second_user_date_mod = strtotime($second_user[19]);
+      $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
+   }
+
+
+   /**
+     * @depends testInitSessionCredentials
+     */
+   public function testListSearchPartial($session_token) {
+      // test retrieve partial users
+      $res = $this->doHttpRequest('GET', 'search/User/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'sort'          => 19,
+                                             'order'         => 'DESC',
+                                             'range'         => '0-2',
+                                             'forcedisplay'  => '81',
+                                             'rawdata'       => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(206, $res->getStatusCode());
 
       $headers = $res->getHeaders();
       $this->assertArrayHasKey('Accept-Range', $headers);
@@ -468,15 +429,55 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('id', $data);
-      $id = $data['id'];
-      $this->assertEquals(true, is_numeric($id));
-      $this->assertEquals(true, $id > 0);
+      $computers_id = $data['id'];
+      $this->assertEquals(true, is_numeric($computers_id));
+      $this->assertEquals(true, $computers_id > 0);
 
       $computer = new Computer;
-      $computers_exist = $computer->getFromDB($id);
+      $computers_exist = $computer->getFromDB($computers_id);
       $this->assertEquals(true, (bool) $computers_exist);
 
-      return $id;
+
+      // create a network port for the previous computer
+      $res = $this->doHttpRequest('POST', 'NetworkPort/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'json' => [
+                                             'input'         => [
+                                                'instantiation_type'       => "NetworkPortEthernet",
+                                                'name'                     => "test port",
+                                                'logical_number'           => 1,
+                                                'items_id'                 => $computers_id,
+                                                'itemtype'                 => "Computer",
+                                                'NetworkName_name'         => "testname",
+                                                'NetworkName_fqdns_id'     => 0,
+                                                'NetworkName__ipaddresses' =>
+                                                   array(-1 => "1.2.3.4")]]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(201, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('id', $data);
+      $netports_id = $data['id'];
+
+      $res = $this->doHttpRequest('POST', 'Notepad/',
+                                          ['headers' => [
+                                                'Session-Token' => $session_token],
+                                          'json' => [
+                                             'input'            => [ 
+                                                'itemtype'                 => 'Computer',
+                                                'items_id'                 => $computers_id,
+                                                'content'                  => 'note about a computer'
+                                          ]]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(201, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('id', $data);
+
+      return $computers_id;
    }
 
 
@@ -515,6 +516,178 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, (bool) $computers_exist);
 
       return $data;
+   }
+
+
+   /**
+     * @depends testInitSessionCredentials
+     * @depends testCreateItem
+     */
+   public function testGetItem($session_token, $computers_id) {
+      // Get the User 'glpi'
+      $res = $this->doHttpRequest('GET', 'User/2/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'expand_dropdowns' => true,
+                                             'with_logs'        => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertArrayHasKey('id', $data);
+      $this->assertArrayHasKey('name', $data);
+      $this->assertArrayHasKey('entities_id', $data);
+      $this->assertArrayHasKey('links', $data);
+      $this->assertFalse(is_numeric($data['entities_id'])); // for expand_dropdowns
+      $this->assertArrayHasKey('_logs', $data); // with_logs == true
+
+      // Get the root-entity
+      $res = $this->doHttpRequest('GET', 'Entity/0',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'get_hateoas'   => false]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('id', $data);
+      $this->assertArrayHasKey('name', $data);
+      $this->assertArrayHasKey('completename', $data);
+      $this->assertArrayNotHasKey('links', $data); // get_hateoas == false
+
+
+      // Get the previously created 'computer 1'
+      $res = $this->doHttpRequest('GET', "Computer/$computers_id",
+                                         ['headers' => [
+                                             'Session-Token'     => $session_token],
+                                          'query' => [
+                                             'with_networkports' => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('id', $data);
+      $this->assertArrayHasKey('name', $data);
+      $this->assertArrayHasKey('_networkports', $data);
+      $this->assertArrayHasKey('NetworkName', $data['_networkports']['NetworkPortEthernet'][0]);
+      $networkname = $data['_networkports']['NetworkPortEthernet'][0]['NetworkName'];
+      $this->assertArrayHasKey('IPAddress', $networkname);
+      $this->assertArrayHasKey('FQDN', $networkname);
+      $this->assertArrayHasKey('id', $networkname['IPAddress'][0]);
+      $this->assertArrayHasKey('name', $networkname['IPAddress'][0]);
+      $this->assertArrayHasKey('IPNetwork', $networkname['IPAddress'][0]);
+      $this->assertEquals('1.2.3.4', $networkname['IPAddress'][0]['name']);
+   }
+
+   /**
+     * @depends testInitSessionCredentials
+     * @depends testCreateItem
+     */
+   public function testGetItemWithNotes($session_token, $computers_id) {
+      // Get the previously created 'computer 1'
+      $res = $this->doHttpRequest('GET', "Computer/$computers_id",
+            ['headers' => [
+                  'Session-Token'     => $session_token],
+                  'query' => [
+                        'with_notes' => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey('id', $data);
+      $this->assertArrayHasKey('name', $data);
+      $this->assertArrayHasKey('_notes', $data);
+      $notes = $data['_notes'];
+      $this->assertArrayHasKey('id', $notes[0]);
+      $this->assertArrayHasKey('itemtype', $notes[0]);
+      $this->assertArrayHasKey('items_id', $notes[0]);
+      $this->assertArrayHasKey('id', $notes[0]);
+      $this->assertArrayHasKey('users_id', $notes[0]);
+      $this->assertArrayHasKey('content', $notes[0]);
+   }
+
+   /**
+     * @depends testInitSessionCredentials
+     */
+   public function testGetItems($session_token) {
+      // test retrieve all users
+      $res = $this->doHttpRequest('GET', 'User/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'expand_dropdowns' => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+
+      $this->assertGreaterThanOrEqual(4, count($data));
+      $this->assertArrayHasKey('id', $data[0]);
+      $this->assertArrayHasKey('name', $data[0]);
+      $this->assertArrayNotHasKey('password', $data[0]);
+      $this->assertArrayHasKey('is_active', $data[0]);
+      $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
+
+
+      // test retrieve partial users
+      $res = $this->doHttpRequest('GET', 'User/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'range' => '0-1',
+                                             'expand_dropdowns' => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(206, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+
+      $this->assertEquals(2, count($data));
+      $this->assertArrayHasKey('id', $data[0]);
+      $this->assertArrayHasKey('name', $data[0]);
+      $this->assertArrayNotHasKey('password', $data[0]);
+      $this->assertArrayHasKey('is_active', $data[0]);
+      $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
+
+
+      // test retrieve invalid range of users
+      try {
+         $res = $this->doHttpRequest('GET', 'User/',
+                                            ['headers' => [
+                                                'Session-Token' => $session_token],
+                                             'query' => [
+                                                'range' => '100-105',
+                                                'expand_dropdowns' => true]]);
+      } catch (ClientException $e) {
+         $response = $e->getResponse();
+         $this->assertEquals(400, $response->getStatusCode());
+      }
+
+
+      // Test only_id param
+      $res = $this->doHttpRequest('GET', 'User/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'only_id'       => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertGreaterThanOrEqual(4, count($data));
+      $this->assertArrayHasKey('id', $data[0]);
+      $this->assertArrayNotHasKey('name', $data[0]);
+      $this->assertArrayNotHasKey('password', $data[0]);
+      $this->assertArrayNotHasKey('is_active', $data[0]);
    }
 
 

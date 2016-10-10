@@ -385,7 +385,6 @@ class Printer  extends CommonDBTM {
       Network::dropdown(array('value' => $this->fields["networks_id"]));
       echo "</td></tr>\n";
 
-
       // Display auto inventory informations
       $rowspan        = 5;
       echo "<tr class='tab_bg_1'>";
@@ -449,7 +448,7 @@ class Printer  extends CommonDBTM {
          Plugin::doHook("autoinventory_information", $this);
          echo "</td></tr>";
       }
-      
+
       $this->showFormButtons($options);
 
       return true;
@@ -702,7 +701,7 @@ class Printer  extends CommonDBTM {
    }
 
 
-  /**
+   /**
     * Add a printer. If already exist in dustbin restore it
     *
     * @param $name          the printer's name (need to be addslashes)
@@ -795,4 +794,3 @@ class Printer  extends CommonDBTM {
    }
 
 }
-?>

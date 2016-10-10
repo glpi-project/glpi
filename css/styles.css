@@ -1612,6 +1612,11 @@ a.icon_nav_move:hover img {
 #planning_filter ul.filters > li label {
    padding-left: 4px;
    line-height: 16px;
+   width: 200px;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   display: inline-block;
+   white-space: nowrap;
 }
 
 #planning_filter ul.filters > li .filter-icon,
@@ -1810,6 +1815,10 @@ a.icon_nav_move:hover img {
 
 #planning .fc-time-grid-event .fc-resizer {
    height: 10px;
+}
+
+#planning .fc-divider {
+   border:1px dashed #cccccc;
 }
 
 /* for checkavailable */

@@ -340,7 +340,6 @@ class DisplayPreference extends CommonDBTM {
          echo "<td colspan='3'>&nbsp;</td>";
          echo "</tr>";
 
-
          // print entity
          if (Session::isMultiEntitiesMode()
              && (isset($CFG_GLPI["union_search_type"][$itemtype])

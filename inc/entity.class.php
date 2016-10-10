@@ -143,7 +143,7 @@ class Entity extends CommonTreeDropdown {
    }
 
 
-  /**
+   /**
    * @since version 0.84
    **/
    static function canUpdate() {
@@ -960,7 +960,6 @@ class Entity extends CommonTreeDropdown {
          .focus();
      ";
 
-
       echo "</script>";
 
       echo "<div id='tree_projectcategory$rand' ></div>";
@@ -1036,7 +1035,6 @@ class Entity extends CommonTreeDropdown {
                        `glpi_entities`.`$field`
                 FROM `glpi_entities`
                 ORDER BY `glpi_entities`.`level` ASC";
-
 
       foreach ($DB->request($query) as $entitydatas) {
          if ((is_null($entitydatas[$field])
@@ -1216,7 +1214,7 @@ class Entity extends CommonTreeDropdown {
          echo "</td></tr>";
       }
 
-     if ($canedit) {
+      if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='2'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
@@ -1255,7 +1253,6 @@ class Entity extends CommonTreeDropdown {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>".__('Autofill dates for financial and administrative information').
            "</th></tr>";
-
 
       $options[0] = __('No autofill');
       if ($ID > 0) {
@@ -1466,7 +1463,6 @@ class Entity extends CommonTreeDropdown {
                                  'value'          =>  $entity->getField('is_notif_enable_default'),
                                  'inherit_parent' => (($ID > 0) ? 1 : 0)));
 
-
       if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
          echo "<font class='green'><br>";
@@ -1477,7 +1473,6 @@ class Entity extends CommonTreeDropdown {
       echo "<td colspan='2'>&nbsp;</td>";
 
       echo "</tr>";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='middle right'>" . __('Email signature') . "</td>";
@@ -1561,7 +1556,7 @@ class Entity extends CommonTreeDropdown {
                                   'max'   => 100,
                                   'step'  => 1,
                                   'toadd' => $toadd));
-         if ($entity->fields['default_consumables_alarm_threshold'] == self::CONFIG_PARENT) {
+      if ($entity->fields['default_consumables_alarm_threshold'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('default_consumables_alarm_threshold',
                                     $entity->getField('entities_id'));
          echo "<font class='green'><br>";
@@ -1570,7 +1565,6 @@ class Entity extends CommonTreeDropdown {
 
       }
       echo "</td></tr>";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='3'>";
@@ -2110,7 +2104,7 @@ class Entity extends CommonTreeDropdown {
 
          }
       }
-/*
+      /*
       switch ($fieldval) {
          case "tickettype" :
             // Default is Incident if not set
@@ -2215,13 +2209,13 @@ class Entity extends CommonTreeDropdown {
       }
 
       if (strstr($url,"[SLALEVEL_ID]")) {
-         $url = str_replace("[SLALEVEL_ID]", $ticket->fields['slalevels_id'], $url);
+         $url = str_replace("[SLALEVEL_ID]", $ticket->fields['ttr_slalevels_id'], $url);
       }
 
       if (strstr($url,"[SLALEVEL_NAME]")) {
          $url = str_replace("[SLALEVEL_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_slalevels',
-                                                                $ticket->fields['slalevels_id'])),
+                                                                $ticket->fields['ttr_slalevels_id'])),
                             $url);
       }
 
@@ -2362,8 +2356,8 @@ class Entity extends CommonTreeDropdown {
 
                case 0 :
                   return __('Never');
-             }
-           return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
+            }
+            return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
 
          case 'auto_assign_mode' :
             return self::getAutoAssignMode($values[$field]);
@@ -2584,4 +2578,3 @@ class Entity extends CommonTreeDropdown {
    }
 
 }
-?>

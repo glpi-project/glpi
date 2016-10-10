@@ -40,6 +40,10 @@ abstract class API extends CommonGLPI {
    // permit writing to $_SESSION
    protected $session_write = false;
 
+   // avoid disclosure of critical fields
+   protected $excluded_fields = array('password', 'passwd', 'rootdn_passwd',
+                                      'smtp_passwd', 'proxy_passwd');
+
    static $api_url = "";
    protected $format;
    protected $iptxt         = "";
@@ -170,7 +174,7 @@ abstract class API extends CommonGLPI {
 
       } else if (!$CFG_GLPI['enable_api_login_credentials']) {
          $this->returnError(__("usage of initSession resource with credentials is disabled"), 400,
-                            "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED");
+                            "ERROR_LOGIN_WITH_CREDENTIALS_DISABLED", false);
       }
 
       // login on glpi
@@ -178,9 +182,9 @@ abstract class API extends CommonGLPI {
          $err = Html::clean($auth->getErr());
          if (isset($params['user_token'])
              && !empty($params['user_token'])) {
-            return $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN");
+            return $this->returnError(__("parameter user_token seems invalid"), 401, "ERROR_GLPI_LOGIN_USER_TOKEN", false);
          }
-         return $this->returnError($err, 401, "ERROR_GLPI_LOGIN");
+         return $this->returnError($err, 401, "ERROR_GLPI_LOGIN", false);
       }
 
       // stop session and return session key
@@ -275,11 +279,11 @@ abstract class API extends CommonGLPI {
 
       $myentities = array();
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {
-         $myentities[$entity['id']] = array('id'   => $entity['id'],
+         $myentities[] = array('id'   => $entity['id'],
                                             'name' => Dropdown::getDropdownName("glpi_entities",
                                                                                 $entity['id']));
       }
-      return $myentities;
+      return array('myentities' => $myentities);
    }
 
 
@@ -344,7 +348,7 @@ abstract class API extends CommonGLPI {
 
       $myprofiles = array();
       foreach($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
-         // append if of the profile into values 
+         // append if of the profile into values
          $profile = ['id' => $profiles_id] + $profile;
 
          // don't keep keys for entities
@@ -367,7 +371,7 @@ abstract class API extends CommonGLPI {
    protected function getActiveProfile() {
 
       $this->initEndpoint();
-      return $_SESSION['glpiactiveprofile'];
+      return ["active_profile" => $_SESSION['glpiactiveprofile']];
    }
 
 
@@ -381,7 +385,7 @@ abstract class API extends CommonGLPI {
    protected function getFullSession() {
 
       $this->initEndpoint();
-      return $_SESSION;
+      return ['session' => $_SESSION];
    }
 
 
@@ -445,6 +449,11 @@ abstract class API extends CommonGLPI {
 
       $fields =  $item->fields;
 
+      // avoid disclosure of critical fields
+      foreach($this->excluded_fields as $key) {
+         unset($fields[$key]);
+      }
+
       // retrieve devices
       if (isset($params['with_devices'])
           && $params['with_devices']
@@ -468,7 +477,6 @@ abstract class API extends CommonGLPI {
          }
          $fields['_devices'] = $all_devices;
       }
-
 
       // retrieve computer disks
       if (isset($params['with_disks'])
@@ -523,7 +531,6 @@ abstract class API extends CommonGLPI {
          }
       }
 
-
       // retrieve item connections
       if (isset($params['with_connections'])
           && $params['with_connections']
@@ -562,7 +569,9 @@ abstract class API extends CommonGLPI {
             $fields['_networkports'] = self::arrayRightError();
          } else {
             foreach (NetworkPort::getNetworkPortInstantiations() as $networkport_type) {
+               $netport_table = $networkport_type::getTable();
                $query = "SELECT
+                           netp.`id` as netport_id,
                            netp.`entities_id`,
                            netp.`is_recursive`,
                            netp.`logical_number`,
@@ -572,14 +581,86 @@ abstract class API extends CommonGLPI {
                            netp.`is_dynamic`,
                            netp_subtable.*
                          FROM glpi_networkports AS netp
-                         LEFT JOIN ".$networkport_type::getTable()." AS netp_subtable
+                         LEFT JOIN `$netport_table` AS netp_subtable
                            ON netp_subtable.`networkports_id` = netp.`id`
                          WHERE netp.`instantiation_type` = '$networkport_type'
-                               AND netp.`items_id` = '$id'
-                               AND netp.`itemtype` = '$itemtype'
-                               AND netp.`is_deleted` = '0'";
+                           AND netp.`items_id` = '$id'
+                           AND netp.`itemtype` = '$itemtype'
+                           AND netp.`is_deleted` = '0'";
                if ($result = $DB->query($query)) {
                   while ($data = $DB->fetch_assoc($result)) {
+                     if (isset($data['netport_id'])) {
+                        // append network name
+                        $query_netn = "SELECT
+                              GROUP_CONCAT(CONCAT(ipadr.`id`, '".Search::SHORTSEP."' , ipadr.`name`)
+                                           SEPARATOR '".Search::LONGSEP."') as ipadresses,
+                              netn.`id` as networknames_id,
+                              netn.`name` as networkname,
+                              netn.`fqdns_id`,
+                              fqdn.`name` as fqdn_name,
+                              fqdn.`fqdn`
+                           FROM `glpi_networknames` AS netn
+                           LEFT JOIN `glpi_ipaddresses` AS ipadr
+                              ON ipadr.`itemtype` = 'NetworkName' AND ipadr.`items_id` = netn.`id`
+                           LEFT JOIN `glpi_fqdns` AS fqdn
+                              ON fqdn.`id` = netn.`fqdns_id`
+                           LEFT JOIN `glpi_ipaddresses_ipnetworks` ipadnet
+                              ON ipadnet.`ipaddresses_id` = ipadr.`id`
+                           LEFT JOIN `glpi_ipnetworks` `ipnet`
+                              ON ipnet.`id` = ipadnet.`ipnetworks_id`
+                           WHERE netn.`itemtype` = 'NetworkPort'
+                             AND netn.`items_id` = ".$data['netport_id']."
+                           GROUP BY netn.`id`, netn.`name`, netn.fqdns_id, fqdn.name, fqdn.fqdn";
+                        if ($result_netn = $DB->query($query_netn)) {
+                           $data_netn = $DB->fetch_assoc($result_netn);
+
+                           $raw_ipadresses = explode(Search::LONGSEP, $data_netn['ipadresses']);
+                           $ipadresses = array();
+                           foreach($raw_ipadresses as $ipadress) {
+                              $ipadress = explode(Search::SHORTSEP, $ipadress);
+
+                              //find ip network attached to these ip
+                              $ipnetworks = array();
+                              $query_ipnet = "SELECT
+                                    ipnet.`id`,
+                                    ipnet.`completename`,
+                                    ipnet.`name`,
+                                    ipnet.`address`,
+                                    ipnet.`netmask`,
+                                    ipnet.`gateway`,
+                                    ipnet.`ipnetworks_id`,
+                                    ipnet.`comment`
+                                 FROM `glpi_ipnetworks` ipnet
+                                 INNER JOIN `glpi_ipaddresses_ipnetworks` ipadnet
+                                    ON ipnet.`id` = ipadnet.`ipnetworks_id`
+                                    AND ipadnet.`ipaddresses_id` = ".$ipadress[0];
+                              if ($result_ipnet = $DB->query($query_ipnet)) {
+                                 while ($data_ipnet = $DB->fetch_assoc($result_ipnet)) {
+                                    $ipnetworks[] = $data_ipnet;
+                                 }
+                              }
+
+                              $ipadresses[] = array(
+                                 'id'        => $ipadress[0],
+                                 'name'      => $ipadress[1],
+                                 'IPNetwork' => $ipnetworks
+                              );
+                           }
+
+                           $data['NetworkName'] = array(
+                              'id'         => $data_netn['networknames_id'],
+                              'name'       => $data_netn['networkname'],
+                              'fqdns_id'   => $data_netn['fqdns_id'],
+                              'FQDN'       => array(
+                                 'id'   => $data_netn['fqdns_id'],
+                                 'name' => $data_netn['fqdn_name'],
+                                 'fqdn' => $data_netn['fqdn']
+                              ),
+                              'IPAddress' => $ipadresses
+                           );
+                        }
+                     }
+
                      $fields['_networkports'][$networkport_type][] = $data;
                   }
                }
@@ -624,8 +705,6 @@ abstract class API extends CommonGLPI {
             }
          }
       }
-
-
 
       // retrieve item contracts
       if (isset($params['with_documents'])
@@ -736,7 +815,7 @@ abstract class API extends CommonGLPI {
          if (!Session::haveRight($itemtype::$rightname, READNOTE)) {
             $fields['_notes'] = self::arrayRightError();
          } else {
-            $fields['_notes'] = Notepad::getAllForItem($itemtype);
+            $fields['_notes'] = Notepad::getAllForItem($item);
          }
       }
 
@@ -814,11 +893,10 @@ abstract class API extends CommonGLPI {
       $default = array('expand_dropdowns' => false,
                        'get_hateoas'      => true,
                        'only_id'          => false,
-                       'range'            => "0-50",
+                       'range'            => "0-".$_SESSION['glpilist_limit'],
                        'sort'             => "id",
                        'order'            => "ASC");
       $params = array_merge($default, $params);
-
 
       if (!$itemtype::canView()) {
          return $this->messageRightError();
@@ -835,9 +913,12 @@ abstract class API extends CommonGLPI {
             $range = explode("-", $params['range']);
             $params['start']      = $range[0];
             $params['list_limit'] = $range[1]-$range[0]+1;
+            $params['range']      = $range;
          } else {
             $this->returnError("range must be in format : [start-end] with integers");
          }
+      } else{
+         $params['range'] = array(0, $_SESSION['glpilist_limit']);
       }
 
       // check parameters
@@ -849,12 +930,11 @@ abstract class API extends CommonGLPI {
          $this->returnError("sort param is not a field of $table");
       }
 
-
       //specific case for restriction
       $already_linked_table = array();
-      $where = "1=1 ";
       $join = Search::addDefaultJoin($itemtype, $table, $already_linked_table);
-      $where.= Search::addDefaultWhere($itemtype);
+      $where = Search::addDefaultWhere($itemtype);
+      if ($where == '') $where = "1=1 ";
 
       // add filter for a parent itemtype
       if (isset($this->parameters['parent_itemtype'])
@@ -891,7 +971,7 @@ abstract class API extends CommonGLPI {
 
       // filter with entity
       if ($item->isEntityAssign()) {
-         $where.= "AND (". getEntitiesRestrictRequest("",
+         $where.= " AND (". getEntitiesRestrictRequest("",
                                              $itemtype::getTable(),
                                              '',
                                              $_SESSION['glpiactiveentities'],
@@ -924,10 +1004,21 @@ abstract class API extends CommonGLPI {
       $data_numtotalrow = $DB->fetch_assoc($result_numtotalrow);
       $totalcount = $data_numtotalrow['FOUND_ROWS()'];
 
+      if ($params['range'][0] > $totalcount) {
+         $this->returnError("Provided range exceed total count of data: ".$totalcount,
+                            400,
+                            "ERROR_RANGE_EXCEED_TOTAL");
+      }
+
       foreach ($found as $key => &$fields) {
          // only keep id in field list
          if ($params['only_id']) {
             $fields = array('id' => $fields['id']);
+         }
+
+         // avoid disclosure of critical fields
+         foreach($this->excluded_fields as $key) {
+            unset($fields[$key]);
          }
 
          // expand dropdown (retrieve name of dropdowns) and get hateoas
@@ -1178,7 +1269,7 @@ abstract class API extends CommonGLPI {
             $this->returnError("range must be in format : [start-end] with integers");
          }
       } else{
-         $params['range'] = array(0,50);
+         $params['range'] = array(0, $_SESSION['glpilist_limit']);
       }
 
       // force reset
@@ -1205,6 +1296,11 @@ abstract class API extends CommonGLPI {
          $this->returnError("Provided range exceed total count of data: ".$cleaned_data['totalcount'],
                             400,
                             "ERROR_RANGE_EXCEED_TOTAL");
+      }
+
+      // fix end range
+      if ($params['range'][1] > $cleaned_data['totalcount'] - 1) {
+         $params['range'][1] = $cleaned_data['totalcount'] - 1;
       }
 
       //prepare cols (searchoptions_id) for cleaned data
@@ -1327,7 +1423,7 @@ abstract class API extends CommonGLPI {
          $idCollection = array();
          $failed       = 0;
          foreach($input as $object) {
-            $object = get_object_vars($object);
+            $object = self::inputObjectToArray($object);
             //check rights
             if (!$item->can(-1, CREATE, $object)) {
                $idCollection[] = array('error' => $this->messageRightError(false));
@@ -1355,7 +1451,7 @@ abstract class API extends CommonGLPI {
          return $idCollection;
 
       } else if (is_object($input)) {
-         $input = get_object_vars($input);
+         $input = self::inputObjectToArray($input);
 
          //check rights
          if (!$item->can(-1, CREATE, $input)) {
@@ -1377,6 +1473,28 @@ abstract class API extends CommonGLPI {
       } else {
          $this->messageBadArrayError();
       }
+   }
+
+   /**
+    * Transform all stdobject retrieved from a json_decode into arrays
+    *
+    * @since 9.1
+    *
+    * @param  mixed $input can be an object or array
+    * @return array the cleaned input
+    */
+   private function inputObjectToArray($input) {
+      if (is_object($input)) {
+         $input = get_object_vars($input);
+      }
+
+      if (is_array($input)) {
+         foreach ($input as $key => &$sub_input) {
+            $sub_input = self::inputObjectToArray($sub_input);
+         }
+      }
+
+      return $input;
    }
 
 

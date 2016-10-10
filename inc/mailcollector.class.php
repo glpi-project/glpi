@@ -281,7 +281,6 @@ class MailCollector  extends CommonDBTM {
       Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
       echo "</td></tr>\n";
 
-
       if ($type != "pop") {
          echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
          echo "<td><input size='30' type='text' name='accepted' value=\"".$this->fields['accepted']."\">";
@@ -291,7 +290,6 @@ class MailCollector  extends CommonDBTM {
          echo "<td><input size='30' type='text' name='refused' value=\"".$this->fields['refused']."\">";
          echo "</td></tr>\n";
       }
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td width='200px'> ". __('Maximum size of each file imported by the mails receiver').
@@ -532,12 +530,12 @@ class MailCollector  extends CommonDBTM {
                if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
                   $this->deleteMails($i, self::REFUSED_FOLDER);
                   $blacklisted++;
-               // entities_id set when new ticket / tickets_id when new followup
                } else if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
                            && $user_condition)
                           || isset($tkt['_refuse_email_no_response'])
                           || isset($tkt['_refuse_email_with_response'])) {
 
+                  // entities_id set when new ticket / tickets_id when new followup
                   if (isset($tkt['_refuse_email_with_response'])) {
                      $this->sendMailRefusedResponse($tkt['_head']['from'], $tkt['name']);
                      $delete_mail = self::REFUSED_FOLDER;
@@ -643,7 +641,6 @@ class MailCollector  extends CommonDBTM {
       $tkt['_blacklisted'] = false;
       // For RuleTickets
       $tkt['_mailgate']    = $options['mailgates_id'];
-
 
       // Use mail date if it's defined
       if ($this->fields['use_mail_date']) {
@@ -873,7 +870,6 @@ class MailCollector  extends CommonDBTM {
          }
       }
 
-
       // Add message from getAttached
       if ($this->addtobody) {
          $tkt['content'] .= $this->addtobody;
@@ -1085,7 +1081,6 @@ class MailCollector  extends CommonDBTM {
              $errors = imap_errors();
          }
 
-
          if ($this->fields['errors'] > 0) {
             $this->update(array('id'     => $this->getID(),
                                 'errors' => 0));
@@ -1102,7 +1097,7 @@ class MailCollector  extends CommonDBTM {
     *
     * @param $mid : Message ID.
    **/
-    function getStructure ($mid) {
+   function getStructure ($mid) {
 
       if (($mid != $this->mid)
           || !$this->structure) {
@@ -1183,7 +1178,7 @@ class MailCollector  extends CommonDBTM {
                   $to = $data;
                }
                $tos[] = $mailto;
-                           }
+            }
          }
          if (isset($mail_header->cc) && count($mail_header->cc)) {
             foreach ($mail_header->cc as $data) {
@@ -1424,13 +1419,13 @@ class MailCollector  extends CommonDBTM {
          } else if (empty($filename)
                     && ($structure->type == 2)
                     && $structure->subtype) {
-             // Embeded email comes without filename - try to get "Subject:" or generate trivial one
-             $filename = "msg_$part.EML"; // default trivial one :)!
-             if (($message = $this->getDecodedFetchbody($structure, $mid, $part))
-                 && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches))) {
-                 $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";
-                $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;
-             }
+            // Embeded email comes without filename - try to get "Subject:" or generate trivial one
+            $filename = "msg_$part.EML"; // default trivial one :)!
+            if (($message = $this->getDecodedFetchbody($structure, $mid, $part))
+                    && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches))) {
+               $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";
+               $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;
+            }
          }
 
          // if no filename found, ignore this part
@@ -1450,7 +1445,6 @@ class MailCollector  extends CommonDBTM {
             }
             $i++;
          }
-
 
          $filename = $this->decodeMimeString($filename);
 
@@ -1482,10 +1476,10 @@ class MailCollector  extends CommonDBTM {
 
                   // Link file based on id
                   if (isset($structure->id)) {
-                    $clean = array('<' => '',
+                     $clean = array('<' => '',
                                     '>' => '');
 
-                    $this->altfiles[strtr($structure->id, $clean)] = $filename;
+                     $this->altfiles[strtr($structure->id, $clean)] = $filename;
                   }
 
                }
@@ -1741,7 +1735,7 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-  function title() {
+   function title() {
       global $CFG_GLPI;
 
       $buttons = array();

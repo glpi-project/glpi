@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -77,7 +77,7 @@ class NotificationTargetUser extends NotificationTarget {
                                 'language' => $this->obj->getField('language'),
                                 'usertype' => $usertype);
                   $this->addToAddressesList($data);
-         }
+            }
       }
    }
 
@@ -146,4 +146,3 @@ class NotificationTargetUser extends NotificationTarget {
    }
 
 }
-?>
