@@ -1123,7 +1123,7 @@ class Config extends CommonDBTM {
       echo "<td>";
       Dropdown::showYesNo('highcontrast_css', $data['highcontrast_css']);
       echo "</td>";
-      echo "<td>";
+      echo "<td colspan='2'>";
       echo "</td></tr>";
 
       if ($oncentral) {
