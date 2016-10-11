@@ -2336,7 +2336,7 @@ class Toolbox {
    /**
     * Create the GLPI default schema
     *
-    * @since 9.1
+    * @since 0.90.6
     *
     * @param $lang
     *
