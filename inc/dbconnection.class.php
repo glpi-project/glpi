@@ -56,7 +56,7 @@ class DBConnection extends CommonDBTM {
    /**
     * Create GLPI main configuration file
     *
-    * @since 9.1
+    * @since 0.90.6
     *
     * @param $dbhost
     * @param $user
