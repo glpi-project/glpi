@@ -27,31 +27,40 @@
 
 ## Glossary
 
-Endpoint: Resource available though the api.
+Endpoint
+:   Resource available though the api.
     The endpoint is the URL where your api can be accessed by a client application
 
-Method: HTTP verbs to indicate the desired action to be performed on the identified resource.
-    See: <https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods>
+Method
+:   HTTP verbs to indicate the desired action to be performed on the identified resource.
+    See: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
 
-itemtype: A GLPi type, could be an asset, an itil or a configuration object, etc.
-    This type must be a class who inherits CommonDTBM GLPi class.
+itemtype
+:   A GLPI type, could be an asset, an itil or a configuration object, etc.
+    This type must be a class who inherits CommonDTBM GLPI class.
     See [List itemtypes](https://forge.glpi-project.org/projects/glpi/embedded/class-CommonDBTM.html).
 
-searchOption: A column identifier (integer) of an itemtype (ex: 1 -> id, 2 -> name, ...).
+searchOption
+:   A column identifier (integer) of an itemtype (ex: 1 -> id, 2 -> name, ...).
     See [List searchOptions](#list-searchoptions) endpoint.
 
-JSON Payload: content of HTTP Request in json format (HTTP body)
+JSON Payload
+:   content of HTTP Request in json format (HTTP body)
 
-Query string: URL parameters
+Query string
+:   URL parameters
 
-User token: Used in login process instead of login/password couple.
+User token
+:   Used in login process instead of login/password couple.
     It represent the user with a string.
     You can find user token in the settings tabs of users.
 
-Session token: A string describing a valid session in GLPi.
+Session token
+:   A string describing a valid session in glpi.
     Except initSession endpoint who provide this token, all others require this string to be used.
 
-App(lication) token: An optional way to filter the access to the api.
+App(lication) token
+:   An optional way to filter the access to the api.
     On api call, it will try to find an api client matching your ip and the app toekn (if provided).
     You can define an api client with an app token in general configuration for each of your external applications to identify them (each api client have its own history).
 
