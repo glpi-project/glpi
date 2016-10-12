@@ -152,8 +152,8 @@ class RuleRight extends Rule {
                         $continue                   = false;
                         $output_src["_stop_import"] = true;
                         break;
-					case "groups_id" :
-						$output["groups_id"] = $action->fields["value"];
+					case "_groups_id" :
+						$output["_groups_id"] = $action->fields["value"];
 						break;
                   } // switch (field)
                   break;
@@ -340,9 +340,9 @@ class RuleRight extends Rule {
       $actions['_ignore_user_import']['type']               = 'yesonly';
       $actions['_ignore_user_import']['table']              = '';
 	  
-	  $actions['groups_id']['name']                         = __('Group');
-	  $actions['groups_id']['type']                         = 'dropdown';
-	  $actions['groups_id']['table']                        = 'glpi_groups';
+	  $actions['_groups_id']['name']                         = __('Group');
+	  $actions['_groups_id']['type']                         = 'dropdown';
+	  $actions['_groups_id']['table']                        = 'glpi_groups';
 
       return $actions;
    }
