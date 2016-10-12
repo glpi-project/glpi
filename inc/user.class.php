@@ -599,7 +599,7 @@ class User extends CommonDBTM {
 
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
-      $rulesplayed = $this->applyRightRules($this->getID());
+      $rulesplayed = $this->applyRightRules();
       $picture     = $this->syncLdapPhoto();
 
       //add picture in user fields
@@ -861,7 +861,7 @@ class User extends CommonDBTM {
 
       $this->syncLdapGroups();
       $this->syncDynamicEmails();
-      $this->applyRightRules($this->getID());
+      $this->applyRightRules();
    }
 
 
@@ -872,7 +872,7 @@ class User extends CommonDBTM {
     *
     * @return boolean : true if we play the Rule Engine
    **/
-   function applyRightRules($users_id) {
+   function applyRightRules() {
       global $DB;
 
       $return = false;
@@ -987,7 +987,7 @@ class User extends CommonDBTM {
 			
 			if (isset($this->input["groups_id"])) {
                $group_user = new Group_user();
-               $input['users_id'] = $users_id;
+               $input['users_id'] = $this->getID();
                $input['groups_id'] = $this->input["groups_id"];
                $group_user->add($input);
             }
