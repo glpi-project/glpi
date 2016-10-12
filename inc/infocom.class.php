@@ -144,8 +144,8 @@ class Infocom extends CommonDBChild {
             default :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_infocoms',
-                                             "`itemtype` = '".$item->getType()."'
-                                               AND `items_id` = '".$item->getID()."'");
+                                             ['itemtype' => $item->getType(),
+                                              'items_id' => $item->getID()]);
                }
                return self::createTabEntry(__('Management'), $nb);
          }

@@ -1549,24 +1549,21 @@ class Toolbox {
    /**
     * Get a random string
     *
-    * @param $length integer: length of the random string
+    * @param integer $length of the random string
+    * @param boolean $high strength of the random source (since 9.2)
     *
     * @return random string
    **/
-   static function getRandomString($length) {
+   static function getRandomString($length, $high=false) {
 
-      $alphabet  = "1234567890abcdefghijklmnopqrstuvwxyz";
-      $rndstring = "";
-
-      for ($a=0 ; $a<$length ; $a++) {
-         if (function_exists('random_int')) { // PHP 7+
-            $b = random_int(0, strlen($alphabet) - 1);
-         } else {
-            $b = mt_rand(0, strlen($alphabet) - 1);
-         }
-         $rndstring .= $alphabet[$b];
+      $factory = new RandomLib\Factory();
+      if ($high) {
+         $generator = $factory->getHighStrengthGenerator();
+      } else {
+         $generator = $factory->getLowStrengthGenerator();
       }
-      return $rndstring;
+
+      return $generator->generateString($length, RandomLib\Generator::CHAR_LOWER + RandomLib\Generator::CHAR_DIGITS);
    }
 
 

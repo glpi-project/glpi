@@ -83,7 +83,7 @@ class Contract_Item extends CommonDBRelation{
       }
       if (($contract->fields['max_links_allowed'] > 0)
           && (countElementsInTable($this->getTable(),
-                                   "`contracts_id`='".$this->input['contracts_id']."'")
+                                  ['contracts_id'=> $this->input['contracts_id']])
                 >= $contract->fields['max_links_allowed'])) {
          return false;
       }
@@ -181,8 +181,8 @@ class Contract_Item extends CommonDBRelation{
    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_contracts_items',
-                                  "`itemtype` = '".$item->getType()."'
-                                   AND `items_id` ='".$item->getField('id')."'");
+                                  ['itemtype' => $item->getType(),
+                                   'items_id' => $item->getField('id')]);
    }
 
 

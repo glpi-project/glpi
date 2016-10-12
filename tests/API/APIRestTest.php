@@ -69,6 +69,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    }
 
 
+   /**
+    * @group api
+   **/
    public function testInlineDocumentation() {
       $res = $this->doHttpRequest('GET');
       $this->assertNotEquals(null, $res, $this->last_error);
@@ -79,6 +82,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    }
 
 
+   /**
+    * @group api
+   **/
    public function testInitSessionCredentials() {
       $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => ['glpi', 'glpi']]);
 
@@ -95,6 +101,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    }
 
 
+   /**
+    * @group api
+   **/
    public function testInitSessionUserToken() {
       // retrieve personnal token of 'glpi' user
       $user = new User;
@@ -465,7 +474,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                           ['headers' => [
                                                 'Session-Token' => $session_token],
                                           'json' => [
-                                             'input'            => [ 
+                                             'input'            => [
                                                 'itemtype'                 => 'Computer',
                                                 'items_id'                 => $computers_id,
                                                 'content'                  => 'note about a computer'

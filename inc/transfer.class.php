@@ -1671,10 +1671,10 @@ class Transfer extends CommonDBTM {
 
       $vers = new SoftwareVersion();
       foreach ($this->already_transfer['SoftwareVersion'] AS $old => $new) {
-         if ((countElementsInTable("glpi_softwarelicenses", "softwareversions_id_buy=$old") == 0)
-             && (countElementsInTable("glpi_softwarelicenses", "softwareversions_id_use=$old") == 0)
+         if ((countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_buy'=>$old]) == 0)
+             && (countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_use'=>$old]) == 0)
              && (countElementsInTable("glpi_computers_softwareversions",
-                                      "softwareversions_id=$old") == 0)) {
+                                      ['softwareversions_id'=>$old]) == 0)) {
 
             $vers->delete(array('id' => $old));
          }
@@ -1690,8 +1690,8 @@ class Transfer extends CommonDBTM {
 
       $soft = new Software();
       foreach ($this->already_transfer['Software'] AS $old => $new) {
-         if ((countElementsInTable("glpi_softwarelicenses", "softwares_id=$old") == 0)
-             && (countElementsInTable("glpi_softwareversions", "softwares_id=$old") == 0)) {
+         if ((countElementsInTable("glpi_softwarelicenses", ['softwares_id'=>$old]) == 0)
+             && (countElementsInTable("glpi_softwareversions", ['softwares_id'=>$old]) == 0)) {
 
             if ($this->options['clean_software'] == 1) { // delete
                $soft->delete(array('id' => $old), 0);

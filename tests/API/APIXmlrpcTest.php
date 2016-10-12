@@ -49,6 +49,9 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
    }
 
 
+   /**
+    * @group api
+   **/
    public function testInitSessionCredentials() {
       $res = $this->doHttpRequest('initSession', ['login'    => 'glpi',
                                                   'password' => 'glpi']);
@@ -62,6 +65,9 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
    }
 
 
+   /**
+    * @group api
+   **/
    public function testInitSessionUserToken() {
       // retrieve personnal token of 'glpi' user
       $user = new User;

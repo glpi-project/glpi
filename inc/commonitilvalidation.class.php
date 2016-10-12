@@ -1357,13 +1357,12 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $tab = self::getAllStatusArray();
 
-      $nb  = countElementsInTable(static::getTable(),"`".static::$items_id."` = ".$tID);
+      $nb  = countElementsInTable(static::getTable(),[static::$items_id => $tID]);
 
       $stats = array();
       foreach ($tab as $status => $name) {
-         $restrict    = "`".static::$items_id."` = '".$tID."'
-                        AND `status` = '".$status."'";
-         $validations = countElementsInTable(static::getTable(),$restrict);
+         $validations = countElementsInTable(static::getTable(),[static::$items_id => $tID,
+                                                                 'status'          => $status]);
          if ($validations > 0) {
             if (!isset($stats[$status])) {
                $stats[$status] = 0;

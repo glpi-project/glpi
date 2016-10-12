@@ -191,10 +191,10 @@ class DropdownTranslation extends CommonDBChild {
    static function getNumberOfTranslations($itemtype, $items_id, $field, $language) {
 
       return countElementsInTable(getTableForItemType(__CLASS__),
-                                  "`itemtype`='".$itemtype."'
-                                     AND `items_id`='".$items_id."'
-                                     AND `field`='".$field."'
-                                     AND `language`='".$language."'");
+                                  ['itemtype' => $itemtype,
+                                   'items_id' => $items_id,
+                                   'field'    => $field,
+                                   'language' => $language]);
    }
 
 
@@ -208,9 +208,9 @@ class DropdownTranslation extends CommonDBChild {
    static function getNumberOfTranslationsForItem($item) {
 
       return countElementsInTable(getTableForItemType(__CLASS__),
-                                  "`itemtype`='".$item->getType()."'
-                                     AND `items_id`='".$item->getID()."'
-                                     AND `field` <> 'completename'");
+                                  ['itemtype' => $item->getType(),
+                                   'items_id' => $item->getID(),
+                                   'NOT'      => ['field' => 'completename' ]]);
    }
 
 
@@ -700,7 +700,7 @@ class DropdownTranslation extends CommonDBChild {
     * @return true if there's at least one translation, otherwise false
    **/
    static function hasItemtypeATranslation($itemtype) {
-      return countElementsInTable(self::getTable(), "`itemtype`='$itemtype'");
+      return countElementsInTable(self::getTable(), ['itemtype'=> $itemtype ]);
    }
 
 

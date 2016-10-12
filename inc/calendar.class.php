@@ -514,7 +514,7 @@ class Calendar extends CommonDropdown {
 
       // Only if segments exists
       if (countElementsInTable('glpi_calendarsegments',
-                               "`calendars_id` = '".$this->fields['id']."'")) {
+                               ['calendars_id' => $this->fields['id']])) {
          while ($delay >= 0) {
             $actualdate = date('Y-m-d',$actualtime);
             if (!$this->isHoliday($actualdate)) {

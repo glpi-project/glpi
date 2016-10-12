@@ -735,9 +735,7 @@ class Consumable extends CommonDBChild {
    **/
    static function countForConsumableItem(ConsumableItem $item) {
 
-      $restrict = "`glpi_consumables`.`consumableitems_id` = '".$item->getField('id') ."'";
-
-      return countElementsInTable(array('glpi_consumables'), $restrict);
+      return countElementsInTable(array('glpi_consumables'), ['glpi_consumables.consumableitems_id' => $item->getField('id')]);
    }
 
 
