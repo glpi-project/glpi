@@ -160,5 +160,3 @@ function createMainConfig($host, $user, $password, $DBname) {
 
    return Toolbox::writeConfig('config_db.php', $DB_str);
 }
- 
- 
