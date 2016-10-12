@@ -224,15 +224,24 @@ class SearchTest extends DbTestCase {
             continue;
          }
          $item = getItemForItemtype($itemtype);
+         $number += countElementsInTable(
+                 $displaypref->getTable(),
+                 "itemtype='".$itemtype."'");
          foreach ($item->getSearchOptions() as $key=>$data) {
             if (is_int($key)) {
-               $input = array(
-                   'itemtype' => $itemtype,
-                   'users_id' => 0,
-                   'num' => $key,
-               );
-               $displaypref->add($input);
-               $number++;
+               $dpref = getAllDatasFromTable(
+                       $displaypref->getTable(),
+                       "itemtype='".$itemtype."' AND users_id=0 AND "
+                       . " num=".$key);
+               if (!count($dpref)) {
+                  $input = array(
+                      'itemtype' => $itemtype,
+                      'users_id' => 0,
+                      'num' => $key,
+                  );
+                  $displaypref->add($input);
+                  $number++;
+               }
             }
          }
          $this->assertEquals($number, countElementsInTable($displaypref->getTable(),

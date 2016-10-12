@@ -1378,6 +1378,10 @@ function TableExists($tablename) {
 function FieldExists($table, $field, $usecache=true) {
    global $DB;
 
+   if (!TableExists($table)) {
+      return false;
+   }
+
    if ($fields = $DB->list_fields($table, $usecache)) {
       if (isset($fields[$field])) {
          return true;
@@ -1398,6 +1402,10 @@ function FieldExists($table, $field, $usecache=true) {
 **/
 function isIndex($table, $field) {
    global $DB;
+
+   if (!TableExists($table)) {
+      return false;
+   }
 
    $result = $DB->query("SHOW INDEX FROM `$table`");
 

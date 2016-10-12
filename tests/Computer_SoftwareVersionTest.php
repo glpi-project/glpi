@@ -47,9 +47,9 @@ class Computer_SoftwareVersionTest extends DbTestCase {
     * @covers Computer_SoftwareVersion::prepareInputForAdd
     */
    public function testPrepareInputForAdd() {
-      $this->Login();
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
+      $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
 
       // Do some installations
       $ins = new Computer_SoftwareVersion();
@@ -83,7 +83,6 @@ class Computer_SoftwareVersionTest extends DbTestCase {
     * @covers Computer_SoftwareVersion::prepareInputForUpdate
     */
    public function testPrepareInputForUpdate() {
-      $this->Login();
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
       $computer11 = getItemByTypeName('Computer', '_test_pc11', true);
@@ -116,8 +115,6 @@ class Computer_SoftwareVersionTest extends DbTestCase {
     * @covers Computer_SoftwareVersion::countForVersion
     */
    public function testCountInstall() {
-
-      $this->Login();
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01', true);
       $computer11 = getItemByTypeName('Computer', '_test_pc11', true);

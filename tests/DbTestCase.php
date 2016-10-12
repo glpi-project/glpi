@@ -36,19 +36,21 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
 
    protected function setUp() {
       global $DB;
+      
+      $this->Login();
 
       // Need Innodb -- $DB->begin_transaction() -- workaround:
       $DB->objcreated = array();
+
+      // Cleanup log directory
+      foreach(glob(GLPI_LOG_DIR.'/*.log') as $file) {
+         file_put_contents($file, '');
+      }
    }
 
 
    protected function tearDown() {
       global $DB;
-
-      // Cleanup log directory
-      foreach(glob(GLPI_LOG_DIR . '/*.log') as $file) {
-         unlink($file);
-      }
 
       // Need Innodb -- $DB->rollback()  -- workaround:
       foreach ($DB->objcreated as $table => $ids) {
@@ -57,6 +59,10 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
          }
       }
       unset($DB->objcreated);
+
+      // Check have no errors in php-errors.log and sql-errors.log
+      $this->assertStringEqualsFile(GLPI_LOG_DIR.'/php-errors.log', '');
+      $this->assertStringEqualsFile(GLPI_LOG_DIR.'/sql-errors.log', '');
    }
 
 

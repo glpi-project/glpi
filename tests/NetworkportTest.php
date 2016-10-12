@@ -39,7 +39,6 @@ class NetworkportTest extends DbTestCase {
     * @covers NetworkPort::post_addItem
     */
    public function testAddSimpleNetworkPort() {
-      $this->Login();
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
 
@@ -59,7 +58,8 @@ class NetworkportTest extends DbTestCase {
       $this->assertGreaterThan($nb_log, countElementsInTable('glpi_logs'));
 
       // check data in db
-      $networkports = end(getAllDatasFromTable('glpi_networkports', '', false, 'id'));
+      $all_networkports = getAllDatasFromTable('glpi_networkports', '', false, 'id');
+      $networkports = end($all_networkports);
       unset($networkports['id']);
       unset($networkports['date_mod']);
       unset($networkports['date_creation']);
@@ -96,7 +96,6 @@ class NetworkportTest extends DbTestCase {
     * @covers NetworkPort::post_addItem
     */
    public function testAddCompleteNetworkPort() {
-      $this->Login();
 
       $computer1 = getItemByTypeName('Computer', '_test_pc01');
 

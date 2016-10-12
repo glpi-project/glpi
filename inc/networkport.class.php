@@ -264,7 +264,8 @@ class NetworkPort extends CommonDBChild {
       $this->getEmpty();
 
       foreach ($input as $field => $value) {
-         if (array_key_exists($field, $this->fields)) {
+         if (array_key_exists($field, $this->fields)
+                 || $field == '_no_history') {
             continue;
          }
          if (preg_match('/^NetworkName_/',$field)) {
