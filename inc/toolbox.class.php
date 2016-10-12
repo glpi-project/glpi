@@ -947,7 +947,7 @@ class Toolbox {
          ],
          'ctype'    => [
             'required'  => true,
-            'function'  => ['ctype_digit']
+            'function'  => 'ctype_digit',
          ],
          'fileinfo' => [
             'required'  => true,
@@ -982,21 +982,21 @@ class Toolbox {
          $success = true;
 
          if (isset($params['function'])) {
-            if (!function_exists($func)) {
+            if (!function_exists($params['function'])) {
                 $success = false;
             }
-         } elseif (isset($param['class'])) {
+         } else if (isset($param['class'])) {
             if (!class_exists($params['class'])) {
                $success = false;
             }
          } else {
-            if (extension_loaded($ext)) {
+            if (!extension_loaded($ext)) {
                $success = false;
             }
          }
 
          echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
-         if ($success === false) {
+         if ($success) {
              $msg = sprintf(__('%s extension is installed'), $ext);
             echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
                     alt=\"$msg\"
