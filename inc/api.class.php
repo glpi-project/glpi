@@ -883,6 +883,9 @@ abstract class API extends CommonGLPI {
     * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
     * - 'only_id'          (default: false): keep only id in fields list. Optionnal
     * - 'range'            (default: 0-50): limit the list to start-end attributes
+    * - 'sort'             (default: id): sort by the field.
+    * - 'order'            (default: ASC): ASC(ending) or DESC(ending).
+    * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
     * @param $totalcount   integer  output parameter who receive the total count of the query resulat.
     *                               As this function paginate results (with a mysql LIMIT),
     *                               we can have the full range. (default 0)
@@ -900,7 +903,8 @@ abstract class API extends CommonGLPI {
                        'only_id'          => false,
                        'range'            => "0-".$_SESSION['glpilist_limit'],
                        'sort'             => "id",
-                       'order'            => "ASC");
+                       'order'            => "ASC",
+                       'searchText'       => NULL);
       $params = array_merge($default, $params);
 
 
@@ -983,6 +987,32 @@ abstract class API extends CommonGLPI {
             $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
             $join.= " LEFT JOIN `$parentTable` ON `itemtype`='$itemtype' AND `$parentTable`.`items_id` = `$table`.`id` ";
             $where.= " AND `$parentTable`.`id` = '" . $this->parameters['parent_id'] . "'";
+         }
+      }
+
+      // filter by searchText parameter
+      if (is_array($params['searchText'])) {
+         if (array_keys($params['searchText']) == array('all')) {
+            $labelfield = "name";
+            if ($item instanceof CommonDevice) {
+               $labelfield = "designation";
+            } else if ($item instanceof Item_Devices) {
+               $labelfield = "itemtype";
+            }
+            $search_value                      = $params['searchText']['all'];
+            $params['searchText'][$labelfield] = $search_value;
+            if (FieldExists($table, 'comment')) {
+               $params['searchText']['comment'] = $search_value;
+            }
+         }
+
+         // make text search
+         foreach($params['searchText']  as $filter_field => $filter_value) {
+            if (!empty($filter_value)) {
+               $search = Search::makeTextSearch($filter_value);
+               $where.= " AND (`$table`.`$filter_field` $search
+                               OR `$table`.`id` $search)";
+            }
          }
       }
 
