@@ -2334,38 +2334,6 @@ class Toolbox {
 
 
    /**
-    * Create the GLPI default schema
-    *
-    * @since 0.90.6
-    *
-    * @param $lang
-    *
-    * @return nothing
-   **/
-   static function createSchema($lang='en_GB') {
-      global $CFG_GLPI, $DB;
-
-      include_once (GLPI_CONFIG_DIR . "/config_db.php");
-
-      $DB = new DB();
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.90.1-empty.sql")) {
-         echo "Errors occurred inserting default database";
-      }
-      // update default language
-      Config::setConfigurationValues('core', array('language' => $lang));
-      $query = "UPDATE `glpi_users`
-                SET `language` = NULL";
-      $DB->queryOrDie($query, "4203");
-
-      if (defined('GLPI_SYSTEM_CRON')) {
-         // Downstream packages may provide a good system cron
-         $query = "UPDATE `glpi_crontasks` SET `mode`=2 WHERE `name`!='watcher' AND (`allowmode` & 2)";
-         $DB->queryOrDie($query, "4203");
-      }
-   }
-   
-   
-   /**
     * Save a configuration file
     *
     * @since version 0.84

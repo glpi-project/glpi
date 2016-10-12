@@ -101,11 +101,64 @@ if (!$link->select_db($args['db'])) {
 }
 
 echo "Save configuration file...\n";
-if (!DBConnection::createMainConfig($args['host'], $args['user'], $args['pass'], $args['db'])) {
+if (!createMainConfig($args['host'], $args['user'], $args['pass'], $args['db'])) {
    die("Can't write configuration file\n");
 }
 
 echo "Load default schema...\n";
-Toolbox::createSchema($_SESSION['glpilanguage']);
+createSchema($_SESSION['glpilanguage']);
 
 echo "Done\n";
+
+   /**
+    * Create the GLPI default schema
+    *
+    * @since 0.90.6
+    *
+    * @param $lang
+    *
+    * @return nothing
+   **/
+function createSchema($lang='en_GB') {
+   global $CFG_GLPI, $DB;
+
+   include_once (GLPI_CONFIG_DIR . "/config_db.php");
+
+   $DB = new DB();
+   if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.90.1-empty.sql")) {
+      echo "Errors occurred inserting default database";
+   }
+   // update default language
+   Config::setConfigurationValues('core', array('language' => $lang));
+   $query = "UPDATE `glpi_users`
+                SET `language` = NULL";
+   $DB->queryOrDie($query, "4203");
+
+}
+
+/**
+ * Create GLPI main configuration file
+ *
+ * @since 0.90.6
+ *
+ * @param $dbhost
+ * @param $user
+ * @param $password
+ * @param $DBname
+ *
+ * @return boolean
+ *
+ **/
+function createMainConfig($host, $user, $password, $DBname) {
+
+   $DB_str = "<?php\n class DB extends DBmysql {
+                \n public \$dbhost     = '". $host ."';
+                \n public \$dbuser     = '". $user ."';
+                \n public \$dbpassword = '". rawurlencode($password) ."';
+                \n public \$dbdefault  = '". $DBname ."';
+                \n}\n";
+
+   return Toolbox::writeConfig('config_db.php', $DB_str);
+}
+ 
+ 

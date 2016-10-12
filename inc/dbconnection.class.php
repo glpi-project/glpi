@@ -54,32 +54,6 @@ class DBConnection extends CommonDBTM {
 
 
    /**
-    * Create GLPI main configuration file
-    *
-    * @since 0.90.6
-    *
-    * @param $dbhost
-    * @param $user
-    * @param $password
-    * @param $DBname
-    *
-    * @return boolean
-    *
-   **/
-   static function createMainConfig($host, $user, $password, $DBname) {
-
-      $DB_str = "<?php\n class DB extends DBmysql {
-                \n public \$dbhost     = '". $host ."';
-                \n public \$dbuser     = '". $user ."';
-                \n public \$dbpassword = '". rawurlencode($password) ."';
-                \n public \$dbdefault  = '". $DBname ."';
-                \n}\n";
-
-      return Toolbox::writeConfig('config_db.php', $DB_str);
-   }
-   
-   
-   /**
     * Create slave DB configuration file
     *
     * @param host       the slave DB host(s)
