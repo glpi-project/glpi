@@ -143,7 +143,7 @@ function loadDataset() {
    $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
 
    if (!file_exists(GLPI_LOG_DIR)) {
-      @mkdir(GLPI_LOG_DIR, 0755, true);
+      mkdir(GLPI_LOG_DIR, 0755, true);
    }
    file_put_contents(GLPI_LOG_DIR.'/php-errors.log', '');
    file_put_contents(GLPI_LOG_DIR.'/sql-errors.log', '');
