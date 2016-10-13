@@ -68,6 +68,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       }
    }
 
+   /**
+    * @group api
+   **/
    public function testCORS() {
       $res = $this->doHttpRequest('OPTIONS', '',
                                          ['headers' => [
@@ -725,10 +728,12 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
 
    /**
+    * @group api
+    *
     * This function test https://github.com/glpi-project/glpi/issues/1103
     * A post-only user could retrieve tickets of others users when requesting itemtype
     * without first letter in uppercase
-    */
+   **/
    public function testgetItemsForPostonly() {
       // init session for postonly
       $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => ['post-only', 'postonly']]);
