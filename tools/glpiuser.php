@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 /*
  -------------------------------------------------------------------------
@@ -30,7 +31,9 @@
  --------------------------------------------------------------------------
  */
 
-// Ensure current directory when run from crontab
+(PHP_SAPI == 'cli') or die("Only available from command line");
+
+// Ensure current directory when run from CLI
 chdir(__DIR__);
 
 include ('../inc/includes.php');
