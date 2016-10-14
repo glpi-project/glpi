@@ -385,14 +385,14 @@ class Ticket extends CommonITILObject {
          case SLT::TTR :
             $input['slts_ttr_id'] = 0;
             if ($delete_date) {
-               $input['time_to_own'] = '';
+               $input['due_date'] = '';
             }
             break;
 
          case SLT::TTO :
             $input['slts_tto_id'] = 0;
             if ($delete_date) {
-               $input['due_date'] = '';
+               $input['time_to_own'] = '';
             }
             break;
       }
