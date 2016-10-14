@@ -231,11 +231,11 @@ class Alert extends CommonDBTM {
       global $DB;
 
       if ($items_id) {
-         $iter = $DB->request(getTableForItemType(__CLASS__), ['FIELDS'   => 'date',
-                                                               'ORDER'    => 'date DESC',
-                                                               'LIMIT'    => 1,
-                                                               'itemtype' => $itemtype,
-                                                               'items_id' => $items_id]);
+         $iter = $DB->request(self::getTable(), ['FIELDS'   => 'date',
+                                                 'ORDER'    => 'date DESC',
+                                                 'LIMIT'    => 1,
+                                                 'itemtype' => $itemtype,
+                                                 'items_id' => $items_id]);
          if ($row = $iter->next()) {
             //TRANS: %s is the date
             echo sprintf(__('Alert sent on %s'), Html::convDateTime($row['date']));
