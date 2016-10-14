@@ -838,58 +838,58 @@ class CommonDBTM extends CommonGLPI {
          if (isset($table_fields['date_mod'])) {
             $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
          }
+         if ($this->checkForeignkeys()){
+            if ($this->checkUnicity(true,$options)) {
+               if ($this->addToDB()) {
+                  $this->post_addItem();
+                  $this->addMessageOnAddAction();
 
-         if ($this->checkUnicity(true,$options)) {
-            if ($this->addToDB()) {
-               $this->post_addItem();
-               $this->addMessageOnAddAction();
+                  if ($this->dohistory && $history) {
+                     $changes[0] = 0;
+                     $changes[1] = $changes[2] = "";
 
-               if ($this->dohistory && $history) {
-                  $changes[0] = 0;
-                  $changes[1] = $changes[2] = "";
-
-                  Log::history($this->fields["id"], $this->getType(), $changes, 0,
-                               Log::HISTORY_CREATE_ITEM);
-               }
-
-                // Auto create infocoms
-               if (isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
-                   && Infocom::canApplyOn($this)) {
-
-                  $ic = new Infocom();
-                  if (!$ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
-                     $ic->add(array('itemtype' => $this->getType(),
-                                    'items_id' => $this->fields['id']));
+                     Log::history($this->fields["id"], $this->getType(), $changes, 0,
+                                  Log::HISTORY_CREATE_ITEM);
                   }
-               }
 
-               // If itemtype is in infocomtype and if states_id field is filled
-               // and item is not a template
-               if (InfoCom::canApplyOn($this)
-                   && isset($this->input['states_id'])
-                            && (!isset($this->input['is_template'])
-                                || !$this->input['is_template'])) {
+                   // Auto create infocoms
+                  if (isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
+                      && Infocom::canApplyOn($this)) {
 
-                  //Check if we have to automatical fill dates
-                  Infocom::manageDateOnStatusChange($this);
-               }
-               Plugin::doHook("item_add", $this);
+                     $ic = new Infocom();
+                     if (!$ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
+                        $ic->add(array('itemtype' => $this->getType(),
+                                       'items_id' => $this->fields['id']));
+                     }
+                  }
 
-               // As add have suceed, clean the old input value
-               if (isset($this->input['_add'])) {
-                  $this->clearSavedInput();
+                  // If itemtype is in infocomtype and if states_id field is filled
+                  // and item is not a template
+                  if (InfoCom::canApplyOn($this)
+                      && isset($this->input['states_id'])
+                               && (!isset($this->input['is_template'])
+                                   || !$this->input['is_template'])) {
+
+                     //Check if we have to automatical fill dates
+                     Infocom::manageDateOnStatusChange($this);
+                  }
+                  Plugin::doHook("item_add", $this);
+
+                  // As add have suceed, clean the old input value
+                  if (isset($this->input['_add'])) {
+                     $this->clearSavedInput();
+                  }
+                  if ($this->mailqueueonaction) {
+                     QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+                  }
+                  // For unit test (workaround for MyIsam without transaction)
+                  if (isset($DB->objcreated) && is_array($DB->objcreated)) {
+                     $DB->objcreated[$this->getTable()][] = $this->fields['id'];
+                  }
+                  return $this->fields['id'];
                }
-               if ($this->mailqueueonaction) {
-                  QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
-               }
-               // For unit test (workaround for MyIsam without transaction)
-               if (isset($DB->objcreated) && is_array($DB->objcreated)) {
-                  $DB->objcreated[$this->getTable()][] = $this->fields['id'];
-               }
-               return $this->fields['id'];
             }
          }
-
       }
       $this->last_status = self::NOTHING_TO_DO;
       return false;
@@ -1063,115 +1063,116 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Valid input for update
-      if ($this->checkUnicity(false,$options)) {
-         if ($this->input && is_array($this->input)) {
-            // Fill the update-array with changes
-            $x               = 0;
-            $this->updates   = array();
-            $this->oldvalues = array();
+      if ($this->checkForeignkeys()){
+         if ($this->checkUnicity(false,$options)) {
+            if ($this->input && is_array($this->input)) {
+               // Fill the update-array with changes
+               $x               = 0;
+               $this->updates   = array();
+               $this->oldvalues = array();
 
-            foreach ($this->input as $key => $val) {
-               if (array_key_exists($key,$this->fields)) {
+               foreach ($this->input as $key => $val) {
+                  if (array_key_exists($key,$this->fields)) {
 
-                  // Prevent history for date statement (for date for example)
-                  if (is_null($this->fields[$key])
-                      && ($this->input[$key] == 'NULL')) {
-                     $this->fields[$key] = 'NULL';
-                  }
-                  // Compare item
-                  $ischanged = true;
-                  $searchopt = $this->getSearchOptionByField('field', $key, $this->getTable());
-                  if (isset($searchopt['datatype'])) {
-                     switch ($searchopt['datatype']) {
-                        case 'string' :
-                        case 'text' :
-                           $ischanged = (strcmp($DB->escape($this->fields[$key]),
-                                                $this->input[$key]) != 0);
-                           break;
-
-                        case 'itemlink' :
-                           if ($key == 'name') {
+                     // Prevent history for date statement (for date for example)
+                     if (is_null($this->fields[$key])
+                         && ($this->input[$key] == 'NULL')) {
+                        $this->fields[$key] = 'NULL';
+                     }
+                     // Compare item
+                     $ischanged = true;
+                     $searchopt = $this->getSearchOptionByField('field', $key, $this->getTable());
+                     if (isset($searchopt['datatype'])) {
+                        switch ($searchopt['datatype']) {
+                           case 'string' :
+                           case 'text' :
                               $ischanged = (strcmp($DB->escape($this->fields[$key]),
-                                                               $this->input[$key]) != 0);
+                                                   $this->input[$key]) != 0);
                               break;
-                           } // else default
 
-                        default :
-                           $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
-                           break;
-                     }
-                  } else {
-                     // No searchoption case
-                     $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                           case 'itemlink' :
+                              if ($key == 'name') {
+                                 $ischanged = (strcmp($DB->escape($this->fields[$key]),
+                                                                  $this->input[$key]) != 0);
+                                 break;
+                              } // else default
 
-                  }
-                  if ($ischanged) {
-                     if ($key != "id") {
-
-                        // Store old values
-                        if (!in_array($key,$this->history_blacklist)) {
-                           $this->oldvalues[$key] = $this->fields[$key];
+                           default :
+                              $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                              break;
                         }
+                     } else {
+                        // No searchoption case
+                        $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
 
-                        $this->fields[$key] = $this->input[$key];
-                        $this->updates[$x]  = $key;
-                        $x++;
                      }
-                  }
+                     if ($ischanged) {
+                        if ($key != "id") {
 
-               }
-            }
-            if (count($this->updates)) {
-               if (array_key_exists('date_mod',$this->fields)) {
-                  // is a non blacklist field exists
-                  if (count(array_diff($this->updates, $this->history_blacklist)) > 0) {
-                     $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
-                     $this->updates[$x++]      = 'date_mod';
+                           // Store old values
+                           if (!in_array($key,$this->history_blacklist)) {
+                              $this->oldvalues[$key] = $this->fields[$key];
+                           }
+
+                           $this->fields[$key] = $this->input[$key];
+                           $this->updates[$x]  = $key;
+                           $x++;
+                        }
+                     }
+
                   }
                }
-               $this->pre_updateInDB();
-
                if (count($this->updates)) {
-                  if ($this->updateInDB($this->updates,
-                                        ($this->dohistory && $history ? $this->oldvalues
-                                                                      : array()))) {
-                     $this->addMessageOnUpdateAction();
-                     Plugin::doHook("item_update", $this);
+                  if (array_key_exists('date_mod',$this->fields)) {
+                     // is a non blacklist field exists
+                     if (count(array_diff($this->updates, $this->history_blacklist)) > 0) {
+                        $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
+                        $this->updates[$x++]      = 'date_mod';
+                     }
+                  }
+                  $this->pre_updateInDB();
 
-                     //Fill forward_entity_to array with itemtypes coming from plugins
-                     if (isset(self::$plugins_forward_entity[$this->getType()])) {
-                        foreach (self::$plugins_forward_entity[$this->getType()] as $itemtype) {
-                           static::$forward_entity_to[] = $itemtype;
+                  if (count($this->updates)) {
+                     if ($this->updateInDB($this->updates,
+                                           ($this->dohistory && $history ? $this->oldvalues
+                                                                         : array()))) {
+                        $this->addMessageOnUpdateAction();
+                        Plugin::doHook("item_update", $this);
+
+                        //Fill forward_entity_to array with itemtypes coming from plugins
+                        if (isset(self::$plugins_forward_entity[$this->getType()])) {
+                           foreach (self::$plugins_forward_entity[$this->getType()] as $itemtype) {
+                              static::$forward_entity_to[] = $itemtype;
+                           }
                         }
-                     }
-                     // forward entity information if needed
-                     if (count(static::$forward_entity_to)
-                         && (in_array("entities_id",$this->updates)
-                             || in_array("is_recursive",$this->updates)) ) {
-                        $this->forwardEntityInformations();
-                     }
+                        // forward entity information if needed
+                        if (count(static::$forward_entity_to)
+                            && (in_array("entities_id",$this->updates)
+                                || in_array("is_recursive",$this->updates)) ) {
+                           $this->forwardEntityInformations();
+                        }
 
-                     // If itemtype is in infocomtype and if states_id field is filled
-                     // and item not a template
-                     if (InfoCom::canApplyOn($this)
-                         && in_array('states_id',$this->updates)
-                         && ($this->getField('is_template') != NOT_AVAILABLE)) {
-                        //Check if we have to automatical fill dates
-                        Infocom::manageDateOnStatusChange($this, false);
+                        // If itemtype is in infocomtype and if states_id field is filled
+                        // and item not a template
+                        if (InfoCom::canApplyOn($this)
+                            && in_array('states_id',$this->updates)
+                            && ($this->getField('is_template') != NOT_AVAILABLE)) {
+                           //Check if we have to automatical fill dates
+                           Infocom::manageDateOnStatusChange($this, false);
+                        }
                      }
                   }
                }
-            }
-            $this->post_updateItem($history);
+               $this->post_updateItem($history);
 
-            if ($this->mailqueueonaction) {
-               QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
-            }
+               if ($this->mailqueueonaction) {
+                  QueuedMail::forceSendFor($this->getType(), $this->fields['id']);
+               }
 
-            return true;
+               return true;
+            }
          }
       }
-
       return false;
    }
 
@@ -4455,5 +4456,44 @@ class CommonDBTM extends CommonGLPI {
    **/
    static function generateLinkContents($link, CommonDBTM $item) {
       return Link::generateLinkContents($link, $item);
+   }
+
+
+   /**
+    * Check foreignkeys exist in DB
+    *
+    * @return true if all foreignkeys exist in DB, otherwise false
+   **/
+   function checkForeignkeys() {
+
+      $state = true;
+      foreach ($this->fields as $field => $value) {
+         if (isForeignKeyField($field)) {
+            if ($value == 0) {
+               continue;
+            }
+            if ($field == 'items_id') {
+               if (!isset($this->fields['itemtype'])) {
+                  continue;
+               }
+               $itemtype = $this->fields['itemtype'];
+            } else if ($field == 'mainitems_id') {
+               if (!isset($this->fields['mainitemtype'])) {
+                  continue;
+               }
+               $itemtype = $this->fields['mainitemtype'];
+            } else {
+               $itemtype = getItemTypeForTable(getTableNameForForeignKeyField($field));
+            }
+            $item = new $itemtype;
+            if (!$item->getFromDB($value)) {
+               $state = false;
+               $msg = sprintf(__('The foreignkey %s with value %d not exists'),
+                                 $field, $value);
+               Session::addMessageAfterRedirect($msg, true, ERROR);
+            }
+         }
+      }
+      return $state;
    }
 }

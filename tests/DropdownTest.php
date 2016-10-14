@@ -102,6 +102,7 @@ class DropdownTest extends DbTestCase {
             [ [ 'completename' => 'foo>bar', 'entities_id' => 0],           'bar',  'foo > bar',  'int',   'two names with no space'],
             [ [ 'completename' => '>foo>>bar>', 'entities_id' => 0],        'bar',  'foo > bar',  'int',   'two names with additional >'],
             [ [ 'completename' => ' foo >   > bar > ', 'entities_id' => 0], 'bar',  'foo > bar',  'int',   'two names with garbage'],
+            [ [ 'name' => 'foob', 'entities_id' => 100],                    '',     '',           'false', 'bad entity'],
       ];
    }
 
