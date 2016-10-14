@@ -45,7 +45,7 @@ ini_set("max_execution_time", "0");
 include ('../inc/includes.php');
 
 // No debug mode
-$_SESSION['glpi_use_mode'] == Session::NORMAL_MODE;
+$_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
 
 $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareVersion',
                'SoftwareLicense', 'Peripheral', 'NetworkEquipment', 'User', 'Group', 'Entity',
