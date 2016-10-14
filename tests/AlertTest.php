@@ -56,6 +56,10 @@ class AlertTest extends DbTestCase {
       $this->assertEquals($id, Alert::alertExists($comp->getType(), $comp->getID(), Alert::END));
       $this->assertEquals($date, Alert::getAlertDate($comp->getType(), $comp->getID(), Alert::END));
 
+      // Display
+      $this->expectOutputString(sprintf('Alert sent on %s', Html::convDateTime($date)));
+      Alert::displayLastAlert($comp->getType(), $comp->getID());
+
       // Delete
       $this->assertTrue($alert->clear($comp->getType(), $comp->getID(), Alert::END));
       $this->assertEquals($nb, countElementsInTable($alert->getTable()));
