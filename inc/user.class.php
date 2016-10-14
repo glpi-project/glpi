@@ -1528,7 +1528,7 @@ class User extends CommonDBTM {
                      if (isset($this->fields["_ldap_rules"]["rules_entities"])) {
                         $entity_count += count($this->fields["_ldap_rules"]["rules_entities"]);
                      }
-                     if (isset($this->input["_ldap_rules"]["rules_rights"])) {
+                     if (isset($this->fields["_ldap_rules"]["rules_rights"])) {
                         $right_count += count($this->fields["_ldap_rules"]["rules_rights"]);
                      }
                      if ($entity_count && $right_count) {
