@@ -189,7 +189,7 @@ class Event extends CommonDBTM {
                                              $CFG_GLPI["root_doc"]."/front/infocom.form.php".
                                                 "?id=".$items_id,
                                              array('height' => 600));
-
+               break;
             case "devices" :
                echo $items_id;
                break;
