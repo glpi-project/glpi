@@ -3305,6 +3305,7 @@ class Html {
       $param['ajax']       = '';
       $param['display']    = true;
       $param['autoclose']  = true;
+      $param['onclick']    = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -3372,7 +3373,9 @@ class Html {
          $js .=", title: {text: ' ',button: true}";
       }
       $js .= "}, style: { classes: 'qtip-shadow qtip-bootstrap'}";
-      if (!$param['autoclose']) {
+      if ($param['onclick']) {
+         $js .= ",show: 'click', hide: false,";
+      } else if (!$param['autoclose']) {
          $js .= ",show: {
                         solo: true, // ...and hide all other tooltips...
                 }, hide: false,";
