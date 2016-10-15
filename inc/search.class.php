@@ -5141,12 +5141,27 @@ class Search {
                      if (self::$output_type == self::HTML_OUTPUT
                          && (Toolbox::strlen($text) > $CFG_GLPI['cut'])) {
                         $rand = mt_rand();
-                        $out .= sprintf(__('%1$s %2$s'),
-                                        "<span id='text$rand'>".
-                                          Html::resume_text($text, $CFG_GLPI['cut']).'</span>',
-                                        Html::showToolTip($text, ['applyto' => "text$rand",
-                                                                       'display' => false]));
-
+                        $popup_params = [
+                           'display'   => false
+                        ];
+                        if (Toolbox::strlen($text) > $CFG_GLPI['cut']) {
+                           $popup_params += [
+                              'awesome-class'   => 'fa-comments-o',
+                              'autoclose'       => false,
+                              'onclick'         => true
+                           ];
+                        } else {
+                           $popup_params += [
+                              'applyto'   => "text$rand",
+                           ];
+                        }
+                        $out .= sprintf(
+                           __('%1$s %2$s'),
+                           "<span id='text$rand'>". Html::resume_text($text, $CFG_GLPI['cut']).'</span>',
+                           Html::showToolTip(
+                              '<div class="fup-popup">'.$text.'</div>', $popup_params
+                              )
+                        );
                      } else {
                         $out .= $text;
                      }
@@ -6121,18 +6136,24 @@ class Search {
                $values = preg_split('/'.self::LBHR.'/i', $value);
                $line_delimiter = '<hr>';
             }
-            $limitto = 20;
-            if (count($values) > $limitto) {
-               for ($i=0; $i<$limitto; $i++) {
-                  $out .= $values[$i].$line_delimiter;
+
+            if (count($values) > 1) {
+               $value = '';
+               foreach ($values as $v) {
+                  $value .= $v.$line_delimiter;
                }
-               // $rand=mt_rand();
-               $out .= "...&nbsp;";
                $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
                $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
-               $out .= Html::showToolTip($value, ['display'   => false,
-                                                      'autoclose' => false]);
-
+               $value = '<div class="fup-popup">'.$value.'</div>';
+               $valTip = "&nbsp;".Html::showToolTip(
+                  $value, [
+                     'awesome-class'   => 'fa-comments-o',
+                     'display'         => false,
+                     'autoclose'       => false,
+                     'onclick'         => true
+                  ]
+               );
+               $out .= $values[0] . $valTip;
             } else {
                $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
                $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);

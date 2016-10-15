@@ -5366,6 +5366,13 @@ input[name=as_map]:checked + label {
 
 /** /ITIL statuses */
 
+.fup-popup {
+   overflow-y: auto;
+   width: 350px;
+   height: 200px;
+   font-size: 11px;
+}
+
 /** Responsive for documentation */
 
 @media screen and (max-width: 900px) {
