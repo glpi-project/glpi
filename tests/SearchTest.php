@@ -201,6 +201,8 @@ class SearchTest extends DbTestCase {
    /**
     * This test will add all serachoptions in each itemtype and check if the
     * search give a SQL error
+    *
+    * @medium
     */
    public function testSearchOptions() {
 
