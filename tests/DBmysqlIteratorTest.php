@@ -56,6 +56,38 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   public function testNoTableWithWhere() {
+
+      file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
+      $it = new DBmysqlIterator(NULL, '', ['foo' => 1]);
+      $this->assertEquals('SELECT * WHERE `foo` = 1', $it->getSql(), 'No table');
+
+      // Really, this is an error
+      $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
+      $this->assertRegExp('/Missing table name/', $buf, 'Missing table with WHERE');
+   }
+
+
+   public function testNoTableWithoutWhere() {
+
+      file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
+      $it = new DBmysqlIterator(NULL, '');
+      $this->assertEquals('SELECT *', $it->getSql(), 'No table');
+
+      // Temporarily, this is an error, will be allowed later
+      $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
+      $this->assertRegExp('/Missing table name/', $buf, 'Missing table');
+
+      file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
+      $it = new DBmysqlIterator(NULL, ['FROM' => []]);
+      $this->assertEquals('SELECT *', $it->getSql(), 'No table');
+
+      // Temporarily, this is an error, will be allowed later
+      $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
+      $this->assertRegExp('/Missing table name/', $buf, 'Missing table');
+   }
+
+
    public function testDebug() {
 
       $it = new DBmysqlIterator(NULL, 'foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
