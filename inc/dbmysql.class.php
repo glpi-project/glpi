@@ -175,6 +175,9 @@ class DBmysql {
          $error .= toolbox::backtrace(false, 'DBmysql->query()', array('Toolbox::backtrace()'));
 
          Toolbox::logInFile("sql-errors", $error);
+         if (class_exists('GlpitestSQLError')) { // For unit test
+            throw new GlpitestSQLError($error);
+         }
 
          if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
              && $CFG_GLPI["debug_sql"]) {
@@ -227,6 +230,9 @@ class DBmysql {
          $error .= toolbox::backtrace(false, 'DBmysql->prepare()', array('Toolbox::backtrace()'));
 
          Toolbox::logInFile("sql-errors", $error);
+         if (class_exists('GlpitestSQLError')) { // For unit test
+            throw new GlpitestSQLError($error);
+         }
 
          if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
              && $CFG_GLPI["debug_sql"]) {

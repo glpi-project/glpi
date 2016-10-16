@@ -534,23 +534,21 @@ class Toolbox {
    static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars) {
 
       // Date et heure de l'erreur
-      $errortype = array(E_ERROR           => 'Error',
-                         E_WARNING         => 'Warning',
-                         E_PARSE           => 'Parsing Error',
-                         E_NOTICE          => 'Notice',
-                         E_CORE_ERROR      => 'Core Error',
-                         E_CORE_WARNING    => 'Core Warning',
-                         E_COMPILE_ERROR   => 'Compile Error',
-                         E_COMPILE_WARNING => 'Compile Warning',
-                         E_USER_ERROR      => 'User Error',
-                         E_USER_WARNING    => 'User Warning',
-                         E_USER_NOTICE     => 'User Notice',
-                         E_STRICT          => 'Runtime Notice',
-                         // Need php 5.2.0
-                         4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error',
-                         // Need php 5.3.0
-                         8192 /* E_DEPRECATED */       => 'Deprecated function',
-                         16384 /* E_USER_DEPRECATED */ => 'User deprecated function');
+      $errortype = array(E_ERROR             => 'Error',
+                         E_WARNING           => 'Warning',
+                         E_PARSE             => 'Parsing Error',
+                         E_NOTICE            => 'Notice',
+                         E_CORE_ERROR        => 'Core Error',
+                         E_CORE_WARNING      => 'Core Warning',
+                         E_COMPILE_ERROR     => 'Compile Error',
+                         E_COMPILE_WARNING   => 'Compile Warning',
+                         E_USER_ERROR        => 'User Error',
+                         E_USER_WARNING      => 'User Warning',
+                         E_USER_NOTICE       => 'User Notice',
+                         E_STRICT            => 'Runtime Notice',
+                         E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+                         E_DEPRECATED        => 'Deprecated function',
+                         E_USER_DEPRECATED   => 'User deprecated function');
       // Les niveaux qui seront enregistrés
       $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 
@@ -571,6 +569,21 @@ class Toolbox {
 
       // Save error
       self::logInFile("php-errors", $err);
+
+      // For unit test
+      if (class_exists('GlpitestPHPerror')) {
+         if (in_array($errno, [E_ERROR, E_USER_ERROR])) {
+            throw new GlpitestPHPerror($err);
+         }
+         /* for tuture usage
+         if (in_array($errno, [E_STRICT, E_WARNING, E_CORE_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED])) {
+             throw new GlpitestPHPwarning($err);
+         }
+         if (in_array($errno, [E_NOTICE, E_USER_NOTICE])) {
+            throw new GlpitestPHPnotice($err);
+         }
+         */
+      }
 
       return $errortype[$errno];
    }

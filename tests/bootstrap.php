@@ -41,6 +41,19 @@ include_once __DIR__ . '/DbTestCase.php';
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
+class GlpitestPHPerror extends Exception
+{
+}
+class GlpitestPHPwarning extends Exception
+{
+}
+class GlpitestPHPnotice extends Exception
+{
+}
+class GlpitestSQLError extends Exception
+{
+}
+
 function loadDataset() {
    global $CFG_GLPI;
 
@@ -142,7 +155,7 @@ function loadDataset() {
    $CFG_GLPI['url_base']      = GLPI_URI;
    $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
 
-   @mkdir(GLPI_LOG_DIR, 0755, true);
+   is_dir(GLPI_LOG_DIR) or mkdir(GLPI_LOG_DIR, 0755, true);
 
    $conf = Config::getConfigurationValues('phpunit');
    if (isset($conf['dataset']) && $conf['dataset']==$data['_version']) {

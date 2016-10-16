@@ -43,6 +43,17 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   /**
+    * @expectedException        GlpitestSQLerror
+    * @expectedExceptionMessage fakeTable' doesn't exist
+    */
+   public function testSqlError() {
+      global $DB;
+
+      $DB->request('fakeTable');
+   }
+
+
    public function testOnlyTable() {
 
       $it = new DBmysqlIterator(NULL, 'foo');
@@ -56,6 +67,10 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   /**
+    * @expectedException        GlpitestPHPerror
+    * @expectedExceptionMessage Missing table name
+    */
    public function testNoTableWithWhere() {
 
       file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
@@ -68,23 +83,27 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   /**
+    * Temporarily, this is an error, will be allowed later
+    *
+    * @expectedException        GlpitestPHPerror
+    * @expectedExceptionMessage Missing table name
+    */
    public function testNoTableWithoutWhere() {
 
-      file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
       $it = new DBmysqlIterator(NULL, '');
       $this->assertEquals('SELECT *', $it->getSql(), 'No table');
+   }
 
-      // Temporarily, this is an error, will be allowed later
-      $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
-      $this->assertRegExp('/Missing table name/', $buf, 'Missing table');
 
-      file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
+   /**
+    * @expectedException        GlpitestPHPerror
+    * @expectedExceptionMessage Missing table name
+    */
+   public function testNoTableWithoutWhereBis() {
+
       $it = new DBmysqlIterator(NULL, ['FROM' => []]);
       $this->assertEquals('SELECT *', $it->getSql(), 'No table');
-
-      // Temporarily, this is an error, will be allowed later
-      $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
-      $this->assertRegExp('/Missing table name/', $buf, 'Missing table');
    }
 
 
