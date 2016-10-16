@@ -101,7 +101,7 @@ class SearchTest extends DbTestCase {
            }
          }
       }
-      return $classes;
+      return array_unique($classes);
    }
 
 
@@ -209,6 +209,9 @@ class SearchTest extends DbTestCase {
       $displaypref = new DisplayPreference();
       // save table glpi_displaypreferences
       $dp = getAllDatasFromTable($displaypref->getTable());
+      foreach ($dp as $line) {
+         $displaypref->delete($line, true);
+      }
 
       $itemtypeslist = $this->getClasses('getSearchOptions');
       foreach ($itemtypeslist as $itemtype) {
@@ -233,7 +236,7 @@ class SearchTest extends DbTestCase {
                    'users_id' => 0,
                    'num' => $key,
                );
-               $displaypref->add($input);
+                $displaypref->add($input);
                $number++;
             }
          }
@@ -251,6 +254,7 @@ class SearchTest extends DbTestCase {
          $this->assertNotCount(0, $data['data'], $data['last_errors']);
       }
       // restore displaypreference table
+      /// TODO: review, this can't work.
       foreach (getAllDatasFromTable($displaypref->getTable()) as $line) {
          $displaypref->delete($line, true);
       }
