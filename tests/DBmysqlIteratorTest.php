@@ -222,8 +222,26 @@ class DBmysqlIteratorTest extends DbTestCase {
                                    ],
                           ],
               ];
+      $sql = "SELECT * FROM `foo` WHERE `a` = 1 AND (`b` = 2 OR NOT (`c` IN (2, 3) AND (`d` = 4 AND `e` = 5)))";
       $it = new DBmysqlIterator(NULL, ['foo'], $crit);
-      $this->assertEquals("SELECT * FROM `foo` WHERE `a` = 1 AND (`b` = 2 OR NOT (`c` IN (2, 3) AND (`d` = 4 AND `e` = 5)))", $it->getSql(), 'Complex case');
+      $this->assertEquals($sql, $it->getSql(), 'Complex case');
+
+      $crit['FROM'] = 'foo';
+      $it = new DBmysqlIterator(NULL, $crit);
+      $this->assertEquals($sql, $it->getSql(), 'Complex case');
+   }
+
+
+   public function testModern() {
+
+      $req = [
+         'SELECT' => ['a', 'b'],
+         'FROM'   => 'foo',
+         'WHERE'  => ['c' => 1],
+      ];
+      $sql = "SELECT `a`, `b` FROM `foo` WHERE `c` = 1";
+      $it = new DBmysqlIterator(NULL, $req);
+      $this->assertEquals($sql, $it->getSql(), 'Mondern syntax');
    }
 
 
