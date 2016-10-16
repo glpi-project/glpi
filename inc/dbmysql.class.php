@@ -773,7 +773,6 @@ class DBmysqlIterator  implements Iterator {
             $crit  = $table;
             $table = $crit['FROM'];
             unset($crit['FROM']);
-            var_dump("DEBUG", $table, $crit);
          }
          // Check field, orderby, limit, start in criterias
          $field    = "";
@@ -865,11 +864,21 @@ class DBmysqlIterator  implements Iterator {
 
          // FROM table list
          if (is_array($table)) {
-            $table = array_map([__CLASS__, 'quoteName'], $table);
-            $this->sql .= ' FROM '.implode(", ",$table);
-         } else {
+            if (count($table)) {
+               $table = array_map([__CLASS__, 'quoteName'], $table);
+               $this->sql .= ' FROM '.implode(", ",$table);
+            } else {
+               trigger_error("Missing table name", E_USER_ERROR);
+            }
+         } else if ($table) {
             $table = self::quoteName($table);
             $this->sql .= " FROM $table";
+         } else {
+            /*
+             * TODO filter with if ($where || !empty($crit)) {
+             * but not usefull for now, as we CANNOT write somthing like "SELECT NOW()"
+             */
+            trigger_error("Missing table name", E_USER_ERROR);
          }
 
          // JOIN
