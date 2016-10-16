@@ -555,7 +555,7 @@ class Toolbox {
       $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 
       $err = '  *** PHP '.$errortype[$errno] . "($errno): $errmsg\n";
-      if (in_array($errno, $user_errors)) {
+      if (in_array($errno, $user_errors) && function_exists('wddx_serialize_value')) {
          $err .= "Variables:".wddx_serialize_value($vars, "Variables")."\n";
       }
 
