@@ -68,18 +68,16 @@ class DBmysqlIteratorTest extends DbTestCase {
 
 
    /**
+    * This is really an error, no table but a WHERE clase
+    *
     * @expectedException        GlpitestPHPerror
     * @expectedExceptionMessage Missing table name
     */
    public function testNoTableWithWhere() {
 
-      file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
+      // Really, this is an error
       $it = new DBmysqlIterator(NULL, '', ['foo' => 1]);
       $this->assertEquals('SELECT * WHERE `foo` = 1', $it->getSql(), 'No table');
-
-      // Really, this is an error
-      $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
-      $this->assertRegExp('/Missing table name/', $buf, 'Missing table with WHERE');
    }
 
 
@@ -97,6 +95,8 @@ class DBmysqlIteratorTest extends DbTestCase {
 
 
    /**
+    * Temporarily, this is an error, will be allowed later
+    *
     * @expectedException        GlpitestPHPerror
     * @expectedExceptionMessage Missing table name
     */
@@ -109,6 +109,7 @@ class DBmysqlIteratorTest extends DbTestCase {
 
    public function testDebug() {
 
+      file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
       $it = new DBmysqlIterator(NULL, 'foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
       $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
       $this->assertTrue(strpos($buf, 'From DBmysqlIterator') > 0, 'From in php_errors.log');
