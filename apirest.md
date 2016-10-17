@@ -512,6 +512,7 @@ $ curl -X GET \
   * *range* (default: 0-50):  a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-200. Optional.
   * *sort* (default 1): id of the searchoption to sort by. Optional.
   * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
+  * *searchText* (default NULL): array of filters to pass on the query (with key = field and value the text to search)
 * **Returns**:
   * 200 (OK) with items data.
   * 206 (PARTIAL CONTENT) with items data defined by range.
