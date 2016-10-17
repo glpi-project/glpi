@@ -681,6 +681,23 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
 
+      // test retrieve 1 user with a text filter
+      $res = $this->doHttpRequest('GET', 'User/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'searchText' => array('name' => 'gl')]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+
+      $this->assertEquals(1, count($data));
+      $this->assertArrayHasKey('id', $data[0]);
+      $this->assertArrayHasKey('name', $data[0]);
+      $this->assertEquals('glpi', $data[0]['name']);
+
+
       // test retrieve invalid range of users
       try {
          $res = $this->doHttpRequest('GET', 'User/',
