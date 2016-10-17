@@ -100,8 +100,7 @@ class HtmlTest extends PHPUnit_Framework_TestCase {
     */
    public function testNl2br_deep() {
       $origin = "A string\nwith breakline.";
-      $expected = "A string<br />
-with breakline.";
+      $expected = "A string<br />\nwith breakline.";
       $this->assertEquals($expected, Html::nl2br_deep($origin));
 
       $origin = [
@@ -109,10 +108,8 @@ with breakline.";
          "And another\none"
       ];
       $expected = [
-         "Another string<br />
-with breakline.",
-         "And another<br />
-one"
+         "Another string<br />\nwith breakline.",
+         "And another<br />\none"
       ];
       $this->assertEquals($expected, Html::nl2br_deep($origin));
    }
