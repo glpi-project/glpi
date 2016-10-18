@@ -41,6 +41,9 @@ if (!defined('GLPI_ROOT')) {
 include_once (GLPI_ROOT."/inc/define.php");
 include_once (GLPI_ROOT."/inc/based_config.php");
 
+define ('NS_GLPI', 'Glpi\\');
+define ('NS_PLUG', 'Plugin\\');
+
 /**
  * Is the script launch in Command line ?
  *
@@ -79,6 +82,13 @@ function isPluginItemType($classname) {
       $plug           = array();
       $plug['plugin'] = $matches[1];
       $plug['class']  = $matches[2];
+      return $plug;
+
+   } else if (substr($classname, 0, \strlen(NS_PLUG)) === NS_PLUG) {
+      $tab = explode('\\', $classname, 3);
+      $plug           = array();
+      $plug['plugin'] = $tab[1];
+      $plug['class']  = $tab[2];
       return $plug;
    }
    // Standard case
@@ -287,7 +297,7 @@ function glpi_autoload($classname) {
    if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
       $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
-      $item     = strtolower($plug['class']);
+      $item     = str_replace('\\', '/', strtolower($plug['class']));
       // Is the plugin activate ?
       // Command line usage of GLPI : need to do a real check plugin activation
       if (isCommandLine()) {
@@ -304,22 +314,10 @@ function glpi_autoload($classname) {
          }
       }
    } else {
-      //TODO: clean, seems uneeded, as composer autoloader is used first
-
-      // Do not try to load phpcas using GLPI autoload
-      //if (preg_match('/^CAS_.*/', $classname)) {
-      //   return false;
-      //}
-      // Do not try to load Zend using GLPI autoload
-      //if (preg_match('/^Zend.*/', $classname)) {
-      //   return false;
-      //}
-      // Do not try to load Simplepie using GLPI autoload
-      //if (preg_match('/^SimplePie.*/', $classname)) {
-      //   return false;
-      //}
-
       $item = strtolower($classname);
+      if (substr($classname, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+         $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
+      }
    }
 
    if (file_exists("$dir$item.class.php")) {

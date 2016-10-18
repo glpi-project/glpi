@@ -31,6 +31,14 @@
  --------------------------------------------------------------------------
  */
 
+namespace Glpi;
+
+use \Ajax;
+use \CommonDBTM;
+use \Html;
+use \Session;
+use \Toolbox;
+
 /** @file
 * @brief
 */
@@ -74,9 +82,9 @@ class Event extends CommonDBTM {
          $full_message = "[".$this->fields['service']."] ".
                          $message_type.
                          $this->fields['level'].": ".
-                         Toolbox::stripslashes_deep($this->fields['message'])."\n";
+                         \Toolbox::stripslashes_deep($this->fields['message'])."\n";
 
-         Toolbox::logInFile("event", $full_message);
+         \Toolbox::logInFile("event", $full_message);
       }
    }
 
@@ -431,4 +439,9 @@ class Event extends CommonDBTM {
              '<span class="b">'.$nb_login.'</span>', $date);
    }
 
+}
+
+// For compatibility
+if (!class_exists('Event', false)) {
+   class_alias('Glpi\\Event', 'Event');
 }
