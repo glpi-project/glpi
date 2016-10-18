@@ -36,6 +36,8 @@
 * @since version 0.84
 */
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 $cipm = new CartridgeItem_PrinterModel();

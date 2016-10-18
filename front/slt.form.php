@@ -35,6 +35,8 @@
 * @since version 9.1
 */
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 Session::checkRight("sla", READ);

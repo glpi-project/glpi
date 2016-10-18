@@ -36,6 +36,8 @@
 * @since version 0.83
 */
 
+use Glpi\Event;
+
 if (!defined('GLPI_ROOT')) {
    include ('../inc/includes.php');
 }

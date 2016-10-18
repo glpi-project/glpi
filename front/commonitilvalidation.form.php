@@ -36,6 +36,8 @@
 * @since version 0.85
 */
 
+use Glpi\Event;
+
 // autoload include in objecttask.form (ticketvalidation, changevalidation,...)
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");

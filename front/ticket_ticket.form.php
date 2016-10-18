@@ -36,6 +36,8 @@
 * @since version 0.84
 */
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 $ticket_ticket = new Ticket_Ticket();

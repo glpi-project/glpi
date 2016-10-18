@@ -35,6 +35,8 @@
 * @brief
 */
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 $nn = new NetworkName();
