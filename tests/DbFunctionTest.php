@@ -43,7 +43,8 @@ class DbFunctionTest extends DbTestCase {
       unset($CFG_GLPI['glpitablesitemtype']);
 
       // Pseudo plugin class for test
-      include_once 'fixtures/pluginfoobar.php';
+      require_once 'fixtures/pluginfoobar.php';
+      require_once 'fixtures/pluginbarfoo.php';
    }
 
 
@@ -104,7 +105,10 @@ class DbFunctionTest extends DbTestCase {
    public function dataTableType() {
 
       return array(array('glpi_computers', 'Computer', true),
+                   array('glpi_events', 'Glpi\\Event', true),
                    array('glpi_users', 'User', true),
+                   array('glpi_plugin_bar_foos', 'Plugin\\Bar\\Foo', true),
+                   array('glpi_plugin_baz_foos', 'Plugin\\Baz\\Foo', false),
                    array('glpi_plugin_foo_bars', 'PluginFooBar', true),
                    array('glpi_plugin_foo_bazs', 'PluginFooBaz', false));
    }

@@ -1500,10 +1500,13 @@ class Toolbox {
       if ($plug = isPluginItemType($itemtype)) {
          /* PluginFooBar => /plugins/foo/front/bar */
          $dir .= "/plugins/".strtolower($plug['plugin']);
-         $item = strtolower($plug['class']);
+         $item = str_replace('\\', '/', strtolower($plug['class']));
 
       } else { // Standard case
          $item = strtolower($itemtype);
+         if (substr($itemtype, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+            $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
+         }
       }
 
       return "$dir/front/$item.form.php";
@@ -1525,7 +1528,7 @@ class Toolbox {
 
       if ($plug = isPluginItemType($itemtype)) {
          $dir .=  "/plugins/".strtolower($plug['plugin']);
-         $item = strtolower($plug['class']);
+         $item = str_replace('\\', '/', strtolower($plug['class']));
 
       } else { // Standard case
          if ($itemtype == 'Cartridge') {
@@ -1535,6 +1538,9 @@ class Toolbox {
             $itemtype = 'ConsumableItem';
          }
          $item = strtolower($itemtype);
+         if (substr($itemtype, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+            $item = str_replace('\\', '/', substr($item, \strlen(NS_GLPI)));
+         }
       }
 
       return "$dir/front/$item.php";
