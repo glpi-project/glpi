@@ -722,11 +722,11 @@ class Toolbox {
       // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
       // http://tools.ietf.org/html/rfc7232#section-3.3
       if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag){
-         header("HTTP/1.1 304 Not Modified");
+         http_response_code(304); //304 - Not Modified
          exit;
       }
       if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified){
-         header("HTTP/1.1 304 Not Modified");
+         http_response_code(304); //304 - Not Modified
          exit;
       }
 
