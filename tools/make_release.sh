@@ -77,6 +77,7 @@ echo "Retrieve PHP vendor"
 composer install --no-dev --optimize-autoloader --prefer-dist --quiet
 
 echo "Clean PHP vendor"
+\rm -rf vendor/bin;
 \find vendor/ -type f -name "build.xml" -exec rm -rf {} \;
 \find vendor/ -type f -name "build.properties" -exec rm -rf {} \;
 \find vendor/ -type f -name "composer.json" -exec rm -rf {} \;
