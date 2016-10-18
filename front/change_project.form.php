@@ -36,6 +36,8 @@
 * @since version 0.85
 */
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 Session::checkLoginUser();

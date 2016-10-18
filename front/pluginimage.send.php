@@ -41,6 +41,8 @@
 
 */
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 if (!isset($_GET["name"]) || !isset($_GET["plugin"])) {

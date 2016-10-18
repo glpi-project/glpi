@@ -34,6 +34,8 @@
 // Ensure current directory when run from crontab
 chdir(__DIR__);
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 if (isset($_SERVER['argv'])) {

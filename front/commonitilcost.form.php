@@ -36,10 +36,13 @@
 * @since version 0.85
 */
 
+use Glpi\Event;
+
 // autoload include in objecttask.form (ticketcost, problemcost,...)
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
+
 Session::checkCentralAccess();
 if (!($cost instanceof CommonITILCost)) {
    Html::displayErrorAndDie('');

@@ -36,6 +36,8 @@
 * @since vesion 0.84
 */
 
+use Glpi\Event;
+
 include ('../inc/includes.php');
 
 Session::checkCentralAccess();
