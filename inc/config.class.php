@@ -1783,10 +1783,10 @@ class Config extends CommonDBTM {
       if (is_object($libstring)) {
          return realpath(dirname((new ReflectionObject($libstring))->getFileName()));
 
-      } elseif (class_exists($libstring)) {
+      } else if (class_exists($libstring)) {
          return realpath(dirname((new ReflectionClass($libstring))->getFileName()));
 
-      } elseif (function_exists($libstring)) {
+      } else if (function_exists($libstring)) {
          // Internal function have no file name
          $path = (new ReflectionFunction($libstring))->getFileName();
          return ($path ? realpath(dirname($path)) : false);

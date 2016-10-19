@@ -3,6 +3,9 @@
   <!-- white spaces at end of line or empty line have spaces -->
   <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
 
+  <!-- else if instead of elseif -->
+  <rule ref="Squiz.ControlStructures.ElseIfDeclaration" />
+
   <!-- No tab in indent -->
   <rule ref="Generic.WhiteSpace.DisallowTabIndent" />
 
