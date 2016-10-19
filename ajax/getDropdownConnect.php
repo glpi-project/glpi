@@ -203,4 +203,3 @@ if ($DB->numrows($result)) {
 $ret['results'] = $datas;
 
 echo json_encode($ret);
-?>

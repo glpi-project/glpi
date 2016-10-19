@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -63,11 +63,11 @@ if (isset($_POST["add"])) {
                     sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       }
       if ($_SESSION['glpibackcreated']) {
-        $url = $dropdown->getFormURLWithID($newID);
-        if (isset($_REQUEST['_in_modal'])) {
-          $url.="&_in_modal=1";
-        }
-        Html::redirect($url);
+         $url = $dropdown->getFormURLWithID($newID);
+         if (isset($_REQUEST['_in_modal'])) {
+            $url.="&_in_modal=1";
+         }
+         Html::redirect($url);
       }
    }
    Html::back();
@@ -132,4 +132,3 @@ if (isset($_POST["add"])) {
    $dropdown->display($options);
    Html::footer();
 }
-?>

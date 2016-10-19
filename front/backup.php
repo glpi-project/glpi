@@ -345,7 +345,6 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
       $fileHandle = gzopen64($dumpFile, "a");
    }
 
-
    if (!$fileHandle) {
       //TRANS: %s is the name of the file
       echo sprintf(__('Unauthorized access to the file %s'), $dumpFile)."<br>";
@@ -715,4 +714,3 @@ echo "</table>";
 echo "</div>";
 
 Html::footer();
-?>

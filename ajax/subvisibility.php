@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -54,7 +54,7 @@ if (isset($_POST['type']) && !empty($_POST['type'])
       $prefix = $_POST['prefix'].'[';
       $suffix = ']';
    }
-   
+
    switch ($_POST['type']) {
       case 'Group' :
       case 'Profile' :
@@ -75,4 +75,3 @@ if (isset($_POST['type']) && !empty($_POST['type'])
          break;
    }
 }
-?>

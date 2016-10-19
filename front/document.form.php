@@ -118,4 +118,3 @@ if (isset($_POST["add"])) {
    $doc->display(array('id' =>$_GET["id"]));
    Html::footer();
 }
-?>

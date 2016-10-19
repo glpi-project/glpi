@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -67,4 +67,3 @@ if (!empty($_GET['reset_apcu'])) {
 Html::header(Config::getTypeName(1), $_SERVER['PHP_SELF'], "config", "config");
 $config->display(array('id' => 1));
 Html::footer();
-?>

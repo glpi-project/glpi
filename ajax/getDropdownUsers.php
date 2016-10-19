@@ -153,4 +153,3 @@ if (($one_item >= 0)
    $ret['count']   = $count;
    echo json_encode($ret);
 }
-?>

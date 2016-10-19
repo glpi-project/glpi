@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -51,4 +51,3 @@ if (isset($_POST['name'])) {
          Html::cleanInputText(Toolbox::clean_cross_side_scripting_deep(rawurldecode(stripslashes($_POST["data"])))).
         "\">";
 }
-?>

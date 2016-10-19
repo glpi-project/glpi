@@ -102,4 +102,3 @@ if (isset($_POST["add"])) {
    $license->display($_REQUEST);
    Html::footer();
 }
-?>

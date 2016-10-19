@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -103,4 +103,3 @@ if ($auth->Login($login, $password, (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUT
    Html::nullFooter();
    exit();
 }
-?>

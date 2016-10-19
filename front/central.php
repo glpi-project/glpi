@@ -81,4 +81,3 @@ $central = new Central();
 $central->display();
 
 Html::footer();
-?>

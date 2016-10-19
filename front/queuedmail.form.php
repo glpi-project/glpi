@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -50,4 +50,3 @@ $mail = new QueuedMail();
 Html::header(QueuedMail::getTypeName(), $_SERVER['PHP_SELF'], "admin", "queuedmail");
 $mail->display($_GET);
 Html::footer();
-?>

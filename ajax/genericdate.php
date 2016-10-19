@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -55,4 +55,3 @@ if (isset($_POST['value']) && (strcmp($_POST['value'],'0') == 0)) {
 } else {
    echo "<input type='hidden' name='".$_POST['name']."' value='".$_POST['value']."'>";
 }
-?>

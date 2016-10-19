@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -161,7 +161,7 @@ if (isset($_POST["itemtype"])
 
    if (isset($criteria['field'])) {
       $value = $criteria['field'];
-   } 
+   }
 
    $rand     = Dropdown::showFromArray("criteria[".$_POST["num"]."][field]", $values,
                                        array('value' => $value));
@@ -195,4 +195,3 @@ if (isset($_POST["itemtype"])
 
    echo "</td></tr>\n";
 }
-?>

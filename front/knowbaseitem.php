@@ -74,4 +74,3 @@ $kb->display($_GET);
 
 
 Html::footer();
-?>

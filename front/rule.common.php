@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -51,7 +51,7 @@ if (isset($_POST["action"])) {
    $rulecollection->checkGlobal(UPDATE);
    $rulecollection->changeRuleOrder($_POST["id"],$_POST["action"], $_POST['condition']);
    Html::back();
-// POST and GET needed to manage reload
+   // POST and GET needed to manage reload
 } else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
    $rulecollection->checkGlobal(UPDATE);
 
@@ -119,4 +119,3 @@ Html::header(Rule::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF']
 
 $rulecollection->display();
 Html::footer();
-?>

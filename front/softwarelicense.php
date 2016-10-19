@@ -46,4 +46,3 @@ Html::header(SoftwareLicense::getTypeName(Session::getPluralNumber()),
 Search::show('SoftwareLicense');
 
 Html::footer();
-?>

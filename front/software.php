@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -44,4 +44,3 @@ Html::header(Software::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SE
 Search::show('Software');
 
 Html::footer();
-?>
