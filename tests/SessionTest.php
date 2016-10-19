@@ -44,13 +44,13 @@ class SessionTest extends PHPUnit_Framework_TestCase {
       $warn_msg = 'There was a warning. Be carefull.';
       $info_msg = 'All goes well. Or not... Who knows ;)';
 
-      $this->assertNull($_SESSION['MESSAGE_AFTER_REDIRECT']);
+      $this->assertEquals(false,isset($_SESSION['MESSAGE_AFTER_REDIRECT']));
 
       //test add message in cron mode
       $_SESSION['glpicronuserrunning'] = 'phpunit_cron';
       Session::addMessageAfterRedirect($err_msg, false, ERROR);
       //adding a message in "cron mode" does not add anything in the session
-      $this->assertNull($_SESSION['MESSAGE_AFTER_REDIRECT']);
+      $this->assertEquals(false, isset($_SESSION['MESSAGE_AFTER_REDIRECT']));
 
       //set not running from cron
       unset($_SESSION['glpicronuserrunning']);
@@ -109,7 +109,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
 
       //test with reset
       Session::addMessageAfterRedirect($err_msg, false, ERROR);
-      Session::addMessageAfterRedirect($warn_msg, false, WARN);
+      Session::addMessageAfterRedirect($warn_msg, false, WARNING);
       Session::addMessageAfterRedirect($info_msg, false, INFO, true);
 
       $expected = [

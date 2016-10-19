@@ -287,11 +287,9 @@ class DbFunctionTest extends DbTestCase {
       }
    }
 
-
 /*
 TODO :
 getTreeLeafValueName
-getTreeValueCompleteName
 getTreeValueName
 getAncestorsOf
 getTreeForItem
