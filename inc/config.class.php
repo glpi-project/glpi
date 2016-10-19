@@ -238,6 +238,15 @@ class Config extends CommonDBTM {
       return false;
    }
 
+   function unsetUndisclosedFields() {
+      if (isset($this->fields['context']) && isset($this->fields['name'])) {
+         if ($this->fields['context'] == 'core'
+            && in_array($this->fields['name'], array('proxy_passwd', 'smtp_passwd'))) {
+            unset($this->fields['value']);
+         }
+      }
+   }
+
    /**
     * Print the config form for display
     *

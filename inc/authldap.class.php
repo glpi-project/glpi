@@ -109,6 +109,15 @@ class AuthLDAP extends CommonDBTM {
 
 
    /**
+    * {@inheritDoc}
+    * @see CommonDBTM::unsetUndisclosedFields()
+    */
+   function unsetUndisclosedFields() {
+      unset($this->fields['rootdn_passwd']);
+   }
+
+
+   /**
     * Preconfig datas for standard system
     *
     * @param $type type of standard system : AD
