@@ -259,6 +259,7 @@ function loadDataset() {
    ];
 
    // To bypass various right checks
+   $_SESSION['glpiactiveentities_string'] = "'0'";
    $_SESSION['glpicronuserrunning'] = "cron_phpunit";
    $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
    $CFG_GLPI['root_doc']            = '/glpi';
