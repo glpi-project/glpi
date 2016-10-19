@@ -1843,8 +1843,6 @@ class Config extends CommonDBTM {
                  'check'   => 'autolink' ],
                [ 'name'    => 'sabre/vobject',
                  'check'   => 'Sabre\\VObject\\Component' ],
-               [ 'name'    => 'guzzlehttp/guzzle',
-                 'check'   => 'GuzzleHttp\\Client' ],
       ];
 
       foreach ($deps as $dep) {
