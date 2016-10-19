@@ -523,12 +523,13 @@ function getTreeLeafValueName($table, $ID, $withcomment=false, $translate=true) 
  * @param $ID           integer  ID of the element
  * @param $withcomment  boolean  1 if you want to give the array with the comments (false by default)
  * @param $translate    boolean  (true by default)
+ * @param $tooltip      boolean  (true by default) returns a tooltip, else returns only 'comment'
  *
  * @return string : completename of the element
  *
  * @see getTreeLeafValueName
 **/
-function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=true) {
+function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=true, $tooltip=true) {
    global $DB;
 
    $name    = "";
@@ -570,11 +571,12 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=tr
          } else {
             $name = $DB->result($result,0,"completename");
          }
-         $comment  = sprintf(__('%1$s: %2$s')."<br>",
-                             "<span class='b'>".__('Complete name')."</span>",
-                             $name);
-         $comment .= "<span class='b'>&nbsp;".__('Comments')."&nbsp;</span>";
-
+         if( $tooltip ) {
+            $comment  = sprintf(__('%1$s: %2$s')."<br>",
+                                "<span class='b'>".__('Complete name')."</span>",
+                                $name);
+            $comment .= "<span class='b'>&nbsp;".__('Comments')."&nbsp;</span>";
+         }
          $transcomment = $DB->result($result,0,"transcomment");
          if ($translate && !empty($transcomment)) {
             $comment .= nl2br($transcomment);
