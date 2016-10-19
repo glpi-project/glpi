@@ -264,16 +264,17 @@ class Dropdown {
     * @param $id           id of the element to get
     * @param $withcomment  give array with name and comment (default 0)
     * @param $translate    (true by default)
+    * @param $tooltip      boolean  (true by default) returns a tooltip, else returns only 'comment'
     *
     * @return string the value of the dropdown or &nbsp; if not exists
    **/
-   static function getDropdownName($table, $id, $withcomment=0, $translate=true) {
+   static function getDropdownName($table, $id, $withcomment=0, $translate=true, $tooltip=true) {
       global $DB, $CFG_GLPI;
 
       $item = getItemForItemtype(getItemTypeForTable($table));
 
       if ($item instanceof CommonTreeDropdown) {
-         return getTreeValueCompleteName($table,$id,$withcomment, $translate);
+         return getTreeValueCompleteName($table,$id,$withcomment, $translate, $tooltip);
       }
 
       $name    = "";
@@ -341,42 +342,46 @@ class Dropdown {
                   case "glpi_contacts" :
                      //TRANS: %1$s is the name, %2$s is the firstname
                      $name = sprintf(__('%1$s %2$s'), $name, $data["firstname"]);
-                     if (!empty($data["phone"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
-                                                   "</span>".$data['phone']);
-                     }
-                     if (!empty($data["phone2"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                   "<span class='b'>".__('Phone 2'),
-                                                   "</span>".$data['phone2']);
-                     }
-                     if (!empty($data["mobile"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                   "<span class='b'>".__('Mobile phone'),
-                                                   "</span>".$data['mobile']);
-                     }
-                     if (!empty($data["fax"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Fax'),
-                                                   "</span>".$data['fax']);
-                     }
-                     if (!empty($data["email"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
-                                                   "</span>".$data['email']);
+                     if ($tooltip) {
+                        if (!empty($data["phone"])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
+                                                      "</span>".$data['phone']);
+                        }
+                        if (!empty($data["phone2"])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Phone 2'),
+                                                      "</span>".$data['phone2']);
+                        }
+                        if (!empty($data["mobile"])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Mobile phone'),
+                                                      "</span>".$data['mobile']);
+                        }
+                        if (!empty($data["fax"])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Fax'),
+                                                      "</span>".$data['fax']);
+                        }
+                        if (!empty($data["email"])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
+                                                      "</span>".$data['email']);
+                        }
                      }
                      break;
 
                   case "glpi_suppliers" :
-                     if (!empty($data["phonenumber"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
-                                                   "</span>".$data['phonenumber']);
-                     }
-                     if (!empty($data["fax"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Fax'),
-                                                   "</span>".$data['fax']);
-                     }
-                     if (!empty($data["email"])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
-                                                   "</span>".$data['email']);
+                     if( $tooltip ) {
+                        if (!empty($data["phonenumber"])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
+                                                      "</span>".$data['phonenumber']);
+                        }
+                        if (!empty($data["fax"])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Fax'),
+                                                      "</span>".$data['fax']);
+                        }
+                        if (!empty($data["email"])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
+                                                      "</span>".$data['email']);
+                        }
                      }
                      break;
 
@@ -387,31 +392,33 @@ class Dropdown {
                      break;
 
                   case "glpi_budgets" :
-                     if (!empty($data['locations_id'])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                   "<span class='b'>".__('Location')."</span>",
-                                                   self::getDropdownName("glpi_locations",
-                                                                         $data["locations_id"],
-                                                                         false, $translate));
+                     if( $tooltip ) {
+                        if (!empty($data['locations_id'])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Location')."</span>",
+                                                      self::getDropdownName("glpi_locations",
+                                                                            $data["locations_id"],
+                                                                            false, $translate));
 
-                     }
-                     if (!empty($data['budgettypes_id'])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Type')."</span>",
-                                     self::getDropdownName("glpi_budgettypes",
-                                                           $data["budgettypes_id"], false, $translate));
+                        }
+                        if (!empty($data['budgettypes_id'])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Type')."</span>",
+                                        self::getDropdownName("glpi_budgettypes",
+                                                              $data["budgettypes_id"], false, $translate));
 
-                     }
-                     if (!empty($data['begin_date'])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                   "<span class='b'>".__('Start date')."</span>",
-                                                   Html::convDateTime($data["begin_date"]));
+                        }
+                        if (!empty($data['begin_date'])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Start date')."</span>",
+                                                      Html::convDateTime($data["begin_date"]));
 
 
-                     }
-                     if (!empty($data['end_date'])) {
-                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                   "<span class='b'>".__('End date')."</span>",
-                                                   Html::convDateTime($data["end_date"]));
+                        }
+                        if (!empty($data['end_date'])) {
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('End date')."</span>",
+                                                      Html::convDateTime($data["end_date"]));
+                        }
                      }
                }
             }
