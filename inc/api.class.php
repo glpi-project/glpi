@@ -41,8 +41,7 @@ abstract class API extends CommonGLPI {
    protected $session_write = false;
 
    // avoid disclosure of critical fields
-   protected $excluded_fields = array('password', 'passwd', 'rootdn_passwd',
-                                      'smtp_passwd', 'proxy_passwd');
+   protected $excluded_fields = array('password', 'passwd', 'rootdn_passwd');
 
    static $api_url = "";
    protected $format;
@@ -447,12 +446,10 @@ abstract class API extends CommonGLPI {
          return $this->messageRightError();
       }
 
-      $fields =  $item->fields;
-
       // avoid disclosure of critical fields
-      foreach($this->excluded_fields as $key) {
-         unset($fields[$key]);
-      }
+      $item->unsetUndisclosedFields();
+
+      $fields =  $item->fields;
 
       // retrieve devices
       if (isset($params['with_devices'])
