@@ -239,6 +239,13 @@ class Config extends CommonDBTM {
    }
 
 
+   function post_getFromDbByApi() {
+      if ($this->fields['context'] == 'core' && in_array($this->fields['name'], array('smtp_passwd', 'proxy_passwd'))) {
+         $this->fields['value'] = '';
+      }
+   }
+
+
    /**
     * Print the config form for display
     *

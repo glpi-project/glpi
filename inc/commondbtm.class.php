@@ -223,6 +223,16 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * List of fields to not return from the API
+    * 
+    * @return array of fields to not provide
+    */
+   static function getApiExcludedFields() {
+      return $this->apiFieldBlacklist;
+   }
+
+
+   /**
     * Retrieve all items from the database
     *
     * @param $condition    condition used to search if needed (empty get all) (default '')
