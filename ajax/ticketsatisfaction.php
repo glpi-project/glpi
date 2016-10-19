@@ -120,4 +120,3 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
       echo "</table>";
    }
 }
-?>

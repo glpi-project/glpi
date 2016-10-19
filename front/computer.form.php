@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-// delete a computer
+   // delete a computer
 } else if (isset($_POST["delete"])) {
    $computer->check($_POST['id'], DELETE);
    $ok = $computer->delete($_POST);
@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
    }
    $computer->redirectToList();
 
-//update a computer
+   //update a computer
 } else if (isset($_POST["update"])) {
    $computer->check($_POST['id'], UPDATE);
    $computer->update($_POST);
@@ -99,7 +99,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-// Disconnect a computer from a printer/monitor/phone/peripheral
+   // Disconnect a computer from a printer/monitor/phone/peripheral
 } else {//print computer information
    Html::header(Computer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "computer");
    //show computer form to add
@@ -107,4 +107,3 @@ if (isset($_POST["add"])) {
                             'withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }
-?>

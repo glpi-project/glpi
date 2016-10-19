@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -126,7 +126,7 @@ if (empty($_GET["dropdown"])
 
 
 if (!($item instanceof CommonDevice)) {
-  // echo "Dropdown";
+   // echo "Dropdown";
    $type = "comp_champ";
 
    $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
@@ -137,7 +137,7 @@ if (!($item instanceof CommonDevice)) {
                    'start'    => $_GET["start"]);
 
 } else {
-//   echo "Device";
+   //   echo "Device";
    $type  = "device";
    $field = $_GET["dropdown"];
 
@@ -223,4 +223,3 @@ if (!$_GET['showgraph']) {
 }
 
 Html::footer();
-?>

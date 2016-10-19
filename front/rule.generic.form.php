@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -47,4 +47,3 @@ if (isset($_GET["id"])) {
    $rulecollection = RuleCollection::getClassByType($generic_rule->fields["sub_type"]);
    include (GLPI_ROOT . "/front/rule.common.form.php");
 }
-?>

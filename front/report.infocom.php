@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -193,7 +193,6 @@ function display_infocoms_report($itemtype, $begin, $end) {
       $valeurtot      += $valeursoustot;
       $valeurnettetot += $valeurnettesoustot;
 
-
       $tmpmsg = sprintf(__('Total: Value=%1$s - Account net value=%2$s'),
                         Html::formatNumber($valeursoustot),
                         Html::formatNumber($valeurnettesoustot));
@@ -285,4 +284,3 @@ if (count($valeurgraphtot) > 0) {
 }
 
 Html::footer();
-?>

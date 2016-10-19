@@ -96,7 +96,7 @@ if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
          }
       } else { // Unlink file
          $val->error = $errors['accept_file_types'];
-	 if (file_exists($upload_dir.$val->name)) {
+         if (file_exists($upload_dir.$val->name)) {
             @unlink($upload_dir.$val->name);
          }
       }

@@ -197,4 +197,3 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 } else {
    Html::footer();
 }
-?>

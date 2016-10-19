@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -73,7 +73,7 @@ if ($_POST['items_id']
             $name = $row['id'];
          }
          $devices[$row['id']] = $name;
-         
+
       }
       dropdown::showFromArray($linktype::getForeignKeyField(), $devices, array('multiple' => true));
    }
@@ -82,4 +82,3 @@ if ($_POST['items_id']
    echo "</td></tr></table>";
 
 }
-?>

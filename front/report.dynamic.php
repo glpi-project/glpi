@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -91,4 +91,3 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
          Search::showList($_GET["item_type"], $params);
    }
 }
-?>

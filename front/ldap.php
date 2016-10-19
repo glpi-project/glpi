@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -59,4 +59,3 @@ echo "<tr class='tab_bg_1'><td class='center b'>".
 echo "</table></div>";
 
 Html::footer();
-?>

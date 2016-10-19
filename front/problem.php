@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -44,4 +44,3 @@ Html::header(Problem::getTypeName(Session::getPluralNumber()), '', "helpdesk", "
 Search::show('Problem');
 
 Html::footer();
-?>

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -50,4 +50,3 @@ if ($_POST["actortype"] > 0) {
                              true, false, false);
    echo "&nbsp;<input type='submit' name='add_actor' class='submit' value=\""._sx('button','Add')."\">";
 }
-?>

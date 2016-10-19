@@ -73,11 +73,11 @@ if (!isset($_POST['permit_select_parent'])) {
 }
 
 if (isset($_POST['condition']) && !empty($_POST['condition'])) {
-    if (isset($_SESSION['glpicondition'][$_POST['condition']])) {
-        $_POST['condition'] = $_SESSION['glpicondition'][$_POST['condition']];
-    } else {
-        $_POST['condition'] = '';
-    }
+   if (isset($_SESSION['glpicondition'][$_POST['condition']])) {
+      $_POST['condition'] = $_SESSION['glpicondition'][$_POST['condition']];
+   } else {
+      $_POST['condition'] = '';
+   }
 }
 
 if (!isset($_POST['emptylabel']) || ($_POST['emptylabel'] == '')) {
@@ -343,7 +343,7 @@ if ($item instanceof CommonTreeDropdown) {
                                                                                  'name',
                                                                                  $_SESSION['glpilanguage'],
                                                                                  $item->fields['name']);
-                           //   $output2 = $item->getName();
+                              //   $output2 = $item->getName();
 
                               $temp = array('id'       => $ID,
                                             'text'     => $output2,
@@ -562,7 +562,7 @@ if ($item instanceof CommonTreeDropdown) {
          }
       }
 
-//       $outputval = Dropdown::getDropdownName($table, $_POST['value']);
+      //       $outputval = Dropdown::getDropdownName($table, $_POST['value']);
 
       $datastoadd = array();
 
@@ -658,4 +658,3 @@ if (($one_item >= 0) && isset($datas[0])) {
    echo json_encode($ret);
 }
 
-?>

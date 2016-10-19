@@ -92,4 +92,3 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
       echo "<br><span id='showItemSpecificity_".$_POST["name"]."$rand'>&nbsp;</span>\n";
    }
 }
-?>

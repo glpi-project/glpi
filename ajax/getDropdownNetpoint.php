@@ -168,4 +168,3 @@ if (($one_item >= 0) && isset($datas[0])) {
    $ret['results'] = $datas;
    echo json_encode($ret);
 }
-?>

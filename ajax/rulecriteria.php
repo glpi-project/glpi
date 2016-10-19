@@ -90,4 +90,3 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
       echo "</td></tr></table>";
    }
 }
-?>
