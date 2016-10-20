@@ -560,6 +560,15 @@ function update91to92() {
       $DB->queryOrDie("INSERT INTO `glpi_devicefirmwaretypes` VALUES ('3','Firmware',NULL,NULL,NULL);");
    }
 
+   //Father/son for Software licenses
+   $migration->addField("glpi_softwarelicenses", "softwarelicenses_id", "integer");
+   $new = $migration->addField("glpi_softwarelicenses", "completename", "text");
+   $migration->addField("glpi_softwarelicenses", "level", "integer");
+   $migration->executeMigration();
+   if ($new) {
+      $query = "UPDATE `glpi_softwarelicenses` SET `completename`=`name`";
+      $DB->queryOrDie($query, "9.2 copy name to completename for software licenses");
+   }
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

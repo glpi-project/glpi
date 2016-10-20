@@ -7134,6 +7134,9 @@ DROP TABLE IF EXISTS `glpi_softwarelicenses`;
 CREATE TABLE `glpi_softwarelicenses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `softwares_id` int(11) NOT NULL DEFAULT '0',
+  `softwarelicenses_id` int(11) NOT NULL DEFAULT '0',
+  `completename` text COLLATE utf8_unicode_ci,
+  `level` int(11) NOT NULL DEFAULT '0',
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `number` int(11) NOT NULL DEFAULT '0',
