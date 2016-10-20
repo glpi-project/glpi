@@ -77,7 +77,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    **/
    function prepareInputForAdd($input) {
 
-      $inut = parent::prepareInputForAdd($input);
+      $input = parent::prepareInputForAdd($input);
 
       if (!isset($this->fields['softwares_id']) || !$this->fields['softwares_id']) {
             Session::addMessageAfterRedirect("Please select a software for this license", true,
