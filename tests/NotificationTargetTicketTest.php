@@ -62,7 +62,6 @@ class NotificationTargetTicketTest extends DbTestCase {
       $this->assertEquals($expected, $notiftargetticket->tag_descriptions['lang']['##lang.task.categorycomment##']);
       $this->assertEquals($expected, $notiftargetticket->tag_descriptions['tag']['##task.categorycomment##']);
 
-
       // advanced test for ##task.categorycomment## tag
       // test of the getDatasForObject for default language en_US
       $expected = [
@@ -86,7 +85,6 @@ class NotificationTargetTicketTest extends DbTestCase {
       $ret = $notiftargetticket->getDatasForObject( $tkt, array() ) ;
 
       $this->assertEquals($expected, $ret['tasks']);
-
 
       // test of the getDatasForObject for default language fr_FR
       $CFG_GLPI['translate_dropdowns'] = 1 ;
