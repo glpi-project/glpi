@@ -38,6 +38,11 @@ global $CFG_GLPI;
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/DbTestCase.php';
 
+// check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
+if(!file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')){
+   die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
+}
+
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
