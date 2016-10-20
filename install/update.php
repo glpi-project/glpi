@@ -795,6 +795,7 @@ function updateDbUpTo031() {
          update0905to91();
 
       case "9.1" :
+      case "0.91" :
          include_once("update_91_92.php");
          update91to92();
          break;
