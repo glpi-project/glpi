@@ -329,6 +329,7 @@ switch ($current_version) {
    /* remember to also change --force below for last version */
 
    case "9.1" :
+   case "0.91" :
       include_once("../install/update_91_92.php");
       update91to92();
       break;
