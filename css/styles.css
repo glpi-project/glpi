@@ -2596,6 +2596,10 @@ ul#menu ul.ssmenu {
    padding: 5px;
 }
 
+#footer > table {
+   width: 100%;
+}
+
 a.copyright {
    font-size: 9px;
    color :#000;
