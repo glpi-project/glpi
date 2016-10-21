@@ -1011,8 +1011,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             }
             $tmp['##task.author##']       = Html::clean(getUserName($task['users_id']));
 
-            $tmp_taskcatinfo = Dropdown::getDropdownName('glpi_taskcategories', 
+            $tmp_taskcatinfo = Dropdown::getDropdownName('glpi_taskcategories',
                                                          $task['taskcategories_id'], true, true, false);
+            $tmp['##task.categoryid##']      = $task['taskcategories_id'];
             $tmp['##task.category##']        = $tmp_taskcatinfo['name'];
             $tmp['##task.categorycomment##'] = $tmp_taskcatinfo['comment'] ;
 
@@ -1116,6 +1117,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'task.isprivate'                    => __('Private'),
                     'task.date'                         => __('Opening date'),
                     'task.description'                  => __('Description'),
+                    'task.categoryid'                   => __('Category id'),
                     'task.category'                     => __('Category'),
                     'task.categorycomment'              => __('Category comment'),
                     'task.time'                         => __('Total duration'),
