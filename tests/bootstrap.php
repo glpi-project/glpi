@@ -295,9 +295,9 @@ function loadDataset() {
                }
                if ( $foreigntype && isset($ids[$foreigntype][$v]) && !is_numeric($v)) {
                   $input[$k] = $ids[$foreigntype][$v];
-               } elseif ($k == 'items_id'  &&  isset( $input['itemtype'] ) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
+               } else if ($k == 'items_id'  &&  isset( $input['itemtype'] ) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
                   $input[$k] = $ids[$input['itemtype']][$v];
-               } elseif( $foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v) ) {
+               } else if( $foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v) ) {
                   // not found in ids array, then must get it from DB
                   if( $obj = getItemByTypeName($foreigntype, $v) ) {
                      $input[$k] = $obj->getID() ;
