@@ -78,7 +78,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'Access-Control-Request-Method'  => 'GET',
                                              'Access-Control-Request-Headers' => 'X-Requested-With'
                                          ]]);
-      
+
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
       $headers = $res->getHeaders();
@@ -114,7 +114,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    **/
    public function testInitSessionCredentials() {
       $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => ['glpi', 'glpi']]);
-
 
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
@@ -473,7 +472,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $computers_exist = $computer->getFromDB($computers_id);
       $this->assertEquals(true, (bool) $computers_exist);
 
-
       // create a network port for the previous computer
       $res = $this->doHttpRequest('POST', 'NetworkPort/',
                                          ['headers' => [
@@ -504,8 +502,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'input'            => [
                                                 'itemtype'                 => 'Computer',
                                                 'items_id'                 => $computers_id,
-                                                'content'                  => 'note about a computer'
-                                          ]]]);
+                                                'content'                  => 'note about a computer']]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(201, $res->getStatusCode());
       $body = $res->getBody();
@@ -543,7 +540,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, is_numeric($secnd_computer['id']));
       $this->assertEquals(true, $first_computer['id'] > 0);
       $this->assertEquals(true, $secnd_computer['id'] > 0);
-
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($first_computer['id']);
@@ -595,7 +591,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('name', $data);
       $this->assertArrayHasKey('completename', $data);
       $this->assertArrayNotHasKey('links', $data); // get_hateoas == false
-
 
       // Get the previously created 'computer 1'
       $res = $this->doHttpRequest('GET', "Computer/$computers_id",
@@ -672,7 +667,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('is_active', $data[0]);
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
-
       // test retrieve partial users
       $res = $this->doHttpRequest('GET', 'User/',
                                          ['headers' => [
@@ -692,7 +686,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('is_active', $data[0]);
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
-
       // test retrieve 1 user with a text filter
       $res = $this->doHttpRequest('GET', 'User/',
                                          ['headers' => [
@@ -709,7 +702,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('name', $data[0]);
       $this->assertEquals('glpi', $data[0]['name']);
 
-
       // test retrieve invalid range of users
       try {
          $res = $this->doHttpRequest('GET', 'User/',
@@ -722,7 +714,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $response = $e->getResponse();
          $this->assertEquals(400, $response->getStatusCode());
       }
-
 
       // Test only_id param
       $res = $this->doHttpRequest('GET', 'User/',
@@ -756,7 +747,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => ['post-only', 'postonly']]);
       $body = $res->getBody();
       $data = json_decode($body, true);
-
 
       // create a ticket for another user (glpi - super-admin)
       $ticket = new Ticket;

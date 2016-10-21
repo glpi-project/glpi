@@ -291,7 +291,7 @@ function loadDataset() {
          foreach($inputs as $input) {
             // Resolve FK
             foreach ($input as $k => $v) {
-//               $foreigntype = $type; // by default same type than current type (is the case of the dropdowns)
+               // $foreigntype = $type; // by default same type than current type (is the case of the dropdowns)
                $foreigntype = false ;
                $match = array() ;
                if( isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))){
@@ -302,7 +302,7 @@ function loadDataset() {
                   $input[$k] = $ids[$foreigntype][$v];
                } else if ($k == 'items_id'  &&  isset( $input['itemtype'] ) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
                   $input[$k] = $ids[$input['itemtype']][$v];
-               } else if( $foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v) ) {
+               } else if ($foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v)) {
                   // not found in ids array, then must get it from DB
                   if( $obj = getItemByTypeName($foreigntype, $v) ) {
                      $input[$k] = $obj->getID() ;

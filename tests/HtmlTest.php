@@ -37,7 +37,7 @@ class HtmlTest extends PHPUnit_Framework_TestCase {
    /**
     * @covers Html::convDate
     */
-    public function testConvDate() {
+   public function testConvDate() {
       $this->assertNull(Html::convDate(null));
       $this->assertNull(Html::convDate('NULL'));
 
@@ -56,12 +56,12 @@ class HtmlTest extends PHPUnit_Framework_TestCase {
 
       $expected = date('m-d-Y');
       $this->assertEquals($expected, Html::convDate($mydate, 2));
-    }
+   }
 
    /**
     * @covers Html::convDateTime
     */
-    public function testConvDateTime() {
+   public function testConvDateTime() {
       $this->assertNull(Html::convDateTime(null));
       $this->assertNull(Html::convDateTime('NULL'));
 

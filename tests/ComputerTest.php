@@ -73,7 +73,7 @@ class ComputerTest extends DbTestCase {
       foreach ($in as $k => $v) {
          // Check the computer new values
          $this->assertEquals($v, $computer->getField($k), $k);
-      // Check the printer and test propagation occurs
+         // Check the printer and test propagation occurs
          $this->assertEquals($v, $printer->getField($k), $k);
       }
 

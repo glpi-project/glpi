@@ -38,7 +38,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
     * @covers Session::addMessageAfterRedirect
     * @covers Html::displayMessageAfterRedirect
     */
-    public function testAddMessageAfterRedirect() {
+   public function testAddMessageAfterRedirect() {
       session_start();
       $err_msg = 'Something is broken. Weird.';
       $warn_msg = 'There was a warning. Be carefull.';
@@ -121,5 +121,5 @@ class SessionTest extends PHPUnit_Framework_TestCase {
       Html::displayMessageAfterRedirect();
 
       $this->assertEquals([], $_SESSION['MESSAGE_AFTER_REDIRECT']);
-    }
+   }
 }

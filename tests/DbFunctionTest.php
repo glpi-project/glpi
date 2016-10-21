@@ -188,7 +188,7 @@ class DbFunctionTest extends DbTestCase {
     * @covers ::countElementsInTable
    **/
    public function testCountElementsInTable() {
-   global $DB;
+      global $DB;
 
       //the case of using an element that is not a table is not handle in the function :
       //testCountElementsInTable($table, $condition="")
@@ -209,7 +209,7 @@ class DbFunctionTest extends DbTestCase {
     * @covers ::countDistinctElementsInTable
    **/
    public function testCountDistinctElementsInTable() {
-   global $DB;
+      global $DB;
 
       //the case of using an element that is not a table is not handle in the function :
       //testCountElementsInTable($table, $condition="")
@@ -287,22 +287,6 @@ class DbFunctionTest extends DbTestCase {
       }
    }
 
-/*
-TODO :
-getTreeLeafValueName
-getTreeValueName
-getAncestorsOf
-getTreeForItem
-contructTreeFromList
-contructListFromTree
-getRealQueryForTreeItem
-regenerateTreeCompleteName
-getNextItem
-getPreviousItem
-formatUserName
-getUserName
-*/
-
 
    /**
     *@covers ::TableExists
@@ -337,13 +321,6 @@ getUserName
       $this->assertTrue(isIndex('glpi_users','locations_id'));
       $this->assertTrue(isIndex('glpi_users','unicity'));
    }
-
-
- /*
- TODO :
-    autoName
-    closeDBConnections
-*/
 
 
    /**
@@ -411,13 +388,27 @@ getUserName
       $it = new DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('', '', '', true));
       $this->assertEquals('SELECT * FROM `glpi_computers` WHERE (`entities_id` IN (3) OR (`is_recursive` = 1 AND `entities_id` IN (0, 1)))', $it->getSql());
    }
-/*
-TODO :
-   getDateRequest
-   exportArrayToDB
-   importArrayFromDB
-   get_hour_from_sql
-   getDbRelations
-*/
-
 }
+
+/*
+ TODO :
+ getTreeLeafValueName
+ getTreeValueName
+ getAncestorsOf
+ getTreeForItem
+ contructTreeFromList
+ contructListFromTree
+ getRealQueryForTreeItem
+ regenerateTreeCompleteName
+ getNextItem
+ getPreviousItem
+ formatUserName
+ getUserName
+ autoName
+ closeDBConnections
+ getDateRequest
+ exportArrayToDB
+ importArrayFromDB
+ get_hour_from_sql
+ getDbRelations
+ */

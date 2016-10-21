@@ -85,20 +85,20 @@ class SearchTest extends DbTestCase {
          $tokens = token_get_all($php_file);
          $class_token = false;
          foreach ($tokens as $token) {
-           if (is_array($token)) {
-             if ($token[0] == T_CLASS) {
-                $class_token = true;
-             } else if ($class_token && $token[0] == T_STRING) {
-                if ($function) {
-                   if (method_exists($token[1], $function)) {
-                      $classes[] = $token[1];
-                   }
-                } else {
-                   $classes[] = $token[1];
-                }
-                $class_token = false;
-             }
-           }
+            if (is_array($token)) {
+               if ($token[0] == T_CLASS) {
+                  $class_token = true;
+               } else if ($class_token && $token[0] == T_STRING) {
+                  if ($function) {
+                     if (method_exists($token[1], $function)) {
+                        $classes[] = $token[1];
+                     }
+                  } else {
+                     $classes[] = $token[1];
+                  }
+                  $class_token = false;
+               }
+            }
          }
       }
       return array_unique($classes);

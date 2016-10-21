@@ -244,7 +244,6 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('is_active', $data[0]);
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
-
       // test retrieve partial users
       $res = $this->doHttpRequest('getItems', ['session_token'    => $session_token,
                                                'itemtype'         => 'User',
@@ -259,7 +258,6 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayNotHasKey('password', $data[0]);
       $this->assertArrayHasKey('is_active', $data[0]);
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
-
 
       // Test only_id param
       $res = $this->doHttpRequest('getItems', ['session_token' => $session_token,
@@ -455,7 +453,6 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, is_numeric($secnd_computer['id']));
       $this->assertEquals(true, $first_computer['id'] > 0);
       $this->assertEquals(true, $secnd_computer['id'] > 0);
-
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($first_computer['id']);
