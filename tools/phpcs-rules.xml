@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<ruleset name="glpi">
+  <!-- white spaces at end of line or empty line have spaces -->
+  <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
+
+  <!-- else if instead of elseif -->
+  <rule ref="Squiz.ControlStructures.ElseIfDeclaration" />
+
+  <!-- No tab in indent -->
+  <rule ref="Generic.WhiteSpace.DisallowTabIndent" />
+
+  <!-- Indent 3 -->
+  <rule ref="Generic.WhiteSpace.ScopeIndent">
+    <properties>
+      <property name="indent" value="3"/>
+    </properties>
+  </rule>
+
+  <!-- Remove closingTag -->
+  <rule ref="Zend.Files.ClosingTag" />
+
+</ruleset>
