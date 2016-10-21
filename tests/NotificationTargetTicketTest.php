@@ -62,14 +62,30 @@ class NotificationTargetTicketTest extends DbTestCase {
       $this->assertEquals($expected, $notiftargetticket->tag_descriptions['lang']['##lang.task.categorycomment##']);
       $this->assertEquals($expected, $notiftargetticket->tag_descriptions['tag']['##task.categorycomment##']);
 
+      // basic test for ##task.categorid## tag
+      $expected = [
+         'tag'             => 'task.categoryid',
+         'value'           => true,
+         'label'           => 'Category id',
+         'events'          => 0,
+         'foreach'         => false,
+         'lang'            => true,
+         'allowed_values'  => [],
+         ];
 
-      // advanced test for ##task.categorycomment## tag
+      $this->assertEquals($expected, $notiftargetticket->tag_descriptions['lang']['##lang.task.categoryid##']);
+      $this->assertEquals($expected, $notiftargetticket->tag_descriptions['tag']['##task.categoryid##']);
+
+
+      // advanced test for ##task.categorycomment## and ##task.categoryid## tags
       // test of the getDatasForObject for default language en_US
+      $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
       $expected = [
                      [
                      '##task.id##'              => 1,
                      '##task.isprivate##'       => 'No',
                      '##task.author##'          => '_test_user',
+                     '##task.categoryid##'      => $taskcat->getID(),
                      '##task.category##'        => '_cat_1 > _subcat_1',
                      '##task.categorycomment##' => 'Comment for sub-category _subcat_1',
                      '##task.date##'            => '2016-10-19 11:50',
@@ -92,10 +108,6 @@ class NotificationTargetTicketTest extends DbTestCase {
       $CFG_GLPI['translate_dropdowns'] = 1 ;
       $_SESSION["glpilanguage"] = Session::loadLanguage( 'fr_FR' ) ;
       $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
-      //$expected = array('name'    => 'FR - _cat_1 > FR - _subcat_1',
-      //                  'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1') ;
-      //$ret = Dropdown::getDropdownName( 'glpi_taskcategories',  $subCat->getID(), true, true, false ) ;
-      //$this->assertEquals($expected, $ret);
 
       $ret = $notiftargetticket->getDatasForObject( $tkt, array() ) ;
 
@@ -104,6 +116,7 @@ class NotificationTargetTicketTest extends DbTestCase {
                      '##task.id##'              => 1,
                      '##task.isprivate##'       => 'Non',
                      '##task.author##'          => '_test_user',
+                     '##task.categoryid##'      => $taskcat->getID(),
                      '##task.category##'        => 'FR - _cat_1 > FR - _subcat_1',
                      '##task.categorycomment##' => 'FR - Commentaire pour sous-catégorie _subcat_1',
                      '##task.date##'            => '2016-10-19 11:50',
