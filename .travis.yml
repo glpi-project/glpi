@@ -15,7 +15,7 @@ before_script:
 script:
   - mysql -u root -e 'select version();'
   - phpunit --verbose
-  - phpcs -p --standard=tools/phpcs-rules.xml inc/ front/ ajax/
+  - phpcs -p --standard=tools/phpcs-rules.xml inc/ front/ ajax/ tests/
 
 matrix:
   include:
