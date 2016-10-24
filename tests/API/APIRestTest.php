@@ -486,7 +486,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                                 'NetworkName_name'         => "testname",
                                                 'NetworkName_fqdns_id'     => 0,
                                                 'NetworkName__ipaddresses' =>
-                                                   array(-1 => "1.2.3.4")]]]);
+                                                   array(-1 => "1.2.3.4"),
+                                                '_create_children'         => true]]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(201, $res->getStatusCode());
       $body = $res->getBody();
