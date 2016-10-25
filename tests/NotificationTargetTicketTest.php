@@ -75,7 +75,6 @@ class NotificationTargetTicketTest extends DbTestCase {
       $this->assertEquals($expected, $notiftargetticket->tag_descriptions['lang']['##lang.task.categoryid##']);
       $this->assertEquals($expected, $notiftargetticket->tag_descriptions['tag']['##task.categoryid##']);
 
-
       // advanced test for ##task.categorycomment## and ##task.categoryid## tags
       // test of the getDatasForObject for default language en_US
       $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
