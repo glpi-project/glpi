@@ -48,16 +48,17 @@ class Planning extends CommonGLPI {
 
    static $rightname = 'planning';
 
-   static $palette_bg = array("#FFEEC4", "#D4EDFB", "#E1D0E1", "#CDD7A9", "#F8C8D2",
-                              "#D6CACA", "#D3D6ED", "#C8E5E3", "#FBD5BF", "#E9EBA2",
-                              "#E8E5E5", "#DBECDF", "#FCE7F2", "#E9D3D3", "#D2DBDC");
+   static $palette_bg = array('#FFEEC4', '#D4EDFB', '#E1D0E1', '#CDD7A9', '#F8C8D2',
+                              '#D6CACA', '#D3D6ED', '#C8E5E3', '#FBD5BF', '#E9EBA2',
+                              '#E8E5E5', '#DBECDF', '#FCE7F2', '#E9D3D3', '#D2DBDC');
 
    static $palette_fg = array('#57544D', '#59707E', '#5B3B5B', '#3A431A', '#58242F',
                               '#3B2727', '#272D59', '#2E4645', '#6F4831', '#46481B',
                               '#4E4E4E', '#274C30', '#6A535F', '#473232', '#454545',);
 
    static $palette_ev = array('#E94A31', '#5174F2', '#51C9F2', '#FFCC29', '#20C646',
-                              '#364959', '#8C5344');
+                              '#364959', '#8C5344', '#FF8100', '#F600C4', '#0017FF',
+                              '#000000', '#FFFFFF', '#005800', '#925EFF');
 
    static $directgroup_itemtype = array('ProjectTask', 'TicketTask', 'ProblemTask');
 
@@ -860,6 +861,42 @@ class Planning extends CommonGLPI {
       return;
    }
 
+   /**
+    * Return a palette array (for example self::$palette_bg)
+    * @param  string $palette_name  the short name for palette (bg, fg, ev)
+    * @return mixed                 the palette array or false
+    *
+    * @since  9.1.1
+    */
+   static function getPalette($palette_name = 'bg') {
+      if (in_array($palette_name, array('bg', 'fg', 'ev'))) {
+         return self::${"palette_$palette_name"};
+      }
+
+      return false;
+   }
+
+
+   /**
+    * Return an hexa color from a palette
+    * @param  string  $palette_name the short name for palette (bg, fg, ev)
+    * @param  integer $color_index  The color index in this palette
+    * @return mixed                 the color in hexa (ex: #FFFFFF) or false
+    *
+    * @since  9.1.1
+    */
+   static function getPaletteColor($palette_name = 'bg', $color_index = 0) {
+      if ($palette = self::getPalette($palette_name)) {
+         if ($color_index > count($palette)) {
+            $color_index = $color_index % count($palette);
+         }
+
+         return $palette[$color_index];
+      }
+
+      return false;
+   }
+
 
    /**
     * Init $_SESSION['glpi_plannings'] var with thses keys :
@@ -879,7 +916,7 @@ class Planning extends CommonGLPI {
       if (!isset($_SESSION['glpi_plannings']['filters'])) {
          $_SESSION['glpi_plannings']['filters']   = array();
          $_SESSION['glpi_plannings']['plannings'] = array('user_'.$_SESSION['glpiID'] => array(
-                                                               'color'   => self::$palette_bg[0],
+                                                               'color'   => self::getPaletteColor('bg', 0),
                                                                'display' => true,
                                                                'type'    => 'user'));
       }
@@ -890,7 +927,8 @@ class Planning extends CommonGLPI {
       foreach($CFG_GLPI['planning_types'] as $planning_type) {
          if ($planning_type::canView()) {
             if (!isset($filters[$planning_type])) {
-               $filters[$planning_type] = array('color'   => self::$palette_ev[$index_color],
+               $filters[$planning_type] = array('color'   => self::getPaletteColor('ev',
+                                                                                   $index_color),
                                                 'display' => true,
                                                 'type'    => 'event_filter');
             }
@@ -1155,10 +1193,7 @@ class Planning extends CommonGLPI {
          $color = $filter_data['color'];
       } else {
          $params['filter_color_index']++;
-         if (!isset(self::$palette_bg[$params['filter_color_index']])) {
-            $params['filter_color_index'] = 0;
-            $color = self::$palette_bg[$params['filter_color_index']];
-         }
+         $color = self::getPaletteColor('bg', $params['filter_color_index']);
       }
 
 
@@ -1307,7 +1342,7 @@ class Planning extends CommonGLPI {
     */
    static function sendAddUserForm($params = array()) {
       $_SESSION['glpi_plannings']['plannings']["user_".$params['users_id']]
-         = array('color'   => self::$palette_bg[$_SESSION['glpi_plannings_color_index']],
+         = array('color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
                  'display' => true,
                  'type'    => 'user');
       self::savePlanningsInDB();
@@ -1363,7 +1398,8 @@ class Planning extends CommonGLPI {
          // do not add an already set user
          if (!isset($_SESSION['glpi_plannings']['plannings']['user_'.$user_data['id']])) {
             $current_group['users']['user_'.$user_data['id']]
-               = array('color'   => self::$palette_bg[$_SESSION['glpi_plannings_color_index']],
+               = array('color'   => self::getPaletteColor('bg',
+                                                          $_SESSION['glpi_plannings_color_index']),
                        'display' => true,
                        'type'    => 'user');
             $_SESSION['glpi_plannings_color_index']++;
@@ -1434,7 +1470,8 @@ class Planning extends CommonGLPI {
     */
    static function sendAddGroupForm($params = array()) {
       $_SESSION['glpi_plannings']['plannings']["group_".$params['groups_id']]
-         = array('color'   => self::$palette_bg[$_SESSION['glpi_plannings_color_index']],
+         = array('color'   => self::getPaletteColor('bg',
+                                                    $_SESSION['glpi_plannings_color_index']),
                  'display' => true,
                  'type'    => 'group');
       self::savePlanningsInDB();
@@ -1778,11 +1815,11 @@ class Planning extends CommonGLPI {
                                              Planning::$palette_bg[$index_color]:
                                              $event['color']),
                            'borderColor' => (empty($event['event_type_color'])?
-                                             self::$palette_ev[$event['itemtype']]:
+                                             self::getPaletteColor('ev', $event['itemtype']):
                                              $event['event_type_color']),
                            'textColor'   => Planning::$palette_fg[$index_color],
                            'typeColor'   => (empty($event['event_type_color'])?
-                                             self::$palette_ev[$event['itemtype']]:
+                                             self::getPaletteColor('ev', $event['itemtype']):
                                              $event['event_type_color']),
                            'url'         => isset($event['url'])?$event['url']:"",
                            'ajaxurl'     => isset($event['ajaxurl'])?$event['ajaxurl']:"",
