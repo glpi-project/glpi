@@ -261,10 +261,11 @@ class NetworkPort extends CommonDBChild {
       $this->input_for_NetworkName        = array();
       $this->input_for_NetworkPortConnect = array();
 
-      $this->getEmpty();
+      $clone = clone $this;
+      $clone->getEmpty();
 
       foreach ($input as $field => $value) {
-         if (array_key_exists($field, $this->fields)) {
+         if (array_key_exists($field, $clone->fields)  || $field[0] == '_') {
             continue;
          }
          if (preg_match('/^NetworkName_/',$field)) {

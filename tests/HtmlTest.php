@@ -397,7 +397,7 @@ class HtmlTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals($expected, $menu['config']['types']);
 
       $this->assertEquals('My settings', $menu['preference']['title']);
-      $this->assertNull($menu['preference']['types']);
+      $this->assertFalse(isset($menu['preference']['types']));
       $this->assertEquals('/front/preference.php', $menu['preference']['default']);
 
    }

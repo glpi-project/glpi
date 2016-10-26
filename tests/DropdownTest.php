@@ -57,12 +57,12 @@ class DropdownTest extends DbTestCase {
 
    public function dataTestImport() {
       return [
-            // input,             name,  message
-            [ [ ],                '',    'missing name'],
-            [ [ 'name' => ''],    '',    'empty name'],
-            [ [ 'name' => ' '],   '',    'space name'],
-            [ [ 'name' => ' a '], 'a',   'simple name'],
-            [ [ 'name' => 'foo'], 'foo', 'simple name'],
+            // input,             name,  return,  message
+            [ [ ],                '',    -1,      'missing name'],
+            [ [ 'name' => ''],    '',    -1,      'empty name'],
+            [ [ 'name' => ' '],   '',    -1,      'space name'],
+            [ [ 'name' => ' a '], 'a',   'int',   'simple name'],
+            [ [ 'name' => 'foo'], 'foo', 'int',   'simple name'],
       ];
    }
 
@@ -71,33 +71,38 @@ class DropdownTest extends DbTestCase {
     * @covers CommonDropdown::import
     * @dataProvider dataTestImport
     */
-   public function testImport($input, $result, $msg) {
+   public function testImport($input, $result, $return, $msg) {
       $id = Dropdown::import('UserTitle', $input);
-      if ($result) {
+      if ($return == 'false') {
+         $this->assertFalse($id, $msg);
+      } else if ($return == -1) {
+         $this->assertEquals(-1, $id, $msg);
+      } else if ($return == 'int') {
          $this->assertGreaterThan(0, $id, $msg);
+      }
+      if ($result) {
          $ut = new UserTitle();
          $this->assertTrue($ut->getFromDB($id), $msg);
          $this->assertEquals($result, $ut->getField('name'), $msg);
-      } else {
-         $this->AssertLessThan(0, $id, $msg);
       }
    }
 
    public function dataTestTreeImport() {
       return [
-            // input,                                  name,    completename, message
-            [ [ ],                                     '',      '',           'missing name'],
-            [ [ 'name' => ''],                          '',     '',           'empty name'],
-            [ [ 'name' => ' '],                         '',     '',           'space name'],
-            [ [ 'name' => ' a '],                       'a',    'a',          'simple name'],
-            [ [ 'name' => 'foo'],                       'foo',  'foo',        'simple name'],
-            [ [ 'completename' => 'foo > bar'],         'bar',  'foo > bar',  'two names'],
-            [ [ 'completename' => ' '],                 '',     '',           'only space'],
-            [ [ 'completename' => '>'],                 '',     '',           'only >'],
-            [ [ 'completename' => ' > '],               '',     '',           'only > and spaces'],
-            [ [ 'completename' => 'foo>bar'],           'bar',  'foo > bar',  'two names with no space'],
-            [ [ 'completename' => '>foo>>bar>'],        'bar',  'foo > bar',  'two names with additional >'],
-            [ [ 'completename' => ' foo >   > bar > '], 'bar',  'foo > bar',  'two names with garbage'],
+            // input,                                                       name,    completename, return,  message
+            [ [ 'entities_id' => 0],                                        '',     '',           -1,      'missing name'],
+            [ [ 'name' => '', 'entities_id' => 0],                          '',     '',           -1,      'empty name'],
+            [ [ 'name' => ' ', 'entities_id' => 0],                         '',     '',           -1,      'space name'],
+            [ [ 'name' => ' a ', 'entities_id' => 0],                       'a',    'a',          'int',   'simple name'],
+            [ [ 'name' => 'foo', 'entities_id' => 0],                       'foo',  'foo',        'int',   'simple name'],
+            [ [ 'completename' => 'foo > bar', 'entities_id' => 0],         'bar',  'foo > bar',  'int',   'two names'],
+            [ [ 'completename' => ' ', 'entities_id' => 0],                 '',     '',           '0',     'only space'],
+            [ [ 'completename' => '>', 'entities_id' => 0],                 '',     '',           '0',     'only >'],
+            [ [ 'completename' => ' > ', 'entities_id' => 0],               '',     '',           '0',     'only > and spaces'],
+            [ [ 'completename' => 'foo>bar', 'entities_id' => 0],           'bar',  'foo > bar',  'int',   'two names with no space'],
+            [ [ 'completename' => '>foo>>bar>', 'entities_id' => 0],        'bar',  'foo > bar',  'int',   'two names with additional >'],
+            [ [ 'completename' => ' foo >   > bar > ', 'entities_id' => 0], 'bar',  'foo > bar',  'int',   'two names with garbage'],
+            [ [ 'name' => 'foob', 'entities_id' => 100],                    '',     '',           'false', 'bad entity'],
       ];
    }
 
@@ -106,16 +111,22 @@ class DropdownTest extends DbTestCase {
     * @covers CommonTreeDropdown::import
     * @dataProvider dataTestTreeImport
     */
-   public function testTreeImport($input, $result, $complete, $msg) {
+   public function testTreeImport($input, $result, $complete, $return, $msg) {
       $id = Dropdown::import('Location', $input);
-      if ($result) {
+      if ($return == 'false') {
+         $this->assertFalse($id, $msg);
+      } else if ($return == -1) {
+         $this->assertEquals(-1, $id, $msg);
+      } else if ($return == '0') {
+         $this->assertEquals(0, $id, $msg);
+      } else if ($return == 'int') {
          $this->assertGreaterThan(0, $id, $msg);
+      }
+      if ($result) {
          $ut = new Location();
          $this->assertTrue($ut->getFromDB($id), $msg);
          $this->assertEquals($result, $ut->getField('name'), $msg);
          $this->assertEquals($complete, $ut->getField('completename'), $msg);
-      } else {
-         $this->assertLessThanOrEqual(0, $id, $msg);
       }
    }
 

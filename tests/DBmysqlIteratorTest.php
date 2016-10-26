@@ -60,6 +60,7 @@ class DBmysqlIteratorTest extends DbTestCase {
 
       $it = new DBmysqlIterator(NULL, 'foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
       $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
+      file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
       $this->assertTrue(strpos($buf, 'From DBmysqlIterator') > 0, 'From in php_errors.log');
       $this->assertTrue(strpos($buf, $it->getSql()) > 0, 'Query in php_errors.log');
    }

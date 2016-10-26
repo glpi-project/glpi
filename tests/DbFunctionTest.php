@@ -222,8 +222,6 @@ class DbFunctionTest extends DbTestCase {
     */
    public function testCountElementsInTableForMyEntities() {
 
-      $this->Login();
-
       $this->setEntity('_test_root_entity', true);
       $this->assertEquals(6, countElementsInTableForMyEntities('glpi_computers'));
       $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
