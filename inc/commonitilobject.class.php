@@ -1283,7 +1283,9 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!is_null($useractors)) {
          if (isset($this->input["_users_id_requester"])) {
 
-            if (!is_array($this->input["_users_id_requester"])) {
+            if (is_array($this->input["_users_id_requester"])) {
+               $tab_requester = $this->input["_users_id_requester"];
+            } else {
                $tab_requester   = array();
                $tab_requester[] = $this->input["_users_id_requester"];
             }
@@ -1310,7 +1312,7 @@ abstract class CommonITILObject extends CommonDBTM {
                    && (!isset($input2['alternative_email'])
                        || empty($input2['alternative_email']))) {
                   continue;
-               } else {
+               } else if ($requester != 0) {
                   $requesterToAdd[] = $requester;
                }
 
@@ -1323,7 +1325,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if (is_array($this->input["_users_id_observer"])) {
                $tab_observer = $this->input["_users_id_observer"];
-               } else {
+            } else {
                $tab_observer   = array();
                $tab_observer[] = $this->input["_users_id_observer"];
             }
@@ -1350,7 +1352,7 @@ abstract class CommonITILObject extends CommonDBTM {
                    && (!isset($input2['alternative_email'])
                        || empty($input2['alternative_email']))) {
                   continue;
-               } else {
+               } else if ($observer != 0) {
                   $observerToAdd[] = $observer;
                }
 
@@ -1361,7 +1363,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          if (isset($this->input["_users_id_assign"])) {
 
-            if (!is_array($this->input["_users_id_assign"])) {
+            if (is_array($this->input["_users_id_assign"])) {
                $tab_assign = $this->input["_users_id_assign"];
             } else {
                $tab_assign   = array();
@@ -1390,7 +1392,7 @@ abstract class CommonITILObject extends CommonDBTM {
                    && (!isset($input2['alternative_email'])
                        || empty($input2['alternative_email']))) {
                   continue;
-               } else {
+               } else if ($assign != 0) {
                   $assignToAdd[] = $assign;
                }
 
@@ -1461,11 +1463,11 @@ abstract class CommonITILObject extends CommonDBTM {
                    && (!isset($input3['alternative_email'])
                        || empty($input3['alternative_email']))) {
                   continue;
-               } else {
+               } else if ($assign != 0) {
                   $supplierToAdd[] = $assign;
                }
 
-                $input3['_from_object'] = true;
+               $input3['_from_object'] = true;
                $supplieractors->add($input3);
             }
          }
