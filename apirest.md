@@ -1154,12 +1154,12 @@ One of theses parameter(s) is missing:
 The GLPi setup forbid the login with credentials, you must login with your user_token instead.
 See your personal preferences page or setup API access in GLPi main interface.
 
-### ERROR_GLPi_LOGIN_USER_TOKEN
+### ERROR_GLPI_LOGIN_USER_TOKEN
 
 The provided user_token seems invalid.
 Check your personal preferences page in GLPi main interface.
 
-### ERROR_GLPi_LOGIN
+### ERROR_GLPI_LOGIN
 
 We cannot login you into GLPi. This error is not relative to API but GLPi core.
 Check the user administration and the GLPi logs files (in files/_logs directory).
@@ -1180,34 +1180,34 @@ Check the GLPi logs files (in files/_logs directory).
 
 The range parameter you provided is superior to the total count of available data.
 
-### ERROR_GLPi_ADD
+### ERROR_GLPI_ADD
 
 We cannot add the object to GLPi. This error is not relative to API but to GLPi core.
 Check the GLPi logs files (in files/_logs directory).
 
-### ERROR_GLPi_PARTIAL_ADD
+### ERROR_GLPI_PARTIAL_ADD
 
 Some of the object you wanted to add triggers an error.
 Maybe a missing field or rights.
 You'll find with this error a collection of results.
 
-### ERROR_GLPi_UPDATE
+### ERROR_GLPI_UPDATE
 
 We cannot update the object to GLPi. This error is not relative to API but to GLPi core.
 Check the GLPi logs files (in files/_logs directory).
 
-### ERROR_GLPi_PARTIAL_UPDATE
+### ERROR_GLPI_PARTIAL_UPDATE
 
 Some of the object you wanted to update triggers an error.
 Maybe a missing field or rights.
 You'll find with this error a collection of results.
 
-### ERROR_GLPi_DELETE
+### ERROR_GLPI_DELETE
 
 We cannot delete the object to GLPi. This error is not relative to API but to GLPi core.
 Check the GLPi logs files (in files/_logs directory).
 
-### ERROR_GLPi_PARTIAL_DELETE
+### ERROR_GLPI_PARTIAL_DELETE
 
 Some of the objects you want to delete triggers an error, maybe a missing field or rights.
 You'll find with this error, a collection of results.
