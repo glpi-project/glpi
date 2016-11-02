@@ -6245,7 +6245,7 @@ class Ticket extends CommonITILObject {
     * @param $rand
    **/
    function showTimeline($rand) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB, $autolink_options;
 
       //get ticket actors
       $ticket_users_keys = $this->getTicketActors();
@@ -6254,8 +6254,9 @@ class Ticket extends CommonITILObject {
       $group             = new Group();
       $followup_obj      = new TicketFollowup();
       $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
-
       $timeline          = $this->getTimelineItems();
+
+      $autolink_options['strip_protocols'] = false;
 
       //display timeline
       echo "<div class='timeline_history'>";
