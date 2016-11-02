@@ -4679,7 +4679,7 @@ class Search {
                if (isset($searchopt[$ID]['splititems']) && $searchopt[$ID]['splititems']) {
                   $separate = self::LBHR;
                }
-toolbox::logdebug("data", $data);
+
                for ($k=0 ; $k<$data[$num]['count'] ; $k++) {
                   if (isset($data[$num][$k]['id'])) {
                      if ($count_display) {
