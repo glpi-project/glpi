@@ -89,6 +89,13 @@ function update91to911() {
    $migration->addKey('glpi_tickets', 'ttr_slalevels_id');
    $migration->migrationOneTable('glpi_tickets');
 
+   // give READ right on components to profiles having UPDATE right
+   $query = "UPDATE `glpi_profilerights`
+             SET `rights` = `rights` | 1
+             WHERE (`rights` & 2) = '2'
+                   AND `name` = 'device'";
+   $DB->queryOrDie($query, "grant READ right on components to profiles having UPDATE right");
+
    //put you migration script here
 
    // ************ Keep it at the end **************

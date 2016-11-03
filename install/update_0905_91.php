@@ -857,12 +857,6 @@ function update0905to91() {
                    AND `id` = 0";
    $DB->queryOrDie($query, "glpi_entities root_entity change autoclose_delay value from -1 to 0");
 
-   // give READ right on components to profiles having UPDATE right
-   $query = "UPDATE `glpi_profilerights`
-             SET `rights` = `rights` | 1
-             WHERE (`rights` & 2) = '2'
-                   AND `name` = 'device'";
-   $DB->queryOrDie($query, "grant READ right on components to profiles having UPDATE right");
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
