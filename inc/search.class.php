@@ -2767,6 +2767,9 @@ class Search {
                   $condition .= ") ";
                }
                return $condition;
+         
+            case 'Config':
+               return Config::addVisibilityRestrict();
 
          default :
             // Plugin can override core definition for its type
