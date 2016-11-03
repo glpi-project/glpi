@@ -223,12 +223,11 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * List of fields to not return from the API
+    * Obsfucate sensitive data when the item is retrieved by an API
     * 
     * @return array of fields to not provide
     */
-   static function getApiExcludedFields() {
-      return $this->apiFieldBlacklist;
+   function post_getFromDbByApi() {
    }
 
 
