@@ -73,6 +73,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo '<head><title>'.__('GLPI - Authentication').'</title>'."\n";
    echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'."\n";
    echo '<meta http-equiv="Content-Script-Type" content="text/javascript"/>'."\n";
+   echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
    echo '<link rel="shortcut icon" type="images/x-icon" href="'.$CFG_GLPI["root_doc"].
           '/pics/favicon.ico" />';
 

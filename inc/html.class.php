@@ -3914,7 +3914,7 @@ class Html {
       global $CFG_GLPI;
 
       $language = $_SESSION['glpilanguage'];
-      if (!file_exists($CFG_GLPI['root_doc']."/lib/tiny_mce/langs/$language.js")) {
+      if (!file_exists(GLPI_ROOT."/lib/tiny_mce/langs/$language.js")) {
          $language = "en_GB";
       }
 

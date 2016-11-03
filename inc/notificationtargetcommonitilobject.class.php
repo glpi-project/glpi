@@ -1005,12 +1005,18 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $datas['tasks'] = array();
          foreach ($tasks as $task) {
             $tmp                          = array();
+            $tmp['##task.id##']           = $task['id'] ;
             if ($taskobj->maybePrivate()) {
                $tmp['##task.isprivate##'] = Dropdown::getYesNo($task['is_private']);
             }
             $tmp['##task.author##']       = Html::clean(getUserName($task['users_id']));
-            $tmp['##task.category##']     = Dropdown::getDropdownName('glpi_taskcategories',
-                                                                      $task['taskcategories_id']);
+
+            $tmp_taskcatinfo = Dropdown::getDropdownName('glpi_taskcategories',
+                                                         $task['taskcategories_id'], true, true, false);
+            $tmp['##task.categoryid##']      = $task['taskcategories_id'];
+            $tmp['##task.category##']        = $tmp_taskcatinfo['name'];
+            $tmp['##task.categorycomment##'] = $tmp_taskcatinfo['comment'] ;
+
             $tmp['##task.date##']         = Html::convDateTime($task['date']);
             $tmp['##task.description##']  = $task['content'];
             $tmp['##task.time##']         = Ticket::getActionTime($task['actiontime']);
@@ -1111,7 +1117,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'task.isprivate'                    => __('Private'),
                     'task.date'                         => __('Opening date'),
                     'task.description'                  => __('Description'),
+                    'task.categoryid'                   => __('Category id'),
                     'task.category'                     => __('Category'),
+                    'task.categorycomment'              => __('Category comment'),
                     'task.time'                         => __('Total duration'),
                     'task.user'                         => __('User assigned to task'),
                     'task.group'                        => __('Group assigned to task'),

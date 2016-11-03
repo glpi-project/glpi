@@ -38,6 +38,11 @@ global $CFG_GLPI;
 include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/DbTestCase.php';
 
+// check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
+if (!file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
+   die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
+}
+
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
@@ -47,7 +52,7 @@ function loadDataset() {
    // Unit test data definition
    $data = [
       // bump this version to force reload of the full dataset, when content change
-      '_version' => 2,
+      '_version' => 3,
 
       // Type => array of entries
       'Entity' => [
@@ -65,9 +70,11 @@ function loadDataset() {
          [
             'name'        => '_test_pc01',
             'entities_id' => '_test_root_entity',
+            'comment'     => 'Comment for computer _test_pc01'
          ], [
             'name'        => '_test_pc02',
             'entities_id' => '_test_root_entity',
+            'comment'     => 'Comment for computer _test_pc02'
          ], [
             'name'        => '_test_pc11',
             'entities_id' => '_test_child_1',
@@ -128,6 +135,118 @@ function loadDataset() {
             '_profiles_id'  => 4,
             '_is_recursive' => 1,
          ]
+      ], 'TaskCategory' => [
+         [
+            'is_recursive' => 1,
+            'name'         => '_cat_1',
+            'completename' => '_cat_1',
+            'comment'      => 'Comment for category _cat_1',
+            'level'        => 1,
+         ],
+         [
+            'is_recursive' => 1,
+            'taskcategories_id' => '_cat_1',
+            'name'         => '_subcat_1',
+            'completename' => '_cat_1 > _subcat_1',
+            'comment'      => 'Comment for sub-category _subcat_1',
+            'level'        => 2,
+         ]
+      ], 'DropdownTranslation' => [
+         [
+            'items_id'   => '_cat_1',
+            'itemtype'   => 'TaskCategory',
+            'language'   => 'fr_FR',
+            'field'      => 'name',
+            'value'      => 'FR - _cat_1'
+         ],
+         [
+            'items_id'   => '_cat_1',
+            'itemtype'   => 'TaskCategory',
+            'language'   => 'fr_FR',
+            'field'      => 'comment',
+            'value'      => 'FR - Commentaire pour catégorie _cat_1'
+         ],
+         [
+            'items_id'   => '_subcat_1',
+            'itemtype'   => 'TaskCategory',
+            'language'   => 'fr_FR',
+            'field'      => 'name',
+            'value'      => 'FR - _subcat_1'
+         ],
+         [
+            'items_id'   => '_subcat_1',
+            'itemtype'   => 'TaskCategory',
+            'language'   => 'fr_FR',
+            'field'      => 'comment',
+            'value'      => 'FR - Commentaire pour sous-catégorie _subcat_1'
+         ]
+      ], 'Contact' => [
+         [
+            'name'      => '_contact01_name',
+            'firstname' => '_contact01_firstname',
+            'phone'     => '0123456789',
+            'phone2'    => '0123456788',
+            'mobile'    => '0623456789',
+            'fax'       => '0123456787',
+            'email'     => '_contact01_firstname._contact01_name@glpi.com',
+            'comment'   => 'Comment for contact _contact01_name'
+         ]
+      ], 'Supplier' => [
+         [
+            'name'         => '_suplier01_name',
+            'phonenumber'  => '0123456789',
+            'fax'          => '0123456787',
+            'email'        => 'info@_supplier01_name.com',
+            'comment'      => 'Comment for supplier _suplier01_name'
+         ]
+      ], 'Location' => [
+         [
+            'name'         => '_location01',
+            'comment'      => 'Comment for location _location01'
+         ]
+      ], 'Netpoint' => [
+         [
+            'name'         => '_netpoint01',
+            'locations_id' => '_location01',
+            'comment'      => 'Comment for netpoint _netpoint01'
+         ]
+      ], 'BudgetType' => [
+         [
+            'name'         => '_budgettype01',
+            'comment'      => 'Comment for budgettype _budgettype01'
+         ]
+      ], 'Budget' => [
+         [
+            'name'           => '_budget01',
+            'comment'        => 'Comment for budget _budget01',
+            'locations_id'   => '_location01',
+            'budgettypes_id' => '_budgettype01',
+            'begin_date'     => '2016-10-18',
+            'end_date'       => '2016-12-31'
+         ]
+      ], 'Ticket' => [
+         [
+            'name'           => '_ticket01',
+            'content'        => 'Content for ticket _ticket01',
+            'users_id_recipient' => TU_USER
+         ]
+      ], 'TicketTask' => [
+         [
+            'tickets_id'         => '_ticket01',
+            'taskcategories_id'  => '_subcat_1',
+            'users_id'           => TU_USER,
+            'content'            => 'Task to be done',
+            'is_private'         => 0,
+            'users_id_tech'      => TU_USER,
+            'date'               => '2016-10-19 11:50:50'
+         ]
+      ], 'UserEmail' => [
+         [
+            'users_id'     => TU_USER,
+            'is_default'   => '1',
+            'is_dynamic'   => '0',
+            'email'        => TU_USER.'@glpi.com'
+         ]
       ]
    ];
 
@@ -158,12 +277,26 @@ function loadDataset() {
          foreach($inputs as $input) {
             // Resolve FK
             foreach ($input as $k => $v) {
-               if (isForeignKeyField($k) && isset($ids[$v]) && !is_numeric($v)) {
-                  $input[$k] = $ids[$v];
+//               $foreigntype = $type; // by default same type than current type (is the case of the dropdowns)
+               $foreigntype = false ;
+               $match = array() ;
+               if( isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))){
+                  $foreigntype = array_pop( $match ) ;
+                  $foreigntype = getItemTypeForTable( "glpi_$foreigntype" ) ;
+               }
+               if ( $foreigntype && isset($ids[$foreigntype][$v]) && !is_numeric($v)) {
+                  $input[$k] = $ids[$foreigntype][$v];
+               } elseif ($k == 'items_id'  &&  isset( $input['itemtype'] ) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
+                  $input[$k] = $ids[$input['itemtype']][$v];
+               } elseif( $foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v) ) {
+                  // not found in ids array, then must get it from DB
+                  if( $obj = getItemByTypeName($foreigntype, $v) ) {
+                     $input[$k] = $obj->getID() ;
+                  }
                }
             }
             if (isset($input['name']) && $item = getItemByTypeName($type, $input['name'])) {
-               $input['id'] = $ids[$input['name']] = $item->getField('id');
+               $input['id'] = $ids[$type][$input['name']] = $item->getField('id');
                $item->update($input);
                echo ".";
             } else {
@@ -172,7 +305,7 @@ function loadDataset() {
                $id = $item->add($input);
                echo "+";
                if (isset($input['name'])) {
-                  $ids[$input['name']] = $id;
+                  $ids[$type][$input['name']] = $id;
                }
             }
          }
