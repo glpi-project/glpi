@@ -75,7 +75,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'Access-Control-Request-Method'  => 'GET',
                                              'Access-Control-Request-Headers' => 'X-Requested-With'
                                          ]]);
-      
+
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
       $headers = $res->getHeaders();
@@ -926,6 +926,46 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       }
    }
 
+   /**
+     * @depends testInitSessionCredentials
+     */
+   public function testInjection($session_token) {
+      $res = $this->doHttpRequest('POST', 'Computer/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'json' => [
+                                             'input'         => [[
+                                                'name' => "my computer', (SELECT `password` from `glpi_users` as `otherserial` WHERE `id`=2), '0 ' , '2016-10-26 00:00:00', '2016-10-26 00 :00 :00')#"
+                                             ,
+                                                'otherserial' => "Not hacked"]]]]);
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $new_id = $data[0]['id'];
+
+      $computer = new Computer();
+      $computer_exists = $computer->getFromDB($new_id);
+
+      $this->assertTrue((bool)$computer_exists, 'Computer does not exists :\'(');
+
+      $is_password = $computer->fields['otherserial'] != 'Not hacked';
+      $this->assertFalse($is_password, 'Add SQL injection spotted!');
+
+      $res = $this->doHttpRequest('PUT', 'Computer/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'json' => [
+                                             'input'         => [
+                                                'id'     => $new_id,
+                                                'serial' => "abcdef', `otherserial`='injected"]]]);
+
+      $computer->getFromDB($new_id);
+      $is_injected = $computer->fields['otherserial'] === 'injected';
+      $this->assertFalse($is_injected, 'Update SQL injection spotted!');
+
+      $computer = new Computer();
+      $computer->delete(['id' => $new_id], true);
+   }
 
    /**
      * @depends testInitSessionCredentials
