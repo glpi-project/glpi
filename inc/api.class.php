@@ -1453,7 +1453,6 @@ abstract class API extends CommonGLPI {
     * @return   array of id
    **/
    protected function createItems($itemtype, $params=array()) {
-
       $this->initEndpoint();
       $input    = isset($params['input']) ? $params["input"] : null;
       $item     = new $itemtype;
@@ -1475,6 +1474,7 @@ abstract class API extends CommonGLPI {
                }
 
                //add current item
+               $object = array_map('Toolbox::addslashes_deep', $object);
                if ($new_id = $item->add( $object)) {
                   $idCollection[] = array('id' => $new_id);
                } else {
@@ -1504,7 +1504,8 @@ abstract class API extends CommonGLPI {
          }
 
          //add item
-         if ($new_id = $item->add( $input)) {
+         $input = array_map('Toolbox::addslashes_deep', $input);
+         if ($new_id = $item->add($input)) {
             return array('id' => $new_id);
          } else {
             $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_ADD", false);
@@ -1573,7 +1574,8 @@ abstract class API extends CommonGLPI {
                   $idCollection[] = array($object->id => $this->messageRightError(false));
                } else {
                   //update item
-                  if ($update_return = $item->update( (array) $object)) {
+                  $aobject = array_map('Toolbox::addslashes_deep', (array)$object);
+                  if ($update_return = $item->update($aobject)) {
                      $idCollection[] = array($object->id => $update_return);
                   } else {
                      $failed++;
@@ -1603,6 +1605,7 @@ abstract class API extends CommonGLPI {
          }
 
          // update item
+         $input = array_map('Toolbox::addslashes_deep', $input);
          if (!$item->update($input)) {
             $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
          } else {
