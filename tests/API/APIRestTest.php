@@ -104,7 +104,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
 
    public function testInitSessionCredentials() {
-      $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => ['glpi', 'glpi']]);
+      $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => [TU_USER, TU_PASS]]);
 
 
       $this->assertNotEquals(null, $res, $this->last_error);
@@ -120,12 +120,13 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
 
    public function testInitSessionUserToken() {
-      // retrieve personnal token of 'glpi' user
+      // retrieve personnal token of TU_USER user
       $user = new User;
-      $user->getFromDB(2);
+      $uid = getItemByTypeName('User', TU_USER, true);
+      $user->getFromDB($uid);
       $token = isset($user->fields['personnal_token'])?$user->fields['personnal_token']:"";
       if (empty($token)) {
-         $token = User::getPersonalToken(2);
+         $token = User::getPersonalToken($uid);
       }
 
       $res = $this->doHttpRequest('GET', 'initSession/',
@@ -276,14 +277,16 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testGetMultipleItems($session_token) {
-      // Get the User 'glpi' and the root entity in the same query
+      // Get the User TU_USER and the entity in the same query
+      $uid = getItemByTypeName('User', TU_USER, true);
+      $eid = getItemByTypeName('Entity', '_test_root_entity', true);
       $res = $this->doHttpRequest('GET', 'getMultipleItems',
                                          ['headers' => ['Session-Token' => $session_token],
                                           'query' =>   [
                                              'items'            => [['itemtype' => 'User',
-                                                                     'items_id' => 2],
+                                                                     'items_id' => $uid],
                                                                     ['itemtype' => 'Entity',
-                                                                     'items_id' => 0]],
+                                                                     'items_id' => $eid]],
                                              'with_logs'        => true,
                                              'expand_dropdowns' => true]]);
       $this->assertEquals(200, $res->getStatusCode());
@@ -549,8 +552,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testCreateItem
      */
    public function testGetItem($session_token, $computers_id) {
-      // Get the User 'glpi'
-      $res = $this->doHttpRequest('GET', 'User/2/',
+      // Get the User TU_USER
+      $uid = getItemByTypeName('User', TU_USER, true);
+      $res = $this->doHttpRequest('GET', "User/$uid/",
                                          ['headers' => [
                                              'Session-Token' => $session_token],
                                           'query' => [
@@ -568,8 +572,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertFalse(is_numeric($data['entities_id'])); // for expand_dropdowns
       $this->assertArrayHasKey('_logs', $data); // with_logs == true
 
-      // Get the root-entity
-      $res = $this->doHttpRequest('GET', 'Entity/0',
+      // Get user's entity
+      $eid = getItemByTypeName('Entity', '_test_root_entity', true);
+      $res = $this->doHttpRequest('GET', 'Entity/' . $eid,
                                          ['headers' => [
                                              'Session-Token' => $session_token],
                                           'query' => [
