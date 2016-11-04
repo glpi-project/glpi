@@ -1481,7 +1481,7 @@ abstract class API extends CommonGLPI {
                }
 
                //add current item
-               $object = array_map('Toolbox::addslashes_deep', $object);
+               $object = Toolbox::sanitize($object);
                if ($new_id = $item->add( $object)) {
                   $idCollection[] = array('id' => $new_id);
                } else {
@@ -1511,7 +1511,7 @@ abstract class API extends CommonGLPI {
          }
 
          //add item
-         $input = array_map('Toolbox::addslashes_deep', $input);
+         $input = Toolbox::sanitize($input);
          if ($new_id = $item->add($input)) {
             return array('id' => $new_id);
          } else {
@@ -1581,7 +1581,7 @@ abstract class API extends CommonGLPI {
                   $idCollection[] = array($object->id => $this->messageRightError(false));
                } else {
                   //update item
-                  $aobject = array_map('Toolbox::addslashes_deep', (array)$object);
+                  $aobject = Toolbox::sanitize((array)$object);
                   if ($update_return = $item->update($aobject)) {
                      $idCollection[] = array($object->id => $update_return);
                   } else {
@@ -1612,7 +1612,7 @@ abstract class API extends CommonGLPI {
          }
 
          // update item
-         $input = array_map('Toolbox::addslashes_deep', $input);
+         $input = Toolbox::sanitize($input);
          if (!$item->update($input)) {
             $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
          } else {
@@ -2226,5 +2226,4 @@ abstract class API extends CommonGLPI {
       }
       return array($statuscode, $message);
    }
-
 }
