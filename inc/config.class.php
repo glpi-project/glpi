@@ -238,7 +238,6 @@ class Config extends CommonDBTM {
       return false;
    }
 
-
    /**
     * Print the config form for display
     *
