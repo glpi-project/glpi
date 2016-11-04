@@ -577,6 +577,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('name', $data);
       $this->assertArrayHasKey('entities_id', $data);
       $this->assertArrayHasKey('links', $data);
+      $this->assertArrayNotHasKey('password', $data);
       $this->assertFalse(is_numeric($data['entities_id'])); // for expand_dropdowns
       $this->assertArrayHasKey('_logs', $data); // with_logs == true
 
@@ -970,6 +971,72 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $computer = new Computer();
       $computer->delete(['id' => $new_id], true);
    }
+
+   /**
+    * @depends testInitSessionCredentials
+    */
+   public function testProtectedConfigSettings($session_token) {
+      $sensitiveSettings = array(
+            'proxy_passwd',
+            'smtp_passwd',
+      );
+
+      // set a non empty value to the sessionts to check
+      foreach ($sensitiveSettings as $name) {
+         Config::setConfigurationValues('core', array($name => 'not_empty_password'));
+         $value = Config::getConfigurationValues('core', array($name));
+         $this->assertArrayHasKey($name, $value);
+         $this->assertNotEmpty($value[$name]);
+      }
+
+      $where = "'" . implode("', '", $sensitiveSettings) . "'";
+      $config = new config();
+      $rows = $config->find("`context`='core' AND `name` IN ($where)");
+      $this->assertEquals(count($sensitiveSettings), count($rows));
+
+      // Check the value is not retrieved for sensitive settings
+      foreach ($rows as $row) {
+         $res = $this->doHttpRequest('GET', "Config/" . $row['id'],
+                                             ['headers' => [
+                                                   'Session-Token' => $session_token]]);
+         $this->assertEquals(200, $res->getStatusCode());
+         $body = $res->getBody();
+         $data = json_decode($body, true);
+         $this->assertEquals('', $data['value']);
+      }
+
+      // Check an other setting is disclosed (when not empty)
+      $config = new Config();
+      $config->getFromDBByQuery("WHERE `context`='core' AND `name`='admin_email'");
+      $res = $this->doHttpRequest('GET', "Config/" . $config->getID(),
+                                         ['headers' => [
+                                                'Session-Token' => $session_token]]);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals('', $data['value']);
+
+      // Check a search does not disclose sensitive values
+      $criteria = array();
+      $queryString = "";
+      foreach ($rows as $row) {
+         $queryString = "&criteria[][link]=or&criteria[][field]=1&criteria[][searchtype]=equals&criteria[][value]=" . $row['name'];
+      }
+
+      $res = $this->doHttpRequest('GET', "search/Config" . "?$queryString",
+                                          ['headers' => [
+                                                'Session-Token' => $session_token],
+                                          'query' => array()]);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      foreach ($data['data'] as $row) {
+          foreach ($row as $col) {
+              $this->assertNotEquals($col, 'not_empty_password');
+          }
+      }
+   }
+
 
    /**
      * @depends testInitSessionCredentials
