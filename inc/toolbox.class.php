@@ -2551,4 +2551,16 @@ class Toolbox {
       return false;
    }
 
+   /**
+    * Sanitize received values
+    *
+    * @param array $array
+    *
+    * @return array
+    */
+   static public function sanitize($array) {
+      $array = array_map('Toolbox::addslashes_deep', $array);
+      $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
+      return $array;
+   }
 }
