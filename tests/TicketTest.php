@@ -41,9 +41,27 @@ class TicketTest extends PHPUnit_Framework_TestCase {
                      '_users_id_requester'   => '3'
                   ),
             ),
-            'multiple requesters'   => array(
+            'single unknown requester'   => array(
+                  array(
+                        '_users_id_requester'         => '0',
+                        '_users_id_requester_notif'   => array(
+                              'use_notification'            => array('1'),
+                              'alternative_email'           => array('unknownuser@localhost.local')
+                        ),
+                  ),
+            ),
+           'multiple requesters'   => array(
                   array(
                         '_users_id_requester'   => array('3', '5'),
+                  ),
+            ),
+            'multiple mixed requesters'   => array(
+                  array(
+                        '_users_id_requester'   => array('3', '5', '0'),
+                        '_users_id_requester_notif'   => array(
+                              'use_notification'            => array('1', '0', '1'),
+                              'alternative_email'           => array('','', 'unknownuser@localhost.local')
+                        ),
                   ),
             ),
             'single observer'   => array(
@@ -89,31 +107,47 @@ class TicketTest extends PHPUnit_Framework_TestCase {
          }
 
          // Check all actors are assigned to the ticket
-         foreach ($actorsList as $actor) {
+         foreach ($actorsList as $index => $actor) {
+            $notify = isset($actorList['_users_id_requester_notif']['use_notification'][$index])
+                      ? $actorList['_users_id_requester_notif']['use_notification'][$index]
+                      : 1;
+            $alternateEmail = isset($actorList['_users_id_requester_notif']['use_notification'][$index])
+                              ? $actorList['_users_id_requester_notif']['alternative_email'][$index]
+                              : '';
             switch ($actorType) {
                case '_users_id_assign':
-                  $this->_testTicketUser($ticket, $actor, CommonITILActor::REQUESTER);
+                  $this->_testTicketUser($ticket, $actor, CommonITILActor::REQUESTER, $notify, $alternateEmail);
                   break;
                case '_users_id_observer':
-                  $this->_testTicketUser($ticket, $actor, CommonITILActor::OBSERVER);
+                  $this->_testTicketUser($ticket, $actor, CommonITILActor::OBSERVER, $notify, $alternateEmail);
                   break;
                case '_users_id_assign':
-                  $this->_testTicketUser($ticket, $actor, CommonITILActor::ASSIGN);
+                  $this->_testTicketUser($ticket, $actor, CommonITILActor::ASSIGN, $notify, $alternateEmail);
                   break;
             }
          }
       }
    }
 
-   protected function _testTicketUser(Ticket $ticket, $actor, $role) {
-      $user = new User();
-      $user->getFromDB($actor);
-      $this->assertFalse($user->isNewItem());
+   protected function _testTicketUser(Ticket $ticket, $actor, $role, $notify, $alternateEmail) {
+      if ($actor > 0) {
+         $user = new User();
+         $user->getFromDB($actor);
+         $this->assertFalse($user->isNewItem());
 
-      $ticketUser = new Ticket_User();
-      $ticketUser->getFromDBForItems($ticket, $user);
-      $this->assertFalse($ticketUser->isNewItem());
-      $this->assertEquals($role, $ticketUser->getField('type'));
+         $ticketUser = new Ticket_User();
+         $ticketUser->getFromDBForItems($ticket, $user);
+         $this->assertFalse($ticketUser->isNewItem());
+         $this->assertEquals($role, $ticketUser->getField('type'));
+         $this->assertEquals($notify, $ticketUser->getField('use_notification'));
+      } else {
+         $ticketId = $ticket->getID();
+         $ticketUser = new Ticket_User();
+         $ticketUser->getFromDBByQuery("WHERE `tickets_id` = '$ticketId' AND `users_id` = '0' AND `alternative_email` = '$alternateEmail'");
+         $this->assertFalse($ticketUser->isNewItem());
+         $this->assertEquals($role, $ticketUser->getField('type'));
+         $this->assertEquals($notify, $ticketUser->getField('use_notification'));
+      }
    }
 
 }
