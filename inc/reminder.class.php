@@ -863,6 +863,7 @@ class Reminder extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $default_options = array(
+         'genical'             => false,
          'color'               => '',
          'event_type_color'    => '',
          'check_planned'       => false,
@@ -888,7 +889,8 @@ class Reminder extends CommonDBTM {
       $joinstoadd = self::addVisibilityJoins(true);
 
       // See public reminder ?
-      if (($who === Session::getLoginUserID())
+      if (!$options['genical']
+          && $who === Session::getLoginUserID()
           && self::canView()) {
          $readpub    = self::addVisibilityRestrict();
       }
