@@ -928,6 +928,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $this->assertEquals(false, (bool) $computers_exist);
       }
 
+      // Test multiple delete with multi-status
       $input    = array();
       $computers_id_collection = [
             [
