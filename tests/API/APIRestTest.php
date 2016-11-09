@@ -135,7 +135,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $user = new User;
       $uid = getItemByTypeName('User', TU_USER, true);
       $user->getFromDB($uid);
-      $token = isset($user->fields['personnal_token'])?$user->fields['personnal_token']:"";
+      $token = isset($user->fields['personal_token'])?$user->fields['personal_token']:"";
       if (empty($token)) {
          $token = User::getPersonalToken($uid);
       }
