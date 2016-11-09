@@ -1232,13 +1232,12 @@ class ProjectTask extends CommonDBChild {
          return $interv;
       }
 
-      if (!isset($options['color'])) {
-         $options['color'] = '';
-      }
-
-      if (!isset($options['event_type_color'])) {
-         $options['event_type_color'] = '';
-      }
+      $default_options = array(
+         'genical'             => false,
+         'color'               => '',
+         'event_type_color'    => '',
+      );
+      $options = array_merge($default_options, $options);
 
       $who       = $options['who'];
       $who_group = $options['who_group'];
@@ -1249,7 +1248,8 @@ class ProjectTask extends CommonDBChild {
       $ASSIGN = "";
 
       if ($who_group === "mine") {
-         if (count($_SESSION["glpigroups"])) {
+         if (!$options['genical']
+             && count($_SESSION["glpigroups"])) {
             $groups = implode("','",$_SESSION['glpigroups']);
             $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'Group'
                        AND `glpi_projecttaskteams`.`items_id`

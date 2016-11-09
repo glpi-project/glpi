@@ -785,17 +785,13 @@ abstract class CommonITILTask  extends CommonDBTM {
          return;
       }
 
-      if (!isset($options['color'])) {
-         $options['color'] = '';
-      }
-
-      if (!isset($options['event_type_color'])) {
-         $options['event_type_color'] = '';
-      }
-
-      if (!isset($options['display_done_events'])) {
-         $options['display_done_events'] = true;
-      }
+      $default_options = array(
+         'genical'             => false,
+         'color'               => '',
+         'event_type_color'    => '',
+         'display_done_events' => true,
+      );
+      $options = array_merge($default_options, $options);
 
       $who       = $options['who'];
       $who_group = $options['who_group'];
@@ -807,7 +803,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       $ASSIGN = "";
 
       if ($who_group === "mine") {
-         if (count($_SESSION["glpigroups"])) {
+         if (!$options['genical']
+             && count($_SESSION["glpigroups"])) {
             $groups = implode("','",$_SESSION['glpigroups']);
             $ASSIGN = "`".$item->getTable()."`.`users_id_tech`
                            IN (SELECT DISTINCT `users_id`
