@@ -64,6 +64,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
             if ($e->hasResponse()) {
                $this->last_error = $e->getResponse();
             }
+            throw $e;
          }
       }
    }
@@ -382,6 +383,23 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $second_user_date_mod = strtotime($second_user[19]);
       $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
    }
+   
+   
+   /**
+    * @depends testInitSessionCredentials
+    */
+   public function testSearchWithBadCriteria($session_token) {
+      // test retrieve all users
+      // multidimensional array of vars in query string not supported ? 
+      try {
+         $res = $this->doHttpRequest('GET', 'search/User/?criteria[0][field]=134343&criteria[0][searchtype]=contains&criteria[0][value]=dsadasd',
+                                             ['headers' => [
+                                                   'Session-Token' => $session_token]]);
+         $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
+      } catch (ClientException $e) {
+         $this->assertEquals(400, $this->last_error->getStatusCode());
+      }
+   }
 
 
    /**
@@ -434,18 +452,20 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $res = $this->doHttpRequest('GET', 'badEndpoint/',
                                             ['headers' => [
                                              'Session-Token' => $session_token]]);
+        $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
       } catch (ClientException $e) {
          $response = $e->getResponse();
-         $this->assertEquals(400, $response->getStatusCode());
+         $this->assertEquals(400, $this->last_error->getStatusCode());
       }
 
       try {
          $res = $this->doHttpRequest('GET', 'Entity/0/badEndpoint/',
                                             ['headers' => [
                                              'Session-Token' => $session_token]]);
+         $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
       } catch (ClientException $e) {
          $response = $e->getResponse();
-         $this->assertEquals(400, $response->getStatusCode());
+         $this->assertEquals(400, $this->last_error->getStatusCode());
       }
    }
 
@@ -782,9 +802,10 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $res = $this->doHttpRequest('GET', "ticket/$tickets_id",
                                             ['headers' => [
                                                 'Session-Token' => $data['session_token']]]);
+         $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
       } catch (ClientException $e) {
          $response = $e->getResponse();
-         $this->assertEquals(401, $res->getStatusCode());
+         $this->assertEquals(401, $this->last_error->getStatusCode());
       }
 
       // try to access ticket list (we should get empty return)
