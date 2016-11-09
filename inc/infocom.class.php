@@ -1303,12 +1303,12 @@ class Infocom extends CommonDBChild {
       $tab[38]['forcegroupby']         = true;
       $tab[38]['joinparams']           = $joinparams;
 
-      $tab[141]['table']               = 'glpi_infocoms';
-      $tab[141]['field']               = 'delivery_date';
-      $tab[141]['name']                = __('Delivery date');
-      $tab[141]['datatype']            = 'date';
-      $tab[141]['forcegroupby']        = true;
-      $tab[141]['joinparams']          = $joinparams;
+      $tab[142]['table']               = 'glpi_infocoms';
+      $tab[142]['field']               = 'delivery_date';
+      $tab[142]['name']                = __('Delivery date');
+      $tab[142]['datatype']            = 'date';
+      $tab[142]['forcegroupby']        = true;
+      $tab[142]['joinparams']          = $joinparams;
 
       $tab[124]['table']               = 'glpi_infocoms';
       $tab[124]['field']               = 'order_date';
