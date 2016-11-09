@@ -1287,6 +1287,17 @@ abstract class API extends CommonGLPI {
       // retrieve searchoptions
       $soptions = $this->listSearchOptions($itemtype);
 
+      // Check the criterias are valid
+      if (isset($params['criteria']) && is_array($params['criteria'])) {
+         foreach ($params['criteria'] as $criteria) {
+            if (isset($criteria['field']) 
+                  && ctype_digit($criteria['field']) 
+                  && !array_key_exists($criteria['field'], $soptions)) {
+               return $this->returnError(__("Bad field ID in search criteria"));
+            }
+         }
+      }
+
       // manage forcedisplay
       if (isset($params['forcedisplay'])) {
          if (!is_array($params['forcedisplay'])) {
@@ -2110,7 +2121,7 @@ abstract class API extends CommonGLPI {
 
 
    /**
-    * Send 401 error to client
+    * Send 400 error to client
     *
     *  @param $return_error   (default true)
    **/
