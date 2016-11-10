@@ -77,10 +77,12 @@ if (!isset($_POST['page'])) {
    $_POST['page_limit'] = $CFG_GLPI['dropdown_max'];
 }
 
+$entity_restrict = -1;
 if (isset($_POST['entity_restrict'])) {
-   $entity_restrict = json_decode($_POST['entity_restrict']);
+   $entity_restrict = Toolbox::stripslashes_deep($_POST['entity_restrict']);
+   $entity_restrict = json_decode($entity_restrict);
    if (json_last_error() != JSON_ERROR_NONE) {
-      $entity_restrict = $_POST['entity_restrict'];
+      $entity_restrict = $entity_restrict;
    }
 }
 
