@@ -3208,6 +3208,9 @@ class Search {
                if ($searchtype) {
                   $date_computation = $tocompute;
                }
+               if ($searchtype == "contains") {
+                  $date_computation = "CONVERT($date_computation USING utf8)";
+               }
                $search_unit = ' MONTH ';
                if (isset($searchopt[$ID]['searchunit'])) {
                   $search_unit = $searchopt[$ID]['searchunit'];
