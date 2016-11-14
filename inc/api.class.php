@@ -447,12 +447,10 @@ abstract class API extends CommonGLPI {
          return $this->messageRightError();
       }
 
-      $fields =  $item->fields;
-
       // avoid disclosure of critical fields
-      foreach($this->excluded_fields as $key) {
-         unset($fields[$key]);
-      }
+      $item->post_getFromDBByApi();
+
+      $fields =  $item->fields;
 
       // retrieve devices
       if (isset($params['with_devices'])

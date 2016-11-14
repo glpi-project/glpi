@@ -108,7 +108,12 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   /**
+   function post_getFromDbByApi() {
+      unset($this->fields['rootdn_passwd']);
+   }
+
+
+    /**
     * Preconfig datas for standard system
     *
     * @param $type type of standard system : AD

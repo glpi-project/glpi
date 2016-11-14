@@ -239,6 +239,61 @@ class Config extends CommonDBTM {
    }
 
 
+   function post_getFromDbByApi() {
+      if ($this->fields['context'] == 'core' && in_array($this->fields['name'], array('smtp_passwd', 'proxy_passwd'))) {
+         $this->fields['value'] = '';
+      }
+   }
+
+   function getSearchOptions() {
+      $tab                     = array();
+      $tab['common']           =__('Characteristics');
+
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         = 'name';
+      $tab[1]['name']          = __('Name');
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['massiveaction'] = false;
+
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = __('ID');
+      $tab[2]['datatype']      = 'number';
+      $tab[2]['massiveaction'] = false;
+
+      $tab[3]['table']         = $this->getTable();
+      $tab[3]['field']         = 'context';
+      $tab[3]['name']          = __('Context');
+      $tab[3]['datatype']      = 'string';
+      $tab[3]['massiveaction'] = false;
+
+      $tab[4]['table']         = $this->getTable();
+      $tab[4]['field']         = 'value';
+      $tab[4]['name']          = __('Value');
+      $tab[4]['datatype']      = 'string';
+      $tab[4]['massiveaction'] = false;
+
+      return $tab;
+   }
+
+   static function addVisibilityRestrict() {
+      $condition = '';
+      $link = '';
+
+      $protectedValues = Plugin::doHookFunction('undiscloseConfig', array());
+      $protectedValues['core'] = array(
+            'proxy_passwd',
+            'smtp_passwd',
+      );
+      foreach ($protectedValues as $context => $values) {
+         $values = "'" . implode("', '", $values) . "'";
+         $condition .= " $link (`glpi_configs`.`context` = '$context' 
+                        AND `glpi_configs`.`name` IN ($values))"; 
+         $link = 'OR';
+      }
+      return "NOT (" . $condition . ")";
+   }
+
    /**
     * Print the config form for display
     *

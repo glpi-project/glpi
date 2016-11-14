@@ -278,6 +278,11 @@ class User extends CommonDBTM {
    }
 
 
+   function post_getFromDbByApi() {
+      unset($this->fields['password']);
+   }
+
+
    function pre_deleteItem() {
       global $DB;
 

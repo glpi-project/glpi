@@ -223,6 +223,15 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Obsfucate sensitive data when the item is retrieved by an API
+    * 
+    * @return array of fields to not provide
+    */
+   function post_getFromDbByApi() {
+   }
+
+
+   /**
     * Retrieve all items from the database
     *
     * @param $condition    condition used to search if needed (empty get all) (default '')
