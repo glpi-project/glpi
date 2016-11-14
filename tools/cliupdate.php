@@ -333,12 +333,12 @@ switch ($current_version) {
       include_once("../install/update_0905_91.php");
       update0905to91();
 
+   /* remember to also change --force below for last version */
    case "0.91" : // // for change name of the version - to delete in next version
    case "9.1" :
       include_once("update_91_911.php");
       update91to911();
 
-   /* remember to also change --force below for last version */
    case GLPI_VERSION :
       break;
 
@@ -360,8 +360,8 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
 } else if (in_array('--force', $_SERVER['argv'])) {
 
-   include_once("../install/update_0905_91.php");
-   update0905to91();
+   include_once("../install/update_91_911.php");
+   update91to911();
 
    $migration->displayWarning("\nForced migration Done.");
 
