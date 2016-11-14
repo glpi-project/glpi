@@ -277,15 +277,9 @@ class User extends CommonDBTM {
       }
    }
 
-
-   /**
-    * {@inheritDoc}
-    * @see CommonDBTM::unsetUndisclosedFields()
-    */
    function unsetUndisclosedFields() {
       unset($this->fields['password']);
    }
-
 
    function pre_deleteItem() {
       global $DB;
