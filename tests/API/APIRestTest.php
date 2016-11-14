@@ -736,6 +736,22 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayNotHasKey('name', $data[0]);
       $this->assertArrayNotHasKey('password', $data[0]);
       $this->assertArrayNotHasKey('is_active', $data[0]);
+
+      // test retrieve all config
+      $res = $this->doHttpRequest('GET', 'Config/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'expand_dropdowns' => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+
+      foreach ($data as $config_row) {
+        $this->assertNotEquals('smtp_passwd', $config_row['name']);
+        $this->assertNotEquals('proxy_passwd', $config_row['name']);
+      }
    }
 
 
