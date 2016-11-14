@@ -1816,4 +1816,8 @@ class MailCollector  extends CommonDBTM {
       Rule::cleanForItemCriteria($this, '_mailgate');
    }
 
+   function unsetUndisclosedFields() {
+      unset($this->fields['passwd']);
+   }
+
 }

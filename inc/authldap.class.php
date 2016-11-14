@@ -107,11 +107,6 @@ class AuthLDAP extends CommonDBTM {
       $this->fields['picture_field']               = '';
    }
 
-
-   /**
-    * {@inheritDoc}
-    * @see CommonDBTM::unsetUndisclosedFields()
-    */
    function unsetUndisclosedFields() {
       unset($this->fields['rootdn_passwd']);
    }
