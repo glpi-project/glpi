@@ -242,8 +242,8 @@ class Search {
 
       if (count($p['criteria']) > 0) {
          foreach ($p['criteria'] as $key => $val) {
-            if (!in_array($val['field'], $data['toview'])) {
-               if (isset($val['field']) && ($val['field'] != 'all') && ($val['field'] != 'view')) {
+            if (isset($val['field']) && !in_array($val['field'], $data['toview'])) {
+               if ($val['field'] != 'all' && $val['field'] != 'view') {
                   array_push($data['toview'], $val['field']);
                } else if ($val['field'] == 'all'){
                   $data['search']['all_search'] = true;
