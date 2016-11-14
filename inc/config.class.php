@@ -238,11 +238,11 @@ class Config extends CommonDBTM {
       return false;
    }
 
-   function unsetUndisclosedFields() {
-      if (isset($this->fields['context']) && isset($this->fields['name'])) {
-         if ($this->fields['context'] == 'core'
-            && in_array($this->fields['name'], array('proxy_passwd', 'smtp_passwd'))) {
-            unset($this->fields['value']);
+   static public function unsetUndisclosedFields(&$fields) {
+      if (isset($fields['context']) && isset($fields['name'])) {
+         if ($fields['context'] == 'core'
+            && in_array($fields['name'], array('proxy_passwd', 'smtp_passwd'))) {
+            unset($fields['value']);
          }
       }
    }
