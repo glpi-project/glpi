@@ -1810,8 +1810,8 @@ class MailCollector  extends CommonDBTM {
       Rule::cleanForItemCriteria($this, '_mailgate');
    }
 
-   function unsetUndisclosedFields() {
-      unset($this->fields['passwd']);
+   static public function unsetUndisclosedFields(&$fields) {
+      unset($fields['passwd']);
    }
 
 }

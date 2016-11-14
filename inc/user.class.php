@@ -277,8 +277,8 @@ class User extends CommonDBTM {
       }
    }
 
-   function unsetUndisclosedFields() {
-      unset($this->fields['password']);
+   static public function unsetUndisclosedFields(&$fields) {
+      unset($fields['password']);
    }
 
    function pre_deleteItem() {

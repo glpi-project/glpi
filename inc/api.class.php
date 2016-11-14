@@ -40,9 +40,6 @@ abstract class API extends CommonGLPI {
    // permit writing to $_SESSION
    protected $session_write = false;
 
-   // avoid disclosure of critical fields
-   protected $excluded_fields = array('password', 'passwd', 'rootdn_passwd');
-
    static $api_url = "";
    protected $format;
    protected $iptxt         = "";
@@ -446,10 +443,10 @@ abstract class API extends CommonGLPI {
          return $this->messageRightError();
       }
 
-      // avoid disclosure of critical fields
-      $item->unsetUndisclosedFields();
-
       $fields =  $item->fields;
+
+      // avoid disclosure of critical fields
+      $item::unsetUndisclosedFields($fields);
 
       // retrieve devices
       if (isset($params['with_devices'])
@@ -1053,10 +1050,8 @@ abstract class API extends CommonGLPI {
             $fields = array('id' => $fields['id']);
          }
 
-         // avoid disclosure of critical fields
-         foreach($this->excluded_fields as $key) {
-            unset($fields[$key]);
-         }
+         // avioid disclosure of critical fields
+         $item::unsetUndisclosedFields($fields);
 
          // expand dropdown (retrieve name of dropdowns) and get hateoas
          $fields = self::parseDropdowns($fields, $params);
