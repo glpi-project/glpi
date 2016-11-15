@@ -2333,7 +2333,7 @@ class Toolbox {
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
       $DB = new DB();
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-" . GLPI_VERSION . "-empty.sql")) {
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-" . GLPI_SCHEMA_VERSION . "-empty.sql")) {
          echo "Errors occurred inserting default database";
       }
       // update default language
