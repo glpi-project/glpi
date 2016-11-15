@@ -336,7 +336,7 @@ switch ($current_version) {
    /* remember to also change --force below for last version */
    case "0.91" : // // for change name of the version - to delete in next version
    case "9.1" :
-      include_once("update_91_911.php");
+      include_once("../install/update_91_911.php");
       update91to911();
 
    case GLPI_VERSION :
