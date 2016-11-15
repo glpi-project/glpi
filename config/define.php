@@ -36,7 +36,7 @@
 */
 
 // Current version of GLPI
-define("GLPI_VERSION","9.1");
+define("GLPI_VERSION","9.1.1");
 define('GLPI_YEAR', '2016');
 define("GLPI_DEMO_MODE","0");
 
