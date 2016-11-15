@@ -41,12 +41,17 @@
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 
-include ('../inc/includes.php');
-include ("generate_bigdump.function.php");
+include (__DIR__ . '/../inc/includes.php');
+include (__DIR__ . '/generate_bigdump.function.php');
 
-if (!Session::getLoginUserID()) {
-   echo "Must be logged in GLPI to run this script";
+if (PHP_SAPI != 'cli') {
+   echo "This script must be run from command line";
    exit();
+}
+
+$auth = new Auth();
+if (!$auth->Login('glpi', 'glpi', true)) {
+    exit('Authentication failed!');
 }
 
 // Force mailing to false
@@ -183,7 +188,7 @@ $vlan_loc = array();
 
 generateGlobalDropdowns();
 
-DBmysql::optimize_tables ();
+DBmysql::optimize_tables();
 
 // Force entity right
 $_SESSION['glpiactive_profile']['entity'] = 127;
