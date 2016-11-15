@@ -40,6 +40,12 @@ matrix:
     - php: 7.0
       addons:
         mariadb: 10.1
+    - php: 7.1
+      addons:
+        mariadb: 10.0
+    - php: 7.1
+      addons:
+        mariadb: 10.1
     - php: nightly
       addons:
         mariadb: 10.1
