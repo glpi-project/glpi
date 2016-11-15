@@ -752,8 +752,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $data = json_decode($body, true);
 
       foreach ($data as $config_row) {
-        $this->assertNotEquals('smtp_passwd', $config_row['name']);
-        $this->assertNotEquals('proxy_passwd', $config_row['name']);
+         $this->assertNotEquals('smtp_passwd', $config_row['name']);
+         $this->assertNotEquals('proxy_passwd', $config_row['name']);
       }
    }
 
@@ -1047,9 +1047,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $body = $res->getBody();
       $data = json_decode($body, true);
       foreach ($data['data'] as $row) {
-          foreach ($row as $col) {
-              $this->assertNotEquals($col, 'not_empty_password');
-          }
+         foreach ($row as $col) {
+            $this->assertNotEquals($col, 'not_empty_password');
+         }
       }
    }
 
