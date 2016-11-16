@@ -1571,7 +1571,8 @@ class Toolbox {
 
       $factory = new RandomLib\Factory();
       if ($high) {
-         /* Notice "High" imply mcrypt extension, unwanted for now */
+         /* Notice "High" imply mcrypt extension, unwanted for now
+            See https://github.com/ircmaxell/RandomLib/issues/57 */
          $generator = $factory->getMediumStrengthGenerator();
       } else {
          $generator = $factory->getLowStrengthGenerator();
