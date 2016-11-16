@@ -58,6 +58,23 @@ if (isset($_POST["add"])) {
    $track->check($_POST['id'], UPDATE);
 
    $track->update($_POST);
+
+   if(isset($_POST['kb_linked_id'])) {
+      $params = [
+         'knowbaseitems_id' => $_POST['kb_linked_id'],
+         'itemtype'         => $track->getType(),
+         'items_id'         => $track->getID()
+      ];
+      $existing = $DB->request(
+         'glpi_knowbaseitems_items',
+         $params
+      );
+      if ($existing->numrows() == 0) {
+         $kb_item_item = new KnowbaseItem_Item();
+         $kb_item_item->add($params);
+      }
+   }
+
    Event::log($_POST["id"], "ticket", 4, "tracking",
               //TRANS: %s is the user login
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));

@@ -4094,7 +4094,15 @@ abstract class CommonITILObject extends CommonDBTM {
          echo Dropdown::getDropdownName('glpi_solutiontypes',
                                         $this->getField('solutiontypes_id'));
       }
-      echo "</td><td colspan='2'>&nbsp;</td></tr>";
+      echo "</td><td colspan='2'>";
+
+      if (Session::haveRightsOr('knowbase', array(READ, KnowbaseItem::READFAQ)) && $knowbase_id_toload != 0) {
+         echo '<br/><input type="checkbox" name="kb_linked_id" id="kb_linked_id" value="' . $kb->getID() . '" checked="checked">';
+         echo ' <label for="kb_linked_id">' . str_replace('%id', $kb->getID(), __('Link to knowledge base entry #%id')) . '</label>';
+      } else {
+        echo '&nbsp;';
+      }
+      echo "</td></tr>";
       if ($canedit && Session::haveRight('knowbase', UPDATE)) {
          echo "<tr class='tab_bg_2'><td>".__('Save and add to the knowledge base')."</td><td>";
          Dropdown::showYesNo('_sol_to_kb', false);
