@@ -575,7 +575,7 @@ class Profile extends CommonDBTM {
 
       $onfocus = "";
       $new     = false;
-      $rowspan = 5;
+      $rowspan = 4;
       if ($ID > 0) {
          $rowspan++;
          $this->check($ID, READ);

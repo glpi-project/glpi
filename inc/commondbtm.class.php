@@ -2011,7 +2011,7 @@ class CommonDBTM extends CommonGLPI {
          echo "<th colspan='$colspan'>";
          printf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
          echo "</th>";
-      } else {
+      } else if(!isset($options['withtemplate']) || $options['withtemplate'] == 0) {
          echo "<th colspan='$colspan'>";
          echo "</th>";
       }
@@ -4372,7 +4372,7 @@ class CommonDBTM extends CommonGLPI {
                (strpos($target, '?') ? '&amp;' : '?')
                . "withtemplate=1";
             $target_create = $target . $create_params;
-            echo "<tr><td class='tab_bg_2 center b' colspan='2'>";
+            echo "<tr><td class='tab_bg_2 center b' colspan='3'>";
             echo "<a href=\"$target_create\">" . __('Add a template...') . "</a>";
             echo "</td></tr>";
          }

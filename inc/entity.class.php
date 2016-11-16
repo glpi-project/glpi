@@ -1339,7 +1339,7 @@ class Entity extends CommonTreeDropdown {
       Dropdown::showFromArray('autofill_decommission_date', $options,
                               array('value' => $entity->getField('autofill_decommission_date')));
 
-      echo "</td><td colspan='2'></td></tr>";
+      echo "</td></tr>";
 
       echo "<tr><th colspan='4'>"._n('Software', 'Software', Session::getPluralNumber())."</th></tr>";
       echo "<tr class='tab_bg_2'>";
