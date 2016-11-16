@@ -7664,3 +7664,18 @@ CREATE TABLE `glpi_wifinetworks` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_knowbaseitems_items
+
+DROP TABLE IF EXISTS `glpi_knowbaseitems_items`
+CREATE TABLE `glpi_knowbaseitems_items` (
+  `knowbaseitems_id` int(11) NOT NULL,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `date_creation` datetime DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`knowbaseitems_id`),
+  KEY `itemtype` (`itemtype`),
+  KEY `item_id` (`items_id`),
+  KEY `item` (`itemtype`,`items_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
