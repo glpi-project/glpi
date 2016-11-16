@@ -1663,6 +1663,13 @@ abstract class API extends CommonGLPI {
                   || ($item->useDeletedToLockIfDynamic()
                         && !$item->isDynamic())) {
                   $params['force_purge'] = 1;
+               } else {
+                  if (isset($params['force_purge'])
+                        && ($params['force_purge'] === true || $params['force_purge'] == "true")) {
+                     $params['force_purge'] = 1;
+                  } else {
+                     $params['force_purge'] = 0;
+                  }
                }
 
                //check rights
@@ -1709,6 +1716,13 @@ abstract class API extends CommonGLPI {
              || ($item->useDeletedToLockIfDynamic()
                  && !$item->isDynamic())) {
             $params['force_purge'] = 1;
+         } else {
+            if (isset($params['force_purge'])
+                  && ($params['force_purge'] === true || $params['force_purge'] == "true")) {
+               $params['force_purge'] = 1;
+            } else {
+               $params['force_purge'] = 0;
+            }
          }
 
          //check rights
