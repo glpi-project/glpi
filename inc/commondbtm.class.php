@@ -1357,7 +1357,9 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($this->pre_deleteItem()) {
-
+         if (!isset($this->input['_no_history'])) {
+            $this->input['_no_history'] = $history;
+         }
          if ($this->deleteFromDB($force)) {
 
             if ($force) {
@@ -3765,8 +3767,13 @@ class CommonDBTM extends CommonGLPI {
       if (is_array($crit) && (count($crit) > 0)) {
          $crit['FIELDS'] = 'id';
          $ok = true;
+         $history = 1;
+         if(isset($crit['_no_history'])){
+            $history = $crit['_no_history'];
+            unset($crit['_no_history']);
+         }
          foreach ($DB->request($this->getTable(), $crit) as $row) {
-            if (!$this->delete($row, $force)) {
+            if (!$this->delete($row, $force, $history)) {
                $ok = false;
             }
          }
