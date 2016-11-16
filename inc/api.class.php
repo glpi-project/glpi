@@ -40,10 +40,6 @@ abstract class API extends CommonGLPI {
    // permit writing to $_SESSION
    protected $session_write = false;
 
-   // avoid disclosure of critical fields
-   protected $excluded_fields = array('password', 'passwd', 'rootdn_passwd',
-                                      'smtp_passwd', 'proxy_passwd');
-
    static $api_url = "";
    protected $format;
    protected $iptxt         = "";
@@ -62,7 +58,7 @@ abstract class API extends CommonGLPI {
 
 
    public function __construct() {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       // construct api url
       self::$api_url = trim($CFG_GLPI['url_base_api'], "/");
@@ -94,7 +90,7 @@ abstract class API extends CommonGLPI {
                                  AND `ipv4_range_end` >= '$this->ipnum'))";
       } else {
          $where_ip .= " AND (`ipv6` IS NULL
-                             OR `ipv6` = '".addslashes($this->iptxt)."')";
+                             OR `ipv6` = '".$DB->escape($this->iptxt)."')";
       }
       $found_clients = $apiclient->find("`is_active` = '1' $where_ip");
       if (count($found_clients) <= 0) {
@@ -124,7 +120,7 @@ abstract class API extends CommonGLPI {
 
          if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
             header("Access-Control-Allow-Headers: ".
-                   "origin, content-type, accept, session-token");
+                   "origin, content-type, accept, session-token, authorization");
          }
          exit(0);
       }
@@ -450,9 +446,7 @@ abstract class API extends CommonGLPI {
       $fields =  $item->fields;
 
       // avoid disclosure of critical fields
-      foreach($this->excluded_fields as $key) {
-         unset($fields[$key]);
-      }
+      $item::unsetUndisclosedFields($fields);
 
       // retrieve devices
       if (isset($params['with_devices'])
@@ -878,6 +872,9 @@ abstract class API extends CommonGLPI {
     * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
     * - 'only_id'          (default: false): keep only id in fields list. Optionnal
     * - 'range'            (default: 0-50): limit the list to start-end attributes
+    * - 'sort'             (default: id): sort by the field.
+    * - 'order'            (default: ASC): ASC(ending) or DESC(ending).
+    * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
     * @param $totalcount   integer  output parameter who receive the total count of the query resulat.
     *                               As this function paginate results (with a mysql LIMIT),
     *                               we can have the full range. (default 0)
@@ -895,7 +892,8 @@ abstract class API extends CommonGLPI {
                        'only_id'          => false,
                        'range'            => "0-".$_SESSION['glpilist_limit'],
                        'sort'             => "id",
-                       'order'            => "ASC");
+                       'order'            => "ASC",
+                       'searchText'       => NULL);
       $params = array_merge($default, $params);
 
       if (!$itemtype::canView()) {
@@ -949,6 +947,7 @@ abstract class API extends CommonGLPI {
          }
 
          $fk_parent = getForeignKeyFieldForItemType($this->parameters['parent_itemtype']);
+         $fk_child = getForeignKeyFieldForItemType($itemtype);
 
          // check parent rights
          $parent_item = new $this->parameters['parent_itemtype'];
@@ -966,6 +965,41 @@ abstract class API extends CommonGLPI {
                  && isset($item->fields['items_id'])) {
             $where.= " AND `$table`.`itemtype` = '".$this->parameters['parent_itemtype']."'
                        AND `$table`.`items_id` = ".$this->parameters['parent_id'];
+         } else if(isset($parent_item->fields[$fk_child])) {
+            $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
+            $join.= " LEFT JOIN `$parentTable` ON `$parentTable`.`$fk_child` = `$table`.`id` ";
+            $where.= " AND `$parentTable`.`id` = '" . $this->parameters['parent_id'] . "'" ;
+         } else if (isset($parent_item->fields['itemtype'])
+                 && isset($parent_item->fields['items_id'])) {
+            $parentTable = getTableForItemType($this->parameters['parent_itemtype']);
+            $join.= " LEFT JOIN `$parentTable` ON `itemtype`='$itemtype' AND `$parentTable`.`items_id` = `$table`.`id` ";
+            $where.= " AND `$parentTable`.`id` = '" . $this->parameters['parent_id'] . "'";
+         }
+      }
+
+      // filter by searchText parameter
+      if (is_array($params['searchText'])) {
+         if (array_keys($params['searchText']) == array('all')) {
+            $labelfield = "name";
+            if ($item instanceof CommonDevice) {
+               $labelfield = "designation";
+            } else if ($item instanceof Item_Devices) {
+               $labelfield = "itemtype";
+            }
+            $search_value                      = $params['searchText']['all'];
+            $params['searchText'][$labelfield] = $search_value;
+            if (FieldExists($table, 'comment')) {
+               $params['searchText']['comment'] = $search_value;
+            }
+         }
+
+         // make text search
+         foreach($params['searchText']  as $filter_field => $filter_value) {
+            if (!empty($filter_value)) {
+               $search = Search::makeTextSearch($filter_value);
+               $where.= " AND (`$table`.`$filter_field` $search
+                               OR `$table`.`id` $search)";
+            }
          }
       }
 
@@ -1016,10 +1050,8 @@ abstract class API extends CommonGLPI {
             $fields = array('id' => $fields['id']);
          }
 
-         // avoid disclosure of critical fields
-         foreach($this->excluded_fields as $key) {
-            unset($fields[$key]);
-         }
+         // avioid disclosure of critical fields
+         $item::unsetUndisclosedFields($fields);
 
          // expand dropdown (retrieve name of dropdowns) and get hateoas
          $fields = self::parseDropdowns($fields, $params);
@@ -1413,7 +1445,6 @@ abstract class API extends CommonGLPI {
     * @return   array of id
    **/
    protected function createItems($itemtype, $params=array()) {
-
       $this->initEndpoint();
       $input    = isset($params['input']) ? $params["input"] : null;
       $item     = new $itemtype;
@@ -1435,6 +1466,7 @@ abstract class API extends CommonGLPI {
                }
 
                //add current item
+               $object = Toolbox::sanitize($object);
                if ($new_id = $item->add( $object)) {
                   $idCollection[] = array('id' => $new_id);
                } else {
@@ -1464,7 +1496,8 @@ abstract class API extends CommonGLPI {
          }
 
          //add item
-         if ($new_id = $item->add( $input)) {
+         $input = Toolbox::sanitize($input);
+         if ($new_id = $item->add($input)) {
             return array('id' => $new_id);
          } else {
             $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_ADD", false);
@@ -1533,7 +1566,8 @@ abstract class API extends CommonGLPI {
                   $idCollection[] = array($object->id => $this->messageRightError(false));
                } else {
                   //update item
-                  if ($update_return = $item->update( (array) $object)) {
+                  $aobject = Toolbox::sanitize((array)$object);
+                  if ($update_return = $item->update($aobject)) {
                      $idCollection[] = array($object->id => $update_return);
                   } else {
                      $failed++;
@@ -1563,6 +1597,7 @@ abstract class API extends CommonGLPI {
          }
 
          // update item
+         $input = Toolbox::sanitize($input);
          if (!$item->update($input)) {
             $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
          } else {
@@ -2176,5 +2211,4 @@ abstract class API extends CommonGLPI {
       }
       return array($statuscode, $message);
    }
-
 }

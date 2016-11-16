@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -55,4 +55,3 @@ Html::header(Notification::getTypeName(Session::getPluralNumber()), $_SERVER['PH
 $notificationmail->display(array('id' => 1));
 
 Html::footer();
-?>

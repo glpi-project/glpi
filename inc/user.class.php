@@ -277,6 +277,9 @@ class User extends CommonDBTM {
       }
    }
 
+   static public function unsetUndisclosedFields(&$fields) {
+      unset($fields['password']);
+   }
 
    function pre_deleteItem() {
       global $DB;
@@ -3936,7 +3939,7 @@ class User extends CommonDBTM {
              || !Auth::useAuthExt()) {
 
             if (NotificationMail::isUserAddressValid($email)) {
-               $input['password_forget_token']      = sha1(Toolbox::getRandomString(30));
+               $input['password_forget_token']      = sha1(Toolbox::getRandomString(30, true));
                $input['password_forget_token_date'] = $_SESSION["glpi_currenttime"];
                $input['id']                         = $this->fields['id'];
                $this->update($input);
@@ -4044,7 +4047,7 @@ class User extends CommonDBTM {
 
       $ok = false;
       do {
-         $key    = Toolbox::getRandomString(40);
+         $key    = Toolbox::getRandomString(40, true);
          $query  = "SELECT COUNT(*)
                     FROM `glpi_users`
                     WHERE `personal_token` = '$key'";
@@ -4097,9 +4100,10 @@ class User extends CommonDBTM {
                          'post-only' => 'postonly');
       $default_password_set = array();
 
-      $crit = array('FIELDS'    => array('name', 'password'),
-                    'is_active' => 1,
-                    'name'      => array_keys($passwords));
+      $crit = array('FIELDS'     => array('name', 'password'),
+                    'is_active'  => 1,
+                    'is_deleted' => 0,
+                    'name'       => array_keys($passwords));
 
       foreach ($DB->request('glpi_users', $crit) as $data) {
          if (Auth::checkPassword($passwords[$data['name']], $data['password'])) {

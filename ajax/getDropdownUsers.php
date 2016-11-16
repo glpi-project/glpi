@@ -77,10 +77,20 @@ if (!isset($_POST['page'])) {
    $_POST['page_limit'] = $CFG_GLPI['dropdown_max'];
 }
 
+$entity_restrict = -1;
+if (isset($_POST['entity_restrict'])) {
+   $entity_restrict = Toolbox::stripslashes_deep($_POST['entity_restrict']);
+   $entity_restrict = json_decode($entity_restrict);
+   if (json_last_error() != JSON_ERROR_NONE) {
+      $entity_restrict = $_POST['entity_restrict'];
+   }
+}
+
 if ($one_item < 0) {
    $start  = intval(($_POST['page']-1)*$_POST['page_limit']);
-   $result = User::getSqlSearchResult(false, $_POST['right'], $_POST["entity_restrict"],
-                                      $_POST['value'], $used, $_POST['searchText'], $start,
+   $searchText = (isset($_POST['searchText']) ? $_POST['searchText'] : null);
+   $result = User::getSqlSearchResult(false, $_POST['right'], $entity_restrict,
+                                      $_POST['value'], $used, $searchText, $start,
                                       intval($_POST['page_limit']));
 } else {
    $query = "SELECT DISTINCT `glpi_users`.*
@@ -146,4 +156,3 @@ if (($one_item >= 0)
    $ret['count']   = $count;
    echo json_encode($ret);
 }
-?>

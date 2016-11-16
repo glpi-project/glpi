@@ -49,9 +49,12 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
    }
 
 
+   /**
+    * @group api
+   **/
    public function testInitSessionCredentials() {
-      $res = $this->doHttpRequest('initSession', ['login'    => 'glpi',
-                                                  'password' => 'glpi']);
+      $res = $this->doHttpRequest('initSession', ['login'    => TU_USER,
+                                                  'password' => TU_PASS]);
 
       $this->assertEquals(200, $res->getStatusCode());
 
@@ -62,13 +65,17 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
    }
 
 
+   /**
+    * @group api
+   **/
    public function testInitSessionUserToken() {
-      // retrieve personnal token of 'glpi' user
+      // retrieve personnal token of TU_USER user
       $user = new User;
-      $user->getFromDB(2);
+      $uid = getItemByTypeName('User', TU_USER, true);
+      $user->getFromDB($uid);
       $token = isset($user->fields['personnal_token'])?$user->fields['personnal_token']:"";
       if (empty($token)) {
-         $token = User::getPersonalToken(2);
+         $token = User::getPersonalToken($uid);
       }
 
       $res = $this->doHttpRequest('initSession', ['user_token' => $token]);
@@ -188,10 +195,11 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testGetItem($session_token) {
-      // Get the User 'glpi'
+      // Get the User TU_USER
+      $uid = getItemByTypeName('User', TU_USER, true);
       $res = $this->doHttpRequest('getItem', ['session_token'    => $session_token,
                                               'itemtype'         => 'User',
-                                              'id'               => 2,
+                                              'id'               => $uid,
                                               'expand_dropdowns' => true,
                                               'with_logs'        => true]);
       $this->assertEquals(200, $res->getStatusCode());
@@ -204,10 +212,11 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertFalse(is_numeric($data['entities_id'])); // for expand_dropdowns
       $this->assertArrayHasKey('_logs', $data); // with_logs == true
 
-      // Get the root-entity
+      // Get the user's entity
+      $eid = getItemByTypeName('Entity', '_test_root_entity', true);
       $res = $this->doHttpRequest('getItem', ['session_token' => $session_token,
                                               'itemtype'      => 'Entity',
-                                              'id'            => 0,
+                                              'id'            => $eid,
                                               'get_hateoas'   => false]);
       $this->assertEquals(200, $res->getStatusCode());
 
@@ -238,6 +247,20 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('is_active', $data[0]);
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
+      // test retrieve partial users
+      $res = $this->doHttpRequest('getItems', ['session_token'    => $session_token,
+                                               'itemtype'         => 'User',
+                                               'range'            => '0-1',
+                                               'expand_dropdowns' => true]);
+      $this->assertEquals(206, $res->getStatusCode());
+      $data = xmlrpc_decode($res->getBody());
+
+      $this->assertGreaterThanOrEqual(2, count($data));
+      $this->assertArrayHasKey('id', $data[0]);
+      $this->assertArrayHasKey('name', $data[0]);
+      $this->assertArrayNotHasKey('password', $data[0]);
+      $this->assertArrayHasKey('is_active', $data[0]);
+      $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
       // Test only_id param
       $res = $this->doHttpRequest('getItems', ['session_token' => $session_token,
@@ -259,12 +282,14 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testGetMultipleItems($session_token) {
-      // Get the User 'glpi' and the root entity in the same query
+      // Get the User TU_USER and the its entity in the same query
+      $uid = getItemByTypeName('User', TU_USER, true);
+      $eid = getItemByTypeName('Entity', '_test_root_entity', true);
       $res = $this->doHttpRequest('getMultipleItems', ['session_token'    => $session_token,
                                                        'items'            => [['itemtype' => 'User',
-                                                                               'items_id' => 2],
+                                                                               'items_id' => $uid],
                                                                               ['itemtype' => 'Entity',
-                                                                               'items_id' => 0]],
+                                                                               'items_id' => $eid]],
                                                        'expand_dropdowns' => true,
                                                        'with_logs'        => true]);
       $this->assertEquals(200, $res->getStatusCode());
@@ -433,7 +458,6 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, is_numeric($secnd_computer['id']));
       $this->assertEquals(true, $first_computer['id'] > 0);
       $this->assertEquals(true, $secnd_computer['id'] > 0);
-
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($first_computer['id']);

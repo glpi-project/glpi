@@ -2977,8 +2977,8 @@ class Rule extends CommonDBTM {
             case 'SLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_ruleactions',
-                                             "`field` = 'slas_id'
-                                                AND `value` = '".$item->getID()."'");
+                                            ['field' => 'slas_id',
+                                             'value' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
 
@@ -2989,9 +2989,9 @@ class Rule extends CommonDBTM {
                   $nbaction   = 0;
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nbcriteria = countElementsInTable(getTableForItemType($item->getRuleCriteriaClass()),
-                                                        "`".$item->getRuleIdField()."` = '".$item->getID()."'");
+                                                        [$item->getRuleIdField() => $item->getID()]);
                      $nbaction   = countElementsInTable(getTableForItemType($item->getRuleActionClass()),
-                                                        "`".$item->getRuleIdField()."` = '".$item->getID()."'");
+                                                        [$item->getRuleIdField() => $item->getID()]);
 
                   }
 

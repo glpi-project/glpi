@@ -78,4 +78,3 @@ if (Session::haveRight("config", READ)) {
 echo "</table>";
 
 Html::footer();
-?>

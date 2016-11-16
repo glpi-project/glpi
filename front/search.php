@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -59,8 +59,8 @@ if (isset($_GET["globalsearch"])) {
          $params["criteria"][$count]["field"]       = 'view';
          $params["criteria"][$count]["searchtype"]  = 'contains';
          $params["criteria"][$count]["value"]       = $searchtext;
-//          $_SESSION["glpisearchcount"][$itemtype]  = $count+1;
-//          $_SESSION["glpisearchcount2"][$itemtype] = 0;
+         //          $_SESSION["glpisearchcount"][$itemtype]  = $count+1;
+         //          $_SESSION["glpisearchcount2"][$itemtype] = 0;
 
          Search::showList($itemtype, $params);
          echo "<hr>";
@@ -69,4 +69,3 @@ if (isset($_GET["globalsearch"])) {
 }
 
 Html::footer();
-?>

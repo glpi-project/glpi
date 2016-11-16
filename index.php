@@ -43,7 +43,7 @@ if (version_compare(PHP_VERSION, "5.4.0") < 0) {
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 // If config_db doesn't exist -> start installation
-define('GLPI_ROOT', dirname(__FILE__));
+define('GLPI_ROOT', __DIR__);
 include (GLPI_ROOT . "/config/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
@@ -73,6 +73,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo '<head><title>'.__('GLPI - Authentication').'</title>'."\n";
    echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'."\n";
    echo '<meta http-equiv="Content-Script-Type" content="text/javascript"/>'."\n";
+   echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
    echo '<link rel="shortcut icon" type="images/x-icon" href="'.$CFG_GLPI["root_doc"].
           '/pics/favicon.ico" />';
 

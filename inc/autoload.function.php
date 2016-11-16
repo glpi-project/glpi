@@ -337,8 +337,17 @@ function glpi_autoload($classname) {
 }
 
 // composer autoload
-$autoload = dirname(__DIR__) . '/vendor/autoload.php';
+$autoload = GLPI_ROOT . '/vendor/autoload.php';
+$needrun  = false;
 if (!file_exists($autoload)) {
+   $needrun = true;
+} else if (file_exists(GLPI_ROOT . '/composer.lock')
+           && file_exists(GLPI_ROOT . '/vendor/composer/installed.json')) {
+   if (filemtime(GLPI_ROOT . '/composer.lock') > filemtime(GLPI_ROOT . '/vendor/composer/installed.json')) {
+      $needrun = true;
+   }
+}
+if ($needrun) {
    die('Run "composer install --no-dev" in the glpi tree');
 }
 require_once $autoload;

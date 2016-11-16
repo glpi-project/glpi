@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -71,7 +71,7 @@ if (isset($_POST["itemtype"])
    $rowid  = 'metasearchrow'.$_POST['itemtype'].$rand;
 
    echo "<tr class='metacriteria' id='$rowid'><td class='left' colspan='2'>";
-   
+
    echo "<table class='tab_format'><tr class='left'>";
    echo "<td width='30%'>";
    echo "<img class='pointer' src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
@@ -137,4 +137,3 @@ if (isset($_POST["itemtype"])
 
    echo "</td></tr>\n";
 }
-?>

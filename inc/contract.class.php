@@ -1270,9 +1270,8 @@ class Contract extends CommonDBTM {
       while ($data = $DB->fetch_assoc($result)) {
          if ($p['nochecklimit']
              || ($data["max_links_allowed"] == 0)
-             || ($data["max_links_allowed"] > countElementsInTable("glpi_contracts_items",
-                                                                   "contracts_id
-                                                                     = '".$data['id']."'" ))) {
+             || ($data["max_links_allowed"] > countElementsInTable('glpi_contracts_items',
+                                                                   ['contracts_id' => $data['id']]))) {
             if ($data["entities_id"] != $prev) {
                $group = Dropdown::getDropdownName("glpi_entities", $data["entities_id"]);
                $prev = $data["entities_id"];

@@ -78,14 +78,14 @@ class ProjectTask_Ticket extends CommonDBRelation{
             case 'ProjectTask' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_projecttasks_tickets',
-                                             "`projecttasks_id` = '".$item->getID()."'");
+                                            ['projecttasks_id' => $item->getID()]);
                }
                return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Ticket' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_projecttasks_tickets',
-                                             "`tickets_id` = '".$item->getID()."'");
+                                            ['tickets_id' => $item->getID()]);
                }
                return self::createTabEntry(ProjectTask::getTypeName(Session::getPluralNumber()), $nb);
          }

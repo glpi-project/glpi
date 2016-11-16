@@ -87,4 +87,3 @@ Ajax::updateItemOnSelectEvent($field_id,
                               "Search2Span".$_POST["itemtype"].$_POST["num"],
                               $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params);
 echo '</td></tr></table>';
-?>

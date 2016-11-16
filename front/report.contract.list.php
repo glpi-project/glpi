@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -203,7 +203,7 @@ if (isset($query) && count($query)) {
             }
             if (!isset($data['warranty_duration'])) {
                $data['warranty_duration'] = 0;
-            }            
+            }
 
             echo "<td> ".Dropdown::getYesNo($data['itemdeleted'])." </td>";
 
@@ -254,4 +254,3 @@ if (isset($query) && count($query)) {
 }
 
 Html::footer();
-?>

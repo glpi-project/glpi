@@ -68,7 +68,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable('glpi_computervirtualmachines',
-                                       "computers_id = '".$item->getID()."' AND `is_deleted`='0'");
+                                      ['computers_id' => $item->getID(), 'is_deleted' => 0 ]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }

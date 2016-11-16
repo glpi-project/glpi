@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -69,4 +69,3 @@ if ($_POST["authtype"] > 0) {
 
    echo "&nbsp;<input type='submit' name='$name' class='submit' value=\""._sx('button','Post')."\">";
 }
-?>

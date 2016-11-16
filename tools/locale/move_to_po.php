@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -35,7 +35,7 @@
 * @brief
 */
 
-chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
+chdir(__DIR__);
 
 if ($argv) {
    for ($i=1 ; $i<count($argv) ; $i++) {

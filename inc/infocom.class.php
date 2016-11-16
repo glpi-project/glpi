@@ -144,8 +144,8 @@ class Infocom extends CommonDBChild {
             default :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_infocoms',
-                                             "`itemtype` = '".$item->getType()."'
-                                               AND `items_id` = '".$item->getID()."'");
+                                             ['itemtype' => $item->getType(),
+                                              'items_id' => $item->getID()]);
                }
                return self::createTabEntry(__('Management'), $nb);
          }
@@ -1303,12 +1303,12 @@ class Infocom extends CommonDBChild {
       $tab[38]['forcegroupby']         = true;
       $tab[38]['joinparams']           = $joinparams;
 
-      $tab[121]['table']               = 'glpi_infocoms';
-      $tab[121]['field']               = 'delivery_date';
-      $tab[121]['name']                = __('Delivery date');
-      $tab[121]['datatype']            = 'date';
-      $tab[121]['forcegroupby']        = true;
-      $tab[121]['joinparams']          = $joinparams;
+      $tab[142]['table']               = 'glpi_infocoms';
+      $tab[142]['field']               = 'delivery_date';
+      $tab[142]['name']                = __('Delivery date');
+      $tab[142]['datatype']            = 'date';
+      $tab[142]['forcegroupby']        = true;
+      $tab[142]['joinparams']          = $joinparams;
 
       $tab[124]['table']               = 'glpi_infocoms';
       $tab[124]['field']               = 'order_date';

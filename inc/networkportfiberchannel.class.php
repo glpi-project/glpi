@@ -39,8 +39,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// NetworkPortFiberchannel class : Fiberchannel instantiation of NetworkPort
-/// @since 0.91
+/**
+ * NetworkPortFiberchannel class : Fiberchannel instantiation of NetworkPort
+ *
+ * @since 9.1
+ */
 class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
 

@@ -801,14 +801,14 @@ class NetworkName extends FQDNLabel {
       switch ($item->getType()) {
          case 'FQDN' :
             return countElementsInTable('glpi_networknames',
-                                        "`fqdns_id` = '".$item->fields["id"]."'
-                                             AND `is_deleted` = '0'");
+                                        ['fqdns_id'   => $item->fields["id"],
+                                         'is_deleted' => 0 ]);
 
          case 'NetworkPort' :
             return countElementsInTable('glpi_networknames',
-                                        "itemtype = '".$item->getType()."'
-                                             AND items_id = '".$item->getID()."'
-                                             AND `is_deleted` = '0'");
+                                       ['itemtype'   => $item->getType(),
+                                        'items_id'   => $item->getID(),
+                                        'is_deleted' => 0 ]);
 
          case 'NetworkEquipment' :
             $query = "SELECT DISTINCT COUNT(*) AS cpt

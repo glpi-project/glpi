@@ -68,7 +68,37 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       }
    }
 
+   /**
+    * @group api
+   **/
+   public function testCORS() {
+      $res = $this->doHttpRequest('OPTIONS', '',
+                                         ['headers' => [
+                                             'Origin' => "http://localhost",
+                                             'Access-Control-Request-Method'  => 'GET',
+                                             'Access-Control-Request-Headers' => 'X-Requested-With'
+                                         ]]);
 
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $headers = $res->getHeaders();
+      $this->assertArrayHasKey('Access-Control-Allow-Methods', $headers);
+      $this->assertArrayHasKey('Access-Control-Allow-Headers', $headers);
+      $this->assertContains('GET',           $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('PUT',           $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('POST',          $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('DELETE',        $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('OPTIONS',       $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('origin',        $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('content-type',  $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('accept',        $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('session-token', $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('authorization', $headers['Access-Control-Allow-Headers'][0]);
+   }
+
+   /**
+    * @group api
+   **/
    public function testInlineDocumentation() {
       $res = $this->doHttpRequest('GET');
       $this->assertNotEquals(null, $res, $this->last_error);
@@ -79,9 +109,11 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    }
 
 
+   /**
+    * @group api
+   **/
    public function testInitSessionCredentials() {
-      $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => ['glpi', 'glpi']]);
-
+      $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => [TU_USER, TU_PASS]]);
 
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
@@ -95,13 +127,17 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    }
 
 
+   /**
+    * @group api
+   **/
    public function testInitSessionUserToken() {
-      // retrieve personnal token of 'glpi' user
+      // retrieve personnal token of TU_USER user
       $user = new User;
-      $user->getFromDB(2);
-      $token = isset($user->fields['personnal_token'])?$user->fields['personnal_token']:"";
+      $uid = getItemByTypeName('User', TU_USER, true);
+      $user->getFromDB($uid);
+      $token = isset($user->fields['personal_token'])?$user->fields['personal_token']:"";
       if (empty($token)) {
-         $token = User::getPersonalToken(2);
+         $token = User::getPersonalToken($uid);
       }
 
       $res = $this->doHttpRequest('GET', 'initSession/',
@@ -252,14 +288,16 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testInitSessionCredentials
      */
    public function testGetMultipleItems($session_token) {
-      // Get the User 'glpi' and the root entity in the same query
+      // Get the User TU_USER and the entity in the same query
+      $uid = getItemByTypeName('User', TU_USER, true);
+      $eid = getItemByTypeName('Entity', '_test_root_entity', true);
       $res = $this->doHttpRequest('GET', 'getMultipleItems',
                                          ['headers' => ['Session-Token' => $session_token],
                                           'query' =>   [
                                              'items'            => [['itemtype' => 'User',
-                                                                     'items_id' => 2],
+                                                                     'items_id' => $uid],
                                                                     ['itemtype' => 'Entity',
-                                                                     'items_id' => 0]],
+                                                                     'items_id' => $eid]],
                                              'with_logs'        => true,
                                              'expand_dropdowns' => true]]);
       $this->assertEquals(200, $res->getStatusCode());
@@ -437,7 +475,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $computers_exist = $computer->getFromDB($computers_id);
       $this->assertEquals(true, (bool) $computers_exist);
 
-
       // create a network port for the previous computer
       $res = $this->doHttpRequest('POST', 'NetworkPort/',
                                          ['headers' => [
@@ -452,7 +489,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                                 'NetworkName_name'         => "testname",
                                                 'NetworkName_fqdns_id'     => 0,
                                                 'NetworkName__ipaddresses' =>
-                                                   array(-1 => "1.2.3.4")]]]);
+                                                   array(-1 => "1.2.3.4"),
+                                                '_create_children'         => true]]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(201, $res->getStatusCode());
       $body = $res->getBody();
@@ -465,11 +503,10 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                           ['headers' => [
                                                 'Session-Token' => $session_token],
                                           'json' => [
-                                             'input'            => [ 
+                                             'input'            => [
                                                 'itemtype'                 => 'Computer',
                                                 'items_id'                 => $computers_id,
-                                                'content'                  => 'note about a computer'
-                                          ]]]);
+                                                'content'                  => 'note about a computer']]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(201, $res->getStatusCode());
       $body = $res->getBody();
@@ -508,7 +545,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, $first_computer['id'] > 0);
       $this->assertEquals(true, $secnd_computer['id'] > 0);
 
-
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($first_computer['id']);
       $this->assertEquals(true, (bool) $computers_exist);
@@ -524,8 +560,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
      * @depends testCreateItem
      */
    public function testGetItem($session_token, $computers_id) {
-      // Get the User 'glpi'
-      $res = $this->doHttpRequest('GET', 'User/2/',
+      // Get the User TU_USER
+      $uid = getItemByTypeName('User', TU_USER, true);
+      $res = $this->doHttpRequest('GET', "User/$uid/",
                                          ['headers' => [
                                              'Session-Token' => $session_token],
                                           'query' => [
@@ -540,11 +577,13 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('name', $data);
       $this->assertArrayHasKey('entities_id', $data);
       $this->assertArrayHasKey('links', $data);
+      $this->assertArrayNotHasKey('password', $data);
       $this->assertFalse(is_numeric($data['entities_id'])); // for expand_dropdowns
       $this->assertArrayHasKey('_logs', $data); // with_logs == true
 
-      // Get the root-entity
-      $res = $this->doHttpRequest('GET', 'Entity/0',
+      // Get user's entity
+      $eid = getItemByTypeName('Entity', '_test_root_entity', true);
+      $res = $this->doHttpRequest('GET', 'Entity/' . $eid,
                                          ['headers' => [
                                              'Session-Token' => $session_token],
                                           'query' => [
@@ -559,7 +598,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('name', $data);
       $this->assertArrayHasKey('completename', $data);
       $this->assertArrayNotHasKey('links', $data); // get_hateoas == false
-
 
       // Get the previously created 'computer 1'
       $res = $this->doHttpRequest('GET', "Computer/$computers_id",
@@ -636,7 +674,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('is_active', $data[0]);
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
-
       // test retrieve partial users
       $res = $this->doHttpRequest('GET', 'User/',
                                          ['headers' => [
@@ -656,6 +693,21 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('is_active', $data[0]);
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
+      // test retrieve 1 user with a text filter
+      $res = $this->doHttpRequest('GET', 'User/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'searchText' => array('name' => 'gl')]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+
+      $this->assertEquals(1, count($data));
+      $this->assertArrayHasKey('id', $data[0]);
+      $this->assertArrayHasKey('name', $data[0]);
+      $this->assertEquals('glpi', $data[0]['name']);
 
       // test retrieve invalid range of users
       try {
@@ -669,7 +721,6 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $response = $e->getResponse();
          $this->assertEquals(400, $response->getStatusCode());
       }
-
 
       // Test only_id param
       $res = $this->doHttpRequest('GET', 'User/',
@@ -688,6 +739,66 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayNotHasKey('name', $data[0]);
       $this->assertArrayNotHasKey('password', $data[0]);
       $this->assertArrayNotHasKey('is_active', $data[0]);
+
+      // test retrieve all config
+      $res = $this->doHttpRequest('GET', 'Config/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'expand_dropdowns' => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+
+      foreach ($data as $config_row) {
+         $this->assertNotEquals('smtp_passwd', $config_row['name']);
+         $this->assertNotEquals('proxy_passwd', $config_row['name']);
+      }
+   }
+
+
+   /**
+    * @group api
+    *
+    * This function test https://github.com/glpi-project/glpi/issues/1103
+    * A post-only user could retrieve tickets of others users when requesting itemtype
+    * without first letter in uppercase
+   **/
+   public function testgetItemsForPostonly() {
+      // init session for postonly
+      $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => ['post-only', 'postonly']]);
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+
+      // create a ticket for another user (glpi - super-admin)
+      $ticket = new Ticket;
+      $tickets_id = $ticket->add(array('name'                => 'test post-only',
+                                       'content'             => 'test post-only',
+                                       '_users_id_requester' => 2));
+
+      // try to access this ticket with post-only
+      try {
+         $res = $this->doHttpRequest('GET', "ticket/$tickets_id",
+                                            ['headers' => [
+                                                'Session-Token' => $data['session_token']]]);
+      } catch (ClientException $e) {
+         $response = $e->getResponse();
+         $this->assertEquals(401, $res->getStatusCode());
+      }
+
+      // try to access ticket list (we should get empty return)
+      $res = $this->doHttpRequest('GET', 'ticket/',
+                                         ['headers' => [
+                                             'Session-Token' => $data['session_token']]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertEquals(0, count($data));
+
+      // delete ticket
+      $ticket->delete(array('id' => $tickets_id), true);
    }
 
 
@@ -833,6 +944,112 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
          $computers_exist = $computer->getFromDB($computers_id);
          $this->assertEquals(false, (bool) $computers_exist);
+      }
+   }
+
+   /**
+     * @depends testInitSessionCredentials
+     */
+   public function testInjection($session_token) {
+      $res = $this->doHttpRequest('POST', 'Computer/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'json' => [
+                                             'input'         => [[
+                                                'name' => "my computer', (SELECT `password` from `glpi_users` as `otherserial` WHERE `id`=2), '0 ' , '2016-10-26 00:00:00', '2016-10-26 00 :00 :00')#"
+                                             ,
+                                                'otherserial' => "Not hacked"]]]]);
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $new_id = $data[0]['id'];
+
+      $computer = new Computer();
+      $computer_exists = $computer->getFromDB($new_id);
+
+      $this->assertTrue((bool)$computer_exists, 'Computer does not exists :\'(');
+
+      $is_password = $computer->fields['otherserial'] != 'Not hacked';
+      $this->assertFalse($is_password, 'Add SQL injection spotted!');
+
+      $res = $this->doHttpRequest('PUT', 'Computer/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'json' => [
+                                             'input'         => [
+                                                'id'     => $new_id,
+                                                'serial' => "abcdef', `otherserial`='injected"]]]);
+
+      $computer->getFromDB($new_id);
+      $is_injected = $computer->fields['otherserial'] === 'injected';
+      $this->assertFalse($is_injected, 'Update SQL injection spotted!');
+
+      $computer = new Computer();
+      $computer->delete(['id' => $new_id], true);
+   }
+
+   /**
+    * @depends testInitSessionCredentials
+    */
+   public function testProtectedConfigSettings($session_token) {
+      $sensitiveSettings = array(
+            'proxy_passwd',
+            'smtp_passwd',
+      );
+
+      // set a non empty value to the sessionts to check
+      foreach ($sensitiveSettings as $name) {
+         Config::setConfigurationValues('core', array($name => 'not_empty_password'));
+         $value = Config::getConfigurationValues('core', array($name));
+         $this->assertArrayHasKey($name, $value);
+         $this->assertNotEmpty($value[$name]);
+      }
+
+      $where = "'" . implode("', '", $sensitiveSettings) . "'";
+      $config = new config();
+      $rows = $config->find("`context`='core' AND `name` IN ($where)");
+      $this->assertEquals(count($sensitiveSettings), count($rows));
+
+      // Check the value is not retrieved for sensitive settings
+      foreach ($rows as $row) {
+         $res = $this->doHttpRequest('GET', "Config/" . $row['id'],
+                                             ['headers' => [
+                                                   'Session-Token' => $session_token]]);
+         $this->assertEquals(200, $res->getStatusCode());
+         $body = $res->getBody();
+         $data = json_decode($body, true);
+         $this->assertEquals('', $data['value']);
+      }
+
+      // Check an other setting is disclosed (when not empty)
+      $config = new Config();
+      $config->getFromDBByQuery("WHERE `context`='core' AND `name`='admin_email'");
+      $res = $this->doHttpRequest('GET', "Config/" . $config->getID(),
+                                         ['headers' => [
+                                                'Session-Token' => $session_token]]);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals('', $data['value']);
+
+      // Check a search does not disclose sensitive values
+      $criteria = array();
+      $queryString = "";
+      foreach ($rows as $row) {
+         $queryString = "&criteria[][link]=or&criteria[][field]=1&criteria[][searchtype]=equals&criteria[][value]=" . $row['name'];
+      }
+
+      $res = $this->doHttpRequest('GET', "search/Config" . "?$queryString",
+                                          ['headers' => [
+                                                'Session-Token' => $session_token],
+                                          'query' => array()]);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      foreach ($data['data'] as $row) {
+         foreach ($row as $col) {
+            $this->assertNotEquals($col, 'not_empty_password');
+         }
       }
    }
 

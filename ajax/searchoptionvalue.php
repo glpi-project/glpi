@@ -71,7 +71,7 @@ if (isset($_POST['searchtype'])) {
       case "lessthan" :
       case "under" :
       case "notunder" :
-        if (!$display && isset($searchopt['field'])) {
+         if (!$display && isset($searchopt['field'])) {
             // Specific cases
             switch ($searchopt['table'].".".$searchopt['field']) {
                // Add mygroups choice to searchopt
@@ -110,7 +110,7 @@ if (isset($_POST['searchtype'])) {
 
 
                case "glpi_users.name" :
-                  $options2['right'] = 'all';
+                  $options2['right'] = $searchopt['right'];
                   break;
             }
 
@@ -145,7 +145,7 @@ if (isset($_POST['searchtype'])) {
                }
             }
 
-        }
+         }
         break;
    }
 
@@ -155,4 +155,3 @@ if (isset($_POST['searchtype'])) {
                Html::cleanInputText($_POST['value'])."\">";
    }
 }
-?>

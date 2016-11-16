@@ -115,4 +115,3 @@ if (class_exists($_POST["itemtype"])
    }
    Dropdown::showFromArray($_POST['myname'], $values, array('display_emptychoice' => true));
 }
-?>

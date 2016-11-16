@@ -385,14 +385,14 @@ class Ticket extends CommonITILObject {
          case SLT::TTR :
             $input['slts_ttr_id'] = 0;
             if ($delete_date) {
-               $input['time_to_own'] = '';
+               $input['due_date'] = '';
             }
             break;
 
          case SLT::TTO :
             $input['slts_tto_id'] = 0;
             if ($delete_date) {
-               $input['due_date'] = '';
+               $input['time_to_own'] = '';
             }
             break;
       }
@@ -468,12 +468,13 @@ class Ticket extends CommonITILObject {
       }
 
       // user can delete his ticket if no action on it
-      if (($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-           || ($this->fields["users_id_recipient"] === Session::getLoginUserID()))
-          && ($this->numberOfFollowups() == 0)
-          && ($this->numberOfTasks() == 0)
-          && ($this->fields["date"] == $this->fields["date_mod"])) {
-         return true;
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
+          && (!($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+               || $this->fields["users_id_recipient"] === Session::getLoginUserID())
+             || $this->numberOfFollowups() > 0
+             || $this->numberOfTasks() > 0
+             || $this->fields["date"] != $this->fields["date_mod"])) {
+         return false;
       }
 
       return static::canDelete();
@@ -553,8 +554,8 @@ class Ticket extends CommonITILObject {
 
                case 'SLT' :
                   $nb = countElementsInTable('glpi_tickets',
-                                             "`slts_tto_id` = '".$item->getID()."'
-                                               OR `slts_ttr_id` = '".$item->getID()."'");
+                                             ['slts_tto_id' => $item->getID(),
+                                              'slts_ttr_id' => $item->getID()]);
                   break;
 
                case 'Group' :
@@ -569,8 +570,8 @@ class Ticket extends CommonITILObject {
                default :
                   // Direct one
                   $nb = countElementsInTable('glpi_items_tickets',
-                                             " `itemtype` = '".$item->getType()."'
-                                                AND `items_id` = '".$item->getID()."'");
+                                             ['itemtype' => $item->getType(),
+                                              'items_id' => $item->getID()]);
                   // Linked items
                   $linkeditems = $item->getLinkedItems();
 
@@ -578,8 +579,8 @@ class Ticket extends CommonITILObject {
                      foreach ($linkeditems as $type => $tab) {
                         foreach ($tab as $ID) {
                            $nb += countElementsInTable('glpi_items_tickets',
-                                                       " `itemtype` = '$type'
-                                                         AND `items_id` = '$ID'");
+                                                       ['itemtype' => $type,
+                                                        'items_id' => $ID]);
                         }
                      }
                   }
@@ -4397,7 +4398,7 @@ class Ticket extends CommonITILObject {
                             Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                   }
                } else {
-                  if (self::canDelete()) {
+                  if ($this->canDeleteItem()) {
                      echo "<input type='submit' class='submit' name='delete' value='".
                             _sx('button', 'Put in dustbin')."'>";
                   }
@@ -6245,7 +6246,7 @@ class Ticket extends CommonITILObject {
     * @param $rand
    **/
    function showTimeline($rand) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB, $autolink_options;
 
       //get ticket actors
       $ticket_users_keys = $this->getTicketActors();
@@ -6254,8 +6255,9 @@ class Ticket extends CommonITILObject {
       $group             = new Group();
       $followup_obj      = new TicketFollowup();
       $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
-
       $timeline          = $this->getTimelineItems();
+
+      $autolink_options['strip_protocols'] = false;
 
       //display timeline
       echo "<div class='timeline_history'>";

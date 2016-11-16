@@ -43,6 +43,17 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   /**
+    * @expectedException        GlpitestSQLerror
+    * @expectedExceptionMessage fakeTable' doesn't exist
+    */
+   public function testSqlError() {
+      global $DB;
+
+      $DB->request('fakeTable');
+   }
+
+
    public function testOnlyTable() {
 
       $it = new DBmysqlIterator(NULL, 'foo');
@@ -56,8 +67,49 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   /**
+    * This is really an error, no table but a WHERE clase
+    *
+    * @expectedException        GlpitestPHPerror
+    * @expectedExceptionMessage Missing table name
+    */
+   public function testNoTableWithWhere() {
+
+      // Really, this is an error
+      $it = new DBmysqlIterator(NULL, '', ['foo' => 1]);
+      $this->assertEquals('SELECT * WHERE `foo` = 1', $it->getSql(), 'No table');
+   }
+
+
+   /**
+    * Temporarily, this is an error, will be allowed later
+    *
+    * @expectedException        GlpitestPHPerror
+    * @expectedExceptionMessage Missing table name
+    */
+   public function testNoTableWithoutWhere() {
+
+      $it = new DBmysqlIterator(NULL, '');
+      $this->assertEquals('SELECT *', $it->getSql(), 'No table');
+   }
+
+
+   /**
+    * Temporarily, this is an error, will be allowed later
+    *
+    * @expectedException        GlpitestPHPerror
+    * @expectedExceptionMessage Missing table name
+    */
+   public function testNoTableWithoutWhereBis() {
+
+      $it = new DBmysqlIterator(NULL, ['FROM' => []]);
+      $this->assertEquals('SELECT *', $it->getSql(), 'No table');
+   }
+
+
    public function testDebug() {
 
+      file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
       $it = new DBmysqlIterator(NULL, 'foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
       $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
       $this->assertTrue(strpos($buf, 'From DBmysqlIterator') > 0, 'From in php_errors.log');
@@ -222,8 +274,26 @@ class DBmysqlIteratorTest extends DbTestCase {
                                    ],
                           ],
               ];
+      $sql = "SELECT * FROM `foo` WHERE `a` = 1 AND (`b` = 2 OR NOT (`c` IN (2, 3) AND (`d` = 4 AND `e` = 5)))";
       $it = new DBmysqlIterator(NULL, ['foo'], $crit);
-      $this->assertEquals("SELECT * FROM `foo` WHERE `a` = 1 AND (`b` = 2 OR NOT (`c` IN (2, 3) AND (`d` = 4 AND `e` = 5)))", $it->getSql(), 'Complex case');
+      $this->assertEquals($sql, $it->getSql(), 'Complex case');
+
+      $crit['FROM'] = 'foo';
+      $it = new DBmysqlIterator(NULL, $crit);
+      $this->assertEquals($sql, $it->getSql(), 'Complex case');
+   }
+
+
+   public function testModern() {
+
+      $req = [
+         'SELECT' => ['a', 'b'],
+         'FROM'   => 'foo',
+         'WHERE'  => ['c' => 1],
+      ];
+      $sql = "SELECT `a`, `b` FROM `foo` WHERE `c` = 1";
+      $it = new DBmysqlIterator(NULL, $req);
+      $this->assertEquals($sql, $it->getSql(), 'Mondern syntax');
    }
 
 

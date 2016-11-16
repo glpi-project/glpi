@@ -56,4 +56,3 @@ if ($_POST["nodelegate"] == 1) {
 
 $ticket = new Ticket();
 $ticket->showActorAddFormOnCreate(Ticket_User::REQUESTER, $_POST);
-?>

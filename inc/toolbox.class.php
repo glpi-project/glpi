@@ -534,28 +534,26 @@ class Toolbox {
    static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars) {
 
       // Date et heure de l'erreur
-      $errortype = array(E_ERROR           => 'Error',
-                         E_WARNING         => 'Warning',
-                         E_PARSE           => 'Parsing Error',
-                         E_NOTICE          => 'Notice',
-                         E_CORE_ERROR      => 'Core Error',
-                         E_CORE_WARNING    => 'Core Warning',
-                         E_COMPILE_ERROR   => 'Compile Error',
-                         E_COMPILE_WARNING => 'Compile Warning',
-                         E_USER_ERROR      => 'User Error',
-                         E_USER_WARNING    => 'User Warning',
-                         E_USER_NOTICE     => 'User Notice',
-                         E_STRICT          => 'Runtime Notice',
-                         // Need php 5.2.0
-                         4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error',
-                         // Need php 5.3.0
-                         8192 /* E_DEPRECATED */       => 'Deprecated function',
-                         16384 /* E_USER_DEPRECATED */ => 'User deprecated function');
+      $errortype = array(E_ERROR             => 'Error',
+                         E_WARNING           => 'Warning',
+                         E_PARSE             => 'Parsing Error',
+                         E_NOTICE            => 'Notice',
+                         E_CORE_ERROR        => 'Core Error',
+                         E_CORE_WARNING      => 'Core Warning',
+                         E_COMPILE_ERROR     => 'Compile Error',
+                         E_COMPILE_WARNING   => 'Compile Warning',
+                         E_USER_ERROR        => 'User Error',
+                         E_USER_WARNING      => 'User Warning',
+                         E_USER_NOTICE       => 'User Notice',
+                         E_STRICT            => 'Runtime Notice',
+                         E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+                         E_DEPRECATED        => 'Deprecated function',
+                         E_USER_DEPRECATED   => 'User deprecated function');
       // Les niveaux qui seront enregistrés
       $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 
       $err = '  *** PHP '.$errortype[$errno] . "($errno): $errmsg\n";
-      if (in_array($errno, $user_errors)) {
+      if (in_array($errno, $user_errors) && function_exists('wddx_serialize_value')) {
          $err .= "Variables:".wddx_serialize_value($vars, "Variables")."\n";
       }
 
@@ -571,6 +569,21 @@ class Toolbox {
 
       // Save error
       self::logInFile("php-errors", $err);
+
+      // For unit test
+      if (class_exists('GlpitestPHPerror')) {
+         if (in_array($errno, [E_ERROR, E_USER_ERROR])) {
+            throw new GlpitestPHPerror($err);
+         }
+         /* for tuture usage
+         if (in_array($errno, [E_STRICT, E_WARNING, E_CORE_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED])) {
+             throw new GlpitestPHPwarning($err);
+         }
+         if (in_array($errno, [E_NOTICE, E_USER_NOTICE])) {
+            throw new GlpitestPHPnotice($err);
+         }
+         */
+      }
 
       return $errortype[$errno];
    }
@@ -709,11 +722,11 @@ class Toolbox {
       // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
       // http://tools.ietf.org/html/rfc7232#section-3.3
       if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag){
-         header("HTTP/1.1 304 Not Modified");
+         http_response_code(304); //304 - Not Modified
          exit;
       }
       if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified){
-         header("HTTP/1.1 304 Not Modified");
+         http_response_code(304); //304 - Not Modified
          exit;
       }
 
@@ -947,7 +960,7 @@ class Toolbox {
          ],
          'ctype'    => [
             'required'  => true,
-            'function'  => ['ctype_digit']
+            'function'  => 'ctype_digit',
          ],
          'fileinfo' => [
             'required'  => true,
@@ -982,21 +995,21 @@ class Toolbox {
          $success = true;
 
          if (isset($params['function'])) {
-            if (!function_exists($func)) {
+            if (!function_exists($params['function'])) {
                 $success = false;
             }
-         } elseif (isset($param['class'])) {
+         } else if (isset($param['class'])) {
             if (!class_exists($params['class'])) {
                $success = false;
             }
          } else {
-            if (extension_loaded($ext)) {
+            if (!extension_loaded($ext)) {
                $success = false;
             }
          }
 
          echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
-         if ($success === false) {
+         if ($success) {
              $msg = sprintf(__('%s extension is installed'), $ext);
             echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
                     alt=\"$msg\"
@@ -1549,24 +1562,23 @@ class Toolbox {
    /**
     * Get a random string
     *
-    * @param $length integer: length of the random string
+    * @param integer $length of the random string
+    * @param boolean $high strength of the random source (since 9.2)
     *
     * @return random string
    **/
-   static function getRandomString($length) {
+   static function getRandomString($length, $high=false) {
 
-      $alphabet  = "1234567890abcdefghijklmnopqrstuvwxyz";
-      $rndstring = "";
-
-      for ($a=0 ; $a<$length ; $a++) {
-         if (function_exists('random_int')) { // PHP 7+
-            $b = random_int(0, strlen($alphabet) - 1);
-         } else {
-            $b = mt_rand(0, strlen($alphabet) - 1);
-         }
-         $rndstring .= $alphabet[$b];
+      $factory = new RandomLib\Factory();
+      if ($high) {
+         /* Notice "High" imply mcrypt extension, unwanted for now
+            See https://github.com/ircmaxell/RandomLib/issues/57 */
+         $generator = $factory->getMediumStrengthGenerator();
+      } else {
+         $generator = $factory->getLowStrengthGenerator();
       }
-      return $rndstring;
+
+      return $generator->generateString($length, RandomLib\Generator::CHAR_LOWER + RandomLib\Generator::CHAR_DIGITS);
    }
 
 
@@ -2323,7 +2335,7 @@ class Toolbox {
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
       $DB = new DB();
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-9.1-empty.sql")) {
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-" . GLPI_SCHEMA_VERSION . "-empty.sql")) {
          echo "Errors occurred inserting default database";
       }
       // update default language
@@ -2541,4 +2553,16 @@ class Toolbox {
       return false;
    }
 
+   /**
+    * Sanitize received values
+    *
+    * @param array $array
+    *
+    * @return array
+    */
+   static public function sanitize($array) {
+      $array = array_map('Toolbox::addslashes_deep', $array);
+      $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
+      return $array;
+   }
 }

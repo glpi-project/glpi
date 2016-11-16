@@ -1,4 +1,4 @@
-# GLPI REST API:  Documentation
+# GLPi REST API:  Documentation
 
 ## Summary
 
@@ -68,55 +68,54 @@ App(lication) token
 
 * you should always precise a Content-Type header in your HTTP calls.
    Currently, the api supports:
-   - application/json
-   - multipart/form-data (for files upload, see [Add item(s)](#add-items) endpoint.
+  * application/json
+  * multipart/form-data (for files upload, see [Add item(s)](#add-items) endpoint.
 
 * GET requests must have an empty body. You must pass all parameters in URL.
   Failing to do so will trigger an HTTP 400 response.
 
 * By default, sessions used in this API are read-only.
   Only Some methods have write access to session:
-   - [initSession](#init-session)
-   - [killSession](#kill-session)
-   - [changeActiveEntities](#change-active-entities)
-   - [changeActiveProfile](#change-active-profiles)
+  * [initSession](#init-session)
+  * [killSession](#kill-session)
+  * [changeActiveEntities](#change-active-entities)
+  * [changeActiveProfile](#change-active-profiles)
 
   You could pass an additional parameter "session_write=true" to bypass this default.
   This read-only mode allow to use this API with parallel calls.
   In write mode, sessions are locked and your client must wait the end of a call before the next one can execute.
 
-* You can filter API access by enable the following parameters in GLPI General Configuration (API tab):
-   - IPv4 range
-   - IPv6 address
-   - *App-Token* parameter: if not empty, you should pass this parameter in all of your api calls
+* You can filter API access by enable the following parameters in GLPi General Configuration (API tab):
+  * IPv4 range
+  * IPv6 address
+  * *App-Token* parameter: if not empty, you should pass this parameter in all of your api calls
 
 * Session and App tokens could be provided in query string instead of header parameters.
-
 
 ## Init session
 
 * **URL**: apirest.php/initSession/
 * **Description**: Request a session token to uses other api endpoints.
 * **Method**: GET
-* **Parameters (Headers)**
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-   - a couple *login* & *password*: 2 parameters to login with user authentication.  
-     You should pass this 2 parameters in [http basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication).  
-     It consists in a Base64 string with login and password separated by ":"  
+* **Parameters**: (Headers)
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+  * a couple *login* & *password*: 2 parameters to login with user authentication.
+     You should pass this 2 parameters in [http basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication).
+     It consists in a Base64 string with login and password separated by ":"
      A valid Authorization header is:
-         - "Authorization: Basic base64({login}:{password})"
+        * "Authorization: Basic base64({login}:{password})"
 
-      **OR**
+    > **OR**
 
-   - an *user_token* defined in User Preference (See 'Remote access key')  
+  * an *user_token* defined in User Preference (See 'Remote access key')
      You should pass this parameter in 'Authorization' HTTP header.
-     A valid Authorization header is:  
-         - "Authorization: user_token {user_token}"
+     A valid Authorization header is:
+        * "Authorization: user_token {user_token}"
 
 * **Returns**:
-   - 200 (OK) with the *session_token* string.
-   - 400 (Bad Request) with a message indicating an error in input parameter.
-   - 401 (UNAUTHORIZED)
+  * 200 (OK) with the *session_token* string.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED)
 
 Examples usage (CURL):
 
@@ -149,12 +148,12 @@ $ curl -X GET \
 * **URL**: apirest.php/killSession/
 * **Description**: Destroy a session identified by a session token.
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Returns**
-   - 200 (OK).
-   - 400 (Bad Request) with a message indicating an error in input parameter.
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
 
 Example usage (CURL):
 
@@ -168,23 +167,22 @@ $ curl -X GET \
 < 200 OK
 ```
 
-
 ## Get my profiles
 
 * **URL**: [apirest.php/getMyProfiles/](getMyProfiles/?debug)
 * **Description**: Return all the profiles associated to logged user.
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Returns**
-   - 200 (OK) with an array of all profiles.
-   - 400 (Bad Request) with a message indicating an error in input parameter.
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Returns**:
+  * 200 (OK) with an array of all profiles.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
 
 Example usage (CURL):
 
 ```bash
-$ curl -X POST \
+$ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
@@ -205,23 +203,22 @@ $ curl -X POST \
    ]
 ```
 
-
 ## Get active profile
 
 * **URL**: [apirest.php/getActiveProfile/](getActiveProfile/?debug)
-* **Description**: return the current active profile.
+* **Description**: Return the current active profile.
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Returns**
-   - 200 (OK) with an array representing current profile.
-   - 400 (Bad Request) with a message indicating an error in input parameter.
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Returns**:
+  * 200 (OK) with an array representing current profile.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
 
 Example usage (CURL):
 
 ```bash
-$ curl -X POST \
+$ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
@@ -236,20 +233,19 @@ $ curl -X POST \
    }
 ```
 
-
 ## Change active profile
 
 * **URL**: [apirest.php/changeActiveProfile/](changeActiveProfile/?profiles_id=4&debug)
 * **Description**: Change active profile to the profiles_id one. See [getMyProfiles](#get-my-profiles) endpoint for possible profiles.
 * **Method**: POST
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Parameters (JSON Payload)**
-   - *profiles_id*: (default 'all') ID of the new active profile. Mandatory.
-* **Returns**
-   - 200 (OK).
-   - 400 (Bad Request) with a message indicating an error in input parameter.
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Parameters**: (JSON Payload)
+  * *profiles_id*: (default 'all') ID of the new active profile. Mandatory.
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
 
 Example usage (CURL):
 
@@ -264,18 +260,17 @@ $ curl -X POST \
 < 200 OK
 ```
 
-
 ## Get my entities
 
 * **URL**: [apirest.php/getMyEntities/](getMyEntities/?debug)
-* **Description**: return all the possible entities of the current logged user (and for current active profile).
+* **Description**: Return all the possible entities of the current logged user (and for current active profile).
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Returns**
-   - 200 (OK) with an array of all entities (with id and name).
-   - 400 (Bad Request) with a message indicating an error in input parameter.
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Returns**:
+  * 200 (OK) with an array of all entities (with id and name).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
 
 Example usage (CURL):
 
@@ -298,21 +293,20 @@ $ curl -X POST \
   }
 ```
 
-
 ## Get active entities
 
 * **URL**: [apirest.php/getActiveEntities/](getActiveEntities/?debug)
-* **Description**: return active entities of current logged user
+* **Description**: Return active entities of current logged user.
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Returns**
-   - 200 (OK) with an array with 3 keys:
-      - *active_entity*: current set entity.
-      - *active_entity_recursive*: boolean, if we see sons of this entity.
-      - *active_entities*: array all active entities (active_entity and its sons).
-   - 400 (Bad Request) with a message indicating an error in input parameter.
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Returns**:
+  * 200 (OK) with an array with 3 keys:
+    * *active_entity*: current set entity.
+    * *active_entity_recursive*: boolean, if we see sons of this entity.
+    * *active_entities*: array all active entities (active_entity and its sons).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
 
 Example usage (CURL):
 
@@ -336,21 +330,20 @@ $ curl -X POST \
 }
 ```
 
-
 ## Change active entities
 
 * **URL**: [apirest.php/changeActiveEntities/](changeActiveEntities/?entities_id=1&is_recursive=0&debug)
 * **Description**: Change active entity to the entities_id one. See [getMyEntities](#get-my-entities) endpoint for possible entities.
 * **Method**: POST
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Parameters (JSON Payload)**
-   - *entities_id*: (default 'all') ID of the new active entity ("all" => load all possible entities). Optional.
-   - *is_recursive*: (default false) Also display sub entities of the active entity.  Optional.
-* **Returns**
-   - 200 (OK).
-   - 400 (Bad Request) with a message indicating an error in input parameter.
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Parameters**: (JSON Payload)
+  * *entities_id*: (default 'all') ID of the new active entity ("all" => load all possible entities). Optional.
+  * *is_recursive*: (default false) Also display sub entities of the active entity.  Optional.
+* **Returns**:
+  * 200 (OK).
+  * 400 (Bad Request) with a message indicating an error in input parameter.
 
 Example usage (CURL):
 
@@ -365,18 +358,17 @@ $ curl -X POST \
 < 200 OK
 ```
 
-
 ## Get full session
 
 * **URL**: [apirest.php/getFullSession/](getFullSession/?debug)
-* **Description**: return the current php $_SESSION
+* **Description**: Return the current php $_SESSION.
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Returns**
-   - 200 (OK) with an array representing the php session.
-   - 400 (Bad Request) with a message indicating an error in input parameter.
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Returns**:
+  * 200 (OK) with an array representing the php session.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
 
 Example usage (CURL):
 
@@ -396,37 +388,36 @@ $ curl -X POST \
    }
 ```
 
-
 ## Get an item
 
 * **URL**: [apirest.php/:itemtype/:id](User/2?debug)
-* **Description**: Return the instance fields of itemtype identified by id
+* **Description**: Return the instance fields of itemtype identified by id.
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Parameters (query string)**
-   - *id*: unique identifier of the itemtype. Mandatory.
-   - *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
-   - *get_hateoas* (default: true): Show relations of the item in a links attribute. Optional.
-   - *get_sha1* (default: false): Get a sha1 signature instead of the full answer. Optional.
-   - *with_components*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
-   - *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
-   - *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
-   - *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
-   - *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
-   - *with_infocoms*: Retrieve financial and administrative informations. Optional.
-   - *with_contracts*: Retrieve associated contracts. Optional.
-   - *with_documents*: Retrieve associated external documents. Optional.
-   - *with_tickets*: Retrieve associated itil tickets. Optional.
-   - *with_problems*: Retrieve associated itil problems. Optional.
-   - *with_changes*: Retrieve associated itil changes. Optional.
-   - *with_notes*: Retrieve Notes. Optional.
-   - *with_logs*: Retrieve historical. Optional.
-* **Returns**
-   - 200 (OK) with item data (Last-Modified header should contain the date of last modification of the item).
-   - 401 (UNAUTHORIZED).
-   - 404 (NOT FOUND).
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Parameters**: (query string)
+  * *id*: unique identifier of the itemtype. Mandatory.
+  * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
+  * *get_hateoas* (default: true): Show relations of the item in a links attribute. Optional.
+  * *get_sha1* (default: false): Get a sha1 signature instead of the full answer. Optional.
+  * *with_components*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
+  * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
+  * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
+  * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
+  * *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
+  * *with_infocoms*: Retrieve financial and administrative informations. Optional.
+  * *with_contracts*: Retrieve associated contracts. Optional.
+  * *with_documents*: Retrieve associated external documents. Optional.
+  * *with_tickets*: Retrieve associated itil tickets. Optional.
+  * *with_problems*: Retrieve associated itil problems. Optional.
+  * *with_changes*: Retrieve associated itil changes. Optional.
+  * *with_notes*: Retrieve Notes. Optional.
+  * *with_logs*: Retrieve historical. Optional.
+* **Returns**:
+  * 200 (OK) with item data (Last-Modified header should contain the date of last modification of the item).
+  * 401 (UNAUTHORIZED).
+  * 404 (NOT FOUND).
 
 Example usage (CURL):
 
@@ -506,27 +497,26 @@ $ curl -X GET \
 }
 ```
 
-
-
 ## Get all items
 
 * **URL**: [apirest.php/:itemtype/](Computer/?debug)
-* **Description**: Return a collection of rows of the itemtype
+* **Description**: Return a collection of rows of the itemtype.
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Parameters (query string)**
-   - *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
-   - *get_hateoas* (default: true): Show relation of item in a links attribute. Optional.
-   - *only_id* (default: false): keep only id keys in returned data. Optional.
-   - *range* (default: 0-50):  a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-200. Optional.
-   - *sort* (default 1): id of the searchoption to sort by. Optional.
-   - *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
-* **Returns**
-   - 200 (OK) with items data.
-   - 206 (PARTIAL CONTENT) with items data defined by range.
-   - 401 (UNAUTHORIZED).
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Parameters**: (query string)
+  * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
+  * *get_hateoas* (default: true): Show relation of item in a links attribute. Optional.
+  * *only_id* (default: false): keep only id keys in returned data. Optional.
+  * *range* (default: 0-50):  a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-200. Optional.
+  * *sort* (default 1): id of the searchoption to sort by. Optional.
+  * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
+  * *searchText* (default NULL): array of filters to pass on the query (with key = field and value the text to search)
+* **Returns**:
+  * 200 (OK) with items data.
+  * 206 (PARTIAL CONTENT) with items data defined by range.
+  * 401 (UNAUTHORIZED).
 
    and theses headers:
       * *Content-Range* offset – limit / count
@@ -631,22 +621,22 @@ $ curl -X GET \
 ## Get sub items
 
 * **URL**: [apirest.php/:itemtype/:id/:sub_itemtype](User/2/Log?debug)
-* **Description**: Return a collection of rows of the sub_itemtype for the identified item
+* **Description**: Return a collection of rows of the sub_itemtype for the identified item.
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Parameters (query string)**
-   - id: unique identifier of the parent itemtype. Mandatory.
-   - *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
-   - *get_hateoas* (default: true): Show item's relations in a links attribute. Optional.
-   - *only_id* (default: false): keep only id keys in returned data. Optional.
-   - *range* (default: 0-50): a string with a couple of number for start and end of pagination separated by a '-' char. Ex: 150-200. Optional.
-   - *sort* (default 1): id of the "searchoption" to sort by. Optional.
-   - *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
-* **Returns**
-   - 200 (OK) with the items data.
-   - 401 (UNAUTHORIZED).
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Parameters**: (query string)
+  * id: unique identifier of the parent itemtype. Mandatory.
+  * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
+  * *get_hateoas* (default: true): Show item's relations in a links attribute. Optional.
+  * *only_id* (default: false): keep only id keys in returned data. Optional.
+  * *range* (default: 0-50): a string with a couple of number for start and end of pagination separated by a '-' char. Ex: 150-200. Optional.
+  * *sort* (default 1): id of the "searchoption" to sort by. Optional.
+  * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
+* **Returns**:
+  * 200 (OK) with the items data.
+  * 401 (UNAUTHORIZED).
 
    and theses headers:
       * *Content-Range* offset – limit / count
@@ -693,40 +683,39 @@ $ curl -X GET \
 ]
 ```
 
-
 ## Get multiple items
 
 * **URL**: apirest.php/getMultipleItems
 * **Description**: Virtually call [Get an item](#get-an-item) for each line in input. So, you can have a ticket, an user in the same query.
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Parameters (query string)**
-   - *items*: items to retrieve. Mandatory.  
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Parameters**: (query string)
+  * *items*: items to retrieve. Mandatory.
               Each line of this array should contains two keys:
-               - itemtype
-               - items_id
-   - *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
-   - *get_hateoas* (default: true): Show relations of the item in a links attribute. Optional.
-   - *get_sha1* (default: false): Get a sha1 signature instead of the full answer. Optional.
-   - *with_components*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
-   - *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
-   - *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
-   - *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
-   - *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
-   - *with_infocoms*: Retrieve financial and administrative informations. Optional.
-   - *with_contracts*: Retrieve associated contracts. Optional.
-   - *with_documents*: Retrieve associated external documents. Optional.
-   - *with_tickets*: Retrieve associated itil tickets. Optional.
-   - *with_problems*: Retrieve associated itil problems. Optional.
-   - *with_changes*: Retrieve associated itil changes. Optional.
-   - *with_notes*: Retrieve Notes. Optional.
-   - *with_logs*: Retrieve historical. Optional.
-* **Returns**
-   - 200 (OK) with item data (Last-Modified header should contain the date of last modification of the item).
-   - 401 (UNAUTHORIZED).
-   - 404 (NOT FOUND).
+              * itemtype
+              * items_id
+  * *expand_dropdowns* (default: false): show dropdown name instead of id. Optional.
+  * *get_hateoas* (default: true): Show relations of the item in a links attribute. Optional.
+  * *get_sha1* (default: false): Get a sha1 signature instead of the full answer. Optional.
+  * *with_components*: Only for [Computer, NetworkEquipment, Peripheral, Phone, Printer], retrieve the associated components. Optional.
+  * *with_disks*: Only for Computer, retrieve the associated file-systems. Optional.
+  * *with_softwares*: Only for Computer, retrieve the associated software's installations. Optional.
+  * *with_connections*: Only for Computer, retrieve the associated direct connections (like peripherals and printers) .Optional.
+  * *with_networkports*: Retrieve all network's connections and advanced network's informations. Optional.
+  * *with_infocoms*: Retrieve financial and administrative informations. Optional.
+  * *with_contracts*: Retrieve associated contracts. Optional.
+  * *with_documents*: Retrieve associated external documents. Optional.
+  * *with_tickets*: Retrieve associated itil tickets. Optional.
+  * *with_problems*: Retrieve associated itil problems. Optional.
+  * *with_changes*: Retrieve associated itil changes. Optional.
+  * *with_notes*: Retrieve Notes. Optional.
+  * *with_logs*: Retrieve historical. Optional.
+* **Returns**:
+  * 200 (OK) with item data (Last-Modified header should contain the date of last modification of the item).
+  * 401 (UNAUTHORIZED).
+  * 404 (NOT FOUND).
 
 Example usage (CURL):
 
@@ -752,20 +741,19 @@ $ curl -X GET \
 }]
 ```
 
-
 ## List searchOptions
 
 * **URL**: [apirest.php/listSearchOptions/:itemtype](listSearchOptions/Computer?debug)
-* **Description**: List the searchoptions of provided itemtype. To use with [Search items](#search_items)
+* **Description**: List the searchoptions of provided itemtype. To use with [Search items](#search_items).
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Parameters (query string)**
-   - *raw*: return searchoption uncleaned (as provided by core)
-* **Returns**
-   - 200 (OK) with all searchoptions of specified itemtype (format: searchoption_id: {option_content}).
-   - 401 (UNAUTHORIZED).
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Parameters**: (query string)
+  * *raw*: return searchoption uncleaned (as provided by core)
+* **Returns**:
+  * 200 (OK) with all searchoptions of specified itemtype (format: searchoption_id: {option_content}).
+  * 401 (UNAUTHORIZED).
 
 Example usage (CURL):
 
@@ -807,24 +795,22 @@ $ curl -X GET \
 }
 ```
 
-
-
 ## Search items
 
 * **URL**: [apirest.php/search/:itemtype/](search/Computer/?debug)
-* **Description**: Expose the GLPI searchEngine and combine criteria to retrieve a list of elements of specified itemtype.  
-Note: you can use 'AllAssets' itemtype to retrieve a combination of all asset's types.
+* **Description**: Expose the GLPi searchEngine and combine criteria to retrieve a list of elements of specified itemtype.
+  > Note: you can use 'AllAssets' itemtype to retrieve a combination of all asset's types.
 * **Method**: GET
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Parameters (query string)**
-   - *criteria*: array of criterion objects to filter search. Optional.  
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Parameters**: (query string)
+  * *criteria*: array of criterion objects to filter search. Optional.
       Each criterion object must provide:
-         - *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
-         - *field*: id of the searchoption.
-         - *searchtype*: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
-         - *value*: the value to search.
+        * *link*: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
+        * *field*: id of the searchoption.
+        * *searchtype*: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+        * *value*: the value to search.
 
       Ex:
 
@@ -846,14 +832,14 @@ Note: you can use 'AllAssets' itemtype to retrieve a combination of all asset's 
          ...
          ```
 
-   - *metacriteria* (optional): array of meta-criterion objects to filter search. Optional.  
-                                 A meta search is a link with another itemtype (ex: Computer with softwares).  
+  * *metacriteria* (optional): array of meta-criterion objects to filter search. Optional.
+                                 A meta search is a link with another itemtype (ex: Computer with softwares).
       Each meta-criterion object must provide:
-         - *link*: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory.
-         - *itemtype*: second itemtype to link.
-         - *field*: id of the searchoption.
-         - *searchtype*: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
-         - *value*: the value to search.
+        * *link*: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory.
+        * *itemtype*: second itemtype to link.
+        * *field*: id of the searchoption.
+        * *searchtype*: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+        * *value*: the value to search.
 
       Ex:
 
@@ -878,21 +864,21 @@ Note: you can use 'AllAssets' itemtype to retrieve a combination of all asset's 
          ...
          ```
 
-   - *sort* (default 1): id of the searchoption to sort by. Optional.
-   - *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
-   - *range* (default 0-50): a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-200.
+  * *sort* (default 1): id of the searchoption to sort by. Optional.
+  * *order* (default ASC): ASC - Ascending sort / DESC Descending sort. Optional.
+  * *range* (default 0-50): a string with a couple of number for start and end of pagination separated by a '-'. Ex: 150-200.
                              Optional.
-   - *forcedisplay*: array of columns to display (default empty = use display preferences and searched criteria).
+  * *forcedisplay*: array of columns to display (default empty = use display preferences and searched criteria).
                      Some columns will be always presents (1: id, 2: name, 80: Entity).
                      Optional.
-   - *rawdata* (default false): a boolean for displaying raws data of the Search engine of glpi (like SQL request, full searchoptions, etc)
-   - *withindexes* (default false): a boolean to retrieve rows indexed by items id.  
-   By default this option is set to false, because order of json objects (which are identified by index) cannot be garrantued  (from http://json.org/ : An object is an unordered set of name/value pairs).  
+  * *rawdata* (default false): a boolean for displaying raws data of the Search engine of glpi (like SQL request, full searchoptions, etc)
+  * *withindexes* (default false): a boolean to retrieve rows indexed by items id.
+   By default this option is set to false, because order of json objects (which are identified by index) cannot be garrantued  (from <http://json.org/> : An object is an unordered set of name/value pairs).
    So, we provide arrays to guarantying sorted rows.
-   - *uid_cols* (default false): a boolean to identify cols by the 'uniqid' of the searchoptions instead of a numeric value (see [List searchOptions](#list-searchoptions) and 'uid' field)
-   - *giveItems* (default false): a boolean to retrieve the data with the html parsed from core, new data are provided in data_html key.
-* **Returns**
-   - 200 (OK) with all rows data with this format:
+  * *uid_cols* (default false): a boolean to identify cols by the 'uniqid' of the searchoptions instead of a numeric value (see [List searchOptions](#list-searchoptions) and 'uid' field)
+  * *giveItems* (default false): a boolean to retrieve the data with the html parsed from core, new data are provided in data_html key.
+* **Returns**:
+  * 200 (OK) with all rows data with this format:
 
    ```javascript
       {
@@ -913,8 +899,8 @@ Note: you can use 'AllAssets' itemtype to retrieve a combination of all asset's 
       }
    ```
 
-   - 206 (PARTIAL CONTENT) with rows data (pagination doesn't permit to display all rows).
-   - 401 (UNAUTHORIZED).
+  * 206 (PARTIAL CONTENT) with rows data (pagination doesn't permit to display all rows).
+  * 401 (UNAUTHORIZED).
 
    and theses headers:
       * *Content-Range* offset – limit / count
@@ -946,33 +932,32 @@ criteria\[0\]\[link\]\=AND\
 < {"totalcount":2,"count":2,"data":{"11":{"1":"W2242","80":"Root Entity","23":"GSM"},"7":{"1":"W2252","80":"Root Entity","23":"GSM"}}}%
 ```
 
-
 ## Add item(s)
 
 * **URL**: apirest.php/:itemtype/
-* **Description**: Add an object (or multiple objects) into GLPI.
+* **Description**: Add an object (or multiple objects) into GLPi.
 * **Method**: POST
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Parameters (JSON Payload)**
-   - *input*: an object with fields of itemtype to be inserted.  
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Parameters**: (JSON Payload)
+  * *input*: an object with fields of itemtype to be inserted.
               You can add several items in one action by passing an array of objects.
               Mandatory.
 
    **Important:**
       In case of 'multipart/data' content_type (aka file upload), you should insert your parameters into
-      a 'uploadManifest' parameter.  
+      a 'uploadManifest' parameter.
       Theses serialized data should be a json string.
 
-* **Returns**
-   - 201 (OK) with id of added items.
-   - 207 (Multi-Status) with id of added items and errors.
-   - 400 (Bad Request) with a message indicating an error in input parameter.
-   - 401 (UNAUTHORIZED).
-   - And additional header can be provided on creation success:
-      - Location when adding a single item.
-      - Link on bulk addition.
+* **Returns**:
+  * 201 (OK) with id of added items.
+  * 207 (Multi-Status) with id of added items and errors.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
+  * And additional header can be provided on creation success:
+    * Location when adding a single item.
+    * Link on bulk addition.
 
 Examples usage (CURL):
 
@@ -1001,26 +986,24 @@ $ curl -X POST \
 < [ {"id":8}, {"id":false}, {"id":9} ]
 ```
 
-
-
 ## Update item(s)
 
-* **URL**: apirest.php/:itemtype/(:id)
-* **Description**: update an object (or multiple objects) existing in GLPI.
+* **URL**: apirest.php/:itemtype/:id
+* **Description**: Update an object (or multiple objects) existing in GLPi.
 * **Method**: PUT
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Parameters (JSON Payload)**
-   - *id*: the unique identifier of the itemtype passed in URL. You **could skip** this parameter by passing it in the input payload.
-   - *input*: Array of objects with fields of itemtype to be updated.
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Parameters**: (JSON Payload)
+  * *id*: the unique identifier of the itemtype passed in URL. You **could skip** this parameter by passing it in the input payload.
+  * *input*: Array of objects with fields of itemtype to be updated.
                Mandatory.
                You **could provide** in each object a key named 'id' to identify the item(s) to update.
-* **Returns**
-   - 200 (OK) with update status for each item.
-   - 207 (Multi-Status) with id of added items and errors.
-   - 400 (Bad Request) with a message indicating an error in input parameter.
-   - 401 (UNAUTHORIZED).
+* **Returns**:
+  * 200 (OK) with update status for each item.
+  * 207 (Multi-Status) with id of added items and errors.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
 
 Example usage (CURL):
 
@@ -1058,33 +1041,31 @@ $ curl -X PUT \
 [{"8":true},{"2":true}]
 ```
 
-
-
 ## Delete item(s)
 
-* **URL**: apirest.php/:itemtype/(:id)
-* **Description**: delete an object existing in GLPI
+* **URL**: apirest.php/:itemtype/:id
+* **Description**: Delete an object existing in GLPi.
 * **Method**: DELETE
-* **Parameters (Headers)**
-   - *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
-   - *App-token*: authorization string provided by the GLPI api configuration. Optional.
-* **Parameters (query string)**
-   - *id*: unique identifier of the itemtype passed in the URL. You **could skip** this parameter by passing it in the input payload.
+* **Parameters**: (Headers)
+  * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
+  * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
+* **Parameters**: (query string)
+  * *id*: unique identifier of the itemtype passed in the URL. You **could skip** this parameter by passing it in the input payload.
       OR
-   - *input* Array of id who need to be deleted. This parameter is passed by payload.
+  * *input* Array of id who need to be deleted. This parameter is passed by payload.
 
    id parameter has precedence over input payload.
 
-   - *force_purge* (default false): boolean, if the itemtype have a dustbin, you can force purge (delete finally).
+  * *force_purge* (default false): boolean, if the itemtype have a dustbin, you can force purge (delete finally).
                      Optional.
-   - *history* (default true): boolean, set to false to disable saving of deletion in global history.
+  * *history* (default true): boolean, set to false to disable saving of deletion in global history.
                  Optional.
-* **Returns**
-   - 200 (OK) *in case of multiple deletion*.
-   - 204 (No Content) *in case of single deletion*.
-   - 207 (Multi-Status) with id of deleted items and errors.
-   - 400 (Bad Request) with a message indicating an error in input parameter.
-   - 401 (UNAUTHORIZED).
+* **Returns**:
+  * 200 (OK) *in case of multiple deletion*.
+  * 204 (No Content) *in case of single deletion*.
+  * 207 (Multi-Status) with id of deleted items and errors.
+  * 400 (Bad Request) with a message indicating an error in input parameter.
+  * 401 (UNAUTHORIZED).
 
 Example usage (CURL):
 
@@ -1120,151 +1101,126 @@ $ curl -X DELETE \
 [{"16":true},{"17":false}]
 ```
 
-
-
 ## Errors
-
 
 ### ERROR_ITEM_NOT_FOUND
 
-The desired resource (itemtype-id) was not found in the GLPI database.
-
+The desired resource (itemtype-id) was not found in the GLPi database.
 
 ### ERROR_BAD_ARRAY
 
 The HTTP body must be an an array of objects.
 
-
 ### ERROR_METHOD_NOT_ALLOWED
 
 You specified an inexistent or not not allowed resource.
 
-
 ### ERROR_RIGHT_MISSING
 
-The current logged user miss rights in his profile to do the provided action.  
-Alter this profile or choose a new one for the user in GLPI main interface.
-
+The current logged user miss rights in his profile to do the provided action.
+Alter this profile or choose a new one for the user in GLPi main interface.
 
 ### ERROR_SESSION_TOKEN_INVALID
 
-The Session-Token provided in header is invalid.  
+The Session-Token provided in header is invalid.
 You should redo an [Init session](#init-session) request.
-
 
 ### ERROR_SESSION_TOKEN_MISSING
 
 You miss to provide Session-Token in header of your HTTP request.
 
-
 ### ERROR_APP_TOKEN_PARAMETERS_MISSING
 
 The current API requires an App-Token header for using its methods.
-
 
 ### ERROR_NOT_DELETED
 
 You must mark the item for deletion before actually deleting it
 
-
 ### ERROR_NOT_ALLOWED_IP
 
-We can't find an active client defined in configuration for your IP.  
-Go to the GLPI Configuration > Setup menu and API tab to check IP access.
-
+We can't find an active client defined in configuration for your IP.
+Go to the GLPi Configuration > Setup menu and API tab to check IP access.
 
 ### ERROR_LOGIN_PARAMETERS_MISSING
 
 One of theses parameter(s) is missing:
+
 * login and password
 * or user_token
 
-
 ### ERROR_LOGIN_WITH_CREDENTIALS_DISABLED
 
-The GLPI setup forbid the login with credentials, you must login with your user_token instead.
-See your personal preferences page or setup API access in GLPI main interface.
-
+The GLPi setup forbid the login with credentials, you must login with your user_token instead.
+See your personal preferences page or setup API access in GLPi main interface.
 
 ### ERROR_GLPI_LOGIN_USER_TOKEN
 
-The provided user_token seems invalid.  
-Check your personal preferences page in GLPI main interface.
-
+The provided user_token seems invalid.
+Check your personal preferences page in GLPi main interface.
 
 ### ERROR_GLPI_LOGIN
 
-We cannot login you into GLPI. This error is not relative to API but GLPI core.  
-Check the user administration and the GLPI logs files (in files/_logs directory).
-
+We cannot login you into GLPi. This error is not relative to API but GLPi core.
+Check the user administration and the GLPi logs files (in files/_logs directory).
 
 ### ERROR_ITEMTYPE_NOT_FOUND_NOR_COMMONDBTM
 
-You asked a inexistent resource (endpoint). It's not a predefined (initSession, getFullSession, etc) nor a GLPI CommonDBTM resources.
+You asked a inexistent resource (endpoint). It's not a predefined (initSession, getFullSession, etc) nor a GLPi CommonDBTM resources.
 
 See this documentation for predefined ones or [List itemtypes](https://forge.glpi-project.org/embedded/glpi/annotated.html) for available resources
 
-
 ### ERROR_SQL
 
-We suspect an SQL error.  
-This error is not relative to API but to GLPI core.  
-Check the GLPI logs files (in files/_logs directory).
-
+We suspect an SQL error.
+This error is not relative to API but to GLPi core.
+Check the GLPi logs files (in files/_logs directory).
 
 ### ERROR_RANGE_EXCEED_TOTAL
 
 The range parameter you provided is superior to the total count of available data.
 
-
 ### ERROR_GLPI_ADD
 
-We cannot add the object to GLPI. This error is not relative to API but to GLPI core.  
-Check the GLPI logs files (in files/_logs directory).
-
+We cannot add the object to GLPi. This error is not relative to API but to GLPi core.
+Check the GLPi logs files (in files/_logs directory).
 
 ### ERROR_GLPI_PARTIAL_ADD
 
-Some of the object you wanted to add triggers an error.  
-Maybe a missing field or rights.  
+Some of the object you wanted to add triggers an error.
+Maybe a missing field or rights.
 You'll find with this error a collection of results.
-
 
 ### ERROR_GLPI_UPDATE
 
-We cannot update the object to GLPI. This error is not relative to API but to GLPI core.  
-Check the GLPI logs files (in files/_logs directory).
-
+We cannot update the object to GLPi. This error is not relative to API but to GLPi core.
+Check the GLPi logs files (in files/_logs directory).
 
 ### ERROR_GLPI_PARTIAL_UPDATE
 
-Some of the object you wanted to update triggers an error.  
-Maybe a missing field or rights.  
+Some of the object you wanted to update triggers an error.
+Maybe a missing field or rights.
 You'll find with this error a collection of results.
-
 
 ### ERROR_GLPI_DELETE
 
-We cannot delete the object to GLPI. This error is not relative to API but to GLPI core.  
-Check the GLPI logs files (in files/_logs directory).
-
+We cannot delete the object to GLPi. This error is not relative to API but to GLPi core.
+Check the GLPi logs files (in files/_logs directory).
 
 ### ERROR_GLPI_PARTIAL_DELETE
 
-Some of the objects you want to delete triggers an error, maybe a missing field or rights.  
+Some of the objects you want to delete triggers an error, maybe a missing field or rights.
 You'll find with this error, a collection of results.
-
-
 
 ## Servers configuration
 
-By default, you can use http://path/to/glpi/apirest.php without any additional configuration.
+By default, you can use <http://path/to/glpi/apirest.php> without any additional configuration.
 
-You'll find below some examples to configure your web server to redirect your http://.../glpi/api/ url to the apirest.php file.
+You'll find below some examples to configure your web server to redirect your <http://.../glpi/api/> url to the apirest.php file.
 
 ### Apache Httpd
 
-We provide in root .htaccess of glpi an example to enable api url rewriting.
+We provide in root .htaccess of GLPi an example to enable api url rewriting.
 
 You need to uncomment (removing #) theses lines:
 
@@ -1277,9 +1233,8 @@ You need to uncomment (removing #) theses lines:
 #</IfModule>
 ```
 
-By enabling url rewriting, you could use api with this url : http://path/to/glpi/api/.
-You need also to enable rewrite module in apache httpd and permit glpi's .htaccess to override server configuration (see AllowOverride directive).
-
+By enabling url rewriting, you could use api with this url : <http://path/to/glpi/api/>.
+You need also to enable rewrite module in apache httpd and permit GLPi's .htaccess to override server configuration (see AllowOverride directive).
 
 ### Nginx
 
@@ -1290,7 +1245,7 @@ server {
    listen 80 default_server;
    listen [::]:80 default_server;
 
-   # change here to match your glpi directory
+   # change here to match your GLPi directory
    root /var/www/html/glpi/;
 
    index index.html index.htm index.nginx-debian.html index.php;

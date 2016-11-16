@@ -193,7 +193,7 @@ class APIRest extends API {
                   $response = $this->getItem($itemtype, $id, $this->parameters);
                   if (isset($response['date_mod'])) {
                      $datemod = strtotime($response['date_mod']);
-                     $additionalheaders['Last-Modified'] = date('r', $datemod);
+                     $additionalheaders['Last-Modified'] = gmdate("D, d M Y H:i:s", $datemod)." GMT";
                   }
                } else {
                   // return collection of items
@@ -293,6 +293,7 @@ class APIRest extends API {
                $this->parameters['parent_itemtype'] = $itemtype;
                $itemtype                            = $additional_itemtype;
             }
+            $itemtype = ucfirst($itemtype);
             return $itemtype;
          }
          $this->returnError(__("resource not found or not an instance of CommonDBTM"),

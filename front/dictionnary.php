@@ -135,4 +135,3 @@ echo "</table></td></tr>";
 
 echo "</table></div>";
 Html::footer();
-?>

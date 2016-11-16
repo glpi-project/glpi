@@ -87,4 +87,3 @@ if (!isCommandLine()) {
    // Default from configuration
    CronTask::launch(CronTask::MODE_EXTERNAL, $CFG_GLPI['cron_limit']);
 }
-?>

@@ -66,4 +66,3 @@ if (isset($_GET["itemtype"])) {
 
    Html::footer();
 }
-?>

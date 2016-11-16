@@ -40,4 +40,3 @@ include ('../inc/includes.php');
 $rulecollection = new RuleDictionnaryOperatingSystemArchitectureCollection();
 
 include (GLPI_ROOT . "/front/rule.common.php");
-?>

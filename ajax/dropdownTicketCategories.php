@@ -73,4 +73,3 @@ if ($_POST["type"]) {
 }
 
 ItilCategory::dropdown($opt);
-?>

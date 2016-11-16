@@ -70,7 +70,7 @@ abstract class CommonITILCost extends CommonDBChild {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable($this->getTable(),
-                                       "`".$item->getForeignKeyField()."` = '".$item->getID()."'");
+                                       [$item->getForeignKeyField() => $item->getID()]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }

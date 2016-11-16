@@ -156,4 +156,3 @@ if ($DB->numrows($result)) {
 $ret['count']   = $count;
 $ret['results'] = $datas;
 echo json_encode($ret);
-?>

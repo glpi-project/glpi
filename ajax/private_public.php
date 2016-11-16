@@ -77,4 +77,3 @@ if (isset($_POST['is_private'])) {
          break;
    }
 }
-?>
