@@ -1665,7 +1665,7 @@ abstract class API extends CommonGLPI {
                   $params['force_purge'] = 1;
                } else {
                   if (isset($params['force_purge'])
-                        && ($params['force_purge'] === true || $params['force_purge'] == "true")) {
+                        && ($params['force_purge'] === true || strtolower($params['force_purge']) == "true")) {
                      $params['force_purge'] = 1;
                   } else {
                      $params['force_purge'] = 0;
@@ -1718,7 +1718,7 @@ abstract class API extends CommonGLPI {
             $params['force_purge'] = 1;
          } else {
             if (isset($params['force_purge'])
-                  && ($params['force_purge'] === true || $params['force_purge'] == "true")) {
+                  && ($params['force_purge'] === true || strtolower($params['force_purge']) == "true")) {
                $params['force_purge'] = 1;
             } else {
                $params['force_purge'] = 0;
