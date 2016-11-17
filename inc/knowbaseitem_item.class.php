@@ -69,9 +69,20 @@ class KnowbaseItem_Item extends CommonDBRelation {
       if (!$withtemplate) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = countElementsInTable('glpi_knowbaseitems_items',
-                                       ['knowbaseitems_id' => $item->getID()]);
-
+            if ($item->getType() == KnowbaseItem::getType()) {
+               $nb = countElementsInTable(
+                  'glpi_knowbaseitems_items',
+                  ['knowbaseitems_id' => $item->getID()]
+               );
+            } else {
+               $nb = countElementsInTable(
+                  'glpi_knowbaseitems_items',
+                  [
+                     'itemtype' => $item::getType(),
+                     'items_id' => $item->getId()
+                  ]
+               );
+            }
          }
 
          $type_name = null;
@@ -190,7 +201,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
     *
     * @return array of linked items
    **/
-   static function getItems(CommonDBTM $item, $id_field = null, $start=0, $limit=0, $sqlfilter='') {
+   static function getItems(CommonDBTM $item, $start=0, $limit=0, $sqlfilter='') {
       global $DB;
 
       $itemtype  = $item->getType();
