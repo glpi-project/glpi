@@ -244,6 +244,8 @@ class Config extends CommonDBTM {
          if ($fields['context'] == 'core'
             && in_array($fields['name'], self::$undisclosedFields)) {
             unset($fields['value']);
+         } else {
+            $fields = Plugin::doHookFunction('undiscloseConfigValue', $fields);
          }
       }
    }
