@@ -7667,7 +7667,7 @@ CREATE TABLE `glpi_wifinetworks` (
 
 ### Dump table glpi_knowbaseitems_items
 
-DROP TABLE IF EXISTS `glpi_knowbaseitems_items`
+DROP TABLE IF EXISTS `glpi_knowbaseitems_items`;
 CREATE TABLE `glpi_knowbaseitems_items` (
   `knowbaseitems_id` int(11) NOT NULL,
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
