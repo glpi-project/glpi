@@ -708,6 +708,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
 
       return $ong;
    }

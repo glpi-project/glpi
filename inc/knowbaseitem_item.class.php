@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- *  Class KnowbaseItemItem
+ *  Class KnowbaseItem_Item
  *
  *  @author Johan Cwiklinski <jcwiklinski@teclib.com>
  *
@@ -62,7 +62,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
    static $rightname          = 'knowbaseitem';
 
    static function getTypeName($nb=0) {
-      return _n('Linked item', 'Linked items', $nb);
+      return _n('Knowledge base item', 'Knowledge base items', $nb);
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
@@ -73,7 +73,15 @@ class KnowbaseItem_Item extends CommonDBRelation {
                                        ['knowbaseitems_id' => $item->getID()]);
 
          }
-         return self::createTabEntry(self::getTypeName($nb), $nb);
+
+         $type_name = null;
+         if ($item->getType() == KnowbaseItem::getType()) {
+            $type_name = _n('Linked item', 'Linked items', $nb);
+         } else {
+            $type_name = self::getTypeName($nb);
+         }
+
+         return self::createTabEntry($type_name, $nb);
       }
       return '';
    }
@@ -93,7 +101,8 @@ class KnowbaseItem_Item extends CommonDBRelation {
    static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB;
 
-      $item_id = $item->getField('id');
+      $item_id = $item->getID();
+      $item_type = $item::getType();
 
       if (isset($_GET["start"])) {
          $start = intval($_GET["start"]);
@@ -102,20 +111,39 @@ class KnowbaseItem_Item extends CommonDBRelation {
       }
 
       // Total Number of events
-      $number = countElementsInTable("glpi_knowbaseitems_items", ['knowbaseitems_id' => $item_id]);
+      if ($item_type == KnowbaseItem::getType()) {
+         $number = countElementsInTable("glpi_knowbaseitems_items", ['knowbaseitems_id' => $item_id]);
+      } else {
+         $number = countElementsInTable(
+            'glpi_knowbaseitems_items',
+            [
+               'itemtype' => $item::getType(),
+               'items_id' => $item_id
+            ]
+         );
+      }
 
       // No Events in database
       if ($number < 1) {
+         $no_txt = ($item_type == KnowbaseItem::getType()) ?
+            __('No linked items') :
+            __('No knowledge base entries linked');
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".__('No linked items')."</th></tr>";
+         echo "<tr><th>$no_txt</th></tr>";
          echo "</table>";
          echo "</div><br>";
          return;
       }
 
       // Display the pager
-      Html::printAjaxPager(self::getTypeName(1), $start, $number);
+      $type_name = null;
+      if ($item->getType() == KnowbaseItem::getType()) {
+         $type_name = _n('Linked item', 'Linked items', 1);
+      } else {
+         $type_name = self::getTypeName(1);
+      }
+      Html::printAjaxPager($type_name, $start, $number);
 
       // Output events
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
@@ -149,7 +177,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
       }
       echo $header;
       echo "</table></div>";
-      Html::printAjaxPager(self::getTypeName(1), $start, $number);
+      Html::printAjaxPager($type_name, $start, $number);
    }
 
    /**
@@ -162,18 +190,22 @@ class KnowbaseItem_Item extends CommonDBRelation {
     *
     * @return array of linked items
    **/
-   static function getItems(CommonDBTM $item, $start=0, $limit=0, $sqlfilter='') {
+   static function getItems(CommonDBTM $item, $id_field = null, $start=0, $limit=0, $sqlfilter='') {
       global $DB;
 
       $itemtype  = $item->getType();
       $items_id  = $item->getField('id');
       $itemtable = $item->getTable();
 
-      $SEARCHOPTION = Search::getOptions($itemtype);
+      if ($item::getType() == KnowbaseItem::getType()) {
+         $id_field = 'knowbaseitems_id';
+      } else {
+        $id_field = 'items_id';
+      }
 
       $query = "SELECT *
                 FROM `glpi_knowbaseitems_items`
-                WHERE `knowbaseitems_id` = '$items_id' ";
+                WHERE `$id_field` = '$items_id' ";
 
       if ($sqlfilter) {
          $query .= "AND ($sqlfilter) ";
