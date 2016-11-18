@@ -167,23 +167,29 @@ class KnowbaseItem_Item extends CommonDBRelation {
       echo $header;
 
       foreach (self::getItems($item, $start, $_SESSION['glpilist_limit']) as $data) {
-         $linked_item = getItemForItemtype($data['itemtype']);
-         $linked_item->getFromDB($data['items_id']);
+         $linked_item = null;
+         if ($item->getType() == KnowbaseItem::getType()) {
+            $linked_item = getItemForItemtype($data['itemtype']);
+            $linked_item->getFromDB($data['items_id']);
+         } else {
+            $linked_item = getItemForItemtype(KnowbaseItem::getType());
+            $linked_item->getFromDB($data['knowbaseitems_id']);
+         }
 
          $name = $linked_item->fields['name'];
          if ($_SESSION["glpiis_ids_visible"]
-            || empty($data["name"])) {
-            $name = sprintf(__('%1$s (%2$s)'), $name, $data["items_id"]);
+            || empty($name)) {
+            $name = sprintf(__('%1$s (%2$s)'), $name, $linked_item->getID());
          }
 
-         $link = $linked_item::getFormURLWithID($data['items_id']);
+         $link = $linked_item::getFormURLWithID($linked_item->getID());
 
          // show line
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . $linked_item->getTypeName(1) . "</td>" .
                  "<td><a href=\"" . $link . "\">" . $name . "</a></td>".
-                 "<td class='tab_date'>".$data['date_creation']."</td>".
-                 "<td class='tab_date'>".$data['date_mod']."</td>";
+                 "<td class='tab_date'>".$linked_item->fields['date_creation']."</td>".
+                 "<td class='tab_date'>".$linked_item->fields['date_mod']."</td>";
          echo "</tr>";
       }
       echo $header;

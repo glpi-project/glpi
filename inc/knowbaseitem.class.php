@@ -301,8 +301,8 @@ class KnowbaseItem extends CommonDBTM {
       // Profile / entities
       $this->profiles = KnowbaseItem_Profile::getProfiles($this->fields['id']);
 
-      //Linked items
-      $this->linked_items = KnowbaseItem_Item::getItems($this);
+      //Linked kb items
+      $this->knowbase_items = KnowbaseItem_Item::getItems($this);
    }
 
 
