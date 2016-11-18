@@ -50,16 +50,12 @@ class KnowbaseItem_Item extends CommonDBRelation {
    // From CommonDBRelation
    static public $itemtype_1          = 'KnowbaseItem';
    static public $items_id_1          = 'knowbaseitems_id';
-   static public $itemtype_2          = 'Ticket';
-   static public $items_id_2          = 'ticket_id';
-
-   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
-   static public $logs_for_item_2     = false;
+   static public $itemtype_2          = 'itemtype';
+   static public $items_id_2          = 'items_id';
+   static public $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
    // From CommonDBTM
    public $dohistory          = true;
-
-   static $rightname          = 'knowbaseitem';
 
    static function getTypeName($nb=0) {
       return _n('Knowledge base item', 'Knowledge base items', $nb);
@@ -124,6 +120,24 @@ class KnowbaseItem_Item extends CommonDBRelation {
       // Total Number of events
       if ($item_type == KnowbaseItem::getType()) {
          $number = countElementsInTable("glpi_knowbaseitems_items", ['knowbaseitems_id' => $item_id]);
+         echo '<form method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
+         echo "<div class='center'>";
+         echo "<table class=\"tab_cadre_fixe\">";
+         echo "<tr><th colspan=\"2\">" . __('Add a linked item') . "</th><tr>";
+         echo "<tr><td>";
+         $rand = self::dropdownAllTypes($item, 'items_id');
+         echo "</td><td>";
+         echo "<input type=\"submit\" name=\"add\" value=\""._sx('button', 'Add')."\" class=\"submit\">";
+         echo "</td></tr>";
+         echo "</table>";
+         if ($item::getType() == KnowbaseItem::getType()) {
+            echo '<input type="hidden" name="knowbaseitems_id" value="' . $item->getID() . '">';
+         } else {
+           echo '<input type="hidden" name="itemtype" value="' . $item::getType() . '">';
+           echo '<input type="hidden" name="items_id" value="' . $item->getID() . '">';
+         }
+         echo "</div>";
+         Html::closeForm();
       } else {
          $number = countElementsInTable(
             'glpi_knowbaseitems_items',
@@ -143,7 +157,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>$no_txt</th></tr>";
          echo "</table>";
-         echo "</div><br>";
+         echo "</div>";
          return;
       }
 
@@ -195,6 +209,34 @@ class KnowbaseItem_Item extends CommonDBRelation {
       echo $header;
       echo "</table></div>";
       Html::printAjaxPager($type_name, $start, $number);
+   }
+
+   /**
+    * Displays linked dropdowns to add linked items
+    *
+    * @param CommonDBTM $item Item instance
+    * @param string     $name Field name
+    *
+    * @return string
+    */
+   static function dropdownAllTypes(CommonDBTM $item, $name) {
+      global $CFG_GLPI;
+
+      $onlyglobal = 0;
+      $entity_restrict = -1;
+      $checkright = true;
+
+      $rand = Dropdown::showAllItems(
+         $name,                 //select/@name
+         0,
+         0,
+         $entity_restrict,      //entity restriction
+         $CFG_GLPI['kb_types'], //types list
+         $onlyglobal,
+         $checkright            //checkright
+      );
+
+      return $rand;
    }
 
    /**
