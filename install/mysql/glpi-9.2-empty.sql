@@ -7669,11 +7669,13 @@ CREATE TABLE `glpi_wifinetworks` (
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems_items`;
 CREATE TABLE `glpi_knowbaseitems_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `knowbaseitems_id` int(11) NOT NULL,
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `items_id` int(11) NOT NULL DEFAULT '0',
   `date_creation` datetime DEFAULT NULL,
   `date_mod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`knowbaseitems_id`),
   KEY `itemtype` (`itemtype`),
   KEY `item_id` (`items_id`),
