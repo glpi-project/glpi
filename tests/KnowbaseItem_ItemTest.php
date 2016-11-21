@@ -34,19 +34,6 @@ along with GLPI. If not, see <http://www.gnu.org/licenses/>.
 
 class KnowbaseItem_ItemTest extends DbTestCase {
 
-   /*protected function setUp() {
-      global $DB;
-
-      parent::setUp();
-
-   }
-
-
-   protected function tearDown() {
-      parent::tearDown();
-      //
-   }*/
-
    /**
     * @covers KnowbaseItem_Item::getTypeName()
     */

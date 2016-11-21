@@ -256,20 +256,34 @@ class KnowbaseItem_Item extends CommonDBRelation {
       $items_id  = $item->getField('id');
       $itemtable = $item->getTable();
 
+      $query = "SELECT *
+                FROM `glpi_knowbaseitems_items` as `kb_linked`
+                INNER JOIN `glpi_knowbaseitems`
+                   ON `kb_linked`.`knowbaseitems_id`=`glpi_knowbaseitems`.`id` ";
+
       if ($item::getType() == KnowbaseItem::getType()) {
          $id_field = 'knowbaseitems_id';
+         $query .= KnowbaseItem::addvisibilityjoins() . ' WHERE ' .
+            KnowbaseItem::addVisibilityRestrict();
       } else {
-        $id_field = 'items_id';
+         $id_field = 'items_id';
+         $restrict = getEntitiesRestrictRequest(
+            'AND',
+            self::getTable(),
+            '',
+            '',
+            true
+        );
+        if ($restrict !== '') {
+           $query .= ' WHERE ' . $restrict;
+        }
       }
-
-      $query = "SELECT *
-                FROM `glpi_knowbaseitems_items`
-                WHERE `$id_field` = '$items_id' ";
+      $query .= " AND `kb_linked`.`$id_field` = '$items_id'";
 
       if ($sqlfilter) {
-         $query .= "AND ($sqlfilter) ";
+         $query .= " AND ($sqlfilter) ";
       }
-      $query .= "ORDER BY `itemtype`, `items_id` DESC";
+      $query .= " ORDER BY `itemtype`, `items_id` DESC";
 
       if ($limit) {
          $query .= " LIMIT ".intval($start)."," . intval($limit);
