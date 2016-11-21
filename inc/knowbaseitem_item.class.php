@@ -117,27 +117,11 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $start = 0;
       }
 
+      $canedit = $item->can($ID, UPDATE);
+
       // Total Number of events
       if ($item_type == KnowbaseItem::getType()) {
          $number = countElementsInTable("glpi_knowbaseitems_items", ['knowbaseitems_id' => $item_id]);
-         echo '<form method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
-         echo "<div class='center'>";
-         echo "<table class=\"tab_cadre_fixe\">";
-         echo "<tr><th colspan=\"2\">" . __('Add a linked item') . "</th><tr>";
-         echo "<tr><td>";
-         $rand = self::dropdownAllTypes($item, 'items_id');
-         echo "</td><td>";
-         echo "<input type=\"submit\" name=\"add\" value=\""._sx('button', 'Add')."\" class=\"submit\">";
-         echo "</td></tr>";
-         echo "</table>";
-         if ($item::getType() == KnowbaseItem::getType()) {
-            echo '<input type="hidden" name="knowbaseitems_id" value="' . $item->getID() . '">';
-         } else {
-           echo '<input type="hidden" name="itemtype" value="' . $item::getType() . '">';
-           echo '<input type="hidden" name="items_id" value="' . $item->getID() . '">';
-         }
-         echo "</div>";
-         Html::closeForm();
       } else {
          $number = countElementsInTable(
             'glpi_knowbaseitems_items',
@@ -146,6 +130,37 @@ class KnowbaseItem_Item extends CommonDBRelation {
                'items_id' => $item_id
             ]
          );
+      }
+
+      if ($canedit) {
+         echo '<form method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
+         echo "<div class='center'>";
+         echo "<table class=\"tab_cadre_fixe\">";
+         echo "<tr><th colspan=\"2\">";
+         if ($item_type == KnowbaseItem::getType()) {
+            echo  __('Add a linked item');
+         } else {
+            echo __('Link a knowledge base entry');
+         }
+         echo "</th><tr>";
+         echo "<tr><td>";
+         if ($item_type == KnowbaseItem::getType()) {
+            $rand = self::dropdownAllTypes($item, 'items_id');
+         } else {
+            $rand = KnowbaseItem::dropdown(['entity'  => $item->getEntityID()]);
+         }
+         echo "</td><td>";
+         echo "<input type=\"submit\" name=\"add\" value=\""._sx('button', 'Add')."\" class=\"submit\">";
+         echo "</td></tr>";
+         echo "</table>";
+         if ($item_type == KnowbaseItem::getType()) {
+            echo '<input type="hidden" name="knowbaseitems_id" value="' . $item->getID() . '">';
+         } else {
+            echo "<input type=\"hidden\" name=\"items_id\" value=\"" . $item->getID() . "\">";
+            echo "<input type=\"hidden\" name=\"itemtype\" value=\"" . $item::getType() . "\">";
+         }
+         echo "</div>";
+         Html::closeForm();
       }
 
       // No Events in database
