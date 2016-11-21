@@ -187,9 +187,28 @@ class KnowbaseItem_Item extends CommonDBRelation {
       Html::printAjaxPager($type_name, $start, $number);
 
       // Output events
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
+      echo "<div class='center'>";
 
-      $header = "<tr><th>" . __('Type') . "</th>";
+      if ($canedit) {
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
+         $massiveactionparams
+            = array('num_displayed'
+                        => $number,
+                    'specific_actions'
+                        => ['purge' => _x('button', 'Unlink item')],
+                    'container'
+                        => 'mass'.__CLASS__.$rand);
+         Html::showMassiveActions($massiveactionparams);
+      }
+      echo "<table class='tab_cadre_fixehov'>";
+
+      $header = '<tr>';
+
+      if ($canedit) {
+         $header    .= "<th width='10'>".Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand) . "</th>";
+      }
+
+      $header .= "<th>" . __('Type') . "</th>";
       $header .= "<th>".__('Item')."</th>";
       $header .= "<th>".__('Creation date')."</th>";
       $header .= "<th>".__('Update date')."</th>";
@@ -217,6 +236,12 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $createdate = $item::getType() == KnowbaseItem::getType() ? 'date_creation' : 'date';
          // show line
          echo "<tr class='tab_bg_2'>";
+
+         if ($canedit) {
+            echo "<td width='10'>";
+            Html::showMassiveActionCheckBox(__CLASS__, $linked_item->getID());
+            echo "</td>";
+         }
          echo "<td>" . $linked_item->getTypeName(1) . "</td>" .
                  "<td><a href=\"" . $link . "\">" . $name . "</a></td>".
                  "<td class='tab_date'>".$linked_item->fields[$createdate]."</td>".
@@ -224,7 +249,12 @@ class KnowbaseItem_Item extends CommonDBRelation {
          echo "</tr>";
       }
       echo $header;
-      echo "</table></div>";
+      echo "</table>";
+
+      $massiveactionparams['ontop'] = false;
+      Html::showMassiveActions($massiveactionparams);
+
+      echo "</div>";
       Html::printAjaxPager($type_name, $start, $number);
    }
 
@@ -352,5 +382,11 @@ class KnowbaseItem_Item extends CommonDBRelation {
                                   'itemtype'    => $newitemtype,
                                   'items_id'    => $newid));
       }
+   }
+
+   function getSpecificMassiveActions($checkitem=NULL) {
+      $actions = parent::getSpecificMassiveActions($checkitem);
+      $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'unlink'] = _x('button', 'Unlink item');
+      return $actions;
    }
 }
