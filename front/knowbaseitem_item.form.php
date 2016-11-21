@@ -54,12 +54,6 @@ if (isset($_POST["add"])) {
                   sprintf(__('%s adds a link with an knowledge base'), $_SESSION["glpiname"]));
    }
    Html::back();
-} else if (isset($_POST["delete"])) {
-   /*$item_ticket = new Item_Ticket();
-   $deleted = $item_ticket->deleteByCriteria(array('tickets_id' => $_POST['tickets_id'],
-                                                   'items_id'   => $_POST['items_id'],
-                                                   'itemtype'   => $_POST['itemtype']));
-   Html::back();*/
 }
 
 Html::displayErrorAndDie("lost");
