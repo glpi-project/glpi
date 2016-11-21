@@ -291,14 +291,16 @@ class KnowbaseItem_Item extends CommonDBRelation {
       } else {
          $id_field = 'items_id';
          $restrict = getEntitiesRestrictRequest(
-            'AND',
-            self::getTable(),
+            '',
+            $item::getTable(),
             '',
             '',
             true
         );
         if ($restrict !== '') {
-           $query .= ' WHERE ' . $restrict;
+           $query .= ' INNER JOIN `' . $item->getTable() .
+              '` ON `kb_linked`.`items_id`=`' . $item->getTable() . '`.`id`' .
+              ' WHERE ' . $restrict;
         }
       }
       $query .= " AND `kb_linked`.`$id_field` = '$items_id'";
