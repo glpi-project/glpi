@@ -62,39 +62,36 @@ class KnowbaseItem_Item extends CommonDBRelation {
    }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      if (!$withtemplate) {
-         $nb = 0;
-         if ($_SESSION['glpishow_count_on_tabs']) {
-            if ($item->getType() == KnowbaseItem::getType()) {
-               $nb = countElementsInTable(
-                  'glpi_knowbaseitems_items',
-                  ['knowbaseitems_id' => $item->getID()]
-               );
-            } else {
-               $nb = countElementsInTable(
-                  'glpi_knowbaseitems_items',
-                  [
-                     'itemtype' => $item::getType(),
-                     'items_id' => $item->getId()
-                  ]
-               );
-            }
-         }
-
-         $type_name = null;
+      $nb = 0;
+      if ($_SESSION['glpishow_count_on_tabs']) {
          if ($item->getType() == KnowbaseItem::getType()) {
-            $type_name = _n('Linked item', 'Linked items', $nb);
+            $nb = countElementsInTable(
+               'glpi_knowbaseitems_items',
+               ['knowbaseitems_id' => $item->getID()]
+            );
          } else {
-            $type_name = self::getTypeName($nb);
+            $nb = countElementsInTable(
+               'glpi_knowbaseitems_items',
+               [
+                  'itemtype' => $item::getType(),
+                  'items_id' => $item->getId()
+               ]
+            );
          }
-
-         return self::createTabEntry($type_name, $nb);
       }
-      return '';
+
+      $type_name = null;
+      if ($item->getType() == KnowbaseItem::getType()) {
+         $type_name = _n('Linked item', 'Linked items', $nb);
+      } else {
+         $type_name = self::getTypeName($nb);
+      }
+
+      return self::createTabEntry($type_name, $nb);
    }
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      self::showForItem($item);
+      self::showForItem($item, $withtemplate);
       return true;
    }
 
@@ -325,5 +322,33 @@ class KnowbaseItem_Item extends CommonDBRelation {
          }
       }
       return $linked_items;
+   }
+
+   /**
+    * Duplicate KB links from an item template to its clone
+    *
+    * @since version 9.2
+    *
+    * @param $itemtype     itemtype of the item
+    * @param $oldid        ID of the item to clone
+    * @param $newid        ID of the item cloned
+    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
+   **/
+   static function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
+      global $DB;
+
+      if (empty($newitemtype)) {
+         $newitemtype = $itemtype;
+      }
+
+      foreach ($DB->request('glpi_knowbaseitems_items',
+                            array('FIELDS' => 'knowbaseitems_id',
+                                  'WHERE'  => "`items_id` = '$oldid'
+                                                AND `itemtype` = '$itemtype'")) as $data) {
+         $kb_link = new self();
+         $kb_link->add(array('knowbaseitems_id' => $data['knowbaseitems_id'],
+                                  'itemtype'    => $newitemtype,
+                                  'items_id'    => $newid));
+      }
    }
 }

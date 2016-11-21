@@ -135,6 +135,8 @@ class Monitor extends CommonDBTM {
          // ADD Computers
          Computer_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
+         //Add KB links
+         KnowbaseItem_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
       }
 
    }
