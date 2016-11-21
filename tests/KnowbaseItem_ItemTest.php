@@ -152,7 +152,6 @@ class KnowbaseItem_ItemTest extends DbTestCase {
           $this->assertEquals($ticket1->getID(), $kb['items_id']);
        }
 
-
        $computer21 = getItemByTypeName(Computer::getType(), '_test_pc21');
        $kbs = KnowbaseItem_Item::getItems($computer21);
        $this->assertCount(1, $kbs);
@@ -161,6 +160,33 @@ class KnowbaseItem_ItemTest extends DbTestCase {
           $this->assertEquals($computer21->getType(), $kb['itemtype']);
           $this->assertEquals($computer21->getID(), $kb['items_id']);
        }
+
+       //test with entitiesrestriction
+       $_SESSION['glpishowallentities'] = 0;
+
+       $entity = getItemByTypeName(Entity::getType(), '_test_root_entity');
+       $_SESSION['glpiactiveentities_string'] = $entity->getID();
+
+       $ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');
+       $kbs = KnowbaseItem_Item::getItems($ticket3);
+       $this->assertCount(0, $kbs);
+
+       $entity = getItemByTypeName(Entity::getType(), '_test_child_1');
+       $_SESSION['glpiactiveentities_string'] = $entity->getID();
+
+       $ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');
+       $kbs = KnowbaseItem_Item::getItems($ticket3);
+       $this->assertCount(2, $kbs);
+
+       $entity = getItemByTypeName(Entity::getType(), '_test_child_2');
+       $_SESSION['glpiactiveentities_string'] = $entity->getID();
+
+       $ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');
+       $kbs = KnowbaseItem_Item::getItems($ticket3);
+       $this->assertCount(0, $kbs);
+
+       $_SESSION['glpishowallentities'] = 1;
+       unset($_SESSION['glpiactiveentities_string']);
    }
 
    /**

@@ -251,7 +251,8 @@ function loadDataset() {
         [
             'name'           => '_ticket03',
             'content'        => 'Content for ticket _ticket03',
-            'users_id_recipient' => TU_USER
+            'users_id_recipient' => TU_USER,
+            'entities_id'    => '_test_child_1'
         ]
       ], 'TicketTask' => [
          [
@@ -330,7 +331,7 @@ function loadDataset() {
          ],
          [
             'knowbaseitems_id' => '_knowbaseitem02',
-            'entities_id'      => 0
+            'entities_id'      => '_test_child_1'
          ]
       ]
    ];
