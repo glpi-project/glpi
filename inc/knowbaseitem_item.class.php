@@ -117,7 +117,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $start = 0;
       }
 
-      $canedit = $item->can($ID, UPDATE);
+      $canedit = $item->can($item_id, UPDATE);
 
       // Total Number of events
       if ($item_type == KnowbaseItem::getType()) {
@@ -147,7 +147,10 @@ class KnowbaseItem_Item extends CommonDBRelation {
          if ($item_type == KnowbaseItem::getType()) {
             $rand = self::dropdownAllTypes($item, 'items_id');
          } else {
-            $rand = KnowbaseItem::dropdown(['entity'  => $item->getEntityID()]);
+            $rand = KnowbaseItem::dropdown([
+               'entity' => $item->getEntityID(),
+               'used'   => self::getItems($item, 0, 0, '', true)
+            ]);
          }
          echo "</td><td>";
          echo "<input type=\"submit\" name=\"add\" value=\""._sx('button', 'Add')."\" class=\"submit\">";
@@ -213,11 +216,12 @@ class KnowbaseItem_Item extends CommonDBRelation {
 
          $link = $linked_item::getFormURLWithID($linked_item->getID());
 
+         $createdate = $item::getType() == KnowbaseItem::getType() ? 'date_creation' : 'date';
          // show line
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . $linked_item->getTypeName(1) . "</td>" .
                  "<td><a href=\"" . $link . "\">" . $name . "</a></td>".
-                 "<td class='tab_date'>".$linked_item->fields['date_creation']."</td>".
+                 "<td class='tab_date'>".$linked_item->fields[$createdate]."</td>".
                  "<td class='tab_date'>".$linked_item->fields['date_mod']."</td>";
          echo "</tr>";
       }
@@ -257,19 +261,25 @@ class KnowbaseItem_Item extends CommonDBRelation {
    /**
     * Retrieve items for a knowbase item
     *
-    * @param $item                     CommonDBTM object
-    * @param $start        integer     first line to retrieve (default 0)
-    * @param $limit        integer     max number of line to retrive (0 for all) (default 0)
-    * @param $sqlfilter    string      to add an SQL filter (default '')
+    * @param CommonDBTM $item      CommonDBTM object
+    * @param integer    $start     first line to retrieve (default 0)
+    * @param integer    $limit     max number of line to retrive (0 for all) (default 0)
+    * @param string     $sqlfilter to add an SQL filter (default '')
+    * @param boolean    $used      whether to retrieve data for "used" records
     *
     * @return array of linked items
    **/
-   static function getItems(CommonDBTM $item, $start=0, $limit=0, $sqlfilter='') {
+   static function getItems(CommonDBTM $item, $start=0, $limit=0, $sqlfilter='', $used = false) {
       global $DB;
 
       $itemtype  = $item->getType();
       $items_id  = $item->getField('id');
       $itemtable = $item->getTable();
+
+      $select = $used === false ? '*' :
+          $item::getType() === KnowbaseItem::getType() ?
+             '`kb_linked`.`knowbaseitems_id`' :
+             '`kb_linked`.`items_id`';
 
       $query = "SELECT *
                 FROM `glpi_knowbaseitems_items` as `kb_linked`
@@ -306,7 +316,12 @@ class KnowbaseItem_Item extends CommonDBRelation {
 
       $linked_items = array();
       foreach ($DB->request($query) as $data) {
-         $linked_items[] = $data;
+         if ($used === false) {
+            $linked_items[] = $data;
+         } else {
+            $key = $item::getType() == KnowbaseItem::getType() ? 'items_id' : 'knowbaseitems_id';
+            $linked_items[$data[$key]] = $data[$key];
+         }
       }
       return $linked_items;
    }
