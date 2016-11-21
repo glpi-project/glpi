@@ -122,6 +122,7 @@ class Computer extends CommonDBTM {
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('ComputerVirtualMachine', $ong, $options)
          ->addStandardTab('ComputerAntivirus', $ong, $options)
+         ->addStandardTab('KnowbaseItem_Item', $ong, $options)
          ->addStandardTab('Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)

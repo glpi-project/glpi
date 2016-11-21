@@ -702,13 +702,13 @@ class Ticket extends CommonITILObject {
       }
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
       $this->addStandardTab('TicketCost', $ong, $options);
       $this->addStandardTab('Projecttask_Ticket', $ong, $options);
       $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab('Change_Ticket', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
-      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
 
       return $ong;
    }
