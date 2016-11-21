@@ -138,9 +138,20 @@ class KnowbaseItem_ItemTest extends DbTestCase {
        $kbs = KnowbaseItem_Item::getItems($ticket3);
        $this->assertCount(2, $kbs);
 
+       $kb_ids = [];
        foreach ($kbs as $kb) {
           $this->assertEquals($ticket3->getType(), $kb['itemtype']);
           $this->assertEquals($ticket3->getID(), $kb['items_id']);
+          $kb_ids[] = $kb['knowbaseitems_id'];
+       }
+
+       //test get "used"
+       $kbs = KnowbaseItem_Item::getItems($ticket3, 0, 0, '', true);
+       $this->assertCount(2, $kbs);
+
+       foreach ($kbs as $key => $kb) {
+          $this->assertEquals($key, $kb);
+          $this->assertTrue(in_array($key, $kb_ids));
        }
 
        $ticket1 = getItemByTypeName(Ticket::getType(), '_ticket01');
