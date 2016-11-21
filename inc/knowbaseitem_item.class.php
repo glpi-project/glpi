@@ -145,6 +145,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
          echo "</th><tr>";
          echo "<tr><td>";
          if ($item_type == KnowbaseItem::getType()) {
+            //TODO: pass used array to restrict visible items in list
             $rand = self::dropdownAllTypes($item, 'items_id');
          } else {
             $rand = KnowbaseItem::dropdown([
