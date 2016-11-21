@@ -351,6 +351,12 @@ class Software extends CommonDBTM {
 
       if ($isadmin) {
          MassiveAction::getAddTransferList($actions);
+
+         $kb_item = new KnowbaseItem();
+         $kb_item->getEmpty();
+         if ($kb_item->canViewItem()) {
+            $actions['KnowbaseItem_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Link knowledgebase article');
+         }
       }
 
       return $actions;
