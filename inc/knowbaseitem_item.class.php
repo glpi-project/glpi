@@ -194,8 +194,6 @@ class KnowbaseItem_Item extends CommonDBRelation {
          $massiveactionparams
             = array('num_displayed'
                         => $number,
-                    'specific_actions'
-                        => ['purge' => _x('button', 'Unlink item')],
                     'container'
                         => 'mass'.__CLASS__.$rand);
          Html::showMassiveActions($massiveactionparams);
@@ -239,7 +237,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
 
          if ($canedit) {
             echo "<td width='10'>";
-            Html::showMassiveActionCheckBox(__CLASS__, $linked_item->getID());
+            Html::showMassiveActionCheckBox(__CLASS__, $data['id']);
             echo "</td>";
          }
          echo "<td>" . $linked_item->getTypeName(1) . "</td>" .
@@ -309,7 +307,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
              '`kb_linked`.`knowbaseitems_id`' :
              '`kb_linked`.`items_id`';
 
-      $query = "SELECT *
+      $query = "SELECT `kb_linked`.*
                 FROM `glpi_knowbaseitems_items` as `kb_linked`
                 INNER JOIN `glpi_knowbaseitems`
                    ON `kb_linked`.`knowbaseitems_id`=`glpi_knowbaseitems`.`id` ";
@@ -326,12 +324,12 @@ class KnowbaseItem_Item extends CommonDBRelation {
             '',
             '',
             true
-        );
-        if ($restrict !== '') {
-           $query .= ' INNER JOIN `' . $item->getTable() .
-              '` ON `kb_linked`.`items_id`=`' . $item->getTable() . '`.`id`' .
-              ' WHERE ' . $restrict;
-        }
+         );
+         if ($restrict !== '') {
+            $query .= ' INNER JOIN `' . $item->getTable() .
+               '` ON `kb_linked`.`items_id`=`' . $item->getTable() . '`.`id`' .
+               ' WHERE ' . $restrict;
+         }
       }
       $query .= " AND `kb_linked`.`$id_field` = '$items_id'";
 
@@ -384,9 +382,9 @@ class KnowbaseItem_Item extends CommonDBRelation {
       }
    }
 
-   function getSpecificMassiveActions($checkitem=NULL) {
-      $actions = parent::getSpecificMassiveActions($checkitem);
-      $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'unlink'] = _x('button', 'Unlink item');
-      return $actions;
+   function getForbiddenStandardMassiveAction() {
+      $forbidden   = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
    }
 }
