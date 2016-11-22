@@ -3823,6 +3823,16 @@ input[type=checkbox]:not(:disabled) ~ .lever:active:after {
    margin-left: 20px;
 }
 
+td.diff ins {
+   color: green;
+   text-decoration: none;
+}
+
+td.diff del {
+   color:red;
+   text-decoration: none;
+}
+
 @media screen and (max-width: 900px) {
    .documentation {
       margin-left: 0 !important;

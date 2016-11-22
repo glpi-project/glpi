@@ -3306,8 +3306,12 @@ CREATE TABLE `glpi_knowbaseitemtranslations` (
   `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
   `name` text COLLATE utf8_unicode_ci,
   `answer` longtext COLLATE utf8_unicode_ci,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `item` (`knowbaseitems_id`,`language`),
+  KEY `users_id` (`users_id`),
   FULLTEXT KEY `fulltext` (`name`,`answer`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -7703,4 +7707,21 @@ CREATE TABLE `glpi_knowbaseitems_items` (
   KEY `itemtype` (`itemtype`),
   KEY `item_id` (`items_id`),
   KEY `item` (`itemtype`,`items_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_knowbaseitems_revisions
+
+DROP TABLE IF EXISTS `glpi_knowbaseitems_revisions`;
+CREATE TABLE `glpi_knowbaseitems_revisions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int(11) NOT NULL,
+  `revision` int(11) NOT NULL,
+  `name` text COLLATE utf8_unicode_ci,
+  `answer` longtext COLLATE utf8_unicode_ci,
+  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`knowbaseitems_id`, `revision`, `language`),
+  KEY `revision` (`revision`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
