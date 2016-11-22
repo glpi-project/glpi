@@ -130,6 +130,47 @@ function update91to92() {
       $DB->queryOrDie($query, "9.2 add table glpi_knowbaseitems_items");
    }
 
+   $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item revisions'));
+   if (!TableExists('glpi_knowbaseitems_revisions')) {
+      $query = "CREATE TABLE `glpi_knowbaseitems_revisions` (
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `knowbaseitems_id` int(11) NOT NULL,
+                 `revision` int(11) NOT NULL,
+                 `name` text COLLATE utf8_unicode_ci,
+                 `answer` longtext COLLATE utf8_unicode_ci,
+                 `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 `users_id` int(11) NOT NULL,
+                 `date_creation` datetime DEFAULT NULL,
+                 PRIMARY KEY (`id`),
+                 UNIQUE KEY `unicity` (`knowbaseitems_id`, `revision`, `language`),
+                 KEY `revision` (`revision`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.2 add table glpi_knowbaseitems_revisions");
+   }
+
+   $migration->addField("glpi_knowbaseitemtranslations", "users_id", "integer");
+   $migration->addKey("glpi_knowbaseitemtranslations", "users_id");
+
+   //set kb translations users...
+   $query = "SELECT `id`, `users_id`
+             FROM `glpi_knowbaseitem`
+             INNER JOIN `glpi_knowbaseitemtranslations`
+                ON `glpi_knowbaseitemtranslations`.`knowbaseitems_id` = `glpi_knowbaseitem`.`id`";
+
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)>0) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $query = "UPDATE `glpi_knowbaseitemtranslations`
+                          SET `users_id` = '{$data['users_id']}'
+                          WHERE `knowbaseitems_id` = '{$data['id']}'";
+            $DB->queryOrDie($query, 'Set knowledge base translations users');
+         }
+      }
+   }
+
+   $migration->addField("glpi_knowbaseitemtranslations", "date_creation", "DATE");
+   $migration->addField("glpi_knowbaseitemtranslations", "date_mod", "DATE");
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

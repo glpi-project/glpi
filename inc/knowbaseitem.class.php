@@ -173,6 +173,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $this->addStandardTab('KnowbaseItemTranslation', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
 
       return $ong;
    }
@@ -322,6 +323,8 @@ class KnowbaseItem extends CommonDBVisible {
       $class = new KnowbaseItem_Profile();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       $class = new KnowbaseItem_Item();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new KnowbaseItem_Revision();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
@@ -1693,6 +1696,13 @@ class KnowbaseItem extends CommonDBVisible {
       return $values;
    }
 
+   function pre_updateInDB() {
+      $revision = new KnowbaseItem_Revision();
+      $kb = new KnowbaseItem();
+      $kb->getFromDB($this->getID());
+      $revision->createNew($kb);
+   }
+
    /**
     * Get KB answer, with id on titles to set anchors
     *
@@ -1739,5 +1749,32 @@ class KnowbaseItem extends CommonDBVisible {
       $params = parent::getShowVisibilityDropdownParams();
       $params['right'] = ($this->getField('is_faq') ? 'faq' : 'knowbase');
       return $params;
+   }
+
+   /**
+    * Reverts item contents to specified revision
+    *
+    * @param integer $revid Revision ID
+    *
+    * @return boolean
+    */
+   public function revertTo($revid) {
+      $revision = new KnowbaseItem_Revision();
+      $revision->getFromDB($revid);
+
+      $values = [
+         'id'     => $this->getID(),
+         'name'   => $revision->fields['name'],
+         'answer' => $revision->fields['answer']
+      ];
+
+      if ($this->update($values)) {
+         Event::log($this->getID(), "knowbaseitem", 5, "tools",
+                    //TRANS: %s is the user login, %d the revision number
+                    sprintf(__('%s reverts item to revision %id'), $_SESSION["glpiname"], $revision));
+         return true;
+      } else {
+         return false;
+      }
    }
 }
