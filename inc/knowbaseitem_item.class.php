@@ -240,7 +240,13 @@ class KnowbaseItem_Item extends CommonDBRelation {
             Html::showMassiveActionCheckBox(__CLASS__, $data['id']);
             echo "</td>";
          }
-         echo "<td>" . $linked_item->getTypeName(1) . "</td>" .
+
+         $type = $linked_item->getTypeName(1);
+         if (isset($linked_item->fields['is_template']) && $linked_item->fields['is_template'] == 1) {
+             $type .= ' (' . __('template') . ')';
+         }
+
+         echo "<td>" . $type . "</td>" .
                  "<td><a href=\"" . $link . "\">" . $name . "</a></td>".
                  "<td class='tab_date'>".$linked_item->fields[$createdate]."</td>".
                  "<td class='tab_date'>".$linked_item->fields['date_mod']."</td>";
