@@ -103,7 +103,7 @@ class APIXmlrpc extends API {
       } else if ($resource === "getFullSession") { // get complete php session
          return $this->returnResponse($this->getFullSession($this->parameters));
 
-      } else if ($resource === "getGlpiConfig") { // get complete php session
+      } else if ($resource === "getGlpiConfig") { // get complete php var $CFG_GLPI
          return $this->returnResponse($this->getGlpiConfig($this->parameters));
 
       } else if ($resource === "getMultipleItems") { // get multiple items (with various itemtype)

@@ -147,7 +147,7 @@ class APIRest extends API {
          return $this->returnResponse($this->getFullSession($this->parameters));
 
       } else if ($resource === "getGlpiConfig") {
-         // get complete php session
+         // get complete php var $CFG_GLPI
          return $this->returnResponse($this->getGlpiConfig($this->parameters));
 
       } else if ($resource === "listSearchOptions") {
