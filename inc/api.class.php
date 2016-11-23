@@ -1572,7 +1572,7 @@ abstract class API extends CommonGLPI {
       if (is_object($input)) {
          $input = array($input);
       }
-      
+
       if (is_array($input)) {
          $idCollection = array();
          $failed       = 0;
@@ -1614,27 +1614,6 @@ abstract class API extends CommonGLPI {
             } else {
                return $idCollection;
             }
-         }
-         return $idCollection;
-
-      } else if (is_object($input)) {
-         $input = get_object_vars($input);
-
-         if (!$item->getFromDB($input['id'])) {
-            $this->messageNotfoundError();
-         }
-
-         //check rights
-         if (!$item->can($input['id'], UPDATE, $input)) {
-            $this->messageRightError();
-         }
-
-         // update item
-         $input = Toolbox::sanitize($input);
-         if (!$item->update($input)) {
-            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
-         } else {
-            $idCollection[] = array($item->fields["id"] => true);
          }
          return $idCollection;
 
