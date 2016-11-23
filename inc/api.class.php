@@ -1571,6 +1571,8 @@ abstract class API extends CommonGLPI {
                if (!$item->getFromDB($object->id)) {
                   $failed++;
                   $idCollection[] = array($object->id => false);
+                  // Why not return an error message instead ?
+                  // $idCollection[] = array($object->id => $this->messageNotfoundError(false));
                   continue;
                }
 
@@ -1578,6 +1580,8 @@ abstract class API extends CommonGLPI {
                if (!$item->can($object->id, UPDATE)) {
                   $failed++;
                   $idCollection[] = array($object->id => false);
+                  // Why not return an error message instead ?
+                  // $idCollection[] = array($object->id => $this->messageRightError(false));
                } else {
                   //update item
                   if ($item->update( (array) $object)) {
@@ -1585,6 +1589,8 @@ abstract class API extends CommonGLPI {
                   } else {
                      $failed++;
                      $idCollection[] = array($object->id => false);
+                     // Why not return an error message instead ?
+                     // $idCollection[] = array($object->id => $this->getGlpiLastMessage(false));
                   }
                }
             }
@@ -1655,7 +1661,7 @@ abstract class API extends CommonGLPI {
             if (isset($object->id)) {
                if (!$item->getFromDB($object->id)) {
                   $failed++;
-                  $idCollection[] = array($object->id => false);
+                  $idCollection[] = array($object->id => $this->messageNotfoundError(false));
                   continue;
                }
 
@@ -1677,6 +1683,8 @@ abstract class API extends CommonGLPI {
                        && !$item->can($object->id, DELETE))) {
                   $failed++;
                   $idCollection[] = array($object->id => false);
+                  // Why not return an error message instead ?
+                  // $idCollection[] = array($object->id => $this->messageRightError(false));
                } else {
                   //delete item
                   if ($item->delete((array) $object,
@@ -1686,6 +1694,8 @@ abstract class API extends CommonGLPI {
                   } else {
                      $failed++;
                      $idCollection[] = array($object->id => false);
+                     // Why not return an error message instead ?
+                     // $idCollection[] = array($object->id => $this->getGlpiLastMessage());
                   }
                }
             }
