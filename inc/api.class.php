@@ -1590,7 +1590,7 @@ abstract class API extends CommonGLPI {
                   );
                } else {
                   //update item
-                  $aobject = Toolbox::sanitize((array)$object);
+                  $object = Toolbox::sanitize((array)$object);
                   $update_return = $item->update( (array) $object);
                   if ($update_return === false) {
                      $failed++;
