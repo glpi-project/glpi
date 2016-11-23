@@ -329,7 +329,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
             $item::getTable(),
             '',
             '',
-            true
+            false
          );
          if ($restrict !== '') {
             $query .= ' INNER JOIN `' . $item->getTable() .
