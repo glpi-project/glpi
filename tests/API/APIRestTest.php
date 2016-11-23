@@ -1055,6 +1055,32 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
 
    /**
+    * @depends testInitSessionCredentials
+    */
+   public function testGetGlpiConfig($session_token) {
+      $res = $this->doHttpRequest('GET', 'getGlpiConfig/',
+            ['headers' => [
+                  'Session-Token' => $session_token]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+
+      // Test a disclosed data
+      $this->assertArrayHasKey('cfg_glpi', $data);
+      $this->assertArrayHasKey('infocom_types', $data['cfg_glpi']);
+
+      // Test undisclosed data are actually not disclosed
+      $this->assertGreaterThan(0, count(Config::$undisclosedFields));
+      foreach (Config::$undisclosedFields as $key) {
+         $this->assertArrayNotHasKey($key, $data['cfg_glpi']);
+      }
+
+   }
+
+
+   /**
      * @depends testInitSessionCredentials
      */
    public function testKillSession($session_token) {
