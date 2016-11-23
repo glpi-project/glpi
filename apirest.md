@@ -13,6 +13,7 @@
 * [Get active entities](#get-active-entities)
 * [Change active entities](#change-active-entities)
 * [Get full session](#get-full-session)
+* [Get GLPi config](#get-glpi-config)
 * [Get an item](#get-an-item)
 * [Get all items](#get-all-items)
 * [Get sub items](#get-sub-items)
