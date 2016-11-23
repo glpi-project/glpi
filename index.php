@@ -37,8 +37,8 @@
 */
 
 // Check PHP version not to have trouble
-if (version_compare(PHP_VERSION, "5.4.0") < 0) {
-   die("PHP >= 5.4.0 required");
+if (version_compare(PHP_VERSION, GLPI_MIN_PHP) < 0) {
+   die(sprintf("PHP >= %s required", GLPI_MIN_PHP));
 }
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);

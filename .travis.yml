@@ -19,9 +19,6 @@ script:
 
 matrix:
   include:
-    - php: 5.4
-      addons:
-        mariadb: 5.5
     - php: 5.5
       addons:
         mariadb: 5.5
