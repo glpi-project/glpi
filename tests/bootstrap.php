@@ -242,18 +242,18 @@ function loadDataset() {
             'name'           => '_ticket01',
             'content'        => 'Content for ticket _ticket01',
             'users_id_recipient' => TU_USER
-        ],
-        [
+         ],
+         [
             'name'           => '_ticket02',
             'content'        => 'Content for ticket _ticket02',
             'users_id_recipient' => TU_USER
-        ],
-        [
+         ],
+         [
             'name'           => '_ticket03',
             'content'        => 'Content for ticket _ticket03',
             'users_id_recipient' => TU_USER,
             'entities_id'    => '_test_child_1'
-        ]
+         ]
       ], 'TicketTask' => [
          [
             'tickets_id'         => '_ticket01',
@@ -324,7 +324,7 @@ function loadDataset() {
             'date_creation'    => '2016-11-17 14:31:28',
             'date_mod'         => '2016-11-17 14:31:52'
          ]
-     ], 'Entity_KnowbaseItem' => [
+      ], 'Entity_KnowbaseItem' => [
          [
             'knowbaseitems_id' => '_knowbaseitem01',
             'entities_id'      => 0

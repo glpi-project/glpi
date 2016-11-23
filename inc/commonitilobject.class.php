@@ -4100,7 +4100,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo '<br/><input type="checkbox" name="kb_linked_id" id="kb_linked_id" value="' . $kb->getID() . '" checked="checked">';
          echo ' <label for="kb_linked_id">' . str_replace('%id', $kb->getID(), __('Link to knowledge base entry #%id')) . '</label>';
       } else {
-        echo '&nbsp;';
+         echo '&nbsp;';
       }
       echo "</td></tr>";
       if ($canedit && Session::haveRight('knowbase', UPDATE)) {

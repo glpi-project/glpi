@@ -51,153 +51,152 @@ class KnowbaseItem_ItemTest extends DbTestCase {
     * @covers KnowbaseItem_Item::getItems()
     */
    public function testGetItemsFromKB() {
-       $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
-       $items = KnowbaseItem_Item::getItems($kb1);
-       $this->assertCount(3, $items);
+      $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
+      $items = KnowbaseItem_Item::getItems($kb1);
+      $this->assertCount(3, $items);
 
-       $expecteds = [
-          0 => [
-             'id'       => '_ticket01',
-             'itemtype' => Ticket::getType(),
-          ],
-          1 => [
-             'id'       => '_ticket02',
-             'itemtype' => Ticket::getType(),
-          ],
-          2 => [
-             'id'       => '_ticket03',
-             'itemtype' => Ticket::getType(),
-          ]
-       ];
+      $expecteds = [
+         0 => [
+            'id'       => '_ticket01',
+            'itemtype' => Ticket::getType(),
+         ],
+         1 => [
+            'id'       => '_ticket02',
+            'itemtype' => Ticket::getType(),
+         ],
+         2 => [
+            'id'       => '_ticket03',
+            'itemtype' => Ticket::getType(),
+         ]
+      ];
 
-       foreach ($expecteds as $key => $expected) {
-          $item = getItemByTypeName($expected['itemtype'], $expected['id']);
-          $this->assertInstanceOf($expected['itemtype'], $item);
-       }
+      foreach ($expecteds as $key => $expected) {
+         $item = getItemByTypeName($expected['itemtype'], $expected['id']);
+         $this->assertInstanceOf($expected['itemtype'], $item);
+      }
 
-       //add start & limit
-       $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
-       $items = KnowbaseItem_Item::getItems($kb1, 1, 1);
-       $this->assertCount(1, $items);
+      //add start & limit
+      $kb1 = getItemByTypeName('KnowbaseItem', '_knowbaseitem01');
+      $items = KnowbaseItem_Item::getItems($kb1, 1, 1);
+      $this->assertCount(1, $items);
 
-       $expecteds = [
-          1 => [
-             'id'       => '_ticket02',
-             'itemtype' => Ticket::getType(),
-          ]
-       ];
+      $expecteds = [
+         1 => [
+            'id'       => '_ticket02',
+            'itemtype' => Ticket::getType(),
+         ]
+      ];
 
-       foreach ($expecteds as $key => $expected) {
-          $item = getItemByTypeName($expected['itemtype'], $expected['id']);
-          $this->assertInstanceOf($expected['itemtype'], $item);
-       }
+      foreach ($expecteds as $key => $expected) {
+         $item = getItemByTypeName($expected['itemtype'], $expected['id']);
+         $this->assertInstanceOf($expected['itemtype'], $item);
+      }
 
-       $kb2 = getItemByTypeName('KnowbaseItem', '_knowbaseitem02');
-       $items = KnowbaseItem_Item::getItems($kb2);
-       $this->assertCount(2, $items);
+      $kb2 = getItemByTypeName('KnowbaseItem', '_knowbaseitem02');
+      $items = KnowbaseItem_Item::getItems($kb2);
+      $this->assertCount(2, $items);
 
-       $expecteds = [
-          0 => [
-             'id'       => '_ticket03',
-             'itemtype' => Ticket::getType(),
-          ],
-          1 => [
-             'id'       => '_test_pc21',
-             'itemtype' => Computer::getType(),
-          ]
-       ];
+      $expecteds = [
+         0 => [
+            'id'       => '_ticket03',
+            'itemtype' => Ticket::getType(),
+         ],
+         1 => [
+            'id'       => '_test_pc21',
+            'itemtype' => Computer::getType(),
+         ]
+      ];
 
-       foreach ($expecteds as $key => $expected) {
-          $item = getItemByTypeName($expected['itemtype'], $expected['id']);
-          $this->assertInstanceOf($expected['itemtype'], $item);
-       }
+      foreach ($expecteds as $key => $expected) {
+         $item = getItemByTypeName($expected['itemtype'], $expected['id']);
+         $this->assertInstanceOf($expected['itemtype'], $item);
+      }
 
-       //add sql where clause
-       $items = KnowbaseItem_Item::getItems($kb2, 0, 0, '`itemtype` = \'Computer\'');
-       $this->assertCount(1, $items);
+      //add sql where clause
+      $items = KnowbaseItem_Item::getItems($kb2, 0, 0, '`itemtype` = \'Computer\'');
+      $this->assertCount(1, $items);
 
-       $expecteds = [
-          1 => [
-             'id'       => '_test_pc21',
-             'itemtype' => Computer::getType(),
-          ]
-       ];
+      $expecteds = [
+         1 => [
+            'id'       => '_test_pc21',
+            'itemtype' => Computer::getType(),
+         ]
+      ];
 
-       foreach ($expecteds as $key => $expected) {
-          $item = getItemByTypeName($expected['itemtype'], $expected['id']);
-          $this->assertInstanceOf($expected['itemtype'], $item);
-       }
-
+      foreach ($expecteds as $key => $expected) {
+         $item = getItemByTypeName($expected['itemtype'], $expected['id']);
+         $this->assertInstanceOf($expected['itemtype'], $item);
+      }
    }
 
    /**
     * @covers KnowbaseItem_Item::getItems()
     */
    public function testGetKbsFromItem() {
-       $ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');
-       $kbs = KnowbaseItem_Item::getItems($ticket3);
-       $this->assertCount(2, $kbs);
+      $ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');
+      $kbs = KnowbaseItem_Item::getItems($ticket3);
+      $this->assertCount(2, $kbs);
 
-       $kb_ids = [];
-       foreach ($kbs as $kb) {
-          $this->assertEquals($ticket3->getType(), $kb['itemtype']);
-          $this->assertEquals($ticket3->getID(), $kb['items_id']);
-          $kb_ids[] = $kb['knowbaseitems_id'];
-       }
+      $kb_ids = [];
+      foreach ($kbs as $kb) {
+         $this->assertEquals($ticket3->getType(), $kb['itemtype']);
+         $this->assertEquals($ticket3->getID(), $kb['items_id']);
+         $kb_ids[] = $kb['knowbaseitems_id'];
+      }
 
-       //test get "used"
-       $kbs = KnowbaseItem_Item::getItems($ticket3, 0, 0, '', true);
-       $this->assertCount(2, $kbs);
+      //test get "used"
+      $kbs = KnowbaseItem_Item::getItems($ticket3, 0, 0, '', true);
+      $this->assertCount(2, $kbs);
 
-       foreach ($kbs as $key => $kb) {
-          $this->assertEquals($key, $kb);
-          $this->assertTrue(in_array($key, $kb_ids));
-       }
+      foreach ($kbs as $key => $kb) {
+         $this->assertEquals($key, $kb);
+         $this->assertTrue(in_array($key, $kb_ids));
+      }
 
-       $ticket1 = getItemByTypeName(Ticket::getType(), '_ticket01');
-       $kbs = KnowbaseItem_Item::getItems($ticket1);
-       $this->assertCount(1, $kbs);
+      $ticket1 = getItemByTypeName(Ticket::getType(), '_ticket01');
+      $kbs = KnowbaseItem_Item::getItems($ticket1);
+      $this->assertCount(1, $kbs);
 
-       foreach ($kbs as $kb) {
-          $this->assertEquals($ticket1->getType(), $kb['itemtype']);
-          $this->assertEquals($ticket1->getID(), $kb['items_id']);
-       }
+      foreach ($kbs as $kb) {
+         $this->assertEquals($ticket1->getType(), $kb['itemtype']);
+         $this->assertEquals($ticket1->getID(), $kb['items_id']);
+      }
 
-       $computer21 = getItemByTypeName(Computer::getType(), '_test_pc21');
-       $kbs = KnowbaseItem_Item::getItems($computer21);
-       $this->assertCount(1, $kbs);
+      $computer21 = getItemByTypeName(Computer::getType(), '_test_pc21');
+      $kbs = KnowbaseItem_Item::getItems($computer21);
+      $this->assertCount(1, $kbs);
 
-       foreach ($kbs as $kb) {
-          $this->assertEquals($computer21->getType(), $kb['itemtype']);
-          $this->assertEquals($computer21->getID(), $kb['items_id']);
-       }
+      foreach ($kbs as $kb) {
+         $this->assertEquals($computer21->getType(), $kb['itemtype']);
+         $this->assertEquals($computer21->getID(), $kb['items_id']);
+      }
 
-       //test with entitiesrestriction
-       $_SESSION['glpishowallentities'] = 0;
+      //test with entitiesrestriction
+      $_SESSION['glpishowallentities'] = 0;
 
-       $entity = getItemByTypeName(Entity::getType(), '_test_root_entity');
-       $_SESSION['glpiactiveentities_string'] = $entity->getID();
+      $entity = getItemByTypeName(Entity::getType(), '_test_root_entity');
+      $_SESSION['glpiactiveentities_string'] = $entity->getID();
 
-       $ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');
-       $kbs = KnowbaseItem_Item::getItems($ticket3);
-       $this->assertCount(0, $kbs);
+      $ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');
+      $kbs = KnowbaseItem_Item::getItems($ticket3);
+      $this->assertCount(0, $kbs);
 
-       $entity = getItemByTypeName(Entity::getType(), '_test_child_1');
-       $_SESSION['glpiactiveentities_string'] = $entity->getID();
+      $entity = getItemByTypeName(Entity::getType(), '_test_child_1');
+      $_SESSION['glpiactiveentities_string'] = $entity->getID();
 
-       $ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');
-       $kbs = KnowbaseItem_Item::getItems($ticket3);
-       $this->assertCount(2, $kbs);
+      $ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');
+      $kbs = KnowbaseItem_Item::getItems($ticket3);
+      $this->assertCount(2, $kbs);
 
-       $entity = getItemByTypeName(Entity::getType(), '_test_child_2');
-       $_SESSION['glpiactiveentities_string'] = $entity->getID();
+      $entity = getItemByTypeName(Entity::getType(), '_test_child_2');
+      $_SESSION['glpiactiveentities_string'] = $entity->getID();
 
-       $ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');
-       $kbs = KnowbaseItem_Item::getItems($ticket3);
-       $this->assertCount(0, $kbs);
+      $ticket3 = getItemByTypeName(Ticket::getType(), '_ticket03');
+      $kbs = KnowbaseItem_Item::getItems($ticket3);
+      $this->assertCount(0, $kbs);
 
-       $_SESSION['glpishowallentities'] = 1;
-       unset($_SESSION['glpiactiveentities_string']);
+      $_SESSION['glpishowallentities'] = 1;
+      unset($_SESSION['glpiactiveentities_string']);
    }
 
    /**
