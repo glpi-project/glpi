@@ -399,7 +399,7 @@ $ curl -X POST \
   * *Session-Token*: session var provided by [initSession](#init-session) endpoint. Mandatory.
   * *App-Token*: authorization string provided by the GLPi api configuration. Optional.
 * **Returns**:
-  * 200 (OK) with an array representing the php session.
+  * 200 (OK) with an array representing the php global variable $CFG_GLPI.
   * 400 (Bad Request) with a message indicating an error in input parameter.
 
 Example usage (CURL):
@@ -409,7 +409,7 @@ $ curl -X POST \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
-'http://path/to/glpi/apirest.php/getFullSession'
+'http://path/to/glpi/apirest.php/getGlpiConfig'
 
 < 200 OK
 < {
