@@ -795,7 +795,11 @@ function updateDbUpTo031() {
          update0905to91();
 
       case "9.1" :
-      case "0.91": // // for change name of the version - to delete in next version
+      case "0.91":
+         include_once("update_91_911.php");
+         update91to911();
+
+      case GLPI_VERSION:
          break;
 
       default :
@@ -826,7 +830,7 @@ function updateDbUpTo031() {
    }
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   Config::setConfigurationValues('core', array('version'             => '9.1',
+   Config::setConfigurationValues('core', array('version'             => GLPI_VERSION,
                                                 'language'            => $glpilanguage,
                                                 'founded_new_version' => ''));
 

@@ -64,6 +64,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
             if ($e->hasResponse()) {
                $this->last_error = $e->getResponse();
             }
+            throw $e;
          }
       }
    }
@@ -75,7 +76,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'Access-Control-Request-Method'  => 'GET',
                                              'Access-Control-Request-Headers' => 'X-Requested-With'
                                          ]]);
-      
+
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(200, $res->getStatusCode());
       $headers = $res->getHeaders();
@@ -124,7 +125,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $user = new User;
       $uid = getItemByTypeName('User', TU_USER, true);
       $user->getFromDB($uid);
-      $token = isset($user->fields['personnal_token'])?$user->fields['personnal_token']:"";
+      $token = isset($user->fields['personal_token'])?$user->fields['personal_token']:"";
       if (empty($token)) {
          $token = User::getPersonalToken($uid);
       }
@@ -371,6 +372,23 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $second_user_date_mod = strtotime($second_user[19]);
       $this->assertLessThanOrEqual($first_user_date_mod, $second_user_date_mod);
    }
+   
+   
+   /**
+    * @depends testInitSessionCredentials
+    */
+   public function testSearchWithBadCriteria($session_token) {
+      // test retrieve all users
+      // multidimensional array of vars in query string not supported ? 
+      try {
+         $res = $this->doHttpRequest('GET', 'search/User/?criteria[0][field]=134343&criteria[0][searchtype]=contains&criteria[0][value]=dsadasd',
+                                             ['headers' => [
+                                                   'Session-Token' => $session_token]]);
+         $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
+      } catch (ClientException $e) {
+         $this->assertEquals(400, $this->last_error->getStatusCode());
+      }
+   }
 
 
    /**
@@ -423,18 +441,20 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $res = $this->doHttpRequest('GET', 'badEndpoint/',
                                             ['headers' => [
                                              'Session-Token' => $session_token]]);
+        $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
       } catch (ClientException $e) {
          $response = $e->getResponse();
-         $this->assertEquals(400, $response->getStatusCode());
+         $this->assertEquals(400, $this->last_error->getStatusCode());
       }
 
       try {
          $res = $this->doHttpRequest('GET', 'Entity/0/badEndpoint/',
                                             ['headers' => [
                                              'Session-Token' => $session_token]]);
+         $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
       } catch (ClientException $e) {
          $response = $e->getResponse();
-         $this->assertEquals(400, $response->getStatusCode());
+         $this->assertEquals(400, $this->last_error->getStatusCode());
       }
    }
 
@@ -520,7 +540,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'input'         => [[
                                                 'name' => "My computer 2"
                                              ],[
-                                                'name' => "My computer 3"]]]]);
+                                                'name' => "My computer 3"
+                                             ],[
+                                                'name' => "My computer 4"]]]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(201, $res->getStatusCode());
 
@@ -569,6 +591,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('name', $data);
       $this->assertArrayHasKey('entities_id', $data);
       $this->assertArrayHasKey('links', $data);
+      $this->assertArrayNotHasKey('password', $data);
       $this->assertFalse(is_numeric($data['entities_id'])); // for expand_dropdowns
       $this->assertArrayHasKey('_logs', $data); // with_logs == true
 
@@ -735,6 +758,22 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayNotHasKey('name', $data[0]);
       $this->assertArrayNotHasKey('password', $data[0]);
       $this->assertArrayNotHasKey('is_active', $data[0]);
+
+      // test retrieve all config
+      $res = $this->doHttpRequest('GET', 'Config/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'query' => [
+                                             'expand_dropdowns' => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+
+      foreach ($data as $config_row) {
+        $this->assertNotEquals('smtp_passwd', $config_row['name']);
+        $this->assertNotEquals('proxy_passwd', $config_row['name']);
+      }
    }
 
 
@@ -761,9 +800,10 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $res = $this->doHttpRequest('GET', "ticket/$tickets_id",
                                             ['headers' => [
                                                 'Session-Token' => $data['session_token']]]);
+         $this->assertGreaterThanOrEqual(400, $res->getStatusCode());
       } catch (ClientException $e) {
          $response = $e->getResponse();
-         $this->assertEquals(401, $res->getStatusCode());
+         $this->assertEquals(401, $this->last_error->getStatusCode());
       }
 
       // try to access ticket list (we should get empty return)
@@ -902,6 +942,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    public function testDeleteItems($session_token, $computers_id_collection) {
       $input    = array();
       $computer = new Computer;
+      $lastComputer = array_pop($computers_id_collection);
       foreach($computers_id_collection as $key => $computers_id) {
          $input[] = ['id' => $computers_id['id']];
       }
@@ -923,6 +964,138 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
 
          $computers_exist = $computer->getFromDB($computers_id);
          $this->assertEquals(false, (bool) $computers_exist);
+      }
+      // Test multiple delete with multi-status
+      $input    = array();
+      $computers_id_collection = [
+            [
+                  'id'  => $lastComputer['id']
+            ],
+            [
+                  'id'  => $lastComputer['id'] + 1 // Non existing computer id
+            ]
+      ];
+      foreach($computers_id_collection as $key => $computers_id) {
+         $input[] = ['id' => $computers_id['id']];
+      }
+      $res = $this->doHttpRequest('DELETE', "Computer/",
+            ['headers' => [
+                  'Session-Token' => $session_token],
+                  'json' => [
+                        'input'         => $input,
+                        'force_purge'   => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(207, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertTrue($data[1][0][$computers_id_collection[0]['id']]);
+      $this->assertFalse($data[1][1][$computers_id_collection[1]['id']]);
+   }
+
+   /**
+     * @depends testInitSessionCredentials
+     */
+   public function testInjection($session_token) {
+      $res = $this->doHttpRequest('POST', 'Computer/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'json' => [
+                                             'input'         => [[
+                                                'name' => "my computer', (SELECT `password` from `glpi_users` as `otherserial` WHERE `id`=2), '0 ' , '2016-10-26 00:00:00', '2016-10-26 00 :00 :00')#"
+                                             ,
+                                                'otherserial' => "Not hacked"]]]]);
+
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $new_id = $data[0]['id'];
+
+      $computer = new Computer();
+      $computer_exists = $computer->getFromDB($new_id);
+
+      $this->assertTrue((bool)$computer_exists, 'Computer does not exists :\'(');
+
+      $is_password = $computer->fields['otherserial'] != 'Not hacked';
+      $this->assertFalse($is_password, 'Add SQL injection spotted!');
+
+      $res = $this->doHttpRequest('PUT', 'Computer/',
+                                         ['headers' => [
+                                             'Session-Token' => $session_token],
+                                          'json' => [
+                                             'input'         => [
+                                                'id'     => $new_id,
+                                                'serial' => "abcdef', `otherserial`='injected"]]]);
+
+      $computer->getFromDB($new_id);
+      $is_injected = $computer->fields['otherserial'] === 'injected';
+      $this->assertFalse($is_injected, 'Update SQL injection spotted!');
+
+      $computer = new Computer();
+      $computer->delete(['id' => $new_id], true);
+   }
+
+   /**
+    * @depends testInitSessionCredentials
+    */
+   public function testProtectedConfigSettings($session_token) {
+      $sensitiveSettings = array(
+            'proxy_passwd',
+            'smtp_passwd',
+      );
+
+      // set a non empty value to the sessionts to check
+      foreach ($sensitiveSettings as $name) {
+         Config::setConfigurationValues('core', array($name => 'not_empty_password'));
+         $value = Config::getConfigurationValues('core', array($name));
+         $this->assertArrayHasKey($name, $value);
+         $this->assertNotEmpty($value[$name]);
+      }
+
+      $where = "'" . implode("', '", $sensitiveSettings) . "'";
+      $config = new config();
+      $rows = $config->find("`context`='core' AND `name` IN ($where)");
+      $this->assertEquals(count($sensitiveSettings), count($rows));
+
+      // Check the value is not retrieved for sensitive settings
+      foreach ($rows as $row) {
+         $res = $this->doHttpRequest('GET', "Config/" . $row['id'],
+                                             ['headers' => [
+                                                   'Session-Token' => $session_token]]);
+         $this->assertEquals(200, $res->getStatusCode());
+         $body = $res->getBody();
+         $data = json_decode($body, true);
+         $this->assertEquals('', $data['value']);
+      }
+
+      // Check an other setting is disclosed (when not empty)
+      $config = new Config();
+      $config->getFromDBByQuery("WHERE `context`='core' AND `name`='admin_email'");
+      $res = $this->doHttpRequest('GET', "Config/" . $config->getID(),
+                                         ['headers' => [
+                                                'Session-Token' => $session_token]]);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals('', $data['value']);
+
+      // Check a search does not disclose sensitive values
+      $criteria = array();
+      $queryString = "";
+      foreach ($rows as $row) {
+         $queryString = "&criteria[][link]=or&criteria[][field]=1&criteria[][searchtype]=equals&criteria[][value]=" . $row['name'];
+      }
+
+      $res = $this->doHttpRequest('GET', "search/Config" . "?$queryString",
+                                          ['headers' => [
+                                                'Session-Token' => $session_token],
+                                          'query' => array()]);
+      $this->assertEquals(200, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      foreach ($data['data'] as $row) {
+          foreach ($row as $col) {
+              $this->assertNotEquals($col, 'not_empty_password');
+          }
       }
    }
 

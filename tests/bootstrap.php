@@ -39,7 +39,7 @@ include_once __DIR__ . '/../inc/includes.php';
 include_once __DIR__ . '/DbTestCase.php';
 
 // check folder exists instead of class_exists('\GuzzleHttp\Client'), to prevent global includes
-if (!file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
+if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '/../vendor/guzzlehttp/guzzle')) {
    die("\nDevelopment dependencies not found\n\nrun: composer install -o\n\n");
 }
 

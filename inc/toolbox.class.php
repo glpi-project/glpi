@@ -2311,7 +2311,7 @@ class Toolbox {
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
       $DB = new DB();
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-9.1-empty.sql")) {
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-" . GLPI_SCHEMA_VERSION . "-empty.sql")) {
          echo "Errors occurred inserting default database";
       }
       // update default language
@@ -2529,5 +2529,16 @@ class Toolbox {
       return false;
    }
 
+   /**
+    * Sanitize received values
+    *
+    * @param array $array
+    *
+    * @return array
+    */
+   static public function sanitize($array) {
+      $array = array_map('Toolbox::addslashes_deep', $array);
+      $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
+      return $array;
+   }
 }
-?>

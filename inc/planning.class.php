@@ -2062,7 +2062,8 @@ class Planning extends CommonGLPI {
       $end    = time()+MONTH_TIMESTAMP*12;
       $begin  = date("Y-m-d H:i:s", $begin);
       $end    = date("Y-m-d H:i:s", $end);
-      $params = array('who'       => $who,
+      $params = array('genical'   => true,
+                      'who'       => $who,
                       'who_group' => $who_group,
                       'whogroup'  => $who_group,
                       'begin'     => $begin,
