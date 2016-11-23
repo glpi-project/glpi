@@ -11,7 +11,7 @@
         "docs": "https://github.com/glpi-project/doc"
     },
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.5.0",
         "ext-mysqli": "*",
         "ext-fileinfo": "*",
         "ext-json": "*",
@@ -19,7 +19,6 @@
         "ext-gd": "*",
         "ext-zlib": "*",
         "ext-curl": "*",
-        "ircmaxell/password-compat": "~1.0.0",
         "jasig/phpcas": "~1.3.0",
         "iamcal/lib_autolink": "~1.7",
         "phpmailer/phpmailer": "~5.2",
@@ -30,7 +29,6 @@
         "zendframework/zend-i18n": "~2.4.0",
         "zendframework/zend-loader": "~2.4.0",
         "zetacomponents/graph": "~1.5",
-        "ramsey/array_column": "^1.1.3",
         "michelf/php-markdown": "^1.6",
         "true/punycode": "^2.1",
         "ircmaxell/random-lib": "^1.2"
@@ -44,7 +42,7 @@
     },
     "config": {
         "platform": {
-            "php": "5.4.0"
+            "php": "5.5.0"
         }
     }
 }
