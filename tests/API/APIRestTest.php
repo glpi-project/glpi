@@ -1001,14 +1001,14 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ['headers' => [
                                              'Session-Token' => $session_token],
                                           'json' => [
-                                             'input'         => [[
+                                             'input'         => [
                                                 'name' => "my computer', (SELECT `password` from `glpi_users` as `otherserial` WHERE `id`=2), '0 ' , '2016-10-26 00:00:00', '2016-10-26 00 :00 :00')#"
                                              ,
-                                                'otherserial' => "Not hacked"]]]]);
+                                                'otherserial' => "Not hacked"]]]);
 
       $body = $res->getBody();
       $data = json_decode($body, true);
-      $new_id = $data[0]['id'];
+      $new_id = $data['id'];
 
       $computer = new Computer();
       $computer_exists = $computer->getFromDB($new_id);
