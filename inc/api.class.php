@@ -1467,6 +1467,9 @@ abstract class API extends CommonGLPI {
       $input    = isset($params['input']) ? $params["input"] : null;
       $item     = new $itemtype;
       $response = "";
+      if (is_object($input)) {
+         $input = array($input);
+      }
 
       if (is_array($input)) {
          $idCollection = array();
@@ -1495,34 +1498,21 @@ abstract class API extends CommonGLPI {
                $idCollection[] = array('id' => $new_id, 'message' => $this->getGlpiLastMessage());
             }
          }
-         if ($failed == count($input)) {
-            $this->returnError($idCollection, 400, "ERROR_GLPI_ADD", false);
-         } else if ($failed > 0) {
-            $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_ADD", false);
+         if (count($idCollection) > 1) {
+            if ($failed == count($input)) {
+               $this->returnError($idCollection, 400, "ERROR_GLPI_ADD", false);
+            } else if ($failed > 0) {
+               $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_ADD", false);
+            } 
+         } else {
+            if ($failed > 0) {
+               $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_ADD", false);
+            } else {
+               return $idCollection[0];
+            }
          }
 
          return $idCollection;
-
-      } else if (is_object($input)) {
-         $input = self::inputObjectToArray($input);
-
-         //check rights
-         if (!$item->can(-1, CREATE, $input)) {
-            $this->messageRightError();
-         }
-
-         // add missing entity
-         if (!isset($input['entities_id'])) {
-            $input['entities_id'] = $_SESSION['glpiactive_entity'];
-         }
-
-         //add item
-         $input = Toolbox::sanitize($input);
-         if ($new_id = $item->add($input)) {
-            return array('id' => $new_id);
-         } else {
-            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_ADD", false);
-         }
 
       } else {
          $this->messageBadArrayError();
