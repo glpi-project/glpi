@@ -1569,7 +1569,10 @@ abstract class API extends CommonGLPI {
       $input    = $params['input'];
       $item     = new $itemtype;
       $response = "";
-
+      if (is_object($input)) {
+         $input = array($input);
+      }
+      
       if (is_array($input)) {
          $idCollection = array();
          $failed       = 0;
@@ -1591,20 +1594,27 @@ abstract class API extends CommonGLPI {
                } else {
                   //update item
                   $object = Toolbox::sanitize((array)$object);
-                  $update_return = $item->update( (array) $object);
+                  $update_return = $item->update($object);
                   if ($update_return === false) {
                      $failed++;
                   }
-                  $idCollection[] = array($object->id => $update_return, 'message' => $this->getGlpiLastMessage());
+                  $idCollection[] = array($item->fields["id"] => $update_return, 'message' => $this->getGlpiLastMessage());
                }
             }
          }
-         if ($failed == count($input)) {
-            $this->returnError($idCollection, 400, "ERROR_GLPI_UPDATE", false);
-         } else if ($failed > 0) {
-            $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_UPDATE", false);
+         if (count($idCollection) > 1) {
+            if ($failed == count($input)) {
+               $this->returnError($idCollection, 400, "ERROR_GLPI_UPDATE", false);
+            } else if ($failed > 0) {
+               $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_UPDATE", false);
+            }
+         } else {
+            if ($failed > 0) {
+               $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
+            } else {
+               return $idCollection;
+            }
          }
-
          return $idCollection;
 
       } else if (is_object($input)) {
