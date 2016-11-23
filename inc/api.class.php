@@ -1570,27 +1570,21 @@ abstract class API extends CommonGLPI {
             if (isset($object->id)) {
                if (!$item->getFromDB($object->id)) {
                   $failed++;
-                  $idCollection[] = array($object->id => false);
-                  // Why not return an error message instead ?
-                  // $idCollection[] = array($object->id => $this->messageNotfoundError(false));
+                  $idCollection[] = array($object->id => $this->messageNotfoundError(false));
                   continue;
                }
 
                //check rights
                if (!$item->can($object->id, UPDATE)) {
                   $failed++;
-                  $idCollection[] = array($object->id => false);
-                  // Why not return an error message instead ?
-                  // $idCollection[] = array($object->id => $this->messageRightError(false));
+                  $idCollection[] = array($object->id => $this->messageRightError(false));
                } else {
                   //update item
-                  if ($item->update( (array) $object)) {
-                     $idCollection[] = array($object->id => true);
+                  if ($update_return = $item->update( (array) $object)) {
+                     $idCollection[] = array($object->id => $update_return);
                   } else {
                      $failed++;
-                     $idCollection[] = array($object->id => false);
-                     // Why not return an error message instead ?
-                     // $idCollection[] = array($object->id => $this->getGlpiLastMessage(false));
+                     $idCollection[] = array($object->id => $this->getGlpiLastMessage(false));
                   }
                }
             }
@@ -1619,7 +1613,7 @@ abstract class API extends CommonGLPI {
          if (!$item->update($input)) {
             $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
          } else {
-            $idCollection[] = array($item->fields["id"] => true);
+            $idCollection[] = array($item->fields["id"] => "true");
          }
          return $idCollection;
 
@@ -1682,20 +1676,16 @@ abstract class API extends CommonGLPI {
                    || (!$params['force_purge']
                        && !$item->can($object->id, DELETE))) {
                   $failed++;
-                  $idCollection[] = array($object->id => false);
-                  // Why not return an error message instead ?
-                  // $idCollection[] = array($object->id => $this->messageRightError(false));
+                  $idCollection[] = array($object->id => $this->messageRightError(false));
                } else {
                   //delete item
-                  if ($item->delete((array) $object,
+                  if ($delete_return = $item->delete((array) $object,
                                                      $params['force_purge'],
                                                      $params['history'])) {
-                     $idCollection[] = array($object->id => true);
+                     $idCollection[] = array($object->id => $delete_return);
                   } else {
                      $failed++;
-                     $idCollection[] = array($object->id => false);
-                     // Why not return an error message instead ?
-                     // $idCollection[] = array($object->id => $this->getGlpiLastMessage());
+                     $idCollection[] = array($object->id => $this->getGlpiLastMessage());
                   }
                }
             }
@@ -1740,7 +1730,7 @@ abstract class API extends CommonGLPI {
                              $params['history'])) {
             $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_DELETE", false);
          } else {
-            $idCollection[] = array($item->fields["id"] => true);
+            $idCollection[] = array($item->fields["id"] => "true");
          }
          return $idCollection;
 
