@@ -1600,7 +1600,7 @@ abstract class API extends CommonGLPI {
             if ($failed > 0) {
                $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
             } else {
-               return $idCollection[0];
+               return $idCollection; // Return collection, even if teh request affects a single item
             }
          }
          return $idCollection;

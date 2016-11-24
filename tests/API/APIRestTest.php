@@ -923,11 +923,11 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                           'query' => [
                                              'force_purge'   => "true"]]);
       $this->assertNotEquals(null, $res, $this->last_error);
-      $this->assertEquals(204, $res->getStatusCode());
+      $this->assertEquals(200, $res->getStatusCode());
 
       $body = $res->getBody();
       $data = json_decode($body, true);
-      $this->assertEquals(NULL, $data);
+      $this->assertNotEquals(false, $data);
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($computers_id);
