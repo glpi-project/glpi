@@ -344,7 +344,7 @@ abstract class API extends CommonGLPI {
 
       $myprofiles = array();
       foreach($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
-         // append if of the profile into values 
+         // append if of the profile into values
          $profile = ['id' => $profiles_id] + $profile;
 
          // don't keep keys for entities
@@ -472,7 +472,6 @@ abstract class API extends CommonGLPI {
          $fields['_devices'] = $all_devices;
       }
 
-
       // retrieve computer disks
       if (isset($params['with_disks'])
           && $params['with_disks']
@@ -525,7 +524,6 @@ abstract class API extends CommonGLPI {
             }
          }
       }
-
 
       // retrieve item connections
       if (isset($params['with_connections'])
@@ -643,7 +641,6 @@ abstract class API extends CommonGLPI {
                               );
                            }
 
-
                            $data['NetworkName'] = array(
                               'id'         => $data_netn['networknames_id'],
                               'name'       => $data_netn['networkname'],
@@ -702,8 +699,6 @@ abstract class API extends CommonGLPI {
             }
          }
       }
-
-
 
       // retrieve item contracts
       if (isset($params['with_documents'])
@@ -901,7 +896,6 @@ abstract class API extends CommonGLPI {
                        'searchText'       => NULL);
       $params = array_merge($default, $params);
 
-
       if (!$itemtype::canView()) {
          return $this->messageRightError();
       }
@@ -933,7 +927,6 @@ abstract class API extends CommonGLPI {
       if (!isset($item->fields[$params['sort']])) {
          $this->returnError("sort param is not a field of $table");
       }
-
 
       //specific case for restriction
       $already_linked_table = array();
@@ -1290,8 +1283,8 @@ abstract class API extends CommonGLPI {
       // Check the criterias are valid
       if (isset($params['criteria']) && is_array($params['criteria'])) {
          foreach ($params['criteria'] as $criteria) {
-            if (isset($criteria['field']) 
-                  && ctype_digit($criteria['field']) 
+            if (isset($criteria['field'])
+                  && ctype_digit($criteria['field'])
                   && !array_key_exists($criteria['field'], $soptions)) {
                return $this->returnError(__("Bad field ID in search criteria"));
             }
@@ -1347,7 +1340,7 @@ abstract class API extends CommonGLPI {
                             400,
                             "ERROR_RANGE_EXCEED_TOTAL");
       }
-      
+
       // fix end range
       if ($params['range'][1] > $cleaned_data['totalcount'] - 1) {
          $params['range'][1] = $cleaned_data['totalcount'] - 1;
@@ -1469,6 +1462,9 @@ abstract class API extends CommonGLPI {
       $response = "";
       if (is_object($input)) {
          $input = array($input);
+         $isMultiple = false;
+      } else {
+         $isMultiple = true;
       }
 
       if (is_array($input)) {
@@ -1498,7 +1494,7 @@ abstract class API extends CommonGLPI {
                $idCollection[] = array('id' => $new_id, 'message' => $this->getGlpiLastMessage());
             }
          }
-         if (count($idCollection) > 1) {
+         if ($isMultiple) {
             if ($failed == count($input)) {
                $this->returnError($idCollection, 400, "ERROR_GLPI_ADD", false);
             } else if ($failed > 0) {
@@ -1561,6 +1557,9 @@ abstract class API extends CommonGLPI {
       $response = "";
       if (is_object($input)) {
          $input = array($input);
+         $isMultiple = false;
+      } {
+         $isMultiple = true;
       }
 
       if (is_array($input)) {
@@ -1592,7 +1591,7 @@ abstract class API extends CommonGLPI {
                }
             }
          }
-         if (count($idCollection) > 1) {
+         if ($isMultiple) {
             if ($failed == count($input)) {
                $this->returnError($idCollection, 400, "ERROR_GLPI_UPDATE", false);
             } else if ($failed > 0) {
@@ -1637,6 +1636,12 @@ abstract class API extends CommonGLPI {
       $input    = $params['input'];
       $item     = new $itemtype;
       $response = "";
+      if (is_object($input)) {
+         $input = array($input);
+         $isMultiple = false;
+      } else {
+         $isMultiple = true;
+      }
 
       if (is_array($input)) {
          $idCollection = array();
@@ -1684,50 +1689,20 @@ abstract class API extends CommonGLPI {
                }
             }
          }
-         if ($failed == count($input)) {
-            $this->returnError($idCollection, 400, "ERROR_GLPI_DELETE", false);
-         } else if ($failed > 0) {
-            $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_DELETE", false);
-         }
-
-         return $idCollection;
-
-      } else if (is_object($input)) {
-         $input = get_object_vars($input);
-
-         if (!$item->getFromDB($input['id'])) {
-            $this->messageNotfoundError();
-         }
-
-         // Force purge for templates / may not to be deleted / not dynamic lockable items
-         // see CommonDBTM::delete()
-         // Needs factorization
-         if ($item->isTemplate()
-             || !$item->maybeDeleted()
-             // Do not take into account deleted field if maybe dynamic but not dynamic
-             || ($item->useDeletedToLockIfDynamic()
-                 && !$item->isDynamic())) {
-            $params['force_purge'] = 1;
+         if ($isMultiple) {
+            if ($failed == count($input)) {
+               $this->returnError($idCollection, 400, "ERROR_GLPI_DELETE", false);
+            } else if ($failed > 0) {
+               $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_DELETE", false);
+            }
          } else {
-            $params['force_purge'] = filter_var($params['force_purge'], FILTER_VALIDATE_BOOLEAN);
+            if ($failed > 0) {
+               $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_DELETE", false);
+            } else {
+               return $idCollection;
+            }
          }
 
-         //check rights
-         if ($params['force_purge']
-             && !$item->can($input['id'], PURGE)
-             || !$params['force_purge']
-             && !$item->can($input['id'], DELETE)) {
-            $this->messageRightError();
-         }
-
-         // delete item
-         if (! $item->delete($input,
-                             $params['force_purge'],
-                             $params['history'])) {
-            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_DELETE", false);
-         } else {
-            $idCollection[] = array($item->fields["id"] => true);
-         }
          return $idCollection;
 
       } else {
