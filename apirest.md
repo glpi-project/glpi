@@ -1016,7 +1016,7 @@ $ curl -X PUT \
 'http://path/to/glpi/apirest.php/Computer/10'
 
 < 200 OK
-[{"10":true}]
+[{"10":true, "message": ""}]
 
 
 $ curl -X PUT \
@@ -1027,7 +1027,7 @@ $ curl -X PUT \
 'http://path/to/glpi/apirest.php/Computer/'
 
 < 200 OK
-[{"11":true}]
+[{"11":true, "message": ""}]
 
 
 $ curl -X PUT \
@@ -1076,8 +1076,8 @@ $ curl -X DELETE \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
 'http://path/to/glpi/apirest.php/Computer/16?force_purge=true'
 
-< 204 OK
-
+< 200 OK
+{"16":true, "message": ""}
 
 $ curl -X DELETE \
 -H 'Content-Type: application/json' \
@@ -1087,7 +1087,7 @@ $ curl -X DELETE \
 'http://path/to/glpi/apirest.php/Computer/'
 
 < 200 OK
-[{"11":true}]
+{"11":true, "message": ""}
 
 
 $ curl -X DELETE \
