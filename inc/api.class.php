@@ -1499,7 +1499,7 @@ abstract class API extends CommonGLPI {
                $this->returnError($idCollection, 400, "ERROR_GLPI_ADD", false);
             } else if ($failed > 0) {
                $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_ADD", false);
-            } 
+            }
          } else {
             if ($failed > 0) {
                $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_ADD", false);
@@ -1507,7 +1507,6 @@ abstract class API extends CommonGLPI {
                return $idCollection[0];
             }
          }
-
          return $idCollection;
 
       } else {
@@ -1601,7 +1600,7 @@ abstract class API extends CommonGLPI {
             if ($failed > 0) {
                $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
             } else {
-               return $idCollection;
+               return $idCollection[0];
             }
          }
          return $idCollection;
@@ -1699,7 +1698,7 @@ abstract class API extends CommonGLPI {
             if ($failed > 0) {
                $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_DELETE", false);
             } else {
-               return $idCollection;
+               return $idCollection[0];
             }
          }
 
