@@ -57,6 +57,9 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
          }
       }
       unset($DB->objcreated);
+
+      //reset entity in session
+      Session::changeActiveEntities(getItemByTypeName('Entity', '_test_root_entity',  true), true);
    }
 
 
