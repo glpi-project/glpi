@@ -1077,7 +1077,7 @@ $ curl -X DELETE \
 'http://path/to/glpi/apirest.php/Computer/16?force_purge=true'
 
 < 200 OK
-{"16":true, "message": ""}
+[{"16":true, "message": ""}]
 
 $ curl -X DELETE \
 -H 'Content-Type: application/json' \
