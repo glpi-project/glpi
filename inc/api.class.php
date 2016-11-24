@@ -1551,7 +1551,7 @@ abstract class API extends CommonGLPI {
    protected function updateItems($itemtype, $params = array()) {
 
       $this->initEndpoint();
-      $input    = $params['input'];
+      $input    = isset($params['input']) ? $params["input"] : null;
       $item     = new $itemtype;
       $response = "";
       if (is_object($input)) {
