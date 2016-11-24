@@ -922,7 +922,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                          ['headers' => [
                                              'Session-Token' => $session_token],
                                           'query' => [
-                                             'force_purge'   => true]]);
+                                             'force_purge'   => "true"]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(204, $res->getStatusCode());
 
