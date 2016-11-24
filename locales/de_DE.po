@@ -82,7 +82,7 @@ msgstr "Passwort vergessen?"
 
 #: index.php:152
 msgid "You must activate the JavaScript function of your browser"
-msgstr "Die JavaScript Funktion von Browser muss aktiviert sein"
+msgstr "Die JavaScript Funktion Ihres Browsers muss aktiviert sein"
 
 #: index.php:158
 msgid "You must accept cookies to reach this application"
@@ -771,7 +771,7 @@ msgstr "Gültig bis"
 
 #: ajax/resaperiod.php:68
 msgid "By day"
-msgstr "Täglich."
+msgstr "Täglich"
 
 #: ajax/resaperiod.php:78
 msgid "Each month, same date"
@@ -808,7 +808,7 @@ msgstr "Angezeigte Elemente"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:63
 msgid "Choose an existing device"
-msgstr "Wähle ein besetehendes Gerät aus"
+msgstr "Wähle ein bestehendes Gerät aus"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:64
 msgid "and/or"
@@ -820,7 +820,7 @@ msgstr "Neue Geräte hinzufügen"
 
 #: ajax/selectUnaffectedOrNewItem_Device.php:67
 msgid "No unaffected device !"
-msgstr "Kein nichtbetroffenes Gerät!"
+msgstr "Kein unbetroffenes Gerät!"
 
 #: ajax/subvisibility.php:64
 msgid "No restriction"
@@ -992,7 +992,7 @@ msgstr "Zugriff verweigert"
 
 #: config/config.php:197 config/config.php:205
 msgid "Service is down for maintenance. It will be back shortly."
-msgstr "Dienst wegen Unterhaltsabeiten abgeschaltet. Wird in kurze wieder verfügbar sein."
+msgstr "Der Dienst wurde wegen Wartungsabeiten abgeschaltet. Er wird in Kürze wieder verfügbar sein."
 
 #: config/config.php:223 config/config.php:242
 msgid ""
@@ -1002,7 +1002,7 @@ msgstr "Die Version der Datenbank ist nicht mit der installierten Version der An
 
 #: config/config.php:235 install/install.php:194 install/install.php:204
 msgid "Try again"
-msgstr "Noch mal versuchen"
+msgstr "Noch einmal versuchen"
 
 #: config/config.php:243 inc/plugin.class.php:513 install/install.php:152
 msgctxt "button"
@@ -1014,7 +1014,7 @@ msgid ""
 "You are trying to use GLPI with outdated files compared to the version of "
 "the database. Please install the correct GLPI files corresponding to the "
 "version of your database."
-msgstr "Sie versuchen GLPI mit veralteten Dateien verglichen zu Ihren Datenbank Version zu starten. Bitte installieren Sie die GLPI Dateien die zu Ihren Datenbank Version zusammenpassen"
+msgstr "Sie versuchen GLPI, verglichen mit Ihren Datenbank Version, mit veralteten Dateien zu starten. Bitte installieren Sie die GLPI Dateien, die zu Ihrer Datenbank Version passen"
 
 #: front/allassets.php:44 inc/bookmark.class.php:692 inc/config.class.php:482
 #: inc/html.class.php:1416 inc/stat.class.php:1538 inc/stat.class.php:1550
@@ -1217,7 +1217,7 @@ msgstr "Die aktuelle Datenbank mit dem Backup  %s ersetzen?"
 msgid ""
 "Warning, your actual database will be totaly overwriten by the database you "
 "want to restore !!!"
-msgstr "Achtung, die aktuell verwendete Datenbank wird mit der Datenbank, die zurückgespielt weden soll, komplett überschrieben !!!"
+msgstr "Achtung, die aktuell verwendete Datenbank wird mit der Datenbank, die zurückgespielt werden soll, komplett überschrieben !!!"
 
 #: front/backup.php:665
 msgid "Restore"
@@ -1292,7 +1292,7 @@ msgstr "%s löscht ein Element"
 #: front/supplier.form.php:74 front/ticket.form.php:102 front/user.form.php:91
 #, php-format
 msgid "%s restores an item"
-msgstr "%s stellt Element wieder her"
+msgstr "%s stellt ein Element wieder her"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:88 front/cartridgeitem.form.php:86
@@ -1317,7 +1317,7 @@ msgstr "%s stellt Element wieder her"
 #: front/ticket.form.php:93 front/transfer.form.php:62 front/user.form.php:98
 #, php-format
 msgid "%s purges an item"
-msgstr "%s bereinigt Element"
+msgstr "%s bereinigt ein Element"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:98 front/cartridgeitem.form.php:96
@@ -1786,41 +1786,41 @@ msgstr[1] "Modelle"
 #: inc/dropdown.class.php:826 inc/rule.class.php:284
 msgid "Computer model"
 msgid_plural "Computer models"
-msgstr[0] "Computer-Modell"
-msgstr[1] "Computer-Modelle"
+msgstr[0] "Computermodell"
+msgstr[1] "Computermodelle"
 
 #: front/dictionnary.php:75 inc/dropdown.class.php:833
 #: inc/monitormodel.class.php:48 inc/rule.class.php:297
 msgid "Monitor model"
 msgid_plural "Monitor models"
-msgstr[0] "Monitor-Modell"
-msgstr[1] "Monitor-Modelle"
+msgstr[0] "Monitormodell"
+msgstr[1] "Monitormodelle"
 
 #: front/dictionnary.php:78 inc/cartridgeitem.class.php:379
 #: inc/dropdown.class.php:831 inc/printermodel.class.php:48
 #: inc/rule.class.php:310
 msgid "Printer model"
 msgid_plural "Printer models"
-msgstr[0] "Drucker-Modell"
-msgstr[1] "Drucker-Modelle"
+msgstr[0] "Druckermodell"
+msgstr[1] "Druckermodelle"
 
 #: front/dictionnary.php:81
 msgid "Device model"
 msgid_plural "Device models"
-msgstr[0] "Gerät-Modell"
-msgstr[1] "Gerät-Modelle"
+msgstr[0] "Gerätemodell"
+msgstr[1] "Gerätemodelle"
 
 #: front/dictionnary.php:84
 msgid "Network equipment model"
 msgid_plural "Network equipment models"
-msgstr[0] "Netzwerkgerät-Modell"
-msgstr[1] "Netzwerkgerät-Modelle"
+msgstr[0] "Netzwerkgerätemodell"
+msgstr[1] "Netzwerkgerätemodelle"
 
 #: front/dictionnary.php:88 inc/dropdown.class.php:838
 #: inc/phonemodel.class.php:48 inc/rule.class.php:349
 msgid "Phone model"
 msgid_plural "Phone models"
-msgstr[0] "Telefonemodell"
+msgstr[0] "Telefonmodell"
 msgstr[1] "Telefonmodelle"
 
 #: front/dictionnary.php:95 front/stat.graph.php:152
@@ -1909,15 +1909,15 @@ msgstr[1] "Computertypen"
 #: inc/monitortype.class.php:47 inc/rule.class.php:375
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] "Bildschirm-Typ"
-msgstr[1] "Monitor Typ"
+msgstr[0] "Bildschirmtyp"
+msgstr[1] "Monitortypen"
 
 #: front/dictionnary.php:103 inc/dropdown.class.php:789
 #: inc/printertype.class.php:47 inc/rule.class.php:388
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] "Drucker-Typ"
-msgstr[1] "Drucker Typ"
+msgstr[0] "Druckertyp"
+msgstr[1] "Druckertypen"
 
 #: front/dictionnary.php:106 inc/report.class.php:370 inc/report.class.php:379
 msgid "Device type"
@@ -1928,8 +1928,8 @@ msgstr[1] "Gerätetypen"
 #: front/dictionnary.php:109
 msgid "Network equipment type"
 msgid_plural "Network equipment types"
-msgstr[0] "Netzwerk Gerätetypen"
-msgstr[1] "Netzwerk Gerätetypen"
+msgstr[0] "Netzwerkgerätetypen"
+msgstr[1] "Netzwerkgerätetypen"
 
 #: front/dictionnary.php:113 inc/dropdown.class.php:795
 #: inc/phonetype.class.php:47 inc/rule.class.php:427
@@ -2035,11 +2035,11 @@ msgstr "Die Grösse der hochzuladende Datei übersteigt die upload_max_filesize 
 msgid ""
 "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in "
 "the HTML form"
-msgstr "Die Grösse der hochzuladende Datei übersteigt die MAX_FILE_SIZE Vorgabe spezifiziert im HTML Formular"
+msgstr "Die Größe der hochzuladende Datei übersteigt die MAX_FILE_SIZE Vorgabe spezifiziert im HTML Formular"
 
 #: front/fileupload.php:56
 msgid "The uploaded file was only partially uploaded"
-msgstr "Die hochgeladene Datei wurde nur teilsweise hochgeladen"
+msgstr "Die hochgeladene Datei wurde nur teilweise hochgeladen"
 
 #: front/fileupload.php:57 inc/rulecollection.class.php:1046
 msgid "No file was uploaded"
@@ -2063,7 +2063,7 @@ msgstr "Die Grösse der hochzuladende Datei übersteigt die post_max_size Vorgab
 
 #: front/fileupload.php:62
 msgid "File is too big"
-msgstr "Datei zu gross"
+msgstr "Datei zu groß"
 
 #: front/fileupload.php:63
 msgid "File is too small"
@@ -2121,7 +2121,7 @@ msgstr "Kontakt"
 
 #: front/find_num.php:96 inc/ticket.class.php:3174
 msgid "Hardware type"
-msgstr "Hardwaretyp"
+msgstr "Hardware-Typ"
 
 #: front/find_num.php:97 front/item_ticket.form.php:54
 #: inc/commonitilobject.class.php:5364 inc/item_ticket.class.php:1228
@@ -2336,7 +2336,7 @@ msgstr "%s fügt eine Vorgabe hinzu"
 #: inc/knowbase.class.php:53 inc/knowbaseitem.class.php:65
 #: inc/profile.class.php:934 inc/profile.class.php:1673
 msgid "Knowledge base"
-msgstr "WissensDB"
+msgstr "Wissensdatenbank"
 
 #: front/ldap.group.import.php:45 front/ldap.group.php:44
 #: front/ldap.import.php:51 front/ldap.php:42 inc/group.class.php:167
@@ -2398,7 +2398,7 @@ msgstr "Ihre PHP Installation wurde ohne IMAP Unterstützung kompiliert"
 
 #: front/massiveaction.php:50
 msgid "Bulk modification error"
-msgstr "Gruppen Mutation Fehler"
+msgstr "Fehler bei Batch-Änderung"
 
 #: front/massiveaction.php:62
 msgid "Bulk modification"
@@ -2898,7 +2898,7 @@ msgstr "LDAP kann nicht als Authentifizierungsquelle genutzt werden"
 msgid "Mail server"
 msgid_plural "Mail servers"
 msgstr[0] "Mailserver"
-msgstr[1] "Mail Server"
+msgstr[1] "Mailserver"
 
 #: front/setup.auth.php:63 inc/authmail.class.php:208
 msgid "Impossible to use email server as external source of connection"
@@ -2957,7 +2957,7 @@ msgstr "%s aktualisiert ein SLA"
 #: front/slalevel.form.php:74
 #, php-format
 msgid "%s purges a sla level"
-msgstr "%s ein SLA Stufe bereinigen"
+msgstr "%s eine SLA Stufe bereinigen"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:58
@@ -3022,7 +3022,7 @@ msgstr[1] "Geöffnet"
 msgctxt "ticket"
 msgid "Solved"
 msgid_plural "Solved"
-msgstr[0] ""
+msgstr[0] "Gelöst"
 msgstr[1] "Gelöst"
 
 #: front/stat.global.php:98 front/stat.graph.php:343 inc/stat.class.php:446
@@ -3067,7 +3067,7 @@ msgstr "Durchschnittliche Dauer"
 #: inc/config.class.php:1270 inc/config.class.php:1287 inc/slt.class.php:225
 msgid "Hour"
 msgid_plural "Hours"
-msgstr[0] "Stunden"
+msgstr[0] "Stunde"
 msgstr[1] "Stunden"
 
 #: front/stat.global.php:207 front/stat.graph.php:448 inc/stat.class.php:462
@@ -3081,7 +3081,7 @@ msgstr[1] "Geöffnet"
 msgctxt "survey"
 msgid "Answered"
 msgid_plural "Answered"
-msgstr[0] ""
+msgstr[0] "Beantwortet"
 msgstr[1] "Beantwortet"
 
 #: front/stat.global.php:224 front/stat.graph.php:465
@@ -3276,8 +3276,8 @@ msgstr "Titel"
 #: inc/solutiontype.class.php:47
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] "Typ der Lösung"
-msgstr[1] "Lösungs-Typen"
+msgstr[0] "Lösungstyp"
+msgstr[1] "Lösungstypen"
 
 #: front/stat.graph.php:228 front/stat.tracking.php:97
 #: inc/dropdown.class.php:771 inc/notificationtargetticket.class.php:706
@@ -3385,7 +3385,7 @@ msgstr "Autor"
 
 #: front/stat.tracking.php:84 front/stat.tracking.php:112
 msgid "Group tree"
-msgstr "Gruppen-Baum"
+msgstr "Gruppenbaum"
 
 #: front/stat.tracking.php:89
 msgid "Category tree"
@@ -3497,7 +3497,7 @@ msgstr "%s fügt ein vordefiniertes Feld hinzu"
 #: front/ticket_ticket.form.php:52
 #, php-format
 msgid "%s purges link between tickets"
-msgstr "%s bereinigt Verknüpfung zwischen Ticket"
+msgstr "%s bereinigt Verknüpfung zwischen Tickets"
 
 #: front/tracking.injector.php:71 inc/ticket.class.php:1776
 msgid "Your ticket has been registered, its treatment is in progress."
@@ -3626,7 +3626,7 @@ msgstr "Parameter Login, Passwort oder Benutzertoken fehlt"
 
 #: inc/api.class.php:172
 msgid "usage of initSession resource with credentials is disabled"
-msgstr ""
+msgstr "Die Nutzung der initSession Ressource mit Anmeldedaten ist deaktiviert"
 
 #: inc/api.class.php:181
 msgid "parameter user_token seems invalid"
@@ -3638,7 +3638,7 @@ msgstr "Sie haben keine ausreichenden Rechte für diese Aktion."
 
 #: inc/api.class.php:941
 msgid "parent itemtype not found or not an instance of CommonDBTM"
-msgstr ""
+msgstr "Der übergeordnete Typ des Elements wurde nicht gefunden oder ist keine Insatz von CommonDBTM."
 
 #: inc/api.class.php:1711
 msgid "missing parameter app_token"
@@ -3672,7 +3672,7 @@ msgstr "Der Parameter session_token fehlt oder ist leer"
 #: inc/api.class.php:2150
 #, php-format
 msgid "view documentation in your browser at %s"
-msgstr ""
+msgstr "Öffnen Sie die Dokumentation in Ihrem Browser unter %s"
 
 #: inc/apiclient.class.php:61
 msgid "API client"
@@ -3792,7 +3792,7 @@ msgstr "Rest API"
 
 #: inc/apirest.class.php:292
 msgid "resource not found or not an instance of CommonDBTM"
-msgstr ""
+msgstr "Ressource nicht gefunden oder keine Instanz von CommonDBTM"
 
 #: inc/apirest.class.php:297
 msgid "missing resource"
@@ -3808,7 +3808,7 @@ msgstr "Fehlende Typzuweisung"
 
 #: inc/apixmlrpc.class.php:147
 msgid "itemtype not found or not an instance of CommonDBTM"
-msgstr ""
+msgstr "Element nicht gefunden oder keine Instanz von CommonDBTM"
 
 #: inc/apixmlrpc.class.php:156
 msgid "missing id"
@@ -3833,7 +3833,7 @@ msgstr "Passwort nicht angegeben"
 
 #: inc/auth.class.php:502
 msgid "Login with external token disabled"
-msgstr "Anmeldung mit externen Token ist deaktiviert"
+msgstr "Anmeldung mit externem Token ist deaktiviert"
 
 #: inc/auth.class.php:659 inc/auth.class.php:667
 msgid "Empty login or password"
@@ -3971,8 +3971,8 @@ msgstr "Andere Authentifizierung über HTTP-Request übergeben"
 #: inc/ssovariable.class.php:52
 msgid "Field storage of the login in the HTTP request"
 msgid_plural "Fields storage of the login in the HTTP request"
-msgstr[0] "Fields storage of the login in the HTTP Anfrage"
-msgstr[1] "Fields storage of the login in the HTTP Anfrage"
+msgstr[0] "Field storage des Logins der HTTP Anfrage"
+msgstr[1] "Field storage des Logins der HTTP Anfrage"
 
 #: inc/auth.class.php:1271
 msgid "Remove the domain of logins like login@domain"
@@ -4204,7 +4204,7 @@ msgstr "Liste der Replikate von LDAP-Verzeichnissen"
 #: inc/authldap.class.php:538 inc/authldap.class.php:3091
 msgid "Replicate"
 msgid_plural "Replicates"
-msgstr[0] ""
+msgstr[0] "Replikation"
 msgstr[1] "Replikation"
 
 #: inc/authldap.class.php:552 inc/authldap.class.php:675
@@ -4270,7 +4270,7 @@ msgstr "Bild"
 
 #: inc/authldap.class.php:757
 msgid "You can use a field name or an expression using various %{fieldname}"
-msgstr ""
+msgstr "Sie können einen oder mehre Feldnamen und Ausdruck aus %{fieldname} benutzen"
 
 #: inc/authldap.class.php:758
 msgid "Example for location: %{city} > %{roomnumber}"
@@ -4393,7 +4393,7 @@ msgstr "Einfacher Modus"
 #: inc/authldap.class.php:2721
 msgctxt "button"
 msgid "To change"
-msgstr "&Auml;ndern"
+msgstr "Ändern"
 
 #: inc/authldap.class.php:2743 inc/entity.class.php:864
 #: inc/html.class.php:3704 inc/rulecollection.class.php:1207
@@ -4435,7 +4435,7 @@ msgstr "Datumsfilter aktivieren"
 
 #: inc/authldap.class.php:3051
 msgid "View updated users"
-msgstr "aktualisierte Benutzer anzeigen"
+msgstr "Aktualisierte Benutzer anzeigen"
 
 #: inc/authldap.class.php:3052 inc/networkport.class.php:870
 #: inc/software.class.php:310
@@ -5118,7 +5118,7 @@ msgstr "Lagerplatz"
 #: inc/cartridgeitem.class.php:238 inc/cartridgeitem.class.php:361
 #: inc/consumableitem.class.php:198 inc/consumableitem.class.php:311
 msgid "Alert threshold"
-msgstr "Schwelle zur Benachrichtigung"
+msgstr "Schwellenwert zur Benachrichtigung"
 
 #: inc/cartridgeitem.class.php:313 inc/printer.class.php:631
 msgid "Number of used cartridges"
@@ -5211,8 +5211,7 @@ msgstr[1] "RSS-Feeds"
 
 #: inc/central.class.php:171
 #, php-format
-msgid ""
-"For security reasons, please change the password for the default users: %s"
+msgid "For security reasons, please change the password for the default users: %s"
 msgstr "Aus Sicherheitsgründen sollten Sie das Passwort des Default-Benutzers ändern: %s"
 
 #: inc/central.class.php:180
@@ -5223,7 +5222,7 @@ msgstr "Bitte Folgende Datei aus Sicherheitsgründen löschen: %s"
 #: inc/central.class.php:190
 #, php-format
 msgid "SQL strict mode is not fully enabled, recommended for development: %s"
-msgstr ""
+msgstr "SQL strict mode ist nicht vollständig aktiviert, wird aber zu Entwicklungszwecken empfohlen: %s"
 
 #: inc/central.class.php:204
 msgid "The following SQL tables are marked as crashed:"
@@ -5231,7 +5230,7 @@ msgstr "Die folgenden SQL-Tabellen sind als abgestürzt markiert:"
 
 #: inc/central.class.php:215 inc/central.class.php:216 inc/html.class.php:1806
 msgid "SQL replica: read only"
-msgstr ""
+msgstr "SQL Replikation: read only"
 
 #: inc/change.class.php:75 inc/notificationtargetproblem.class.php:234
 #: inc/notificationtargetproblem.class.php:246
@@ -5688,11 +5687,11 @@ msgstr "Zweites Element"
 #: inc/commondbconnexity.class.php:526
 #, php-format
 msgid "Select a peer for %s:"
-msgstr "wähle ein Peer aus für %s:"
+msgstr "Wähle ein Peer aus für %s:"
 
 #: inc/commondbconnexity.class.php:562
 msgid "Unable to reaffect given elements !"
-msgstr "Wieder Zuweisung des vorgegebenes Elements fehlgeschlagen !"
+msgstr "Erneute Zuweisung des vorgegebenes Elements fehlgeschlagen !"
 
 #: inc/commondbrelation.class.php:1213
 msgid "Remove all at once"
@@ -5763,7 +5762,7 @@ msgstr "Wiederherstellen"
 
 #: inc/commondbtm.class.php:2107
 msgid "Check to keep the devices while deleting this item"
-msgstr "Prüfen ob die Geräte aufbewart werden sollen obwohl das Element gelöscht wird."
+msgstr "Prüfen ob die Geräte aufbewahrt werden sollen, obwohl das Element gelöscht wird."
 
 #: inc/commondbtm.class.php:2127 inc/notepad.class.php:320
 #: inc/ticket.class.php:4431 inc/ticketfollowup.class.php:778
@@ -5912,7 +5911,7 @@ msgstr "Sie können diesen Eintrag nicht löschen, da diese Unterpunkte besitzt"
 
 #: inc/commondropdown.class.php:547
 msgid "Caution: you're about to remove a heading used for one or more items."
-msgstr "Achtung! Die Rubrik die Sie entfernen wollen, wird noch verwendet.."
+msgstr "Achtung! Die Rubrik die Sie entfernen wollen, wird noch verwendet."
 
 #: inc/commondropdown.class.php:552
 msgid ""
@@ -5932,7 +5931,7 @@ msgstr "Abbrechen"
 
 #: inc/commondropdown.class.php:568
 msgid "You can also replace all uses of this dropdown by another."
-msgstr "Sie können auch diese Rubrik global durch eine Andere ersetzen::"
+msgstr "Sie können auch diese Rubrik global durch eine Andere ersetzen."
 
 #: inc/commondropdown.class.php:590
 msgctxt "button"
@@ -6436,7 +6435,7 @@ msgstr "Eine Lösung suchen"
 
 #: inc/commonitilobject.class.php:4127
 msgid "Save and add to the knowledge base"
-msgstr "Speichern und der WissensDB hinzufügen"
+msgstr "Speichern und der Wissensdatenbank hinzufügen"
 
 #: inc/commonitilobject.class.php:4409 inc/ruleticket.class.php:466
 #: inc/ruleticket.class.php:572 inc/slt.class.php:628
@@ -6494,7 +6493,7 @@ msgstr "Kein Objekt in Bearbeitung"
 
 #: inc/commonitilobject.class.php:5362
 msgid "Assigned"
-msgstr "zugewiesen"
+msgstr "Zugewiesen"
 
 #: inc/commonitilobject.class.php:5368
 msgid "Planification"
@@ -6644,8 +6643,7 @@ msgstr "Genehmigungsanfrage an %s gesendet"
 
 #: inc/commonitilvalidation.class.php:291
 #, php-format
-msgid ""
-"The selected user (%s) has no valid email address. The request has been "
+msgid "The selected user (%s) has no valid email address. The request has been "
 "created, without email confirmation."
 msgstr "Der ausgewählte Benutzer (%s) hat keine gültige E-Mail-Adresse. Die Anfrage wurde erstellt, allerdings ohne E-Mail-Benachrichtigung."
 
@@ -6871,25 +6869,19 @@ msgid "Product ID"
 msgstr "Produktkennung"
 
 #: inc/computer.class.php:281 inc/computer_item.class.php:184
-msgid ""
-"Alternate username updated. The connected items have been updated using this"
-" alternate username."
+msgid "Alternate username updated. The connected items have been updated using this alternate username."
 msgstr "Kontakt aktualisiert. Die mit dem Kontakt verbunden Einträge wurden ebenfalls aktualisiert."
 
 #: inc/computer.class.php:336 inc/computer_item.class.php:173
-msgid ""
-"User or group updated. The connected items have been moved in the same "
-"values."
+msgid "User or group updated. The connected items have been moved in the same values."
 msgstr "Benutzer oder Gruppe aktualisiert. Die verbundenen Elemente wurden mit den selben Werten aktualisiert."
 
 #: inc/computer.class.php:376 inc/computer_item.class.php:193
-msgid ""
-"Status updated. The connected items have been updated using this status."
+msgid "Status updated. The connected items have been updated using this status."
 msgstr "Statusaktualisierung. Die verbundenen Elemente wurden gemäß des Status des Computers aktualisiert."
 
 #: inc/computer.class.php:419 inc/computer_item.class.php:158
-msgid ""
-"Location updated. The connected items have been moved in the same location."
+msgid "Location updated. The connected items have been moved in the same location."
 msgstr "Standort aktualisiert. Die verbundenen Elemente wurden mit den selben Werten aktualisiert."
 
 #. TRANS: %1$s is a string, %2$s a second one without spaces between them : to
@@ -6937,7 +6929,7 @@ msgstr "%1$s%2$s"
 msgid "Network"
 msgid_plural "Networks"
 msgstr[0] "Netzwerk"
-msgstr[1] "Netzwerk"
+msgstr[1] "Netzwerke"
 
 #: inc/computer.class.php:640 inc/computer.class.php:851
 #: inc/domain.class.php:50 inc/dropdown.class.php:901
@@ -6947,7 +6939,7 @@ msgstr[1] "Netzwerk"
 msgid "Domain"
 msgid_plural "Domains"
 msgstr[0] "Domäne"
-msgstr[1] "Domains"
+msgstr[1] "Domänen"
 
 #: inc/computer.class.php:702 inc/computer_item.class.php:286
 #: inc/computer_item.class.php:311 inc/computer_item.class.php:412
@@ -6982,7 +6974,7 @@ msgstr[1] "Betriebssystemarchitekturen"
 
 #: inc/computer.class.php:792
 msgid "Kernel version of the operating system"
-msgstr "Kenelversion des Betriebssystem"
+msgstr "Kenelversion des Betriebssystems"
 
 #: inc/computer.class.php:890 inc/deviceprocessor.class.php:48
 msgid "Processor"
@@ -7004,8 +6996,8 @@ msgstr "MHz"
 #: inc/dropdown.class.php:807
 msgid "Memory type"
 msgid_plural "Memory types"
-msgstr[0] "Arbeitsspeicher Typ"
-msgstr[1] "Arbeitsspeicher Typen"
+msgstr[0] "Arbeitsspeichertyp"
+msgstr[1] "Arbeitsspeichertypen"
 
 #: inc/computer.class.php:924 inc/computer.class.php:925
 #: inc/computer.class.php:999 inc/computer.class.php:1043
@@ -7358,8 +7350,7 @@ msgid "Autocompletion of text fields"
 msgstr "Automatische Vervollständigung der Textfelder"
 
 #: inc/config.class.php:340
-msgid ""
-"Don't show search engine in dropdowns if the number of items is less than"
+msgid "Don't show search engine in dropdowns if the number of items is less than"
 msgstr "Such Maschine nicht in Dropdows anzeigen wenn der Anzahl Objekten kleiner ist als"
 
 #: inc/config.class.php:366
@@ -7388,11 +7379,11 @@ msgstr ""
 
 #: inc/config.class.php:395
 msgid "Profile to be used when locking items"
-msgstr ""
+msgstr "Bei gesperrten Elementen zu nutzendes Profil"
 
 #: inc/config.class.php:406
 msgid "List of items to lock"
-msgstr ""
+msgstr "Liste der zu sperrenden Elemente"
 
 #: inc/config.class.php:446 inc/config.class.php:2012 inc/entity.class.php:323
 #: inc/entity.class.php:771 inc/event.class.php:150 inc/html.class.php:1279
@@ -7564,17 +7555,15 @@ msgstr "Login mit Anmeldeinformationen aktivieren"
 
 #: inc/config.class.php:725
 msgid "Allow to login to api and get a session token with user credentials"
-msgstr ""
+msgstr "API Login mit session token und Anmeldedaten erlauben"
 
 #: inc/config.class.php:731
 msgid "Enable login with external token"
 msgstr "Login mit externem Token aktivieren"
 
 #: inc/config.class.php:732
-msgid ""
-"Allow to login to api and get a session token with user external token. See "
-"Remote access key in user Settings tab "
-msgstr ""
+msgid "Allow to login to api and get a session token with user external token. See Remote access key in user Settings tab"
+msgstr "API Login mit session token und externem Nutzer token erlauben. Der zugehörige Remotezugriff-Schlüssel ist in den persönlichen Einstellungen hinterlegt."
 
 #: inc/config.class.php:750
 msgid "Add API client"
@@ -7771,7 +7760,7 @@ msgstr "Vorauswahl als Techniker während der Ticket-Erstellung"
 
 #: inc/config.class.php:1187
 msgid "Pre-select me as a requester when creating a ticket"
-msgstr ""
+msgstr "Vorauswahl als Anforderer während der Ticket-Erstellung"
 
 #: inc/config.class.php:1196
 msgid "Priority colors"
@@ -7821,12 +7810,11 @@ msgstr "Schwellwert für den Status kritsich"
 
 #: inc/config.class.php:1297
 msgid "Auto-lock Mode"
-msgstr ""
+msgstr "Auto-lock Modus"
 
 #: inc/config.class.php:1299
-msgid ""
-"Direct Notification (requester for unlock will be the notification sender)"
-msgstr ""
+msgid "Direct Notification (requester for unlock will be the notification sender)"
+msgstr "Direkte Benachrichtigung (Anforderer zum Aufheben der Sperre als Sender)"
 
 #: inc/config.class.php:1325 inc/config.class.php:1624
 msgid "Password minimum length"
@@ -7866,7 +7854,7 @@ msgstr "Das Kennwort muss mindestens einen Kleinbuchstaben enthalten!"
 
 #: inc/config.class.php:1434
 msgid "Password must include at least a uppercase letter!"
-msgstr "Das Kennwort muss mindestens einen Grossbuchstaben enthalten!"
+msgstr "Das Kennwort muss mindestens einen Großbuchstaben enthalten!"
 
 #: inc/config.class.php:1442
 msgid "Password must include at least a symbol!"
@@ -8309,8 +8297,8 @@ msgstr "Kontakt hinzufügen"
 #: inc/contacttype.class.php:47 inc/dropdown.class.php:805
 msgid "Contact type"
 msgid_plural "Contact types"
-msgstr[0] "Kontakt-Typ"
-msgstr[1] "Kontakttyp"
+msgstr[0] "Kontakttyp"
+msgstr[1] "Kontakttypen"
 
 #: inc/contract.class.php:57 inc/contract.class.php:384
 #: inc/contract.class.php:392 inc/contract.class.php:403
@@ -8832,7 +8820,7 @@ msgstr "Log Dateien archivieren und ältere Dateien entfernen"
 
 #: inc/crontask.class.php:1673
 msgid "Number of days to keep archived logs"
-msgstr "Anzahl der Tage wie lange die archiviereten Protkolle aufbewart werden sollen"
+msgstr "Aufbewahrungsdauer der Protkolle in Tagen"
 
 #. TRANS: %d is a number of minutes
 #: inc/crontask.class.php:1688 inc/crontask.class.php:1692
@@ -8921,8 +8909,8 @@ msgstr[1] "Gehäuse"
 #: inc/devicecasetype.class.php:47 inc/dropdown.class.php:814
 msgid "Case type"
 msgid_plural "Case types"
-msgstr[0] "Gehäuse-Typ"
-msgstr[1] "Gehäuse Art"
+msgstr[0] "Gehäusetyp"
+msgstr[1] "Gehäusetypen"
 
 #: inc/devicecontrol.class.php:50
 msgid "Controller"
@@ -9247,7 +9235,7 @@ msgstr "Potenzielle Upload Attacke oder Datei zu groß. Verschieben der temporä
 
 #: inc/document.class.php:1142 inc/rulecollection.class.php:1053
 msgid "Unauthorized file type"
-msgstr "unerlaubter Dateityp"
+msgstr "Unerlaubter Dateityp"
 
 #: inc/document.class.php:1154
 #, php-format
@@ -9372,14 +9360,14 @@ msgstr[1] "Ticketkategorien"
 #: inc/dropdown.class.php:775 inc/projectstate.class.php:51
 msgid "Project state"
 msgid_plural "Project states"
-msgstr[0] "Projekt Status"
-msgstr[1] "Projekt Status"
+msgstr[0] "Projektstatus"
+msgstr[1] "Projektstatus"
 
 #: inc/dropdown.class.php:777 inc/projecttype.class.php:51
 msgid "Project type"
 msgid_plural "Project types"
-msgstr[0] "Projekt Typen "
-msgstr[1] "Projekt Typen "
+msgstr[0] "Projekttyp"
+msgstr[1] "Projekttypen"
 
 #: inc/dropdown.class.php:779 inc/projecttasktype.class.php:51
 msgid "Project tasks type"
@@ -9392,20 +9380,20 @@ msgstr[1] "Typen von Projekt Aufgaben"
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
 msgstr[0] "Netzwerkgerätetyp"
-msgstr[1] "Netzwerk Gerätetypen"
+msgstr[1] "Netzwerkgerätetypen"
 
 #: inc/dropdown.class.php:793 inc/peripheraltype.class.php:47
 msgid "Devices type"
 msgid_plural "Devices types"
-msgstr[0] "Peripherie-Typen"
-msgstr[1] "Gerätetypen"
+msgstr[0] "Peripherietyp"
+msgstr[1] "Peripherietypen"
 
 #: inc/dropdown.class.php:797 inc/softwarelicense.class.php:654
 #: inc/softwarelicensetype.class.php:47
 msgid "License type"
 msgid_plural "License types"
-msgstr[0] "Lizenz-Typen"
-msgstr[1] "Lizenztyp"
+msgstr[0] "Lizenztyp"
+msgstr[1] "Lizenztypen"
 
 #: inc/dropdown.class.php:811 inc/interfacetype.class.php:48
 msgid "Interface type (Hard drive...)"
@@ -9423,15 +9411,15 @@ msgstr[1] "Typen Telefonnetzteile"
 #: inc/rule.class.php:336
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
-msgstr[0] "Netzwerkgerät Modell"
-msgstr[1] "Netzwerkgeräte Modelle"
+msgstr[0] "Netzwerkgerätmodell"
+msgstr[1] "Netzwerkgerätemodelle"
 
 #: inc/dropdown.class.php:835 inc/peripheralmodel.class.php:48
 #: inc/rule.class.php:323
 msgid "Peripheral model"
 msgid_plural "Peripheral models"
-msgstr[0] "Gerät-Modelle"
-msgstr[1] "Gerät-Modelle"
+msgstr[0] "Gerätemodell"
+msgstr[1] "Gerätemodelle"
 
 #: inc/dropdown.class.php:854 inc/event.class.php:155 inc/html.class.php:1288
 #: inc/infocom.class.php:150 inc/profile.class.php:104
@@ -9525,7 +9513,7 @@ msgstr[1] "Netzwerk Namen"
 msgid "Software category"
 msgid_plural "Software categories"
 msgstr[0] "Softwarekategorie"
-msgstr[1] "Software-Kategorien"
+msgstr[1] "Softwarekategorien"
 
 #: inc/dropdown.class.php:925 inc/usertitle.class.php:47
 msgid "User title"
@@ -10127,9 +10115,7 @@ msgid "FQDN"
 msgstr "FQDN"
 
 #: inc/fqdn.class.php:63
-msgid ""
-"Fully Qualified Domain Name. Use the classical notation (labels separated by"
-" dots). For example: indepnet.net"
+msgid "Fully Qualified Domain Name. Use the classical notation (labels separated by dots). For example: indepnet.net"
 msgstr "Fully Qualified Domain Name. Bitte klassische Notation benutzen (Namensteile durch Punkte getrennt). Z.B.: indepnet.net"
 
 #: inc/fqdn.class.php:84
@@ -10221,7 +10207,7 @@ msgstr "Beauftragter"
 
 #: inc/group.class.php:527
 msgid "Can be in charge of a task"
-msgstr ""
+msgstr "Kann für Aufgabe verantworlich sein"
 
 #: inc/group_user.class.php:151 inc/user.class.php:2449
 msgid "Associate to a group"
@@ -10382,9 +10368,7 @@ msgid "Selection too large, massive action disabled."
 msgstr "Auswahl zu groß, Batch-Aktualisierungen deaktiviert."
 
 #: inc/html.class.php:2950
-msgid ""
-"To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
-" configuration."
+msgid "To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration."
 msgstr "Um den Limit zu erhöhen muss der Wert von max_input_vars oder von suhosin.post.max_vars in der php-Konfiguration geändert werden."
 
 #: inc/html.class.php:3486
@@ -10797,7 +10781,7 @@ msgstr "Komponententyp"
 
 #: inc/item_devices.class.php:366
 msgid "Specificities"
-msgstr "Spezifitäten"
+msgstr "Spezifikationen"
 
 #: inc/item_devices.class.php:419
 msgid "Add a new component"
@@ -11151,7 +11135,7 @@ msgstr[1] "Sperrungen"
 
 #: inc/lock.class.php:81
 msgid "Locked items"
-msgstr "gesperrte Elemente"
+msgstr "Gesperrte Elemente"
 
 #: inc/lock.class.php:314
 msgctxt "button"
@@ -11160,7 +11144,7 @@ msgstr "Entsperren"
 
 #: inc/lock.class.php:317
 msgid "No locked item"
-msgstr "kein gesperrtes Element"
+msgstr "Kein gesperrtes Element"
 
 #: inc/lock.class.php:471
 msgid "Unlock components"
@@ -11389,9 +11373,7 @@ msgid "Send alarms on receiver errors"
 msgstr "Benachrichtigung bei Fehlern beim E-Mail Empfang"
 
 #: inc/mailcollector.class.php:1738
-msgid ""
-"Your email could not be processed.\n"
-"If the problem persists, contact the administrator"
+msgid "Your email could not be processed.\nIf the problem persists, contact the administrator"
 msgstr "Ihre E-Mail konnte nicht verarbeiter werden.\nWenn das Problem weiterhin besteht, kontaktieren Sie Ihren Systemadministrator"
 
 #: inc/mailcollector.class.php:1749
@@ -11451,7 +11433,7 @@ msgstr "Unwirderruflich löschen und Geräte entfernen"
 #: inc/massiveaction.class.php:564
 msgctxt "button"
 msgid "Delete permanently the relation with selected elements"
-msgstr ""
+msgstr "Permanentes Löschen der Beziehung zwischen ausgewählten Elementen"
 
 #: inc/massiveaction.class.php:570
 msgctxt "button"
@@ -11472,8 +11454,7 @@ msgid "or"
 msgstr "oder"
 
 #: inc/massiveaction.class.php:1064
-msgid ""
-"You can't delete that item by massive actions, because it has sub-items"
+msgid "You can't delete that item by massive actions, because it has sub-items"
 msgstr "Sie können diesen Eintrag nicht über die Mehrfachaktion löschen. Es hat untergeordnete Elemente."
 
 #: inc/massiveaction.class.php:1065 inc/massiveaction.class.php:1074
@@ -11734,7 +11715,7 @@ msgstr[1] "Portnummern"
 
 #: inc/networkport.class.php:918 inc/networkport.class.php:1002
 msgid "Network port type"
-msgstr "Netzwerkport-Typ"
+msgstr "Netzwerkporttyp"
 
 #: inc/networkport.class.php:966
 msgid "Dissociate a VLAN"
@@ -12031,7 +12012,7 @@ msgstr[1] "Ereignisse"
 
 #: inc/notification.class.php:533 inc/notification.class.php:549
 msgid "Field itemtype is mandatory"
-msgstr ""
+msgstr "Feld Elementtyp ist verpflichtend"
 
 #: inc/notificationmail.class.php:125
 msgid "Mail test"
@@ -12334,11 +12315,11 @@ msgstr "Höhe der Kosten"
 
 #: inc/notificationtargetcommonitilobject.class.php:1116
 msgid "User assigned to task"
-msgstr ""
+msgstr "Nutzer der Aufgabe zuwiesen"
 
 #: inc/notificationtargetcommonitilobject.class.php:1117
 msgid "Group assigned to task"
-msgstr ""
+msgstr "Gruppe der Aufgabe zuwiesen"
 
 #: inc/notificationtargetcommonitilobject.class.php:1148
 msgid "No defined category"
@@ -12437,7 +12418,7 @@ msgstr "E-Mail Posteingang Fehler"
 
 #: inc/notificationtargetobjectlock.class.php:54
 msgid "Unlock Item Request"
-msgstr ""
+msgstr "Entsperre Item Request"
 
 #: inc/notificationtargetobjectlock.class.php:61
 msgid "Item Name"
@@ -12580,7 +12561,7 @@ msgstr "Code"
 #: inc/projecttask.class.php:669 inc/projecttask.class.php:753
 #: inc/projecttask_ticket.class.php:314
 msgid "Planned start date"
-msgstr "Geplante Anfangsdatum"
+msgstr "Geplantes Anfangsdatum"
 
 #: inc/notificationtargetproject.class.php:569
 #: inc/notificationtargetproject.class.php:593
@@ -12590,7 +12571,7 @@ msgstr "Geplante Anfangsdatum"
 #: inc/projecttask.class.php:674 inc/projecttask.class.php:754
 #: inc/projecttask_ticket.class.php:315
 msgid "Planned end date"
-msgstr "geplante Schlussdatum"
+msgstr "Geplantes Schlussdatum"
 
 #: inc/notificationtargetproject.class.php:570
 #: inc/notificationtargetproject.class.php:594
@@ -12626,7 +12607,7 @@ msgstr "Prozent erledigt"
 #: inc/projecttask.class.php:689 inc/projecttask.class.php:755
 #: inc/projecttask_ticket.class.php:316
 msgid "Planned duration"
-msgstr "geplante Durchlaufzeit"
+msgstr "Geplante Durchlaufzeit"
 
 #: inc/notificationtargetproject.class.php:580
 #: inc/notificationtargetprojecttask.class.php:479 inc/project.class.php:491
@@ -12803,7 +12784,7 @@ msgstr "Ablehnungskommentar der Lösung"
 
 #: inc/notificationtargetticket.class.php:758
 msgid "Solution rejection date"
-msgstr "Ablehungsdatum der Lösung"
+msgstr "Ablehnungsdatum der Lösung"
 
 #: inc/notificationtargetticket.class.php:806
 msgid "Creation date of the satisfaction survey"
@@ -12967,8 +12948,8 @@ msgstr "E-Mail nicht vorhanden. Import nicht möglich"
 #: inc/objectlock.class.php:64
 msgid "Object Lock"
 msgid_plural "Object Locks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Objekt Sperre"
+msgstr[1] "Objekt Sperren"
 
 #: inc/objectlock.class.php:153 inc/objectlock.class.php:240
 msgid "Reload page?"
@@ -13012,11 +12993,11 @@ msgstr "Gesperrt von"
 
 #: inc/objectlock.class.php:261
 msgid "Ask for unlock"
-msgstr ""
+msgstr "Um Entsperrung bitten"
 
 #: inc/objectlock.class.php:263
 msgid "Alert me when unlocked"
-msgstr ""
+msgstr "Benachrichtigung wenn entsperrt"
 
 #: inc/objectlock.class.php:283
 msgid "Warning: read-only!"
@@ -13040,11 +13021,11 @@ msgstr "Entsperren"
 
 #: inc/objectlock.class.php:602
 msgid "Unlock forgotten locked objects"
-msgstr ""
+msgstr "Entsperre vergessebe gesperrte Objekte"
 
 #: inc/objectlock.class.php:603
 msgid "Timeout to force unlock (hours)"
-msgstr ""
+msgstr "Zeitraum um Entsperrung zu erzwingen (in Stunden)"
 
 #: inc/peripheral.class.php:285 inc/peripheral.class.php:428
 #: inc/phone.class.php:284 inc/phone.class.php:463
@@ -13170,8 +13151,8 @@ msgstr "Liste der Plugins"
 #: inc/plugin.class.php:376
 msgid "Author"
 msgid_plural "Authors"
-msgstr[0] "Author"
-msgstr[1] "Authoren"
+msgstr[0] "Autor"
+msgstr[1] "Autoren"
 
 #: inc/plugin.class.php:378
 msgid "CSRF compliant"
@@ -13223,7 +13204,7 @@ msgstr "Deinstallieren"
 #: inc/plugin.class.php:494 inc/plugin.class.php:531 inc/plugin.class.php:544
 #: inc/plugin.class.php:560 inc/plugin.class.php:568 inc/plugin.class.php:590
 msgid "Non-existent function"
-msgstr "nicht existierende Funktion"
+msgstr "Nicht existierende Funktion"
 
 #: inc/plugin.class.php:579
 msgid "Not CSRF compliant"
@@ -13279,12 +13260,12 @@ msgstr "Wifi"
 #: inc/problem.class.php:517 inc/ticket.class.php:2739
 msgctxt "status"
 msgid "Processing (assigned)"
-msgstr "in Bearbeitung (zugewiesen)"
+msgstr "In Bearbeitung (zugewiesen)"
 
 #: inc/problem.class.php:518 inc/ticket.class.php:2740
 msgctxt "status"
 msgid "Processing (planned)"
-msgstr "in Bearbeitung (mit Zeitplan)"
+msgstr "In Bearbeitung (mit Zeitplan)"
 
 #: inc/problem.class.php:520 inc/ticket.class.php:2742
 msgctxt "status"
@@ -13611,7 +13592,7 @@ msgstr "Inkonsistente geplante Datumsangabe. Datum nicht aktualisiert."
 
 #: inc/project.class.php:751
 msgid "Invalid real dates. Dates not updated."
-msgstr "Inkonsistentes reeales Datum. Aktualisierung abgebrochen."
+msgstr "Inkonsistentes reales Datum. Aktualisierung abgebrochen."
 
 #: inc/project.class.php:785
 msgid "Create a sub project from this project"
@@ -13807,7 +13788,7 @@ msgstr "Absender Name"
 
 #: inc/queuedmail.class.php:223 inc/queuedmail.class.php:613
 msgid "Recipient email"
-msgstr "Empfänger Email Adresse "
+msgstr "Empfänger E-Mail Adresse "
 
 #: inc/queuedmail.class.php:229 inc/queuedmail.class.php:615
 msgid "Recipient name"
@@ -13815,7 +13796,7 @@ msgstr "Empfänger Name"
 
 #: inc/queuedmail.class.php:235 inc/queuedmail.class.php:620
 msgid "Reply-to email"
-msgstr "Antwort Email Adresse"
+msgstr "Antwort E-Mail Adresse"
 
 #: inc/queuedmail.class.php:241 inc/queuedmail.class.php:622
 msgid "Reply-to name"
@@ -13848,7 +13829,7 @@ msgstr "E-Mails in Warteschlange versenden"
 
 #: inc/queuedmail.class.php:438
 msgid "Maximum emails to send at once"
-msgstr "Maximal Anzahl Emails pro Versand"
+msgstr "Maximal E-Mail Anzahl pro Versand"
 
 #: inc/queuedmail.class.php:441
 msgid "Clean mail queue"
@@ -13918,9 +13899,7 @@ msgid "Hardware financial and administrative information"
 msgstr "Finanz- und Administrationsdaten zu Hardwareinventar"
 
 #: inc/report.class.php:98
-msgid ""
-"Other financial and administrative information (licenses, cartridges, "
-"consumables)"
+msgid "Other financial and administrative information (licenses, cartridges, consumables)"
 msgstr "Weitere Finanz- und Administrationsdaten (Lizenzen, Kartuschen, Verbrauchsmaterial)"
 
 #: inc/report.class.php:106 install/update_051_06.php:151
@@ -14094,7 +14073,7 @@ msgstr "Siehe alle reservierbaren Objekten"
 
 #: inc/reservationitem.class.php:377 inc/reservationitem.class.php:388
 msgid "Find a free item in a specific period"
-msgstr "Suche freies Objekt in spezifizierte Periode"
+msgstr "Suche freies Objekt in bestimmter Periode"
 
 #: inc/reservationitem.class.php:620
 msgid "Device reservations expiring today"
@@ -14199,7 +14178,7 @@ msgstr "Position"
 #: inc/rule.class.php:730 inc/rule.class.php:862 inc/rule.class.php:2722
 #: inc/ruleright.class.php:86 inc/slalevel.class.php:320
 msgid "Logical operator"
-msgstr "logischer Operator"
+msgstr "Logischer Operator"
 
 #: inc/rule.class.php:788 inc/rule.class.php:944 inc/rule.class.php:2484
 msgid "and"
@@ -14211,9 +14190,7 @@ msgid "Use rule for"
 msgstr "Regel anwenden bei"
 
 #: inc/rule.class.php:997
-msgid ""
-"It is possible to affect the result of a regular expression using the string"
-" #0"
+msgid "It is possible to affect the result of a regular expression using the string #0"
 msgstr "Es ist möglich, das Ergebnis eines regulären Ausdrucks zu benutzen indem man #0 eingibt"
 
 #: inc/rule.class.php:1065
@@ -14310,7 +14287,7 @@ msgstr "Objekt nicht gefunden"
 
 #: inc/rulecollection.class.php:1220
 msgid "Criteria refused"
-msgstr "Kriteria wurde abgelehnt"
+msgstr "Kriterium wurde abgelehnt"
 
 #: inc/rulecollection.class.php:1252
 msgid "Actions refused"
@@ -14547,9 +14524,7 @@ msgid "Warning before running rename based on the dictionary rules"
 msgstr "Warnung vor dem Wiederholen des Lexikons"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:89
-msgid ""
-"Warning! This operation can put merged software in the dustbin.<br>Sure to "
-"notify your users."
+msgid "Warning! This operation can put merged software in the dustbin.\nSure to notify your users."
 msgstr "Warnung! Dieser Vorgang könnte zusammengeführte Software in den Papierkorb verschieben. <br> Bitte benachrichtigen Sie Ihre Benutzer."
 
 #: inc/ruledictionnarysoftwarecollection.class.php:91
@@ -14629,7 +14604,7 @@ msgstr "X-Auto-Response-Suppresss E-Mail Kopf"
 
 #: inc/rulemailcollector.class.php:122
 msgid "Auto-Submitted email header"
-msgstr "automatisch versendeter E-Mail-Header"
+msgstr "Automatisch versendeter E-Mail-Header"
 
 #: inc/rulemailcollector.class.php:127
 msgid "X-UCE-Status email header"
@@ -14641,7 +14616,7 @@ msgstr "Eingegangene E-Mail-Kopfzeile"
 
 #: inc/rulemailcollector.class.php:145
 msgid "Known mail domain"
-msgstr "bekannte Maildomain"
+msgstr "Bekannte Maildomain"
 
 #: inc/rulemailcollector.class.php:153
 msgid "User featuring the profile"
@@ -14725,10 +14700,8 @@ msgid "Rules for assigning a category to software"
 msgstr "Regeln, die eine Software einer Kategorie zuweisen"
 
 #: inc/ruleticket.class.php:111
-msgid ""
-"Urgency or impact used in actions, think to add Prioriy: recompute action if"
-" needed."
-msgstr "Dringlichkeit oder Auswirkung welche in der Aktion gewählt wurde verlangt eine Erhöhung der Priorität. Aktion neu berechnen falls benötigt."
+msgid "Urgency or impact used in actions, think to add Prioriy: recompute action if needed."
+msgstr "Dringlichkeit oder Auswirkung, welche in der Aktion gewählt wurde, verlangt eine Erhöhung der Priorität. Aktion neu berechnen falls nötig."
 
 #: inc/ruleticket.class.php:353
 msgid "Requester in group"
@@ -14756,11 +14729,11 @@ msgstr "SLT"
 
 #: inc/ruleticket.class.php:595
 msgid "Approval request to requester group manager"
-msgstr "Genehmigung anfordern beim Manager der Anforderer-Gruppe"
+msgstr "Genehmigung beim Manager der Anforderer-Gruppe einholen"
 
 #: inc/ruleticket.class.php:602
 msgid "Approval request to technician group manager"
-msgstr "Genehmigung anfordern beim Manager der Techniker-Gruppe"
+msgstr "Genehmigung beim Manager der Techniker-Gruppe einholen"
 
 #. TRANS: short for : Business rules for ticket (entity parent)
 #: inc/ruleticket.class.php:630
@@ -14804,9 +14777,7 @@ msgid "You don't have right to connect"
 msgstr "Sie haben keine Berechtigung für die Anmeldung"
 
 #: inc/session.class.php:163
-msgid ""
-"You don't have access to this application because your account was "
-"deactivated or removed"
+msgid "You don't have access to this application because your account was deactivated or removed"
 msgstr "Sie haben keinen Zugriff zu dieser Anwendung, weil Ihr Konto deaktiviert oder gelöscht wurde."
 
 #: inc/session.class.php:369 inc/session.class.php:372
@@ -14838,7 +14809,7 @@ msgstr "Ausführung"
 
 #: inc/slalevel.class.php:234
 msgid "Automatic reminders of SLT"
-msgstr ""
+msgstr "Automatische Erinnerung an SLT"
 
 #: inc/slalevel.class.php:360
 #, php-format
@@ -14874,7 +14845,7 @@ msgstr "Arbeitstag Ende"
 
 #: inc/slt.class.php:295
 msgid "Add a new SLT"
-msgstr ""
+msgstr "Ein neues SLT hinzufügen"
 
 #: inc/slt.class.php:512
 #, php-format
@@ -14886,13 +14857,12 @@ msgid "Also delete date ?"
 msgstr "Datum auch löschen?"
 
 #: inc/slt.class.php:573
-msgid ""
-"The assignment of a SLT to a ticket causes the recalculation of the date."
-msgstr ""
+msgid "The assignment of a SLT to a ticket causes the recalculation of the date."
+msgstr "Die Zuordnung eines SLT zu einem Ticket erfordert die Neukalkulation des Datums."
 
 #: inc/slt.class.php:574
 msgid "Escalations defined in the SLT will be triggered under this new date."
-msgstr ""
+msgstr "In der SLT definierte Eskalationsstufen werden durch das neue Datum beeinflusst. "
 
 #: inc/software.class.php:79 inc/software.class.php:912
 msgid "Merging"
@@ -14946,26 +14916,24 @@ msgstr "Kauf-Version"
 #: inc/softwarelicense.class.php:412 inc/softwarelicense.class.php:680
 msgctxt "adjective"
 msgid "Valid"
-msgstr "gültig"
+msgstr "Gültig"
 
 #: inc/softwarelicense.class.php:414
 msgctxt "adjective"
 msgid "Invalid"
-msgstr "ungültig"
+msgstr "Ungültig"
 
 #: inc/softwarelicense.class.php:425 inc/softwarelicense.class.php:674
 msgid "Never expire"
 msgstr "Lauft nie ab"
 
 #: inc/softwarelicense.class.php:426
-msgid ""
-"On search engine, use \"Expiration contains NULL\" to search licenses with "
-"no expiration date"
+msgid "On search engine, use \"Expiration contains NULL\" to search licenses with no expiration date"
 msgstr "Bei der Suchmaschine, \"Expiration contaiins NULL\"  verwenden um Lizenz ohne Ablaufsdatum zu suchen. "
 
 #: inc/softwarelicense.class.php:530
 msgid "Valid"
-msgstr "gültig"
+msgstr "Gültig"
 
 #: inc/softwarelicense.class.php:620
 msgid "License name"
@@ -15018,11 +14986,11 @@ msgstr "Reale Dauer der Bearbeitung des Tickets"
 
 #: inc/stat.class.php:438
 msgid "Number of opened tickets"
-msgstr "Anzahl der geöffneten Tickets"
+msgstr "Anzahl geöffneter Tickets"
 
 #: inc/stat.class.php:439
 msgid "Number of solved tickets"
-msgstr "Anzahl der gelösten Tickets"
+msgstr "Anzahl gelöster Tickets"
 
 #: inc/stat.class.php:440
 msgid "Number of late tickets"
@@ -15030,15 +14998,15 @@ msgstr "Anzahl verzögerter Tickets"
 
 #: inc/stat.class.php:441
 msgid "Number of closed tickets"
-msgstr "Anzahl abgeschlossene Tickets"
+msgstr "Anzahl abgeschlossener Tickets"
 
 #: inc/stat.class.php:453
 msgid "Number of opened satisfaction survey"
-msgstr "Anzahl der offenen Zufriedenheitsumfragen"
+msgstr "Anzahl offener Zufriedenheitsumfragen"
 
 #: inc/stat.class.php:456
 msgid "Number of answered satisfaction survey"
-msgstr "Anzahl der beantworteten Zufriedenheitsumfragen"
+msgstr "Anzahl beantworteter Zufriedenheitsumfragen"
 
 #: inc/stat.class.php:458
 msgid "Average satisfaction"
@@ -15347,7 +15315,7 @@ msgstr "Erstellen einer Zufriedenheitsumfrage"
 
 #: inc/ticket.class.php:5738
 msgid "See my ticket"
-msgstr "Siehe mein TIcket"
+msgstr "Siehe mein Ticket"
 
 #. TRANS: short for : See tickets created by my groups
 #: inc/ticket.class.php:5740
@@ -15365,11 +15333,11 @@ msgstr "Alle Tickets anzeigen"
 #. TRANS: short for : See assigned tickets (group associated)
 #: inc/ticket.class.php:5745
 msgid "See assigned"
-msgstr "Siehe zugewiesen"
+msgstr "Siehe zugewiesene"
 
 #: inc/ticket.class.php:5746
 msgid "See assigned tickets"
-msgstr "Siehe zugewiesene Ticket"
+msgstr "Siehe zugewiesene Tickets"
 
 #: inc/ticket.class.php:5749
 msgid "Assign a ticket"
@@ -15399,11 +15367,11 @@ msgstr "Priorität ändern"
 
 #: inc/ticket.class.php:5757
 msgid "Approve solution/Reply survey (my ticket)"
-msgstr ""
+msgstr "Genehmigen der Lösung/Antwort (Umfrage zu meinem Ticket)"
 
 #: inc/ticket.class.php:5758
 msgid "Approve solution and reply to survey for ticket created by me"
-msgstr ""
+msgstr "Genehmigen der Lösung und Antwort (Umfrage zu einem von mir erstellten Ticket)"
 
 #: inc/ticket.class.php:6586
 msgid "Ticket recall"
@@ -15419,7 +15387,7 @@ msgstr "Zeitleistefilter"
 
 #: inc/ticketfollowup.class.php:305
 msgid "You can't add a followup without description"
-msgstr ""
+msgstr "Sie können keine Wiedervorlage ohne Beschreibung anlegen"
 
 #. TRANS: %s is tha document name
 #: inc/ticketfollowup.class.php:327
@@ -15637,8 +15605,7 @@ msgid "Testing PHP Parser"
 msgstr "PHP Parser wird getestet"
 
 #: inc/toolbox.class.php:863
-msgid ""
-"GLPI is not compatible with the option zend.ze1_compatibility_mode = On."
+msgid "GLPI is not compatible with the option zend.ze1_compatibility_mode = On."
 msgstr "GLPI ist nicht kompatibel mit der Direktive zend.ze1_compatibility_mode = On."
 
 #: inc/toolbox.class.php:867 inc/toolbox.class.php:868
@@ -15682,9 +15649,7 @@ msgid "Test session auto start"
 msgstr "Automatischer Start der Testsitzung"
 
 #: inc/toolbox.class.php:921
-msgid ""
-"session.auto_start is activated. See .htaccess file in the GLPI root for "
-"more information."
+msgid "session.auto_start is activated. See .htaccess file in the GLPI root for more information."
 msgstr "session.auto_start ist aktiv. Siehe Datei .htaccess im GLPI Wurzelverzeichnis für weitere Information."
 
 #: inc/toolbox.class.php:928
@@ -15730,8 +15695,7 @@ msgid "Test json functions"
 msgstr "JSON Funktionen testen"
 
 #: inc/toolbox.class.php:979
-msgid ""
-"GLPI can't work correctly without the json_encode and json_decode functions"
+msgid "GLPI can't work correctly without the json_encode and json_decode functions"
 msgstr "GLPI kann nicht korrekt ohne die json_encode und json_decode Funktionen arbeiten."
 
 #: inc/toolbox.class.php:991
@@ -15780,7 +15744,7 @@ msgstr "Zugewiesener Speicher"
 
 #: inc/toolbox.class.php:1069
 msgid "A minimum of 64Mio is commonly required for GLPI."
-msgstr "64Mio minimum sind üblicherweise für GLPI notwendig."
+msgstr "64MB minimum sind üblicherweise für GLPI notwendig."
 
 #: inc/toolbox.class.php:1070
 msgid "Try increasing the memory_limit parameter in the php.ini file."
@@ -15924,33 +15888,23 @@ msgid "Port (optional)"
 msgstr "Port (optional)"
 
 #: inc/toolbox.class.php:2446
-msgid ""
-"No HTTP_REFERER found in request. Reload previous page before doing action "
-"again."
+msgid "No HTTP_REFERER found in request. Reload previous page before doing action again."
 msgstr ""
 
 #: inc/toolbox.class.php:2453
-msgid ""
-"Error when parsing HTTP_REFERER. Reload previous page before doing action "
-"again."
+msgid "Error when parsing HTTP_REFERER. Reload previous page before doing action again."
 msgstr ""
 
 #: inc/toolbox.class.php:2464
-msgid ""
-"None or Invalid host in HTTP_REFERER. Reload previous page before doing "
-"action again."
+msgid "None or Invalid host in HTTP_REFERER. Reload previous page before doing action again."
 msgstr ""
 
 #: inc/toolbox.class.php:2474
-msgid ""
-"None or Invalid path in HTTP_REFERER. Reload previous page before doing "
-"action again."
+msgid "None or Invalid path in HTTP_REFERER. Reload previous page before doing action again."
 msgstr ""
 
 #: inc/toolbox.class.php:2481
-msgid ""
-"The action you have requested is not allowed. Reload previous page before "
-"doing action again."
+msgid "The action you have requested is not allowed. Reload previous page before doing action again."
 msgstr "Der Vorgang, den den Sie angefordert haben, ist nicht erlaubt. Bitte laden Sie die vorhergehende Seite neu, bervor Sie den Vorgang wiederholen."
 
 #: inc/transfer.class.php:3308 inc/transfer.class.php:3315
@@ -16026,9 +15980,7 @@ msgid "If contracts are no longer used"
 msgstr "Wenn Verträge nicht länger verwendet werden"
 
 #: inc/transfer.class.php:3472
-msgid ""
-"You can continue to add elements to be transferred or execute the transfer "
-"now"
+msgid "You can continue to add elements to be transferred or execute the transfer now"
 msgstr "Sie können weitere Elemente für die Übertragung hinzufügen oder die aktuell hinzugefügten sofort übertragen."
 
 #: inc/transfer.class.php:3473
@@ -16200,14 +16152,11 @@ msgid "Please confirm your email address and enter your new password."
 msgstr "Bitte bestätigen Sie Ihre E-Mail Adresse und geben Sie Ihr neues Passwort ein."
 
 #: inc/user.class.php:3843 inc/user.class.php:3911
-msgid ""
-"Your password reset request has expired or is invalid. Please renew it."
+msgid "Your password reset request has expired or is invalid. Please renew it."
 msgstr "Ihr Anfrage zum Rücksetzen des Passwortes ist nicht mehr gültig. Bitte setzen Sie es erneut zurück."
 
 #: inc/user.class.php:3862
-msgid ""
-"Please enter your email address. An email will be sent to you and you will "
-"be able to choose a new password."
+msgid "Please enter your email address. An email will be sent to you and you will be able to choose a new password."
 msgstr "Bitte geben Sie Ihre E-Mail-Adresse ein. Sie bekommen dann eine E-Mail und können ein neues Passwort vergeben."
 
 #: inc/user.class.php:3899
@@ -16225,9 +16174,7 @@ msgid "Email address not found."
 msgstr "Email Adresse wurde nicht gefunden."
 
 #: inc/user.class.php:3959
-msgid ""
-"An email has been sent to your email address. The email contains information"
-" for reset your password."
+msgid "An email has been sent to your email address. The email contains information for reset your password."
 msgstr "Es wurde eine Email an Ihre Mailadresse gesendet. Diese Mail enthält Informationen zum Rücksetzen Ihres Passworts."
 
 #: inc/user.class.php:3993
@@ -16296,7 +16243,7 @@ msgstr "sekundär"
 
 #: inc/wifinetwork.class.php:76
 msgid "Automatic"
-msgstr "automatisch"
+msgstr "Automatisch"
 
 #: inc/wifinetwork.class.php:83
 msgid "Infrastructure (with access point)"
@@ -16337,13 +16284,11 @@ msgid "Choose 'Install' for a completely new installation of GLPI."
 msgstr "Wählen Sie 'Installieren' für eine komplett neue Installation von GLPI."
 
 #: install/install.php:142
-msgid ""
-"Select 'Upgrade' to update your version of GLPI from an earlier version"
+msgid "Select 'Upgrade' to update your version of GLPI from an earlier version"
 msgstr "'Update' auswählen, um von einer installierten früheren Version auf die aktuelle Version umzusteigen"
 
 #: install/install.php:162
-msgid ""
-"Checking of the compatibility of your environment with the execution of GLPI"
+msgid "Checking of the compatibility of your environment with the execution of GLPI"
 msgstr "Die Kompatibilität von GLPI mit der vorhandenen Konfiguration wird überprüft"
 
 #: install/install.php:181 install/install.php:200 install/install.php:497
@@ -16453,8 +16398,7 @@ msgid "Use GLPI"
 msgstr "GLPI benutzen"
 
 #: install/install.php:496
-msgid ""
-"Can't create the database connection file, please verify file permissions."
+msgid "Can't create the database connection file, please verify file permissions."
 msgstr "Verbindungsdatei für Datenbank kann nicht erstellt werden. Bitte Berechtigungen prüfen."
 
 #: install/install.php:566
