@@ -539,8 +539,9 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
-      $this->assertArrayHasKey($computers_id, $data);
-      $this->assertArrayHasKey('message', $data);
+      $computer = array_shift($data);
+      $this->assertArrayHasKey($computers_id, $computer);
+      $this->assertArrayHasKey('message', $computer);
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($computers_id);
