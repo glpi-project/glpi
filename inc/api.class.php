@@ -1578,7 +1578,7 @@ abstract class API extends CommonGLPI {
                if (!$item->can($object->id, UPDATE)) {
                   $failed++;
                   $idCollection[] = array(
-                        $object->id => false, 
+                        $object->id => false,
                         'message' => __("You don't have permission to perform this action.")
                   );
                } else {
@@ -1683,7 +1683,7 @@ abstract class API extends CommonGLPI {
                        && !$item->can($object->id, DELETE))) {
                   $failed++;
                   $idCollection[] = array(
-                        $object->id => false, 
+                        $object->id => false,
                         'message' => __("You don't have permission to perform this action.")
                   );
                } else {
