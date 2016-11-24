@@ -1682,6 +1682,10 @@ function getDbRelations() {
 function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$value='',
                                     $is_recursive=false, $complete_request=false) {
 
+   if (empty($table)) {
+      Toolbox::logDebug(__METHOD__ . ' called without any `table` specified!');
+   }
+
    $query = $separator ." ( ";
 
    // !='0' needed because consider as empty
@@ -1740,11 +1744,27 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
       }
 
       if (count($ancestors)) {
-         if ($table == 'glpi_entities') {
-            $query .= " OR $field IN ('" . implode("','",$ancestors) . "')";
-         } else {
-            $recur = (empty($table) ? '`is_recursive`' : "`$table`.`is_recursive`");
-            $query .= " OR ($recur='1' AND $field IN ('" . implode("','",$ancestors) . "'))";
+         $query .= ' OR ';
+
+         //flag recursivity
+         $is_recursive = false;
+         if (!empty($table) && $table != 'glpi_entities') {
+            $item = getItemForItemtype(getItemTypeForTable($table));
+            if ($item !== false) {
+               $is_recursive = $item->maybeRecursive();
+            }
+         }
+
+         if ($is_recursive) {
+            $query .= '(';
+            $query .= (empty($table) ? '`is_recursive`' : "`$table`.`is_recursive`");
+            $query .= "='1' AND ";
+         }
+
+         $query .= "$field IN ('" . implode("','",$ancestors) . "')";
+
+         if ($is_recursive) {
+            $query .= ')';
          }
       }
    }
