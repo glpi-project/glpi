@@ -1674,6 +1674,8 @@ abstract class API extends CommonGLPI {
                   || ($item->useDeletedToLockIfDynamic()
                         && !$item->isDynamic())) {
                   $params['force_purge'] = 1;
+               } else {
+                  $params['force_purge'] = filter_var($params['force_purge'], FILTER_VALIDATE_BOOLEAN);
                }
 
                //check rights
@@ -1720,6 +1722,8 @@ abstract class API extends CommonGLPI {
              || ($item->useDeletedToLockIfDynamic()
                  && !$item->isDynamic())) {
             $params['force_purge'] = 1;
+         } else {
+            $params['force_purge'] = filter_var($params['force_purge'], FILTER_VALIDATE_BOOLEAN);
          }
 
          //check rights
