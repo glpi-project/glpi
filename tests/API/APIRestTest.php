@@ -479,6 +479,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $computers_id = $data['id'];
       $this->assertEquals(true, is_numeric($computers_id));
       $this->assertEquals(true, $computers_id > 0);
+      $this->assertArrayHasKey('message', $data);
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($computers_id);
@@ -507,6 +508,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('id', $data);
+      $this->assertArrayHasKey('message', $data);
       $netports_id = $data['id'];
 
       $res = $this->doHttpRequest('POST', 'Notepad/',
@@ -524,6 +526,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertArrayHasKey('id', $data);
+      $this->assertArrayHasKey('message', $data);
 
       return $computers_id;
    }
@@ -557,6 +560,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, is_numeric($secnd_computer['id']));
       $this->assertEquals(true, $first_computer['id'] > 0);
       $this->assertEquals(true, $secnd_computer['id'] > 0);
+      $this->assertArrayHasKey('message', $data[0]);
+      $this->assertArrayHasKey('message', $data[1]);
 
 
       $computer = new Computer;
@@ -841,6 +846,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(false, $data);
       $computer = array_shift($data);
       $this->assertArrayHasKey($computers_id, $computer);
+      $this->assertArrayHasKey('message', $computer);
       $this->assertEquals(true, (bool) $computer[$computers_id]);
 
       $computer = new Computer;
@@ -869,6 +875,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $this->assertNotEquals(false, $data);
       $computer = array_shift($data);
       $this->assertArrayHasKey($computers_id, $computer);
+      $this->assertArrayHasKey('message', $computer);
       $this->assertEquals(true, (bool) $computer[$computers_id]);
 
       $computer = new Computer;
@@ -903,6 +910,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       foreach($data as $index => $row) {
          $computers_id = $computers_id_collection[$index]['id'];
          $this->assertArrayHasKey($computers_id, $row);
+         $this->assertArrayHasKey('message', $row);
          $this->assertEquals(true, (bool) $row[$computers_id]);
 
          $computers_exist = $computer->getFromDB($computers_id);
@@ -928,6 +936,8 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $body = $res->getBody();
       $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
+      $this->assertArrayHasKey($computers_id, $data);
+      $this->assertArrayHasKey('message', $data);
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($computers_id);
@@ -960,6 +970,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       foreach($data as $index => $row) {
          $computers_id = $computers_id_collection[$index]['id'];
          $this->assertArrayHasKey($computers_id, $row);
+         $this->assertArrayHasKey('message', $row);
          $this->assertEquals(true, (bool) $row[$computers_id]);
 
          $computers_exist = $computer->getFromDB($computers_id);
@@ -990,7 +1001,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $data = json_decode($body, true);
       $this->assertNotEquals(false, $data);
       $this->assertTrue($data[1][0][$computers_id_collection[0]['id']]);
+      $this->assertArrayHasKey('message', $data[1][0]);
       $this->assertFalse($data[1][1][$computers_id_collection[1]['id']]);
+      $this->assertArrayHasKey('message', $data[1][1]);
    }
 
    /**
