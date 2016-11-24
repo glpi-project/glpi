@@ -548,7 +548,9 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
                                              'input'         => [[
                                                 'name' => "My computer 2"
                                              ],[
-                                                'name' => "My computer 3"]]]]);
+                                                'name' => "My computer 3"
+                                             ],[
+                                                'name' => "My computer 4"]]]]);
       $this->assertNotEquals(null, $res, $this->last_error);
       $this->assertEquals(201, $res->getStatusCode());
 
@@ -943,6 +945,7 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
    public function testDeleteItems($session_token, $computers_id_collection) {
       $input    = array();
       $computer = new Computer;
+      $lastComputer = array_pop($computers_id_collection);
       foreach($computers_id_collection as $key => $computers_id) {
          $input[] = ['id' => $computers_id['id']];
       }
@@ -965,6 +968,32 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
          $computers_exist = $computer->getFromDB($computers_id);
          $this->assertEquals(false, (bool) $computers_exist);
       }
+      // Test multiple delete with multi-status
+      $input    = array();
+      $computers_id_collection = [
+            [
+                  'id'  => $lastComputer['id']
+            ],
+            [
+                  'id'  => $lastComputer['id'] + 1 // Non existing computer id
+            ]
+      ];
+      foreach($computers_id_collection as $key => $computers_id) {
+         $input[] = ['id' => $computers_id['id']];
+      }
+      $res = $this->doHttpRequest('DELETE', "Computer/",
+            ['headers' => [
+                  'Session-Token' => $session_token],
+                  'json' => [
+                        'input'         => $input,
+                        'force_purge'   => true]]);
+      $this->assertNotEquals(null, $res, $this->last_error);
+      $this->assertEquals(207, $res->getStatusCode());
+      $body = $res->getBody();
+      $data = json_decode($body, true);
+      $this->assertNotEquals(false, $data);
+      $this->assertTrue($data[1][0][$computers_id_collection[0]['id']]);
+      $this->assertFalse($data[1][1][$computers_id_collection[1]['id']]);
    }
 
    /**
