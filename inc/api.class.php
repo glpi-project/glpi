@@ -344,7 +344,7 @@ abstract class API extends CommonGLPI {
 
       $myprofiles = array();
       foreach($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
-         // append if of the profile into values 
+         // append if of the profile into values
          $profile = ['id' => $profiles_id] + $profile;
 
          // don't keep keys for entities
@@ -1290,8 +1290,8 @@ abstract class API extends CommonGLPI {
       // Check the criterias are valid
       if (isset($params['criteria']) && is_array($params['criteria'])) {
          foreach ($params['criteria'] as $criteria) {
-            if (isset($criteria['field']) 
-                  && ctype_digit($criteria['field']) 
+            if (isset($criteria['field'])
+                  && ctype_digit($criteria['field'])
                   && !array_key_exists($criteria['field'], $soptions)) {
                return $this->returnError(__("Bad field ID in search criteria"));
             }
@@ -1347,7 +1347,7 @@ abstract class API extends CommonGLPI {
                             400,
                             "ERROR_RANGE_EXCEED_TOTAL");
       }
-      
+
       // fix end range
       if ($params['range'][1] > $cleaned_data['totalcount'] - 1) {
          $params['range'][1] = $cleaned_data['totalcount'] - 1;
@@ -1585,7 +1585,7 @@ abstract class API extends CommonGLPI {
                if (!$item->can($object->id, UPDATE)) {
                   $failed++;
                   $idCollection[] = array(
-                        $object->id => false, 
+                        $object->id => false,
                         'message' => __("You don't have permission to perform this action.")
                   );
                } else {
@@ -1690,7 +1690,7 @@ abstract class API extends CommonGLPI {
                        && !$item->can($object->id, DELETE))) {
                   $failed++;
                   $idCollection[] = array(
-                        $object->id => false, 
+                        $object->id => false,
                         'message' => __("You don't have permission to perform this action.")
                   );
                } else {
