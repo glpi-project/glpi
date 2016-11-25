@@ -209,7 +209,6 @@ class APIXmlrpc extends API {
 
          } else if ($resource === "deleteItems") { // delete one or many CommonDBTM items
             if (isset($this->parameters['id'])) {
-               $code = 204;
                //override input
                $this->parameters['input'] = new stdClass();;
                $this->parameters['input']->id = $this->parameters['id'];

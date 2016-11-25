@@ -424,6 +424,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $id = $data['id'];
       $this->assertEquals(true, is_numeric($id));
       $this->assertEquals(true, $id > 0);
+      $this->assertArrayHasKey('message', $data);
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($id);
@@ -458,6 +459,8 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, is_numeric($secnd_computer['id']));
       $this->assertEquals(true, $first_computer['id'] > 0);
       $this->assertEquals(true, $secnd_computer['id'] > 0);
+      $this->assertArrayHasKey('message', $data[0]);
+      $this->assertArrayHasKey('message', $data[1]);
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($first_computer['id']);
@@ -535,10 +538,13 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
                                                   'itemtype'      => 'Computer',
                                                   'id'            => $computers_id,
                                                   'force_purge'   => true]);
-      $this->assertEquals(204, $res->getStatusCode());
+      $this->assertEquals(200, $res->getStatusCode());
 
       $data = xmlrpc_decode($res->getBody());
-      $this->assertEquals(NULL, $data);
+      $this->assertNotEquals(false, $data);
+      $computer = array_shift($data);
+      $this->assertArrayHasKey($computers_id, $computer);
+      $this->assertArrayHasKey('message', $computer);
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($computers_id);
@@ -566,6 +572,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       foreach($data as $index => $row) {
          $computers_id = $computers_id_collection[$index]['id'];
          $this->assertArrayHasKey($computers_id, $row);
+         $this->assertArrayHasKey('message', $row);
          $this->assertEquals(true, (bool) $row[$computers_id]);
 
          $computers_exist = $computer->getFromDB($computers_id);
