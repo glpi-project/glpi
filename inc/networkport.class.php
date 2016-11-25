@@ -861,6 +861,7 @@ class NetworkPort extends CommonDBChild {
       // Need these to update information
       echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
       echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
+      echo "<input type='hidden' name='_create_children' value='1'>\n";
       echo "<input type='hidden' name='instantiation_type' value='" .
              $this->fields["instantiation_type"]."'>\n";
 
