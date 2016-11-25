@@ -1343,6 +1343,11 @@ class CommonDBTM extends CommonGLPI {
          $this->input['_delete'] = $this->input['delete'];
          unset($this->input['delete']);
       }
+
+      if (!isset($this->input['_no_history'])) {
+         $this->input['_no_history'] = $history;
+      }
+
       // Purge
       if ($force) {
          Plugin::doHook("pre_item_purge", $this);
@@ -1357,9 +1362,6 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($this->pre_deleteItem()) {
-         if (!isset($this->input['_no_history'])) {
-            $this->input['_no_history'] = $history;
-         }
          if ($this->deleteFromDB($force)) {
 
             if ($force) {
@@ -3759,19 +3761,15 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param $crit   array    of criteria (ex array('is_active'=>'1'))
     * @param $force  boolean  force purge not on put in dustbin (default 0)
+    * @param $history boolean  do history log ? (true by default)
    **/
-   function deleteByCriteria($crit=array(), $force=0) {
+   function deleteByCriteria($crit=array(), $force=0, $history=1) {
       global $DB;
 
       $ok = false;
       if (is_array($crit) && (count($crit) > 0)) {
          $crit['FIELDS'] = 'id';
          $ok = true;
-         $history = 1;
-         if(isset($crit['_no_history'])){
-            $history = $crit['_no_history'];
-            unset($crit['_no_history']);
-         }
          foreach ($DB->request($this->getTable(), $crit) as $row) {
             if (!$this->delete($row, $force, $history)) {
                $ok = false;
