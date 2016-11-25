@@ -1362,6 +1362,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($this->pre_deleteItem()) {
+
          if ($this->deleteFromDB($force)) {
 
             if ($force) {
