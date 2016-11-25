@@ -406,7 +406,7 @@ $ curl -X POST \
 Example usage (CURL):
 
 ```bash
-$ curl -X POST \
+$ curl -X GET \
 -H 'Content-Type: application/json' \
 -H "Session-Token: 83af7e620c83a50a18d3eac2f6ed05a3ca0bea62" \
 -H "App-Token: f7g3csp8mgatg5ebc5elnazakw20i9fyev1qopya7" \
