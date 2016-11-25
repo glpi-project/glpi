@@ -252,15 +252,11 @@ class APIRest extends API {
             case "DELETE" : //delete item(s)
                // if id is passed by query string, construct an object with it
                if ($id !== false) {
-                  $code = 204;
                   //override input
                   $this->parameters['input']     = new stdClass();
                   $this->parameters['input']->id = $id;
                }
                $response = $this->deleteItems($itemtype, $this->parameters);
-               if ($id !== false) {
-                  $response = "";
-               }
                break;
          }
          return $this->returnResponse($response, $code, $additionalheaders);
