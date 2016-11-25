@@ -224,7 +224,7 @@ class APIRest extends API {
             case "POST" : // create item(s)
                $response = $this->createItems($itemtype, $this->parameters);
                $code     = 201;
-               if (count($response) == 1) {
+               if (isset($response['id'])) {
                   // add a location targetting created element
                   $additionalheaders['location'] = self::$api_url.$itemtype."/".$response['id'];
                } else {
