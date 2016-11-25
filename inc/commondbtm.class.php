@@ -1345,7 +1345,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if (!isset($this->input['_no_history'])) {
-         $this->input['_no_history'] = $history;
+         $this->input['_no_history'] = !$history;
       }
 
       // Purge
