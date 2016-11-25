@@ -52,6 +52,7 @@ class Config extends CommonDBTM {
 
    static $rightname              = 'config';
 
+   static $undisclosedFields      = array('proxy_passwd', 'smtp_passwd');
 
 
    static function getTypeName($nb=0) {
@@ -241,7 +242,7 @@ class Config extends CommonDBTM {
    static public function unsetUndisclosedFields(&$fields) {
       if (isset($fields['context']) && isset($fields['name'])) {
          if ($fields['context'] == 'core'
-            && in_array($fields['name'], array('proxy_passwd', 'smtp_passwd'))) {
+            && in_array($fields['name'], self::$undisclosedFields)) {
             unset($fields['value']);
          }
       }

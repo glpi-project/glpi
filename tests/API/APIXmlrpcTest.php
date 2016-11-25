@@ -582,8 +582,30 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-     * @depends testInitSessionCredentials
-     */
+    * @depends testInitSessionCredentials
+    */
+   public function testGetGlpiConfig($session_token) {
+      $res = $this->doHttpRequest('getGlpiConfig', ['session_token' => $session_token]);
+      $this->assertEquals(200, $res->getStatusCode());
+
+      $data = xmlrpc_decode($res->getBody());
+      $this->assertNotEquals(false, $data);
+
+      // Test a disclosed data
+      $this->assertArrayHasKey('cfg_glpi', $data);
+      $this->assertArrayHasKey('infocom_types', $data['cfg_glpi']);
+
+      // Test undisclosed data are actually not disclosed
+      $this->assertGreaterThan(0, count(Config::$undisclosedFields));
+      foreach (Config::$undisclosedFields as $key) {
+         $this->assertArrayNotHasKey($key, $data['cfg_glpi']);
+      }
+   }
+
+
+   /**
+    * @depends testInitSessionCredentials
+    */
    public function testKillSession($session_token) {
       // test retrieve all users
       $res = $this->doHttpRequest('killSession', ['session_token' => $session_token]);
