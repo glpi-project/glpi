@@ -241,13 +241,6 @@ class MailCollector  extends CommonDBTM {
       $options['colspan'] = 1;
       $this->showFormHeader($options);
 
-      if (!function_exists('mb_list_encodings')
-          || !function_exists('mb_convert_encoding')) {
-         echo "<tr class='tab_bg_1'>".
-              "<td colspan='2'>".__('mbstring extension not found. Warning with charsets used.').
-              "</td></tr>";
-      }
-
       echo "<tr class='tab_bg_1'><td>".sprintf(__('%1$s (%2$s)'), __('Name'), __('Email address')).
            "</td><td>";
       Html::autocompletionTextField($this, "name");
