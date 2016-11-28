@@ -1232,7 +1232,7 @@ class Html {
 
          //fullcalendar
          $filename = "/lib/jqueryplugins/fullcalendar/locale/".
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
+                     strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]).".js";
          if (file_exists(GLPI_ROOT.$filename)) {
             echo Html::script($CFG_GLPI["root_doc"].$filename);
          }
