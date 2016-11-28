@@ -36,6 +36,10 @@
 * @brief
 */
 
+//Load GLPI constants
+define('GLPI_ROOT', __DIR__);
+include_once (GLPI_ROOT . "/inc/define.php");
+
 // Check PHP version not to have trouble
 if (version_compare(PHP_VERSION, GLPI_MIN_PHP) < 0) {
    die(sprintf("PHP >= %s required", GLPI_MIN_PHP));
@@ -43,7 +47,6 @@ if (version_compare(PHP_VERSION, GLPI_MIN_PHP) < 0) {
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 // If config_db doesn't exist -> start installation
-define('GLPI_ROOT', __DIR__);
 include (GLPI_ROOT . "/inc/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
