@@ -3915,7 +3915,10 @@ class Html {
 
       $language = $_SESSION['glpilanguage'];
       if (!file_exists(GLPI_ROOT."/lib/tiny_mce/langs/$language.js")) {
-         $language = "en_GB";
+         $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
+         if (!file_exists(GLPI_ROOT."/lib/tiny_mce/langs/$language.js")) {
+            $language = "en_GB";
+         }
       }
 
       Html::scriptStart();
