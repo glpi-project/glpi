@@ -44,7 +44,7 @@ if (version_compare(PHP_VERSION, GLPI_MIN_PHP) < 0) {
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 // If config_db doesn't exist -> start installation
 define('GLPI_ROOT', __DIR__);
-include (GLPI_ROOT . "/config/based_config.php");
+include (GLPI_ROOT . "/inc/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    include_once (GLPI_ROOT . "/inc/autoload.function.php");
