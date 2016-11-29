@@ -702,6 +702,7 @@ class Ticket extends CommonITILObject {
       }
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
       $this->addStandardTab('TicketCost', $ong, $options);
       $this->addStandardTab('Projecttask_Ticket', $ong, $options);
@@ -2223,6 +2224,12 @@ class Ticket extends CommonITILObject {
 
          if (Session::haveRight(self::$rightname, UPDATE)) {
             MassiveAction::getAddTransferList($actions);
+
+            $kb_item = new KnowbaseItem();
+            $kb_item->getEmpty();
+            if ($kb_item->canViewItem()) {
+               $actions['KnowbaseItem_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Link knowledgebase article');
+            }
          }
       }
       return $actions;

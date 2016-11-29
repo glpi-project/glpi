@@ -53,6 +53,7 @@ class KnowbaseItem extends CommonDBTM {
    protected $groups    = array();
    protected $profiles  = array();
    protected $entities  = array();
+   protected $items     = array();
 
    const KNOWBASEADMIN = 1024;
    const READFAQ       = 2048;
@@ -167,10 +168,11 @@ class KnowbaseItem extends CommonDBTM {
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
 
-      $this->addStandardTab('KnowbaseItemTranslation',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('KnowbaseItemTranslation', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -298,6 +300,9 @@ class KnowbaseItem extends CommonDBTM {
 
       // Profile / entities
       $this->profiles = KnowbaseItem_Profile::getProfiles($this->fields['id']);
+
+      //Linked kb items
+      $this->knowbase_items = KnowbaseItem_Item::getItems($this);
    }
 
 
@@ -315,6 +320,8 @@ class KnowbaseItem extends CommonDBTM {
       $class = new Group_KnowbaseItem();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       $class = new KnowbaseItem_Profile();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new KnowbaseItem_Item();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 

@@ -56,14 +56,14 @@ cache:
   directories:
     - $HOME/.composer/cache
 
-notifications:
-  irc:
-    channels:
-      - "irc.freenode.org#glpi"
-    on_success: change
-    on_failure: always
-    use_notice: true
-    skip_join: true
+#notifications:
+#  irc:
+#    channels:
+#      - "irc.freenode.org#glpi"
+#   on_success: change
+#   on_failure: always
+#    use_notice: true
+#    skip_join: true
 
 #exclude old branches, without tests
 branches:

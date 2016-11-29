@@ -54,7 +54,9 @@ function update91to92() {
    $backup_tables = false;
    // table already exist but deleted during the migration
    // not table created during the migration
-   $newtables     = array();
+   $newtables     = array(
+    'glpi_knowbaseitems_items'
+   );
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -72,6 +74,24 @@ function update91to92() {
    }
 
    //put you migration script here
+
+   $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item link to tickets'));
+   if (!TableExists('glpi_knowbaseitems_items')) {
+      $query = "CREATE TABLE `glpi_knowbaseitems_items` (
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `knowbaseitems_id` int(11) NOT NULL,
+                 `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+                 `items_id` int(11) NOT NULL DEFAULT '0',
+                 `date_creation` datetime DEFAULT NULL,
+                 `date_mod` datetime DEFAULT NULL,
+                 PRIMARY KEY (`id`),
+                 UNIQUE KEY `unicity` (`itemtype`,`items_id`,`knowbaseitems_id`),
+                 KEY `itemtype` (`itemtype`),
+                 KEY `item_id` (`items_id`),
+                 KEY `item` (`itemtype`,`items_id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.2 add table glpi_knowbaseitems_items");
+   }
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

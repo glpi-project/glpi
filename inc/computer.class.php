@@ -122,6 +122,7 @@ class Computer extends CommonDBTM {
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('ComputerVirtualMachine', $ong, $options)
          ->addStandardTab('ComputerAntivirus', $ong, $options)
+         ->addStandardTab('KnowbaseItem_Item', $ong, $options)
          ->addStandardTab('Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
@@ -359,6 +360,9 @@ class Computer extends CommonDBTM {
 
          // Add connected devices
          Computer_Item::cloneComputer($this->input["_oldID"], $this->fields['id']);
+
+         //Add KB links
+         KnowbaseItem_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
       }
    }
 
@@ -591,10 +595,13 @@ class Computer extends CommonDBTM {
       if ($isadmin) {
          $actions['Computer_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add']    = _x('button', 'Connect');
          $actions['Computer_SoftwareVersion'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Install');
-      }
-
-      if ($isadmin) {
          MassiveAction::getAddTransferList($actions);
+
+         $kb_item = new KnowbaseItem();
+         $kb_item->getEmpty();
+         if ($kb_item->canViewItem()) {
+            $actions['KnowbaseItem_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Link knowledgebase article');
+         }
       }
 
       return $actions;
