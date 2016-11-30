@@ -78,7 +78,7 @@ class SoftwareLicense extends CommonDBTM {
    function prepareInputForAdd($input) {
 
       if (!isset($this->fields['softwares_id']) || !$this->fields['softwares_id']) {
-            Session::addMessageAfterRedirect("Please select a software for this license", true,
+            Session::addMessageAfterRedirect(__("Please select a software for this license"), true,
                                              ERROR, true);
             return false;
       }
