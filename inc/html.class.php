@@ -1161,15 +1161,16 @@ class Html {
       if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
 
          foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $files) {
+            $version = Plugin::getInfo($plugin, 'version');
             if (is_array($files)) {
                foreach ($files as $file) {
                   if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                     echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$file");
+                     echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$file", ['version' => $version]);
                   }
                }
             } else {
                if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
-                  echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$files");
+                  echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$files", ['version' => $version]);
                }
             }
          }
@@ -1249,15 +1250,16 @@ class Html {
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
 
          foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
+            $version = Plugin::getInfo($plugin, 'version');
             if (is_array($files)) {
                foreach ($files as $file) {
                   if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                     echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$file");
+                     echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$file", ['version' => $version]);
                   }
                }
             } else {
                if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
-                  echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$files");
+                  echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$files", ['version' => $version]);
                }
             }
          }
@@ -4935,11 +4937,22 @@ class Html {
     *
     * @since version 0.85
     *
-    * @param $url String of javascript file to include
+    * @param $url     String of javascript file to include
+    * @param $options Array  of HTML attributes.
     *
     * @return String of script tags
    **/
-   static function script($url) {
+   static function script($url, $options=array()) {
+      $version = GLPI_VERSION;
+      if (isset($options['version'])) {
+         $version = $options['version'];
+         unset($options['version']);
+      }
+
+      if($version){
+         $url .= '?v=' . $version;
+      }
+
       return sprintf('<script type="text/javascript" src="%1$s"></script>', $url);
    }
 
@@ -4959,6 +4972,17 @@ class Html {
       if (!isset($options['media'])) {
          $options['media'] = 'screen';
       }
+
+      $version = GLPI_VERSION;
+      if (isset($options['version'])) {
+         $version = $options['version'];
+         unset($options['version']);
+      }
+
+      if($version){
+         $url .= '?v=' . $version;
+      }
+
       return sprintf('<link rel="stylesheet" type="text/css" href="%s" %s>', $url,
                      Html::parseAttributes($options));
    }
