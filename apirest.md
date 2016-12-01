@@ -1087,7 +1087,7 @@ $ curl -X DELETE \
 'http://path/to/glpi/apirest.php/Computer/'
 
 < 200 OK
-{"11":true, "message": ""}
+[{"11":true, "message": ""}]
 
 
 $ curl -X DELETE \
