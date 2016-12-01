@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class SoftwareLicenseType
-class SoftwareLicenseType extends CommonDropdown {
+class SoftwareLicenseType extends CommontreeDropdown {
 
 
    static function getTypeName($nb=0) {

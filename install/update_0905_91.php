@@ -850,13 +850,19 @@ function update0905to91() {
    $migration->addField("glpi_requesttypes", "is_mailfollowup_default", "bool", array('value' => 0));
    $migration->addKey("glpi_requesttypes", "is_mailfollowup_default");
 
+   $migration->addField("glpi_softwarelicensetypes", "softwarelicensetypes_id", "int");
+   $migration->addKey("glpi_softwarelicensetypes", "softwarelicensetypes_id");
+   $migration->addField("glpi_softwarelicensetypes", "completename", "text");
+   $migration->addField("glpi_softwarelicensetypes", "level", "int");
+   $migration->addField("glpi_softwarelicensetypes", "ancestors_cache", "int");
+   $migration->addField("glpi_softwarelicensetypes", "sons_cache", "int");
+
    /************** Fix autoclose_delay for root_entity in glpi_entities (from -1 to 0) **************/
    $query = "UPDATE `glpi_entities`
              SET `autoclose_delay` = 0
              WHERE `autoclose_delay` = '-1'
                    AND `id` = 0";
    $DB->queryOrDie($query, "glpi_entities root_entity change autoclose_delay value from -1 to 0");
-
 
    // ************ Keep it at the end **************
    $migration->executeMigration();
