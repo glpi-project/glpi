@@ -114,4 +114,52 @@ class PrinterTest extends DbTestCase {
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_ent1', true), READ));
       $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent2', true), READ));
    }
+
+   /**
+    * @covers Printer::deleteByCriteria
+    * @covers Printer::restore
+    */
+   public function testDeleteByCriteria() {
+      $obj = new Printer();
+      $this->assertTrue($obj->maybeDeleted());
+
+      // Add
+      $id = $obj->add(['name' => __METHOD__]);
+      $this->assertGreaterThan(0, $id);
+      $this->assertTrue($obj->getFromDB($id));
+      $this->assertEquals(0, $obj->getField('is_deleted'));
+      $this->assertEquals(0, $obj->isDeleted());
+      $nb_before = countElementsInTable('glpi_logs', "itemtype = 'Printer'
+                                          AND items_id = '$id'");
+
+      // DeleteByCriteria without history
+      $this->assertTrue($obj->deleteByCriteria(['name' => __METHOD__], 0, 0));
+      $this->assertTrue($obj->getFromDB($id));
+      $this->assertEquals(1, $obj->getField('is_deleted'));
+      $this->assertEquals(1, $obj->isDeleted());
+
+      $nb_after = countElementsInTable('glpi_logs', "itemtype = 'Printer'
+                                          AND items_id = '$id'");
+      $this->assertEquals($nb_before, $nb_after);
+
+      // Restore
+      $this->assertTrue($obj->restore(['id' => $id], 0));
+      $this->assertTrue($obj->getFromDB($id));
+      $this->assertEquals(0, $obj->getField('is_deleted'));
+      $this->assertEquals(0, $obj->isDeleted());
+
+      $nb_before = countElementsInTable('glpi_logs', "itemtype = 'Printer'
+                                          AND items_id = '$id'");
+
+      // DeleteByCriteria with history
+      $this->assertTrue($obj->deleteByCriteria(['name' => __METHOD__], 0, 1));
+      $this->assertTrue($obj->getFromDB($id));
+      $this->assertEquals(1, $obj->getField('is_deleted'));
+      $this->assertEquals(1, $obj->isDeleted());
+
+      $nb_after = countElementsInTable('glpi_logs', "itemtype = 'Printer'
+                                          AND items_id = '$id'");
+      $this->assertEquals($nb_before+1, $nb_after);
+
+   }
 }
