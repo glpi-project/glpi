@@ -136,6 +136,10 @@ class DBmysqlIteratorTest extends DbTestCase {
 
       $it = new DBmysqlIterator(NULL, 'foo', ['FIELDS' => ['a' => ['`bar`', 'baz']]]);
       $this->assertEquals('SELECT `a`.`bar`, `a`.`baz` FROM `foo`', $it->getSql(), 'Multiple fields from single table');
+
+      $it = new DBmysqlIterator(NULL, ['foo', 'bar'], ['FIELDS' => ['foo' => ['*']]]);
+      $this->assertEquals('SELECT `foo`.`*` FROM `foo`, `bar`', $it->getSql(), 'Select all fields from one table on two');
+
    }
 
 
