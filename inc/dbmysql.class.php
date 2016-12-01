@@ -858,7 +858,7 @@ class DBmysqlIterator  implements Iterator {
                   $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(", $t.",$f);
                } else {
                   $t = self::quoteName($t);
-                  $f = self::quoteName($f);
+                  $f = ($f == '*' ? $f : self::quoteName($f));
                   $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . "$t.$f";
                }
             }
