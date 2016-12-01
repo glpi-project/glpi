@@ -50,4 +50,21 @@ class ToolboxTest extends PHPUnit_Framework_TestCase {
          $this->assertTrue(ctype_alnum ($str) );
       }
    }
+
+   public function testRemoveHtmlSpecialChars() {
+      $original = 'My - string èé  Ê À ß';
+      $expected = 'my - string ee  e a sz';
+      $result = Toolbox::removeHtmlSpecialChars($original);
+
+      $this->assertEquals($expected, $result);
+   }
+
+   public function testSlugify() {
+      $original = 'My - string èé  Ê À ß';
+      $expected = 'my-string-ee-e-a-sz';
+      $result = Toolbox::slugify($original);
+
+      $this->assertEquals($expected, $result);
+
+   }
 }
