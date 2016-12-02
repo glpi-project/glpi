@@ -1796,12 +1796,10 @@ function getEntitiesRestrictCriteria($table='', $field='', $value='',
    }
 
    if (!is_array($value) && strlen($value) == 0) {
-      $child = $_SESSION['glpiactiveentities'];
-   } else {
-      $child = $value;
+      $value = $_SESSION['glpiactiveentities'];
    }
 
-   $crit = [$field => $child];
+   $crit = [$field => $value];
    if ($is_recursive) {
       $ancestors = array();
       if (is_array($value)) {
@@ -1820,11 +1818,13 @@ function getEntitiesRestrictCriteria($table='', $field='', $value='',
 
       if (count($ancestors)) {
          if ($table == 'glpi_entities') {
-            $crit = ['OR' => [$field => $child,
-                              $field => $ancestors]];
+            if (!is_array($value)) {
+               $value = [$value => $value];
+            }
+            $crit = ['OR' => [$field => $value + $ancestors]];
          } else {
             $recur = (empty($table) ? 'is_recursive' : "$table.is_recursive");
-            $crit = ['OR' => [$field => $child,
+            $crit = ['OR' => [$field => $value,
                               'AND' => [$recur => 1,
                                         $field => $ancestors]]];
          }

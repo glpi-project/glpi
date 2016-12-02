@@ -382,11 +382,22 @@ class DbFunctionTest extends DbTestCase {
       $it = new DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', true));
       $this->assertEquals('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (3) OR (`glpi_computers`.`is_recursive` = 1 AND `glpi_computers`.`entities_id` IN (0, 1)))', $it->getSql());
 
+      //Child + parent on glpi_entities
+      $it = new DBmysqlIterator(NULL, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', '', true));
+      $this->assertEquals('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (3, 0, 1))', $it->getSql());
+
       // Child + parent without table
       $this->assertEquals("WHERE ( `entities_id` IN ('3')  OR (`is_recursive`='1' AND `entities_id` IN ('0','1')) ) ",
                           getEntitiesRestrictRequest('WHERE', '', '', '', true));
       $it = new DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('', '', '', true));
       $this->assertEquals('SELECT * FROM `glpi_computers` WHERE (`entities_id` IN (3) OR (`is_recursive` = 1 AND `entities_id` IN (0, 1)))', $it->getSql());
+
+      $it = new DBmysqlIterator(NULL, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 3, true));
+      $this->assertEquals('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (3, 0, 1))', $it->getSql());
+
+      $it = new DBmysqlIterator(NULL, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 7, true));
+      $this->assertEquals('SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = 7', $it->getSql());
+
    }
 }
 
