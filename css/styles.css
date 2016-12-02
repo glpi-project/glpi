@@ -1470,6 +1470,35 @@ td.rotate {
   background-color: #fff2a8;
 }
 
+#kbanswer h1 > a,
+#kbanswer h2 > a,
+#kbanswer h3 > a,
+#kbanswer h4 > a,
+#kbanswer h5 > a,
+#kbanswer h6 > a {
+   line-height: 1;
+   margin-left: -20px;
+   padding-right: 4px;
+}
+
+#kbanswer h1 svg,
+#kbanswer h2 svg,
+#kbanswer h3 svg,
+#kbanswer h4 svg,
+#kbanswer h5 svg,
+#kbanswer h6 svg{
+   visibility: hidden;
+}
+
+#kbanswer h1:hover svg,
+#kbanswer h2:hover svg,
+#kbanswer h3:hover svg,
+#kbanswer h4:hover svg,
+#kbanswer h5:hover svg,
+#kbanswer h6:hover svg {
+   visibility: visible;
+}
+
 #kbanswer address {
    font-style: italic;
 }
