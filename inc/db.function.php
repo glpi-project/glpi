@@ -1764,7 +1764,7 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
  * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
  *                            single item or array (default '')
  * @param $is_recursive       need to use recursive process to find item
- *                            (field need to be named recursive) (false by default)
+ *                            (field need to be named recursive) (false by default, set to auto to automatic detection)
  * @param $complete_request   need to use a complete request and not a simple one
  *                            when have acces to all entities (used for reminders)
  *                            (false by default)
@@ -1800,6 +1800,14 @@ function getEntitiesRestrictCriteria($table='', $field='', $value='',
    }
 
    $crit = [$field => $value];
+
+   if ($is_recursive === 'auto' && !empty($table) && $table != 'glpi_entities') {
+      $item = getItemForItemtype(getItemTypeForTable($table));
+      if ($item !== false) {
+         $is_recursive = $item->maybeRecursive();
+      }
+   }
+
    if ($is_recursive) {
       $ancestors = array();
       if (is_array($value)) {
