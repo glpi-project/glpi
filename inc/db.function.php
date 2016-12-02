@@ -1821,6 +1821,7 @@ function getEntitiesRestrictCriteria($table='', $field='', $value='',
       $child = $value;
    }
 
+   $crit = [$field => $child];
    if ($is_recursive) {
       $ancestors = array();
       if (is_array($value)) {
@@ -1848,8 +1849,6 @@ function getEntitiesRestrictCriteria($table='', $field='', $value='',
                                         $field => $ancestors]]];
          }
       }
-   } else {
-      $crit = [$field => $child];
    }
    return $crit;
 }
