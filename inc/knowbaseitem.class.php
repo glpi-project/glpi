@@ -53,6 +53,7 @@ class KnowbaseItem extends CommonDBVisible {
    protected $groups    = array();
    protected $profiles  = array();
    protected $entities  = array();
+   protected $items     = array();
 
    const KNOWBASEADMIN = 1024;
    const READFAQ       = 2048;
@@ -167,6 +168,7 @@ class KnowbaseItem extends CommonDBVisible {
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
 
       $this->addStandardTab('KnowbaseItemTranslation', $ong, $options);
@@ -298,6 +300,9 @@ class KnowbaseItem extends CommonDBVisible {
 
       // Profile / entities
       $this->profiles = KnowbaseItem_Profile::getProfiles($this->fields['id']);
+
+      //Linked kb items
+      $this->knowbase_items = KnowbaseItem_Item::getItems($this);
    }
 
 
@@ -315,6 +320,8 @@ class KnowbaseItem extends CommonDBVisible {
       $class = new Group_KnowbaseItem();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       $class = new KnowbaseItem_Profile();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new KnowbaseItem_Item();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
@@ -402,7 +409,6 @@ class KnowbaseItem extends CommonDBVisible {
       return $join;
    }
 
-
    /**
     * Return visibility SQL restriction to add
     *
@@ -452,6 +458,111 @@ class KnowbaseItem extends CommonDBVisible {
       return $restrict;
    }
 
+   /**
+    * Return visibility joins to add to DBIterator parameters
+    *
+    * @since version 9.2
+    *
+    * @param boolean $forceall force all joins (false by default)
+    *
+    * @return array
+    */
+   static public function getVisibilityCriteria($forceall=false) {
+
+      $join = [];
+      $where = [];
+
+      // Users
+      $join['glpi_knowbaseitems_users'] = [
+         'FKEY' => [
+            'glpi_knowbaseitems_users' => 'knowbaseitems_id',
+            'glpi_knowbaseitems'       => 'id'
+         ]
+      ];
+
+      if (Session::getLoginUserID()) {
+         $where['`glpi_knowbaseitems_users`.`users_id`'] = Session::getLoginUserID();
+      }
+
+      // Groups
+      if ($forceall
+          || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
+         $join['glpi_groups_knowbaseitems'] = [
+            'FKEY' => [
+               'glpi_groups_knowbaseitems' => 'knowbaseitems_id',
+               'glpi_knowbaseitems'        => 'id'
+            ]
+         ];
+
+         if (Session::getLoginUserID()) {
+            $where['`glpi_groups_knowbaseitems`.`groups_id`'] = $_SESSION["glpigroups"];
+            $where['`glpi_groups_knowbaseitems`.`entities_id`'] = ['<', '0'];
+            $restrict = getEntitiesRestrictCriteria('glpi_groups_knowbaseitems', '', '', true);
+            if (count($restrict)) {
+               if (isset($restrict['OR']) && count($restrict['OR'])) {
+                  $where = $where + $restrict['OR'];
+               } else if (!isset($restrict['OR'])) {
+                  $where = $where + $restrict;
+               }
+            }
+         }
+      }
+
+      // Profiles
+      if ($forceall
+          || (isset($_SESSION["glpiactiveprofile"])
+              && isset($_SESSION["glpiactiveprofile"]['id']))) {
+         $join['glpi_knowbaseitems_profiles'] = [
+            'FKEY' => [
+               'glpi_knowbaseitems_profiles' => 'knowbaseitems_id',
+               'glpi_knowbaseitems'          => 'id'
+            ]
+         ];
+
+         if (Session::getLoginUserID()) {
+            $where['`glpi_knowbaseitems_profiles`.`profiles_id`'] = $_SESSION["glpiactiveprofile"]['id'];
+            $where['`glpi_knowbaseitems_profiles`.`entities_id`'] = ['<', '0'];
+            $restrict = getEntitiesRestrictCriteria('glpi_knowbaseitems_profiles', '', '', true);
+            if (count($restrict)) {
+               if (isset($restrict['OR']) && count($restrict['OR'])) {
+                  $where = $where + $restrict['OR'];
+               } else if (!isset($restrict['OR'])) {
+                  $where = $where + $restrict;
+               }
+            }
+         }
+      }
+
+      // Entities
+      if ($forceall
+          || !Session::getLoginUserID()
+          || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))) {
+         $join['glpi_entities_knowbaseitems'] = [
+            'FKEY' => [
+               'glpi_entities_knowbaseitems' => 'knowbaseitems_id',
+               'glpi_knowbaseitems'          => 'id'
+            ]
+         ];
+
+         if (Session::getLoginUserID()) {
+            $restrict = getEntitiesRestrictCriteria('glpi_entities_knowbaseitems', '', '', true);
+            if (count($restrict)) {
+               if (isset($restrict['OR']) && count($restrict['OR'])) {
+                  $where = $where + $restrict['OR'];
+               } else if (!isset($restrict['OR'])) {
+                  $where = $where + $restrict;
+               }
+            }
+         }
+      }
+
+      $criteria = ['JOIN' => $join];
+      if (count($where)) {
+         $criteria['WHERE'] = ['OR' => $where];
+      }
+
+      return $criteria;
+   }
 
    /**
     * @see CommonDBTM::prepareInputForAdd()

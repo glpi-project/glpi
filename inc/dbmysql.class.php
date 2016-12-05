@@ -172,7 +172,7 @@ class DBmysql {
          // no translation for error logs
          $error = "  *** MySQL query error:\n  SQL: ".addslashes($query)."\n  Error: ".
                    $this->dbh->error."\n";
-         $error .= toolbox::backtrace(false, 'DBmysql->query()', array('Toolbox::backtrace()'));
+         $error .= Toolbox::backtrace(false, 'DBmysql->query()', array('Toolbox::backtrace()'));
 
          Toolbox::logInFile("sql-errors", $error);
          if (class_exists('GlpitestSQLError')) { // For unit test
@@ -227,7 +227,7 @@ class DBmysql {
          // no translation for error logs
          $error = "  *** MySQL prepare error:\n  SQL: ".addslashes($query)."\n  Error: ".
                    $this->dbh->error."\n";
-         $error .= toolbox::backtrace(false, 'DBmysql->prepare()', array('Toolbox::backtrace()'));
+         $error .= Toolbox::backtrace(false, 'DBmysql->prepare()', array('Toolbox::backtrace()'));
 
          Toolbox::logInFile("sql-errors", $error);
          if (class_exists('GlpitestSQLError')) { // For unit test
@@ -780,6 +780,7 @@ class DBmysqlIterator  implements Iterator {
             $table = $crit['FROM'];
             unset($crit['FROM']);
          }
+
          // Check field, orderby, limit, start in criterias
          $field    = "";
          $orderby  = "";
@@ -930,7 +931,7 @@ class DBmysqlIterator  implements Iterator {
          }
       }
       if ($debug) {
-         toolbox::logdebug("Generated query:", $this->getSql());
+         Toolbox::logDebug("Generated query:", $this->getSql());
       }
       $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
    }
@@ -1089,5 +1090,4 @@ class DBmysqlIterator  implements Iterator {
    public function numrows() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
    }
-
 }

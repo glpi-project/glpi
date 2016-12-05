@@ -352,6 +352,10 @@ $CFG_GLPI['lock_lockable_objects'] = array('Budget',  'Change', 'Contact', 'Cont
                                            'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
                                            'SoftwareLicense');
 
+$CFG_GLPI["kb_types"]              = array('Computer', 'Monitor', 'NetworkEquipment',
+                                           'Peripheral', 'Phone', 'Printer', 'Software',
+                                           'Ticket');
+
 $CFG_GLPI['javascript'] = [
    'central'   => [
       'central'   => ['fullcalendar']
