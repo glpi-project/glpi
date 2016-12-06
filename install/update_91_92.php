@@ -73,6 +73,31 @@ function update91to92() {
 
    //put you migration script here
 
+   $migration->addField("glpi_infocoms", "businesscriticities_id", "integer");
+   $migration->addKey("glpi_infocoms", "businesscriticities_id");
+   if (!TableExists("glpi_businesscriticities")) {
+      $query = "CREATE TABLE `glpi_businesscriticities` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `entities_id` int(11) NOT NULL DEFAULT '0',
+        `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+        `comment` text COLLATE utf8_unicode_ci,
+        `date_mod` datetime DEFAULT NULL,
+        `date_creation` datetime DEFAULT NULL,
+        `businesscriticities_id` int(11) NOT NULL DEFAULT '0',
+        `completename` text COLLATE utf8_unicode_ci,
+        `level` int(11) NOT NULL DEFAULT '0',
+        `ancestors_cache` longtext COLLATE utf8_unicode_ci,
+        `sons_cache` longtext COLLATE utf8_unicode_ci,
+        PRIMARY KEY (`id`),
+        KEY `name` (`name`),
+        KEY `unicity` (`businesscriticities_id`,`name`),
+        KEY `date_mod` (`date_mod`),
+        KEY `date_creation` (`date_creation`)
+      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "Add business criticity table");
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

@@ -1135,6 +1135,13 @@ class Infocom extends CommonDBChild {
             }
             echo "</td></tr>";
 
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".__('Business criticity')."</td><td>";
+            Dropdown::show('BusinessCriticity', array('value' => $ic->fields['businesscriticities_id']));
+            echo "</td>";
+            echo "<td colspan='2'>";
+            echo "</td></tr>";
+
             echo "<tr><th colspan='4'>".__('Warranty information')."</th></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Start date of warranty')."</td><td>";
@@ -1428,6 +1435,13 @@ class Infocom extends CommonDBChild {
       $tab[122]['datatype']            = 'text';
       $tab[122]['forcegroupby']        = true;
       $tab[122]['joinparams']          = $joinparams;
+
+      $tab[123]['table']                = 'glpi_businesscriticities';
+      $tab[123]['field']                = 'completename';
+      $tab[123]['name']                 = __('Business criticity');
+      $tab[123]['forcegroupby']         = true;
+      $tab[123]['joinparams']           = $complexjoinparams;
+      $tab[123]['datatype']             = 'dropdown';
 
       $tab[159]['table']               = 'glpi_infocoms';
       $tab[159]['field']               = 'decommission_date';
