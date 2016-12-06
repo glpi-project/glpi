@@ -2565,4 +2565,39 @@ class Toolbox {
       $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
       return $array;
    }
+
+   /**
+    * Remove accentued characters and return lower case string
+    *
+    * @param string $string String to handle
+    *
+    * @return string
+    */
+   public static function removeAccents($string)
+   {
+      $string = htmlentities($string, ENT_NOQUOTES, 'utf-8');
+      $string = preg_replace(
+         '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#',
+         '\1',
+         $string
+      );
+      $string = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $string);
+      $string = preg_replace('#&[^;]+;#', '', $string);
+      return mb_strtolower($string);
+   }
+
+   /**
+    * Slugify
+    *
+    * @param string $string String to slugify
+    *
+    * @return string
+    */
+   public static function slugify($string)
+   {
+      $string = str_replace(' ', '-', mb_strtolower($string));
+      $string = self::removeAccents($string);
+      $string = preg_replace('~[^0-9a-z]+~i', '-', $string);
+      return trim($string, '-');
+   }
 }

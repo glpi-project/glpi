@@ -826,12 +826,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
       echo "<div id='kbanswer'>";
-      if (KnowbaseItemTranslation::canBeTranslated($this)) {
-         $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
-      } else {
-         $answer = $this->fields["answer"];
-      }
-      echo Toolbox::unclean_html_cross_side_scripting_deep($answer);
+      echo Toolbox::unclean_html_cross_side_scripting_deep($this->getAnswer());
       echo "</div>";
       echo "</td></tr>";
 
@@ -1840,4 +1835,39 @@ class KnowbaseItem extends CommonDBTM {
       return $values;
    }
 
+   /**
+    * Get KB answer, with id on titles to set anchors
+    *
+    * @return string
+    */
+   public function getAnswer()
+   {
+      if (KnowbaseItemTranslation::canBeTranslated($this)) {
+         $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
+      } else {
+         $answer = $this->fields["answer"];
+      }
+
+      $callback = function ($matches) {
+         //1 => tag name, 2 => existing attributes, 3 => title contents
+         $tpl = '&lt;%tag%attrs id="%slug"&gt;%title&lt;/%tag&gt;';
+
+         $title = str_replace(
+            ['%tag', '%attrs', '%slug', '%title'],
+            [
+               $matches[1],
+               $matches[2],
+               Toolbox::slugify($matches[3]),
+               $matches[3]
+            ],
+            $tpl
+         );
+
+         return $title;
+      };
+      $pattern = '|&lt;(h[1-6]{1})(.?[^&])?&gt;(.+)&lt;/h[1-6]{1}&gt;|';
+      $answer = preg_replace_callback($pattern, $callback, $answer);
+
+      return $answer;
+   }
 }
