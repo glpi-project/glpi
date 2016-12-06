@@ -1401,30 +1401,56 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if (!is_null($groupactors)) {
-         if (isset($this->input["_groups_id_requester"])
-             && ($this->input["_groups_id_requester"] > 0)) {
-            $groupactors->add(array($groupactors->getItilObjectForeignKey()
-                                                   => $this->fields['id'],
-                                    'groups_id'    => $this->input["_groups_id_requester"],
-                                    'type'         => CommonITILActor::REQUESTER,
-                                    '_from_object' => true));
+         if (isset($this->input["_groups_id_requester"])) {
+            $groups_id_requester = $this->input["_groups_id_requester"];
+            if (!is_array($this->input["_groups_id_requester"])) {
+               $groups_id_requester = array($this->input["_groups_id_requester"]);
+            } else {
+               $groups_id_requester = $this->input["_groups_id_requester"];
+            }
+            foreach ($groups_id_requester as $groups_id) {
+               if ($groups_id > 0) {
+                  $groupactors->add(array($groupactors->getItilObjectForeignKey()
+                        => $this->fields['id'],
+                        'groups_id'    => $groups_id,
+                        'type'         => CommonITILActor::REQUESTER,
+                        '_from_object' => true));
+               }
+            }
          }
 
-         if (isset($this->input["_groups_id_assign"]) && ($this->input["_groups_id_assign"] > 0)) {
-            $groupactors->add(array($groupactors->getItilObjectForeignKey()
-                                                   => $this->fields['id'],
-                                    'groups_id'    => $this->input["_groups_id_assign"],
-                                    'type'         => CommonITILActor::ASSIGN,
-                                    '_from_object' => true));
+         if (isset($this->input["_groups_id_assign"])) {
+            if (!is_array($this->input["_groups_id_assign"])) {
+               $groups_id_assign = array($this->input["_groups_id_assign"]);
+            } else {
+               $groups_id_assign = $this->input["_groups_id_assign"];
+            }
+            foreach ($groups_id_assign as $groups_id) {
+               if ($groups_id > 0) {
+                  $groupactors->add(array($groupactors->getItilObjectForeignKey()
+                        => $this->fields['id'],
+                        'groups_id'    => $groups_id,
+                        'type'         => CommonITILActor::ASSIGN,
+                        '_from_object' => true));
+               }
+            }
          }
 
-         if (isset($this->input["_groups_id_observer"])
-             && ($this->input["_groups_id_observer"] > 0)) {
-            $groupactors->add(array($groupactors->getItilObjectForeignKey()
-                                                   => $this->fields['id'],
-                                    'groups_id'    => $this->input["_groups_id_observer"],
-                                    'type'         => CommonITILActor::OBSERVER,
-                                    '_from_object' => true));
+         if (isset($this->input["_groups_id_observer"])) {
+            if (!is_array($this->input["_groups_id_observer"])) {
+               $groups_id_observer = array($this->input["_groups_id_observer"]);
+            } else {
+               $groups_id_observer = $this->input["_groups_id_observer"];
+            }
+            foreach ($groups_id_observer as $groups_id) {
+               if ($groups_id > 0) {
+                  $groupactors->add(array($groupactors->getItilObjectForeignKey()
+                                                         => $this->fields['id'],
+                                          'groups_id'    => $groups_id,
+                                          'type'         => CommonITILActor::OBSERVER,
+                                          '_from_object' => true));
+               }
+            }
          }
       }
 
