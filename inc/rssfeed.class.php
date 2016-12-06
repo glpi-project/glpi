@@ -231,11 +231,7 @@ class RSSFeed extends CommonDBTM {
                      return true;
                   }
                   // Restrict to entities
-                  $entities    = array($group['entities_id']);
-                  if ($group['is_recursive']) {
-                     $entities = getSonsOf('glpi_entities', $group['entities_id']);
-                  }
-                  if (Session::haveAccessToOneOfEntities($entities, true)) {
+                  if (Session::haveAccessToEntity($group['entities_id'], $group['is_recursive'])) {
                      return true;
                   }
                }
@@ -248,11 +244,7 @@ class RSSFeed extends CommonDBTM {
           && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
          foreach ($this->entities as $key => $data) {
             foreach ($data as $entity) {
-               $entities    = array($entity['entities_id']);
-               if ($entity['is_recursive']) {
-                  $entities = getSonsOf('glpi_entities', $entity['entities_id']);
-               }
-               if (Session::haveAccessToOneOfEntities($entities, true)) {
+               if (Session::haveAccessToEntity($entity['entities_id'], $entity['is_recursive'])) {
                   return true;
                }
             }
@@ -270,11 +262,7 @@ class RSSFeed extends CommonDBTM {
                   return true;
                }
                // Restrict to entities
-               $entities    = array($profile['entities_id']);
-               if ($profile['is_recursive']) {
-                  $entities = getSonsOf('glpi_entities',$profile['entities_id']);
-               }
-               if (Session::haveAccessToOneOfEntities($entities, true)) {
+               if (Session::haveAccessToEntity($profile['entities_id'], $profile['is_recursive'])) {
                   return true;
                }
             }
