@@ -85,7 +85,6 @@ class KnowbaseItem_Revision extends CommonDBTM {
    static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB, $CFG_GLPI;
 
-      $kbitem_id = null;
       $item_id = $item->getID();
       $item_type = $item::getType();
       if (isset($_GET["start"])) {

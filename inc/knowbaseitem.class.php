@@ -58,6 +58,7 @@ class KnowbaseItem extends CommonDBVisible {
    const KNOWBASEADMIN = 1024;
    const READFAQ       = 2048;
    const PUBLISHFAQ    = 4096;
+   const COMMENTS      = 8192;
 
    static $rightname   = 'knowbase';
 
@@ -143,6 +144,14 @@ class KnowbaseItem extends CommonDBVisible {
                   && $this->haveVisibilityAccess()));
    }
 
+   /**
+    * Check if current user can comment on KB entries
+    *
+    * @return boolean
+    */
+   public function canComment() {
+      return $this->canViewItem() && Session::haveRight(self::$rightname, self::COMMENTS);
+   }
 
    /**
     * Get the search page URL for the current classe
@@ -174,6 +183,7 @@ class KnowbaseItem extends CommonDBVisible {
       $this->addStandardTab('KnowbaseItemTranslation', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
       $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Comment', $ong, $options);
 
       return $ong;
    }
@@ -500,7 +510,7 @@ class KnowbaseItem extends CommonDBVisible {
          if (Session::getLoginUserID()) {
             $where['`glpi_groups_knowbaseitems`.`groups_id`'] = $_SESSION["glpigroups"];
             $where['`glpi_groups_knowbaseitems`.`entities_id`'] = ['<', '0'];
-            $restrict = getEntitiesRestrictCriteria('glpi_groups_knowbaseitems', '', '', true);
+            $restrict = getEntitiesRestrictCriteria('glpi_groups_knowbaseitems', '', '', true, true);
             if (count($restrict)) {
                if (isset($restrict['OR']) && count($restrict['OR'])) {
                   $where = $where + $restrict['OR'];
@@ -525,7 +535,7 @@ class KnowbaseItem extends CommonDBVisible {
          if (Session::getLoginUserID()) {
             $where['`glpi_knowbaseitems_profiles`.`profiles_id`'] = $_SESSION["glpiactiveprofile"]['id'];
             $where['`glpi_knowbaseitems_profiles`.`entities_id`'] = ['<', '0'];
-            $restrict = getEntitiesRestrictCriteria('glpi_knowbaseitems_profiles', '', '', true);
+            $restrict = getEntitiesRestrictCriteria('glpi_knowbaseitems_profiles', '', '', true, true);
             if (count($restrict)) {
                if (isset($restrict['OR']) && count($restrict['OR'])) {
                   $where = $where + $restrict['OR'];
@@ -548,13 +558,15 @@ class KnowbaseItem extends CommonDBVisible {
          ];
 
          if (Session::getLoginUserID()) {
-            $restrict = getEntitiesRestrictCriteria('glpi_entities_knowbaseitems', '', '', true);
+            $restrict = getEntitiesRestrictCriteria('glpi_entities_knowbaseitems', '', '', true, true);
             if (count($restrict)) {
                if (isset($restrict['OR']) && count($restrict['OR'])) {
                   $where = $where + $restrict['OR'];
                } else if (!isset($restrict['OR'])) {
                   $where = $where + $restrict;
                }
+            } else {
+               $where['`glpi_entities_knowbaseitems`.`entities_id`'] = null;
             }
          }
       }
@@ -1691,6 +1703,7 @@ class KnowbaseItem extends CommonDBVisible {
          $values = parent::getRights();
          $values[self::KNOWBASEADMIN] = __('Knowledge base administration');
          $values[self::PUBLISHFAQ]    = __('Publish in the FAQ');
+         $values[self::COMMENTS]      = __('Comment KB entries');
       }
       $values[self::READFAQ]       = __('Read the FAQ');
       return $values;
