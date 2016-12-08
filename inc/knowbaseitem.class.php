@@ -826,6 +826,13 @@ class KnowbaseItem extends CommonDBVisible {
          return false;
       }
 
+      $default_options = [
+         'display' => true,
+      ];
+      $options = array_merge($default_options, $options);
+
+      $out = "";
+
       $linkusers_id = true;
       // show item : question and answer
       if (((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
@@ -842,26 +849,26 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tmp = "<a href='".$this->getSearchURL().
              "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Category'), $tmp);
-      echo "</th></tr>";
+      $out.= "<table class='tab_cadre_fixe'>";
+      $out.= "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Category'), $tmp);
+      $out.= "</th></tr>";
 
-      echo "<tr><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
+      $out.= "<tr><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
       if (KnowbaseItemTranslation::canBeTranslated($this)) {
-         echo KnowbaseItemTranslation::getTranslatedValue($this, 'name');
+         $out.= KnowbaseItemTranslation::getTranslatedValue($this, 'name');
       } else {
-         echo $this->fields["name"];
+         $out.= $this->fields["name"];
       }
 
-      echo "</td></tr>";
-      echo "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
+      $out.= "</td></tr>";
+      $out.= "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
-      echo "<div id='kbanswer'>";
-      echo $this->getAnswer();
-      echo "</div>";
-      echo "</td></tr>";
+      $out.= "<div id='kbanswer'>";
+      $out.= $this->getAnswer();
+      $out.= "</div>";
+      $out.= "</td></tr>";
 
-      echo "<tr><th class='tdkb'  colspan='2'>";
+      $out.= "<tr><th class='tdkb'  colspan='2'>";
       if ($this->fields["users_id"]) {
          // Integer because true may be 2 and getUserName return array
          if ($linkusers_id) {
@@ -870,36 +877,42 @@ class KnowbaseItem extends CommonDBVisible {
             $linkusers_id = 0;
          }
 
-         printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],
+         $out.= sprintf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],
                 $linkusers_id));
-         echo "<br>";
+         $out.= "<br>";
       }
 
       if ($this->fields["date"]) {
          //TRANS: %s is the datetime of update
-         printf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
-         echo "<br>";
+         $out.= sprintf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
+         $out.= "<br>";
       }
       if ($this->fields["date_mod"]) {
          //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+         $out.= sprintf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
 
-      echo "</th>";
-      echo "<th class='tdkb' colspan='2'>";
+      $out.= "</th>";
+      $out.= "<th class='tdkb' colspan='2'>";
       if ($this->countVisibilities() == 0) {
-         echo "<span class='red'>".__('Unpublished')."</span><br>";
+         $out.= "<span class='red'>".__('Unpublished')."</span><br>";
       }
 
-      printf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]);
-      echo "<br>";
+      $out.= sprintf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]);
+      $out.= "<br>";
       if ($this->fields["is_faq"]) {
-         _e('This item is part of the FAQ');
+         $out.= __('This item is part of the FAQ');
       } else {
-         _e('This item is not part of the FAQ');
+         $out.= __('This item is not part of the FAQ');
       }
-      echo "</th></tr>";
-      echo "</table>";
+      $out.= "</th></tr>";
+      $out.= "</table>";
+
+      if ($options['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }
 
       return true;
    }

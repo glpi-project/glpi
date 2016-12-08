@@ -1582,6 +1582,86 @@ a.icon_nav_move:hover img {
    border-radius: 5px;
 }
 
+.faqadd_block {
+   position: relative;
+   display: inline-block;
+}
+
+.faqadd_block .display_faq_chkbox {
+   display: none;
+}
+
+.faqadd_entries {
+   background: white;
+   border:  1px solid #CCC;
+   box-shadow: 0px 1px 2px 1px #D2D2D2;
+   position: absolute;
+   padding: 5px;
+   width: 450px;
+   height: 40vh;
+   right: -5px;
+   z-index: 1000;
+   margin-top: 20px;
+   border-radius: 2px;
+   display: none;
+}
+
+.faqadd_block .display_faq_chkbox:checked + .faqadd_entries {
+   display: block;
+}
+
+
+.faqadd_entries:before {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 10px 17.3px 10px;
+    border-color: transparent transparent #CCC transparent;
+    top: -18px;
+    right: 5px;
+    position: absolute;
+}
+
+.faqadd_entries:after {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 10px 18.3px 10px;
+    border-color: transparent transparent #ffffff transparent;
+    top: -16px;
+    right: 5px;
+    position: absolute;
+}
+
+.faqadd_block_content {
+   overflow-x: hidden;
+   overflow-y: auto;
+   position: absolute;
+   top: 40px;
+   bottom: 0;
+   left: 0;
+   right: 0;
+}
+
+.faqadd_entries .tab_cadre_fixe {
+   width: 100%;
+   padding: 5px;
+}
+
+.faqadd_entries tr {
+   display: block;
+}
+
+.main_form .faqadd_entries table.tab_cadre_fixe th:not(.actor-th) {
+   display: block;
+   text-align: center;
+}
+
+
 /* ################--------------- File upload  ---------------#################### */
 .fileupload {
    text-align: center;
