@@ -255,39 +255,6 @@ class ITILCategory extends CommonTreeDropdown {
    }
 
 
-   /**
-    * Get links to Faq
-    *
-    * @param $withname  boolean  also display name ? (false by default)
-   **/
-   function getLinks($withname=false) {
-      global $CFG_GLPI;
-
-      $ret = '';
-
-      if ($withname) {
-         $ret .= $this->fields["name"];
-         $ret .= "&nbsp;&nbsp;";
-      }
-
-      if ($this->fields['knowbaseitemcategories_id']) {
-         $title = __('FAQ');
-
-         if (isset($_SESSION['glpiactiveprofile'])
-             && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
-            $title = __('Knowledge base');
-         }
-
-         $ret .= "<a href='".$CFG_GLPI["root_doc"].
-                   "/front/knowbaseitem.php?knowbaseitemcategories_id=".
-                   $this->fields['knowbaseitemcategories_id']."'>".
-                 "<img src='".$CFG_GLPI["root_doc"]."/pics/faqadd.png' class='middle'
-                   alt=\"$title\" title=\"$title\"></a>";
-      }
-      return $ret;
-   }
-
-
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this);
    }

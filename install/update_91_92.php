@@ -192,6 +192,9 @@ function update91to92() {
              WHERE `name` = 'knowbase'";
    $DB->queryOrDie($query, "9.2 update knowledge base with comment right");
 
+   // add kb category to task categories
+   $migration->addField("glpi_taskcategories", "knowbaseitemcategories_id", "integer");
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
