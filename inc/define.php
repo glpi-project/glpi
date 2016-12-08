@@ -352,8 +352,12 @@ $CFG_GLPI['lock_lockable_objects'] = array('Budget',  'Change', 'Contact', 'Cont
                                            'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
                                            'SoftwareLicense');
 
-$CFG_GLPI["kb_types"]              = array('Computer', 'Monitor', 'NetworkEquipment',
-                                           'Peripheral', 'Phone', 'Printer', 'Software',
+$CFG_GLPI["kb_types"]              = array('Budget', 'Change', 'Computer',
+                                           'Contract', 'Entity',
+                                           'Monitor', 'NetworkEquipment',
+                                           'Peripheral', 'Phone', 'Printer',
+                                           'Problem', 'Project', 'Software',
+                                           'SoftwareLicense', 'Supplier',
                                            'Ticket');
 
 $CFG_GLPI['javascript'] = [
