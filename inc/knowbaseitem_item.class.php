@@ -82,9 +82,9 @@ class KnowbaseItem_Item extends CommonDBRelation {
 
       $type_name = null;
       if ($item->getType() == KnowbaseItem::getType()) {
-         $type_name = _n('Linked item', 'Linked items', $nb);
+         $type_name = _n('Associated element', 'Associated elements', $nb);
       } else {
-         $type_name = self::getTypeName($nb);
+         $type_name = __('Knowledge base');
       }
 
       return self::createTabEntry($type_name, $nb);
