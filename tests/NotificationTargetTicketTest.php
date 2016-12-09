@@ -45,7 +45,7 @@ class NotificationTargetTicketTest extends DbTestCase {
       global $CFG_GLPI;
 
       $tkt = getItemByTypeName('Ticket', '_ticket01');
-      $notiftargetticket = new NotificationTargetTicket( '', 'new', $tkt );
+      $notiftargetticket = new NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity',  true), 'new', $tkt );
       $notiftargetticket->getTags( ) ;
 
       // basic test for ##task.categorycomment## tag

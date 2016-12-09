@@ -42,7 +42,7 @@ class PrinterTest extends DbTestCase {
       $obj = new Printer();
 
       // Add
-      $id = $obj->add(['name' => __METHOD__]);
+      $id = $obj->add(['name' => __METHOD__, 'entities_id' => getItemByTypeName('Entity', '_test_root_entity',  true)]);
       $this->assertGreaterThan(0, $id);
       $this->assertTrue($obj->getFromDB($id));
 
@@ -64,7 +64,7 @@ class PrinterTest extends DbTestCase {
       $this->assertTrue($obj->maybeDeleted());
 
       // Add
-      $id = $obj->add(['name' => __METHOD__]);
+      $id = $obj->add(['name' => __METHOD__, 'entities_id' => getItemByTypeName('Entity', '_test_root_entity',  true)]);
       $this->assertGreaterThan(0, $id);
       $this->assertTrue($obj->getFromDB($id));
       $this->assertEquals(0, $obj->getField('is_deleted'));
@@ -124,7 +124,7 @@ class PrinterTest extends DbTestCase {
       $this->assertTrue($obj->maybeDeleted());
 
       // Add
-      $id = $obj->add(['name' => __METHOD__]);
+      $id = $obj->add(['name' => __METHOD__, 'entities_id' => getItemByTypeName('Entity', '_test_root_entity',  true)]);
       $this->assertGreaterThan(0, $id);
       $this->assertTrue($obj->getFromDB($id));
       $this->assertEquals(0, $obj->getField('is_deleted'));
