@@ -217,7 +217,7 @@ class Reminder extends CommonDBTM {
                      return true;
                   }
                   // Restrict to entities
-                  if (Session::haveAccessToEntity($group['entities_id'], $groups['is_recursive'])) {
+                  if (Session::haveAccessToEntity($group['entities_id'], $group['is_recursive'])) {
                      return true;
                   }
                }
@@ -248,11 +248,7 @@ class Reminder extends CommonDBTM {
                   return true;
                }
                // Restrict to entities
-               $entities = array($profile['entities_id']);
-               if ($profile['is_recursive']) {
-                  $entities = getSonsOf('glpi_entities',$profile['entities_id']);
-               }
-               if (Session::haveAccessToOneOfEntities($entities, true)) {
+               if (Session::haveAccessToEntity($profiles['entities_id'], $profile['is_recursive'])) {
                   return true;
                }
             }
