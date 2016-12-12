@@ -85,72 +85,116 @@ class Location extends CommonTreeDropdown {
 
 
    static function getSearchOptionsToAdd() {
+      $options = [];
 
-      $tab                      = array();
+      foreach(self::getSearchOptionsToAddNew() as $opt) {
+         if (!isset($opt['id'])) {
+            throw new \Exception('Invalid search option! ' . print_r($opt, true));
+         }
+         $optid = $opt['id'];
+         unset($opt['id']);
 
-      $tab[3]['table']          = 'glpi_locations';
-      $tab[3]['field']          = 'completename';
-      $tab[3]['name']           = __('Location');
-      $tab[3]['datatype']       = 'dropdown';
+         foreach ($opt as $k => $v) {
+            $options[$optid][$k] = $v;
+         }
+      }
 
-      $tab[91]['table']         = 'glpi_locations';
-      $tab[91]['field']         = 'building';
-      $tab[91]['name']          = __('Building number');
-      $tab[91]['massiveaction'] = false;
-      $tab[91]['datatype']      = 'string';
+      return $options;
+   }
 
-      $tab[92]['table']         = 'glpi_locations';
-      $tab[92]['field']         = 'room';
-      $tab[92]['name']          = __('Room number');
-      $tab[92]['massiveaction'] = false;
-      $tab[92]['datatype']      = 'string';
+   /**
+    * Get the Search options to add to an item for the given Type
+    *
+    * @return a *not indexed* array of search options
+    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
+    * @since 9.2
+   **/
+   static public function getSearchOptionsToAddNew() {
+      $tab = [];
 
-      $tab[93]['table']         = 'glpi_locations';
-      $tab[93]['field']         = 'comment';
-      $tab[93]['name']          = __('Location comments');
-      $tab[93]['massiveaction'] = false;
-      $tab[93]['datatype']      = 'text';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => 'glpi_locations',
+         'field'              => 'completename',
+         'name'               => __('Location'),
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '91',
+         'table'              => 'glpi_locations',
+         'field'              => 'building',
+         'name'               => __('Building number'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '92',
+         'table'              => 'glpi_locations',
+         'field'              => 'room',
+         'name'               => __('Room number'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '93',
+         'table'              => 'glpi_locations',
+         'field'              => 'comment',
+         'name'               => __('Location comments'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
 
       return $tab;
    }
 
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => 'glpi_locations',
+         'field'              => 'building',
+         'name'               => __('Building number'),
+         'datatype'           => 'text'
+      ];
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => 'glpi_locations',
+         'field'              => 'room',
+         'name'               => __('Room number'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'building';
-      $tab[11]['name']     = __('Building number');
-      $tab[11]['datatype'] = 'text';
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => 'glpi_locations',
+         'field'              => 'longitude',
+         'name'               => __('Longitude'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'room';
-      $tab[12]['name']     = __('Room number');
-      $tab[12]['datatype'] = 'text';
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => 'glpi_locations',
+         'field'              => 'latitude',
+         'name'               => __('Latitude'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[20]['table']         = 'glpi_locations';
-      $tab[20]['field']         = 'longitude';
-      $tab[20]['name']          = __('Longitude');
-      $tab[20]['massiveaction'] = false;
-      $tab[20]['datatype']      = 'string';
-
-      $tab[21]['table']         = 'glpi_locations';
-      $tab[21]['field']         = 'latitude';
-      $tab[21]['name']          = __('Latitude');
-      $tab[21]['massiveaction'] = false;
-      $tab[21]['datatype']      = 'string';
-
-      $tab[22]['table']         = 'glpi_locations';
-      $tab[22]['field']         = 'altitude';
-      $tab[22]['name']          = __('Altitude');
-      $tab[22]['massiveaction'] = false;
-      $tab[22]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '22',
+         'table'              => 'glpi_locations',
+         'field'              => 'altitude',
+         'name'               => __('Altitude'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
       return $tab;
    }

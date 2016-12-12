@@ -601,454 +601,701 @@ class Computer extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
       global $CFG_GLPI;
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab = [];
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false; // implicit key==1
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false; // implicit field is id
-      $tab[2]['datatype']        = 'number';
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false // implicit key==1
+      ];
 
-      $tab += Location::getSearchOptionsToAdd();
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false, // implicit field is id
+         'datatype'           => 'number'
+      ];
 
-      $tab[4]['table']           = 'glpi_computertypes';
-      $tab[4]['field']           = 'name';
-      $tab[4]['name']            = __('Type');
-      $tab[4]['datatype']        = 'dropdown';
+      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
 
-      $tab[40]['table']          = 'glpi_computermodels';
-      $tab[40]['field']          = 'name';
-      $tab[40]['name']           = __('Model');
-      $tab[40]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_computertypes',
+         'field'              => 'name',
+         'name'               => __('Type'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[31]['table']          = 'glpi_states';
-      $tab[31]['field']          = 'completename';
-      $tab[31]['name']           = __('Status');
-      $tab[31]['datatype']       = 'dropdown';
-      $tab[31]['condition']      = "`is_visible_computer`";
+      $tab[] = [
+         'id'                 => '40',
+         'table'              => 'glpi_computermodels',
+         'field'              => 'name',
+         'name'               => __('Model'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[45]['table']          = 'glpi_operatingsystems';
-      $tab[45]['field']          = 'name';
-      $tab[45]['name']           = __('Operating system');
-      $tab[45]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '31',
+         'table'              => 'glpi_states',
+         'field'              => 'completename',
+         'name'               => __('Status'),
+         'datatype'           => 'dropdown',
+         'condition'          => '`is_visible_computer`'
+      ];
 
-      $tab[46]['table']          = 'glpi_operatingsystemversions';
-      $tab[46]['field']          = 'name';
-      $tab[46]['name']           = __('Version of the operating system');
-      $tab[46]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '45',
+         'table'              => 'glpi_operatingsystems',
+         'field'              => 'name',
+         'name'               => __('Operating system'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[41]['table']          = 'glpi_operatingsystemservicepacks';
-      $tab[41]['field']          = 'name';
-      $tab[41]['name']           = __('Service pack');
-      $tab[41]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '46',
+         'table'              => 'glpi_operatingsystemversions',
+         'field'              => 'name',
+         'name'               => __('Version of the operating system'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[42]['table']          = 'glpi_autoupdatesystems';
-      $tab[42]['field']          = 'name';
-      $tab[42]['name']           = __('Update Source');
-      $tab[42]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '41',
+         'table'              => 'glpi_operatingsystemservicepacks',
+         'field'              => 'name',
+         'name'               => __('Service pack'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[43]['table']          = $this->getTable();
-      $tab[43]['field']          = 'os_license_number';
-      $tab[43]['name']           = __('Serial of the operating system');
-      $tab[43]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '42',
+         'table'              => 'glpi_autoupdatesystems',
+         'field'              => 'name',
+         'name'               => __('Update Source'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[44]['table']          = $this->getTable();
-      $tab[44]['field']          = 'os_licenseid';
-      $tab[44]['name']           = __('Product ID of the operating system');
-      $tab[44]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '43',
+         'table'              => 'glpi_computers',
+         'field'              => 'os_license_number',
+         'name'               => __('Serial of the operating system'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[61]['table']          = 'glpi_operatingsystemarchitectures';
-      $tab[61]['field']          = 'name';
-      $tab[61]['name']           = __('Operating system architecture');
-      $tab[61]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '44',
+         'table'              => 'glpi_computers',
+         'field'              => 'os_licenseid',
+         'name'               => __('Product ID of the operating system'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[47]['table']          = $this->getTable();
-      $tab[47]['field']          = 'uuid';
-      $tab[47]['name']           = __('UUID');
-      $tab[47]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '61',
+         'table'              => 'glpi_operatingsystemarchitectures',
+         'field'              => 'name',
+         'name'               => __('Operating system architecture'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[48]['table']          = $this->getTable();
-      $tab[48]['field']          = 'os_kernel_version';
-      $tab[48]['name']           = __('Kernel version of the operating system');
-      $tab[48]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '47',
+         'table'              => 'glpi_computers',
+         'field'              => 'uuid',
+         'name'               => __('UUID'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'serial';
-      $tab[5]['name']            = __('Serial number');
-      $tab[5]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '48',
+         'table'              => 'glpi_computers',
+         'field'              => 'os_kernel_version',
+         'name'               => __('Kernel version of the operating system'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'otherserial';
-      $tab[6]['name']            = __('Inventory number');
-      $tab[6]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => 'glpi_computers',
+         'field'              => 'serial',
+         'name'               => __('Serial number'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => 'glpi_computers',
+         'field'              => 'otherserial',
+         'name'               => __('Inventory number'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[7]['table']           = $this->getTable();
-      $tab[7]['field']           = 'contact';
-      $tab[7]['name']            = __('Alternate username');
-      $tab[7]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => 'glpi_computers',
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[8]['table']           = $this->getTable();
-      $tab[8]['field']           = 'contact_num';
-      $tab[8]['name']            = __('Alternate username number');
-      $tab[8]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => 'glpi_computers',
+         'field'              => 'contact',
+         'name'               => __('Alternate username'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[70]['table']          = 'glpi_users';
-      $tab[70]['field']          = 'name';
-      $tab[70]['name']           = __('User');
-      $tab[70]['datatype']       = 'dropdown';
-      $tab[70]['right']          = 'all';
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => 'glpi_computers',
+         'field'              => 'contact_num',
+         'name'               => __('Alternate username number'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[71]['table']          = 'glpi_groups';
-      $tab[71]['field']          = 'completename';
-      $tab[71]['name']           = __('Group');
-      $tab[71]['condition']      = '`is_itemgroup`';
-      $tab[71]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '70',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('User'),
+         'datatype'           => 'dropdown',
+         'right'              => 'all'
+      ];
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '71',
+         'table'              => 'glpi_groups',
+         'field'              => 'completename',
+         'name'               => __('Group'),
+         'condition'          => '`is_itemgroup`',
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => 'glpi_computers',
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => ''
+      ];
 
-      $tab[32]['table']          = 'glpi_networks';
-      $tab[32]['field']          = 'name';
-      $tab[32]['name']           = __('Network');
-      $tab[32]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => 'glpi_computers',
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => ''
+      ];
 
-      $tab[33]['table']          = 'glpi_domains';
-      $tab[33]['field']          = 'name';
-      $tab[33]['name']           = __('Domain');
-      $tab[33]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '32',
+         'table'              => 'glpi_networks',
+         'field'              => 'name',
+         'name'               => __('Network Device'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[23]['table']          = 'glpi_manufacturers';
-      $tab[23]['field']          = 'name';
-      $tab[23]['name']           = __('Manufacturer');
-      $tab[23]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '33',
+         'table'              => 'glpi_domains',
+         'field'              => 'name',
+         'name'               => __('Domain'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[24]['table']          = 'glpi_users';
-      $tab[24]['field']          = 'name';
-      $tab[24]['linkfield']      = 'users_id_tech';
-      $tab[24]['name']           = __('Technician in charge of the hardware');
-      $tab[24]['datatype']       = 'dropdown';
-      $tab[24]['right']          = 'own_ticket';
+      $tab[] = [
+         'id'                 => '23',
+         'table'              => 'glpi_manufacturers',
+         'field'              => 'name',
+         'name'               => __('Manufacturer'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[49]['table']          = 'glpi_groups';
-      $tab[49]['field']          = 'completename';
-      $tab[49]['linkfield']      = 'groups_id_tech';
-      $tab[49]['name']           = __('Group in charge of the hardware');
-      $tab[49]['condition']      = '`is_assign`';
-      $tab[49]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '24',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'linkfield'          => 'users_id_tech',
+         'name'               => __('Technician in charge of the hardware'),
+         'datatype'           => 'dropdown',
+         'right'              => 'own_ticket'
+      ];
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '49',
+         'table'              => 'glpi_groups',
+         'field'              => 'completename',
+         'linkfield'          => 'groups_id_tech',
+         'name'               => __('Group in charge of the hardware'),
+         'condition'          => '`is_assign`',
+         'datatype'           => 'dropdown'
+      ];
+
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'datatype'           => 'dropdown'
+      ];
 
       // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
-      $tab += Notepad::getSearchOptionsToAdd();
+      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
 
-      $tab['periph']             = _n('Component', 'Components', Session::getPluralNumber());
+      $tab[] = [
+          'id'                => 'periph',
+          'name'              => _n('Component', 'Components', Session::getPluralNumber())
+      ];
 
       $items_device_joinparams   = array('jointype'          => 'itemtype_item',
                                          'specific_itemtype' => 'Computer');
 
-      $tab[17]['table']          = 'glpi_deviceprocessors';
-      $tab[17]['field']          = 'designation';
-      $tab[17]['name']           = __('Processor');
-      $tab[17]['forcegroupby']   = true;
-      $tab[17]['usehaving']      = true;
-      $tab[17]['massiveaction']  = false;
-      $tab[17]['datatype']       = 'string';
-      $tab[17]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_items_deviceprocessors',
-                                                   'joinparams' => $items_device_joinparams));
+      $tab[] = [
+         'id'                 => '17',
+         'table'              => 'glpi_deviceprocessors',
+         'field'              => 'designation',
+         'name'               => __('Processor'),
+         'forcegroupby'       => '1',
+         'usehaving'          => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_deviceprocessors',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
 
-      $tab[36]['table']          = 'glpi_items_deviceprocessors';
-      $tab[36]['field']          = 'frequency';
-      $tab[36]['name']           = __('Processor frequency');
-      $tab[36]['unit']           = __('MHz');
-      $tab[36]['forcegroupby']   = true;
-      $tab[36]['usehaving']      = true;
-      $tab[36]['datatype']       = 'number';
-      $tab[36]['width']          = 100;
-      $tab[36]['massiveaction']  = false;
-      $tab[36]['joinparams']     = $items_device_joinparams;
-      $tab[36]['computation']    = "SUM(TABLE.`frequency`) / COUNT(TABLE.`id`)";
+      $tab[] = [
+         'id'                 => '36',
+         'table'              => 'glpi_items_deviceprocessors',
+         'field'              => 'frequency',
+         'name'               => __('Processor frequency'),
+         'unit'               => 'MHz',
+         'forcegroupby'       => '1',
+         'usehaving'          => '1',
+         'datatype'           => 'number',
+         'width'              => '100',
+         'massiveaction'      => '',
+         'joinparams'         => $items_device_joinparams,
+         'computation'        => 'SUM(TABLE.`frequency`) / COUNT(TABLE.`id`)'
+      ];
 
-      $tab[10]['table']          = 'glpi_devicememories';
-      $tab[10]['field']          = 'designation';
-      $tab[10]['name']           = __('Memory type');
-      $tab[10]['forcegroupby']   = true;
-      $tab[10]['usehaving']      = true;
-      $tab[10]['massiveaction']  = false;
-      $tab[10]['datatype']       = 'string';
-      $tab[10]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_items_devicememories',
-                                                   'joinparams' => $items_device_joinparams));
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => 'glpi_devicememories',
+         'field'              => 'designation',
+         'name'               => __('Memory type'),
+         'forcegroupby'       => '1',
+         'usehaving'          => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicememories',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
 
-      $tab[35]['table']          = 'glpi_items_devicememories';
-      $tab[35]['field']          = 'size';
-      $tab[35]['unit']           = __('Mio');
-      $tab[35]['name']           = sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'));
-      $tab[35]['forcegroupby']   = true;
-      $tab[35]['usehaving']      = true;
-      $tab[35]['datatype']       = 'number';
-      $tab[35]['width']          = 100;
-      $tab[35]['massiveaction']  = false;
-      $tab[35]['joinparams']     = $items_device_joinparams;
-      $tab[35]['computation']    = "(SUM(TABLE.`size`) / COUNT(TABLE.`id`))
-                                    * COUNT(DISTINCT TABLE.`id`)";
+      $tab[] = [
+         'id'                 => '35',
+         'table'              => 'glpi_items_devicememories',
+         'field'              => 'size',
+         'unit'               => 'Mio',
+         'name'               => __('Memory (Mio)'),
+         'forcegroupby'       => '1',
+         'usehaving'          => '1',
+         'datatype'           => 'number',
+         'width'              => '100',
+         'massiveaction'      => '',
+         'joinparams'         => $items_device_joinparams,
+         'computation'        => '(SUM(TABLE.`size`) / COUNT(TABLE.`id`))
+                                    * COUNT(DISTINCT TABLE.`id`)'
+      ];
 
-      $tab[11]['table']          = 'glpi_devicenetworkcards';
-      $tab[11]['field']          = 'designation';
-      $tab[11]['name']           = _n('Network interface', 'Network interfaces', 1);
-      $tab[11]['forcegroupby']   = true;
-      $tab[11]['massiveaction']  = false;
-      $tab[11]['datatype']       = 'string';
-      $tab[11]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_items_devicenetworkcards',
-                                                   'joinparams' => $items_device_joinparams));
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => 'glpi_devicenetworkcards',
+         'field'              => 'designation',
+         'name'               => __('Network interface'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicenetworkcards',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
 
-      $tab[20]['table']          = 'glpi_items_devicenetworkcards';
-      $tab[20]['field']          = 'mac';
-      $tab[20]['name']           = __('MAC address');
-      $tab[20]['forcegroupby']   = true;
-      $tab[20]['massiveaction']  = false;
-      $tab[20]['datatype']       = 'string';
-      $tab[20]['joinparams']     = $items_device_joinparams;
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => 'glpi_items_devicenetworkcards',
+         'field'              => 'mac',
+         'name'               => __('MAC address'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => $items_device_joinparams
+      ];
 
-      $tab[12]['table']          = 'glpi_devicesoundcards';
-      $tab[12]['field']          = 'designation';
-      $tab[12]['name']           = __('Soundcard');
-      $tab[12]['forcegroupby']   = true;
-      $tab[12]['massiveaction']  = false;
-      $tab[12]['datatype']       = 'string';
-      $tab[12]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_items_devicesoundcards',
-                                                   'joinparams' => $items_device_joinparams));
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => 'glpi_devicesoundcards',
+         'field'              => 'designation',
+         'name'               => __('Soundcard'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicesoundcards',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
 
-      $tab[13]['table']          = 'glpi_devicegraphiccards';
-      $tab[13]['field']          = 'designation';
-      $tab[13]['name']           = __('Graphics card');
-      $tab[13]['forcegroupby']   = true;
-      $tab[13]['massiveaction']  = false;
-      $tab[13]['datatype']       = 'string';
-      $tab[13]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_items_devicegraphiccards',
-                                                   'joinparams' => $items_device_joinparams));
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => 'glpi_devicegraphiccards',
+         'field'              => 'designation',
+         'name'               => __('Graphics card'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicegraphiccards',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
 
-      $tab[14]['table']          = 'glpi_devicemotherboards';
-      $tab[14]['field']          = 'designation';
-      $tab[14]['name']           = __('System board');
-      $tab[14]['forcegroupby']   = true;
-      $tab[14]['massiveaction']  = false;
-      $tab[14]['datatype']       = 'string';
-      $tab[14]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_items_devicemotherboards',
-                                                   'joinparams' => $items_device_joinparams));
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => 'glpi_devicemotherboards',
+         'field'              => 'designation',
+         'name'               => __('System board'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicemotherboards',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
 
-      $tab[15]['table']          = 'glpi_deviceharddrives';
-      $tab[15]['field']          = 'designation';
-      $tab[15]['name']           = __('Hard drive type');
-      $tab[15]['forcegroupby']   = true;
-      $tab[15]['usehaving']      = true;
-      $tab[15]['massiveaction']  = false;
-      $tab[15]['datatype']       = 'string';
-      $tab[15]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_items_deviceharddrives',
-                                                   'joinparams' => $items_device_joinparams));
+      $tab[] = [
+         'id'                 => '15',
+         'table'              => 'glpi_deviceharddrives',
+         'field'              => 'designation',
+         'name'               => __('Hard drive type'),
+         'forcegroupby'       => '1',
+         'usehaving'          => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_deviceharddrives',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
 
-      $tab[34]['table']          = 'glpi_items_deviceharddrives';
-      $tab[34]['field']          = 'capacity';
-      $tab[34]['name']           = __('Hard drive size');
-      $tab[34]['unit']           = __('Mio');
-      $tab[34]['forcegroupby']   = true;
-      $tab[34]['usehaving']      = true;
-      $tab[34]['datatype']       = 'number';
-      $tab[34]['width']          = 1000;
-      $tab[34]['massiveaction']  = false;
-      $tab[34]['joinparams']     = $items_device_joinparams;
-      $tab[34]['computation']    = "(SUM(TABLE.`capacity`) / COUNT(TABLE.`id`))
-                                       * COUNT(DISTINCT TABLE.`id`)";
+      $tab[] = [
+         'id'                 => '34',
+         'table'              => 'glpi_items_deviceharddrives',
+         'field'              => 'capacity',
+         'name'               => __('Hard drive size'),
+         'unit'               => 'Mio',
+         'forcegroupby'       => '1',
+         'usehaving'          => '1',
+         'datatype'           => 'number',
+         'width'              => '1000',
+         'massiveaction'      => '',
+         'joinparams'         => $items_device_joinparams,
+         'computation'        => '(SUM(TABLE.`capacity`) / COUNT(TABLE.`id`))
+                                       * COUNT(DISTINCT TABLE.`id`)'
+      ];
 
-      $tab[39]['table']          = 'glpi_devicepowersupplies';
-      $tab[39]['field']          = 'designation';
-      $tab[39]['name']           = __('Power supply');
-      $tab[39]['forcegroupby']   = true;
-      $tab[39]['usehaving']      = true;
-      $tab[39]['massiveaction']  = false;
-      $tab[39]['datatype']       = 'string';
-      $tab[39]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_items_devicepowersupplies',
-                                                   'joinparams' => $items_device_joinparams));
+      $tab[] = [
+         'id'                 => '39',
+         'table'              => 'glpi_devicepowersupplies',
+         'field'              => 'designation',
+         'name'               => __('Power supply'),
+         'forcegroupby'       => '1',
+         'usehaving'          => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicepowersupplies',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
 
-      $tab[95]['table']          = 'glpi_devicepcis';
-      $tab[95]['field']          = 'designation';
-      $tab[95]['name']           = __('Other component');
-      $tab[95]['forcegroupby']   = true;
-      $tab[95]['usehaving']      = true;
-      $tab[95]['massiveaction']  = false;
-      $tab[95]['datatype']       = 'string';
-      $tab[95]['joinparams']     = array('beforejoin'
-                                          => array('table'      => 'glpi_items_devicepcis',
-                                                   'joinparams' => $items_device_joinparams));
+      $tab[] = [
+         'id'                 => '95',
+         'table'              => 'glpi_devicepcis',
+         'field'              => 'designation',
+         'name'               => __('Other component'),
+         'forcegroupby'       => '1',
+         'usehaving'          => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_items_devicepcis',
+               'joinparams'         => $items_device_joinparams
+            ]
+         ]
+      ];
 
-      $tab['disk']               = _n('Volume', 'Volumes', Session::getPluralNumber());
+      $tab[] = [
+          'id'                 => 'disk',
+          'name'               => _n('Volume', 'Volumes', Session::getPluralNumber())
+      ];
 
-      $tab[156]['table']         = 'glpi_computerdisks';
-      $tab[156]['field']         = 'name';
-      $tab[156]['name']          = __('Volume');
-      $tab[156]['forcegroupby']  = true;
-      $tab[156]['massiveaction'] = false;
-      $tab[156]['datatype']      = 'dropdown';
-      $tab[156]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '156',
+         'table'              => 'glpi_computerdisks',
+         'field'              => 'name',
+         'name'               => __('Volume'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[150]['table']         = 'glpi_computerdisks';
-      $tab[150]['field']         = 'totalsize';
-      $tab[150]['name']          = sprintf(__('%1$s (%2$s)'), __('Global size'), __('Mio'));
-      $tab[150]['forcegroupby']  = true;
-      $tab[150]['usehaving']     = true;
-      $tab[150]['datatype']      = 'number';
-      $tab[150]['width']         = 1000;
-      $tab[150]['massiveaction'] = false;
-      $tab[150]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '150',
+         'table'              => 'glpi_computerdisks',
+         'field'              => 'totalsize',
+         'name'               => __('Global size (Mio)'),
+         'forcegroupby'       => '1',
+         'usehaving'          => '1',
+         'datatype'           => 'number',
+         'width'              => '1000',
+         'massiveaction'      => '',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[151]['table']         = 'glpi_computerdisks';
-      $tab[151]['field']         = 'freesize';
-      $tab[151]['name']          = __('Free size');
-      $tab[151]['forcegroupby']  = true;
-      $tab[151]['datatype']      = 'number';
-      $tab[151]['width']         = 1000;
-      $tab[151]['massiveaction'] = false;
-      $tab[151]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '151',
+         'table'              => 'glpi_computerdisks',
+         'field'              => 'freesize',
+         'name'               => __('Free size'),
+         'forcegroupby'       => '1',
+         'datatype'           => 'number',
+         'width'              => '1000',
+         'massiveaction'      => '',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[152]['table']         = 'glpi_computerdisks';
-      $tab[152]['field']         = 'freepercent';
-      $tab[152]['name']          = __('Free percentage');
-      $tab[152]['forcegroupby']  = true;
-      $tab[152]['datatype']      = 'decimal';
-      $tab[152]['width']         = 2;
-      $tab[152]['computation']   = "ROUND(100*TABLE.freesize/TABLE.totalsize)";
-      $tab[152]['computationgroupby'] = true;
-      $tab[152]['unit']          = '%';
-      $tab[152]['massiveaction'] = false;
-      $tab[152]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '152',
+         'table'              => 'glpi_computerdisks',
+         'field'              => 'freepercent',
+         'name'               => __('Free percentage'),
+         'forcegroupby'       => '1',
+         'datatype'           => 'decimal',
+         'width'              => '2',
+         'computation'        => 'ROUND(100*TABLE.freesize/TABLE.totalsize)',
+         'computationgroupby' => '1',
+         'unit'               => '%',
+         'massiveaction'      => '',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[153]['table']         = 'glpi_computerdisks';
-      $tab[153]['field']         = 'mountpoint';
-      $tab[153]['name']          = __('Mount point');
-      $tab[153]['forcegroupby']  = true;
-      $tab[153]['massiveaction'] = false;
-      $tab[153]['datatype']      = 'string';
-      $tab[153]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '153',
+         'table'              => 'glpi_computerdisks',
+         'field'              => 'mountpoint',
+         'name'               => __('Mount point'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[154]['table']         = 'glpi_computerdisks';
-      $tab[154]['field']         = 'device';
-      $tab[154]['name']          = __('Partition');
-      $tab[154]['forcegroupby']  = true;
-      $tab[154]['massiveaction'] = false;
-      $tab[154]['datatype']      = 'string';
-      $tab[154]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '154',
+         'table'              => 'glpi_computerdisks',
+         'field'              => 'device',
+         'name'               => __('Partition'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'string',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[155]['table']         = 'glpi_filesystems';
-      $tab[155]['field']         = 'name';
-      $tab[155]['name']          = __('File system');
-      $tab[155]['forcegroupby']  = true;
-      $tab[155]['massiveaction'] = false;
-      $tab[155]['datatype']      = 'dropdown';
-      $tab[155]['joinparams']    = array('beforejoin'
-                                         => array('table'      => 'glpi_computerdisks',
-                                                  'joinparams' => array('jointype' => 'child')));
+      $tab[] = [
+         'id'                 => '155',
+         'table'              => 'glpi_filesystems',
+         'field'              => 'name',
+         'name'               => __('File system'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_computerdisks',
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
-      $tab['virtualmachine']     = _n('Virtual machine', 'Virtual machines', Session::getPluralNumber());
+      $tab[] = [
+         'id'                 => 'virtualmachine',
+         'name'               => _n('Virtual machine', 'Virtual machines', Session::getPluralNumber())
+      ];
 
-      $tab[160]['table']         = 'glpi_computervirtualmachines';
-      $tab[160]['field']         = 'name';
-      $tab[160]['name']          = __('Virtual machine');
-      $tab[160]['forcegroupby']  = true;
-      $tab[160]['massiveaction'] = false;
-      $tab[160]['datatype']      = 'dropdown';
-      $tab[160]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '160',
+         'table'              => 'glpi_computervirtualmachines',
+         'field'              => 'name',
+         'name'               => __('Virtual machine'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[161]['table']         = 'glpi_virtualmachinestates';
-      $tab[161]['field']         = 'name';
-      $tab[161]['name']          = __('State of the virtual machine');
-      $tab[161]['forcegroupby']  = true;
-      $tab[161]['massiveaction'] = false;
-      $tab[161]['datatype']      = 'dropdown';
-      $tab[161]['joinparams']    = array('beforejoin'
-                                          => array('table'      => 'glpi_computervirtualmachines',
-                                                   'joinparams' => array('jointype' => 'child')));
+      $tab[] = [
+         'id'                 => '161',
+         'table'              => 'glpi_virtualmachinestates',
+         'field'              => 'name',
+         'name'               => __('State of the virtual machine'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_computervirtualmachines',
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
-      $tab[162]['table']         = 'glpi_virtualmachinesystems';
-      $tab[162]['field']         = 'name';
-      $tab[162]['name']          = __('Virtualization model');
-      $tab[162]['forcegroupby']  = true;
-      $tab[162]['massiveaction'] = false;
-      $tab[162]['datatype']      = 'dropdown';
-      $tab[162]['joinparams']    = array('beforejoin'
-                                          => array('table'      => 'glpi_computervirtualmachines',
-                                                   'joinparams' => array('jointype' => 'child')));
+      $tab[] = [
+         'id'                 => '162',
+         'table'              => 'glpi_virtualmachinesystems',
+         'field'              => 'name',
+         'name'               => __('Virtualization model'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_computervirtualmachines',
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
-      $tab[163]['table']         = 'glpi_virtualmachinetypes';
-      $tab[163]['field']         = 'name';
-      $tab[163]['name']          = __('Virtualization system');
-      $tab[163]['datatype']      = 'dropdown';
-      $tab[163]['forcegroupby']  = true;
-      $tab[163]['massiveaction'] = false;
-      $tab[163]['joinparams']    = array('beforejoin'
-                                          => array('table'      => 'glpi_computervirtualmachines',
-                                                   'joinparams' => array('jointype' => 'child')));
+      $tab[] = [
+         'id'                 => '163',
+         'table'              => 'glpi_virtualmachinetypes',
+         'field'              => 'name',
+         'name'               => __('Virtualization system'),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_computervirtualmachines',
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
-      $tab[164]['table']         = 'glpi_computervirtualmachines';
-      $tab[164]['field']         = 'vcpu';
-      $tab[164]['name']          = __('Virtual machine processor number');
-      $tab[164]['datatype']      = 'number';
-      $tab[164]['forcegroupby']  = true;
-      $tab[164]['massiveaction'] = false;
-      $tab[164]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '164',
+         'table'              => 'glpi_computervirtualmachines',
+         'field'              => 'vcpu',
+         'name'               => __('Virtual machine processor number'),
+         'datatype'           => 'number',
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[165]['table']         = 'glpi_computervirtualmachines';
-      $tab[165]['field']         = 'ram';
-      $tab[165]['name']          = __('Memory of virtual machines');
-      $tab[165]['datatype']      = 'number';
-      $tab[165]['unit']          = __('Mio');
-      $tab[165]['forcegroupby']  = true;
-      $tab[165]['massiveaction'] = false;
-      $tab[165]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '165',
+         'table'              => 'glpi_computervirtualmachines',
+         'field'              => 'ram',
+         'name'               => __('Memory of virtual machines'),
+         'datatype'           => 'string',
+         'unit'               => 'Mio',
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[166]['table']         = 'glpi_computervirtualmachines';
-      $tab[166]['field']         = 'uuid';
-      $tab[166]['name']          = __('Virtual machine UUID');
-      $tab[165]['datatype']      = 'string';
-      $tab[166]['forcegroupby']  = true;
-      $tab[166]['massiveaction'] = false;
-      $tab[166]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '166',
+         'table'              => 'glpi_computervirtualmachines',
+         'field'              => 'uuid',
+         'name'               => __('Virtual machine UUID'),
+         'forcegroupby'       => '1',
+         'massiveaction'      => '',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab+= ComputerAntivirus::getSearchOptionsToAdd();
+      $tab = array_merge($tab, ComputerAntivirus::getSearchOptionsToAddNew());
 
       return $tab;
    }

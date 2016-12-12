@@ -3174,25 +3174,66 @@ class CommonDBTM extends CommonGLPI {
     *
     * This should be overloaded in Class
     *
-    * @return an array of search options
+    * @return an *indexed* array of search options
     * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
    **/
    function getSearchOptions() {
+      $options = [];
 
-      $tab                     = array();
-      $tab['common']           =__('Characteristics');
+      foreach($this->getSearchOptionsNew() as $opt) {
+         if (!isset($opt['id'])) {
+            throw new \Exception(get_called_class() . ': invalid search option! ' . print_r($opt, true));
+         }
+         $optid = $opt['id'];
+         unset($opt['id']);
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['massiveaction'] = false;
+         if (isset($options[$optid])) {
+            Toolbox::logDebug(
+               "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
+                get_class($this) . " searchOptions!"
+            );
+         }
+
+         foreach ($opt as $k => $v) {
+            $options[$optid][$k] = $v;
+         }
+      }
+
+      return $options;
+   }
+
+   /**
+    * Get the Search options for the given Type
+    *
+    * This should be overloaded in Class
+    *
+    * @return a *not indexed* array of search options
+    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
+    * @since 9.2
+   **/
+   function getSearchOptionsNew() {
+      $tab = [];
+
+      $tab[] = [
+          'id'   => 'common',
+          'name' => __('Characteristics')
+      ];
+
+      $tab[] = [
+         'id'            => 1,
+         'table'         => $this->getTable(),
+         'field'         => 'name',
+         'name'          => __('Name'),
+         'datatype'      => 'itemlink',
+         'massiveaction' => false
+      ];
 
       // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
       return $tab;
    }
+
 
 
    /**
