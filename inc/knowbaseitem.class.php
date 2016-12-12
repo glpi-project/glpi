@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * KnowbaseItem Class
 **/
-class KnowbaseItem extends CommonDBTM {
+class KnowbaseItem extends CommonDBVisible {
 
 
    // From CommonDBTM
@@ -318,20 +318,6 @@ class KnowbaseItem extends CommonDBTM {
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
-
-
-   /**
-    * @since version 0.83
-   **/
-   function countVisibilities() {
-
-      return (count($this->entities)
-              + count($this->users)
-              + count($this->groups)
-              + count($this->profiles));
-   }
-
-
    /**
     * Check is this item if visible to everybody (anonymous users)
     *
@@ -356,88 +342,19 @@ class KnowbaseItem extends CommonDBTM {
       return false;
    }
 
-
-   /**
-    * Is the login user have access to KnowbaseItem based on visibility configuration
-    *
-    * @since version 0.83
-    *
-    * @return boolean
-   **/
-   function haveVisibilityAccess() {
-
+   public function haveVisibilityAccess() {
       // No public knowbaseitem right : no visibility check
       if (!Session::haveRightsOr(self::$rightname, array(self::READFAQ, READ))) {
          return false;
       }
 
-      // Author
-      if ($this->fields['users_id'] == Session::getLoginUserID()) {
-         return true;
-      }
-      // Admin
+      // KB Admin
       if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
          return true;
       }
-      // Users
-      if (isset($this->users[Session::getLoginUserID()])) {
-         return true;
-      }
 
-      // Groups
-      if (count($this->groups)
-          && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
-
-         foreach ($this->groups as $key => $data) {
-            foreach ($data as $group) {
-               if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
-                  // All the group
-                  if ($group['entities_id'] < 0) {
-                     return true;
-                  }
-                  // Restrict to entities
-                  if (Session::haveAccessToEntity($group['entities_id'], $group['is_recursive'])) {
-                     return true;
-                  }
-               }
-            }
-         }
-      }
-
-      // Entities
-      if (count($this->entities)
-          && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-
-         foreach ($this->entities as $key => $data) {
-            foreach ($data as $entity) {
-               if (Session::haveAccessToEntity($entity['entities_id'], $entity['is_recursive'])) {
-                  return true;
-               }
-            }
-         }
-      }
-
-      // Profiles
-      if (count($this->profiles)
-          && isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
-
-         if (isset($this->profiles[$_SESSION["glpiactiveprofile"]['id']])) {
-            foreach ($this->profiles[$_SESSION["glpiactiveprofile"]['id']] as $profile) {
-               // All the profile
-               if ($profile['entities_id'] < 0) {
-                  return true;
-               }
-               // Restrict to entities
-               if (Session::haveAccessToEntity($profile['entities_id'], $profile['is_recursive'])) {
-                  return true;
-               }
-            }
-         }
-      }
-
-      return false;
+      return parent::haveVisibilityAccess();
    }
-
 
    /**
    * Return visibility joins to add to SQL
@@ -1607,206 +1524,6 @@ class KnowbaseItem extends CommonDBTM {
       return $tab;
    }
 
-
-   /**
-    * Show visibility config for a knowbaseitem
-    *
-    * @since version 0.83
-   **/
-   function showVisibility() {
-      global $DB, $CFG_GLPI;
-
-      $ID      = $this->fields['id'];
-      $canedit = $this->can($ID, UPDATE);
-
-      echo "<div class='center'>";
-
-      $rand = mt_rand();
-      $nb   = count($this->users) + count($this->groups) + count($this->profiles)
-              + count($this->entities);
-
-      if ($canedit) {
-         echo "<div class='firstbloc'>";
-         echo "<form name='knowbaseitemvisibility_form$rand' id='knowbaseitemvisibility_form$rand' ";
-         echo " method='post' action='".Toolbox::getItemTypeFormURL('KnowbaseItem')."'>";
-         echo "<input type='hidden' name='knowbaseitems_id' value='$ID'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</th></tr>";
-         echo "<tr class='tab_bg_2'><td width='100px'>";
-
-         $types = array('Entity', 'Group', 'Profile', 'User');
-
-         $addrand = Dropdown::showItemTypes('_type', $types);
-         $params  = array('type'  => '__VALUE__',
-                          'right' => ($this->getField('is_faq') ? 'faq' : 'knowbase'));
-
-         Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
-                                       $CFG_GLPI["root_doc"]."/ajax/visibility.php",
-                                       $params);
-
-         echo "</td>";
-         echo "<td><span id='visibility$rand'></span>";
-         echo "</td></tr>";
-         echo "</table>";
-         Html::closeForm();
-         echo "</div>";
-      }
-
-      echo "<div class='spaced'>";
-      if ($canedit && $nb) {
-         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $massiveactionparams
-            = array('num_displayed'
-                        => $nb,
-                    'container'
-                        => 'mass'.__CLASS__.$rand,
-                    'specific_actions'
-                         => array('delete' => _x('button', 'Delete permanently')) );
-
-         if ($this->fields['users_id'] != Session::getLoginUserID()) {
-            $massiveactionparams['confirm']
-               = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
-         }
-         Html::showMassiveActions($massiveactionparams);
-      }
-      echo "<table class='tab_cadre_fixehov'>";
-      $header_begin  = "<tr>";
-      $header_top    = '';
-      $header_bottom = '';
-      $header_end    = '';
-      if ($canedit && $nb) {
-         $header_begin  .= "<th width='10'>";
-         $header_top    .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         $header_bottom .= Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
-         $header_end    .= "</th>";
-      }
-      $header_end .= "<th>".__('Type')."</th>";
-      $header_end .= "<th>"._n('Recipient', 'Recipients', Session::getPluralNumber())."</th>";
-      $header_end .= "</tr>";
-      echo $header_begin.$header_top.$header_end;
-
-      // Users
-      if (count($this->users)) {
-         foreach ($this->users as $key => $val) {
-            foreach ($val as $data) {
-               echo "<tr class='tab_bg_1'>";
-               if ($canedit) {
-                  echo "<td>";
-                  Html::showMassiveActionCheckBox('KnowbaseItem_User',$data["id"]);
-                  echo "</td>";
-               }
-               echo "<td>".__('User')."</td>";
-               echo "<td>".getUserName($data['users_id'])."</td>";
-               echo "</tr>";
-            }
-         }
-      }
-
-      // Groups
-      if (count($this->groups)) {
-         foreach ($this->groups as $key => $val) {
-            foreach ($val as $data) {
-               echo "<tr class='tab_bg_1'>";
-               if ($canedit) {
-                  echo "<td>";
-                  Html::showMassiveActionCheckBox('Group_KnowbaseItem',$data["id"]);
-                  echo "</td>";
-               }
-               echo "<td>".__('Group')."</td>";
-               echo "<td>";
-               $names     = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
-               $groupname = sprintf(__('%1$s %2$s'), $names["name"],
-                                    Html::showToolTip($names["comment"], array('display' => false)));
-               if ($data['entities_id'] >= 0) {
-                  $groupname = sprintf(__('%1$s / %2$s'), $groupname,
-                                       Dropdown::getDropdownName('glpi_entities',
-                                                                 $data['entities_id']));
-                  if ($data['is_recursive']) {
-                     $groupname = sprintf(__('%1$s %2$s'), $groupname,
-                                          "<span class='b'>(".__('R').")</span>");
-                  }
-               }
-               echo $groupname;
-               echo "</td>";
-               echo "</tr>";
-            }
-         }
-      }
-
-      // Entity
-      if (count($this->entities)) {
-         foreach ($this->entities as $key => $val) {
-            foreach ($val as $data) {
-               echo "<tr class='tab_bg_1'>";
-               if ($canedit) {
-                  echo "<td>";
-                  Html::showMassiveActionCheckBox('Entity_KnowbaseItem',$data["id"]);
-                  echo "</td>";
-               }
-               echo "<td>".__('Entity')."</td>";
-               echo "<td>";
-               $names      = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
-               $entityname = sprintf(__('%1$s %2$s'), $names["name"],
-                                    Html::showToolTip($names["comment"], array('display' => false)));
-               if ($data['is_recursive']) {
-                  $entityname = sprintf(__('%1$s %2$s'), $entityname,
-                                        "<span class='b'>(".__('R').")</span>");
-               }
-               echo $entityname;
-               echo "</td>";
-               echo "</tr>";
-            }
-         }
-      }
-
-      // Profiles
-      if (count($this->profiles)) {
-         foreach ($this->profiles as $key => $val) {
-            foreach ($val as $data) {
-               echo "<tr class='tab_bg_1'>";
-               if ($canedit) {
-                  echo "<td>";
-                  Html::showMassiveActionCheckBox('KnowbaseItem_Profile',$data["id"]);
-                  echo "</td>";
-               }
-               echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
-               echo "<td>";
-               $names       = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
-               $profilename = sprintf(__('%1$s %2$s'), $names["name"],
-                                    Html::showToolTip($names["comment"], array('display' => false)));
-               if ($data['entities_id'] >= 0) {
-                  $profilename = sprintf(__('%1$s / %2$s'), $profilename,
-                                       Dropdown::getDropdownName('glpi_entities',
-                                                                 $data['entities_id']));
-                  if ($data['is_recursive']) {
-                     $profilename = sprintf(__('%1$s %2$s'), $profilename,
-                                        "<span class='b'>(".__('R').")</span>");
-                  }
-               }
-               echo $profilename;
-               echo "</td>";
-               echo "</tr>";
-            }
-         }
-      }
-      if ($nb) {
-         echo $header_begin.$header_bottom.$header_end;
-      }
-
-      echo "</table>";
-      if ($canedit && $nb) {
-         $massiveactionparams['ontop'] =false;
-         Html::showMassiveActions($massiveactionparams);
-         Html::closeForm();
-      }
-
-      echo "</div>";
-      // Add items
-
-      return true;
-   }
-
-
    /**
     * @since version 0.85
     *
@@ -1859,5 +1576,16 @@ class KnowbaseItem extends CommonDBTM {
       $answer = preg_replace_callback($pattern, $callback, $answer);
 
       return $answer;
+   }
+
+   /**
+    * Get dropdown parameters from showVisibility method
+    *
+    * @return array
+    */
+   protected function getShowVisibilityDropdownParams() {
+      $params = parent::getShowVisibilityDropdownParams();
+      $params['right'] = ($this->getField('is_faq') ? 'faq' : 'knowbase');
+      return $params;
    }
 }
