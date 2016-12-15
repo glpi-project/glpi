@@ -317,7 +317,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<div class='center'>";
 
       $virtualmachines = getAllDatasFromTable('glpi_computervirtualmachines',
-                                              "`computers_id` = '$ID' AND `is_deleted` = '0'");
+                                              "`computers_id` = '$ID' AND `is_deleted` = '0'",,'name');
 
       echo "<table class='tab_cadre_fixehov'>";
 
