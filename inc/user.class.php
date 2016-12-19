@@ -987,10 +987,10 @@ class User extends CommonDBTM {
                   $right->add($retr_profile);
                }
             }
-			
-			if (isset($this->input["groups_id"])) {
-               $group_user = new Group_user();
-               $input['users_id'] = $this->getID();
+
+            if (isset($this->input["groups_id"])) {
+               $group_user         = new Group_user();
+               $input['users_id']  = $this->getID();
                $input['groups_id'] = $this->input["groups_id"];
                $group_user->add($input);
             }

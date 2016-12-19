@@ -119,7 +119,7 @@ class RuleRight extends Rule {
       global $CFG_GLPI;
 
       $entity       = array();
-	  $group		= -1;
+      $group        = -1;
       $right        = '';
       $is_recursive = 0;
       $continue     = true;
@@ -152,9 +152,9 @@ class RuleRight extends Rule {
                         $continue                   = false;
                         $output_src["_stop_import"] = true;
                         break;
-					case "_groups_id" :
-						$output["_groups_id"] = $action->fields["value"];
-						break;
+                     case "_groups_id" :
+                        $output["_groups_id"] = $action->fields["value"];
+                        break;
                   } // switch (field)
                   break;
 
@@ -339,10 +339,10 @@ class RuleRight extends Rule {
       $actions['_ignore_user_import']['name']               = __('To be unaware of import');
       $actions['_ignore_user_import']['type']               = 'yesonly';
       $actions['_ignore_user_import']['table']              = '';
-	  
-	  $actions['_groups_id']['name']                         = __('Group');
-	  $actions['_groups_id']['type']                         = 'dropdown';
-	  $actions['_groups_id']['table']                        = 'glpi_groups';
+
+      $actions['_groups_id']['name']                        = __('Group');
+      $actions['_groups_id']['type']                        = 'dropdown';
+      $actions['_groups_id']['table']                       = 'glpi_groups';
 
       return $actions;
    }
