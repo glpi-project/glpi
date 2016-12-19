@@ -39,6 +39,9 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
 
       // Need Innodb -- $DB->begin_transaction() -- workaround:
       $DB->objcreated = array();
+
+      // By default, no sessio, not connected
+      $_SESSION = [];
    }
 
 
@@ -57,9 +60,6 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
          }
       }
       unset($DB->objcreated);
-
-      //reset entity in session
-      Session::changeActiveEntities(getItemByTypeName('Entity', '_test_root_entity',  true), true);
    }
 
 

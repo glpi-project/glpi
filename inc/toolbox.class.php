@@ -881,8 +881,8 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td class='b left'>".__('Testing PHP Parser')."</td>";
 
       // PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
-      if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-         // PHP > 5.4 ok, now check PHP zend.ze1_compatibility_mode
+      if (version_compare(PHP_VERSION, GLPI_MIN_PHP) >= 0) {
+         // PHP version ok, now check PHP zend.ze1_compatibility_mode
          if (ini_get("zend.ze1_compatibility_mode") == 1) {
             $error = 2;
             echo "<td class='red'>
@@ -891,15 +891,15 @@ class Toolbox {
                  "</td>";
          } else {
             echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                       __s('PHP version is at least 5.4.0 - Perfect!')."\"
-                       title=\"".__s('PHP version is at least 5.4.0 - Perfect!')."\"></td>";
+                       sprintf(__s('PHP version is at least %s - Perfect!'), GLPI_MIN_PHP)."\"
+                       title=\"".sprintf(__s('PHP version is at least %s - Perfect!'), GLPI_MIN_PHP)."\"></td>";
          }
 
       } else { // PHP <5
          $error = 2;
          echo "<td class='red'>
                <img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                __('You must install at least PHP 5.4.0.')."</td>";
+                sprintf(__('You must install at least PHP %s.'), GLPI_MIN_PHP)."</td>";
       }
       echo "</tr>";
 
@@ -2564,5 +2564,40 @@ class Toolbox {
       $array = array_map('Toolbox::addslashes_deep', $array);
       $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
       return $array;
+   }
+
+   /**
+    * Remove accentued characters and return lower case string
+    *
+    * @param string $string String to handle
+    *
+    * @return string
+    */
+   public static function removeHtmlSpecialChars($string)
+   {
+      $string = htmlentities($string, ENT_NOQUOTES, 'utf-8');
+      $string = preg_replace(
+         '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#',
+         '\1',
+         $string
+      );
+      $string = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $string);
+      $string = preg_replace('#&[^;]+;#', '', $string);
+      return self::strtolower($string, 'UTF-8');
+   }
+
+   /**
+    * Slugify
+    *
+    * @param string $string String to slugify
+    *
+    * @return string
+    */
+   public static function slugify($string)
+   {
+      $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
+      $string = self::removeHtmlSpecialChars($string);
+      $string = preg_replace('~[^0-9a-z]+~i', '-', $string);
+      return trim($string, '-');
    }
 }

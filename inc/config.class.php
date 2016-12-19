@@ -90,6 +90,14 @@ class Config extends CommonDBTM {
    }
 
 
+   function canViewItem() {
+      if ($this->fields['context'] == 'core' || in_array($this->fields['context'], $_SESSION['glpi_plugins'])) {
+         return true;
+      }
+      return false;
+   }
+
+
    function defineTabs($options=array()) {
 
       $ong = array();
@@ -244,6 +252,8 @@ class Config extends CommonDBTM {
          if ($fields['context'] == 'core'
             && in_array($fields['name'], self::$undisclosedFields)) {
             unset($fields['value']);
+         } else {
+            $fields = Plugin::doHookFunction('undiscloseConfigValue', $fields);
          }
       }
    }

@@ -31,7 +31,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 2 - please consul
 
 * A web server (Apache, Nginx, IIS, etc.)
 * MariaDB (or MySQL < 5.7)
-* PHP 5.4 or higher
+* PHP 5.5 or higher
 * Mandatory PHP extensions:
     - json
     - mbstring
@@ -61,6 +61,7 @@ We are working on a [markdown version](https://github.com/glpi-project/doc)
 
 * [Installation](http://glpi-project.org/spip.php?article61)
 * [Update](http://glpi-project.org/spip.php?article172)
+
 
 
 ## Additional resources

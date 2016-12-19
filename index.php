@@ -36,15 +36,18 @@
 * @brief
 */
 
+//Load GLPI constants
+define('GLPI_ROOT', __DIR__);
+include_once (GLPI_ROOT . "/inc/define.php");
+
 // Check PHP version not to have trouble
-if (version_compare(PHP_VERSION, "5.4.0") < 0) {
-   die("PHP >= 5.4.0 required");
+if (version_compare(PHP_VERSION, GLPI_MIN_PHP) < 0) {
+   die(sprintf("PHP >= %s required", GLPI_MIN_PHP));
 }
 
 define('DO_NOT_CHECK_HTTP_REFERER', 1);
 // If config_db doesn't exist -> start installation
-define('GLPI_ROOT', __DIR__);
-include (GLPI_ROOT . "/config/based_config.php");
+include (GLPI_ROOT . "/inc/based_config.php");
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    include_once (GLPI_ROOT . "/inc/autoload.function.php");
@@ -67,18 +70,16 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    header("Content-Type: text/html; charset=UTF-8");
 
    // Start the page
-   echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" '.
-         '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'."\n";
-   echo '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">';
+   echo "<!DOCTYPE html>\n";
+   echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
    echo '<head><title>'.__('GLPI - Authentication').'</title>'."\n";
-   echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'."\n";
-   echo '<meta http-equiv="Content-Script-Type" content="text/javascript"/>'."\n";
+   echo '<meta charset="utf-8"/>'."\n";
    echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
    echo '<link rel="shortcut icon" type="images/x-icon" href="'.$CFG_GLPI["root_doc"].
           '/pics/favicon.ico" />';
 
    // auto desktop / mobile viewport
-   echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
+   echo "<meta name='viewport' content='width=device-width, initial-scale=1'/>";
 
    // Appel CSS
    echo '<link rel="stylesheet" href="'.$CFG_GLPI["root_doc"].'/css/styles.css" type="text/css" '.
@@ -88,7 +89,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    // surcharge CSS hack for IE
    echo "<!--[if lte IE 6]>" ;
    echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' ".
-         "media='screen' >\n";
+         "media='screen' />\n";
    echo "<![endif]-->";
 //    echo "<script type='text/javascript'><!--document.getElementById('var_login_name').focus();-->".
 //          "</script>";
@@ -119,7 +120,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    }
    echo '<p class="login_input">
          <input type="text" name="'.$namfield.'" id="login_name" required="required"
-                placeholder="'.__('Login').'" />
+                placeholder="'.__('Login').'" autofocus="autofocus" />
          <span class="login_img"></span>
          </p>';
    echo '<p class="login_input">

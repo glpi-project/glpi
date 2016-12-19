@@ -36,7 +36,6 @@
  * @since version 0.85
 **/
 
-$AJAX_INCLUDE = 1;
 include ('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");

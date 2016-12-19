@@ -1682,10 +1682,6 @@ function getDbRelations() {
 function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$value='',
                                     $is_recursive=false, $complete_request=false) {
 
-   if (empty($table)) {
-      Toolbox::logDebug(__METHOD__ . ' called without any `table` specified!');
-   }
-
    $query = $separator ." ( ";
 
    // !='0' needed because consider as empty
@@ -1744,27 +1740,11 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
       }
 
       if (count($ancestors)) {
-         $query .= ' OR ';
-
-         //flag recursivity
-         $is_recursive = false;
-         if (!empty($table) && $table != 'glpi_entities') {
-            $item = getItemForItemtype(getItemTypeForTable($table));
-            if ($item !== false) {
-               $is_recursive = $item->maybeRecursive();
-            }
-         }
-
-         if ($is_recursive) {
-            $query .= '(';
-            $query .= (empty($table) ? '`is_recursive`' : "`$table`.`is_recursive`");
-            $query .= "='1' AND ";
-         }
-
-         $query .= "$field IN ('" . implode("','",$ancestors) . "')";
-
-         if ($is_recursive) {
-            $query .= ')';
+         if ($table == 'glpi_entities') {
+            $query .= " OR $field IN ('" . implode("','",$ancestors) . "')";
+         } else {
+            $recur = (empty($table) ? '`is_recursive`' : "`$table`.`is_recursive`");
+            $query .= " OR ($recur='1' AND $field IN ('" . implode("','",$ancestors) . "'))";
          }
       }
    }
@@ -1784,7 +1764,7 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
  * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
  *                            single item or array (default '')
  * @param $is_recursive       need to use recursive process to find item
- *                            (field need to be named recursive) (false by default)
+ *                            (field need to be named recursive) (false by default, set to auto to automatic detection)
  * @param $complete_request   need to use a complete request and not a simple one
  *                            when have acces to all entities (used for reminders)
  *                            (false by default)
@@ -1816,9 +1796,16 @@ function getEntitiesRestrictCriteria($table='', $field='', $value='',
    }
 
    if (!is_array($value) && strlen($value) == 0) {
-      $child = $_SESSION['glpiactiveentities'];
-   } else {
-      $child = $value;
+      $value = $_SESSION['glpiactiveentities'];
+   }
+
+   $crit = [$field => $value];
+
+   if ($is_recursive === 'auto' && !empty($table) && $table != 'glpi_entities') {
+      $item = getItemForItemtype(getItemTypeForTable($table));
+      if ($item !== false) {
+         $is_recursive = $item->maybeRecursive();
+      }
    }
 
    if ($is_recursive) {
@@ -1839,17 +1826,17 @@ function getEntitiesRestrictCriteria($table='', $field='', $value='',
 
       if (count($ancestors)) {
          if ($table == 'glpi_entities') {
-            $crit = ['OR' => [$field => $child,
-                              $field => $ancestors]];
+            if (!is_array($value)) {
+               $value = [$value => $value];
+            }
+            $crit = ['OR' => [$field => $value + $ancestors]];
          } else {
             $recur = (empty($table) ? 'is_recursive' : "$table.is_recursive");
-            $crit = ['OR' => [$field => $child,
+            $crit = ['OR' => [$field => $value,
                               'AND' => [$recur => 1,
                                         $field => $ancestors]]];
          }
       }
-   } else {
-      $crit = [$field => $child];
    }
    return $crit;
 }

@@ -1276,13 +1276,19 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($this->input["_users_id_requester"])) {
 
             if (is_array($this->input["_users_id_requester"])) {
-               $tab_requester = array_unique($this->input["_users_id_requester"]);
+               $tab_requester = $this->input["_users_id_requester"];
             } else {
                $tab_requester   = array();
                $tab_requester[] = $this->input["_users_id_requester"];
             }
 
+            $requesterToAdd = array();
             foreach ($tab_requester as $key_requester => $requester) {
+               if (in_array($requester, $requesterToAdd)) {
+                  // This requester ID is already added;
+                  continue;
+               }
+
                $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
                               'users_id'                              => $requester,
                               'type'                                  => CommonITILActor::REQUESTER);
@@ -1300,6 +1306,8 @@ abstract class CommonITILObject extends CommonDBTM {
                    && (!isset($input2['alternative_email'])
                        || empty($input2['alternative_email']))) {
                   continue;
+               } else if ($requester != 0) {
+                  $requesterToAdd[] = $requester;
                }
 
                $input2['_from_object'] = true;
@@ -1310,13 +1318,19 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($this->input["_users_id_observer"])) {
 
             if (is_array($this->input["_users_id_observer"])) {
-               $tab_observer = array_unique($this->input["_users_id_observer"]);
+               $tab_observer = $this->input["_users_id_observer"];
             } else {
                $tab_observer   = array();
                $tab_observer[] = $this->input["_users_id_observer"];
             }
 
+            $observerToAdd = array();
             foreach ($tab_observer as $key_observer => $observer) {
+               if (in_array($observer, $observerToAdd)) {
+                  // This observer ID is already added;
+                  continue;
+               }
+
                $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
                               'users_id'                              => $observer,
                               'type'                                  => CommonITILActor::OBSERVER);
@@ -1334,6 +1348,8 @@ abstract class CommonITILObject extends CommonDBTM {
                    && (!isset($input2['alternative_email'])
                        || empty($input2['alternative_email']))) {
                   continue;
+               } else if ($observer != 0) {
+                  $observerToAdd[] = $observer;
                }
 
                $input2['_from_object'] = true;
@@ -1344,13 +1360,19 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($this->input["_users_id_assign"])) {
 
             if (is_array($this->input["_users_id_assign"])) {
-               $tab_assign = array_unique($this->input["_users_id_assign"]);
+               $tab_assign = $this->input["_users_id_assign"];
             } else {
                $tab_assign   = array();
                $tab_assign[] = $this->input["_users_id_assign"];
             }
 
+            $assignToAdd = array();
             foreach ($tab_assign as $key_assign => $assign) {
+               if (in_array($assign, $assignToAdd)) {
+                  // This assigned user ID is already added;
+                  continue;
+               }
+
                $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
                               'users_id'                              => $assign,
                               'type'                                  => CommonITILActor::ASSIGN);
@@ -1368,6 +1390,8 @@ abstract class CommonITILObject extends CommonDBTM {
                    && (!isset($input2['alternative_email'])
                        || empty($input2['alternative_email']))) {
                   continue;
+               } else if ($assign != 0) {
+                  $assignToAdd[] = $assign;
                }
 
                $input2['_from_object'] = true;
@@ -1377,30 +1401,56 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if (!is_null($groupactors)) {
-         if (isset($this->input["_groups_id_requester"])
-             && ($this->input["_groups_id_requester"] > 0)) {
-            $groupactors->add(array($groupactors->getItilObjectForeignKey()
-                                                   => $this->fields['id'],
-                                    'groups_id'    => $this->input["_groups_id_requester"],
-                                    'type'         => CommonITILActor::REQUESTER,
-                                    '_from_object' => true));
+         if (isset($this->input["_groups_id_requester"])) {
+            $groups_id_requester = $this->input["_groups_id_requester"];
+            if (!is_array($this->input["_groups_id_requester"])) {
+               $groups_id_requester = array($this->input["_groups_id_requester"]);
+            } else {
+               $groups_id_requester = $this->input["_groups_id_requester"];
+            }
+            foreach ($groups_id_requester as $groups_id) {
+               if ($groups_id > 0) {
+                  $groupactors->add(array($groupactors->getItilObjectForeignKey()
+                        => $this->fields['id'],
+                        'groups_id'    => $groups_id,
+                        'type'         => CommonITILActor::REQUESTER,
+                        '_from_object' => true));
+               }
+            }
          }
 
-         if (isset($this->input["_groups_id_assign"]) && ($this->input["_groups_id_assign"] > 0)) {
-            $groupactors->add(array($groupactors->getItilObjectForeignKey()
-                                                   => $this->fields['id'],
-                                    'groups_id'    => $this->input["_groups_id_assign"],
-                                    'type'         => CommonITILActor::ASSIGN,
-                                    '_from_object' => true));
+         if (isset($this->input["_groups_id_assign"])) {
+            if (!is_array($this->input["_groups_id_assign"])) {
+               $groups_id_assign = array($this->input["_groups_id_assign"]);
+            } else {
+               $groups_id_assign = $this->input["_groups_id_assign"];
+            }
+            foreach ($groups_id_assign as $groups_id) {
+               if ($groups_id > 0) {
+                  $groupactors->add(array($groupactors->getItilObjectForeignKey()
+                        => $this->fields['id'],
+                        'groups_id'    => $groups_id,
+                        'type'         => CommonITILActor::ASSIGN,
+                        '_from_object' => true));
+               }
+            }
          }
 
-         if (isset($this->input["_groups_id_observer"])
-             && ($this->input["_groups_id_observer"] > 0)) {
-            $groupactors->add(array($groupactors->getItilObjectForeignKey()
-                                                   => $this->fields['id'],
-                                    'groups_id'    => $this->input["_groups_id_observer"],
-                                    'type'         => CommonITILActor::OBSERVER,
-                                    '_from_object' => true));
+         if (isset($this->input["_groups_id_observer"])) {
+            if (!is_array($this->input["_groups_id_observer"])) {
+               $groups_id_observer = array($this->input["_groups_id_observer"]);
+            } else {
+               $groups_id_observer = $this->input["_groups_id_observer"];
+            }
+            foreach ($groups_id_observer as $groups_id) {
+               if ($groups_id > 0) {
+                  $groupactors->add(array($groupactors->getItilObjectForeignKey()
+                                                         => $this->fields['id'],
+                                          'groups_id'    => $groups_id,
+                                          'type'         => CommonITILActor::OBSERVER,
+                                          '_from_object' => true));
+               }
+            }
          }
       }
 
@@ -1409,12 +1459,18 @@ abstract class CommonITILObject extends CommonDBTM {
              && ($this->input["_suppliers_id_assign"] > 0)) {
 
             if (is_array($this->input["_suppliers_id_assign"])) {
-               $tab_assign = array_unique($this->input["_suppliers_id_assign"]);
+               $tab_assign = $this->input["_suppliers_id_assign"];
             } else {
                $tab_assign   = array();
                $tab_assign[] = $this->input["_suppliers_id_assign"];
             }
+
+            $supplierToAdd = array();
             foreach ($tab_assign as $key_assign => $assign) {
+               if (in_array($assign, $supplierToAdd)) {
+                  // This assigned supplier ID is already added;
+                  continue;
+               }
                $input3 = array($supplieractors->getItilObjectForeignKey()
                                               => $this->fields['id'],
                                'suppliers_id' => $assign,
@@ -1431,9 +1487,11 @@ abstract class CommonITILObject extends CommonDBTM {
                    && (!isset($input3['alternative_email'])
                        || empty($input3['alternative_email']))) {
                   continue;
+               } else if ($assign != 0) {
+                  $supplierToAdd[] = $assign;
                }
 
-                $input3['_from_object'] = true;
+               $input3['_from_object'] = true;
                $supplieractors->add($input3);
             }
          }
