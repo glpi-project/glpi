@@ -74,7 +74,25 @@ function update91to92() {
    //put you migration script here
    // Issue #1250 - Add decimal to monitor size
    $migration->changeField('glpi_monitors', 'size', 'size', 'DECIMAL(5,2)');
-      
+
+   //Make software license type a tree dropdown
+   $migration->addField("glpi_softwarelicensetypes", "softwarelicensetypes_id", "integer");
+   $migration->addKey("glpi_softwarelicensetypes", "softwarelicensetypes_id");
+   $migration->addField("glpi_softwarelicensetypes", "level", "integer");
+   $migration->addField("glpi_softwarelicensetypes", "ancestors_cache", "longtext");
+   $migration->addField("glpi_softwarelicensetypes", "sons_cache", "longtext");
+   $migration->addField("glpi_softwarelicensetypes", "entities_id", "integer");
+   $migration->addField("glpi_softwarelicensetypes", "is_recursive", "bool");
+   $tree = $migration->addField("glpi_softwarelicensetypes", "completename", "text");
+   $migration->migrationOneTable('glpi_softwarelicensetypes');
+
+   //First time the dropdown is changed from CommonDropdown to CommonTreeDropdown
+   if ($tree) {
+      $query = "UPDATE `glpi_softwarelicensetypes`
+                SET `completename`=`name`, `is_recursive`='1'";
+      $DB->queryOrDie($query, "9.2 make glpi_softwarelicensetypes a tree dropdown");
+   }
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
