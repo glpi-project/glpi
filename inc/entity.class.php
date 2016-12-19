@@ -1079,6 +1079,9 @@ class Entity extends CommonTreeDropdown {
       }
 
       echo "<table class='tab_cadre_fixe'>";
+
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+
       echo "<tr><th colspan='4'>".__('Address')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1127,19 +1130,15 @@ class Entity extends CommonTreeDropdown {
       echo "<td>";
       Html::autocompletionTextField($entity, "country");
       echo "</td></tr>";
+      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => []]);
+      echo "</table>";
 
       if ($canedit) {
-         echo "<tr>";
-         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-
-         echo "</td></tr>";
-         echo "</table>";
+         echo "</div";
          Html::closeForm();
-
-      } else {
-         echo "</table>";
       }
 
       echo "</div>";
@@ -1167,7 +1166,10 @@ class Entity extends CommonTreeDropdown {
       if ($canedit) {
          echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       }
+
       echo "<table class='tab_cadre_fixe'>";
+
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
 
       echo "<tr><th colspan='2'>".__('Values for the generic rules for assignment to entities').
            "</th></tr>";
@@ -1216,18 +1218,16 @@ class Entity extends CommonTreeDropdown {
          echo "</td></tr>";
       }
 
-     if ($canedit) {
-         echo "<tr>";
-         echo "<td class='tab_bg_2 center' colspan='2'>";
+      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+
+      echo "</table>";
+
+      if ($canedit) {
+         echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-
-         echo "</td></tr>";
-         echo "</table>";
+         echo "</div>";
          Html::closeForm();
-
-      } else {
-         echo "</table>";
       }
    }
 
@@ -1253,9 +1253,11 @@ class Entity extends CommonTreeDropdown {
       }
 
       echo "<table class='tab_cadre_fixe'>";
+
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+
       echo "<tr><th colspan='4'>".__('Autofill dates for financial and administrative information').
            "</th></tr>";
-
 
       $options[0] = __('No autofill');
       if ($ID > 0) {
@@ -1371,18 +1373,16 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td><td colspan='2'></td></tr>";
 
+      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+
+      echo "</table>";
+
       if ($canedit) {
-         echo "<tr>";
-         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-
-         echo "</td></tr>";
-         echo "</table>";
+         echo "</div>";
          Html::closeForm();
-
-      } else {
-         echo "</table>";
       }
 
       echo "</div>";
@@ -1413,6 +1413,9 @@ class Entity extends CommonTreeDropdown {
       }
 
       echo "<table class='tab_cadre_fixe'>";
+
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+
       echo "<tr><th colspan='4'>".__('Notification options')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1731,17 +1734,16 @@ class Entity extends CommonTreeDropdown {
       }
       echo "</td></tr>";
 
+      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+
+      echo "</table>";
+
       if ($canedit) {
-         echo "<tr>";
-         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
-         echo "</td></tr>";
-         echo "</table>";
+         echo "</div>";
          Html::closeForm();
-
-      } else {
-         echo "</table>";
       }
 
       echo "</div>";
@@ -1854,6 +1856,9 @@ class Entity extends CommonTreeDropdown {
       }
 
       echo "<table class='tab_cadre_fixe'>";
+
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+
       echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Ticket template', 'Ticket templates', 1).
            "</td>";
       echo "<td colspan='2'>";
@@ -2043,19 +2048,17 @@ class Entity extends CommonTreeDropdown {
 
       echo "</td></tr>";
 
+      Plugin::doHook("post_item_form", ['item' => $entity, 'options' => &$options]);
+
+      echo "</table>";
+
       if ($canedit) {
-         echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' colspan='4'>";
+         echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
                   class='submit'>";
-
-         echo "</td></tr>";
-         echo "</table>";
+         echo "</div>";
          Html::closeForm();
-
-      } else {
-         echo "</table>";
       }
 
       echo "</div>";
