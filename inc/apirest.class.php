@@ -146,6 +146,10 @@ class APIRest extends API {
          // get complete php session
          return $this->returnResponse($this->getFullSession($this->parameters));
 
+      } else if ($resource === "getGlpiConfig") {
+         // get complete php var $CFG_GLPI
+         return $this->returnResponse($this->getGlpiConfig($this->parameters));
+
       } else if ($resource === "listSearchOptions") {
          // list searchOptions of an itemtype
          $itemtype = $this->getItemtype(1);
@@ -193,7 +197,7 @@ class APIRest extends API {
                   $response = $this->getItem($itemtype, $id, $this->parameters);
                   if (isset($response['date_mod'])) {
                      $datemod = strtotime($response['date_mod']);
-                     $additionalheaders['Last-Modified'] = date('r', $datemod);
+                     $additionalheaders['Last-Modified'] = gmdate("D, d M Y H:i:s", $datemod)." GMT";
                   }
                } else {
                   // return collection of items
@@ -220,7 +224,7 @@ class APIRest extends API {
             case "POST" : // create item(s)
                $response = $this->createItems($itemtype, $this->parameters);
                $code     = 201;
-               if (count($response) == 1) {
+               if (isset($response['id'])) {
                   // add a location targetting created element
                   $additionalheaders['location'] = self::$api_url.$itemtype."/".$response['id'];
                } else {
@@ -250,15 +254,11 @@ class APIRest extends API {
             case "DELETE" : //delete item(s)
                // if id is passed by query string, construct an object with it
                if ($id !== false) {
-                  $code = 204;
                   //override input
                   $this->parameters['input']     = new stdClass();
                   $this->parameters['input']->id = $id;
                }
                $response = $this->deleteItems($itemtype, $this->parameters);
-               if ($id !== false) {
-                  $response = "";
-               }
                break;
          }
          return $this->returnResponse($response, $code, $additionalheaders);
@@ -293,6 +293,7 @@ class APIRest extends API {
                $this->parameters['parent_itemtype'] = $itemtype;
                $itemtype                            = $additional_itemtype;
             }
+            $itemtype = ucfirst($itemtype);
             return $itemtype;
          }
          $this->returnError(__("resource not found or not an instance of CommonDBTM"),

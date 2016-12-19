@@ -175,6 +175,9 @@ class DBmysql {
          $error .= toolbox::backtrace(false, 'DBmysql->query()', array('Toolbox::backtrace()'));
 
          Toolbox::logInFile("sql-errors", $error);
+         if (class_exists('GlpitestSQLError')) { // For unit test
+            throw new GlpitestSQLError($error);
+         }
 
          if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
              && $CFG_GLPI["debug_sql"]) {
@@ -227,6 +230,9 @@ class DBmysql {
          $error .= toolbox::backtrace(false, 'DBmysql->prepare()', array('Toolbox::backtrace()'));
 
          Toolbox::logInFile("sql-errors", $error);
+         if (class_exists('GlpitestSQLError')) { // For unit test
+            throw new GlpitestSQLError($error);
+         }
 
          if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
              && $CFG_GLPI["debug_sql"]) {
@@ -752,7 +758,7 @@ class DBmysqlIterator  implements Iterator {
     * Constructor
     *
     * @param $dbconnexion                    Database Connnexion (must be a CommonDBTM object)
-    * @param $table                          table name
+    * @param $table        string or array   table name (optional when $crit have FROM entry)
     * @param $crit         string or array   of filed/values, ex array("id"=>1), if empty => all rows
     *                                        (default '')
     * @param $debug                          for log the request (default false)
@@ -766,6 +772,14 @@ class DBmysqlIterator  implements Iterator {
          //}
          $this->sql = $table;
       } else {
+         // Modern way
+         if (is_array($table) && isset($table['FROM'])) {
+            // Shift the args
+            $debug = $crit;
+            $crit  = $table;
+            $table = $crit['FROM'];
+            unset($crit['FROM']);
+         }
          // Check field, orderby, limit, start in criterias
          $field    = "";
          $orderby  = "";
@@ -777,37 +791,55 @@ class DBmysqlIterator  implements Iterator {
          $join     = '';
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
-               if ($key === "FIELDS") {
-                  $field = $val;
-                  unset($crit[$key]);
-               } else if ($key === "DISTINCT FIELDS") {
-                  $field = $val;
-                  $distinct = "DISTINCT";
-                  unset($crit[$key]);
-               } else if ($key === "COUNT") {
-                  $count = $val;
-                  unset($crit[$key]);
-               } else if ($key === "ORDER") {
-                  $orderby = $val;
-                  unset($crit[$key]);
-               } else if ($key === "LIMIT") {
-                  $limit = $val;
-                  unset($crit[$key]);
-               } else if ($key === "START") {
-                  $start = $val;
-                  unset($crit[$key]);
-               } else if ($key === "WHERE") {
-                  $where = $val;
-                  unset($crit[$key]);
-               } else if ($key === 'JOIN') {
-                  if (is_array($val)) {
-                     foreach ($val as $jointable => $joincrit) {
-                        $join .= " LEFT JOIN " .  self::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
+               switch ((string)$key) {
+                  case 'SELECT' :
+                  case 'FIELDS' :
+                     $field = $val;
+                     unset($crit[$key]);
+                     break;
+
+                  case 'SELECT DISTINCT' :
+                  case 'DISTINCT FIELDS' :
+                     $field = $val;
+                     $distinct = "DISTINCT";
+                     unset($crit[$key]);
+                     break;
+
+                  case 'COUNT' :
+                     $count = $val;
+                     unset($crit[$key]);
+                     break;
+
+                  case 'ORDER' :
+                     $orderby = $val;
+                     unset($crit[$key]);
+                     break;
+
+                  case 'LIMIT' :
+                     $limit = $val;
+                     unset($crit[$key]);
+                     break;
+
+                  case 'START' :
+                     $start = $val;
+                     unset($crit[$key]);
+                     break;
+
+                  case 'WHERE' :
+                     $where = $val;
+                     unset($crit[$key]);
+                     break;
+
+                  case 'JOIN' :
+                     if (is_array($val)) {
+                        foreach ($val as $jointable => $joincrit) {
+                           $join .= " LEFT JOIN " .  self::quoteName($jointable) . " ON (" . $this->analyseCrit($joincrit) . ")";
+                        }
+                     } else {
+                        trigger_error("BAD JOIN, value sould be [ table => criteria ]", E_USER_ERROR);
                      }
-                  } else {
-                     trigger_error("BAD JOIN, value sould be [ table => criteria ]", E_USER_ERROR);
-                  }
-                  unset($crit[$key]);
+                     unset($crit[$key]);
+                     break;
                }
             }
          }
@@ -826,7 +858,7 @@ class DBmysqlIterator  implements Iterator {
                   $this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(", $t.",$f);
                } else {
                   $t = self::quoteName($t);
-                  $f = self::quoteName($f);
+                  $f = ($f == '*' ? $f : self::quoteName($f));
                   $this->sql .= (empty($this->sql) ? 'SELECT ' : ', ') . "$t.$f";
                }
             }
@@ -838,11 +870,21 @@ class DBmysqlIterator  implements Iterator {
 
          // FROM table list
          if (is_array($table)) {
-            $table = array_map([__CLASS__, 'quoteName'], $table);
-            $this->sql .= ' FROM '.implode(", ",$table);
-         } else {
+            if (count($table)) {
+               $table = array_map([__CLASS__, 'quoteName'], $table);
+               $this->sql .= ' FROM '.implode(", ",$table);
+            } else {
+               trigger_error("Missing table name", E_USER_ERROR);
+            }
+         } else if ($table) {
             $table = self::quoteName($table);
             $this->sql .= " FROM $table";
+         } else {
+            /*
+             * TODO filter with if ($where || !empty($crit)) {
+             * but not usefull for now, as we CANNOT write somthing like "SELECT NOW()"
+             */
+            trigger_error("Missing table name", E_USER_ERROR);
          }
 
          // JOIN

@@ -37,7 +37,7 @@ class HtmlTest extends PHPUnit_Framework_TestCase {
    /**
     * @covers Html::convDate
     */
-    public function testConvDate() {
+   public function testConvDate() {
       $this->assertNull(Html::convDate(null));
       $this->assertNull(Html::convDate('NULL'));
 
@@ -56,12 +56,12 @@ class HtmlTest extends PHPUnit_Framework_TestCase {
 
       $expected = date('m-d-Y');
       $this->assertEquals($expected, Html::convDate($mydate, 2));
-    }
+   }
 
    /**
     * @covers Html::convDateTime
     */
-    public function testConvDateTime() {
+   public function testConvDateTime() {
       $this->assertNull(Html::convDateTime(null));
       $this->assertNull(Html::convDateTime('NULL'));
 
@@ -100,8 +100,7 @@ class HtmlTest extends PHPUnit_Framework_TestCase {
     */
    public function testNl2br_deep() {
       $origin = "A string\nwith breakline.";
-      $expected = "A string<br />
-with breakline.";
+      $expected = "A string<br />\nwith breakline.";
       $this->assertEquals($expected, Html::nl2br_deep($origin));
 
       $origin = [
@@ -109,10 +108,8 @@ with breakline.";
          "And another\none"
       ];
       $expected = [
-         "Another string<br />
-with breakline.",
-         "And another<br />
-one"
+         "Another string<br />\nwith breakline.",
+         "And another<br />\none"
       ];
       $this->assertEquals($expected, Html::nl2br_deep($origin));
    }

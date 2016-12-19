@@ -190,7 +190,15 @@ class NetworkPort extends CommonDBChild {
     * @see CommonDBTM::prepareInputForUpdate
     */
    function prepareInputForUpdate($input) {
-      return $this->splitInputForElements($input);
+      if (!isset($input["_no_history"])) {
+         $input['_no_history'] = false;
+      }
+      if (isset($input['_create_children'])
+          && $input['_create_children']) {
+         return $this->splitInputForElements($input);
+      }
+
+      return $input;
    }
 
    /**
@@ -261,10 +269,11 @@ class NetworkPort extends CommonDBChild {
       $this->input_for_NetworkName        = array();
       $this->input_for_NetworkPortConnect = array();
 
-      $this->getEmpty();
+      $clone = clone $this;
+      $clone->getEmpty();
 
       foreach ($input as $field => $value) {
-         if (array_key_exists($field, $this->fields)) {
+         if (array_key_exists($field, $clone->fields) || $field[0] == '_') {
             continue;
          }
          if (preg_match('/^NetworkName_/',$field)) {
@@ -300,8 +309,9 @@ class NetworkPort extends CommonDBChild {
    function updateDependencies($history=true) {
 
       $instantiation = $this->getInstantiation();
-      if (($instantiation !== false)
-          && (count($this->input_for_instantiation) > 0)) {
+      if ($instantiation !== false
+          && isset($this->input_for_instantiation)
+          && count($this->input_for_instantiation) > 0) {
          $this->input_for_instantiation['networkports_id'] = $this->getID();
          if ($instantiation->isNewID($instantiation->getID())) {
             $instantiation->add($this->input_for_instantiation, [], $history);
@@ -311,8 +321,9 @@ class NetworkPort extends CommonDBChild {
       }
       unset($this->input_for_instantiation);
 
-      if ((count($this->input_for_NetworkName) > 0)
-          && (!isset($_POST['several']))) {
+      if (isset($this->input_for_NetworkName)
+          && count($this->input_for_NetworkName) > 0
+          && !isset($_POST['several'])) {
 
          // Check to see if the NetworkName is empty
          $empty_networkName = empty($this->input_for_NetworkName['name'])
@@ -342,13 +353,14 @@ class NetworkPort extends CommonDBChild {
             if (!$empty_networkName) { // Only create a NetworkName if it is not empty
                $this->input_for_NetworkName['itemtype'] = 'NetworkPort';
                $this->input_for_NetworkName['items_id'] = $this->getID();
-               $network_name->add($this->input_for_NetworkName, [], $history);
+               $newid = $network_name->add($this->input_for_NetworkName, [], $history);
             }
          }
       }
       unset($this->input_for_NetworkName);
 
-      if (count($this->input_for_NetworkPortConnect) > 0) {
+      if (isset($this->input_for_NetworkPortConnect)
+          && count($this->input_for_NetworkPortConnect) > 0) {
          if (isset($this->input_for_NetworkPortConnect['networkports_id_1'])
              && isset($this->input_for_NetworkPortConnect['networkports_id_2'])
              && !empty($this->input_for_NetworkPortConnect['networkports_id_2'])) {
@@ -370,7 +382,14 @@ class NetworkPort extends CommonDBChild {
          unset($input["logical_number"]);
       }
 
-      $input = $this->splitInputForElements($input);
+      if (!isset($input["_no_history"])) {
+         $input['_no_history'] = false;
+      }
+
+      if (isset($input['_create_children'])
+          && $input['_create_children']) {
+         $input = $this->splitInputForElements($input);
+      }
 
       return parent::prepareInputForAdd($input);
    }
@@ -840,6 +859,7 @@ class NetworkPort extends CommonDBChild {
       // Need these to update information
       echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
       echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
+      echo "<input type='hidden' name='_create_children' value='1'>\n";
       echo "<input type='hidden' name='instantiation_type' value='" .
              $this->fields["instantiation_type"]."'>\n";
 

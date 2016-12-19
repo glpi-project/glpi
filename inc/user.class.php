@@ -277,6 +277,9 @@ class User extends CommonDBTM {
       }
    }
 
+   static public function unsetUndisclosedFields(&$fields) {
+      unset($fields['password']);
+   }
 
    function pre_deleteItem() {
       global $DB;
@@ -4104,9 +4107,10 @@ class User extends CommonDBTM {
                          'post-only' => 'postonly');
       $default_password_set = array();
 
-      $crit = array('FIELDS'    => array('name', 'password'),
-                    'is_active' => 1,
-                    'name'      => array_keys($passwords));
+      $crit = array('FIELDS'     => array('name', 'password'),
+                    'is_active'  => 1,
+                    'is_deleted' => 0,
+                    'name'       => array_keys($passwords));
 
       foreach ($DB->request('glpi_users', $crit) as $data) {
          if (Auth::checkPassword($passwords[$data['name']], $data['password'])) {

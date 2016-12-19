@@ -163,7 +163,7 @@ class Central extends CommonGLPI {
          $logins = User::checkDefaultPasswords();
          $user   = new User();
          if (!empty($logins)) {
-            $accouts = array();
+            $accounts = array();
             foreach ($logins as $login) {
                $user->getFromDBbyName($login);
                $accounts[] = $user->getLink();

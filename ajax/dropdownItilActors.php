@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -124,7 +124,7 @@ if (isset($_POST["type"])
             if ($_POST["actortype"] == 'assign')  {
                $cond = '`is_assign`';
             }
-            
+
             $param = array('name'      => '_itil_'.$_POST["actortype"].'[groups_id]',
                            'entity'    => $_POST['entity_restrict'],
                            'condition' => $cond,
@@ -206,4 +206,3 @@ if (isset($_POST["type"])
       }
    }
 }
-?>

@@ -55,7 +55,7 @@ foreach (array('glpi_table_of', 'glpi_foreign_key_field_of') as $session_array_f
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
 // Standard includes
-include_once (GLPI_ROOT . "/config/config.php");
+include_once (GLPI_ROOT . "/inc/config.php");
 
 
 // Security of PHP_SELF
@@ -81,20 +81,16 @@ if (isset($_POST)) {
    if (isset($_POST['_glpi_simple_form'])) {
       $_POST = array_map('urldecode', $_POST);
    }
-   $_POST = array_map(array('Toolbox','addslashes_deep'), $_POST);
-   $_POST = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_POST);
+   $_POST = Toolbox::sanitize($_POST);
 }
 if (isset($_GET)) {
-   $_GET = array_map(array('Toolbox','addslashes_deep'), $_GET);
-   $_GET = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_GET);
+   $_GET = Toolbox::sanitize($_GET);
 }
 if (isset($_REQUEST)) {
-   $_REQUEST = array_map(array('Toolbox','addslashes_deep'), $_REQUEST);
-   $_REQUEST = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_REQUEST);
+   $_REQUEST = Toolbox::sanitize($_REQUEST);
 }
 if (isset($_FILES)) {
-   $_FILES = array_map(array('Toolbox','addslashes_deep'), $_FILES);
-   $_FILES = array_map(array('Toolbox', 'clean_cross_side_scripting_deep'), $_FILES);
+   $_FILES = Toolbox::sanitize($_FILES);
 }
 
 // Mark if Header is loaded or not :

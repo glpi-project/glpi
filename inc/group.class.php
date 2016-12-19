@@ -471,10 +471,10 @@ class Group extends CommonTreeDropdown {
       $tab[18]['name']          = __('Can be manager');
       $tab[18]['datatype']      = 'bool';
 
-      $tab[13]['table']         = $this->getTable();
-      $tab[13]['field']         = 'is_notify';
-      $tab[13]['name']          = __('Can be notified');
-      $tab[13]['datatype']      = 'bool';
+      $tab[20]['table']         = $this->getTable();
+      $tab[20]['field']         = 'is_notify';
+      $tab[20]['name']          = __('Can be notified');
+      $tab[20]['datatype']      = 'bool';
 
       $tab[17]['table']         = $this->getTable();
       $tab[17]['field']         = 'is_itemgroup';

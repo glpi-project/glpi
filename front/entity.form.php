@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -46,4 +46,3 @@ if (isset($_GET['id']) && ($_GET['id'] == 0)) {
 }
 
 include (GLPI_ROOT . "/front/dropdown.common.form.php");
-?>

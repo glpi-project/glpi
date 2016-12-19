@@ -5,7 +5,7 @@ cd $(dirname $0)
 if which apigen &>/dev/null
 then
 	version=$(php -r '
-		require __DIR__ . "/../config/define.php";
+		require __DIR__ . "/../inc/define.php";
 		echo GLPI_VERSION;
 	')
 	apigen generate \

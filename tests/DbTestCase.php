@@ -39,6 +39,9 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
 
       // Need Innodb -- $DB->begin_transaction() -- workaround:
       $DB->objcreated = array();
+
+      // By default, no sessio, not connected
+      $_SESSION = [];
    }
 
 

@@ -68,12 +68,12 @@ class DBConnection extends CommonDBTM {
    **/
    static function createMainConfig($host, $user, $password, $DBname) {
 
-      $DB_str = "<?php\n class DB extends DBmysql {
-                \n public \$dbhost     = '". $host ."';
-                \n public \$dbuser     = '". $user ."';
-                \n public \$dbpassword = '". rawurlencode($password) ."';
-                \n public \$dbdefault  = '". $DBname ."';
-                \n}\n";
+      $DB_str = "<?php\nclass DB extends DBmysql {\n" .
+                "   public \$dbhost     = '$host';\n" .
+                "   public \$dbuser     = '$user';\n" .
+                "   public \$dbpassword = '". rawurlencode($password) . "';\n" .
+                "   public \$dbdefault  = '$DBname';\n" .
+                "}\n";
 
       return Toolbox::writeConfig('config_db.php', $DB_str);
    }

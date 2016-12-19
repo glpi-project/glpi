@@ -4,6 +4,31 @@ To run the GLPI test suite you need
 
 * [PHPunit](https://phpunit.de/) version 4.8 or greater
 
+Installing composer development dependencies
+----------------------
+
+Run the **composer install** command without --no-dev option in the top of GLPI tree:
+
+```bash
+$ composer install -o
+
+Loading composer repositories with package information
+Installing dependencies (including require-dev) from lock file
+  - Installing react/promise (v2.4.1)
+    Loading from cache
+
+  - Installing guzzlehttp/streams (3.0.0)
+    Loading from cache
+
+  - Installing guzzlehttp/ringphp (1.1.0)
+    Loading from cache
+
+  - Installing guzzlehttp/guzzle (5.3.1)
+    Loading from cache
+
+Generating optimized autoload files
+```
+
 Creating a dedicated database
 -----------------------------
 

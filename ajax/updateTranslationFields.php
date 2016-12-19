@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -36,7 +36,6 @@
  * @since version 0.85
 **/
 
-$AJAX_INCLUDE = 1;
 include ('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -48,4 +47,3 @@ if (isset($_POST['itemtype']) && isset($_POST['language'])) {
    $item->getFromDB($_POST['items_id']);
    DropdownTranslation::dropdownFields($item, $_POST['language']);
 }
-?>

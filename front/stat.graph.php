@@ -493,4 +493,3 @@ if ($_GET['itemtype'] == 'Ticket') {
 // form using GET method : CRSF not needed
 Html::closeForm();
 Html::footer();
-?>

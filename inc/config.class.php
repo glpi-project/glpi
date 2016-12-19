@@ -52,6 +52,7 @@ class Config extends CommonDBTM {
 
    static $rightname              = 'config';
 
+   static $undisclosedFields      = array('proxy_passwd', 'smtp_passwd');
 
 
    static function getTypeName($nb=0) {
@@ -85,6 +86,14 @@ class Config extends CommonDBTM {
 
 
    static function canCreate() {
+      return false;
+   }
+
+
+   function canViewItem() {
+      if ($this->fields['context'] == 'core' || in_array($this->fields['context'], $_SESSION['glpi_plugins'])) {
+         return true;
+      }
       return false;
    }
 
@@ -238,6 +247,16 @@ class Config extends CommonDBTM {
       return false;
    }
 
+   static public function unsetUndisclosedFields(&$fields) {
+      if (isset($fields['context']) && isset($fields['name'])) {
+         if ($fields['context'] == 'core'
+            && in_array($fields['name'], self::$undisclosedFields)) {
+            unset($fields['value']);
+         } else {
+            $fields = Plugin::doHookFunction('undiscloseConfigValue', $fields);
+         }
+      }
+   }
 
    /**
     * Print the config form for display
@@ -1123,7 +1142,7 @@ class Config extends CommonDBTM {
       echo "<td>";
       Dropdown::showYesNo('highcontrast_css', $data['highcontrast_css']);
       echo "</td>";
-      echo "<td>";
+      echo "<td colspan='2'>";
       echo "</td></tr>";
 
       if ($oncentral) {
@@ -1783,10 +1802,10 @@ class Config extends CommonDBTM {
       if (is_object($libstring)) {
          return realpath(dirname((new ReflectionObject($libstring))->getFileName()));
 
-      } elseif (class_exists($libstring)) {
+      } else if (class_exists($libstring)) {
          return realpath(dirname((new ReflectionClass($libstring))->getFileName()));
 
-      } elseif (function_exists($libstring)) {
+      } else if (function_exists($libstring)) {
          // Internal function have no file name
          $path = (new ReflectionFunction($libstring))->getFileName();
          return ($path ? realpath(dirname($path)) : false);
@@ -1843,8 +1862,6 @@ class Config extends CommonDBTM {
                  'check'   => 'autolink' ],
                [ 'name'    => 'sabre/vobject',
                  'check'   => 'Sabre\\VObject\\Component' ],
-               [ 'name'    => 'guzzlehttp/guzzle',
-                 'check'   => 'GuzzleHttp\\Client' ],
       ];
 
       foreach ($deps as $dep) {

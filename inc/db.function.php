@@ -521,12 +521,13 @@ function getTreeLeafValueName($table, $ID, $withcomment=false, $translate=true) 
  * @param $ID           integer  ID of the element
  * @param $withcomment  boolean  1 if you want to give the array with the comments (false by default)
  * @param $translate    boolean  (true by default)
+ * @param $tooltip      boolean  (true by default) returns a tooltip, else returns only 'comment'
  *
  * @return string : completename of the element
  *
  * @see getTreeLeafValueName
 **/
-function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=true) {
+function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=true, $tooltip=true) {
    global $DB;
 
    $name    = "";
@@ -568,11 +569,12 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=tr
          } else {
             $name = $DB->result($result,0,"completename");
          }
-         $comment  = sprintf(__('%1$s: %2$s')."<br>",
-                             "<span class='b'>".__('Complete name')."</span>",
-                             $name);
-         $comment .= "<span class='b'>&nbsp;".__('Comments')."&nbsp;</span>";
-
+         if( $tooltip ) {
+            $comment  = sprintf(__('%1$s: %2$s')."<br>",
+                                "<span class='b'>".__('Complete name')."</span>",
+                                $name);
+            $comment .= "<span class='b'>&nbsp;".__('Comments')."&nbsp;</span>";
+         }
          $transcomment = $DB->result($result,0,"transcomment");
          if ($translate && !empty($transcomment)) {
             $comment .= nl2br($transcomment);
@@ -1374,6 +1376,11 @@ function TableExists($tablename) {
 function FieldExists($table, $field, $usecache=true) {
    global $DB;
 
+   if (!TableExists($table)) {
+      trigger_error("Table $table does not exists", E_USER_WARNING);
+      return false;
+   }
+
    if ($fields = $DB->list_fields($table, $usecache)) {
       if (isset($fields[$field])) {
          return true;
@@ -1394,6 +1401,11 @@ function FieldExists($table, $field, $usecache=true) {
 **/
 function isIndex($table, $field) {
    global $DB;
+
+   if (!TableExists($table)) {
+      trigger_error("Table $table does not exists", E_USER_WARNING);
+      return false;
+   }
 
    $result = $DB->query("SHOW INDEX FROM `$table`");
 
@@ -1752,7 +1764,7 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
  * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
  *                            single item or array (default '')
  * @param $is_recursive       need to use recursive process to find item
- *                            (field need to be named recursive) (false by default)
+ *                            (field need to be named recursive) (false by default, set to auto to automatic detection)
  * @param $complete_request   need to use a complete request and not a simple one
  *                            when have acces to all entities (used for reminders)
  *                            (false by default)
@@ -1784,9 +1796,16 @@ function getEntitiesRestrictCriteria($table='', $field='', $value='',
    }
 
    if (!is_array($value) && strlen($value) == 0) {
-      $child = $_SESSION['glpiactiveentities'];
-   } else {
-      $child = $value;
+      $value = $_SESSION['glpiactiveentities'];
+   }
+
+   $crit = [$field => $value];
+
+   if ($is_recursive === 'auto' && !empty($table) && $table != 'glpi_entities') {
+      $item = getItemForItemtype(getItemTypeForTable($table));
+      if ($item !== false) {
+         $is_recursive = $item->maybeRecursive();
+      }
    }
 
    if ($is_recursive) {
@@ -1807,17 +1826,17 @@ function getEntitiesRestrictCriteria($table='', $field='', $value='',
 
       if (count($ancestors)) {
          if ($table == 'glpi_entities') {
-            $crit = ['OR' => [$field => $child,
-                              $field => $ancestors]];
+            if (!is_array($value)) {
+               $value = [$value => $value];
+            }
+            $crit = ['OR' => [$field => $value + $ancestors]];
          } else {
             $recur = (empty($table) ? 'is_recursive' : "$table.is_recursive");
-            $crit = ['OR' => [$field => $child,
+            $crit = ['OR' => [$field => $value,
                               'AND' => [$recur => 1,
                                         $field => $ancestors]]];
          }
       }
-   } else {
-      $crit = [$field => $child];
    }
    return $crit;
 }

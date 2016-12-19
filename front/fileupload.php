@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 
 include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
-include_once (GLPI_ROOT . "/config/config.php");
+include_once (GLPI_ROOT . "/inc/config.php");
 
 Session::checkLoginUser();
 // Load Language file
@@ -96,7 +96,7 @@ if (isset($response[$_GET['name']]) && is_array($response[$_GET['name']])) {
          }
       } else { // Unlink file
          $val->error = $errors['accept_file_types'];
-	 if (file_exists($upload_dir.$val->name)) {
+         if (file_exists($upload_dir.$val->name)) {
             @unlink($upload_dir.$val->name);
          }
       }

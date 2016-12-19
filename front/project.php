@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -45,4 +45,3 @@ Html::header(Project::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SEL
 Search::show('Project');
 
 Html::footer();
-?>

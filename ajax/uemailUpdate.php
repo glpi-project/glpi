@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -56,7 +56,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
    if (isset($_POST['typefield']) && ($_POST['typefield'] == 'supplier')) {
       $supplier = new Supplier();
       if ($supplier->getFromDB($_POST["value"])) {
-      $default_email = $supplier->fields['email'];
+         $default_email = $supplier->fields['email'];
       }
    } else {
       $user          = new User();
@@ -78,7 +78,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
       $default_notif = $_POST['use_notification'][$user_index];
    }
 
-   if (isset($_POST['alternative_email'][$user_index]) 
+   if (isset($_POST['alternative_email'][$user_index])
        && !empty($_POST['alternative_email'][$user_index])
        && empty($default_email)) {
 
@@ -125,4 +125,3 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
 }
 
 Ajax::commonDropdownUpdateItem($_POST);
-?>

@@ -534,28 +534,26 @@ class Toolbox {
    static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars) {
 
       // Date et heure de l'erreur
-      $errortype = array(E_ERROR           => 'Error',
-                         E_WARNING         => 'Warning',
-                         E_PARSE           => 'Parsing Error',
-                         E_NOTICE          => 'Notice',
-                         E_CORE_ERROR      => 'Core Error',
-                         E_CORE_WARNING    => 'Core Warning',
-                         E_COMPILE_ERROR   => 'Compile Error',
-                         E_COMPILE_WARNING => 'Compile Warning',
-                         E_USER_ERROR      => 'User Error',
-                         E_USER_WARNING    => 'User Warning',
-                         E_USER_NOTICE     => 'User Notice',
-                         E_STRICT          => 'Runtime Notice',
-                         // Need php 5.2.0
-                         4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error',
-                         // Need php 5.3.0
-                         8192 /* E_DEPRECATED */       => 'Deprecated function',
-                         16384 /* E_USER_DEPRECATED */ => 'User deprecated function');
+      $errortype = array(E_ERROR             => 'Error',
+                         E_WARNING           => 'Warning',
+                         E_PARSE             => 'Parsing Error',
+                         E_NOTICE            => 'Notice',
+                         E_CORE_ERROR        => 'Core Error',
+                         E_CORE_WARNING      => 'Core Warning',
+                         E_COMPILE_ERROR     => 'Compile Error',
+                         E_COMPILE_WARNING   => 'Compile Warning',
+                         E_USER_ERROR        => 'User Error',
+                         E_USER_WARNING      => 'User Warning',
+                         E_USER_NOTICE       => 'User Notice',
+                         E_STRICT            => 'Runtime Notice',
+                         E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+                         E_DEPRECATED        => 'Deprecated function',
+                         E_USER_DEPRECATED   => 'User deprecated function');
       // Les niveaux qui seront enregistrés
       $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 
       $err = '  *** PHP '.$errortype[$errno] . "($errno): $errmsg\n";
-      if (in_array($errno, $user_errors)) {
+      if (in_array($errno, $user_errors) && function_exists('wddx_serialize_value')) {
          $err .= "Variables:".wddx_serialize_value($vars, "Variables")."\n";
       }
 
@@ -571,6 +569,21 @@ class Toolbox {
 
       // Save error
       self::logInFile("php-errors", $err);
+
+      // For unit test
+      if (class_exists('GlpitestPHPerror')) {
+         if (in_array($errno, [E_ERROR, E_USER_ERROR])) {
+            throw new GlpitestPHPerror($err);
+         }
+         /* for tuture usage
+         if (in_array($errno, [E_STRICT, E_WARNING, E_CORE_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED])) {
+             throw new GlpitestPHPwarning($err);
+         }
+         if (in_array($errno, [E_NOTICE, E_USER_NOTICE])) {
+            throw new GlpitestPHPnotice($err);
+         }
+         */
+      }
 
       return $errortype[$errno];
    }
@@ -709,11 +722,11 @@ class Toolbox {
       // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
       // http://tools.ietf.org/html/rfc7232#section-3.3
       if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag){
-         header("HTTP/1.1 304 Not Modified");
+         http_response_code(304); //304 - Not Modified
          exit;
       }
       if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified){
-         header("HTTP/1.1 304 Not Modified");
+         http_response_code(304); //304 - Not Modified
          exit;
       }
 
@@ -868,8 +881,8 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td class='b left'>".__('Testing PHP Parser')."</td>";
 
       // PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
-      if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-         // PHP > 5.4 ok, now check PHP zend.ze1_compatibility_mode
+      if (version_compare(PHP_VERSION, GLPI_MIN_PHP) >= 0) {
+         // PHP version ok, now check PHP zend.ze1_compatibility_mode
          if (ini_get("zend.ze1_compatibility_mode") == 1) {
             $error = 2;
             echo "<td class='red'>
@@ -878,15 +891,15 @@ class Toolbox {
                  "</td>";
          } else {
             echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                       __s('PHP version is at least 5.4.0 - Perfect!')."\"
-                       title=\"".__s('PHP version is at least 5.4.0 - Perfect!')."\"></td>";
+                       sprintf(__s('PHP version is at least %s - Perfect!'), GLPI_MIN_PHP)."\"
+                       title=\"".sprintf(__s('PHP version is at least %s - Perfect!'), GLPI_MIN_PHP)."\"></td>";
          }
 
       } else { // PHP <5
          $error = 2;
          echo "<td class='red'>
                <img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
-                __('You must install at least PHP 5.4.0.')."</td>";
+                sprintf(__('You must install at least PHP %s.'), GLPI_MIN_PHP)."</td>";
       }
       echo "</tr>";
 
@@ -947,7 +960,7 @@ class Toolbox {
          ],
          'ctype'    => [
             'required'  => true,
-            'function'  => ['ctype_digit']
+            'function'  => 'ctype_digit',
          ],
          'fileinfo' => [
             'required'  => true,
@@ -982,21 +995,21 @@ class Toolbox {
          $success = true;
 
          if (isset($params['function'])) {
-            if (!function_exists($func)) {
+            if (!function_exists($params['function'])) {
                 $success = false;
             }
-         } elseif (isset($param['class'])) {
+         } else if (isset($param['class'])) {
             if (!class_exists($params['class'])) {
                $success = false;
             }
          } else {
-            if (extension_loaded($ext)) {
+            if (!extension_loaded($ext)) {
                $success = false;
             }
          }
 
          echo "<tr class=\"tab_bg_1\"><td class=\"left b\">" . sprintf(__('%s extension test'), $ext) . "</td>";
-         if ($success === false) {
+         if ($success) {
              $msg = sprintf(__('%s extension is installed'), $ext);
             echo "<td><img src=\"{$CFG_GLPI['root_doc']}/pics/ok_min.png\"
                     alt=\"$msg\"
@@ -1558,7 +1571,9 @@ class Toolbox {
 
       $factory = new RandomLib\Factory();
       if ($high) {
-         $generator = $factory->getHighStrengthGenerator();
+         /* Notice "High" imply mcrypt extension, unwanted for now
+            See https://github.com/ircmaxell/RandomLib/issues/57 */
+         $generator = $factory->getMediumStrengthGenerator();
       } else {
          $generator = $factory->getLowStrengthGenerator();
       }
@@ -2320,7 +2335,7 @@ class Toolbox {
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
       $DB = new DB();
-      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-9.1-empty.sql")) {
+      if (!$DB->runFile(GLPI_ROOT ."/install/mysql/glpi-" . GLPI_SCHEMA_VERSION . "-empty.sql")) {
          echo "Errors occurred inserting default database";
       }
       // update default language
@@ -2538,4 +2553,51 @@ class Toolbox {
       return false;
    }
 
+   /**
+    * Sanitize received values
+    *
+    * @param array $array
+    *
+    * @return array
+    */
+   static public function sanitize($array) {
+      $array = array_map('Toolbox::addslashes_deep', $array);
+      $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
+      return $array;
+   }
+
+   /**
+    * Remove accentued characters and return lower case string
+    *
+    * @param string $string String to handle
+    *
+    * @return string
+    */
+   public static function removeHtmlSpecialChars($string)
+   {
+      $string = htmlentities($string, ENT_NOQUOTES, 'utf-8');
+      $string = preg_replace(
+         '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#',
+         '\1',
+         $string
+      );
+      $string = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $string);
+      $string = preg_replace('#&[^;]+;#', '', $string);
+      return self::strtolower($string, 'UTF-8');
+   }
+
+   /**
+    * Slugify
+    *
+    * @param string $string String to slugify
+    *
+    * @return string
+    */
+   public static function slugify($string)
+   {
+      $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
+      $string = self::removeHtmlSpecialChars($string);
+      $string = preg_replace('~[^0-9a-z]+~i', '-', $string);
+      return trim($string, '-');
+   }
 }

@@ -1461,6 +1461,44 @@ td.rotate {
    font-weight: bolder;
 }
 
+#kbanswer h1:target,
+#kbanswer h2:target,
+#kbanswer h3:target,
+#kbanswer h4:target,
+#kbanswer h5:target,
+#kbanswer h6:target {
+  background-color: #fff2a8;
+}
+
+#kbanswer h1 > a,
+#kbanswer h2 > a,
+#kbanswer h3 > a,
+#kbanswer h4 > a,
+#kbanswer h5 > a,
+#kbanswer h6 > a {
+   line-height: 1;
+   margin-left: -20px;
+   padding-right: 4px;
+}
+
+#kbanswer h1 svg,
+#kbanswer h2 svg,
+#kbanswer h3 svg,
+#kbanswer h4 svg,
+#kbanswer h5 svg,
+#kbanswer h6 svg{
+   visibility: hidden;
+}
+
+#kbanswer h1:hover svg,
+#kbanswer h2:hover svg,
+#kbanswer h3:hover svg,
+#kbanswer h4:hover svg,
+#kbanswer h5:hover svg,
+#kbanswer h6:hover svg {
+   visibility: visible;
+}
+
 #kbanswer address {
    font-style: italic;
 }
@@ -1954,7 +1992,7 @@ a.icon_nav_move:hover img {
    font-family:"Myriad Pro","Myriad Web","Tahoma","Helvetica","Arial",sans-serif;
    color:#393939;
    font-size: 11px;
-   background: #CDE4CB;
+   background: #DFDFDF;
 }
 
 .message_after_redirect h3 {
@@ -1986,14 +2024,10 @@ a.icon_nav_move:hover img {
 }
 
 /* ##### INFO messages ##### */
-.ui-widget-content.message_after_redirect.info_msg {
-   background-color: #a3abc0;
-}
-
 .message_after_redirect.info_msg div.ui-widget-header {
    color: white;
-   background: rgba(27, 47, 98, .8);
-   border-color: rgba(27, 47, 98, 0.8);
+   background: #A9A9A9;
+   border-color: #A9A9A9;
 }
 
 /* ################--------------- Login Null Header  ---------------#################### */
@@ -2560,6 +2594,10 @@ ul#menu ul.ssmenu {
    padding: 6px;
    height: 18px;
    padding: 5px;
+}
+
+#footer > table {
+   width: 100%;
 }
 
 a.copyright {

@@ -55,4 +55,3 @@ if (isset($_POST["used"])) {
 }
 Computer_Item::dropdownConnect($_POST["itemtype"], $_POST['fromtype'], $_POST['myname'],
                                $_POST["entity_restrict"], $_POST["onlyglobal"], $used);
-?>

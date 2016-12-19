@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -115,4 +115,3 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
           $ticket->countActiveObjectsForSupplier($_POST['suppliers_id_assign']));
    echo ")</a>";
 }
-?>

@@ -242,8 +242,8 @@ class Search {
 
       if (count($p['criteria']) > 0) {
          foreach ($p['criteria'] as $key => $val) {
-            if (!in_array($val['field'], $data['toview'])) {
-               if (isset($val['field']) && ($val['field'] != 'all') && ($val['field'] != 'view')) {
+            if (isset($val['field']) && !in_array($val['field'], $data['toview'])) {
+               if ($val['field'] != 'all' && $val['field'] != 'view') {
                   array_push($data['toview'], $val['field']);
                } else if ($val['field'] == 'all'){
                   $data['search']['all_search'] = true;
@@ -2515,21 +2515,23 @@ class Search {
             case "itemlink" :
                if ($meta
                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
+
+                  $TRANS = '';
+                  if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+                      $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
+                                                             '".self::SHORTSEP."',$tocomputeid)
+                                             SEPARATOR '".self::LONGSEP."')
+                                     AS `".$NAME."_".$num."_trans`, ";
+                  }
+
                   return " GROUP_CONCAT(DISTINCT CONCAT($tocompute, '".self::SHORTSEP."' ,
                                                         `$table$addtable`.`id`)
                                         SEPARATOR '".self::LONGSEP."') AS `".$NAME."_$num`,
+                           $TRANS
                            $ADDITONALFIELDS";
-               }
-               $TRANS = '';
-               if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-                   $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
-                                                          '".self::SHORTSEP."',$tocomputeid)
-                                          SEPARATOR '".self::LONGSEP."')
-                                  AS `".$NAME."_".$num."_trans`, ";
                }
                return " $tocompute AS `".$NAME."_$num`,
                         `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
-                        $TRANS
                         $ADDITONALFIELDS";
          }
       }
@@ -2754,6 +2756,12 @@ class Search {
 
                $condition .= ") ";
             }
+            return $condition;
+
+         case 'Config':
+            $availableContexts = array('core') + $_SESSION['glpi_plugins'];
+            $availableContexts = implode("', '", $availableContexts);
+            $condition = "`context` IN ('$availableContexts')";
             return $condition;
 
          default :

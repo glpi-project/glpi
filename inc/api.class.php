@@ -40,10 +40,6 @@ abstract class API extends CommonGLPI {
    // permit writing to $_SESSION
    protected $session_write = false;
 
-   // avoid disclosure of critical fields
-   protected $excluded_fields = array('password', 'passwd', 'rootdn_passwd',
-                                      'smtp_passwd', 'proxy_passwd');
-
    static $api_url = "";
    protected $format;
    protected $iptxt         = "";
@@ -62,7 +58,7 @@ abstract class API extends CommonGLPI {
 
 
    public function __construct() {
-      global $CFG_GLPI;
+      global $CFG_GLPI, $DB;
 
       // construct api url
       self::$api_url = trim($CFG_GLPI['url_base_api'], "/");
@@ -94,7 +90,7 @@ abstract class API extends CommonGLPI {
                                  AND `ipv4_range_end` >= '$this->ipnum'))";
       } else {
          $where_ip .= " AND (`ipv6` IS NULL
-                             OR `ipv6` = '".addslashes($this->iptxt)."')";
+                             OR `ipv6` = '".$DB->escape($this->iptxt)."')";
       }
       $found_clients = $apiclient->find("`is_active` = '1' $where_ip");
       if (count($found_clients) <= 0) {
@@ -124,7 +120,7 @@ abstract class API extends CommonGLPI {
 
          if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
             header("Access-Control-Allow-Headers: ".
-                   "origin, content-type, accept, session-token");
+                   "origin, content-type, accept, session-token, authorization");
          }
          exit(0);
       }
@@ -237,6 +233,8 @@ abstract class API extends CommonGLPI {
             // Define current time for sync of action timing
             $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
             $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+
+            Session::loadLanguage();
          }
       }
    }
@@ -391,6 +389,22 @@ abstract class API extends CommonGLPI {
 
 
    /**
+    *  return the current $CFG_GLPI
+    *
+    * @return array
+    **/
+   protected function getGlpiConfig() {
+
+      global $CFG_GLPI;
+      $this->initEndpoint();
+
+      $excludedKeys = array_flip(Config::$undisclosedFields);
+      return ['cfg_glpi' => array_diff_key($CFG_GLPI, $excludedKeys)];
+   }
+
+
+
+   /**
     * Return the instance fields of itemtype identified by id
     *
     * @param $itemtype    string  itemtype (class) of object
@@ -450,9 +464,7 @@ abstract class API extends CommonGLPI {
       $fields =  $item->fields;
 
       // avoid disclosure of critical fields
-      foreach($this->excluded_fields as $key) {
-         unset($fields[$key]);
-      }
+      $item::unsetUndisclosedFields($fields);
 
       // retrieve devices
       if (isset($params['with_devices'])
@@ -878,6 +890,9 @@ abstract class API extends CommonGLPI {
     * - 'get_hateoas'      (default: true): show relations of items in a links attribute. Optionnal
     * - 'only_id'          (default: false): keep only id in fields list. Optionnal
     * - 'range'            (default: 0-50): limit the list to start-end attributes
+    * - 'sort'             (default: id): sort by the field.
+    * - 'order'            (default: ASC): ASC(ending) or DESC(ending).
+    * - 'searchText'       (default: NULL): array of filters to pass on the query (with key = field and value the search)
     * @param $totalcount   integer  output parameter who receive the total count of the query resulat.
     *                               As this function paginate results (with a mysql LIMIT),
     *                               we can have the full range. (default 0)
@@ -895,7 +910,8 @@ abstract class API extends CommonGLPI {
                        'only_id'          => false,
                        'range'            => "0-".$_SESSION['glpilist_limit'],
                        'sort'             => "id",
-                       'order'            => "ASC");
+                       'order'            => "ASC",
+                       'searchText'       => NULL);
       $params = array_merge($default, $params);
 
       if (!$itemtype::canView()) {
@@ -979,6 +995,32 @@ abstract class API extends CommonGLPI {
          }
       }
 
+      // filter by searchText parameter
+      if (is_array($params['searchText'])) {
+         if (array_keys($params['searchText']) == array('all')) {
+            $labelfield = "name";
+            if ($item instanceof CommonDevice) {
+               $labelfield = "designation";
+            } else if ($item instanceof Item_Devices) {
+               $labelfield = "itemtype";
+            }
+            $search_value                      = $params['searchText']['all'];
+            $params['searchText'][$labelfield] = $search_value;
+            if (FieldExists($table, 'comment')) {
+               $params['searchText']['comment'] = $search_value;
+            }
+         }
+
+         // make text search
+         foreach($params['searchText']  as $filter_field => $filter_value) {
+            if (!empty($filter_value)) {
+               $search = Search::makeTextSearch($filter_value);
+               $where.= " AND (`$table`.`$filter_field` $search
+                               OR `$table`.`id` $search)";
+            }
+         }
+      }
+
       // filter with entity
       if ($item->isEntityAssign()) {
          $where.= " AND (". getEntitiesRestrictRequest("",
@@ -1026,10 +1068,8 @@ abstract class API extends CommonGLPI {
             $fields = array('id' => $fields['id']);
          }
 
-         // avoid disclosure of critical fields
-         foreach($this->excluded_fields as $key) {
-            unset($fields[$key]);
-         }
+         // avioid disclosure of critical fields
+         $item::unsetUndisclosedFields($fields);
 
          // expand dropdown (retrieve name of dropdowns) and get hateoas
          $fields = self::parseDropdowns($fields, $params);
@@ -1258,6 +1298,17 @@ abstract class API extends CommonGLPI {
       // retrieve searchoptions
       $soptions = $this->listSearchOptions($itemtype);
 
+      // Check the criterias are valid
+      if (isset($params['criteria']) && is_array($params['criteria'])) {
+         foreach ($params['criteria'] as $criteria) {
+            if (isset($criteria['field'])
+                  && ctype_digit($criteria['field'])
+                  && !array_key_exists($criteria['field'], $soptions)) {
+               return $this->returnError(__("Bad field ID in search criteria"));
+            }
+         }
+      }
+
       // manage forcedisplay
       if (isset($params['forcedisplay'])) {
          if (!is_array($params['forcedisplay'])) {
@@ -1423,11 +1474,16 @@ abstract class API extends CommonGLPI {
     * @return   array of id
    **/
    protected function createItems($itemtype, $params=array()) {
-
       $this->initEndpoint();
       $input    = isset($params['input']) ? $params["input"] : null;
       $item     = new $itemtype;
       $response = "";
+      if (is_object($input)) {
+         $input = array($input);
+         $isMultiple = false;
+      } else {
+         $isMultiple = true;
+      }
 
       if (is_array($input)) {
          $idCollection = array();
@@ -1436,8 +1492,11 @@ abstract class API extends CommonGLPI {
             $object = self::inputObjectToArray($object);
             //check rights
             if (!$item->can(-1, CREATE, $object)) {
-               $idCollection[] = array('error' => $this->messageRightError(false));
                $failed++;
+               $idCollection[] = array(
+                           'id' => false,
+                           'message' => __("You don't have permission to perform this action.")
+               );
             } else {
                // add missing entity
                if (!isset($object['entities_id'])) {
@@ -1445,40 +1504,28 @@ abstract class API extends CommonGLPI {
                }
 
                //add current item
-               if ($new_id = $item->add( $object)) {
-                  $idCollection[] = array('id' => $new_id);
-               } else {
-                  $idCollection[] = array('error' => $this->getGlpiLastMessage());
+               $object = Toolbox::sanitize($object);
+               $new_id = $item->add($object);
+               if ($new_id === false) {
+                  $failed++;
                }
+               $idCollection[] = array('id' => $new_id, 'message' => $this->getGlpiLastMessage());
             }
          }
-         if ($failed == count($input)) {
-            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_ADD", false);
-         } else if ($failed > 0) {
-            $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_ADD", false);
-         }
-
-         return $idCollection;
-
-      } else if (is_object($input)) {
-         $input = self::inputObjectToArray($input);
-
-         //check rights
-         if (!$item->can(-1, CREATE, $input)) {
-            $this->messageRightError();
-         }
-
-         // add missing entity
-         if (!isset($input['entities_id'])) {
-            $input['entities_id'] = $_SESSION['glpiactive_entity'];
-         }
-
-         //add item
-         if ($new_id = $item->add( $input)) {
-            return array('id' => $new_id);
+         if ($isMultiple) {
+            if ($failed == count($input)) {
+               $this->returnError($idCollection, 400, "ERROR_GLPI_ADD", false);
+            } else if ($failed > 0) {
+               $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_ADD", false);
+            }
          } else {
-            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_ADD", false);
+            if ($failed > 0) {
+               $this->returnError($idCollection[0]['message'], 400, "ERROR_GLPI_ADD", false);
+            } else {
+               return $idCollection[0];
+            }
          }
+         return $idCollection;
 
       } else {
          $this->messageBadArrayError();
@@ -1522,9 +1569,15 @@ abstract class API extends CommonGLPI {
    protected function updateItems($itemtype, $params = array()) {
 
       $this->initEndpoint();
-      $input    = $params['input'];
+      $input    = isset($params['input']) ? $params["input"] : null;
       $item     = new $itemtype;
       $response = "";
+      if (is_object($input)) {
+         $input = array($input);
+         $isMultiple = false;
+      } {
+         $isMultiple = true;
+      }
 
       if (is_array($input)) {
          $idCollection = array();
@@ -1533,50 +1586,40 @@ abstract class API extends CommonGLPI {
             if (isset($object->id)) {
                if (!$item->getFromDB($object->id)) {
                   $failed++;
-                  $idCollection[] = array($object->id => $this->messageNotfoundError(false));
+                  $idCollection[] = array($object->id => false, 'message' => __("Item not found"));
                   continue;
                }
 
                //check rights
                if (!$item->can($object->id, UPDATE)) {
                   $failed++;
-                  $idCollection[] = array($object->id => $this->messageRightError(false));
+                  $idCollection[] = array(
+                        $object->id => false,
+                        'message' => __("You don't have permission to perform this action.")
+                  );
                } else {
                   //update item
-                  if ($update_return = $item->update( (array) $object)) {
-                     $idCollection[] = array($object->id => $update_return);
-                  } else {
+                  $object = Toolbox::sanitize((array)$object);
+                  $update_return = $item->update($object);
+                  if ($update_return === false) {
                      $failed++;
-                     $idCollection[] = array($object->id => $this->getGlpiLastMessage(false));
                   }
+                  $idCollection[] = array($item->fields["id"] => $update_return, 'message' => $this->getGlpiLastMessage());
                }
             }
          }
-         if ($failed == count($input)) {
-            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
-         } else if ($failed > 0) {
-            $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_UPDATE", false);
-         }
-
-         return $idCollection;
-
-      } else if (is_object($input)) {
-         $input = get_object_vars($input);
-
-         if (!$item->getFromDB($input['id'])) {
-            $this->messageNotfoundError();
-         }
-
-         //check rights
-         if (!$item->can($input['id'], UPDATE, $input)) {
-            $this->messageRightError();
-         }
-
-         // update item
-         if (!$item->update($input)) {
-            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_UPDATE", false);
+         if ($isMultiple) {
+            if ($failed == count($input)) {
+               $this->returnError($idCollection, 400, "ERROR_GLPI_UPDATE", false);
+            } else if ($failed > 0) {
+               $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_UPDATE", false);
+            }
          } else {
-            $idCollection[] = array($item->fields["id"] => "true");
+            if ($failed > 0) {
+               $this->returnError($idCollection[0]['message'], 400, "ERROR_GLPI_UPDATE", false);
+            } else {
+               return $idCollection; // Return collection, even if the request affects a single item
+            }
          }
          return $idCollection;
 
@@ -1610,6 +1653,12 @@ abstract class API extends CommonGLPI {
       $input    = $params['input'];
       $item     = new $itemtype;
       $response = "";
+      if (is_object($input)) {
+         $input = array($input);
+         $isMultiple = false;
+      } else {
+         $isMultiple = true;
+      }
 
       if (is_array($input)) {
          $idCollection = array();
@@ -1618,7 +1667,7 @@ abstract class API extends CommonGLPI {
             if (isset($object->id)) {
                if (!$item->getFromDB($object->id)) {
                   $failed++;
-                  $idCollection[] = array($object->id => $this->messageNotfoundError(false));
+                  $idCollection[] = array($object->id => false, 'message' => __("Item not found"));
                   continue;
                }
 
@@ -1631,6 +1680,8 @@ abstract class API extends CommonGLPI {
                   || ($item->useDeletedToLockIfDynamic()
                         && !$item->isDynamic())) {
                   $params['force_purge'] = 1;
+               } else {
+                  $params['force_purge'] = filter_var($params['force_purge'], FILTER_VALIDATE_BOOLEAN);
                }
 
                //check rights
@@ -1639,62 +1690,36 @@ abstract class API extends CommonGLPI {
                    || (!$params['force_purge']
                        && !$item->can($object->id, DELETE))) {
                   $failed++;
-                  $idCollection[] = array($object->id => $this->messageRightError(false));
+                  $idCollection[] = array(
+                        $object->id => false,
+                        'message' => __("You don't have permission to perform this action.")
+                  );
                } else {
                   //delete item
-                  if ($delete_return = $item->delete((array) $object,
-                                                     $params['force_purge'],
-                                                     $params['history'])) {
-                     $idCollection[] = array($object->id => $delete_return);
-                  } else {
+                  $delete_return = $item->delete((array) $object,
+                                                 $params['force_purge'],
+                                                 $params['history']);
+                  if ($delete_return === false) {
                      $failed++;
-                     $idCollection[] = array($object->id => $this->getGlpiLastMessage());
                   }
+                  $idCollection[] = array($object->id => $delete_return, 'message' => $this->getGlpiLastMessage());
                }
             }
          }
-         if ($failed == count($input)) {
-            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_DELETE", false);
-         } else if ($failed > 0) {
-            $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_DELETE", false);
-         }
-
-         return $idCollection;
-
-      } else if (is_object($input)) {
-         $input = get_object_vars($input);
-
-         if (!$item->getFromDB($input['id'])) {
-            $this->messageNotfoundError();
-         }
-
-         // Force purge for templates / may not to be deleted / not dynamic lockable items
-         // see CommonDBTM::delete()
-         // Needs factorization
-         if ($item->isTemplate()
-             || !$item->maybeDeleted()
-             // Do not take into account deleted field if maybe dynamic but not dynamic
-             || ($item->useDeletedToLockIfDynamic()
-                 && !$item->isDynamic())) {
-            $params['force_purge'] = 1;
-         }
-
-         //check rights
-         if ($params['force_purge']
-             && !$item->can($input['id'], PURGE)
-             || !$params['force_purge']
-             && !$item->can($input['id'], DELETE)) {
-            $this->messageRightError();
-         }
-
-         // delete item
-         if (! $item->delete($input,
-                             $params['force_purge'],
-                             $params['history'])) {
-            $this->returnError($this->getGlpiLastMessage(), 400, "ERROR_GLPI_DELETE", false);
+         if ($isMultiple) {
+            if ($failed == count($input)) {
+               $this->returnError($idCollection, 400, "ERROR_GLPI_DELETE", false);
+            } else if ($failed > 0) {
+               $this->returnError($idCollection, 207, "ERROR_GLPI_PARTIAL_DELETE", false);
+            }
          } else {
-            $idCollection[] = array($item->fields["id"] => "true");
+            if ($failed > 0) {
+               $this->returnError($idCollection[0]['message'], 400, "ERROR_GLPI_DELETE", false);
+            } else {
+               return $idCollection; // Return collection, even if the request affects a single item
+            }
          }
+
          return $idCollection;
 
       } else {
@@ -1835,6 +1860,9 @@ abstract class API extends CommonGLPI {
          }
       }
 
+      if (!end($all_messages)) {
+         return '';
+      }
       return end($all_messages);
    }
 
@@ -2078,7 +2106,7 @@ abstract class API extends CommonGLPI {
 
 
    /**
-    * Send 401 error to client
+    * Send 400 error to client
     *
     *  @param $return_error   (default true)
    **/
@@ -2186,5 +2214,4 @@ abstract class API extends CommonGLPI {
       }
       return array($statuscode, $message);
    }
-
 }

@@ -5,7 +5,7 @@ env:
 
 before_script:
   - composer self-update
-  - composer install --no-dev
+  - composer install -o
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --lang=en_US --db=glpitest --user=root --tests
   - php -S localhost:8088 tests/router.php &>/dev/null &
@@ -15,13 +15,10 @@ before_script:
 script:
   - mysql -u root -e 'select version();'
   - phpunit --verbose
-  - phpcs --standard=tools/phpcs-rules.xml inc/
+  - phpcs -p --standard=tools/phpcs-rules.xml inc/ front/ ajax/ tests/
 
 matrix:
   include:
-    - php: 5.4
-      addons:
-        mariadb: 5.5
     - php: 5.5
       addons:
         mariadb: 5.5
@@ -38,6 +35,12 @@ matrix:
       addons:
         mariadb: 10.0
     - php: 7.0
+      addons:
+        mariadb: 10.1
+    - php: 7.1
+      addons:
+        mariadb: 10.0
+    - php: 7.1
       addons:
         mariadb: 10.1
     - php: nightly

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -40,4 +40,3 @@ include ('../inc/includes.php');
 
 $item_device = new Item_DevicePowerSupply();
 include (GLPI_ROOT . "/front/item_device.common.form.php");
-?>

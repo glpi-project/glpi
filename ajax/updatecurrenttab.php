@@ -68,4 +68,3 @@ if (isset($_GET['tab']) && isset($_GET['itemtype'])) {
 
    }
 }
-?>

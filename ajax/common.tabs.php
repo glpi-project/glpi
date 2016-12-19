@@ -120,4 +120,3 @@ if (isset($_GET['full_page_tab'])) {
 } else {
    Html::ajaxFooter();
 }
-?>

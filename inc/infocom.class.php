@@ -1303,12 +1303,12 @@ class Infocom extends CommonDBChild {
       $tab[38]['forcegroupby']         = true;
       $tab[38]['joinparams']           = $joinparams;
 
-      $tab[121]['table']               = 'glpi_infocoms';
-      $tab[121]['field']               = 'delivery_date';
-      $tab[121]['name']                = __('Delivery date');
-      $tab[121]['datatype']            = 'date';
-      $tab[121]['forcegroupby']        = true;
-      $tab[121]['joinparams']          = $joinparams;
+      $tab[142]['table']               = 'glpi_infocoms';
+      $tab[142]['field']               = 'delivery_date';
+      $tab[142]['name']                = __('Delivery date');
+      $tab[142]['datatype']            = 'date';
+      $tab[142]['forcegroupby']        = true;
+      $tab[142]['joinparams']          = $joinparams;
 
       $tab[124]['table']               = 'glpi_infocoms';
       $tab[124]['field']               = 'order_date';
@@ -1429,12 +1429,12 @@ class Infocom extends CommonDBChild {
       $tab[122]['forcegroupby']        = true;
       $tab[122]['joinparams']          = $joinparams;
 
-      $tab[150]['table']               = 'glpi_infocoms';
-      $tab[150]['field']               = 'decommission_date';
-      $tab[150]['name']                = __('Decommission date');
-      $tab[150]['datatype']            = 'date';
-      $tab[150]['forcegroupby']        = true;
-      $tab[150]['joinparams']          = $joinparams;
+      $tab[159]['table']               = 'glpi_infocoms';
+      $tab[159]['field']               = 'decommission_date';
+      $tab[159]['name']                = __('Decommission date');
+      $tab[159]['datatype']            = 'date';
+      $tab[159]['forcegroupby']        = true;
+      $tab[159]['joinparams']          = $joinparams;
 
       return $tab;
    }

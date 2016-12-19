@@ -1103,15 +1103,12 @@ class Html {
       self::header_nocache();
 
       // Start the page
-      echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"
-             \"http://www.w3.org/TR/html4/loose.dtd\">";
-      echo "\n<html><head><title>GLPI - ".$title."</title>";
-      echo "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
+      echo "<!DOCTYPE html>\n";
+      echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
+      echo "<head><title>GLPI - ".$title."</title>";
+      echo "<meta charset=\"utf-8\">";
 
-      // Send extra expires header
-      echo "<meta http-equiv='Expires' content='Fri, Jun 12 1981 08:20:00 GMT'>\n";
-      echo "<meta http-equiv='Pragma' content='no-cache'>\n";
-      echo "<meta http-equiv='Cache-Control' content='no-cache'>\n";
+      //prevent IE to turn into compatible mode...
       echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
 
       // auto desktop / mobile viewport
@@ -1161,15 +1158,16 @@ class Html {
       if (isset($PLUGIN_HOOKS['add_css']) && count($PLUGIN_HOOKS['add_css'])) {
 
          foreach ($PLUGIN_HOOKS["add_css"] as $plugin => $files) {
+            $version = Plugin::getInfo($plugin, 'version');
             if (is_array($files)) {
                foreach ($files as $file) {
                   if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                     echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$file");
+                     echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$file", ['version' => $version]);
                   }
                }
             } else {
                if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
-                  echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$files");
+                  echo Html::css($CFG_GLPI["root_doc"]."/plugins/$plugin/$files", ['version' => $version]);
                }
             }
          }
@@ -1231,7 +1229,7 @@ class Html {
 
          //fullcalendar
          $filename = "/lib/jqueryplugins/fullcalendar/locale/".
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
+                     strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]).".js";
          if (file_exists(GLPI_ROOT.$filename)) {
             echo Html::script($CFG_GLPI["root_doc"].$filename);
          }
@@ -1249,15 +1247,16 @@ class Html {
       if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
 
          foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
+            $version = Plugin::getInfo($plugin, 'version');
             if (is_array($files)) {
                foreach ($files as $file) {
                   if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                     echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$file");
+                     echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$file", ['version' => $version]);
                   }
                }
             } else {
                if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
-                  echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$files");
+                  echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$files", ['version' => $version]);
                }
             }
          }
@@ -1449,14 +1448,14 @@ class Html {
 
       echo "' title=\"".__s('Logout')."\">";
       echo "<span id='logout_icon' title=\"".__s('Logout').
-             "\"  alt=\"".__s('Logout')."\" class='button-icon' />";
+             "\"  class='button-icon'></span>";
       echo "</a>";
       echo "</li>\n";
 
       echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                  __s('My settings')."\">";
       echo "<span id='preferences_icon' title=\"".__s('My settings').
-             "\"  alt=\"".__s('My settings')."\" class='button-icon' /></span>";
+             "\"  class='button-icon'></span>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -1475,7 +1474,7 @@ class Html {
                                           'reloadonclose' => true));
       echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\">";
       echo "<span id='bookmark_icon' title=\"".__s('Load a bookmark').
-             "\"  alt=\"".__s('Load a bookmark')."\" class='button-icon' />";
+             "\"  class='button-icon'></span>";
       echo "</a></li>";
 
       echo "<li id='help_link'><a href='".
@@ -1483,8 +1482,8 @@ class Html {
                    ? "http://glpi-project.org/help-central"
                    : $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
                   "<span id='help_icon' title=\"".__s('Help').
-                  "\"  alt=\"".__s('Help')."\" class='button-icon' />";
-           "</a></li>";
+                  "\"  class='button-icon'></span>";
+      echo "</a></li>";
 
       echo "<li id='language_link'><a href='".$CFG_GLPI["root_doc"].
                  "/front/preference.php?forcetab=User\$1' title=\"".
@@ -1773,7 +1772,7 @@ class Html {
       echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
 
       echo "<div id='footer' >";
-      echo "<table width='100%'><tr><td class='left'><span class='copyright'>";
+      echo "<table><tr><td class='left'><span class='copyright'>";
       $timedebug = sprintf(_n('%s second', '%s seconds', $TIMER_DEBUG->getTime()),
                            $TIMER_DEBUG->getTime());
 
@@ -1966,7 +1965,7 @@ class Html {
       echo "<li id='preferences_link'><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                  __s('My settings')."\">";
       echo "<span id='preferences_icon' title=\"".__s('My settings').
-             "\"  alt=\"".__s('My settings')."\" class='button-icon' /></span>";
+             "\" class='button-icon' /></span>";
 
       // check user id : header used for display messages when session logout
       if (Session::getLoginUserID()) {
@@ -1984,7 +1983,7 @@ class Html {
                                           'reloadonclose' => true));
       echo "<a href='#' onClick=\"".Html::jsGetElementbyID('loadbookmark').".dialog('open');\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
-             "\"  alt=\"".__s('Load a bookmark')."\" class='button-icon'>";
+             "\" class='button-icon'>";
       echo "</a></li>";
 
       echo "<li id='help_link'>".
@@ -1992,7 +1991,7 @@ class Html {
                         ? "http://glpi-project.org/help-helpdesk"
                         : $CFG_GLPI["helpdesk_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
            "<img src='".$CFG_GLPI["root_doc"]."/pics/help.png' title=\"".__s('Help').
-                  "\"  alt=\"".__s('Help')."\" class='button-icon'>";
+                  "\" class='button-icon'>";
            "</a></li>";
 
       echo "</ul>";
@@ -3831,8 +3830,11 @@ class Html {
       global $CFG_GLPI;
 
       $language = $_SESSION['glpilanguage'];
-      if (!file_exists($CFG_GLPI['root_doc']."/lib/tiny_mce/langs/$language.js")) {
-         $language = "en_GB";
+      if (!file_exists(GLPI_ROOT."/lib/tiny_mce/langs/$language.js")) {
+         $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
+         if (!file_exists(GLPI_ROOT."/lib/tiny_mce/langs/$language.js")) {
+            $language = "en_GB";
+         }
       }
 
       Html::scriptStart();
@@ -4691,7 +4693,7 @@ class Html {
          $class = "class='pointer'";
       }
 
-      $image = sprintf('<img src="%1$s" %2$s %3$s>', $path, Html::parseAttributes($options), $class);
+      $image = sprintf('<img src="%1$s" %2$s %3$s />', $path, Html::parseAttributes($options), $class);
       if ($url) {
          return Html::link($image, $url);
       }
@@ -4762,7 +4764,7 @@ class Html {
          }
          return $result;
       }
-      return sprintf('<input type="hidden" name="%1$s" %2$s>',
+      return sprintf('<input type="hidden" name="%1$s" %2$s />',
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
    }
 
@@ -4779,7 +4781,7 @@ class Html {
    **/
    static function input($fieldName, $options=array()) {
 
-      return sprintf('<input type="text" name="%1$s" %2$s>',
+      return sprintf('<input type="text" name="%1$s" %2$s />',
                      Html::cleanInputText($fieldName), Html::parseAttributes($options));
    }
 
@@ -4831,10 +4833,10 @@ class Html {
       if ($image) {
          $options['title'] = $caption;
          $options['alt']   = $caption;
-         return sprintf('<input type="image" src="%s" %s>',
+         return sprintf('<input type="image" src="%s" %s />',
                Html::cleanInputText($image), Html::parseAttributes($options));
       }
-      return sprintf('<input type="submit" value="%s" %s>',
+      return sprintf('<input type="submit" value="%s" %s />',
                      Html::cleanInputText($caption), Html::parseAttributes($options));
    }
 
@@ -4935,11 +4937,22 @@ class Html {
     *
     * @since version 0.85
     *
-    * @param $url String of javascript file to include
+    * @param $url     String of javascript file to include
+    * @param $options Array  of HTML attributes.
     *
     * @return String of script tags
    **/
-   static function script($url) {
+   static function script($url, $options=array()) {
+      $version = GLPI_VERSION;
+      if (isset($options['version'])) {
+         $version = $options['version'];
+         unset($options['version']);
+      }
+
+      if($version){
+         $url .= '?v=' . $version;
+      }
+
       return sprintf('<script type="text/javascript" src="%1$s"></script>', $url);
    }
 
@@ -4956,9 +4969,20 @@ class Html {
    **/
    static function css($url, $options=array()) {
 
-      if (!isset($options['media'])) {
+      if (!isset($options['media']) || $options['media'] == '') {
          $options['media'] = 'screen';
       }
+
+      $version = GLPI_VERSION;
+      if (isset($options['version'])) {
+         $version = $options['version'];
+         unset($options['version']);
+      }
+
+      if($version){
+         $url .= '?v=' . $version;
+      }
+
       return sprintf('<link rel="stylesheet" type="text/css" href="%s" %s>', $url,
                      Html::parseAttributes($options));
    }

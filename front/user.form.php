@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -161,17 +161,17 @@ if (isset($_GET['getvcard'])) {
       }
       Html::back();
    } else if (isset($_POST['add_ext_auth_simple'])) {
-         if (isset($_POST['login']) && !empty($_POST['login'])) {
-            Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
-            $input = array('name'     => $_POST['login'],
-                           '_extauth' => 1,
-                           'add'      => 1);
-            $user->check(-1, CREATE, $input);
-            $newID = $user->add($input);
-            Event::log($newID, "users", 4, "setup",
-                       sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
-                               $_POST["login"]));
-         }
+      if (isset($_POST['login']) && !empty($_POST['login'])) {
+         Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
+         $input = array('name'     => $_POST['login'],
+                     '_extauth' => 1,
+                     'add'      => 1);
+         $user->check(-1, CREATE, $input);
+         $newID = $user->add($input);
+         Event::log($newID, "users", 4, "setup",
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
+                         $_POST["login"]));
+      }
 
          Html::back();
    } else {
@@ -182,4 +182,3 @@ if (isset($_GET['getvcard'])) {
 
    }
 }
-?>

@@ -385,14 +385,14 @@ class Ticket extends CommonITILObject {
          case SLT::TTR :
             $input['slts_ttr_id'] = 0;
             if ($delete_date) {
-               $input['time_to_own'] = '';
+               $input['due_date'] = '';
             }
             break;
 
          case SLT::TTO :
             $input['slts_tto_id'] = 0;
             if ($delete_date) {
-               $input['due_date'] = '';
+               $input['time_to_own'] = '';
             }
             break;
       }
@@ -468,12 +468,13 @@ class Ticket extends CommonITILObject {
       }
 
       // user can delete his ticket if no action on it
-      if (($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-           || ($this->fields["users_id_recipient"] === Session::getLoginUserID()))
-          && ($this->numberOfFollowups() == 0)
-          && ($this->numberOfTasks() == 0)
-          && ($this->fields["date"] == $this->fields["date_mod"])) {
-         return true;
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"
+          && (!($this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+               || $this->fields["users_id_recipient"] === Session::getLoginUserID())
+             || $this->numberOfFollowups() > 0
+             || $this->numberOfTasks() > 0
+             || $this->fields["date"] != $this->fields["date_mod"])) {
+         return false;
       }
 
       return static::canDelete();
@@ -1493,6 +1494,7 @@ class Ticket extends CommonITILObject {
       // Set unset variables with are needed
       $user = new User();
       if (isset($input["_users_id_requester"])
+          && !is_array($input["_users_id_requester"])
           && $user->getFromDB($input["_users_id_requester"])) {
          $input['users_locations'] = $user->fields['locations_id'];
          $tmprequester = $input["_users_id_requester"];
@@ -1520,6 +1522,7 @@ class Ticket extends CommonITILObject {
       $input = $this->computeDefaultValuesForAdd($input);
 
       if (isset($input['_users_id_requester'])
+          && !is_array($input['_users_id_requester'])
           && ($input['_users_id_requester'] != $tmprequester)) {
          // if requester set by rule, clear address from mailcollector
          unset($input['_users_id_requester_notif']);
@@ -1596,9 +1599,15 @@ class Ticket extends CommonITILObject {
       }
 
       // Replay setting auto assign if set in rules engine or by auto_assign_mode
-      if (((isset($input["_users_id_assign"]) && ($input["_users_id_assign"] > 0))
-           || (isset($input["_groups_id_assign"]) && ($input["_groups_id_assign"] > 0))
-           || (isset($input["_suppliers_id_assign"]) && ($input["_suppliers_id_assign"] > 0)))
+      if (((isset($input["_users_id_assign"])
+           && ((!is_array($input['_users_id_assign']) &&  $input["_users_id_assign"] > 0)
+               || is_array($input['_users_id_assign']) && count($input['_users_id_assign']) > 0))
+           || (isset($input["_groups_id_assign"])
+           && ((!is_array($input['_groups_id_assign']) && $input["_groups_id_assign"] > 0)
+               || is_array($input['_groups_id_assign']) && count($input['_groups_id_assign']) > 0))
+           || (isset($input["_suppliers_id_assign"])
+           && ((!is_array($input['_suppliers_id_assign']) && $input["_suppliers_id_assign"] > 0)
+               || is_array($input['_suppliers_id_assign']) && count($input['_suppliers_id_assign']) > 0)))
           && (in_array($input['status'], $this->getNewStatusArray()))) {
 
          $input["status"] = self::ASSIGNED;
@@ -1886,7 +1895,7 @@ class Ticket extends CommonITILObject {
          if (count($validations_to_send)) {
             $values                = array();
             $values['tickets_id']  = $this->fields['id'];
-            if ($input['id'] != $this->fields['id']) {
+            if (isset($input['id']) && $input['id'] != $this->fields['id']) {
                $values['_ticket_add'] = true;
             }
 
@@ -3372,7 +3381,7 @@ class Ticket extends CommonITILObject {
       if (is_numeric(Session::getLoginUserID(false))) {
          $users_id_requester = Session::getLoginUserID();
          // No default requester if own ticket right = tech and update_ticket right to update requester
-         if (Session::haveRightsOr(self::$rightname, array(UPDATE, self::OWN))) {
+         if (Session::haveRightsOr(self::$rightname, array(UPDATE, self::OWN)) && !$_SESSION['glpiset_default_requester']) {
             $users_id_requester = 0;
          }
          $entity      = $_SESSION['glpiactive_entity'];
@@ -4397,7 +4406,7 @@ class Ticket extends CommonITILObject {
                             Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                   }
                } else {
-                  if (self::canDelete()) {
+                  if ($this->canDeleteItem()) {
                      echo "<input type='submit' class='submit' name='delete' value='".
                             _sx('button', 'Put in dustbin')."'>";
                   }
@@ -6245,7 +6254,7 @@ class Ticket extends CommonITILObject {
     * @param $rand
    **/
    function showTimeline($rand) {
-      global $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB, $autolink_options;
 
       //get ticket actors
       $ticket_users_keys = $this->getTicketActors();
@@ -6254,8 +6263,9 @@ class Ticket extends CommonITILObject {
       $group             = new Group();
       $followup_obj      = new TicketFollowup();
       $pics_url          = $CFG_GLPI['root_doc']."/pics/timeline";
-
       $timeline          = $this->getTimelineItems();
+
+      $autolink_options['strip_protocols'] = false;
 
       //display timeline
       echo "<div class='timeline_history'>";

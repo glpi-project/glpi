@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -63,4 +63,3 @@ if (isset($_POST['value']) && ($_POST['value'] > 0)) {
 } else {
       echo "<textarea id='solution$rand' name='solution' rows='12' cols='80'></textarea>";
 }
-?>
