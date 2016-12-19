@@ -342,14 +342,11 @@ class Ajax {
                   ui.panel.html($('#loadingtabs$rand').html());
                   forceReload$rand = false;
                 }
-            },
-            ajaxOptions: {type: 'POST'},
-            activate : function( event, ui ) {
-               // Get future value
-               var newIndex = ui.newTab.parent().children().index(ui.newTab);
+               var newIndex = ui.tab.parent().children().index(ui.tab);
                $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
                   { itemtype: '$type', id: '$ID', tab: newIndex });
-            }
+            },
+            ajaxOptions: {type: 'POST'}
          });";
 
          if ($orientation=='vertical') {
