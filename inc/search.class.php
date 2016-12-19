@@ -2515,21 +2515,23 @@ class Search {
             case "itemlink" :
                if ($meta
                   || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
+
+                  $TRANS = '';
+                  if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+                      $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
+                                                             '".self::SHORTSEP."',$tocomputeid)
+                                             SEPARATOR '".self::LONGSEP."')
+                                     AS `".$NAME."_".$num."_trans`, ";
+                  }
+
                   return " GROUP_CONCAT(DISTINCT CONCAT($tocompute, '".self::SHORTSEP."' ,
                                                         `$table$addtable`.`id`)
                                         SEPARATOR '".self::LONGSEP."') AS `".$NAME."_$num`,
+                           $TRANS
                            $ADDITONALFIELDS";
-               }
-               $TRANS = '';
-               if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
-                   $TRANS = "GROUP_CONCAT(DISTINCT CONCAT(IFNULL($tocomputetrans, '".self::NULLVALUE."'),
-                                                          '".self::SHORTSEP."',$tocomputeid)
-                                          SEPARATOR '".self::LONGSEP."')
-                                  AS `".$NAME."_".$num."_trans`, ";
                }
                return " $tocompute AS `".$NAME."_$num`,
                         `$table$addtable`.`id` AS `".$NAME."_".$num."_id`,
-                        $TRANS
                         $ADDITONALFIELDS";
          }
       }
