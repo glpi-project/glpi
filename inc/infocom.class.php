@@ -1429,12 +1429,12 @@ class Infocom extends CommonDBChild {
       $tab[122]['forcegroupby']        = true;
       $tab[122]['joinparams']          = $joinparams;
 
-      $tab[150]['table']               = 'glpi_infocoms';
-      $tab[150]['field']               = 'decommission_date';
-      $tab[150]['name']                = __('Decommission date');
-      $tab[150]['datatype']            = 'date';
-      $tab[150]['forcegroupby']        = true;
-      $tab[150]['joinparams']          = $joinparams;
+      $tab[159]['table']               = 'glpi_infocoms';
+      $tab[159]['field']               = 'decommission_date';
+      $tab[159]['name']                = __('Decommission date');
+      $tab[159]['datatype']            = 'date';
+      $tab[159]['forcegroupby']        = true;
+      $tab[159]['joinparams']          = $joinparams;
 
       return $tab;
    }
