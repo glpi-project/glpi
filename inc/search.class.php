@@ -2756,6 +2756,12 @@ class Search {
             }
             return $condition;
 
+         case 'Config':
+            $availableContexts = array('core') + $_SESSION['glpi_plugins'];
+            $availableContexts = implode("', '", $availableContexts);
+            $condition = "`context` IN ('$availableContexts')";
+            return $condition;
+
          default :
             // Plugin can override core definition for its type
             if ($plug = isPluginItemType($itemtype)) {

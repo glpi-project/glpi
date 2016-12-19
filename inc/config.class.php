@@ -90,6 +90,14 @@ class Config extends CommonDBTM {
    }
 
 
+   function canViewItem() {
+      if ($this->fields['context'] == 'core' || in_array($this->fields['context'], $_SESSION['glpi_plugins'])) {
+         return true;
+      }
+      return false;
+   }
+
+
    function defineTabs($options=array()) {
 
       $ong = array();
