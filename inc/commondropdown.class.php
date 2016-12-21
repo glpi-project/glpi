@@ -861,6 +861,7 @@ abstract class CommonDropdown extends CommonDBTM {
          $found_kbitem = $kbitem->find("`knowbaseitemcategories_id` = ".
                                        $this->fields['knowbaseitemcategories_id']);
 
+         $kbitem->getFromDB(reset($found_kbitem)['id']);
          if (count($found_kbitem)) {
             $ret.= "<div class='faqadd_block'>";
             $ret.= "<label for='display_faq_chkbox$rand'>";
@@ -894,7 +895,6 @@ abstract class CommonDropdown extends CommonDBTM {
                                                              $this->fields['knowbaseitemcategories_id'],
                                               'on_change' => "getKnowbaseItemAnswer$rand()"]);
                $ret.= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
-               $kbitem->getFromDB(reset($found_kbitem)['id']);
                $ret.= $kbitem->showFull(['display' => false]);
                $ret.= "</div>"; // .faqadd_block_content
             }
