@@ -1575,7 +1575,7 @@ abstract class API extends CommonGLPI {
       if (is_object($input)) {
          $input = array($input);
          $isMultiple = false;
-      } {
+      } else {
          $isMultiple = true;
       }
 
