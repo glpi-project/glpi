@@ -690,10 +690,11 @@ class RuleAction extends CommonDBChild {
          $params['action_type'] = $this->fields['action_type'];
          $params['value']       = $this->fields['value'];
          echo "<script type='text/javascript' >\n";
+         echo "$(function() {";
          Ajax::updateItemJsCode("action_span",
                                  $CFG_GLPI["root_doc"]."/ajax/ruleaction.php",
                                  $params);
-         echo '</script>';
+         echo '});</script>';
       }
       echo "</td></tr>";
       echo "<tr><td colspan='4'><span id='action_span'>\n";

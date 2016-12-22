@@ -556,7 +556,7 @@ class Planning extends CommonGLPI {
 
       echo "<div id='planning'></div>";
       echo Html::scriptBlock("
-      $(document).ready(function() {
+      $(function() {
          var disable_qtip = false,
              disable_edit = false;
          $('html')
@@ -991,7 +991,7 @@ class Planning extends CommonGLPI {
       echo "</div>";
 
       echo Html::scriptBlock("
-      $(document).ready(function() {
+      $(function() {
          $('#planning_filter a.planning_add_filter' ).on( 'click', function( e ) {
             e.preventDefault(); // to prevent change of url on anchor
             var url = $(this).attr('href');
@@ -1277,7 +1277,7 @@ class Planning extends CommonGLPI {
                               array('display_emptychoice' => true,
                                     'rand'                =>  $rand));
       echo Html::scriptBlock("
-      $(document).ready(function() {
+      $(function() {
          $('#dropdown_planning_type$rand').on( 'change', function( e ) {
             var planning_type = $(this).val();
             $('#add_planning_subform$rand').load('".$CFG_GLPI['root_doc']."/ajax/planning.php',
@@ -1494,7 +1494,7 @@ class Planning extends CommonGLPI {
                                        'rand'                => $rand));
 
          echo Html::scriptBlock("
-         $(document).ready(function() {
+         $(function() {
             $('#dropdown_itemtype$rand').on('change', function() {
                var current_itemtype = $(this).val();
                $('#add_planning_subform$rand').load('".$CFG_GLPI['root_doc']."/ajax/planning.php',

@@ -1332,7 +1332,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<td rowspan='$rowspan' style='width:50%' id='content$rand_text'>".
            "<textarea name='content' style='width: 95%; height: 160px' id='task$rand_text'>".$this->fields["content"].
            "</textarea>";
-      echo Html::scriptBlock("$(document).ready(function() { $('#content$rand').autogrow(); });");
+      echo Html::scriptBlock("$(function() { $('#content$rand').autogrow(); });");
       echo "</td>";
       echo "<input type='hidden' name='$fkfield' value='".$this->fields[$fkfield]."'>";
       echo "</td></tr>\n";
