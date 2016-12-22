@@ -1368,8 +1368,9 @@ class Dropdown {
          // default itemtype and the default value can be '' thus empty won't be valid !
          if (array_key_exists ('default_itemtype', $options)) {
             echo "<script type='text/javascript' >\n";
+            echo "$(function() {";
             echo Html::jsSetDropdownValue($field_id, $params['default_itemtype']);
-            echo "</script>\n";
+            echo "});</script>\n";
 
             $p["idtable"] = $params['default_itemtype'];
             Ajax::updateItem($show_id, $CFG_GLPI["root_doc"]. "/ajax/dropdownAllItems.php", $p);

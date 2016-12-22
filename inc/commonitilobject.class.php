@@ -3655,11 +3655,12 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "</span>";
 
             echo "<script type='text/javascript'>";
+            echo "$(function() {";
             Ajax::updateItemJsCode("countassign_$rand",
                                    $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
                                    array('users_id_assign' => '__VALUE__'),
                                    "dropdown__users_id_".$typename.$rand);
-            echo "</script>";
+            echo "});</script>";
          }
       }
 
@@ -3668,10 +3669,11 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</div>";
 
          echo "<script type='text/javascript'>";
+         echo "$(function() {";
          Ajax::updateItemJsCode("notif_".$typename."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
                                 "dropdown_".$actor_name.$rand);
-         echo "</script>";
+         echo "});</script>";
       }
 
       return $rand;
@@ -3743,11 +3745,12 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<span id='countassign_$rand'>";
          echo "</span>";
          echo "<script type='text/javascript'>";
+         echo "$(function() {";
          Ajax::updateItemJsCode("countassign_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
                                 array('suppliers_id_assign' => '__VALUE__'),
                                 "dropdown__suppliers_id_assign".$rand);
-         echo "</script>";
+         echo "});</script>";
       }
 
       if ($CFG_GLPI['use_mailing']) {
@@ -3755,10 +3758,11 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</div>";
 
          echo "<script type='text/javascript'>";
+         echo "$(function() {";
          Ajax::updateItemJsCode("notif_assign_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php", $paramscomment,
                                 "dropdown__suppliers_id_assign".$rand);
-         echo "</script>";
+         echo "});</script>";
       }
    }
 
@@ -4122,11 +4126,12 @@ abstract class CommonITILObject extends CommonDBTM {
             echo "</span>";
 
             echo "<script type='text/javascript'>";
+            echo "$(function() {";
             Ajax::updateItemJsCode("countgroupassign_$rand",
                                    $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
                                    array('groups_id_assign' => '__VALUE__'),
                                    "dropdown__groups_id_assign$rand");
-            echo "</script>";
+            echo "});</script>";
 
             echo '<hr>';
          } else { // predefined value

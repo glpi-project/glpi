@@ -657,7 +657,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "<textarea id='content$rand' name='content' style='width: 95%; height: 120px'>";
          echo $this->fields["content"];
          echo "</textarea>";
-         echo Html::scriptBlock("$(document).ready(function() { $('#content$rand').autogrow(); });");
+         echo Html::scriptBlock("$(function() { $('#content$rand').autogrow(); });");
          if ($this->fields["date"]) {
             echo "</td><td>".__('Date')."</td>";
             echo "<td>".Html::convDateTime($this->fields["date"]);

@@ -150,6 +150,7 @@ class Ajax {
       }
 
       $out  =  "<script type='text/javascript'>\n";
+      $out .= "$(function() {";
       $out .= "var $name=";
       if (!empty($param['container'])) {
          $out .= Html::jsGetElementbyID(Html::cleanId($param['container']));
@@ -162,7 +163,7 @@ class Ajax {
          height:".$param['height'].",\n
          modal: ".($param['modal']?'true':'false').",\n
          title: \"".addslashes($param['title'])."\"\n
-         });\n";
+         });\n});";
       $out .= "</script>";
 
       if ($param['display']) {
@@ -209,9 +210,10 @@ class Ajax {
       $url .= (strstr($url, '?') ?'&' :  '?').'_in_modal=1';
 
       $out  = "<div id=\"$domid\">";
-      $out .= "<iframe id='Iframe$domid' class='iframe'></iframe></div>";
+      $out .= "<iframe id='Iframe$domid' class='iframe hidden'></iframe></div>";
 
-        $out .= "<script type='text/javascript'>
+      $out .= "<script type='text/javascript'>
+         $(function() {
             $('#$domid').dialog({
                modal: true,
                autoOpen: false,
@@ -220,12 +222,13 @@ class Ajax {
                draggable: true,
                resizeable: true,
                open: function(ev, ui){
-               $('#Iframe$domid').attr('src','$url');},";
+               $('#Iframe$domid').attr('src','$url').removeClass('hidden');},";
       if ($param['reloadonclose']) {
          $out .= "close: function(ev, ui) { window.location.reload() },";
       }
 
       $out.= "title: \"".addslashes($param['title'])."\"});
+         });
             </script>";
 
       if ($param['display']) {
@@ -388,9 +391,10 @@ class Ajax {
                                      $forceloadfor=array(), $display=true) {
 
       $output  = "<script type='text/javascript'>";
+      $output .= "$(function() {";
       $output .= self::updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters, $events,
                                                $minsize, $buffertime, $forceloadfor, false);
-      $output .=  "</script>";
+      $output .=  "});</script>";
       if ($display) {
          echo $output;
       } else {
@@ -647,8 +651,9 @@ class Ajax {
    static function updateItem($toupdate, $url, $parameters=array(), $toobserve="", $display=true) {
 
       $output = "<script type='text/javascript'>";
+      $output  = "$(function() {";
       $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
-      $output .= "</script>";
+      $output .= "});</script>";
       if ($display) {
          echo $output;
       } else {
