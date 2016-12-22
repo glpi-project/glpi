@@ -76,6 +76,7 @@ if (!isset($_GET["start"])) {
    $_GET["start"] = 0;
 }
 
+$stat = new Stat();
 Stat::title();
 
 $requester = array('user'               => array('title' => __('Requester')),
@@ -166,70 +167,129 @@ if (!$_GET['showgraph']) {
                    $val, $_GET['value2']);
 
 } else {
-   $data = Stat::getDatas($_GET["itemtype"], $_GET["type"], $_GET["date1"], $_GET["date2"],
+   $data = Stat::getData($_GET["itemtype"], $_GET["type"], $_GET["date1"], $_GET["date2"],
                           $_GET['start'], $val, $_GET['value2']);
 
    if (isset($data['opened']) && is_array($data['opened'])) {
+      $count = 0;
+      $cleandata = [];
       foreach ($data['opened'] as $key => $val) {
          $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
-         $cleandata[$newkey] = $val;
+         if ($val > 0) {
+            $count += $val;
+            $cleandata[$newkey] = $val;
+         }
       }
-      Stat::showGraph(array(__('Number opened') => $cleandata),
-                      array('title'     => __('Number opened'),
-                            'showtotal' => 1,
-                            'unit'      => $item->getTypeName(Session::getPluralNumber()),
-                            'type'      => 'pie'));
+
+      if (count($cleandata)) {
+         $stat->displayPieGraph(
+            sprintf(
+               __('Opened %1$s (%2$s)'),
+               $item->getTypeName(Session::getPluralNumber()),
+               $count
+            ),
+            array_keys($cleandata),
+            $cleandata
+         );
+      }
    }
 
    if (isset($data['solved']) && is_array($data['solved'])) {
+      $count = 0;
+      $cleandata = [];
       foreach ($data['solved'] as $key => $val) {
          $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
-         $cleandata[$newkey] = $val;
+         if ($val > 0) {
+            $count += $val;
+            $cleandata[$newkey] = $val;
+         }
       }
-      Stat::showGraph(array(__('Number solved') => $cleandata),
-                      array('title'     => __('Number solved'),
-                            'showtotal' => 1,
-                            'unit'      => $item->getTypeName(Session::getPluralNumber()),
-                            'type'      => 'pie'));
+
+      if (count($cleandata)) {
+         $stat->displayPieGraph(
+            sprintf(
+               __('Solved %1$s (%2$s)'),
+               $item->getTypeName(Session::getPluralNumber()),
+               $count
+            ),
+            array_keys($cleandata),
+            $cleandata
+         );
+      }
    }
 
    if (isset($data['late']) && is_array($data['late'])) {
+      $count = 0;
+      $cleandata = [];
       foreach ($data['late'] as $key => $val) {
          $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
-         $cleandata[$newkey] = $val;
+         if ($val > 0) {
+            $count += $val;
+            $cleandata[$newkey] = $val;
+         }
       }
 
-      Stat::showGraph(array(__('Number solved late') => $cleandata),
-                      array('title'     => __('Number solved late'),
-                            'showtotal' => 1,
-                            'unit'      => $item->getTypeName(Session::getPluralNumber()),
-                            'type'      => 'pie'));
+      if (count($cleandata)) {
+         $stat->displayPieGraph(
+            sprintf(
+               __('Solved late %1$s (%2$s)'),
+               $item->getTypeName(Session::getPluralNumber()),
+               $count
+            ),
+            array_keys($cleandata),
+            $cleandata
+         );
+      }
    }
 
 
    if (isset($data['closed']) && is_array($data['closed'])) {
+      $count = 0;
+      $cleandata = [];
       foreach ($data['closed'] as $key => $val) {
          $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
-         $cleandata[$newkey] = $val;
+         if ($val > 0) {
+            $count += $val;
+            $cleandata[$newkey] = $val;
+         }
       }
-      Stat::showGraph(array(__('Number closed') => $cleandata),
-                      array('title'     => __('Number closed'),
-                            'showtotal' => 1,
-                            'unit'      => $item->getTypeName(Session::getPluralNumber()),
-                            'type'      => 'pie'));
+
+      if (count($cleandata)) {
+         $stat->displayPieGraph(
+            sprintf(
+               __('Closed %1$s (%2$s)'),
+               $item->getTypeName(Session::getPluralNumber()),
+               $count
+            ),
+            array_keys($cleandata),
+            $cleandata
+         );
+      }
    }
 
    if ($_GET['itemtype'] == 'Ticket') {
+      $count = 0;
+      $cleandata = [];
       if (isset($data['opensatisfaction']) && is_array($data['opensatisfaction'])) {
          foreach ($data['opensatisfaction'] as $key => $val) {
             $newkey             = Toolbox::unclean_cross_side_scripting_deep(Html::clean($key));
-            $cleandata[$newkey] = $val;
+            if ($val > 0) {
+               $count += $val;
+               $cleandata[$newkey] = $val;
+            }
          }
-         Stat::showGraph(array(__('Satisfaction survey') => $cleandata),
-                        array('title'     => __('Satisfaction survey'),
-                              'showtotal' => 1,
-                              'unit'      => $item->getTypeName(Session::getPluralNumber()),
-                              'type'      => 'pie'));
+
+         if (count($cleandata)) {
+            $stat->displayPieGraph(
+               sprintf(
+                  __('%1$s satisfaction survey (%2$s)'),
+                  $item->getTypeName(Session::getPluralNumber()),
+                  $count
+               ),
+               array_keys($cleandata),
+               $cleandata
+            );
+         }
       }
    }
 

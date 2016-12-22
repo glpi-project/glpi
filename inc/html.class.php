@@ -1164,6 +1164,13 @@ class Html {
          if (in_array('tinymce', $jslibs)) {
             Html::requireJs('tinymce');
          }
+
+         if (in_array('charts', $jslibs)) {
+            echo Html::css($CFG_GLPI["root_doc"]."/lib/chartist-js-0.10.1/chartist.min.css");
+            echo Html::css($CFG_GLPI["root_doc"]."/css/chartists-glpi.css");
+            echo Html::css($CFG_GLPI["root_doc"]."/lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.css");
+            Html::requireJs('charts');
+         }
       }
 
       //file upload is required... almost everywhere.
@@ -5830,6 +5837,11 @@ class Html {
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.min.js';
             $_SESSION['glpi_js_toload'][$name][] = 'lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.min.js';
             $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
+            break;
+         case 'charts':
+            $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-js-0.10.1/chartist.js';
+            $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-legend-0.6.0/chartist-plugin-legend.js';
+            $_SESSION['glpi_js_toload']['charts'][] = 'lib/chartist-plugin-tooltip-0.0.17/chartist-plugin-tooltip.min.js';
             break;
          default:
             $found = false;

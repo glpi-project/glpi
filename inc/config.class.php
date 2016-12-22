@@ -1842,8 +1842,6 @@ class Config extends CommonDBTM {
                  'check'   => 'PHPMailer' ],
                [ 'name'    => 'Zend Framework',
                  'check'   => 'Zend\\Loader\\StandardAutoloader' ],
-               [ 'name'    => 'zetacomponents/graph',
-                 'check'   => 'ezcGraph' ],
                [ 'name'    => 'SimplePie',
                  'version' => SIMPLEPIE_VERSION,
                  'check'   => $sp ],

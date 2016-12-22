@@ -57,6 +57,12 @@ if (!empty($_POST["date1"])
    $_POST["date2"] = $tmp;
 }
 
+$stat = new Stat();
+$chart_opts =  [
+   'width'  => '90%',
+   'legend' => false
+];
+
 Report::title();
 
 echo "<div class='center'><form method='post' name='form' action='".$_SERVER['PHP_SELF']."'>";
@@ -87,7 +93,7 @@ $valeurgraphtot      = array();
  * @param $end       end date
 **/
 function display_infocoms_report($itemtype, $begin, $end) {
-   global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI;
+   global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI, $stat, $chart_opts;
 
    $itemtable = getTableForItemType($itemtype);
    $query = "SELECT `glpi_infocoms`.*,
@@ -174,7 +180,10 @@ function display_infocoms_report($itemtype, $begin, $end) {
             }
          }
 
-         $valeurnettesoustot += str_replace(" ", "", $valeurnette);
+         $valeurnette = str_replace([" ", "-"], ["", ""], $valeurnette);
+         if (!empty($valeurnette)) {
+            $valeurnettesoustot += $valeurnette;
+         }
 
          echo "<tr class='tab_bg_1'><td>".$line["name"]."</td>";
          if ($display_entity) {
@@ -199,7 +208,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
       echo "<tr><td colspan='6' class='center'><h3>$tmpmsg</h3></td></tr>";
 
       if (count($valeurnettegraph) > 0) {
-         echo "<tr><td colspan='5' class='center'>";
+         echo "<tr><td colspan='8' class='center'>";
          ksort($valeurnettegraph);
          $valeurnettegraphdisplay = array_map('round', $valeurnettegraph);
 
@@ -210,15 +219,22 @@ function display_infocoms_report($itemtype, $begin, $end) {
             $valeurnettegraphtot[$key] += $valeurnettegraph[$key];
          }
 
-         Stat::showGraph(array(__('Account net value') => $valeurnettegraphdisplay),
-                         array('title' => __('Account net value'),
-                               'width' => 400));
-
+         $stat->displayLineGraph(
+            sprintf(
+                __('%1$s account net value'),
+                $item->getTypeName(1)
+            ),
+            array_keys($valeurnettegraphdisplay), [
+               [
+                  'data' => $valeurnettegraphdisplay
+               ]
+            ], $chart_opts
+         );
          echo "</td></tr>";
       }
 
       if (count($valeurgraph) > 0) {
-         echo "<tr><td colspan='5' class='center'>";
+         echo "<tr><td colspan='8' class='center'>";
 
          ksort($valeurgraph);
          $valeurgraphdisplay = array_map('round', $valeurgraph);
@@ -230,9 +246,17 @@ function display_infocoms_report($itemtype, $begin, $end) {
             $valeurgraphtot[$key] += $valeurgraph[$key];
          }
 
-         Stat::showGraph(array(_x('price', 'Value') => $valeurgraphdisplay),
-                         array('title' => _x('price', 'Value'),
-                               'width' => 400));
+         $stat->displayLineGraph(
+            sprintf(
+                __('%1$s value'),
+                $item->getTypeName(1)
+            ),
+            array_keys($valeurgraphdisplay), [
+               [
+                  'data' => $valeurgraphdisplay
+               ]
+            ], $chart_opts
+         );
          echo "</td></tr>";
       }
       echo "</table>";
@@ -274,13 +298,27 @@ echo "<div class='center'><h3>$tmpmsg</h3></div>";
 
 if (count($valeurnettegraphtot) > 0) {
    $valeurnettegraphtotdisplay = array_map('round', $valeurnettegraphtot);
-   Stat::showGraph(array(__('Account net value') => $valeurnettegraphtotdisplay),
-                   array('title' => __('Account net value')));
+
+   $stat->displayLineGraph(
+      __('Total account net value'),
+      array_keys($valeurnettegraphtotdisplay), [
+         [
+            'data' => $valeurnettegraphtotdisplay
+         ]
+      ], $chart_opts
+   );
 }
 if (count($valeurgraphtot) > 0) {
    $valeurgraphtotdisplay = array_map('round', $valeurgraphtot);
-   Stat::showGraph(array(_x('price', 'Value') => $valeurgraphtotdisplay),
-                   array('title' => _x('price', 'Value')));
+
+   $stat->displayLineGraph(
+      __('Total value'),
+      array_keys($valeurgraphtotdisplay), [
+         [
+            'data' => $valeurgraphtotdisplay
+         ]
+      ], $chart_opts
+   );
 }
 
 Html::footer();
