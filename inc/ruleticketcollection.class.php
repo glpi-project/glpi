@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -112,8 +112,13 @@ class RuleTicketCollection extends RuleCollection {
       $input['_groups_id_of_requester'] = array();
       // Get groups of users
       if (isset($input['_users_id_requester'])) {
-         foreach (Group_User::getUserGroups($input['_users_id_requester']) as $g) {
-            $input['_groups_id_of_requester'][$g['id']] = $g['id'];
+         if (!is_array($input['_users_id_requester'])) {
+            $input['_users_id_requester'] = array($input['_users_id_requester']);
+         }
+         foreach ($input['_users_id_requester'] as $uid) {
+            foreach (Group_User::getUserGroups($uid) as $g) {
+               $input['_groups_id_of_requester'][$g['id']] = $g['id'];
+            }
          }
       }
       return $input;

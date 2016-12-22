@@ -321,6 +321,7 @@ class Migration {
       $params['nodefault'] = false;
       $params['comment']   = '';
       $params['after']     = '';
+      $params['first']     = '';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -336,12 +337,14 @@ class Migration {
 
       if ($params['after']) {
          $params['after'] = " AFTER `".$params['after']."`";
+      } else if (isset($params['first'])) {
+         $params['first'] = " FIRST ";
       }
 
       if ($format) {
          if (!FieldExists($table, $field, false)) {
             $this->change[$table][] = "ADD `$field` $format ".$params['comment'] ." ".
-                                           $params['after']."";
+                                           $params['first'].$params['after']."";
 
             if (isset($params['update']) && strlen($params['update'])) {
                $this->migrationOneTable($table);

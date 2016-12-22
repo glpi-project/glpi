@@ -1505,6 +1505,7 @@ class Ticket extends CommonITILObject {
       // Set unset variables with are needed
       $user = new User();
       if (isset($input["_users_id_requester"])
+          && !is_array($input["_users_id_requester"])
           && $user->getFromDB($input["_users_id_requester"])) {
          $input['users_locations'] = $user->fields['locations_id'];
          $tmprequester = $input["_users_id_requester"];
@@ -1532,6 +1533,7 @@ class Ticket extends CommonITILObject {
       $input = $this->computeDefaultValuesForAdd($input);
 
       if (isset($input['_users_id_requester'])
+          && !is_array($input['_users_id_requester'])
           && ($input['_users_id_requester'] != $tmprequester)) {
          // if requester set by rule, clear address from mailcollector
          unset($input['_users_id_requester_notif']);
@@ -1608,9 +1610,15 @@ class Ticket extends CommonITILObject {
       }
 
       // Replay setting auto assign if set in rules engine or by auto_assign_mode
-      if (((isset($input["_users_id_assign"]) && ($input["_users_id_assign"] > 0))
-           || (isset($input["_groups_id_assign"]) && ($input["_groups_id_assign"] > 0))
-           || (isset($input["_suppliers_id_assign"]) && ($input["_suppliers_id_assign"] > 0)))
+      if (((isset($input["_users_id_assign"])
+           && ((!is_array($input['_users_id_assign']) &&  $input["_users_id_assign"] > 0)
+               || is_array($input['_users_id_assign']) && count($input['_users_id_assign']) > 0))
+           || (isset($input["_groups_id_assign"])
+           && ((!is_array($input['_groups_id_assign']) && $input["_groups_id_assign"] > 0)
+               || is_array($input['_groups_id_assign']) && count($input['_groups_id_assign']) > 0))
+           || (isset($input["_suppliers_id_assign"])
+           && ((!is_array($input['_suppliers_id_assign']) && $input["_suppliers_id_assign"] > 0)
+               || is_array($input['_suppliers_id_assign']) && count($input['_suppliers_id_assign']) > 0)))
           && (in_array($input['status'], $this->getNewStatusArray()))) {
 
          $input["status"] = self::ASSIGNED;
@@ -3404,7 +3412,7 @@ class Ticket extends CommonITILObject {
       if (is_numeric(Session::getLoginUserID(false))) {
          $users_id_requester = Session::getLoginUserID();
          // No default requester if own ticket right = tech and update_ticket right to update requester
-         if (Session::haveRightsOr(self::$rightname, array(UPDATE, self::OWN))) {
+         if (Session::haveRightsOr(self::$rightname, array(UPDATE, self::OWN)) && !$_SESSION['glpiset_default_requester']) {
             $users_id_requester = 0;
          }
          $entity      = $_SESSION['glpiactive_entity'];
