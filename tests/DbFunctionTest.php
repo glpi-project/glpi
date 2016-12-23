@@ -287,6 +287,25 @@ class DbFunctionTest extends DbTestCase {
       }
    }
 
+<<<<<<< HEAD
+=======
+/*
+TODO :
+getTreeLeafValueName
+getTreeValueName
+getAncestorsOf
+getTreeForItem
+contructTreeFromList
+contructListFromTree
+getRealQueryForTreeItem
+regenerateTreeCompleteName
+getNextItem
+getPreviousItem
+formatUserName
+getUserName
+*/
+
+>>>>>>> upstream/9.1/bugfixes
 
    /**
     *@covers ::TableExists

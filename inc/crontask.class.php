@@ -203,6 +203,26 @@ class CronTask extends CommonDBTM{
    }
 
    /**
+    * Signal handler callback
+    *
+    * @since 9.1
+    */
+   function signal($signo) {
+      if ($signo == SIGTERM) {
+         pcntl_signal(SIGTERM, SIG_DFL);
+
+         // End of this task
+         $this->end(NULL);
+
+         // End of this cron
+         $_SESSION["glpicronuserrunning"]='';
+         self::release_lock();
+         Toolbox::logInFile('cron', __('Action aborted')."\n");
+         exit;
+      }
+   }
+
+   /**
     * Start a task, timer, stat, log, ...
     *
     * @return bool : true if ok (not start by another)

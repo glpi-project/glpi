@@ -353,4 +353,8 @@ if ($needrun) {
 require_once $autoload;
 
 // Use spl autoload to allow stackable autoload.
+<<<<<<< HEAD
 spl_autoload_register('glpi_autoload', false, true);
+=======
+spl_autoload_register('glpi_autoload', false, true);
+>>>>>>> upstream/9.1/bugfixes

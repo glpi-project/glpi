@@ -332,11 +332,14 @@ switch ($current_version) {
       include_once("../install/update_91_911.php");
       update91to911();
 
+<<<<<<< HEAD
    case "9.1.1":
       include_once("../install/update_91_92.php");
       update91to92();
       break;
 
+=======
+>>>>>>> upstream/9.1/bugfixes
    case GLPI_VERSION :
       break;
 
@@ -358,8 +361,13 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
 } else if (in_array('--force', $_SERVER['argv'])) {
 
+<<<<<<< HEAD
    include_once("../install/update_91_92.php");
    update91to92();
+=======
+   include_once("../install/update_91_911.php");
+   update91to911();
+>>>>>>> upstream/9.1/bugfixes
 
    $migration->displayWarning("\nForced migration Done.");
 

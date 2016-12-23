@@ -391,6 +391,7 @@ $ curl -X POST \
    }
 ```
 
+<<<<<<< HEAD
 ## Get GLPi config
 
 * **URL**: [apirest.php/getGlpiConfig/](getGlpiConfig/?debug)
@@ -423,6 +424,8 @@ $ curl -X GET \
    }
 ```
 
+=======
+>>>>>>> upstream/9.1/bugfixes
 ## Get an item
 
 * **URL**: [apirest.php/:itemtype/:id](User/2?debug)

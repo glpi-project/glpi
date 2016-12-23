@@ -155,6 +155,7 @@ class APIXmlrpc extends API {
             }
 
             $response = $this->getItem($this->parameters['itemtype'], $this->parameters['id'], $this->parameters);
+<<<<<<< HEAD
 
             $additionalheaders = array();
             if (isset($response['date_mod'])) {
@@ -186,6 +187,41 @@ class APIXmlrpc extends API {
             return $this->returnResponse($response, $code, $additionalheaders);
 
          } else if ($resource === "createItems") { // create one or many CommonDBTM items
+=======
+
+            $additionalheaders = array();
+            if (isset($response['date_mod'])) {
+               $datemod = strtotime($response['date_mod']);
+               $additionalheaders['Last-Modified'] = gmdate("D, d M Y H:i:s", $datemod)." GMT";
+            }
+            return $this->returnResponse($response, 200, $additionalheaders);
+
+         // get a collection of a CommonDBTM item
+         } else if ($resource === "getItems") {
+            // return collection of items
+            $totalcount = 0;
+            $response = $this->getItems($this->parameters['itemtype'], $this->parameters, $totalcount);
+
+            //add pagination headers
+            $range = [0, $_SESSION['glpilist_limit']];
+            if (isset($this->parameters['range'])) {
+               $range = explode("-", $this->parameters['range']);
+               // fix end range
+               if($range[1] > $totalcount - 1){
+                  $range[1] = $totalcount - 1;
+               }
+               if($range[1] - $range[0] + 1 < $totalcount){
+                  $code = 206; // partial content
+               }
+            }
+            $additionalheaders                  = array();
+            $additionalheaders["Content-Range"] = implode('-', $range)."/".$totalcount;
+            $additionalheaders["Accept-Range"]  = $this->parameters['itemtype']." ".Toolbox::get_max_input_vars();
+            return $this->returnResponse($response, $code, $additionalheaders);
+
+         // create one or many CommonDBTM items
+         } else if ($resource === "createItems") {
+>>>>>>> upstream/9.1/bugfixes
             $response = $this->createItems($this->parameters['itemtype'], $this->parameters);
 
             $additionalheaders = array();

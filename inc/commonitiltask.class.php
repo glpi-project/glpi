@@ -1050,7 +1050,11 @@ abstract class CommonITILTask  extends CommonDBTM {
    function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate=false) {
       global $DB, $CFG_GLPI;
 
+<<<<<<< HEAD
       $canedit = (isset($this->fields['can_edit']) && !$this->fields['can_edit']) ? false : $this->canEdit($this->fields['id']);
+=======
+      $canedit = (isset($this->fields['can_edit']) && !$this->fields['can_edit']) ? false : $this->canEdit($this->fields['id']) ;
+>>>>>>> upstream/9.1/bugfixes
       $canview = $this->canViewItem();
 
       echo "<tr class='tab_bg_";

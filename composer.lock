@@ -4,8 +4,13 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "hash": "300b44764ee58f9af429bbb3ae18d370",
     "content-hash": "6f2d94a3c2d7cc4829a6ea986890c7e1",
+=======
+    "hash": "76ea83c224a80eda541182b50a707b69",
+    "content-hash": "af93477ecc3db2960f074f3b2ae11ea1",
+>>>>>>> upstream/9.1/bugfixes
     "packages": [
         {
             "name": "iamcal/lib_autolink",
@@ -40,6 +45,7 @@
             "time": "2015-05-22 17:10:41"
         },
         {
+<<<<<<< HEAD
             "name": "ircmaxell/random-lib",
             "version": "v1.2.0",
             "source": {
@@ -124,6 +130,29 @@
                 "psr-0": {
                     "SecurityLib": "lib"
                 }
+=======
+            "name": "ircmaxell/password-compat",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ircmaxell/password_compat.git",
+                "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ircmaxell/password_compat/zipball/5c5cde8822a69545767f7c7f3058cb15ff84614c",
+                "reference": "5c5cde8822a69545767f7c7f3058cb15ff84614c",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "lib/password.php"
+                ]
+>>>>>>> upstream/9.1/bugfixes
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -303,7 +332,56 @@
                 }
             ],
             "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
+<<<<<<< HEAD
             "time": "2016-12-09 10:03:48"
+=======
+            "time": "2016-06-06 09:09:37"
+        },
+        {
+            "name": "ramsey/array_column",
+            "version": "1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramsey/array_column.git",
+                "reference": "f8e52eb28e67eb50e613b451dd916abcf783c1db"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramsey/array_column/zipball/f8e52eb28e67eb50e613b451dd916abcf783c1db",
+                "reference": "f8e52eb28e67eb50e613b451dd916abcf783c1db",
+                "shasum": ""
+            },
+            "require-dev": {
+                "jakub-onderka/php-parallel-lint": "0.8.*",
+                "phpunit/phpunit": "~4.5",
+                "satooshi/php-coveralls": "0.6.*",
+                "squizlabs/php_codesniffer": "~2.2"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/array_column.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Ramsey",
+                    "homepage": "http://benramsey.com"
+                }
+            ],
+            "description": "Provides functionality for array_column() to projects using PHP earlier than version 5.5.",
+            "homepage": "https://github.com/ramsey/array_column",
+            "keywords": [
+                "array",
+                "array_column",
+                "column"
+            ],
+            "time": "2015-03-20 22:07:39"
+>>>>>>> upstream/9.1/bugfixes
         },
         {
             "name": "sabre/vobject",

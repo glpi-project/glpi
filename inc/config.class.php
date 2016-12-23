@@ -250,10 +250,15 @@ class Config extends CommonDBTM {
    static public function unsetUndisclosedFields(&$fields) {
       if (isset($fields['context']) && isset($fields['name'])) {
          if ($fields['context'] == 'core'
+<<<<<<< HEAD
             && in_array($fields['name'], self::$undisclosedFields)) {
             unset($fields['value']);
          } else {
             $fields = Plugin::doHookFunction('undiscloseConfigValue', $fields);
+=======
+            && in_array($fields['name'], array('proxy_passwd', 'smtp_passwd'))) {
+            unset($fields['value']);
+>>>>>>> upstream/9.1/bugfixes
          }
       }
    }

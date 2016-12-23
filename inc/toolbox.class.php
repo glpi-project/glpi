@@ -899,7 +899,11 @@ class Toolbox {
          $error = 2;
          echo "<td class='red'>
                <img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
+<<<<<<< HEAD
                 sprintf(__('You must install at least PHP %s.'), GLPI_MIN_PHP)."</td>";
+=======
+                __('You must install at least PHP 5.4.0.')."</td>";
+>>>>>>> upstream/9.1/bugfixes
       }
       echo "</tr>";
 
@@ -978,7 +982,11 @@ class Toolbox {
          ],
          'curl'      => [
             'required'  => true,
+<<<<<<< HEAD
          ],
+=======
+        ],
+>>>>>>> upstream/9.1/bugfixes
          'gd'       => [
             'required'  => false,
          ],
@@ -1569,6 +1577,7 @@ class Toolbox {
    **/
    static function getRandomString($length, $high=false) {
 
+<<<<<<< HEAD
       $factory = new RandomLib\Factory();
       if ($high) {
          /* Notice "High" imply mcrypt extension, unwanted for now
@@ -1576,6 +1585,15 @@ class Toolbox {
          $generator = $factory->getMediumStrengthGenerator();
       } else {
          $generator = $factory->getLowStrengthGenerator();
+=======
+      for ($a=0 ; $a<$length ; $a++) {
+         if (function_exists('random_int')) { // PHP 7+
+            $b = random_int(0, strlen($alphabet) - 1);
+         } else {
+            $b = mt_rand(0, strlen($alphabet) - 1);
+         }
+         $rndstring .= $alphabet[$b];
+>>>>>>> upstream/9.1/bugfixes
       }
 
       return $generator->generateString($length, RandomLib\Generator::CHAR_LOWER + RandomLib\Generator::CHAR_DIGITS);
@@ -2565,6 +2583,7 @@ class Toolbox {
       $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
       return $array;
    }
+<<<<<<< HEAD
 
    /**
     * Remove accentued characters and return lower case string
@@ -2600,4 +2619,6 @@ class Toolbox {
       $string = preg_replace('~[^0-9a-z]+~i', '-', $string);
       return trim($string, '-');
    }
+=======
+>>>>>>> upstream/9.1/bugfixes
 }

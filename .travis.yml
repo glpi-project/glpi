@@ -9,8 +9,11 @@ before_script:
   - mysql -u root -e 'create database glpitest;'
   - php tools/cliinstall.php --lang=en_US --db=glpitest --user=root --tests
   - php -S localhost:8088 tests/router.php &>/dev/null &
+<<<<<<< HEAD
   - pear install pear/PHP_CodeSniffer
   - phpenv rehash
+=======
+>>>>>>> upstream/9.1/bugfixes
 
 script:
   - mysql -u root -e 'select version();'

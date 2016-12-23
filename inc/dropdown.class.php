@@ -410,6 +410,10 @@ class Dropdown {
                                                       "<span class='b'>".__('Start date')."</span>",
                                                       Html::convDateTime($data["begin_date"]));
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/9.1/bugfixes
                         }
                         if (!empty($data['end_date'])) {
                            $comment .= "<br>".sprintf(__('%1$s: %2$s'),

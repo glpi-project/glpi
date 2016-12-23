@@ -341,7 +341,11 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>";
       Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
+<<<<<<< HEAD
 
+=======
+      
+>>>>>>> upstream/9.1/bugfixes
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
