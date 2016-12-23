@@ -6920,7 +6920,7 @@ class Ticket extends CommonITILObject {
          switch( $field_id_or_search_options['linkfield'] ) {
             case 'requesttypes_id':
                $opt = 'is_ticketheader = 1';
-               if( Toolbox::in_array_recursive('glpi_ticketfollowups', $field_id_or_search_options['joinparams']) ) {
+               if (isset($field_id_or_search_options['joinparams']) && Toolbox::in_array_recursive('glpi_ticketfollowups', $field_id_or_search_options['joinparams'])) {
                   $opt = 'is_ticketfollowup = 1';
                }
                if( $field_id_or_search_options['linkfield']  == $name ) {
