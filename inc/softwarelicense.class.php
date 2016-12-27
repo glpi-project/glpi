@@ -330,7 +330,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Technician in charge of the hardware')."</td>";
+      echo "<td>".__('Technician in charge of the license')."</td>";
       echo "<td>";
       User::dropdown(array('name'   => 'users_id_tech',
                            'value'  => $this->fields["users_id_tech"],
@@ -343,7 +343,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Group in charge of the hardware')."</td>";
+      echo "<td>".__('Group in charge of the license')."</td>";
       echo "<td>";
       Group::dropdown(array('name'      => 'groups_id_tech',
                             'value'     => $this->fields['groups_id_tech'],
@@ -544,7 +544,7 @@ class SoftwareLicense extends CommonDBTM {
       $tab[24]['table']          = 'glpi_users';
       $tab[24]['field']          = 'name';
       $tab[24]['linkfield']      = 'users_id_tech';
-      $tab[24]['name']           = __('Technician in charge of the hardware');
+      $tab[24]['name']           = __('Technician in charge of the license');
       $tab[24]['datatype']       = 'dropdown';
       $tab[24]['right']          = 'own_ticket';
 
@@ -557,7 +557,7 @@ class SoftwareLicense extends CommonDBTM {
       $tab[49]['table']          = 'glpi_groups';
       $tab[49]['field']          = 'completename';
       $tab[49]['linkfield']      = 'groups_id_tech';
-      $tab[49]['name']           = __('Group in charge of the hardware');
+      $tab[49]['name']           = __('Group in charge of the license');
       $tab[49]['condition']      = '`is_assign`';
       $tab[49]['datatype']       = 'dropdown';
 
