@@ -194,7 +194,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
             $opt['criteria'][0]['searchtype']   = 'equals';
             $opt['criteria'][0]['value']        = $data["pmid"];
             $url = Printer::getSearchURL()."?".Toolbox::append_params($opt,'&amp;');
-            echo "<td class='center'><a href='".$url."'>".$data["type"]."</a></td>";        
+            echo "<td class='center'><a href='".$url."'>".$data["type"]."</a></td>";
             echo "</tr>";
          }
          echo $header_begin.$header_bottom.$header_end;
