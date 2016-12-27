@@ -189,7 +189,10 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
                Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
                echo "</td>";
             }
-            echo "<td class='center'>".$data['type']."</td>";
+            echo "<td class='center'><a href='".$CFG_GLPI['root_doc'].
+            "/front/printer.php?is_deleted=0&criteria[0][field]=40&criteria[0][searchtype]=equals&criteria[0][value]="
+            .$data['pmid']."'>".$data['type']."</a>";
+          
             echo "</tr>";
          }
          echo $header_begin.$header_bottom.$header_end;
