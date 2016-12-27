@@ -811,178 +811,268 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                      = array();
-      $tab['common']            = $this->getTypeName(1);
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => $this->getTypeName(1)
+      ];
 
-      $tab[1]['table']          = $this->getTable();
-      $tab[1]['field']          = 'name';
-      $tab[1]['name']           = __('Name');
-      $tab[1]['datatype']       = 'itemlink';
-      $tab[1]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']          = $this->getTable();
-      $tab[2]['field']          = 'id';
-      $tab[2]['name']           = __('ID');
-      $tab[2]['datatype']       = 'number';
-      $tab[2]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'datatype'           => 'number',
+         'massiveaction'      => false
+      ];
 
-      $tab[3]['table']          = $this->getTable();
-      $tab[3]['field']          = 'host';
-      $tab[3]['name']           = __('Server');
-      $tab[3]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'host',
+         'name'               => __('Server'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[4]['table']          = $this->getTable();
-      $tab[4]['field']          = 'port';
-      $tab[4]['name']           = __('Port');
-      $tab[4]['datatype']       = 'integer';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'port',
+         'name'               => __('Port'),
+         'datatype'           => 'integer'
+      ];
 
-      $tab[5]['table']          = $this->getTable();
-      $tab[5]['field']          = 'basedn';
-      $tab[5]['name']           = __('BaseDN');
-      $tab[5]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'basedn',
+         'name'               => __('BaseDN'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[6]['table']          = $this->getTable();
-      $tab[6]['field']          = 'condition';
-      $tab[6]['name']           = __('Connection filter');
-      $tab[6]['datatype']       = 'text';
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'condition',
+         'name'               => __('Connection filter'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[7]['table']          = $this->getTable();
-      $tab[7]['field']          = 'is_default';
-      $tab[7]['name']           = __('Default server');
-      $tab[7]['datatype']       = 'bool';
-      $tab[7]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'is_default',
+         'name'               => __('Default server'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[8]['table']          = $this->getTable();
-      $tab[8]['field']          = 'login_field';
-      $tab[8]['name']           = __('Login field');
-      $tab[8]['massiveaction']  = false;
-      $tab[8]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'login_field',
+         'name'               => __('Login field'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[9]['table']          = $this->getTable();
-      $tab[9]['field']          = 'realname_field';
-      $tab[9]['name']           = __('Surname');
-      $tab[9]['massiveaction']  = false;
-      $tab[9]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => $this->getTable(),
+         'field'              => 'realname_field',
+         'name'               => __('Last Name'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[10]['table']         = $this->getTable();
-      $tab[10]['field']         = 'firstname_field';
-      $tab[10]['name']          = __('First name');
-      $tab[10]['massiveaction'] = false;
-      $tab[10]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $this->getTable(),
+         'field'              => 'firstname_field',
+         'name'               => __('First Name'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'phone_field';
-      $tab[11]['name']          = __('Phone');
-      $tab[11]['massiveaction'] = false;
-      $tab[11]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'phone_field',
+         'name'               => __('Phone'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'phone2_field';
-      $tab[12]['name']          = __('Phone 2');
-      $tab[12]['massiveaction'] = false;
-      $tab[12]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'phone2_field',
+         'name'               => __('Phone 2'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[13]['table']         = $this->getTable();
-      $tab[13]['field']         = 'mobile_field';
-      $tab[13]['name']          = __('Mobile phone');
-      $tab[13]['massiveaction'] = false;
-      $tab[13]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => $this->getTable(),
+         'field'              => 'mobile_field',
+         'name'               => __('Mobile phone'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[14]['table']         = $this->getTable();
-      $tab[14]['field']         = 'title_field';
-      $tab[14]['name']          = _x('person','Title');
-      $tab[14]['massiveaction'] = false;
-      $tab[14]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => $this->getTable(),
+         'field'              => 'title_field',
+         'name'               => __('Title'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[15]['table']         = $this->getTable();
-      $tab[15]['field']         = 'category_field';
-      $tab[15]['name']          = __('Category');
-      $tab[15]['massiveaction'] = false;
-      $tab[15]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '15',
+         'table'              => $this->getTable(),
+         'field'              => 'category_field',
+         'name'               => __('Category'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[16]['table']         = $this->getTable();
-      $tab[16]['field']         = 'comment';
-      $tab[16]['name']          = __('Comments');
-      $tab[16]['datatype']      = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[17]['table']         = $this->getTable();
-      $tab[17]['field']         = 'email1_field';
-      $tab[17]['name']          = __('Email');
-      $tab[17]['massiveaction'] = false;
-      $tab[17]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '17',
+         'table'              => $this->getTable(),
+         'field'              => 'email1_field',
+         'name'               => __('Email'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[25]['table']         = $this->getTable();
-      $tab[25]['field']         = 'email2_field';
-      $tab[25]['name']          = sprintf(__('%1$s %2$s'),_n('Email','Emails',1), '2');
-      $tab[25]['massiveaction'] = false;
-      $tab[25]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '25',
+         'table'              => $this->getTable(),
+         'field'              => 'email2_field',
+         'name'               => sprintf(__('%1$s %2$s'),_n('Email','Emails',1), '2'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[26]['table']         = $this->getTable();
-      $tab[26]['field']         = 'email3_field';
-      $tab[26]['name']          = sprintf(__('%1$s %2$s'),_n('Email','Emails',1), '3');
-      $tab[26]['massiveaction'] = false;
-      $tab[26]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '26',
+         'table'              => $this->getTable(),
+         'field'              => 'email3_field',
+         'name'               => sprintf(__('%1$s %2$s'),_n('Email','Emails',1), '3'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[27]['table']         = $this->getTable();
-      $tab[27]['field']         = 'email4_field';
-      $tab[27]['name']          = sprintf(__('%1$s %2$s'),_n('Email','Emails',1), '4');
-      $tab[27]['massiveaction'] = false;
-      $tab[27]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '27',
+         'table'              => $this->getTable(),
+         'field'              => 'email4_field',
+         'name'               => sprintf(__('%1$s %2$s'),_n('Email','Emails',1), '4'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[18]['table']         = $this->getTable();
-      $tab[18]['field']         = 'use_dn';
-      $tab[18]['name']          = __('Use DN in the search');
-      $tab[18]['datatype']      = 'bool';
-      $tab[18]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '18',
+         'table'              => $this->getTable(),
+         'field'              => 'use_dn',
+         'name'               => __('Use DN in the search'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[20]['table']         = $this->getTable();
-      $tab[20]['field']         = 'language_field';
-      $tab[20]['name']          = __('Language');
-      $tab[20]['massiveaction'] = false;
-      $tab[20]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => $this->getTable(),
+         'field'              => 'language_field',
+         'name'               => __('Language'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[21]['table']         = $this->getTable();
-      $tab[21]['field']         = 'group_field';
-      $tab[21]['name']          = __('User attribute containing its groups');
-      $tab[21]['massiveaction'] = false;
-      $tab[21]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => $this->getTable(),
+         'field'              => 'group_field',
+         'name'               => __('User attribute containing its groups'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[22]['table']         = $this->getTable();
-      $tab[22]['field']         = 'group_condition';
-      $tab[22]['name']          = __('Filter to search in groups');
-      $tab[22]['massiveaction'] = false;
-      $tab[22]['datatype']      = 'text';
+      $tab[] = [
+         'id'                 => '22',
+         'table'              => $this->getTable(),
+         'field'              => 'group_condition',
+         'name'               => __('Filter to search in groups'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
 
-      $tab[23]['table']         = $this->getTable();
-      $tab[23]['field']         = 'group_member_field';
-      $tab[23]['name']          = __('Group attribute containing its users');
-      $tab[23]['massiveaction'] = false;
-      $tab[23]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '23',
+         'table'              => $this->getTable(),
+         'field'              => 'group_member_field',
+         'name'               => __('Group attribute containing its users'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[24]['table']         = $this->getTable();
-      $tab[24]['field']         = 'group_search_type';
-      $tab[24]['datatype']      = 'specific';
-      $tab[24]['name']          = __('Search type');
-      $tab[24]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '24',
+         'table'              => $this->getTable(),
+         'field'              => 'group_search_type',
+         'datatype'           => 'specific',
+         'name'               => __('Search type'),
+         'massiveaction'      => false
+      ];
 
-      $tab[30]['table']         = $this->getTable();
-      $tab[30]['field']         = 'is_active';
-      $tab[30]['name']          = __('Active');
-      $tab[30]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '30',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
+      ];
 
       return $tab;
    }

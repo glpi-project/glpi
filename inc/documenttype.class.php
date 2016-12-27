@@ -75,30 +75,41 @@ class DocumentType  extends CommonDropdown {
     *
     * @return array of search option
    **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                       = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'ext',
+         'name'               => __('Extension'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'ext';
-      $tab[3]['name']            = __('Extension');
-      $tab[3]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'icon',
+         'name'               => __('Icon'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific'
+      ];
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'icon';
-      $tab[6]['name']            = __('Icon');
-      $tab[6]['massiveaction']   = false;
-      $tab[6]['datatype']        = 'specific';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'mime',
+         'name'               => __('MIME type'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'mime';
-      $tab[4]['name']            = __('MIME type');
-      $tab[4]['datatype']        = 'string';
-
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'is_uploadable';
-      $tab[5]['name']            = __('Authorized upload');
-      $tab[5]['datatype']        = 'bool';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'is_uploadable',
+         'name'               => __('Authorized upload'),
+         'datatype'           => 'bool'
+      ];
 
       return $tab;
    }

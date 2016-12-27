@@ -740,10 +740,8 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * @param $tab          array
     * @param $joinparams   array
-    * @param $itemtype
     **/
-   static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams,
-                                                         $itemtype) {
+   static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams) {
    }
 
 

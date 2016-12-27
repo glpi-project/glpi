@@ -155,37 +155,55 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                 = array();
-      $tab['common']       = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'name';
-      $tab[2]['name']      = __('Name');
-      $tab[2]['datatype']  = 'string';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[4]['table']     = 'glpi_operatingsystems';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = __('Operating system');
-      $tab[4]['datatype']  = 'dropdown';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_operatingsystems',
+         'field'              => 'name',
+         'name'               => __('Operating system'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[31]['table']     = 'glpi_states';
-      $tab[31]['field']     = 'completename';
-      $tab[31]['name']      = __('Status');
-      $tab[31]['datatype']  = 'dropdown';
-      $tab[31]['condition'] = "`is_visible_softwareversion`";
+      $tab[] = [
+         'id'                 => '31',
+         'table'              => 'glpi_states',
+         'field'              => 'completename',
+         'name'               => __('Status'),
+         'datatype'           => 'dropdown',
+         'condition'          => '`is_visible_softwareversion`'
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }

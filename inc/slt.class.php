@@ -666,51 +666,75 @@ class SLT extends CommonDBChild {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                        = array();
-      $tab['common']              = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']            = $this->getTable();
-      $tab[1]['field']            = 'name';
-      $tab[1]['name']             = __('Name');
-      $tab[1]['datatype']         = 'itemlink';
-      $tab[1]['massiveaction']    = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']            = $this->getTable();
-      $tab[2]['field']            = 'id';
-      $tab[2]['name']             = __('ID');
-      $tab[2]['massiveaction']    = false;
-      $tab[2]['datatype']         = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[5]['table']            = $this->getTable();
-      $tab[5]['field']            = 'number_time';
-      $tab[5]['name']             = __('Time');
-      $tab[5]['datatype']         = 'specific';
-      $tab[5]['massiveaction']    = false;
-      $tab[5]['nosearch']         = true;
-      $tab[5]['additionalfields'] = array('definition_time');
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'number_time',
+         'name'               => __('Time'),
+         'datatype'           => 'specific',
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'additionalfields'   => ['definition_time']
+      ];
 
-      $tab[6]['table']            = $this->getTable();
-      $tab[6]['field']            = 'end_of_working_day';
-      $tab[6]['name']             = __('End of working day');
-      $tab[6]['datatype']         = 'bool';
-      $tab[6]['massiveaction']    = false;
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'end_of_working_day',
+         'name'               => __('End of working day'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[7]['table']            = $this->getTable();
-      $tab[7]['field']            = 'type';
-      $tab[7]['name']             = __('Type');
-      $tab[7]['datatype']         = 'specific';
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'type',
+         'name'               => __('Type'),
+         'datatype'           => 'specific'
+      ];
 
-      $tab[8]['table']            = 'glpi_slas';
-      $tab[8]['field']            = 'name';
-      $tab[8]['name']             = __('SLA');
-      $tab[8]['datatype']         = 'dropdown';
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => 'glpi_slas',
+         'field'              => 'name',
+         'name'               => __('SLA'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[16]['table']           = $this->getTable();
-      $tab[16]['field']           = 'comment';
-      $tab[16]['name']            = __('Comments');
-      $tab[16]['datatype']        = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
       return $tab;
    }

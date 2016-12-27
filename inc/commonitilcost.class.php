@@ -90,137 +90,192 @@ abstract class CommonITILCost extends CommonDBChild {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                          = array();
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab['common']                = __('Characteristics');
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Title'),
+         'searchtype'         => 'contains',
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[1]['table']              = $this->getTable();
-      $tab[1]['field']              = 'name';
-      $tab[1]['name']               =  __('Title');
-      $tab[1]['searchtype']         = 'contains';
-      $tab[1]['datatype']           = 'itemlink';
-      $tab[1]['massiveaction']      = false;
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[2]['table']              = $this->getTable();
-      $tab[2]['field']              = 'id';
-      $tab[2]['name']               = __('ID');
-      $tab[2]['massiveaction']      = false;
-      $tab[2]['datatype']           = 'number';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'cost_material',
+         'name'               => __('Material cost'),
+         'datatype'           => 'decimal'
+      ];
 
-      $tab[16]['table']             = $this->getTable();
-      $tab[16]['field']             = 'comment';
-      $tab[16]['name']              = __('Comments');
-      $tab[16]['datatype']          = 'text';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'begin_date',
+         'name'               => __('Begin date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[12]['table']             = $this->getTable();
-      $tab[12]['field']             = 'begin_date';
-      $tab[12]['name']              = __('Begin date');
-      $tab[12]['datatype']          = 'datetime';
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $this->getTable(),
+         'field'              => 'end_date',
+         'name'               => __('End date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[10]['table']             = $this->getTable();
-      $tab[10]['field']             = 'end_date';
-      $tab[10]['name']              = __('End date');
-      $tab[10]['datatype']          = 'datetime';
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'actiontime',
+         'name'               => __('Duration'),
+         'datatype'           => 'timestamp'
+      ];
 
-      $tab[11]['table']             = $this->getTable();
-      $tab[11]['field']             = 'actiontime';
-      $tab[11]['name']              = __('Duration');
-      $tab[11]['datatype']          = 'timestamp';
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => $this->getTable(),
+         'field'              => 'cost_time',
+         'name'               => __('Time cost'),
+         'datatype'           => 'decimal'
+      ];
 
-      $tab[14]['table']              = $this->getTable();
-      $tab[14]['field']              = 'cost_time';
-      $tab[14]['name']               = __('Time cost');
-      $tab[14]['datatype']           = 'decimal';
+      $tab[] = [
+         'id'                 => '15',
+         'table'              => $this->getTable(),
+         'field'              => 'cost_fixed',
+         'name'               => __('Fixed cost'),
+         'datatype'           => 'decimal'
+      ];
 
-      $tab[15]['table']             = $this->getTable();
-      $tab[15]['field']             = 'cost_fixed';
-      $tab[15]['name']              = __('Fixed cost');
-      $tab[15]['datatype']          = 'decimal';
+      $tab[] = [
+         'id'                 => '18',
+         'table'              => 'glpi_budgets',
+         'field'              => 'name',
+         'name'               => _n('Budget', 'Budgets', 1),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[16]['table']             = $this->getTable();
-      $tab[16]['field']             = 'cost_material';
-      $tab[16]['name']              = __('Material cost');
-      $tab[16]['datatype']          = 'decimal';
-
-      $tab[18]['table']             = 'glpi_budgets';
-      $tab[18]['field']             = 'name';
-      $tab[18]['name']              = _n('Budget', 'Budgets', 1);
-      $tab[18]['datatype']          = 'dropdown';
-
-      $tab[80]['table']             = 'glpi_entities';
-      $tab[80]['field']             = 'completename';
-      $tab[80]['name']              = __('Entity');
-      $tab[80]['massiveaction']     = false;
-      $tab[80]['datatype']          = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }
 
 
-   static function getSearchOptionsToAdd() {
+   static function getSearchOptionsToAddNew() {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['cost']               = __('Cost');
+      $tab[] = [
+         'id'                 => 'cost',
+         'name'               => __('Cost')
+      ];
 
-      $tab[48]['table']          = static::getTable();
-      $tab[48]['field']          = 'totalcost';
-      $tab[48]['name']           = __('Total cost');
-      $tab[48]['datatype']       = 'decimal';
-      $tab[48]['forcegroupby']   = true;
-      $tab[48]['usehaving']      = true;
-      $tab[48]['massiveaction']  = false;
-      $tab[48]['joinparams']     = array('jointype'  => 'child');
-      $tab[48]['computation']    = "(SUM(TABLE.`actiontime`
-                                         * TABLE.`cost_time`/".HOUR_TIMESTAMP."
+      $tab[] = [
+         'id'                 => '48',
+         'table'              => static::getTable(),
+         'field'              => 'totalcost',
+         'name'               => __('Total cost'),
+         'datatype'           => 'decimal',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'computation'        => '(SUM(TABLE.`actiontime`
+                                         * TABLE.`cost_time`/'.HOUR_TIMESTAMP.'
                                          + TABLE.`cost_fixed`
                                          + TABLE.`cost_material`)
                                      / COUNT(TABLE.`id`))
-                                   * COUNT(DISTINCT TABLE.`id`)";
+                                   * COUNT(DISTINCT TABLE.`id`)'
+      ];
 
-      $tab[42]['table']          = static::getTable();
-      $tab[42]['field']          = 'cost_time';
-      $tab[42]['name']           = __('Time cost');
-      $tab[42]['datatype']       = 'decimal';
-      $tab[42]['forcegroupby']   = true;
-      $tab[42]['usehaving']      = true;
-      $tab[42]['massiveaction']  = false;
-      $tab[42]['joinparams']     = array('jointype'  => 'child');
-      $tab[42]['computation']    = "(SUM(TABLE.`cost_time`*TABLE.`actiontime`/".HOUR_TIMESTAMP.")
+      $tab[] = [
+         'id'                 => '42',
+         'table'              => static::getTable(),
+         'field'              => 'cost_time',
+         'name'               => __('Time cost'),
+         'datatype'           => 'decimal',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'computation'        => '(SUM(TABLE.`cost_time`*TABLE.`actiontime`/'.HOUR_TIMESTAMP.')
                                       / COUNT(TABLE.`id`))
-                                    * COUNT(DISTINCT TABLE.`id`)";
+                                    * COUNT(DISTINCT TABLE.`id`)'
+      ];
 
-      $tab[49]['table']          = static::getTable();
-      $tab[49]['field']          = 'actiontime';
-      $tab[49]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('Duration'));
-      $tab[49]['datatype']       = 'timestamp';
-      $tab[49]['forcegroupby']   = true;
-      $tab[49]['usehaving']      = true;
-      $tab[49]['massiveaction']  = false;
-      $tab[49]['joinparams']     = array('jointype'  => 'child');
+      $tab[] = [
+         'id'                 => '49',
+         'table'              => static::getTable(),
+         'field'              => 'actiontime',
+         'name'               => sprintf(__('%1$s - %2$s'), __('Cost'), __('Duration')),
+         'datatype'           => 'timestamp',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[43]['table']          = static::getTable();
-      $tab[43]['field']          = 'cost_fixed';
-      $tab[43]['name']           = __('Fixed cost');
-      $tab[43]['datatype']       = 'decimal';
-      $tab[43]['forcegroupby']   = true;
-      $tab[43]['usehaving']      = true;
-      $tab[43]['massiveaction']  = false;
-      $tab[43]['joinparams']     = array('jointype'  => 'child');
-      $tab[43]['computation']    = "(SUM(TABLE.`cost_fixed`) / COUNT(TABLE.`id`))
-                                    * COUNT(DISTINCT TABLE.`id`)";
+      $tab[] = [
+         'id'                 => '43',
+         'table'              => static::getTable(),
+         'field'              => 'cost_fixed',
+         'name'               => __('Fixed cost'),
+         'datatype'           => 'decimal',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'computation'        => '(SUM(TABLE.`cost_fixed`) / COUNT(TABLE.`id`))
+                                    * COUNT(DISTINCT TABLE.`id`)'
+      ];
 
-      $tab[44]['table']          = static::getTable();
-      $tab[44]['field']          = 'cost_material';
-      $tab[44]['name']           = __('Material cost');
-      $tab[44]['datatype']       = 'decimal';
-      $tab[44]['forcegroupby']   = true;
-      $tab[44]['usehaving']      = true;
-      $tab[44]['massiveaction']  = false;
-      $tab[44]['joinparams']     = array('jointype'  => 'child');
-      $tab[44]['computation']    = "(SUM(TABLE.`cost_material`) / COUNT(TABLE.`id`))
-                                    * COUNT(DISTINCT TABLE.`id`)";
+      $tab[] = [
+         'id'                 => '44',
+         'table'              => static::getTable(),
+         'field'              => 'cost_material',
+         'name'               => __('Material cost'),
+         'datatype'           => 'decimal',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'computation'        => '(SUM(TABLE.`cost_material`) / COUNT(TABLE.`id`))
+                                    * COUNT(DISTINCT TABLE.`id`)'
+      ];
 
       return $tab;
    }

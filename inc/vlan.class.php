@@ -73,21 +73,18 @@ class Vlan extends CommonDropdown {
    }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
-
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'tag';
-      $tab[11]['name']     = __('ID TAG');
-      $tab[11]['datatype'] = 'number';
-      $tab[11]['min']      = 1;
-      $tab[11]['max']      = 4094;
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'tag',
+         'name'               => __('ID TAG'),
+         'datatype'           => 'number',
+         'min'                => 1,
+         'max'                => 4094
+      ];
 
       return $tab;
    }

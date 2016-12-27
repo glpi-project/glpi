@@ -186,7 +186,7 @@ class Notepad extends CommonDBChild {
             'jointype'           => 'itemtype_item'
          ],
          'forcegroupby'       => true,
-         'splititems'         => '1',
+         'splititems'         => true,
          'massiveaction'      => false
       ];
 

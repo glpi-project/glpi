@@ -95,20 +95,25 @@ class Blacklist extends CommonDropdown {
     *
     * @return array of search option
    **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                    = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'value',
+         'name'               => __('Value'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[11]['table']       = $this->getTable();
-      $tab[11]['field']       = 'value';
-      $tab[11]['name']        = __('Value');
-      $tab[11]['datatype']    = 'text';
-
-      $tab[12]['table']      = $this->getTable();
-      $tab[12]['field']      = 'type';
-      $tab[12]['name']       = _n('Type','Types',1);
-      $tab[12]['searchtype'] = array('equals', 'notequals');
-      $tab[12]['datatype']   = 'specific';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'type',
+         'name'               => _n('Type','Types',1),
+         'searchtype'         => ['equals', 'notequals'],
+         'datatype'           => 'specific'
+      ];
 
       return $tab;
    }

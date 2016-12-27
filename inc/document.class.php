@@ -708,22 +708,27 @@ class Document extends CommonDBTM {
    }
 
 
-   /**
-    * @since version 0.84
-   **/
-   static function getSearchOptionsToAdd() {
+   static function getSearchOptionsToAddNew($itemtype = null) {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['document']           = self::getTypeName(Session::getPluralNumber());
+      $tab[] = [
+         'id'                 => 'document',
+         'name'               => self::getTypeName(Session::getPluralNumber())
+      ];
 
-      $tab[119]['table']         = 'glpi_documents_items';
-      $tab[119]['field']         = 'id';
-      $tab[119]['name']          = _x('quantity', 'Number of documents');
-      $tab[119]['forcegroupby']  = true;
-      $tab[119]['usehaving']     = true;
-      $tab[119]['datatype']      = 'count';
-      $tab[119]['massiveaction'] = false;
-      $tab[119]['joinparams']    = array('jointype' => 'itemtype_item');
+      $tab[] = [
+         'id'                 => '119',
+         'table'              => 'glpi_documents_items',
+         'field'              => 'id',
+         'name'               => _x('quantity', 'Number of documents'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'count',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ]
+      ];
 
       return $tab;
    }
@@ -745,100 +750,148 @@ class Document extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
       global $CFG_GLPI;
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab = [];
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'number';
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'filename';
-      $tab[3]['name']            = __('File');
-      $tab[3]['massiveaction']   = false;
-      $tab[3]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'link';
-      $tab[4]['name']            = __('Web Link');
-      $tab[4]['datatype']        = 'weblink';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'filename',
+         'name'               => __('File'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'mime';
-      $tab[5]['name']            = __('MIME type');
-      $tab[5]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'link',
+         'name'               => __('Web Link'),
+         'datatype'           => 'weblink'
+      ];
+
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'mime',
+         'name'               => __('MIME type'),
+         'datatype'           => 'string'
+      ];
 
       if ($CFG_GLPI['use_rich_text']) {
-         $tab[6]['table']           = $this->getTable();
-         $tab[6]['field']           = 'tag';
-         $tab[6]['name']            = __('Tag');
-         $tab[6]['datatype']        = 'text';
-         $tab[6]['massiveaction']   = false;
+         $tab[] = [
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'tag',
+            'name'               => __('Tag'),
+            'datatype'           => 'string',
+            'massiveaction'      => false
+         ];
       }
 
-      $tab[7]['table']           = 'glpi_documentcategories';
-      $tab[7]['field']           = 'completename';
-      $tab[7]['name']            = __('Heading');
-      $tab[7]['datatype']        = 'dropdown';
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => 'glpi_documentcategories',
+         'field'              => 'completename',
+         'name'               => __('Heading'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[86]['table']          = $this->getTable();
-      $tab[86]['field']          = 'is_recursive';
-      $tab[86]['name']           = __('Child entities');
-      $tab[86]['datatype']       = 'bool';
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[20]['table']          = $this->getTable();
-      $tab[20]['field']          = 'sha1sum';
-      $tab[20]['name']           = sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1'));
-      $tab[20]['massiveaction']  = false;
-      $tab[20]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => $this->getTable(),
+         'field'              => 'sha1sum',
+         'name'               => sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1')),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[72]['table']          = 'glpi_documents_items';
-      $tab[72]['field']          = 'id';
-      $tab[72]['name']           = _x('quantity', 'Number of associated items');
-      $tab[72]['forcegroupby']   = true;
-      $tab[72]['usehaving']      = true;
-      $tab[72]['datatype']       = 'count';
-      $tab[72]['massiveaction']  = false;
-      $tab[72]['joinparams']     = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '72',
+         'table'              => 'glpi_documents_items',
+         'field'              => 'id',
+         'name'               => _x('quantity', 'Number of associated items'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'count',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
       // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
-      $tab += Notepad::getSearchOptionsToAdd();
+      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
 
       return $tab;
    }
