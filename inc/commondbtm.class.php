@@ -3234,7 +3234,36 @@ class CommonDBTM extends CommonGLPI {
       return $tab;
    }
 
+   /**
+    * Summary of getSearchOptionsToAdd
+    * @since 9.2
+    *
+    * @param string $itemtype Item type, defaults to null
+    *
+    * @return array
+   **/
+   static function getSearchOptionsToAdd($itemtype = null) {
+      $options = [];
 
+      $classname = get_called_class();
+      if (!method_exists($classname, 'getSearchOptionsToAddNew')) {
+         return $options;
+      }
+
+      foreach($classname::getSearchOptionsToAddNew($itemtype) as $opt) {
+         if (!isset($opt['id'])) {
+            throw new \Exception(get_called_class() . ': invalid search option! ' . print_r($opt, true));
+         }
+         $optid = $opt['id'];
+         unset($opt['id']);
+
+         foreach ($opt as $k => $v) {
+            $options[$optid][$k] = $v;
+         }
+      }
+
+      return $options;
+   }
 
    /**
     * Get all the massive actions available for the current class regarding given itemtype

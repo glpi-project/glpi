@@ -162,27 +162,6 @@ class Notepad extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
-   **/
-   static function getSearchOptionsToAdd() {
-      $options = [];
-
-      foreach(self::getSearchOptionsToAddNew() as $opt) {
-         if (!isset($opt['id'])) {
-            throw new \Exception('Invalid search option! ' . print_r($opt, true));
-         }
-         $optid = $opt['id'];
-         unset($opt['id']);
-
-         foreach ($opt as $k => $v) {
-            $options[$optid][$k] = $v;
-         }
-      }
-
-      return $options;
-   }
-
-   /**
     * Get the Search options to add to an item for the given Type
     *
     * @return a *not indexed* array of search options

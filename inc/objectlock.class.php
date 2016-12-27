@@ -576,32 +576,6 @@ class ObjectLock extends CommonDBTM {
    }
 
    /**
-    * Summary of getSearchOptionsToAdd
-    *
-    * @param  $itemtype
-    *
-    * @return array
-   **/
-   static function getSearchOptionsToAdd($itemtype) {
-      $options = [];
-
-      foreach(self::getSearchOptionsToAddNew($itemtype) as $opt) {
-         if (!isset($opt['id'])) {
-            throw new \Exception('Invalid search option! ' . print_r($opt, true));
-         }
-         $optid = $opt['id'];
-         unset($opt['id']);
-
-         foreach ($opt as $k => $v) {
-            $options[$optid][$k] = $v;
-         }
-      }
-
-      return $options;
-   }
-
-
-   /**
     * Summary of getRightsToAdd
     *
     * @param  $itemtype
