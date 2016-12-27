@@ -1482,7 +1482,9 @@ class Ticket extends CommonITILObject {
                if ($item = getItemForItemtype($itemtype)) {
                   $item->getFromDB($items_id);
                   $input['items_locations'] = $item->fields['locations_id'];
-                  $input['items_groups'] = $item->fields['groups_id'];
+                  if (isset($item->fields['groups_id'])) {
+                     $input['items_groups'] = $item->fields['groups_id'];
+                  }
                   break(2);
                }
             }
