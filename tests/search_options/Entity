@@ -1,0 +1,593 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Complete name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  14 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'address',
+    'name' => 'Address',
+    'massiveaction' => false,
+    'datatype' => 'text',
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'website',
+    'name' => 'Website',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'phonenumber',
+    'name' => 'Phone',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  6 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'email',
+    'name' => 'Email',
+    'datatype' => 'email',
+    'massiveaction' => false,
+  ),
+  10 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'fax',
+    'name' => 'Fax',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  25 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'postcode',
+    'name' => 'Postal code',
+    'datatype' => 'string',
+  ),
+  11 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'town',
+    'name' => 'City',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  12 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'state',
+    'name' => 'State',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  13 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'country',
+    'name' => 'Country',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  122 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  'notepad' => 'Notes',
+  200 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'content',
+    'name' => 'Notes',
+    'datatype' => 'text',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'splititems' => true,
+    'massiveaction' => false,
+  ),
+  201 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  202 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'Writer',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+  203 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  204 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id_lastupdater',
+    'name' => 'Last updater',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+  'advanced' => 'Advanced information',
+  7 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'ldap_dn',
+    'name' => 'LDAP directory information attribute representing the entity',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  8 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'tag',
+    'name' => 'Information in inventory tool (TAG) representing the entity',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  9 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'name',
+    'name' => 'LDAP directory of an entity',
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+  ),
+  17 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'entity_ldapfilter',
+    'name' => 'Search filter (if needed)',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  20 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'mail_domain',
+    'name' => 'Mail domain',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  'notif' => 'Notification options',
+  60 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'delay_send_emails',
+    'name' => 'Delay to send email notifications',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'number',
+    'min' => 0,
+    'max' => 60,
+    'step' => 1,
+    'unit' => 'minute',
+    'toadd' => 
+    array (
+      -2 => 'Inheritance of the parent entity',
+    ),
+  ),
+  61 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'is_notif_enable_default',
+    'name' => 'Enable notifications by default',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'string',
+  ),
+  18 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'admin_email',
+    'name' => 'Administrator email',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'admin_reply',
+    'name' => 'Administrator reply-to email (if needed)',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  21 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'notification_subject_tag',
+    'name' => 'Prefix for notifications',
+    'datatype' => 'string',
+  ),
+  22 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'admin_email_name',
+    'name' => 'Administrator name',
+    'datatype' => 'string',
+  ),
+  23 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'admin_reply_name',
+    'name' => 'Response address (if needed)',
+    'datatype' => 'string',
+  ),
+  24 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'mailing_signature',
+    'name' => 'Email signature',
+    'datatype' => 'text',
+  ),
+  26 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'cartridges_alert_repeat',
+    'name' => 'Alarms on cartridges',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  27 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'consumables_alert_repeat',
+    'name' => 'Alarms on consumables',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  29 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'use_licenses_alert',
+    'name' => 'Alarms on expired licenses',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  53 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'send_licenses_alert_before_delay',
+    'name' => 'Send license alarms before',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  30 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'use_contracts_alert',
+    'name' => 'Alarms on contracts',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  54 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'send_contracts_alert_before_delay',
+    'name' => 'Send contract alarms before',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  31 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'use_infocoms_alert',
+    'name' => 'Alarms on financial and administrative information',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  55 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'send_infocoms_alert_before_delay',
+    'name' => 'Send financial and administrative information alarms before',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  32 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'use_reservations_alert',
+    'name' => 'Alerts on reservations',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  48 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'default_contract_alert',
+    'name' => 'Default value for alarms on contracts',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  49 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'default_infocom_alert',
+    'name' => 'Default value for alarms on financial and administrative information',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  50 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'default_cartridges_alarm_threshold',
+    'name' => 'Default threshold for cartridges count',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'number',
+  ),
+  52 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'default_consumables_alarm_threshold',
+    'name' => 'Default threshold for consumables count',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'number',
+  ),
+  'helpdesk' => 'Assets',
+  47 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'tickettemplates_id',
+    'name' => 'Ticket template',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  33 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'autoclose_delay',
+    'name' => 'Automatic closing of solved tickets after',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'number',
+    'min' => 1,
+    'max' => 99,
+    'step' => 1,
+    'unit' => 'day',
+    'toadd' => 
+    array (
+      -2 => 'Inheritance of the parent entity',
+      -10 => 'Never',
+      0 => 'Immediatly',
+    ),
+  ),
+  34 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'notclosed_delay',
+    'name' => 'Alerts on tickets which are not solved',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  35 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'auto_assign_mode',
+    'name' => 'Automatic assignment of tickets',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  36 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'calendars_id',
+    'name' => 'Calendar',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  37 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'tickettype',
+    'name' => 'Tickets default type',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  38 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'autofill_buy_date',
+    'name' => 'Date of purchase',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  39 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'autofill_order_date',
+    'name' => 'Order date',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  40 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'autofill_delivery_date',
+    'name' => 'Delivery date',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  41 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'autofill_use_date',
+    'name' => 'Startup date',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  42 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'autofill_warranty_date',
+    'name' => 'Start date of warranty',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  43 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'inquest_config',
+    'name' => 'Satisfaction survey configuration',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  44 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'inquest_rate',
+    'name' => 'Satisfaction survey trigger rate',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  45 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'inquest_delay',
+    'name' => 'Create survey after',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  46 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'inquest_URL',
+    'name' => 'URL',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  51 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'entities_id_software',
+    'name' => 'Entity for software creation',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+  56 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'autofill_decommission_date',
+    'name' => 'Decommission date',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'datatype' => 'specific',
+  ),
+)

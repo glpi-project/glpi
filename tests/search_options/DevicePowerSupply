@@ -1,0 +1,62 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_devicepowersupplies',
+    'field' => 'designation',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  23 => 
+  array (
+    'table' => 'glpi_manufacturers',
+    'field' => 'name',
+    'name' => 'Manufacturer',
+    'datatype' => 'dropdown',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_devicepowersupplies',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_devicepowersupplies',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_devicepowersupplies',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'datatype' => 'dropdown',
+  ),
+  11 => 
+  array (
+    'table' => 'glpi_devicepowersupplies',
+    'field' => 'is_atx',
+    'name' => 'ATX',
+    'datatype' => 'bool',
+  ),
+  12 => 
+  array (
+    'table' => 'glpi_devicepowersupplies',
+    'field' => 'power',
+    'name' => 'Power',
+    'datatype' => 'string',
+  ),
+)

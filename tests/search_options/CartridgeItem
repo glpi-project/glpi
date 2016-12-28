@@ -1,0 +1,278 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_cartridgeitems',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_cartridgeitems',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  34 => 
+  array (
+    'table' => 'glpi_cartridgeitems',
+    'field' => 'ref',
+    'name' => 'Reference',
+    'datatype' => 'string',
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_cartridgeitemtypes',
+    'field' => 'name',
+    'name' => 'Type',
+    'datatype' => 'dropdown',
+  ),
+  23 => 
+  array (
+    'table' => 'glpi_manufacturers',
+    'field' => 'name',
+    'name' => 'Manufacturer',
+    'datatype' => 'dropdown',
+  ),
+  9 => 
+  array (
+    'table' => 'glpi_cartridgeitems',
+    'field' => '_virtual',
+    'name' => 'Cartridges',
+    'datatype' => 'specific',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'nosort' => true,
+    'additionalfields' => 
+    array (
+      0 => 'alarm_threshold',
+    ),
+  ),
+  17 => 
+  array (
+    'table' => 'glpi_cartridges',
+    'field' => 'id',
+    'name' => 'Number of used cartridges',
+    'datatype' => 'count',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND NEWTABLE.`date_use` IS NOT NULL
+                                                            AND NEWTABLE.`date_out` IS NULL',
+    ),
+  ),
+  18 => 
+  array (
+    'table' => 'glpi_cartridges',
+    'field' => 'id',
+    'name' => 'Number of worn cartridges',
+    'datatype' => 'count',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND NEWTABLE.`date_out` IS NOT NULL',
+    ),
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_cartridges',
+    'field' => 'id',
+    'name' => 'Number of new cartridges',
+    'datatype' => 'count',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND NEWTABLE.`date_use` IS NULL
+                                                            AND NEWTABLE.`date_out` IS NULL',
+    ),
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'completename',
+    'name' => 'Location',
+    'datatype' => 'dropdown',
+  ),
+  91 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'building',
+    'name' => 'Building number',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  92 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'room',
+    'name' => 'Room number',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  93 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'comment',
+    'name' => 'Location comments',
+    'massiveaction' => false,
+    'datatype' => 'text',
+  ),
+  24 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id_tech',
+    'name' => 'Technician in charge of the hardware',
+    'datatype' => 'dropdown',
+    'right' => 'own_ticket',
+  ),
+  49 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'completename',
+    'linkfield' => 'groups_id_tech',
+    'name' => 'Group in charge of the hardware',
+    'condition' => '`is_assign`',
+    'datatype' => 'dropdown',
+  ),
+  8 => 
+  array (
+    'table' => 'glpi_cartridgeitems',
+    'field' => 'alarm_threshold',
+    'name' => 'Alert threshold',
+    'datatype' => 'number',
+    'toadd' => 
+    array (
+      -1 => 'Never',
+    ),
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_cartridgeitems',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+  ),
+  40 => 
+  array (
+    'table' => 'glpi_printermodels',
+    'field' => 'name',
+    'datatype' => 'dropdown',
+    'name' => 'Printer models',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_cartridgeitems_printermodels',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+        ),
+      ),
+    ),
+  ),
+  'notepad' => 'Notes',
+  200 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'content',
+    'name' => 'Notes',
+    'datatype' => 'text',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'splititems' => true,
+    'massiveaction' => false,
+  ),
+  201 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  202 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'Writer',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+  203 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  204 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id_lastupdater',
+    'name' => 'Last updater',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+)
