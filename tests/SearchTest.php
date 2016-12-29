@@ -329,4 +329,40 @@ class SearchTest extends DbTestCase {
          $this->assertNotCount(0, $data['data'], $data['last_errors']);
       }
    }
+
+   /**
+    * Test that getSearchOptions throws an exception when it finds a duplicate
+    */
+   public function testGetSearchOptionsWException() {
+      $item = new DupSearchOpt();
+      $error = 'Duplicate key 12 (One search option/Any option) in DupSearchOpt searchOptions!';
+      $catched = false;
+
+      try {
+         $options = $item->getSearchOptions();
+      } catch (\Exception $e) {
+         $catched = true;
+         $this->assertTrue($e instanceof \RuntimeException);
+         $this->assertEquals($error, $e->getMessage());
+      }
+      $this->assertTrue($catched, 'getSearchOptions exception has not been catched!');
+   }
+}
+
+class DupSearchOpt extends CommonDBTM {
+   public function getSearchOptionsNew() {
+      $tab = [];
+
+      $tab[] = [
+         'id'     => '12',
+         'name'   => 'One search option'
+      ];
+
+      $tab[] = [
+         'id'     => '12',
+         'name'   => 'Any option'
+      ];
+
+      return $tab;
+   }
 }

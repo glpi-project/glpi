@@ -3188,10 +3188,15 @@ class CommonDBTM extends CommonGLPI {
          unset($opt['id']);
 
          if (isset($options[$optid])) {
-            Toolbox::logDebug(
-               "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
-                get_class($this) . " searchOptions!"
-            );
+            $message = "Duplicate key $optid ({$options[$optid]['name']}/{$opt['name']}) in ".
+                get_class($this) . " searchOptions!";
+
+            if (defined('TU_USER')) {
+               //will break tests
+               throw new \RuntimeException($message);
+            } else {
+               Toolbox::logDebug($message);
+            }
          }
 
          foreach ($opt as $k => $v) {
