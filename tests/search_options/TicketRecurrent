@@ -18,10 +18,10 @@ array (
   ),
   16 => 
   array (
-    'table' => 'glpi_calendars',
-    'field' => 'name',
-    'name' => 'Calendar',
-    'datatype' => 'itemlink',
+    'table' => 'glpi_ticketrecurrents',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
   ),
   80 => 
   array (
@@ -79,5 +79,12 @@ array (
     'field' => 'create_before',
     'name' => 'Preliminary creation',
     'datatype' => 'timestamp',
+  ),
+  18 => 
+  array (
+    'table' => 'glpi_calendars',
+    'field' => 'name',
+    'name' => 'Calendar',
+    'datatype' => 'itemlink',
   ),
 )

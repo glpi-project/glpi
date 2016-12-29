@@ -45,6 +45,6 @@ array (
     'field' => 'content',
     'name' => 'Content',
     'datatype' => 'text',
-    'massiveactoin' => false,
+    'massiveaction' => false,
   ),
 )

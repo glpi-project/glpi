@@ -429,7 +429,7 @@ array (
     'nosearch' => true,
     'datatype' => 'number',
   ),
-  'helpdesk' => 'Assets',
+  'helpdesk' => 'Assistance',
   47 => 
   array (
     'table' => 'glpi_entities',
@@ -494,6 +494,7 @@ array (
     'nosearch' => true,
     'datatype' => 'specific',
   ),
+  'assets' => 'Assets',
   38 => 
   array (
     'table' => 'glpi_entities',

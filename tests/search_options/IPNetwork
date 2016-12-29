@@ -19,16 +19,16 @@ array (
   14 => 
   array (
     'table' => 'glpi_ipnetworks',
-    'field' => 'addressable',
-    'name' => 'Addressable network',
-    'datatype' => 'bool',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
   ),
   13 => 
   array (
     'table' => 'glpi_ipnetworks',
-    'field' => 'gateway',
-    'name' => 'Gateway',
-    'datatype' => 'string',
+    'field' => 'completename',
+    'name' => 'Father',
+    'datatype' => 'dropdown',
     'massiveaction' => false,
     'joinparams' => 
     array (
@@ -96,5 +96,20 @@ array (
     'name' => 'Subnet mask',
     'massiveaction' => false,
     'datatype' => 'string',
+  ),
+  17 => 
+  array (
+    'table' => 'glpi_ipnetworks',
+    'field' => 'gateway',
+    'name' => 'Gateway',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  18 => 
+  array (
+    'table' => 'glpi_ipnetworks',
+    'field' => 'addressable',
+    'name' => 'Addressable network',
+    'datatype' => 'bool',
   ),
 )
