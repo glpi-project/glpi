@@ -1530,14 +1530,14 @@ class Search {
       return "<div class='switch grey_border'>".
              "<label for='is_deletedswitch$rand' title='".__s('Show the dustbin')."' >".
                 "<img src='".$CFG_GLPI["root_doc"]."/pics/showdeleted.png' ".
-                  "name='img_deleted' alt='".__s('Show the dustbin')."' class='pointer' />".
+                  "alt='" . __s('Show the dustbin') . "' class='pointer' />" .
                 "<input type='hidden' name='is_deleted' value='0' /> ".
                 "<input type='checkbox' id='is_deletedswitch$rand' name='is_deleted' value='1' ".
                   ($is_deleted?"checked='checked'":"").
                   " onClick = \"toogle('is_deleted','','','');
                               document.forms['searchform".$_POST["itemtype"]."'].submit();\" />".
-                "<span class='lever' />".
-             "</label>".
+                "<span class='lever'></span>" .
+                "</label>".
              "</div>";
    }
 
