@@ -145,6 +145,17 @@ if (isset($_GET['getvcard'])) {
    }
    Html::back();
 
+} else if (isset($_POST['language'])) {
+   $user->update(
+      [
+         'id'        => Session::getLoginUserID(),
+         'language'  => $_POST['language']
+      ]
+   );
+
+   Session::addMessageAfterRedirect(__('Lang has been changed!'));
+   Html::back();
+
 } else {
 
 

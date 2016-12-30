@@ -886,6 +886,18 @@ if ($(window).width() <= 700) {
    }
 }
 
+langSwitch = function(elt) {
+   var _url = elt.attr('href').replace(/front\/preference.+/, 'ajax/switchlang.php');
+   $.ajax({
+      url: _url,
+      type: 'GET',
+      success: function(html) {
+         $('#language_link')
+            .html(html);
+         $('#debugajax').remove();
+      }
+   });
+}
 
 $(function(){
    $("body").delegate('td','mouseover mouseleave', function(e) {
@@ -912,4 +924,10 @@ $(function(){
 
    // prevent jquery ui dialog to keep focus
    $.ui.dialog.prototype._focusTabbable = function(){};
+
+   //quick lang switch
+   $('#language_link > a').on('click', function(event) {
+      event.preventDefault();
+      langSwitch($(this));
+   });
 });
