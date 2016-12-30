@@ -2254,6 +2254,14 @@ a.icon_nav_move:hover img {
    text-decoration: underline;
 }
 
+#c_preference .select2-choice {
+   color: #3a5693;
+}
+
+#c_preference p {
+   margin: 0;
+}
+
 #c_recherche {
    position: relative;
 }
