@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,13 +32,13 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 class RuleDictionnaryPhoneModelCollection extends RuleDictionnaryDropdownCollection {
    public $item_table  = "glpi_phonemodels";
    public $menu_option = "model.phone";
-   
+
    /**
     * @see RuleCollection::getTitle()
    **/
@@ -47,4 +47,3 @@ class RuleDictionnaryPhoneModelCollection extends RuleDictionnaryDropdownCollect
    }
 
 }
-?>

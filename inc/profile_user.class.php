@@ -245,8 +245,8 @@ class Profile_User extends CommonDBRelation {
                }
                $entname = sprintf(__('%1$s%2$s'), $entname, ")</span>");
             }
-             echo "<td>".$entname."</td>";
-         echo "</tr>";
+            echo "<td>".$entname."</td>";
+            echo "</tr>";
          }
          echo $header_begin.$header_bottom.$header_end;
          echo "</table>";
@@ -271,8 +271,6 @@ class Profile_User extends CommonDBRelation {
     * @param $entity Entity object
    **/
    static function showForEntity(Entity $entity) {
-      global $DB;
-
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID, READ)) {
@@ -338,7 +336,6 @@ class Profile_User extends CommonDBRelation {
       echo "<th class='noHover' colspan='$headerspan'>";
       printf(__('%1$s (%2$s)'), _n('User', 'Users', Session::getPluralNumber()), __('D=Dynamic, R=Recursive'));
       echo "</th></tr></thead>";
-
 
       if ($nb) {
          Session::initNavigateListItems('User',
@@ -872,7 +869,6 @@ class Profile_User extends CommonDBRelation {
       $tab[5]['datatype']        = 'dropdown';
       $tab[5]['right']           = 'all';
 
-
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
@@ -960,7 +956,7 @@ class Profile_User extends CommonDBRelation {
             case 'User' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
-                                             "users_id = '".$item->getID()."'");
+                                             ['users_id' => $item->getID()]);
                }
                return self::createTabEntry(_n('Authorization','Authorizations',
                                            Session::getPluralNumber()), $nb);

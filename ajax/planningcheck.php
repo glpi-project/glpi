@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -59,4 +59,3 @@ if (isset($_POST['users_id']) && ($_POST['users_id'] > 0)) {
                                           "&itemtype=User&users_id=".$_POST['users_id'],
                                     array('title'  => __('Availability')));
 }
-?>

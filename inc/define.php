@@ -36,8 +36,14 @@
 */
 
 // Current version of GLPI
+<<<<<<< HEAD:inc/define.php
+define("GLPI_VERSION","9.2");
+define("GLPI_SCHEMA_VERSION","9.2");
+define('GLPI_MIN_PHP', '5.5.0');
+=======
 define("GLPI_VERSION","9.1.1");
 define("GLPI_SCHEMA_VERSION","9.1.1");
+>>>>>>> upstream/9.1/bugfixes:config/define.php
 define('GLPI_YEAR', '2016');
 define("GLPI_DEMO_MODE","0");
 
@@ -350,4 +356,3 @@ $CFG_GLPI['lock_lockable_objects'] = array('Budget',  'Change', 'Contact', 'Cont
                                            'Printer', 'Problem', 'Profile', 'Project', 'Reminder',
                                            'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
                                            'SoftwareLicense') ;
-?>

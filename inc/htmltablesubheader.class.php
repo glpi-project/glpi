@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -32,7 +32,7 @@
  */
 
 /** @file
-* @brief 
+* @brief
 */
 
 if (!defined('GLPI_ROOT')) {
@@ -61,7 +61,7 @@ class HTMLTableSubHeader extends HTMLTableHeader {
       $this->header = $header;
       parent::__construct($name, $content, $father);
       $this->copyAttributsFrom($this->header);
-    }
+   }
 
 
    function isSuperHeader() {
@@ -98,4 +98,3 @@ class HTMLTableSubHeader extends HTMLTableHeader {
       $this->setColSpan($this->header->getColSpan() / $numberOfSubHeaders);
    }
 }
-?>

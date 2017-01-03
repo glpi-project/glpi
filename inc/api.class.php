@@ -389,6 +389,22 @@ abstract class API extends CommonGLPI {
 
 
    /**
+    *  return the current $CFG_GLPI
+    *
+    * @return array
+    **/
+   protected function getGlpiConfig() {
+
+      global $CFG_GLPI;
+      $this->initEndpoint();
+
+      $excludedKeys = array_flip(Config::$undisclosedFields);
+      return ['cfg_glpi' => array_diff_key($CFG_GLPI, $excludedKeys)];
+   }
+
+
+
+   /**
     * Return the instance fields of itemtype identified by id
     *
     * @param $itemtype    string  itemtype (class) of object
@@ -1559,7 +1575,11 @@ abstract class API extends CommonGLPI {
       if (is_object($input)) {
          $input = array($input);
          $isMultiple = false;
+<<<<<<< HEAD
+      } {
+=======
       } else {
+>>>>>>> upstream/9.1/bugfixes
          $isMultiple = true;
       }
 

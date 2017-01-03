@@ -43,6 +43,17 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   /**
+    * @expectedException        GlpitestSQLerror
+    * @expectedExceptionMessage fakeTable' doesn't exist
+    */
+   public function testSqlError() {
+      global $DB;
+
+      $DB->request('fakeTable');
+   }
+
+
    public function testOnlyTable() {
 
       $it = new DBmysqlIterator(NULL, 'foo');
@@ -56,8 +67,49 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   /**
+    * This is really an error, no table but a WHERE clase
+    *
+    * @expectedException        GlpitestPHPerror
+    * @expectedExceptionMessage Missing table name
+    */
+   public function testNoTableWithWhere() {
+
+      // Really, this is an error
+      $it = new DBmysqlIterator(NULL, '', ['foo' => 1]);
+      $this->assertEquals('SELECT * WHERE `foo` = 1', $it->getSql(), 'No table');
+   }
+
+
+   /**
+    * Temporarily, this is an error, will be allowed later
+    *
+    * @expectedException        GlpitestPHPerror
+    * @expectedExceptionMessage Missing table name
+    */
+   public function testNoTableWithoutWhere() {
+
+      $it = new DBmysqlIterator(NULL, '');
+      $this->assertEquals('SELECT *', $it->getSql(), 'No table');
+   }
+
+
+   /**
+    * Temporarily, this is an error, will be allowed later
+    *
+    * @expectedException        GlpitestPHPerror
+    * @expectedExceptionMessage Missing table name
+    */
+   public function testNoTableWithoutWhereBis() {
+
+      $it = new DBmysqlIterator(NULL, ['FROM' => []]);
+      $this->assertEquals('SELECT *', $it->getSql(), 'No table');
+   }
+
+
    public function testDebug() {
 
+      file_put_contents(GLPI_LOG_DIR . '/php-errors.log', '');
       $it = new DBmysqlIterator(NULL, 'foo', ['FIELDS' => 'name', 'id = ' . mt_rand()], true);
       $buf = file_get_contents(GLPI_LOG_DIR . '/php-errors.log');
       $this->assertTrue(strpos($buf, 'From DBmysqlIterator') > 0, 'From in php_errors.log');
@@ -84,6 +136,10 @@ class DBmysqlIteratorTest extends DbTestCase {
 
       $it = new DBmysqlIterator(NULL, 'foo', ['FIELDS' => ['a' => ['`bar`', 'baz']]]);
       $this->assertEquals('SELECT `a`.`bar`, `a`.`baz` FROM `foo`', $it->getSql(), 'Multiple fields from single table');
+
+      $it = new DBmysqlIterator(NULL, ['foo', 'bar'], ['FIELDS' => ['foo' => ['*']]]);
+      $this->assertEquals('SELECT `foo`.`*` FROM `foo`, `bar`', $it->getSql(), 'Select all fields from one table on two');
+
    }
 
 
@@ -106,6 +162,47 @@ class DBmysqlIteratorTest extends DbTestCase {
    }
 
 
+   public function testCount() {
+      $it = new DBmysqlIterator(NULL, 'foo', ['COUNT' => 'cpt']);
+      $this->assertEquals('SELECT COUNT(*) AS cpt FROM `foo`', $it->getSql(), 'Simple count');
+   }
+
+
+   public function testJoin() {
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['bar' => 'id', 'foo' => 'fk']]]]);
+      $this->assertEquals('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)', $it->getSql(), 'Left join using FK table => field');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['bar.id', 'foo.fk']]]]);
+      $this->assertEquals('SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk`)', $it->getSql(), 'Left join using FK table.field');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['JOIN' => ['bar' => ['FKEY' => ['id', 'fk'], 'val' => 1]]]);
+      $this->assertEquals('SELECT * FROM `foo` LEFT JOIN `bar` ON (`id` = `fk` AND `val` = 1)', $it->getSql(), 'Left join using FK fields + other crit');
+   }
+
+
+   public function testOperators() {
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['a' => 1]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE `a` = 1', $it->getSql(), 'Operator, implicit =');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['a' => ['=', 1]]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE `a` = 1', $it->getSql(), 'Operator, explicit =');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['a' => ['>', 1]]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE `a` > 1', $it->getSql(), 'Operator, >');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['a' => ['LIKE', '%bar%']]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE `a` LIKE \'%bar%\'', $it->getSql(), 'Operator, LIKE');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['NOT' => ['a' => ['LIKE', '%bar%']]]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE NOT (`a` LIKE \'%bar%\')', $it->getSql(), 'Operator, NOT / LIKE');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['a' => ['NOT LIKE', '%bar%']]);
+      $this->assertEquals('SELECT * FROM `foo` WHERE `a` NOT LIKE \'%bar%\'', $it->getSql(), 'Operator, NOT LIKE');
+   }
+
+
    public function testWhere() {
 
       $it = new DBmysqlIterator(NULL, 'foo', 'id=1');
@@ -124,7 +221,10 @@ class DBmysqlIteratorTest extends DbTestCase {
       $this->assertEquals('SELECT * FROM `foo` WHERE `bar` = 1', $it->getSql(), 'Integer value');
 
       $it = new DBmysqlIterator(NULL, 'foo', ['bar' => [1, 2, 4]]);
-      $this->assertEquals("SELECT * FROM `foo` WHERE `bar` IN ('1','2','4')", $it->getSql(), 'Multiple values');
+      $this->assertEquals("SELECT * FROM `foo` WHERE `bar` IN (1, 2, 4)", $it->getSql(), 'Multiple integer values');
+
+      $it = new DBmysqlIterator(NULL, 'foo', ['bar' => ['a', 'b', 'c']]);
+      $this->assertEquals("SELECT * FROM `foo` WHERE `bar` IN ('a', 'b', 'c')", $it->getSql(), 'Multiple string values');
 
       $it = new DBmysqlIterator(NULL, 'foo', ['bar' => 'val']);
       $this->assertEquals("SELECT * FROM `foo` WHERE `bar` = 'val'", $it->getSql(), 'String value');
@@ -178,8 +278,26 @@ class DBmysqlIteratorTest extends DbTestCase {
                                    ],
                           ],
               ];
+      $sql = "SELECT * FROM `foo` WHERE `a` = 1 AND (`b` = 2 OR NOT (`c` IN (2, 3) AND (`d` = 4 AND `e` = 5)))";
       $it = new DBmysqlIterator(NULL, ['foo'], $crit);
-      $this->assertEquals("SELECT * FROM `foo` WHERE `a` = 1 AND (`b` = 2 OR NOT (`c` IN ('2','3') AND (`d` = 4 AND `e` = 5)))", $it->getSql(), 'Complex case');
+      $this->assertEquals($sql, $it->getSql(), 'Complex case');
+
+      $crit['FROM'] = 'foo';
+      $it = new DBmysqlIterator(NULL, $crit);
+      $this->assertEquals($sql, $it->getSql(), 'Complex case');
+   }
+
+
+   public function testModern() {
+
+      $req = [
+         'SELECT' => ['a', 'b'],
+         'FROM'   => 'foo',
+         'WHERE'  => ['c' => 1],
+      ];
+      $sql = "SELECT `a`, `b` FROM `foo` WHERE `c` = 1";
+      $it = new DBmysqlIterator(NULL, $req);
+      $this->assertEquals($sql, $it->getSql(), 'Mondern syntax');
    }
 
 

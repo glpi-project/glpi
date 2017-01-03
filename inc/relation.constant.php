@@ -657,4 +657,3 @@ $RELATION = array("glpi_authldaps"
                                            ),
                 );
 
-?>

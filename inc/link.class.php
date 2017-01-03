@@ -150,7 +150,7 @@ class Link extends CommonDBTM {
          echo "&nbsp;";
          $i++;
          if (($i%8 == 0) && ($count > 1)) {
-         echo "<br>";
+            echo "<br>";
          }
       }
       echo "</td></tr>";
@@ -312,7 +312,6 @@ class Link extends CommonDBTM {
             && $item->isField('firstname')) {
          $link = str_replace("[FIRSTNAME]",$item->getField('firstname'),$link);
       }
-
 
       $replace_IP  = strstr($link,"[IP]");
       $replace_MAC = strstr($link,"[MAC]");
@@ -586,4 +585,3 @@ class Link extends CommonDBTM {
       return $tab;
    }
 }
-?>

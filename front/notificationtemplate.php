@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -45,4 +45,3 @@ Html::header(NotificationTemplate::getTypeName(Session::getPluralNumber()), $_SE
 Search::show('NotificationTemplate');
 
 Html::footer();
-?>

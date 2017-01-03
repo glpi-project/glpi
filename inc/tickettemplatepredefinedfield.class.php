@@ -137,7 +137,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable($this->getTable(),
-                                       "`tickettemplates_id` = '".$item->getID()."'");
+                                       ['tickettemplates_id' => $item->getID()]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -232,12 +232,10 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $ticket        = new Ticket();
       $rand          = mt_rand();
 
-
       $query = "SELECT `glpi_tickettemplatepredefinedfields`.*
                 FROM `glpi_tickettemplatepredefinedfields`
                 WHERE (`tickettemplates_id` = '$ID')
                 ORDER BY 'id'";
-
 
       $display_options = array('relative_dates' => true,
                                'comments'       => true,
@@ -348,7 +346,6 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             echo "<tr><th colspan='3'>".__('No item found')."</th></tr>";
          }
 
-
          echo "</table>";
          if ($canedit && $numrows) {
             $massiveactionparams['ontop'] = false;
@@ -361,4 +358,3 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    }
 
 }
-?>

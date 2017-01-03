@@ -49,6 +49,9 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
    }
 
 
+   /**
+    * @group api
+   **/
    public function testInitSessionCredentials() {
       $res = $this->doHttpRequest('initSession', ['login'    => TU_USER,
                                                   'password' => TU_PASS]);
@@ -62,6 +65,9 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
    }
 
 
+   /**
+    * @group api
+   **/
    public function testInitSessionUserToken() {
       // retrieve personnal token of TU_USER user
       $user = new User;
@@ -241,6 +247,20 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertArrayHasKey('is_active', $data[0]);
       $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
+      // test retrieve partial users
+      $res = $this->doHttpRequest('getItems', ['session_token'    => $session_token,
+                                               'itemtype'         => 'User',
+                                               'range'            => '0-1',
+                                               'expand_dropdowns' => true]);
+      $this->assertEquals(206, $res->getStatusCode());
+      $data = xmlrpc_decode($res->getBody());
+
+      $this->assertGreaterThanOrEqual(2, count($data));
+      $this->assertArrayHasKey('id', $data[0]);
+      $this->assertArrayHasKey('name', $data[0]);
+      $this->assertArrayNotHasKey('password', $data[0]);
+      $this->assertArrayHasKey('is_active', $data[0]);
+      $this->assertFalse(is_numeric($data[0]['entities_id'])); // for expand_dropdowns
 
       // test retrieve partial users
       $res = $this->doHttpRequest('getItems', ['session_token'    => $session_token,
@@ -457,7 +477,10 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, $secnd_computer['id'] > 0);
       $this->assertArrayHasKey('message', $data[0]);
       $this->assertArrayHasKey('message', $data[1]);
+<<<<<<< HEAD
+=======
       
+>>>>>>> upstream/9.1/bugfixes
 
       $computer = new Computer;
       $computers_exist = $computer->getFromDB($first_computer['id']);
@@ -579,8 +602,30 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
 
    /**
-     * @depends testInitSessionCredentials
-     */
+    * @depends testInitSessionCredentials
+    */
+   public function testGetGlpiConfig($session_token) {
+      $res = $this->doHttpRequest('getGlpiConfig', ['session_token' => $session_token]);
+      $this->assertEquals(200, $res->getStatusCode());
+
+      $data = xmlrpc_decode($res->getBody());
+      $this->assertNotEquals(false, $data);
+
+      // Test a disclosed data
+      $this->assertArrayHasKey('cfg_glpi', $data);
+      $this->assertArrayHasKey('infocom_types', $data['cfg_glpi']);
+
+      // Test undisclosed data are actually not disclosed
+      $this->assertGreaterThan(0, count(Config::$undisclosedFields));
+      foreach (Config::$undisclosedFields as $key) {
+         $this->assertArrayNotHasKey($key, $data['cfg_glpi']);
+      }
+   }
+
+
+   /**
+    * @depends testInitSessionCredentials
+    */
    public function testKillSession($session_token) {
       // test retrieve all users
       $res = $this->doHttpRequest('killSession', ['session_token' => $session_token]);

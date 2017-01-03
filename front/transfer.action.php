@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -135,4 +135,3 @@ $options['keep_consumable']=1;
 //$items['Computer']=array(403);
 //$transfer->moveItems($items,$entity_id,$options);
 */
-?>

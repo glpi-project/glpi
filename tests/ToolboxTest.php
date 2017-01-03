@@ -37,9 +37,42 @@ class ToolboxTest extends PHPUnit_Framework_TestCase {
    /**
     * @covers Toolbox::getRandomString
     */
+<<<<<<< HEAD
+   public function testGetRandomString() {
+
+      for($len = 20; $len < 50; $len += 5) {
+         // Low strength
+         $str = Toolbox::getRandomString($len);
+         $this->assertEquals($len, strlen($str));
+         $this->assertTrue(ctype_alnum($str));
+         // High strength
+         $str = Toolbox::getRandomString($len, true);
+         $this->assertEquals($len, strlen($str));
+         $this->assertTrue(ctype_alnum ($str) );
+      }
+   }
+
+   public function testRemoveHtmlSpecialChars() {
+      $original = 'My - string èé  Ê À ß';
+      $expected = 'my - string ee  e a sz';
+      $result = Toolbox::removeHtmlSpecialChars($original);
+
+      $this->assertEquals($expected, $result);
+   }
+
+   public function testSlugify() {
+      $original = 'My - string èé  Ê À ß';
+      $expected = 'my-string-ee-e-a-sz';
+      $result = Toolbox::slugify($original);
+
+      $this->assertEquals($expected, $result);
+
+   }
+=======
     public function testGetRandomString() {
        for ($len=20 ; $len<50 ; $len+=5) {
            $this->assertEquals($len, strlen(Toolbox::getRandomString($len)));
        }
     }
+>>>>>>> upstream/9.1/bugfixes
 }

@@ -132,7 +132,6 @@ class Budget extends CommonDropdown{
       Dropdown::show('BudgetType', array('value' => $this->fields['budgettypes_id']));
       echo "</td></tr>";
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._x('price', 'Value')."</td>";
       echo "<td><input type='text' name='value' size='14'
@@ -417,14 +416,12 @@ class Budget extends CommonDropdown{
                                   getEntitiesRestrictRequest(" AND", $item->getTable())."
                                   ".($item->maybeTemplate()?" AND NOT `".$item->getTable()."`.`is_template`":'')."
                             ORDER BY `".$item->getTable()."`.`entities_id`,";
-                if ($item instanceof Item_Devices) {
-                   $query .= " `".$item->getTable()."`.`itemtype`";
-                } else {
-                   $query .= " `".$item->getTable()."`.`name`";
-                }
-
-
-               break;
+                  if ($item instanceof Item_Devices) {
+                     $query .= " `".$item->getTable()."`.`itemtype`";
+                  } else {
+                     $query .= " `".$item->getTable()."`.`name`";
+                  }
+                  break;
             }
 
             if ($result_linked = $DB->query($query)) {
@@ -485,7 +482,7 @@ class Budget extends CommonDropdown{
                      echo "</td></tr>";
                   }
                }
-            $num += $nb;
+               $num += $nb;
             }
          }
       }

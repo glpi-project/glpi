@@ -101,4 +101,3 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
                     $paramsaction, "dropdown_action_type$randaction");
    echo "</td></tr></table>";
 }
-?>

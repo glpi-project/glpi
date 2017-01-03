@@ -74,10 +74,9 @@ class Item_Project extends CommonDBRelation{
    function prepareInputForAdd($input) {
 
       // Avoid duplicate entry
-      $restrict = " `projects_id` = '".$input['projects_id']."'
-                   AND `itemtype` = '".$input['itemtype']."'
-                   AND `items_id` = '".$input['items_id']."'";
-      if (countElementsInTable($this->getTable(), $restrict) > 0) {
+      if (countElementsInTable($this->getTable(), ['projects_id' => $input['projects_id'],
+                                                   'itemtype'    => $input['itemtype'],
+                                                   'items_id'    => $input['items_id']]) > 0) {
          return false;
       }
       return parent::prepareInputForAdd($input);
@@ -125,7 +124,6 @@ class Item_Project extends CommonDBRelation{
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -269,7 +267,7 @@ class Item_Project extends CommonDBRelation{
             case 'Project' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_items_projects',
-                                             "`projects_id` = '".$item->getID()."'");
+                                             ['projects_id' => $item->getID()]);
                }
                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
 
@@ -279,8 +277,8 @@ class Item_Project extends CommonDBRelation{
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      // Direct one
                      $nb = countElementsInTable('glpi_items_projects',
-                                                " `itemtype` = '".$item->getType()."'
-                                                   AND `items_id` = '".$item->getID()."'");
+                                                ['itemtype' => $item->getType(),
+                                                 'items_id' => $item->getID()]);
                      // Linked items
                      $linkeditems = $item->getLinkedItems();
 
@@ -288,8 +286,8 @@ class Item_Project extends CommonDBRelation{
                         foreach ($linkeditems as $type => $tab) {
                            foreach ($tab as $ID) {
                               $nb += countElementsInTable('glpi_items_projects',
-                                                          " `itemtype` = '$type'
-                                                            AND `items_id` = '$ID'");
+                                                          ['itemtype' => $type,
+                                                           'items_id' => $ID]);
                            }
                         }
                      }
@@ -310,11 +308,10 @@ class Item_Project extends CommonDBRelation{
             break;
 
          default :
-         // Not defined and used now
-//            Project::showListForItem($item);
+            // Not defined and used now
+            // Project::showListForItem($item);
       }
       return true;
    }
 
 }
-?>

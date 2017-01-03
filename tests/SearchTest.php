@@ -85,23 +85,23 @@ class SearchTest extends DbTestCase {
          $tokens = token_get_all($php_file);
          $class_token = false;
          foreach ($tokens as $token) {
-           if (is_array($token)) {
-             if ($token[0] == T_CLASS) {
-                $class_token = true;
-             } else if ($class_token && $token[0] == T_STRING) {
-                if ($function) {
-                   if (method_exists($token[1], $function)) {
-                      $classes[] = $token[1];
-                   }
-                } else {
-                   $classes[] = $token[1];
-                }
-                $class_token = false;
-             }
-           }
+            if (is_array($token)) {
+               if ($token[0] == T_CLASS) {
+                  $class_token = true;
+               } else if ($class_token && $token[0] == T_STRING) {
+                  if ($function) {
+                     if (method_exists($token[1], $function)) {
+                        $classes[] = $token[1];
+                     }
+                  } else {
+                     $classes[] = $token[1];
+                  }
+                  $class_token = false;
+               }
+            }
          }
       }
-      return $classes;
+      return array_unique($classes);
    }
 
 
@@ -201,12 +201,17 @@ class SearchTest extends DbTestCase {
    /**
     * This test will add all serachoptions in each itemtype and check if the
     * search give a SQL error
+    *
+    * @medium
     */
    public function testSearchOptions() {
 
       $displaypref = new DisplayPreference();
       // save table glpi_displaypreferences
       $dp = getAllDatasFromTable($displaypref->getTable());
+      foreach ($dp as $line) {
+         $displaypref->delete($line, true);
+      }
 
       $itemtypeslist = $this->getClasses('getSearchOptions');
       foreach ($itemtypeslist as $itemtype) {
@@ -231,7 +236,7 @@ class SearchTest extends DbTestCase {
                    'users_id' => 0,
                    'num' => $key,
                );
-               $displaypref->add($input);
+                $displaypref->add($input);
                $number++;
             }
          }
@@ -249,6 +254,7 @@ class SearchTest extends DbTestCase {
          $this->assertNotCount(0, $data['data'], $data['last_errors']);
       }
       // restore displaypreference table
+      /// TODO: review, this can't work.
       foreach (getAllDatasFromTable($displaypref->getTable()) as $line) {
          $displaypref->delete($line, true);
       }

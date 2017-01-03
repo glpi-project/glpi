@@ -38,7 +38,7 @@ include_once (GLPI_ROOT . "/inc/autoload.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 Config::detectRootDoc();
-include_once (GLPI_ROOT . "/config/config.php");
+include_once (GLPI_ROOT . "/inc/config.php");
 if (is_writable(GLPI_SESSION_DIR)) {
    Session::setPath();
 } else {

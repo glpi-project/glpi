@@ -161,7 +161,7 @@ class Document extends CommonDBTM {
          if (is_file(GLPI_DOC_DIR."/".$this->fields["filepath"])
              && !is_dir(GLPI_DOC_DIR."/".$this->fields["filepath"])
              && (countElementsInTable($this->getTable(),
-                                     "`sha1sum`='".$this->fields["sha1sum"]."'") <= 1)) {
+                                     ['sha1sum' => $this->fields["sha1sum"] ]) <= 1)) {
 
             if (unlink(GLPI_DOC_DIR."/".$this->fields["filepath"])) {
                Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
@@ -342,7 +342,7 @@ class Document extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->initForm($ID, $options);
-//       $options['formoptions'] = " enctype='multipart/form-data'";
+      // $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
 
       $showuserlink = 0;
@@ -453,27 +453,7 @@ class Document extends CommonDBTM {
 
       $file = GLPI_DOC_DIR."/".$this->fields['filepath'];
 
-      if (!file_exists($file)) {
-         die("Error file ".$file." does not exist");
-      }
-
-      // don't download picture files, see them inline
-      $attachment = "";
-      $filename_parts = explode(".", $this->fields['filename']);
-      $extension = array_pop($filename_parts);
-      $extension = strtolower($extension);
-      if (!in_array($extension, array('jpg', 'png', 'gif', 'bmp'))) {
-         $attachment = " attachment;";
-      }
-
-      // Now send the file with header() magic
-      header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
-      header('Pragma: private'); /// IE BUG + SSL
-      header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-      header("Content-disposition:$attachment filename=\"".$this->fields['filename']."\"");
-      header("Content-type: ".$this->fields['mime']);
-
-      readfile($file) or die ("Error opening file $file");
+      Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime']);
    }
 
 
@@ -922,8 +902,8 @@ class Document extends CommonDBTM {
           && !empty($input['current_filepath'])
           && is_file(GLPI_DOC_DIR."/".$input['current_filepath'])
           && (countElementsInTable('glpi_documents',
-                                   "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".
-                                             $input['current_filepath'])."'") <= 1)) {
+                                  ['sha1sum' => sha1_file(GLPI_DOC_DIR."/".
+                                             $input['current_filepath']) ]) <= 1)) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
             Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
@@ -1003,8 +983,8 @@ class Document extends CommonDBTM {
           && !empty($input['current_filepath'])
           && is_file(GLPI_DOC_DIR."/".$input['current_filepath'])
           && (countElementsInTable('glpi_documents',
-                                   "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".
-                                             $input['current_filepath'])."'") <= 1)) {
+                                  ['sha1sum' => sha1_file(GLPI_DOC_DIR."/".
+                                             $input['current_filepath']) ]) <= 1)) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
             Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
@@ -1071,7 +1051,7 @@ class Document extends CommonDBTM {
                break;
 
             case 4 :
-//                Session::addMessageAfterRedirect(__('No file specified.'),false,ERROR);
+               // Session::addMessageAfterRedirect(__('No file specified.'),false,ERROR);
                break;
          }
 
@@ -1090,8 +1070,8 @@ class Document extends CommonDBTM {
       if (isset($input['current_filepath'])
           && !empty($input['current_filepath'])
           && (countElementsInTable('glpi_documents',
-                                  "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".
-                                             $input['current_filepath'])."'") <= 1)) {
+                                  ['sha1sum'=> sha1_file(GLPI_DOC_DIR."/".
+                                             $input['current_filepath']) ]) <= 1)) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
             Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
@@ -1200,7 +1180,7 @@ class Document extends CommonDBTM {
          if (count($uploaded_files)) {
             Dropdown::showFromArray($myname, $uploaded_files, array('display_emptychoice' => true));
          } else {
-           _e('No file available');
+            _e('No file available');
          }
 
       } else {
@@ -1261,7 +1241,6 @@ class Document extends CommonDBTM {
    **/
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
-
 
       $p['name']    = 'documents_id';
       $p['entity']  = '';
@@ -1361,4 +1340,3 @@ class Document extends CommonDBTM {
    }
 
 }
-?>

@@ -82,8 +82,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          if ($item->getFromDB($this->fields[$item->getForeignKeyField()])) {
             return $item;
          }
-     }
-     return false;
+      }
+      return false;
    }
 
 
@@ -246,7 +246,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          PlanningRecall::manageDatas($input['_planningrecall']);
       }
 
-//      $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
+      // $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
 
       if (isset($input['update'])
           && ($uid = Session::getLoginUserID())) { // Change from task form
@@ -302,7 +302,6 @@ abstract class CommonITILTask  extends CommonDBTM {
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
-
       if (in_array("begin",$this->updates)) {
          PlanningRecall::managePlanningUpdates($this->getType(), $this->getID(),
                                                $this->fields["begin"]);
@@ -334,7 +333,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                 $update['id']            = $this->input['_job']->fields['id'];
                 $update['_disablenotif'] = true;
                 $this->input['_job']->update($update);
-             }
+            }
 
             if (!empty($this->fields['begin'])
                 && $item->isStatusExists(CommonITILObject::PLANNED)
@@ -456,18 +455,14 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       }
 
-//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-//          $donotif = false;
-//       }
-
       $this->input["_job"]->updateDateMod($this->input[$this->input["_job"]->getForeignKeyField()]);
 
       if (isset($this->input["actiontime"]) && ($this->input["actiontime"] > 0)) {
          $this->input["_job"]->updateActionTime($this->input[$this->input["_job"]->getForeignKeyField()]);
       }
 
-     //change status only if input change
-     if (isset($this->input['_status'])
+      //change status only if input change
+      if (isset($this->input['_status'])
          && ($this->input['_status'] != $this->input['_job']->fields['status'])) {
          $update['status']        = $this->input['_status'];
          $update['id']            = $this->input['_job']->fields['id'];
@@ -583,7 +578,6 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[5]['name']         = __('Technician');
       $tab[5]['datatype']     = 'dropdown';
       $tab[5]['right']        = 'own_ticket';
-
 
       $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'actiontime';
@@ -1033,7 +1027,6 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       }
 
-
       if (isset($val["state"])) {
          $html.= "<span>";
          $html.= Planning::getState($val["state"]);
@@ -1057,7 +1050,11 @@ abstract class CommonITILTask  extends CommonDBTM {
    function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate=false) {
       global $DB, $CFG_GLPI;
 
+<<<<<<< HEAD
+      $canedit = (isset($this->fields['can_edit']) && !$this->fields['can_edit']) ? false : $this->canEdit($this->fields['id']);
+=======
       $canedit = (isset($this->fields['can_edit']) && !$this->fields['can_edit']) ? false : $this->canEdit($this->fields['id']) ;
+>>>>>>> upstream/9.1/bugfixes
       $canview = $this->canViewItem();
 
       echo "<tr class='tab_bg_";
@@ -1269,7 +1266,6 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
       ');
 
-
       if ($ID > 0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Date')."</td>";
@@ -1361,7 +1357,6 @@ abstract class CommonITILTask  extends CommonDBTM {
                                           "/front/planning.php?checkavailability=checkavailability".
                                           "&itemtype=".$item->getType()."&$fkfield=".$item->getID(),
                                     array('title'  => __('Availability')));
-
 
       echo "<br />";
       echo Html::image($CFG_GLPI['root_doc']."/pics/group.png")."&nbsp;";
@@ -1553,8 +1548,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
          while ($data = $DB->fetch_assoc($result)) {
             if ($this->getFromDB($data['id'])) {
-               $options = array( 'parent' => $item, 
-                                 'rand' => $rand, 
+               $options = array( 'parent' => $item,
+                                 'rand' => $rand,
                                  'showprivate' => $showprivate ) ;
                Plugin::doHook('pre_show_item', array('item' => $this, 'options' => &$options));
                $this->showInObjectSumnary($item, $rand, $showprivate);
@@ -1600,4 +1595,3 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
 }
-?>

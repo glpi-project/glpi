@@ -336,12 +336,12 @@ class Calendar extends CommonDropdown {
                } else {
                   $timeoftheday = $cache_duration[$dayofweek];
                }
-//                 echo "time of the day = $timeoftheday ".Html::timestampToString($timeoftheday).'<br>';
+               // echo "time of the day = $timeoftheday ".Html::timestampToString($timeoftheday).'<br>';
                $activetime += $timeoftheday;
-//                 echo "cumulate time = $activetime ".Html::timestampToString($activetime).'<br>';
+               // echo "cumulate time = $activetime ".Html::timestampToString($activetime).'<br>';
 
             } else {
-//                 echo "$actualdate is an holiday<br>";
+               // echo "$actualdate is an holiday<br>";
             }
          }
       }
@@ -514,47 +514,46 @@ class Calendar extends CommonDropdown {
 
       // Only if segments exists
       if (countElementsInTable('glpi_calendarsegments',
-                               "`calendars_id` = '".$this->fields['id']."'")) {
-          while ($delay >= 0) {
+                               ['calendars_id' => $this->fields['id']])) {
+         while ($delay >= 0) {
             $actualdate = date('Y-m-d',$actualtime);
-               if (!$this->isHoliday($actualdate)) {
-                  $dayofweek = self::getDayNumberInWeek($actualtime);
+            if (!$this->isHoliday($actualdate)) {
+               $dayofweek = self::getDayNumberInWeek($actualtime);
+               $beginhour = '00:00:00';
+               /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
+               $endhour   = '23:59:59';
+
+               if ($actualdate == $datestart) { // First day cannot use cache
+                  $beginhour    = date('H:i:s',$timestart);
+                  $timeoftheday = CalendarSegment::getActiveTimeBetween($this->fields['id'],
+                                                                        $dayofweek, $beginhour,
+                                                                        $endhour);
+               } else {
+                  $timeoftheday = $cache_duration[$dayofweek];
+               }
+
+               // Day do not complete the delay : pass to next day
+               if ($timeoftheday<$delay) {
+                  $actualtime += DAY_TIMESTAMP;
+                  $delay      -= $timeoftheday;
+
+               } else { // End of the delay in the day : get hours with this delay
                   $beginhour = '00:00:00';
                   /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
                   $endhour   = '23:59:59';
 
-                  if ($actualdate == $datestart) { // First day cannot use cache
-                     $beginhour    = date('H:i:s',$timestart);
-                     $timeoftheday = CalendarSegment::getActiveTimeBetween($this->fields['id'],
-                                                                           $dayofweek, $beginhour,
-                                                                           $endhour);
-                  } else {
-                     $timeoftheday = $cache_duration[$dayofweek];
+                  if ($actualdate == $datestart) {
+                     $beginhour = date('H:i:s',$timestart);
                   }
 
-                  // Day do not complete the delay : pass to next day
-                  if ($timeoftheday<$delay) {
-                     $actualtime += DAY_TIMESTAMP;
-                     $delay      -= $timeoftheday;
-
-                  } else { // End of the delay in the day : get hours with this delay
-                     $beginhour = '00:00:00';
-                     /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
-                     $endhour   = '23:59:59';
-
-                     if ($actualdate == $datestart) {
-                        $beginhour = date('H:i:s',$timestart);
-                     }
-
-                     $endhour = CalendarSegment::addDelayInDay($this->fields['id'], $dayofweek,
-                                                               $beginhour, $delay);
-                     return $actualdate.' '.$endhour;
-                  }
-
-               } else { // Holiday : pass to next day
-                     $actualtime += DAY_TIMESTAMP;
+                  $endhour = CalendarSegment::addDelayInDay($this->fields['id'], $dayofweek,
+                                                            $beginhour, $delay);
+                  return $actualdate.' '.$endhour;
                }
 
+            } else { // Holiday : pass to next day
+                  $actualtime += DAY_TIMESTAMP;
+            }
          }
       }
       return false;

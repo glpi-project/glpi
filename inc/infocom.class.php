@@ -113,7 +113,7 @@ class Infocom extends CommonDBChild {
    }
 
 
-    function post_getEmpty() {
+   function post_getEmpty() {
 
       $this->fields["alert"] = Entity::getUsedConfig("use_infocoms_alert",
                                                      $this->fields["entities_id"],
@@ -144,8 +144,8 @@ class Infocom extends CommonDBChild {
             default :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_infocoms',
-                                             "`itemtype` = '".$item->getType()."'
-                                               AND `items_id` = '".$item->getID()."'");
+                                             ['itemtype' => $item->getType(),
+                                              'items_id' => $item->getID()]);
                }
                return self::createTabEntry(__('Management'), $nb);
          }
@@ -198,7 +198,6 @@ class Infocom extends CommonDBChild {
 
          case 'alert' :
             return self::getAlertName($values[$field]);
-
 
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -333,7 +332,7 @@ class Infocom extends CommonDBChild {
             case 0 :
                break;
 
-             case self::COPY_WARRANTY_DATE :
+            case self::COPY_WARRANTY_DATE :
                if (isset($infocoms['warranty_date'])) {
                   $infocoms[$field] = $infocoms['warranty_date'];
                }
@@ -975,7 +974,7 @@ class Infocom extends CommonDBChild {
                                                     "infocoms-show")?"_fixe":"")."'>";
 
             // Can edit calendar ?
-           $editcalendar = ($withtemplate != 2);
+            $editcalendar = ($withtemplate != 2);
 
             echo "<tr><th colspan='4'>".__('Asset lifecycle')."</th></tr>";
             echo "<tr class='tab_bg_1'>";
@@ -1223,22 +1222,6 @@ class Infocom extends CommonDBChild {
    **/
    static function getSearchOptionsToAdd($itemtype) {
 
-//                if ($itemtype == 'CartridgeItem') {
-//                   // Return the infocom linked to the Cartridge, not the template linked to the Type
-//                   $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_cartridges",
-//                                              $linkfield);
-//                   $specific_leftjoin =  $out."
-//                         LEFT JOIN `$new_table` $AS ON (`glpi_cartridges`.`id` = `$nt`.`items_id`
-//                                                       AND `$nt`.`itemtype` = 'Cartridge') ";
-//                }
-//                if ($itemtype == 'ConsumableItem') {
-//                   // Return the infocom linked to the Comsumable, not the template linked to the Type
-//                   $out = Search::addLeftJoin($itemtype, $rt, $already_link_tables, "glpi_consumables",
-//                                              $linkfield);
-//                   $specific_leftjoin =  $out."
-//                         LEFT JOIN `$new_table` $AS ON (glpi_consumables.`id` = `$nt`.`items_id`
-//                                                       AND `$nt`.`itemtype` = 'Consumable') ";
-//                }
       $specific_itemtype = '';
       $beforejoin        = array();
       switch ($itemtype) {
@@ -1432,7 +1415,6 @@ class Infocom extends CommonDBChild {
       $tab[58]['joinparams']           = $joinparams;
       $tab[58]['datatype']             = 'decimal';
 
-
       $tab[59]['table']                = 'glpi_infocoms';
       $tab[59]['field']                = 'alert';
       $tab[59]['name']                 = __('Email alarms');
@@ -1608,7 +1590,6 @@ class Infocom extends CommonDBChild {
       $tab[80]['massiveaction']  = false;
       $tab[80]['datatype']       = 'dropdown';
 
-
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';
       $tab[86]['name']           = __('Child entities');
@@ -1757,4 +1738,3 @@ class Infocom extends CommonDBChild {
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 }
-?>

@@ -120,13 +120,8 @@ class Printer  extends CommonDBTM {
          return false;
       }
 
-      $entities = "(".$this->fields['entities_id'];
-
-      foreach (getAncestorsOf("glpi_entities",$this->fields['entities_id']) as $papa) {
-         $entities .= ",$papa";
-      }
-
-      $entities .= ")";
+      $entities = getAncestorsOf("glpi_entities",$this->fields['entities_id']);
+      $entities[] = $this->fields['entities_id'];
 
       // RELATION : printers -> _port -> _wire -> _port -> device
 
@@ -155,8 +150,8 @@ class Printer  extends CommonDBTM {
                   // For each itemtype which are entity dependant
                   if ($item->isEntityAssign()) {
 
-                     if (countElementsInTable($itemtable, "`id` IN (".$data["ids"].")
-                                              AND `entities_id` NOT IN $entities") > 0) {
+                     if (countElementsInTable($itemtable, ['id' => $data["ids"],
+                                              'NOT' => [ 'entities_id' => $entities]]) > 0) {
                         return false;
                      }
                   }
@@ -385,7 +380,6 @@ class Printer  extends CommonDBTM {
       Network::dropdown(array('value' => $this->fields["networks_id"]));
       echo "</td></tr>\n";
 
-
       // Display auto inventory informations
       $rowspan        = 5;
       echo "<tr class='tab_bg_1'>";
@@ -449,7 +443,7 @@ class Printer  extends CommonDBTM {
          Plugin::doHook("autoinventory_information", $this);
          echo "</td></tr>";
       }
-      
+
       $this->showFormButtons($options);
 
       return true;
@@ -702,7 +696,7 @@ class Printer  extends CommonDBTM {
    }
 
 
-  /**
+   /**
     * Add a printer. If already exist in dustbin restore it
     *
     * @param $name          the printer's name (need to be addslashes)
@@ -795,4 +789,3 @@ class Printer  extends CommonDBTM {
    }
 
 }
-?>

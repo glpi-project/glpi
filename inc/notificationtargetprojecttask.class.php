@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -116,7 +116,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
                   break;
 
             }
-         }
+      }
    }
 
 
@@ -255,7 +255,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
                   = Html::timestampToString($ticket_duration+$item->getField('effective_duration'),
                                             false);
 
-
       $entity = new Entity();
       $this->datas["##projecttask.entity##"] = '';
       $this->datas["##projecttask.shortentity##"] = '';
@@ -291,7 +290,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
          $user_tmp->getFromDB($item->getField('users_id'));
          $this->datas["##projecttask.createbyuser##"] = $user_tmp->getName();
       }
-
 
       // Team infos
       $restrict = "`projecttasks_id` = '".$item->getField('id')."'";
@@ -355,7 +353,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
 
       $this->datas["##projecttask.numberoftasks##"] = count($this->datas['tasks']);
 
-
       // History infos
 
       $this->datas['log'] = array();
@@ -398,7 +395,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
 
       $this->datas['##projecttask.numberoftickets##'] = count($this->datas['tickets']);
 
-
       // Document
       $query = "SELECT `glpi_documents`.*
                 FROM `glpi_documents`
@@ -406,7 +402,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
                   ON (`glpi_documents`.`id` = `glpi_documents_items`.`documents_id`)
                 WHERE `glpi_documents_items`.`itemtype` =  'ProjectTask'
                       AND `glpi_documents_items`.`items_id` = '".$item->getField('id')."'";
-
 
       $this->datas["documents"] = array();
       if ($result = $DB->query($query)) {
@@ -445,7 +440,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
       // Items infos
       $restrict = "`projects_id` = '".$item->getField('id')."'";
       $items    = getAllDatasFromTable('glpi_items_projects',$restrict);
-
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -517,7 +511,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
                                    'value' => true));
       }
 
-
       //Tags without lang
       $tags = array('ticket.id'               => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
                     'ticket.date'             => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Date')),
@@ -553,7 +546,6 @@ class NotificationTargetProjectTask extends NotificationTarget {
                                                         _n('Team member', 'Team members', 1),
                                                         __('Type'))
                      );
-
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -592,4 +584,3 @@ class NotificationTargetProjectTask extends NotificationTarget {
    }
 
 }
-?>

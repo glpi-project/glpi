@@ -71,7 +71,6 @@ class APIRest extends API {
       $path_info          = str_replace("api/", "", trim($_SERVER['PATH_INFO'], '/'));
       $this->url_elements = explode('/', $path_info);
 
-
       // retrieve requested resource
       $resource      = trim(strval($this->url_elements[0]));
       $is_inline_doc = (strlen($resource) == 0) || ($resource == "api");
@@ -81,7 +80,6 @@ class APIRest extends API {
 
       // retrieve paramaters (in body, query_string, headers)
       $this->parseIncomingParams($is_inline_doc);
-
 
       // show debug if required
       if (isset($this->parameters['debug'])) {
@@ -107,58 +105,62 @@ class APIRest extends API {
       if ($is_inline_doc) {
          return $this->inlineDocumentation("apirest.md");
 
-      ## DECLARE ALL ENDPOINTS ##
-      // login into glpi
       } else if ($resource === "initSession") {
+         ## DECLARE ALL ENDPOINTS ##
+         // login into glpi
          $this->session_write = true;
          return $this->returnResponse($this->initSession($this->parameters));
 
-      // logout from glpi
       } else if ($resource === "killSession") {
+         // logout from glpi
          $this->session_write = true;
          return $this->returnResponse($this->killSession());
 
-      // change active entities
       } else if ($resource === "changeActiveEntities") {
+         // change active entities
          $this->session_write = true;
          return $this->returnResponse($this->changeActiveEntities($this->parameters));
 
-      // get all entities of logged user
       } else if ($resource === "getMyEntities") {
+         // get all entities of logged user
          return $this->returnResponse($this->getMyEntities($this->parameters));
 
-      // get curent active entity
       } else if ($resource === "getActiveEntities") {
+         // get curent active entity
          return $this->returnResponse($this->getActiveEntities($this->parameters));
 
-      // change active profile
       } else if ($resource === "changeActiveProfile") {
+         // change active profile
          $this->session_write = true;
          return $this->returnResponse($this->changeActiveProfile($this->parameters));
 
-      // get all profiles of current logged user
       } else if ($resource === "getMyProfiles") {
+         // get all profiles of current logged user
          return $this->returnResponse($this->getMyProfiles($this->parameters));
 
-      // get current active profile
       } else if ($resource === "getActiveProfile") {
+         // get current active profile
          return $this->returnResponse($this->getActiveProfile($this->parameters));
 
-      // get complete php session
       } else if ($resource === "getFullSession") {
+         // get complete php session
          return $this->returnResponse($this->getFullSession($this->parameters));
 
-      // list searchOptions of an itemtype
+      } else if ($resource === "getGlpiConfig") {
+         // get complete php var $CFG_GLPI
+         return $this->returnResponse($this->getGlpiConfig($this->parameters));
+
       } else if ($resource === "listSearchOptions") {
+         // list searchOptions of an itemtype
          $itemtype = $this->getItemtype(1);
          return $this->returnResponse($this->listSearchOptions($itemtype, $this->parameters));
 
-      // get multiple items (with various itemtype)
       } else if ($resource === "getMultipleItems") {
+         // get multiple items (with various itemtype)
          return $this->returnResponse($this->getMultipleItems($this->parameters));
 
-      // Search on itemtype
       } else if ($resource === "search") {
+         // Search on itemtype
          self::checkSessionToken();
 
          $itemtype = $this->getItemtype(1, true, true);
@@ -181,8 +183,8 @@ class APIRest extends API {
 
          return $this->returnResponse($response, $code, $additionalheaders);
 
-      // commonDBTM manipulation
       } else {
+         // commonDBTM manipulation
          $itemtype          = $this->getItemtype(0);
          $id                = $this->getId();
          $additionalheaders = array();
@@ -242,7 +244,7 @@ class APIRest extends API {
             case "PUT" : // update item(s)
                // if id is passed by query string, add it into input parameter
                $input = (array) ($this->parameters['input']);
-               if (($id > 0 || $id == 0 && $itemtype == "Entity") 
+               if (($id > 0 || $id == 0 && $itemtype == "Entity")
                      && !isset($input['id'])) {
                   $this->parameters['input']->id = $id;
                }

@@ -312,7 +312,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
    static function getNumberOfTranslationsForItem($item) {
 
       return countElementsInTable(getTableForItemType(__CLASS__),
-                                  "`knowbaseitems_id`='".$item->getID()."'");
+                                  ['knowbaseitems_id' => $item->getID()]);
    }
 
 
@@ -334,4 +334,3 @@ class KnowbaseItemTranslation extends CommonDBChild {
       return $tab;
    }
 }
-?>

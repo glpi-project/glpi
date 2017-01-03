@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -46,10 +46,9 @@ if (isset($_POST["add"])) {
    $link->check(-1, CREATE, $_POST);
 
    if ($link_itemtype->add($_POST)) {
-    Event::log($_POST["links_id"], "links", 4, "setup",
+      Event::log($_POST["links_id"], "links", 4, "setup",
                //TRANS: %s is the user login
                sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::redirect($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["links_id"]);
 }
-?>

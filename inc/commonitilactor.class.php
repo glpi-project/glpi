@@ -290,10 +290,6 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       $donotif = $CFG_GLPI["use_mailing"];
 
-//       if (isset($this->input["_no_notif"]) && $this->input["_no_notif"]) {
-//          $donotif = false;
-//       }
-
       $item = $this->getConnexityItem(static::$itemtype_1, static::getItilObjectForeignKey());
 
       if ($item instanceof CommonDBTM) {

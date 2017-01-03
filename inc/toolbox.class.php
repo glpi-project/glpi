@@ -106,7 +106,7 @@ class Toolbox {
                                      : ($str{0}.$str{1})).substr($str,2);
       }
       return ucfirst($str);
-    }
+   }
 
 
    /**
@@ -273,15 +273,14 @@ class Toolbox {
    **/
    static function encrypt($string, $key) {
 
-     $result = '';
-     for($i=0 ; $i<strlen($string) ; $i++) {
-       $char    = substr($string, $i, 1);
-       $keychar = substr($key, ($i % strlen($key))-1, 1);
-       $char    = chr(ord($char)+ord($keychar));
-       $result .= $char;
-     }
-
-     return base64_encode($result);
+      $result = '';
+      for($i=0 ; $i<strlen($string) ; $i++) {
+         $char    = substr($string, $i, 1);
+         $keychar = substr($key, ($i % strlen($key))-1, 1);
+         $char    = chr(ord($char)+ord($keychar));
+         $result .= $char;
+      }
+      return base64_encode($result);
    }
 
 
@@ -295,17 +294,17 @@ class Toolbox {
    **/
    static function decrypt($string, $key) {
 
-     $result = '';
-     $string = base64_decode($string);
+      $result = '';
+      $string = base64_decode($string);
 
-     for($i=0 ; $i<strlen($string) ; $i++) {
-       $char    = substr($string, $i, 1);
-       $keychar = substr($key, ($i % strlen($key))-1, 1);
-       $char    = chr(ord($char)-ord($keychar));
-       $result .= $char;
-     }
+      for($i=0 ; $i<strlen($string) ; $i++) {
+         $char    = substr($string, $i, 1);
+         $keychar = substr($key, ($i % strlen($key))-1, 1);
+         $char    = chr(ord($char)-ord($keychar));
+         $result .= $char;
+      }
 
-     return Toolbox::unclean_cross_side_scripting_deep($result);
+      return Toolbox::unclean_cross_side_scripting_deep($result);
    }
 
 
@@ -535,28 +534,26 @@ class Toolbox {
    static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars) {
 
       // Date et heure de l'erreur
-      $errortype = array(E_ERROR           => 'Error',
-                         E_WARNING         => 'Warning',
-                         E_PARSE           => 'Parsing Error',
-                         E_NOTICE          => 'Notice',
-                         E_CORE_ERROR      => 'Core Error',
-                         E_CORE_WARNING    => 'Core Warning',
-                         E_COMPILE_ERROR   => 'Compile Error',
-                         E_COMPILE_WARNING => 'Compile Warning',
-                         E_USER_ERROR      => 'User Error',
-                         E_USER_WARNING    => 'User Warning',
-                         E_USER_NOTICE     => 'User Notice',
-                         E_STRICT          => 'Runtime Notice',
-                         // Need php 5.2.0
-                         4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error',
-                         // Need php 5.3.0
-                         8192 /* E_DEPRECATED */       => 'Deprecated function',
-                         16384 /* E_USER_DEPRECATED */ => 'User deprecated function');
+      $errortype = array(E_ERROR             => 'Error',
+                         E_WARNING           => 'Warning',
+                         E_PARSE             => 'Parsing Error',
+                         E_NOTICE            => 'Notice',
+                         E_CORE_ERROR        => 'Core Error',
+                         E_CORE_WARNING      => 'Core Warning',
+                         E_COMPILE_ERROR     => 'Compile Error',
+                         E_COMPILE_WARNING   => 'Compile Warning',
+                         E_USER_ERROR        => 'User Error',
+                         E_USER_WARNING      => 'User Warning',
+                         E_USER_NOTICE       => 'User Notice',
+                         E_STRICT            => 'Runtime Notice',
+                         E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
+                         E_DEPRECATED        => 'Deprecated function',
+                         E_USER_DEPRECATED   => 'User deprecated function');
       // Les niveaux qui seront enregistrés
       $user_errors = array(E_USER_ERROR, E_USER_NOTICE, E_USER_WARNING);
 
       $err = '  *** PHP '.$errortype[$errno] . "($errno): $errmsg\n";
-      if (in_array($errno, $user_errors)) {
+      if (in_array($errno, $user_errors) && function_exists('wddx_serialize_value')) {
          $err .= "Variables:".wddx_serialize_value($vars, "Variables")."\n";
       }
 
@@ -572,6 +569,21 @@ class Toolbox {
 
       // Save error
       self::logInFile("php-errors", $err);
+
+      // For unit test
+      if (class_exists('GlpitestPHPerror')) {
+         if (in_array($errno, [E_ERROR, E_USER_ERROR])) {
+            throw new GlpitestPHPerror($err);
+         }
+         /* for tuture usage
+         if (in_array($errno, [E_STRICT, E_WARNING, E_CORE_WARNING, E_USER_WARNING, E_DEPRECATED, E_USER_DEPRECATED])) {
+             throw new GlpitestPHPwarning($err);
+         }
+         if (in_array($errno, [E_NOTICE, E_USER_NOTICE])) {
+            throw new GlpitestPHPnotice($err);
+         }
+         */
+      }
 
       return $errortype[$errno];
    }
@@ -651,10 +663,11 @@ class Toolbox {
     *
     * @param $file      string: storage filename
     * @param $filename  string: file title
+    * @param $mime      string: file mime type
     *
     * @return nothing
    **/
-   static function sendFile($file, $filename) {
+   static function sendFile($file, $filename, $mime = null) {
 
       // Test securite : document in DOC_DIR
       $tmpfile = str_replace(GLPI_DOC_DIR, "", $file);
@@ -669,39 +682,53 @@ class Toolbox {
          die("Error file $file does not exist");
       }
 
-      $splitter = explode("/", $file);
-      $mime     = "application/octetstream";
+      // if $mime is defined, ignore mime type by extension
+      if($mime === null && preg_match('/\.(...)$/', $file, $regs)){
+         $mimeTypeMap = [
+            'sql' => 'text/x-sql',
+            'xml' => 'text/xml',
+            'csv' => 'text/csv',
+            'svg' => 'image/svg+xml',
+            'png' => 'image/png',
+         ];
 
-      if (preg_match('/\.(...)$/', $file, $regs)) {
-         switch ($regs[1]) {
-            case "sql" :
-               $mime = "text/x-sql";
-               break;
+         $ext = strtolower($regs[1]);
 
-            case "xml" :
-               $mime = "text/xml";
-               break;
-
-            case "csv" :
-               $mime = "text/csv";
-               break;
-
-            case "svg" :
-               $mime = "image/svg+xml";
-               break;
-
-            case "png" :
-               $mime = "image/png";
-               break;
+         if(isset($mimeTypeMap[$ext])){
+            $mime = $mimeTypeMap[$ext];
+         }else{
+            $mime = 'application/octetstream';
          }
       }
 
+      // don't download picture files, see them inline
+      $attachment = "";
+      // if not begin 'image/'
+      if(strncmp($mime, 'image/', 6) !== 0){
+         $attachment = ' attachment;';
+      }
+
+      $etag = md5_file($file);
+      $lastModified = filemtime($file);
+
       // Now send the file with header() magic
-      header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
+      header("Last-Modified: ".gmdate("D, d M Y H:i:s", $lastModified)." GMT");
+      header("Etag: $etag");
       header('Pragma: private'); /// IE BUG + SSL
       header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
-      header("Content-disposition: filename=\"$filename\"");
+      header("Content-disposition:$attachment filename=\"$filename\"");
       header("Content-type: ".$mime);
+
+      // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
+      // http://tools.ietf.org/html/rfc7232#section-3.3
+      if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag){
+         http_response_code(304); //304 - Not Modified
+         exit;
+      }
+      if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified){
+         http_response_code(304); //304 - Not Modified
+         exit;
+      }
 
       readfile($file) or die ("Error opening file $file");
    }
@@ -854,8 +881,8 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td class='b left'>".__('Testing PHP Parser')."</td>";
 
       // PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
-      if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-         // PHP > 5.4 ok, now check PHP zend.ze1_compatibility_mode
+      if (version_compare(PHP_VERSION, GLPI_MIN_PHP) >= 0) {
+         // PHP version ok, now check PHP zend.ze1_compatibility_mode
          if (ini_get("zend.ze1_compatibility_mode") == 1) {
             $error = 2;
             echo "<td class='red'>
@@ -864,15 +891,19 @@ class Toolbox {
                  "</td>";
          } else {
             echo "<td><img src='".$CFG_GLPI['root_doc']."/pics/ok_min.png' alt=\"".
-                       __s('PHP version is at least 5.4.0 - Perfect!')."\"
-                       title=\"".__s('PHP version is at least 5.4.0 - Perfect!')."\"></td>";
+                       sprintf(__s('PHP version is at least %s - Perfect!'), GLPI_MIN_PHP)."\"
+                       title=\"".sprintf(__s('PHP version is at least %s - Perfect!'), GLPI_MIN_PHP)."\"></td>";
          }
 
       } else { // PHP <5
          $error = 2;
          echo "<td class='red'>
                <img src='".$CFG_GLPI['root_doc']."/pics/ko_min.png'>".
+<<<<<<< HEAD
+                sprintf(__('You must install at least PHP %s.'), GLPI_MIN_PHP)."</td>";
+=======
                 __('You must install at least PHP 5.4.0.')."</td>";
+>>>>>>> upstream/9.1/bugfixes
       }
       echo "</tr>";
 
@@ -951,7 +982,11 @@ class Toolbox {
          ],
          'curl'      => [
             'required'  => true,
+<<<<<<< HEAD
+         ],
+=======
         ],
+>>>>>>> upstream/9.1/bugfixes
          'gd'       => [
             'required'  => false,
          ],
@@ -1257,11 +1292,11 @@ class Toolbox {
             || ($img_height > $max_size)) {
             $source_aspect_ratio = $img_width / $img_height;
             if ($source_aspect_ratio < 1) {
-            $new_width  = $max_size * $source_aspect_ratio;
-            $new_height = $max_size;
+               $new_width  = $max_size * $source_aspect_ratio;
+               $new_height = $max_size;
             } else {
-            $new_width  = $max_size;
-            $new_height = $max_size / $source_aspect_ratio;
+               $new_width  = $max_size;
+               $new_height = $max_size / $source_aspect_ratio;
             }
          }
       }
@@ -1455,7 +1490,7 @@ class Toolbox {
       }
 
       return 0;
-}
+   }
 
 
    /**
@@ -1535,15 +1570,22 @@ class Toolbox {
    /**
     * Get a random string
     *
-    * @param $length integer: length of the random string
+    * @param integer $length of the random string
+    * @param boolean $high strength of the random source (since 9.2)
     *
     * @return random string
    **/
-   static function getRandomString($length) {
+   static function getRandomString($length, $high=false) {
 
-      $alphabet  = "1234567890abcdefghijklmnopqrstuvwxyz";
-      $rndstring = "";
-
+<<<<<<< HEAD
+      $factory = new RandomLib\Factory();
+      if ($high) {
+         /* Notice "High" imply mcrypt extension, unwanted for now
+            See https://github.com/ircmaxell/RandomLib/issues/57 */
+         $generator = $factory->getMediumStrengthGenerator();
+      } else {
+         $generator = $factory->getLowStrengthGenerator();
+=======
       for ($a=0 ; $a<$length ; $a++) {
          if (function_exists('random_int')) { // PHP 7+
             $b = random_int(0, strlen($alphabet) - 1);
@@ -1551,8 +1593,10 @@ class Toolbox {
             $b = mt_rand(0, strlen($alphabet) - 1);
          }
          $rndstring .= $alphabet[$b];
+>>>>>>> upstream/9.1/bugfixes
       }
-      return $rndstring;
+
+      return $generator->generateString($length, RandomLib\Generator::CHAR_LOWER + RandomLib\Generator::CHAR_DIGITS);
    }
 
 
@@ -1801,10 +1845,9 @@ class Toolbox {
             }
             // Redirect based on GLPI_ROOT : URL must be rawurlencoded
             if ($decoded_where[0] == '/') {
-//                echo $decoded_where;exit();
+               // echo $decoded_where;exit();
                Html::redirect($CFG_GLPI["root_doc"].$decoded_where);
             }
-
 
             $data = explode("_", $where);
             $forcetab = '';
@@ -1835,8 +1878,8 @@ class Toolbox {
                            }
                            Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
                                           $data[1]."&$forcetab");
-                        // redirect to list
-                        } else if (!empty($data[0])) {
+
+                        } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
                               Html::redirect($item->getSearchURL()."?$forcetab");
                            }
@@ -1888,8 +1931,8 @@ class Toolbox {
                               }
                               Html::redirect($item->getFormURL()."?id=".$data[1]."&$forcetab");
                            }
-                        // redirect to list
-                        } else if (!empty($data[0])) {
+
+                        } else if (!empty($data[0])) { // redirect to list
                            if ($item = getItemForItemtype($data[0])) {
                               Html::redirect($item->getSearchURL()."?$forcetab");
                            }
@@ -2125,7 +2168,6 @@ class Toolbox {
                               array('value'               => $svalue,
                                     'width'               => '12%',
                                     'display_emptychoice' => true));
-
 
       echo "<input type=hidden name=imap_string value='".$value."'>";
       echo "</td></tr>\n";
@@ -2541,4 +2583,42 @@ class Toolbox {
       $array = array_map('Toolbox::clean_cross_side_scripting_deep', $array);
       return $array;
    }
+<<<<<<< HEAD
+
+   /**
+    * Remove accentued characters and return lower case string
+    *
+    * @param string $string String to handle
+    *
+    * @return string
+    */
+   public static function removeHtmlSpecialChars($string)
+   {
+      $string = htmlentities($string, ENT_NOQUOTES, 'utf-8');
+      $string = preg_replace(
+         '#&([A-za-z])(?:acute|cedil|caron|circ|grave|orn|ring|slash|th|tilde|uml);#',
+         '\1',
+         $string
+      );
+      $string = preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $string);
+      $string = preg_replace('#&[^;]+;#', '', $string);
+      return self::strtolower($string, 'UTF-8');
+   }
+
+   /**
+    * Slugify
+    *
+    * @param string $string String to slugify
+    *
+    * @return string
+    */
+   public static function slugify($string)
+   {
+      $string = str_replace(' ', '-', self::strtolower($string, 'UTF-8'));
+      $string = self::removeHtmlSpecialChars($string);
+      $string = preg_replace('~[^0-9a-z]+~i', '-', $string);
+      return trim($string, '-');
+   }
+=======
+>>>>>>> upstream/9.1/bugfixes
 }

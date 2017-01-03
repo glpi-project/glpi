@@ -631,47 +631,47 @@ class IPAddress extends CommonDBChild {
          }
          // END OF EXTREMITY CHECKS
 
-
          // The number of empty singletons depends on the type of contraction
          switch ($empty_count) {
 
-         case 0: // No empty singleton => no contraction at all
-            // Thus, its side must be 8 !
-            if (count($singletons) != 8) {
-               return false;
-            }
-            break;
+            case 0: // No empty singleton => no contraction at all
+               // Thus, its side must be 8 !
+               if (count($singletons) != 8) {
+                  return false;
+               }
+               break;
 
-         case 1:
-            // One empty singleton : must be in the middle, otherwise EXTREMITY CHECKS
-            // would return false
-            break;
+            case 1:
+               // One empty singleton : must be in the middle, otherwise EXTREMITY CHECKS
+               // would return false
+               break;
 
-         case 2: // If there is two empty singletons then it must be at the beginning or the end
-            if (!($start_with_empty XOR $end_with_empty)) {
-               return false;
-            }
-            // Thus remove one of both empty singletons.
-            if ($start_with_empty) {
-               unset($singletons[0]);
-            } else { // $end_with_empty == true
-               unset($singletons[count($singletons) - 1]);
-            }
-            break;
+            case 2: // If there is two empty singletons then it must be at the beginning or the end
+               if (!($start_with_empty XOR $end_with_empty)) {
+                  return false;
+               }
+               // Thus remove one of both empty singletons.
+               if ($start_with_empty) {
+                  unset($singletons[0]);
+               } else { // $end_with_empty == true
+                  unset($singletons[count($singletons) - 1]);
+               }
+               break;
 
-         case 3: // Only '::' allows three empty singletons ('::x::' = four empty singletons)
-            if (!($start_with_empty AND $end_with_empty)) {
-               return false;
-            }
-            // Middle value must be '' otherwise EXTREMITY CHECKS returned an error
-            if (count($singletons) != 3) {
-               return false;
-            }
-            $singletons = array('');
-            break;
+            case 3: // Only '::' allows three empty singletons ('::x::' = four empty singletons)
+               if (!($start_with_empty AND $end_with_empty)) {
+                  return false;
+               }
+               // Middle value must be '' otherwise EXTREMITY CHECKS returned an error
+               if (count($singletons) != 3) {
+                  return false;
+               }
+               $singletons = array('');
+               break;
 
-         default:
-            return false;
+            default:
+               return false;
+
          }
 
          // Here, we are sure that $singletons are valids and only contains 1 empty singleton that
@@ -1261,7 +1261,6 @@ class IPAddress extends CommonDBChild {
                                               Dropdown::getYesNo($address->fields['is_dynamic']),
                                               $this_cell);
                }
-
 
                IPNetwork::getHTMLTableCellsForItem($row, $address, $this_cell, $options);
             }

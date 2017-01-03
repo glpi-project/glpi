@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -74,6 +74,5 @@ class Supplier_Ticket extends CommonITILActor {
       }
       return false;
    }
-  
+
 }
-?>

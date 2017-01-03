@@ -233,7 +233,7 @@ class SoftwareVersion extends CommonDBChild {
       $result = $DB->query($query);
       $number = $DB->numrows($result);
       $values = array();
-      
+
       if ($number) {
          while ($data = $DB->fetch_assoc($result)) {
             $ID     = $data['id'];
@@ -338,7 +338,7 @@ class SoftwareVersion extends CommonDBChild {
          switch ($item->getType()) {
             case 'Software' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(), "softwares_id = '".$item->getID()."'");
+                  $nb = countElementsInTable($this->getTable(), ['softwares_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
@@ -356,4 +356,3 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 }
-?>

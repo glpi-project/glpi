@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -73,11 +73,11 @@ if (isset($_POST["validatortype"])) {
          break;
 
       case 'group_user' :
-         
-         $opt = array('groups_id'   => $_POST["groups_id"], 
+
+         $opt = array('groups_id'   => $_POST["groups_id"],
                            'right'     => $_POST['right'],
                            'entity'    => $_SESSION["glpiactive_entity"]);
-                           
+
          $groups_users = TicketValidation::getGroupUserHaveRights($opt);
 
          $users           = array();
@@ -126,4 +126,3 @@ if (isset($_POST["validatortype"])) {
    }
 
 }
-?>

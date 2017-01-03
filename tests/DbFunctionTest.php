@@ -188,7 +188,7 @@ class DbFunctionTest extends DbTestCase {
     * @covers ::countElementsInTable
    **/
    public function testCountElementsInTable() {
-   global $DB;
+      global $DB;
 
       //the case of using an element that is not a table is not handle in the function :
       //testCountElementsInTable($table, $condition="")
@@ -198,6 +198,10 @@ class DbFunctionTest extends DbTestCase {
       $this->assertEquals(1, countElementsInTable('glpi_configs', "context = 'core'
                                                    AND `name` = 'version'"));
       $this->assertEquals(0, countElementsInTable('glpi_configs', "context = 'fakecontext'"));
+      // Using iterator
+      $this->assertEquals(1, countElementsInTable('glpi_configs', ['context' => 'core', 'name' => 'version']));
+      $this->assertGreaterThan(100, countElementsInTable('glpi_configs', ['context' => 'core']));
+      $this->assertEquals(0, countElementsInTable('glpi_configs', ['context' => 'fakecontext']));
    }
 
 
@@ -205,7 +209,7 @@ class DbFunctionTest extends DbTestCase {
     * @covers ::countDistinctElementsInTable
    **/
    public function testCountDistinctElementsInTable() {
-   global $DB;
+      global $DB;
 
       //the case of using an element that is not a table is not handle in the function :
       //testCountElementsInTable($table, $condition="")
@@ -226,18 +230,24 @@ class DbFunctionTest extends DbTestCase {
 
       $this->setEntity('_test_root_entity', true);
       $this->assertEquals(6, countElementsInTableForMyEntities('glpi_computers'));
-      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"')); // SQL restrict
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc11'])); // Criteria
       $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc01']));
 
       $this->setEntity('_test_root_entity', false);
       $this->assertEquals(2, countElementsInTableForMyEntities('glpi_computers'));
       $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc11']));
       $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc01']));
 
       $this->setEntity('_test_child_1', false);
       $this->assertEquals(2, countElementsInTableForMyEntities('glpi_computers'));
       $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc11"'));
+      $this->assertEquals(1, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc11']));
       $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', 'name="_test_pc01"'));
+      $this->assertEquals(0, countElementsInTableForMyEntities('glpi_computers', ['name' => '_test_pc01']));
    }
 
    /**
@@ -277,6 +287,8 @@ class DbFunctionTest extends DbTestCase {
       }
    }
 
+<<<<<<< HEAD
+=======
 /*
 TODO :
 getTreeLeafValueName
@@ -293,6 +305,7 @@ formatUserName
 getUserName
 */
 
+>>>>>>> upstream/9.1/bugfixes
 
    /**
     *@covers ::TableExists
@@ -329,13 +342,6 @@ getUserName
    }
 
 
- /*
- TODO :
-    autoName
-    closeDBConnections
-*/
-
-
    /**
     * @covers ::formatOutputWebLink
    **/
@@ -347,14 +353,96 @@ getUserName
                           formatOutputWebLink('http://www.glpi-project.org/'));
    }
 
-/*
-TODO :
-   getDateRequest
-   exportArrayToDB
-   importArrayFromDB
-   get_hour_from_sql
-   getDbRelations
-   getEntitiesRestrictRequest
-*/
 
+   /**
+    *@covers ::getEntitiesRestrictRequest
+    *@covers ::getEntitiesRestrictCriteria
+    */
+   public function testGetEntityRestrict() {
+      $this->Login();
+
+      // See all, really all
+      $_SESSION['glpishowallentities'] = 1; // will be restored by setEntity call
+      $this->assertEmpty(getEntitiesRestrictRequest('AND', 'glpi_computers'));
+      $it = new DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+      $this->assertEquals('SELECT * FROM `glpi_computers`', $it->getSql());
+
+      // See all
+      $this->setEntity('_test_root_entity', true);
+      $this->assertEquals("WHERE ( `glpi_computers`.`entities_id` IN ('1', '2', '3')  ) ",
+                          getEntitiesRestrictRequest('WHERE', 'glpi_computers'));
+      $it = new DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+      $this->assertEquals('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (1, 2, 3)', $it->getSql());
+
+      // Root entity
+      $this->setEntity('_test_root_entity', false);
+      $this->assertEquals("WHERE ( `glpi_computers`.`entities_id` IN ('1')  ) ",
+                          getEntitiesRestrictRequest('WHERE', 'glpi_computers'));
+      $it = new DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+      $this->assertEquals('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (1)', $it->getSql());
+
+      // Child
+      $this->setEntity('_test_child_1', false);
+      $this->assertEquals("WHERE ( `glpi_computers`.`entities_id` IN ('2')  ) ",
+                          getEntitiesRestrictRequest('WHERE', 'glpi_computers'));
+      $it = new DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
+      $this->assertEquals('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (2)', $it->getSql());
+
+      // Child without table
+      $this->assertEquals("WHERE ( `entities_id` IN ('2')  ) ",
+            getEntitiesRestrictRequest('WHERE'));
+      $it = new DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria());
+      $this->assertEquals('SELECT * FROM `glpi_computers` WHERE `entities_id` IN (2)', $it->getSql());
+
+      // Child + parent
+      $this->setEntity('_test_child_2', false);
+      $this->assertEquals("WHERE ( `glpi_computers`.`entities_id` IN ('3')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN ('0','1')) ) ",
+                          getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true));
+      $it = new DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', true));
+      $this->assertEquals('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (3) OR (`glpi_computers`.`is_recursive` = 1 AND `glpi_computers`.`entities_id` IN (0, 1)))', $it->getSql());
+
+      //Child + parent on glpi_entities
+      $it = new DBmysqlIterator(NULL, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', '', true));
+      $this->assertEquals('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (3, 0, 1))', $it->getSql());
+
+      //Child + parent -- automatic recusrivity detection
+      $it = new DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', 'auto'));
+      $this->assertEquals('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (3) OR (`glpi_computers`.`is_recursive` = 1 AND `glpi_computers`.`entities_id` IN (0, 1)))', $it->getSql());
+
+      // Child + parent without table
+      $this->assertEquals("WHERE ( `entities_id` IN ('3')  OR (`is_recursive`='1' AND `entities_id` IN ('0','1')) ) ",
+                          getEntitiesRestrictRequest('WHERE', '', '', '', true));
+      $it = new DBmysqlIterator(NULL, 'glpi_computers', getEntitiesRestrictCriteria('', '', '', true));
+      $this->assertEquals('SELECT * FROM `glpi_computers` WHERE (`entities_id` IN (3) OR (`is_recursive` = 1 AND `entities_id` IN (0, 1)))', $it->getSql());
+
+      $it = new DBmysqlIterator(NULL, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 3, true));
+      $this->assertEquals('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (3, 0, 1))', $it->getSql());
+
+      $it = new DBmysqlIterator(NULL, 'glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', 7, true));
+      $this->assertEquals('SELECT * FROM `glpi_entities` WHERE `glpi_entities`.`id` = 7', $it->getSql());
+
+   }
 }
+
+/*
+ TODO :
+ getTreeLeafValueName
+ getTreeValueName
+ getAncestorsOf
+ getTreeForItem
+ contructTreeFromList
+ contructListFromTree
+ getRealQueryForTreeItem
+ regenerateTreeCompleteName
+ getNextItem
+ getPreviousItem
+ formatUserName
+ getUserName
+ autoName
+ closeDBConnections
+ getDateRequest
+ exportArrayToDB
+ importArrayFromDB
+ get_hour_from_sql
+ getDbRelations
+ */

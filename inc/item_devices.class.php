@@ -49,7 +49,7 @@ class Item_Devices extends CommonDBRelation {
    static public $items_id_1            = 'items_id';
    static public $mustBeAttached_1      = false;
    static public $take_entity_1         = false ;
-//    static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
+   // static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
 
    static protected $notable            = true;
 
@@ -294,9 +294,9 @@ class Item_Devices extends CommonDBRelation {
             if ($_SESSION['glpishow_count_on_tabs']) {
                foreach (self::getItemAffinities($item->getType()) as $link_type) {
                   $nb   += countElementsInTable($link_type::getTable(),
-                                                "`items_id` = '".$item->getID()."'
-                                                   AND `itemtype` = '".$item->getType()."'
-                                                   AND `is_deleted` = '0'");
+                                                ['items_id'   => $item->getID(),
+                                                 'itemtype'   => $item->getType(),
+                                                 'is_deleted' => 0 ]);
                }
             }
             return self::createTabEntry(_n('Component', 'Components', Session::getPluralNumber()),
@@ -309,8 +309,8 @@ class Item_Devices extends CommonDBRelation {
                $table           = $linkClass::getTable();
                $foreignkeyField = $deviceClass::getForeignKeyField();
                $nb = countElementsInTable($table,
-                                          "`$foreignkeyField` = '".$item->getID()."'
-                                            AND `is_deleted` = '0'");
+                                          [$foreignkeyField => $item->getID(),
+                                           'is_deleted' => 0 ]);
             }
             return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
          }
@@ -634,7 +634,6 @@ class Item_Devices extends CommonDBRelation {
 
          }
 
-
          if (Session::haveRight('device', UPDATE)) {
             $mode = __s('Update');
          } else {
@@ -652,8 +651,8 @@ class Item_Devices extends CommonDBRelation {
             $spec_cell = $current_row->addCell($specificity_columns[$field], $content, $spec_cell);
          }
 
-         if (countElementsInTable('glpi_infocoms', "`itemtype`='".$this->getType()."' AND
-                                                    `items_id`='".$link['id']."'")) {
+         if (countElementsInTable('glpi_infocoms', ['itemtype' => $this->getType(),
+                                                    'items_id' => $link['id']])) {
             $content = array(array('function'   => 'Infocom::showDisplayLink',
                                    'parameters' => array($this->getType(), $link['id'])));
          } else {
@@ -677,8 +676,6 @@ class Item_Devices extends CommonDBRelation {
          }
          $content = implode('<br>', $content);
          $current_row->addCell($document_column, $content, $spec_cell);
-
-
 
          if ($item->isDynamic()) {
             $previous_cell = $current_row->addCell($dynamics_column,

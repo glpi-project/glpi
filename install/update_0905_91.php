@@ -722,7 +722,7 @@ function update0905to91() {
                   KEY `date_creation` (`date_creation`),
                   KEY `slas_id` (`slas_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->queryOrDie($query, "0.91 add table glpi_slts");
+      $DB->queryOrDie($query, "9.1 add table glpi_slts");
 
       // Sla migration
       $query = "SELECT *

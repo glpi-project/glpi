@@ -688,8 +688,6 @@ class KnowbaseItem extends CommonDBTM {
                                                 'canedit'    => $canedit));
       echo "</td></tr>";
 
-
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Subject')."</td>";
       echo "<td colspan='3'>";
@@ -816,12 +814,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
       echo "<div id='kbanswer'>";
-      if (KnowbaseItemTranslation::canBeTranslated($this)) {
-         $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
-      } else {
-         $answer = $this->fields["answer"];
-      }
-      echo Toolbox::unclean_html_cross_side_scripting_deep($answer);
+      echo $this->getAnswer();
       echo "</div>";
       echo "</td></tr>";
 
@@ -1049,7 +1042,6 @@ class KnowbaseItem extends CommonDBTM {
             }
             break;
       }
-
 
       if (empty($where)) {
          $where = '1 = 1';
@@ -1390,7 +1382,6 @@ class KnowbaseItem extends CommonDBTM {
                }
                echo Search::showItem($output_type, $categ, $item_num, $row_num);
 
-
                if (isset($options['item_itemtype'])
                    && isset($options['item_items_id'])
                    && ($output_type == Search::HTML_OUTPUT)) {
@@ -1407,7 +1398,6 @@ class KnowbaseItem extends CommonDBTM {
                                __('Use as a solution')."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
                }
-
 
                // End Line
                echo Search::showEndLine($output_type);
@@ -1476,7 +1466,6 @@ class KnowbaseItem extends CommonDBTM {
          }
       }
 
-
       // Only published
       $faq_limit .= " AND (`glpi_entities_knowbaseitems`.`entities_id` IS NOT NULL
                            OR `glpi_knowbaseitems_profiles`.`profiles_id` IS NOT NULL
@@ -1489,11 +1478,9 @@ class KnowbaseItem extends CommonDBTM {
                       AND (`glpi_knowbaseitems`.`end_date` IS NULL
                            OR `glpi_knowbaseitems`.`end_date` > NOW()) ";
 
-
       if ($faq) { // FAQ
          $faq_limit .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
-
 
       if (KnowbaseItemTranslation::isKbTranslationActive()
           && (countElementsInTable('glpi_knowbaseitemtranslations') > 0)) {
@@ -1503,7 +1490,6 @@ class KnowbaseItem extends CommonDBTM {
          $addselect .= ", `glpi_knowbaseitemtranslations`.`name` AS transname,
                           `glpi_knowbaseitemtranslations`.`answer` AS transanswer ";
       }
-
 
       $query = "SELECT DISTINCT `glpi_knowbaseitems`.* $addselect
                 FROM `glpi_knowbaseitems`
@@ -1665,7 +1651,6 @@ class KnowbaseItem extends CommonDBTM {
          Html::closeForm();
          echo "</div>";
       }
-
 
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
@@ -1838,5 +1823,41 @@ class KnowbaseItem extends CommonDBTM {
       return $values;
    }
 
+   /**
+    * Get KB answer, with id on titles to set anchors
+    *
+    * @return string
+    */
+   public function getAnswer()
+   {
+      if (KnowbaseItemTranslation::canBeTranslated($this)) {
+         $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
+      } else {
+         $answer = $this->fields["answer"];
+      }
+      $answer = Toolbox::unclean_html_cross_side_scripting_deep($answer);
+
+      $callback = function ($matches) {
+         //1 => tag name, 2 => existing attributes, 3 => title contents
+         $tpl = '<%tag%attrs id="%slug"><a href="#%slug">%icon</a>%title</%tag>';
+
+         $title = str_replace(
+            ['%tag', '%attrs', '%slug', '%title', '%icon'],
+            [
+               $matches[1],
+               $matches[2],
+               Toolbox::slugify($matches[3]),
+               $matches[3],
+               '<svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"/></svg>'
+            ],
+            $tpl
+         );
+
+         return $title;
+      };
+      $pattern = '|<(h[1-6]{1})(.?[^>])?>(.+)</h[1-6]{1}>|';
+      $answer = preg_replace_callback($pattern, $callback, $answer);
+
+      return $answer;
+   }
 }
-?>

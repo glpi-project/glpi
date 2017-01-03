@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -114,4 +114,3 @@ Html::header(AuthLDAP::getTypeName(1), $_SERVER['PHP_SELF'], 'config', 'auth', '
 $config_ldap->display($_GET);
 
 Html::footer();
-?>

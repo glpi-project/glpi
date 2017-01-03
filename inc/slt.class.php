@@ -390,7 +390,7 @@ class SLT extends CommonDBChild {
          switch ($item->getType()) {
             case 'SLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable('glpi_slts', "`slas_id` = '".$item->getField('id')."'");
+                  $nb = countElementsInTable('glpi_slts', ['slas_id' => $item->getField('id')]);
                }
                return self::createTabEntry(self::getTypeName(1), $nb);
          }
@@ -599,7 +599,11 @@ class SLT extends CommonDBChild {
                                         AND `entities_id` = '".$ticket->fields['entities_id']."'");
          if ($canupdate
              && !empty($slt_data)) {
+<<<<<<< HEAD
+            echo "<th>".$tt->getBeginHiddenFieldText($sltField);
+=======
             echo $tt->getBeginHiddenFieldText($sltField);
+>>>>>>> upstream/9.1/bugfixes
             if (!$tt->isHiddenField($sltField) || $tt->isPredefinedField($sltField)) {
                echo "<th>".sprintf(__('%1$s%2$s'), __('SLT'), $tt->getMandatoryMark($sltField))."</th>";
             }

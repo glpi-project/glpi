@@ -386,7 +386,7 @@ class NetworkAlias extends FQDNLabel {
          $order = "alias";
       }
 
-      $number = countElementsInTable($alias->getTable(), "`fqdns_id`='".$item->getID()."'");
+      $number = countElementsInTable($alias->getTable(), ['fqdns_id' => $item->getID() ]);
 
       echo "<br><div class='center'>";
 
@@ -466,12 +466,12 @@ class NetworkAlias extends FQDNLabel {
             switch ($item->getType()) {
                case 'NetworkName' :
                   $nb = countElementsInTable($this->getTable(),
-                                             "networknames_id='".$item->getID()."'");
+                                            ['networknames_id' => $item->getID() ]);
                   break;
 
                case 'FQDN' :
                   $nb = countElementsInTable($this->getTable(),
-                                             "fqdns_id='".$item->getID()."'");
+                                            ['fqdns_id' => $item->getID() ]);
             }
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
@@ -498,4 +498,3 @@ class NetworkAlias extends FQDNLabel {
       return $tab;
    }
 }
-?>

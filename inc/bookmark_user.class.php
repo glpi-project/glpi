@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 
 class Bookmark_User extends CommonDBRelation {
 
-    public $auto_message_on_action = false;
+   public $auto_message_on_action = false;
 
    static public $itemtype_1          = 'Bookmark';
    static public $items_id_1          = 'bookmarks_id';

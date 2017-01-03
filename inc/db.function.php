@@ -245,7 +245,7 @@ function getPlural($string) {
                   '([aeiou]{2})ses$'   => '\1ses', // Case like aliases
                   '([aeiou]{2})s$'     => '\1ses', // Case like aliases
                   'x$'                 =>'xes',
-//                   's$'           =>'ses',
+                  // 's$'                 =>'ses',
                   '([^s])$'            => '\1s',   // Add at the end if not exists
                   );
 
@@ -298,27 +298,24 @@ function getSingular($string) {
  * Count the number of elements in a table.
  *
  * @param $table        string/array   table names
- * @param $condition    string         condition to use (default '')
+ * @param $condition    string/array   condition to use (default '') or array of criteria
  *
  * @return int nb of elements in table
 **/
 function countElementsInTable($table, $condition="") {
    global $DB;
 
-   if (is_array($table)) {
-      $table = implode('`,`',$table);
+   if (!is_array($condition)) {
+      if (empty($condition)) {
+         $condition = [];
+      } else {
+         $condition = ['WHERE' => $condition]; // Deprecated use case
+      }
    }
+   $condition['COUNT'] = 'cpt';
 
-   $query = "SELECT COUNT(*) AS cpt
-             FROM `$table`";
-
-   if (!empty($condition)) {
-      $query .= " WHERE $condition ";
-   }
-
-   $result = $DB->query($query);
-   $ligne  = $DB->fetch_assoc($result);
-   return $ligne['cpt'];
+   $row = $DB->request($table, $condition)->next();
+   return ($row ? $row['cpt'] : 0);
 }
 
 /**
@@ -354,8 +351,8 @@ function countDistinctElementsInTable($table, $field, $condition="") {
 /**
  * Count the number of elements in a table for a specific entity
  *
- * @param $table        string   table name
- * @param $condition    string   additional condition (default '')
+ * @param $table        string         table name
+ * @param $condition    string/array   additional condition (default '') or criteria
  *
  * @return int nb of elements in table
 **/
@@ -365,12 +362,13 @@ function countElementsInTableForMyEntities($table, $condition='') {
    $itemtype = getItemTypeForTable($table);
    $item     = new $itemtype();
 
-   if (!empty($condition)) {
-      $condition .= " AND ";
+   $criteria = getEntitiesRestrictCriteria($table, '', '', $item->maybeRecursive());
+   if (is_array($condition)) {
+      $criteria = array_merge($condition, $criteria);
+   } else if ($condition) {
+      $criteria[] = $condition;
    }
-
-   $condition .= getEntitiesRestrictRequest("", $table, '', '', $item->maybeRecursive());
-   return countElementsInTable($table, $condition);
+   return countElementsInTable($table, $criteria);
 }
 
 
@@ -623,7 +621,6 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
       if ($DB->numrows($result)>0) {
          $row      = $DB->fetch_assoc($result);
          $parentID = $row[$parentIDfield];
-
 
          if ($wholename == "") {
             $name = $row["name"];
@@ -1197,7 +1194,6 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
       $id_visible = $_SESSION["glpiis_ids_visible"];
    }
 
-
    if (strlen($realname) > 0) {
       $temp = $realname;
 
@@ -1380,6 +1376,11 @@ function TableExists($tablename) {
 function FieldExists($table, $field, $usecache=true) {
    global $DB;
 
+   if (!TableExists($table)) {
+      trigger_error("Table $table does not exists", E_USER_WARNING);
+      return false;
+   }
+
    if ($fields = $DB->list_fields($table, $usecache)) {
       if (isset($fields[$field])) {
          return true;
@@ -1400,6 +1401,11 @@ function FieldExists($table, $field, $usecache=true) {
 **/
 function isIndex($table, $field) {
    global $DB;
+
+   if (!TableExists($table)) {
+      trigger_error("Table $table does not exists", E_USER_WARNING);
+      return false;
+   }
 
    $result = $DB->query("SHOW INDEX FROM `$table`");
 
@@ -1745,4 +1751,92 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
    $query .= " ) ";
 
    return $query;
+}
+
+/**
+ * Get criteria to restrict to current entities of the user
+ *
+ * @since 9.2
+ *
+ * @param $table              table where apply the limit (if needed, multiple tables queries)
+ *                            (default '')
+ * @param $field              field where apply the limit (id != entities_id) (default '')
+ * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
+ *                            single item or array (default '')
+ * @param $is_recursive       need to use recursive process to find item
+ *                            (field need to be named recursive) (false by default, set to auto to automatic detection)
+ * @param $complete_request   need to use a complete request and not a simple one
+ *                            when have acces to all entities (used for reminders)
+ *                            (false by default)
+ *
+ * @return array of criteria
+ **/
+function getEntitiesRestrictCriteria($table='', $field='', $value='',
+                                     $is_recursive=false, $complete_request=false) {
+
+   // !='0' needed because consider as empty
+   if (!$complete_request
+       && ($value != '0')
+       && empty($value)
+       && isset($_SESSION['glpishowallentities'])
+       && $_SESSION['glpishowallentities']) {
+
+      return [];
+   }
+
+   if (empty($field)) {
+      if ($table == 'glpi_entities') {
+         $field = "id";
+      } else {
+         $field = "entities_id";
+      }
+   }
+   if (!empty($table)) {
+      $field = "$table.$field";
+   }
+
+   if (!is_array($value) && strlen($value) == 0) {
+      $value = $_SESSION['glpiactiveentities'];
+   }
+
+   $crit = [$field => $value];
+
+   if ($is_recursive === 'auto' && !empty($table) && $table != 'glpi_entities') {
+      $item = getItemForItemtype(getItemTypeForTable($table));
+      if ($item !== false) {
+         $is_recursive = $item->maybeRecursive();
+      }
+   }
+
+   if ($is_recursive) {
+      $ancestors = array();
+      if (is_array($value)) {
+         foreach ($value as $val) {
+            $ancestors = array_unique(array_merge(getAncestorsOf('glpi_entities', $val),
+                  $ancestors));
+         }
+         $ancestors = array_diff($ancestors, $value);
+
+      } else if (strlen($value) == 0) {
+         $ancestors = $_SESSION['glpiparententities'];
+
+      } else {
+         $ancestors = getAncestorsOf('glpi_entities', $value);
+      }
+
+      if (count($ancestors)) {
+         if ($table == 'glpi_entities') {
+            if (!is_array($value)) {
+               $value = [$value => $value];
+            }
+            $crit = ['OR' => [$field => $value + $ancestors]];
+         } else {
+            $recur = (empty($table) ? 'is_recursive' : "$table.is_recursive");
+            $crit = ['OR' => [$field => $value,
+                              'AND' => [$recur => 1,
+                                        $field => $ancestors]]];
+         }
+      }
+   }
+   return $crit;
 }

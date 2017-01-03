@@ -341,7 +341,11 @@ class SoftwareLicense extends CommonDBTM {
       echo "<td>";
       Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
+<<<<<<< HEAD
+
+=======
       
+>>>>>>> upstream/9.1/bugfixes
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the license')."</td>";
       echo "<td>";
@@ -686,6 +690,8 @@ class SoftwareLicense extends CommonDBTM {
 
       return $tab;
    }
+
+
    /**
     * Give cron information
     *
@@ -693,7 +699,7 @@ class SoftwareLicense extends CommonDBTM {
     *
     * @return arrray of information
    **/
-      static function cronInfo($name) {
+   static function cronInfo($name) {
       return array('description' => __('Send alarms on expired licenses'));
    }
 
@@ -760,7 +766,7 @@ class SoftwareLicense extends CommonDBTM {
                   //TRANS: %1$s is the entity, %2$s is the message
                   $task->log(sprintf(__('%1$s: %2$s')."\n", $entityname, $message));
                   $task->addVolume(1);
-                } else {
+               } else {
                   Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'),
                                                            $entityname, $message));
                }
@@ -786,7 +792,7 @@ class SoftwareLicense extends CommonDBTM {
                }
             }
          }
-       }
+      }
       return $cron_status;
    }
 
@@ -888,7 +894,6 @@ class SoftwareLicense extends CommonDBTM {
          $start = 0;
       }
 
-
       if (isset($_GET["order"]) && ($_GET["order"] == "DESC")) {
          $order = "DESC";
       } else {
@@ -900,7 +905,6 @@ class SoftwareLicense extends CommonDBTM {
       } else {
          $sort = "`entity` $order, `name`";
       }
-
 
       // Righ type is enough. Can add a License on a software we have Read access
       $canedit             = Software::canUpdate();
@@ -971,12 +975,10 @@ class SoftwareLicense extends CommonDBTM {
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                         (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
-
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                           (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
             echo "<table class='tab_cadre_fixehov'>";
-
 
             $header_begin  = "<tr><th>";
             $header_top    = Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
@@ -1068,7 +1070,6 @@ class SoftwareLicense extends CommonDBTM {
          }
       }
 
-
       echo "</div>";
    }
 
@@ -1132,4 +1133,3 @@ class SoftwareLicense extends CommonDBTM {
    }
 
 }
-?>

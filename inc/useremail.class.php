@@ -221,7 +221,7 @@ class UserEmail  extends CommonDBChild {
       }
 
       // First email is default
-      if (countElementsInTable($this->getTable(), "`users_id` = '".$input['users_id']."'") == 0) {
+      if (countElementsInTable($this->getTable(), ['users_id' => $input['users_id']]) == 0) {
          $input['is_default'] = 1;
       }
 
@@ -292,4 +292,3 @@ class UserEmail  extends CommonDBChild {
    }
 
 }
-?>

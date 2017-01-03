@@ -301,7 +301,6 @@ class CalendarSegment extends CommonDBChild {
                       AND `day` = '$day'
                       AND `begin` <= '$hour'
                       AND `end` >= '$hour'";
- //     Toolbox::logDebug($query);
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             return true;
@@ -327,14 +326,12 @@ class CalendarSegment extends CommonDBChild {
       $canedit = $calendar->can($ID, UPDATE);
       $rand    = mt_rand();
 
-
       $query = "SELECT *
                 FROM `glpi_calendarsegments`
                 WHERE `calendars_id` = '$ID'
                 ORDER BY `day`, `begin`, `end`";
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
-
 
       if ($canedit) {
          echo "<div class='firstbloc'>";
@@ -417,7 +414,7 @@ class CalendarSegment extends CommonDBChild {
             case 'Calendar' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(),
-                                             "calendars_id = '".$item->getID()."'");
+                                             ['calendars_id' => $item->getID()]);
                }
                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),$nb);
          }

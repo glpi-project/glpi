@@ -52,6 +52,7 @@ class Config extends CommonDBTM {
 
    static $rightname              = 'config';
 
+   static $undisclosedFields      = array('proxy_passwd', 'smtp_passwd');
 
 
    static function getTypeName($nb=0) {
@@ -85,6 +86,14 @@ class Config extends CommonDBTM {
 
 
    static function canCreate() {
+      return false;
+   }
+
+
+   function canViewItem() {
+      if ($this->fields['context'] == 'core' || in_array($this->fields['context'], $_SESSION['glpi_plugins'])) {
+         return true;
+      }
       return false;
    }
 
@@ -241,8 +250,15 @@ class Config extends CommonDBTM {
    static public function unsetUndisclosedFields(&$fields) {
       if (isset($fields['context']) && isset($fields['name'])) {
          if ($fields['context'] == 'core'
+<<<<<<< HEAD
+            && in_array($fields['name'], self::$undisclosedFields)) {
+            unset($fields['value']);
+         } else {
+            $fields = Plugin::doHookFunction('undiscloseConfigValue', $fields);
+=======
             && in_array($fields['name'], array('proxy_passwd', 'smtp_passwd'))) {
             unset($fields['value']);
+>>>>>>> upstream/9.1/bugfixes
          }
       }
    }
@@ -352,24 +368,8 @@ class Config extends CommonDBTM {
                                                      'max'   => 200,
                                                      'step'  => 1,
                                                      'toadd' => array(0 => __('Never'))));
-//       echo "</td><td>".__('Buffer time for dynamic search in dropdowns')."</td><td>";
-//       Dropdown::showNumber('ajax_buffertime_load',
-//                            array('value' => $CFG_GLPI["ajax_buffertime_load"],
-//                                  'min'   => 100,
-//                                  'max'   => 5000,
-//                                  'step'  => 100,
-//                                  'unit'  => 'millisecond'));
       echo "<td colspan='2'></td>";
       echo "</td></tr>";
-
-//      echo "<tr class='tab_bg_2'>";
-//       echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
-//       Dropdown::showYesNo("use_ajax_autocompletion", $CFG_GLPI["use_ajax_autocompletion"]);
-//       echo "</td><td>". __('Character to force the full display of dropdowns (wildcard)')."</td>";
-//       echo "<td><input type='text' size='1' name='ajax_wildcard' value='" .
-//                   $CFG_GLPI["ajax_wildcard"] . "'>";
-//      echo "</td>";
-//      echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Search engine')."</td></tr>";
       echo "<tr class='tab_bg_2'>";
@@ -903,7 +903,6 @@ class Config extends CommonDBTM {
                $pri = $CFG_GLPI['priority_matrix'][$urgency][$impact];
             }
 
-
             if ($isurgency[$urgency] && $isimpact[$impact]) {
                $bgcolor=$_SESSION["glpipriority_$pri"];
                echo "<td class='center' bgcolor='$bgcolor'>";
@@ -1014,14 +1013,13 @@ class Config extends CommonDBTM {
 
       echo "</tr>";
 
-
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
          echo "<td>" . __('Display the complete name in tree dropdowns') . "</td><td>";
          Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
          echo "</td>";
       } else {
-        echo "<td colspan='2'>&nbsp;</td>";
+         echo "<td colspan='2'>&nbsp;</td>";
       }
 
       if (!$userpref
@@ -1235,9 +1233,6 @@ class Config extends CommonDBTM {
          Dropdown::showYesNo('ticket_timeline_keep_replaced_tabs',
                              $data['ticket_timeline_keep_replaced_tabs']);
          echo "</td></tr>";
-
-
-
       }
 
       // Only for user
@@ -1729,7 +1724,6 @@ class Config extends CommonDBTM {
       echo "GLPI $ver (" . $CFG_GLPI['root_doc']." => " . GLPI_ROOT . ")\n";
       echo "\n</pre></td></tr>";
 
-
       echo "<tr><th>Server</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
       echo wordwrap("Operating system: ".php_uname()."\n", $width, "\n\t");
@@ -1813,10 +1807,10 @@ class Config extends CommonDBTM {
       if (is_object($libstring)) {
          return realpath(dirname((new ReflectionObject($libstring))->getFileName()));
 
-      } elseif (class_exists($libstring)) {
+      } else if (class_exists($libstring)) {
          return realpath(dirname((new ReflectionClass($libstring))->getFileName()));
 
-      } elseif (function_exists($libstring)) {
+      } else if (function_exists($libstring)) {
          // Internal function have no file name
          $path = (new ReflectionFunction($libstring))->getFileName();
          return ($path ? realpath(dirname($path)) : false);

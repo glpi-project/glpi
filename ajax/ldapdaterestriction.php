@@ -45,4 +45,3 @@ if (strpos($_SERVER['PHP_SELF'],"ldapdaterestriction.php")) {
 
 Session::checkLoginUser();
 AuthLdap::showDateRestrictionForm($_POST);
-?>

@@ -107,6 +107,7 @@ class DropdownTest extends DbTestCase {
     * @dataProvider dataTestTreeImport
     */
    public function testTreeImport($input, $result, $complete, $msg) {
+      $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity',  true);
       $id = Dropdown::import('Location', $input);
       if ($result) {
          $this->assertGreaterThan(0, $id, $msg);

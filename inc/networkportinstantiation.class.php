@@ -247,7 +247,7 @@ class NetworkPortInstantiation extends CommonDBChild {
          } else {
             $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                                   $connect_cell_value);
-          }
+         }
 
       } else {
          $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
@@ -337,12 +337,11 @@ class NetworkPortInstantiation extends CommonDBChild {
          NetworkName::getHTMLTableCellsForItem($row, $netport, $father, $options);
       }
 
-
       return NULL;
    }
 
 
-  /**
+   /**
     * Get all NetworkPort and NetworkEquipments that have a specific MAC address
     *
     * @param $mac                      address to search
@@ -849,7 +848,7 @@ class NetworkPortInstantiation extends CommonDBChild {
       $p['entity']      = -1;
       $p['entity_sons'] = false;
 
-     if (is_array($options) && count($options)) {
+      if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $p[$key] = $val;
          }

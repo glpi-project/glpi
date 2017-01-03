@@ -192,7 +192,10 @@ class NetworkportTest extends DbTestCase {
       ];
       $this->assertEquals($expected, $ipadress);
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> upstream/9.1/bugfixes
       // be sure added and have no logs
       $nb_log = countElementsInTable('glpi_logs');
       $new_id = $networkport->add([

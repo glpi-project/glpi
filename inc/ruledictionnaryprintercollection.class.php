@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -329,9 +329,9 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
 
          //Direct connection exists in the target printer ?
          if (!countElementsInTable("glpi_computers_items",
-                                   "`itemtype` = 'Printer'
-                                       AND `items_id` = '$new_printers_id'
-                                       AND `computers_id`='".$connection["computers_id"]."'")) {
+                                   ['itemtype'     => 'Printer',
+                                    'items_id'     => $new_printers_id,
+                                    'computers_id' => $connection["computers_id"]])) {
             //Direct connection doesn't exists in the target printer : move it
             $computeritem->update(array('id'       => $connection['id'],
                                         'items_id' => $new_printers_id));
@@ -343,4 +343,3 @@ class RuleDictionnaryPrinterCollection extends RuleCollection {
    }
 
 }
-?>

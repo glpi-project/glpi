@@ -158,7 +158,7 @@ class NetworkPort extends CommonDBChild {
    **/
    function switchInstantiationType($new_instantiation_type) {
 
-     // First, check if the new instantiation is a valid one ...
+      // First, check if the new instantiation is a valid one ...
       if (!in_array($new_instantiation_type, self::getNetworkPortInstantiations())) {
          return false;
       }
@@ -418,7 +418,7 @@ class NetworkPort extends CommonDBChild {
 
       $names = new NetworkName();
       $names->cleanDBonItemDelete ($this->getType(), $this->getID());
-  }
+   }
 
 
    /**
@@ -665,7 +665,6 @@ class NetworkPort extends CommonDBChild {
             $c_dynamic->setHTMLClass('center');
          }
 
-
          if ($display_options['characteristics']) {
             if (empty($portType)) {
                NetworkPortMigration::getMigrationInstantiationHTMLTableHeaders($t_group, $c_instant,
@@ -710,7 +709,6 @@ class NetworkPort extends CommonDBChild {
                       ORDER BY `name`,
                                `logical_number`";
          }
-
 
          if ($result = $DB->query($query)) {
             echo "<div class='spaced'>";
@@ -793,7 +791,7 @@ class NetworkPort extends CommonDBChild {
 
                }
 
-              $canedit = $save_canedit;
+               $canedit = $save_canedit;
             }
             echo "</div>";
          }
@@ -970,7 +968,6 @@ class NetworkPort extends CommonDBChild {
       $tab[88]['massiveaction'] = false;
       $tab[88]['joinparams']    = array('beforejoin' => $netportjoin);
 
-
       return $tab;
    }
 
@@ -1077,16 +1074,16 @@ class NetworkPort extends CommonDBChild {
          $portid                 = $np->addToDB();
 
          if ($instantiation !== false) {
-             $input = array();
-             $input["networkports_id"] = $portid;
-             unset($instantiation->fields["id"]);
-             unset($instantiation->fields["networkports_id"]);
-             foreach ($instantiation->fields as $key => $val) {
-                 if (!empty($val)) {
-                     $input[$key] = $val;
-                 }
-             }
-             $instantiation->add($input);
+            $input = array();
+            $input["networkports_id"] = $portid;
+            unset($instantiation->fields["id"]);
+            unset($instantiation->fields["networkports_id"]);
+            foreach ($instantiation->fields as $key => $val) {
+               if (!empty($val)) {
+                  $input[$key] = $val;
+               }
+            }
+            $instantiation->add($input);
             unset($instantiation);
          }
 
@@ -1121,7 +1118,7 @@ class NetworkPort extends CommonDBChild {
 
       if ($item->getType() == 'NetworkPort') {
          $nbAlias = countElementsInTable('glpi_networkportaliases',
-                                         "`networkports_id_alias` = '".$item->getField('id')."'");
+                                         ['networkports_id_alias' => $item->getField('id')]);
          if ($nbAlias > 0) {
             $aliases = self::createTabEntry(NetworkPortAlias::getTypeName(Session::getPluralNumber()), $nbAlias);
          } else {
@@ -1141,7 +1138,7 @@ class NetworkPort extends CommonDBChild {
          }
          return $aliases.$aggregates;
       }
-     return '';
+      return '';
    }
 
 
@@ -1151,9 +1148,9 @@ class NetworkPort extends CommonDBChild {
    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_networkports',
-                                  "`itemtype` = '".$item->getType()."'
-                                      AND `items_id` ='".$item->getField('id')."'
-                                      AND `is_deleted` = '0'");
+                                  ['itemtype'   => $item->getType(),
+                                   'items_id'   => $item->getField('id'),
+                                   'is_deleted' => 0 ]);
    }
 
 
@@ -1187,4 +1184,3 @@ class NetworkPort extends CommonDBChild {
    }
 
 }
-?>

@@ -197,7 +197,7 @@ class TicketTemplate extends CommonDropdown {
 
                      66                                                  => '_users_id_observer',
                      65                                                  => '_groups_id_observer',
-            );
+             );
 
          if ($withtypeandcategory) {
             $allowed_fields[$withtypeandcategory][$withitemtype]
@@ -732,7 +732,7 @@ class TicketTemplate extends CommonDropdown {
    }
 
 
-  /**
+   /**
     * Import a dropdown - check if already exists
     *
     * @since version 0.90

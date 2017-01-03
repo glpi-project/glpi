@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -253,4 +253,3 @@ if ($_GET['itemtype'] == 'Ticket') {
 // form using GET method : CRSF not needed
 echo "</form>";
 Html::footer();
-?>

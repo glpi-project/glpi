@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -55,7 +55,7 @@ foreach (array('glpi_table_of', 'glpi_foreign_key_field_of') as $session_array_f
 include_once (GLPI_ROOT . "/inc/db.function.php");
 
 // Standard includes
-include_once (GLPI_ROOT . "/config/config.php");
+include_once (GLPI_ROOT . "/inc/config.php");
 
 
 // Security of PHP_SELF
@@ -171,4 +171,3 @@ if (GLPI_USE_CSRF_CHECK
 }
 // SET new global Token
 $CURRENTCSRFTOKEN = '';
-?>

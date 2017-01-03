@@ -238,7 +238,6 @@ class FieldUnicity extends CommonDropdown {
    static function selectCriterias(CommonDBTM $unicity) {
       global $DB;
 
-
       echo "<span id='span_fields'>";
 
       if (!isset($unicity->fields['itemtype']) || !$unicity->fields['itemtype']) {
@@ -288,11 +287,6 @@ class FieldUnicity extends CommonDropdown {
          $values = array();
          foreach ($DB->list_fields(getTableForItemType($itemtype)) as $field) {
             $searchOption = $target->getSearchOptionByField('field', $field['Field']);
-//             if (empty($searchOption)) {
-//                if ($table = getTableNameForForeignKeyField($field['Field'])) {
-//                   $searchOption = $target->getSearchOptionByField('field', 'name', $table);
-//                }
-//             }
             if (!empty($searchOption)
                 && !in_array($field['Type'], $blacklisted_types)
                 && !in_array($field['Field'], $target->getUnallowedFieldsForUnicity())) {

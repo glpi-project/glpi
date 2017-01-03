@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -72,14 +72,8 @@ class Alert extends CommonDBTM {
     *@return nothing
    **/
    function clear($itemtype, $ID, $alert_type) {
-      global $DB;
 
-      $query = "DELETE
-                FROM `".$this->getTable()."`
-                WHERE `itemtype` = '$itemtype'
-                      AND `items_id` = '$ID'
-                      AND `type` = '$alert_type'";
-      $DB->query($query);
+      return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID, 'type' => $alert_type], 1);
    }
 
 
@@ -91,16 +85,11 @@ class Alert extends CommonDBTM {
     * @param $itemtype   ID of the type to clear
     * @param $ID         ID of the item to clear
     *
-    * @return nothing
+    * @return boolean
    **/
    function cleanDBonItemDelete($itemtype, $ID) {
-      global $DB;
 
-      $query = "DELETE
-                FROM `".$this->getTable()."`
-                WHERE `itemtype` = '$itemtype'
-                      AND `items_id` = '$ID'";
-      $DB->query($query);
+      return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID], 1);
    }
 
 
@@ -200,18 +189,15 @@ class Alert extends CommonDBTM {
     * @param $itemtype  (default '')
     * @param $items_id  (default '')
     * @param $type      (default '')
+    *
+    * @return integer of false
    **/
    static function alertExists($itemtype='', $items_id='', $type='') {
       global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_alerts`
-                WHERE `itemtype` = '$itemtype'
-                      AND `type` = '$type'
-                      AND `items_id` = '$items_id'";
-      $result = $DB->query($query);
-      if ($DB->numrows($result)) {
-         return $DB->result($result,0,'id');
+      $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
+      if ($row = $iter->next()) {
+         return $row['id'];
       }
       return false;
    }
@@ -227,14 +213,9 @@ class Alert extends CommonDBTM {
    static function getAlertDate($itemtype='', $items_id='', $type='') {
       global $DB;
 
-      $query = "SELECT `date`
-                FROM `glpi_alerts`
-                WHERE `itemtype` = '$itemtype'
-                      AND `type` = '$type'
-                      AND `items_id` = '$items_id'";
-      $result = $DB->query($query);
-      if ($DB->numrows($result)) {
-         return $DB->result($result,0,'date');
+      $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
+      if ($row = $iter->next()) {
+         return $row['date'];
       }
       return false;
    }
@@ -243,25 +224,23 @@ class Alert extends CommonDBTM {
    /**
     * @param $itemtype
     * @param $items_id
+    *
+    * @return nothing
    **/
    static function displayLastAlert($itemtype, $items_id) {
       global $DB;
 
       if ($items_id) {
-         $query = "SELECT `date`
-                   FROM `glpi_alerts`
-                   WHERE `itemtype` = '$itemtype'
-                         AND `items_id` = '$items_id'
-                   ORDER BY `date` DESC
-                   LIMIT 1";
-         $result = $DB->query($query);
-         if ($DB->numrows($result) > 0) {
+         $iter = $DB->request(self::getTable(), ['FIELDS'   => 'date',
+                                                 'ORDER'    => 'date DESC',
+                                                 'LIMIT'    => 1,
+                                                 'itemtype' => $itemtype,
+                                                 'items_id' => $items_id]);
+         if ($row = $iter->next()) {
             //TRANS: %s is the date
-            echo sprintf(__('Alert sent on %s'),
-                         Html::convDateTime($DB->result($result, 0, 'date')));
+            echo sprintf(__('Alert sent on %s'), Html::convDateTime($row['date']));
          }
       }
    }
 
 }
-?>

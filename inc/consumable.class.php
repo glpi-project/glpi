@@ -695,8 +695,8 @@ class Consumable extends CommonDBChild {
                $total[$id_type] += $val[$id_type];
                $tot             += $val[$id_type];
             }
-         echo "<td class='numeric'>".$tot."</td>";
-         echo "</tr>";
+            echo "<td class='numeric'>".$tot."</td>";
+            echo "</tr>";
          }
          echo "<tr class='tab_bg_1'><td class='b'>".__('Total')."</td>";
          $tot = 0;
@@ -735,21 +735,19 @@ class Consumable extends CommonDBChild {
    **/
    static function countForConsumableItem(ConsumableItem $item) {
 
-      $restrict = "`glpi_consumables`.`consumableitems_id` = '".$item->getField('id') ."'";
-
-      return countElementsInTable(array('glpi_consumables'), $restrict);
+      return countElementsInTable(array('glpi_consumables'), ['glpi_consumables.consumableitems_id' => $item->getField('id')]);
    }
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-         switch ($item->getType()) {
-            case 'ConsumableItem' :
-               self::showAddForm($item);
-               self::showForConsumableItem($item);
-               self::showForConsumableItem($item, 1);
-               return true;
-         }
+      switch ($item->getType()) {
+         case 'ConsumableItem' :
+            self::showAddForm($item);
+            self::showForConsumableItem($item);
+            self::showForConsumableItem($item, 1);
+            return true;
+      }
    }
 
    function getRights($interface='central') {

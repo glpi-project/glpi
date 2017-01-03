@@ -46,6 +46,19 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php') && !file_exists(__DIR__ . '
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
 
+class GlpitestPHPerror extends Exception
+{
+}
+class GlpitestPHPwarning extends Exception
+{
+}
+class GlpitestPHPnotice extends Exception
+{
+}
+class GlpitestSQLError extends Exception
+{
+}
+
 function loadDataset() {
    global $CFG_GLPI;
 
@@ -251,6 +264,7 @@ function loadDataset() {
    ];
 
    // To bypass various right checks
+   $_SESSION['glpishowallentities'] = 1;
    $_SESSION['glpicronuserrunning'] = "cron_phpunit";
    $_SESSION['glpi_use_mode']       = Session::NORMAL_MODE;
    $CFG_GLPI['root_doc']            = '/glpi';
@@ -261,7 +275,7 @@ function loadDataset() {
    $CFG_GLPI['url_base']      = GLPI_URI;
    $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
 
-   @mkdir(GLPI_LOG_DIR, 0755, true);
+   is_dir(GLPI_LOG_DIR) or mkdir(GLPI_LOG_DIR, 0755, true);
 
    $conf = Config::getConfigurationValues('phpunit');
    if (isset($conf['dataset']) && $conf['dataset']==$data['_version']) {
@@ -277,7 +291,11 @@ function loadDataset() {
          foreach($inputs as $input) {
             // Resolve FK
             foreach ($input as $k => $v) {
+<<<<<<< HEAD
+               // $foreigntype = $type; // by default same type than current type (is the case of the dropdowns)
+=======
 //               $foreigntype = $type; // by default same type than current type (is the case of the dropdowns)
+>>>>>>> upstream/9.1/bugfixes
                $foreigntype = false ;
                $match = array() ;
                if( isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))){
@@ -286,9 +304,15 @@ function loadDataset() {
                }
                if ( $foreigntype && isset($ids[$foreigntype][$v]) && !is_numeric($v)) {
                   $input[$k] = $ids[$foreigntype][$v];
+<<<<<<< HEAD
+               } else if ($k == 'items_id'  &&  isset( $input['itemtype'] ) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
+                  $input[$k] = $ids[$input['itemtype']][$v];
+               } else if ($foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v)) {
+=======
                } elseif ($k == 'items_id'  &&  isset( $input['itemtype'] ) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
                   $input[$k] = $ids[$input['itemtype']][$v];
                } elseif( $foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v) ) {
+>>>>>>> upstream/9.1/bugfixes
                   // not found in ids array, then must get it from DB
                   if( $obj = getItemByTypeName($foreigntype, $v) ) {
                      $input[$k] = $obj->getID() ;

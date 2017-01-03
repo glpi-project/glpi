@@ -68,7 +68,7 @@ class ComputerVirtualMachine extends CommonDBChild {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable('glpi_computervirtualmachines',
-                                       "computers_id = '".$item->getID()."' AND `is_deleted`='0'");
+                                      ['computers_id' => $item->getID(), 'is_deleted' => 0 ]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -124,7 +124,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       global $CFG_GLPI;
 
       if (!Session::haveRight("computer", UPDATE)) {
-        return false;
+         return false;
       }
 
       $comp = new Computer();
@@ -160,7 +160,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<td colspan='2'></td>";
       }
       echo "</tr>\n";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
@@ -215,7 +214,6 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<td>";
       Html::autocompletionTextField($this, "vcpu");
       echo "</td></tr>";
-
 
       $this->showFormButtons($options);
 
@@ -319,7 +317,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<div class='center'>";
 
       $virtualmachines = getAllDatasFromTable('glpi_computervirtualmachines',
-                                              "`computers_id` = '$ID' AND `is_deleted` = '0'");
+                                              "`computers_id` = '$ID' AND `is_deleted` = '0'", false, 'name');
 
       echo "<table class='tab_cadre_fixehov'>";
 
@@ -397,9 +395,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          }
          echo $header;
       }
-
-
-
       echo "</table>";
       echo "</div>";
    }
@@ -476,4 +471,3 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 }
-?>

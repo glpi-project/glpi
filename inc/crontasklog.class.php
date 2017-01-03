@@ -83,8 +83,8 @@ class CronTaskLog extends CommonDBTM{
                $ong[1] = __('Statistics');
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb =  countElementsInTable($this->getTable(),
-                                              "crontasks_id = '".$item->getID()."'
-                                                 AND `state` = '".self::STATE_STOP."' ");
+                                              ['crontasks_id' => $item->getID(),
+                                               'state'        => self::STATE_STOP ]);
                }
                $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb);
                return $ong;
@@ -111,4 +111,3 @@ class CronTaskLog extends CommonDBTM{
    }
 
 }
-?>

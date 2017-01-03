@@ -217,7 +217,8 @@ class Software extends CommonDBTM {
       if ($soft->getFromDB($ID)) {
          $valid = 1;
          if (countElementsInTable('glpi_softwarelicenses',
-                                  "`softwares_id`='$ID' AND NOT `is_valid`") > 0) {
+                                  ['softwares_id'=>$ID,
+                                   'NOT' => [ 'is_valid']]) > 0) {
             $valid = 0;
          }
          if ($valid != $soft->fields['is_valid']) {
@@ -333,13 +334,13 @@ class Software extends CommonDBTM {
       $isadmin = static::canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin
-          && (countElementsInTable("glpi_rules", "sub_type='RuleSoftwareCategory'") > 0)) {
+          && (countElementsInTable("glpi_rules", ['sub_type'=>'RuleSoftwareCategory']) > 0)) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'compute_software_category']
             = __('Recalculate the category');
       }
 
       if (Session::haveRightsOr("rule_dictionnary_software", array(CREATE, UPDATE))
-           && (countElementsInTable("glpi_rules", "sub_type='RuleDictionnarySoftware'") > 0)) {
+           && (countElementsInTable("glpi_rules", ['sub_type'=>'RuleDictionnarySoftware']) > 0)) {
          $actions[__CLASS__.MassiveAction::CLASS_ACTION_SEPARATOR.'replay_dictionnary']
             = __('Replay the dictionary rules');
       }
@@ -988,4 +989,3 @@ class Software extends CommonDBTM {
 
 
 }
-?>

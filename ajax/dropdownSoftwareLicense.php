@@ -75,4 +75,3 @@ if ($_POST['softwares_id'] > 0) {
    }
    Dropdown::showFromArray($_POST['myname'], $values, array('display_emptychoice' => true));
 }
-?>

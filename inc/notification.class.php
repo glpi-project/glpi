@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Notification extends CommonDBTM {
 
-// MAILING TYPE
+   // MAILING TYPE
    //Notification to a user (sse mailing users type below)
    const USER_TYPE             = 1;
    //Notification to users of a profile
@@ -479,7 +479,7 @@ class Notification extends CommonDBTM {
 
       $mail = new NotificationMail();
       $mail->sendNotification($mailing_options);
-//       $mail->ClearAddresses();
+      // $mail->ClearAddresses();
    }
 
 

@@ -9,7 +9,7 @@
 
  based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
- 
+
  -------------------------------------------------------------------------
 
  LICENSE
@@ -50,7 +50,7 @@ if (isset($_POST["disconnect"])) {
               sprintf(__('%s disconnects an item'), $_SESSION["glpiname"]));
    Html::back();
 
-// Connect a computer to a printer/monitor/phone/peripheral
+   // Connect a computer to a printer/monitor/phone/peripheral
 } else if (isset($_POST["add"])) {
    if (isset($_POST["items_id"]) && ($_POST["items_id"] > 0)) {
       $conn->check(-1, CREATE, $_POST);
@@ -65,4 +65,3 @@ if (isset($_POST["disconnect"])) {
 }
 
 Html::displayErrorAndDie('Lost');
-?>

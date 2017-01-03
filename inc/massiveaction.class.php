@@ -420,7 +420,7 @@ class MassiveAction {
             $common_fields = array_merge($common_fields, $this->POST['massive_action_fields']);
          }
 
-        foreach ($common_fields as $field) {
+         foreach ($common_fields as $field) {
             if (isset($this->POST[$field])) {
                echo Html::hidden($field, array('value' => $this->POST[$field]));
             }
@@ -467,8 +467,7 @@ class MassiveAction {
             exit();
          }
       }
-
-     return false;
+      return false;
    }
 
 
@@ -511,7 +510,6 @@ class MassiveAction {
       } else {
          return false;
       }
-
 
       if (!is_null($checkitem)) {
          $canupdate = $checkitem->canUpdate();
@@ -1307,4 +1305,3 @@ class MassiveAction {
       $this->updateProgressBars();
    }
 }
-?>

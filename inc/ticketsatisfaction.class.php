@@ -113,8 +113,7 @@ class TicketSatisfaction extends CommonDBTM {
          echo "<div class='center spaced'>".
               "<a href='$url'>".__('External survey')."</a><br>($url)</div>";
 
-      // for internal inquest => form
-      } else {
+      } else { // for internal inquest => form
          $this->showFormHeader($options);
 
          // Set default satisfaction to 3 if not set
@@ -290,4 +289,3 @@ class TicketSatisfaction extends CommonDBTM {
    }
 
 }
-?>

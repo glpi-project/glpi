@@ -95,7 +95,7 @@ class ProjectCost extends CommonDBChild {
       if (($item->getType() == 'Project') && Project::canView()) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $nb = countElementsInTable('glpi_projectcosts', "projects_id = '".$item->getID()."'");
+            $nb = countElementsInTable('glpi_projectcosts', ['projects_id' => $item->getID()]);
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
@@ -360,12 +360,11 @@ class ProjectCost extends CommonDBChild {
             echo "<th>".__('Cost')."</th>";
             echo "</tr>";
 
-         Session::initNavigateListItems(__CLASS__,
+            Session::initNavigateListItems(__CLASS__,
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
                                                 Project::getTypeName(1), $project->getName()));
-
 
             while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2' ".
@@ -416,4 +415,3 @@ class ProjectCost extends CommonDBChild {
       echo "</div>";
    }
 }
-?>

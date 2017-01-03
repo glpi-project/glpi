@@ -135,8 +135,8 @@ class Notepad extends CommonDBChild {
    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_notepads',
-                                 "`itemtype` = '".$item->getType()."'
-                                    AND `items_id` = '".$item->getID()."'");
+                                  ['itemtype' => $item->getType(),
+                                   'items_id' => $item->getID()]);
    }
 
 
@@ -230,7 +230,7 @@ class Notepad extends CommonDBChild {
       global $CFG_GLPI;
 
       if (!Session::haveRight($item::$rightname, READNOTE)) {
-        return false;
+         return false;
       }
       $notes   = static::getAllForItem($item);
       $rand    = mt_rand();
@@ -280,7 +280,6 @@ class Notepad extends CommonDBChild {
 
             echo "<div class='boxnotecontent'>";
 
-
             echo "<div class='boxnotefloatright'>";
             $username = NOT_AVAILABLE;
             if ($note['users_id_lastupdater']) {
@@ -296,7 +295,6 @@ class Notepad extends CommonDBChild {
                               Html::convDateTime($note['date']));
             printf(__('%1$s / %2$s'), $update, $create);
             echo "</div>"; // floatright
-
 
             echo "<div class='boxnotetext $classtoadd' ";
             if ($canedit) {
@@ -322,7 +320,7 @@ class Notepad extends CommonDBChild {
             echo "</div>"; // boxnoteright
             echo "</div>"; // boxnote
 
-             if ($canedit) {
+            if ($canedit) {
                 echo "<div class='boxnote starthidden' id='edit$id'>";
                 echo "<form name='update_form$id$rand' id='update_form$id$rand' ";
                 echo " method='post' action='".Toolbox::getItemTypeFormURL('Notepad')."'>";
@@ -339,11 +337,9 @@ class Notepad extends CommonDBChild {
 
                 Html::closeForm();
                 echo "</div>"; // boxnote
-             }
+            }
          }
       }
-
       return true;
    }
 }
-?>

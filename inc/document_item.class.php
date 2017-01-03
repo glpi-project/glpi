@@ -79,7 +79,8 @@ class Document_Item extends CommonDBRelation{
          // Not item linked for closed tickets
          if ($ticket->getFromDB($this->fields['items_id'])
              && in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
-           return false;
+
+            return false;
          }
       }
 
@@ -101,17 +102,17 @@ class Document_Item extends CommonDBRelation{
       }
 
       // Avoid duplicate entry
-      $restrict = "`documents_id` = '".$input['documents_id']."'
-                   AND `itemtype` = '".$input['itemtype']."'
-                   AND `items_id` = '".$input['items_id']."'";
-      if (countElementsInTable($this->getTable(),$restrict) > 0) {
+      if (countElementsInTable($this->getTable(),
+                              ['documents_id' => $input['documents_id'],
+                               'itemtype'     => $input['itemtype'],
+                               'items_id'     => $input['items_id']]) > 0) {
          return false;
       }
       return parent::prepareInputForAdd($input);
    }
 
 
-  /**
+   /**
     * @since version 0.90.2
     *
     * @see CommonDBTM::pre_deleteItem()
@@ -131,8 +132,8 @@ class Document_Item extends CommonDBRelation{
          if (isset($tt->mandatory['_documents_id'])) {
             // refuse delete if only one document
             if (countElementsInTable($this->getTable(),
-                                     "`items_id` =". $this->fields['items_id'] ."
-                                          AND `itemtype` = 'Ticket'") == 1) {
+                                    ['items_id' => $this->fields['items_id'],
+                                     'itemtype' => 'Ticket' ]) == 1) {
                $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
                                   _n('Document', 'Documents', 2));
                Session::addMessageAfterRedirect($message, false, ERROR);
@@ -235,11 +236,9 @@ class Document_Item extends CommonDBRelation{
     * @param $item   Document object
    **/
    static function countForDocument(Document $item) {
-
-      $restrict = "`glpi_documents_items`.`documents_id` = '".$item->getField('id')."'
-                   AND `glpi_documents_items`.`itemtype` != '".$item->getType()."'";
-
-      return countElementsInTable(array('glpi_documents_items'), $restrict);
+      return countElementsInTable(array('glpi_documents_items'),
+                                 ['glpi_documents_items.documents_id' => $item->getField('id'),
+                                  'NOT' => ['glpi_documents_items.itemtype' => $item->getType()]]);
    }
 
 
@@ -456,7 +455,7 @@ class Document_Item extends CommonDBRelation{
 
             if ($itemtype =='KnowbaseItem') {
                if (Session::getLoginUserID()) {
-                 $where = "AND ".KnowbaseItem::addVisibilityRestrict();
+                  $where = "AND ".KnowbaseItem::addVisibilityRestrict();
                } else {
                   // Anonymous access
                   if (Session::isMultiEntitiesMode()) {
@@ -682,7 +681,6 @@ class Document_Item extends CommonDBRelation{
          $result = $DB->query($q);
          $nb     = $DB->result($result,0,0);
 
-
          if ($item->getType() == 'Document') {
             $used[$item->getID()] = $item->getID();
          }
@@ -866,7 +864,6 @@ class Document_Item extends CommonDBRelation{
          }
       }
 
-
       echo "<div class='spaced'>";
       if ($canedit
           && $number
@@ -1021,4 +1018,3 @@ class Document_Item extends CommonDBRelation{
    }
 
 }
-?>

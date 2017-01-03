@@ -199,11 +199,8 @@ class NetworkEquipment extends CommonDBTM {
       if (!parent::canUnrecurs()) {
          return false;
       }
-      $entities = "(".$this->fields['entities_id'];
-      foreach (getAncestorsOf("glpi_entities", $this->fields['entities_id']) as $papa) {
-         $entities .= ",$papa";
-      }
-      $entities .= ")";
+      $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
+      $entities[] = $this->fields['entities_id'];
 
       // RELATION : networking -> _port -> _wire -> _port -> device
 
@@ -228,13 +225,13 @@ class NetworkEquipment extends CommonDBTM {
             while ($data = $DB->fetch_assoc($res)) {
                $itemtable = getTableForItemType($data["itemtype"]);
                if ($item = getItemForItemtype($data["itemtype"])) {
-                   // For each itemtype which are entity dependant
-                   if ($item->isEntityAssign()) {
-                      if (countElementsInTable($itemtable, "id IN (".$data["ids"].")
-                                               AND entities_id NOT IN $entities") > 0) {
+                  // For each itemtype which are entity dependant
+                  if ($item->isEntityAssign()) {
+                     if (countElementsInTable($itemtable, ['id' => $data["ids"],
+                                              'NOT' => ['entities_id' => $entities ]]) > 0) {
                          return false;
-                      }
-                   }
+                     }
+                  }
                }
             }
          }
@@ -351,7 +348,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>";
 
       $rowspan        = 5;
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
@@ -387,7 +384,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "ram");
       echo "</td></tr>";
-      
+
       // Display auto inventory informations
       if (!empty($ID)
          && $this->fields["is_dynamic"]) {
@@ -561,4 +558,3 @@ class NetworkEquipment extends CommonDBTM {
    }
 
 }
-?>
