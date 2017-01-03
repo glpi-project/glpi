@@ -684,7 +684,7 @@ class Printer  extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => '_virtual',
          'linkfield'          => '_virtual',
-         'name'               => _n('Cartridge','Cartridges', Session::getPluralNumber()),
+         'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
          'datatype'           => 'specific',
          'massiveaction'      => false,
          'nosearch'           => true,

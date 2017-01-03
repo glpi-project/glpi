@@ -1233,7 +1233,7 @@ class Item_Ticket extends CommonDBRelation{
          'id'                 => '131',
          'table'              => $this->getTable(),
          'field'              => 'itemtype',
-         'name'               => _n('Associated item type', 'Associated item types',2),
+         'name'               => _n('Associated item type', 'Associated item types', 2),
          'datatype'           => 'itemtypename',
          'itemtype_list'      => 'ticket_types',
          'nosort'             => true

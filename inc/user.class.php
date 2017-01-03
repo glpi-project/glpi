@@ -2650,7 +2650,7 @@ class User extends CommonDBTM {
          'id'                 => '13',
          'table'              => 'glpi_groups',
          'field'              => 'completename',
-         'name'               => _n('Group','Groups', Session::getPluralNumber()),
+         'name'               => _n('Group', 'Groups', Session::getPluralNumber()),
          'forcegroupby'       => true,
          'datatype'           => 'itemlink',
          'massiveaction'      => false,

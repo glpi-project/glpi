@@ -543,7 +543,7 @@ class Entity extends CommonTreeDropdown {
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'state',
-         'name'               => _x('location','State'),
+         'name'               => _x('location', 'State'),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];

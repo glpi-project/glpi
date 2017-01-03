@@ -419,7 +419,7 @@ class Contract extends CommonDBTM {
          'id'                 => '130',
          'table'              => 'glpi_contracts',
          'field'              => 'duration',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'),__('Duration')),
+         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('Duration')),
          'datatype'           => 'number',
          'max'                => '120',
          'unit'               => 'month',

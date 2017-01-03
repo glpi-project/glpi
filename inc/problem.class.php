@@ -425,7 +425,7 @@ class Problem extends CommonITILObject {
          'id'                 => '63',
          'table'              => 'glpi_items_problems',
          'field'              => 'id',
-         'name'               => _x('quantity','Number of items'),
+         'name'               => _x('quantity', 'Number of items'),
          'forcegroupby'       => true,
          'usehaving'          => true,
          'datatype'           => 'count',

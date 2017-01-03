@@ -282,7 +282,7 @@ class ConsumableItem extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => '_virtual',
          'linkfield'          => '_virtual',
-         'name'               => _n('Consumable','Consumables', Session::getPluralNumber()),
+         'name'               => _n('Consumable', 'Consumables', Session::getPluralNumber()),
          'datatype'           => 'specific',
          'massiveaction'      => false,
          'nosearch'           => true,

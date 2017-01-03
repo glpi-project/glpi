@@ -280,7 +280,7 @@ class Supplier extends CommonDBTM {
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'state',
-         'name'               => _x('location','State'),
+         'name'               => _x('location', 'State'),
          'datatype'           => 'string'
       ];
 

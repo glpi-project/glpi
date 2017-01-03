@@ -971,7 +971,7 @@ class AuthLDAP extends CommonDBTM {
          'id'                 => '25',
          'table'              => $this->getTable(),
          'field'              => 'email2_field',
-         'name'               => sprintf(__('%1$s %2$s'),_n('Email','Emails',1), '2'),
+         'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '2'),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];
@@ -980,7 +980,7 @@ class AuthLDAP extends CommonDBTM {
          'id'                 => '26',
          'table'              => $this->getTable(),
          'field'              => 'email3_field',
-         'name'               => sprintf(__('%1$s %2$s'),_n('Email','Emails',1), '3'),
+         'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '3'),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];
@@ -989,7 +989,7 @@ class AuthLDAP extends CommonDBTM {
          'id'                 => '27',
          'table'              => $this->getTable(),
          'field'              => 'email4_field',
-         'name'               => sprintf(__('%1$s %2$s'),_n('Email','Emails',1), '4'),
+         'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '4'),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];

@@ -320,7 +320,7 @@ class CartridgeItem extends CommonDBTM {
          'id'                 => '9',
          'table'              => $this->getTable(),
          'field'              => '_virtual',
-         'name'               => _n('Cartridge','Cartridges', Session::getPluralNumber()),
+         'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
          'datatype'           => 'specific',
          'massiveaction'      => false,
          'nosearch'           => true,

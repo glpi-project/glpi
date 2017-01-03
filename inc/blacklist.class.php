@@ -110,7 +110,7 @@ class Blacklist extends CommonDropdown {
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'type',
-         'name'               => _n('Type','Types',1),
+         'name'               => _n('Type', 'Types', 1),
          'searchtype'         => ['equals', 'notequals'],
          'datatype'           => 'specific'
       ];
