@@ -94,7 +94,7 @@ foreach ($notvalidoptions as $key) {
 if( isset($options['locked'] ) ) {
     ObjectLock::setReadOnlyProfile() ;
 }
-CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'],$_GET["withtemplate"], $options);
+CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], $_GET["withtemplate"], $options);
 
 
 if (isset($_GET['full_page_tab'])) {

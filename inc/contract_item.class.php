@@ -93,7 +93,7 @@ class Contract_Item extends CommonDBRelation{
 
 
    static function getTypeName($nb=0) {
-      return _n('Link Contract/Item','Links Contract/Item',$nb);
+      return _n('Link Contract/Item', 'Links Contract/Item', $nb);
    }
 
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
@@ -263,7 +263,7 @@ class Contract_Item extends CommonDBRelation{
          if ($item->maybeTemplate()) {
             $query .= " AND `$itemtable`.`is_template` = '0'";
          }
-         $query .= getEntitiesRestrictRequest(" AND",$itemtable, '', $entities_id,
+         $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', $entities_id,
                                                 $item->maybeRecursive())."
                      ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
 
@@ -387,7 +387,7 @@ class Contract_Item extends CommonDBRelation{
                 WHERE `glpi_contracts`.`id`=`glpi_contracts_items`.`contracts_id`
                       AND `glpi_contracts_items`.`items_id` = '$ID'
                       AND `glpi_contracts_items`.`itemtype` = '$itemtype'".
-                      getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)."
+                      getEntitiesRestrictRequest(" AND", "glpi_contracts", '', '', true)."
                 ORDER BY `glpi_contracts`.`name`";
 
       $result = $DB->query($query);
@@ -464,7 +464,7 @@ class Contract_Item extends CommonDBRelation{
                                                 $item->getTypeName(1), $item->getName()));
          foreach ($contracts as $data) {
             $cID         = $data["contracts_id"];
-            Session::addToNavigateListItems(__CLASS__,$cID);
+            Session::addToNavigateListItems(__CLASS__, $cID);
             $contracts[] = $cID;
             $assocID     = $data["id"];
             $con         = new Contract();
@@ -573,7 +573,7 @@ class Contract_Item extends CommonDBRelation{
             if ($item->maybeTemplate()) {
                $query .= " AND `$itemtable`.`is_template` = '0'";
             }
-            $query .= getEntitiesRestrictRequest(" AND",$itemtable, '', '',
+            $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',
                                                  $item->maybeRecursive())."
                       ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
 
@@ -592,7 +592,7 @@ class Contract_Item extends CommonDBRelation{
                                                              'field'      => 29)));
 
                $url  = $item::getSearchURL();
-               $url .= (strpos($url,'?') ? '&':'?');
+               $url .= (strpos($url, '?') ? '&':'?');
                $url .= Toolbox::append_params($opt);
                $link = "<a href='$url'>" . __('Device list')."</a>";
 
@@ -707,7 +707,7 @@ class Contract_Item extends CommonDBRelation{
                   $prem = false;
                }
                echo "<td class='center'>";
-               echo Dropdown::getDropdownName("glpi_entities",$objdata['entity'])."</td>";
+               echo Dropdown::getDropdownName("glpi_entities", $objdata['entity'])."</td>";
                echo "<td class='center".
                       (isset($objdata['is_deleted']) && $objdata['is_deleted'] ? " tab_bg_2_2'" : "'");
                echo ">".$name."</td>";

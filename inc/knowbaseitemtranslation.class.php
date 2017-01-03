@@ -213,7 +213,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
          // Create item
          $options['itemtype']         = get_class($item);
          $options['knowbaseitems_id'] = $item->getID();
-         $this->check(-1 , CREATE, $options);
+         $this->check(-1, CREATE, $options);
 
       }
       Html::initEditorSystem('answer');

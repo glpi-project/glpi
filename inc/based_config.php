@@ -54,71 +54,71 @@ if (file_exists(GLPI_ROOT ."/config/config_path.php")) {
 
 // Default location for database configuration : config_db.php
 if (!defined("GLPI_CONFIG_DIR")) {
-   define("GLPI_CONFIG_DIR",GLPI_ROOT . "/config");
+   define("GLPI_CONFIG_DIR", GLPI_ROOT . "/config");
 }
 
 // Default location for backup dump
 if (!defined("GLPI_DUMP_DIR")) {
-   define("GLPI_DUMP_DIR",GLPI_ROOT . "/files/_dumps");
+   define("GLPI_DUMP_DIR", GLPI_ROOT . "/files/_dumps");
 }
 
 // Path for documents storage
 if (!defined("GLPI_DOC_DIR")) {
-   define("GLPI_DOC_DIR",GLPI_ROOT . "/files");
+   define("GLPI_DOC_DIR", GLPI_ROOT . "/files");
 }
 
 // Path for cron storage
 if (!defined("GLPI_CRON_DIR")) {
-   define("GLPI_CRON_DIR",GLPI_ROOT . "/files/_cron");
+   define("GLPI_CRON_DIR", GLPI_ROOT . "/files/_cron");
 }
 
 // Path for sessions storage
 if (!defined("GLPI_SESSION_DIR")) {
-   define("GLPI_SESSION_DIR",GLPI_ROOT . "/files/_sessions");
+   define("GLPI_SESSION_DIR", GLPI_ROOT . "/files/_sessions");
 }
 
 // Path for plugins documents storage
 if (!defined("GLPI_PLUGIN_DOC_DIR")) {
-   define("GLPI_PLUGIN_DOC_DIR",GLPI_ROOT . "/files/_plugins");
+   define("GLPI_PLUGIN_DOC_DIR", GLPI_ROOT . "/files/_plugins");
 }
 // Path for cache storage
 if (!defined("GLPI_LOCK_DIR")) {
-   define("GLPI_LOCK_DIR",GLPI_ROOT . "/files/_lock");
+   define("GLPI_LOCK_DIR", GLPI_ROOT . "/files/_lock");
 }
 
 // Path for log storage
 if (!defined("GLPI_LOG_DIR")) {
-   define("GLPI_LOG_DIR",GLPI_ROOT . "/files/_log");
+   define("GLPI_LOG_DIR", GLPI_ROOT . "/files/_log");
 }
 
 // Path for graph storage
 if (!defined("GLPI_GRAPH_DIR")) {
-   define("GLPI_GRAPH_DIR",GLPI_ROOT . "/files/_graphs");
+   define("GLPI_GRAPH_DIR", GLPI_ROOT . "/files/_graphs");
 }
 
 // Path for picture storage
 if (!defined("GLPI_PICTURE_DIR")) {
-   define("GLPI_PICTURE_DIR",GLPI_ROOT . "/files/_pictures");
+   define("GLPI_PICTURE_DIR", GLPI_ROOT . "/files/_pictures");
 }
 
 // Path for temp storage
 if (!defined("GLPI_TMP_DIR")) {
-   define("GLPI_TMP_DIR",GLPI_ROOT . "/files/_tmp");
+   define("GLPI_TMP_DIR", GLPI_ROOT . "/files/_tmp");
 }
 
 // Path for rss storage
 if (!defined("GLPI_RSS_DIR")) {
-   define("GLPI_RSS_DIR",GLPI_ROOT . "/files/_rss");
+   define("GLPI_RSS_DIR", GLPI_ROOT . "/files/_rss");
 }
 
 // Path for upload storage
 if (!defined("GLPI_UPLOAD_DIR")) {
-   define("GLPI_UPLOAD_DIR",GLPI_ROOT . "/files/_uploads");
+   define("GLPI_UPLOAD_DIR", GLPI_ROOT . "/files/_uploads");
 }
 
 // Default location scripts
 if (!defined("GLPI_SCRIPT_DIR")) {
-   define("GLPI_SCRIPT_DIR",GLPI_ROOT . "/scripts");
+   define("GLPI_SCRIPT_DIR", GLPI_ROOT . "/scripts");
 }
 
 // Default patch to htmLawed

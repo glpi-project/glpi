@@ -257,7 +257,7 @@ class Notepad extends CommonDBChild {
          echo "</div>"; // box notecontent
 
          echo "<div class='boxnoteright'><br>";
-         echo Html::submit(_x('button','Add'), array('name' => 'add'));
+         echo Html::submit(_x('button', 'Add'), array('name' => 'add'));
          echo "</div>";
 
          Html::closeForm();
@@ -332,7 +332,7 @@ class Notepad extends CommonDBChild {
                 echo "</div>"; // boxnotecontent
 
                 echo "<div class='boxnoteright'><br>";
-                echo Html::submit(_x('button','Update'), array('name' => 'update'));
+                echo Html::submit(_x('button', 'Update'), array('name' => 'update'));
                 echo "</div>"; // boxnoteright
 
                 Html::closeForm();

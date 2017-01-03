@@ -19,4 +19,7 @@
   <!-- Remove closingTag -->
   <rule ref="Zend.Files.ClosingTag" />
 
+  <!-- White space after comma in function call -->
+  <rule ref="Generic.Functions.FunctionCallArgumentSpacing" />
+
 </ruleset>

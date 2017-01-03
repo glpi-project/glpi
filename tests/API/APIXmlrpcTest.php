@@ -44,7 +44,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
    protected function doHttpRequest($resource = "", $params = array()) {
       $headers = array("Content-Type" => "text/xml");
       $request = xmlrpc_encode_request($resource, $params);
-      return $this->http_client->post($this->base_uri,['body'    => $request,
+      return $this->http_client->post($this->base_uri, ['body'    => $request,
                                                        'headers' => $headers]);
    }
 

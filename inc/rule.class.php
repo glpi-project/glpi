@@ -1062,7 +1062,7 @@ class Rule extends CommonDBTM {
 
       echo "<table $style>";
       echo "<tr class='noHover'>";
-      echo "<th colspan='".($canedit && $nb?'4':'3')."'>" . _n('Action','Actions', Session::getPluralNumber()) . "</th></tr>";
+      echo "<th colspan='".($canedit && $nb?'4':'3')."'>" . _n('Action', 'Actions', Session::getPluralNumber()) . "</th></tr>";
 
       $header_begin  = "<tr>";
       $header_top    = '';
@@ -1526,7 +1526,7 @@ class Rule extends CommonDBTM {
 
             if (!isset($definition_criteria['is_global'])
                 || !$definition_criteria['is_global']) {
-               $doactions |= $this->checkCriteria($criteria,$input);
+               $doactions |= $this->checkCriteria($criteria, $input);
                if ($doactions) {
                   break;
                }
@@ -1555,7 +1555,7 @@ class Rule extends CommonDBTM {
       reset($this->criterias);
 
       foreach ($this->criterias as $criteria) {
-         $result = $this->checkCriteria($criteria,$input);
+         $result = $this->checkCriteria($criteria, $input);
          $check_results[$criteria->fields["id"]]["name"]   = $criteria->fields["criteria"];
          $check_results[$criteria->fields["id"]]["value"]  = $criteria->fields["pattern"];
          $check_results[$criteria->fields["id"]]["result"] = ((!$result)?0:1);
@@ -1630,7 +1630,7 @@ class Rule extends CommonDBTM {
             foreach ($partial_regex_result as $new) {
 
                foreach ($this->regex_results as $old) {
-                  $temp_result[] = array_merge($old,$new);
+                  $temp_result[] = array_merge($old, $new);
                }
             }
             $this->regex_results = $temp_result;
@@ -2347,7 +2347,7 @@ class Rule extends CommonDBTM {
                return Dropdown::getDropdownName('glpi_groups', $value);
 
             case "dropdown_validation_percent" :
-               return Dropdown::getValueWithUnit($value,'%');
+               return Dropdown::getValueWithUnit($value, '%');
 
             case "yesonly" :
             case "yesno" :
@@ -2470,7 +2470,7 @@ class Rule extends CommonDBTM {
 
             //Look for the criteria in the field of already displayed criteria :
             //if present, don't display it again
-            if (!in_array($criteria->fields["criteria"],$already_displayed)) {
+            if (!in_array($criteria->fields["criteria"], $already_displayed)) {
                $already_displayed[] = $criteria->fields["criteria"];
                echo "<tr class='tab_bg_1'>";
                echo "<td>";
@@ -2500,7 +2500,7 @@ class Rule extends CommonDBTM {
          $this->showSpecificCriteriasForPreview($_POST);
 
          echo "<tr><td class='tab_bg_2 center' colspan='3'>";
-         echo "<input type='submit' name='test_rule' value=\""._sx('button','Test')."\"
+         echo "<input type='submit' name='test_rule' value=\""._sx('button', 'Test')."\"
                 class='submit'>";
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getType() . "'>";
@@ -2568,7 +2568,7 @@ class Rule extends CommonDBTM {
       }
 
       $p['condition'] = "`sub_type` = '".$p['sub_type']."' $add_condition";
-      return Dropdown::show($p['sub_type'],$p);
+      return Dropdown::show($p['sub_type'], $p);
    }
 
 
@@ -2706,7 +2706,7 @@ class Rule extends CommonDBTM {
       echo "<input type=hidden name='entities_id' value='-1'>";
       echo "<input type=hidden name='affectentity' value='$ID'>";
       echo "<input type=hidden name='_method' value='AddRule'>";
-      echo "<input type='submit' name='execute' value=\""._sx('button','Add')."\" class='submit'>";
+      echo "<input type='submit' name='execute' value=\""._sx('button', 'Add')."\" class='submit'>";
       echo "</td></tr>\n";
       echo "</table>";
       Html::closeForm();
@@ -2966,7 +2966,7 @@ class Rule extends CommonDBTM {
                      $nb = countElementsInTable(array('glpi_rules', 'glpi_ruleactions'),
                                                 "`glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
                                                   AND `glpi_rules`.`sub_type`
-                                                         IN ('".implode("','",$types)."')
+                                                         IN ('".implode("','", $types)."')
                                                   AND `glpi_ruleactions`.`field` = 'entities_id'
                                                   AND `glpi_ruleactions`.`value`
                                                             = '".$item->getID()."'");

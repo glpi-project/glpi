@@ -162,8 +162,8 @@ class QueuedMail extends CommonDBTM {
                    AND `entities_id` = '".$input['entities_id']."'
                    AND `notificationtemplates_id` = '".$input['notificationtemplates_id']."'
                    AND `recipient` = '".$input['recipient']."'";
-         foreach ($DB->request($this->getTable(),$query) as $data) {
-            $this->delete(array('id' => $data['id']),1);
+         foreach ($DB->request($this->getTable(), $query) as $data) {
+            $this->delete(array('id' => $data['id']), 1);
          }
       }
 
@@ -666,7 +666,7 @@ class QueuedMail extends CommonDBTM {
       foreach ($content as $ID => $val) {
          // Get last tag for end
          if ($begin_strip >= 0) {
-            if (preg_match($end_match,$val)) {
+            if (preg_match($end_match, $val)) {
                $end_strip = $ID;
                continue;
             }
@@ -676,12 +676,12 @@ class QueuedMail extends CommonDBTM {
          }
          // Get first tag for begin
          if ($begin_strip < 0) {
-            if (preg_match($begin_match,$val)) {
+            if (preg_match($begin_match, $val)) {
                $begin_strip = $ID;
             }
          }
       }
-      return nl2br($newstring,false);
+      return nl2br($newstring, false);
       return preg_replace($patterns, $replacements, $string);
    }
 

@@ -121,7 +121,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                                                          = '".$input['options']['move']['softwares_id']."'",
                                                   'used'
                                                     => $input['options']['move']['used']));
-                  echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+                  echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
                   return true;
                }
             }
@@ -303,7 +303,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
               ORDER BY `completename`";
 
       foreach ($DB->request($sql) as $ID => $data) {
-         $nb = self::countForLicense($softwarelicense_id,$ID);
+         $nb = self::countForLicense($softwarelicense_id, $ID);
          if ($nb > 0) {
             echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
             echo "<td class='numeric'>".$nb."</td></tr>\n";
@@ -354,8 +354,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       if (isset($_GET["sort"]) && !empty($_GET["sort"])) {
          // manage several param like location,compname : order first
-         $tmp  = explode(",",$_GET["sort"]);
-         $sort = "`".implode("` $order,`",$tmp)."`";
+         $tmp  = explode(",", $_GET["sort"]);
+         $sort = "`".implode("` $order,`", $tmp)."`";
       } else {
          $sort = "`entity` $order, `compname`";
       }
@@ -529,7 +529,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             echo $header_begin.$header_top.$header_end;
 
             do {
-               Session::addToNavigateListItems('Computer',$data["cID"]);
+               Session::addToNavigateListItems('Computer', $data["cID"]);
 
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {

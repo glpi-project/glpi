@@ -66,7 +66,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
    function getAdditionalTargets($event='') {
 
       $this->addTarget(Notification::TEAM_USER, __('Project team user'));
-      $this->addTarget(Notification::TEAM_GROUP,  __('Project team group'));
+      $this->addTarget(Notification::TEAM_GROUP, __('Project team group'));
       $this->addTarget(Notification::TEAM_GROUP_SUPERVISOR, __('Manager of group of project team'));
       $this->addTarget(Notification::TEAM_GROUP_WITHOUT_SUPERVISOR,
                         __("Group of project team except manager users"));
@@ -233,7 +233,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $this->datas["##projecttask.lastupdatedate##"]
                   = Html::convDateTime($item->getField('date_mod'));
       $this->datas["##projecttask.percent##"]
-                  = Dropdown::getValueWithUnit($item->getField('percent_done'),"%");
+                  = Dropdown::getValueWithUnit($item->getField('percent_done'), "%");
       $this->datas["##projecttask.planstartdate##"]
                   = Html::convDateTime($item->getField('plan_start_date'));
       $this->datas["##projecttask.planenddate##"]
@@ -293,7 +293,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
 
       // Team infos
       $restrict = "`projecttasks_id` = '".$item->getField('id')."'";
-      $items    = getAllDatasFromTable('glpi_projecttaskteams',$restrict);
+      $items    = getAllDatasFromTable('glpi_projecttaskteams', $restrict);
 
       $this->datas['teammembers'] = array();
       if (count($items)) {
@@ -315,7 +315,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
       $restrict             = "`projecttasks_id`='".$item->getField('id')."'";
       $restrict            .= " ORDER BY `date` DESC, `id` ASC";
 
-      $tasks                = getAllDatasFromTable('glpi_projecttasks',$restrict);
+      $tasks                = getAllDatasFromTable('glpi_projecttasks', $restrict);
       $this->datas['tasks'] = array();
       foreach ($tasks as $task) {
          $tmp                            = array();
@@ -329,7 +329,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
                                                                      $task['projectstates_id']);
          $tmp['##task.type##']           = Dropdown::getDropdownName('glpi_projecttasktypes',
                                                                      $task['projecttasktypes_id']);
-         $tmp['##task.percent##']        = Dropdown::getValueWithUnit($task['percent_done'],"%");
+         $tmp['##task.percent##']        = Dropdown::getValueWithUnit($task['percent_done'], "%");
 
          $this->datas["##task.planstartdate##"]    = '';
          $this->datas["##task.planenddate##"]      = '';
@@ -439,7 +439,7 @@ class NotificationTargetProjectTask extends NotificationTarget {
 
       // Items infos
       $restrict = "`projects_id` = '".$item->getField('id')."'";
-      $items    = getAllDatasFromTable('glpi_items_projects',$restrict);
+      $items    = getAllDatasFromTable('glpi_items_projects', $restrict);
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {

@@ -319,7 +319,7 @@ class MailCollector  extends CommonDBTM {
       echo "<form name='form' method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_2'><td class='center'>";
-      echo "<input type='submit' name='get_mails' value=\""._sx('button','Get email tickets now').
+      echo "<input type='submit' name='get_mails' value=\""._sx('button', 'Get email tickets now').
              "\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
@@ -403,7 +403,7 @@ class MailCollector  extends CommonDBTM {
       $mailbox_id = 0;
       $query      = "SELECT *
                      FROM `glpi_notimportedemails`
-                     WHERE `id` IN (".implode(',',$emails_ids).")
+                     WHERE `id` IN (".implode(',', $emails_ids).")
                      ORDER BY `mailcollectors_id`";
 
       $todelete = array();
@@ -711,7 +711,7 @@ class MailCollector  extends CommonDBTM {
       if (!empty($this->charset)
           && !$this->body_converted
           && mb_detect_encoding($body) != 'UTF-8') {
-         $body                 = Toolbox::encodeInUtf8($body,$this->charset);
+         $body                 = Toolbox::encodeInUtf8($body, $this->charset);
          $this->body_converted = true;
       }
 
@@ -738,7 +738,7 @@ class MailCollector  extends CommonDBTM {
 
       // See in title
       if (!isset($tkt['tickets_id'])
-          && preg_match('/\[.+#(\d+)\]/',$head['subject'],$match)) {
+          && preg_match('/\[.+#(\d+)\]/', $head['subject'], $match)) {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
@@ -806,13 +806,13 @@ class MailCollector  extends CommonDBTM {
             foreach ($content as $ID => $val) {
                // Get first tag for begin
                if ($begin_strip < 0) {
-                  if (preg_match($begin_match,$val)) {
+                  if (preg_match($begin_match, $val)) {
                      $begin_strip = $ID;
                   }
                }
                // Get last tag for end
                if ($begin_strip >= 0) {
-                  if (preg_match($end_match,$val)) {
+                  if (preg_match($end_match, $val)) {
                      $end_strip = $ID;
                      continue;
                   }
@@ -821,11 +821,11 @@ class MailCollector  extends CommonDBTM {
 
             if ($begin_strip >= 0) {
                // Clean first and last lines
-               $content[$begin_strip] = preg_replace($begin_match,'',$content[$begin_strip]);
+               $content[$begin_strip] = preg_replace($begin_match, '', $content[$begin_strip]);
             }
             if ($end_strip >= 0) {
                // Clean first and last lines
-               $content[$end_strip] = preg_replace($end_match,'',$content[$end_strip]);
+               $content[$end_strip] = preg_replace($end_match, '', $content[$end_strip]);
             }
 
             if ($begin_strip >= 0) {
@@ -941,16 +941,16 @@ class MailCollector  extends CommonDBTM {
 
       $rand   = mt_rand();
       // Move line breaks to special CHARS
-      $string = str_replace(array("<br>"),"==$rand==", $string);
+      $string = str_replace(array("<br>"), "==$rand==", $string);
 
-      $string = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $string);
+      $string = str_replace(array("\r\n", "\n", "\r"), "==$rand==", $string);
 
       // Wrap content for blacklisted items
       $itemstoclean = array();
       foreach ($DB->request('glpi_blacklistedmailcontents') as $data) {
          $toclean = trim($data['content']);
          if (!empty($toclean)) {
-            $toclean        = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $toclean);
+            $toclean        = str_replace(array("\r\n", "\n", "\r"), "==$rand==", $toclean);
             $itemstoclean[] = $toclean;
          }
       }
@@ -1094,7 +1094,7 @@ class MailCollector  extends CommonDBTM {
 
       if (($mid != $this->mid)
           || !$this->structure) {
-         $this->structure = imap_fetchstructure($this->marubox,$mid);
+         $this->structure = imap_fetchstructure($this->marubox, $mid);
 
          if ($this->structure) {
             $this->mid = $mid;
@@ -1270,7 +1270,7 @@ class MailCollector  extends CommonDBTM {
                       && function_exists('mb_convert_encoding')
                       && (strtoupper($param->value) != 'UTF-8')) {
 
-                     $text                 = mb_convert_encoding($text, 'utf-8',$param->value);
+                     $text                 = mb_convert_encoding($text, 'utf-8', $param->value);
                      $this->body_converted = true;
                   }
                }
@@ -1415,7 +1415,7 @@ class MailCollector  extends CommonDBTM {
             // Embeded email comes without filename - try to get "Subject:" or generate trivial one
             $filename = "msg_$part.EML"; // default trivial one :)!
             if (($message = $this->getDecodedFetchbody($structure, $mid, $part))
-                    && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches))) {
+                    && (preg_match( "/Subject: *([^\r\n]*)/i", $message, $matches))) {
                $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";
                $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;
             }
@@ -1535,7 +1535,7 @@ class MailCollector  extends CommonDBTM {
    **/
    function deleteMails($mid, $folder='') {
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
-         $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
+         $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
             return true;
          }

@@ -42,7 +42,7 @@ class PrinterTest extends DbTestCase {
       $obj = new Printer();
 
       // Add
-      $id = $obj->add(['name' => __METHOD__, 'entities_id' => getItemByTypeName('Entity', '_test_root_entity',  true)]);
+      $id = $obj->add(['name' => __METHOD__, 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)]);
       $this->assertGreaterThan(0, $id);
       $this->assertTrue($obj->getFromDB($id));
 
@@ -64,7 +64,7 @@ class PrinterTest extends DbTestCase {
       $this->assertTrue($obj->maybeDeleted());
 
       // Add
-      $id = $obj->add(['name' => __METHOD__, 'entities_id' => getItemByTypeName('Entity', '_test_root_entity',  true)]);
+      $id = $obj->add(['name' => __METHOD__, 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)]);
       $this->assertGreaterThan(0, $id);
       $this->assertTrue($obj->getFromDB($id));
       $this->assertEquals(0, $obj->getField('is_deleted'));
@@ -95,21 +95,21 @@ class PrinterTest extends DbTestCase {
 
       // Visibility from root + tree
       $this->setEntity('_test_root_entity', true);
-      $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_all',  true), READ));
+      $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_all', true), READ));
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_ent0', true), READ));
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_ent1', true), READ));
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_ent2', true), READ));
 
       // Visibility from root only
       $this->setEntity('_test_root_entity', false);
-      $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_all',  true), READ));
+      $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_all', true), READ));
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_ent0', true), READ));
       $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent1', true), READ));
       $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent2', true), READ));
 
       // Visibility from child
       $this->setEntity('_test_child_1', false);
-      $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_all',  true), READ));
+      $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_all', true), READ));
       $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent0', true), READ));
       $this->assertTrue( $p->can(getItemByTypeName('Printer', '_test_printer_ent1', true), READ));
       $this->assertFalse($p->can(getItemByTypeName('Printer', '_test_printer_ent2', true), READ));
@@ -124,7 +124,7 @@ class PrinterTest extends DbTestCase {
       $this->assertTrue($obj->maybeDeleted());
 
       // Add
-      $id = $obj->add(['name' => __METHOD__, 'entities_id' => getItemByTypeName('Entity', '_test_root_entity',  true)]);
+      $id = $obj->add(['name' => __METHOD__, 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)]);
       $this->assertGreaterThan(0, $id);
       $this->assertTrue($obj->getFromDB($id));
       $this->assertEquals(0, $obj->getField('is_deleted'));

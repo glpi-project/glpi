@@ -289,7 +289,7 @@ class Auth extends CommonGLPI {
          $ok = sha1($pass) == $hash;
 
       } else {
-         $salt = substr($hash,0,8);
+         $salt = substr($hash, 0, 8);
          $ok = ($salt.sha1($salt.$pass) == $hash);
       }
 
@@ -399,7 +399,7 @@ class Auth extends CommonGLPI {
       switch ($authtype) {
          case self::CAS :
             phpCAS::client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
-                           $CFG_GLPI["cas_uri"],false);
+                           $CFG_GLPI["cas_uri"], false);
 
             // no SSL validation for the CAS server
             phpCAS::setNoCasServerValidation();
@@ -421,12 +421,12 @@ class Auth extends CommonGLPI {
             //    $login_string = $_REQUEST[$ssovariable];
             // }
             $login        = $login_string;
-            $pos          = stripos($login_string,"\\");
+            $pos          = stripos($login_string, "\\");
             if (!$pos === false) {
                $login = substr($login_string, $pos + 1);
             }
             if ($CFG_GLPI['existing_auth_server_field_clean_domain']) {
-               $pos = stripos($login,"@");
+               $pos = stripos($login, "@");
                if (!$pos === false) {
                   $login = substr($login, 0, $pos);
                }
@@ -458,7 +458,7 @@ class Auth extends CommonGLPI {
                $restrict = false;
                $CFG_GLPI["x509_ou_restrict"] = trim($CFG_GLPI["x509_ou_restrict"]);
                if (!empty($CFG_GLPI["x509_ou_restrict"])) {
-                  $split = explode ('$',$CFG_GLPI["x509_ou_restrict"]);
+                  $split = explode ('$', $CFG_GLPI["x509_ou_restrict"]);
 
                   if (!in_array($sslattributes['OU'], $split)) {
                      $restrict = true;
@@ -466,7 +466,7 @@ class Auth extends CommonGLPI {
                }
                $CFG_GLPI["x509_o_restrict"] = trim($CFG_GLPI["x509_o_restrict"]);
                if (!empty($CFG_GLPI["x509_o_restrict"])) {
-                  $split = explode ('$',$CFG_GLPI["x509_o_restrict"]);
+                  $split = explode ('$', $CFG_GLPI["x509_o_restrict"]);
 
                   if (!in_array($sslattributes['O'], $split)) {
                      $restrict = true;
@@ -474,7 +474,7 @@ class Auth extends CommonGLPI {
                }
                $CFG_GLPI["x509_cn_restrict"] = trim($CFG_GLPI["x509_cn_restrict"]);
                if (!empty($CFG_GLPI["x509_cn_restrict"])) {
-                  $split = explode ('$',$CFG_GLPI["x509_cn_restrict"]);
+                  $split = explode ('$', $CFG_GLPI["x509_cn_restrict"]);
 
                   if (!in_array($sslattributes['CN'], $split)) {
                      $restrict = true;
@@ -550,7 +550,7 @@ class Auth extends CommonGLPI {
    **/
    function addToError($message) {
 
-      if (!strstr($this->err,$message)) {
+      if (!strstr($this->err, $message)) {
          $this->err .= $message."<br>\n";
       }
    }
@@ -860,7 +860,7 @@ class Auth extends CommonGLPI {
               WHERE `is_active` = 1";
       $result = $DB->query($sql);
 
-      if ($DB->result($result,0,"cpt") > 0) {
+      if ($DB->result($result, 0, "cpt") > 0) {
          $methods[self::MAIL] = __('Authentication on mail server');
       }
 
@@ -895,7 +895,7 @@ class Auth extends CommonGLPI {
                //TRANS: %1$s is the auth method type, %2$s the auth method name or link
                return sprintf(__('%1$s: %2$s'), AuthLdap::getTypeName(1), $auth->getLink());
             }
-            return sprintf(__('%1$s: %2$s'),__('Email server'), $name);
+            return sprintf(__('%1$s: %2$s'), __('Email server'), $name);
 
          case self::CAS :
             if ($auths_id > 0) {
@@ -903,7 +903,7 @@ class Auth extends CommonGLPI {
                if ($auth->getFromDB($auths_id)) {
                   return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
-                                         __('CAS'),AuthLdap::getTypeName(1)),
+                                         __('CAS'), AuthLdap::getTypeName(1)),
                                  $auth->getLink());
                }
             }
@@ -1203,7 +1203,7 @@ class Auth extends CommonGLPI {
       // CAS config
       echo "<tr><th>" . __('CAS authentication').'</th><th>';
       if (!empty($CFG_GLPI["cas_host"])) {
-         echo _x('authentication','Enabled');
+         echo _x('authentication', 'Enabled');
       }
       echo "</th></tr>\n";
 
@@ -1231,7 +1231,7 @@ class Auth extends CommonGLPI {
       // X509 config
       echo "<tr><th>" . __('x509 certificate authentication')."</th><th>";
       if (!empty($CFG_GLPI["x509_email_field"])) {
-         echo _x('authentication','Enabled');
+         echo _x('authentication', 'Enabled');
       }
       echo "</th></tr>\n";
       echo "<tr class='tab_bg_2'>";
@@ -1239,15 +1239,15 @@ class Auth extends CommonGLPI {
       echo "<td><input type='text' name='x509_email_field' value=\"".$CFG_GLPI["x509_email_field"]."\">";
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>". sprintf(__('Restrict %s field for x509 authentication (separator $)'),'OU') ."</td>";
+      echo "<td class='center'>". sprintf(__('Restrict %s field for x509 authentication (separator $)'), 'OU') ."</td>";
       echo "<td><input type='text' name='x509_ou_restrict' value=\"".$CFG_GLPI["x509_ou_restrict"]."\">";
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>". sprintf(__('Restrict %s field for x509 authentication (separator $)'),'CN') ."</td>";
+      echo "<td class='center'>". sprintf(__('Restrict %s field for x509 authentication (separator $)'), 'CN') ."</td>";
       echo "<td><input type='text' name='x509_cn_restrict' value=\"".$CFG_GLPI["x509_cn_restrict"]."\">";
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>". sprintf(__('Restrict %s field for x509 authentication (separator $)'),'O') ."</td>";
+      echo "<td class='center'>". sprintf(__('Restrict %s field for x509 authentication (separator $)'), 'O') ."</td>";
       echo "<td><input type='text' name='x509_o_restrict' value=\"".$CFG_GLPI["x509_o_restrict"]."\">";
       echo "</td></tr>\n";
 
@@ -1304,19 +1304,19 @@ class Auth extends CommonGLPI {
        echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . sprintf(__('%1$s %2$s'),_n('Email','Emails',1), '2') . "</td>";
+      echo "<td class='center'>" . sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '2') . "</td>";
       echo "<td><input type='text' name='email2_ssofield' value='".$CFG_GLPI['email2_ssofield']."'>";
       echo "</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . sprintf(__('%1$s %2$s'),_n('Email','Emails',1),  '3') . "</td>";
+      echo "<td class='center'>" . sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '3') . "</td>";
       echo "<td><input type='text' name='email3_ssofield' value='".$CFG_GLPI['email3_ssofield']."'>";
       echo "</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . sprintf(__('%1$s %2$s'),_n('Email','Emails',1),  '4') . "</td>";
+      echo "<td class='center'>" . sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '4') . "</td>";
       echo "<td><input type='text' name='email4_ssofield' value='".$CFG_GLPI['email4_ssofield']."'>";
       echo "</td>";
       echo "</tr>\n";
@@ -1340,7 +1340,7 @@ class Auth extends CommonGLPI {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . _x('person','Title') . "</td>";
+      echo "<td class='center'>" . _x('person', 'Title') . "</td>";
       echo "<td><input type='text' name='title_ssofield' value='".$CFG_GLPI['title_ssofield']."'>";
       echo "</td>";
       echo "</tr>\n";

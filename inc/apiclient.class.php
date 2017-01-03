@@ -163,7 +163,7 @@ class APIClient extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td >".__('Active')."</td>";
       echo "<td>";
-      Dropdown::showYesNo("is_active",$this->fields["is_active"]);
+      Dropdown::showYesNo("is_active", $this->fields["is_active"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -203,7 +203,7 @@ class APIClient extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s (%2$s)'),  __('Application token'), "app_token")."</td>";
+      echo "<td>".sprintf(__('%1$s (%2$s)'), __('Application token'), "app_token")."</td>";
       echo "<td colspan='2'>";
       Html::autocompletionTextField($this, "app_token");
       echo "<br><input type='checkbox' name='_reset_app_token' id='app_token'>&nbsp;";

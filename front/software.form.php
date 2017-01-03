@@ -48,7 +48,7 @@ if (!isset($_GET["withtemplate"])) {
 
 $soft = new Software();
 if (isset($_POST["add"])) {
-   $soft->check(-1, CREATE,$_POST);
+   $soft->check(-1, CREATE, $_POST);
 
    if ($newID = $soft->add($_POST)) {
       Event::log($newID, "software", 4, "inventory",
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $soft->check($_POST["id"], PURGE);
 
-   $soft->delete($_POST,1);
+   $soft->delete($_POST, 1);
    Event::log($_POST["id"], "software", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

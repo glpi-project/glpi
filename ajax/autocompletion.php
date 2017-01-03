@@ -36,7 +36,7 @@
 */
 
 // Include plugin if it is a plugin table
-if (!strstr($_GET['itemtype'],"Plugin")) {
+if (!strstr($_GET['itemtype'], "Plugin")) {
    $AJAX_INCLUDE = 1;
 }
 include ('../inc/includes.php');
@@ -83,7 +83,7 @@ $query = "SELECT COUNT(`".$_GET['field']."`)
                 AND `".$_GET['field']."` <> '".$_GET['term']."'
                 $entity ";
 $result = $DB->query($query);
-$totnum = $DB->result($result,0,0);
+$totnum = $DB->result($result, 0, 0);
 
 $query = "SELECT DISTINCT `".$_GET['field']."` AS VAL
           FROM `$table`

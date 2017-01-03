@@ -61,7 +61,7 @@ class ObjectLock extends CommonDBTM {
     * @see CommonGLPI::getTypeName()
     */
    static function getTypeName($nb=0) {
-      return _n('Object Lock','Object Locks',$nb);
+      return _n('Object Lock', 'Object Locks', $nb);
    }
 
 
@@ -157,7 +157,7 @@ class ObjectLock extends CommonDBTM {
                            }") ."
                      },
                   error: function() { ".
-                        Html::jsAlertCallback(__('Contact your GLPI admin!'),__('Item NOT unlocked!'), 'function(){$(\'#message_after_lock\').fadeToggle()}')."
+                        Html::jsAlertCallback(__('Contact your GLPI admin!'), __('Item NOT unlocked!'), 'function(){$(\'#message_after_lock\').fadeToggle()}')."
                      }
                });
             }".

@@ -267,7 +267,7 @@ class ProjectCost extends CommonDBChild {
       echo "<td>".__('Name')."</td>";
       echo "<td>";
       echo "<input type='hidden' name='projects_id' value='".$this->fields['projects_id']."'>";
-      Html::autocompletionTextField($this,'name');
+      Html::autocompletionTextField($this, 'name');
       echo "</td>";
       echo "<td>".__('Cost')."</td>";
       echo "<td>";
@@ -411,7 +411,7 @@ class ProjectCost extends CommonDBChild {
       $ticketcost = TicketCost::showForObject($project);
       echo "</div>";
       echo "<div class='b'>";
-      printf(__('%1$s: %2$s'), __('Total cost'),$total+$ticketcost);
+      printf(__('%1$s: %2$s'), __('Total cost'), $total+$ticketcost);
       echo "</div>";
    }
 }

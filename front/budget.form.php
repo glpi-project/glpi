@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $budget->check($_POST["id"], PURGE);
 
-   if ($budget->delete($_POST,1)) {
+   if ($budget->delete($_POST, 1)) {
       Event::log($_POST["id"], "budget", 4, "financial",
                   //TRANS: %s is the user login
                   sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
@@ -100,7 +100,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_GET['_in_modal'])) {
-      Html::popHeader(Budget::getTypeName(1),$_SERVER['PHP_SELF']);
+      Html::popHeader(Budget::getTypeName(1), $_SERVER['PHP_SELF']);
       $budget->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
       Html::popFooter();
 

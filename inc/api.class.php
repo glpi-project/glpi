@@ -708,7 +708,7 @@ abstract class API extends CommonGLPI {
                      WHERE `glpi_contracts`.`id`=`glpi_contracts_items`.`contracts_id`
                            AND `glpi_contracts_items`.`items_id` = '$id'
                            AND `glpi_contracts_items`.`itemtype` = '$itemtype'".
-                           getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)."
+                           getEntitiesRestrictRequest(" AND", "glpi_contracts", '', '', true)."
                      ORDER BY `glpi_contracts`.`name`";
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {
@@ -786,7 +786,7 @@ abstract class API extends CommonGLPI {
                             Problem::getCommonLeftJoin()."
                             WHERE `items_id` = '$id'
                                   AND `itemtype` = '$itemtype' ".
-                                  getEntitiesRestrictRequest("AND","glpi_problems")."
+                                  getEntitiesRestrictRequest("AND", "glpi_problems")."
                             ORDER BY `glpi_problems`.`date_mod` DESC";
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {
@@ -810,7 +810,7 @@ abstract class API extends CommonGLPI {
                             Change::getCommonLeftJoin()."
                             WHERE `items_id` = '$id'
                                   AND `itemtype` = '$itemtype' ".
-                                  getEntitiesRestrictRequest("AND","glpi_changes")."
+                                  getEntitiesRestrictRequest("AND", "glpi_changes")."
                             ORDER BY `glpi_changes`.`date_mod` DESC";
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {

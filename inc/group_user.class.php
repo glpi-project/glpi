@@ -174,7 +174,7 @@ class Group_User extends CommonDBRelation{
             Dropdown::showYesNo('is_userdelegate');
 
             echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='addgroup' value=\""._sx('button','Add')."\"
+            echo "<input type='submit' name='addgroup' value=\""._sx('button', 'Add')."\"
                    class='submit'>";
 
          } else {
@@ -293,7 +293,7 @@ class Group_User extends CommonDBRelation{
 
       $rand = mt_rand();
       $res  = User::getSqlSearchResult (true, "all", $entityrestrict, 0, $used_ids);
-      $nb   = ($res ? $DB->result($res,0,"CPT") : 0);
+      $nb   = ($res ? $DB->result($res, 0, "CPT") : 0);
 
       if ($nb) {
          echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'
@@ -317,7 +317,7 @@ class Group_User extends CommonDBRelation{
 
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name'is_dynamic' value='0'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table></div>";
          Html::closeForm();

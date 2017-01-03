@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $constype->check($_POST["id"], PURGE);
 
-   if ($constype->delete($_POST,1)) {
+   if ($constype->delete($_POST, 1)) {
       Event::log($_POST["id"], "consumableitems", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

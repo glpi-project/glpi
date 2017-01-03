@@ -74,7 +74,7 @@ class Item_Problem extends CommonDBRelation{
    function prepareInputForAdd($input) {
 
       // Avoid duplicate entry
-      if (countElementsInTable($this->getTable(),['problems_id' => $input['problems_id'],
+      if (countElementsInTable($this->getTable(), ['problems_id' => $input['problems_id'],
                                                   'itemtype'    => $input['itemtype'],
                                                   'items_id'    => $input['items_id']])>0) {
          return false;
@@ -290,7 +290,7 @@ class Item_Problem extends CommonDBRelation{
 
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countDistinctElementsInTable('glpi_problems_suppliers','problems_id',
+                  $nb = countDistinctElementsInTable('glpi_problems_suppliers', 'problems_id',
                                              "`suppliers_id` = '".$item->getID()."'");
                }
                return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);

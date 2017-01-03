@@ -66,7 +66,7 @@ class Change_Problem extends CommonDBRelation{
 
 
    static function getTypeName($nb=0) {
-      return _n('Link Problem/Change','Links Problem/Change',$nb);
+      return _n('Link Problem/Change', 'Links Problem/Change', $nb);
    }
 
 
@@ -195,7 +195,7 @@ class Change_Problem extends CommonDBRelation{
       echo "<tr class='noHover'><th colspan='12'>".Change::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
-         Change::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
+         Change::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Change',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
@@ -210,7 +210,7 @@ class Change_Problem extends CommonDBRelation{
                                                  'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
-         Change::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
+         Change::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
       }
       echo "</table>";
 
@@ -291,7 +291,7 @@ class Change_Problem extends CommonDBRelation{
       echo "<tr class='noHover'><th colspan='12'>".Problem::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
-         Problem::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
+         Problem::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Problem',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
@@ -306,7 +306,7 @@ class Change_Problem extends CommonDBRelation{
                                                  'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
-         Problem::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
+         Problem::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
       }
       echo "</table>";
 

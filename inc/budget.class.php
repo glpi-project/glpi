@@ -61,11 +61,11 @@ class Budget extends CommonDropdown{
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab(__CLASS__,$ong, $options);
-      $this->addStandardTab('Document_Item',$ong, $options);
-      $this->addStandardTab('Link',$ong, $options);
-      $this->addStandardTab('Notepad',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -516,7 +516,7 @@ class Budget extends CommonDropdown{
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_infocoms`
                 WHERE `budgets_id` = '$budgets_id'
-                      AND `itemtype` NOT IN ('".implode("','",$ignore)."')".
+                      AND `itemtype` NOT IN ('".implode("','", $ignore)."')".
                       getEntitiesRestrictRequest(" AND", 'glpi_infocoms', "entities_id")."
                 GROUP BY `itemtype`";
 
@@ -646,7 +646,7 @@ class Budget extends CommonDropdown{
       echo "</tr>";
 
       // get all entities ordered by names
-      $allentities = getAllDatasFromTable('glpi_entities','',true, 'completename');
+      $allentities = getAllDatasFromTable('glpi_entities', '', true, 'completename');
 
       foreach ($allentities as $entity => $data) {
          if (isset($entities_values[$entity])) {

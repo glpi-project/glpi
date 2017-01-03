@@ -79,14 +79,14 @@ class Blacklist extends CommonDropdown {
                          'type'  => 'text',
                          'list'  => true),
                    array('name'  => 'type',
-                         'label' => _n('Type','Types',1),
+                         'label' => _n('Type', 'Types', 1),
                          'type'  => '',
                          'list'  => true));
    }
 
 
    static function getTypeName($nb=0) {
-      return _n('Blacklist','Blacklists',$nb);
+      return _n('Blacklist', 'Blacklists', $nb);
    }
 
 
@@ -106,7 +106,7 @@ class Blacklist extends CommonDropdown {
 
       $tab[12]['table']      = $this->getTable();
       $tab[12]['field']      = 'type';
-      $tab[12]['name']       = _n('Type','Types',1);
+      $tab[12]['name']       = _n('Type', 'Types', 1);
       $tab[12]['searchtype'] = array('equals', 'notequals');
       $tab[12]['datatype']   = 'specific';
 
@@ -227,7 +227,7 @@ class Blacklist extends CommonDropdown {
       $options[self::MAC]    = __('MAC');
       $options[self::SERIAL] = __('Serial number');
       $options[self::UUID]   = __('UUID');
-      $options[self::EMAIL]  = _n('Email','Emails',1);
+      $options[self::EMAIL]  = _n('Email', 'Emails', 1);
 
       return $options;
    }

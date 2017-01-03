@@ -801,7 +801,7 @@ class Item_Devices extends CommonDBRelation {
       // Update quantity or values
       $device_type = '';
       foreach ($input as $key => $val) {
-         $data = explode("_",$key);
+         $data = explode("_", $key);
          if (!empty($data[0])) {
             $command = $data[0];
          } else {

@@ -120,7 +120,7 @@ class Printer  extends CommonDBTM {
          return false;
       }
 
-      $entities = getAncestorsOf("glpi_entities",$this->fields['entities_id']);
+      $entities = getAncestorsOf("glpi_entities", $this->fields['entities_id']);
       $entities[] = $this->fields['entities_id'];
 
       // RELATION : printers -> _port -> _wire -> _port -> device
@@ -412,7 +412,7 @@ class Printer  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._n('Port','Ports', Session::getPluralNumber())."</td>";
+      echo "<td>"._n('Port', 'Ports', Session::getPluralNumber())."</td>";
       echo "<td>\n<table>";
       // serial interface
       echo "<tr><td>".__('Serial')."</td><td width='80'>";
@@ -428,7 +428,7 @@ class Printer  extends CommonDBTM {
       echo "</td>";
       // ethernet interface?
       echo "<td>".__('Ethernet')."</td><td>";
-      Dropdown::showYesNo("have_ethernet",$this->fields["have_ethernet"]);
+      Dropdown::showYesNo("have_ethernet", $this->fields["have_ethernet"]);
       echo "</td></tr>";
       // wifi ?
       echo "<tr><td>".__('Wifi')."</td><td colspan='3'>";
@@ -614,7 +614,7 @@ class Printer  extends CommonDBTM {
       $tab[9]['table']             = 'glpi_printers';
       $tab[9]['field']             = '_virtual';
       $tab[9]['linkfield']         = '_virtual';
-      $tab[9]['name']              = _n('Cartridge','Cartridges', Session::getPluralNumber());
+      $tab[9]['name']              = _n('Cartridge', 'Cartridges', Session::getPluralNumber());
       $tab[9]['datatype']          = 'specific';
       $tab[9]['massiveaction']     = false;
       $tab[9]['nosearch']          = true;

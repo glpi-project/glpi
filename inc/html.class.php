@@ -122,7 +122,7 @@ class Html {
    static function entities_deep($value) {
 
       return (is_array($value) ? array_map(array(__CLASS__, 'entities_deep'), $value)
-                               : htmlentities($value,ENT_QUOTES, "UTF-8"));
+                               : htmlentities($value, ENT_QUOTES, "UTF-8"));
    }
 
 
@@ -451,7 +451,7 @@ class Html {
 
       $toadd = '';
       $dest = addslashes($dest);
-      if (!strpos($dest,"?")) {
+      if (!strpos($dest, "?")) {
          $toadd = '?tokonq='.Toolbox::getRandomString(5);
       }
 
@@ -478,14 +478,14 @@ class Html {
       global $CFG_GLPI;
 
       $dest     = $CFG_GLPI["root_doc"] . "/index.php";
-      $url_dest = str_replace($CFG_GLPI["root_doc"],'',$_SERVER['REQUEST_URI']);
+      $url_dest = str_replace($CFG_GLPI["root_doc"], '', $_SERVER['REQUEST_URI']);
       $dest    .= "?redirect=".rawurlencode($url_dest);
 
       if (!empty($params)) {
          $dest .= '&'.$params;
       }
       $toadd = '';
-      if (!strpos($dest,"?")) {
+      if (!strpos($dest, "?")) {
          $toadd = '&tokonq='.Toolbox::getRandomString(5);
       }
 
@@ -696,15 +696,15 @@ class Html {
    **/
    static function cleanSQLDisplay($request) {
 
-      $request = str_replace("<","&lt;",$request);
-      $request = str_replace(">","&gt;",$request);
-      $request = str_ireplace("UNION","<br>UNION<br>",$request);
-      $request = str_ireplace("FROM","<br>FROM",$request);
-      $request = str_ireplace("WHERE","<br>WHERE",$request);
-      $request = str_ireplace("INNER JOIN","<br>INNER JOIN",$request);
-      $request = str_ireplace("LEFT JOIN","<br>LEFT JOIN",$request);
-      $request = str_ireplace("ORDER BY","<br>ORDER BY",$request);
-      $request = str_ireplace("SORT","<br>SORT",$request);
+      $request = str_replace("<", "&lt;", $request);
+      $request = str_replace(">", "&gt;", $request);
+      $request = str_ireplace("UNION", "<br>UNION<br>", $request);
+      $request = str_ireplace("FROM", "<br>FROM", $request);
+      $request = str_ireplace("WHERE", "<br>WHERE", $request);
+      $request = str_ireplace("INNER JOIN", "<br>INNER JOIN", $request);
+      $request = str_ireplace("LEFT JOIN", "<br>LEFT JOIN", $request);
+      $request = str_ireplace("ORDER BY", "<br>ORDER BY", $request);
+      $request = str_ireplace("SORT", "<br>SORT", $request);
 
       return $request;
    }
@@ -893,7 +893,7 @@ class Html {
          if (is_array($tab)) {
             $multiple      = true;
             $out          .="if (window.confirm('";
-            $out          .= implode('\n',$tab);
+            $out          .= implode('\n', $tab);
             $out          .= "')){ ";
             $close_string .= "return true;} else { return false;}";
          }
@@ -901,7 +901,7 @@ class Html {
       // manage simple confirmation
       if (!$multiple) {
             $out          .="if (window.confirm('";
-            $out          .= implode('\n',$string);
+            $out          .= implode('\n', $string);
             $out          .= "')){ ";
             $close_string .= "return true;} else { return false;}";
       }
@@ -1786,7 +1786,7 @@ class Html {
          echo "<td class='copyright'>";
          $latest_version = "<a href='http://www.glpi-project.org' target='_blank' title=\"".
                               __s('You will find it on the GLPI-PROJECT.org site.')."\"> ".
-                           preg_replace('/0$/','',$CFG_GLPI["founded_new_version"])."</a>";
+                           preg_replace('/0$/', '', $CFG_GLPI["founded_new_version"])."</a>";
          printf(__('A new version is available: %s.'), $latest_version);
 
          echo "</td>";
@@ -2022,7 +2022,7 @@ class Html {
           || Session::haveRight("followup", TicketFollowup::SEEPUBLIC)) {
          $menu['tickets']['id']      = "menu3";
          $menu['tickets']['default'] = '/front/ticket.php';
-         $menu['tickets']['title']   = _n('Ticket','Tickets', Session::getPluralNumber());
+         $menu['tickets']['title']   = _n('Ticket', 'Tickets', Session::getPluralNumber());
          $menu['tickets']['content'] = array(true);
       }
 
@@ -2125,7 +2125,7 @@ class Html {
          $opt['criteria'][1]['link']       = 'AND';
 
          $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".
-                         Toolbox::append_params($opt,'&amp;');
+                         Toolbox::append_params($opt, '&amp;');
          $pic_validate = "<a href='$url_validate'>".
                          "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
                            __s('Ticket waiting for your approval')."\" src='".
@@ -2134,7 +2134,7 @@ class Html {
       }
 
       if (Session::haveRight('ticket', CREATE)
-          && strpos($_SERVER['PHP_SELF'],"ticket")) {
+          && strpos($_SERVER['PHP_SELF'], "ticket")) {
          echo "<li class='icons_block'><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".__s('Add').
                 "\" alt=\"".__s('Add')."\" class='pointer'></a></li>";
@@ -3317,12 +3317,12 @@ class Html {
       // Validate value
       if (($value != 'NOW')
           && ($value != 'TODAY')
-          && !preg_match("/\d{4}-\d{2}-\d{2}.*/",$value)
-          && !strstr($value,'HOUR')
-          && !strstr($value,'DAY')
-          && !strstr($value,'WEEK')
-          && !strstr($value,'MONTH')
-          && !strstr($value,'YEAR')) {
+          && !preg_match("/\d{4}-\d{2}-\d{2}.*/", $value)
+          && !strstr($value, 'HOUR')
+          && !strstr($value, 'DAY')
+          && !strstr($value, 'WEEK')
+          && !strstr($value, 'MONTH')
+          && !strstr($value, 'YEAR')) {
 
          $value = "";
       }
@@ -3332,7 +3332,7 @@ class Html {
       }
       $specific_value = date("Y-m-d H:i:s");
 
-      if (preg_match("/\d{4}-\d{2}-\d{2}.*/",$value)) {
+      if (preg_match("/\d{4}-\d{2}-\d{2}.*/", $value)) {
          $specific_value = $value;
          $value          = 0;
       }
@@ -3512,7 +3512,7 @@ class Html {
       }
 
       // Search on begin of month / year
-      if (strstr($val,'BEGIN')) {
+      if (strstr($val, 'BEGIN')) {
          $hour   = 0;
          $minute = 0;
          $second = 0;
@@ -3533,7 +3533,7 @@ class Html {
       }
 
       // Search on Last monday, sunday...
-      if (strstr($val,'LAST')) {
+      if (strstr($val, 'LAST')) {
          $lastday = str_replace("LAST", "LAST ", $val);
          $hour   = 0;
          $minute = 0;
@@ -3546,7 +3546,7 @@ class Html {
       }
 
       // Search on +- x days, hours...
-      if (preg_match("/^(-?)(\d+)(\w+)$/",$val,$matches)) {
+      if (preg_match("/^(-?)(\d+)(\w+)$/", $val, $matches)) {
          if (in_array($matches[3], array('YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR'))) {
             $nb = intval($matches[2]);
             if ($matches[1] == '-') {
@@ -3606,7 +3606,7 @@ class Html {
             $values[$key] = $val['name'];
          }
 
-         Dropdown::showFromArray('newprofile',$values,
+         Dropdown::showFromArray('newprofile', $values,
                                  array('value'     => $_SESSION["glpiactiveprofile"]["id"],
                                        'width'     => '150px',
                                        'on_change' => 'submit()'));
@@ -3763,12 +3763,12 @@ class Html {
       $params['name']   = $field;
       $params['value']  = '';
 
-      if (array_key_exists($field,$item->fields)) {
+      if (array_key_exists($field, $item->fields)) {
          $params['value'] = $item->fields[$field];
       }
       $params['entity'] = -1;
 
-      if (array_key_exists('entities_id',$item->fields)) {
+      if (array_key_exists('entities_id', $item->fields)) {
          $params['entity'] = $item->fields['entities_id'];
       }
       $params['user']   = -1;
@@ -3798,7 +3798,7 @@ class Html {
          }
 
          $js = "  $( '#text$name' ).autocomplete({
-                        source: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php?".Toolbox::append_params($parameters,'&')."',
+                        source: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php?".Toolbox::append_params($parameters, '&')."',
                         minLength: 3,
                         });";
 
@@ -4019,7 +4019,7 @@ class Html {
 
             if ($is_array) {
                echo "<div id='content$key$rand' ".($jsexpand?"style=\"display:none;\"":'').">";
-               self::printCleanArray($val,$pad+1);
+               self::printCleanArray($val, $pad+1);
                echo "</div>";
             } else {
                if (is_bool($val)) {
@@ -4141,12 +4141,12 @@ class Html {
             echo Html::hidden('item_type_param',
                               array('value' => Toolbox::prepareArrayForInput($item_type_output_param)));
          }
-         $split = explode("&amp;",$parameters);
+         $split = explode("&amp;", $parameters);
 
          for ($i=0 ; $i<count($split) ; $i++) {
             $pos    = Toolbox::strpos($split[$i], '=');
             $length = Toolbox::strlen($split[$i]);
-            echo Html::hidden(Toolbox::substr($split[$i],0,$pos), array('value' => urldecode(Toolbox::substr($split[$i], $pos+1))));
+            echo Html::hidden(Toolbox::substr($split[$i], 0, $pos), array('value' => urldecode(Toolbox::substr($split[$i], $pos+1))));
          }
 
          Dropdown::showOutputFormat();
@@ -4879,7 +4879,7 @@ class Html {
    static function formatAttribute($key, $value) {
 
       if (is_array($value)) {
-         $value = implode(' ' , $value);
+         $value = implode(' ', $value);
       }
 
       return sprintf('%1$s="%2$s"', $key, Html::cleanInputText($value));

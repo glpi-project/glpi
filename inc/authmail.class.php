@@ -229,7 +229,7 @@ class AuthMail extends CommonDBTM {
                     autocomplete='off'></td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<input type='submit' name='test' class='submit' value=\""._sx('button','Test')."\">".
+         echo "<input type='submit' name='test' class='submit' value=\""._sx('button', 'Test')."\">".
               "</td>";
          echo "</tr></table></div>";
          Html::closeForm();
@@ -318,7 +318,7 @@ class AuthMail extends CommonDBTM {
             }
          }
 
-      } else if (array_key_exists($auths_id,$auth->authtypes["mail"])) {
+      } else if (array_key_exists($auths_id, $auth->authtypes["mail"])) {
          //Check if the mail server indicated as the last good one still exists !
          $auth = self::mailAuth($auth, $login, $password, $auth->authtypes["mail"][$auths_id]);
       }
@@ -333,9 +333,9 @@ class AuthMail extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && $item->can($item->getField('id'),READ)) {
+      if (!$withtemplate && $item->can($item->getField('id'), READ)) {
          $ong = array();
-         $ong[1] = _sx('button','Test');    // test connexion
+         $ong[1] = _sx('button', 'Test');    // test connexion
 
          return $ong;
       }

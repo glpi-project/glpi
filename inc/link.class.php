@@ -53,7 +53,7 @@ class Link extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      return _n('External link', 'External links',$nb);
+      return _n('External link', 'External links', $nb);
    }
 
 
@@ -251,70 +251,70 @@ class Link extends CommonDBTM {
    static function generateLinkContents($link, CommonDBTM $item) {
       global $DB;
 
-      if (strstr($link,"[ID]")) {
-         $link = str_replace("[ID]", $item->fields['id'],$link);
+      if (strstr($link, "[ID]")) {
+         $link = str_replace("[ID]", $item->fields['id'], $link);
       }
-      if (strstr($link,"[LOGIN]")
+      if (strstr($link, "[LOGIN]")
           && isset($_SESSION["glpiname"])) {
          $link = str_replace("[LOGIN]", $_SESSION["glpiname"], $link);
       }
 
-      if (strstr($link,"[NAME]")) {
+      if (strstr($link, "[NAME]")) {
          $link = str_replace("[NAME]", $item->getName(), $link);
       }
-      if (strstr($link,"[SERIAL]")
+      if (strstr($link, "[SERIAL]")
           && $item->isField('serial')) {
             $link = str_replace("[SERIAL]", $item->getField('serial'), $link);
       }
-      if (strstr($link,"[OTHERSERIAL]")
+      if (strstr($link, "[OTHERSERIAL]")
           && $item->isField('otherserial')) {
-            $link=str_replace("[OTHERSERIAL]",$item->getField('otherserial'),$link);
+            $link=str_replace("[OTHERSERIAL]", $item->getField('otherserial'), $link);
       }
-      if (strstr($link,"[LOCATIONID]")
+      if (strstr($link, "[LOCATIONID]")
           && $item->isField('locations_id')) {
             $link = str_replace("[LOCATIONID]", $item->getField('locations_id'), $link);
       }
-      if (strstr($link,"[LOCATION]")
+      if (strstr($link, "[LOCATION]")
           && $item->isField('locations_id')) {
             $link = str_replace("[LOCATION]",
                                 Dropdown::getDropdownName("glpi_locations",
                                                           $item->getField('locations_id')), $link);
       }
-      if (strstr($link,"[NETWORK]")
+      if (strstr($link, "[NETWORK]")
           && $item->isField('networks_id')) {
             $link = str_replace("[NETWORK]",
                                 Dropdown::getDropdownName("glpi_networks",
                                                           $item->getField('networks_id')), $link);
       }
-      if (strstr($link,"[DOMAIN]")
+      if (strstr($link, "[DOMAIN]")
           && $item->isField('domains_id')) {
             $link = str_replace("[DOMAIN]",
                                 Dropdown::getDropdownName("glpi_domains",
                                                           $item->getField('domains_id')), $link);
       }
-      if (strstr($link,"[USER]")
+      if (strstr($link, "[USER]")
           && $item->isField('users_id')) {
             $link = str_replace("[USER]",
                                 Dropdown::getDropdownName("glpi_users",
                                                           $item->getField('users_id')), $link);
       }
-      if (strstr($link,"[GROUP]")
+      if (strstr($link, "[GROUP]")
           && $item->isField('groups_id')) {
             $link = str_replace("[GROUP]",
                                 Dropdown::getDropdownName("glpi_groups",
                                                           $item->getField('groups_id')), $link);
       }
-      if (strstr($link,"[REALNAME]")
+      if (strstr($link, "[REALNAME]")
             && $item->isField('realname')) {
-         $link = str_replace("[REALNAME]",$item->getField('realname'),$link);
+         $link = str_replace("[REALNAME]", $item->getField('realname'), $link);
       }
-      if (strstr($link,"[FIRSTNAME]")
+      if (strstr($link, "[FIRSTNAME]")
             && $item->isField('firstname')) {
-         $link = str_replace("[FIRSTNAME]",$item->getField('firstname'),$link);
+         $link = str_replace("[FIRSTNAME]", $item->getField('firstname'), $link);
       }
 
-      $replace_IP  = strstr($link,"[IP]");
-      $replace_MAC = strstr($link,"[MAC]");
+      $replace_IP  = strstr($link, "[IP]");
+      $replace_MAC = strstr($link, "[MAC]");
 
       if (!$replace_IP && !$replace_MAC) {
          return array($link);
@@ -393,14 +393,14 @@ class Link extends CommonDBTM {
          foreach ($ipmac as $key => $val) {
             $tmplink = $link;
             $disp    = 1;
-            if (strstr($link,"[IP]")) {
+            if (strstr($link, "[IP]")) {
                if (empty($val['ip'])) {
                   $disp = 0;
                } else {
                   $tmplink = str_replace("[IP]", $val['ip'], $tmplink);
                }
             }
-            if (strstr($link,"[MAC]")) {
+            if (strstr($link, "[MAC]")) {
                if (empty($val['mac'])) {
                   $disp = 0;
                } else {

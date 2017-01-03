@@ -130,7 +130,7 @@ class Report extends CommonGLPI{
          $file          = $report_list["$val"]["file"];
          $key           = $CFG_GLPI["root_doc"]."/front/".$file;
          $values[$key]  = $name;
-         if (stripos($_SERVER['REQUEST_URI'],$key) !== false) {
+         if (stripos($_SERVER['REQUEST_URI'], $key) !== false) {
             $selected = $key;
          }
       }
@@ -156,7 +156,7 @@ class Report extends CommonGLPI{
             if ($opt == $val["plug"]) {
                $file                  = $CFG_GLPI["root_doc"]."/plugins/".$key;
                $values[$group][$file] = $val["name"];
-               if (stripos($_SERVER['REQUEST_URI'],$file) !== false) {
+               if (stripos($_SERVER['REQUEST_URI'], $file) !== false) {
                   $selected = $file;
                }
             }
@@ -207,9 +207,9 @@ class Report extends CommonGLPI{
                    FROM `".$table_item."`
                    $join
                    $where ".
-                         getEntitiesRestrictRequest("AND",$table_item);
+                         getEntitiesRestrictRequest("AND", $table_item);
          $result = $DB->query($query);
-         $number = $DB->result($result,0,0);
+         $number = $DB->result($result, 0, 0);
 
          echo "<tr class='tab_bg_2'><td>".$itemtype::getTypeName(Session::getPluralNumber())."</td>";
          echo "<td class='numeric'>$number</td></tr>";
@@ -227,7 +227,7 @@ class Report extends CommonGLPI{
                 LEFT JOIN `glpi_operatingsystems`
                    ON (`glpi_computers`.`operatingsystems_id` = `glpi_operatingsystems`.`id`)
                 $where ".
-                        getEntitiesRestrictRequest("AND","glpi_computers")."
+                        getEntitiesRestrictRequest("AND", "glpi_computers")."
                 GROUP BY `glpi_operatingsystems`.`name`";
       $result = $DB->query($query);
 
@@ -270,7 +270,7 @@ class Report extends CommonGLPI{
                          ON (`".$table_item."`.`".$typefield."` = `".$type_table."`.`id`)
                    $join
                    $where ".
-                          getEntitiesRestrictRequest("AND",$table_item)."
+                          getEntitiesRestrictRequest("AND", $table_item)."
                    GROUP BY `".$type_table."`.`name`";
          $result = $DB->query($query);
 

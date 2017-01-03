@@ -81,7 +81,7 @@ class RSSFeed extends CommonDBVisible {
 
    static function getTypeName($nb=0) {
 
-      if (Session::haveRight('rssfeed_public',READ)) {
+      if (Session::haveRight('rssfeed_public', READ)) {
          return _n('RSS feed', 'RSS feed', $nb);
       }
       return _n('Personal RSS feed', 'Personal RSS feed', $nb);
@@ -258,7 +258,7 @@ class RSSFeed extends CommonDBVisible {
       // Groups
       if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
          $restrict .= " OR (`glpi_groups_rssfeeds`.`groups_id`
-                                 IN ('".implode("','",$_SESSION["glpigroups"])."')
+                                 IN ('".implode("','", $_SESSION["glpigroups"])."')
                             AND (`glpi_groups_rssfeeds`.`entities_id` < 0
                                  ".getEntitiesRestrictRequest(" OR", "glpi_groups_rssfeeds", '', '',
                                                               true).")) ";
@@ -276,7 +276,7 @@ class RSSFeed extends CommonDBVisible {
       // Entities
       if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
          // Force complete SQL not summary when access to all entities
-         $restrict .= getEntitiesRestrictRequest("OR","glpi_entities_rssfeeds", '', '', true, true);
+         $restrict .= getEntitiesRestrictRequest("OR", "glpi_entities_rssfeeds", '', '', true, true);
       }
 
       return '('.$restrict.')';
@@ -422,7 +422,7 @@ class RSSFeed extends CommonDBVisible {
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = $item->countVisibilities();
                   }
-                  $showtab[2] = self::createTabEntry(_n('Target','Targets',
+                  $showtab[2] = self::createTabEntry(_n('Target', 'Targets',
                                                         Session::getPluralNumber()), $nb);
                }
                return $showtab;
@@ -685,7 +685,7 @@ class RSSFeed extends CommonDBVisible {
          $this->setError(false);
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='3'>".$feed->get_title()."</th>";
-         foreach ($feed->get_items(0,$this->fields['max_items']) as $item) {
+         foreach ($feed->get_items(0, $this->fields['max_items']) as $item) {
             $link = $item->get_permalink();
             echo "<tr class='tab_bg_1'><td>";
             echo HTML::convDateTime($item->get_date('Y-m-d H:i:s'));
@@ -738,7 +738,7 @@ class RSSFeed extends CommonDBVisible {
             $link = $newfeed->get_permalink();
             if (!empty($link)) {
                echo "<a href='$newurl'>".$newfeed->get_title()."</a>&nbsp;";
-               Html::showSimpleForm($this->getFormURL(),'update', _x('button', 'Use'),
+               Html::showSimpleForm($this->getFormURL(), 'update', _x('button', 'Use'),
                                     array('id'  => $this->getID(),
                                           'url' => $newurl));
                echo "<br>";

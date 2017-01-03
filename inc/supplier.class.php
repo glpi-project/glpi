@@ -184,7 +184,7 @@ class Supplier extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('location','State')."</td>";
+      echo "<td>"._x('location', 'State')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "state");
       echo "</td></tr>";
@@ -259,7 +259,7 @@ class Supplier extends CommonDBTM {
 
       $tab[12]['table']             = $this->getTable();
       $tab[12]['field']             = 'state';
-      $tab[12]['name']              = _x('location','State');
+      $tab[12]['name']              = _x('location', 'State');
       $tab[12]['datatype']          = 'string';
 
       $tab[13]['table']             = $this->getTable();
@@ -494,7 +494,7 @@ class Supplier extends CommonDBTM {
                                                              'searchtype' => 'contains',
                                                              'field'      => 53)));
                $link = $linktype::getSearchURL();
-               $link.= (strpos($link,'?') ? '&amp;':'?');
+               $link.= (strpos($link, '?') ? '&amp;':'?');
 
                echo "<a href='$link" .
                      Toolbox::append_params($opt). "'>" . __('Device list')."</a></td>";

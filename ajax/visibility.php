@@ -36,7 +36,7 @@
 */
 
 // Direct access to file
-if (strpos($_SERVER['PHP_SELF'],"visibility.php")) {
+if (strpos($_SERVER['PHP_SELF'], "visibility.php")) {
    $AJAX_INCLUDE = 1;
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
@@ -129,7 +129,7 @@ if (isset($_POST['type']) && !empty($_POST['type'])
    }
 
    if ($display && (!isset($_POST['nobutton']) || !$_POST['nobutton'])) {
-      echo "<td><input type='submit' name='addvisibility' value=\""._sx('button','Add')."\"
+      echo "<td><input type='submit' name='addvisibility' value=\""._sx('button', 'Add')."\"
                    class='submit'></td>";
    } else {
       // For table w3c

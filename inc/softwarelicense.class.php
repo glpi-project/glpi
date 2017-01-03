@@ -303,7 +303,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s%2$s'),__('Name'),
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'),
                           (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
            "</td>";
       echo "<td>";
@@ -352,7 +352,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Serial number')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,"serial");
+      Html::autocompletionTextField($this, "serial");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -848,7 +848,7 @@ class SoftwareLicense extends CommonDBTM {
                       getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
 
       $result = $DB->query($query);
-      $nb     = $DB->result($result,0,0);
+      $nb     = $DB->result($result, 0, 0);
       return ($nb ? $nb : 0);
    }
 

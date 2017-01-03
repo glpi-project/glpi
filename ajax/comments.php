@@ -57,7 +57,7 @@ if (isset($_POST["table"])
             $tmpname['link']    = $CFG_GLPI['root_doc']."/front/user.php";
             $tmpname['comment'] = "";
          } else {
-            $tmpname = getUserName($_POST["value"],2);
+            $tmpname = getUserName($_POST["value"], 2);
          }
          echo $tmpname["comment"];
 

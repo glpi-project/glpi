@@ -120,7 +120,7 @@ class ConsumableItem extends CommonDBTM {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Consumable', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
-      $this->addStandardTab('Document_Item',$ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
 
@@ -263,7 +263,7 @@ class ConsumableItem extends CommonDBTM {
       $tab[9]['table']              = 'glpi_consumableitems';
       $tab[9]['field']              = '_virtual';
       $tab[9]['linkfield']          = '_virtual';
-      $tab[9]['name']               = _n('Consumable','Consumables', Session::getPluralNumber());
+      $tab[9]['name']               = _n('Consumable', 'Consumables', Session::getPluralNumber());
       $tab[9]['datatype']           = 'specific';
       $tab[9]['massiveaction']      = false;
       $tab[9]['nosearch']           = true;

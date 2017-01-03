@@ -107,7 +107,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       } else {
          $fields[] = "'".static::$itemtype_1."' AS itemtype_1";
          if (($itemtype ==  static::$itemtype_1)
-             || is_subclass_of($itemtype,  static::$itemtype_1)) {
+             || is_subclass_of($itemtype, static::$itemtype_1)) {
             $condition_1 = $condition_id_1;
          }
       }
@@ -127,7 +127,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       } else {
          $fields[] = "'".static::$itemtype_2."' AS itemtype_2";
          if (($itemtype ==  static::$itemtype_2)
-             || is_subclass_of($itemtype,  static::$itemtype_2)) {
+             || is_subclass_of($itemtype, static::$itemtype_2)) {
             $condition_2 = $condition_id_2;
          }
       }

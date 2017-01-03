@@ -44,13 +44,13 @@ Session::checkRight("statistic", READ);
 
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
    $year          = date("Y")-1;
-   $_GET["date1"] = date("Y-m-d", mktime(1,0,0,date("m"), date("d"), $year));
+   $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
    $_GET["date2"] = date("Y-m-d");
 }
 
 if (!empty($_GET["date1"])
     && !empty($_GET["date2"])
-    && (strcmp($_GET["date2"],$_GET["date1"]) < 0)) {
+    && (strcmp($_GET["date2"], $_GET["date1"]) < 0)) {
 
    $tmp           = $_GET["date1"];
    $_GET["date1"] = $_GET["date2"];
@@ -122,7 +122,7 @@ Stat::showGraph($toprint, array('title'     => _x('Quantity', 'Number'),
                                 'unit'      => $item->getTypeName(Session::getPluralNumber())));
 
 //Temps moyen de resolution d'intervention
-$values2['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'] ,"inter_avgsolvedtime",
+$values2['avgsolved'] = Stat::constructEntryValues($_GET['itemtype'], "inter_avgsolvedtime",
                                                    $_GET["date1"], $_GET["date2"]);
 // Pass to hour values
 foreach ($values2['avgsolved'] as $key => $val) {
@@ -204,8 +204,8 @@ if ($_GET['itemtype'] == 'Ticket') {
                                                               $_GET["date1"], $_GET["date2"]);
 
 
-   $available = array('opensatisfaction'   => _nx('survey','Opened','Opened',2),
-                      'answersatisfaction' => _nx('survey','Answered','Answered',2));
+   $available = array('opensatisfaction'   => _nx('survey', 'Opened', 'Opened', 2),
+                      'answersatisfaction' => _nx('survey', 'Answered', 'Answered', 2));
    echo "<div class='center'>";
 
    foreach ($available as $key => $name) {

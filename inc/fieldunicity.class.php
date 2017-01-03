@@ -389,13 +389,13 @@ class FieldUnicity extends CommonDropdown {
                   $fields       = explode(',', $values[$field]);
                   $message      = array();
                   foreach ($fields as $field) {
-                     $searchOption = $target->getSearchOptionByField('field',$field);
+                     $searchOption = $target->getSearchOptionByField('field', $field);
 
                      if (isset($searchOption['name'])) {
                         $message[] = $searchOption['name'];
                      }
                   }
-                  return implode(', ',$message);
+                  return implode(', ', $message);
                }
             }
             break;
@@ -449,7 +449,7 @@ class FieldUnicity extends CommonDropdown {
          $input = array();
 
       } else {
-         $input['fields'] = implode(',',$input['_fields']);
+         $input['fields'] = implode(',', $input['_fields']);
          unset($input['_fields']);
       }
       return $input;
@@ -463,7 +463,7 @@ class FieldUnicity extends CommonDropdown {
 
    function prepareInputForUpdate($input) {
 
-      $input['fields'] = implode(',',$input['_fields']);
+      $input['fields'] = implode(',', $input['_fields']);
       unset($input['_fields']);
 
       return $input;
@@ -500,7 +500,7 @@ class FieldUnicity extends CommonDropdown {
       if (!$item = getItemForItemtype($unicity->fields['itemtype'])) {
          return;
       }
-      foreach (explode(',',$unicity->fields['fields']) as $field) {
+      foreach (explode(',', $unicity->fields['fields']) as $field) {
          $fields[]       = $field;
          $where_fields[] = $field;
       }
@@ -533,7 +533,7 @@ class FieldUnicity extends CommonDropdown {
          $query = "SELECT $fields_string,
                           COUNT(*) AS cpt
                    FROM `".$item->getTable()."`
-                   WHERE `".$item->getTable()."`.`entities_id` IN (".implode(',',$entities).")
+                   WHERE `".$item->getTable()."`.`entities_id` IN (".implode(',', $entities).")
                          $where_template
                          $where_fields_string
                    GROUP BY $fields_string
@@ -552,7 +552,7 @@ class FieldUnicity extends CommonDropdown {
          } else {
             echo "<tr class='tab_bg_2'>";
             foreach ($fields as $field) {
-               $searchOption = $item->getSearchOptionByField('field',$field);
+               $searchOption = $item->getSearchOptionByField('field', $field);
                echo "<th>".$searchOption["name"]."</th>";
             }
             echo "<th>"._x('quantity', 'Number')."</th></tr>";

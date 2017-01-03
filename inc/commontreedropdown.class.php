@@ -67,11 +67,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $this->addStandardTab($this->getType(), $ong, $options);
       if ($this->dohistory) {
-         $this->addStandardTab('Log',$ong, $options);
+         $this->addStandardTab('Log', $ong, $options);
       }
 
       if (DropdownTranslation::canBeTranslated($this)) {
-         $this->addStandardTab('DropdownTranslation',$ong, $options);
+         $this->addStandardTab('DropdownTranslation', $ong, $options);
       }
 
       return $ong;
@@ -244,7 +244,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                // And we must update the level of the current node ...
                $fieldsToUpdate[] = "`level` = '$nextNodeLevel'";
             }
-            $query .= implode(', ',$fieldsToUpdate)." WHERE `id`= '".$data["id"]."'";
+            $query .= implode(', ', $fieldsToUpdate)." WHERE `id`= '".$data["id"]."'";
             $DB->query($query);
             // Translations :
             if (Session::haveTranslations($this->getType(), 'completename')) {
@@ -725,7 +725,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          // Check twin :
          if ($result_twin = $DB->query($query) ) {
             if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin,0,"id");
+               return $DB->result($result_twin, 0, "id");
             }
          }
 
@@ -771,7 +771,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
 
       // Import a full tree from completename
-      $names  = explode('>',$input['completename']);
+      $names  = explode('>', $input['completename']);
       $fk     = $this->getForeignKeyField();
       $i      = count($names);
       $parent = 0;

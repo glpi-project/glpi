@@ -279,7 +279,7 @@ class Notification extends CommonDBTM {
       switch ($field) {
          case 'event':
             if (isset($values['itemtype']) && !empty($values['itemtype'])) {
-               return NotificationEvent::getEventName($values['itemtype'],$values[$field]);
+               return NotificationEvent::getEventName($values['itemtype'], $values[$field]);
             }
             break;
 
@@ -311,7 +311,7 @@ class Notification extends CommonDBTM {
                 && !empty($values['itemtype'])) {
                $options['value'] = $values[$field];
                $options['name']  = $name;
-               return NotificationEvent::dropdownEvents($values['itemtype'],$options);
+               return NotificationEvent::dropdownEvents($values['itemtype'], $options);
             }
             break;
 

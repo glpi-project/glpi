@@ -529,7 +529,7 @@ class MassiveAction {
             if (in_array($itemtype, Item_Devices::getConcernedItems())) {
                $actions[$self_pref.'purge_item_but_devices']
                                              = _x('button', 'Delete permanently but keep devices');
-               $actions[$self_pref.'purge']  = _x('button',  'Delete permanently and remove devices');
+               $actions[$self_pref.'purge']  = _x('button', 'Delete permanently and remove devices');
             } else {
                $actions[$self_pref.'purge']  = _x('button', 'Delete permanently');
             }
@@ -632,7 +632,7 @@ class MassiveAction {
     * @return nothing (display only)
    **/
    function showDefaultSubForm() {
-      echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+      echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
    }
 
 
@@ -891,7 +891,7 @@ class MassiveAction {
             echo Html::hidden('field', array('value' => $fieldname));
             echo "<br>\n";
 
-            $submitname = _sx('button','Post');
+            $submitname = _sx('button', 'Post');
             if (isset($ma->POST['submitname']) && $ma->POST['submitname']) {
                $submitname= stripslashes($ma->POST['submitname']);
             }
@@ -1122,7 +1122,7 @@ class MassiveAction {
 
                            if ($ic->can(-1, CREATE, $input2)) {
                               // Add infocom if not exists
-                              if (!$ic->getFromDBforDevice($item->getType(),$key)) {
+                              if (!$ic->getFromDBforDevice($item->getType(), $key)) {
                                  $input2["items_id"] = $key;
                                  $input2["itemtype"] = $item->getType();
                                  unset($ic->fields);

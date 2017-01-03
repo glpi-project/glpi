@@ -65,14 +65,14 @@ class NotificationTargetProject extends NotificationTarget {
    **/
    function getAdditionalTargets($event='') {
 
-      $this->addTarget(Notification::MANAGER_USER,  __('Manager'));
+      $this->addTarget(Notification::MANAGER_USER, __('Manager'));
       $this->addTarget(Notification::MANAGER_GROUP, __('Manager group'));
       $this->addTarget(Notification::MANAGER_GROUP_SUPERVISOR, __('Manager of manager group'));
       $this->addTarget(Notification::MANAGER_GROUP_WITHOUT_SUPERVISOR,
                         __("Manager group except manager users"));
       $this->addTarget(Notification::TEAM_USER, __('User of project team'));
       $this->addTarget(Notification::TEAM_GROUP, __('Group of project team'));
-      $this->addTarget(Notification::TEAM_GROUP_SUPERVISOR,  __('Manager of group of project team'));
+      $this->addTarget(Notification::TEAM_GROUP_SUPERVISOR, __('Manager of group of project team'));
       $this->addTarget(Notification::TEAM_GROUP_WITHOUT_SUPERVISOR,
                         __("Group of project team except manager users"));
       $this->addTarget(Notification::TEAM_CONTACT, __('Contact of project team'));
@@ -256,7 +256,7 @@ class NotificationTargetProject extends NotificationTarget {
       $this->datas["##project.priority##"]
             = CommonITILObject::getPriorityName($item->getField('priority'));
       $this->datas["##project.percent##"]
-            = Dropdown::getValueWithUnit($item->getField('percent_done'),"%");
+            = Dropdown::getValueWithUnit($item->getField('percent_done'), "%");
       $this->datas["##project.planstartdate##"]
             = Html::convDateTime($item->getField('plan_start_date'));
       $this->datas["##project.planenddate##"]
@@ -317,7 +317,7 @@ class NotificationTargetProject extends NotificationTarget {
       }
       // Team infos
       $restrict = "`projects_id` = '".$item->getField('id')."'";
-      $items    = getAllDatasFromTable('glpi_projectteams',$restrict);
+      $items    = getAllDatasFromTable('glpi_projectteams', $restrict);
 
       $this->datas['teammembers'] = array();
       if (count($items)) {
@@ -339,7 +339,7 @@ class NotificationTargetProject extends NotificationTarget {
       $restrict             = "`projects_id`='".$item->getField('id')."'";
       $restrict            .= " ORDER BY `date` DESC, `id` ASC";
 
-      $tasks                = getAllDatasFromTable('glpi_projecttasks',$restrict);
+      $tasks                = getAllDatasFromTable('glpi_projecttasks', $restrict);
       $this->datas['tasks'] = array();
       foreach ($tasks as $task) {
          $tmp                            = array();
@@ -353,7 +353,7 @@ class NotificationTargetProject extends NotificationTarget {
                                                                      $task['projectstates_id']);
          $tmp['##task.type##']           = Dropdown::getDropdownName('glpi_projecttasktypes',
                                                                      $task['projecttasktypes_id']);
-         $tmp['##task.percent##']        = Dropdown::getValueWithUnit($task['percent_done'],"%");
+         $tmp['##task.percent##']        = Dropdown::getValueWithUnit($task['percent_done'], "%");
 
          $this->datas["##task.planstartdate##"]  = '';
          $this->datas["##task.planenddate##"]    = '';
@@ -381,7 +381,7 @@ class NotificationTargetProject extends NotificationTarget {
       $restrict             = "`projects_id`='".$item->getField('id')."'";
       $restrict            .= " ORDER BY `begin_date` DESC, `id` ASC";
 
-      $costs                = getAllDatasFromTable('glpi_projectcosts',$restrict);
+      $costs                = getAllDatasFromTable('glpi_projectcosts', $restrict);
       $this->datas['costs'] = array();
       $this->datas["##project.totalcost##"] = 0;
       foreach ($costs as $cost) {
@@ -416,7 +416,7 @@ class NotificationTargetProject extends NotificationTarget {
 
       // Changes infos
       $restrict               = "`projects_id`='".$item->getField('id')."'";
-      $changes                = getAllDatasFromTable('glpi_changes_projects',$restrict);
+      $changes                = getAllDatasFromTable('glpi_changes_projects', $restrict);
       $this->datas['changes'] = array();
       if (count($changes)) {
          $change = new Change();
@@ -487,7 +487,7 @@ class NotificationTargetProject extends NotificationTarget {
 
       // Items infos
       $restrict             = "`projects_id` = '".$item->getField('id')."'";
-      $items                = getAllDatasFromTable('glpi_items_projects',$restrict);
+      $items                = getAllDatasFromTable('glpi_items_projects', $restrict);
 
       $this->datas['items'] = array();
       if (count($items)) {

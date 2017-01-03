@@ -211,7 +211,7 @@ class Contact extends CommonDBTM{
       echo "<td>";
       Html::autocompletionTextField($this, "email");
       echo "</td>";
-      echo "<td>"._x('location','State')."</td>";
+      echo "<td>"._x('location', 'State')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "state");
       echo "</td></tr>";
@@ -226,7 +226,7 @@ class Contact extends CommonDBTM{
       Html::autocompletionTextField($this, "country");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . _x('person','Title') . "</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . _x('person', 'Title') . "</td><td>";
       UserTitle::dropdown(array('value' => $this->fields["usertitles_id"]));
       echo "<td>&nbsp;</td><td class='center'>";
       if ($ID > 0) {
@@ -343,7 +343,7 @@ class Contact extends CommonDBTM{
 
       $tab[85]['table']         = $this->getTable();
       $tab[85]['field']         = 'state';
-      $tab[85]['name']          = _x('location','State');
+      $tab[85]['name']          = _x('location', 'State');
       $tab[85]['datatype']      = 'string';
 
       $tab[87]['table']         = $this->getTable();
@@ -358,7 +358,7 @@ class Contact extends CommonDBTM{
 
       $tab[81]['table']         = 'glpi_usertitles';
       $tab[81]['field']         = 'name';
-      $tab[81]['name']          = _x('person','Title');
+      $tab[81]['name']          = _x('person', 'Title');
       $tab[81]['datatype']      = 'dropdown';
 
       $tab[8]['table']          = 'glpi_suppliers';

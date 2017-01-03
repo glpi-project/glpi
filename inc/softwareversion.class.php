@@ -69,8 +69,8 @@ class SoftwareVersion extends CommonDBChild {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Computer_SoftwareVersion',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('Computer_SoftwareVersion', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -130,7 +130,7 @@ class SoftwareVersion extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,"name");
+      Html::autocompletionTextField($this, "name");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Operating system') . "</td><td>";
@@ -220,7 +220,7 @@ class SoftwareVersion extends CommonDBChild {
 
       $where = '';
       if (count($p['used'])) {
-         $where = " AND `glpi_softwareversions`.`id` NOT IN (".implode(",",$p['used']).")";
+         $where = " AND `glpi_softwareversions`.`id` NOT IN (".implode(",", $p['used']).")";
       }
       // Make a select box
       $query = "SELECT DISTINCT `glpi_softwareversions`.*,
@@ -302,7 +302,7 @@ class SoftwareVersion extends CommonDBChild {
             echo "</tr>\n";
 
             for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {
-               Session::addToNavigateListItems('SoftwareVersion',$data['id']);
+               Session::addToNavigateListItems('SoftwareVersion', $data['id']);
                $nb = Computer_SoftwareVersion::countForVersion($data['id']);
 
                echo "<tr class='tab_bg_2'>";

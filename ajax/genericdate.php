@@ -44,7 +44,7 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['value']) && (strcmp($_POST['value'],'0') == 0)) {
+if (isset($_POST['value']) && (strcmp($_POST['value'], '0') == 0)) {
 
    if ($_POST['withtime']) {
       Html::showDateTimeField($_POST['name'], array('value' => $_POST['specificvalue']));

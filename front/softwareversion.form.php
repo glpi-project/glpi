@@ -49,7 +49,7 @@ if (!isset($_GET["softwares_id"])) {
 $version = new SoftwareVersion();
 
 if (isset($_POST["add"])) {
-    $version->check(-1, CREATE,$_POST);
+    $version->check(-1, CREATE, $_POST);
 
    if ($newID = $version->add($_POST)) {
       Event::log($_POST['softwares_id'], "software", 4, "inventory",

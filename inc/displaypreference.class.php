@@ -69,7 +69,7 @@ class DisplayPreference extends CommonDBTM {
                       AND `users_id` = '".$input["users_id"]."'";
       $result = $DB->query($query);
 
-      $input["rank"] = $DB->result($result,0,0)+1;
+      $input["rank"] = $DB->result($result, 0, 0)+1;
 
       return $input;
    }
@@ -320,7 +320,7 @@ class DisplayPreference extends CommonDBTM {
                $group = $val;
 
             } else if (($key != 1)
-                       && !in_array($key,$already_added)
+                       && !in_array($key, $already_added)
                        && (!isset($val['nodisplay']) || !$val['nodisplay'])) {
                $values[$group][$key] = $val["name"];
             }
@@ -467,7 +467,7 @@ class DisplayPreference extends CommonDBTM {
             if (!is_array($val)) {
                $group = $val;
             } else if (($key != 1)
-                       && !in_array($key,$already_added)
+                       && !in_array($key, $already_added)
                        && (!isset($val['nodisplay']) || !$val['nodisplay'])) {
                $values[$group][$key] = $val["name"];
             }

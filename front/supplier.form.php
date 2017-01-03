@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["purge"])) {
    $ent->check($_POST["id"], PURGE);
-   $ent->delete($_POST,1);
+   $ent->delete($_POST, 1);
    Event::log($_POST["id"], "suppliers", 4, "financial",
                //TRANS: %s is the user login
                sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

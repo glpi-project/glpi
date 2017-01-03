@@ -143,8 +143,8 @@ function current_time() {
 
    list($usec,$sec) = explode(" ", microtime());
    $TPSFIN          = $sec;
-   if (round($TPSFIN-$TPSDEB,1) >= $TPSCOUR+1) {//une seconde de plus
-      $TPSCOUR = round($TPSFIN-$TPSDEB,1);
+   if (round($TPSFIN-$TPSDEB, 1) >= $TPSCOUR+1) {//une seconde de plus
+      $TPSCOUR = round($TPSFIN-$TPSDEB, 1);
    }
 }
 
@@ -178,7 +178,7 @@ function get_content($DB, $table, $from, $limit) {
                $insert .= "'',";
             }
          }
-         $insert   = preg_replace("/,$/","",$insert);
+         $insert   = preg_replace("/,$/", "", $insert);
          $insert  .= ");\n";
          $content .= $insert;
       }
@@ -202,7 +202,7 @@ function get_def($DB, $table) {
    $DB->query("SET SESSION sql_quote_show_create = 1");
    $row = $DB->fetch_row($result);
 
-   $def .= preg_replace("/AUTO_INCREMENT=\w+/i","",$row[1]);
+   $def .= preg_replace("/AUTO_INCREMENT=\w+/i", "", $row[1]);
    $def .= ";";
    return $def."\n\n";
 }
@@ -242,14 +242,14 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
    if ($offset != 0) {
       if (substr($dumpFile, -2) == "gz") {
-         if (gzseek($fileHandle,$offset,SEEK_SET) != 0) { //erreur
+         if (gzseek($fileHandle, $offset, SEEK_SET) != 0) { //erreur
             //TRANS: %s is the number of the byte
             printf(__("Unable to find the byte %s"), Html::formatNumber($offset, false, 0));
             echo "<br>";
             return false;
          }
       } else {
-         if (fseek($fileHandle,$offset,SEEK_SET) != 0) { //erreur
+         if (fseek($fileHandle, $offset, SEEK_SET) != 0) { //erreur
             //TRANS: %s is the number of the byte
             printf(__("Unable to find the byte %s"), Html::formatNumber($offset, false, 0));
             echo "<br>";
@@ -275,7 +275,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
          // do not strip comments due to problems when # in begin of a data line
          $formattedQuery .= $buffer;
 
-         if (substr(rtrim($formattedQuery),-1) == ";") {
+         if (substr(rtrim($formattedQuery), -1) == ";") {
             // Do not use the $DB->query
             if ($DB->query($formattedQuery)) { //if no success continue to concatenate
                $offset         = gztell($fileHandle);
@@ -298,7 +298,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
          // do not strip comments due to problems when # in begin of a data line
          $formattedQuery .= $buffer;
 
-         if (substr(rtrim($formattedQuery),-1) == ";") {
+         if (substr(rtrim($formattedQuery), -1) == ";") {
             // Do not use the $DB->query
             if ($DB->query($formattedQuery)) { //if no success continue to concatenate
                $offset         = ftell($fileHandle);
@@ -368,8 +368,8 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    for ( ; $offsettable<$numtab ; $offsettable++) {
       // Dump de la structure table
       if ($offsetrow == -1) {
-         $todump = "\n".get_def($DB,$tables[$offsettable]);
-         gzwrite ($fileHandle,$todump);
+         $todump = "\n".get_def($DB, $tables[$offsettable]);
+         gzwrite ($fileHandle, $todump);
          $offsetrow++;
          $cpt++;
       }
@@ -380,11 +380,11 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
       }
       $fin = 0;
       while (!$fin) {
-         $todump    = get_content($DB,$tables[$offsettable],$offsetrow,$rowlimit);
+         $todump    = get_content($DB, $tables[$offsettable], $offsetrow, $rowlimit);
          $rowtodump = substr_count($todump, "INSERT INTO");
 
          if ($rowtodump > 0) {
-            gzwrite ($fileHandle,$todump);
+            gzwrite ($fileHandle, $todump);
             $cpt       += $rowtodump;
             $offsetrow += $rowlimit;
             if ($rowtodump<$rowlimit) {
@@ -476,7 +476,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
       $tot = $DB->numrows($tab);
       if (isset($offsettable)) {
          if ($offsettable >= 0) {
-            $percent = min(100,round(100*$offsettable/$tot,0));
+            $percent = min(100, round(100*$offsettable/$tot, 0));
          } else {
             $percent = 100;
          }
@@ -490,7 +490,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
       }
 
       if ($offsettable >= 0) {
-         if (backupMySql($DB,$fichier,$duree,$rowlimit)) {
+         if (backupMySql($DB, $fichier, $duree, $rowlimit)) {
             echo "<div class='center spaced'>".
                  "<a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=".
                     "$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">".
@@ -543,7 +543,7 @@ if (isset($_GET["file"]) && ($_GET["file"] != "")
       if ($offset == -1) {
          $percent = 100;
       } else {
-         $percent = min(100,round(100*$offset/$fsize,0));
+         $percent = min(100, round(100*$offset/$fsize, 0));
       }
    } else {
       $percent = 0;
@@ -555,7 +555,7 @@ if (isset($_GET["file"]) && ($_GET["file"] != "")
    }
 
    if ($offset != -1) {
-      if (restoreMySqlDump($DB,$path."/".$_GET["file"],$duree)) {
+      if (restoreMySqlDump($DB, $path."/".$_GET["file"], $duree)) {
          echo "<div class='center'>".
               "<a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=".
                     "$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">";
@@ -627,8 +627,8 @@ $dir   = opendir($path);
 $files = array();
 while ($file = readdir($dir)) {
    if (($file != ".") && ($file != "..")
-       && (preg_match("/\.sql.gz$/i",$file)
-           || preg_match("/\.sql$/i",$file))) {
+       && (preg_match("/\.sql.gz$/i", $file)
+           || preg_match("/\.sql$/i", $file))) {
 
       $files[$file] = filemtime($path."/".$file);
    }
@@ -640,14 +640,14 @@ if (count($files)) {
       $taille_fic = filesize($path."/".$file);
       echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
            "<td class='right'>".Toolbox::getSize($taille_fic)."</td>".
-           "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>";
+           "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i", $date)) . "</td>";
       if (Session::haveRight('backup', PURGE)) {
          echo "<td>&nbsp;";
               //TRANS: %s is the filename
               $string = sprintf(__('Delete the file %s?'), $file);
               Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile',
                                    _x('button', 'Delete permanently'),
-                                   array('file' => $file),'','',$string);
+                                   array('file' => $file), '', '', $string);
 
          echo "</td>";
          echo "<td>&nbsp;";
@@ -679,7 +679,7 @@ $files = array();
 
 while ($file = readdir($dir)) {
    if (($file != ".") && ($file != "..")
-       && preg_match("/\.xml$/i",$file)) {
+       && preg_match("/\.xml$/i", $file)) {
 
       $files[$file] = filemtime($path."/".$file);
    }
@@ -692,13 +692,13 @@ if (count($files)) {
       echo "<tr class='tab_bg_1'><td colspan='6'><hr noshade></td></tr>".
            "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
             "<td class='right'>".Toolbox::getSize($taille_fic)."</td>".
-            "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>";
+            "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i", $date)) . "</td>";
       if (Session::haveRight('backup', PURGE)) {
          echo "<td colspan=2>";
          //TRANS: %s is the filename
-         $string = sprintf(__('Delete the file %s?'),$file);
+         $string = sprintf(__('Delete the file %s?'), $file);
          Html::showSimpleForm($_SERVER['PHP_SELF'], 'delfile', _x('button', 'Delete permanently'),
-                              array('file' => $file),'','',$string);
+                              array('file' => $file), '', '', $string);
          echo "</td>";
       }
       if (Session::haveRight('backup', CREATE)) {

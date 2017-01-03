@@ -56,7 +56,7 @@ class CartridgeItem extends CommonDBTM {
    static $rightname                   = 'cartridge';
 
    static function getTypeName($nb=0) {
-      return _n('Cartridge model','Cartridge models',$nb);
+      return _n('Cartridge model', 'Cartridge models', $nb);
    }
 
 
@@ -113,9 +113,9 @@ class CartridgeItem extends CommonDBTM {
       $this->addStandardTab('Cartridge', $ong, $options);
       $this->addStandardTab('CartridgeItem_PrinterModel', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
-      $this->addStandardTab('Document_Item',$ong, $options);
-      $this->addStandardTab('Link',$ong, $options);
-      $this->addStandardTab('Notepad',$ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -301,7 +301,7 @@ class CartridgeItem extends CommonDBTM {
 
       $tab[9]['table']              = 'glpi_cartridgeitems';
       $tab[9]['field']              = '_virtual';
-      $tab[9]['name']               = _n('Cartridge','Cartridges', Session::getPluralNumber());
+      $tab[9]['name']               = _n('Cartridge', 'Cartridges', Session::getPluralNumber());
       $tab[9]['datatype']           = 'specific';
       $tab[9]['massiveaction']      = false;
       $tab[9]['nosearch']           = true;

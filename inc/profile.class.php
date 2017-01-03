@@ -83,7 +83,7 @@ class Profile extends CommonDBTM {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Profile_User', $ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
       return $ong;
    }
 
@@ -172,7 +172,7 @@ class Profile extends CommonDBTM {
          unset($this->profileRight);
       }
 
-      if (in_array('is_default',$this->updates) && ($this->input["is_default"] == 1)) {
+      if (in_array('is_default', $this->updates) && ($this->input["is_default"] == 1)) {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->input['id']."'";
@@ -377,8 +377,8 @@ class Profile extends CommonDBTM {
 
       if ($this->fields["interface"] == "helpdesk") {
          foreach ($this->fields as $key=>$val) {
-            if (!in_array($key,self::$common_fields)
-                && !in_array($key,self::$helpdesk_rights)) {
+            if (!in_array($key, self::$common_fields)
+                && !in_array($key, self::$helpdesk_rights)) {
                unset($this->fields[$key]);
             }
          }
@@ -478,7 +478,7 @@ class Profile extends CommonDBTM {
 
          if (!is_array($val) // Do not include entities field added by login
              && (($_SESSION['glpiactiveprofile']['interface'] == 'central')
-                 || in_array($key,self::$helpdesk_rights))) {
+                 || in_array($key, self::$helpdesk_rights))) {
 
             $right_subqueries[] = "(`glpi_profilerights`.`name` = '$key'
                                    AND (`glpi_profilerights`.`rights` | $val) = $val)";
@@ -704,7 +704,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='4' class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table>\n";
          Html::closeForm();
@@ -754,7 +754,7 @@ class Profile extends CommonDBTM {
       if ($canedit) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</div>\n";
          Html::closeForm();
       }
@@ -823,7 +823,7 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</div>\n";
          Html::closeForm();
       }
@@ -882,7 +882,7 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</div>\n";
          Html::closeForm();
       }
@@ -948,7 +948,7 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</div>\n";
          Html::closeForm();
       }
@@ -1096,7 +1096,7 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</div>\n";
          Html::closeForm();
       }
@@ -1179,7 +1179,7 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</div>\n";
          Html::closeForm();
       }
@@ -1274,7 +1274,7 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</div>\n";
          Html::closeForm();
       }
@@ -1368,7 +1368,7 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</div>\n";
          Html::closeForm();
       }
@@ -1428,7 +1428,7 @@ class Profile extends CommonDBTM {
                             'label'     => _n('Network outlet', 'Network outlets', Session::getPluralNumber()),
                             'field'     => 'netpoint'),
                       array('itemtype'  => 'TaskCategory',
-                            'label'     => _n('Task category','Task categories', Session::getPluralNumber()),
+                            'label'     => _n('Task category', 'Task categories', Session::getPluralNumber()),
                             'field'     => 'taskcategory'),
                       array('itemtype'  => 'State',
                             'label'     => _n('Status of items', 'Statuses of items', Session::getPluralNumber()),
@@ -1460,7 +1460,7 @@ class Profile extends CommonDBTM {
           && $closeform) {
          echo "<div class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</div>\n";
          Html::closeForm();
       }
@@ -2078,7 +2078,7 @@ class Profile extends CommonDBTM {
                   $message[] = $item->getTypeName();
                }
             }
-            return implode(', ',$message);
+            return implode(', ', $message);
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }

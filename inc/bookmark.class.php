@@ -340,7 +340,7 @@ class Bookmark extends CommonDBTM {
          echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='users_id' value='".$this->fields['users_id']."'>";
          echo "<div class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</div></td></tr>";
 
       } else {
@@ -558,7 +558,7 @@ class Bookmark extends CommonDBTM {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                // already exists delete it
-               $deleteID = $DB->result($result,0,0);
+               $deleteID = $DB->result($result, 0, 0);
                $dd->delete(array('id' => $deleteID));
             }
          }

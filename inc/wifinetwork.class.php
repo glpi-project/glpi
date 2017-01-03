@@ -89,7 +89,7 @@ class WifiNetwork extends CommonDropdown {
 
       $ong  = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('NetworkPort',$ong, $options);
+      $this->addStandardTab('NetworkPort', $ong, $options);
 
       return $ong;
    }

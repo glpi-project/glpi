@@ -55,7 +55,7 @@ abstract class CommonITILCost extends CommonDBChild {
 
 
    function getItilObjectItemType() {
-      return str_replace('Cost','',$this->getType());
+      return str_replace('Cost', '', $this->getType());
    }
 
 
@@ -341,7 +341,7 @@ abstract class CommonITILCost extends CommonDBChild {
       echo "<td>";
       echo "<input type='hidden' name='".static::$items_id."' value='".$item->fields['id']."'>";
 
-      Html::autocompletionTextField($this,'name');
+      Html::autocompletionTextField($this, 'name');
       echo "</td>";
       echo "<td>".__('Begin date')."</td>";
       echo "<td>";
@@ -432,7 +432,7 @@ abstract class CommonITILCost extends CommonDBChild {
       $condition = "= '$ID'";
 
       if ($forproject) {
-         $condition = " IN ('".implode("','",ProjectTask::getAllTicketsForProject($ID))."')";
+         $condition = " IN ('".implode("','", ProjectTask::getAllTicketsForProject($ID))."')";
       }
 
       $query = "SELECT *

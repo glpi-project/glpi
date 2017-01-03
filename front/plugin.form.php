@@ -45,7 +45,7 @@ $plugin = new Plugin();
 if (isset($_POST['action'])
     && isset($_POST['id'])) {
 
-   if (method_exists($plugin,$_POST['action'])) {
+   if (method_exists($plugin, $_POST['action'])) {
       call_user_func([$plugin, $_POST['action']], $_POST['id']);
    } else {
       echo "Action ".$_POST['action']." undefined";
