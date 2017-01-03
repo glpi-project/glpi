@@ -461,7 +461,7 @@ class RuleCriteria extends CommonDBChild {
                array_shift($results);
                // And add to $regex_result array
                $res = array();
-               foreach($results as $data) {
+               foreach ($results as $data) {
                   $res[] = $data[0];
                }
                $regex_result[]               = $res;

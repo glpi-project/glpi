@@ -453,7 +453,7 @@ class MailCollector  extends CommonDBTM {
             // Get Total Number of Unread Email in mail box
             $tot = $this->getTotalMails(); //Total Mails in Inbox Return integer value
 
-            for($i=1 ; $i<=$tot ; $i++) {
+            for ($i=1 ; $i<=$tot ; $i++) {
                $head = $this->getHeaders($i);
                if (isset($rejected[$head['message_id']])) {
                   if ($action == 1) {
@@ -1090,7 +1090,7 @@ class MailCollector  extends CommonDBTM {
       } else {
          $try_options = array(array('DISABLE_AUTHENTICATOR' => 'GSSAPI'),
                               array('DISABLE_AUTHENTICATOR' => 'PLAIN'));
-         foreach($try_options as $option) {
+         foreach ($try_options as $option) {
             $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
                                         Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                         CL_EXPUNGE, 1, $option);
@@ -1460,7 +1460,7 @@ class MailCollector  extends CommonDBTM {
          }
          //try to avoid conflict between inline image and attachment
          $i = 2;
-         while(in_array($filename, $this->files)) {
+         while (in_array($filename, $this->files)) {
             //replace filename with name_(num).EXT by name_(num+1).EXT
             $new_filename = preg_replace("/(.*)_([0-9])*(\.[a-zA-Z0-9]*)$/", "$1_".$i."$3", $filename);
             if ($new_filename !== $filename) {
@@ -1594,7 +1594,7 @@ class MailCollector  extends CommonDBTM {
    **/
    static function cronInfo($name) {
 
-      switch($name) {
+      switch ($name) {
          case 'mailgate' :
             return array('description' => __('Retrieve email (Mails receivers)'),
                          'parameter'   => __('Number of emails to retrieve'));
@@ -1701,7 +1701,7 @@ class MailCollector  extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       $msg = 'Way of sending emails: ';
-      switch($CFG_GLPI['smtp_mode']) {
+      switch ($CFG_GLPI['smtp_mode']) {
          case MAIL_MAIL :
             $msg .= 'PHP';
             break;

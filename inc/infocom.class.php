@@ -84,7 +84,7 @@ class Infocom extends CommonDBChild {
          $item = $item->getType();
       }
 
-      if (in_array($item, $CFG_GLPI['infocom_types'])){
+      if (in_array($item, $CFG_GLPI['infocom_types'])) {
          return true;
       }
 
@@ -793,7 +793,7 @@ class Infocom extends CommonDBChild {
                if ($prorata > 0) {
                   $duree = $duree+1;
                }
-               for($i=1 ; $i<=$duree ; $i++) {
+               for ($i=1 ; $i<=$duree ; $i++) {
                   $tab['annee'][$i]    = $date_Y+$i-1;
                   $tab['annuite'][$i]  = $annuite;
                   $tab['vcnetdeb'][$i] = $mrt; // Pour chaque annee on calcul la valeur comptable nette
@@ -840,7 +840,7 @@ class Infocom extends CommonDBChild {
                                                         // en mode degressif
                $mrt            = $va;
                // amortissement degressif pour les premieres annees
-               for($i=1 ; $i<=$dureedegressif ; $i++) {
+               for ($i=1 ; $i<=$dureedegressif ; $i++) {
                   $tab['annee'][$i]    = $date_Y+$i-1;
                   $tab['vcnetdeb'][$i] = $mrt; // Pour chaque annee on calcule la valeur comptable nette
                                              // de debut d'exercice
@@ -862,7 +862,7 @@ class Infocom extends CommonDBChild {
                }
                $annuite = ($tab['vcnetfin'][$dureedegressif]*$txlineaire)/100; // calcul de l'annuite
                $mrt     = $tab['vcnetfin'][$dureedegressif];
-               for($i=$dureedegressif+1 ; $i<=$dureedegressif+$dureelineaire ; $i++) {
+               for ($i=$dureedegressif+1 ; $i<=$dureedegressif+$dureelineaire ; $i++) {
                   $tab['annee'][$i]    = $date_Y+$i-1;
                   $tab['annuite'][$i]  = $annuite;
                   $tab['vcnetdeb'][$i] = $mrt; // Pour chaque annee on calcule la valeur comptable nette

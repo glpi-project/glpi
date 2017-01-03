@@ -915,7 +915,7 @@ class Document_Item extends CommonDBRelation{
          }
 
          $document = new Document();
-         foreach  ($documents as $data) {
+         foreach ($documents as $data) {
             $docID        = $data["id"];
             $link         = NOT_AVAILABLE;
             $downloadlink = NOT_AVAILABLE;
@@ -945,7 +945,7 @@ class Document_Item extends CommonDBRelation{
             if (!empty($data["link"])) {
                echo "<a target=_blank href='".formatOutputWebLink($data["link"])."'>".$data["link"];
                echo "</a>";
-            } else {;
+            } else {
                echo "&nbsp;";
             }
             echo "</td>";

@@ -271,7 +271,7 @@ class ProjectTask extends CommonDBChild {
       }
 
       if (isset($input['is_milestone'])
-            && $input['is_milestone']){
+            && $input['is_milestone']) {
          $input['plan_end_date'] = $input['plan_start_date'];
          $input['real_end_date'] = $input['real_start_date'];
       }
@@ -289,7 +289,7 @@ class ProjectTask extends CommonDBChild {
       }
 
       if (isset($input['is_milestone'])
-            && $input['is_milestone']){
+            && $input['is_milestone']) {
          $input['plan_end_date'] = $input['plan_start_date'];
          $input['real_end_date'] = $input['real_start_date'];
       }
@@ -1160,7 +1160,7 @@ class ProjectTask extends CommonDBChild {
             if (!is_null($task->fields['plan_start_date'])) {
                $real_begin = $task->fields['plan_start_date'];
             } else {
-               foreach($subtasks as $subtask) {
+               foreach ($subtasks as $subtask) {
                   if (is_null($real_begin)
                       || (!is_null($subtask['from'])
                           && ($real_begin > $subtask['from']))) {
@@ -1178,7 +1178,7 @@ class ProjectTask extends CommonDBChild {
             if (!is_null($task->fields['plan_end_date'])) {
                $real_end = $task->fields['plan_end_date'];
             } else {
-               foreach($subtasks as $subtask) {
+               foreach ($subtasks as $subtask) {
                   if (is_null($real_end)
                       || (!is_null($subtask['to'])
                           && ($real_end < $subtask['to']))) {
@@ -1193,9 +1193,9 @@ class ProjectTask extends CommonDBChild {
             $parents = count(getAncestorsOf("glpi_projecttasks", $ID));
          }
 
-         if ($task->fields['is_milestone']){
+         if ($task->fields['is_milestone']) {
             $percent = "";
-         }else{
+         } else {
             $percent = isset($task->fields['percent_done'])?$task->fields['percent_done']:0;
          }
 
@@ -1213,7 +1213,7 @@ class ProjectTask extends CommonDBChild {
                               'is_milestone' => $task->fields['is_milestone']);
 
          // Add ordered subtasks
-         foreach($subtasks as $key => $val) {
+         foreach ($subtasks as $key => $val) {
             $todisplay[$key] = $val;
          }
       }

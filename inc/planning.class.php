@@ -922,7 +922,7 @@ class Planning extends CommonGLPI {
       // complete missing filters
       $filters = &$_SESSION['glpi_plannings']['filters'];
       $index_color = 0;
-      foreach($CFG_GLPI['planning_types'] as $planning_type) {
+      foreach ($CFG_GLPI['planning_types'] as $planning_type) {
          if ($planning_type::canView()) {
             if (!isset($filters[$planning_type])) {
                $filters[$planning_type] = array('color'   => self::getPaletteColor('ev',
@@ -967,7 +967,7 @@ class Planning extends CommonGLPI {
       echo "</div>";
 
       echo "<div id='planning_filter_content'>";
-      foreach($_SESSION['glpi_plannings'] as $filter_heading => $filters) {
+      foreach ($_SESSION['glpi_plannings'] as $filter_heading => $filters) {
          echo "<div>";
          echo "<h3>";
          echo $headings[$filter_heading];
@@ -1154,16 +1154,16 @@ class Planning extends CommonGLPI {
          $user = new User();
          $user->getFromDB($actor[1]);
          $title = $user->getName();
-      } else if($filter_data['type'] == 'group_users') {
+      } else if ($filter_data['type'] == 'group_users') {
          $group = new Group();
          $group->getFromDB($actor[1]);
          $title = $group->getName();
-      } else if($filter_data['type'] == 'group') {
+      } else if ($filter_data['type'] == 'group') {
          $gID = $actor[1];
          $group = new Group();
          $group->getFromDB($actor[1]);
          $title = $group->getName();
-      } else if($filter_data['type'] == 'event_filter') {
+      } else if ($filter_data['type'] == 'event_filter') {
          if (!$filter_key::canView()
                || !($item = getItemForItemtype($filter_key))) {
             return false;
@@ -1228,7 +1228,7 @@ class Planning extends CommonGLPI {
       }
 
       // colors not for groups
-      if($filter_data['type'] != 'group_users') {
+      if ($filter_data['type'] != 'group_users') {
          echo "<span class='color_input'>";
          Html::showColorField($filter_key."_color",
                               array('value' => $color));
@@ -1238,9 +1238,9 @@ class Planning extends CommonGLPI {
          echo "<span class='toggle pointer' />";
       }
 
-      if($filter_data['type'] == 'group_users') {
+      if ($filter_data['type'] == 'group_users') {
          echo "<ul class='group_listofusers filters'>";
-         foreach($filter_data['users'] as $user_key => $userdata) {
+         foreach ($filter_data['users'] as $user_key => $userdata) {
             self::showSingleLinePlanningFilter($user_key,
                                                $userdata,
                                                array('show_delete'        => false,
@@ -1301,7 +1301,7 @@ class Planning extends CommonGLPI {
 
       $rand = mt_rand();
       $used = array();
-      foreach(array_keys($_SESSION['glpi_plannings']) as $actor) {
+      foreach (array_keys($_SESSION['glpi_plannings']) as $actor) {
          $actor = explode("_", $actor);
          if ($actor[0] == "user") {
             $used[] = $actor[1];
@@ -1390,7 +1390,7 @@ class Planning extends CommonGLPI {
                                              OR `glpi_users`.`end_date` > NOW())");
       $index_color = count($_SESSION['glpi_plannings']['plannings']);
       $group_user_index = 0;
-      foreach($users as $user_data) {
+      foreach ($users as $user_data) {
          // do not add an already set user
          if (!isset($_SESSION['glpi_plannings']['plannings']['user_'.$user_data['id']])) {
             $current_group['users']['user_'.$user_data['id']]
@@ -1565,7 +1565,7 @@ class Planning extends CommonGLPI {
       if (isset($params["begin"]) && !empty($params["begin"])) {
          $begin = $params["begin"];
          $begintime = date( "H:i:s", strtotime($begin));
-         if($begintime < $mintime) {
+         if ($begintime < $mintime) {
             $mintime = $begintime;
          }
 
@@ -1765,13 +1765,13 @@ class Planning extends CommonGLPI {
       $param['end']   = date("Y-m-d H:i:s", strtotime($param['end']));
 
       $raw_events = array();
-      foreach($CFG_GLPI['planning_types'] as $planning_type) {
+      foreach ($CFG_GLPI['planning_types'] as $planning_type) {
          if (!$planning_type::canView()) {
             continue;
          }
          if ($_SESSION['glpi_plannings']['filters'][$planning_type]['display']) {
             $event_type_color = $_SESSION['glpi_plannings']['filters'][$planning_type]['color'];
-            foreach($_SESSION['glpi_plannings']['plannings'] as $actor => $actor_params) {
+            foreach ($_SESSION['glpi_plannings']['plannings'] as $actor => $actor_params) {
                $actor_params['event_type_color'] = $event_type_color;
                $actor_params['planning_type'] = $planning_type;
                self::constructEventsArraySingleLine($actor,
@@ -1783,7 +1783,7 @@ class Planning extends CommonGLPI {
 
       // construct events (in fullcalendar format)
       $events = array();
-      foreach($raw_events as $event) {
+      foreach ($raw_events as $event) {
          $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech'])?
                         $event['users_id_tech']:
                         $event['users_id']);
@@ -1855,7 +1855,7 @@ class Planning extends CommonGLPI {
          if ($params['type'] == "group_users") {
             $subparams = $params;
             unset($subparams['users']);
-            foreach($params['users'] as $user => $userdata) {
+            foreach ($params['users'] as $user => $userdata) {
                $subparams = array_merge($subparams, $userdata);
                self::constructEventsArraySingleLine($user, $subparams, $raw_events);
             }

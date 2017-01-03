@@ -2001,7 +2001,7 @@ class CommonDBTM extends CommonGLPI {
          echo "<th colspan='$colspan'>";
          printf(__('Created on %s'), Html::convDateTime($this->fields["date_creation"]));
          echo "</th>";
-      } else if(!isset($options['withtemplate']) || $options['withtemplate'] == 0) {
+      } else if (!isset($options['withtemplate']) || $options['withtemplate'] == 0) {
          echo "<th colspan='$colspan'>";
          echo "</th>";
       }
@@ -3180,7 +3180,7 @@ class CommonDBTM extends CommonGLPI {
    function getSearchOptions() {
       $options = [];
 
-      foreach($this->getSearchOptionsNew() as $opt) {
+      foreach ($this->getSearchOptionsNew() as $opt) {
          if (!isset($opt['id'])) {
             throw new \Exception(get_called_class() . ': invalid search option! ' . print_r($opt, true));
          }
@@ -3255,7 +3255,7 @@ class CommonDBTM extends CommonGLPI {
          return $options;
       }
 
-      foreach($classname::getSearchOptionsToAddNew($itemtype) as $opt) {
+      foreach ($classname::getSearchOptionsToAddNew($itemtype) as $opt) {
          if (!isset($opt['id'])) {
             throw new \Exception(get_called_class() . ': invalid search option! ' . print_r($opt, true));
          }
@@ -3610,7 +3610,7 @@ class CommonDBTM extends CommonGLPI {
    function getUnicityErrorMessage($msgs, $unicity, $doubles) {
 
       $message = array();
-      foreach($msgs as $field => $value) {
+      foreach ($msgs as $field => $value) {
          $table = getTableNameForForeignKeyField($field);
          if ($table != '') {
             $searchOption = $this->getSearchOptionByField('field', 'name', $table);

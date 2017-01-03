@@ -233,7 +233,7 @@ class NotificationEvent extends CommonDBTM {
                self::raiseEvent($event, $item, $options, $label);
             }
 
-         } else  {
+         } else {
             echo "<tr class='tab_bg_2 center'><td colspan='4'>".__('No item to display')."</td></tr>";
          }
       }

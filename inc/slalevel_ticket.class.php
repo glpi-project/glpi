@@ -158,27 +158,27 @@ class SlaLevel_Ticket extends CommonDBTM {
           && !$ticket->isDeleted()) {
 
          // search all actors of a ticket
-         foreach($ticket->getUsers(CommonITILActor::REQUESTER) as $user) {
+         foreach ($ticket->getUsers(CommonITILActor::REQUESTER) as $user) {
             $ticket->fields['_users_id_requester'][] = $user['users_id'];
          }
-         foreach($ticket->getUsers(CommonITILActor::ASSIGN) as $user) {
+         foreach ($ticket->getUsers(CommonITILActor::ASSIGN) as $user) {
             $ticket->fields['_users_id_assign'][] = $user['users_id'];
          }
-         foreach($ticket->getUsers(CommonITILActor::OBSERVER) as $user) {
+         foreach ($ticket->getUsers(CommonITILActor::OBSERVER) as $user) {
             $ticket->fields['_users_id_observer'][] = $user['users_id'];
          }
 
-         foreach($ticket->getGroups(CommonITILActor::REQUESTER) as $group) {
+         foreach ($ticket->getGroups(CommonITILActor::REQUESTER) as $group) {
             $ticket->fields['_groups_id_requester'][] = $group['groups_id'];
          }
-         foreach($ticket->getGroups(CommonITILActor::ASSIGN) as $group) {
+         foreach ($ticket->getGroups(CommonITILActor::ASSIGN) as $group) {
             $ticket->fields['_groups_id_assign'][] = $group['groups_id'];
          }
-         foreach($ticket->getGroups(CommonITILActor::OBSERVER) as $group) {
+         foreach ($ticket->getGroups(CommonITILActor::OBSERVER) as $group) {
             $ticket->fields['_groups_id_observer'][] = $group['groups_id'];
          }
 
-         foreach($ticket->getSuppliers(CommonITILActor::ASSIGN) as $supplier) {
+         foreach ($ticket->getSuppliers(CommonITILActor::ASSIGN) as $supplier) {
             $ticket->fields['_suppliers_id_assign'][] = $supplier['suppliers_id'];
          }
 

@@ -97,7 +97,7 @@ class ObjectLock extends CommonDBTM {
       global $CFG_GLPI ;
 
       $ret = array();
-      foreach ($CFG_GLPI['lock_lockable_objects'] as $lo){
+      foreach ($CFG_GLPI['lock_lockable_objects'] as $lo) {
          $ret[$lo] = $lo::getTypeName(Session::getPluralNumber());
       }
       asort($ret, SORT_STRING);
@@ -399,7 +399,7 @@ class ObjectLock extends CommonDBTM {
             // this mask is mandatory to prevent read of information
             // that are not permitted to view by active profile
             ProfileRight::getAllPossibleRights();
-            foreach ($_SESSION['glpi_all_possible_rights'] as $key => $val){
+            foreach ($_SESSION['glpi_all_possible_rights'] as $key => $val) {
                if (isset($_SESSION['glpilocksavedprofile'][$key])) {
                   $_SESSION['glpiactiveprofile'][$key]
                      = intval($_SESSION['glpilocksavedprofile'][$key])

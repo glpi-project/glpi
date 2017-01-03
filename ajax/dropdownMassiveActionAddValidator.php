@@ -43,7 +43,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["validatortype"])) {
-   switch ($_POST["validatortype"]){
+   switch ($_POST["validatortype"]) {
       case 'user' :
          echo "<input type='hidden' name='groups_id' value=0 />";
          User::dropdown(array('name'   => 'users_id_validate',
@@ -82,7 +82,7 @@ if (isset($_POST["validatortype"])) {
 
          $users           = array();
          $param['values'] =  array();
-         foreach ($groups_users as $data){
+         foreach ($groups_users as $data) {
             $users[$data['id']] = formatUserName($data['id'], $data['name'], $data['realname'],
                                                  $data['firstname']);
          }
@@ -99,7 +99,7 @@ if (isset($_POST["validatortype"])) {
          Dropdown::showFromArray("users_id_validate", $users, $param);
 
           // Display all/none buttons to select all or no users in group
-         if (!empty($_POST['groups_id'])){
+         if (!empty($_POST['groups_id'])) {
             echo "<a id='all_users' class='vsubmit'>".__('All')."</a>";
             $param_button['validatortype']      = 'group_user';
             $param_button['users_id_validate']  = '';

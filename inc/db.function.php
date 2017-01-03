@@ -461,7 +461,7 @@ function getTreeLeafValueName($table, $ID, $withcomment=false, $translate=true) 
    $SELECTNAME    = "`$table`.`name`, '' AS transname";
    $SELECTCOMMENT = "`$table`.`comment`, '' AS transcomment";
    $JOIN          = '';
-   if  ($translate) {
+   if ($translate) {
       if (Session::haveTranslations(getItemTypeForTable($table), 'name')) {
          $SELECTNAME  = "`$table`.`name`, `namet`.`value` AS transname";
          $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
@@ -536,7 +536,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=tr
    $SELECTNAME    = "`$table`.`completename`, '' AS transname";
    $SELECTCOMMENT = "`$table`.`comment`, '' AS transcomment";
    $JOIN          = '';
-   if  ($translate) {
+   if ($translate) {
       if (Session::haveTranslations(getItemTypeForTable($table), 'completename')) {
          $SELECTNAME  = "`$table`.`completename`, `namet`.`value` AS transname";
          $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
@@ -569,7 +569,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=tr
          } else {
             $name = $DB->result($result, 0, "completename");
          }
-         if($tooltip) {
+         if ($tooltip) {
             $comment  = sprintf(__('%1$s: %2$s')."<br>",
                                 "<span class='b'>".__('Complete name')."</span>",
                                 $name);

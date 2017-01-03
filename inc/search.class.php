@@ -245,9 +245,9 @@ class Search {
             if (isset($val['field']) && !in_array($val['field'], $data['toview'])) {
                if ($val['field'] != 'all' && $val['field'] != 'view') {
                   array_push($data['toview'], $val['field']);
-               } else if ($val['field'] == 'all'){
+               } else if ($val['field'] == 'all') {
                   $data['search']['all_search'] = true;
-               } else if ($val['field'] == 'view'){
+               } else if ($val['field'] == 'view') {
                   $data['search']['view_search'] = true;
                }
             }
@@ -440,7 +440,7 @@ class Search {
       // Add search conditions
       // If there is search items
       if (count($data['search']['criteria'])) {
-         foreach  ($data['search']['criteria'] as $key => $criteria) {
+         foreach ($data['search']['criteria'] as $key => $criteria) {
             // if real search (strlen >0) and not all and view search
             if (isset($criteria['value']) && (strlen($criteria['value']) > 0)) {
                // common search
@@ -903,7 +903,7 @@ class Search {
 
       // directly increase group_concat_max_len to avoid double query
       if (count($data['search']['metacriteria'])) {
-         foreach($data['search']['metacriteria'] as $metacriterion) {
+         foreach ($data['search']['metacriteria'] as $metacriterion) {
             if ($metacriterion['link'] == 'AND NOT'
                 || $metacriterion['link'] == 'OR NOT') {
                $DBread->query("SET SESSION group_concat_max_len = 4194304;");
@@ -1003,7 +1003,7 @@ class Search {
          }
 
          // search group (corresponding of dropdown optgroup) of current col
-         foreach($data['data']['cols'] as $num => $col) {
+         foreach ($data['data']['cols'] as $num => $col) {
             // search current col in searchoptions ()
             while (key($searchopt) !== null
                    && key($searchopt) != $col['id']) {
@@ -2089,7 +2089,7 @@ class Search {
          }
       }
 
-      switch($table.".".$field) {
+      switch ($table.".".$field) {
          case "glpi_auth_tables.name" :
             $user_searchopt = self::getOptions('User');
             return " ORDER BY `glpi_users`.`authtype` $order,
@@ -4438,7 +4438,7 @@ class Search {
                                                  - strtotime($item->fields['date']);
                      }
                   }
-                  if ($totaltime != 0)  {
+                  if ($totaltime != 0) {
                      $percentage  = round((100 * $currenttime) / $totaltime);
                   } else {
                      // Total time is null : no active time

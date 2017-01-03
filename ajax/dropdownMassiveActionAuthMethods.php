@@ -50,7 +50,7 @@ if ($_POST["authtype"] > 0) {
       $name = $_POST['name'];
    }
 
-   switch($_POST["authtype"]) {
+   switch ($_POST["authtype"]) {
       case Auth::DB_GLPI :
          echo "<input type='hidden' name='auths_id' value='0'>";
          break;

@@ -1022,7 +1022,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                   /// Specific for tickets
                   $interv[$key]["device"] = '';
                   if (isset($parentitem->hardwaredatas) && !empty($parentitem->hardwaredatas)) {
-                     foreach($parentitem->hardwaredatas as $hardwaredata){
+                     foreach ($parentitem->hardwaredatas as $hardwaredata) {
                         $interv[$key]["device"][$hardwaredata->fields['id']] = ($hardwaredata
                                                    ? $hardwaredata->getName() :'');
                      }

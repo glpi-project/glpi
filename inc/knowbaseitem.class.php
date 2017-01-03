@@ -201,7 +201,7 @@ class KnowbaseItem extends CommonDBVisible {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType() == __CLASS__) {
-         switch($tabnum) {
+         switch ($tabnum) {
             case 1 :
                $item->showFull();
                break;
@@ -1015,7 +1015,7 @@ class KnowbaseItem extends CommonDBVisible {
                            AGAINST('$search_wilcard' IN BOOLEAN MODE)";
 
                if (!empty($addscore)) {
-                  foreach($addscore as $addscore_field) {
+                  foreach ($addscore as $addscore_field) {
                      $score.= " + MATCH($addscore_field)
                                         AGAINST('$search_wilcard' IN BOOLEAN MODE)";
                   }
@@ -1027,7 +1027,7 @@ class KnowbaseItem extends CommonDBVisible {
                           AGAINST('$search_wilcard' IN BOOLEAN MODE) ";
 
                if (!empty($addscore)) {
-                  foreach($addscore as $addscore_field) {
+                  foreach ($addscore as $addscore_field) {
                      $where_1.= "OR $addscore_field IS NOT NULL
                                     AND MATCH($addscore_field)
                                         AGAINST('$search_wilcard' IN BOOLEAN MODE)";

@@ -547,7 +547,7 @@ class Html {
       if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])
           && count($_SESSION["MESSAGE_AFTER_REDIRECT"]) > 0) {
 
-         foreach($_SESSION['MESSAGE_AFTER_REDIRECT'] as $msgtype => $messages) {
+         foreach ($_SESSION['MESSAGE_AFTER_REDIRECT'] as $msgtype => $messages) {
             //get messages
             if (count($messages) > 0) {
                $html_messages = implode('<br/>', $messages);
@@ -1362,7 +1362,7 @@ class Html {
          // Permit to plugins to add entry to others sector !
          if (isset($PLUGIN_HOOKS["menu_toadd"]) && count($PLUGIN_HOOKS["menu_toadd"])) {
 
-            foreach  ($PLUGIN_HOOKS["menu_toadd"] as $plugin => $items) {
+            foreach ($PLUGIN_HOOKS["menu_toadd"] as $plugin => $items) {
                if (count($items)) {
                   foreach ($items as $key => $val) {
                      if (is_array($val)) {
@@ -2905,7 +2905,7 @@ class Html {
          echo "<a class='vsubmit' ";
          if (is_array($p['confirm'] || strlen($p['confirm']))) {
             echo self::addConfirmationOnAction($p['confirm'], "massiveaction_window$identifier.dialog(\"open\");");
-         }  else {
+         } else {
             echo "onclick='massiveaction_window$identifier.dialog(\"open\");'";
          }
          echo " href='#modal_massaction_content$identifier' title=\"".htmlentities($p['title'], ENT_QUOTES, 'UTF-8')."\">";
@@ -4215,7 +4215,7 @@ class Html {
       if (($num > 0) && ($num < $tot)) {
          // TRANS %1$d %2$d are numbers (displayed, total)
          $cpt = sprintf(__('%1$d on %2$d'), $num, $tot);
-      } else  {
+      } else {
          // $num is 0, so means configured to display nothing
          // or $num == $tot
          $cpt = $tot;
@@ -4277,7 +4277,7 @@ class Html {
 
       if (is_array($confirm) || strlen($confirm)) {
          $link .= self::addConfirmationOnAction($confirm, $action);
-      }  else {
+      } else {
          $link .= " onclick=\"$action\" ";
       }
 
@@ -4945,7 +4945,7 @@ class Html {
          unset($options['version']);
       }
 
-      if($version){
+      if ($version) {
          $url .= '?v=' . $version;
       }
 
@@ -4975,7 +4975,7 @@ class Html {
          unset($options['version']);
       }
 
-      if($version){
+      if ($version) {
          $url .= '?v=' . $version;
       }
 

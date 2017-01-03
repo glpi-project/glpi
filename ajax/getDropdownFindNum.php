@@ -69,7 +69,7 @@ if ($item->isEntityAssign()) {
    $where = "WHERE 1";
 }
 
-if(isset($_POST['used']) && !empty($_POST['used'])){
+if (isset($_POST['used']) && !empty($_POST['used'])) {
    $where .= " AND `id` NOT IN ('".implode("','", $_POST['used'])."') ";
 }
 

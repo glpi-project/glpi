@@ -169,7 +169,7 @@ function get_content($DB, $table, $from, $limit) {
       while ($row = $DB->fetch_row($result)) {
          $insert = "INSERT INTO `$table` VALUES (";
 
-         for($j=0 ; $j<$num_fields ; $j++) {
+         for ($j=0 ; $j<$num_fields ; $j++) {
             if (is_null($row[$j])) {
                $insert .= "NULL,";
             } else if ($row[$j] != "") {

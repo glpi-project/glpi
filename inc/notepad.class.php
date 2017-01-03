@@ -154,7 +154,7 @@ class Notepad extends CommonDBChild {
                      AND `glpi_notepads`.`items_id` = '".$item->getID()."'
                 ORDER BY `date_mod` DESC";
 
-      foreach($DB->request($query) as $note) {
+      foreach ($DB->request($query) as $note) {
          $data[] = $note;
       }
       return $data;

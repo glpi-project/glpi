@@ -1471,7 +1471,7 @@ abstract class CommonITILValidation  extends CommonDBChild {
 
       $message = __s("This item is waiting for approval, do you really want to resolve or close it?");
 
-      switch($type){
+      switch ($type) {
          case 'status' :
             Html::scriptStart();
             echo "$('[name=\"status\"]').change(function() {

@@ -82,7 +82,7 @@ class Document extends CommonDBTM {
          $item = $item->getType();
       }
 
-      if (in_array($item, $CFG_GLPI['document_types'])){
+      if (in_array($item, $CFG_GLPI['document_types'])) {
          return true;
       }
 

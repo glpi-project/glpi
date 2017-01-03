@@ -75,7 +75,7 @@ if (isset($_POST['execute'])) {
    }
    Html::back();
 
-}else {
+} else {
    if (!isset($_GET["id"]) || empty($_GET["id"])) {
       exit();
    }

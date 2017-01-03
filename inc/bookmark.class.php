@@ -796,7 +796,7 @@ class Bookmark extends CommonDBTM {
 
       if (in_array($ID, $personalorder)) {
          $pos = array_search($ID, $personalorder);
-         switch($action) {
+         switch ($action) {
             case 'up' :
                if (isset($personalorder[$pos-1])) {
                   $personalorder[$pos] = $personalorder[$pos-1];

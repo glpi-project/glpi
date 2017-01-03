@@ -1105,7 +1105,7 @@ class Auth extends CommonGLPI {
          echo "<form method='post' action='".Toolbox::getItemTypeFormURL('User')."'>";
          echo "<div class='firstbloc'>";
 
-         switch($user->getField('authtype')) {
+         switch ($user->getField('authtype')) {
             case self::CAS :
             case self::EXTERNAL :
             case self::X509 :
