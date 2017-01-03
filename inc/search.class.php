@@ -1339,7 +1339,12 @@ class Search {
 
             // prefix by group name (corresponding to optgroup in dropdown) if exists
             if (isset($val['groupname'])) {
-               $name  = $val['groupname']." - ".$name;
+               $groupname = $val['groupname'];
+               if (is_array($groupname)) {
+                  //since 9.2, getSearchOptions has been changed
+                  $groupname = $groupname['name'];
+               }
+               $name  = "$groupname - $name";
             }
 
             // Not main itemtype add itemtype to display
@@ -5440,7 +5445,7 @@ class Search {
          }
 
          foreach ($search[$itemtype] as $key => $val) {
-            if (!is_array($val)) {
+            if (!is_array($val) || count($val) == 1) {
                // skip sub-menu
                continue;
             }

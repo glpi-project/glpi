@@ -152,30 +152,38 @@ class RuleCriteria extends CommonDBChild {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                     = array();
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'criteria',
+         'name'               => __('Name'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'additionalfields'   => ['rules_id']
+      ];
 
-      $tab[1]['table']            = $this->getTable();
-      $tab[1]['field']            = 'criteria';
-      $tab[1]['name']             = __('Name');
-      $tab[1]['massiveaction']    = false;
-      $tab[1]['datatype']         = 'specific';
-      $tab[1]['additionalfields'] = array('rules_id');
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'condition',
+         'name'               => __('Condition'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'additionalfields'   => ['rules_id', 'criteria']
+      ];
 
-      $tab[2]['table']            = $this->getTable();
-      $tab[2]['field']            = 'condition';
-      $tab[2]['name']             = __('Condition');
-      $tab[2]['massiveaction']    = false;
-      $tab[2]['datatype']         = 'specific';
-      $tab[2]['additionalfields'] = array('rules_id', 'criteria');
-
-      $tab[3]['table']            = $this->getTable();
-      $tab[3]['field']            = 'pattern';
-      $tab[3]['name']             = __('Reason');
-      $tab[3]['massiveaction']    = false;
-      $tab[3]['datatype']         = 'specific';
-      $tab[3]['additionalfields'] = array('rules_id', 'criteria', 'condition');
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'pattern',
+         'name'               => __('Reason'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'additionalfields'   => ['rules_id', 'criteria', 'condition']
+      ];
 
       return $tab;
    }

@@ -66,24 +66,32 @@ class DeviceMemory extends CommonDevice {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'size_default',
+         'name'               => __('Size by default'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'size_default';
-      $tab[11]['name']     = __('Size by default');
-      $tab[11]['datatype'] = 'string';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'frequence',
+         'name'               => __('Frequency'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'frequence';
-      $tab[12]['name']     = __('Frequency');
-      $tab[12]['datatype'] = 'string';
-
-      $tab[13]['table']    = 'glpi_devicememorytypes';
-      $tab[13]['field']    = 'name';
-      $tab[13]['name']     = __('Type');
-      $tab[13]['datatype'] = 'dropdown';
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => 'glpi_devicememorytypes',
+         'field'              => 'name',
+         'name'               => __('Type'),
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

@@ -71,16 +71,6 @@ class Change_Project extends CommonDBRelation{
 
 
    /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
-      return parent::getSearchOptions();
-   }
-
-
-   /**
     * @see CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {

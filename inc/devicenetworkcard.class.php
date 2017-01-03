@@ -82,19 +82,24 @@ class DeviceNetworkCard extends CommonDevice {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'mac_default',
+         'name'               => __('MAC address by default'),
+         'datatype'           => 'mac'
+      ];
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'mac_default';
-      $tab[11]['name']     = __('MAC address by default');
-      $tab[11]['datatype'] = 'mac';
-
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'bandwidth';
-      $tab[12]['name']     = __('Flow');
-      $tab[12]['datatype'] = 'string';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'bandwidth',
+         'name'               => __('Flow'),
+         'datatype'           => 'string'
+      ];
 
       return $tab;
    }

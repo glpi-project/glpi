@@ -299,79 +299,115 @@ class Reminder extends CommonDBVisible {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                     = array();
-      $tab['common']           = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Title');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['massiveaction'] = false;
-      $tab[1]['forcegroupby']  = true;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Title'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false,
+         'forcegroupby'       => true
+      ];
 
-      $tab[2]['table']         = 'glpi_users';
-      $tab[2]['field']         = 'name';
-      $tab[2]['name']          = __('Writer');
-      $tab[2]['datatype']      = 'dropdown';
-      $tab[2]['massiveaction'] = false;
-      $tab[2]['right']           = 'all';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Writer'),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
+         'right'              => 'all'
+      ];
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'state';
-      $tab[3]['name']          = __('Status');
-      $tab[3]['datatype']      = 'specific';
-      $tab[3]['massiveaction'] = false;
-      $tab[3]['searchtype']    = array('equals', 'notequals');
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'state',
+         'name'               => __('Status'),
+         'datatype'           => 'specific',
+         'massiveaction'      => false,
+         'searchtype'         => ['equals', 'notequals']
+      ];
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'text';
-      $tab[4]['name']          = __('Description');
-      $tab[4]['massiveaction'] = false;
-      $tab[4]['datatype']      = 'text';
-      $tab[4]['htmltext']      = true;
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'text',
+         'name'               => __('Description'),
+         'massiveaction'      => false,
+         'datatype'           => 'text',
+         'htmltext'           => true
+      ];
 
-      $tab[5]['table']         = $this->getTable();
-      $tab[5]['field']         = 'begin_view_date';
-      $tab[5]['name']          = __('Visibility start date');
-      $tab[5]['datatype']      = 'datetime';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'begin_view_date',
+         'name'               => __('Visibility start date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[6]['table']         = $this->getTable();
-      $tab[6]['field']         = 'end_view_date';
-      $tab[6]['name']          = __('Visibility end date');
-      $tab[6]['datatype']      = 'datetime';
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'end_view_date',
+         'name'               => __('Visibility end date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[7]['table']         = $this->getTable();
-      $tab[7]['field']         = 'is_planned';
-      $tab[7]['name']          = __('Planning');
-      $tab[7]['datatype']      = 'bool';
-      $tab[7]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'is_planned',
+         'name'               => __('Planning'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[8]['table']         = $this->getTable();
-      $tab[8]['field']         = 'begin';
-      $tab[8]['name']          = __('Planning start date');
-      $tab[8]['datatype']      = 'datetime';
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'begin',
+         'name'               => __('Planning start date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[9]['table']         = $this->getTable();
-      $tab[9]['field']         = 'end';
-      $tab[9]['name']          = __('Planning end date');
-      $tab[9]['datatype']      = 'datetime';
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => $this->getTable(),
+         'field'              => 'end',
+         'name'               => __('Planning end date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
       // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
       return $tab;
    }

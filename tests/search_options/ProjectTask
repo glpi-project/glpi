@@ -1,0 +1,250 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'name',
+    'name' => 'Project',
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+  ),
+  13 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'name',
+    'name' => 'Father',
+    'datatype' => 'dropdown',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'condition' => 'AND 1=1',
+    ),
+  ),
+  21 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'content',
+    'name' => 'Description',
+    'massiveaction' => false,
+    'datatype' => 'text',
+  ),
+  12 => 
+  array (
+    'table' => 'glpi_projectstates',
+    'field' => 'name',
+    'name' => 'State',
+    'datatype' => 'dropdown',
+  ),
+  14 => 
+  array (
+    'table' => 'glpi_projecttasktypes',
+    'field' => 'name',
+    'name' => 'Type',
+    'datatype' => 'dropdown',
+  ),
+  15 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'date',
+    'name' => 'Opening date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'percent_done',
+    'name' => 'Percent done',
+    'datatype' => 'number',
+    'unit' => '%',
+    'min' => 0,
+    'max' => 100,
+    'step' => 5,
+  ),
+  24 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id',
+    'name' => 'Creator',
+    'datatype' => 'dropdown',
+  ),
+  7 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'plan_start_date',
+    'name' => 'Planned start date',
+    'datatype' => 'datetime',
+  ),
+  8 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'plan_end_date',
+    'name' => 'Planned end date',
+    'datatype' => 'datetime',
+  ),
+  9 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'real_start_date',
+    'name' => 'Real start date',
+    'datatype' => 'datetime',
+  ),
+  10 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'real_end_date',
+    'name' => 'Real end date',
+    'datatype' => 'datetime',
+  ),
+  11 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'planned_duration',
+    'name' => 'Planned duration',
+    'datatype' => 'timestamp',
+    'min' => 0,
+    'max' => 360000,
+    'step' => 3600,
+    'addfirstminutes' => true,
+    'inhours' => true,
+  ),
+  17 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'effective_duration',
+    'name' => 'Effective duration',
+    'datatype' => 'timestamp',
+    'min' => 0,
+    'max' => 360000,
+    'step' => 3600,
+    'addfirstminutes' => true,
+    'inhours' => true,
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  18 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'is_milestone',
+    'name' => 'Milestone',
+    'datatype' => 'bool',
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'datatype' => 'dropdown',
+  ),
+  86 => 
+  array (
+    'table' => 'glpi_projecttasks',
+    'field' => 'is_recursive',
+    'name' => 'Child entities',
+    'datatype' => 'bool',
+  ),
+  'notepad' => 'Notes',
+  200 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'content',
+    'name' => 'Notes',
+    'datatype' => 'text',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'splititems' => true,
+    'massiveaction' => false,
+  ),
+  201 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  202 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'Writer',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+  203 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  204 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id_lastupdater',
+    'name' => 'Last updater',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+)

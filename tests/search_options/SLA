@@ -1,0 +1,26 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_slas',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_slas',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_calendars',
+    'field' => 'name',
+    'name' => 'Calendar',
+    'datatype' => 'dropdown',
+  ),
+)

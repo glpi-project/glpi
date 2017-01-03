@@ -329,64 +329,97 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'is_active';
-      $tab[2]['name']            = __('Active');
-      $tab[2]['datatype']        = 'bool';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'host';
-      $tab[3]['name']            = __('Connection string');
-      $tab[3]['massiveaction']   = false;
-      $tab[3]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'host',
+         'name'               => __('Connection string'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'login';
-      $tab[4]['name']            = __('Login');
-      $tab[4]['massiveaction']   = false;
-      $tab[4]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'login',
+         'name'               => __('Login'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'filesize_max';
-      $tab[5]['name']            = __('Maximum size of each file imported by the mails receiver');
-      $tab[5]['datatype']        = 'integer';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'filesize_max',
+         'name'               => __('Maximum size of each file imported by the mails receiver'),
+         'datatype'           => 'integer'
+      ];
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[20]['table']          = $this->getTable();
-      $tab[20]['field']          = 'accepted';
-      $tab[20]['name']           = __('Accepted mail archive folder (optional)');
-      $tab[20]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => $this->getTable(),
+         'field'              => 'accepted',
+         'name'               => __('Accepted mail archive folder (optional)'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[21]['table']          = $this->getTable();
-      $tab[21]['field']          = 'refused';
-      $tab[21]['name']           = __('Refused mail archive folder (optional)');
-      $tab[21]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => $this->getTable(),
+         'field'              => 'refused',
+         'name'               => __('Refused mail archive folder (optional)'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[22]['table']           = $this->getTable();
-      $tab[22]['field']           = 'errors';
-      $tab[22]['name']            = __('Connection errors');
-      $tab[22]['datatype']        = 'integer';
+      $tab[] = [
+         'id'                 => '22',
+         'table'              => $this->getTable(),
+         'field'              => 'errors',
+         'name'               => __('Connection errors'),
+         'datatype'           => 'integer'
+      ];
 
       return $tab;
    }

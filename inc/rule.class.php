@@ -686,66 +686,95 @@ class Rule extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                       = array();
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'ranking',
+         'name'               => __('Position'),
+         'datatype'           => 'number',
+         'massiveaction'      => false
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'ranking';
-      $tab[3]['name']            = __('Position');
-      $tab[3]['datatype']        = 'number';
-      $tab[3]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'description',
+         'name'               => __('Description'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'description';
-      $tab[4]['name']            = __('Description');
-      $tab[4]['datatype']        = 'text';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'match',
+         'name'               => __('Logical operator'),
+         'datatype'           => 'specific',
+         'massiveaction'      => false
+      ];
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'match';
-      $tab[5]['name']            = __('Logical operator');
-      $tab[5]['datatype']        = 'specific';
-      $tab[5]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[8]['table']           = $this->getTable();
-      $tab[8]['field']           = 'is_active';
-      $tab[8]['name']            = __('Active');
-      $tab[8]['datatype']        = 'bool';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[86]['table']          = $this->getTable();
-      $tab[86]['field']          = 'is_recursive';
-      $tab[86]['name']           = __('Child entities');
-      $tab[86]['datatype']       = 'bool';
-      $tab[86]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
-
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }
