@@ -1470,582 +1470,906 @@ class Profile extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'interface';
-      $tab[2]['name']            = __("Profile's interface");
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'specific';
-      $tab[2]['searchtype']      = array('equals', 'notequals');
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'interface',
+         'name'               => __("Profile's interface"),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'searchtype'         => ['equals', 'notequals']
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'is_default';
-      $tab[3]['name']            = __('Default profile');
-      $tab[3]['datatype']        = 'bool';
-      $tab[3]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'is_default',
+         'name'               => __('Default profile'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[118]['table']         = $this->getTable();
-      $tab[118]['field']         = 'create_ticket_on_login';
-      $tab[118]['name']          = __('Ticket creation form on login');
-      $tab[118]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '118',
+         'table'              => $this->getTable(),
+         'field'              => 'create_ticket_on_login',
+         'name'               => __('Ticket creation form on login'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
       // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
-      $tab['inventory']          = __('Assets');
+      $tab[] = [
+         'id'                 => 'inventory',
+         'name'               => __('Assets')
+      ];
 
-      $tab[20]['table']          = 'glpi_profilerights';
-      $tab[20]['field']          = 'rights';
-      $tab[20]['name']           = _n('Computer', 'Computers', Session::getPluralNumber());
-      $tab[20]['datatype']       = 'right';
-      $tab[20]['rightclass']     = 'Computer';
-      $tab[20]['rightname']      = 'computer';
-      $tab[20]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'computer'");
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Computer', 'Computers', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Computer',
+         'rightname'          => 'computer',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'computer'"
+         ]
+      ];
 
-      $tab[21]['table']          = 'glpi_profilerights';
-      $tab[21]['field']          = 'rights';
-      $tab[21]['name']           = _n('Monitor', 'Monitors', Session::getPluralNumber());
-      $tab[21]['datatype']       = 'right';
-      $tab[21]['rightclass']     = 'Monitor';
-      $tab[21]['rightname']      = 'monitor';
-      $tab[21]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'monitor'");
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Monitor', 'Monitors', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Monitor',
+         'rightname'          => 'monitor',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'monitor'"
+         ]
+      ];
 
-      $tab[22]['table']          = 'glpi_profilerights';
-      $tab[22]['field']          = 'rights';
-      $tab[22]['name']           = _n('Software', 'Software', Session::getPluralNumber());
-      $tab[22]['datatype']       = 'right';
-      $tab[22]['rightclass']     = 'Software';
-      $tab[22]['rightname']      = 'software';
-      $tab[22]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'software'");
+      $tab[] = [
+         'id'                 => '22',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Software', 'Software', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Software',
+         'rightname'          => 'software',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'software'"
+         ]
+      ];
 
-      $tab[23]['table']          = 'glpi_profilerights';
-      $tab[23]['field']          = 'rights';
-      $tab[23]['name']           = _n('Network', 'Networks', Session::getPluralNumber());
-      $tab[23]['datatype']       = 'right';
-      $tab[23]['rightclass']     = 'Network';
-      $tab[23]['rightname']      = 'networking';
-      $tab[23]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'networking'");
+      $tab[] = [
+         'id'                 => '23',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Network', 'Networks', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Network',
+         'rightname'          => 'networking',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'networking'"
+         ]
+      ];
 
-      $tab[24]['table']          = 'glpi_profilerights';
-      $tab[24]['field']          = 'rights';
-      $tab[24]['name']           = _n('Printer', 'Printers', Session::getPluralNumber());
-      $tab[24]['datatype']       = 'right';
-      $tab[24]['rightclass']     = 'Printer';
-      $tab[24]['rightname']      = 'printer';
-      $tab[24]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'printer'");
+      $tab[] = [
+         'id'                 => '24',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Printer', 'Printers', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Printer',
+         'rightname'          => 'printer',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'printer'"
+         ]
+      ];
 
-      $tab[25]['table']          = 'glpi_profilerights';
-      $tab[25]['field']          = 'rights';
-      $tab[25]['name']           = _n('Device', 'Devices', Session::getPluralNumber());
-      $tab[25]['datatype']       = 'right';
-      $tab[25]['rightclass']     = 'Peripheral';
-      $tab[25]['rightname']      = 'peripheral';
-      $tab[25]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'peripheral'");
+      $tab[] = [
+         'id'                 => '25',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Device', 'Devices', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Peripheral',
+         'rightname'          => 'peripheral',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'peripheral'"
+         ]
+      ];
 
-      $tab[26]['table']          = 'glpi_profilerights';
-      $tab[26]['field']          = 'rights';
-      $tab[26]['name']           = _n('Cartridge', 'Cartridges', Session::getPluralNumber());
-      $tab[26]['datatype']       = 'right';
-      $tab[26]['rightclass']     = 'Cartridge';
-      $tab[26]['rightname']      = 'cartridge';
-      $tab[26]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'cartridge'");
+      $tab[] = [
+         'id'                 => '26',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Cartridge',
+         'rightname'          => 'cartridge',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'cartridge'"
+         ]
+      ];
 
-      $tab[27]['table']          = 'glpi_profilerights';
-      $tab[27]['field']          = 'rights';
-      $tab[27]['name']           = _n('Consumable', 'Consumables', Session::getPluralNumber());
-      $tab[27]['datatype']       = 'right';
-      $tab[27]['rightclass']     = 'Consumable';
-      $tab[27]['rightname']      = 'consumable';
-      $tab[27]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'consumable'");
+      $tab[] = [
+         'id'                 => '27',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Consumable', 'Consumables', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Consumable',
+         'rightname'          => 'consumable',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'consumable'"
+         ]
+      ];
 
-      $tab[28]['table']          = 'glpi_profilerights';
-      $tab[28]['field']          = 'rights';
-      $tab[28]['name']           = _n('Phone', 'Phones', Session::getPluralNumber());
-      $tab[28]['datatype']       = 'right';
-      $tab[28]['rightclass']     = 'Phone';
-      $tab[28]['rightname']      = 'phone';
-      $tab[28]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'phone'");
+      $tab[] = [
+         'id'                 => '28',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Phone', 'Phones', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Phone',
+         'rightname'          => 'phone',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'phone'"
+         ]
+      ];
 
-      $tab[129]['table']         = 'glpi_profilerights';
-      $tab[129]['field']         = 'rights';
-      $tab[129]['name']          = __('Internet');
-      $tab[129]['datatype']      = 'right';
-      $tab[129]['rightclass']    = 'NetworkName';
-      $tab[129]['rightname']     = 'internet';
-      $tab[129]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'internet'");
+      $tab[] = [
+         'id'                 => '129',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Internet'),
+         'datatype'           => 'right',
+         'rightclass'         => 'NetworkName',
+         'rightname'          => 'internet',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'internet'"
+         ]
+      ];
 
-      $tab['management']         = __('Management');
+      $tab[] = [
+         'id'                 => 'management',
+         'name'               => __('Management')
+      ];
 
-      $tab[30]['table']          = 'glpi_profilerights';
-      $tab[30]['field']          = 'rights';
-      $tab[30]['name']           = __('Contact')." / ".__('Supplier');
-      $tab[30]['datatype']       = 'right';
-      $tab[30]['rightclass']     = 'Contact';
-      $tab[30]['rightname']      = 'contact_entreprise';
-      $tab[30]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'contact_enterprise'");
+      $tab[] = [
+         'id'                 => '30',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Contact')." / ".__('Supplier'),
+         'datatype'           => 'right',
+         'rightclass'         => 'Contact',
+         'rightname'          => 'contact_entreprise',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'contact_enterprise'"
+         ]
+      ];
 
-      $tab[31]['table']          = 'glpi_profilerights';
-      $tab[31]['field']          = 'rights';
-      $tab[31]['name']           = _n('Document', 'Documents', Session::getPluralNumber());
-      $tab[31]['datatype']       = 'right';
-      $tab[31]['rightclass']     = 'Document';
-      $tab[31]['rightname']      = 'document';
-      $tab[31]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'document'");
+      $tab[] = [
+         'id'                 => '31',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Document', 'Documents', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Document',
+         'rightname'          => 'document',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'document'"
+         ]
+      ];
 
-      $tab[32]['table']          ='glpi_profilerights';
-      $tab[32]['field']          = 'rights';
-      $tab[32]['name']           = _n('Contract', 'Contracts', Session::getPluralNumber());
-      $tab[32]['datatype']       = 'right';
-      $tab[32]['rightclass']     = 'Contract';
-      $tab[32]['rightname']      = 'contract';
-      $tab[32]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'contract'");
+      $tab[] = [
+         'id'                 => '32',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Contract', 'Contracts', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Contract',
+         'rightname'          => 'contract',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'contract'"
+         ]
+      ];
 
-      $tab[33]['table']          = 'glpi_profilerights';
-      $tab[33]['field']          = 'rights';
-      $tab[33]['name']           = __('Financial and administratives information');
-      $tab[33]['datatype']       = 'right';
-      $tab[33]['rightclass']     = 'Infocom';
-      $tab[33]['rightname']      = 'infocom';
-      $tab[33]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'infocom'");
+      $tab[] = [
+         'id'                 => '33',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Financial and administratives information'),
+         'datatype'           => 'right',
+         'rightclass'         => 'Infocom',
+         'rightname'          => 'infocom',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'infocom'"
+         ]
+      ];
 
-      $tab[101]['table']         = 'glpi_profilerights';
-      $tab[101]['field']         = 'rights';
-      $tab[101]['name']          = __('Budget');
-      $tab[101]['datatype']      = 'right';
-      $tab[101]['rightclass']    = 'Budget';
-      $tab[101]['rightname']     = 'budget';
-      $tab[101]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'budget'");
+      $tab[] = [
+         'id'                 => '101',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Budget'),
+         'datatype'           => 'right',
+         'rightclass'         => 'Budget',
+         'rightname'          => 'budget',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'budget'"
+         ]
+      ];
 
-      $tab['tools']              = __('Tools');
+      $tab[] = [
+         'id'                 => 'tools',
+         'name'               => __('Tools')
+      ];
 
-      $tab[34]['table']          = 'glpi_profilerights';
-      $tab[34]['field']          = 'rights';
-      $tab[34]['name']           = __('Knowledge base');
-      $tab[34]['datatype']       = 'right';
-      $tab[34]['rightclass']     = 'KnowbaseItem';
-      $tab[34]['rightname']      = 'knowbase';
-      $tab[34]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'knowbase'");
+      $tab[] = [
+         'id'                 => '34',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Knowledge base'),
+         'datatype'           => 'right',
+         'rightclass'         => 'KnowbaseItem',
+         'rightname'          => 'knowbase',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'knowbase'"
+         ]
+      ];
 
-      $tab[36]['table']          = 'glpi_profilerights';
-      $tab[36]['field']          = 'rights';
-      $tab[36]['name']           = _n('Reservation', 'Reservations', Session::getPluralNumber());
-      $tab[36]['datatype']       = 'right';
-      $tab[36]['rightclass']     = 'ReservationItem';
-      $tab[36]['rightname']      = 'reservation';
-      $tab[36]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'reservation'");
+      $tab[] = [
+         'id'                 => '36',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'ReservationItem',
+         'rightname'          => 'reservation',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'reservation'"
+         ]
+      ];
 
-      $tab[38]['table']          = 'glpi_profilerights';
-      $tab[38]['field']          = 'rights';
-      $tab[38]['name']           = _n('Report', 'Reports', Session::getPluralNumber());
-      $tab[38]['datatype']       = 'right';
-      $tab[38]['rightclass']     = 'Report';
-      $tab[38]['rightname']      = 'reports';
-      $tab[38]['nowrite']        = true;
-      $tab[38]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'reports'");
+      $tab[] = [
+         'id'                 => '38',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Report', 'Reports', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Report',
+         'rightname'          => 'reports',
+         'nowrite'            => true,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'reports'"
+         ]
+      ];
 
-      $tab['config']             = __('Setup');
+      $tab[] = [
+         'id'                 => 'config',
+         'name'               => __('Setup')
+      ];
 
-      $tab[42]['table']          = 'glpi_profilerights';
-      $tab[42]['field']          = 'rights';
-      $tab[42]['name']           = _n('Dropdown', 'Dropdowns', Session::getPluralNumber());
-      $tab[42]['datatype']       = 'right';
-      $tab[42]['rightclass']     = 'DropdownTranslation';
-      $tab[42]['rightname']      = 'dropdown';
-      $tab[42]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'dropdown'");
+      $tab[] = [
+         'id'                 => '42',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'DropdownTranslation',
+         'rightname'          => 'dropdown',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'dropdown'"
+         ]
+      ];
 
-      $tab[44]['table']          = 'glpi_profilerights';
-      $tab[44]['field']          = 'rights';
-      $tab[44]['name']           = _n('Component', 'Components', Session::getPluralNumber());
-      $tab[44]['datatype']       = 'right';
-      $tab[44]['rightclass']     = 'Item_Devices';
-      $tab[44]['rightname']      = 'device';
-      $tab[44]['noread']         = true;
-      $tab[44]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'device'");
+      $tab[] = [
+         'id'                 => '44',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Component', 'Components', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Item_Devices',
+         'rightname'          => 'device',
+         'noread'             => true,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'device'"
+         ]
+      ];
 
-      $tab[106]['table']         = 'glpi_profilerights';
-      $tab[106]['field']         = 'rights';
-      $tab[106]['name']          = _n('Notification', 'Notifications', Session::getPluralNumber());
-      $tab[106]['datatype']      = 'right';
-      $tab[106]['rightclass']    = 'Notification';
-      $tab[106]['rightname']     = 'notification';
-      $tab[106]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'notification'");
+      $tab[] = [
+         'id'                 => '106',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Notification', 'Notifications', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Notification',
+         'rightname'          => 'notification',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'notification'"
+         ]
+      ];
 
-      $tab[45]['table']          = 'glpi_profilerights';
-      $tab[45]['field']          = 'rights';
-      $tab[45]['name']           = __('Document type');
-      $tab[45]['datatype']       = 'right';
-      $tab[45]['rightclass']     = 'DocumentType';
-      $tab[45]['rightname']      = 'typedoc';
-      $tab[45]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'typedoc'");
+      $tab[] = [
+         'id'                 => '45',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Document type'),
+         'datatype'           => 'right',
+         'rightclass'         => 'DocumentType',
+         'rightname'          => 'typedoc',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'typedoc'"
+         ]
+      ];
 
-      $tab[46]['table']          = 'glpi_profilerights';
-      $tab[46]['field']          = 'rights';
-      $tab[46]['name']           = _n('External link', 'External links', Session::getPluralNumber());
-      $tab[46]['datatype']       = 'right';
-      $tab[46]['rightclass']     = 'Link';
-      $tab[46]['rightname']      = 'link';
-      $tab[46]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'link'");
+      $tab[] = [
+         'id'                 => '46',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('External link', 'External links', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Link',
+         'rightname'          => 'link',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'link'"
+         ]
+      ];
 
-      $tab[47]['table']          = 'glpi_profilerights';
-      $tab[47]['field']          = 'rights';
-      $tab[47]['name']           = __('General setup');
-      $tab[47]['datatype']       = 'right';
-      $tab[47]['rightclass']     = 'Config';
-      $tab[47]['rightname']      = 'config';
-      $tab[47]['noread']         = true;
-      $tab[47]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'config'");
+      $tab[] = [
+         'id'                 => '47',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('General setup'),
+         'datatype'           => 'right',
+         'rightclass'         => 'Config',
+         'rightname'          => 'config',
+         'noread'             => true,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'config'"
+         ]
+      ];
 
-      $tab[52]['table']          = 'glpi_profilerights';
-      $tab[52]['field']          = 'rights';
-      $tab[52]['name']           = __('Search result user display');
-      $tab[52]['datatype']       = 'right';
-      $tab[52]['rightclass']     = 'DisplayPreference';
-      $tab[52]['rightname']      = 'search_config';
-      $tab[52]['noread']         = true;
-      $tab[52]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'search_config'");
+      $tab[] = [
+         'id'                 => '52',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Search result user display'),
+         'datatype'           => 'right',
+         'rightclass'         => 'DisplayPreference',
+         'rightname'          => 'search_config',
+         'noread'             => true,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'search_config'"
+         ]
+      ];
 
-      $tab[107]['table']         = 'glpi_profilerights';
-      $tab[107]['field']         = 'rights';
-      $tab[107]['name']          = _n('Calendar', 'Calendars', Session::getPluralNumber());
-      $tab[107]['datatype']      = 'right';
-      $tab[107]['rightclass']    = 'Calendar';
-      $tab[107]['rightname']     = 'calendar';
-      $tab[107]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'calendar'");
+      $tab[] = [
+         'id'                 => '107',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Calendar', 'Calendars', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Calendar',
+         'rightname'          => 'calendar',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'calendar'"
+         ]
+      ];
 
-      $tab['admin']              = __('Administration');
+      $tab[] = [
+         'id'                 => 'admin',
+         'name'               => __('Administration')
+      ];
 
-      $tab[48]['table']          = 'glpi_profilerights';
-      $tab[48]['field']          = 'rights';
-      $tab[48]['name']           = __('Business rules for tickets');
-      $tab[48]['datatype']       = 'right';
-      $tab[48]['rightclass']     = 'RuleTicket';
-      $tab[48]['rightname']      = 'rule_ticket';
-      $tab[48]['nowrite']        = true;
-      $tab[48]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'rule_ticket'");
+      $tab[] = [
+         'id'                 => '48',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Business rules for tickets'),
+         'datatype'           => 'right',
+         'rightclass'         => 'RuleTicket',
+         'rightname'          => 'rule_ticket',
+         'nowrite'            => true,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_ticket'"
+         ]
+      ];
 
-      $tab[105]['table']         = 'glpi_profilerights';
-      $tab[105]['field']         = 'rights';
-      $tab[105]['name']          = __('Rules for assigning a ticket created through a mails receiver');
-      $tab[105]['datatype']      = 'right';
-      $tab[105]['rightclass']    = 'RuleMailCollector';
-      $tab[105]['rightname']     = 'rule_mailcollector';
-      $tab[105]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'rule_mailcollector'");
+      $tab[] = [
+         'id'                 => '105',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Rules for assigning a ticket created through a mails receiver'),
+         'datatype'           => 'right',
+         'rightclass'         => 'RuleMailCollector',
+         'rightname'          => 'rule_mailcollector',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_mailcollector'"
+         ]
+      ];
 
-      $tab[49]['table']          = 'glpi_profilerights';
-      $tab[49]['field']          = 'rights';
-      $tab[49]['name']           = __('Rules for assigning a computer to an entity');
-      $tab[49]['datatype']       = 'right';
-      $tab[49]['rightclass']     = 'RuleImportComputer';
-      $tab[49]['rightname']      = 'rule_import';
-      $tab[49]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'rule_import'");
+      $tab[] = [
+         'id'                 => '49',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Rules for assigning a computer to an entity'),
+         'datatype'           => 'right',
+         'rightclass'         => 'RuleImportComputer',
+         'rightname'          => 'rule_import',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_import'"
+         ]
+      ];
 
-      $tab[50]['table']          = 'glpi_profilerights';
-      $tab[50]['field']          = 'rights';
-      $tab[50]['name']           = __('Authorizations assignment rules');
-      $tab[50]['datatype']       = 'right';
-      $tab[50]['rightclass']     = 'Rule';
-      $tab[50]['rightname']      = 'rule_ldap';
-      $tab[50]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'rule_ldap'");
+      $tab[] = [
+         'id'                 => '50',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Authorizations assignment rules'),
+         'datatype'           => 'right',
+         'rightclass'         => 'Rule',
+         'rightname'          => 'rule_ldap',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_ldap'"
+         ]
+      ];
 
-      $tab[51]['table']          = 'glpi_profilerights';
-      $tab[51]['field']          = 'rights';
-      $tab[51]['name']           = __('Rules for assigning a category to a software');
-      $tab[51]['datatype']       = 'right';
-      $tab[51]['rightclass']     = 'RuleSoftwareCategory';
-      $tab[51]['rightname']      = 'rule_softwarecategories';
-      $tab[51]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'rule_softwarecategories'");
+      $tab[] = [
+         'id'                 => '51',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Rules for assigning a category to a software'),
+         'datatype'           => 'right',
+         'rightclass'         => 'RuleSoftwareCategory',
+         'rightname'          => 'rule_softwarecategories',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_softwarecategories'"
+         ]
+      ];
 
-      $tab[90]['table']          = 'glpi_profilerights';
-      $tab[90]['field']          = 'rights';
-      $tab[90]['name']           = __('Software dictionary');
-      $tab[90]['datatype']       = 'right';
-      $tab[90]['rightclass']     = 'RuleDictionnarySoftware';
-      $tab[90]['rightname']      = 'rule_dictionnary_software';
-      $tab[90]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'rule_dictionnary_software'");
+      $tab[] = [
+         'id'                 => '90',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Software dictionary'),
+         'datatype'           => 'right',
+         'rightclass'         => 'RuleDictionnarySoftware',
+         'rightname'          => 'rule_dictionnary_software',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_dictionnary_software'"
+         ]
+      ];
 
-      $tab[91]['table']          = 'glpi_profilerights';
-      $tab[91]['field']          = 'rights';
-      $tab[91]['name']           =__('Dropdowns dictionary');
-      $tab[91]['datatype']       = 'right';
-      $tab[91]['rightclass']     = 'RuleDictionnaryDropdown';
-      $tab[91]['rightname']      = 'rule_dictionnary_dropdown';
-      $tab[91]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'rule_dictionnary_dropdown'");
+      $tab[] = [
+         'id'                 => '91',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Dropdowns dictionary'),
+         'datatype'           => 'right',
+         'rightclass'         => 'RuleDictionnaryDropdown',
+         'rightname'          => 'rule_dictionnary_dropdown',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'rule_dictionnary_dropdown'"
+         ]
+      ];
 
-      $tab[55]['table']          = 'glpi_profilerights';
-      $tab[55]['field']          = 'rights';
-      $tab[55]['name']           = self::getTypeName(Session::getPluralNumber());
-      $tab[55]['datatype']       = 'right';
-      $tab[55]['rightclass']     = 'Profile';
-      $tab[55]['rightname']      = 'profile';
-      $tab[55]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'profile'");
+      $tab[] = [
+         'id'                 => '55',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => self::getTypeName(Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Profile',
+         'rightname'          => 'profile',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'profile'"
+         ]
+      ];
 
-      $tab[56]['table']          = 'glpi_profilerights';
-      $tab[56]['field']          = 'rights';
-      $tab[56]['name']           = _n('User', 'Users', Session::getPluralNumber());
-      $tab[56]['datatype']       = 'right';
-      $tab[56]['rightclass']     = 'User';
-      $tab[56]['rightname']      = 'user';
-      $tab[56]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'user'");
+      $tab[] = [
+         'id'                 => '56',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('User', 'Users', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'User',
+         'rightname'          => 'user',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'user'"
+         ]
+      ];
 
-      $tab[58]['table']          = 'glpi_profilerights';
-      $tab[58]['field']          = 'rights';
-      $tab[58]['name']           = _n('Group', 'Groups', Session::getPluralNumber());
-      $tab[58]['datatype']       = 'right';
-      $tab[58]['rightclass']     = 'Group';
-      $tab[58]['rightname']      = 'group';
-      $tab[58]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'group'");
+      $tab[] = [
+         'id'                 => '58',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Group', 'Groups', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Group',
+         'rightname'          => 'group',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'group'"
+         ]
+      ];
 
-      $tab[59]['table']          = 'glpi_profilerights';
-      $tab[59]['field']          = 'rights';
-      $tab[59]['name']           = _n('Entity', 'Entities', Session::getPluralNumber());
-      $tab[59]['datatype']       = 'right';
-      $tab[59]['rightclass']     = 'Entity';
-      $tab[59]['rightname']      = 'entity';
-      $tab[59]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'entity'");
+      $tab[] = [
+         'id'                 => '59',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Entity', 'Entities', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Entity',
+         'rightname'          => 'entity',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'entity'"
+         ]
+      ];
 
-      $tab[60]['table']          = 'glpi_profilerights';
-      $tab[60]['field']          = 'rights';
-      $tab[60]['name']           = __('Transfer');
-      $tab[60]['datatype']       = 'right';
-      $tab[60]['rightclass']     = 'Transfer';
-      $tab[60]['rightname']      = 'transfer';
-      $tab[60]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'transfer'");
+      $tab[] = [
+         'id'                 => '60',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Transfer'),
+         'datatype'           => 'right',
+         'rightclass'         => 'Transfer',
+         'rightname'          => 'transfer',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'transfer'"
+         ]
+      ];
 
-      $tab[61]['table']          = 'glpi_profilerights';
-      $tab[61]['field']          = 'rights';
-      $tab[61]['name']           = _n('Log', 'Logs', Session::getPluralNumber());
-      $tab[61]['datatype']       = 'right';
-      $tab[61]['rightclass']     = 'Log';
-      $tab[61]['rightname']      = 'logs';
-      $tab[61]['nowrite']        = true;
-      $tab[61]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'logs'");
+      $tab[] = [
+         'id'                 => '61',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Log', 'Logs', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Log',
+         'rightname'          => 'logs',
+         'nowrite'            => true,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'logs'"
+         ]
+      ];
 
-      $tab[62]['table']          = 'glpi_profilerights';
-      $tab[62]['field']          = 'rights';
-      $tab[62]['name']           = __('Maintenance');
-      $tab[62]['datatype']       = 'right';
-      $tab[62]['rightclass']     = 'Backup';
-      $tab[62]['rightname']      = 'backup';
-      $tab[62]['noread']         = true;
-      $tab[62]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'backup'");
+      $tab[] = [
+         'id'                 => '62',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Maintenance'),
+         'datatype'           => 'right',
+         'rightclass'         => 'Backup',
+         'rightname'          => 'backup',
+         'noread'             => true,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'backup'"
+         ]
+      ];
 
-      $tab['ticket']             = __('Assistance');
+      $tab[] = [
+         'id'                 => 'ticket',
+         'name'               => __('Assistance')
+      ];
 
-      $tab[102]['table']         = 'glpi_profilerights';
-      $tab[102]['field']         = 'rights';
-      $tab[102]['name']          = __('Create a ticket');
-      $tab[102]['datatype']      = 'right';
-      $tab[102]['rightclass']    = 'Ticket';
-      $tab[102]['rightname']     = 'ticket';
-      $tab[102]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'ticket'");
+      $tab[] = [
+         'id'                 => '102',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Create a ticket'),
+         'datatype'           => 'right',
+         'rightclass'         => 'Ticket',
+         'rightname'          => 'ticket',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'ticket'"
+         ]
+      ];
 
-      $tab[108]['table']         = 'glpi_tickettemplates';
-      $tab[108]['field']         = 'name';
-      $tab[108]['name']          = __('Default ticket template');
-      $tab[108]['datatype']      = 'dropdown';
+      $newtab = [
+         'id'                 => '108',
+         'table'              => 'glpi_tickettemplates',
+         'field'              => 'name',
+         'name'               => __('Default ticket template'),
+         'datatype'           => 'dropdown',
+      ];
       if (Session::isMultiEntitiesMode()) {
-         $tab[108]['condition']     = '`entities_id` = 0 AND `is_recursive`';
+         $newtab['condition']     = '`entities_id` = 0 AND `is_recursive`';
       } else {
-         $tab[108]['condition']     = '`entities_id` = 0';
+         $newtab['condition']     = '`entities_id` = 0';
       }
+      $tab[] = $newtab;
 
-      $tab[103]['table']         = 'glpi_profilerights';
-      $tab[103]['field']         = 'rights';
-      $tab[103]['name']          = _n('Ticket template', 'Ticket templates', Session::getPluralNumber());
-      $tab[103]['datatype']      = 'right';
-      $tab[103]['rightclass']    = 'TicketTemplate';
-      $tab[103]['rightname']     = 'tickettemplate';
-      $tab[103]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'tickettemplate'");
+      $tab[] = [
+         'id'                 => '103',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Ticket template', 'Ticket templates', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'TicketTemplate',
+         'rightname'          => 'tickettemplate',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'tickettemplate'"
+         ]
+      ];
 
-      $tab[79]['table']          = 'glpi_profilerights';
-      $tab[79]['field']          = 'rights';
-      $tab[79]['name']           = __('Planning');
-      $tab[79]['datatype']       = 'right';
-      $tab[79]['rightclass']     = 'Planning';
-      $tab[79]['rightname']      = 'planning';
-      $tab[79]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'planning'");
+      $tab[] = [
+         'id'                 => '79',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Planning'),
+         'datatype'           => 'right',
+         'rightclass'         => 'Planning',
+         'rightname'          => 'planning',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'planning'"
+         ]
+      ];
 
-      $tab[85]['table']          = 'glpi_profilerights';
-      $tab[85]['field']          = 'rights';
-      $tab[85]['name']           = __('Statistics');
-      $tab[85]['datatype']       = 'right';
-      $tab[85]['rightclass']     = 'Stat';
-      $tab[85]['rightname']      = 'statistic';
-      $tab[85]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'statistic'");
+      $tab[] = [
+         'id'                 => '85',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Statistics'),
+         'datatype'           => 'right',
+         'rightclass'         => 'Stat',
+         'rightname'          => 'statistic',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'statistic'"
+         ]
+      ];
 
-      $tab[119]['table']         = 'glpi_profilerights';
-      $tab[119]['field']         = 'rights';
-      $tab[119]['name']          = _n('Ticket cost', 'Ticket costs', Session::getPluralNumber());
-      $tab[119]['datatype']      = 'right';
-      $tab[119]['rightclass']    = 'TicketCost';
-      $tab[119]['rightname']     = 'ticketcost';
-      $tab[119]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'ticketcost'");
+      $tab[] = [
+         'id'                 => '119',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Ticket cost', 'Ticket costs', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'TicketCost',
+         'rightname'          => 'ticketcost',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'ticketcost'"
+         ]
+      ];
 
-      $tab[86]['table']          = $this->getTable();
-      $tab[86]['field']          = 'helpdesk_hardware';
-      $tab[86]['name']           = __('Link with items for the creation of tickets');
-      $tab[86]['massiveaction']  = false;
-      $tab[86]['datatype']       = 'specific';
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'helpdesk_hardware',
+         'name'               => __('Link with items for the creation of tickets'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific'
+      ];
 
-      $tab[87]['table']          = $this->getTable();
-      $tab[87]['field']          = 'helpdesk_item_type';
-      $tab[87]['name']           = __('Associable items to a ticket');
-      $tab[87]['massiveaction']  = false;
-      $tab[87]['datatype']       = 'specific';
+      $tab[] = [
+         'id'                 => '87',
+         'table'              => $this->getTable(),
+         'field'              => 'helpdesk_item_type',
+         'name'               => __('Associable items to a ticket'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific'
+      ];
 
-      $tab[89]['table']          = 'glpi_profilerights';
-      $tab[89]['field']          = 'rights';
-      $tab[89]['name']           = __('See hardware of my groups');
-      $tab[89]['datatype']       = 'bool';
-      $tab[89]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'show_group_hardware'");
+      $tab[] = [
+         'id'                 => '89',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('See hardware of my groups'),
+         'datatype'           => 'bool',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'show_group_hardware'"
+         ]
+      ];
 
-      $tab[100]['table']         = $this->getTable();
-      $tab[100]['field']         = 'ticket_status';
-      $tab[100]['name']          = __('Life cycle of tickets');
-      $tab[100]['nosearch']      = true;
-      $tab[100]['datatype']      = 'text';
-      $tab[100]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '100',
+         'table'              => $this->getTable(),
+         'field'              => 'ticket_status',
+         'name'               => __('Life cycle of tickets'),
+         'nosearch'           => true,
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
 
-      $tab[110]['table']         = $this->getTable();
-      $tab[110]['field']         = 'problem_status';
-      $tab[110]['name']          = __('Life cycle of problems');
-      $tab[110]['nosearch']      = true;
-      $tab[110]['datatype']      = 'text';
-      $tab[110]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '110',
+         'table'              => $this->getTable(),
+         'field'              => 'problem_status',
+         'name'               => __('Life cycle of problems'),
+         'nosearch'           => true,
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
 
-      $tab[112]['table']         = 'glpi_profilerights';
-      $tab[112]['field']         = 'rights';
-      $tab[112]['name']          = _n('Problem', 'Problems', Session::getPluralNumber());
-      $tab[112]['datatype']      = 'right';
-      $tab[112]['rightclass']    = 'Problem';
-      $tab[112]['rightname']     = 'problem';
-      $tab[112]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'problem'");
+      $tab[] = [
+         'id'                 => '112',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Problem', 'Problems', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Problem',
+         'rightname'          => 'problem',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'problem'"
+         ]
+      ];
 
-      $tab[111]['table']         = $this->getTable();
-      $tab[111]['field']         = 'change_status';
-      $tab[111]['name']          = __('Life cycle of changes');
-      $tab[111]['nosearch']      = true;
-      $tab[111]['datatype']      = 'text';
-      $tab[111]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '111',
+         'table'              => $this->getTable(),
+         'field'              => 'change_status',
+         'name'               => __('Life cycle of changes'),
+         'nosearch'           => true,
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
 
-      $tab[115]['table']         = 'glpi_profilerights';
-      $tab[115]['field']         = 'rights';
-      $tab[115]['name']          =_n('Change', 'Changes', Session::getPluralNumber());
-      $tab[115]['datatype']      = 'right';
-      $tab[115]['rightclass']    = 'Change';
-      $tab[115]['rightname']     = 'change';
-      $tab[115]['joinparams']    = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'change'");
+      $tab[] = [
+         'id'                 => '115',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Change', 'Changes', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Change',
+         'rightname'          => 'change',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'change'"
+         ]
+      ];
 
-      $tab['other']              = __('Other');
+      $tab[] = [
+         'id'                 => 'other',
+         'name'               => __('Other')
+      ];
 
-      $tab[4]['table']           = 'glpi_profilerights';
-      $tab[4]['field']           = 'rights';
-      $tab[4]['name']            = __('Update password');
-      $tab[4]['datatype']        = 'bool';
-      $tab[4]['joinparams']     = array('jointype' => 'child',
-                                        'condition' => "AND `NEWTABLE`.`name`= 'password_update'");
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => __('Update password'),
+         'datatype'           => 'bool',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'password_update'"
+         ]
+      ];
 
-      $tab[63]['table']          = 'glpi_profilerights';
-      $tab[63]['field']          = 'rights';
-      $tab[63]['name']           = _n('Public reminder', 'Public reminders', Session::getPluralNumber());
-      $tab[63]['datatype']       = 'right';
-      $tab[63]['rightclass']     = 'Reminder';
-      $tab[63]['rightname']      = 'reminder_public';
-      $tab[63]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'reminder_public'");
+      $tab[] = [
+         'id'                 => '63',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Public reminder', 'Public reminders', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Reminder',
+         'rightname'          => 'reminder_public',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'reminder_public'"
+         ]
+      ];
 
-      $tab[64]['table']          = 'glpi_profilerights';
-      $tab[64]['field']          = 'rights';
-      $tab[64]['name']           = _n('Public bookmark', 'Public bookmarks', Session::getPluralNumber());
-      $tab[64]['datatype']       = 'right';
-      $tab[64]['rightclass']     = 'Bookmark';
-      $tab[64]['rightname']      = 'bookmark_public';
-      $tab[64]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'bookmark_public'");
+      $tab[] = [
+         'id'                 => '64',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Public bookmark', 'Public bookmarks', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'Bookmark',
+         'rightname'          => 'bookmark_public',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'bookmark_public'"
+         ]
+      ];
 
-      $tab[120]['table']          = 'glpi_profilerights';
-      $tab[120]['field']          = 'rights';
-      $tab[120]['name']           = _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber());
-      $tab[120]['datatype']       = 'right';
-      $tab[120]['rightclass']     = 'RSSFeed';
-      $tab[120]['rightname']      = 'rssfeed_public';
-      $tab[120]['joinparams']     = array('jointype' => 'child',
-                                         'condition' => "AND `NEWTABLE`.`name`= 'rssfeed_public'");
+      $tab[] = [
+         'id'                 => '120',
+         'table'              => 'glpi_profilerights',
+         'field'              => 'rights',
+         'name'               => _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()),
+         'datatype'           => 'right',
+         'rightclass'         => 'RSSFeed',
+         'rightname'          => 'rssfeed_public',
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => "AND `NEWTABLE`.`name`= 'rssfeed_public'"
+         ]
+      ];
 
       return $tab;
    }

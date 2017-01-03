@@ -1,0 +1,55 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_devicesoundcards',
+    'field' => 'designation',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  23 => 
+  array (
+    'table' => 'glpi_manufacturers',
+    'field' => 'name',
+    'name' => 'Manufacturer',
+    'datatype' => 'dropdown',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_devicesoundcards',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_devicesoundcards',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_devicesoundcards',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'datatype' => 'dropdown',
+  ),
+  12 => 
+  array (
+    'table' => 'glpi_devicesoundcards',
+    'field' => 'type',
+    'name' => 'Type',
+    'datatype' => 'string',
+  ),
+)

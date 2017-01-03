@@ -1,0 +1,132 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'completename',
+    'name' => 'Complete name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  14 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+  ),
+  13 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'completename',
+    'name' => 'Father',
+    'datatype' => 'dropdown',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'condition' => 'AND 1=1',
+    ),
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+  ),
+  86 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'is_recursive',
+    'name' => 'Child entities',
+    'datatype' => 'bool',
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  21 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'is_visible_computer',
+    'name' => 'Visibility - Computers',
+    'datatype' => 'bool',
+  ),
+  22 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'is_visible_softwareversion',
+    'name' => 'Visibility - Versions',
+    'datatype' => 'bool',
+  ),
+  23 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'is_visible_monitor',
+    'name' => 'Visibility - Monitors',
+    'datatype' => 'bool',
+  ),
+  24 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'is_visible_printer',
+    'name' => 'Visibility - Printers',
+    'datatype' => 'bool',
+  ),
+  25 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'is_visible_peripheral',
+    'name' => 'Visibility - Custom Devices',
+    'datatype' => 'bool',
+  ),
+  26 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'is_visible_phone',
+    'name' => 'Visibility - Phones',
+    'datatype' => 'bool',
+  ),
+  27 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'is_visible_networkequipment',
+    'name' => 'Visibility - Network devices',
+    'datatype' => 'bool',
+  ),
+  28 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'is_visible_softwarelicense',
+    'name' => 'Visibility - Licenses',
+    'datatype' => 'bool',
+  ),
+)

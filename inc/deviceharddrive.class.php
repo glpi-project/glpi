@@ -69,29 +69,40 @@ class DeviceHardDrive extends CommonDevice {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'capacity_default',
+         'name'               => __('Capacity by default'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'capacity_default';
-      $tab[11]['name']     = __('Capacity by default');
-      $tab[11]['datatype'] = 'string';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'rpm',
+         'name'               => __('Rpm'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'rpm';
-      $tab[12]['name']     = __('Rpm');
-      $tab[12]['datatype'] = 'string';
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => $this->getTable(),
+         'field'              => 'cache',
+         'name'               => __('Cache'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[13]['table']    = $this->getTable();
-      $tab[13]['field']    = 'cache';
-      $tab[13]['name']     = __('Cache');
-      $tab[13]['datatype'] = 'string';
-
-      $tab[14]['table']    = 'glpi_interfacetypes';
-      $tab[14]['field']    = 'name';
-      $tab[14]['name']     = __('Interface');
-      $tab[14]['datatype'] = 'dropdown';
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => 'glpi_interfacetypes',
+         'field'              => 'name',
+         'name'               => __('Interface'),
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

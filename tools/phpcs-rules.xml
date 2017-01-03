@@ -22,4 +22,7 @@
   <!--  Disallows the use of any deprecated functions -->
   <rule ref="Generic.PHP.DeprecatedFunctions"/>
 
+  <!-- No white spaces after opening bracket and before closing bracket in IF -->
+  <rule ref="PSR2.ControlStructures.ControlStructureSpacing" />
+
 </ruleset>

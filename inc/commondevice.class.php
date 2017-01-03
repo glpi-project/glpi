@@ -204,43 +204,64 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab = array();
-      $tab['common']           = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'designation';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'designation',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[23]['table']        = 'glpi_manufacturers';
-      $tab[23]['field']        = 'name';
-      $tab[23]['name']         = __('Manufacturer');
-      $tab[23]['datatype']     = 'dropdown';
+      $tab[] = [
+         'id'                 => '23',
+         'table'              => 'glpi_manufacturers',
+         'field'              => 'name',
+         'name'               => __('Manufacturer'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[16]['table']        = $this->getTable();
-      $tab[16]['field']        = 'comment';
-      $tab[16]['name']         = __('Comments');
-      $tab[16]['datatype']     = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[80]['table']        = 'glpi_entities';
-      $tab[80]['field']        = 'completename';
-      $tab[80]['name']         = __('Entity');
-      $tab[80]['datatype']     = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

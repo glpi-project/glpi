@@ -279,129 +279,199 @@ class Contact extends CommonDBTM{
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                      = array();
-      $tab['common']            = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']          = $this->getTable();
-      $tab[1]['field']          = 'name';
-      $tab[1]['name']           = __('Surname');
-      $tab[1]['datatype']       = 'itemlink';
-      $tab[1]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Last Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'firstname';
-      $tab[11]['name']          = __('First name');
-      $tab[11]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'firstname',
+         'name'               => __('First Name'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[2]['table']          = $this->getTable();
-      $tab[2]['field']          = 'id';
-      $tab[2]['name']           = __('ID');
-      $tab[2]['massiveaction']  = false;
-      $tab[2]['datatype']       = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[3]['table']          = $this->getTable();
-      $tab[3]['field']          = 'phone';
-      $tab[3]['name']           = __('Phone');
-      $tab[3]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'phone',
+         'name'               => __('Phone'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[4]['table']          = $this->getTable();
-      $tab[4]['field']          = 'phone2';
-      $tab[4]['name']           = __('Phone 2');
-      $tab[4]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'phone2',
+         'name'               => __('Phone 2'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[10]['table']         = $this->getTable();
-      $tab[10]['field']         = 'mobile';
-      $tab[10]['name']          = __('Mobile phone');
-      $tab[10]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $this->getTable(),
+         'field'              => 'mobile',
+         'name'               => __('Mobile phone'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[5]['table']          = $this->getTable();
-      $tab[5]['field']          = 'fax';
-      $tab[5]['name']           = __('Fax');
-      $tab[5]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'fax',
+         'name'               => __('Fax'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[6]['table']          = $this->getTable();
-      $tab[6]['field']          = 'email';
-      $tab[6]['name']           = _n('Email', 'Emails', 1);
-      $tab[6]['datatype']       = 'email';
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'email',
+         'name'               => _n('Email', 'Emails', 1),
+         'datatype'           => 'email'
+      ];
 
-      $tab[82]['table']         = $this->getTable();
-      $tab[82]['field']         = 'address';
-      $tab[82]['name']          = __('Address');
-      $tab[83]['datatype']      = 'text';
+      $tab[] = [
+         'id'                 => '82',
+         'table'              => $this->getTable(),
+         'field'              => 'address',
+         'name'               => __('Address')
+      ];
 
-      $tab[84]['table']         = $this->getTable();
-      $tab[84]['field']         = 'town';
-      $tab[84]['name']          = __('City');
-      $tab[84]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '83',
+         'datatype'           => 'string',
+         'table'              => $this->getTable(),
+         'field'              => 'postcode',
+         'name'               => __('Postal code')
+      ];
 
-      $tab[83]['table']         = $this->getTable();
-      $tab[83]['field']         = 'postcode';
-      $tab[83]['name']          = __('Postal code');
-      $tab[83]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '84',
+         'table'              => $this->getTable(),
+         'field'              => 'town',
+         'name'               => __('City'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[85]['table']         = $this->getTable();
-      $tab[85]['field']         = 'state';
-      $tab[85]['name']          = _x('location','State');
-      $tab[85]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '85',
+         'table'              => $this->getTable(),
+         'field'              => 'state',
+         'name'               => __('State'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[87]['table']         = $this->getTable();
-      $tab[87]['field']         = 'country';
-      $tab[87]['name']          = __('Country');
-      $tab[87]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '87',
+         'table'              => $this->getTable(),
+         'field'              => 'country',
+         'name'               => __('Country'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[9]['table']          = 'glpi_contacttypes';
-      $tab[9]['field']          = 'name';
-      $tab[9]['name']           = __('Type');
-      $tab[9]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => 'glpi_contacttypes',
+         'field'              => 'name',
+         'name'               => __('Type'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[81]['table']         = 'glpi_usertitles';
-      $tab[81]['field']         = 'name';
-      $tab[81]['name']          = _x('person','Title');
-      $tab[81]['datatype']      = 'dropdown';
+      $tab[] = [
+         'id'                 => '81',
+         'table'              => 'glpi_usertitles',
+         'field'              => 'name',
+         'name'               => __('Title'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[8]['table']          = 'glpi_suppliers';
-      $tab[8]['field']          = 'name';
-      $tab[8]['name']           = _n('Associated supplier', 'Associated suppliers', Session::getPluralNumber());
-      $tab[8]['forcegroupby']   = true;
-      $tab[8]['datatype']       = 'itemlink';
-      $tab[8]['joinparams']     = array('beforejoin'
-                                         => array('table'      => 'glpi_contacts_suppliers',
-                                                  'joinparams' => array('jointype' => 'child')));
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => 'glpi_suppliers',
+         'field'              => 'name',
+         'name'               => _n('Associated supplier', 'Associated suppliers', Session::getPluralNumber()),
+         'forcegroupby'       => true,
+         'datatype'           => 'itemlink',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_contacts_suppliers',
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
-      $tab[16]['table']         = $this->getTable();
-      $tab[16]['field']         = 'comment';
-      $tab[16]['name']          = __('Comments');
-      $tab[16]['datatype']      = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __('Entity');
-      $tab[80]['massiveaction'] = false;
-      $tab[80]['datatype']      = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[86]['table']         = $this->getTable();
-      $tab[86]['field']         = 'is_recursive';
-      $tab[86]['name']          = __('Child entities');
-      $tab[86]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
       // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
-      $tab += Notepad::getSearchOptionsToAdd();
+      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
 
       return $tab;
    }

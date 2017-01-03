@@ -143,7 +143,7 @@ class Html {
       if (!isset($_SESSION["glpidate_format"])) {
          $_SESSION["glpidate_format"] = 0;
       }
-      if (!$format ) {
+      if (!$format) {
          $format = $_SESSION["glpidate_format"];
       }
 

@@ -1,0 +1,81 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_notifications',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_notifications',
+    'field' => 'event',
+    'name' => 'Event',
+    'massiveaction' => false,
+    'datatype' => 'specific',
+    'additionalfields' => 
+    array (
+      0 => 'itemtype',
+    ),
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_notifications',
+    'field' => 'mode',
+    'name' => 'Notification method',
+    'massiveaction' => false,
+    'datatype' => 'specific',
+    'searchtype' => 
+    array (
+      0 => 'equals',
+      1 => 'notequals',
+    ),
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_notificationtemplates',
+    'field' => 'name',
+    'name' => 'Notification templates',
+    'datatype' => 'itemlink',
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_notifications',
+    'field' => 'itemtype',
+    'name' => 'Type',
+    'datatype' => 'itemtypename',
+    'itemtype_list' => 'notificationtemplates_types',
+    'massiveaction' => false,
+  ),
+  6 => 
+  array (
+    'table' => 'glpi_notifications',
+    'field' => 'is_active',
+    'name' => 'Active',
+    'datatype' => 'bool',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_notifications',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+  ),
+  86 => 
+  array (
+    'table' => 'glpi_notifications',
+    'field' => 'is_recursive',
+    'name' => 'Child entities',
+    'datatype' => 'bool',
+  ),
+)
