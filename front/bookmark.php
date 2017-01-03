@@ -48,7 +48,7 @@ if (!isset($_GET["type"])) {
     $_GET['type'] = intval($_GET['type']);
 }
 
-if (!isset($_GET["itemtype"])) {
+if (!isset($_GET["itemtype"]) || $_GET['itemtype'] == 'AllAssets') {
    $_GET["itemtype"] = -1;
 } else {
    if (!is_subclass_of($_GET['itemtype'], 'CommonDBTM')) {
