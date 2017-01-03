@@ -455,7 +455,7 @@ class Html {
          $toadd = '?tokonq='.Toolbox::getRandomString(5);
       }
 
-      echo "<script language=javascript>
+      echo "<script type='text/javascript'>
             NomNav = navigator.appName;
             if (NomNav=='Konqueror') {
                window.location='".$dest.$toadd."';
@@ -489,7 +489,7 @@ class Html {
          $toadd = '&tokonq='.Toolbox::getRandomString(5);
       }
 
-      echo "<script language=javascript>
+      echo "<script type='text/javascript'>
             NomNav = navigator.appName;
             if (NomNav=='Konqueror') {
                window.location='".$dest.$toadd."';
@@ -2991,8 +2991,7 @@ class Html {
       $output .= "<input id='showdate".$p['rand']."' type='text' size='10' name='_$name' ".
                   "value='".self::convDate($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'],
-                                           'id'    => "hiddendate".$p['rand'],
-                                           'size'  => 10));
+                                           'id'    => "hiddendate".$p['rand']));
       if ($p['maybeempty'] && $p['canedit']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
                       "\" id='resetdate".$p['rand']."' class='pointer'>";

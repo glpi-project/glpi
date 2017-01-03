@@ -2121,8 +2121,8 @@ class Dropdown {
 
       Dropdown::showFromArray('display_type', $values);
       echo "<input type='image' name='export' class='pointer' src='".
-             $CFG_GLPI["root_doc"]."/pics/export.png' title=\""._sx('button', 'Export')."\" value=\"".
-             _sx('button', 'Export')."\">";
+             $CFG_GLPI["root_doc"] . "/pics/export.png' title=\"" . _sx('button', 'Export') . "\" alt=\"" .
+        _sx('button', 'Export')."\">";
    }
 
 
