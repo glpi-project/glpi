@@ -1383,7 +1383,7 @@ abstract class API extends CommonGLPI {
          $id = $raw['id'];
 
          // keep row itemtype for all asset
-         if ($itemtype == 'AllAssets' ) {
+         if ($itemtype == 'AllAssets') {
             $current_id       = $raw['id'];
             $current_itemtype = $raw['TYPE'];
          }

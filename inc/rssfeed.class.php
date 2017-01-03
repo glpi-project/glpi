@@ -322,87 +322,122 @@ class RSSFeed extends CommonDBVisible {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                           = array();
-      $tab['common']                 = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']               = $this->getTable();
-      $tab[1]['field']               = 'name';
-      $tab[1]['name']                = __('Name');
-      $tab[1]['datatype']            = 'itemlink';
-      $tab[1]['massiveaction']       = false;
-      $tab[1]['forcegroupby']        = true;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false,
+         'forcegroupby'       => true
+      ];
 
-      $tab[2]['table']               = 'glpi_users';
-      $tab[2]['field']               = 'name';
-      $tab[2]['name']                = __('Creator');
-      $tab[2]['datatype']            = 'dropdown';
-      $tab[2]['massiveaction']       = false;
-      $tab[2]['right']               = 'all';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Creator'),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
+         'right'              => 'all'
+      ];
 
-      $tab[3]['table']               = $this->getTable();
-      $tab[3]['field']               = 'url';
-      $tab[3]['name']                = __('URL');
-      $tab[3]['datatype']            = 'string';
-      $tab[3]['massiveaction']       = false;
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'url',
+         'name'               => __('URL'),
+         'datatype'           => 'string',
+         'massiveaction'      => false
+      ];
 
-      $tab[4]['table']               = $this->getTable();
-      $tab[4]['field']               = 'is_active';
-      $tab[4]['name']                = __('Active');
-      $tab[4]['datatype']            = 'bool';
-      $tab[4]['massiveaction']       = true;
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool',
+         'massiveaction'      => true
+      ];
 
-      $tab[6]['table']               = $this->getTable();
-      $tab[6]['field']               = 'have_error';
-      $tab[6]['name']                = __('Error');
-      $tab[6]['datatype']            = 'bool';
-      $tab[6]['massiveaction']       = true;
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'have_error',
+         'name'               => __('Error'),
+         'datatype'           => 'bool',
+         'massiveaction'      => true
+      ];
 
-      $tab[7]['table']               = $this->getTable();
-      $tab[7]['field']               = 'max_items';
-      $tab[7]['name']                = __('Number of items displayed');
-      $tab[7]['datatype']            = 'number';
-      $tab[7]['min']                 = 5;
-      $tab[7]['max']                 = 100;
-      $tab[7]['step']                = 5;
-      $tab[7]['toadd']               = array(1);
-      $tab[7]['massiveaction']       = true;
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'max_items',
+         'name'               => __('Number of items displayed'),
+         'datatype'           => 'number',
+         'min'                => 5,
+         'max'                => 100,
+         'step'               => 5,
+         'toadd'              => [1],
+         'massiveaction'      => true
+      ];
 
-      $tab[16]['table']              = $this->getTable();
-      $tab[16]['field']              = 'comment';
-      $tab[16]['name']               = __('Comments');
-      $tab[16]['datatype']           = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[5]['table']               = $this->getTable();
-      $tab[5]['field']               = 'refresh_rate';
-      $tab[5]['name']                = __('Refresh rate');
-      $tab[5]['datatype']            = 'timestamp';
-      $tab[5]['min']                 = HOUR_TIMESTAMP;
-      $tab[5]['max']                 = DAY_TIMESTAMP;
-      $tab[5]['step']                = HOUR_TIMESTAMP;
-      $tab[5]['toadd']               = array(5*MINUTE_TIMESTAMP,
-                                             15*MINUTE_TIMESTAMP,
-                                             30*MINUTE_TIMESTAMP,
-                                             45*MINUTE_TIMESTAMP);
-      $tab[5]['display_emptychoice'] = false;
-      $tab[5]['massiveaction']       = true;
-      $tab[5]['searchtype']          = 'equals';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'refresh_rate',
+         'name'               => __('Refresh rate'),
+         'datatype'           => 'timestamp',
+         'min'                => HOUR_TIMESTAMP,
+         'max'                => DAY_TIMESTAMP,
+         'step'               => HOUR_TIMESTAMP,
+         'toadd'              => [
+            5 * MINUTE_TIMESTAMP,
+            15 * MINUTE_TIMESTAMP,
+            30 * MINUTE_TIMESTAMP,
+            45 * MINUTE_TIMESTAMP
+         ],
+         'display_emptychoice' => false,
+         'massiveaction'      => true,
+         'searchtype'         => 'equals'
+      ];
 
-      $tab[19]['table']               = $this->getTable();
-      $tab[19]['field']               = 'date_mod';
-      $tab[19]['name']                = __('Last update');
-      $tab[19]['datatype']            = 'datetime';
-      $tab[19]['massiveaction']       = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
       // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
       return $tab;
    }

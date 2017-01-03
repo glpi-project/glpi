@@ -71,19 +71,24 @@ class DeviceGraphicCard extends CommonDevice {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'memory_default',
+         'name'               => __('Memory by default'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'memory_default';
-      $tab[12]['name']     = __('Memory by default');
-      $tab[12]['datatype'] = 'string';
-
-      $tab[14]['table']    = 'glpi_interfacetypes';
-      $tab[14]['field']    = 'name';
-      $tab[14]['name']     = __('Interface');
-      $tab[14]['datatype'] = 'dropdown';
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => 'glpi_interfacetypes',
+         'field'              => 'name',
+         'name'               => __('Interface'),
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

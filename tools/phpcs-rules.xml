@@ -22,4 +22,7 @@
   <!-- White space after comma in function call -->
   <rule ref="Generic.Functions.FunctionCallArgumentSpacing" />
 
+  <!-- No white spaces after opening bracket and before closing bracket in IF -->
+  <rule ref="PSR2.ControlStructures.ControlStructureSpacing" />
+
 </ruleset>

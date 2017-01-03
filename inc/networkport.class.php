@@ -917,42 +917,50 @@ class NetworkPort extends CommonDBChild {
    /**
     * @param $itemtype
    **/
-   static function getSearchOptionsToAdd($itemtype) {
+   static function getSearchOptionsToAddNew($itemtype = null) {
+      $tab = [];
 
-      $tab                       = array();
+      $tab[] = [
+         'id'                 => 'network',
+         'name'               => __('Networking')
+      ];
 
-      $tab['network']            = __('Networking');
+      $joinparams = ['jointype' => 'itemtype_item'];
 
-      $joinparams                = array('jointype' => 'itemtype_item');
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => 'glpi_networkports',
+         'field'              => 'mac',
+         'name'               => __('MAC address'),
+         'datatype'           => 'mac',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[21]['table']         = 'glpi_networkports';
-      $tab[21]['field']         = 'mac';
-      $tab[21]['name']          = __('MAC address');
-      $tab[21]['datatype']      = 'mac';
-      $tab[21]['forcegroupby']  = true;
-      $tab[21]['massiveaction'] = false;
-      $tab[21]['joinparams']    = $joinparams;
-
-      $tab[87]['table']         = 'glpi_networkports';
-      $tab[87]['field']         = 'instantiation_type';
-      $tab[87]['name']          = __('Network port type');
-      $tab[87]['datatype']      = 'itemtypename';
-      $tab[87]['itemtype_list'] = 'networkport_instantiations';
-      $tab[87]['massiveaction'] = false;
-      $tab[87]['joinparams']    = $joinparams;
+      $tab[] = [
+         'id'                 => '87',
+         'table'              => 'glpi_networkports',
+         'field'              => 'instantiation_type',
+         'name'               => __('Network port type'),
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'networkport_instantiations',
+         'massiveaction'      => false,
+         'joinparams'         => $joinparams
+      ];
 
       $networkNameJoin = array('jointype'          => 'itemtype_item',
                                'specific_itemtype' => 'NetworkPort',
                                'condition'         => 'AND NEWTABLE.`is_deleted` = 0',
                                'beforejoin'        => array('table'      => 'glpi_networkports',
                                                             'joinparams' => $joinparams));
-      NetworkName::getSearchOptionsToAdd($tab, $networkNameJoin, $itemtype);
+      NetworkName::getSearchOptionsToAddNew($tab, $networkNameJoin, $itemtype);
 
       $instantjoin = array('jointype'   => 'child',
                            'beforejoin' => array('table'      => 'glpi_networkports',
                                                  'joinparams' => $joinparams));
       foreach (self::getNetworkPortInstantiations() as $instantiationType) {
-         $instantiationType::getSearchOptionsToAddForInstantiation($tab, $instantjoin, $itemtype);
+         $instantiationType::getSearchOptionsToAddForInstantiation($tab, $instantjoin);
       }
 
       $netportjoin = array(array('table'      => 'glpi_networkports',
@@ -960,13 +968,16 @@ class NetworkPort extends CommonDBChild {
                            array('table'      => 'glpi_networkports_vlans',
                                  'joinparams' => array('jointype' => 'child')));
 
-      $tab[88]['table']         = 'glpi_vlans';
-      $tab[88]['field']         = 'name';
-      $tab[88]['name']          = __('VLAN');
-      $tab[88]['datatype']      = 'dropdown';
-      $tab[88]['forcegroupby']  = true;
-      $tab[88]['massiveaction'] = false;
-      $tab[88]['joinparams']    = array('beforejoin' => $netportjoin);
+      $tab[] = [
+         'id'                 => '88',
+         'table'              => 'glpi_vlans',
+         'field'              => 'name',
+         'name'               => __('VLAN'),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => $netportjoin
+      ];
 
       return $tab;
    }
@@ -988,62 +999,92 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                      = array();
-      $tab['common']            = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']          = $this->getTable();
-      $tab[1]['field']          = 'name';
-      $tab[1]['name']           = __('Name');
-      $tab[1]['type']           = 'text';
-      $tab[1]['massiveaction']  = false;
-      $tab[1]['datatype']       = 'itemlink';
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'type'               => 'text',
+         'massiveaction'      => false,
+         'datatype'           => 'itemlink'
+      ];
 
-      $tab[2]['table']          = $this->getTable();
-      $tab[2]['field']          = 'id';
-      $tab[2]['name']           = __('ID');
-      $tab[2]['massiveaction']  = false;
-      $tab[2]['datatype']       = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[3]['table']          = $this->getTable();
-      $tab[3]['field']          = 'logical_number';
-      $tab[3]['name']           = __('Port number');
-      $tab[3]['datatype']       = 'integer';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'logical_number',
+         'name'               => __('Port number'),
+         'datatype'           => 'integer'
+      ];
 
-      $tab[4]['table']          = $this->getTable();
-      $tab[4]['field']          = 'mac';
-      $tab[4]['name']           = __('MAC address');
-      $tab[4]['datatype']       = 'mac';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'mac',
+         'name'               => __('MAC address'),
+         'datatype'           => 'mac'
+      ];
 
-      $tab[5]['table']          = $this->getTable();
-      $tab[5]['field']          = 'instantiation_type';
-      $tab[5]['name']           = __('Network port type');
-      $tab[5]['datatype']       = 'itemtypename';
-      $tab[5]['itemtype_list']  = 'networkport_instantiations';
-      $tab[5]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'instantiation_type',
+         'name'               => __('Network port type'),
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'networkport_instantiations',
+         'massiveaction'      => false
+      ];
 
-      $tab[9]['table']          = 'glpi_netpoints';
-      $tab[9]['field']          = 'name';
-      $tab[9]['name']           = _n('Network outlet', 'Network outlets', 1);
-      $tab[9]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => 'glpi_netpoints',
+         'field'              => 'name',
+         'name'               => _n('Network outlet', 'Network outlets', 1),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[16]['table']         = $this->getTable();
-      $tab[16]['field']         = 'comment';
-      $tab[16]['name']          = __('Comments');
-      $tab[16]['datatype']      = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[20]['table']         = $this->getTable();
-      $tab[20]['field']         = 'itemtype';
-      $tab[20]['name']          = __('Type');
-      $tab[20]['datatype']      = 'itemtype';
-      $tab[20]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Type'),
+         'datatype'           => 'itemtype',
+         'massiveaction'      => false
+      ];
 
-      $tab[21]['table']         = $this->getTable();
-      $tab[21]['field']         = 'items_id';
-      $tab[21]['name']          = __('ID');
-      $tab[21]['datatype']      = 'integer';
-      $tab[21]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => $this->getTable(),
+         'field'              => 'items_id',
+         'name'               => __('ID'),
+         'datatype'           => 'integer',
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }

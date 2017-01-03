@@ -134,101 +134,143 @@ class ReservationItem extends CommonDBChild {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                          = array();
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[4]['table']              = $this->getTable();
-      $tab[4]['field']              = 'comment';
-      $tab[4]['name']               = __('Comments');
-      $tab[4]['datatype']           = 'text';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[5]['table']              = $this->getTable();
-      $tab[5]['field']              = 'is_active';
-      $tab[5]['name']               = __('Active');
-      $tab[5]['datatype']           = 'bool';
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab['common']                = __('Characteristics');
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => 'reservation_types',
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false,
+         'addobjectparams'    => [
+            'forcetab'           => 'Reservation$1'
+         ]
+      ];
 
-      $tab[1]['table']              = 'reservation_types';
-      $tab[1]['field']              = 'name';
-      $tab[1]['name']               = __('Name');
-      $tab[1]['datatype']           = 'itemlink';
-      $tab[1]['massiveaction']      = false;
-      $tab[1]['addobjectparams']    = array('forcetab' => 'Reservation$1');
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => 'reservation_types',
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[2]['table']              = 'reservation_types';
-      $tab[2]['field']              = 'id';
-      $tab[2]['name']               = __('ID');
-      $tab[2]['massiveaction']      = false;
-      $tab[2]['datatype']           = 'number';
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => $this->getTable(),
+         'field'              => '_virtual',
+         'name'               => __('Planning'),
+         'datatype'           => 'specific',
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'nosort'             => true,
+         'additionalfields'   => ['is_active']
+      ];
 
-      $tab[9]['table']              = 'glpi_reservationitems';
-      $tab[9]['field']              = '_virtual';
-      $tab[9]['name']               = __('Planning');
-      $tab[9]['datatype']           = 'specific';
-      $tab[9]['massiveaction']      = false;
-      $tab[9]['nosearch']           = true;
-      $tab[9]['nosort']             = true;
-      $tab[9]['additionalfields']   = array('is_active');
-
-      $loc = Location::getSearchOptionsToAdd();
+      $loc = Location::getSearchOptionsToAddNew();
       // Force massive actions to false
-      foreach ($loc as $key => $val) {
-         $tab[$key]                  = $val;
-         $tab[$key]['massiveaction'] = false;
+      foreach ($loc as &$val) {
+         $val['massiveaction'] = false;
       }
+      $tab = array_merge($tab, $loc);
 
-      $tab[6]['table']              = 'reservation_types';
-      $tab[6]['field']              = 'otherserial';
-      $tab[6]['name']               = __('Inventory number');
-      $tab[6]['datatype']           = 'string';
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => 'reservation_types',
+         'field'              => 'otherserial',
+         'name'               => __('Inventory number'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[16]['table']             = 'reservation_types';
-      $tab[16]['field']             = 'comment';
-      $tab[16]['name']              = __('Comments');
-      $tab[16]['datatype']          = 'text';
-      $tab[16]['massiveaction']     = false;
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => 'reservation_types',
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
 
-      $tab[70]['table']             = 'glpi_users';
-      $tab[70]['field']             = 'name';
-      $tab[70]['name']              = __('User');
-      $tab[70]['datatype']          = 'dropdown';
-      $tab[70]['right']             = 'all';
-      $tab[70]['massiveaction']     = false;
+      $tab[] = [
+         'id'                 => '70',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('User'),
+         'datatype'           => 'dropdown',
+         'right'              => 'all',
+         'massiveaction'      => false
+      ];
 
-      $tab[71]['table']             = 'glpi_groups';
-      $tab[71]['field']             = 'completename';
-      $tab[71]['name']              = __('Group');
-      $tab[71]['datatype']          = 'dropdown';
-      $tab[71]['massiveaction']     = false;
+      $tab[] = [
+         'id'                 => '71',
+         'table'              => 'glpi_groups',
+         'field'              => 'completename',
+         'name'               => __('Group'),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false
+      ];
 
-      $tab[19]['table']             = 'reservation_types';
-      $tab[19]['field']             = 'date_mod';
-      $tab[19]['name']              = __('Last update');
-      $tab[19]['datatype']          = 'datetime';
-      $tab[19]['massiveaction']     = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => 'reservation_types',
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[23]['table']             = 'glpi_manufacturers';
-      $tab[23]['field']             = 'name';
-      $tab[23]['name']              = __('Manufacturer');
-      $tab[23]['datatype']          = 'dropdown';
-      $tab[23]['massiveaction']     = false;
+      $tab[] = [
+         'id'                 => '23',
+         'table'              => 'glpi_manufacturers',
+         'field'              => 'name',
+         'name'               => __('Manufacturer'),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false
+      ];
 
-      $tab[24]['table']             = 'glpi_users';
-      $tab[24]['field']             = 'name';
-      $tab[24]['linkfield']         = 'users_id_tech';
-      $tab[24]['name']              = __('Technician in charge of the hardware');
-      $tab[24]['datatype']          = 'dropdown';
-      $tab[24]['right']             = 'interface';
-      $tab[24]['massiveaction']     = false;
+      $tab[] = [
+         'id'                 => '24',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'linkfield'          => 'users_id_tech',
+         'name'               => __('Technician in charge of the hardware'),
+         'datatype'           => 'dropdown',
+         'right'              => 'interface',
+         'massiveaction'      => false
+      ];
 
-      $tab[80]['table']             = 'glpi_entities';
-      $tab[80]['field']             = 'completename';
-      $tab[80]['name']              = __('Entity');
-      $tab[80]['massiveaction']     = false;
-      $tab[80]['datatype']          = 'dropdown';
-      $tab[80]['massiveaction']     = false;
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

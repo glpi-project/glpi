@@ -61,15 +61,6 @@ class Contact_Supplier extends CommonDBRelation{
       return $forbidden;
    }
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
-      return parent::getSearchOptions();
-   }
-
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 

@@ -367,7 +367,7 @@ class Dropdown {
                      break;
 
                   case "glpi_suppliers" :
-                     if( $tooltip ) {
+                     if($tooltip) {
                         if (!empty($data["phonenumber"])) {
                            $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
                                                       "</span>".$data['phonenumber']);
@@ -390,7 +390,7 @@ class Dropdown {
                      break;
 
                   case "glpi_budgets" :
-                     if( $tooltip ) {
+                     if($tooltip) {
                         if (!empty($data['locations_id'])) {
                            $comment .= "<br>".sprintf(__('%1$s: %2$s'),
                                                       "<span class='b'>".__('Location')."</span>",
@@ -2121,8 +2121,8 @@ class Dropdown {
 
       Dropdown::showFromArray('display_type', $values);
       echo "<input type='image' name='export' class='pointer' src='".
-             $CFG_GLPI["root_doc"]."/pics/export.png' title=\""._sx('button', 'Export')."\" value=\"".
-             _sx('button', 'Export')."\">";
+             $CFG_GLPI["root_doc"] . "/pics/export.png' title=\"" . _sx('button', 'Export') . "\" alt=\"" .
+        _sx('button', 'Export')."\">";
    }
 
 

@@ -196,45 +196,66 @@ class Link extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                      = array();
-      $tab['common']            = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']          = $this->getTable();
-      $tab[1]['field']          = 'name';
-      $tab[1]['name']           = __('Name');
-      $tab[1]['datatype']       = 'itemlink';
-      $tab[1]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']          = $this->getTable();
-      $tab[2]['field']          = 'id';
-      $tab[2]['name']           = __('ID');
-      $tab[2]['massiveaction']  = false;
-      $tab[2]['datatype']       = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[3]['table']          = $this->getTable();
-      $tab[3]['field']          = 'link';
-      $tab[3]['name']           = __('Link or filename');
-      $tab[3]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'link',
+         'name'               => __('Link or filename'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __('Entity');
-      $tab[80]['massiveaction'] = false;
-      $tab[80]['datatype']      = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }
@@ -557,30 +578,40 @@ class Link extends CommonDBTM {
       return $computedlinks;
    }
 
+   static function getSearchOptionsToAddNew($itemtype = null) {
+      $tab = [];
 
-   /**
-    * @since version 0.85
-   **/
-   static function getSearchOptionsToAdd() {
+      $newtab = [
+         'id'                 => '145',
+         'table'              => 'glpi_links',
+         'field'              => '_virtual',
+         'name'               => _n('External link', 'External links', Session::getPluralNumber()),
+         'datatype'           => 'specific',
+         'additionalfields'   => [
+            'id',
+            'link',
+            'name',
+            'data',
+            'open_window'
+         ],
+         'nosearch'           => true,
+         'forcegroupby'       => true,
+         'nosort'             => '1',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_links_itemtypes',
+               'joinparams'         => [
+                  'jointype'           => 'itemtypeonly'
+               ]
+            ]
+         ]
+      ];
 
-      $tab                           = array();
-
-      $tab[145]['table']             = 'glpi_links';
-      $tab[145]['field']             = '_virtual';
-      $tab[145]['name']              = _n('External link', 'External links', Session::getPluralNumber());
-      $tab[145]['datatype']          = 'specific';
-      $tab[145]['additionalfields']  = array('id','link', 'name', 'data', 'open_window');
-      $tab[145]['nosearch']          = true;
-      $tab[145]['forcegroupby']      = true;
-      $tab[145]['nosort']            = true;
-      $tab[145]['joinparams']        = array('beforejoin'
-                                              => array('table'      => 'glpi_links_itemtypes',
-                                                       'joinparams' => array('jointype'
-                                                                              => 'itemtypeonly')));
       if (!Session::isCron()
           && !isCommandLine()) {
-         $tab[145]['joinparams']['condition'] = getEntitiesRestrictRequest('AND', 'NEWTABLE');
+         $newtab['joinparams']['condition'] = getEntitiesRestrictRequest('AND', 'NEWTABLE');
       }
+      $tab[] = $newtab;
 
       return $tab;
    }

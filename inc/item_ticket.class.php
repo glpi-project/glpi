@@ -1215,24 +1215,29 @@ class Item_Ticket extends CommonDBRelation{
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                          = array();
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => $this->getTable(),
+         'field'              => 'items_id',
+         'name'               => _n('Associated element', 'Associated elements', 2),
+         'datatype'           => 'specific',
+         'comments'           => true,
+         'nosort'             => true,
+         'additionalfields'   => ['itemtype']
+      ];
 
-      $tab[13]['table']             = 'glpi_items_tickets';
-      $tab[13]['field']             = 'items_id';
-      $tab[13]['name']              = _n('Associated element', 'Associated elements', 2);
-      $tab[13]['datatype']          = 'specific';
-      $tab[13]['comments']          = true;
-      $tab[13]['nosort']            = true;
-      $tab[13]['additionalfields']  = array('itemtype');
-
-      $tab[131]['table']            = 'glpi_items_tickets';
-      $tab[131]['field']            = 'itemtype';
-      $tab[131]['name']             = _n('Associated item type', 'Associated item types', 2);
-      $tab[131]['datatype']         = 'itemtypename';
-      $tab[131]['itemtype_list']    = 'ticket_types';
-      $tab[131]['nosort']           = true;
+      $tab[] = [
+         'id'                 => '131',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => _n('Associated item type', 'Associated item types',2),
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'ticket_types',
+         'nosort'             => true
+      ];
 
       return $tab;
    }

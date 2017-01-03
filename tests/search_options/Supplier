@@ -1,0 +1,251 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'address',
+    'name' => 'Address',
+    'datatype' => 'text',
+  ),
+  10 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'fax',
+    'name' => 'Fax',
+    'datatype' => 'string',
+  ),
+  11 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'town',
+    'name' => 'City',
+    'datatype' => 'string',
+  ),
+  14 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'postcode',
+    'name' => 'Postal code',
+    'datatype' => 'string',
+  ),
+  12 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'state',
+    'name' => 'State',
+    'datatype' => 'string',
+  ),
+  13 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'country',
+    'name' => 'Country',
+    'datatype' => 'string',
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'website',
+    'name' => 'Website',
+    'datatype' => 'weblink',
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'phonenumber',
+    'name' => 'Phone',
+    'datatype' => 'string',
+  ),
+  6 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'email',
+    'name' => 'Email',
+    'datatype' => 'email',
+  ),
+  9 => 
+  array (
+    'table' => 'glpi_suppliertypes',
+    'field' => 'name',
+    'name' => 'Third party type',
+    'datatype' => 'dropdown',
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  8 => 
+  array (
+    'table' => 'glpi_contacts',
+    'field' => 'completename',
+    'name' => 'Associated contacts',
+    'forcegroupby' => true,
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+    'computation' => 'CONCAT(TABLE.`name`, \' \', TABLE.`firstname`)',
+    'computationgroupby' => true,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_contacts_suppliers',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+        ),
+      ),
+    ),
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+  ),
+  86 => 
+  array (
+    'table' => 'glpi_suppliers',
+    'field' => 'is_recursive',
+    'name' => 'Child entities',
+    'datatype' => 'bool',
+  ),
+  29 => 
+  array (
+    'table' => 'glpi_contracts',
+    'field' => 'name',
+    'name' => 'Associated contracts',
+    'forcegroupby' => true,
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_contracts_suppliers',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+        ),
+      ),
+    ),
+  ),
+  'notepad' => 'Notes',
+  200 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'content',
+    'name' => 'Notes',
+    'datatype' => 'text',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'splititems' => true,
+    'massiveaction' => false,
+  ),
+  201 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  202 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'Writer',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+  203 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  204 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id_lastupdater',
+    'name' => 'Last updater',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+)

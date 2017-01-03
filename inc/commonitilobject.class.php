@@ -1182,7 +1182,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Set default dropdown
       $dropdown_fields = array('entities_id', 'itilcategories_id');
-      foreach ($dropdown_fields as $field ) {
+      foreach ($dropdown_fields as $field) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
          }
@@ -2717,142 +2717,211 @@ abstract class CommonITILObject extends CommonDBTM {
    function getSearchOptionsMain() {
       global $CFG_GLPI;
 
-      $tab                            = array();
-      $tab['common']                  = __('Characteristics');
+      $tab = [];
 
-      $tab[1]['table']                = $this->getTable();
-      $tab[1]['field']                = 'name';
-      $tab[1]['name']                 = __('Title');
-      $tab[1]['datatype']             = 'itemlink';
-      $tab[1]['searchtype']           = 'contains';
-      $tab[1]['massiveaction']        = false;
-      $tab[1]['additionalfields']     = array('id', 'content', 'status');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[21]['table']               = $this->getTable();
-      $tab[21]['field']               = 'content';
-      $tab[21]['name']                = __('Description');
-      $tab[21]['massiveaction']       = false;
-      $tab[21]['datatype']            = 'text';
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Title'),
+         'datatype'           => 'itemlink',
+         'searchtype'         => 'contains',
+         'massiveaction'      => false,
+         'additionalfields'   => ['id', 'content', 'status']
+      ];
+
+      $newtab = [
+         'id'                 => '21',
+         'table'              => $this->getTable(),
+         'field'              => 'content',
+         'name'               => __('Description'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
       if ($this->getType() == 'Ticket'
           && $CFG_GLPI["use_rich_text"]) {
-         $tab[21]['htmltext'] = true;
+         $newtab['htmltext'] = true;
       }
+      $tab[] = $newtab;
 
-      $tab[2]['table']                = $this->getTable();
-      $tab[2]['field']                = 'id';
-      $tab[2]['name']                 = __('ID');
-      $tab[2]['massiveaction']        = false;
-      $tab[2]['datatype']             = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[12]['table']               = $this->getTable();
-      $tab[12]['field']               = 'status';
-      $tab[12]['name']                = __('Status');
-      $tab[12]['searchtype']          = 'equals';
-      $tab[12]['datatype']            = 'specific';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'status',
+         'name'               => __('Status'),
+         'searchtype'         => 'equals',
+         'datatype'           => 'specific'
+      ];
 
-      $tab[10]['table']               = $this->getTable();
-      $tab[10]['field']               = 'urgency';
-      $tab[10]['name']                = __('Urgency');
-      $tab[10]['searchtype']          = 'equals';
-      $tab[10]['datatype']            = 'specific';
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $this->getTable(),
+         'field'              => 'urgency',
+         'name'               => __('Urgency'),
+         'searchtype'         => 'equals',
+         'datatype'           => 'specific'
+      ];
 
-      $tab[11]['table']               = $this->getTable();
-      $tab[11]['field']               = 'impact';
-      $tab[11]['name']                = __('Impact');
-      $tab[11]['searchtype']          = 'equals';
-      $tab[11]['datatype']            = 'specific';
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'impact',
+         'name'               => __('Impact'),
+         'searchtype'         => 'equals',
+         'datatype'           => 'specific'
+      ];
 
-      $tab[3]['table']                = $this->getTable();
-      $tab[3]['field']                = 'priority';
-      $tab[3]['name']                 = __('Priority');
-      $tab[3]['searchtype']           = 'equals';
-      $tab[3]['datatype']             = 'specific';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'priority',
+         'name'               => __('Priority'),
+         'searchtype'         => 'equals',
+         'datatype'           => 'specific'
+      ];
 
-      $tab[15]['table']               = $this->getTable();
-      $tab[15]['field']               = 'date';
-      $tab[15]['name']                = __('Opening date');
-      $tab[15]['datatype']            = 'datetime';
-      $tab[15]['massiveaction']       = false;
+      $tab[] = [
+         'id'                 => '15',
+         'table'              => $this->getTable(),
+         'field'              => 'date',
+         'name'               => __('Opening date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[16]['table']               = $this->getTable();
-      $tab[16]['field']               = 'closedate';
-      $tab[16]['name']                = __('Closing date');
-      $tab[16]['datatype']            = 'datetime';
-      $tab[16]['massiveaction']       = false;
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'closedate',
+         'name'               => __('Closing date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[18]['table']               = $this->getTable();
-      $tab[18]['field']               = 'due_date';
-      $tab[18]['name']                = __('Time to resolve');
-      $tab[18]['datatype']            = 'datetime';
-      $tab[18]['maybefuture']         = true;
-      $tab[18]['massiveaction']       = false;
-      $tab[18]['additionalfields']    = array('status');
+      $tab[] = [
+         'id'                 => '18',
+         'table'              => $this->getTable(),
+         'field'              => 'due_date',
+         'name'               => __('Time to resolve'),
+         'datatype'           => 'datetime',
+         'maybefuture'        => true,
+         'massiveaction'      => false,
+         'additionalfields'   => ['status']
+      ];
 
-      $tab[151]['table']              = $this->getTable();
-      $tab[151]['field']              = 'due_date';
-      $tab[151]['name']               = __('Time to resolve + Progress');
-      $tab[151]['massiveaction']      = false;
-      $tab[151]['nosearch']           = true;
-      $tab[151]['additionalfields']   = array('status');
+      $tab[] = [
+         'id'                 => '151',
+         'table'              => $this->getTable(),
+         'field'              => 'due_date',
+         'name'               => __('Time to resolve + Progress'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'additionalfields'   => ['status']
+      ];
 
-      $tab[82]['table']               = $this->getTable();
-      $tab[82]['field']               = 'is_late';
-      $tab[82]['name']                = __('Time to resolve exceedeed');
-      $tab[82]['datatype']            = 'bool';
-      $tab[82]['massiveaction']       = false;
-      $tab[82]['computation']         = "IF(TABLE.`due_date` IS NOT NULL
-                                            AND TABLE.`status` <> ".self::WAITING."
+      $tab[] = [
+         'id'                 => '82',
+         'table'              => $this->getTable(),
+         'field'              => 'is_late',
+         'name'               => __('Time to resolve exceedeed'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false,
+         'computation'        => 'IF(TABLE.`due_date` IS NOT NULL
+                                            AND TABLE.`status` <> 4
                                             AND (TABLE.`solvedate` > TABLE.`due_date`
                                                  OR (TABLE.`solvedate` IS NULL
                                                       AND TABLE.`due_date` < NOW())),
-                                            1, 0)";
+                                            1, 0)'
+      ];
 
-      $tab[17]['table']               = $this->getTable();
-      $tab[17]['field']               = 'solvedate';
-      $tab[17]['name']                = __('Resolution date');
-      $tab[17]['datatype']            = 'datetime';
-      $tab[17]['massiveaction']       = false;
+      $tab[] = [
+         'id'                 => '17',
+         'table'              => $this->getTable(),
+         'field'              => 'solvedate',
+         'name'               => __('Resolution date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[19]['table']               = $this->getTable();
-      $tab[19]['field']               = 'date_mod';
-      $tab[19]['name']                = __('Last update');
-      $tab[19]['datatype']            = 'datetime';
-      $tab[19]['massiveaction']       = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[7]['table']                = 'glpi_itilcategories';
-      $tab[7]['field']                = 'completename';
-      $tab[7]['name']                 = __('Category');
-      $tab[7]['datatype']             = 'dropdown';
+      $newtab = [
+         'id'                 => '7',
+         'table'              => 'glpi_itilcategories',
+         'field'              => 'completename',
+         'name'               => __('Category'),
+         'datatype'           => 'dropdown'
+      ];
 
       if (!Session::isCron() // no filter for cron
           && isset($_SESSION['glpiactiveprofile']['interface'])
           && ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk')) {
-         $tab[7]['condition']         = "`is_helpdeskvisible`";
+         $newtab['condition']         = "`is_helpdeskvisible`";
       }
+      $tab[] = $newtab;
 
-      $tab[80]['table']               = 'glpi_entities';
-      $tab[80]['field']               = 'completename';
-      $tab[80]['name']                = __('Entity');
-      $tab[80]['massiveaction']       = false;
-      $tab[80]['datatype']            = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[45]['table']               = $this->getTable();
-      $tab[45]['field']               = 'actiontime';
-      $tab[45]['name']                = __('Total duration');
-      $tab[45]['datatype']            = 'timestamp';
-      $tab[45]['massiveaction']       = false;
-      $tab[45]['nosearch']            = true;
+      $tab[] = [
+         'id'                 => '45',
+         'table'              => $this->getTable(),
+         'field'              => 'actiontime',
+         'name'               => __('Total duration'),
+         'datatype'           => 'timestamp',
+         'massiveaction'      => false,
+         'nosearch'           => true
+      ];
 
-      $tab[64]['table']               = 'glpi_users';
-      $tab[64]['field']               = 'name';
-      $tab[64]['linkfield']           = 'users_id_lastupdater';
-      $tab[64]['name']                = __('Last edit by');
-      $tab[64]['massiveaction']       = false;
-      $tab[64]['datatype']            = 'dropdown';
-      $tab[64]['right']               = 'all';
+      $newtab = [
+         'id'                 => '64',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'linkfield'          => 'users_id_lastupdater',
+         'name'               => __('Last edit by'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'right'              => 'all'
+      ];
+
+      // Filter search fields for helpdesk
+      if (!Session::isCron() // no filter for cron
+          && (!isset($_SESSION['glpiactiveprofile']['interface'])
+              || ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk'))) {
+         // last updater no search
+         $newtab['nosearch'] = true;
+      }
+      $tab[] = $newtab;
 
       // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
       return $tab;
    }
@@ -2862,225 +2931,293 @@ abstract class CommonITILObject extends CommonDBTM {
     * @since version 0.85
    **/
    function getSearchOptionsSolution() {
-      $tab                       = array();
-      $tab['solution']           = _n('Solution', 'Solutions', 1);
+      $tab[] = [
+         'id'                 => 'solution',
+         'name'               => _n('Solution', 'Solutions', 1)
+      ];
 
-      $tab[23]['table']          = 'glpi_solutiontypes';
-      $tab[23]['field']          = 'name';
-      $tab[23]['name']           = __('Solution type');
-      $tab[23]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '23',
+         'table'              => 'glpi_solutiontypes',
+         'field'              => 'name',
+         'name'               => __('Solution type'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[24]['table']          = $this->getTable();
-      $tab[24]['field']          = 'solution';
-      $tab[24]['name']           = _n('Solution', 'Solutions', 1);
-      $tab[24]['datatype']       = 'text';
-      $tab[24]['htmltext']       = true;
-      $tab[24]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '24',
+         'table'              => $this->getTable(),
+         'field'              => 'solution',
+         'name'               => _n('Solution', 'Solutions', 1),
+         'datatype'           => 'text',
+         'htmltext'           => true,
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }
 
 
    function getSearchOptionsStats() {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['stats']              = __('Statistics');
+      $tab[] = [
+         'id'                 => 'stats',
+         'name'               => __('Statistics')
+      ];
 
-      $tab[154]['table']         = $this->getTable();
-      $tab[154]['field']         = 'solve_delay_stat';
-      $tab[154]['name']          = __('Resolution time');
-      $tab[154]['datatype']      = 'timestamp';
-      $tab[154]['forcegroupby']  = true;
-      $tab[154]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '154',
+         'table'              => $this->getTable(),
+         'field'              => 'solve_delay_stat',
+         'name'               => __('Resolution time'),
+         'datatype'           => 'timestamp',
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
 
-      $tab[152]['table']         = $this->getTable();
-      $tab[152]['field']         = 'close_delay_stat';
-      $tab[152]['name']          = __('Closing time');
-      $tab[152]['datatype']      = 'timestamp';
-      $tab[152]['forcegroupby']  = true;
-      $tab[152]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '152',
+         'table'              => $this->getTable(),
+         'field'              => 'close_delay_stat',
+         'name'               => __('Closing time'),
+         'datatype'           => 'timestamp',
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
 
-      $tab[153]['table']         = $this->getTable();
-      $tab[153]['field']         = 'waiting_duration';
-      $tab[153]['name']          = __('Waiting time');
-      $tab[153]['datatype']      = 'timestamp';
-      $tab[153]['forcegroupby']  = true;
-      $tab[153]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '153',
+         'table'              => $this->getTable(),
+         'field'              => 'waiting_duration',
+         'name'               => __('Waiting time'),
+         'datatype'           => 'timestamp',
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }
 
 
    function getSearchOptionsActors() {
+      $tab = [];
 
-      $tab = array();
+      $tab[] = [
+         'id'                 => 'requester',
+         'name'               => __('Requester')
+      ];
 
-      $tab['requester']        = __('Requester');
-
-      $tab[4]['table']         = 'glpi_users';
-      $tab[4]['field']         = 'name';
-      $tab[4]['datatype']      = 'dropdown';
-      $tab[4]['right']         = 'all';
-      $tab[4]['name']          = __('Requester');
-      $tab[4]['forcegroupby']  = true;
-      $tab[4]['massiveaction'] = false;
-      $tab[4]['joinparams']    = array('beforejoin'
-                                        => array('table'
-                                                  => getTableForItemType($this->userlinkclass),
-                                                 'joinparams'
-                                                  => array('jointype'
-                                                            => 'child',
-                                                           'condition'
-                                                            => 'AND NEWTABLE.`type`
-                                                                 = '.CommonITILActor::REQUESTER)));
-      if (!Session::isCron() // no filter for cron
-          && isset($_SESSION['glpiactiveprofile']['interface'])
-          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-         $tab[4]['right']       = 'id';
-      }
-
-      $tab[71]['table']         = 'glpi_groups';
-      $tab[71]['field']         = 'completename';
-      $tab[71]['datatype']      = 'dropdown';
-      $tab[71]['name']          = __('Requester group');
-      $tab[71]['forcegroupby']  = true;
-      $tab[71]['massiveaction'] = false;
-      $tab[71]['condition']     = 'is_requester';
-      $tab[71]['joinparams']    = array('beforejoin'
-                                         => array('table'
-                                                   => getTableForItemType($this->grouplinkclass),
-                                                  'joinparams'
-                                                     => array('jointype'
-                                                               => 'child',
-                                                              'condition'
-                                                               => 'AND NEWTABLE.`type`
-                                                                    = '.CommonITILActor::REQUESTER)));
-      if (!Session::isCron() // no filter for cron
-          && isset($_SESSION['glpiactiveprofile']['interface'])
-          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-         $tab[71]['condition']       .= " AND `id` IN (".implode(",", $_SESSION['glpigroups']).")";
-      }
-
-      $tab[22]['table']         = 'glpi_users';
-      $tab[22]['field']         = 'name';
-      $tab[22]['datatype']      = 'dropdown';
-      $tab[22]['right']         = 'all';
-      $tab[22]['linkfield']     = 'users_id_recipient';
-      $tab[22]['name']          = __('Writer');
+      $newtab = [
+         'id'                 => '4',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'right'              => 'all',
+         'name'               => __('Requester'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => getTableForItemType($this->userlinkclass),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+               ]
+            ]
+         ]
+      ];
 
       if (!Session::isCron() // no filter for cron
           && isset($_SESSION['glpiactiveprofile']['interface'])
           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
-         $tab[22]['right']       = 'id';
+         $newtab['right']       = 'id';
       }
+      $tab[] = $newtab;
 
-      $tab['observer']          = __('Watcher');
+      $newtab = [
+         'id'                 => '71',
+         'table'              => 'glpi_groups',
+         'field'              => 'completename',
+         'datatype'           => 'dropdown',
+         'name'               => __('Requester group'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'condition'          => 'is_requester',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => getTableForItemType($this->grouplinkclass),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+               ]
+            ]
+         ]
+      ];
 
-      $tab[66]['table']         = 'glpi_users';
-      $tab[66]['field']         = 'name';
-      $tab[66]['datatype']      = 'dropdown';
-      $tab[66]['right']         = 'all';
-      $tab[66]['name']          = __('Watcher');
-      $tab[66]['forcegroupby']  = true;
-      $tab[66]['massiveaction'] = false;
-      $tab[66]['joinparams']    = array('beforejoin'
-                                         => array('table'
-                                                   => getTableForItemType($this->userlinkclass),
-                                                  'joinparams'
-                                                    => array('jointype'
-                                                              => 'child',
-                                                             'condition'
-                                                              => 'AND NEWTABLE.`type`
-                                                                   = '.CommonITILActor::OBSERVER)));
+      if (!Session::isCron() // no filter for cron
+          && isset($_SESSION['glpiactiveprofile']['interface'])
+          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+         $newtab['condition']       .= " AND `id` IN (".implode(",", $_SESSION['glpigroups']).")";
+      }
+      $tab[] = $newtab;
 
-      $tab[65]['table']         = 'glpi_groups';
-      $tab[65]['field']         = 'completename';
-      $tab[65]['datatype']      = 'dropdown';
-      $tab[65]['name']          = __('Watcher group');
-      $tab[65]['forcegroupby']  = true;
-      $tab[65]['massiveaction'] = false;
-      $tab[65]['condition']     = 'is_requester';
-      $tab[65]['joinparams']    = array('beforejoin'
-                                         => array('table'
-                                                   => getTableForItemType($this->grouplinkclass),
-                                                  'joinparams'
-                                                    => array('jointype'
-                                                              => 'child',
-                                                             'condition'
-                                                              => 'AND NEWTABLE.`type`
-                                                                   = '.CommonITILActor::OBSERVER)));
+      $newtab = [
+         'id'                 => '22',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'right'              => 'all',
+         'linkfield'          => 'users_id_recipient',
+         'name'               => __('Writer')
+      ];
 
-      $tab['assign']            = __('Assigned to');
+      if (!Session::isCron() // no filter for cron
+          && isset($_SESSION['glpiactiveprofile']['interface'])
+          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+         $newtab['right']       = 'id';
+      }
+      $tab[] = $newtab;
 
-      $tab[5]['table']          = 'glpi_users';
-      $tab[5]['field']          = 'name';
-      $tab[5]['datatype']       = 'dropdown';
-      $tab[5]['right']          = 'own_ticket';
-      $tab[5]['name']           = __('Technician');
-      $tab[5]['forcegroupby']   = true;
-      $tab[5]['massiveaction']  = false;
-      $tab[5]['joinparams']     = array('beforejoin'
-                                         => array('table'
-                                                   => getTableForItemType($this->userlinkclass),
-                                                  'joinparams'
-                                                   => array('jointype'
-                                                             => 'child',
-                                                            'condition'
-                                                             => 'AND NEWTABLE.`type`
-                                                                  = '.CommonITILActor::ASSIGN)));
+      $tab[] = [
+         'id'                 => 'observer',
+         'name'               => __('Watcher')
+      ];
 
-      $tab[6]['table']          = 'glpi_suppliers';
-      $tab[6]['field']          = 'name';
-      $tab[6]['datatype']       = 'dropdown';
-      $tab[6]['name']           = __('Assigned to a supplier');
-      $tab[6]['forcegroupby']   = true;
-      $tab[6]['massiveaction']  = false;
-      $tab[6]['joinparams']     = array('beforejoin'
-                                         => array('table'
-                                                   => getTableForItemType($this->supplierlinkclass),
-                                                  'joinparams'
-                                                   => array('jointype'
-                                                             => 'child',
-                                                            'condition'
-                                                             => 'AND NEWTABLE.`type`
-                                                                  = '.CommonITILActor::ASSIGN)));
+      $tab[] = [
+         'id'                 => '66',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'right'              => 'all',
+         'name'               => __('Watcher'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => getTableForItemType($this->userlinkclass),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::OBSERVER
+               ]
+            ]
+         ]
+      ];
 
-      $tab[8]['table']          = 'glpi_groups';
-      $tab[8]['field']          = 'completename';
-      $tab[8]['datatype']       = 'dropdown';
-      $tab[8]['name']           = __('Technician group');
-      $tab[8]['forcegroupby']   = true;
-      $tab[8]['massiveaction']  = false;
-      $tab[8]['condition']      = 'is_assign';
-      $tab[8]['joinparams']     = array('beforejoin'
-                                         => array('table'
-                                                   => getTableForItemType($this->grouplinkclass),
-                                                  'joinparams'
-                                                   => array('jointype'
-                                                             => 'child',
-                                                            'condition'
-                                                             => 'AND NEWTABLE.`type`
-                                                                  = '.CommonITILActor::ASSIGN)));
+      $tab[] = [
+         'id'                 => '65',
+         'table'              => 'glpi_groups',
+         'field'              => 'completename',
+         'datatype'           => 'dropdown',
+         'name'               => __('Watcher group'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'condition'          => 'is_requester',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => getTableForItemType($this->grouplinkclass),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::OBSERVER
+               ]
+            ]
+         ]
+      ];
 
-      $tab['notification']      = _n('Notification', 'Notifications', Session::getPluralNumber());
+      $tab[] = [
+         'id'                 => 'assign',
+         'name'               => __('Assigned to')
+      ];
 
-      $tab[35]['table']         = getTableForItemType($this->userlinkclass);
-      $tab[35]['field']         = 'use_notification';
-      $tab[35]['name']          = __('Email followup');
-      $tab[35]['datatype']      = 'bool';
-      $tab[35]['massiveaction'] = false;
-      $tab[35]['joinparams']    = array('jointype'  => 'child',
-                                        'condition' => 'AND NEWTABLE.`type`
-                                                            = '.CommonITILActor::REQUESTER);
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'right'              => 'own_ticket',
+         'name'               => __('Technician'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => getTableForItemType($this->userlinkclass),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
+               ]
+            ]
+         ]
+      ];
 
-      $tab[34]['table']         = getTableForItemType($this->userlinkclass);
-      $tab[34]['field']         = 'alternative_email';
-      $tab[34]['name']          = __('Email for followup');
-      $tab[34]['datatype']      = 'email';
-      $tab[34]['massiveaction'] = false;
-      $tab[34]['joinparams']    = array('jointype'  => 'child',
-                                        'condition' => 'AND NEWTABLE.`type`
-                                                            = '.CommonITILActor::REQUESTER);
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => 'glpi_suppliers',
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'name'               => __('Assigned to a supplier'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => getTableForItemType($this->supplierlinkclass),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => 'glpi_groups',
+         'field'              => 'completename',
+         'datatype'           => 'dropdown',
+         'name'               => __('Technician group'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'condition'          => 'is_assign',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => getTableForItemType($this->grouplinkclass),
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
+               ]
+            ]
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => 'notification',
+         'name'               => _n('Notification', 'Notifications', Session::getPluralNumber())
+      ];
+
+      $tab[] = [
+         'id'                 => '35',
+         'table'              => getTableForItemType($this->userlinkclass),
+         'field'              => 'use_notification',
+         'name'               => __('Email followup'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '34',
+         'table'              => getTableForItemType($this->userlinkclass),
+         'field'              => 'alternative_email',
+         'name'               => __('Email for followup'),
+         'datatype'           => 'email',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::REQUESTER
+         ]
+      ];
 
       return $tab;
    }
@@ -4619,7 +4756,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $result = $DB->query($query);
       $tab    = array();
 
-      if ($DB->numrows($result) >=1 ) {
+      if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
             $tmp['id']   = $line["id"];
             $tmp['link'] = $line["completename"];

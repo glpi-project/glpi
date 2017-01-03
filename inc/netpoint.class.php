@@ -63,18 +63,17 @@ class Netpoint extends CommonDropdown {
    }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab  = parent::getSearchOptionsNew();
 
-      $tab  = parent::getSearchOptions();
+      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
 
-      $tab += Location::getSearchOptionsToAdd();
-
-      $tab[3]['datatype']      = 'itemlink';
+      foreach ($tab as &$t) {
+         if ($t['id'] == 3) {
+            $t['datatype']      = 'itemlink';
+            break;
+         }
+      }
 
       return $tab;
    }
@@ -183,7 +182,7 @@ class Netpoint extends CommonDropdown {
                                                     $input['entities_id'], $this->maybeRecursive());
 
          // Check twin :
-         if ($result_twin = $DB->query($query) ) {
+         if ($result_twin = $DB->query($query)) {
             if ($DB->numrows($result_twin) > 0) {
                return $DB->result($result_twin, 0, "id");
             }

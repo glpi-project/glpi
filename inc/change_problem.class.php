@@ -113,16 +113,6 @@ class Change_Problem extends CommonDBRelation{
 
 
    /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
-      return parent::getSearchOptions();
-   }
-
-
-   /**
     * Show tickets for a problem
     *
     * @param $problem Problem object

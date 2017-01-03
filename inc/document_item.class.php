@@ -596,7 +596,7 @@ class Document_Item extends CommonDBRelation{
       $entity = $_SESSION["glpiactive_entity"];
       if ($item->isEntityAssign()) {
          /// Case of personal items : entity = -1 : create on active entity (Reminder case))
-         if ($item->getEntityID() >=0 ) {
+         if ($item->getEntityID() >=0) {
             $entity = $item->getEntityID();
          }
       }
@@ -661,7 +661,7 @@ class Document_Item extends CommonDBRelation{
 
          if ($item->isEntityAssign()) {
             /// Case of personal items : entity = -1 : create on active entity (Reminder case))
-            if ($item->getEntityID() >=0 ) {
+            if ($item->getEntityID() >=0) {
                $entity = $item->getEntityID();
             }
 

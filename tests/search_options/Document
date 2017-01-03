@@ -1,0 +1,190 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_documents',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_documents',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_documents',
+    'field' => 'filename',
+    'name' => 'File',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_documents',
+    'field' => 'link',
+    'name' => 'Web Link',
+    'datatype' => 'weblink',
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_documents',
+    'field' => 'mime',
+    'name' => 'MIME type',
+    'datatype' => 'string',
+  ),
+  7 => 
+  array (
+    'table' => 'glpi_documentcategories',
+    'field' => 'completename',
+    'name' => 'Heading',
+    'datatype' => 'dropdown',
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+  ),
+  86 => 
+  array (
+    'table' => 'glpi_documents',
+    'field' => 'is_recursive',
+    'name' => 'Child entities',
+    'datatype' => 'bool',
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_documents',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_documents',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  20 => 
+  array (
+    'table' => 'glpi_documents',
+    'field' => 'sha1sum',
+    'name' => 'Checksum (SHA1)',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_documents',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  72 => 
+  array (
+    'table' => 'glpi_documents_items',
+    'field' => 'id',
+    'name' => 'Number of associated items',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'datatype' => 'count',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  'notepad' => 'Notes',
+  200 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'content',
+    'name' => 'Notes',
+    'datatype' => 'text',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'splititems' => true,
+    'massiveaction' => false,
+  ),
+  201 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  202 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'Writer',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+  203 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  204 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id_lastupdater',
+    'name' => 'Last updater',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+)

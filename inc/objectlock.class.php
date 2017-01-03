@@ -97,7 +97,7 @@ class ObjectLock extends CommonDBTM {
       global $CFG_GLPI ;
 
       $ret = array();
-      foreach ( $CFG_GLPI['lock_lockable_objects'] as $lo ){
+      foreach ($CFG_GLPI['lock_lockable_objects'] as $lo){
          $ret[$lo] = $lo::getTypeName(Session::getPluralNumber());
       }
       asort($ret, SORT_STRING);
@@ -399,7 +399,7 @@ class ObjectLock extends CommonDBTM {
             // this mask is mandatory to prevent read of information
             // that are not permitted to view by active profile
             ProfileRight::getAllPossibleRights();
-            foreach ($_SESSION['glpi_all_possible_rights'] as $key => $val ){
+            foreach ($_SESSION['glpi_all_possible_rights'] as $key => $val){
                if (isset($_SESSION['glpilocksavedprofile'][$key])) {
                   $_SESSION['glpiactiveprofile'][$key]
                      = intval($_SESSION['glpilocksavedprofile'][$key])
@@ -524,16 +524,17 @@ class ObjectLock extends CommonDBTM {
 
 
    /**
-    * Summary of getSearchOptionsToAdd
+    * Get the Search options to add to an item for the given Type
     *
-    * @param  $itemtype
+    * @param string $itemtype Item type
     *
-    * @return array
+    * @return a *not indexed* array of search options
+    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
+    * @since 9.2
    **/
-   static function getSearchOptionsToAdd($itemtype) {
+   static public function getSearchOptionsToAddNew($itemtype) {
       global $CFG_GLPI;
-
-      $tab = array();
+      $tab = [];
 
       if (isset($_SESSION["glpiactiveprofile"]["interface"])
           && ($_SESSION["glpiactiveprofile"]["interface"] == "central")
@@ -541,30 +542,38 @@ class ObjectLock extends CommonDBTM {
           && ($CFG_GLPI["lock_lockprofile_id"] > 0)
           && in_array($itemtype, $CFG_GLPI['lock_item_list'])) {
 
-         $tab[205]['table']         = 'glpi_users';
-         $tab[205]['field']         = 'name';
-         $tab[205]['datatype']      = 'dropdown';
-         $tab[205]['right']         = 'all';
-         $tab[205]['name']          = __('Locked by');
-         $tab[205]['forcegroupby']  = true;
-         $tab[205]['massiveaction'] = false;
-         $tab[205]['joinparams']    = array('jointype' => '',
-                                            'beforejoin'
-                                             => array('table'      => getTableForItemType('ObjectLock'),
-                                                      'joinparams' => array('jointype'
-                                                                               => "itemtype_item")));
+         $tab[] = [
+            'id' => '205',
+            'table'         => 'glpi_users',
+            'field'         => 'name',
+            'datatype'      => 'dropdown',
+            'right'         => 'all',
+            'name'          => __('Locked by'),
+            'forcegroupby'  => true,
+            'massiveaction' => false,
+            'joinparams'    => [
+               'jointype'   => '',
+               'beforejoin' => [
+                  'table'      => getTableForItemType('ObjectLock'),
+                  'joinparams' => ['jointype' => "itemtype_item"]
+               ]
+            ]
+         ];
 
-         $tab[206]['table']         = getTableForItemType('ObjectLock');
-         $tab[206]['field']         = 'date_mod';
-         $tab[206]['datatype']      = 'datetime';
-         $tab[206]['name']          = __('Locked date');
-         $tab[206]['joinparams']    = array('jointype' => "itemtype_item");
-         $tab[206]['massiveaction'] = false;
-         $tab[206]['forcegroupby']  = true;
+         $tab[] = [
+            'id'            => '206',
+            'table'         => getTableForItemType('ObjectLock'),
+            'field'         => 'date_mod',
+            'datatype'      => 'datetime',
+            'name'          => __('Locked date'),
+            'joinparams'    => ['jointype' => 'itemtype_item'],
+            'massiveaction' => false,
+            'forcegroupby'  => true
+         ];
       }
-      return $tab ;
-   }
 
+      return $tab;
+   }
 
    /**
     * Summary of getRightsToAdd

@@ -326,17 +326,6 @@ class TicketTemplate extends CommonDropdown {
    }
 
 
-
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
-      return parent::getSearchOptions();
-   }
-
-
    /**
     * Get mandatory mark if field is mandatory
     *

@@ -188,7 +188,7 @@ if (isset($query) && count($query)) {
          echo "<th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "</tr>";
-         while ( $data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'>";
             if ($data['itemname']) {
                echo "<td> ".$data['itemname']." </td>";
@@ -198,7 +198,7 @@ if (isset($query) && count($query)) {
             if (!isset($data['itemdeleted'])) {
                $data['itemdeleted'] = 0;
             }
-            if (!isset($data['buy_date']) ){
+            if (!isset($data['buy_date'])){
                $data['buy_date'] = '';
             }
             if (!isset($data['warranty_duration'])) {

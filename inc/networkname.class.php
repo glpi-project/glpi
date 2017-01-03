@@ -165,34 +165,47 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                      = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => 'glpi_fqdns',
+         'field'              => 'fqdn',
+         'name'               => FQDN::getTypeName(1),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[12]['table']         = 'glpi_fqdns';
-      $tab[12]['field']         = 'fqdn';
-      $tab[12]['name']          = FQDN::getTypeName(1);
-      $tab[12]['datatype']      = 'dropdown';
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => 'glpi_ipaddresses',
+         'field'              => 'name',
+         'name'               => IPAddress::getTypeName(1),
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ],
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[13]['table']         = 'glpi_ipaddresses';
-      $tab[13]['field']         = 'name';
-      $tab[13]['name']          = IPAddress::getTypeName(1);
-      $tab[13]['joinparams']    = array('jointype' => 'itemtype_item');
-      $tab[13]['forcegroupby']  = true;
-      $tab[13]['massiveaction'] = false;
-      $tab[13]['datatype']      = 'dropdown';
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Type'),
+         'datatype'           => 'itemtype',
+         'massiveaction'      => false
+      ];
 
-      $tab[20]['table']         = $this->getTable();
-      $tab[20]['field']         = 'itemtype';
-      $tab[20]['name']          = __('Type');
-      $tab[20]['datatype']      = 'itemtype';
-      $tab[20]['massiveaction'] = false;
-
-      $tab[21]['table']         = $this->getTable();
-      $tab[21]['field']         = 'items_id';
-      $tab[21]['name']          = __('ID');
-      $tab[21]['datatype']      = 'integer';
-      $tab[21]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => $this->getTable(),
+         'field'              => 'items_id',
+         'name'               => __('ID'),
+         'datatype'           => 'integer',
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }
@@ -201,33 +214,46 @@ class NetworkName extends FQDNLabel {
    /**
     * @param $tab          array   the array to fill
     * @param $joinparams   array
-    * @param $itemtype
    **/
-   static function getSearchOptionsToAdd(array &$tab, array $joinparams, $itemtype) {
+   static function getSearchOptionsToAddNew(array &$tab, array $joinparams) {
+      $tab[] = [
+         'id'                 => '126',
+         'table'              => 'glpi_ipaddresses',
+         'field'              => 'name',
+         'name'               => __('IP'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'  => 'mainitemtype_mainitem',
+            'condition' => 'AND NEWTABLE.`is_deleted` = 0'
+         ]
+      ];
 
-      $tab[126]['table']         = 'glpi_ipaddresses';
-      $tab[126]['field']         = 'name';
-      $tab[126]['name']          = __('IP');
-      $tab[126]['forcegroupby']  = true;
-      $tab[126]['massiveaction'] = false;
-      $tab[126]['joinparams']    = array('jointype'  => 'mainitemtype_mainitem',
-                                         'condition' => 'AND NEWTABLE.`is_deleted` = 0');
+      $tab[] = [
+         'id'                 => '127',
+         'table'              => 'glpi_networknames',
+         'field'              => 'name',
+         'name'               => self::getTypeName(Session::getPluralNumber()),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[127]['table']         = 'glpi_networknames';
-      $tab[127]['field']         = 'name';
-      $tab[127]['name']          = self::getTypeName(Session::getPluralNumber());
-      $tab[127]['forcegroupby']  = true;
-      $tab[127]['massiveaction'] = false;
-      $tab[127]['joinparams']    = $joinparams;
-
-      $tab[128]['table']         = 'glpi_networkaliases';
-      $tab[128]['field']         = 'name';
-      $tab[128]['name']          = NetworkAlias::getTypeName(Session::getPluralNumber());
-      $tab[128]['forcegroupby']  = true;
-      $tab[128]['massiveaction'] = false;
-      $tab[128]['joinparams']    = array('jointype'   => 'child',
-                                         'beforejoin' => array('table'      => 'glpi_networknames',
-                                                               'joinparams' => $joinparams));
+      $tab[] = [
+         'id'                 => '128',
+         'table'              => 'glpi_networkaliases',
+         'field'              => 'name',
+         'name'               => NetworkAlias::getTypeName(Session::getPluralNumber()),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'   => 'child',
+            'beforejoin' => [
+               'table'      => 'glpi_networknames',
+               'joinparams' => $joinparams
+            ]
+         ]
+      ];
    }
 
 

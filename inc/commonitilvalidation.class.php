@@ -1002,145 +1002,220 @@ abstract class CommonITILValidation  extends CommonDBChild {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = array();
 
-      $tab                       = array();
-      $tab['common']             = __('Approval');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Approval')
+      ];
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'comment_submission';
-      $tab[1]['name']            = __('Request comments');
-      $tab[1]['datatype']        = 'text';
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'comment_submission',
+         'name'               => __('Request comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'comment_validation';
-      $tab[2]['name']            = __('Approval comments');
-      $tab[2]['datatype']        = 'text';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'comment_validation',
+         'name'               => __('Approval comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'status';
-      $tab[3]['name']            = __('Status');
-      $tab[3]['searchtype']      = 'equals';
-      $tab[3]['datatype']        = 'specific';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'status',
+         'name'               => __('Status'),
+         'searchtype'         => 'equals',
+         'datatype'           => 'specific'
+      ];
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'submission_date';
-      $tab[4]['name']            = __('Request date');
-      $tab[4]['datatype']        = 'datetime';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'submission_date',
+         'name'               => __('Request date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'validation_date';
-      $tab[5]['name']            = __('Approval date');
-      $tab[5]['datatype']        = 'datetime';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'validation_date',
+         'name'               => __('Approval date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[6]['table']           = 'glpi_users';
-      $tab[6]['field']           = 'name';
-      $tab[6]['name']            = __('Approval requester');
-      $tab[6]['datatype']        = 'itemlink';
-      $tab[6]['right']           = array('create_incident_validation', 'create_request_validation');
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Approval requester'),
+         'datatype'           => 'itemlink',
+         'right'              => [
+            'create_incident_validation',
+            'create_request_validation'
+         ]
+      ];
 
-      $tab[7]['table']           = 'glpi_users';
-      $tab[7]['field']           = 'name';
-      $tab[7]['linkfield']       = 'users_id_validate';
-      $tab[7]['name']            = __('Approver');
-      $tab[7]['datatype']        = 'itemlink';
-      $tab[7]['right']           = array('validate_request', 'validate_incident');
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'linkfield'          => 'users_id_validate',
+         'name'               => __('Approver'),
+         'datatype'           => 'itemlink',
+         'right'              => [
+            'validate_request',
+            'validate_incident'
+         ]
+      ];
 
       return $tab;
    }
 
 
-   static function getSearchOptionsToAdd() {
+   static function getSearchOptionsToAddNew() {
+      $tab = [];
 
-      $tab = array();
-      $tab['validation']            = __('Approval');
+      $tab[] = [
+         'id'                 => 'validation',
+         'name'               => __('Approval')
+      ];
 
-      $tab[51]['table']             = getTableForItemtype(static::$itemtype);
-      $tab[51]['field']             = 'validation_percent';
-      $tab[51]['name']              = __('Minimum validation required');
-      $tab[51]['datatype']          = 'number';
-      $tab[51]['unit']              = '%';
-      $tab[51]['min']               = 0;
-      $tab[51]['max']               = 100;
-      $tab[51]['step']               = 50;
+      $tab[] = [
+         'id'                 => '51',
+         'table'              => getTableForItemtype(static::$itemtype),
+         'field'              => 'validation_percent',
+         'name'               => __('Minimum validation required'),
+         'datatype'           => 'number',
+         'unit'               => '%',
+         'min'                => 0,
+         'max'                => 100,
+         'step'               => 50
+      ];
 
-      $tab[52]['table']             = getTableForItemtype(static::$itemtype);
-      $tab[52]['field']             = 'global_validation';
-      $tab[52]['name']              = __('Approval');
-      $tab[52]['searchtype']        = 'equals';
-      $tab[52]['datatype']          = 'specific';
+      $tab[] = [
+         'id'                 => '52',
+         'table'              => getTableForItemtype(static::$itemtype),
+         'field'              => 'global_validation',
+         'name'               => __('Approval'),
+         'searchtype'         => 'equals',
+         'datatype'           => 'specific'
+      ];
 
-      $tab[53]['table']             = static::getTable();
-      $tab[53]['field']             = 'comment_submission';
-      $tab[53]['name']              = __('Request comments');
-      $tab[53]['datatype']          = 'text';
-      $tab[53]['forcegroupby']      = true;
-      $tab[53]['massiveaction']     = false;
-      $tab[53]['joinparams']        = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '53',
+         'table'              => static::getTable(),
+         'field'              => 'comment_submission',
+         'name'               => __('Request comments'),
+         'datatype'           => 'text',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[54]['table']             = static::getTable();
-      $tab[54]['field']             = 'comment_validation';
-      $tab[54]['name']              = __('Approval comments');
-      $tab[54]['datatype']          = 'text';
-      $tab[54]['forcegroupby']      = true;
-      $tab[54]['massiveaction']     = false;
-      $tab[54]['joinparams']        = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '54',
+         'table'              => static::getTable(),
+         'field'              => 'comment_validation',
+         'name'               => __('Approval comments'),
+         'datatype'           => 'text',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[55]['table']             = static::getTable();
-      $tab[55]['field']             = 'status';
-      $tab[55]['datatype']          = 'specific';
-      $tab[55]['name']              = __('Approval status');
-      $tab[55]['searchtype']        = 'equals';
-      $tab[55]['forcegroupby']      = true;
-      $tab[55]['massiveaction']     = false;
-      $tab[55]['joinparams']        = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '55',
+         'table'              => static::getTable(),
+         'field'              => 'status',
+         'datatype'           => 'specific',
+         'name'               => __('Approval status'),
+         'searchtype'         => 'equals',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[56]['table']             = static::getTable();
-      $tab[56]['field']             = 'submission_date';
-      $tab[56]['name']              = __('Request date');
-      $tab[56]['datatype']          = 'datetime';
-      $tab[56]['forcegroupby']      = true;
-      $tab[56]['massiveaction']     = false;
-      $tab[56]['joinparams']        = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '56',
+         'table'              => static::getTable(),
+         'field'              => 'submission_date',
+         'name'               => __('Request date'),
+         'datatype'           => 'datetime',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[57]['table']             = static::getTable();
-      $tab[57]['field']             = 'validation_date';
-      $tab[57]['name']              = __('Approval date');
-      $tab[57]['datatype']          = 'datetime';
-      $tab[57]['forcegroupby']      = true;
-      $tab[57]['massiveaction']     = false;
-      $tab[57]['joinparams']        = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '57',
+         'table'              => static::getTable(),
+         'field'              => 'validation_date',
+         'name'               => __('Approval date'),
+         'datatype'           => 'datetime',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[58]['table']             = 'glpi_users';
-      $tab[58]['field']             = 'name';
-      $tab[58]['name']              = __('Requester');
-      $tab[58]['datatype']          = 'itemlink';
-      if (static::$itemtype == 'Ticket') {
-         $tab[58]['right']          = 'create_ticket_validate';
-      } else {
-         $tab[58]['right']          = 'create_validate';
-      }
-      $tab[58]['forcegroupby']      = true;
-      $tab[58]['massiveaction']     = false;
-      $tab[58]['joinparams']        = array('beforejoin'
-                                             => array('table'      => static::getTable(),
-                                                      'joinparams' => array('jointype' => 'child')));
+      $tab[] = [
+         'id'                 => '58',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Requester'),
+         'datatype'           => 'itemlink',
+         'right'              => (static::$itemtype == 'Ticket' ? 'create_ticket_validate' : 'create_validate'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => static::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
-      $tab[59]['table']             = 'glpi_users';
-      $tab[59]['field']             = 'name';
-      $tab[59]['linkfield']         = 'users_id_validate';
-      $tab[59]['name']              = __('Approver');
-      $tab[59]['datatype']          = 'itemlink';
-      if (static::$itemtype == 'Ticket') {
-         $tab[59]['right']          = array('validate_request', 'validate_incident');
-      } else {
-         $tab[59]['right']             = 'validate';
-      }
-      $tab[59]['forcegroupby']      = true;
-      $tab[59]['massiveaction']     = false;
-      $tab[59]['joinparams']        = array('beforejoin'
-                                             => array('table'      => static::getTable(),
-                                                      'joinparams' => array('jointype' => 'child')));
+      $tab[] = [
+         'id'                 => '59',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'linkfield'          => 'users_id_validate',
+         'name'               => __('Approver'),
+         'datatype'           => 'itemlink',
+         'right'              => (static::$itemtype == 'Ticket' ?
+            ['validate_request', 'validate_incident'] :
+            'validate'
+         ),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => static::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
       return $tab;
    }

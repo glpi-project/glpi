@@ -2239,183 +2239,257 @@ class Ticket extends CommonITILObject {
    }
 
 
+   function getSearchOptionsNew() {
+      $tab = [];
 
+      $tab = array_merge($tab, $this->getSearchOptionsMain());
 
+      $tab[] = [
+         'id'                 => '155',
+         'table'              => $this->getTable(),
+         'field'              => 'time_to_own',
+         'name'               => __('Time to own'),
+         'datatype'           => 'datetime',
+         'maybefuture'        => true,
+         'massiveaction'      => false,
+         'additionalfields'   => ['status']
+      ];
 
-   function getSearchOptions() {
+      $tab[] = [
+         'id'                 => '158',
+         'table'              => $this->getTable(),
+         'field'              => 'time_to_own',
+         'name'               => __('Time to own + Progress'),
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'additionalfields'   => ['status']
+      ];
 
-      $tab                          = array();
-
-      $tab += $this->getSearchOptionsMain();
-
-      $tab[155]['table']               = $this->getTable();
-      $tab[155]['field']               = 'time_to_own';
-      $tab[155]['name']                = __('Time to own');
-      $tab[155]['datatype']            = 'datetime';
-      $tab[155]['maybefuture']         = true;
-      $tab[155]['massiveaction']       = false;
-      $tab[155]['additionalfields']    = array('status');
-
-      $tab[158]['table']              = $this->getTable();
-      $tab[158]['field']              = 'time_to_own';
-      $tab[158]['name']               = __('Time to own + Progress');
-      $tab[158]['massiveaction']      = false;
-      $tab[158]['nosearch']           = true;
-      $tab[158]['additionalfields']   = array('status');
-
-      $tab[159]['table']              = $this->getTable();
-      $tab[159]['field']              = 'is_late';
-      $tab[159]['name']               = __('Time to own exceedeed');
-      $tab[159]['datatype']           = 'bool';
-      $tab[159]['massiveaction']      = false;
-      $tab[159]['computation']        = "IF(TABLE.`time_to_own` IS NOT NULL
-                                            AND TABLE.`status` <> ".self::WAITING."
+      $tab[] = [
+         'id'                 => '159',
+         'table'              => 'glpi_tickets',
+         'field'              => 'is_late',
+         'name'               => __('Time to own exceedeed'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false,
+         'computation'        => 'IF(TABLE.`time_to_own` IS NOT NULL
+                                            AND TABLE.`status` <> '.self::WAITING.'
                                             AND (TABLE.`takeintoaccount_delay_stat`
                                                         > TIME_TO_SEC(TIMEDIFF(TABLE.`time_to_own`,
                                                                                TABLE.`date`))
                                                  OR (TABLE.`takeintoaccount_delay_stat` = 0
                                                       AND TABLE.`time_to_own` < NOW())),
-                                            1, 0)";
+                                            1, 0)'
+      ];
 
-      $tab[14]['table']             = $this->getTable();
-      $tab[14]['field']             = 'type';
-      $tab[14]['name']              = __('Type');
-      $tab[14]['searchtype']        = 'equals';
-      $tab[14]['datatype']          = 'specific';
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => $this->getTable(),
+         'field'              => 'type',
+         'name'               => __('Type'),
+         'searchtype'         => 'equals',
+         'datatype'           => 'specific'
+      ];
 
-      $tab[13]['table']             = 'glpi_items_tickets';
-      $tab[13]['field']             = 'items_id';
-      $tab[13]['name']              = _n('Associated element', 'Associated elements', Session::getPluralNumber());
-      $tab[13]['datatype']          = 'specific';
-      $tab[13]['comments']          = true;
-      $tab[13]['nosort']            = true;
-      $tab[13]['nosearch']          = true;
-      $tab[13]['additionalfields']  = array('itemtype');
-      $tab[13]['joinparams']        = array('jointype'   => 'child');
-      $tab[13]['forcegroupby']      = true;
-      $tab[13]['massiveaction']     = false;
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => 'glpi_items_tickets',
+         'field'              => 'items_id',
+         'name'               => _n('Associated element', 'Associated elements', Session::getPluralNumber()),
+         'datatype'           => 'specific',
+         'comments'           => true,
+         'nosort'             => true,
+         'nosearch'           => true,
+         'additionalfields'   => ['itemtype'],
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
 
-      $tab[131]['table']            = 'glpi_items_tickets';
-      $tab[131]['field']            = 'itemtype';
-      $tab[131]['name']             = _n('Associated item type', 'Associated item types', Session::getPluralNumber());
-      $tab[131]['datatype']         = 'itemtypename';
-      $tab[131]['itemtype_list']    = 'ticket_types';
-      $tab[131]['nosort']           = true;
-      $tab[131]['additionalfields'] = array('itemtype');
-      $tab[131]['joinparams']       = array('jointype'   => 'child');
-      $tab[131]['forcegroupby']     = true;
-      $tab[131]['massiveaction']    = false;
+      $tab[] = [
+         'id'                 => '131',
+         'table'              => 'glpi_items_tickets',
+         'field'              => 'itemtype',
+         'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'ticket_types',
+         'nosort'             => true,
+         'additionalfields'   => ['itemtype'],
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
 
-      $tab[9]['table']              = 'glpi_requesttypes';
-      $tab[9]['field']              = 'name';
-      $tab[9]['name']               = __('Request source');
-      $tab[9]['datatype']           = 'dropdown';
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => 'glpi_requesttypes',
+         'field'              => 'name',
+         'name'               => __('Request source'),
+         'datatype'           => 'dropdown'
+      ];
 
       // Can't use Location::getSearchOptionsToAdd because id conflicts
-      $tab[83]['table']             = 'glpi_locations';
-      $tab[83]['field']             = 'completename';
-      $tab[83]['name']              = __('Location');
-      $tab[83]['datatype']          = 'dropdown';
-
-      $tab[80]['table']             = 'glpi_entities';
-      $tab[80]['field']             = 'completename';
-      $tab[80]['name']              = __('Entity');
-      $tab[80]['massiveaction']     = false;
-      $tab[80]['datatype']          = 'dropdown';
+      $tab[] = [
+         'id'                 => '83',
+         'table'              => 'glpi_locations',
+         'field'              => 'completename',
+         'name'               => __('Location'),
+         'datatype'           => 'dropdown'
+      ];
 
       // For ticket template
-      $tab[142]['table']            = 'glpi_documents';
-      $tab[142]['field']            = 'name';
-      $tab[142]['name']             = _n('Document', 'Documents', Session::getPluralNumber());
-      $tab[142]['forcegroupby']     = true;
-      $tab[142]['usehaving']        = true;
-      $tab[142]['nosearch']         = true;
-      $tab[142]['nodisplay']        = true;
-      $tab[142]['datatype']         = 'dropdown';
-      $tab[142]['massiveaction']    = false;
-      $tab[142]['joinparams']       = array('jointype'   => 'items_id',
-                                            'beforejoin' => array('table'
-                                                                    => 'glpi_documents_items',
-                                                                  'joinparams'
-                                                                    => array('jointype'
-                                                                               => 'itemtype_item')));
+      $tab[] = [
+         'id'                 => '142',
+         'table'              => 'glpi_documents',
+         'field'              => 'name',
+         'name'               => _n('Document', 'Documents', Session::getPluralNumber()),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'nosearch'           => true,
+         'nodisplay'          => true,
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'items_id',
+            'beforejoin'         => [
+               'table'              => 'glpi_documents_items',
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item'
+               ]
+            ]
+         ]
+      ];
 
-      $tab += $this->getSearchOptionsActors();
+      $tab = array_merge($tab, $this->getSearchOptionsActors());
 
-      $tab['slt']                   = __('SLT');
+      $tab[] = [
+         'id'                 => 'slt',
+         'name'               => __('SLT')
+      ];
 
-      $tab[37]['table']             = 'glpi_slts';
-      $tab[37]['field']             = 'name';
-      $tab[37]['linkfield']         = 'slts_tto_id';
-      $tab[37]['name']              = __('SLT')."&nbsp;".__('Time to own');
-      $tab[37]['massiveaction']     = false;
-      $tab[37]['datatype']          = 'dropdown';
-      $tab[37]['joinparams']        = array('condition' => "AND NEWTABLE.`type` = '".SLT::TTO."'");
-      $tab[37]['condition']         = "`glpi_slts`.`type` = '".SLT::TTO."'";
+      $tab[] = [
+         'id'                 => '37',
+         'table'              => 'glpi_slts',
+         'field'              => 'name',
+         'linkfield'          => 'slts_tto_id',
+         'name'               => __('SLT')."&nbsp;".__('Time to own'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'condition'          => "AND NEWTABLE.`type` = '".SLT::TTO."'"
+         ],
+         'condition'          => "`glpi_slts`.`type` = '".SLT::TTO."'"
+      ];
 
-      $tab[30]['table']             = 'glpi_slts';
-      $tab[30]['field']             = 'name';
-      $tab[30]['linkfield']         = 'slts_ttr_id';
-      $tab[30]['name']              = __('SLT')."&nbsp;".__('Time to resolve');
-      $tab[30]['massiveaction']     = false;
-      $tab[30]['datatype']          = 'dropdown';
-      $tab[30]['joinparams']        = array('condition' => "AND NEWTABLE.`type` = '".SLT::TTR."'");
-      $tab[30]['condition']         = "`glpi_slts`.`type` = '".SLT::TTR."'";
+      $tab[] = [
+         'id'                 => '30',
+         'table'              => 'glpi_slts',
+         'field'              => 'name',
+         'linkfield'          => 'slts_ttr_id',
+         'name'               => __('SLT')."&nbsp;".__('Time to resolve'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'condition'          => "AND NEWTABLE.`type` = '".SLT::TTR."'"
+         ],
+         'condition'          => "`glpi_slts`.`type` = '".SLT::TTR."'"
+      ];
 
-      $tab[32]['table']             = 'glpi_slalevels';
-      $tab[32]['field']             = 'name';
-      $tab[32]['name']              = __('Escalation level');
-      $tab[32]['massiveaction']     = false;
-      $tab[32]['datatype']          = 'dropdown';
-      $tab[32]['joinparams']        = array('beforejoin'
-                                       => array('table'
-                                                 => 'glpi_slalevels_tickets',
-                                                'joinparams'
-                                                 => array('jointype'  => 'child')));
-      $tab[32]['forcegroupby']      = true;
+      $tab[] = [
+         'id'                 => '32',
+         'table'              => 'glpi_slalevels',
+         'field'              => 'name',
+         'name'               => __('Escalation level'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_slalevels_tickets',
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ],
+         'forcegroupby'       => true
+      ];
 
-      $tab += TicketValidation::getSearchOptionsToAdd();
+      $tab = array_merge($tab, TicketValidation::getSearchOptionsToAddNew());
 
-      $tab['satisfaction']             = __('Satisfaction survey');
+      $tab[] = [
+         'id'                 => 'satisfaction',
+         'name'               => __('Satisfaction survey')
+      ];
 
-      $tab[31]['table']                = 'glpi_ticketsatisfactions';
-      $tab[31]['field']                = 'type';
-      $tab[31]['name']                 = __('Type');
-      $tab[31]['massiveaction']        = false;
-      $tab[31]['searchtype']           = array('equals', 'notequals');
-      $tab[31]['searchequalsonfield']  = true;
-      $tab[31]['joinparams']           = array('jointype' => 'child');
-      $tab[31]['datatype']             = 'specific';
+      $tab[] = [
+         'id'                 => '31',
+         'table'              => 'glpi_ticketsatisfactions',
+         'field'              => 'type',
+         'name'               => __('Type'),
+         'massiveaction'      => false,
+         'searchtype'         => ['equals', 'notequals'],
+         'searchequalsonfield' => true,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'datatype'           => 'specific'
+      ];
 
-      $tab[60]['table']                = 'glpi_ticketsatisfactions';
-      $tab[60]['field']                = 'date_begin';
-      $tab[60]['name']                 = __('Creation date');
-      $tab[60]['datatype']             = 'datetime';
-      $tab[60]['massiveaction']        = false;
-      $tab[60]['joinparams']           = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '60',
+         'table'              => 'glpi_ticketsatisfactions',
+         'field'              => 'date_begin',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[61]['table']                = 'glpi_ticketsatisfactions';
-      $tab[61]['field']                = 'date_answered';
-      $tab[61]['name']                 = __('Response date');
-      $tab[61]['datatype']             = 'datetime';
-      $tab[61]['massiveaction']        = false;
-      $tab[61]['joinparams']           = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '61',
+         'table'              => 'glpi_ticketsatisfactions',
+         'field'              => 'date_answered',
+         'name'               => __('Response date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[62]['table']                = 'glpi_ticketsatisfactions';
-      $tab[62]['field']                = 'satisfaction';
-      $tab[62]['name']                 = __('Satisfaction');
-      $tab[62]['datatype']             = 'number';
-      $tab[62]['massiveaction']        = false;
-      $tab[62]['joinparams']           = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '62',
+         'table'              => 'glpi_ticketsatisfactions',
+         'field'              => 'satisfaction',
+         'name'               => __('Satisfaction'),
+         'datatype'           => 'number',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[63]['table']                = 'glpi_ticketsatisfactions';
-      $tab[63]['field']                = 'comment';
-      $tab[63]['name']                 = __('Comments');
-      $tab[63]['datatype']             = 'text';
-      $tab[63]['massiveaction']        = false;
-      $tab[63]['joinparams']           = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '63',
+         'table'              => 'glpi_ticketsatisfactions',
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab['followup']                 = _n('Followup', 'Followups', Session::getPluralNumber());
+      $tab[] = [
+         'id'                 => 'followup',
+         'name'               => _n('Followup', 'Followups', Session::getPluralNumber())
+      ];
 
       $followup_condition = '';
       if (!Session::haveRight('followup', TicketFollowup::SEEPRIVATE)) {
@@ -2423,143 +2497,205 @@ class Ticket extends CommonITILObject {
                                      OR `NEWTABLE`.`users_id` = '".Session::getLoginUserID()."')";
       }
 
-      $tab[25]['table']             = 'glpi_ticketfollowups';
-      $tab[25]['field']             = 'content';
-      $tab[25]['name']              = __('Description');
-      $tab[25]['forcegroupby']      = true;
-      $tab[25]['splititems']        = true;
-      $tab[25]['massiveaction']     = false;
-      $tab[25]['joinparams']        = array('jointype'  => 'child',
-                                            'condition' => $followup_condition);
-      $tab[25]['datatype']          = 'text';
+      $tab[] = [
+         'id'                 => '25',
+         'table'              => 'glpi_ticketfollowups',
+         'field'              => 'content',
+         'name'               => __('Description'),
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => $followup_condition
+         ],
+         'datatype'           => 'text'
+      ];
 
-      $tab[36]['table']             = 'glpi_ticketfollowups';
-      $tab[36]['field']             = 'date';
-      $tab[36]['name']              = __('Date');
-      $tab[36]['datatype']          = 'datetime';
-      $tab[36]['massiveaction']     = false;
-      $tab[36]['forcegroupby']      = true;
-      $tab[36]['joinparams']        = array('jointype'  => 'child',
-                                            'condition' => $followup_condition);
+      $tab[] = [
+         'id'                 => '36',
+         'table'              => 'glpi_ticketfollowups',
+         'field'              => 'date',
+         'name'               => __('Date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => $followup_condition
+         ]
+      ];
 
-      $tab[27]['table']             = 'glpi_ticketfollowups';
-      $tab[27]['field']             = 'id';
-      $tab[27]['name']              = _x('quantity', 'Number of followups');
-      $tab[27]['forcegroupby']      = true;
-      $tab[27]['usehaving']         = true;
-      $tab[27]['datatype']          = 'count';
-      $tab[27]['massiveaction']     = false;
-      $tab[27]['joinparams']        = array('jointype'  => 'child',
-                                            'condition' => $followup_condition);
+      $tab[] = [
+         'id'                 => '27',
+         'table'              => 'glpi_ticketfollowups',
+         'field'              => 'id',
+         'name'               => _x('quantity', 'Number of followups'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'count',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          =>$followup_condition
+         ]
+      ];
 
-      $tab[29]['table']             = 'glpi_requesttypes';
-      $tab[29]['field']             = 'name';
-      $tab[29]['name']              = __('Request source');
-      $tab[29]['datatype']          = 'dropdown';
-      $tab[29]['forcegroupby']      = true;
-      $tab[29]['massiveaction']     = false;
-      $tab[29]['joinparams']        = array('beforejoin'
-                                             => array('table'
-                                                       => 'glpi_ticketfollowups',
-                                                      'joinparams'
-                                                       => array('jointype'  => 'child',
-                                                                'condition' => $followup_condition)));
+      $tab[] = [
+         'id'                 => '29',
+         'table'              => 'glpi_requesttypes',
+         'field'              => 'name',
+         'name'               => __('Request source'),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_ticketfollowups',
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => $followup_condition
+               ]
+            ]
+         ]
+      ];
 
-      $tab[91]['table']             = 'glpi_ticketfollowups';
-      $tab[91]['field']             = 'is_private';
-      $tab[91]['name']              = __('Private followup');
-      $tab[91]['datatype']          = 'bool';
-      $tab[91]['forcegroupby']      = true;
-      $tab[91]['splititems']        = true;
-      $tab[91]['massiveaction']     = false;
-      $tab[91]['joinparams']        = array('jointype'  => 'child',
-                                            'condition' => $followup_condition);
+      $tab[] = [
+         'id'                 => '91',
+         'table'              => 'glpi_ticketfollowups',
+         'field'              => 'is_private',
+         'name'               => __('Private followup'),
+         'datatype'           => 'bool',
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => $followup_condition
+         ]
+      ];
 
-      $tab[93]['table']             = 'glpi_users';
-      $tab[93]['field']             = 'name';
-      $tab[93]['name']              = __('Writer');
-      $tab[93]['datatype']          = 'itemlink';
-      $tab[93]['right']             = 'all';
-      $tab[93]['forcegroupby']      = true;
-      $tab[93]['massiveaction']     = false;
-      $tab[93]['joinparams']        = array('beforejoin'
-                                             => array('table'
-                                                       => 'glpi_ticketfollowups',
-                                                      'joinparams'
-                                                       => array('jointype'  => 'child',
-                                                                'condition' => $followup_condition)));
+      $tab[] = [
+         'id'                 => '93',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Writer'),
+         'datatype'           => 'itemlink',
+         'right'              => 'all',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_ticketfollowups',
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => $followup_condition
+               ]
+            ]
+         ]
+      ];
 
-      $tab += $this->getSearchOptionsStats();
+      $tab = array_merge($tab, $this->getSearchOptionsStats());
 
-      $tab[150]['table']            = $this->getTable();
-      $tab[150]['field']            = 'takeintoaccount_delay_stat';
-      $tab[150]['name']             = __('Take into account time');
-      $tab[150]['datatype']         = 'timestamp';
-      $tab[150]['forcegroupby']     = true;
-      $tab[150]['massiveaction']    = false;
+      $tab[] = [
+         'id'                 => '150',
+         'table'              => $this->getTable(),
+         'field'              => 'takeintoaccount_delay_stat',
+         'name'               => __('Take into account time'),
+         'datatype'           => 'timestamp',
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
 
       if (Session::haveRightsOr(self::$rightname,
                                 array(self::READALL, self::READASSIGN, self::OWN))) {
+         $tab[] = [
+            'id'                 => 'linktickets',
+            'name'               => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber())
+         ];
 
-         $tab['linktickets']          = _n('Linked ticket', 'Linked tickets', Session::getPluralNumber());
+         $tab[] = [
+            'id'                 => '40',
+            'table'              => 'glpi_tickets_tickets',
+            'field'              => 'tickets_id_1',
+            'name'               => __('All linked tickets'),
+            'massiveaction'      => false,
+            'forcegroupby'       => true,
+            'searchtype'         => 'equals',
+            'joinparams'         => [
+               'jointype' => 'item_item'
+            ],
+            'additionalfields'   => ['tickets_id_2']
+         ];
 
-         $tab[40]['table']            = 'glpi_tickets_tickets';
-         $tab[40]['field']            = 'tickets_id_1';
-         $tab[40]['name']             = __('All linked tickets');
-         $tab[40]['massiveaction']    = false;
-         $tab[40]['forcegroupby']     = true;
-         $tab[40]['searchtype']       = 'equals';
-         $tab[40]['joinparams']       = array('jointype' => 'item_item');
-         $tab[40]['additionalfields'] = array('tickets_id_2');
+         $tab[] = [
+            'id'                 => '47',
+            'table'              => 'glpi_tickets_tickets',
+            'field'              => 'tickets_id_1',
+            'name'               => __('Duplicated tickets'),
+            'massiveaction'      => false,
+            'searchtype'         => 'equals',
+            'joinparams'         => [
+               'jointype'           => 'item_item',
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::DUPLICATE_WITH
+            ],
+            'additionalfields'   => ['tickets_id_2'],
+            'forcegroupby'       => true
+         ];
 
-         $tab[47]['table']            = 'glpi_tickets_tickets';
-         $tab[47]['field']            = 'tickets_id_1';
-         $tab[47]['name']             = __('Duplicated tickets');
-         $tab[47]['massiveaction']    = false;
-         $tab[47]['searchtype']       = 'equals';
-         $tab[47]['joinparams']       = array('jointype'  => 'item_item',
-                                              'condition' => "AND NEWTABLE.`link` = ".
-                                                              Ticket_Ticket::DUPLICATE_WITH);
-         $tab[47]['additionalfields'] = array('tickets_id_2');
-         $tab[47]['forcegroupby']     = true;
+         $tab[] = [
+            'id'                 => '41',
+            'table'              => 'glpi_tickets_tickets',
+            'field'              => 'id',
+            'name'               => __('Number of all linked tickets'),
+            'massiveaction'      => false,
+            'datatype'           => 'count',
+            'usehaving'          => true,
+            'joinparams'         => [
+               'jointype'           => 'item_item'
+            ]
+         ];
 
-         $tab[41]['table']            = 'glpi_tickets_tickets';
-         $tab[41]['field']            = 'id';
-         $tab[41]['name']             = __('Number of all linked tickets');
-         $tab[41]['massiveaction']    = false;
-         $tab[41]['datatype']         = 'count';
-         $tab[41]['usehaving']        = true;
-         $tab[41]['joinparams']       = array('jointype' => 'item_item');
+         $tab[] = [
+            'id'                 => '46',
+            'table'              => 'glpi_tickets_tickets',
+            'field'              => 'id',
+            'name'               => __('Number of duplicated tickets'),
+            'massiveaction'      => false,
+            'datatype'           => 'count',
+            'usehaving'          => true,
+            'joinparams'         => [
+               'jointype'           => 'item_item',
+               'condition'          => 'AND NEWTABLE.`link` = '.Ticket_Ticket::DUPLICATE_WITH
+            ]
+         ];
 
-         $tab[46]['table']            = 'glpi_tickets_tickets';
-         $tab[46]['field']            = 'id';
-         $tab[46]['name']             = __('Number of duplicated tickets');
-         $tab[46]['massiveaction']    = false;
-         $tab[46]['datatype']         = 'count';
-         $tab[46]['usehaving']        = true;
-         $tab[46]['joinparams']       = array('jointype' => 'item_item',
-                                             'condition' => "AND NEWTABLE.`link` = ".
-                                                             Ticket_Ticket::DUPLICATE_WITH);
+         $tab = array_merge($tab, TicketTask::getSearchOptionsToAddNew());
 
-         $tab += TicketTask::getSearchOptionsToAdd();
-
-         $tab += $this->getSearchOptionsSolution();
+         $tab = array_merge($tab, $this->getSearchOptionsSolution());
 
          if (Session::haveRight('ticketcost', READ)) {
-            $tab += TicketCost::getSearchOptionsToAdd();
+            $tab = array_merge($tab, TicketCost::getSearchOptionsToAddNew());
          }
 
-         $tab['problem']            = Problem::getTypeName(Session::getPluralNumber());
+         $tab[] = [
+            'id'                 => 'problem',
+            'name'               => __('Problems')
+         ];
 
-         $tab[141]['table']         = 'glpi_problems_tickets';
-         $tab[141]['field']         = 'id';
-         $tab[141]['name']          = _x('quantity', 'Number of problems');
-         $tab[141]['forcegroupby']  = true;
-         $tab[141]['usehaving']     = true;
-         $tab[141]['datatype']      = 'count';
-         $tab[141]['massiveaction'] = false;
-         $tab[141]['joinparams']    = array('jointype' => 'child');
-
+         $tab[] = [
+            'id'                 => '141',
+            'table'              => 'glpi_problems_tickets',
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of problems'),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'count',
+            'massiveaction'      => false,
+            'joinparams'         => [
+               'jointype'           => 'child'
+            ]
+         ];
       }
 
       // Filter search fields for helpdesk
@@ -2573,18 +2709,16 @@ class Ticket extends CommonITILObject {
             $tokeep[] = 'validation';
          }
          $keep = false;
-         foreach ($tab as $key => $val) {
-            if (!is_array($val)) {
-               $keep = in_array($key, $tokeep);
+         foreach ($tab as $key => &$val) {
+            if (!isset($val['table'])) {
+               $keep = in_array($val['id'], $tokeep);
             }
             if (!$keep) {
-               if (is_array($val)) {
-                  $tab[$key]['nosearch'] = true;
+               if (isset($val['table'])) {
+                  $val['nosearch'] = true;
                }
             }
          }
-         // last updater no search
-         $tab[64]['nosearch'] = true;
       }
       return $tab;
    }
@@ -4396,7 +4530,7 @@ class Ticket extends CommonITILObject {
                             _sx('button', 'Restore')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                   }
                } else {
-                  if (self::canUpdate() ) {
+                  if (self::canUpdate()) {
                      echo "<input type='submit' class='submit' name='update' value='".
                             _sx('button', 'Save')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                   }
@@ -6290,14 +6424,14 @@ class Ticket extends CommonITILObject {
          $options = array( 'parent' => $this,
                            'rand' => $rand
                            ) ;
-         if( $obj = getItemForItemtype($item['type']) ){
+         if($obj = getItemForItemtype($item['type'])){
             $obj->fields = $item['item'] ;
          } else {
             $obj = $item ;
          }
          Plugin::doHook('pre_show_item', array('item' => &$obj, 'options' => &$options));
 
-         if( is_array( $obj ) ){
+         if(is_array($obj)){
             $item_i = $obj['item'];
          } else {
             $item_i = $obj->fields;
@@ -6388,7 +6522,7 @@ class Ticket extends CommonITILObject {
             echo "<p>";
             if (isset($item_i['state'])) {
                $onClick = "onclick='change_task_state(".$item_i['id'].", this)'";
-               if( !$item_i['can_edit'] ) {
+               if(!$item_i['can_edit']) {
                   $onClick = "style='cursor: not-allowed;'" ;
                }
                echo "<span class='state state_".$item_i['state']."'
@@ -6738,7 +6872,7 @@ class Ticket extends CommonITILObject {
       $canadd_document = $doc->can(-1, CREATE, $tmp) && $this->canAddItem('Document');
       $canadd_solution = Ticket::canUpdate() && $this->canSolve();
 
-      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution ) {
+      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution) {
          return false;
       }
 
@@ -6867,13 +7001,13 @@ class Ticket extends CommonITILObject {
     */
    function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()){
       if (isset($field_id_or_search_options['linkfield'])) {
-         switch( $field_id_or_search_options['linkfield'] ) {
+         switch($field_id_or_search_options['linkfield']) {
             case 'requesttypes_id':
                $opt = 'is_ticketheader = 1';
                if (isset($field_id_or_search_options['joinparams']) && Toolbox::in_array_recursive('glpi_ticketfollowups', $field_id_or_search_options['joinparams'])) {
                   $opt = 'is_ticketfollowup = 1';
                }
-               if( $field_id_or_search_options['linkfield']  == $name ) {
+               if($field_id_or_search_options['linkfield']  == $name) {
                   $opt .= ' AND is_active = 1' ;
                }
                if(isset( $options['condition'] )) {

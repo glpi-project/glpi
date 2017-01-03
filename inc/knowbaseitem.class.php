@@ -1440,86 +1440,128 @@ class KnowbaseItem extends CommonDBVisible {
 
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                      = array();
-      $tab['common']            = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[2]['table']          = $this->getTable();
-      $tab[2]['field']          = 'id';
-      $tab[2]['name']           = __('ID');
-      $tab[2]['massiveaction']  = false;
-      $tab[2]['datatype']       = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[4]['table']          = 'glpi_knowbaseitemcategories';
-      $tab[4]['field']          = 'name';
-      $tab[4]['name']           = __('Category');
-      $tab[4]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_knowbaseitemcategories',
+         'field'              => 'name',
+         'name'               => __('Category'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[5]['table']          = $this->getTable();
-      $tab[5]['field']          = 'date';
-      $tab[5]['name']           = __('Date');
-      $tab[5]['datatype']       = 'datetime';
-      $tab[5]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'date',
+         'name'               => __('Date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[6]['table']          = $this->getTable();
-      $tab[6]['field']          = 'name';
-      $tab[6]['name']           = __('Subject');
-      $tab[6]['datatype']       = 'text';
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Subject'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[7]['table']          = $this->getTable();
-      $tab[7]['field']          = 'answer';
-      $tab[7]['name']           = __('Content');
-      $tab[7]['datatype']       = 'text';
-      $tab[7]['htmltext']       = true;
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'answer',
+         'name'               => __('Content'),
+         'datatype'           => 'text',
+         'htmltext'           => true
+      ];
 
-      $tab[8]['table']          = $this->getTable();
-      $tab[8]['field']          = 'is_faq';
-      $tab[8]['name']           = __('FAQ item');
-      $tab[8]['datatype']       = 'bool';
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'is_faq',
+         'name'               => __('FAQ item'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[9]['table']          = $this->getTable();
-      $tab[9]['field']          = 'view';
-      $tab[9]['name']           = _n('View', 'Views', Session::getPluralNumber());
-      $tab[9]['datatype']       = 'integer';
-      $tab[9]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => $this->getTable(),
+         'field'              => 'view',
+         'name'               => _n('View', 'Views', Session::getPluralNumber()),
+         'datatype'           => 'integer',
+         'massiveaction'      => false
+      ];
 
-      $tab[10]['table']         = $this->getTable();
-      $tab[10]['field']         = 'begin_date';
-      $tab[10]['name']          = __('Visibility start date');
-      $tab[10]['datatype']      = 'datetime';
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $this->getTable(),
+         'field'              => 'begin_date',
+         'name'               => __('Visibility start date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'end_date';
-      $tab[11]['name']          = __('Visibility end date');
-      $tab[11]['datatype']      = 'datetime';
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'end_date',
+         'name'               => __('Visibility end date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[70]['table']         = 'glpi_users';
-      $tab[70]['field']         = 'name';
-      $tab[70]['name']          = __('User');
-      $tab[70]['massiveaction'] = false;
-      $tab[70]['datatype']      = 'dropdown';
-      $tab[70]['right']         = 'all';
+      $tab[] = [
+         'id'                 => '70',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('User'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'right'              => 'all'
+      ];
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __('Entity');
-      $tab[80]['massiveaction'] = false;
-      $tab[80]['datatype']      = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[86]['table']         = $this->getTable();
-      $tab[86]['field']         = 'is_recursive';
-      $tab[86]['name']          = __('Child entities');
-      $tab[86]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool'
+      ];
 
       // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
       return $tab;
    }

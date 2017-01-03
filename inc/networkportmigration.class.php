@@ -405,47 +405,63 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
 
-   function getSearchOptions() {
-      global $CFG_GLPI;
-
-      $tab         = parent::getSearchOptions();
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
       $optionIndex = 10;
       // From 10 to 14
       foreach (self::getMotives() as $motive => $name) {
-         $tab[$optionIndex]['table']      = $this->getTable();
-         $tab[$optionIndex]['field']      = $motive;
-         $tab[$optionIndex]['name']       = $name;
-         $tab[$optionIndex]['datatype']   = 'bool';
+         $tab[] = [
+            'id'                 => $optionIndex,
+            'table'              => $this->getTable(),
+            'field'              => $motive,
+            'name'               => $name,
+            'datatype'           => 'bool'
+         ];
 
          $optionIndex ++;
       }
 
-      $tab[20]['table']         = $this->getTable();
-      $tab[20]['field']         = 'ip';
-      $tab[20]['datatype']      = 'ip';
-      $tab[20]['name']          = IPAddress::getTypeName(1);
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => $this->getTable(),
+         'field'              => 'ip',
+         'datatype'           => 'ip',
+         'name'               => IPAddress::getTypeName(1)
+      ];
 
-      $tab[21]['table']         = $this->getTable();
-      $tab[21]['field']         = 'netmask';
-      $tab[21]['datatype']      = 'string';
-      $tab[21]['name']          = IPNetmask::getTypeName(1);
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => $this->getTable(),
+         'field'              => 'netmask',
+         'datatype'           => 'string',
+         'name'               => IPNetmask::getTypeName(1)
+      ];
 
-      $tab[22]['table']         = $this->getTable();
-      $tab[22]['field']         = 'subnet';
-      $tab[22]['datatype']      = 'string';
-      $tab[22]['name']          = __('Network address');
+      $tab[] = [
+         'id'                 => '22',
+         'table'              => $this->getTable(),
+         'field'              => 'subnet',
+         'datatype'           => 'string',
+         'name'               => __('Network address')
+      ];
 
-      $tab[23]['table']         = $this->getTable();
-      $tab[23]['field']         = 'gateway';
-      $tab[23]['datatype']      = 'string';
-      $tab[23]['name']          = IPAddress::getTypeName(1);
+      $tab[] = [
+         'id'                 => '23',
+         'table'              => $this->getTable(),
+         'field'              => 'gateway',
+         'datatype'           => 'string',
+         'name'               => IPAddress::getTypeName(1)
+      ];
 
       if (TableExists('glpi_networkinterfaces')) {
-         $tab[24]['table']         = 'glpi_networkinterfaces';
-         $tab[24]['field']         = 'name';
-         $tab[24]['datatype']      = 'dropdown';
-         $tab[24]['name']          = __('Network interface');
+         $tab[] = [
+            'id'                 => '24',
+            'table'              => 'glpi_networkinterfaces',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => __('Network interface')
+         ];
       }
 
       return $tab;

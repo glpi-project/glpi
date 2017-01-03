@@ -149,30 +149,38 @@ class RuleAction extends CommonDBChild {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                        = array();
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'action_type',
+         'name'               => self::getTypeName(1),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'additionalfields'   => ['rules_id']
+      ];
 
-      $tab[1]['table']            = $this->getTable();
-      $tab[1]['field']            = 'action_type';
-      $tab[1]['name']             = self::getTypeName(1);
-      $tab[1]['massiveaction']    = false;
-      $tab[1]['datatype']         = 'specific';
-      $tab[1]['additionalfields'] = array('rules_id');
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'field',
+         'name'               => _n('Field', 'Fields', Session::getPluralNumber()),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'additionalfields'   => ['rules_id']
+      ];
 
-      $tab[2]['table']            = $this->getTable();
-      $tab[2]['field']            = 'field';
-      $tab[2]['name']             = _n('Field', 'Fields', Session::getPluralNumber());
-      $tab[2]['massiveaction']    = false;
-      $tab[2]['datatype']         = 'specific';
-      $tab[2]['additionalfields'] = array('rules_id');
-
-      $tab[3]['table']            = $this->getTable();
-      $tab[3]['field']            = 'value';
-      $tab[3]['name']             = __('Value');
-      $tab[3]['massiveaction']    = false;
-      $tab[3]['datatype']         = 'specific';
-      $tab[3]['additionalfields'] = array('rules_id');
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'value',
+         'name'               => __('Value'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'additionalfields'   => ['rules_id']
+      ];
 
       return $tab;
    }

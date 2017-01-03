@@ -1339,7 +1339,12 @@ class Search {
 
             // prefix by group name (corresponding to optgroup in dropdown) if exists
             if (isset($val['groupname'])) {
-               $name  = $val['groupname']." - ".$name;
+               $groupname = $val['groupname'];
+               if (is_array($groupname)) {
+                  //since 9.2, getSearchOptions has been changed
+                  $groupname = $groupname['name'];
+               }
+               $name  = "$groupname - $name";
             }
 
             // Not main itemtype add itemtype to display
@@ -1525,14 +1530,14 @@ class Search {
       return "<div class='switch grey_border'>".
              "<label for='is_deletedswitch$rand' title='".__s('Show the dustbin')."' >".
                 "<img src='".$CFG_GLPI["root_doc"]."/pics/showdeleted.png' ".
-                  "name='img_deleted' alt='".__s('Show the dustbin')."' class='pointer' />".
+                  "alt='" . __s('Show the dustbin') . "' class='pointer' />" .
                 "<input type='hidden' name='is_deleted' value='0' /> ".
                 "<input type='checkbox' id='is_deletedswitch$rand' name='is_deleted' value='1' ".
                   ($is_deleted?"checked='checked'":"").
                   " onClick = \"toogle('is_deleted','','','');
                               document.forms['searchform".$_POST["itemtype"]."'].submit();\" />".
-                "<span class='lever' />".
-             "</label>".
+                "<span class='lever'></span>" .
+                "</label>".
              "</div>";
    }
 
@@ -3208,6 +3213,9 @@ class Search {
                if ($searchtype) {
                   $date_computation = $tocompute;
                }
+               if ($searchtype == "contains") {
+                  $date_computation = "CONVERT($date_computation USING utf8)";
+               }
                $search_unit = ' MONTH ';
                if (isset($searchopt[$ID]['searchunit'])) {
                   $search_unit = $searchopt[$ID]['searchunit'];
@@ -3610,7 +3618,7 @@ class Search {
       if (!empty($linkfield)) {
          $before = '';
 
-         if (isset($joinparams['beforejoin']) && is_array($joinparams['beforejoin']) ) {
+         if (isset($joinparams['beforejoin']) && is_array($joinparams['beforejoin'])) {
 
             if (isset($joinparams['beforejoin']['table'])) {
                $joinparams['beforejoin'] = array($joinparams['beforejoin']);
@@ -5437,7 +5445,7 @@ class Search {
          }
 
          foreach ($search[$itemtype] as $key => $val) {
-            if (!is_array($val)) {
+            if (!is_array($val) || count($val) == 1) {
                // skip sub-menu
                continue;
             }
@@ -5741,7 +5749,7 @@ class Search {
             }
             $limitto = 20;
             if (count($values) > $limitto) {
-               for ( $i=0 ; $i<$limitto ; $i++) {
+               for ($i=0 ; $i<$limitto ; $i++) {
                   $out .= $values[$i].$line_delimiter;
                }
                // $rand=mt_rand();

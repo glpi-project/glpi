@@ -1306,103 +1306,150 @@ class CronTask extends CommonDBTM{
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                     = array();
-      $tab['common']           = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
-      $tab[2]['datatype']      = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'description';
-      $tab[3]['name']          = __('Description');
-      $tab[3]['nosearch']      = true;
-      $tab[3]['nosort']        = true;
-      $tab[3]['massiveaction'] = false;
-      $tab[3]['datatype']      = 'text';
-      $tab[3]['computation']   = "TABLE.`id`"; // Virtual data
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'description',
+         'name'               => __('Description'),
+         'nosearch'           => true,
+         'nosort'             => true,
+         'massiveaction'      => false,
+         'datatype'           => 'text',
+         'computation'        => 'TABLE.`id`' // Virtual data
+      ];
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'state';
-      $tab[4]['name']          = __('Status');
-      $tab[4]['searchtype']    = array('equals', 'notequals');
-      $tab[4]['massiveaction'] = false;
-      $tab[4]['datatype']      = 'specific';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'state',
+         'name'               => __('Status'),
+         'searchtype'         => ['equals', 'notequals'],
+         'massiveaction'      => false,
+         'datatype'           => 'specific'
+      ];
 
-      $tab[5]['table']         = $this->getTable();
-      $tab[5]['field']         = 'mode';
-      $tab[5]['name']          = __('Run mode');
-      $tab[5]['datatype']      = 'specific';
-      $tab[5]['searchtype']    = array('equals', 'notequals');
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'mode',
+         'name'               => __('Run mode'),
+         'datatype'           => 'specific',
+         'searchtype'         => ['equals', 'notequals']
+      ];
 
-      $tab[6]['table']         = $this->getTable();
-      $tab[6]['field']         = 'frequency';
-      $tab[6]['name']          = __('Run frequency');
-      $tab[6]['datatype']      = 'timestamp';
-      $tab[6]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'frequency',
+         'name'               => __('Run frequency'),
+         'datatype'           => 'timestamp',
+         'massiveaction'      => false
+      ];
 
-      $tab[7]['table']         = $this->getTable();
-      $tab[7]['field']         = 'lastrun';
-      $tab[7]['name']          = __('Last run');
-      $tab[7]['datatype']      = 'datetime';
-      $tab[7]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'lastrun',
+         'name'               => __('Last run'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[8]['table']         = $this->getTable();
-      $tab[8]['field']         = 'itemtype';
-      $tab[8]['name']          = __('Item type');
-      $tab[8]['massiveaction'] = false;
-      $tab[8]['datatype']      = 'itemtypename';
-      $tab[8]['types']         = self::getUsedItemtypes();
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Item type'),
+         'massiveaction'      => false,
+         'datatype'           => 'itemtypename',
+         'types'              => self::getUsedItemtypes()
+      ];
 
-      $tab[16]['table']        = $this->getTable();
-      $tab[16]['field']        = 'comment';
-      $tab[16]['name']         = __('Comments');
-      $tab[16]['datatype']     = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[17]['table']        = $this->getTable();
-      $tab[17]['field']        = 'hourmin';
-      $tab[17]['name']         = __('Begin hour of run period');
-      $tab[17]['datatype']     = 'integer';
-      $tab[17]['min']          = 0;
-      $tab[17]['max']          = 24;
+      $tab[] = [
+         'id'                 => '17',
+         'table'              => $this->getTable(),
+         'field'              => 'hourmin',
+         'name'               => __('Begin hour of run period'),
+         'datatype'           => 'integer',
+         'min'                => 0,
+         'max'                => 24
+      ];
 
-      $tab[18]['table']        = $this->getTable();
-      $tab[18]['field']        = 'hourmax';
-      $tab[18]['name']         = __('End hour of run period');
-      $tab[18]['datatype']     = 'integer';
-      $tab[18]['min']          = 0;
-      $tab[18]['max']          = 24;
+      $tab[] = [
+         'id'                 => '18',
+         'table'              => $this->getTable(),
+         'field'              => 'hourmax',
+         'name'               => __('End hour of run period'),
+         'datatype'           => 'integer',
+         'min'                => 0,
+         'max'                => 24
+      ];
 
-      $tab[19]['table']        = $this->getTable();
-      $tab[19]['field']        = 'logs_lifetime';
-      $tab[19]['name']         = __('Number of days this action logs are stored');
-      $tab[19]['datatype']     = 'integer';
-      $tab[19]['min']          = 10;
-      $tab[19]['max']          = 360;
-      $tab[19]['step']         = 10;
-      $tab[19]['toadd']        = array(0 => __('Infinite'));
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'logs_lifetime',
+         'name'               => __('Number of days this action logs are stored'),
+         'datatype'           => 'integer',
+         'min'                => 10,
+         'max'                => 360,
+         'step'               => 10,
+         'toadd'              => [
+            '0'                  => 'Infinite'
+         ]
+      ];
 
-      $tab[20]['table']          = $this->getTable();
-      $tab[20]['field']          = 'date_mod';
-      $tab[20]['name']           = __('Last update');
-      $tab[20]['datatype']       = 'datetime';
-      $tab[20]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }
@@ -1468,7 +1515,7 @@ class CronTask extends CommonDBTM{
          // now depending on the format of the name we delete the file (for aging archives) or rename it (will add Ymd.log to the end of the file)
          $match = null;
          if (preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0) {
-            if ($match[1] < $firstdate ) {
+            if ($match[1] < $firstdate) {
                $task->addVolume(1);
                if (unlink($file)) {
                   $task->log(sprintf(__('Deletion of archived log file: %s'), $shortfile));

@@ -106,30 +106,31 @@ class Item_Devices extends CommonDBRelation {
    }
 
 
-   /**
-    * @since version 0.85
-    *
-    * @see CommonDBRelation::getSearchOptions()
-   **/
-   function getSearchOptions() {
-
-      $tab = parent::getSearchOptions();
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
       foreach (static::getSpecificities() as $field => $attributs) {
-         $tab[$attributs['id']] = array('table'         => $this->getTable(),
-                                        'field'         => $field,
-                                        'name'          => $attributs['long name'],
-                                        'massiveaction' => true);
+         $newtab = [
+            'id'                 => $attributs['id'],
+            'table'              => $this->getTable(),
+            'field'              => $field,
+            'name'               => $attributs['long name'],
+            'massiveaction'      => true
+         ];
 
          if (isset($attributs['datatype'])) {
-            $tab[$attributs['id']]['datatype'] = $attributs['datatype'];
+            $newtab['datatype'] = $attributs['datatype'];
          }
+         $tab[] = $newtab;
       }
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

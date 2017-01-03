@@ -63,18 +63,6 @@ class IPNetwork_Vlan extends CommonDBRelation {
 
 
    /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
-
-      $tab = parent::getSearchOptions();
-      return $tab;
-   }
-
-
-   /**
     * @param $portID
     * @param $vlanID
    **/

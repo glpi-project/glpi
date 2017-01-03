@@ -1,0 +1,90 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_ticketrecurrents',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_ticketrecurrents',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_ticketrecurrents',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+  ),
+  86 => 
+  array (
+    'table' => 'glpi_ticketrecurrents',
+    'field' => 'is_recursive',
+    'name' => 'Child entities',
+    'datatype' => 'bool',
+  ),
+  11 => 
+  array (
+    'table' => 'glpi_ticketrecurrents',
+    'field' => 'is_active',
+    'name' => 'Active',
+    'datatype' => 'bool',
+  ),
+  12 => 
+  array (
+    'table' => 'glpi_tickettemplates',
+    'field' => 'name',
+    'name' => 'Ticket template',
+    'datatype' => 'itemlink',
+  ),
+  13 => 
+  array (
+    'table' => 'glpi_ticketrecurrents',
+    'field' => 'begin_date',
+    'name' => 'Start date',
+    'datatype' => 'datetime',
+  ),
+  17 => 
+  array (
+    'table' => 'glpi_ticketrecurrents',
+    'field' => 'end_date',
+    'name' => 'End date',
+    'datatype' => 'datetime',
+  ),
+  15 => 
+  array (
+    'table' => 'glpi_ticketrecurrents',
+    'field' => 'periodicity',
+    'name' => 'Periodicity',
+    'datatype' => 'specific',
+  ),
+  14 => 
+  array (
+    'table' => 'glpi_ticketrecurrents',
+    'field' => 'create_before',
+    'name' => 'Preliminary creation',
+    'datatype' => 'timestamp',
+  ),
+  18 => 
+  array (
+    'table' => 'glpi_calendars',
+    'field' => 'name',
+    'name' => 'Calendar',
+    'datatype' => 'itemlink',
+  ),
+)

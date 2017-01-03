@@ -171,131 +171,194 @@ class QueuedMail extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Subject');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Subject'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false; // implicit field is id
-      $tab[2]['datatype']        = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[16]['table']           = $this->getTable();
-      $tab[16]['field']           = 'create_time';
-      $tab[16]['name']            = __('Creation date');
-      $tab[16]['datatype']        = 'datetime';
-      $tab[16]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'create_time',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'send_time';
-      $tab[3]['name']            = __('Expected send date');
-      $tab[3]['datatype']        = 'datetime';
-      $tab[3]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'send_time',
+         'name'               => __('Expected send date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'sent_time';
-      $tab[4]['name']            = __('Send date');
-      $tab[4]['datatype']        = 'datetime';
-      $tab[4]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'sent_time',
+         'name'               => __('Send date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'sender';
-      $tab[5]['name']            = __('Sender email');
-      $tab[5]['datatype']        = 'text';
-      $tab[5]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'sender',
+         'name'               => __('Sender email'),
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'sendername';
-      $tab[6]['name']            = __('Sender name');
-      $tab[6]['datatype']        = 'string';
-      $tab[6]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'sendername',
+         'name'               => __('Sender name'),
+         'datatype'           => 'string',
+         'massiveaction'      => false
+      ];
 
-      $tab[7]['table']           = $this->getTable();
-      $tab[7]['field']           = 'recipient';
-      $tab[7]['name']            = __('Recipient email');
-      $tab[7]['datatype']        = 'string';
-      $tab[7]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'recipient',
+         'name'               => __('Recipient email'),
+         'datatype'           => 'string',
+         'massiveaction'      => false
+      ];
 
-      $tab[8]['table']           = $this->getTable();
-      $tab[8]['field']           = 'recipientname';
-      $tab[8]['name']            = __('Recipient name');
-      $tab[8]['datatype']        = 'string';
-      $tab[8]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'recipientname',
+         'name'               => __('Recipient name'),
+         'datatype'           => 'string',
+         'massiveaction'      => false
+      ];
 
-      $tab[9]['table']           = $this->getTable();
-      $tab[9]['field']           = 'replyto';
-      $tab[9]['name']            = __('Reply-to email');
-      $tab[9]['datatype']        = 'string';
-      $tab[9]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => $this->getTable(),
+         'field'              => 'replyto',
+         'name'               => __('Reply-to email'),
+         'datatype'           => 'string',
+         'massiveaction'      => false
+      ];
 
-      $tab[10]['table']           = $this->getTable();
-      $tab[10]['field']           = 'replytoname';
-      $tab[10]['name']            = __('Reply-to name');
-      $tab[10]['datatype']        = 'string';
-      $tab[10]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $this->getTable(),
+         'field'              => 'replytoname',
+         'name'               => __('Reply-to name'),
+         'datatype'           => 'string',
+         'massiveaction'      => false
+      ];
 
-      $tab[11]['table']           = $this->getTable();
-      $tab[11]['field']           = 'headers';
-      $tab[11]['name']            = __('Additional headers');
-      $tab[11]['datatype']        = 'specific';
-      $tab[11]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'headers',
+         'name'               => __('Additional headers'),
+         'datatype'           => 'specific',
+         'massiveaction'      => false
+      ];
 
-      $tab[12]['table']           = $this->getTable();
-      $tab[12]['field']           = 'body_html';
-      $tab[12]['name']            = __('Email HTML body');
-      $tab[12]['datatype']        = 'text';
-      $tab[12]['massiveaction']   = false;
-      $tab[12]['htmltext']        = true;
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'body_html',
+         'name'               => __('Email HTML body'),
+         'datatype'           => 'text',
+         'massiveaction'      => false,
+         'htmltext'           => true
+      ];
 
-      $tab[13]['table']           = $this->getTable();
-      $tab[13]['field']           = 'body_text';
-      $tab[13]['name']            = __('Email text body');
-      $tab[13]['datatype']        = 'text';
-      $tab[13]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => $this->getTable(),
+         'field'              => 'body_text',
+         'name'               => __('Email text body'),
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
 
-      $tab[14]['table']           = $this->getTable();
-      $tab[14]['field']           = 'messageid';
-      $tab[14]['name']            = __('Message ID');
-      $tab[14]['datatype']        = 'string';
-      $tab[14]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => $this->getTable(),
+         'field'              => 'messageid',
+         'name'               => __('Message ID'),
+         'datatype'           => 'string',
+         'massiveaction'      => false
+      ];
 
-      $tab[15]['table']           = $this->getTable();
-      $tab[15]['field']           = 'sent_try';
-      $tab[15]['name']            = __('Number of tries of sent');
-      $tab[15]['datatype']        = 'integer';
-      $tab[15]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '15',
+         'table'              => $this->getTable(),
+         'field'              => 'sent_try',
+         'name'               => __('Number of tries of sent'),
+         'datatype'           => 'integer',
+         'massiveaction'      => false
+      ];
 
-      $tab[20]['table']          = $this->getTable();
-      $tab[20]['field']          = 'itemtype';
-      $tab[20]['name']           = __('Type');
-      $tab[20]['datatype']       = 'itemtype';
-      $tab[20]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Type'),
+         'datatype'           => 'itemtype',
+         'massiveaction'      => false
+      ];
 
-      $tab[21]['table']            = $this->getTable();
-      $tab[21]['field']            = 'items_id';
-      $tab[21]['name']             = __('Associated item ID');
-      $tab[21]['massiveaction']    = false;
-      $tab[21]['datatype']         = 'integer';
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => $this->getTable(),
+         'field'              => 'items_id',
+         'name'               => __('Associated item ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'integer'
+      ];
 
-      $tab[22]['table']           = 'glpi_notificationtemplates';
-      $tab[22]['field']           = 'name';
-      $tab[22]['name']            = _n('Notification template', 'Notification templates', 1);
-      $tab[22]['massiveaction']   = false;
-      $tab[22]['datatype']        = 'dropdown';
+      $tab[] = [
+         'id'                 => '22',
+         'table'              => 'glpi_notificationtemplates',
+         'field'              => 'name',
+         'name'               => _n('Notification template', 'Notification templates', 1),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

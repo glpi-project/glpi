@@ -145,6 +145,8 @@ if (isset($_POST["itemtype"])
       // print groups
       if (!is_array($val)) {
          $group = $val;
+      } else if (count($val) == 1) {
+         $group = $val['name'];
       } else {
          if (!isset($val['nosearch']) || ($val['nosearch'] == false)) {
             $values[$group][$key] = $val["name"];

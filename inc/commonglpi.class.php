@@ -703,7 +703,7 @@ class CommonGLPI {
          $tabpage = $this->getTabsURL();
          $tabs    = array();
 
-         foreach ($onglets as $key => $val ) {
+         foreach ($onglets as $key => $val) {
             $tabs[$key] = array('title'  => $val,
                                 'url'    => $tabpage,
                                 'params' => "_target=$target&amp;_itemtype=".$this->getType().
@@ -815,17 +815,17 @@ class CommonGLPI {
          echo "<tr class='tab_bg_2'>";
 
          if ($first >= 0) {
-            echo "<td class='left' width='16px'><a href='$cleantarget?id=$first$extraparamhtml'>".
-                  "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
+            echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'>" .
+                "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
                     "\" title=\"".__s('First')."\" class='pointer'></a></td>";
          } else {
-            echo "<td class='left' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
-                                    __s('First')."\" title=\"".__s('First')."\"></td>";
+            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/first_off.png' alt=\"" .
+                __s('First')."\" title=\"".__s('First')."\"></td>";
          }
 
          if ($prev >= 0) {
-            echo "<td class='left' width='16px'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>".
-                  "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
+            echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>" .
+                "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
                     "\" title=\"".__s('Previous')."\" class='pointer'></a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -836,11 +836,11 @@ class CommonGLPI {
                   });';
             echo Html::scriptBlock($js);
          } else {
-            echo "<td class='left' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
-                                    __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
+            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/left_off.png' alt=\"" .
+                __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
          }
 
-         echo "<td width='200px'><a href=\"".$glpilisturl."\">";
+         echo "<td><a href=\"" . $glpilisturl . "\">";
          if ($glpilisttitle) {
             echo $glpilisttitle;
          } else {
@@ -876,8 +876,8 @@ class CommonGLPI {
          }
 
          if ($next >= 0) {
-            echo "<td class='right' width='16px'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>".
-                  "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
+            echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>" .
+                "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
                     "\" title=\"".__s('Next')."\" class='pointer'></a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -888,17 +888,17 @@ class CommonGLPI {
                   });';
             echo Html::scriptBlock($js);
          } else {
-            echo "<td class='right' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
-                                     __s('Next')."\" title=\"".__s('Next')."\"></td>";
+            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/right_off.png' alt=\"" .
+                __s('Next')."\" title=\"".__s('Next')."\"></td>";
          }
 
          if ($last >= 0) {
-            echo "<td class='right' width='16px'><a href='$cleantarget?id=$last$extraparamhtml'>".
-                  "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
+            echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'>" .
+                "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
                     "\" title=\"".__s('Last')."\" class='pointer'></a></td>";
          } else {
-            echo "<td class='right' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
-                                     __s('Last')."\" title=\"".__s('Last')."\"></td>";
+            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/last_off.png' alt=\"" .
+                __s('Last')."\" title=\"".__s('Last')."\"></td>";
          }
 
          // echo "</ul></div>";

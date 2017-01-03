@@ -1,0 +1,45 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_softwarecategories',
+    'field' => 'completename',
+    'name' => 'Complete name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_softwarecategories',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  14 => 
+  array (
+    'table' => 'glpi_softwarecategories',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+  ),
+  13 => 
+  array (
+    'table' => 'glpi_softwarecategories',
+    'field' => 'completename',
+    'name' => 'Father',
+    'datatype' => 'dropdown',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'condition' => 'AND 1=1',
+    ),
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_softwarecategories',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+)

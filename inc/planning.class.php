@@ -1565,7 +1565,7 @@ class Planning extends CommonGLPI {
       if (isset($params["begin"]) && !empty($params["begin"])) {
          $begin = $params["begin"];
          $begintime = date( "H:i:s", strtotime($begin));
-         if( $begintime < $mintime ) {
+         if($begintime < $mintime) {
             $mintime = $begintime;
          }
 

@@ -147,29 +147,37 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                        = array();
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[2]['table']            = $this->getTable();
-      $tab[2]['field']            = 'id';
-      $tab[2]['name']             = __('ID');
-      $tab[2]['massiveaction']    = false;
-      $tab[2]['datatype']         = 'number';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'items_id',
+         'name'               => __('Associated item ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'additionalfields'   => ['itemtype']
+      ];
 
-      $tab[3]['table']            = $this->getTable();
-      $tab[3]['field']            = 'items_id';
-      $tab[3]['name']             = __('Associated item ID');
-      $tab[3]['massiveaction']    = false;
-      $tab[3]['datatype']         = 'specific';
-      $tab[3]['additionalfields'] = array('itemtype');
-
-      $tab[4]['table']            = $this->getTable();
-      $tab[4]['field']            = 'itemtype';
-      $tab[4]['name']             = __('Type');
-      $tab[4]['massiveaction']    = false;
-      $tab[4]['datatype']         = 'itemtypename';
-      $tab[4]['itemtype_list']    = 'contract_types';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Type'),
+         'massiveaction'      => false,
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'contract_types'
+      ];
 
       return $tab;
    }

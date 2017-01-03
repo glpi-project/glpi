@@ -116,15 +116,6 @@ class Change_Ticket extends CommonDBRelation{
 
 
    /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
-      return parent::getSearchOptions();
-   }
-
-   /**
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()

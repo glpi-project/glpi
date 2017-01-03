@@ -884,7 +884,7 @@ class RuleCollection extends CommonDBTM {
    **/
    static function exportRulesToXML($items=array()) {
 
-      if (!count($items) ) {
+      if (!count($items)) {
          return false;
       }
 

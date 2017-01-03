@@ -143,7 +143,7 @@ class Html {
       if (!isset($_SESSION["glpidate_format"])) {
          $_SESSION["glpidate_format"] = 0;
       }
-      if (!$format ) {
+      if (!$format) {
          $format = $_SESSION["glpidate_format"];
       }
 
@@ -455,7 +455,7 @@ class Html {
          $toadd = '?tokonq='.Toolbox::getRandomString(5);
       }
 
-      echo "<script language=javascript>
+      echo "<script type='text/javascript'>
             NomNav = navigator.appName;
             if (NomNav=='Konqueror') {
                window.location='".$dest.$toadd."';
@@ -489,7 +489,7 @@ class Html {
          $toadd = '&tokonq='.Toolbox::getRandomString(5);
       }
 
-      echo "<script language=javascript>
+      echo "<script type='text/javascript'>
             NomNav = navigator.appName;
             if (NomNav=='Konqueror') {
                window.location='".$dest.$toadd."';
@@ -1526,10 +1526,7 @@ class Html {
                $link = $CFG_GLPI["root_doc"].$data['default'];
             }
 
-            if (Toolbox::strlen($data['title']) > 14) {
-               $data['title'] = Toolbox::substr($data['title'], 0, 14)."...";
-            }
-            echo "<a href='$link' class='itemP'>".$data['title']."</a>";
+            echo "<a href='$link' class='itemP' title='{$data['title']}'>".self::getMenuText($data['title'])."</a>";
             echo "<ul class='ssmenu'>";
 
             // list menu item
@@ -1887,7 +1884,7 @@ class Html {
 
          foreach ($links as $name => $link) {
             echo "<li id='menu$i'>";
-            echo "<a href='$link' title=\"".$name."\" class='itemP'>".$name."</a>";
+            echo "<a href='$link' title=\"".$name."\" class='itemP'>".self::getMenuText($name)."</a>";
             echo "</li>";
             $i++;
          }
@@ -2054,7 +2051,7 @@ class Html {
       foreach ($menu as $menu_item) {
          echo "<li id='".$menu_item['id']."'>";
          echo "<a href='".$CFG_GLPI["root_doc"].$menu_item['default']."' ".
-                "title=\"".$menu_item['title']."\" class='itemP'>".$menu_item['title']."</a>";
+                "title=\"".$menu_item['title']."\" class='itemP'>".self::getMenuText($menu_item['title'])."</a>";
          echo "</li>";
       }
 
@@ -2991,8 +2988,7 @@ class Html {
       $output .= "<input id='showdate".$p['rand']."' type='text' size='10' name='_$name' ".
                   "value='".self::convDate($p['value'])."'>";
       $output .= Html::hidden($name, array('value' => $p['value'],
-                                           'id'    => "hiddendate".$p['rand'],
-                                           'size'  => 10));
+                                           'id'    => "hiddendate".$p['rand']));
       if ($p['maybeempty'] && $p['canedit']) {
          $output .= "<img src='".$CFG_GLPI['root_doc']."/pics/reset.png' alt=\"".__('Clear').
                       "\" id='resetdate".$p['rand']."' class='pointer'>";
@@ -5754,6 +5750,20 @@ class Html {
          " - Copyright (C) 2003-2015 INDEPNET Development Team".
          "</a>";
       return $message;
+   }
+
+   /**
+    * Get text for menu, shortened if needed
+    *
+    * @param string $text Menu text
+    *
+    * @return string
+    */
+   static public function getMenuText($text) {
+      if (Toolbox::strlen($text) > 14) {
+         $text = Toolbox::substr($text, 0, 14)."...";
+      }
+      return $text;
    }
 }
 
