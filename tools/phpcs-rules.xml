@@ -19,4 +19,7 @@
   <!-- Remove closingTag -->
   <rule ref="Zend.Files.ClosingTag" />
 
+  <!--  Makes sure that shorthand PHP open tags are not used. -->
+  <rule ref="Generic.PHP.DisallowShortOpenTag"/>
+
 </ruleset>
