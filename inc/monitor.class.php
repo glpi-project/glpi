@@ -504,7 +504,7 @@ class Monitor extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => 'size',
          'name'               => __('Size'),
-         'datatype'           => 'number'
+         'datatype'           => 'decimal'
       ];
 
       $tab[] = [
