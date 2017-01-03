@@ -72,20 +72,25 @@ class TaskTemplate extends CommonDropdown {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '4',
+         'name'               => __('Content'),
+         'field'              => 'content',
+         'table'              => $this->getTable(),
+         'datatype'           => 'text',
+         'htmltext'           => true
+      ];
 
-      $tab[4]['name']     = __('Content');
-      $tab[4]['field']    = 'content';
-      $tab[4]['table']    = $this->getTable();
-      $tab[4]['datatype'] = 'text';
-      $tab[4]['htmltext'] = true;
-
-      $tab[3]['name']     = __('Task category');
-      $tab[3]['field']    = 'name';
-      $tab[3]['table']    = getTableForItemType('TaskCategory');
-      $tab[3]['datatype'] = 'dropdown';
+      $tab[] = [
+         'id'                 => '3',
+         'name'               => __('Task category'),
+         'field'              => 'name',
+         'table'              => getTableForItemType('TaskCategory'),
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

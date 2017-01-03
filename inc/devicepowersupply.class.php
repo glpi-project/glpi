@@ -61,19 +61,24 @@ class DevicePowerSupply extends CommonDevice {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'is_atx',
+         'name'               => __('ATX'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'is_atx';
-      $tab[11]['name']     = __('ATX');
-      $tab[11]['datatype'] = 'bool';
-
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'power';
-      $tab[12]['name']     = __('Power');
-      $tab[12]['datatype'] = 'string';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'power',
+         'name'               => __('Power'),
+         'datatype'           => 'string'
+      ];
 
       return $tab;
    }

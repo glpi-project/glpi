@@ -111,86 +111,130 @@ class ITILCategory extends CommonTreeDropdown {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab                       = parent::getSearchOptionsNew();
 
-      $tab                       = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '70',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Technician in charge of the hardware'),
+         'datatype'           => 'dropdown',
+         'right'              => 'own_ticket'
+      ];
 
-      $tab[70]['table']          = 'glpi_users';
-      $tab[70]['field']          = 'name';
-      $tab[70]['name']           = __('Technician in charge of the hardware');
-      $tab[70]['datatype']       = 'dropdown';
-      $tab[70]['right']          = 'own_ticket';
+      $tab[] = [
+         'id'                 => '71',
+         'table'              => 'glpi_groups',
+         'field'              => 'completename',
+         'name'               => __('Group'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[71]['table']          = 'glpi_groups';
-      $tab[71]['field']          = 'completename';
-      $tab[71]['name']           = __('Group');
-      $tab[71]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '72',
+         'table'              => 'glpi_tickettemplates',
+         'field'              => 'name',
+         'linkfield'          => 'tickettemplates_id_demand',
+         'name'               => __('Template for a request'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[72]['table']          = 'glpi_tickettemplates';
-      $tab[72]['field']          = 'name';
-      $tab[72]['linkfield']      = 'tickettemplates_id_demand';
-      $tab[72]['name']           = __('Template for a request');
-      $tab[72]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '73',
+         'table'              => 'glpi_tickettemplates',
+         'field'              => 'name',
+         'linkfield'          => 'tickettemplates_id_incident',
+         'name'               => __('Template for an incident'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[73]['table']          = 'glpi_tickettemplates';
-      $tab[73]['field']          = 'name';
-      $tab[73]['linkfield']      = 'tickettemplates_id_incident';
-      $tab[73]['name']           = __('Template for an incident');
-      $tab[73]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '74',
+         'table'              => $this->getTable(),
+         'field'              => 'is_incident',
+         'name'               => __('Visible for an incident'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[74]['table']          = $this->getTable();
-      $tab[74]['field']          = 'is_incident';
-      $tab[74]['name']           = __('Visible for an incident');
-      $tab[74]['datatype']       = 'bool';
+      $tab[] = [
+         'id'                 => '75',
+         'table'              => $this->getTable(),
+         'field'              => 'is_request',
+         'name'               => __('Visible for a request'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[75]['table']          = $this->getTable();
-      $tab[75]['field']          = 'is_request';
-      $tab[75]['name']           = __('Visible for a request');
-      $tab[75]['datatype']       = 'bool';
+      $tab[] = [
+         'id'                 => '76',
+         'table'              => $this->getTable(),
+         'field'              => 'is_problem',
+         'name'               => __('Visible for a problem'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[76]['table']          = $this->getTable();
-      $tab[76]['field']          = 'is_problem';
-      $tab[76]['name']           = __('Visible for a problem');
-      $tab[76]['datatype']       = 'bool';
+      $tab[] = [
+         'id'                 => '85',
+         'table'              => $this->getTable(),
+         'field'              => 'is_change',
+         'name'               => __('Visible for a change'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[85]['table']          = $this->getTable();
-      $tab[85]['field']          = 'is_change';
-      $tab[85]['name']           = __('Visible for a change');
-      $tab[85]['datatype']       = 'bool';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'is_helpdeskvisible',
+         'name'               => __('Visible in the simplified interface'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'is_helpdeskvisible';
-      $tab[3]['name']            = __('Visible in the simplified interface');
-      $tab[3]['datatype']        = 'bool';
+      $tab[] = [
+         'id'                 => '77',
+         'table'              => 'glpi_tickets',
+         'field'              => 'id',
+         'name'               => _x('quantity', 'Number of tickets'),
+         'datatype'           => 'count',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[77]['table']          = 'glpi_tickets';
-      $tab[77]['field']          = 'id';
-      $tab[77]['name']           = _x('quantity', 'Number of tickets');
-      $tab[77]['datatype']       = 'count';
-      $tab[77]['forcegroupby']   = true;
-      $tab[77]['massiveaction']  = false;
-      $tab[77]['joinparams']     = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '78',
+         'table'              => 'glpi_problems',
+         'field'              => 'id',
+         'name'               => _x('quantity', 'Number of problems'),
+         'datatype'           => 'count',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[78]['table']          = 'glpi_problems';
-      $tab[78]['field']          = 'id';
-      $tab[78]['name']           = _x('quantity', 'Number of problems');
-      $tab[78]['datatype']       = 'count';
-      $tab[78]['forcegroupby']   = true;
-      $tab[78]['massiveaction']  = false;
-      $tab[78]['joinparams']     = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '98',
+         'table'              => 'glpi_changes',
+         'field'              => 'id',
+         'name'               => _x('quantity', 'Number of changes'),
+         'datatype'           => 'count',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[98]['table']          = 'glpi_changes';
-      $tab[98]['field']          = 'id';
-      $tab[98]['name']           = _x('quantity', 'Number of changes');
-      $tab[98]['datatype']       = 'count';
-      $tab[98]['forcegroupby']   = true;
-      $tab[98]['massiveaction']  = false;
-      $tab[98]['joinparams']     = array('jointype' => 'child');
-
-      $tab[79]['table']          = 'glpi_knowbaseitemcategories';
-      $tab[79]['field']          = 'completename';
-      $tab[79]['name']           = __('Knowledge base');
-      $tab[79]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '79',
+         'table'              => 'glpi_knowbaseitemcategories',
+         'field'              => 'completename',
+         'name'               => __('Knowledge base'),
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

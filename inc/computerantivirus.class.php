@@ -116,66 +116,105 @@ class ComputerAntivirus extends CommonDBChild {
    }
 
 
-   static function getSearchOptionsToAdd() {
-      $tab = array();
+   /**
+    * Get the Search options to add to an item for the given Type
+    *
+    * @return a *not indexed* array of search options
+    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
+    * @since 9.2
+   **/
+   static public function getSearchOptionsToAddNew() {
+      $tab = [];
 
-      $tab['antivirus']          = _n('Antivirus', 'Antiviruses', Session::getPluralNumber());
+      $tab[] = [
+         'id'                 => 'antivirus',
+         'name'               => _n('Antivirus', 'Antiviruses', Session::getPluralNumber())
+      ];
 
-      $tab[167]['table']         = 'glpi_computerantiviruses';
-      $tab[167]['field']         = 'name';
-      $tab[167]['name']          = __('Antivirus');
-      $tab[167]['forcegroupby']  = true;
-      $tab[167]['massiveaction'] = false;
-      $tab[167]['datatype']      = 'dropdown';
-      $tab[167]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '167',
+         'table'              => 'glpi_computerantiviruses',
+         'field'              => 'name',
+         'name'               => __('Antivirus'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[168]['table']         = 'glpi_computerantiviruses';
-      $tab[168]['field']         = 'antivirus_version';
-      $tab[168]['name']          = __('Antivirus version');
-      $tab[168]['forcegroupby']  = true;
-      $tab[168]['massiveaction'] = false;
-      $tab[168]['datatype']      = 'text';
-      $tab[168]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '168',
+         'table'              => 'glpi_computerantiviruses',
+         'field'              => 'antivirus_version',
+         'name'               => __('Antivirus version'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'text',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[169]['table']         = 'glpi_computerantiviruses';
-      $tab[169]['field']         = 'is_active';
-      $tab[169]['linkfield']     = '';
-      $tab[169]['name']          = __('Active');
-      $tab[169]['datatype']      = 'bool';
-      $tab[169]['joinparams']    = array('jointype' => 'child');
-      $tab[169]['massiveaction'] = FALSE;
-      $tab[169]['forcegroupby']  = TRUE;
-      $tab[169]['searchtype']    = array('equals');
+      $tab[] = [
+         'id'                 => '169',
+         'table'              => 'glpi_computerantiviruses',
+         'field'              => 'is_active',
+         'linkfield'          => '',
+         'name'               => __('Active'),
+         'datatype'           => 'bool',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'searchtype'         => ['equals']
+      ];
 
-      $tab[170]['table']         = 'glpi_computerantiviruses';
-      $tab[170]['field']         = 'is_uptodate';
-      $tab[170]['linkfield']     = '';
-      $tab[170]['name']          = __('Is up to date');
-      $tab[170]['datatype']      = 'bool';
-      $tab[170]['joinparams']    = array('jointype' => 'child');
-      $tab[170]['massiveaction'] = FALSE;
-      $tab[170]['forcegroupby']  = TRUE;
-      $tab[170]['searchtype']    = array('equals');
+      $tab[] = [
+         'id'                 => '170',
+         'table'              => 'glpi_computerantiviruses',
+         'field'              => 'is_uptodate',
+         'linkfield'          => '',
+         'name'               => __('Is up to date'),
+         'datatype'           => 'bool',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ],
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'searchtype'         => ['equals']
+      ];
 
-      $tab[171]['table']         = 'glpi_computerantiviruses';
-      $tab[171]['field']         = 'signature_version';
-      $tab[171]['name']          = __('Signature database version');
-      $tab[171]['forcegroupby']  = true;
-      $tab[171]['massiveaction'] = false;
-      $tab[171]['datatype']      = 'text';
-      $tab[171]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '171',
+         'table'              => 'glpi_computerantiviruses',
+         'field'              => 'signature_version',
+         'name'               => __('Signature database version'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'text',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[172]['table']         = 'glpi_computerantiviruses';
-      $tab[172]['field']         = 'date_expiration';
-      $tab[172]['name']          = __('Expiration date');
-      $tab[172]['forcegroupby']  = true;
-      $tab[172]['massiveaction'] = false;
-      $tab[172]['datatype']      = 'date';
-      $tab[172]['joinparams']    = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '172',
+         'table'              => 'glpi_computerantiviruses',
+         'field'              => 'date_expiration',
+         'name'               => __('Expiration date'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'datatype'           => 'date',
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
       return $tab;
    }
-
 
    /**
     * Display form for antivirus

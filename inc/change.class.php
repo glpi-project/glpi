@@ -406,55 +406,72 @@ class Change extends CommonITILObject {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab = array();
+      $tab = array_merge($tab, $this->getSearchOptionsMain());
 
-      $tab += $this->getSearchOptionsMain();
+      $tab = array_merge($tab, $this->getSearchOptionsActors());
 
-      $tab += $this->getSearchOptionsActors();
+      $tab[] = [
+         'id'                 => 'analysis',
+         'name'               => __('Control list')
+      ];
 
-      $tab['analysis']          = __('Control list');
+      $tab[] = [
+         'id'                 => '60',
+         'table'              => $this->getTable(),
+         'field'              => 'impactcontent',
+         'name'               => __('Impact'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
 
-      $tab[60]['table']         = $this->getTable();
-      $tab[60]['field']         = 'impactcontent';
-      $tab[60]['name']          = __('Impact');
-      $tab[60]['massiveaction'] = false;
-      $tab[60]['datatype']      = 'text';
+      $tab[] = [
+         'id'                 => '61',
+         'table'              => $this->getTable(),
+         'field'              => 'controlistcontent',
+         'name'               => __('Control list'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
 
-      $tab[61]['table']         = $this->getTable();
-      $tab[61]['field']         = 'controlistcontent';
-      $tab[61]['name']          = __('Control list');
-      $tab[61]['massiveaction'] = false;
-      $tab[61]['datatype']      = 'text';
+      $tab[] = [
+         'id'                 => '62',
+         'table'              => $this->getTable(),
+         'field'              => 'rolloutplancontent',
+         'name'               => __('Deployment plan'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
 
-      $tab[62]['table']         = $this->getTable();
-      $tab[62]['field']         = 'rolloutplancontent';
-      $tab[62]['name']          = __('Deployment plan');
-      $tab[62]['massiveaction'] = false;
-      $tab[62]['datatype']      = 'text';
+      $tab[] = [
+         'id'                 => '63',
+         'table'              => $this->getTable(),
+         'field'              => 'backoutplancontent',
+         'name'               => __('Backup plan'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
 
-      $tab[63]['table']         = $this->getTable();
-      $tab[63]['field']         = 'backoutplancontent';
-      $tab[63]['name']          = __('Backup plan');
-      $tab[63]['massiveaction'] = false;
-      $tab[63]['datatype']      = 'text';
+      $tab[] = [
+         'id'                 => '67',
+         'table'              => $this->getTable(),
+         'field'              => 'checklistcontent',
+         'name'               => __('Checklist'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
 
-      $tab[64]['table']         = $this->getTable();
-      $tab[64]['field']         = 'checklistcontent';
-      $tab[64]['name']          = __('Checklist');
-      $tab[64]['massiveaction'] = false;
-      $tab[64]['datatype']      = 'text';
+      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
 
-      $tab += Notepad::getSearchOptionsToAdd();
+      $tab = array_merge($tab, ChangeValidation::getSearchOptionsToAddNew());
 
-      $tab += ChangeValidation::getSearchOptionsToAdd();
+      $tab = array_merge($tab, ChangeTask::getSearchOptionsToAddNew());
 
-      $tab += ChangeTask::getSearchOptionsToAdd();
+      $tab = array_merge($tab, $this->getSearchOptionsSolution());
 
-      $tab += $this->getSearchOptionsSolution();
-
-      $tab += ChangeCost::getSearchOptionsToAdd();
+      $tab = array_merge($tab, ChangeCost::getSearchOptionsToAddNew());
 
       return $tab;
    }

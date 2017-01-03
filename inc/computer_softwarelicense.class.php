@@ -69,35 +69,40 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @since version 0.84
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[4]['table']           = 'glpi_softwarelicenses';
-      $tab[4]['field']           = 'name';
-      $tab[4]['name']            = _n('License', 'Licenses', 1);
-      $tab[4]['datatype']        = 'dropdown';
-      $tab[4]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_softwarelicenses',
+         'field'              => 'name',
+         'name'               => _n('License', 'Licenses', 1),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false
+      ];
 
-      $tab[5]['table']           = 'glpi_computers';
-      $tab[5]['field']           = 'name';
-      $tab[5]['name']            = _n('Computer', 'Computers', 1);
-      $tab[5]['massiveaction']   = false;
-      $tab[5]['datatype']        = 'dropdown';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => 'glpi_computers',
+         'field'              => 'name',
+         'name'               => _n('Computer', 'Computers', 1),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

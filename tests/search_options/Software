@@ -1,0 +1,456 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_softwares',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_softwares',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'completename',
+    'name' => 'Location',
+    'datatype' => 'dropdown',
+  ),
+  91 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'building',
+    'name' => 'Building number',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  92 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'room',
+    'name' => 'Room number',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  93 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'comment',
+    'name' => 'Location comments',
+    'massiveaction' => false,
+    'datatype' => 'text',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_softwares',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  62 => 
+  array (
+    'table' => 'glpi_softwarecategories',
+    'field' => 'completename',
+    'name' => 'Category',
+    'datatype' => 'dropdown',
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_softwares',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_softwares',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  23 => 
+  array (
+    'table' => 'glpi_manufacturers',
+    'field' => 'name',
+    'name' => 'Publisher',
+    'datatype' => 'dropdown',
+  ),
+  24 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id_tech',
+    'name' => 'Technician in charge of the hardware',
+    'datatype' => 'dropdown',
+    'right' => 'own_ticket',
+  ),
+  49 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'completename',
+    'linkfield' => 'groups_id_tech',
+    'name' => 'Group in charge of the hardware',
+    'condition' => '`is_assign`',
+    'datatype' => 'dropdown',
+  ),
+  70 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'User',
+    'datatype' => 'dropdown',
+    'right' => 'all',
+  ),
+  71 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'completename',
+    'name' => 'Group',
+    'condition' => '`is_itemgroup`',
+    'datatype' => 'dropdown',
+  ),
+  61 => 
+  array (
+    'table' => 'glpi_softwares',
+    'field' => 'is_helpdesk_visible',
+    'name' => 'Associable to a ticket',
+    'datatype' => 'bool',
+  ),
+  63 => 
+  array (
+    'table' => 'glpi_softwares',
+    'field' => 'is_valid',
+    'name' => 'Valid licenses',
+    'datatype' => 'bool',
+  ),
+  'license' => 'Licenses',
+  160 => 
+  array (
+    'table' => 'glpi_softwarelicenses',
+    'field' => 'name',
+    'name' => 'License name',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => ' AND ( `NEWTABLE`.`entities_id` IN (\'1\', \'2\', \'3\')  OR (`NEWTABLE`.`is_recursive`=\'1\' AND `NEWTABLE`.`entities_id` IN (\'0\')) )  AND (NEWTABLE.`expire` IS NULL
+                                                   OR NEWTABLE.`expire` > NOW())',
+    ),
+  ),
+  161 => 
+  array (
+    'table' => 'glpi_softwarelicenses',
+    'field' => 'serial',
+    'datatype' => 'string',
+    'name' => 'License serial number',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => ' AND ( `NEWTABLE`.`entities_id` IN (\'1\', \'2\', \'3\')  OR (`NEWTABLE`.`is_recursive`=\'1\' AND `NEWTABLE`.`entities_id` IN (\'0\')) )  AND (NEWTABLE.`expire` IS NULL
+                                                   OR NEWTABLE.`expire` > NOW())',
+    ),
+  ),
+  162 => 
+  array (
+    'table' => 'glpi_softwarelicenses',
+    'field' => 'otherserial',
+    'datatype' => 'string',
+    'name' => 'License inventory number',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => ' AND ( `NEWTABLE`.`entities_id` IN (\'1\', \'2\', \'3\')  OR (`NEWTABLE`.`is_recursive`=\'1\' AND `NEWTABLE`.`entities_id` IN (\'0\')) )  AND (NEWTABLE.`expire` IS NULL
+                                                   OR NEWTABLE.`expire` > NOW())',
+    ),
+  ),
+  163 => 
+  array (
+    'table' => 'glpi_softwarelicenses',
+    'field' => 'number',
+    'name' => 'Number of licenses',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'datatype' => 'number',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => ' AND ( `NEWTABLE`.`entities_id` IN (\'1\', \'2\', \'3\')  OR (`NEWTABLE`.`is_recursive`=\'1\' AND `NEWTABLE`.`entities_id` IN (\'0\')) )  AND (NEWTABLE.`expire` IS NULL
+                                                   OR NEWTABLE.`expire` > NOW())',
+    ),
+  ),
+  164 => 
+  array (
+    'table' => 'glpi_softwarelicensetypes',
+    'field' => 'name',
+    'datatype' => 'dropdown',
+    'name' => 'License types',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_softwarelicenses',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+          'condition' => ' AND ( `NEWTABLE`.`entities_id` IN (\'1\', \'2\', \'3\')  OR (`NEWTABLE`.`is_recursive`=\'1\' AND `NEWTABLE`.`entities_id` IN (\'0\')) )  AND (NEWTABLE.`expire` IS NULL
+                                                   OR NEWTABLE.`expire` > NOW())',
+        ),
+      ),
+    ),
+  ),
+  165 => 
+  array (
+    'table' => 'glpi_softwarelicenses',
+    'field' => 'comment',
+    'name' => 'License comments',
+    'forcegroupby' => true,
+    'datatype' => 'text',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => ' AND ( `NEWTABLE`.`entities_id` IN (\'1\', \'2\', \'3\')  OR (`NEWTABLE`.`is_recursive`=\'1\' AND `NEWTABLE`.`entities_id` IN (\'0\')) )  AND (NEWTABLE.`expire` IS NULL
+                                                   OR NEWTABLE.`expire` > NOW())',
+    ),
+  ),
+  166 => 
+  array (
+    'table' => 'glpi_softwarelicenses',
+    'field' => 'expire',
+    'name' => 'Expiration',
+    'forcegroupby' => true,
+    'datatype' => 'date',
+    'emptylabel' => 'Never expire',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => ' AND ( `NEWTABLE`.`entities_id` IN (\'1\', \'2\', \'3\')  OR (`NEWTABLE`.`is_recursive`=\'1\' AND `NEWTABLE`.`entities_id` IN (\'0\')) )  AND (NEWTABLE.`expire` IS NULL
+                                                   OR NEWTABLE.`expire` > NOW())',
+    ),
+  ),
+  167 => 
+  array (
+    'table' => 'glpi_softwarelicenses',
+    'field' => 'is_valid',
+    'name' => 'Valid',
+    'forcegroupby' => true,
+    'datatype' => 'bool',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => ' AND ( `NEWTABLE`.`entities_id` IN (\'1\', \'2\', \'3\')  OR (`NEWTABLE`.`is_recursive`=\'1\' AND `NEWTABLE`.`entities_id` IN (\'0\')) )  AND (NEWTABLE.`expire` IS NULL
+                                                   OR NEWTABLE.`expire` > NOW())',
+    ),
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+  ),
+  72 => 
+  array (
+    'table' => 'glpi_computers_softwareversions',
+    'field' => 'id',
+    'name' => 'Number of installations',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'datatype' => 'count',
+    'nometa' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND NEWTABLE.`is_deleted_computer` = \'0\'
+                                                          AND NEWTABLE.`is_deleted` = \'0\'
+                                                          AND NEWTABLE.`is_template_computer` = \'0\'
+                                                          AND ( `NEWTABLE`.`entities_id` IN (\'1\', \'2\', \'3\')  ) ',
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_softwareversions',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+        ),
+      ),
+    ),
+  ),
+  86 => 
+  array (
+    'table' => 'glpi_softwares',
+    'field' => 'is_recursive',
+    'name' => 'Child entities',
+    'datatype' => 'bool',
+    'massiveaction' => false,
+  ),
+  'versions' => 'Versions',
+  5 => 
+  array (
+    'table' => 'glpi_softwareversions',
+    'field' => 'name',
+    'name' => 'Version name',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+    'datatype' => 'dropdown',
+  ),
+  31 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'completename',
+    'name' => 'Status',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_softwareversions',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+        ),
+      ),
+    ),
+  ),
+  170 => 
+  array (
+    'table' => 'glpi_softwareversions',
+    'field' => 'comment',
+    'name' => 'Version comments',
+    'forcegroupby' => true,
+    'datatype' => 'text',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_operatingsystems',
+    'field' => 'name',
+    'datatype' => 'dropdown',
+    'name' => 'Operating system',
+    'forcegroupby' => true,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_softwareversions',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+        ),
+      ),
+    ),
+  ),
+  'notepad' => 'Notes',
+  200 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'content',
+    'name' => 'Notes',
+    'datatype' => 'text',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'splititems' => true,
+    'massiveaction' => false,
+  ),
+  201 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  202 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'Writer',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+  203 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  204 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id_lastupdater',
+    'name' => 'Last updater',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+)

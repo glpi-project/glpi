@@ -70,26 +70,25 @@ class ProjectState extends CommonDropdown {
    }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'color',
+         'name'               => __('Color'),
+         'datatype'           => 'color'
+      ];
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'color';
-      $tab[11]['name']     = __('Color');
-      $tab[11]['datatype'] = 'color';
-
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'is_finished';
-      $tab[12]['name']     = __('Finished state');
-      $tab[12]['datatype'] = 'bool';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'is_finished',
+         'name'               => __('Finished state'),
+         'datatype'           => 'bool'
+      ];
 
       return $tab;
    }
-
 }

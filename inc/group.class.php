@@ -435,97 +435,130 @@ class Group extends CommonTreeDropdown {
    }
 
 
-   function getSearchOptions() {
-
-      $tab = parent::getSearchOptions();
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
       if (AuthLdap::useAuthLdap()) {
-         $tab[3]['table']       = $this->getTable();
-         $tab[3]['field']       = 'ldap_field';
-         $tab[3]['name']        = __('Attribute of the user containing its groups');
-         $tab[3]['datatype']    = 'string';
+         $tab[] = [
+            'id'                 => '3',
+            'table'              => $this->getTable(),
+            'field'              => 'ldap_field',
+            'name'               => __('Attribute of the user containing its groups'),
+            'datatype'           => 'string'
+         ];
 
-         $tab[4]['table']       = $this->getTable();
-         $tab[4]['field']       = 'ldap_value';
-         $tab[4]['name']        = __('Attribute value');
-         $tab[4]['datatype']    = 'text';
+         $tab[] = [
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'ldap_value',
+            'name'               => __('Attribute value'),
+            'datatype'           => 'text'
+         ];
 
-         $tab[5]['table']       = $this->getTable();
-         $tab[5]['field']       = 'ldap_group_dn';
-         $tab[5]['name']        = __('Group DN');
-         $tab[5]['datatype']    = 'text';
+         $tab[] = [
+            'id'                 => '5',
+            'table'              => $this->getTable(),
+            'field'              => 'ldap_group_dn',
+            'name'               => __('Group DN'),
+            'datatype'           => 'text'
+         ];
       }
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'is_requester';
-      $tab[11]['name']          = __('Requester');
-      $tab[11]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'is_requester',
+         'name'               => __('Requester'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'is_assign';
-      $tab[12]['name']          = __('Assigned to');
-      $tab[12]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'is_assign',
+         'name'               => __('Assigned to'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[18]['table']         = $this->getTable();
-      $tab[18]['field']         = 'is_manager';
-      $tab[18]['name']          = __('Can be manager');
-      $tab[18]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '18',
+         'table'              => $this->getTable(),
+         'field'              => 'is_manager',
+         'name'               => __('Can be manager'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[20]['table']         = $this->getTable();
-      $tab[20]['field']         = 'is_notify';
-      $tab[20]['name']          = __('Can be notified');
-      $tab[20]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => $this->getTable(),
+         'field'              => 'is_notify',
+         'name'               => __('Can be notified'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[17]['table']         = $this->getTable();
-      $tab[17]['field']         = 'is_itemgroup';
-      $tab[17]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), _n('Item', 'Items', Session::getPluralNumber()));
-      $tab[17]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '17',
+         'table'              => $this->getTable(),
+         'field'              => 'is_itemgroup',
+         'name'               => sprintf(__('%1$s %2$s'), __('Can contain'), _n('Item', 'Items', Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[15]['table']         = $this->getTable();
-      $tab[15]['field']         = 'is_usergroup';
-      $tab[15]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), User::getTypeName(Session::getPluralNumber()));
-      $tab[15]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '15',
+         'table'              => $this->getTable(),
+         'field'              => 'is_usergroup',
+         'name'               => sprintf(__('%1$s %2$s'), __('Can contain'), User::getTypeName(Session::getPluralNumber())),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '70',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Manager'),
+         'datatype'           => 'dropdown',
+         'right'              => 'all',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_groups_users',
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => 'AND NEWTABLE.`is_manager` = 1'
+               ]
+            ]
+         ]
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '71',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Delegatee'),
+         'datatype'           => 'dropdown',
+         'right'              => 'all',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_groups_users',
+               'joinparams'         => [
+                  'jointype'           => 'child',
+                  'condition'          => 'AND NEWTABLE.`is_userdelegate` = 1'
+               ]
+            ]
+         ]
+      ];
 
-      $tab[70]['table']         = 'glpi_users';
-      $tab[70]['field']         = 'name';
-      $tab[70]['name']          = __('Manager');
-      $tab[70]['datatype']      = 'dropdown';
-      $tab[70]['right']         = 'all';
-      $tab[70]['forcegroupby']  = true;
-      $tab[70]['massiveaction'] = false;
-      $tab[70]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_groups_users',
-                                                 'joinparams' => array('jointype' => 'child',
-                                                 'condition'  => "AND NEWTABLE.`is_manager` = 1")));
-
-      $tab[71]['table']         = 'glpi_users';
-      $tab[71]['field']         = 'name';
-      $tab[71]['name']          = __('Delegatee');
-      $tab[71]['datatype']      = 'dropdown';
-      $tab[71]['right']         = 'all';
-      $tab[71]['forcegroupby']  = true;
-      $tab[71]['massiveaction'] = false;
-      $tab[71]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_groups_users',
-                                                 'joinparams' => array('jointype' => 'child',
-                                                 'condition'  => "AND NEWTABLE.`is_userdelegate` = 1")));
-
-      $tab[72]['table']         = $this->getTable();
-      $tab[72]['field']         = 'is_task';
-      $tab[72]['name']          = __('Can be in charge of a task');
-      $tab[72]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '72',
+         'table'              => $this->getTable(),
+         'field'              => 'is_task',
+         'name'               => __('Can be in charge of a task'),
+         'datatype'           => 'bool'
+      ];
 
       return $tab;
    }

@@ -146,7 +146,7 @@ class Computer_Item extends CommonDBRelation{
          return false;
       }
 
-      if (!$item->getField('is_global') ) {
+      if (!$item->getField('is_global')) {
          // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
          $updates = array();
 

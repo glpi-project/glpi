@@ -367,7 +367,7 @@ class Dropdown {
                      break;
 
                   case "glpi_suppliers" :
-                     if( $tooltip ) {
+                     if($tooltip) {
                         if (!empty($data["phonenumber"])) {
                            $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
                                                       "</span>".$data['phonenumber']);
@@ -390,7 +390,7 @@ class Dropdown {
                      break;
 
                   case "glpi_budgets" :
-                     if( $tooltip ) {
+                     if($tooltip) {
                         if (!empty($data['locations_id'])) {
                            $comment .= "<br>".sprintf(__('%1$s: %2$s'),
                                                       "<span class='b'>".__('Location')."</span>",

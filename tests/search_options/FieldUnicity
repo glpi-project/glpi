@@ -1,0 +1,83 @@
+array (
+  'common' => 'Fields unicity',
+  1 => 
+  array (
+    'table' => 'glpi_fieldunicities',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_fieldunicities',
+    'field' => 'id',
+    'name' => 'ID',
+    'datatype' => 'number',
+    'massiveaction' => false,
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_fieldunicities',
+    'field' => 'fields',
+    'name' => 'Unique fields',
+    'massiveaction' => false,
+    'datatype' => 'specific',
+    'additionalfields' => 
+    array (
+      0 => 'itemtype',
+    ),
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_fieldunicities',
+    'field' => 'itemtype',
+    'name' => 'Type',
+    'massiveaction' => false,
+    'datatype' => 'itemtypename',
+    'itemtype_list' => 'unicity_types',
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_fieldunicities',
+    'field' => 'action_refuse',
+    'name' => 'Record into the database denied',
+    'datatype' => 'bool',
+  ),
+  6 => 
+  array (
+    'table' => 'glpi_fieldunicities',
+    'field' => 'action_notify',
+    'name' => 'Send a notification',
+    'datatype' => 'bool',
+  ),
+  86 => 
+  array (
+    'table' => 'glpi_fieldunicities',
+    'field' => 'is_recursive',
+    'name' => 'Child entities',
+    'datatype' => 'bool',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_fieldunicities',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  30 => 
+  array (
+    'table' => 'glpi_fieldunicities',
+    'field' => 'is_active',
+    'name' => 'Active',
+    'datatype' => 'bool',
+    'massiveaction' => false,
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'datatype' => 'dropdown',
+  ),
+)

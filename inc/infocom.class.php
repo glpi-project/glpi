@@ -1220,10 +1220,10 @@ class Infocom extends CommonDBChild {
    /**
     * @param $itemtype
    **/
-   static function getSearchOptionsToAdd($itemtype) {
-
+   static function getSearchOptionsToAddNew($itemtype = null) {
       $specific_itemtype = '';
-      $beforejoin        = array();
+      $beforejoin        = [];
+
       switch ($itemtype) {
          case 'Software' :
             // Return the infocom linked to the license, not the template linked to the software
@@ -1257,343 +1257,505 @@ class Infocom extends CommonDBChild {
       $complexjoinparams['beforejoin'][] = array('table'      => 'glpi_infocoms',
                                                  'joinparams' => $joinparams);
 
-      $tab = array();
+      $tab = [];
 
-      $tab['financial']                = __('Financial and administrative information');
+      $tab[] = [
+         'id'                 => 'financial',
+         'name'               => __('Financial and administrative information')
+      ];
 
-      $tab[25]['table']                = 'glpi_infocoms';
-      $tab[25]['field']                = 'immo_number';
-      $tab[25]['name']                 = __('Immobilization number');
-      $tab[25]['forcegroupby']         = true;
-      $tab[25]['joinparams']           = $joinparams;
-      $tab[25]['datatype']             = 'string';
+      $tab[] = [
+         'id'                 => '25',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'immo_number',
+         'name'               => __('Immobilization number'),
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams,
+         'datatype'           => 'string'
+      ];
 
-      $tab[26]['table']                = 'glpi_infocoms';
-      $tab[26]['field']                = 'order_number';
-      $tab[26]['name']                 = __('Order number');
-      $tab[26]['forcegroupby']         = true;
-      $tab[26]['joinparams']           = $joinparams;
-      $tab[26]['datatype']             = 'string';
+      $tab[] = [
+         'id'                 => '26',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'order_number',
+         'name'               => __('Order number'),
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams,
+         'datatype'           => 'string'
+      ];
 
-      $tab[27]['table']                = 'glpi_infocoms';
-      $tab[27]['field']                = 'delivery_number';
-      $tab[27]['name']                 = __('Delivery form');
-      $tab[27]['forcegroupby']         = true;
-      $tab[27]['joinparams']           = $joinparams;
-      $tab[27]['datatype']             = 'string';
+      $tab[] = [
+         'id'                 => '27',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'delivery_number',
+         'name'               => __('Delivery form'),
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams,
+         'datatype'           => 'string'
+      ];
 
-      $tab[28]['table']                = 'glpi_infocoms';
-      $tab[28]['field']                = 'bill';
-      $tab[28]['name']                 = __('Invoice number');
-      $tab[28]['forcegroupby']         = true;
-      $tab[28]['joinparams']           = $joinparams;
-      $tab[28]['datatype']             = 'string';
+      $tab[] = [
+         'id'                 => '28',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'bill',
+         'name'               => __('Invoice number'),
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams,
+         'datatype'           => 'string'
+      ];
 
-      $tab[37]['table']                = 'glpi_infocoms';
-      $tab[37]['field']                = 'buy_date';
-      $tab[37]['name']                 = __('Date of purchase');
-      $tab[37]['datatype']             = 'date';
-      $tab[37]['forcegroupby']         = true;
-      $tab[37]['joinparams']           = $joinparams;
+      $tab[] = [
+         'id'                 => '37',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'buy_date',
+         'name'               => __('Date of purchase'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[38]['table']                = 'glpi_infocoms';
-      $tab[38]['field']                = 'use_date';
-      $tab[38]['name']                 = __('Startup date');
-      $tab[38]['datatype']             = 'date';
-      $tab[38]['forcegroupby']         = true;
-      $tab[38]['joinparams']           = $joinparams;
+      $tab[] = [
+         'id'                 => '38',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'use_date',
+         'name'               => __('Startup date'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[142]['table']               = 'glpi_infocoms';
-      $tab[142]['field']               = 'delivery_date';
-      $tab[142]['name']                = __('Delivery date');
-      $tab[142]['datatype']            = 'date';
-      $tab[142]['forcegroupby']        = true;
-      $tab[142]['joinparams']          = $joinparams;
+      $tab[] = [
+         'id'                 => '142',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'delivery_date',
+         'name'               => __('Delivery date'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[124]['table']               = 'glpi_infocoms';
-      $tab[124]['field']               = 'order_date';
-      $tab[124]['name']                = __('Order date');
-      $tab[124]['datatype']            = 'date';
-      $tab[124]['forcegroupby']        = true;
-      $tab[124]['joinparams']          = $joinparams;
+      $tab[] = [
+         'id'                 => '124',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'order_date',
+         'name'               => __('Order date'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[123]['table']               = 'glpi_infocoms';
-      $tab[123]['field']               = 'warranty_date';
-      $tab[123]['name']                = __('Start date of warranty');
-      $tab[123]['datatype']            = 'date';
-      $tab[123]['forcegroupby']        = true;
-      $tab[123]['joinparams']          = $joinparams;
+      $tab[] = [
+         'id'                 => '123',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'warranty_date',
+         'name'               => __('Start date of warranty'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[125]['table']               = 'glpi_infocoms';
-      $tab[125]['field']               = 'inventory_date';
-      $tab[125]['name']                = __('Date of last physical inventory');
-      $tab[125]['datatype']            = 'date';
-      $tab[125]['forcegroupby']        = true;
-      $tab[125]['joinparams']          = $joinparams;
+      $tab[] = [
+         'id'                 => '125',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'inventory_date',
+         'name'               => __('Date of last physical inventory'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[50]['table']                = 'glpi_budgets';
-      $tab[50]['field']                = 'name';
-      $tab[50]['datatype']             = 'dropdown';
-      $tab[50]['name']                 = __('Budget');
-      $tab[50]['forcegroupby']         = true;
-      $tab[50]['joinparams']           = $complexjoinparams;
+      $tab[] = [
+         'id'                 => '50',
+         'table'              => 'glpi_budgets',
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'name'               => __('Budget'),
+         'forcegroupby'       => true,
+         'joinparams'         => $complexjoinparams
+      ];
 
-      $tab[51]['table']                = 'glpi_infocoms';
-      $tab[51]['field']                = 'warranty_duration';
-      $tab[51]['name']                 = __('Warranty duration');
-      $tab[51]['forcegroupby']         = true;
-      $tab[51]['joinparams']           = $joinparams;
-      $tab[51]['datatype']             = 'number';
-      $tab[51]['unit']                 = 'month';
-      $tab[51]['max']                  = 120;
-      $tab[51]['toadd']                = array(-1 => __('Lifelong'));
+      $tab[] = [
+         'id'                 => '51',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'warranty_duration',
+         'name'               => __('Warranty duration'),
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams,
+         'datatype'           => 'number',
+         'unit'               => 'month',
+         'max'                => '120',
+         'toadd'              => [
+            '-1'                 => __('Lifelong')
+         ]
+      ];
 
-      $tab[52]['table']                = 'glpi_infocoms';
-      $tab[52]['field']                = 'warranty_info';
-      $tab[52]['name']                 = __('Warranty information');
-      $tab[52]['forcegroupby']         = true;
-      $tab[52]['joinparams']           = $joinparams;
-      $tab[52]['datatype']             = 'string';
+      $tab[] = [
+         'id'                 => '52',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'warranty_info',
+         'name'               => __('Warranty information'),
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams,
+         'datatype'           => 'string'
+      ];
 
-      $tab[120]['table']               = 'glpi_infocoms';
-      $tab[120]['field']               = 'end_warranty';
-      $tab[120]['name']                = __('Warranty expiration date');
-      $tab[120]['datatype']            = 'date_delay';
-      $tab[120]['datafields'][1]       = 'warranty_date';
-      $tab[120]['datafields'][2]       = 'warranty_duration';
-      $tab[120]['searchunit']          = 'MONTH';
-      $tab[120]['delayunit']           = 'MONTH';
-      $tab[120]['forcegroupby']        = true;
-      $tab[120]['massiveaction']       = false;
-      $tab[120]['joinparams']          = $joinparams;
+      $tab[] = [
+         'id'                 => '120',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'end_warranty',
+         'name'               => __('Warranty expiration date'),
+         'datatype'           => 'date_delay',
+         'datafields'         => [
+            '1'                  => 'warranty_date',
+            '2'                  => 'warranty_duration'
+         ],
+         'searchunit'         => 'MONTH',
+         'delayunit'          => 'MONTH',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[53]['table']                = 'glpi_suppliers';
-      $tab[53]['field']                = 'name';
-      $tab[53]['datatype']             = 'dropdown';
-      $tab[53]['name']                 = __('Supplier');
-      $tab[53]['forcegroupby']         = true;
-      $tab[53]['joinparams']           = $complexjoinparams;
+      $tab[] = [
+         'id'                 => '53',
+         'table'              => 'glpi_suppliers',
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'name'               => __('Supplier'),
+         'forcegroupby'       => true,
+         'joinparams'         => $complexjoinparams
+      ];
 
-      $tab[54]['table']                = 'glpi_infocoms';
-      $tab[54]['field']                = 'value';
-      $tab[54]['name']                 = _x('price', 'Value');
-      $tab[54]['datatype']             = 'decimal';
-      $tab[54]['width']                = 100;
-      $tab[54]['forcegroupby']         = true;
-      $tab[54]['joinparams']           = $joinparams;
+      $tab[] = [
+         'id'                 => '54',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'value',
+         'name'               => _x('price', 'Value'),
+         'datatype'           => 'decimal',
+         'width'              => '100',
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[55]['table']                = 'glpi_infocoms';
-      $tab[55]['field']                = 'warranty_value';
-      $tab[55]['name']                 = __('Warranty extension value');
-      $tab[55]['datatype']             = 'decimal';
-      $tab[55]['width']                = 100;
-      $tab[55]['forcegroupby']         = true;
-      $tab[55]['joinparams']           = $joinparams;
+      $tab[] = [
+         'id'                 => '55',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'warranty_value',
+         'name'               => __('Warranty extension value'),
+         'datatype'           => 'decimal',
+         'width'              => '100',
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[56]['table']                = 'glpi_infocoms';
-      $tab[56]['field']                = 'sink_time';
-      $tab[56]['name']                 = __('Amortization duration');
-      $tab[56]['forcegroupby']         = true;
-      $tab[56]['joinparams']           = $joinparams;
-      $tab[56]['datatype']             = 'number';
-      $tab[56]['max']                  = 15;
-      $tab[56]['unit']                 = 'year';
+      $tab[] = [
+         'id'                 => '56',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'sink_time',
+         'name'               => __('Amortization duration'),
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams,
+         'datatype'           => 'number',
+         'max'                => '15',
+         'unit'               => 'year'
+      ];
 
-      $tab[57]['table']                = 'glpi_infocoms';
-      $tab[57]['field']                = 'sink_type';
-      $tab[57]['name']                 = __('Amortization type');
-      $tab[57]['forcegroupby']         = true;
-      $tab[57]['joinparams']           = $joinparams;
-      $tab[57]['datatype']             = 'specific';
-      $tab[57]['searchequalsonfield']  = 'specific';
-      $tab[57]['searchtype']           = array('equals', 'notequals');
+      $tab[] = [
+         'id'                 => '57',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'sink_type',
+         'name'               => __('Amortization type'),
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams,
+         'datatype'           => 'specific',
+         'searchequalsonfield' => 'specific',
+         'searchtype'         => ['equals', 'notequals']
+      ];
 
-      $tab[58]['table']                = 'glpi_infocoms';
-      $tab[58]['field']                = 'sink_coeff';
-      $tab[58]['name']                 = __('Amortization coefficient');
-      $tab[58]['forcegroupby']         = true;
-      $tab[58]['joinparams']           = $joinparams;
-      $tab[58]['datatype']             = 'decimal';
+      $tab[] = [
+         'id'                 => '58',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'sink_coeff',
+         'name'               => __('Amortization coefficient'),
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams,
+         'datatype'           => 'decimal'
+      ];
 
-      $tab[59]['table']                = 'glpi_infocoms';
-      $tab[59]['field']                = 'alert';
-      $tab[59]['name']                 = __('Email alarms');
-      $tab[59]['forcegroupby']         = true;
-      $tab[59]['joinparams']           = $joinparams;
-      $tab[59]['datatype']             = 'specific';
+      $tab[] = [
+         'id'                 => '59',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'alert',
+         'name'               => __('Email alarms'),
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams,
+         'datatype'           => 'specific'
+      ];
 
-      $tab[122]['table']               = 'glpi_infocoms';
-      $tab[122]['field']               = 'comment';
-      $tab[122]['name']                = __('Comments on financial and administrative information');
-      $tab[122]['datatype']            = 'text';
-      $tab[122]['forcegroupby']        = true;
-      $tab[122]['joinparams']          = $joinparams;
+      $tab[] = [
+         'id'                 => '122',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'comment',
+         'name'               => __('Comments on financial and administrative information'),
+         'datatype'           => 'text',
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams
+      ];
 
-      $tab[159]['table']               = 'glpi_infocoms';
-      $tab[159]['field']               = 'decommission_date';
-      $tab[159]['name']                = __('Decommission date');
-      $tab[159]['datatype']            = 'date';
-      $tab[159]['forcegroupby']        = true;
-      $tab[159]['joinparams']          = $joinparams;
+      $tab[] = [
+         'id'                 => '159',
+         'table'              => 'glpi_infocoms',
+         'field'              => 'decommission_date',
+         'name'               => __('Decommission date'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true,
+         'joinparams'         => $joinparams
+      ];
 
       return $tab;
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'buy_date';
-      $tab[4]['name']            = __('Date of purchase');
-      $tab[4]['datatype']        = 'date';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'buy_date',
+         'name'               => __('Date of purchase'),
+         'datatype'           => 'date'
+      ];
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'use_date';
-      $tab[5]['name']            = __('Startup date');
-      $tab[5]['datatype']        = 'date';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'use_date',
+         'name'               => __('Startup date'),
+         'datatype'           => 'date'
+      ];
 
-      $tab[24]['table']          = 'glpi_infocoms';
-      $tab[24]['field']          = 'delivery_date';
-      $tab[24]['name']           = __('Delivery date');
-      $tab[24]['datatype']       = 'date';
-      $tab[24]['forcegroupby']   = true;
+      $tab[] = [
+         'id'                 => '24',
+         'table'              => $this->getTable(),
+         'field'              => 'delivery_date',
+         'name'               => __('Delivery date'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true
+      ];
 
-      $tab[23]['table']          = 'glpi_infocoms';
-      $tab[23]['field']          = 'order_date';
-      $tab[23]['name']           = __('Order date');
-      $tab[23]['datatype']       = 'date';
-      $tab[23]['forcegroupby']   = true;
+      $tab[] = [
+         'id'                 => '23',
+         'table'              => $this->getTable(),
+         'field'              => 'order_date',
+         'name'               => __('Order date'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true
+      ];
 
-      $tab[25]['table']          = 'glpi_infocoms';
-      $tab[25]['field']          = 'warranty_date';
-      $tab[25]['name']           = __('Start date of warranty');
-      $tab[25]['datatype']       = 'date';
-      $tab[25]['forcegroupby']   = true;
+      $tab[] = [
+         'id'                 => '25',
+         'table'              => $this->getTable(),
+         'field'              => 'warranty_date',
+         'name'               => __('Start date of warranty'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true
+      ];
 
-      $tab[27]['table']          = 'glpi_infocoms';
-      $tab[27]['field']          = 'inventory_date';
-      $tab[27]['name']           = __('Date of last physical inventory');
-      $tab[27]['datatype']       = 'date';
-      $tab[27]['forcegroupby']   = true;
+      $tab[] = [
+         'id'                 => '27',
+         'table'              => $this->getTable(),
+         'field'              => 'inventory_date',
+         'name'               => __('Date of last physical inventory'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true
+      ];
 
-      $tab[28]['table']          = 'glpi_infocoms';
-      $tab[28]['field']          = 'decommission_date';
-      $tab[28]['name']           = __('Decommission date');
-      $tab[28]['datatype']       = 'date';
-      $tab[28]['forcegroupby']   = true;
+      $tab[] = [
+         'id'                 => '28',
+         'table'              => $this->getTable(),
+         'field'              => 'decommission_date',
+         'name'               => __('Decommission date'),
+         'datatype'           => 'date',
+         'forcegroupby'       => true
+      ];
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'warranty_duration';
-      $tab[6]['name']            = __('Warranty duration');
-      $tab[6]['datatype']        = 'number';
-      $tab[6]['unit']            = 'month';
-      $tab[6]['max']             = 120;
-      $tab[6]['toadd']           = array(-1 => __('Lifelong'));
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'warranty_duration',
+         'name'               => __('Warranty duration'),
+         'datatype'           => 'number',
+         'unit'               => 'month',
+         'max'                => '120',
+         'toadd'              => [
+            '-1'                 => __('Lifelong')
+         ]
+      ];
 
-      $tab[7]['table']           = $this->getTable();
-      $tab[7]['field']           = 'warranty_info';
-      $tab[7]['name']            = __('Warranty information');
-      $tab[7]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'warranty_info',
+         'name'               => __('Warranty information'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[8]['table']           = $this->getTable();
-      $tab[8]['field']           = 'warranty_value';
-      $tab[8]['name']            = __('Warranty extension value');
-      $tab[8]['datatype']        = 'decimal';
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'warranty_value',
+         'name'               => __('Warranty extension value'),
+         'datatype'           => 'decimal'
+      ];
 
-      $tab[9]['table']           = 'glpi_suppliers';
-      $tab[9]['field']           = 'name';
-      $tab[9]['name']            = __('Supplier');
-      $tab[9]['datatype']        = 'dropdown';
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => 'glpi_suppliers',
+         'field'              => 'name',
+         'name'               => __('Supplier'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[10]['table']          = $this->getTable();
-      $tab[10]['field']          = 'order_number';
-      $tab[10]['name']           = __('Order number');
-      $tab[10]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $this->getTable(),
+         'field'              => 'order_number',
+         'name'               => __('Order number'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[11]['table']          = $this->getTable();
-      $tab[11]['field']          = 'delivery_number';
-      $tab[11]['name']           = __('Delivery form');
-      $tab[11]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'delivery_number',
+         'name'               => __('Delivery form'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[12]['table']          = $this->getTable();
-      $tab[12]['field']          = 'immo_number';
-      $tab[12]['name']           = __('Immobilization number');
-      $tab[12]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'immo_number',
+         'name'               => __('Immobilization number'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[13]['table']          = $this->getTable();
-      $tab[13]['field']          = 'value';
-      $tab[13]['name']           = _x('price', 'Value');
-      $tab[13]['datatype']       = 'decimal';
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => $this->getTable(),
+         'field'              => 'value',
+         'name'               => _x('price', 'Value'),
+         'datatype'           => 'decimal'
+      ];
 
-      $tab[14]['table']          = $this->getTable();
-      $tab[14]['field']          = 'sink_time';
-      $tab[14]['name']           = __('Amortization duration');
-      $tab[14]['datatype']       = 'number';
-      $tab[14]['max']            = 15;
-      $tab[14]['unit']           = 'year';
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => $this->getTable(),
+         'field'              => 'sink_time',
+         'name'               => __('Amortization duration'),
+         'datatype'           => 'number',
+         'max'                => '15',
+         'unit'               => 'year'
+      ];
 
-      $tab[15]['table']          = $this->getTable();
-      $tab[15]['field']          = 'sink_type';
-      $tab[15]['name']           = __('Amortization type');
-      $tab[15]['datatype']       = 'specific';
-      $tab[15]['searchtype']     = array('equals', 'notequals');
+      $tab[] = [
+         'id'                 => '15',
+         'table'              => $this->getTable(),
+         'field'              => 'sink_type',
+         'name'               => __('Amortization type'),
+         'datatype'           => 'specific',
+         'searchtype'         => ['equals', 'notequals']
+      ];
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[17]['table']          = $this->getTable();
-      $tab[17]['field']          = 'sink_coeff';
-      $tab[17]['name']           = __('Amortization coefficient');
-      $tab[17]['datatype']       = 'decimal';
+      $tab[] = [
+         'id'                 => '17',
+         'table'              => $this->getTable(),
+         'field'              => 'sink_coeff',
+         'name'               => __('Amortization coefficient'),
+         'datatype'           => 'decimal'
+      ];
 
-      $tab[18]['table']          = $this->getTable();
-      $tab[18]['field']          = 'bill';
-      $tab[18]['name']           = __('Invoice number');
-      $tab[18]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '18',
+         'table'              => $this->getTable(),
+         'field'              => 'bill',
+         'name'               => __('Invoice number'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[19]['table']          = 'glpi_budgets';
-      $tab[19]['field']          = 'name';
-      $tab[19]['name']           = __('Budget');
-      $tab[19]['datatype']       = 'itemlink';
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => 'glpi_budgets',
+         'field'              => 'name',
+         'name'               => __('Budget'),
+         'datatype'           => 'itemlink'
+      ];
 
-      $tab[20]['table']          = $this->getTable();
-      $tab[20]['field']          = 'itemtype';
-      $tab[20]['name']           = __('Type');
-      $tab[20]['datatype']       = 'itemtype';
-      $tab[20]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Type'),
+         'datatype'           => 'itemtype',
+         'massiveaction'      => false
+      ];
 
-      $tab[21]['table']          = $this->getTable();
-      $tab[21]['field']          = 'items_id';
-      $tab[21]['name']           = __('ID');
-      $tab[21]['datatype']       = 'integer';
-      $tab[21]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => $this->getTable(),
+         'field'              => 'items_id',
+         'name'               => __('ID'),
+         'datatype'           => 'integer',
+         'massiveaction'      => false
+      ];
 
-      $tab[22]['table']          = $this->getTable();
-      $tab[22]['field']          = 'alert';
-      $tab[22]['name']           = __('Alarms on financial and administrative information');
-      $tab[22]['datatype']       = 'integer';
+      $tab[] = [
+         'id'                 => '22',
+         'table'              => $this->getTable(),
+         'field'              => 'alert',
+         'name'               => __('Alarms on financial and administrative information'),
+         'datatype'           => 'integer'
+      ];
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[86]['table']          = $this->getTable();
-      $tab[86]['field']          = 'is_recursive';
-      $tab[86]['name']           = __('Child entities');
-      $tab[86]['datatype']       = 'bool';
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool'
+      ];
 
       return $tab;
    }

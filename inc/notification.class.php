@@ -324,63 +324,98 @@ class Notification extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'event';
-      $tab[2]['name']            = _n('Event', 'Events', 1);
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'specific';
-      $tab[2]['additionalfields'] = array('itemtype');
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'event',
+         'name'               => _n('Event', 'Events', 1),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'additionalfields'   => [
+            '0'                  => 'itemtype'
+         ]
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'mode';
-      $tab[3]['name']            = __('Notification method');
-      $tab[3]['massiveaction']   = false;
-      $tab[3]['datatype']        = 'specific';
-      $tab[3]['searchtype']      = array('equals', 'notequals');
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'mode',
+         'name'               => __('Notification method'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'searchtype'         => [
+            '0'                  => 'equals',
+            '1'                  => 'notequals'
+         ]
+      ];
 
-      $tab[4]['table']           = 'glpi_notificationtemplates';
-      $tab[4]['field']           = 'name';
-      $tab[4]['name']            = _n('Notification template', 'Notification templates', Session::getPluralNumber());
-      $tab[4]['datatype']        = 'itemlink';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_notificationtemplates',
+         'field'              => 'name',
+         'name'               => _n('Notification template', 'Notification templates', Session::getPluralNumber()),
+         'datatype'           => 'itemlink'
+      ];
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'itemtype';
-      $tab[5]['name']            = __('Type');
-      $tab[5]['datatype']        = 'itemtypename';
-      $tab[5]['itemtype_list']   = 'notificationtemplates_types';
-      $tab[5]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Type'),
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'notificationtemplates_types',
+         'massiveaction'      => false
+      ];
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'is_active';
-      $tab[6]['name']            = __('Active');
-      $tab[6]['datatype']        = 'bool';
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[86]['table']          = $this->getTable();
-      $tab[86]['field']          = 'is_recursive';
-      $tab[86]['name']           = __('Child entities');
-      $tab[86]['datatype']       = 'bool';
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool'
+      ];
 
       return $tab;
    }

@@ -1,0 +1,65 @@
+array (
+  1 => 
+  array (
+    'table' => 'glpi_notimportedemails',
+    'field' => 'from',
+    'name' => 'From email header',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_notimportedemails',
+    'field' => 'to',
+    'name' => 'To email header',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_notimportedemails',
+    'field' => 'subject',
+    'name' => 'Subject email header',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_mailcollectors',
+    'field' => 'name',
+    'name' => 'Mails receiver',
+    'datatype' => 'itemlink',
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_notimportedemails',
+    'field' => 'messageid',
+    'name' => 'Message-ID email header',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  6 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'Requester',
+    'datatype' => 'dropdown',
+    'right' => 'all',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_notimportedemails',
+    'field' => 'reason',
+    'name' => 'Reason of rejection',
+    'datatype' => 'specific',
+    'massiveaction' => false,
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_notimportedemails',
+    'field' => 'date',
+    'name' => 'Date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+)

@@ -70,29 +70,40 @@ class DeviceProcessor extends CommonDevice {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'frequency_default',
+         'name'               => __('Frequency by default'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'frequency_default';
-      $tab[11]['name']     = __('Frequency by default');
-      $tab[11]['datatype'] = 'string';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'frequence',
+         'name'               => __('Frequency'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'frequence';
-      $tab[12]['name']     = __('Frequency');
-      $tab[12]['datatype'] = 'string';
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => $this->getTable(),
+         'field'              => 'nbcores_default',
+         'name'               => __('Number of cores'),
+         'datatype'           => 'integer'
+      ];
 
-      $tab[13]['table']    = $this->getTable();
-      $tab[13]['field']    = 'nbcores_default';
-      $tab[13]['name']     = __('Number of cores');
-      $tab[13]['datatype'] = 'integer';
-
-      $tab[14]['table']    = $this->getTable();
-      $tab[14]['field']    = 'nbthreads_default';
-      $tab[14]['name']     = __('Number of threads');
-      $tab[14]['datatype'] = 'integer';
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => $this->getTable(),
+         'field'              => 'nbthreads_default',
+         'name'               => __('Number of threads'),
+         'datatype'           => 'integer'
+      ];
 
       return $tab;
    }

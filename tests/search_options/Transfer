@@ -1,0 +1,26 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_transfers',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_transfers',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_transfers',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+)

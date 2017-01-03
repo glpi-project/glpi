@@ -75,55 +75,84 @@ class APIClient extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab = array();
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => self::GetTypeName()
+      ];
 
-      $tab['common']             = self::GetTypeName();
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink'
+      ];
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'number';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'is_active';
-      $tab[3]['name']            = __('Active');
-      $tab[3]['datatype']        = 'bool';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'dolog_method',
+         'name'               => __('Log connections'),
+         'datatype'           => 'specific'
+      ];
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'dolog_method';
-      $tab[4]['name']            = __('Log connections');
-      $tab[4]['datatype']        = 'specific';
+      $tab[] = [
+         'id'                 => 'filter',
+         'name'               => __('Filter access')
+      ];
 
-      $tab['filter']             = __("Filter access");
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'ipv4_range_start',
+         'name'               => __('IPv4 address range')." - ".__("Start"),
+         'datatype'           => 'specific'
+      ];
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'ipv4_range_start';
-      $tab[5]['name']            = __('IPv4 address range')." - ".__("Start");
-      $tab[5]['datatype']        = 'specific';
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'ipv4_range_end',
+         'name'               => __('IPv4 address range')." - ".__("End"),
+         'datatype'           => 'specific'
+      ];
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'ipv4_range_end';
-      $tab[6]['name']            = __('IPv4 address range')." - ".__("End");
-      $tab[6]['datatype']        = 'specific';
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'ipv6',
+         'name'               => __('IPv6 address'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[7]['table']           = $this->getTable();
-      $tab[7]['field']           = 'ipv6';
-      $tab[7]['name']            = __('IPv6 address');
-      $tab[7]['datatype']        = 'text';
-
-      $tab[8]['table']           = $this->getTable();
-      $tab[8]['field']           = 'app_token';
-      $tab[8]['name']            = __('Application token');
-      $tab[8]['massiveaction']   = false;
-      $tab[8]['datatype']        = 'text';
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'app_token',
+         'name'               => __('Application token'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
 
       return $tab;
    }

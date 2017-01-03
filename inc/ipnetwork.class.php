@@ -61,38 +61,52 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                      = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $this->getTable(),
+         'field'              => 'version',
+         'name'               => __('IP version'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[10]['table']         = $this->getTable();
-      $tab[10]['field']         = 'version';
-      $tab[10]['name']          = __('IP version');
-      $tab[10]['massiveaction'] = false;
-      $tab[10]['datatype']      = 'number';
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'address',
+         'name'               => IPAddress::getTypeName(1),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'address';
-      $tab[11]['name']          = IPAddress::getTypeName(1);
-      $tab[11]['massiveaction'] = false;
-      $tab[11]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'netmask',
+         'name'               => IPNetmask::getTypeName(1),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'netmask';
-      $tab[12]['name']          = IPNetmask::getTypeName(1);
-      $tab[12]['massiveaction'] = false;
-      $tab[12]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '17',
+         'table'              => $this->getTable(),
+         'field'              => 'gateway',
+         'name'               => __('Gateway'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[13]['table']         = $this->getTable();
-      $tab[13]['field']         = 'gateway';
-      $tab[13]['name']          = __('Gateway');
-      $tab[13]['massiveaction'] = false;
-      $tab[13]['datatype']      = 'string';
-
-      $tab[14]['table']         = $this->getTable();
-      $tab[14]['field']         = 'addressable';
-      $tab[14]['name']          = __('Addressable network');
-      $tab[14]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '18',
+         'table'              => $this->getTable(),
+         'field'              => 'addressable',
+         'name'               => __('Addressable network'),
+         'datatype'           => 'bool'
+      ];
 
       return $tab;
    }
