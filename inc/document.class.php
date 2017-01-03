@@ -809,7 +809,7 @@ class Document extends CommonDBTM {
             'table'              => $this->getTable(),
             'field'              => 'tag',
             'name'               => __('Tag'),
-            'datatype'           => 'string',
+            'datatype'           => 'text',
             'massiveaction'      => false
          ];
       }

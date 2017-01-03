@@ -2874,8 +2874,7 @@ class User extends CommonDBTM {
                'table'              => 'glpi_tickets_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type`
-                                                                        = ' . CommonITILActor::REQUESTER
+                  'condition'          => 'AND NEWTABLE.`type` = ' . CommonITILActor::REQUESTER
                ]
             ]
          ]
@@ -2910,8 +2909,7 @@ class User extends CommonDBTM {
                'table'              => 'glpi_tickets_users',
                'joinparams'         => [
                   'jointype'           => 'child',
-                  'condition'          => 'AND NEWTABLE.`type`
-                                                                        = '.CommonITILActor::ASSIGN
+                  'condition'          => 'AND NEWTABLE.`type` = '.CommonITILActor::ASSIGN
                ]
             ]
          ]

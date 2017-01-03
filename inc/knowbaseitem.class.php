@@ -1442,7 +1442,6 @@ class KnowbaseItem extends CommonDBVisible {
 
    function getSearchOptionsNew() {
       $tab = [];
-      $tab['common']            = __('Characteristics');
 
       $tab[] = [
          'id'                 => 'common',

@@ -71,7 +71,7 @@ class Netpoint extends CommonDropdown {
       foreach ($tab as &$t) {
          if ($t['id'] == 3) {
             $t['datatype']      = 'itemlink';
-            continue;
+            break;
          }
       }
 

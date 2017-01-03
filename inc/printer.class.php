@@ -704,7 +704,7 @@ class Printer  extends CommonDBTM {
          'joinparams'         => [
             'jointype'           => 'child',
             'condition'          => 'AND NEWTABLE.`date_use` IS NOT NULL
-                                                      AND NEWTABLE.`date_out` IS NULL'
+                                     AND NEWTABLE.`date_out` IS NULL'
          ]
       ];
 

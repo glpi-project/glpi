@@ -2710,11 +2710,11 @@ class Ticket extends CommonITILObject {
          }
          $keep = false;
          foreach ($tab as $key => &$val) {
-            if (count($val) == 2) {
+            if (!isset($val['table'])) {
                $keep = in_array($val['id'], $tokeep);
             }
             if (!$keep) {
-               if (count($val) != 2) {
+               if (isset($val['table'])) {
                   $val['nosearch'] = true;
                }
             }

@@ -64,7 +64,7 @@ array (
     array (
       'jointype' => 'child',
       'condition' => 'AND NEWTABLE.`date_use` IS NOT NULL
-                                                            AND NEWTABLE.`date_out` IS NULL',
+                                     AND NEWTABLE.`date_out` IS NULL',
     ),
   ),
   18 => 
@@ -95,7 +95,7 @@ array (
     array (
       'jointype' => 'child',
       'condition' => 'AND NEWTABLE.`date_use` IS NULL
-                                                            AND NEWTABLE.`date_out` IS NULL',
+                                     AND NEWTABLE.`date_out` IS NULL',
     ),
   ),
   3 => 

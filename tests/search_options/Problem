@@ -239,8 +239,7 @@ array (
         'joinparams' => 
         array (
           'jointype' => 'child',
-          'condition' => 'AND NEWTABLE.`type`
-                                                                 = 1',
+          'condition' => 'AND NEWTABLE.`type` = 1',
         ),
       ),
     ),
@@ -262,8 +261,7 @@ array (
         'joinparams' => 
         array (
           'jointype' => 'child',
-          'condition' => 'AND NEWTABLE.`type`
-                                                                    = 1',
+          'condition' => 'AND NEWTABLE.`type` = 1',
         ),
       ),
     ),
@@ -295,8 +293,7 @@ array (
         'joinparams' => 
         array (
           'jointype' => 'child',
-          'condition' => 'AND NEWTABLE.`type`
-                                                                   = 3',
+          'condition' => 'AND NEWTABLE.`type` = 3',
         ),
       ),
     ),
@@ -318,8 +315,7 @@ array (
         'joinparams' => 
         array (
           'jointype' => 'child',
-          'condition' => 'AND NEWTABLE.`type`
-                                                                   = 3',
+          'condition' => 'AND NEWTABLE.`type` = 3',
         ),
       ),
     ),
@@ -342,8 +338,7 @@ array (
         'joinparams' => 
         array (
           'jointype' => 'child',
-          'condition' => 'AND NEWTABLE.`type`
-                                                                  = 2',
+          'condition' => 'AND NEWTABLE.`type` = 2',
         ),
       ),
     ),
@@ -364,8 +359,7 @@ array (
         'joinparams' => 
         array (
           'jointype' => 'child',
-          'condition' => 'AND NEWTABLE.`type`
-                                                                  = 2',
+          'condition' => 'AND NEWTABLE.`type` = 2',
         ),
       ),
     ),
@@ -387,8 +381,7 @@ array (
         'joinparams' => 
         array (
           'jointype' => 'child',
-          'condition' => 'AND NEWTABLE.`type`
-                                                                  = 2',
+          'condition' => 'AND NEWTABLE.`type` = 2',
         ),
       ),
     ),
@@ -404,8 +397,7 @@ array (
     'joinparams' => 
     array (
       'jointype' => 'child',
-      'condition' => 'AND NEWTABLE.`type`
-                                                            = 1',
+      'condition' => 'AND NEWTABLE.`type` = 1',
     ),
   ),
   34 => 
@@ -418,8 +410,7 @@ array (
     'joinparams' => 
     array (
       'jointype' => 'child',
-      'condition' => 'AND NEWTABLE.`type`
-                                                            = 1',
+      'condition' => 'AND NEWTABLE.`type` = 1',
     ),
   ),
   'analysis' => 'Analysis',

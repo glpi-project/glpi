@@ -1224,7 +1224,7 @@ class Item_Ticket extends CommonDBRelation{
          'field'              => 'items_id',
          'name'               => _n('Associated element', 'Associated elements', 2),
          'datatype'           => 'specific',
-         'comments'           => '1',
+         'comments'           => true,
          'nosort'             => true,
          'additionalfields'   => ['itemtype']
       ];

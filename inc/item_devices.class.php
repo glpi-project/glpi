@@ -119,7 +119,7 @@ class Item_Devices extends CommonDBRelation {
          ];
 
          if (isset($attributs['datatype'])) {
-            $new['datatype'] = $attributs['datatype'];
+            $newtab['datatype'] = $attributs['datatype'];
          }
          $tab[] = $newtab;
       }

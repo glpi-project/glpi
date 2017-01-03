@@ -557,7 +557,7 @@ class Software extends CommonDBTM {
          'id'                 => '63',
          'table'              => $this->getTable(),
          'field'              => 'is_valid',
-                                 //TRANS: Indicator to know is all licenses of the software are valids
+                              //TRANS: Indicator to know is all licenses of the software are valids
          'name'               => __('Valid licenses'),
          'datatype'           => 'bool'
       ];

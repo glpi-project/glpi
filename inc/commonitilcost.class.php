@@ -120,9 +120,9 @@ abstract class CommonITILCost extends CommonDBChild {
       $tab[] = [
          'id'                 => '16',
          'table'              => $this->getTable(),
-         'field'              => 'cost_material',
-         'name'               => __('Material cost'),
-         'datatype'           => 'decimal'
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
       ];
 
       $tab[] = [
@@ -162,6 +162,14 @@ abstract class CommonITILCost extends CommonDBChild {
          'table'              => $this->getTable(),
          'field'              => 'cost_fixed',
          'name'               => __('Fixed cost'),
+         'datatype'           => 'decimal'
+      ];
+
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'cost_material',
+         'name'               => __('Material cost'),
          'datatype'           => 'decimal'
       ];
 
