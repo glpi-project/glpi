@@ -408,6 +408,6 @@ class HtmlTest extends PHPUnit_Framework_TestCase {
    public function testGetCopyrightMessage() {
       $message = Html::getCopyrightMessage();
       $this->assertContains(GLPI_VERSION, $message, 'Invalid GLPI version!');
-      $this->assertContains(date('Y'), $message, 'Invalid copyright date!');
+      $this->assertContains(GLPI_YEAR, $message, 'Invalid copyright date!');
    }
 }
