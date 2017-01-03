@@ -871,7 +871,7 @@ class Stat extends CommonGLPI {
             break;
       }
 
-      switch($type) {
+      switch ($type) {
          case "inter_total" :
             $WHERE .= " AND ".getDateRequest("`$table`.`date`", $begin, $end);
 

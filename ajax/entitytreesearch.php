@@ -52,7 +52,7 @@ if (isset($_POST['search_string'])) {
              WHERE `name` LIKE '%".$_POST['search_string']."%'
              ORDER BY `completename`";
 
-   foreach($DB->request($query) as $data) {
+   foreach ($DB->request($query) as $data) {
       $ancestors = getAncestorsOf('glpi_entities', $data['id']);
       foreach ($ancestors as $val) {
          $res[] = '#ent'.$val;

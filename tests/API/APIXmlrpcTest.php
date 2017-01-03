@@ -299,7 +299,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(true, is_array($data));
       $this->assertEquals(2, count($data));
 
-      foreach($data as $item) {
+      foreach ($data as $item) {
          $this->assertArrayHasKey('id', $item);
          $this->assertArrayHasKey('name', $item);
          $this->assertArrayHasKey('entities_id', $item);
@@ -506,7 +506,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
    public function testUpdateItems($session_token, $computers_id_collection) {
       $input    = array();
       $computer = new Computer;
-      foreach($computers_id_collection as $key => $computers_id) {
+      foreach ($computers_id_collection as $key => $computers_id) {
          $input[] = ['id'          => $computers_id['id'],
                      'otherserial' => "abcdef"];
       }
@@ -517,7 +517,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
 
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
-      foreach($data as $index => $row) {
+      foreach ($data as $index => $row) {
          $computers_id = $computers_id_collection[$index]['id'];
          $this->assertArrayHasKey($computers_id, $row);
          $this->assertEquals(true, (bool) $row[$computers_id]);
@@ -559,7 +559,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
    public function testDeleteItems($session_token, $computers_id_collection) {
       $input    = array();
       $computer = new Computer;
-      foreach($computers_id_collection as $key => $computers_id) {
+      foreach ($computers_id_collection as $key => $computers_id) {
          $input[] = ['id' => $computers_id['id']];
       }
       $res = $this->doHttpRequest('deleteItems', ['session_token' => $session_token,
@@ -569,7 +569,7 @@ class APIXmlrpcTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals(200, $res->getStatusCode());
       $data = xmlrpc_decode($res->getBody());
       $this->assertNotEquals(false, $data);
-      foreach($data as $index => $row) {
+      foreach ($data as $index => $row) {
          $computers_id = $computers_id_collection[$index]['id'];
          $this->assertArrayHasKey($computers_id, $row);
          $this->assertArrayHasKey('message', $row);

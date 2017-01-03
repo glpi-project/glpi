@@ -235,7 +235,7 @@ class RuleRightCollection extends RuleCollection {
             //Get all the ldap fields
             $fields = $this->getFieldsForQuery();
             foreach ($fields as $field) {
-               switch(Toolbox::strtoupper($field)) {
+               switch (Toolbox::strtoupper($field)) {
                   case "LDAP_SERVER" :
                      $rule_parameters["LDAP_SERVER"] = $params["ldap_server"];
                      break;

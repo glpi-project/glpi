@@ -65,6 +65,6 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
 
    Html::footer();
 
-} else  {
+} else {
    Html::redirect($CFG_GLPI['root_doc']."/front/report.networking.php");
 }

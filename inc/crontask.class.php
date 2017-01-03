@@ -175,7 +175,7 @@ class CronTask extends CommonDBTM{
       global $DB;
 
       $types= array();
-      foreach  ($DB->request("SELECT DISTINCT(`itemtype`)
+      foreach ($DB->request("SELECT DISTINCT(`itemtype`)
                             FROM `glpi_crontasks`") as $data) {
          $types[] = $data['itemtype'];
       }
@@ -292,8 +292,7 @@ class CronTask extends CommonDBTM{
          if (is_null($retcode)) {
             $content = __('Action aborted');
             $content = 'Action aborted';
-         }
-         else if ($retcode < 0) {
+         } else if ($retcode < 0) {
             $content = __('Action completed, partially processed');
             $content = 'Action completed, partially processed';
 

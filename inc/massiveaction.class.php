@@ -96,7 +96,7 @@ class MassiveAction {
                      $POST['actions'] = $POST['specific_actions'];
                      $specific_action = 1;
                      $dont_filter_for = array_keys($POST['actions']);
-                  } else{
+                  } else {
                      $specific_action = 0;
                      if (isset($POST['add_actions'])) {
                         $POST['actions'] = $POST['add_actions'];

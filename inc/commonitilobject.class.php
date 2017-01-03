@@ -1295,7 +1295,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                if (isset($this->input["_users_id_requester_notif"])) {
                   foreach ($this->input["_users_id_requester_notif"] as $key => $val) {
-                     if(isset($val[$key_requester])){
+                     if (isset($val[$key_requester])) {
                         $input2[$key] = $val[$key_requester];
                      }
                   }
@@ -1337,7 +1337,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                if (isset($this->input["_users_id_observer_notif"])) {
                   foreach ($this->input["_users_id_observer_notif"] as $key => $val) {
-                     if(isset($val[$key_observer])){
+                     if (isset($val[$key_observer])) {
                         $input2[$key] = $val[$key_observer];
                      }
                   }
@@ -1379,7 +1379,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
                if (isset($this->input["_users_id_assign_notif"])) {
                   foreach ($this->input["_users_id_assign_notif"] as $key => $val) {
-                     if(isset($val[$key_assign])){
+                     if (isset($val[$key_assign])) {
                         $input2[$key] = $val[$key_assign];
                      }
                   }
@@ -4459,7 +4459,7 @@ abstract class CommonITILObject extends CommonDBTM {
       asort($types); // core type first... asort could be better ?
 
       // Drop not available plugins
-      foreach($ptypes as $itemtype => $itemtype_name) {
+      foreach ($ptypes as $itemtype => $itemtype_name) {
          if (!in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
             unset($ptypes[$itemtype]);
          }

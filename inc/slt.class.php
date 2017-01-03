@@ -426,7 +426,7 @@ class SLT extends CommonDBChild {
     */
    function getSltDataForTicket($tickets_id, $type) {
 
-      switch($type){
+      switch ($type) {
          case SLT::TTR :
             $field = 'slts_ttr_id';
             break;

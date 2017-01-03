@@ -127,8 +127,7 @@ class RuleCollection extends CommonDBTM {
 
       if ($p['active']) {
          $sql_active = " `is_active` = '1'";
-      }
-      else {
+      } else {
          $sql_active = "1";
       }
 
