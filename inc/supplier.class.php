@@ -450,7 +450,7 @@ class Supplier extends CommonDBTM {
                $linkfield = 'cartridgeitems_id';
             }
 
-            if ($itemtype == 'Consumable' ) {
+            if ($itemtype == 'Consumable') {
                $query .= "INNER JOIN `glpi_consumableitems`
                             ON (`glpi_consumableitems`.`id`=`glpi_consumables`.`consumableitems_id`) ";
 

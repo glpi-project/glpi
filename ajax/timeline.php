@@ -71,7 +71,7 @@ switch($_POST['action']) {
              && $parent->getFromDB($_POST[$parent->getForeignKeyField()])) {
 
             $ol = ObjectLock::isLocked( $_POST['parenttype'], $parent->getID() ) ;
-            if( $ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
+            if($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {
                ObjectLock::setReadOnlyProfile( ) ;
             }
 

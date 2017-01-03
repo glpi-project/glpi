@@ -1468,7 +1468,7 @@ class CronTask extends CommonDBTM{
          // now depending on the format of the name we delete the file (for aging archives) or rename it (will add Ymd.log to the end of the file)
          $match = null;
          if (preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0) {
-            if ($match[1] < $firstdate ) {
+            if ($match[1] < $firstdate) {
                $task->addVolume(1);
                if (unlink($file)) {
                   $task->log(sprintf(__('Deletion of archived log file: %s'), $shortfile));

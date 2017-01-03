@@ -703,7 +703,7 @@ class CommonGLPI {
          $tabpage = $this->getTabsURL();
          $tabs    = array();
 
-         foreach ($onglets as $key => $val ) {
+         foreach ($onglets as $key => $val) {
             $tabs[$key] = array('title'  => $val,
                                 'url'    => $tabpage,
                                 'params' => "_target=$target&amp;_itemtype=".$this->getType().

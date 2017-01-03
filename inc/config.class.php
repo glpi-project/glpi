@@ -1938,7 +1938,7 @@ class Config extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!isset($CFG_GLPI["root_doc"])) {
-         if (!isset($_SERVER['REQUEST_URI']) ) {
+         if (!isset($_SERVER['REQUEST_URI'])) {
             $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
          }
 

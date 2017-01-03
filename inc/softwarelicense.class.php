@@ -996,7 +996,7 @@ class SoftwareLicense extends CommonDBTM {
             echo $header_begin.$header_top.$header_end;
 
             $tot_assoc = 0;
-            for ($tot=0 ; $data=$DB->fetch_assoc($result) ; ) {
+            for ($tot=0 ; $data=$DB->fetch_assoc($result) ;) {
                Session::addToNavigateListItems('SoftwareLicense', $data['id']);
                $expired = true;
                if (is_null($data['expire'])

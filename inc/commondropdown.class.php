@@ -618,7 +618,7 @@ abstract class CommonDropdown extends CommonDBTM {
          $query .= " LIMIT 1";
 
          // Check twin :
-         if ($result_twin = $DB->query($query) ) {
+         if ($result_twin = $DB->query($query)) {
             if ($DB->numrows($result_twin) > 0) {
                return $DB->result($result_twin, 0, "id");
             }

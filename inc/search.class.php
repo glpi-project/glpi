@@ -3610,7 +3610,7 @@ class Search {
       if (!empty($linkfield)) {
          $before = '';
 
-         if (isset($joinparams['beforejoin']) && is_array($joinparams['beforejoin']) ) {
+         if (isset($joinparams['beforejoin']) && is_array($joinparams['beforejoin'])) {
 
             if (isset($joinparams['beforejoin']['table'])) {
                $joinparams['beforejoin'] = array($joinparams['beforejoin']);
@@ -5741,7 +5741,7 @@ class Search {
             }
             $limitto = 20;
             if (count($values) > $limitto) {
-               for ( $i=0 ; $i<$limitto ; $i++) {
+               for ($i=0 ; $i<$limitto ; $i++) {
                   $out .= $values[$i].$line_delimiter;
                }
                // $rand=mt_rand();

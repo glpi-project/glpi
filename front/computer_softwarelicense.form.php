@@ -42,7 +42,7 @@ Session::checkRight("software", UPDATE);
 $csl = new Computer_SoftwareLicense();
 
 if (isset($_POST["add"])) {
-   if ($_POST['softwarelicenses_id'] > 0 ) {
+   if ($_POST['softwarelicenses_id'] > 0) {
       if ($newID = $csl->add($_POST)) {
          Event::log($_POST['softwarelicenses_id'], "softwarelicense", 4, "inventory",
                     //TRANS: %s is the user login

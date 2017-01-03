@@ -1182,7 +1182,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Set default dropdown
       $dropdown_fields = array('entities_id', 'itilcategories_id');
-      foreach ($dropdown_fields as $field ) {
+      foreach ($dropdown_fields as $field) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
          }
@@ -4619,7 +4619,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $result = $DB->query($query);
       $tab    = array();
 
-      if ($DB->numrows($result) >=1 ) {
+      if ($DB->numrows($result) >=1) {
          while ($line = $DB->fetch_assoc($result)) {
             $tmp['id']   = $line["id"];
             $tmp['link'] = $line["completename"];
