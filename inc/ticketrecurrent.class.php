@@ -230,49 +230,64 @@ class TicketRecurrent extends CommonDropdown {
    }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'is_active';
-      $tab[11]['name']     = __('Active');
-      $tab[11]['datatype'] = 'bool';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => 'glpi_tickettemplates',
+         'field'              => 'name',
+         'name'               => _n('Ticket template', 'Ticket templates', 1),
+         'datatype'           => 'itemlink'
+      ];
 
-      $tab[12]['table']    = 'glpi_tickettemplates';
-      $tab[12]['field']    = 'name';
-      $tab[12]['name']     = _n('Ticket template', 'Ticket templates', 1);
-      $tab[12]['datatype'] = 'itemlink';
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => $this->getTable(),
+         'field'              => 'begin_date',
+         'name'               => __('Start date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[13]['table']    = $this->getTable();
-      $tab[13]['field']    = 'begin_date';
-      $tab[13]['name']     = __('Start date');
-      $tab[13]['datatype'] = 'datetime';
+      $tab[] = [
+         'id'                 => '17',
+         'table'              => $this->getTable(),
+         'field'              => 'end_date',
+         'name'               => __('End date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[17]['table']    = $this->getTable();
-      $tab[17]['field']    = 'end_date';
-      $tab[17]['name']     = __('End date');
-      $tab[17]['datatype'] = 'datetime';
+      $tab[] = [
+         'id'                 => '15',
+         'table'              => $this->getTable(),
+         'field'              => 'periodicity',
+         'name'               => __('Periodicity'),
+         'datatype'           => 'specific'
+      ];
 
-      $tab[15]['table']    = $this->getTable();
-      $tab[15]['field']    = 'periodicity';
-      $tab[15]['name']     = __('Periodicity');
-      $tab[15]['datatype'] = 'specific';
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => $this->getTable(),
+         'field'              => 'create_before',
+         'name'               => __('Preliminary creation'),
+         'datatype'           => 'timestamp'
+      ];
 
-      $tab[14]['table']    = $this->getTable();
-      $tab[14]['field']    = 'create_before';
-      $tab[14]['name']     = __('Preliminary creation');
-      $tab[14]['datatype'] = 'timestamp';
-
-      $tab[16]['table']    = 'glpi_calendars';
-      $tab[16]['field']    = 'name';
-      $tab[16]['name']     = _n('Calendar', 'Calendars', 1);
-      $tab[16]['datatype'] = 'itemlink';
+      $tab[] = [
+         'id'                 => '18',
+         'table'              => 'glpi_calendars',
+         'field'              => 'name',
+         'name'               => _n('Calendar', 'Calendars', 1),
+         'datatype'           => 'itemlink'
+      ];
 
       return $tab;
    }

@@ -22,4 +22,7 @@
   <!--  Makes sure that shorthand PHP open tags are not used. -->
   <rule ref="Generic.PHP.DisallowShortOpenTag"/>
 
+  <!-- No white spaces after opening bracket and before closing bracket in IF -->
+  <rule ref="PSR2.ControlStructures.ControlStructureSpacing" />
+
 </ruleset>

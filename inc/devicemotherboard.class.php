@@ -58,14 +58,16 @@ class DeviceMotherboard extends CommonDevice {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
-
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'chipset';
-      $tab[11]['name']     = __('Chipset');
-      $tab[11]['datatype'] = 'string';
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'chipset',
+         'name'               => __('Chipset'),
+         'datatype'           => 'string'
+      ];
 
       return $tab;
    }

@@ -1,0 +1,26 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_autoupdatesystems',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_autoupdatesystems',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_autoupdatesystems',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+)

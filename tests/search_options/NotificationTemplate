@@ -1,0 +1,27 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_notificationtemplates',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_notificationtemplates',
+    'field' => 'itemtype',
+    'name' => 'Type',
+    'datatype' => 'itemtypename',
+    'itemtype_list' => 'notificationtemplates_types',
+    'massiveaction' => false,
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_notificationtemplates',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+)

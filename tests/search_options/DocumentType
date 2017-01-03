@@ -1,0 +1,71 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_documenttypes',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_documenttypes',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_documenttypes',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_documenttypes',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_documenttypes',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_documenttypes',
+    'field' => 'ext',
+    'name' => 'Extension',
+    'datatype' => 'string',
+  ),
+  6 => 
+  array (
+    'table' => 'glpi_documenttypes',
+    'field' => 'icon',
+    'name' => 'Icon',
+    'massiveaction' => false,
+    'datatype' => 'specific',
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_documenttypes',
+    'field' => 'mime',
+    'name' => 'MIME type',
+    'datatype' => 'string',
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_documenttypes',
+    'field' => 'is_uploadable',
+    'name' => 'Authorized upload',
+    'datatype' => 'bool',
+  ),
+)

@@ -545,56 +545,83 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                    = array();
-      $tab['common']          = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']        = $this->getTable();
-      $tab[1]['field']        = 'content';
-      $tab[1]['name']         = __('Description');
-      $tab[1]['datatype']     = 'text';
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'content',
+         'name'               => __('Description'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[2]['table']        = 'glpi_taskcategories';
-      $tab[2]['field']        = 'name';
-      $tab[2]['name']         = _n('Task category', 'Task categories', 1);
-      $tab[2]['forcegroupby'] = true;
-      $tab[2]['datatype']     = 'dropdown';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => 'glpi_taskcategories',
+         'field'              => 'name',
+         'name'               => _n('Task category', 'Task categories', 1),
+         'forcegroupby'       => true,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[3]['table']        = $this->getTable();
-      $tab[3]['field']        = 'date';
-      $tab[3]['name']         = __('Date');
-      $tab[3]['datatype']     = 'datetime';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'date',
+         'name'               => __('Date'),
+         'datatype'           => 'datetime'
+      ];
 
       if ($this->maybePrivate()) {
-         $tab[4]['table']    = $this->getTable();
-         $tab[4]['field']    = 'is_private';
-         $tab[4]['name']     = __('Public followup');
-         $tab[4]['datatype'] = 'bool';
+         $tab[] = [
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'is_private',
+            'name'               => __('Public followup'),
+            'datatype'           => 'bool'
+         ];
       }
 
-      $tab[5]['table']        = 'glpi_users';
-      $tab[5]['field']        = 'name';
-      $tab[5]['name']         = __('Technician');
-      $tab[5]['datatype']     = 'dropdown';
-      $tab[5]['right']        = 'own_ticket';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Technician'),
+         'datatype'           => 'dropdown',
+         'right'              => 'own_ticket'
+      ];
 
-      $tab[6]['table']         = $this->getTable();
-      $tab[6]['field']         = 'actiontime';
-      $tab[6]['name']          = __('Total duration');
-      $tab[6]['datatype']      = 'actiontime';
-      $tab[6]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'actiontime',
+         'name'               => __('Total duration'),
+         'datatype'           => 'actiontime',
+         'massiveaction'      => false
+      ];
 
-      $tab[7]['table']         = $this->getTable();
-      $tab[7]['field']         = 'state';
-      $tab[7]['name']          = __('Status');
-      $tab[7]['datatype']      = 'specific';
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'state',
+         'name'               => __('Status'),
+         'datatype'           => 'specific'
+      ];
 
-      $tab[8]['table']        = 'glpi_groups';
-      $tab[8]['field']        = 'completename';
-      $tab[8]['name']         = __('Group in charge of the task');
-      $tab[8]['datatype']     = 'dropdown';
-      $tab[8]['condition']    = 'is_task';
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => 'glpi_groups',
+         'field'              => 'completename',
+         'name'               => __('Group in charge of the task'),
+         'datatype'           => 'dropdown',
+         'condition'          => 'is_task'
+      ];
 
       return $tab;
    }
@@ -603,129 +630,204 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * @since version 0.85
    **/
-   static function getSearchOptionsToAdd() {
+   static function getSearchOptionsToAddNew($itemtype = null) {
+      $task = new static();
+      $tab = [];
 
-      $task                      = new static();
+      $tab[] = [
+         'id'                 => 'task',
+         'name'               => _n('Task', 'Tasks', Session::getPluralNumber())
+      ];
 
-      $tab                       = array();
+      $tab[] = [
+         'id'                 => '26',
+         'table'              => static::getTable(),
+         'field'              => 'content',
+         'name'               => __('Description'),
+         'datatype'           => 'text',
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab['task']               = _n('Task', 'Tasks', Session::getPluralNumber());
+      $tab[] = [
+         'id'                 => '28',
+         'table'              => static::getTable(),
+         'field'              => 'id',
+         'name'               => _x('quantity', 'Number of tasks'),
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'datatype'           => 'count',
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[26]['table']          = static::getTable();
-      $tab[26]['field']          = 'content';
-      $tab[26]['name']           = __('Description');
-      $tab[26]['datatype']       = 'text';
-      $tab[26]['forcegroupby']   = true;
-      $tab[26]['splititems']     = true;
-      $tab[26]['massiveaction']  = false;
-      $tab[26]['joinparams']     = array('jointype' => 'child');
-
-      $tab[28]['table']          = static::getTable();
-      $tab[28]['field']          = 'id';
-      $tab[28]['name']           = _x('quantity', 'Number of tasks');
-      $tab[28]['forcegroupby']   = true;
-      $tab[28]['usehaving']      = true;
-      $tab[28]['datatype']       = 'count';
-      $tab[28]['massiveaction']  = false;
-      $tab[28]['joinparams']     = array('jointype' => 'child');
-
-      $tab[20]['table']          = 'glpi_taskcategories';
-      $tab[20]['field']          = 'name';
-      $tab[20]['datatype']       = 'dropdown';
-      $tab[20]['name']           = __('Task category');
-      $tab[20]['forcegroupby']   = true;
-      $tab[20]['splititems']     = true;
-      $tab[20]['massiveaction']  = false;
-      $tab[20]['joinparams']     = array('beforejoin'
-                                          => array('table'      => static::getTable(),
-                                                   'joinparams' => array('jointype' => 'child')));
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => 'glpi_taskcategories',
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'name'               => __('Task category'),
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => static::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
       if ($task->maybePrivate()) {
-         $tab[92]['table']          = static::getTable();
-         $tab[92]['field']          = 'is_private';
-         $tab[92]['name']           = __('Private task');
-         $tab[92]['datatype']       = 'bool';
-         $tab[92]['forcegroupby']   = true;
-         $tab[92]['splititems']     = true;
-         $tab[92]['massiveaction']  = false;
-         $tab[92]['joinparams']     = array('jointype' => 'child');
+
+         $tab[] = [
+            'id'                 => '92',
+            'table'              => static::getTable(),
+            'field'              => 'is_private',
+            'name'               => __('Private task'),
+            'datatype'           => 'bool',
+            'forcegroupby'       => true,
+            'splititems'         => true,
+            'massiveaction'      => false,
+            'joinparams'         => [
+               'jointype'           => 'child'
+            ]
+         ];
       }
 
-      $tab[94]['table']          = 'glpi_users';
-      $tab[94]['field']          = 'name';
-      $tab[94]['name']           = __('Writer');
-      $tab[94]['datatype']       = 'itemlink';
-      $tab[94]['right']          = 'all';
-      $tab[94]['forcegroupby']   = true;
-      $tab[94]['massiveaction']  = false;
-      $tab[94]['joinparams']     = array('beforejoin'
-                                          => array('table'      => static::getTable(),
-                                                   'joinparams' => array('jointype' => 'child')));
-      $tab[95]['table']          = 'glpi_users';
-      $tab[95]['field']          = 'name';
-      $tab[95]['linkfield']      = 'users_id_tech';
-      $tab[95]['name']           = __('Technician');
-      $tab[95]['datatype']       = 'itemlink';
-      $tab[95]['right']          = 'own_ticket';
-      $tab[95]['forcegroupby']   = true;
-      $tab[95]['massiveaction']  = false;
-      $tab[95]['joinparams']     = array('beforejoin'
-                                          => array('table'      => static::getTable(),
-                                                   'joinparams' => array('jointype'  => 'child')));
+      $tab[] = [
+         'id'                 => '94',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Writer'),
+         'datatype'           => 'itemlink',
+         'right'              => 'all',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => static::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
-      $tab[112]['table']          = 'glpi_groups';
-      $tab[112]['field']          = 'name';
-      $tab[112]['linkfield']      = 'groups_id_tech';
-      $tab[112]['name']           = __('Group in charge of the task');
-      $tab[112]['datatype']       = 'itemlink';
-      $tab[112]['condition']      = 'is_task';
-      $tab[112]['forcegroupby']   = true;
-      $tab[112]['massiveaction']  = false;
-      $tab[112]['joinparams']     = array('beforejoin'
-                                          => array('table'      => static::getTable(),
-                                                   'joinparams' => array('jointype'  => 'child')));
+      $tab[] = [
+         'id'                 => '95',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'linkfield'          => 'users_id_tech',
+         'name'               => __('Technician'),
+         'datatype'           => 'itemlink',
+         'right'              => 'own_ticket',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => static::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
-      $tab[96]['table']          = static::getTable();
-      $tab[96]['field']          = 'actiontime';
-      $tab[96]['name']           = __('Duration');
-      $tab[96]['datatype']       = 'timestamp';
-      $tab[96]['massiveaction']  = false;
-      $tab[96]['forcegroupby']   = true;
-      $tab[96]['joinparams']     = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '112',
+         'table'              => 'glpi_groups',
+         'field'              => 'name',
+         'linkfield'          => 'groups_id_tech',
+         'name'               => __('Group in charge of the task'),
+         'datatype'           => 'itemlink',
+         'condition'          => 'is_task',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => static::getTable(),
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
-      $tab[97]['table']          = static::getTable();
-      $tab[97]['field']          = 'date';
-      $tab[97]['name']           = __('Date');
-      $tab[97]['datatype']       = 'datetime';
-      $tab[97]['massiveaction']  = false;
-      $tab[97]['forcegroupby']   = true;
-      $tab[97]['joinparams']     = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '96',
+         'table'              => static::getTable(),
+         'field'              => 'actiontime',
+         'name'               => __('Duration'),
+         'datatype'           => 'timestamp',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[33]['table']          = static::getTable();
-      $tab[33]['field']          = 'state';
-      $tab[33]['name']           = __('Status');
-      $tab[33]['datatype']       = 'specific';
-      $tab[33]['searchtype']     = 'equals';
-      $tab[33]['searchequalsonfield'] = true;
-      $tab[33]['massiveaction']  = false;
-      $tab[33]['forcegroupby']   = true;
-      $tab[33]['joinparams']     = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '97',
+         'table'              => static::getTable(),
+         'field'              => 'date',
+         'name'               => __('Date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[173]['table']          = static::getTable();
-      $tab[173]['field']          = 'begin';
-      $tab[173]['name']           = __('Begin date');
-      $tab[173]['datatype']       = 'datetime';
-      $tab[173]['massiveaction']  = false;
-      $tab[173]['forcegroupby']   = true;
-      $tab[173]['joinparams']     = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '33',
+         'table'              => static::getTable(),
+         'field'              => 'state',
+         'name'               => __('Status'),
+         'datatype'           => 'specific',
+         'searchtype'         => 'equals',
+         'searchequalsonfield' => true,
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
-      $tab[174]['table']          = static::getTable();
-      $tab[174]['field']          = 'end';
-      $tab[174]['name']           = __('End date');
-      $tab[174]['datatype']       = 'datetime';
-      $tab[174]['massiveaction']  = false;
-      $tab[174]['forcegroupby']   = true;
-      $tab[174]['joinparams']     = array('jointype' => 'child');
+      $tab[] = [
+         'id'                 => '173',
+         'table'              => static::getTable(),
+         'field'              => 'begin',
+         'name'               => __('Begin date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
+
+      $tab[] = [
+         'id'                 => '174',
+         'table'              => static::getTable(),
+         'field'              => 'end',
+         'name'               => __('End date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false,
+         'forcegroupby'       => true,
+         'joinparams'         => [
+            'jointype'           => 'child'
+         ]
+      ];
 
       return $tab;
    }

@@ -1,0 +1,61 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_slts',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_slts',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_slts',
+    'field' => 'number_time',
+    'name' => 'Time',
+    'datatype' => 'specific',
+    'massiveaction' => false,
+    'nosearch' => true,
+    'additionalfields' => 
+    array (
+      0 => 'definition_time',
+    ),
+  ),
+  6 => 
+  array (
+    'table' => 'glpi_slts',
+    'field' => 'end_of_working_day',
+    'name' => 'End of working day',
+    'datatype' => 'bool',
+    'massiveaction' => false,
+  ),
+  7 => 
+  array (
+    'table' => 'glpi_slts',
+    'field' => 'type',
+    'name' => 'Type',
+    'datatype' => 'specific',
+  ),
+  8 => 
+  array (
+    'table' => 'glpi_slas',
+    'field' => 'name',
+    'name' => 'SLA',
+    'datatype' => 'dropdown',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_slts',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+)
