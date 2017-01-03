@@ -99,7 +99,7 @@ abstract class CommonDevice extends CommonDropdown {
    static function getMenuContent() {
 
       $menu = array();
-      if (CommonDevice::canView()) {
+      if (self::canView()) {
          $menu['title'] = static::getTypeName(Session::getPluralNumber());
          $menu['page']  = '/front/device.php';
 

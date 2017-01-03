@@ -72,8 +72,8 @@ function update911to912() {
 
    // give READ right on components to profiles having UPDATE right
    $query = "UPDATE `glpi_profilerights`
-             SET `rights` = `rights` | 1
-             WHERE (`rights` & 2) = '2'
+             SET `rights` = `rights` | " . READ . "
+             WHERE (`rights` & " . UPDATE .") = '" . UPDATE ."'
                    AND `name` = 'device'";
    $DB->queryOrDie($query, "grant READ right on components to profiles having UPDATE right");
 
