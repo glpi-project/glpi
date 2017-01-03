@@ -2540,7 +2540,7 @@ class Toolbox {
       $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($haystack));
 
       foreach($it AS $element) {
-         if( $strict ) {
+         if($strict) {
             if($element === $needle) {
                return true;
             }

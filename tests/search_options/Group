@@ -1,0 +1,169 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'completename',
+    'name' => 'Complete name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  14 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+  ),
+  13 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'completename',
+    'name' => 'Father',
+    'datatype' => 'dropdown',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'condition' => 'AND 1=1',
+    ),
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+  ),
+  86 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'is_recursive',
+    'name' => 'Child entities',
+    'datatype' => 'bool',
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  11 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'is_requester',
+    'name' => 'Requester',
+    'datatype' => 'bool',
+  ),
+  12 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'is_assign',
+    'name' => 'Assigned to',
+    'datatype' => 'bool',
+  ),
+  18 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'is_manager',
+    'name' => 'Can be manager',
+    'datatype' => 'bool',
+  ),
+  20 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'is_notify',
+    'name' => 'Can be notified',
+    'datatype' => 'bool',
+  ),
+  17 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'is_itemgroup',
+    'name' => 'Can contain Items',
+    'datatype' => 'bool',
+  ),
+  15 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'is_usergroup',
+    'name' => 'Can contain Users',
+    'datatype' => 'bool',
+  ),
+  70 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'Manager',
+    'datatype' => 'dropdown',
+    'right' => 'all',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_groups_users',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+          'condition' => 'AND NEWTABLE.`is_manager` = 1',
+        ),
+      ),
+    ),
+  ),
+  71 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'Delegatee',
+    'datatype' => 'dropdown',
+    'right' => 'all',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_groups_users',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+          'condition' => 'AND NEWTABLE.`is_userdelegate` = 1',
+        ),
+      ),
+    ),
+  ),
+  72 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'is_task',
+    'name' => 'Can be in charge of a task',
+    'datatype' => 'bool',
+  ),
+)

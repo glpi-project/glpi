@@ -1,0 +1,229 @@
+array (
+  'common' => 'LDAP directory',
+  1 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'id',
+    'name' => 'ID',
+    'datatype' => 'number',
+    'massiveaction' => false,
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'host',
+    'name' => 'Server',
+    'datatype' => 'string',
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'port',
+    'name' => 'Port',
+    'datatype' => 'integer',
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'basedn',
+    'name' => 'BaseDN',
+    'datatype' => 'string',
+  ),
+  6 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'condition',
+    'name' => 'Connection filter',
+    'datatype' => 'text',
+  ),
+  7 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'is_default',
+    'name' => 'Default server',
+    'datatype' => 'bool',
+    'massiveaction' => false,
+  ),
+  8 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'login_field',
+    'name' => 'Login field',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  9 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'realname_field',
+    'name' => 'Last Name',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  10 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'firstname_field',
+    'name' => 'First Name',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  11 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'phone_field',
+    'name' => 'Phone',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  12 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'phone2_field',
+    'name' => 'Phone 2',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  13 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'mobile_field',
+    'name' => 'Mobile phone',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  14 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'title_field',
+    'name' => 'Title',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  15 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'category_field',
+    'name' => 'Category',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  17 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'email1_field',
+    'name' => 'Email',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  25 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'email2_field',
+    'name' => 'Email 2',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  26 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'email3_field',
+    'name' => 'Email 3',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  27 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'email4_field',
+    'name' => 'Email 4',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  18 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'use_dn',
+    'name' => 'Use DN in the search',
+    'datatype' => 'bool',
+    'massiveaction' => false,
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  20 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'language_field',
+    'name' => 'Language',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  21 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'group_field',
+    'name' => 'User attribute containing its groups',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  22 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'group_condition',
+    'name' => 'Filter to search in groups',
+    'massiveaction' => false,
+    'datatype' => 'text',
+  ),
+  23 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'group_member_field',
+    'name' => 'Group attribute containing its users',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  24 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'group_search_type',
+    'datatype' => 'specific',
+    'name' => 'Search type',
+    'massiveaction' => false,
+  ),
+  30 => 
+  array (
+    'table' => 'glpi_authldaps',
+    'field' => 'is_active',
+    'name' => 'Active',
+    'datatype' => 'bool',
+  ),
+)

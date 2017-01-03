@@ -569,7 +569,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false, $translate=tr
          } else {
             $name = $DB->result($result,0,"completename");
          }
-         if( $tooltip ) {
+         if($tooltip) {
             $comment  = sprintf(__('%1$s: %2$s')."<br>",
                                 "<span class='b'>".__('Complete name')."</span>",
                                 $name);

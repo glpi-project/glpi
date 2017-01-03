@@ -169,7 +169,7 @@ function get_content($DB, $table, $from, $limit) {
       while ($row = $DB->fetch_row($result)) {
          $insert = "INSERT INTO `$table` VALUES (";
 
-         for( $j=0 ; $j<$num_fields ; $j++) {
+         for($j=0 ; $j<$num_fields ; $j++) {
             if (is_null($row[$j])) {
                $insert .= "NULL,";
             } else if ($row[$j] != "") {
@@ -365,7 +365,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
       $numtab++;
    }
 
-   for ( ; $offsettable<$numtab ; $offsettable++) {
+   for (; $offsettable<$numtab ; $offsettable++) {
       // Dump de la structure table
       if ($offsetrow == -1) {
          $todump = "\n".get_def($DB,$tables[$offsettable]);

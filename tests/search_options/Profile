@@ -1,0 +1,851 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'interface',
+    'name' => 'Profile\'s interface',
+    'massiveaction' => false,
+    'datatype' => 'specific',
+    'searchtype' => 
+    array (
+      0 => 'equals',
+      1 => 'notequals',
+    ),
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'is_default',
+    'name' => 'Default profile',
+    'datatype' => 'bool',
+    'massiveaction' => false,
+  ),
+  118 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'create_ticket_on_login',
+    'name' => 'Ticket creation form on login',
+    'datatype' => 'bool',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  'inventory' => 'Assets',
+  20 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Computers',
+    'datatype' => 'right',
+    'rightclass' => 'Computer',
+    'rightname' => 'computer',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'computer\'',
+    ),
+  ),
+  21 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Monitors',
+    'datatype' => 'right',
+    'rightclass' => 'Monitor',
+    'rightname' => 'monitor',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'monitor\'',
+    ),
+  ),
+  22 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Software',
+    'datatype' => 'right',
+    'rightclass' => 'Software',
+    'rightname' => 'software',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'software\'',
+    ),
+  ),
+  23 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Networking Devices',
+    'datatype' => 'right',
+    'rightclass' => 'Network',
+    'rightname' => 'networking',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'networking\'',
+    ),
+  ),
+  24 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Printers',
+    'datatype' => 'right',
+    'rightclass' => 'Printer',
+    'rightname' => 'printer',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'printer\'',
+    ),
+  ),
+  25 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Custom Devices',
+    'datatype' => 'right',
+    'rightclass' => 'Peripheral',
+    'rightname' => 'peripheral',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'peripheral\'',
+    ),
+  ),
+  26 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Cartridges',
+    'datatype' => 'right',
+    'rightclass' => 'Cartridge',
+    'rightname' => 'cartridge',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'cartridge\'',
+    ),
+  ),
+  27 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Consumables',
+    'datatype' => 'right',
+    'rightclass' => 'Consumable',
+    'rightname' => 'consumable',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'consumable\'',
+    ),
+  ),
+  28 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Phones',
+    'datatype' => 'right',
+    'rightclass' => 'Phone',
+    'rightname' => 'phone',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'phone\'',
+    ),
+  ),
+  129 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Internet',
+    'datatype' => 'right',
+    'rightclass' => 'NetworkName',
+    'rightname' => 'internet',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'internet\'',
+    ),
+  ),
+  'management' => 'Management',
+  30 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Contact / Supplier',
+    'datatype' => 'right',
+    'rightclass' => 'Contact',
+    'rightname' => 'contact_entreprise',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'contact_enterprise\'',
+    ),
+  ),
+  31 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Documents',
+    'datatype' => 'right',
+    'rightclass' => 'Document',
+    'rightname' => 'document',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'document\'',
+    ),
+  ),
+  32 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Contracts',
+    'datatype' => 'right',
+    'rightclass' => 'Contract',
+    'rightname' => 'contract',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'contract\'',
+    ),
+  ),
+  33 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Financial and administratives information',
+    'datatype' => 'right',
+    'rightclass' => 'Infocom',
+    'rightname' => 'infocom',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'infocom\'',
+    ),
+  ),
+  101 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Budget',
+    'datatype' => 'right',
+    'rightclass' => 'Budget',
+    'rightname' => 'budget',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'budget\'',
+    ),
+  ),
+  'tools' => 'Tools',
+  34 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Knowledge base',
+    'datatype' => 'right',
+    'rightclass' => 'KnowbaseItem',
+    'rightname' => 'knowbase',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'knowbase\'',
+    ),
+  ),
+  36 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Reservations',
+    'datatype' => 'right',
+    'rightclass' => 'ReservationItem',
+    'rightname' => 'reservation',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'reservation\'',
+    ),
+  ),
+  38 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Reports',
+    'datatype' => 'right',
+    'rightclass' => 'Report',
+    'rightname' => 'reports',
+    'nowrite' => true,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'reports\'',
+    ),
+  ),
+  'config' => 'Setup',
+  42 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Dropdowns',
+    'datatype' => 'right',
+    'rightclass' => 'DropdownTranslation',
+    'rightname' => 'dropdown',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'dropdown\'',
+    ),
+  ),
+  44 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Components',
+    'datatype' => 'right',
+    'rightclass' => 'Item_Devices',
+    'rightname' => 'device',
+    'noread' => true,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'device\'',
+    ),
+  ),
+  106 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Notifications',
+    'datatype' => 'right',
+    'rightclass' => 'Notification',
+    'rightname' => 'notification',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'notification\'',
+    ),
+  ),
+  45 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Document type',
+    'datatype' => 'right',
+    'rightclass' => 'DocumentType',
+    'rightname' => 'typedoc',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'typedoc\'',
+    ),
+  ),
+  46 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'External links',
+    'datatype' => 'right',
+    'rightclass' => 'Link',
+    'rightname' => 'link',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'link\'',
+    ),
+  ),
+  47 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'General setup',
+    'datatype' => 'right',
+    'rightclass' => 'Config',
+    'rightname' => 'config',
+    'noread' => true,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'config\'',
+    ),
+  ),
+  52 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Search result user display',
+    'datatype' => 'right',
+    'rightclass' => 'DisplayPreference',
+    'rightname' => 'search_config',
+    'noread' => true,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'search_config\'',
+    ),
+  ),
+  107 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Calendars',
+    'datatype' => 'right',
+    'rightclass' => 'Calendar',
+    'rightname' => 'calendar',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'calendar\'',
+    ),
+  ),
+  'admin' => 'Administration',
+  48 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Business rules for tickets',
+    'datatype' => 'right',
+    'rightclass' => 'RuleTicket',
+    'rightname' => 'rule_ticket',
+    'nowrite' => true,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'rule_ticket\'',
+    ),
+  ),
+  105 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Rules for assigning a ticket created through a mails receiver',
+    'datatype' => 'right',
+    'rightclass' => 'RuleMailCollector',
+    'rightname' => 'rule_mailcollector',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'rule_mailcollector\'',
+    ),
+  ),
+  49 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Rules for assigning a computer to an entity',
+    'datatype' => 'right',
+    'rightclass' => 'RuleImportComputer',
+    'rightname' => 'rule_import',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'rule_import\'',
+    ),
+  ),
+  50 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Authorizations assignment rules',
+    'datatype' => 'right',
+    'rightclass' => 'Rule',
+    'rightname' => 'rule_ldap',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'rule_ldap\'',
+    ),
+  ),
+  51 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Rules for assigning a category to a software',
+    'datatype' => 'right',
+    'rightclass' => 'RuleSoftwareCategory',
+    'rightname' => 'rule_softwarecategories',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'rule_softwarecategories\'',
+    ),
+  ),
+  90 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Software dictionary',
+    'datatype' => 'right',
+    'rightclass' => 'RuleDictionnarySoftware',
+    'rightname' => 'rule_dictionnary_software',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'rule_dictionnary_software\'',
+    ),
+  ),
+  91 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Dropdowns dictionary',
+    'datatype' => 'right',
+    'rightclass' => 'RuleDictionnaryDropdown',
+    'rightname' => 'rule_dictionnary_dropdown',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'rule_dictionnary_dropdown\'',
+    ),
+  ),
+  55 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Profiles',
+    'datatype' => 'right',
+    'rightclass' => 'Profile',
+    'rightname' => 'profile',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'profile\'',
+    ),
+  ),
+  56 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Users',
+    'datatype' => 'right',
+    'rightclass' => 'User',
+    'rightname' => 'user',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'user\'',
+    ),
+  ),
+  58 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Groups',
+    'datatype' => 'right',
+    'rightclass' => 'Group',
+    'rightname' => 'group',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'group\'',
+    ),
+  ),
+  59 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Entities',
+    'datatype' => 'right',
+    'rightclass' => 'Entity',
+    'rightname' => 'entity',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'entity\'',
+    ),
+  ),
+  60 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Transfer',
+    'datatype' => 'right',
+    'rightclass' => 'Transfer',
+    'rightname' => 'transfer',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'transfer\'',
+    ),
+  ),
+  61 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Logs',
+    'datatype' => 'right',
+    'rightclass' => 'Log',
+    'rightname' => 'logs',
+    'nowrite' => true,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'logs\'',
+    ),
+  ),
+  62 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Maintenance',
+    'datatype' => 'right',
+    'rightclass' => 'Backup',
+    'rightname' => 'backup',
+    'noread' => true,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'backup\'',
+    ),
+  ),
+  'ticket' => 'Assistance',
+  102 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Create a ticket',
+    'datatype' => 'right',
+    'rightclass' => 'Ticket',
+    'rightname' => 'ticket',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'ticket\'',
+    ),
+  ),
+  108 => 
+  array (
+    'table' => 'glpi_tickettemplates',
+    'field' => 'name',
+    'name' => 'Default ticket template',
+    'datatype' => 'dropdown',
+    'condition' => '`entities_id` = 0 AND `is_recursive`',
+  ),
+  103 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Ticket templates',
+    'datatype' => 'right',
+    'rightclass' => 'TicketTemplate',
+    'rightname' => 'tickettemplate',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'tickettemplate\'',
+    ),
+  ),
+  79 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Planning',
+    'datatype' => 'right',
+    'rightclass' => 'Planning',
+    'rightname' => 'planning',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'planning\'',
+    ),
+  ),
+  85 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Statistics',
+    'datatype' => 'right',
+    'rightclass' => 'Stat',
+    'rightname' => 'statistic',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'statistic\'',
+    ),
+  ),
+  119 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Ticket costs',
+    'datatype' => 'right',
+    'rightclass' => 'TicketCost',
+    'rightname' => 'ticketcost',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'ticketcost\'',
+    ),
+  ),
+  86 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'helpdesk_hardware',
+    'name' => 'Link with items for the creation of tickets',
+    'massiveaction' => false,
+    'datatype' => 'specific',
+  ),
+  87 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'helpdesk_item_type',
+    'name' => 'Associable items to a ticket',
+    'massiveaction' => false,
+    'datatype' => 'specific',
+  ),
+  89 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'See hardware of my groups',
+    'datatype' => 'bool',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'show_group_hardware\'',
+    ),
+  ),
+  100 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'ticket_status',
+    'name' => 'Life cycle of tickets',
+    'nosearch' => true,
+    'datatype' => 'text',
+    'massiveaction' => false,
+  ),
+  110 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'problem_status',
+    'name' => 'Life cycle of problems',
+    'nosearch' => true,
+    'datatype' => 'text',
+    'massiveaction' => false,
+  ),
+  112 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Problems',
+    'datatype' => 'right',
+    'rightclass' => 'Problem',
+    'rightname' => 'problem',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'problem\'',
+    ),
+  ),
+  111 => 
+  array (
+    'table' => 'glpi_profiles',
+    'field' => 'change_status',
+    'name' => 'Life cycle of changes',
+    'nosearch' => true,
+    'datatype' => 'text',
+    'massiveaction' => false,
+  ),
+  115 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Changes',
+    'datatype' => 'right',
+    'rightclass' => 'Change',
+    'rightname' => 'change',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'change\'',
+    ),
+  ),
+  'other' => 'Other',
+  4 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Update password',
+    'datatype' => 'bool',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'password_update\'',
+    ),
+  ),
+  63 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Public reminders',
+    'datatype' => 'right',
+    'rightclass' => 'Reminder',
+    'rightname' => 'reminder_public',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'reminder_public\'',
+    ),
+  ),
+  64 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Public bookmarks',
+    'datatype' => 'right',
+    'rightclass' => 'Bookmark',
+    'rightname' => 'bookmark_public',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'bookmark_public\'',
+    ),
+  ),
+  120 => 
+  array (
+    'table' => 'glpi_profilerights',
+    'field' => 'rights',
+    'name' => 'Public RSS feeds',
+    'datatype' => 'right',
+    'rightclass' => 'RSSFeed',
+    'rightname' => 'rssfeed_public',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+      'condition' => 'AND `NEWTABLE`.`name`= \'rssfeed_public\'',
+    ),
+  ),
+)
