@@ -2340,7 +2340,7 @@ class CommonDBTM extends CommonGLPI {
                   echo "<table class='tab_format'><tr class='headerRow responsive_hidden'><th>".$entityname."</th>";
                   echo "<th class='right'>".__('Child entities')."</th><th>";
                   if ($params['canedit']) {
-                     if ( $this instanceof CommonDBChild) {
+                     if ($this instanceof CommonDBChild) {
                         echo Dropdown::getYesNo($this->isRecursive());
                         if (isset($this->fields["is_recursive"])) {
                            echo "<input type='hidden' name='is_recursive' value='".$this->fields["is_recursive"]."'>";
@@ -2352,7 +2352,7 @@ class CommonDBTM extends CommonGLPI {
                         echo Dropdown::getYesNo($this->fields["is_recursive"]);
                         $comment = __('You are not allowed to change the visibility flag for child entities.');
 
-                     } else if ( !$this->canUnrecurs()) {
+                     } else if (!$this->canUnrecurs()) {
                         echo Dropdown::getYesNo($this->fields["is_recursive"]);
                         $comment = __('Flag change forbidden. Linked items found.');
 

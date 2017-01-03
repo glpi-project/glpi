@@ -4530,7 +4530,7 @@ class Ticket extends CommonITILObject {
                             _sx('button', 'Restore')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                   }
                } else {
-                  if (self::canUpdate() ) {
+                  if (self::canUpdate()) {
                      echo "<input type='submit' class='submit' name='update' value='".
                             _sx('button', 'Save')."'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                   }
@@ -6424,14 +6424,14 @@ class Ticket extends CommonITILObject {
          $options = array( 'parent' => $this,
                            'rand' => $rand
                            ) ;
-         if( $obj = getItemForItemtype($item['type']) ){
+         if($obj = getItemForItemtype($item['type'])){
             $obj->fields = $item['item'] ;
          } else {
             $obj = $item ;
          }
          Plugin::doHook('pre_show_item', array('item' => &$obj, 'options' => &$options));
 
-         if( is_array( $obj ) ){
+         if(is_array($obj)){
             $item_i = $obj['item'];
          } else {
             $item_i = $obj->fields;
@@ -6522,7 +6522,7 @@ class Ticket extends CommonITILObject {
             echo "<p>";
             if (isset($item_i['state'])) {
                $onClick = "onclick='change_task_state(".$item_i['id'].", this)'";
-               if( !$item_i['can_edit'] ) {
+               if(!$item_i['can_edit']) {
                   $onClick = "style='cursor: not-allowed;'" ;
                }
                echo "<span class='state state_".$item_i['state']."'
@@ -6872,7 +6872,7 @@ class Ticket extends CommonITILObject {
       $canadd_document = $doc->can(-1, CREATE, $tmp) && $this->canAddItem('Document');
       $canadd_solution = Ticket::canUpdate() && $this->canSolve();
 
-      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution ) {
+      if (!$canadd_fup && !$canadd_task && !$canadd_document && !$canadd_solution) {
          return false;
       }
 
@@ -7001,13 +7001,13 @@ class Ticket extends CommonITILObject {
     */
    function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()){
       if (isset($field_id_or_search_options['linkfield'])) {
-         switch( $field_id_or_search_options['linkfield'] ) {
+         switch($field_id_or_search_options['linkfield']) {
             case 'requesttypes_id':
                $opt = 'is_ticketheader = 1';
                if (isset($field_id_or_search_options['joinparams']) && Toolbox::in_array_recursive('glpi_ticketfollowups', $field_id_or_search_options['joinparams'])) {
                   $opt = 'is_ticketfollowup = 1';
                }
-               if( $field_id_or_search_options['linkfield']  == $name ) {
+               if($field_id_or_search_options['linkfield']  == $name) {
                   $opt .= ' AND is_active = 1' ;
                }
                if(isset( $options['condition'] )) {

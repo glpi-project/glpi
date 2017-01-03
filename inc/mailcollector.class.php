@@ -573,7 +573,7 @@ class MailCollector  extends CommonDBTM {
                              || isset($tkt['tickets_id'])) {
 
                      // Is a mail responding of an already existing ticket ?
-                     if (isset($tkt['tickets_id']) ) {
+                     if (isset($tkt['tickets_id'])) {
                         $fup = new TicketFollowup();
                         if ($fup->add($tkt)) {
                            $delete_mail = self::ACCEPTED_FOLDER;
@@ -882,7 +882,7 @@ class MailCollector  extends CommonDBTM {
             }
 
             $tkt['content'] = "";
-            foreach ($to_keep as $ID ) {
+            foreach ($to_keep as $ID) {
                $tkt['content'] .= $content[$ID]."\n";
             }
 

@@ -62,7 +62,7 @@ class SLA extends CommonDBTM {
    **/
    function setTicketCalendar($calendars_id) {
 
-      if ($this->fields['calendars_id'] == -1 ) {
+      if ($this->fields['calendars_id'] == -1) {
          $this->fields['calendars_id'] = $calendars_id;
       }
    }

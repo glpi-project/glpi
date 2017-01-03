@@ -753,7 +753,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                                                  $input['entities_id'], $this->maybeRecursive());
          }
          // Check twin :
-         if ($result_twin = $DB->query($query) ) {
+         if ($result_twin = $DB->query($query)) {
             if ($DB->numrows($result_twin) > 0) {
                return $DB->result($result_twin,0,"id");
             }
@@ -773,7 +773,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          }
 
          // Check twin :
-         if ($result_twin = $DB->query($query) ) {
+         if ($result_twin = $DB->query($query)) {
             if ($DB->numrows($result_twin) > 0) {
                return $DB->result($result_twin, 0, "id");
             }

@@ -429,7 +429,7 @@ class NotificationTemplate extends CommonDBTM {
             //Get the else tag value (if one)
             $regex_else = "/##ELSE".$if_field."[=]?.*##(.*)##ENDELSE".$if_field."##/Uis";
 
-            if (empty($out[2][$key]) && !strlen($out[2][$key]) ) { // No = : check if ot empty or not null
+            if (empty($out[2][$key]) && !strlen($out[2][$key])) { // No = : check if ot empty or not null
 
                if (isset($data['##'.$if_field.'##'])
                    && $data['##'.$if_field.'##'] != '0'
