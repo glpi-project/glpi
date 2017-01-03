@@ -1020,6 +1020,26 @@ td { }
    white-space: nowrap;
 }
 
+.collapsed-cell {
+   overflow: hidden;
+   line-height: 1em;
+   height: 2em;
+   text-overflow: ellipsis;
+   white-space: nowrap;
+}
+
+.expanded-cell {
+   line-height: 1em;
+   height: auto;
+}
+
+.cell-expander {
+   display: none;
+   cursor: pointer;
+   color: #1B2F62;
+   font-weight: bold;
+}
+
 .central {
    padding-top: 15px;
    width: 100%;
