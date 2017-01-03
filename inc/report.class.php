@@ -180,10 +180,10 @@ class Report extends CommonGLPI{
    static function showDefaultReport() {
       global $DB;
 
-      # Title
+      // Title
       echo "<span class='big b'>GLPI ".Report::getTypeName(Session::getPluralNumber())."</span><br><br>";
 
-      # 1. Get counts of itemtype
+      // 1. Get counts of itemtype
       $items     = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
                          'Printer', 'Software');
 
@@ -217,7 +217,7 @@ class Report extends CommonGLPI{
 
       echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".__('Operating system')."</td></tr>";
 
-      # 2. Get some more number data (operating systems per computer)
+      // 2. Get some more number data (operating systems per computer)
 
       $where = "WHERE `is_deleted` = '0'
                       AND `is_template` = '0' ";
@@ -239,7 +239,7 @@ class Report extends CommonGLPI{
          echo "<td class='numeric'>".$data['count']."</td></tr>";
       }
 
-      # Get counts of types
+      // Get counts of types
 
       $val   = array_flip($items);
       unset($val["Software"]);

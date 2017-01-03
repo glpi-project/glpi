@@ -45,10 +45,10 @@ Report::title();
 
 $items = $CFG_GLPI["contract_types"];
 
-# Titre
+// Titre
 echo "<div class='center b spaced'><big>".__('Device list')."</big></div>";
 
-# Request All
+// Request All
 if ((isset($_POST["item_type"][0]) && ($_POST["item_type"][0] == '0'))
     || !isset($_POST["item_type"])) {
    $_POST["item_type"] = $items;
