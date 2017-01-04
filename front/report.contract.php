@@ -43,14 +43,14 @@ Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF
 
 Report::title();
 
-# Titre
+// Titre
 
 echo "<form name='form' method='post' action='report.contract.list.php'>";
 
 echo "<table class='tab_cadre_fixe' >";
 echo "<tr><th colspan='4'>".__('Hardware under contract')." </th></tr>";
 
-# 3. Selection d'affichage pour generer la liste
+// 3. Selection d'affichage pour generer la liste
 echo "<tr class='tab_bg_1'>";
 echo "<td class='center' width='20%'>". __('Item type')."</td>";
 echo "<td width='30%'>";

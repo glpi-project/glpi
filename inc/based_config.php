@@ -124,14 +124,14 @@ if (!defined("GLPI_SCRIPT_DIR")) {
 // Default patch to htmLawed
 if (!defined('GLPI_HTMLAWED')) {
    define('GLPI_HTMLAWED', GLPI_ROOT.'/lib/htmlawed/htmLawed.php');
-   # if htmLawed available in system, use (in config_path.php)
-   # define('GLPI_HTMLAWED', '/usr/share/htmlawed/htmLawed.php');
+   // if htmLawed available in system, use (in config_path.php)
+   // define('GLPI_HTMLAWED', '/usr/share/htmlawed/htmLawed.php');
 }
 
 // Default path to FreeSans.ttf
 if (!defined("GLPI_FONT_FREESANS")) {
    define("GLPI_FONT_FREESANS", GLPI_ROOT . '/lib/FreeSans.ttf');
 
-   # if FreeSans.ttf available in system, use (in config_path.php)
-   # define("GLPI_FONT_FREESANS", '/usr/share/fonts/gnu-free/FreeSans.ttf');
+   // if FreeSans.ttf available in system, use (in config_path.php)
+   // define("GLPI_FONT_FREESANS", '/usr/share/fonts/gnu-free/FreeSans.ttf');
 }

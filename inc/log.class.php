@@ -134,7 +134,7 @@ class Log extends CommonDBTM {
 
          // Parsing $SEARCHOPTION to find changed field
          foreach ($searchopt as $key2 => $val2) {
-            if (!is_array($val2)) {
+            if (!isset($val2['table'])) {
                // skip sub-title
                continue;
             }

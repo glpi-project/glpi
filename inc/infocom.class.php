@@ -768,11 +768,11 @@ class Infocom extends CommonDBChild {
 
       switch ($type_amort) {
          case "2" :
-            ########################### Calcul amortissement lineaire ###########################
+            //########################### Calcul amortissement lineaire ###########################
             if (($va > 0)
                 && ($duree > 0)
                 && !empty($date_achat)) {
-               ## calcul du prorata temporis en jour ##
+               //## calcul du prorata temporis en jour ##
                $ecartfinmoiscourant = (30-$date_d); // calcul ecart entre jour date acquis
                                                     // ou mise en service et fin du mois courant
                // en lineaire on calcule en jour
@@ -785,7 +785,7 @@ class Infocom extends CommonDBChild {
                $ecartmois  = (($date_m2-$date_m)*30); // calcul ecart entre mois d'acquisition
                                                       // et debut annee fiscale
                $prorata    = $ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
-               ## calcul tableau d'amortissement ##
+               //## calcul tableau d'amortissement ##
                $txlineaire = (100/$duree); // calcul du taux lineaire
                $annuite    = ($va*$txlineaire)/100; // calcul de l'annuitee
                $mrt        = $va; //
@@ -818,12 +818,12 @@ class Infocom extends CommonDBChild {
             break;
 
          case "1" :
-            ########################### Calcul amortissement degressif ###########################
+            //########################### Calcul amortissement degressif ###########################
             if (($va > 0)
                 && ($duree > 0)
                 && ($coef > 1)
                 && !empty($date_achat)) {
-               ## calcul du prorata temporis en mois ##
+               //## calcul du prorata temporis en mois ##
                // si l'annee fiscale debute au dela de l'annee courante
                if ($date_m > $date_m2) {
                   $date_m2 = $date_m2+12;
@@ -831,7 +831,7 @@ class Infocom extends CommonDBChild {
                $ecartmois      = ($date_m2-$date_m)+1; // calcul ecart entre mois d'acquisition
                                                        // et debut annee fiscale
                $prorata        = $ecartfinmoiscourant+$ecartmois-$ecartmoisexercice;
-               ## calcul tableau d'amortissement ##
+               // calcul tableau d'amortissement ##
                $txlineaire     = (100/$duree); // calcul du taux lineaire virtuel
                $txdegressif    = $txlineaire*$coef; // calcul du taux degressif
                $dureelineaire  = (int) (100/$txdegressif); // calcul de la duree de l'amortissement
