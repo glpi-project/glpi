@@ -74,7 +74,14 @@ function update91to92() {
    //put you migration script here
    // Issue #1250 - Add decimal to monitor size
    $migration->changeField('glpi_monitors', 'size', 'size', 'DECIMAL(5,2)');
-      
+
+   // give READ right on components to profiles having UPDATE right
+   $query = "UPDATE `glpi_profilerights`
+             SET `rights` = `rights` | " . READ . "
+             WHERE (`rights` & " . UPDATE .") = '" . UPDATE ."'
+                   AND `name` = 'device'";
+   $DB->queryOrDie($query, "grant READ right on components to profiles having UPDATE right");
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 
