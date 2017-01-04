@@ -242,7 +242,7 @@ class APIRest extends API {
             case "PUT" : // update item(s)
                // if id is passed by query string, add it into input parameter
                $input = (array) ($this->parameters['input']);
-               if (($id > 0 || $id == 0 && $itemtype == "Entity") 
+               if (($id > 0 || $id == 0 && $itemtype == "Entity")
                      && !isset($input['id'])) {
                   $this->parameters['input']->id = $id;
                }
@@ -348,7 +348,7 @@ class APIRest extends API {
       }
 
       // now how about PUT/POST bodies? These override what we got from GET
-      $body = trim(file_get_contents("php://input"));
+      $body = trim($this->getHttpBodyStream());
       if (strlen($body) > 0 && $this->verb == "GET") {
          // GET method requires an empty body
          $this->returnError("GET Request should not have json payload (http body)", 400,
