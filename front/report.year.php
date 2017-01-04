@@ -43,14 +43,14 @@ Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF
 
 Report::title();
 
-# Titre
+// Titre
 
 echo "<form name='form' method='post' action='report.year.list.php'>";
 
 echo "<table class='tab_cadre_fixe'>";
 echo "<tr><th colspan='4'>".__("Equipment's report by year")."</th></tr>";
 
-# 3. Selection d'affichage pour generer la liste
+// 3. Selection d'affichage pour generer la liste
 
 echo "<tr class='tab_bg_2'>";
 echo "<td width='20%' class='b center'>".__('Item type')."</td>";

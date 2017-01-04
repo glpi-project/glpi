@@ -106,7 +106,7 @@ class APIRest extends API {
          return $this->inlineDocumentation("apirest.md");
 
       } else if ($resource === "initSession") {
-         ## DECLARE ALL ENDPOINTS ##
+         // ## DECLARE ALL ENDPOINTS ##
          // login into glpi
          $this->session_write = true;
          return $this->returnResponse($this->initSession($this->parameters));

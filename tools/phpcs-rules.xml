@@ -19,6 +19,9 @@
   <!-- Remove closingTag -->
   <rule ref="Zend.Files.ClosingTag" />
 
+  <!--  Checks that no perl-style comments (#) are used. -->
+  <rule ref="PEAR.Commenting.InlineComment"/>
+
   <!-- No white spaces after opening bracket and before closing bracket in IF -->
   <rule ref="PSR2.ControlStructures.ControlStructureSpacing" />
 
