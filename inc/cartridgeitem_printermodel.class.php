@@ -189,7 +189,18 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
                Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
                echo "</td>";
             }
-            echo "<td class='center'>".$data['type']."</td>";
+            $opt = [
+               'is_deleted' => 0,
+               'criteria'   => [
+                  [
+                     'field'      => 40, // printer model
+                     'searchtype' => 'equals',
+                     'value'      => $data["pmid"],
+                  ]
+               ]
+            ];
+            $url = Printer::getSearchURL()."?".Toolbox::append_params($opt, '&amp;');
+            echo "<td class='center'><a href='".$url."'>".$data["type"]."</a></td>";
             echo "</tr>";
          }
          echo $header_begin.$header_bottom.$header_end;
