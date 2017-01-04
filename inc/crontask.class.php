@@ -501,13 +501,11 @@ class CronTask extends CommonDBTM{
       echo "<tr class='tab_bg_1'><td>".__('Run period')."</td><td>";
       Dropdown::showNumber('hourmin', array('value' => $this->fields['hourmin'],
                                             'min'   => 0,
-                                            'max'   => 24,
-                                            'width' => '35%'));
+                                            'max'   => 24));
       echo "&nbsp;->&nbsp;";
       Dropdown::showNumber('hourmax', array('value' => $this->fields['hourmax'],
                                             'min'   => 0,
-                                            'max'   => 24,
-                                            'width' => '35%'));
+                                            'max'   => 24));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Number of days this action logs are stored')."</td><td>";
