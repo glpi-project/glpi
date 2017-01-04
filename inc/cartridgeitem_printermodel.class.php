@@ -199,7 +199,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation {
                   ]
                ]
             ];
-            $url = Printer::getSearchURL()."?".Toolbox::append_params($opt,'&amp;');
+            $url = Printer::getSearchURL()."?".Toolbox::append_params($opt, '&amp;');
             echo "<td class='center'><a href='".$url."'>".$data["type"]."</a></td>";
             echo "</tr>";
          }
