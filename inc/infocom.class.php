@@ -1513,7 +1513,7 @@ class Infocom extends CommonDBChild {
          'id'                 => '123',
          'table'              => 'glpi_businesscriticities',
          'field'              => 'completename',
-         'name'               => ___('Business criticity'),
+         'name'               => __('Business criticity'),
          'datatype'           => 'dropdown',
          'forcegroupby'       => true,
          'joinparams'         => $complexjoinparams
