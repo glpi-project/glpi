@@ -494,15 +494,6 @@ class APIRest extends API {
       exit;
    }
 
-   /**
-    * get the raw HTTP request body
-    *
-    * @return string
-    */
-   protected function getHttpBodyStream() {
-      return file_get_contents('php://input');
-   }
-
 
    /**
     * Display the APIRest Documentation in Html (parsed from markdown)
