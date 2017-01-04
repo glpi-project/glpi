@@ -125,10 +125,14 @@ class CartridgeItem extends CommonDBTM {
    ///// SPECIFIC FUNCTIONS
 
    /**
-   * Count cartridge of the cartridge type
-   *
-   * @return number of cartridges
-   **/
+    * Count cartridge of the cartridge type
+    *
+    * @param integer $id Item id
+    *
+    * @return number of cartridges
+    *
+    * @since 9.2 add $id parameter
+    **/
    static function getCount($id) {
       global $DB;
 
