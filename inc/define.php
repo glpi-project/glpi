@@ -351,3 +351,31 @@ $CFG_GLPI['lock_lockable_objects'] = array('Budget',  'Change', 'Contact', 'Cont
                                            'Printer', 'Problem', 'Profile', 'Project', 'Reminder',
                                            'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
                                            'SoftwareLicense');
+
+$CFG_GLPI['javascript'] = [
+   'central'   => [
+      'central'   => ['fullcalendar']
+   ],
+   'helpdesk'  => [
+      'planning'  => ['fullcalendar', 'colorpicker'],
+      'ticket'    => ['rateit', 'tinymce', 'imageupload'],
+      'problem'   => ['tinymce'],
+      'change'    => ['tinymce']
+   ],
+   'tools'     => [
+      'project'      => ['gantt'],
+      'knowbaseitem' => ['tinymce'],
+      'reminder'     => ['tinymce']
+   ],
+   'config'    => [
+      'config'    => ['colorpicker'],
+      'commondropdown'  => [
+         'ProjectState'       => ['colorpicker'],
+         'SolutionTemplate'   => ['tinymce']
+      ],
+      'notification'    => [
+         'notificationtemplate' => ['tinymce']
+      ]
+   ],
+   'preference'=> ['colorpicker'],
+];

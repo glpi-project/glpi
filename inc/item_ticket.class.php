@@ -694,11 +694,12 @@ class Item_Ticket extends CommonDBRelation{
                } else {
                   $p['itemtype'] = $itemtype;
                   echo "<script type='text/javascript' >\n";
+                  echo "$(function() {";
                   Ajax::updateItemJsCode("results_$myname$rand",
                                          $CFG_GLPI["root_doc"].
                                             "/ajax/dropdownTrackingDeviceType.php",
                                          $p);
-                  echo '</script>';
+                  echo '});</script>';
                }
             }
             echo "</span>\n";

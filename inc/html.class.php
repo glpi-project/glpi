@@ -576,7 +576,7 @@ class Html {
             echo "</div>";
 
             $scriptblock = "
-               $(document).ready(function() {
+               $(function() {
                   var _of = window;
                   var _at = 'right-20 bottom-20';
                   //calculate relative dialog position
@@ -1082,11 +1082,14 @@ class Html {
    /**
     * Include common HTML headers
     *
-    * @param $title title used for the page (default '')
+    * @param string $title  title used for the page (default '')
+    * @param $sector    sector in which the page displayed is (default 'none')
+    * @param $item      item corresponding to the page displayed (default 'none')
+    * @param $option    option corresponding to the page displayed (default '')
     *
     * @return nothing
    **/
-   static function includeHeader($title='') {
+   static function includeHeader($title='', $sector = 'none', $item = 'none', $option = '') {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
       // complete title with id if exist
@@ -1115,17 +1118,62 @@ class Html {
       echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
 
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css");
+      //JSTree JS part is loaded on demand... But from an ajax call to display entities. Need to have CSS loaded.
       echo Html::css($CFG_GLPI["root_doc"]."/css/jstree/style.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.css");
       echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.min.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/css/style.css");
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.css",
-                     array('media' => ''));
-      echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.print.min.css",
-                     array('media' => 'print'));
+
+      //file upload is required... almost everywhere.
+      Html::requireJs('fileupload');
+
+      //on demand JS
+      if ($sector != 'none' || $item != 'none' || $option != '') {
+         $jslibs = [];
+         if (isset($CFG_GLPI['javascript'][$sector])) {
+            if (isset($CFG_GLPI['javascript'][$sector][$item])) {
+               if (isset($CFG_GLPI['javascript'][$sector][$item][$option])) {
+                  $jslibs = $CFG_GLPI['javascript'][$sector][$item][$option];
+               } else {
+                  $jslibs = $CFG_GLPI['javascript'][$sector][$item];
+               }
+            } else {
+               $jslibs = $CFG_GLPI['javascript'][$sector];
+            }
+         }
+
+         if (in_array('fullcalendar', $jslibs)) {
+            echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.css",
+                           array('media' => ''));
+            echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.print.min.css",
+                           array('media' => 'print'));
+            Html::requireJs('fullcalendar');
+         }
+
+         if (in_array('gantt', $jslibs)) {
+            echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/css/style.css");
+            Html::requireJs('gantt');
+         }
+
+         if (in_array('rateit', $jslibs)) {
+            echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/rateit.min.css");
+            Html::requireJs('rateit');
+         }
+
+         if (in_array('colorpicker', $jslibs)) {
+            echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum.min.css");
+            Html::requireJs('colorpicker');
+         }
+
+         if (in_array('tinymce', $jslibs)) {
+            Html::requireJs('tinymce');
+         }
+
+         if (in_array('imageupload', $jslibs)) {
+            echo Html::css($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.css");
+            Html::requireJs('jcrop');
+         }
+      }
+
       echo Html::css($CFG_GLPI["root_doc"]."/css/jquery-glpi.css");
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
@@ -1183,83 +1231,18 @@ class Html {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-ui-1.10.4.custom.min.js");
       }
 
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/tiny_mce/tinymce.min.js");
-
       // PLugins jquery
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/backtotop/BackToTop.min.jquery.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/select2/select2.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/qtip2/jquery.qtip.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jstree/jquery.jstree.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/rateit/jquery.rateit.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-file-upload/js/jquery.fileupload.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jcrop/jquery.Jcrop.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/imagepaste/jquery.image_paste.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/spectrum-colorpicker/spectrum-min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js");
       echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/autogrow/jquery.autogrow-textarea.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/lib/moment.min.js");
-      echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/fullcalendar/fullcalendar.min.js");
 
       // layout
       if (CommonGLPI::isLayoutWithMain()
           && !CommonGLPI::isLayoutExcludedPage()) {
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.mousewheel.min.js");
          echo Html::script($CFG_GLPI["root_doc"]."/lib/jqueryplugins/jquery-ui-scrollable-tabs/js/jquery.scrollabletab.min.js");
-      }
-
-      //locales for js library
-      if (isset($_SESSION['glpilanguage'])) {
-         // jquery ui
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
-         $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
-         if (file_exists(GLPI_ROOT.$filename)) {
-            echo Html::script($CFG_GLPI["root_doc"].$filename);
-         }
-
-         // select2
-         $filename = "/lib/jqueryplugins/select2/select2_locale_".
-                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
-         if (file_exists(GLPI_ROOT.$filename)) {
-            echo Html::script($CFG_GLPI["root_doc"].$filename);
-         }
-
-         //fullcalendar
-         $filename = "/lib/jqueryplugins/fullcalendar/locale/".
-                     strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]).".js";
-         if (file_exists(GLPI_ROOT.$filename)) {
-            echo Html::script($CFG_GLPI["root_doc"].$filename);
-         }
-      }
-
-      // Some Javascript-Functions which we may need later
-      echo Html::script($CFG_GLPI["root_doc"].'/script.js');
-      self::redefineAlert();
-      self::redefineConfirm();
-
-      // add Ajax display message after redirect
-      Html::displayAjaxMessageAfterRedirect();
-
-      // Add specific javascript for plugins
-      if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
-
-         foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
-            $version = Plugin::getInfo($plugin, 'version');
-            if (is_array($files)) {
-               foreach ($files as $file) {
-                  if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
-                     echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$file", ['version' => $version]);
-                  }
-               }
-            } else {
-               if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
-                  echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$files", ['version' => $version]);
-               }
-            }
-         }
       }
 
       // End of Head
@@ -1336,7 +1319,7 @@ class Html {
       $sector = strtolower($sector);
       $item   = strtolower($item);
 
-      self::includeHeader($title);
+      self::includeHeader($title, $sector, $item, $option);
 
       $body_class = "layout_".$_SESSION['glpilayout'];
       if ((strpos($_SERVER['REQUEST_URI'], ".form.php") !== false)
@@ -1729,7 +1712,7 @@ class Html {
 
       // Back to top
       Html::scriptStart();
-      echo "$(document).ready(function(){
+      echo "$(function() {
                BackToTop({
                text : '^',
                class: 'vsubmit',
@@ -1808,6 +1791,7 @@ class Html {
          echo "</div>";
       }
       self::displayDebugInfos();
+      self::loadJavascript();
       echo "</body></html>";
 
       if (!$keepDB) {
@@ -2184,6 +2168,7 @@ class Html {
       }
       self::displayDebugInfos();
       echo "</body></html>";
+      self::loadJavascript();
       closeDBConnections();
    }
 
@@ -2243,6 +2228,7 @@ class Html {
          echo "</div></div>";
 
          echo "<div id='footer-login'>" . self::getCopyrightMessage() . "</div>";
+         self::loadJavascript();
          echo "</body></html>";
       }
       closeDBConnections();
@@ -2283,6 +2269,7 @@ class Html {
       $FOOTER_LOADED = true;
 
       // Print foot
+      self::loadJavascript();
       echo "</body></html>";
    }
 
@@ -2507,7 +2494,7 @@ class Html {
                </div>";
 
       // permit to shift select checkboxes
-      $out.= Html::scriptBlock("\$('#$container_id input[type=\"checkbox\"]').shiftSelectable();");
+      $out.= Html::scriptBlock("\$(function() {\$('#$container_id input[type=\"checkbox\"]').shiftSelectable();});");
 
       return $out;
    }
@@ -2656,7 +2643,7 @@ class Html {
       $out .= "</span>";
 
       if (!empty($criterion)) {
-         $out .= Html::scriptBlock("\$('$criterion').shiftSelectable();");
+         $out .= Html::scriptBlock("\$(function() {\$('$criterion').shiftSelectable();});");
       }
 
       return $out;
@@ -3069,7 +3056,6 @@ class Html {
     *   - rand       : specific random value (default generated one)
    **/
    static function showColorField($name, $options=array()) {
-
       $p['value']      = '';
       $p['rand']       = mt_rand();
       $p['display']    = true;
@@ -3080,7 +3066,7 @@ class Html {
       }
       $field_id = Html::cleanId("color_".$name.$p['rand']);
       $output   = "<input type='text' id='$field_id' name='$name' value='".$p['value']."'>";
-      $js       = "$('#$field_id').spectrum({preferredFormat: 'hex'});";
+      $js       = "\$(function() {\$('#$field_id').spectrum({preferredFormat: 'hex'})});";
       $output  .= Html::scriptBlock($js);
 
       if ($p['display']) {
@@ -5160,7 +5146,7 @@ class Html {
                   },
                send: function (e, data) {
                   if (1==".(($p['imagePaste'])?1:0)."
-                     && tinyMCE != undefined
+                     && typeof tinyMCE != 'undefined'
                      && tinyMCE.imagePaste != undefined
                      && tinyMCE.imagePaste.pasteddata == undefined
                      && tinyMCE.imagePaste.stockimage == undefined) {
@@ -5193,7 +5179,7 @@ class Html {
                                  ";
       if ($p['imagePaste']) {
          $script.= "             // Insert tag in textarea
-                                 if (tinyMCE != undefined) {\n
+                                 if (typeof tinyMCE != 'undefined') {\n
                                     tinyMCE.activeEditor.execCommand('mceInsertContent', false, '<p>'+tag[index].tag+'</p>');\n
                                     if (tinyMCE.imagePaste != undefined) {
                                        tinyMCE.imagePaste.pasteddata = undefined;
@@ -5225,7 +5211,7 @@ class Html {
             $('<input/>').attr('type', 'hidden').attr('name', '_tag_".$p['name']."['+fileindex".$p['rand']."+']').attr('value', tag.name).appendTo(p);\n
 
             // Coordinates
-            if (tinyMCE != undefined
+            if (typeof tinyMCE != 'undefined'
                   && tinyMCE.imagePaste != undefined
                   && (tinyMCE.imagePaste.imageCoordinates != undefined || tinyMCE.imagePaste.imageCoordinates != null)) {
                $('<input/>').attr('type', 'hidden').attr('name', '_coordinates['+fileindex".$p['rand']."+']').attr('value', encodeURIComponent(JSON.stringify(tinyMCE.imagePaste.imageCoordinates))).appendTo(p2);
@@ -5527,7 +5513,7 @@ class Html {
    **/
    static function ajaxForm($selector, $success = "console.log(html);") {
       echo Html::scriptBlock("
-      $(document).ready(function() {
+      $(function() {
          var lastClicked = null;
          $('input[type=submit]').click(function(e) {
             e = e || event;
@@ -5764,6 +5750,142 @@ class Html {
          $text = Toolbox::substr($text, 0, 14)."...";
       }
       return $text;
+   }
+
+   /**
+    * A a required javascript lib
+    *
+    * @param string|array $name Either a know name, or an array defining lib
+    *
+    * @return void
+    */
+   static public function requireJs($name) {
+      global $CFG_GLPI, $PLUGIN_HOOKS;
+
+      if (isset($_SESSION['glpi_js_toload'][$name])) {
+         //already in stack
+         return;
+      }
+      switch ($name) {
+         case 'tinymce':
+            $_SESSION['glpi_js_toload'][$name][] = 'tiny_mce/tinymce.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/imagepaste/jquery.image_paste.min.js';
+            break;
+         case 'fullcalendar':
+            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/fullcalendar/lib/moment.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/fullcalendar/fullcalendar.min.js';
+            if (isset($_SESSION['glpilanguage'])) {
+               $filename = "jqueryplugins/fullcalendar/locale/".
+                  strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]).".js";
+               if (file_exists(GLPI_ROOT . '/lib/' . $filename)) {
+                  $_SESSION['glpi_js_toload'][$name][] = $filename;
+               }
+            }
+            break;
+         case 'jstree':
+            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/jstree/jquery.jstree.min.js';
+            break;
+         case 'gantt':
+            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/jquery-gantt/js/jquery.fn.gantt.min.js';
+            break;
+         case 'rateit':
+            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/rateit/jquery.rateit.min.js';
+            break;
+         case 'colorpicker':
+            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/spectrum-colorpicker/spectrum-min.js';
+            break;
+         case 'fileupload':
+            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/jquery-file-upload/js/jquery.fileupload.min.js';
+            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/jquery-file-upload/js/jquery.iframe-transport.min.js';
+            break;
+         case 'jcrop':
+            $_SESSION['glpi_js_toload'][$name][] = 'jqueryplugins/jcrop/jquery.Jcrop.min.js';
+            break;
+         default:
+            $found = false;
+            if (isset($PLUGIN_HOOKS['javascript']) && isset($PLUGIN_HOOKS['javascript'][$name])) {
+               $jslibs = $PLUGIN_HOOKS['javascript'][$name];
+               if (!is_array($jslibs)) {
+                  $jslibs = [$jslibs];
+               }
+               foreach ($jslibs as $jslib) {
+                  $_SESSION['glpi_js_toload'][$name][] = $jslib;
+               }
+            }
+            if (!$found) {
+               Toolbox::logDebug("JS lib $name is not known!");
+            }
+      }
+   }
+
+
+   /**
+    * Load javascripts
+    *
+    * @return void
+    */
+   static private function loadJavascript() {
+      global $CFG_GLPI, $PLUGIN_HOOKS;
+
+      //load on demand scripts
+      if (isset($_SESSION['glpi_js_toload'])) {
+         foreach ($_SESSION['glpi_js_toload'] as $key => $script) {
+            if (is_array($script)) {
+               foreach ($script as $s) {
+                  echo Html::script("{$CFG_GLPI['root_doc']}/lib/$s");
+               }
+            } else {
+               echo Html::script("{$CFG_GLPI['root_doc']}/lib/$script");
+            }
+            unset($_SESSION['glpi_js_toload'][$key]);
+         }
+      }
+
+      //locales for js libraries
+      if (isset($_SESSION['glpilanguage'])) {
+         // jquery ui
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/i18n/jquery.ui.datepicker-".
+                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js");
+         $filename = "/lib/jqueryplugins/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-".
+                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
+         if (file_exists(GLPI_ROOT.$filename)) {
+            echo Html::script($CFG_GLPI["root_doc"].$filename);
+         }
+
+         // select2
+         $filename = "/lib/jqueryplugins/select2/select2_locale_".
+                     $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js";
+         if (file_exists(GLPI_ROOT.$filename)) {
+            echo Html::script($CFG_GLPI["root_doc"].$filename);
+         }
+      }
+
+      // Some Javascript-Functions which we may need later
+      echo Html::script($CFG_GLPI["root_doc"].'/script.js');
+      self::redefineAlert();
+      self::redefineConfirm();
+
+      // add Ajax display message after redirect
+      Html::displayAjaxMessageAfterRedirect();
+
+      // Add specific javascript for plugins
+      if (isset($PLUGIN_HOOKS['add_javascript']) && count($PLUGIN_HOOKS['add_javascript'])) {
+
+         foreach ($PLUGIN_HOOKS["add_javascript"] as $plugin => $files) {
+            $version = Plugin::getInfo($plugin, 'version');
+            if (is_array($files)) {
+               foreach ($files as $file) {
+                  if (file_exists(GLPI_ROOT."/plugins/$plugin/$file")) {
+                     echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$file", ['version' => $version]);
+                  }
+               }
+            } else {
+               if (file_exists(GLPI_ROOT."/plugins/$plugin/$files")) {
+                  echo Html::script($CFG_GLPI["root_doc"]."/plugins/$plugin/$files", ['version' => $version]);
+               }
+            }
+         }
+      }
    }
 }
 

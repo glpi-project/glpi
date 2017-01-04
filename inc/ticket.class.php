@@ -4423,7 +4423,7 @@ class Ticket extends CommonITILObject {
          echo "<div id='content$rand_text'>";
          echo "<textarea id='$content_id' name='content' style='width:100%' rows='$rows'>".
                 $this->fields["content"]."</textarea></div>";
-         echo Html::scriptBlock("$(document).ready(function() { $('#$content_id').autogrow(); });");
+         echo Html::scriptBlock("$(function() { $('#$content_id').autogrow(); });");
          echo $tt->getEndHiddenFieldValue('content', $this);
 
       } else {
@@ -4465,8 +4465,9 @@ class Ticket extends CommonITILObject {
             if (isset($values["_link"])
                 && !empty($values["_link"]['tickets_id_2'])) {
                echo "<script language='javascript'>";
+               echo "$(function() {";
                echo Html::jsShow("linkedticket$rand_linked_ticket");
-               echo "</script>";
+               echo "});</script>";
             }
          }
 
@@ -6706,7 +6707,7 @@ class Ticket extends CommonITILObject {
 
       // end timeline
       echo "</div>"; // h_item $user_position
-      echo "<script type='text/javascript'>read_more();</script>";
+      echo "<script type='text/javascript'>$(function() {read_more();});</script>";
    }
 
 
@@ -6777,7 +6778,7 @@ class Ticket extends CommonITILObject {
       echo "</ul>";
       echo "</div>";
 
-      echo "<script type='text/javascript'>filter_timeline();</script>";
+      echo "<script type='text/javascript'>$(function() {filter_timeline();});</script>";
    }
 
    /**
@@ -6967,7 +6968,7 @@ class Ticket extends CommonITILObject {
       }
       $html .= "</ul></div>";
 
-      $html.= "<script type='text/javascript'>split_button();</script>";
+      $html.= "<script type='text/javascript'>$(function() {split_button();});</script>";
       return $html;
    }
 

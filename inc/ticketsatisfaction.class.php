@@ -134,6 +134,7 @@ class TicketSatisfaction extends CommonDBTM {
          echo "</select>";
          echo "<div class='rateit' id='stars'></div>";
          echo  "<script type='text/javascript'>\n";
+         echo "$(function() {";
          echo "$('#stars').rateit({value: ".$this->fields["satisfaction"].",
                                    min : 0,
                                    max : 5,
@@ -141,7 +142,7 @@ class TicketSatisfaction extends CommonDBTM {
                                    backingfld: '#satisfaction_data',
                                    ispreset: true,
                                    resetable: false});";
-         echo "</script>";
+         echo "});</script>";
 
          echo "</td></tr>";
 

@@ -309,7 +309,7 @@ class ObjectLock extends CommonDBTM {
                                           'items_id' => $this->itemid,
                                           'users_id' => Session::getLoginUserID()))) {
          // add a script to unlock the Object
-         echo Html::scriptBlock( "$(document).ready( function() {
+         echo Html::scriptBlock( "$(function() {
                   $(window).on('beforeunload', function() {
                      //debugger;
                       $.ajax({
@@ -478,7 +478,7 @@ class ObjectLock extends CommonDBTM {
       echo "</div>";
 
       echo Html::scriptBlock("
-         $(document).ready(function() {
+         $(function() {
             $('#message_after_lock').dialog({
                dialogClass: 'message_after_redirect',
                minHeight: 10,

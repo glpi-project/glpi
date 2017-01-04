@@ -2600,6 +2600,11 @@ ul#menu ul.ssmenu {
     border-width: 0px;
 }
 
+.iframe.hidden {
+   height: 0;
+   width: 0;
+}
+
 /* ################--------------- Footer  ---------------#################### */
 
 #footer {

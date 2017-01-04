@@ -93,6 +93,14 @@ function update91to92() {
       $DB->queryOrDie($query, "9.2 make glpi_softwarelicensetypes a tree dropdown");
    }
 
+   // give READ right on components to profiles having UPDATE right
+   $query = "UPDATE `glpi_profilerights`
+             SET `rights` = `rights` | " . READ . "
+             WHERE (`rights` & " . UPDATE .") = '" . UPDATE ."'
+                   AND `name` = 'device'";
+   $DB->queryOrDie($query, "grant READ right on components to profiles having UPDATE right");
+
+
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

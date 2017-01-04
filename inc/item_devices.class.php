@@ -919,7 +919,6 @@ class Item_Devices extends CommonDBRelation {
    function getRights($interface='central') {
 
       $values = parent::getRights();
-      unset($values[READ]);
       return $values;
    }
 

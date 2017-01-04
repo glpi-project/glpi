@@ -624,10 +624,11 @@ class RuleCriteria extends CommonDBChild {
          $params['condition'] = $this->fields['condition'];
          $params['pattern']   = $this->fields['pattern'];
          echo "<script type='text/javascript' >\n";
+         echo "$(function() {";
          Ajax::updateItemJsCode("criteria_span",
                                  $CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",
                                  $params);
-         echo '</script>';
+         echo '});</script>';
       }
 
       if ($rule->specific_parameters) {
