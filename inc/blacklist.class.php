@@ -79,14 +79,14 @@ class Blacklist extends CommonDropdown {
                          'type'  => 'text',
                          'list'  => true),
                    array('name'  => 'type',
-                         'label' => _n('Type','Types',1),
+                         'label' => _n('Type', 'Types', 1),
                          'type'  => '',
                          'list'  => true));
    }
 
 
    static function getTypeName($nb=0) {
-      return _n('Blacklist','Blacklists',$nb);
+      return _n('Blacklist', 'Blacklists', $nb);
    }
 
 
@@ -95,20 +95,25 @@ class Blacklist extends CommonDropdown {
     *
     * @return array of search option
    **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                    = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'value',
+         'name'               => __('Value'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[11]['table']       = $this->getTable();
-      $tab[11]['field']       = 'value';
-      $tab[11]['name']        = __('Value');
-      $tab[11]['datatype']    = 'text';
-
-      $tab[12]['table']      = $this->getTable();
-      $tab[12]['field']      = 'type';
-      $tab[12]['name']       = _n('Type','Types',1);
-      $tab[12]['searchtype'] = array('equals', 'notequals');
-      $tab[12]['datatype']   = 'specific';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'type',
+         'name'               => _n('Type', 'Types', 1),
+         'searchtype'         => ['equals', 'notequals'],
+         'datatype'           => 'specific'
+      ];
 
       return $tab;
    }
@@ -227,7 +232,7 @@ class Blacklist extends CommonDropdown {
       $options[self::MAC]    = __('MAC');
       $options[self::SERIAL] = __('Serial number');
       $options[self::UUID]   = __('UUID');
-      $options[self::EMAIL]  = _n('Email','Emails',1);
+      $options[self::EMAIL]  = _n('Email', 'Emails', 1);
 
       return $options;
    }

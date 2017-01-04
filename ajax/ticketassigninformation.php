@@ -36,7 +36,7 @@
 */
 
 // Direct access to file
-if (strpos($_SERVER['PHP_SELF'],"ticketassigninformation.php")) {
+if (strpos($_SERVER['PHP_SELF'], "ticketassigninformation.php")) {
    $AJAX_INCLUDE = 1;
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
@@ -61,7 +61,7 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
 
    $options2['reset'] = 'reset';
 
-   $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
+   $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
    //TRANS: %d is number of objects for the user
    echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
@@ -84,7 +84,7 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
 
    $options2['reset']         = 'reset';
 
-   $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
+   $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
    echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
    printf(__('%1$s: %2$s'), __('Processing'),
@@ -107,7 +107,7 @@ if (isset($_POST['users_id_assign']) && ($_POST['users_id_assign'] > 0)) {
 
    $options2['reset'] = 'reset';
 
-   $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
+   $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2, '&amp;');
 
    //TRANS: %d is number of objects for the user
    echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";

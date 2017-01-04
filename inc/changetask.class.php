@@ -183,7 +183,7 @@ class ChangeTask extends CommonITILTask {
     * @return Nothing (display function)
    **/
    static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
-      return parent::genericDisplayPlanningItem(__CLASS__,$val, $who, $type, $complete);
+      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }
 
 

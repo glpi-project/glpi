@@ -67,11 +67,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       $this->addStandardTab($this->getType(), $ong, $options);
       if ($this->dohistory) {
-         $this->addStandardTab('Log',$ong, $options);
+         $this->addStandardTab('Log', $ong, $options);
       }
 
       if (DropdownTranslation::canBeTranslated($this)) {
-         $this->addStandardTab('DropdownTranslation',$ong, $options);
+         $this->addStandardTab('DropdownTranslation', $ong, $options);
       }
 
       return $ong;
@@ -244,7 +244,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                // And we must update the level of the current node ...
                $fieldsToUpdate[] = "`level` = '$nextNodeLevel'";
             }
-            $query .= implode(', ',$fieldsToUpdate)." WHERE `id`= '".$data["id"]."'";
+            $query .= implode(', ', $fieldsToUpdate)." WHERE `id`= '".$data["id"]."'";
             $DB->query($query);
             // Translations :
             if (Session::haveTranslations($this->getType(), 'completename')) {
@@ -591,74 +591,104 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @return array of search option
    **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                          = array();
-      $tab['common']                = __('Characteristics');
+      $tab[] = [
+         'id'   => 'common',
+         'name' => __('Characteristics')
+      ];
 
-      $tab[1]['table']              = $this->getTable();
-      $tab[1]['field']              = 'completename';
-      $tab[1]['name']               = __('Complete name');
-      $tab[1]['datatype']           = 'itemlink';
-      $tab[1]['massiveaction']      = false;
+      $tab[] = [
+         'id'                => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'completename',
+         'name'               => __('Complete name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']              = $this->getTable();
-      $tab[2]['field']              = 'id';
-      $tab[2]['name']               = __('ID');
-      $tab[2]['massiveaction']      = false;
-      $tab[2]['datatype']           = 'number';
+      $tab[] = [
+         'id'                => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[14]['table']             = $this->getTable();
-      $tab[14]['field']             = 'name';
-      $tab[14]['name']              = __('Name');
-      $tab[14]['datatype']          = 'itemlink';
+      $tab[] = [
+         'id'                => '14',
+         'table'             => $this->getTable(),
+         'field'             => 'name',
+         'name'              => __('Name'),
+         'datatype'          => 'itemlink'
+      ];
 
-      $tab[13]['table']             = $this->getTable();
-      $tab[13]['field']             = 'completename';
-      $tab[13]['name']              = __('Father');
-      $tab[13]['datatype']          = 'dropdown';
-      $tab[13]['massiveaction']     = false;
-      // Add virtual condition to relink table
-      $tab[13]['joinparams']        = array('condition' => "AND 1=1");
+      $tab[] = [
+         'id'                => '13',
+         'table'             => $this->getTable(),
+         'field'             => 'completename',
+         'name'              => __('Father'),
+         'datatype'          => 'dropdown',
+         'massiveaction'     => false,
+         // Add virtual condition to relink table
+         'joinparams'        => ['condition' => "AND 1=1"]
+      ];
 
-      $tab[16]['table']             = $this->getTable();
-      $tab[16]['field']             = 'comment';
-      $tab[16]['name']              = __('Comments');
-      $tab[16]['datatype']          = 'text';
+      $tab[] = [
+         'id'                => '16',
+         'table'             => $this->getTable(),
+         'field'             => 'comment',
+         'name'              => __('Comments'),
+         'datatype'          => 'text'
+      ];
 
       if ($this->isEntityAssign()) {
-         $tab[80]['table']          = 'glpi_entities';
-         $tab[80]['field']          = 'completename';
-         $tab[80]['name']           = __('Entity');
-         $tab[80]['massiveaction']  = false;
-         $tab[80]['datatype']       = 'dropdown';
+         $tab[] = [
+            'id'             => '80',
+            'table'          => 'glpi_entities',
+            'field'          => 'completename',
+            'name'           => __('Entity'),
+            'massiveaction'  => false,
+            'datatype'       => 'dropdown'
+         ];
       }
 
       if ($this->maybeRecursive()) {
-         $tab[86]['table']          = $this->getTable();
-         $tab[86]['field']          = 'is_recursive';
-         $tab[86]['name']           = __('Child entities');
-         $tab[86]['datatype']       = 'bool';
+         $tab[] = [
+            'id'             => '86',
+            'table'          => $this->getTable(),
+            'field'          => 'is_recursive',
+            'name'           => __('Child entities'),
+            'datatype'       => 'bool'
+         ];
       }
 
       if ($this->isField('date_mod')) {
-         $tab[19]['table']          = $this->getTable();
-         $tab[19]['field']          = 'date_mod';
-         $tab[19]['name']           = __('Last update');
-         $tab[19]['datatype']       = 'datetime';
-         $tab[19]['massiveaction']  = false;
+         $tab[] = [
+            'id'             => '19',
+            'table'          => $this->getTable(),
+            'field'          => 'date_mod',
+            'name'           => __('Last update'),
+            'datatype'       => 'datetime',
+            'massiveaction'  => false
+         ];
       }
 
       if ($this->isField('date_creation')) {
-         $tab[121]['table']          = $this->getTable();
-         $tab[121]['field']          = 'date_creation';
-         $tab[121]['name']           = __('Creation date');
-         $tab[121]['datatype']       = 'datetime';
-         $tab[121]['massiveaction']  = false;
+         $tab[] = [
+            'id'             => '121',
+            'table'          => $this->getTable(),
+            'field'          => 'date_creation',
+            'name'           => __('Creation date'),
+            'datatype'       => 'datetime',
+            'massiveaction'  => false
+         ];
       }
 
       // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
       return $tab;
    }
@@ -723,9 +753,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
                                                  $input['entities_id'], $this->maybeRecursive());
          }
          // Check twin :
-         if ($result_twin = $DB->query($query) ) {
+         if ($result_twin = $DB->query($query)) {
             if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin,0,"id");
+               return $DB->result($result_twin, 0, "id");
             }
          }
 
@@ -743,7 +773,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          }
 
          // Check twin :
-         if ($result_twin = $DB->query($query) ) {
+         if ($result_twin = $DB->query($query)) {
             if ($DB->numrows($result_twin) > 0) {
                return $DB->result($result_twin, 0, "id");
             }
@@ -771,7 +801,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
 
       // Import a full tree from completename
-      $names  = explode('>',$input['completename']);
+      $names  = explode('>', $input['completename']);
       $fk     = $this->getForeignKeyField();
       $i      = count($names);
       $parent = 0;

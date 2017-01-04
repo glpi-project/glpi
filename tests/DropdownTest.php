@@ -107,7 +107,7 @@ class DropdownTest extends DbTestCase {
     * @dataProvider dataTestTreeImport
     */
    public function testTreeImport($input, $result, $complete, $msg) {
-      $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity',  true);
+      $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);
       $id = Dropdown::import('Location', $input);
       if ($result) {
          $this->assertGreaterThan(0, $id, $msg);
@@ -133,7 +133,7 @@ class DropdownTest extends DbTestCase {
 
       // basic test returns string only
       $expected = $cat->fields['name']." > ".$subCat->fields['name'] ;
-      $ret = Dropdown::getDropdownName( 'glpi_taskcategories',  $subCat->getID() ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID() ) ;
       $this->assertEquals($expected, $ret);
 
       // test of return with comments
@@ -141,13 +141,13 @@ class DropdownTest extends DbTestCase {
                         'comment' => "<span class='b'>Complete name</span>: ".$cat->fields['name']." > "
                                     .$subCat->fields['name']."<br><span class='b'>&nbsp;Comments&nbsp;</span>"
                                     .$subCat->fields['comment']) ;
-      $ret = Dropdown::getDropdownName( 'glpi_taskcategories',  $subCat->getID(), true ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true ) ;
       $this->assertEquals($expected, $ret);
 
       // test of return without $tooltip
       $expected = array('name'    => $cat->fields['name']." > ".$subCat->fields['name'],
                         'comment' => $subCat->fields['comment']) ;
-      $ret = Dropdown::getDropdownName( 'glpi_taskcategories',  $subCat->getID(), true, true, false ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true, true, false ) ;
       $this->assertEquals($expected, $ret);
 
       // test of return with translations
@@ -156,7 +156,7 @@ class DropdownTest extends DbTestCase {
       $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
       $expected = array('name'    => 'FR - _cat_1 > FR - _subcat_1',
                         'comment' => 'FR - Commentaire pour sous-catégorie _subcat_1') ;
-      $ret = Dropdown::getDropdownName( 'glpi_taskcategories',  $subCat->getID(), true, true, false ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_taskcategories', $subCat->getID(), true, true, false ) ;
       $this->assertEquals($expected, $ret);
       // switch back to default language
       $_SESSION["glpilanguage"] = Session::loadLanguage( 'en_US' ) ;
@@ -168,19 +168,19 @@ class DropdownTest extends DbTestCase {
       ///////////
       // Computer
       $computer = getItemByTypeName( 'Computer', '_test_pc01' ) ;
-      $ret = Dropdown::getDropdownName( 'glpi_computers',  $computer->getID()) ;
+      $ret = Dropdown::getDropdownName( 'glpi_computers', $computer->getID()) ;
       $this->assertEquals($computer->getName(), $ret);
 
       $expected = array('name'    => $computer->getName(),
                         'comment' => $computer->fields['comment']) ;
-      $ret = Dropdown::getDropdownName( 'glpi_computers',  $computer->getID(), true) ;
+      $ret = Dropdown::getDropdownName( 'glpi_computers', $computer->getID(), true) ;
       $this->assertEquals($expected, $ret);
 
       //////////
       // Contact
       $contact = getItemByTypeName( 'Contact', '_contact01_name' ) ;
       $expected = $contact->getName();
-      $ret = Dropdown::getDropdownName( 'glpi_contacts',  $contact->getID()) ;
+      $ret = Dropdown::getDropdownName( 'glpi_contacts', $contact->getID()) ;
       $this->assertEquals($expected, $ret);
 
       // test of return with comments
@@ -189,33 +189,33 @@ class DropdownTest extends DbTestCase {
                                     "Phone: </span>0123456789<br><span class='b'>Phone 2: </span>0123456788<br><span class='b'>".
                                     "Mobile phone: </span>0623456789<br><span class='b'>Fax: </span>0123456787<br>".
                                     "<span class='b'>Email: </span>_contact01_firstname._contact01_name@glpi.com") ;
-      $ret = Dropdown::getDropdownName( 'glpi_contacts',  $contact->getID(), true ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_contacts', $contact->getID(), true ) ;
       $this->assertEquals($expected, $ret);
 
       // test of return without $tooltip
       $expected = array('name'    => $contact->getName(),
                         'comment' => $contact->fields['comment']) ;
-      $ret = Dropdown::getDropdownName( 'glpi_contacts',  $contact->getID(), true, true, false ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_contacts', $contact->getID(), true, true, false ) ;
       $this->assertEquals($expected, $ret);
 
       ///////////
       // Supplier
       $supplier = getItemByTypeName( 'Supplier', '_suplier01_name' ) ;
       $expected = $supplier->getName();
-      $ret = Dropdown::getDropdownName( 'glpi_suppliers',  $supplier->getID()) ;
+      $ret = Dropdown::getDropdownName( 'glpi_suppliers', $supplier->getID()) ;
       $this->assertEquals($expected, $ret);
 
       // test of return with comments
       $expected = array('name'    => $supplier->getName(),
                         'comment' => "Comment for supplier _suplier01_name<br><span class='b'>Phone: </span>0123456789<br>".
                                      "<span class='b'>Fax: </span>0123456787<br><span class='b'>Email: </span>info@_supplier01_name.com") ;
-      $ret = Dropdown::getDropdownName( 'glpi_suppliers',  $supplier->getID(), true ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_suppliers', $supplier->getID(), true ) ;
       $this->assertEquals($expected, $ret);
 
       // test of return without $tooltip
       $expected = array('name'    => $supplier->getName(),
                         'comment' => $supplier->fields['comment']) ;
-      $ret = Dropdown::getDropdownName( 'glpi_suppliers',  $supplier->getID(), true, true, false ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_suppliers', $supplier->getID(), true, true, false ) ;
       $this->assertEquals($expected, $ret);
 
       ///////////
@@ -223,24 +223,24 @@ class DropdownTest extends DbTestCase {
       $netpoint = getItemByTypeName( 'Netpoint', '_netpoint01' ) ;
       $location = getItemByTypeName( 'Location', '_location01' ) ;
       $expected = $netpoint->getName()." (".$location->getName().")" ;
-      $ret = Dropdown::getDropdownName( 'glpi_netpoints',  $netpoint->getID()) ;
+      $ret = Dropdown::getDropdownName( 'glpi_netpoints', $netpoint->getID()) ;
       $this->assertEquals($expected, $ret);
 
       // test of return with comments
       $expected = array('name'    => $expected,
                         'comment' => "Comment for netpoint _netpoint01") ;
-      $ret = Dropdown::getDropdownName( 'glpi_netpoints',  $netpoint->getID(), true ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_netpoints', $netpoint->getID(), true ) ;
       $this->assertEquals($expected, $ret);
 
       // test of return without $tooltip
-      $ret = Dropdown::getDropdownName( 'glpi_netpoints',  $netpoint->getID(), true, true, false ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_netpoints', $netpoint->getID(), true, true, false ) ;
       $this->assertEquals($expected, $ret);
 
       ///////////
       // Budget
       $budget = getItemByTypeName( 'Budget', '_budget01' ) ;
       $expected = $budget->getName() ;
-      $ret = Dropdown::getDropdownName( 'glpi_budgets',  $budget->getID()) ;
+      $ret = Dropdown::getDropdownName( 'glpi_budgets', $budget->getID()) ;
       $this->assertEquals($expected, $ret);
 
       // test of return with comments
@@ -248,13 +248,13 @@ class DropdownTest extends DbTestCase {
                         'comment' => "Comment for budget _budget01<br><span class='b'>Location</span>: ".
                                        "_location01<br><span class='b'>Type</span>: _budgettype01<br><span class='b'>".
                                        "Start date</span>: 2016-10-18 <br><span class='b'>End date</span>: 2016-12-31 ") ;
-      $ret = Dropdown::getDropdownName( 'glpi_budgets',  $budget->getID(), true ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_budgets', $budget->getID(), true ) ;
       $this->assertEquals($expected, $ret);
 
       // test of return without $tooltip
       $expected = array('name'    => $budget->getName(),
                         'comment' => $budget->fields['comment']) ;
-      $ret = Dropdown::getDropdownName( 'glpi_budgets',  $budget->getID(), true, true, false ) ;
+      $ret = Dropdown::getDropdownName( 'glpi_budgets', $budget->getID(), true, true, false ) ;
       $this->assertEquals($expected, $ret);
    }
 }

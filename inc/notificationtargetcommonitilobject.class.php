@@ -472,7 +472,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket'));
          $this->addTarget(Notification::OBSERVER_GROUP, __('Watcher group'));
          $this->addTarget(Notification::OBSERVER, __('Watcher'));
-         $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,__('Watcher group manager'));
+         $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP, __('Watcher group manager'));
          $this->addTarget(Notification::OBSERVER_GROUP_WITHOUT_SUPERVISOR,
                           __("Watcher group except manager users"));
       }
@@ -778,7 +778,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                $users[] = $tmpusr['alternative_email'];
             }
          }
-         $datas["##$objettype.authors##"] = implode(', ',$users);
+         $datas["##$objettype.authors##"] = implode(', ', $users);
       }
 
       $datas["##$objettype.openbyuser##"] = '';
@@ -805,7 +805,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                $users[$uid] = $user_tmp->getName();
             }
          }
-         $datas["##$objettype.assigntousers##"] = implode(', ',$users);
+         $datas["##$objettype.assigntousers##"] = implode(', ', $users);
       }
 
       $datas["##$objettype.assigntosupplier##"] = '';
@@ -818,7 +818,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                $suppliers[$uid] = $supplier_tmp->getName();
             }
          }
-         $datas["##$objettype.assigntosupplier##"] = implode(', ',$suppliers);
+         $datas["##$objettype.assigntosupplier##"] = implode(', ', $suppliers);
       }
 
       $datas["##$objettype.groups##"] = '';
@@ -828,7 +828,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $gid          = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
-         $datas["##$objettype.groups##"] = implode(', ',$groups);
+         $datas["##$objettype.groups##"] = implode(', ', $groups);
       }
 
       $datas["##$objettype.observergroups##"] = '';
@@ -838,7 +838,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $gid          = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
-         $datas["##$objettype.observergroups##"] = implode(', ',$groups);
+         $datas["##$objettype.observergroups##"] = implode(', ', $groups);
       }
 
       $datas["##$objettype.observerusers##"] = '';
@@ -854,7 +854,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                $users[] = $tmp['alternative_email'];
             }
          }
-         $datas["##$objettype.observerusers##"] = implode(', ',$users);
+         $datas["##$objettype.observerusers##"] = implode(', ', $users);
       }
 
       $datas["##$objettype.assigntogroups##"] = '';
@@ -864,7 +864,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $gid          = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
-         $datas["##$objettype.assigntogroups##"] = implode(', ',$groups);
+         $datas["##$objettype.assigntogroups##"] = implode(', ', $groups);
       }
 
       $datas["##$objettype.solution.type##"]='';
@@ -965,7 +965,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
          $restrict .= " ORDER BY `begin_date` DESC, `id` ASC";
 
-         $costs          = getAllDatasFromTable(getTableForItemType($costtype),$restrict);
+         $costs          = getAllDatasFromTable(getTableForItemType($costtype), $restrict);
          $datas['costs'] = array();
          foreach ($costs as $cost) {
             $tmp = array();
@@ -998,7 +998,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          }
          $restrict .= " ORDER BY `date` DESC, `id` ASC";
 
-         $tasks          = getAllDatasFromTable($taskobj->getTable(),$restrict);
+         $tasks          = getAllDatasFromTable($taskobj->getTable(), $restrict);
          $datas['tasks'] = array();
          foreach ($tasks as $task) {
             $tmp                          = array();
@@ -1069,7 +1069,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'author.phone'                      => __('Phone'),
                     'author.phone2'                     => __('Phone 2'),
                     'author.email'                      => _n('Email', 'Emails', 1),
-                    'author.title'                      => _x('person','Title'),
+                    'author.title'                      => _x('person', 'Title'),
                     'author.category'                   => __('Category'),
                     $objettype.'.openbyuser'            => __('Writer'),
                     $objettype.'.lastupdater'           => __('Last updater'),

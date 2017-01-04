@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
    if ($dropdown->isUsed()
        && empty($_POST["forcepurge"])) {
       Html::header($dropdown->getTypeName(1), $_SERVER['PHP_SELF'], "config",
-                   $dropdown->second_level_menu, str_replace('glpi_','',$dropdown->getTable()));
+                   $dropdown->second_level_menu, str_replace('glpi_', '', $dropdown->getTable()));
       $dropdown->showDeleteConfirmForm($_SERVER['PHP_SELF']);
       Html::footer();
    } else {
@@ -118,7 +118,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_GET['_in_modal'])) {
-   Html::popHeader($dropdown->getTypeName(1),$_SERVER['PHP_SELF']);
+   Html::popHeader($dropdown->getTypeName(1), $_SERVER['PHP_SELF']);
    $dropdown->showForm($_GET["id"]);
    Html::popFooter();
 

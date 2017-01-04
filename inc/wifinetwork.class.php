@@ -89,7 +89,7 @@ class WifiNetwork extends CommonDropdown {
 
       $ong  = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('NetworkPort',$ong, $options);
+      $this->addStandardTab('NetworkPort', $ong, $options);
 
       return $ong;
    }
@@ -118,16 +118,17 @@ class WifiNetwork extends CommonDropdown {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
-
-      $tab[10]['table']    = $this->getTable();
-      $tab[10]['field']    = 'essid';
-      $tab[10]['name']     = __('ESSID');
-      $tab[10]['datatype'] = 'string';
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $this->getTable(),
+         'field'              => 'essid',
+         'name'               => __('ESSID'),
+         'datatype'           => 'string'
+      ];
 
       return $tab;
    }
-
 }

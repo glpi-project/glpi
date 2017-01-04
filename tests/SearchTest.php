@@ -229,7 +229,25 @@ class SearchTest extends DbTestCase {
             continue;
          }
          $item = getItemForItemtype($itemtype);
-         foreach ($item->getSearchOptions() as $key=>$data) {
+
+         $options = $item->getSearchOptions();
+         $compare_options = [];
+         foreach($options as $key => $value) {
+            if (is_array($value) && count($value) == 1) {
+               $compare_options[$key] = $value['name'];
+            } else {
+               $compare_options[$key] = $value;
+            }
+         }
+
+         $origin_options = file_get_contents(__DIR__ . '/search_options/' . $itemtype);
+         //do not use any assert() so we can store current values for comparison
+         if ($origin_options != var_export($compare_options, true)) {
+            //a simple way to compare ;)
+            //file_put_contents(__DIR__ . '/search_options/' . $itemtype .'.broken', var_export($compare_options, true));
+            throw new \Exception("$itemtype search options are broken!");
+         }
+         foreach ($options as $key=>$data) {
             if (is_int($key)) {
                $input = array(
                    'itemtype' => $itemtype,
@@ -310,5 +328,41 @@ class SearchTest extends DbTestCase {
          $this->assertArrayHasKey('data', $data, $data['last_errors']);
          $this->assertNotCount(0, $data['data'], $data['last_errors']);
       }
+   }
+
+   /**
+    * Test that getSearchOptions throws an exception when it finds a duplicate
+    */
+   public function testGetSearchOptionsWException() {
+      $item = new DupSearchOpt();
+      $error = 'Duplicate key 12 (One search option/Any option) in DupSearchOpt searchOptions!';
+      $catched = false;
+
+      try {
+         $options = $item->getSearchOptions();
+      } catch (\Exception $e) {
+         $catched = true;
+         $this->assertTrue($e instanceof \RuntimeException);
+         $this->assertEquals($error, $e->getMessage());
+      }
+      $this->assertTrue($catched, 'getSearchOptions exception has not been catched!');
+   }
+}
+
+class DupSearchOpt extends CommonDBTM {
+   public function getSearchOptionsNew() {
+      $tab = [];
+
+      $tab[] = [
+         'id'     => '12',
+         'name'   => 'One search option'
+      ];
+
+      $tab[] = [
+         'id'     => '12',
+         'name'   => 'Any option'
+      ];
+
+      return $tab;
    }
 }

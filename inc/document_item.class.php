@@ -78,7 +78,7 @@ class Document_Item extends CommonDBRelation{
          $ticket = new Ticket();
          // Not item linked for closed tickets
          if ($ticket->getFromDB($this->fields['items_id'])
-             && in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
+             && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
 
             return false;
          }
@@ -596,7 +596,7 @@ class Document_Item extends CommonDBRelation{
       $entity = $_SESSION["glpiactive_entity"];
       if ($item->isEntityAssign()) {
          /// Case of personal items : entity = -1 : create on active entity (Reminder case))
-         if ($item->getEntityID() >=0 ) {
+         if ($item->getEntityID() >=0) {
             $entity = $item->getEntityID();
          }
       }
@@ -661,17 +661,17 @@ class Document_Item extends CommonDBRelation{
 
          if ($item->isEntityAssign()) {
             /// Case of personal items : entity = -1 : create on active entity (Reminder case))
-            if ($item->getEntityID() >=0 ) {
+            if ($item->getEntityID() >=0) {
                $entity = $item->getEntityID();
             }
 
             if ($item->isRecursive()) {
-               $entities = getSonsOf('glpi_entities',$entity);
+               $entities = getSonsOf('glpi_entities', $entity);
             } else {
                $entities = $entity;
             }
          }
-         $limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
+         $limit = getEntitiesRestrictRequest(" AND ", "glpi_documents", '', $entities, true);
 
          $q = "SELECT COUNT(*)
                FROM `glpi_documents`
@@ -679,7 +679,7 @@ class Document_Item extends CommonDBRelation{
                $limit";
 
          $result = $DB->query($q);
-         $nb     = $DB->result($result,0,0);
+         $nb     = $DB->result($result, 0, 0);
 
          if ($item->getType() == 'Document') {
             $used[$item->getID()] = $item->getID();
@@ -817,7 +817,7 @@ class Document_Item extends CommonDBRelation{
                       AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
       if (Session::getLoginUserID()) {
-         $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
+         $query .= getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
       } else {
          // Anonymous access from FAQ
          $query .= " AND `glpi_documents`.`entities_id`= '0' ";
@@ -843,7 +843,7 @@ class Document_Item extends CommonDBRelation{
                           AND `glpi_documents_items`.`itemtype` = '".$item->getType()."' ";
 
          if (Session::getLoginUserID()) {
-            $query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
+            $query .= getEntitiesRestrictRequest(" AND", "glpi_documents", '', '', true);
          } else {
             // Anonymous access from FAQ
             $query .= " AND `glpi_documents`.`entities_id`='0' ";

@@ -446,7 +446,7 @@ class CommonGLPI {
             return true;
 
          default :
-            $data     = explode('$',$tab);
+            $data     = explode('$', $tab);
             $itemtype = $data[0];
             // Default set
             $tabnum   = 1;
@@ -585,7 +585,7 @@ class CommonGLPI {
 
       $itemtype = get_called_class();
       $link     = $itemtype::getFormURL($full);
-      $link    .= (strpos($link,'?') ? '&':'?').'id=' . $id;
+      $link    .= (strpos($link, '?') ? '&':'?').'id=' . $id;
       return $link;
    }
 
@@ -686,7 +686,7 @@ class CommonGLPI {
          if (isset($cleaned_options['stock_image'])) {
             unset($cleaned_options['stock_image']);
          }
-         $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options,'&amp;');
+         $extraparamhtml = "&amp;".Toolbox::append_params($cleaned_options, '&amp;');
          $extraparam     = "&".Toolbox::append_params($cleaned_options);
       }
       echo "<div class='glpi_tabs ".($this->isNewID($ID)?"new_form_tabs":"")."'>";
@@ -703,7 +703,7 @@ class CommonGLPI {
          $tabpage = $this->getTabsURL();
          $tabs    = array();
 
-         foreach ($onglets as $key => $val ) {
+         foreach ($onglets as $key => $val) {
             $tabs[$key] = array('title'  => $val,
                                 'url'    => $tabpage,
                                 'params' => "_target=$target&amp;_itemtype=".$this->getType().
@@ -765,7 +765,7 @@ class CommonGLPI {
                unset($cleanoptions[$key]);
             }
          }
-         $extraparamhtml = "&amp;".Toolbox::append_params($cleanoptions,'&amp;');
+         $extraparamhtml = "&amp;".Toolbox::append_params($cleanoptions, '&amp;');
          $extraparam     = "&".Toolbox::append_params($cleanoptions);
       }
 
@@ -787,7 +787,7 @@ class CommonGLPI {
          $next = $prev = $first = $last = -1;
          $current = false;
          if (is_array($glpilistitems)) {
-            $current = array_search($ID,$glpilistitems);
+            $current = array_search($ID, $glpilistitems);
             if ($current !== false) {
 
                if (isset($glpilistitems[$current+1])) {
@@ -815,17 +815,17 @@ class CommonGLPI {
          echo "<tr class='tab_bg_2'>";
 
          if ($first >= 0) {
-            echo "<td class='left' width='16px'><a href='$cleantarget?id=$first$extraparamhtml'>".
-                  "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
+            echo "<td class='left'><a href='$cleantarget?id=$first$extraparamhtml'>" .
+                "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
                     "\" title=\"".__s('First')."\" class='pointer'></a></td>";
          } else {
-            echo "<td class='left' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
-                                    __s('First')."\" title=\"".__s('First')."\"></td>";
+            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/first_off.png' alt=\"" .
+                __s('First')."\" title=\"".__s('First')."\"></td>";
          }
 
          if ($prev >= 0) {
-            echo "<td class='left' width='16px'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>".
-                  "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
+            echo "<td class='left'><a href='$cleantarget?id=$prev$extraparamhtml' id='previouspage'>" .
+                "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
                     "\" title=\"".__s('Previous')."\" class='pointer'></a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -836,11 +836,11 @@ class CommonGLPI {
                   });';
             echo Html::scriptBlock($js);
          } else {
-            echo "<td class='left' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
-                                    __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
+            echo "<td class='left'><img src='" . $CFG_GLPI["root_doc"] . "/pics/left_off.png' alt=\"" .
+                __s('Previous')."\" title=\"".__s('Previous')."\"></td>";
          }
 
-         echo "<td width='200px'><a href=\"".$glpilisturl."\">";
+         echo "<td><a href=\"" . $glpilisturl . "\">";
          if ($glpilisttitle) {
             echo $glpilisttitle;
          } else {
@@ -876,8 +876,8 @@ class CommonGLPI {
          }
 
          if ($next >= 0) {
-            echo "<td class='right' width='16px'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>".
-                  "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
+            echo "<td class='right'><a href='$cleantarget?id=$next$extraparamhtml' id='nextpage'>" .
+                "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
                     "\" title=\"".__s('Next')."\" class='pointer'></a></td>";
             $js = '$("body").keydown(function(e) {
                        if ($("input, textarea").is(":focus") === false) {
@@ -888,17 +888,17 @@ class CommonGLPI {
                   });';
             echo Html::scriptBlock($js);
          } else {
-            echo "<td class='right' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
-                                     __s('Next')."\" title=\"".__s('Next')."\"></td>";
+            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/right_off.png' alt=\"" .
+                __s('Next')."\" title=\"".__s('Next')."\"></td>";
          }
 
          if ($last >= 0) {
-            echo "<td class='right' width='16px'><a href='$cleantarget?id=$last$extraparamhtml'>".
-                  "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
+            echo "<td class='right'><a href='$cleantarget?id=$last$extraparamhtml'>" .
+                "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
                     "\" title=\"".__s('Last')."\" class='pointer'></a></td>";
          } else {
-            echo "<td class='right' width='16px'><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
-                                     __s('Last')."\" title=\"".__s('Last')."\"></td>";
+            echo "<td class='right'><img src='" . $CFG_GLPI["root_doc"] . "/pics/last_off.png' alt=\"" .
+                __s('Last')."\" title=\"".__s('Last')."\"></td>";
          }
 
          // echo "</ul></div>";
@@ -963,7 +963,7 @@ class CommonGLPI {
          $next = $prev = $first = $last = -1;
          $current = false;
          if (is_array($glpilistitems)) {
-            $current = array_search($ID,$glpilistitems);
+            $current = array_search($ID, $glpilistitems);
             if ($current !== false) {
 
                if (isset($glpilistitems[$current+1])) {
@@ -1308,7 +1308,7 @@ class CommonGLPI {
             }
          }
          echo "<tr><td colspan='2' class='center'>";
-         echo "<input type='submit' class='submit' name='update' value=\""._sx('button','Save')."\">";
+         echo "<input type='submit' class='submit' name='update' value=\""._sx('button', 'Save')."\">";
          echo "</td></tr>\n";
          echo "</table>";
          echo "</form>";
@@ -1376,19 +1376,19 @@ class CommonGLPI {
       }
       switch ($error) {
          case ERROR_NOT_FOUND :
-            return sprintf(__('%1$s: %2$s'), $object,  __('Unable to get item'));
+            return sprintf(__('%1$s: %2$s'), $object, __('Unable to get item'));
 
          case ERROR_RIGHT :
-            return sprintf(__('%1$s: %2$s'), $object,  __('Authorization error'));
+            return sprintf(__('%1$s: %2$s'), $object, __('Authorization error'));
 
          case ERROR_COMPAT :
-            return sprintf(__('%1$s: %2$s'), $object,  __('Incompatible items'));
+            return sprintf(__('%1$s: %2$s'), $object, __('Incompatible items'));
 
          case ERROR_ON_ACTION :
-            return sprintf(__('%1$s: %2$s'), $object,  __('Error on executing the action'));
+            return sprintf(__('%1$s: %2$s'), $object, __('Error on executing the action'));
 
          case ERROR_ALREADY_DEFINED :
-            return sprintf(__('%1$s: %2$s'), $object,  __('Item already defined'));
+            return sprintf(__('%1$s: %2$s'), $object, __('Item already defined'));
       }
    }
 

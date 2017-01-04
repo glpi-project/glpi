@@ -40,9 +40,9 @@ include ('../inc/includes.php');
 Session::checkLoginUser();
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-   Html::helpHeader(Ticket::getTypeName(Session::getPluralNumber()),'',$_SESSION["glpiname"]);
+   Html::helpHeader(Ticket::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
 } else {
-   Html::header(Ticket::getTypeName(Session::getPluralNumber()),'',"helpdesk","ticket");
+   Html::header(Ticket::getTypeName(Session::getPluralNumber()), '', "helpdesk", "ticket");
 }
 
 if ($_SESSION['glpirefresh_ticket_list'] > 0) {

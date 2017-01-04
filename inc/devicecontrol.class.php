@@ -69,19 +69,24 @@ class DeviceControl extends CommonDevice {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'is_raid',
+         'name'               => __('RAID'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'is_raid';
-      $tab[12]['name']     = __('RAID');
-      $tab[12]['datatype'] = 'bool';
-
-      $tab[14]['table']    = 'glpi_interfacetypes';
-      $tab[14]['field']    = 'name';
-      $tab[14]['name']     = __('Interface');
-      $tab[14]['datatype'] = 'dropdown';
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => 'glpi_interfacetypes',
+         'field'              => 'name',
+         'name'               => __('Interface'),
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

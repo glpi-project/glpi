@@ -16,3 +16,7 @@
 /nbproject/private/
 phpunit.xml
 /coverage/
+/config/based_config.php
+/config/config.php
+/config/define.php
+/nbproject

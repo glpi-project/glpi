@@ -43,7 +43,7 @@ Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF
 
 Report::title();
 
-# Titre
+// Titre
 
 echo "<table class='tab_cadre' >";
 echo "<tr><th colspan='3'>&nbsp;".__('Network report')."</th></tr>";
@@ -78,7 +78,7 @@ if (countElementsInTableForMyEntities("glpi_netpoints") > 0) {
    echo "<table class='tab_cadre' width='500'>";
    echo "<tr class='tab_bg_1'><td width='120'>".__('By network outlet')."</td>";
    echo "<td>";
-   Netpoint::dropdownNetpoint("prise",0,-1,1,$_SESSION["glpiactive_entity"]);
+   Netpoint::dropdownNetpoint("prise", 0, -1, 1, $_SESSION["glpiactive_entity"]);
    echo "</td><td class='center' width='120'>";
    echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'>";
    echo "</td></tr>";

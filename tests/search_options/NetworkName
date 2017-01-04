@@ -1,0 +1,47 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_networknames',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  12 => 
+  array (
+    'table' => 'glpi_fqdns',
+    'field' => 'fqdn',
+    'name' => 'Internet domain',
+    'datatype' => 'dropdown',
+  ),
+  13 => 
+  array (
+    'table' => 'glpi_ipaddresses',
+    'field' => 'name',
+    'name' => 'IP address',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+  ),
+  20 => 
+  array (
+    'table' => 'glpi_networknames',
+    'field' => 'itemtype',
+    'name' => 'Type',
+    'datatype' => 'itemtype',
+    'massiveaction' => false,
+  ),
+  21 => 
+  array (
+    'table' => 'glpi_networknames',
+    'field' => 'items_id',
+    'name' => 'ID',
+    'datatype' => 'integer',
+    'massiveaction' => false,
+  ),
+)

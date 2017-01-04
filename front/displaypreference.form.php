@@ -64,10 +64,10 @@ if (isset($_POST["activate"])) {
    $setupdisplay->delete($_POST, 1);
 
 } else if (isset($_POST["up"]) || isset($_POST["up_x"])) {
-   $setupdisplay->orderItem($_POST,'up');
+   $setupdisplay->orderItem($_POST, 'up');
 
 } else if (isset($_POST["down"]) || isset($_POST["down_x"])) {
-   $setupdisplay->orderItem($_POST,'down');
+   $setupdisplay->orderItem($_POST, 'down');
 }
 
 // Datas may come from GET or POST : use REQUEST

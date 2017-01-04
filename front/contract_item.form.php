@@ -43,7 +43,7 @@ Session::checkCentralAccess();
 $contract_item   = new Contract_Item();
 
 if (isset($_POST["add"])) {
-   $contract_item->check(-1, CREATE,$_POST);
+   $contract_item->check(-1, CREATE, $_POST);
    if ($contract_item->add($_POST)) {
       Event::log($_POST["contracts_id"], "contracts", 4, "financial",
                  //TRANS: %s is the user login

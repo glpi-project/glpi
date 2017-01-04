@@ -36,7 +36,7 @@
 * @since version 0.85
 */
 
-if (strpos($_SERVER['PHP_SELF'],"getDropdownConnect.php")) {
+if (strpos($_SERVER['PHP_SELF'], "getDropdownConnect.php")) {
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
@@ -111,7 +111,7 @@ $LIMIT = "LIMIT $start,$limit";
 
 $where_used = '';
 if (!empty($used)) {
-   $where_used = " AND `$table`.`id` NOT IN ('".implode("','",$used)."')";
+   $where_used = " AND `$table`.`id` NOT IN ('".implode("','", $used)."')";
 }
 
 if ($_POST["onlyglobal"]

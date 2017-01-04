@@ -85,14 +85,14 @@ class APIRestTest extends PHPUnit_Framework_TestCase {
       $headers = $res->getHeaders();
       $this->assertArrayHasKey('Access-Control-Allow-Methods', $headers);
       $this->assertArrayHasKey('Access-Control-Allow-Headers', $headers);
-      $this->assertContains('GET',           $headers['Access-Control-Allow-Methods'][0]);
-      $this->assertContains('PUT',           $headers['Access-Control-Allow-Methods'][0]);
-      $this->assertContains('POST',          $headers['Access-Control-Allow-Methods'][0]);
-      $this->assertContains('DELETE',        $headers['Access-Control-Allow-Methods'][0]);
-      $this->assertContains('OPTIONS',       $headers['Access-Control-Allow-Methods'][0]);
-      $this->assertContains('origin',        $headers['Access-Control-Allow-Headers'][0]);
-      $this->assertContains('content-type',  $headers['Access-Control-Allow-Headers'][0]);
-      $this->assertContains('accept',        $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('GET', $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('PUT', $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('POST', $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('DELETE', $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('OPTIONS', $headers['Access-Control-Allow-Methods'][0]);
+      $this->assertContains('origin', $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('content-type', $headers['Access-Control-Allow-Headers'][0]);
+      $this->assertContains('accept', $headers['Access-Control-Allow-Headers'][0]);
       $this->assertContains('session-token', $headers['Access-Control-Allow-Headers'][0]);
       $this->assertContains('authorization', $headers['Access-Control-Allow-Headers'][0]);
    }

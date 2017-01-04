@@ -142,7 +142,7 @@ class TicketFollowup  extends CommonDBTM {
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'), READ)
         // No validation for closed tickets
-          || (in_array($ticket->fields['status'],$ticket->getClosedStatusArray())
+          || (in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
             && !$ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING))) {
          return false;
       }
@@ -260,7 +260,7 @@ class TicketFollowup  extends CommonDBTM {
 
          if (count($this->updates)) {
             if ($CFG_GLPI["use_mailing"]
-                && (in_array("content",$this->updates)
+                && (in_array("content", $this->updates)
                     || isset($this->input['_need_send_mail']))) {
 
                $options = array('followup_id' => $this->fields["id"],
@@ -317,7 +317,7 @@ class TicketFollowup  extends CommonDBTM {
          $input["_job"]->input['_filename'] = $input['_filename'];
       }
       // Add docs without notif
-      $docadded = $input["_job"]->addFiles(0,1);
+      $docadded = $input["_job"]->addFiles(0, 1);
 
       if (count($docadded) > 0) {
          $input['content'] .= "\n";
@@ -767,7 +767,7 @@ class TicketFollowup  extends CommonDBTM {
          if ($params['candel']) {
             echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
             if ($this->can($ID, PURGE)) {
-               echo Html::submit(_x('button','Delete permanently'),
+               echo Html::submit(_x('button', 'Delete permanently'),
                                  array('name'    => 'purge',
                                        'confirm' => __('Confirm the final deletion?')));
             }
@@ -1098,37 +1098,55 @@ class TicketFollowup  extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                    = array();
-      $tab['common']          = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']        = $this->getTable();
-      $tab[1]['field']        = 'content';
-      $tab[1]['name']         = __('Description');
-      $tab[1]['datatype']     = 'text';
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'content',
+         'name'               => __('Description'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[2]['table']        = 'glpi_requesttypes';
-      $tab[2]['field']        = 'name';
-      $tab[2]['name']         = __('Request source');
-      $tab[2]['forcegroupby'] = true;
-      $tab[2]['datatype']     = 'dropdown';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => 'glpi_requesttypes',
+         'field'              => 'name',
+         'name'               => __('Request source'),
+         'forcegroupby'       => true,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[3]['table']        = $this->getTable();
-      $tab[3]['field']        = 'date';
-      $tab[3]['name']         = __('Date');
-      $tab[3]['datatype']     = 'datetime';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'date',
+         'name'               => __('Date'),
+         'datatype'           => 'datetime'
+      ];
 
-      $tab[4]['table']        = $this->getTable();
-      $tab[4]['field']        = 'is_private';
-      $tab[4]['name']         = __('Private');
-      $tab[4]['datatype']     = 'bool';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'is_private',
+         'name'               => __('Private'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[5]['table']        = 'glpi_users';
-      $tab[5]['field']        = 'name';
-      $tab[5]['name']         = __('User');
-      $tab[5]['datatype']     = 'dropdown';
-      $tab[5]['right']        = 'all';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('User'),
+         'datatype'           => 'dropdown',
+         'right'              => 'all'
+      ];
 
       return $tab;
    }

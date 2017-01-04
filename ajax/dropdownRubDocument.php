@@ -35,7 +35,7 @@
 * @brief
 */
 
-if (strpos($_SERVER['PHP_SELF'],"dropdownRubDocument.php")) {
+if (strpos($_SERVER['PHP_SELF'], "dropdownRubDocument.php")) {
    $AJAX_INCLUDE = 1;
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");

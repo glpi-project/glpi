@@ -78,20 +78,17 @@ class BlacklistedMailContent extends CommonDropdown {
    }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                      = parent::getSearchOptions();
-
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'content';
-      $tab[11]['name']          = __('Content');
-      $tab[11]['datatype']      = 'text';
-      $tab[11]['massiveactoin'] = false;
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'content',
+         'name'               => __('Content'),
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }

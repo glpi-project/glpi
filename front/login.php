@@ -99,7 +99,7 @@ if ($auth->Login($login, $password, (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUT
    echo '<div class="center b">' . $auth->getErr() . '<br><br>';
    // Logout whit noAUto to manage auto_login with errors
    echo '<a href="' . $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1'.
-         str_replace("?","&",$REDIRECT).'">' .__('Log in again') . '</a></div>';
+         str_replace("?", "&", $REDIRECT).'">' .__('Log in again') . '</a></div>';
    Html::nullFooter();
    exit();
 }

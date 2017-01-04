@@ -740,10 +740,8 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * @param $tab          array
     * @param $joinparams   array
-    * @param $itemtype
     **/
-   static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams,
-                                                         $itemtype) {
+   static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams) {
    }
 
 
@@ -864,7 +862,7 @@ class NetworkPortInstantiation extends CommonDBChild {
       }
 
       echo "<input type='hidden' name='NetworkPortConnect_networkports_id_1'value='$ID'>";
-      $rand = Dropdown::showItemTypes('NetworkPortConnect_itemtype',$CFG_GLPI["networkport_types"] );
+      $rand = Dropdown::showItemTypes('NetworkPortConnect_itemtype', $CFG_GLPI["networkport_types"] );
 
       $params = array('itemtype'           => '__VALUE__',
                       'entity_restrict'    => $p['entity'],

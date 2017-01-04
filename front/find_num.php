@@ -43,13 +43,12 @@ if (!$CFG_GLPI["use_anonymous_helpdesk"]) {
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
-
+echo "<!DOCTYPE html>\n";
+echo "<html lang=\"{$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]}\">";
 ?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>GLPI</title>
+    <meta charset="utf-8">
+    <title>GLPI</title>
 
 <?php
 // Appel CSS
@@ -63,7 +62,7 @@ echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/script.js'><
 </head>
 
 <body>
-<script language="javascript" type="text/javascript">
+    <script type="text/javascript">
 function fillidfield(Type,Id) {
 
    window.opener.document.forms["helpdeskform"].elements["items_id"].value = Id;

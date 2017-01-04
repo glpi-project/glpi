@@ -51,7 +51,7 @@ if (!isset($_REQUEST["withtemplate"])) {
 $license = new SoftwareLicense();
 
 if (isset($_POST["add"])) {
-   $license->check(-1, CREATE,$_POST);
+   $license->check(-1, CREATE, $_POST);
    if ($newID = $license->add($_POST)) {
       Event::log($_POST['softwares_id'], "software", 4, "inventory",
                  //TRANS: %s is the user login, %2$s is the license id
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["restore"])) {
    $license->check($_POST['id'], DELETE);
    if ($license->restore($_POST)) {
-      Event::log($_POST["id"],"software", 4, "inventory",
+      Event::log($_POST["id"], "software", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    }

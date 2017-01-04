@@ -80,77 +80,103 @@ class Location extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
-      return _n('Location','Locations',$nb);
-   }
-
-
-   static function getSearchOptionsToAdd() {
-
-      $tab                      = array();
-
-      $tab[3]['table']          = 'glpi_locations';
-      $tab[3]['field']          = 'completename';
-      $tab[3]['name']           = __('Location');
-      $tab[3]['datatype']       = 'dropdown';
-
-      $tab[91]['table']         = 'glpi_locations';
-      $tab[91]['field']         = 'building';
-      $tab[91]['name']          = __('Building number');
-      $tab[91]['massiveaction'] = false;
-      $tab[91]['datatype']      = 'string';
-
-      $tab[92]['table']         = 'glpi_locations';
-      $tab[92]['field']         = 'room';
-      $tab[92]['name']          = __('Room number');
-      $tab[92]['massiveaction'] = false;
-      $tab[92]['datatype']      = 'string';
-
-      $tab[93]['table']         = 'glpi_locations';
-      $tab[93]['field']         = 'comment';
-      $tab[93]['name']          = __('Location comments');
-      $tab[93]['massiveaction'] = false;
-      $tab[93]['datatype']      = 'text';
-
-      return $tab;
+      return _n('Location', 'Locations', $nb);
    }
 
 
    /**
-    * Get search function for the class
+    * Get the Search options to add to an item for the given Type
     *
-    * @return array of search option
+    * @return a *not indexed* array of search options
+    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
+    * @since 9.2
    **/
-   function getSearchOptions() {
+   static public function getSearchOptionsToAddNew() {
+      $tab = [];
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => 'glpi_locations',
+         'field'              => 'completename',
+         'name'               => __('Location'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'building';
-      $tab[11]['name']     = __('Building number');
-      $tab[11]['datatype'] = 'text';
+      $tab[] = [
+         'id'                 => '91',
+         'table'              => 'glpi_locations',
+         'field'              => 'building',
+         'name'               => __('Building number'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'room';
-      $tab[12]['name']     = __('Room number');
-      $tab[12]['datatype'] = 'text';
+      $tab[] = [
+         'id'                 => '92',
+         'table'              => 'glpi_locations',
+         'field'              => 'room',
+         'name'               => __('Room number'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[20]['table']         = 'glpi_locations';
-      $tab[20]['field']         = 'longitude';
-      $tab[20]['name']          = __('Longitude');
-      $tab[20]['massiveaction'] = false;
-      $tab[20]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '93',
+         'table'              => 'glpi_locations',
+         'field'              => 'comment',
+         'name'               => __('Location comments'),
+         'massiveaction'      => false,
+         'datatype'           => 'text'
+      ];
 
-      $tab[21]['table']         = 'glpi_locations';
-      $tab[21]['field']         = 'latitude';
-      $tab[21]['name']          = __('Latitude');
-      $tab[21]['massiveaction'] = false;
-      $tab[21]['datatype']      = 'string';
+      return $tab;
+   }
 
-      $tab[22]['table']         = 'glpi_locations';
-      $tab[22]['field']         = 'altitude';
-      $tab[22]['name']          = __('Altitude');
-      $tab[22]['massiveaction'] = false;
-      $tab[22]['datatype']      = 'string';
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
+
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => 'glpi_locations',
+         'field'              => 'building',
+         'name'               => __('Building number'),
+         'datatype'           => 'text'
+      ];
+
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => 'glpi_locations',
+         'field'              => 'room',
+         'name'               => __('Room number'),
+         'datatype'           => 'text'
+      ];
+
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => 'glpi_locations',
+         'field'              => 'longitude',
+         'name'               => __('Longitude'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => 'glpi_locations',
+         'field'              => 'latitude',
+         'name'               => __('Latitude'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
+
+      $tab[] = [
+         'id'                 => '22',
+         'table'              => 'glpi_locations',
+         'field'              => 'altitude',
+         'name'               => __('Altitude'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
       return $tab;
    }
@@ -160,7 +186,8 @@ class Location extends CommonTreeDropdown {
 
       $ong = parent::defineTabs($options);
       $this->addStandardTab('Netpoint', $ong, $options);
-      $this->addStandardTab(__CLASS__,$ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
 
       return $ong;
    }
@@ -267,7 +294,7 @@ class Location extends CommonTreeDropdown {
 
       if ($number) {
          echo "<div class='spaced'>";
-         Html::printAjaxPager('',  $start, $number);
+         Html::printAjaxPager('', $start, $number);
 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th>".__('Type')."</th>";

@@ -76,7 +76,7 @@ class Item_Ticket extends CommonDBRelation{
       $ticket = new Ticket();
       // Not item linked for closed tickets
       if ($ticket->getFromDB($this->fields['tickets_id'])
-          && in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
+          && in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
          return false;
       }
 
@@ -676,7 +676,7 @@ class Item_Ticket extends CommonDBRelation{
                        'rand'            => $rand,
                        'myname'          => "add_items_id");
 
-            Ajax::updateItemOnSelectEvent("dropdown_$myname$rand","results_$myname$rand",
+            Ajax::updateItemOnSelectEvent("dropdown_$myname$rand", "results_$myname$rand",
                                           $CFG_GLPI["root_doc"].
                                              "/ajax/dropdownTrackingDeviceType.php",
                                           $p);
@@ -766,7 +766,7 @@ class Item_Ticket extends CommonDBRelation{
                   $query .= " AND `is_helpdesk_visible` = '1' ";
                }
 
-               $query .= getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict,
+               $query .= getEntitiesRestrictRequest("AND", $itemtable, "", $entity_restrict,
                                                     $item->maybeRecursive())."
 
 
@@ -805,7 +805,7 @@ class Item_Ticket extends CommonDBRelation{
             $my_devices[__('My devices')] = $devices;
          }
          // My group items
-         if (Session::haveRight("show_group_hardware","1")) {
+         if (Session::haveRight("show_group_hardware", "1")) {
             $group_where = "";
             $query       = "SELECT `glpi_groups_users`.`groups_id`, `glpi_groups`.`name`
                             FROM `glpi_groups_users`
@@ -886,13 +886,13 @@ class Item_Ticket extends CommonDBRelation{
          }
          // Get linked items to computers
          if (isset($already_add['Computer']) && count($already_add['Computer'])) {
-            $search_computer = " XXXX IN (".implode(',',$already_add['Computer']).') ';
+            $search_computer = " XXXX IN (".implode(',', $already_add['Computer']).') ';
             $devices = array();
 
             // Direct Connection
             $types = array('Monitor', 'Peripheral', 'Phone', 'Printer');
             foreach ($types as $itemtype) {
-               if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+               if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
                    && ($item = getItemForItemtype($itemtype))) {
                   $itemtable = getTableForItemType($itemtype);
                   if (!isset($already_add[$itemtype])) {
@@ -903,7 +903,7 @@ class Item_Ticket extends CommonDBRelation{
                             LEFT JOIN `$itemtable`
                                  ON (`glpi_computers_items`.`items_id` = `$itemtable`.`id`)
                             WHERE `glpi_computers_items`.`itemtype` = '$itemtype'
-                                  AND  ".str_replace("XXXX","`glpi_computers_items`.`computers_id`",
+                                  AND  ".str_replace("XXXX", "`glpi_computers_items`.`computers_id`",
                                                      $search_computer);
                   if ($item->maybeDeleted()) {
                      $query .= " AND `$itemtable`.`is_deleted` = '0' ";
@@ -911,14 +911,14 @@ class Item_Ticket extends CommonDBRelation{
                   if ($item->maybeTemplate()) {
                      $query .= " AND `$itemtable`.`is_template` = '0' ";
                   }
-                  $query .= getEntitiesRestrictRequest("AND",$itemtable,"",$entity_restrict)."
+                  $query .= getEntitiesRestrictRequest("AND", $itemtable, "", $entity_restrict)."
                             ORDER BY `$itemtable`.`name`";
 
                   $result = $DB->query($query);
                   if ($DB->numrows($result) > 0) {
                      $type_name = $item->getTypeName();
                      while ($data = $DB->fetch_assoc($result)) {
-                        if (!in_array($data["id"],$already_add[$itemtype])) {
+                        if (!in_array($data["id"], $already_add[$itemtype])) {
                            $output = $data["name"];
                            if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
                               $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
@@ -952,7 +952,7 @@ class Item_Ticket extends CommonDBRelation{
                                                  "`glpi_computers_softwareversions`.`computers_id`",
                                                  $search_computer)."
                                AND `glpi_softwares`.`is_helpdesk_visible` = '1' ".
-                               getEntitiesRestrictRequest("AND","glpi_softwares","",
+                               getEntitiesRestrictRequest("AND", "glpi_softwares", "",
                                                           $entity_restrict)."
                          ORDER BY `glpi_softwares`.`name`";
                $devices = array();
@@ -991,7 +991,7 @@ class Item_Ticket extends CommonDBRelation{
          // Auto update summary of active or just solved tickets
          $params = array('my_items' => '__VALUE__');
 
-         Ajax::updateItemOnSelectEvent("dropdown_my_items$rand","item_ticket_selection_information",
+         Ajax::updateItemOnSelectEvent("dropdown_my_items$rand", "item_ticket_selection_information",
                                        $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
                                        $params);
       }
@@ -1215,24 +1215,29 @@ class Item_Ticket extends CommonDBRelation{
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                          = array();
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => $this->getTable(),
+         'field'              => 'items_id',
+         'name'               => _n('Associated element', 'Associated elements', 2),
+         'datatype'           => 'specific',
+         'comments'           => true,
+         'nosort'             => true,
+         'additionalfields'   => ['itemtype']
+      ];
 
-      $tab[13]['table']             = 'glpi_items_tickets';
-      $tab[13]['field']             = 'items_id';
-      $tab[13]['name']              = _n('Associated element', 'Associated elements', 2);
-      $tab[13]['datatype']          = 'specific';
-      $tab[13]['comments']          = true;
-      $tab[13]['nosort']            = true;
-      $tab[13]['additionalfields']  = array('itemtype');
-
-      $tab[131]['table']            = 'glpi_items_tickets';
-      $tab[131]['field']            = 'itemtype';
-      $tab[131]['name']             = _n('Associated item type', 'Associated item types',2);
-      $tab[131]['datatype']         = 'itemtypename';
-      $tab[131]['itemtype_list']    = 'ticket_types';
-      $tab[131]['nosort']           = true;
+      $tab[] = [
+         'id'                 => '131',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => _n('Associated item type', 'Associated item types', 2),
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'ticket_types',
+         'nosort'             => true
+      ];
 
       return $tab;
    }

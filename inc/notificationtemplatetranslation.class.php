@@ -145,7 +145,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>" . __('Subject') . "</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this,'subject', array('size' => 100));
+      Html::autocompletionTextField($this, 'subject', array('size' => 100));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>";
@@ -213,7 +213,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
                             array('notificationtemplates_id' => $nID)) as $data) {
 
          if ($this->getFromDB($data['id'])) {
-            Session::addToNavigateListItems('NotificationTemplateTranslation',$data['id']);
+            Session::addToNavigateListItems('NotificationTemplateTranslation', $data['id']);
             echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td class='center'>";
@@ -275,35 +275,50 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                     = array();
-      $tab['common']           = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'language';
-      $tab[1]['name']          = __('Language');
-      $tab[1]['datatype']      = 'language';
-      $tab[1]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'language',
+         'name'               => __('Language'),
+         'datatype'           => 'language',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'subject';
-      $tab[2]['name']          = __('Subject');
-      $tab[2]['massiveaction'] = false;
-      $tab[2]['datatype']      = 'string';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'subject',
+         'name'               => __('Subject'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'content_html';
-      $tab[3]['name']          = __('Email HTML body');
-      $tab[3]['datatype']      = 'text';
-      $tab[3]['htmltext']      = 'true';
-      $tab[3]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'content_html',
+         'name'               => __('Email HTML body'),
+         'datatype'           => 'text',
+         'htmltext'           => 'true',
+         'massiveaction'      => false
+      ];
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'content_text';
-      $tab[4]['name']          = __('Email text body');
-      $tab[4]['datatype']      = 'text';
-      $tab[4]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'content_text',
+         'name'               => __('Email text body'),
+         'datatype'           => 'text',
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }
@@ -349,7 +364,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          foreach ($infos as $key => $val) {
             $infos[$key]['type'] = $tag_type;
          }
-         $tags = array_merge($tags,$infos);
+         $tags = array_merge($tags, $infos);
       }
       ksort($tags);
       foreach ($tags as $tag => $values) {
@@ -357,7 +372,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          if ($values['events'] == NotificationTarget::TAG_FOR_ALL_EVENTS) {
             $event = __('All');
          } else {
-            $event = implode(', ',$values['events']);
+            $event = implode(', ', $values['events']);
          }
 
          $action = '';
@@ -369,7 +384,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          }
 
          if (!empty($values['allowed_values'])) {
-            $allowed_values = implode(',',$values['allowed_values']);
+            $allowed_values = implode(',', $values['allowed_values']);
          } else {
             $allowed_values = '';
          }

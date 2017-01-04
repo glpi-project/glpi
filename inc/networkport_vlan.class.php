@@ -63,18 +63,6 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
 
    /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
-
-      $tab = parent::getSearchOptions();
-      return $tab;
-   }
-
-
-   /**
     * @param $portID
     * @param $vlanID
    **/
@@ -144,7 +132,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          echo "</td>";
          echo "<td class='right'>".__('Tagged')."</td>";
          echo "<td class='left'><input type='checkbox' name='tagged' value='1'></td>";
-         echo "<td><input type='submit' name='add' value='"._sx('button','Associate').
+         echo "<td><input type='submit' name='add' value='"._sx('button', 'Associate').
                     "' class='submit'>";
          echo "</td></tr>\n";
 

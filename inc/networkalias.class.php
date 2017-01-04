@@ -423,7 +423,7 @@ class NetworkAlias extends FQDNLabel {
                    OFFSET $start";
 
          foreach ($DB->request($query) as $data) {
-            Session::addToNavigateListItems($alias->getType(),$data["alias_id"]);
+            Session::addToNavigateListItems($alias->getType(), $data["alias_id"]);
             if ($address->getFromDB($data["address_id"])) {
                echo "<tr class='tab_bg_1'>";
                echo "<td><a href='".$alias->getFormURL().'?id='.$data['alias_id']."'>" .
@@ -480,20 +480,25 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                      = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => 'glpi_fqdns',
+         'field'              => 'fqdn',
+         'name'               => FQDN::getTypeName(1),
+         'datatype'           => 'string'
+      ];
 
-      $tab[12]['table']         = 'glpi_fqdns';
-      $tab[12]['field']         = 'fqdn';
-      $tab[12]['name']          = FQDN::getTypeName(1);
-      $tab[12]['datatype']      = 'string';
-
-      $tab[20]['table']         = 'glpi_networknames';
-      $tab[20]['field']         = 'name';
-      $tab[20]['name']          = NetworkName::getTypeName(1);
-      $tab[20]['massiveaction'] = false;
-      $tab[20]['datatype']      = 'dropdown';
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => 'glpi_networknames',
+         'field'              => 'name',
+         'name'               => NetworkName::getTypeName(1),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

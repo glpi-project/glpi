@@ -990,7 +990,7 @@ class NotificationTarget extends CommonDBChild {
 
                default :
                   //Maybe a target specific to a type
-                  $this->getSpecificTargets($data,$options);
+                  $this->getSpecificTargets($data, $options);
             }
             break;
 
@@ -1011,11 +1011,11 @@ class NotificationTarget extends CommonDBChild {
 
          default :
             //Maybe a target specific to a type
-            $this->getSpecificTargets($data,$options);
+            $this->getSpecificTargets($data, $options);
       }
       // action for target from plugin
       $this->data = $data;
-      Plugin::doHook('item_action_targets',$this);
+      Plugin::doHook('item_action_targets', $this);
 
    }
 

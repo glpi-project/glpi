@@ -44,7 +44,7 @@ class SessionTest extends PHPUnit_Framework_TestCase {
       $warn_msg = 'There was a warning. Be carefull.';
       $info_msg = 'All goes well. Or not... Who knows ;)';
 
-      $this->assertEquals(false,isset($_SESSION['MESSAGE_AFTER_REDIRECT']));
+      $this->assertEquals(false, isset($_SESSION['MESSAGE_AFTER_REDIRECT']));
 
       //test add message in cron mode
       $_SESSION['glpicronuserrunning'] = 'phpunit_cron';

@@ -64,7 +64,7 @@ class Change_Ticket extends CommonDBRelation{
 
 
    static function getTypeName($nb=0) {
-      return _n('Link Ticket/Change','Links Ticket/Change',$nb);
+      return _n('Link Ticket/Change', 'Links Ticket/Change', $nb);
    }
 
 
@@ -116,15 +116,6 @@ class Change_Ticket extends CommonDBRelation{
 
 
    /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
-      return parent::getSearchOptions();
-   }
-
-   /**
     * @since version 0.85
     *
     * @see CommonDBTM::showMassiveActionsSubForm()
@@ -147,7 +138,7 @@ class Change_Ticket extends CommonDBRelation{
             if (isset($input['changes_id']) && $change->getFromDB($input['changes_id'])) {
                Ticket::showMassiveSolutionForm($change->getEntityID());
                echo "<br><br>";
-               echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+               echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
                return true;
             }
             return false;
@@ -311,7 +302,7 @@ class Change_Ticket extends CommonDBRelation{
       echo "<tr class='noHover'><th colspan='12'>".Ticket::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
-         Ticket::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
+         Ticket::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Ticket',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
@@ -327,7 +318,7 @@ class Change_Ticket extends CommonDBRelation{
                                                  'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
-         Ticket::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
+         Ticket::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
       }
       echo "</table>";
       if ($canedit && $numrows) {
@@ -384,7 +375,7 @@ class Change_Ticket extends CommonDBRelation{
          Change::dropdown(array('used'        => $used,
                                 'entity'      => $ticket->getEntityID()));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td><td>";
          if (Session::haveRight('change', CREATE)) {
             echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?tickets_id=$ID'>";
@@ -408,7 +399,7 @@ class Change_Ticket extends CommonDBRelation{
       echo "<tr class='noHover'><th colspan='12'>".Change::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
-         Change::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
+         Change::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Change',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
@@ -423,7 +414,7 @@ class Change_Ticket extends CommonDBRelation{
                                                  'id_for_massiveaction'   => $data['linkID']));
             $i++;
          }
-         Change::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
+         Change::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
       }
       echo "</table>";
 

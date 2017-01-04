@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["get_mails"])) {
    $mailgate->check($_POST['id'], UPDATE);
-   $mailgate->collect($_POST["id"],1);
+   $mailgate->collect($_POST["id"], 1);
 
    Html::back();
 

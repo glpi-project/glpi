@@ -77,7 +77,7 @@ if (isset($_POST["itemtype"])
    // Auto update summary of active or just solved tickets
    $params = array('items_id' => '__VALUE__',
                    'itemtype' => $_POST['itemtype']);
-   Ajax::updateItemOnSelectEvent($field_id,"item_ticket_selection_information",
+   Ajax::updateItemOnSelectEvent($field_id, "item_ticket_selection_information",
                                  $CFG_GLPI["root_doc"]."/ajax/ticketiteminformation.php",
                                  $params);
 }

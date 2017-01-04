@@ -63,18 +63,17 @@ class Netpoint extends CommonDropdown {
    }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab  = parent::getSearchOptionsNew();
 
-      $tab  = parent::getSearchOptions();
+      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
 
-      $tab += Location::getSearchOptionsToAdd();
-
-      $tab[3]['datatype']      = 'itemlink';
+      foreach ($tab as &$t) {
+         if ($t['id'] == 3) {
+            $t['datatype']      = 'itemlink';
+            break;
+         }
+      }
 
       return $tab;
    }
@@ -122,7 +121,7 @@ class Netpoint extends CommonDropdown {
          $value = 0;
       }
       if ($value > 0) {
-         $tmpname = Dropdown::getDropdownName("glpi_netpoints",$value,1);
+         $tmpname = Dropdown::getDropdownName("glpi_netpoints", $value, 1);
          if ($tmpname["name"] != "&nbsp;") {
             $name          = $tmpname["name"];
             $comment       = $tmpname["comment"];
@@ -183,9 +182,9 @@ class Netpoint extends CommonDropdown {
                                                     $input['entities_id'], $this->maybeRecursive());
 
          // Check twin :
-         if ($result_twin = $DB->query($query) ) {
+         if ($result_twin = $DB->query($query)) {
             if ($DB->numrows($result_twin) > 0) {
-               return $DB->result($result_twin,0,"id");
+               return $DB->result($result_twin, 0, "id");
             }
          }
       }
@@ -276,7 +275,7 @@ class Netpoint extends CommonDropdown {
          Html::autocompletionTextField($item, "name", array('value' => ''));
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table>\n";
          Html::closeForm();
@@ -299,7 +298,7 @@ class Netpoint extends CommonDropdown {
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'>";
          echo "<input type='hidden' name='_method' value='AddMulti'></td>";
-         echo "<td><input type='submit' name='execute' value=\""._sx('button','Add')."\"
+         echo "<td><input type='submit' name='execute' value=\""._sx('button', 'Add')."\"
                     class='submit'>";
          echo "</td></tr>\n";
          echo "</table>\n";
@@ -354,7 +353,7 @@ class Netpoint extends CommonDropdown {
                                                 $item->getTypeName(1), $item->getName()));
 
          foreach ($DB->request('glpi_netpoints', $crit) as $data) {
-            Session::addToNavigateListItems('Netpoint',$data["id"]);
+            Session::addToNavigateListItems('Netpoint', $data["id"]);
             echo "<tr class='tab_bg_1'>";
 
             if ($canedit) {

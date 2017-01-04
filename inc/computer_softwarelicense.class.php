@@ -69,35 +69,40 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @since version 0.84
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[4]['table']           = 'glpi_softwarelicenses';
-      $tab[4]['field']           = 'name';
-      $tab[4]['name']            = _n('License', 'Licenses', 1);
-      $tab[4]['datatype']        = 'dropdown';
-      $tab[4]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_softwarelicenses',
+         'field'              => 'name',
+         'name'               => _n('License', 'Licenses', 1),
+         'datatype'           => 'dropdown',
+         'massiveaction'      => false
+      ];
 
-      $tab[5]['table']           = 'glpi_computers';
-      $tab[5]['field']           = 'name';
-      $tab[5]['name']            = _n('Computer', 'Computers', 1);
-      $tab[5]['massiveaction']   = false;
-      $tab[5]['datatype']        = 'dropdown';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => 'glpi_computers',
+         'field'              => 'name',
+         'name'               => _n('Computer', 'Computers', 1),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }
@@ -121,7 +126,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                                                          = '".$input['options']['move']['softwares_id']."'",
                                                   'used'
                                                     => $input['options']['move']['used']));
-                  echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+                  echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
                   return true;
                }
             }
@@ -303,7 +308,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
               ORDER BY `completename`";
 
       foreach ($DB->request($sql) as $ID => $data) {
-         $nb = self::countForLicense($softwarelicense_id,$ID);
+         $nb = self::countForLicense($softwarelicense_id, $ID);
          if ($nb > 0) {
             echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
             echo "<td class='numeric'>".$nb."</td></tr>\n";
@@ -354,8 +359,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       if (isset($_GET["sort"]) && !empty($_GET["sort"])) {
          // manage several param like location,compname : order first
-         $tmp  = explode(",",$_GET["sort"]);
-         $sort = "`".implode("` $order,`",$tmp)."`";
+         $tmp  = explode(",", $_GET["sort"]);
+         $sort = "`".implode("` $order,`", $tmp)."`";
       } else {
          $sort = "`entity` $order, `compname`";
       }
@@ -529,7 +534,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             echo $header_begin.$header_top.$header_end;
 
             do {
-               Session::addToNavigateListItems('Computer',$data["cID"]);
+               Session::addToNavigateListItems('Computer', $data["cID"]);
 
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {

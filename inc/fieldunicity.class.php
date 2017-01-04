@@ -302,67 +302,100 @@ class FieldUnicity extends CommonDropdown {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                          = array();
-      $tab['common']                = self::getTypeName();
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => self::getTypeName()
+      ];
 
-      $tab[1]['table']              = $this->getTable();
-      $tab[1]['field']              = 'name';
-      $tab[1]['name']               = __('Name');
-      $tab[1]['datatype']           = 'itemlink';
-      $tab[1]['massiveaction']      = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']              = $this->getTable();
-      $tab[2]['field']              = 'id';
-      $tab[2]['name']               = __('ID');
-      $tab[2]['datatype']           = 'number';
-      $tab[2]['massiveaction']      = false;
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'datatype'           => 'number',
+         'massiveaction'      => false
+      ];
 
-      $tab[3]['table']              = $this->getTable();
-      $tab[3]['field']              = 'fields';
-      $tab[3]['name']               = __('Unique fields');
-      $tab[3]['massiveaction']      = false;
-      $tab[3]['datatype']           = 'specific';
-      $tab[3]['additionalfields']   = array('itemtype');
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'fields',
+         'name'               => __('Unique fields'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'additionalfields'   => ['itemtype']
+      ];
 
-      $tab[4]['table']              = $this->getTable();
-      $tab[4]['field']              = 'itemtype';
-      $tab[4]['name']               = __('Type');
-      $tab[4]['massiveaction']      = false;
-      $tab[4]['datatype']           = 'itemtypename';
-      $tab[4]['itemtype_list']      = 'unicity_types';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Type'),
+         'massiveaction'      => false,
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'unicity_types'
+      ];
 
-      $tab[5]['table']              = $this->getTable();
-      $tab[5]['field']              = 'action_refuse';
-      $tab[5]['name']               = __('Record into the database denied');
-      $tab[5]['datatype']           = 'bool';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'action_refuse',
+         'name'               => __('Record into the database denied'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[6]['table']              = $this->getTable();
-      $tab[6]['field']              = 'action_notify';
-      $tab[6]['name']               = __('Send a notification');
-      $tab[6]['datatype']           = 'bool';
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'action_notify',
+         'name'               => __('Send a notification'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[86]['table']             = $this->getTable();
-      $tab[86]['field']             = 'is_recursive';
-      $tab[86]['name']              = __('Child entities');
-      $tab[86]['datatype']          = 'bool';
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[16]['table']             = $this->getTable();
-      $tab[16]['field']             = 'comment';
-      $tab[16]['name']              = __('Comments');
-      $tab[16]['datatype']          = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[30]['table']             = $this->getTable();
-      $tab[30]['field']             = 'is_active';
-      $tab[30]['name']              = __('Active');
-      $tab[30]['datatype']          = 'bool';
-      $tab[30]['massiveaction']     = false;
+      $tab[] = [
+         'id'                 => '30',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[80]['table']             = 'glpi_entities';
-      $tab[80]['field']             = 'completename';
-      $tab[80]['name']              = __('Entity');
-      $tab[80]['datatype']          = 'dropdown';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }
@@ -389,13 +422,13 @@ class FieldUnicity extends CommonDropdown {
                   $fields       = explode(',', $values[$field]);
                   $message      = array();
                   foreach ($fields as $field) {
-                     $searchOption = $target->getSearchOptionByField('field',$field);
+                     $searchOption = $target->getSearchOptionByField('field', $field);
 
                      if (isset($searchOption['name'])) {
                         $message[] = $searchOption['name'];
                      }
                   }
-                  return implode(', ',$message);
+                  return implode(', ', $message);
                }
             }
             break;
@@ -449,7 +482,7 @@ class FieldUnicity extends CommonDropdown {
          $input = array();
 
       } else {
-         $input['fields'] = implode(',',$input['_fields']);
+         $input['fields'] = implode(',', $input['_fields']);
          unset($input['_fields']);
       }
       return $input;
@@ -463,7 +496,7 @@ class FieldUnicity extends CommonDropdown {
 
    function prepareInputForUpdate($input) {
 
-      $input['fields'] = implode(',',$input['_fields']);
+      $input['fields'] = implode(',', $input['_fields']);
       unset($input['_fields']);
 
       return $input;
@@ -500,7 +533,7 @@ class FieldUnicity extends CommonDropdown {
       if (!$item = getItemForItemtype($unicity->fields['itemtype'])) {
          return;
       }
-      foreach (explode(',',$unicity->fields['fields']) as $field) {
+      foreach (explode(',', $unicity->fields['fields']) as $field) {
          $fields[]       = $field;
          $where_fields[] = $field;
       }
@@ -533,7 +566,7 @@ class FieldUnicity extends CommonDropdown {
          $query = "SELECT $fields_string,
                           COUNT(*) AS cpt
                    FROM `".$item->getTable()."`
-                   WHERE `".$item->getTable()."`.`entities_id` IN (".implode(',',$entities).")
+                   WHERE `".$item->getTable()."`.`entities_id` IN (".implode(',', $entities).")
                          $where_template
                          $where_fields_string
                    GROUP BY $fields_string
@@ -552,7 +585,7 @@ class FieldUnicity extends CommonDropdown {
          } else {
             echo "<tr class='tab_bg_2'>";
             foreach ($fields as $field) {
-               $searchOption = $item->getSearchOptionByField('field',$field);
+               $searchOption = $item->getSearchOptionByField('field', $field);
                echo "<th>".$searchOption["name"]."</th>";
             }
             echo "<th>"._x('quantity', 'Number')."</th></tr>";

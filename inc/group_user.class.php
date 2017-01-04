@@ -174,7 +174,7 @@ class Group_User extends CommonDBRelation{
             Dropdown::showYesNo('is_userdelegate');
 
             echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='addgroup' value=\""._sx('button','Add')."\"
+            echo "<input type='submit' name='addgroup' value=\""._sx('button', 'Add')."\"
                    class='submit'>";
 
          } else {
@@ -293,7 +293,7 @@ class Group_User extends CommonDBRelation{
 
       $rand = mt_rand();
       $res  = User::getSqlSearchResult (true, "all", $entityrestrict, 0, $used_ids);
-      $nb   = ($res ? $DB->result($res,0,"CPT") : 0);
+      $nb   = ($res ? $DB->result($res, 0, "CPT") : 0);
 
       if ($nb) {
          echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'
@@ -317,7 +317,7 @@ class Group_User extends CommonDBRelation{
 
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name'is_dynamic' value='0'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table></div>";
          Html::closeForm();
@@ -609,45 +609,66 @@ class Group_User extends CommonDBRelation{
     *
     * @return array of search option
    **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
-      $tab[2]['datatype']        = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'is_dynamic';
-      $tab[3]['name']            = __('Dynamic');
-      $tab[3]['datatype']        = 'bool';
-      $tab[3]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'is_dynamic',
+         'name'               => __('Dynamic'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[4]['table']           = 'glpi_groups';
-      $tab[4]['field']           = 'completename';
-      $tab[4]['name']            = __('Group');
-      $tab[4]['massiveaction']   = false;
-      $tab[4]['datatype']        = 'dropdown';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_groups',
+         'field'              => 'completename',
+         'name'               => __('Group'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[5]['table']           = 'glpi_users';
-      $tab[5]['field']           = 'name';
-      $tab[5]['name']            = __('User');
-      $tab[5]['massiveaction']   = false;
-      $tab[5]['datatype']        = 'dropdown';
-      $tab[5]['right']           = 'all';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('User'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown',
+         'right'              => 'all'
+      ];
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'is_manager';
-      $tab[6]['name']            = __('Manager');
-      $tab[6]['datatype']        = 'bool';
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'is_manager',
+         'name'               => __('Manager'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[7]['table']           = $this->getTable();
-      $tab[7]['field']           = 'is_userdelegate';
-      $tab[7]['name']            = __('Delegatee');
-      $tab[7]['datatype']        = 'bool';
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'is_userdelegate',
+         'name'               => __('Delegatee'),
+         'datatype'           => 'bool'
+      ];
 
       return $tab;
    }

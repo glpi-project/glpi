@@ -69,8 +69,8 @@ class SoftwareVersion extends CommonDBChild {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab('Computer_SoftwareVersion',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('Computer_SoftwareVersion', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -130,7 +130,7 @@ class SoftwareVersion extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,"name");
+      Html::autocompletionTextField($this, "name");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Operating system') . "</td><td>";
@@ -155,37 +155,55 @@ class SoftwareVersion extends CommonDBChild {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                 = array();
-      $tab['common']       = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'name';
-      $tab[2]['name']      = __('Name');
-      $tab[2]['datatype']  = 'string';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[4]['table']     = 'glpi_operatingsystems';
-      $tab[4]['field']     = 'name';
-      $tab[4]['name']      = __('Operating system');
-      $tab[4]['datatype']  = 'dropdown';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_operatingsystems',
+         'field'              => 'name',
+         'name'               => __('Operating system'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[31]['table']     = 'glpi_states';
-      $tab[31]['field']     = 'completename';
-      $tab[31]['name']      = __('Status');
-      $tab[31]['datatype']  = 'dropdown';
-      $tab[31]['condition'] = "`is_visible_softwareversion`";
+      $tab[] = [
+         'id'                 => '31',
+         'table'              => 'glpi_states',
+         'field'              => 'completename',
+         'name'               => __('Status'),
+         'datatype'           => 'dropdown',
+         'condition'          => '`is_visible_softwareversion`'
+      ];
 
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }
@@ -220,7 +238,7 @@ class SoftwareVersion extends CommonDBChild {
 
       $where = '';
       if (count($p['used'])) {
-         $where = " AND `glpi_softwareversions`.`id` NOT IN (".implode(",",$p['used']).")";
+         $where = " AND `glpi_softwareversions`.`id` NOT IN (".implode(",", $p['used']).")";
       }
       // Make a select box
       $query = "SELECT DISTINCT `glpi_softwareversions`.*,
@@ -302,7 +320,7 @@ class SoftwareVersion extends CommonDBChild {
             echo "</tr>\n";
 
             for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {
-               Session::addToNavigateListItems('SoftwareVersion',$data['id']);
+               Session::addToNavigateListItems('SoftwareVersion', $data['id']);
                $nb = Computer_SoftwareVersion::countForVersion($data['id']);
 
                echo "<tr class='tab_bg_2'>";

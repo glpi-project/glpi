@@ -75,7 +75,7 @@ if (isset($_GET['node'])) {
                        FROM `glpi_entities`
                        WHERE `entities_id` = '$ID'";
             $result2 = $DB->query($query2);
-            if ($DB->result($result2,0,0) > 0) {
+            if ($DB->result($result2, 0, 0) > 0) {
                $path['data']['title'] .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
                                                  $CFG_GLPI["root_doc"]."/front/".$target.
                                                  "?active_entity=".$ID."&amp;is_recursive=1'>".
@@ -91,7 +91,7 @@ if (isset($_GET['node'])) {
          $nodes[] = $path;
       }
    } else { // standard node
-      $node_id = str_replace('ent','', $_GET['node']);
+      $node_id = str_replace('ent', '', $_GET['node']);
       $query   = "SELECT *
                   FROM `glpi_entities`
                   WHERE `entities_id` = '$node_id'
@@ -110,7 +110,7 @@ if (isset($_GET['node'])) {
                           FROM `glpi_entities`
                           WHERE `entities_id` = '".$row['id']."'";
                $result2 = $DB->query($query2);
-               if ($DB->result($result2,0,0) > 0) {
+               if ($DB->result($result2, 0, 0) > 0) {
                   $path['data']['title'] .= "&nbsp;<a title=\"".__s('Show all')."\" href='".
                                                     $CFG_GLPI["root_doc"]."/front/".$target.
                                                     "?active_entity=".$row['id']."&amp;is_recursive=1'>".

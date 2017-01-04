@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $problem->check($_POST["id"], PURGE);
 
-   $problem->delete($_POST,1);
+   $problem->delete($_POST, 1);
    Event::log($_POST["id"], "problem", 4, "maintain",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

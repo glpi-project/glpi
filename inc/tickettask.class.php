@@ -135,7 +135,7 @@ class TicketTask  extends CommonITILTask {
 
       if ($ticket->getFromDB($this->fields['tickets_id'])
           // No validation for closed tickets
-          && !in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
+          && !in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
          return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
                  || $ticket->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])
@@ -187,7 +187,7 @@ class TicketTask  extends CommonITILTask {
     * @return array of planning item
    **/
    static function populatePlanning($options=array()) {
-      return parent::genericPopulatePlanning(__CLASS__,$options);
+      return parent::genericPopulatePlanning(__CLASS__, $options);
    }
 
 
@@ -199,7 +199,7 @@ class TicketTask  extends CommonITILTask {
     * @return Already planned information
    **/
    static function getAlreadyPlannedInformation($val) {
-      return parent::genericGetAlreadyPlannedInformation(__CLASS__,$val);
+      return parent::genericGetAlreadyPlannedInformation(__CLASS__, $val);
    }
 
 
@@ -215,7 +215,7 @@ class TicketTask  extends CommonITILTask {
     * @return Nothing (display function)
    **/
    static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
-      return parent::genericDisplayPlanningItem(__CLASS__,$val, $who, $type, $complete);
+      return parent::genericDisplayPlanningItem(__CLASS__, $val, $who, $type, $complete);
    }
 
 
@@ -295,7 +295,7 @@ class TicketTask  extends CommonITILTask {
          if ($params['candel']) {
             echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
             if ($this->can($ID, PURGE)) {
-               echo Html::submit(_x('button','Delete permanently'),
+               echo Html::submit(_x('button', 'Delete permanently'),
                                  array('name'    => 'purge',
                                        'confirm' => __('Confirm the final deletion?')));
             }

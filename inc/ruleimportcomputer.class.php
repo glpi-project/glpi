@@ -299,7 +299,7 @@ class RuleImportComputer extends Rule {
 
       //Build the request to check if the machine exists in GLPI
       if (is_array($input['entities_id'])) {
-         $where_entity = implode($input['entities_id'],',');
+         $where_entity = implode($input['entities_id'], ',');
       } else {
          $where_entity = $input['entities_id'];
       }

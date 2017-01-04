@@ -249,7 +249,7 @@ class Contract_Supplier extends CommonDBRelation {
          echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data["entity"]);
          echo "</td><td class='center'>".$data["num"]."</td>";
          echo "<td class='center'>".
-                Dropdown::getDropdownName("glpi_contracttypes",$data["contracttypes_id"])."</td>";
+                Dropdown::getDropdownName("glpi_contracttypes", $data["contracttypes_id"])."</td>";
          echo "<td class='center'>".Html::convDate($data["begin_date"])."</td>";
          echo "<td class='center'>";
          sprintf(_n('%d month', '%d months', $data["duration"]), $data["duration"]);
@@ -306,7 +306,7 @@ class Contract_Supplier extends CommonDBRelation {
                 LEFT JOIN `glpi_entities` ON (`glpi_entities`.`id`=`glpi_suppliers`.`entities_id`)
                 WHERE `glpi_contracts_suppliers`.`contracts_id` = '$instID'
                       AND `glpi_contracts_suppliers`.`suppliers_id`=`glpi_suppliers`.`id`".
-                      getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true). "
+                      getEntitiesRestrictRequest(" AND", "glpi_suppliers", '', '', true). "
                 ORDER BY `glpi_entities`.`completename`, `name`";
 
       $result    = $DB->query($query);
@@ -372,7 +372,7 @@ class Contract_Supplier extends CommonDBRelation {
          $ID      = $data['id'];
          $website = $data['website'];
          if (!empty($website)) {
-            if (!preg_match("?https*://?",$website)) {
+            if (!preg_match("?https*://?", $website)) {
                $website = "http://".$website;
             }
             $website = "<a target=_blank href='$website'>".$data['website']."</a>";
@@ -394,7 +394,7 @@ class Contract_Supplier extends CommonDBRelation {
          }
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=$entID'>".$entname;
          echo "</a></td>";
-         echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$entity)."</td>";
+         echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $entity)."</td>";
          echo "<td class='center'>";
          echo Dropdown::getDropdownName("glpi_suppliertypes", $data['type'])."</td>";
          echo "<td class='center'>".$data['phone']."</td>";

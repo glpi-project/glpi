@@ -58,14 +58,16 @@ class DeviceCase extends CommonDevice {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
-
-      $tab[12]['table']    = 'glpi_devicecasetypes';
-      $tab[12]['field']    = 'name';
-      $tab[12]['name']     = __('Type');
-      $tab[12]['datatype'] = 'dropdown';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => 'glpi_devicecasetypes',
+         'field'              => 'name',
+         'name'               => __('Type'),
+         'datatype'           => 'dropdown'
+      ];
 
       return $tab;
    }

@@ -437,7 +437,7 @@ class Lock {
 
          default :
             // Devices
-            if (preg_match('/^Item\_Device/',$itemtype)) {
+            if (preg_match('/^Item\_Device/', $itemtype)) {
                $condition = array('itemtype'   => $baseitemtype,
                                   'is_dynamic' => 1,
                                   'is_deleted' => 1);
@@ -500,7 +500,7 @@ class Lock {
                                           'size'     => 5,
                                           'values'   => array_keys($types)));
 
-            echo "<br><br>".Html::submit(_x('button','Post'), array('name' => 'massiveaction'));
+            echo "<br><br>".Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'));
             return true;
       }
       return false;
