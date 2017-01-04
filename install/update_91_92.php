@@ -54,7 +54,7 @@ function update91to92() {
    $backup_tables = false;
    // table already exist but deleted during the migration
    // not table created during the migration
-   $newtables     = array();
+   $newtables     = array('glpi_businesscriticities');
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
