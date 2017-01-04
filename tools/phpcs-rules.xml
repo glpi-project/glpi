@@ -19,6 +19,9 @@
   <!-- Remove closingTag -->
   <rule ref="Zend.Files.ClosingTag" />
 
+  <!--  Disallows the use of any deprecated functions -->
+  <rule ref="Generic.PHP.DeprecatedFunctions"/>
+
   <!--  Makes sure that shorthand PHP open tags are not used. -->
   <rule ref="Generic.PHP.DisallowShortOpenTag"/>
 
