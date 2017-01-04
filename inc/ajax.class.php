@@ -209,10 +209,9 @@ class Ajax {
       $url .= (strstr($url,'?') ?'&' :  '?').'_in_modal=1';
 
       $out  = "<div id=\"$domid\">";
-      $out .= "<iframe id='Iframe$domid' width='100%' height='100%' marginWidth='0' marginHeight='0'
-                frameBorder='0' scrolling='auto'></iframe></div>";
+      $out .= "<iframe id='Iframe$domid' class='iframe'></iframe></div>";
 
-      $out .= "<script type='text/javascript'>
+        $out .= "<script type='text/javascript'>
             $('#$domid').dialog({
                modal: true,
                autoOpen: false,

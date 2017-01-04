@@ -495,8 +495,8 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
                  "<a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=".
                     "$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">".
                     __('Automatic redirection, else click')."</a>";
-            echo "<script language='javascript' type='text/javascript'>".
-                  "window.location=\"backup.php?dump=1&duree=$duree&rowlimit=".
+            echo "<script type='text/javascript'>" .
+                "window.location=\"backup.php?dump=1&duree=$duree&rowlimit=".
                      "$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=".
                      "$fichier\";</script></div>";
             Html::glpi_flush();
@@ -560,8 +560,8 @@ if (isset($_GET["file"]) && ($_GET["file"] != "")
               "<a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=".
                     "$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">";
          echo __('Automatic redirection, else click')."</a>";
-         echo "<script language='javascript' type='text/javascript'>".
-               "window.location=\"backup.php?file=".
+         echo "<script type='text/javascript'>" .
+            "window.location=\"backup.php?file=".
                 $_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";".
                 "</script></div>";
          Html::glpi_flush();

@@ -791,10 +791,9 @@ class Toolbox {
          if (is_array($v)) {
             $params[] = self::append_params($v, $separator,
                                             (empty($parent) ? rawurlencode($k)
-                                                            : $parent .'['.rawurlencode($k).']'));
+                                                            : $parent . '%5B' . rawurlencode($k) . '%5D'));
          } else {
-            $params[] = (!empty($parent) ? $parent . '[' . rawurlencode($k) . ']'
-                                         : rawurlencode($k)) . '=' . rawurlencode($v);
+            $params[] = (!empty($parent) ? $parent . '%5B' . rawurlencode($k) . '%5D' : rawurlencode($k)) . '=' . rawurlencode($v);
          }
       }
       return implode($separator, $params);
