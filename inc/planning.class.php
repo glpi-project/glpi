@@ -224,10 +224,10 @@ class Planning extends CommonGLPI {
          }
 
          if (count($data)
-             && method_exists($itemtype,'getAlreadyPlannedInformation')) {
+             && method_exists($itemtype, 'getAlreadyPlannedInformation')) {
             foreach ($data as $key => $val) {
                if (!isset($except[$itemtype])
-                   || (is_array($except[$itemtype]) && !in_array($val['id'],$except[$itemtype]))) {
+                   || (is_array($except[$itemtype]) && !in_array($val['id'], $except[$itemtype]))) {
 
                   $planned  = true;
                   $message .= '- '.call_user_func(array($itemtype, 'getAlreadyPlannedInformation'),
@@ -396,8 +396,8 @@ class Planning extends CommonGLPI {
             // Print Headers
             echo "<br><div class='center'><table class='tab_cadre_fixe'>";
             $colnumber  = 1;
-            $plan_begin = explode(":",$CFG_GLPI["planning_begin"]);
-            $plan_end   = explode(":",$CFG_GLPI["planning_end"]);
+            $plan_begin = explode(":", $CFG_GLPI["planning_begin"]);
+            $plan_end   = explode(":", $CFG_GLPI["planning_end"]);
             $begin_hour = intval($plan_begin[0]);
             $end_hour   = intval($plan_end[0]);
             if ($plan_end[1] != 0) {
@@ -1580,7 +1580,7 @@ class Planning extends CommonGLPI {
          $end = $params["end"];
 
       } else {
-         $end = date("Y-m-d H:i:s",strtotime($begin)+HOUR_TIMESTAMP);
+         $end = date("Y-m-d H:i:s", strtotime($begin)+HOUR_TIMESTAMP);
       }
 
       echo "<table class='tab_cadre'>";
@@ -1634,7 +1634,7 @@ class Planning extends CommonGLPI {
       if ((!isset($params["id"]) || ($params["id"] == 0))
           && isset($params['itemtype'])
           && PlanningRecall::isAvailable()) {
-         echo "<tr class='tab_bg_2'><td>"._x('Planning','Reminder')."</td><td>";
+         echo "<tr class='tab_bg_2'><td>"._x('Planning', 'Reminder')."</td><td>";
          PlanningRecall::dropdown(array('itemtype' => $params['itemtype'],
                                         'items_id' => $params['items_id']));
          echo "</td></tr>";

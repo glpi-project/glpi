@@ -40,7 +40,7 @@ include ('../inc/includes.php');
 Session::checkSeveralRightsOr(array('notification' => READ,
                                     'config'       => UPDATE));
 
-Html::header(_n('Notification', 'Notifications',2), $_SERVER['PHP_SELF'], "config", "notification");
+Html::header(_n('Notification', 'Notifications', 2), $_SERVER['PHP_SELF'], "config", "notification");
 
 if (isset($_POST['activate'])) {
    $config             = new Config();
@@ -64,7 +64,7 @@ if (!$CFG_GLPI['use_mailing']) {
 
    } else {
       echo "<table class='tab_cadre'>";
-      echo "<tr><th>" . _n('Notification', 'Notifications',2)."</th></tr>";
+      echo "<tr><th>" . _n('Notification', 'Notifications', 2)."</th></tr>";
       if (Session::haveRight("config", UPDATE)) {
          echo "<tr class='tab_bg_1'><td class='center'>".
               "<a href='notificationmailsetting.form.php'>". __('Email followups configuration') .
@@ -77,7 +77,7 @@ if (!$CFG_GLPI['use_mailing']) {
 
       if (Session::haveRight("notification", READ) && $CFG_GLPI['use_mailing']) {
          echo "<tr class='tab_bg_1'><td class='center'>".
-              "<a href='notification.php'>". _n('Notification', 'Notifications',2)."</a></td></tr>";
+              "<a href='notification.php'>". _n('Notification', 'Notifications', 2)."</a></td></tr>";
       } else {
             echo "<tr class='tab_bg_1'><td class='center'>" .
             __('Unable to configure notifications: please configure your email followup using the above configuration.') .

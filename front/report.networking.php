@@ -78,7 +78,7 @@ if (countElementsInTableForMyEntities("glpi_netpoints") > 0) {
    echo "<table class='tab_cadre' width='500'>";
    echo "<tr class='tab_bg_1'><td width='120'>".__('By network outlet')."</td>";
    echo "<td>";
-   Netpoint::dropdownNetpoint("prise",0,-1,1,$_SESSION["glpiactive_entity"]);
+   Netpoint::dropdownNetpoint("prise", 0, -1, 1, $_SESSION["glpiactive_entity"]);
    echo "</td><td class='center' width='120'>";
    echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'>";
    echo "</td></tr>";

@@ -346,7 +346,7 @@ class NetworkPortMigration extends CommonDBChild {
             Dropdown::showItemTypes('transform_to', NetworkPort::getNetworkPortInstantiations(),
                                     array('value' => 'NetworkPortEthernet'));
             echo "<br><br>";
-            echo Html::submit(_x('button','Post'), array('name' => 'massiveaction'))."</span>";
+            echo Html::submit(_x('button', 'Post'), array('name' => 'massiveaction'))."</span>";
             return true;
       }
       return parent::showMassiveActionsSubForm($ma);

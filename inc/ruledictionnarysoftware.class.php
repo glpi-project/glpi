@@ -109,7 +109,7 @@ class RuleDictionnarySoftware extends Rule {
       $actions['_ignore_import']['name']        = __('To be unaware of import');
       $actions['_ignore_import']['type']        = 'yesonly';
 
-      $actions['version']['name']               = _n('Version', 'Versions',1);
+      $actions['version']['name']               = _n('Version', 'Versions', 1);
       $actions['version']['force_actions']      = array('assign','regex_result',
                                                         'append_regex_result');
 
@@ -147,7 +147,7 @@ class RuleDictionnarySoftware extends Rule {
    function showSpecificCriteriasForPreview($fields) {
 
       if (isset($this->fields['id'])) {
-         $this->getRuleWithCriteriasAndActions($this->fields['id'],0,1);
+         $this->getRuleWithCriteriasAndActions($this->fields['id'], 0, 1);
       }
 
       //if there's a least one action with type == append_regex_result, then need to display

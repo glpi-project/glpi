@@ -257,7 +257,7 @@ class NetworkEquipment extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf(__('%1$s%2$s'),__('Name'),
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'),
                           (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
            "</td>";
       echo "<td>";
@@ -380,7 +380,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'))."</td>";
+      echo "<td>".sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio'))."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "ram");
       echo "</td></tr>";
@@ -556,7 +556,7 @@ class NetworkEquipment extends CommonDBTM {
          'id'                 => '14',
          'table'              => $this->getTable(),
          'field'              => 'ram',
-         'name'               => sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio')),
+         'name'               => sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio')),
          'datatype'           => 'number'
       ];
 

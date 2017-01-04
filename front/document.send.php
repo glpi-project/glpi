@@ -64,7 +64,7 @@ if (isset($_GET['docid'])) { // docid for document
    }
 
 } else if (isset($_GET["file"])) { // for other file
-   $splitter = explode("/",$_GET["file"], 2);
+   $splitter = explode("/", $_GET["file"], 2);
    if (count($splitter) == 2) {
       $send = false;
       if (($splitter[0] == "_dumps")

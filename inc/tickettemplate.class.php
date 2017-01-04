@@ -428,7 +428,7 @@ class TicketTemplate extends CommonDropdown {
                if ($field == 'itemtype') {
                   $output .= "<input type='hidden' name='items_id' value=\"".
                                $ticket->fields['items_id']."\">";
-                  if ($num = array_search('items_id',$this->getAllowedFields())) {
+                  if ($num = array_search('items_id', $this->getAllowedFields())) {
                      $output = sprintf(__('%1$s - %2$s'), $output,
                                        $ticket->getValueToDisplay($num, $ticket->fields,
                                                                   $display_options));

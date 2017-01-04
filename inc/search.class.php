@@ -233,7 +233,7 @@ class Search {
          $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
          if (count($displaypref)) {
             foreach ($displaypref as $val) {
-               array_push($data['toview'],$val);
+               array_push($data['toview'], $val);
             }
          }
       } else {
@@ -449,8 +449,8 @@ class Search {
                   $NOT     = 0;
                   $tmplink = "";
                   if (isset($criteria['link'])) {
-                     if (strstr($criteria['link'],"NOT")) {
-                        $tmplink = " ".str_replace(" NOT","",$criteria['link']);
+                     if (strstr($criteria['link'], "NOT")) {
+                        $tmplink = " ".str_replace(" NOT", "", $criteria['link']);
                         $NOT     = 1;
                      } else {
                         $tmplink = " ".$criteria['link'];
@@ -607,12 +607,12 @@ class Search {
                // Where
                $LINK = "";
                // For AND NOT statement need to take into account all the group by items
-               if (strstr($metacriteria['link'],"AND NOT")
+               if (strstr($metacriteria['link'], "AND NOT")
                    || isset($sopt["usehaving"])) {
 
                   $NOT = 0;
-                  if (strstr($metacriteria['link'],"NOT")) {
-                     $tmplink = " ".str_replace(" NOT","",$metacriteria['link']);
+                  if (strstr($metacriteria['link'], "NOT")) {
+                     $tmplink = " ".str_replace(" NOT", "", $metacriteria['link']);
                      $NOT     = 1;
                   } else {
                      $tmplink = " ".$metacriteria['link'];
@@ -628,7 +628,7 @@ class Search {
                   $NOT  = 0;
                   // Manage Link if not first item
                   if (isset($metacriteria['link'])
-                      && strstr($metacriteria['link'],"NOT")) {
+                      && strstr($metacriteria['link'], "NOT")) {
 
                      $tmplink = " ".str_replace(" NOT", "", $metacriteria['link']);
                      $NOT     = 1;
@@ -1066,10 +1066,10 @@ class Search {
                   }
 
                   // No Group_concat case
-                  if (strpos($val,self::LONGSEP) === false) {
+                  if (strpos($val, self::LONGSEP) === false) {
                      $newrow[$j]['count'] = 1;
 
-                     if (strpos($val,self::SHORTSEP) === false) {
+                     if (strpos($val, self::SHORTSEP) === false) {
                         if ($val == self::NULLVALUE) {
                            $newrow[$j][0][$fieldname] = NULL;
                         } else {
@@ -1087,7 +1087,7 @@ class Search {
                      $split               = explode(self::LONGSEP, $val);
                      $newrow[$j]['count'] = count($split);
                      foreach ($split as $key2 => $val2) {
-                        if (strpos($val2,self::SHORTSEP) === false) {
+                        if (strpos($val2, self::SHORTSEP) === false) {
                            $newrow[$j][$key2][$fieldname] = $val2;
                         } else {
                            $split2                  = self::explodeWithID(self::SHORTSEP, $val2);
@@ -1328,7 +1328,7 @@ class Search {
                 && (!isset($val['searchopt']['nosort'])
                     || !$val['searchopt']['nosort'])) {
 
-               $linkto = $data['search']['target'].(strpos($data['search']['target'],'?') ? '&amp;' : '?').
+               $linkto = $data['search']['target'].(strpos($data['search']['target'], '?') ? '&amp;' : '?').
                            "itemtype=".$data['itemtype']."&amp;sort=".
                            $val['id']."&amp;order=".
                            (($data['search']['order'] == "ASC") ?"DESC":"ASC").
@@ -1902,7 +1902,7 @@ class Search {
          if ($p['showreset']) {
             echo "<a href='"
                .$p['target']
-               .(strpos($p['target'],'?') ? '&amp;' : '?')
+               .(strpos($p['target'], '?') ? '&amp;' : '?')
                ."reset=reset' >";
             echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
                   $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier pointer'></a>";
@@ -1988,7 +1988,7 @@ class Search {
                $search  = array("/\&lt;/","/\&gt;/");
                $replace = array("<",">");
                $val     = preg_replace($search, $replace, $val);
-               if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/",$val,$regs)) {
+               if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]+)/", $val, $regs)) {
                   if ($NOT) {
                      if ($regs[1] == '<') {
                         $regs[1] = '>';
@@ -2032,7 +2032,7 @@ class Search {
       return " $LINK (`$NAME$num`".self::makeTextSearch($val,$NOT)."
                      $ADD ) ";
       */
-      return self::makeTextCriteria("`$NAME$num`",$val,$NOT,$LINK);
+      return self::makeTextCriteria("`$NAME$num`", $val, $NOT, $LINK);
    }
 
 
@@ -2598,7 +2598,7 @@ class Search {
             if (Session::isViewAllEntities()) {
                return "";
             }
-            return getEntitiesRestrictRequest("","glpi_profiles_users", '', '', true);
+            return getEntitiesRestrictRequest("", "glpi_profiles_users", '', '', true);
 
          case 'ProjectTask' :
             $condition  = '';
@@ -2608,7 +2608,7 @@ class Search {
             if (count($_SESSION['glpigroups'])) {
                $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
                                     AND `$teamtable`.`items_id`
-                                       IN (".implode(",",$_SESSION['glpigroups'])."))";
+                                       IN (".implode(",", $_SESSION['glpigroups'])."))";
             }
             $condition .= ") ";
 
@@ -2623,10 +2623,10 @@ class Search {
                                    AND `$teamtable`.`items_id` = '".Session::getLoginUserID()."')";
                if (count($_SESSION['glpigroups'])) {
                   $condition .= " OR (`glpi_projects`.`groups_id`
-                                       IN (".implode(",",$_SESSION['glpigroups'])."))";
+                                       IN (".implode(",", $_SESSION['glpigroups'])."))";
                   $condition .= " OR (`$teamtable`.`itemtype` = 'Group'
                                       AND `$teamtable`.`items_id`
-                                          IN (".implode(",",$_SESSION['glpigroups'])."))";
+                                          IN (".implode(",", $_SESSION['glpigroups'])."))";
                }
                $condition .= ") ";
             }
@@ -2679,9 +2679,9 @@ class Search {
                if (Session::haveRight("ticket", Ticket::READGROUP)) {
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $requestergroup_table.`groups_id`
-                                             IN (".implode(",",$_SESSION['glpigroups']).")";
+                                             IN (".implode(",", $_SESSION['glpigroups']).")";
                      $condition .= " OR $observergroup_table.`groups_id`
-                                             IN (".implode(",",$_SESSION['glpigroups']).")";
+                                             IN (".implode(",", $_SESSION['glpigroups']).")";
                   }
                }
 
@@ -2694,7 +2694,7 @@ class Search {
                   $condition .=" OR $assign_table.`users_id` = '".Session::getLoginUserID()."'";
                   if (count($_SESSION['glpigroups'])) {
                      $condition .= " OR $assigngroup_table.`groups_id`
-                                             IN (".implode(",",$_SESSION['glpigroups']).")";
+                                             IN (".implode(",", $_SESSION['glpigroups']).")";
                   }
                   if (Session::haveRight('ticket', Ticket::ASSIGN)) {
                      $condition .= " OR `glpi_tickets`.`status`='".CommonITILObject::INCOMING."'";
@@ -2827,7 +2827,7 @@ class Search {
       }
 
       // Hack to allow search by ID on every sub-table
-      if (preg_match('/^\$\$\$\$([0-9]+)$/',$val,$regs)) {
+      if (preg_match('/^\$\$\$\$([0-9]+)$/', $val, $regs)) {
          return $link." (`$table`.`id` ".($nott?"<>":"=").$regs[1]." ".
                          (($regs[1] == 0)?" OR `$table`.`id` IS NULL":'').") ";
       }
@@ -2842,7 +2842,7 @@ class Search {
                if ($searchopt[$ID]["datatype"] == 'datetime') {
                   $force_day = false;
                }
-               if (strstr($val,'BEGIN') || strstr($val,'LAST')) {
+               if (strstr($val, 'BEGIN') || strstr($val, 'LAST')) {
                   $force_day = true;
                }
 
@@ -2874,17 +2874,17 @@ class Search {
 
          case "under" :
             if ($nott) {
-               $SEARCH = " NOT IN ('".implode("','",getSonsOf($inittable, $val))."')";
+               $SEARCH = " NOT IN ('".implode("','", getSonsOf($inittable, $val))."')";
             } else {
-               $SEARCH = " IN ('".implode("','",getSonsOf($inittable, $val))."')";
+               $SEARCH = " IN ('".implode("','", getSonsOf($inittable, $val))."')";
             }
             break;
 
          case "notunder" :
             if ($nott) {
-               $SEARCH = " IN ('".implode("','",getSonsOf($inittable, $val))."')";
+               $SEARCH = " IN ('".implode("','", getSonsOf($inittable, $val))."')";
             } else {
-               $SEARCH = " NOT IN ('".implode("','",getSonsOf($inittable, $val))."')";
+               $SEARCH = " NOT IN ('".implode("','", getSonsOf($inittable, $val))."')";
             }
             break;
 
@@ -3010,7 +3010,7 @@ class Search {
             $search  = array("/\&lt;/","/\&gt;/");
             $replace = array("<",">");
             $val     = preg_replace($search, $replace, $val);
-            if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/",$val,$regs)) {
+            if (preg_match("/^\s*([<>])([=]*)[[:space:]]*([0-9\.]+)/", $val, $regs)) {
                if ($nott) {
                   if ($regs[1] == '<') {
                      $regs[1] = '>';
@@ -3077,9 +3077,9 @@ class Search {
 
             if (count($tocheck)) {
                if ($nott) {
-                  return $link." `$table`.`$field` NOT IN ('".implode("','",$tocheck)."')";
+                  return $link." `$table`.`$field` NOT IN ('".implode("','", $tocheck)."')";
                }
-               return $link." `$table`.`$field` IN ('".implode("','",$tocheck)."')";
+               return $link." `$table`.`$field` IN ('".implode("','", $tocheck)."')";
             }
             break;
 
@@ -3144,9 +3144,9 @@ class Search {
             }
             if (count($tocheck)) {
                if ($nott) {
-                  return $link." `$table`.`$field` NOT IN ('".implode("','",$tocheck)."')";
+                  return $link." `$table`.`$field` NOT IN ('".implode("','", $tocheck)."')";
                }
-               return $link." `$table`.`$field` IN ('".implode("','",$tocheck)."')";
+               return $link." `$table`.`$field` IN ('".implode("','", $tocheck)."')";
             }
             break;
 
@@ -3196,7 +3196,7 @@ class Search {
                if ($searchopt[$ID]["datatype"] == 'datetime') {
                   // Specific search for datetime
                   if (in_array($searchtype, array('equals', 'notequals'))) {
-                     $val = preg_replace("/:00$/",'',$val);
+                     $val = preg_replace("/:00$/", '', $val);
                      $val = '^'.$val;
                      if ($searchtype == 'notequals') {
                         $nott = !$nott;
@@ -3239,14 +3239,14 @@ class Search {
                }
                $search  = array("/\&lt;/","/\&gt;/");
                $replace = array("<",">");
-               $val     = preg_replace($search,$replace,$val);
-               if (preg_match("/^\s*([<>=]+)(.*)/",$val,$regs)) {
+               $val     = preg_replace($search, $replace, $val);
+               if (preg_match("/^\s*([<>=]+)(.*)/", $val, $regs)) {
                   if (is_numeric($regs[2])) {
                      return $link." $date_computation ".$regs[1]."
                             ADDDATE(NOW(), INTERVAL ".$regs[2]." $search_unit) ";
                   }
                   // ELSE Reformat date if needed
-                  $regs[2] = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',
+                  $regs[2] = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@', '\5-\3-\1',
                                           $regs[2]);
                   if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/', $regs[2])) {
                      return $link." $date_computation ".$regs[1]." '".$regs[2]."'";
@@ -3255,7 +3255,7 @@ class Search {
                }
                // ELSE standard search
                // Date format modification if needed
-               $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1', $val);
+               $val = preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@', '\5-\3-\1', $val);
                return self::makeTextCriteria($date_computation, $val, $nott, $link);
 
             case "right" :
@@ -3266,9 +3266,9 @@ class Search {
 
             case "bool" :
                if (!is_numeric($val)) {
-                  if (strcasecmp($val,__('No')) == 0) {
+                  if (strcasecmp($val, __('No')) == 0) {
                      $val = 0;
-                  } else if (strcasecmp($val,__('Yes')) == 0) {
+                  } else if (strcasecmp($val, __('Yes')) == 0) {
                      $val = 1;
                   }
                }
@@ -3346,11 +3346,11 @@ class Search {
       }
       $transitemtype = getItemTypeForTable($inittable);
       if (Session::haveTranslations($transitemtype, $field)) {
-         return " $link (".self::makeTextCriteria($tocompute,$val,$nott,'')."
-                          OR ".self::makeTextCriteria($tocomputetrans,$val,$nott,'').")";
+         return " $link (".self::makeTextCriteria($tocompute, $val, $nott, '')."
+                          OR ".self::makeTextCriteria($tocomputetrans, $val, $nott, '').")";
       }
 
-      return self::makeTextCriteria($tocompute,$val,$nott,$link);
+      return self::makeTextCriteria($tocompute, $val, $nott, $link);
    }
 
 
@@ -3588,7 +3588,7 @@ class Search {
          $tocheck = $nt;
       }
 
-      if (in_array($tocheck,$already_link_tables)) {
+      if (in_array($tocheck, $already_link_tables)) {
          return "";
       }
       array_push($already_link_tables, $tocheck);
@@ -3801,11 +3801,11 @@ class Search {
       switch ($to_type) {
          case 'User' :
          case 'Group' :
-            array_push($already_link_tables2,getTableForItemType($to_type));
+            array_push($already_link_tables2, getTableForItemType($to_type));
             return "$LINK `$to_table`
                         ON (`$from_table`.`$to_fk` = `$to_table`.`id`) ";
          case 'Budget' :
-            array_push($already_link_tables2,getTableForItemType($to_type));
+            array_push($already_link_tables2, getTableForItemType($to_type));
             return "$LINK `glpi_infocoms`
                         ON (`$from_table`.`id` = `glpi_infocoms`.`items_id`
                             AND `glpi_infocoms`.`itemtype` = '$from_type')
@@ -3822,7 +3822,7 @@ class Search {
             } else if ($from_type == 'Problem') {
                $table = 'problems';
             }
-            array_push($already_link_tables2,$to_table);
+            array_push($already_link_tables2, $to_table);
             return " $LINK `glpi_items_".$table."` AS glpi_items_".$table."_to_$to_type
                         ON (`glpi_".$table."`.`id` = `glpi_items_".$table."_to_$to_type`.`".$table."_id`)
                      $LINK `$to_table`
@@ -3866,7 +3866,7 @@ class Search {
                                        = `glpi_peripherals`.`id`) ";
 
                case 'Phone' :
-                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`computers_id`
@@ -3877,9 +3877,9 @@ class Search {
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`) ";
 
                case 'Software' :
-                  array_push($already_link_tables2,getTableForItemType($to_type));
-                  array_push($already_link_tables2,"glpi_softwareversions_$to_type");
-                  array_push($already_link_tables2,"glpi_softwarelicenses_$to_type");
+                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, "glpi_softwareversions_$to_type");
+                  array_push($already_link_tables2, "glpi_softwarelicenses_$to_type");
                   return " $LINK `glpi_computers_softwareversions`
                                     AS `glpi_computers_softwareversions_$complexjoin$to_type`
                               ON (`glpi_computers_softwareversions_$complexjoin$to_type`.`computers_id`
@@ -3934,7 +3934,7 @@ class Search {
          case 'Peripheral' :
             switch ($to_type) {
                case 'Computer' :
-                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id`
@@ -3950,7 +3950,7 @@ class Search {
          case 'Phone' :
             switch ($to_type) {
                case 'Computer' :
-                  array_push($already_link_tables2,getTableForItemType($to_type));
+                  array_push($already_link_tables2, getTableForItemType($to_type));
                   array_push($already_link_tables2, "glpi_computers_items_$to_type");
                   return " $LINK `glpi_computers_items` AS `glpi_computers_items_$to_type`
                               ON (`glpi_computers_items_$to_type`.`items_id` = `glpi_phones`.`id`
@@ -3965,9 +3965,9 @@ class Search {
          case 'Software' :
             switch ($to_type) {
                case 'Computer' :
-                  array_push($already_link_tables2,getTableForItemType($to_type));
-                  array_push($already_link_tables2,"glpi_softwareversions_$to_type");
-                  array_push($already_link_tables2,"glpi_softwareversions_$to_type");
+                  array_push($already_link_tables2, getTableForItemType($to_type));
+                  array_push($already_link_tables2, "glpi_softwareversions_$to_type");
+                  array_push($already_link_tables2, "glpi_softwareversions_$to_type");
                   return " $LINK `glpi_softwareversions` AS `glpi_softwareversions_$to_type`
                               ON (`glpi_softwareversions_$to_type`.`softwares_id`
                                        = `glpi_softwares`.`id`)
@@ -4121,7 +4121,7 @@ class Search {
                         if ($itemtype == 'Ticket') {
                            if (isset($data[$num][$k]['name'])
                                  && $data[$num][$k]['name'] > 0) {
-                              $userdata = getUserName($data[$num][$k]['name'],2);
+                              $userdata = getUserName($data[$num][$k]['name'], 2);
                               $tooltip  = "";
                               if (Session::haveRight('user', READ)) {
                                  $tooltip = Html::showToolTip($userdata["comment"],
@@ -4141,7 +4141,7 @@ class Search {
                             && isset($data[$num][$k][2])) {
                            $split = explode(self::LONGSEP, $data[$num][$k][2]);
                            for ($l=0 ; $l<count($split) ; $l++) {
-                              $split2 = explode(" ",$split[$l]);
+                              $split2 = explode(" ", $split[$l]);
                               if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
                                  if ($count_display) {
                                     $out .= self::LBBR;
@@ -4579,7 +4579,7 @@ class Search {
                   foreach ($data[$num] as $key => $val) {
                      if (is_numeric($key)) {
                         if (!empty($val['name'])) {
-                           if (substr($val['name'],0, 6) == 'Plugin') {
+                           if (substr($val['name'], 0, 6) == 'Plugin') {
                               $plug = new $val['name']();
                               $name = $plug->getTypeName();
                               $itemtypes[] = __($name);
@@ -4606,7 +4606,7 @@ class Search {
                   $link = Toolbox::getItemTypeFormURL($itemtype);
 
                   $out  = "<a id='$itemtype".$data[$num][0]['id']."' href=\"".$link;
-                  $out .= (strstr($link,'?') ?'&amp;' :  '?');
+                  $out .= (strstr($link, '?') ?'&amp;' :  '?');
                   $out .= 'id='.$data[$num][0]['id'];
                   // Force solution tab if solved
                   if ($item = getItemForItemtype($itemtype)) {
@@ -4749,8 +4749,8 @@ class Search {
                      }
                      $count_display++;
                      $page  = $linkitemtype::getFormUrl();
-                     $page .= (strpos($page,'?') ? '&id' : '?id');
-                     $name  = Dropdown::getValueWithUnit($data[$num][$k]['name'],$unit);
+                     $page .= (strpos($page, '?') ? '&id' : '?id');
+                     $name  = Dropdown::getValueWithUnit($data[$num][$k]['name'], $unit);
                      if ($_SESSION["glpiis_ids_visible"] || empty($data[$num][$k]['name'])) {
                         $name = sprintf(__('%1$s (%2$s)'), $name, $data[$num][$k]['id']);
                      }
@@ -4861,7 +4861,7 @@ class Search {
                $orig_link = trim($data[$num][0]['name']);
                if (!empty($orig_link)) {
                   // strip begin of link
-                  $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
+                  $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
                   $link = preg_replace('/\/$/', '', $link);
                   if (Toolbox::strlen($link)>$CFG_GLPI["url_maxlength"]) {
                      $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
@@ -5071,7 +5071,7 @@ class Search {
 
       if (($itemtype != 'AllAssets')
           && class_exists($itemtype)
-          && method_exists($itemtype,'getDefaultSearchRequest')) {
+          && method_exists($itemtype, 'getDefaultSearchRequest')) {
 
          $default_values = array_merge($default_values,
                                        call_user_func(array($itemtype,
@@ -5174,19 +5174,19 @@ class Search {
       $options = &self::getOptions($itemtype, $withplugins);
       $todel   = array();
 
-      if (!Session::haveRight('infocom',$action)
+      if (!Session::haveRight('infocom', $action)
           && InfoCom::canApplyOn($itemtype)) {
          $itemstodel = Infocom::getSearchOptionsToAdd($itemtype);
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
 
-      if (!Session::haveRight('contract',$action)
+      if (!Session::haveRight('contract', $action)
           && in_array($itemtype, $CFG_GLPI["contract_types"])) {
          $itemstodel = Contract::getSearchOptionsToAdd();
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
 
-      if (!Session::haveRight('document',$action)
+      if (!Session::haveRight('document', $action)
           && Document::canApplyOn($itemtype)) {
          $itemstodel = Document::getSearchOptionsToAdd();
          $todel      = array_merge($todel, array_keys($itemstodel));
@@ -5430,7 +5430,7 @@ class Search {
             // Search options added by plugins
             $plugsearch = Plugin::getAddSearchOptions($itemtype);
             if (count($plugsearch)) {
-               $search[$itemtype] += array('plugins' => _n('Plugin','Plugins', Session::getPluralNumber()));
+               $search[$itemtype] += array('plugins' => _n('Plugin', 'Plugins', Session::getPluralNumber()));
                $search[$itemtype] += $plugsearch;
             }
          }
@@ -5456,7 +5456,7 @@ class Search {
 
             // Set default linkfield
             if (!isset($val['linkfield']) || empty($val['linkfield'])) {
-               if ((strcmp($itemtable,$val['table']) == 0)
+               if ((strcmp($itemtable, $val['table']) == 0)
                    && (!isset($val['joinparams']) || (count($val['joinparams']) == 0))) {
                   $search[$itemtype][$key]['linkfield'] = $val['field'];
                } else {
@@ -5712,8 +5712,8 @@ class Search {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_TABLE;
-            $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
-            $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
+            $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
+            $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
             $PDF_TABLE .= "<td $extraparam valign='top'>";
             $PDF_TABLE .= Html::weblink_extract(Html::clean($value));
             $PDF_TABLE .= "</td>\n";
@@ -5723,16 +5723,16 @@ class Search {
          case self::SYLK_OUTPUT : //sylk
             global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
             $value                  = Html::weblink_extract($value);
-            $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
-            $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
+            $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
+            $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
             $SYLK_ARRAY[$row][$num] = self::sylk_clean($value);
             $SYLK_SIZE[$num]        = max($SYLK_SIZE[$num],
                                           Toolbox::strlen($SYLK_ARRAY[$row][$num]));
             break;
 
          case self::CSV_OUTPUT : //csv
-            $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
-            $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
+            $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
+            $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
             $value = Html::weblink_extract($value);
             $out   = "\"".self::csv_clean($value)."\"".$_SESSION["glpicsv_delimiter"];
             break;
@@ -5740,11 +5740,11 @@ class Search {
          default :
             $out = "<td $extraparam valign='top'>";
 
-            if (!preg_match('/'.self::LBHR.'/',$value)) {
-               $values = preg_split('/'.self::LBBR.'/i',$value);
+            if (!preg_match('/'.self::LBHR.'/', $value)) {
+               $values = preg_split('/'.self::LBBR.'/i', $value);
                $line_delimiter = '<br>';
             } else {
-               $values = preg_split('/'.self::LBHR.'/i',$value);
+               $values = preg_split('/'.self::LBHR.'/i', $value);
                $line_delimiter = '<hr>';
             }
             $limitto = 20;
@@ -5754,14 +5754,14 @@ class Search {
                }
                // $rand=mt_rand();
                $out .= "...&nbsp;";
-               $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
-               $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
-               $out .= Html::showToolTip($value,array('display'   => false,
+               $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
+               $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
+               $out .= Html::showToolTip($value, array('display'   => false,
                                                       'autoclose' => false));
 
             } else {
-               $value = preg_replace('/'.self::LBBR.'/','<br>',$value);
-               $value = preg_replace('/'.self::LBHR.'/','<hr>',$value);
+               $value = preg_replace('/'.self::LBBR.'/', '<br>', $value);
+               $value = preg_replace('/'.self::LBHR.'/', '<hr>', $value);
                $out .= $value;
             }
             $out .= "</td>\n";
@@ -5851,7 +5851,7 @@ class Search {
             global $SYLK_HEADER,$SYLK_ARRAY,$SYLK_SIZE;
             // largeurs des colonnes
             foreach ($SYLK_SIZE as $num => $val) {
-               $out .= "F;W".$num." ".$num." ".min(50,$val)."\n";
+               $out .= "F;W".$num." ".$num." ".min(50, $val)."\n";
             }
             $out .= "\n";
             // Header
@@ -6240,7 +6240,7 @@ class Search {
 
       if (isset($tab[1]) && !is_numeric($tab[1])) {
          // Report $ to tab[0]
-         if (preg_match('/^(\\$*)(.*)/',$tab[1],$matchs)) {
+         if (preg_match('/^(\\$*)(.*)/', $tab[1], $matchs)) {
             if (isset($matchs[2]) && is_numeric($matchs[2])) {
                $tab[1]  = $matchs[2];
                $tab[0] .= $matchs[1];

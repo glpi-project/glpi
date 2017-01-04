@@ -65,7 +65,7 @@ if (isset($_POST["update"])
 
 } else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-      Html::header(Preference::getTypeName(1), $_SERVER['PHP_SELF'],'preference');
+      Html::header(Preference::getTypeName(1), $_SERVER['PHP_SELF'], 'preference');
    } else {
       Html::helpHeader(Preference::getTypeName(1), $_SERVER['PHP_SELF']);
    }

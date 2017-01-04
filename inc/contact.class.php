@@ -211,7 +211,7 @@ class Contact extends CommonDBTM{
       echo "<td>";
       Html::autocompletionTextField($this, "email");
       echo "</td>";
-      echo "<td>"._x('location','State')."</td>";
+      echo "<td>"._x('location', 'State')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "state");
       echo "</td></tr>";
@@ -226,7 +226,7 @@ class Contact extends CommonDBTM{
       Html::autocompletionTextField($this, "country");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . _x('person','Title') . "</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . _x('person', 'Title') . "</td><td>";
       UserTitle::dropdown(array('value' => $this->fields["usertitles_id"]));
       echo "<td>&nbsp;</td><td class='center'>";
       if ($ID > 0) {

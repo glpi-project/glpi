@@ -78,7 +78,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["purge"])) {
    $project->check($_POST["id"], PURGE);
-   $project->delete($_POST,1);
+   $project->delete($_POST, 1);
 
    Event::log($_POST["id"], "project", 4, "maintain",
               //TRANS: %s is the user login

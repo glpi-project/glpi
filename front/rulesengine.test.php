@@ -63,7 +63,7 @@ if ($rulecollection->isRuleRecursive()) {
 }
 $rulecollection->checkGlobal(READ);
 
-Html::popHeader(__('Setup'),$_SERVER['PHP_SELF']);
+Html::popHeader(__('Setup'), $_SERVER['PHP_SELF']);
 
 // Need for RuleEngines
 foreach ($_POST as $key => $val) {

@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $phone->check($_POST["id"], PURGE);
 
-   $phone->delete($_POST,1);
+   $phone->delete($_POST, 1);
    Event::log($_POST["id"], "phones", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

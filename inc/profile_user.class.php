@@ -87,7 +87,7 @@ class Profile_User extends CommonDBRelation {
    function canCreateItem() {
 
       $user = new User();
-      return $user->can($this->fields['users_id'],READ)
+      return $user->can($this->fields['users_id'], READ)
              && Profile::currentUserHaveMoreRightThan(array($this->fields['profiles_id']
                                                                => $this->fields['profiles_id']))
              && Session::haveAccessToEntity($this->fields['entities_id']);
@@ -122,7 +122,7 @@ class Profile_User extends CommonDBRelation {
 
       $canedit = $user->canEdit($ID);
 
-      $strict_entities = self::getUserEntities($ID,false);
+      $strict_entities = self::getUserEntities($ID, false);
       if (!Session::haveAccessToOneOfEntities($strict_entities)
           && !Session::isViewAllEntities()) {
          $canedit = false;
@@ -144,9 +144,9 @@ class Profile_User extends CommonDBRelation {
          echo "</td><td class='center'>".self::getTypeName(1)."</td><td>";
          Profile::dropdownUnder(array('value' => Profile::getDefault()));
          echo "</td><td>".__('Recursive')."</td><td>";
-         Dropdown::showYesNo("is_recursive",0);
+         Dropdown::showYesNo("is_recursive", 0);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table>";
@@ -302,7 +302,7 @@ class Profile_User extends CommonDBRelation {
          echo "</td><td class='tab_bg_2 center'>".__('Recursive')."</td><td>";
          Dropdown::showYesNo("is_recursive", 0);
          echo "</td><td class='tab_bg_2 center'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -377,7 +377,7 @@ class Profile_User extends CommonDBRelation {
                $i = 0;
 
                while ($data2 = $DB->fetch_assoc($result2)) {
-                  Session::addToNavigateListItems('User',$data2["id"]);
+                  Session::addToNavigateListItems('User', $data2["id"]);
 
                   if (($i%$nb_per_line) == 0) {
                      if ($i  !=0) {
@@ -979,7 +979,7 @@ class Profile_User extends CommonDBRelation {
                   $nb = countElementsInTable($this->getTable(),
                                              ['users_id' => $item->getID()]);
                }
-               return self::createTabEntry(_n('Authorization','Authorizations',
+               return self::createTabEntry(_n('Authorization', 'Authorizations',
                                            Session::getPluralNumber()), $nb);
          }
       }

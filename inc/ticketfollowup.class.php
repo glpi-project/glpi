@@ -142,7 +142,7 @@ class TicketFollowup  extends CommonDBTM {
       $ticket = new Ticket();
       if (!$ticket->can($this->getField('tickets_id'), READ)
         // No validation for closed tickets
-          || (in_array($ticket->fields['status'],$ticket->getClosedStatusArray())
+          || (in_array($ticket->fields['status'], $ticket->getClosedStatusArray())
             && !$ticket->isAllowedStatus($ticket->fields['status'], Ticket::INCOMING))) {
          return false;
       }
@@ -260,7 +260,7 @@ class TicketFollowup  extends CommonDBTM {
 
          if (count($this->updates)) {
             if ($CFG_GLPI["use_mailing"]
-                && (in_array("content",$this->updates)
+                && (in_array("content", $this->updates)
                     || isset($this->input['_need_send_mail']))) {
 
                $options = array('followup_id' => $this->fields["id"],
@@ -317,7 +317,7 @@ class TicketFollowup  extends CommonDBTM {
          $input["_job"]->input['_filename'] = $input['_filename'];
       }
       // Add docs without notif
-      $docadded = $input["_job"]->addFiles(0,1);
+      $docadded = $input["_job"]->addFiles(0, 1);
 
       if (count($docadded) > 0) {
          $input['content'] .= "\n";
@@ -767,7 +767,7 @@ class TicketFollowup  extends CommonDBTM {
          if ($params['candel']) {
             echo "<td class='right' colspan='".($params['colspan']*2)."' >\n";
             if ($this->can($ID, PURGE)) {
-               echo Html::submit(_x('button','Delete permanently'),
+               echo Html::submit(_x('button', 'Delete permanently'),
                                  array('name'    => 'purge',
                                        'confirm' => __('Confirm the final deletion?')));
             }

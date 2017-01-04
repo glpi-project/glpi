@@ -291,7 +291,7 @@ class ContractCost extends CommonDBChild {
       echo "<td>".__('Name')."</td>";
       echo "<td>";
       echo "<input type='hidden' name='contracts_id' value='".$this->fields['contracts_id']."'>";
-      Html::autocompletionTextField($this,'name');
+      Html::autocompletionTextField($this, 'name');
       echo "</td>";
       echo "<td>".__('Cost')."</td>";
       echo "<td>";

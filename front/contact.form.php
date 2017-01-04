@@ -88,7 +88,7 @@ if (isset($_GET['getvcard'])) {
 } else if (isset($_POST["purge"])) {
    $contact->check($_POST["id"], PURGE);
 
-   if ($contact->delete($_POST,1)) {
+   if ($contact->delete($_POST, 1)) {
       Event::log($_POST["id"], "contacts", 4, "financial",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

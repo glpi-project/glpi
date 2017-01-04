@@ -57,7 +57,7 @@ class Phone extends CommonDBTM {
 
    static function getTypeName($nb=0) {
       //TRANS: Test of comment for translation (mark : //TRANS)
-      return _n('Phone','Phones',$nb);
+      return _n('Phone', 'Phones', $nb);
    }
 
 
@@ -171,7 +171,7 @@ class Phone extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf(__('%1$s%2$s'),__('Name'),
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'),
                           (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
            "</td>";
       echo "<td>";
@@ -231,7 +231,7 @@ class Phone extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Serial number')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,"serial");
+      Html::autocompletionTextField($this, "serial");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -281,7 +281,7 @@ class Phone extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Brand')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,"brand");
+      Html::autocompletionTextField($this, "brand");
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";

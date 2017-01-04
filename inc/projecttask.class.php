@@ -166,12 +166,12 @@ class ProjectTask extends CommonDBChild {
 
       $ong = array();
       $this->addDefaultFormTab($ong);
-      $this->addStandardTab(__CLASS__,$ong, $options);
-      $this->addStandardTab('ProjectTaskTeam',$ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('ProjectTaskTeam', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
-      $this->addStandardTab('ProjectTask_Ticket',$ong, $options);
-      $this->addStandardTab('Notepad',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('ProjectTask_Ticket', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -258,7 +258,7 @@ class ProjectTask extends CommonDBChild {
 
    function pre_deleteItem() {
 
-      NotificationEvent::raiseEvent('delete',$this);
+      NotificationEvent::raiseEvent('delete', $this);
       return true;
    }
 
@@ -407,7 +407,7 @@ class ProjectTask extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td>".__('Name')."</td>";
       echo "<td colspan='3'>";
-      Html::autocompletionTextField($this,"name", array('size' => 80));
+      Html::autocompletionTextField($this, "name", array('size' => 80));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -486,10 +486,10 @@ class ProjectTask extends CommonDBChild {
       if ($ID) {
          $ticket_duration = ProjectTask_Ticket::getTicketsTotalActionTime($this->getID());
          echo "<br>";
-         printf(__('%1$s: %2$s'),__('Tickets duration'),
+         printf(__('%1$s: %2$s'), __('Tickets duration'),
                 Html::timestampToString($ticket_duration, false));
          echo '<br>';
-         printf(__('%1$s: %2$s'),__('Total duration'),
+         printf(__('%1$s: %2$s'), __('Total duration'),
                 Html::timestampToString($ticket_duration+$this->fields["effective_duration"],
                                         false));
       }
@@ -937,7 +937,7 @@ class ProjectTask extends CommonDBChild {
             echo $header;
 
             while ($data=$DB->fetch_assoc($result)) {
-               Session::addToNavigateListItems('ProjectTask',$data['id']);
+               Session::addToNavigateListItems('ProjectTask', $data['id']);
                $rand = mt_rand();
                echo "<tr class='tab_bg_2'>";
                echo "<td>";
@@ -956,7 +956,7 @@ class ProjectTask extends CommonDBChild {
                echo " style=\"background-color:".$data['color']."\"";
                echo ">".$statename."</td>";
                echo "<td>";
-               echo Dropdown::getValueWithUnit($data["percent_done"],"%");
+               echo Dropdown::getValueWithUnit($data["percent_done"], "%");
                echo "</td>";
                echo "<td>".Html::convDateTime($data['plan_start_date'])."</td>";
                echo "<td>".Html::convDateTime($data['plan_end_date'])."</td>";
@@ -1063,7 +1063,7 @@ class ProjectTask extends CommonDBChild {
 
          echo "</td>";
          echo "<td width='20%'>";
-         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
          echo "</table>";
@@ -1101,7 +1101,7 @@ class ProjectTask extends CommonDBChild {
                   echo "<tr class='tab_bg_2'>";
                   if ($canedit) {
                      echo "<td>";
-                     Html::showMassiveActionCheckBox('ProjectTaskTeam',$data["id"]);
+                     Html::showMassiveActionCheckBox('ProjectTaskTeam', $data["id"]);
                      echo "</td>";
                   }
                   echo "<td>".$item->getTypeName(1)."</td>";
@@ -1298,7 +1298,7 @@ class ProjectTask extends CommonDBChild {
       if ($who_group === "mine") {
          if (!$options['genical']
              && count($_SESSION["glpigroups"])) {
-            $groups = implode("','",$_SESSION['glpigroups']);
+            $groups = implode("','", $_SESSION['glpigroups']);
             $ASSIGN = "`glpi_projecttaskteams`.`itemtype` = 'Group'
                        AND `glpi_projecttaskteams`.`items_id`
                            IN (SELECT DISTINCT `groups_id`
@@ -1372,13 +1372,13 @@ class ProjectTask extends CommonDBChild {
                $interv[$key]["id"]                        = $data["id"];
                $interv[$key]["users_id"]                  = $data["users_id"];
 
-               if (strcmp($begin,$data["plan_start_date"]) > 0) {
+               if (strcmp($begin, $data["plan_start_date"]) > 0) {
                   $interv[$key]["begin"] = $begin;
                } else {
                   $interv[$key]["begin"] = $data["plan_start_date"];
                }
 
-               if (strcmp($end,$data["plan_end_date"]) < 0) {
+               if (strcmp($end, $data["plan_end_date"]) < 0) {
                   $interv[$key]["end"]   = $end;
                } else {
                   $interv[$key]["end"]   = $data["plan_end_date"];
@@ -1432,23 +1432,23 @@ class ProjectTask extends CommonDBChild {
       switch ($type) {
          case "in" :
             //TRANS: %1$s is the start time of a planned item, %2$s is the end
-            $beginend = sprintf(__('From %1$s to %2$s'), date("H:i",strtotime($val["begin"])),
-                                date("H:i",strtotime($val["end"])));
-            $html.= sprintf(__('%1$s: %2$s'), $beginend, Html::resume_text($val["name"],80)) ;
+            $beginend = sprintf(__('From %1$s to %2$s'), date("H:i", strtotime($val["begin"])),
+                                date("H:i", strtotime($val["end"])));
+            $html.= sprintf(__('%1$s: %2$s'), $beginend, Html::resume_text($val["name"], 80)) ;
             break;
 
          case "through" :
-            $html.= Html::resume_text($val["name"],80);
+            $html.= Html::resume_text($val["name"], 80);
             break;
 
          case "begin" :
             $start = sprintf(__('Start at %s'), date("H:i", strtotime($val["begin"])));
-            $html.= sprintf(__('%1$s: %2$s'), $start, Html::resume_text($val["name"],80)) ;
+            $html.= sprintf(__('%1$s: %2$s'), $start, Html::resume_text($val["name"], 80)) ;
             break;
 
          case "end" :
             $end = sprintf(__('End at %s'), date("H:i", strtotime($val["end"])));
-            $html.= sprintf(__('%1$s: %2$s'), $end,  Html::resume_text($val["name"],80)) ;
+            $html.= sprintf(__('%1$s: %2$s'), $end, Html::resume_text($val["name"], 80)) ;
             break;
       }
 

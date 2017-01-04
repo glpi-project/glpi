@@ -211,10 +211,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                 WHERE `users_id`='".$data['users_id']."' ".
                       getEntitiesRestrictRequest("AND", "glpi_profiles_users", "entities_id",
                                                  $this->getEntity(), true)."
-                      AND profiles_id IN (".implode(',',$this->private_profiles).")";
+                      AND profiles_id IN (".implode(',', $this->private_profiles).")";
       $result = $DB->query($query);
 
-      if ($DB->result($result,0,'cpt')) {
+      if ($DB->result($result, 0, 'cpt')) {
          return array('show_private' => 1);
       }
       return array('show_private' => 0);
@@ -505,7 +505,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $datas['##ticket.numberoflinkedtickets##'] = count($datas['linkedtickets']);
 
          $restrict          = "`tickets_id`='".$item->getField('id')."'";
-         $problems          = getAllDatasFromTable('glpi_problems_tickets',$restrict);
+         $problems          = getAllDatasFromTable('glpi_problems_tickets', $restrict);
          $datas['problems'] = array();
          if (count($problems)) {
             $problem = new Problem();
@@ -533,7 +533,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $datas['##ticket.numberofproblems##'] = count($datas['problems']);
 
          $restrict         = "`tickets_id`='".$item->getField('id')."'";
-         $changes          = getAllDatasFromTable('glpi_changes_tickets',$restrict);
+         $changes          = getAllDatasFromTable('glpi_changes_tickets', $restrict);
          $datas['changes'] = array();
          if (count($changes)) {
             $change = new Change();
@@ -568,7 +568,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $restrict .= " ORDER BY `date` DESC, `id` ASC";
 
          //Followup infos
-         $followups          = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
+         $followups          = getAllDatasFromTable('glpi_ticketfollowups', $restrict);
          $datas['followups'] = array();
          foreach ($followups as $followup) {
             $tmp                             = array();
@@ -586,7 +586,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          // Approbation of solution
          $restrict .= " LIMIT 1";
-         $replysolved = getAllDatasFromTable('glpi_ticketfollowups',$restrict);
+         $replysolved = getAllDatasFromTable('glpi_ticketfollowups', $restrict);
          $data = current($replysolved);
          $datas['##ticket.solution.approval.description##'] = $data['content'];
          $datas['##ticket.solution.approval.date##']        = Html::convDateTime($data['date']);
@@ -601,7 +601,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
          $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
 
-         $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
+         $validations = getAllDatasFromTable('glpi_ticketvalidations', $restrict);
          $datas['validations'] = array();
          foreach ($validations as $validation) {
             $tmp = array();
@@ -684,7 +684,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                          AND `glpi_notificationtargets`.`items_id` = '".Notification::AUTHOR."'";
 
          if ($result = $DB->query($query)) {
-            if ($DB->result($result,0,0) > 0) {
+            if ($DB->result($result, 0, 0) > 0) {
                return true;
             }
          }
@@ -832,7 +832,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       //Foreach global tags
       $tags = array('followups'     => _n('Followup', 'Followups', Session::getPluralNumber()),
-                    'validations'   => _n('Validation','Validations', Session::getPluralNumber()),
+                    'validations'   => _n('Validation', 'Validations', Session::getPluralNumber()),
                     'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
                     'problems'      => _n('Problem', 'Problems', Session::getPluralNumber()),
                     'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),
@@ -915,7 +915,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       //Tickets with a fixed set of values
       $allowed_validation = array();
-      $status = TicketValidation::getAllStatusArray(false,true);
+      $status = TicketValidation::getAllStatusArray(false, true);
       foreach ($status as $key => $value) {
          $allowed_validation[] = $key;
       }

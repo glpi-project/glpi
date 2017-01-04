@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
 
 } else if (isset($_POST["purge"])) {
    $change->check($_POST["id"], PURGE);
-   $change->delete($_POST,1);
+   $change->delete($_POST, 1);
 
    Event::log($_POST["id"], "change", 4, "maintain",
               //TRANS: %s is the user login

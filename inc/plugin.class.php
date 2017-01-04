@@ -233,7 +233,7 @@ class Plugin extends CommonDBTM {
 
       //// Get all plugins
       // Get all from DBs
-      $pluglist   = $this->find("","name, directory");
+      $pluglist   = $this->find("", "name, directory");
       $db_plugins = array();
       if (count($pluglist)) {
          foreach ($pluglist as $plug) {
@@ -371,7 +371,7 @@ class Plugin extends CommonDBTM {
       echo "<tr><th colspan='9'>".__('Plugins list')."</th></tr>\n";
 
       if (!empty($pluglist)) {
-         echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions',1)."</th>";
+         echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions', 1)."</th>";
          echo "<th>".__('License')."</th>";
          echo "<th>".__('Status')."</th><th>"._n('Author', 'Authors', Session::getPluralNumber())."</th>";
          echo "<th>".__('Website')."</th>";
@@ -483,12 +483,12 @@ class Plugin extends CommonDBTM {
                case self::ACTIVATED :
                   echo "<td>";
                   Html::showSimpleForm(static::getFormURL(), array('action' => 'unactivate'),
-                                       _x('button','Disable'), array('id' => $ID));
+                                       _x('button', 'Disable'), array('id' => $ID));
                   echo "</td>";
                   echo "<td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
-                                          _x('button','Uninstall'), array('id' => $ID));
+                                          _x('button', 'Uninstall'), array('id' => $ID));
                   } else {
                      //TRANS: %s is the list of missing functions
                      echo sprintf(__('%1$s: %2$s'), __('Non-existent function'),
@@ -535,7 +535,7 @@ class Plugin extends CommonDBTM {
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      if (function_exists("plugin_".$plug['directory']."_check_config")) {
                         Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
-                                             _x('button','Uninstall'), array('id' => $ID));
+                                             _x('button', 'Uninstall'), array('id' => $ID));
                      } else {
                         // This is an incompatible plugin (0.71), uninstall fonction could crash
                         echo "&nbsp;";
@@ -563,7 +563,7 @@ class Plugin extends CommonDBTM {
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
-                                          _x('button','Uninstall'), array('id' => $ID));
+                                          _x('button', 'Uninstall'), array('id' => $ID));
                   } else {
                      printf(__('%1$s: %2$s'), __('Non-existent function'),
                             "plugin_".$plug['directory']."_uninstall");
@@ -579,13 +579,13 @@ class Plugin extends CommonDBTM {
                      _e('Not CSRF compliant');
                   } else if (function_exists($function) && $function()) {
                      Html::showSimpleForm(static::getFormURL(), array('action' => 'activate'),
-                                          _x('button','Enable'), array('id' => $ID));
+                                          _x('button', 'Enable'), array('id' => $ID));
                   }
                   // Else : reason displayed by the plugin
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      Html::showSimpleForm(static::getFormURL(), array('action' => 'uninstall'),
-                                          _x('button','Uninstall'), array('id' => $ID));
+                                          _x('button', 'Uninstall'), array('id' => $ID));
                   } else {
                      printf(__('%1$s: %2$s'), __('Non-existent function'),
                             "plugin_".$plug['directory']."_uninstall");
@@ -597,7 +597,7 @@ class Plugin extends CommonDBTM {
                default :
                   echo "<td colspan='2'>";
                   Html::showSimpleForm(static::getFormURL(), array('action' => 'clean'),
-                                       _x('button','Clean'), array('id' => $ID));
+                                       _x('button', 'Clean'), array('id' => $ID));
                   echo "</td>";
                   break;
             }
@@ -628,7 +628,7 @@ class Plugin extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
          CronTask::Unregister($this->fields['directory']);
-         self::load($this->fields['directory'],true);
+         self::load($this->fields['directory'], true);
          FieldUnicity::deleteForItemtype($this->fields['directory']);
          Link_Itemtype::deleteForItemtype($this->fields['directory']);
 
@@ -656,7 +656,7 @@ class Plugin extends CommonDBTM {
    function install($ID) {
 
       if ($this->getFromDB($ID)) {
-         self::load($this->fields['directory'],true);
+         self::load($this->fields['directory'], true);
          $function   = 'plugin_' . $this->fields['directory'] . '_install';
          $install_ok = false;
          if (function_exists($function)) {
@@ -691,7 +691,7 @@ class Plugin extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
 
-         self::load($this->fields['directory'],true);
+         self::load($this->fields['directory'], true);
          // No activation if not CSRF compliant
          if (!isset($PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']])
              || !$PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']]) {
@@ -825,7 +825,7 @@ class Plugin extends CommonDBTM {
    **/
    function removeFromSession($plugin) {
 
-      $key = array_search($plugin,$_SESSION['glpi_plugins']);
+      $key = array_search($plugin, $_SESSION['glpi_plugins']);
       if ($key !== false) {
          unset($_SESSION['glpi_plugins'][$key]);
       }
@@ -891,7 +891,7 @@ class Plugin extends CommonDBTM {
                           44 => "Budget");
 
       //Add plugins types
-      $typetoname = self::doHookFunction("migratetypes",$typetoname);
+      $typetoname = self::doHookFunction("migratetypes", $typetoname);
 
       foreach ($types as $num => $name) {
          $typetoname[$num] = $name;
@@ -914,7 +914,7 @@ class Plugin extends CommonDBTM {
                continue;
             }
             $do_recursive = false;
-            if (FieldExists($itemtable,'is_recursive')) {
+            if (FieldExists($itemtable, 'is_recursive')) {
                $do_recursive = true;
             }
             foreach ($entities as $entID => $val) {
@@ -978,11 +978,11 @@ class Plugin extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       $plug     = new Plugin();
-      $pluglist = $plug->find("","name, directory");
+      $pluglist = $plug->find("", "name, directory");
       foreach ($pluglist as $plugin) {
-         $msg  = substr(str_pad($plugin['directory'],30),0,20).
-                 " Name: ".Toolbox::substr(str_pad($plugin['name'],40),0,30).
-                 " Version: ".str_pad($plugin['version'],10).
+         $msg  = substr(str_pad($plugin['directory'], 30), 0, 20).
+                 " Name: ".Toolbox::substr(str_pad($plugin['name'], 40), 0, 30).
+                 " Version: ".str_pad($plugin['version'], 10).
                  " State: ";
 
          switch ($plugin['state']) {
@@ -1122,7 +1122,7 @@ class Plugin extends CommonDBTM {
                      include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
                   }
                   if (is_callable($tab[$itemtype])) {
-                     call_user_func($tab[$itemtype],$data);
+                     call_user_func($tab[$itemtype], $data);
                   }
                }
             }
@@ -1135,7 +1135,7 @@ class Plugin extends CommonDBTM {
                   include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
                }
                if (is_callable($function)) {
-                  call_user_func($function,$data);
+                  call_user_func($function, $data);
                }
             }
          }
@@ -1208,7 +1208,7 @@ class Plugin extends CommonDBTM {
       $dps = array();
       if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) {
          foreach ($_SESSION["glpi_plugins"] as  $plug) {
-            $tab = self::doOneHook($plug,'getDropdown');
+            $tab = self::doOneHook($plug, 'getDropdown');
             if (is_array($tab)) {
                $dps      = array_merge($dps, array(self::getInfo($plug, 'name') => $tab));
             }
@@ -1258,7 +1258,7 @@ class Plugin extends CommonDBTM {
             }
             $function2 = "plugin_".$plug."_getDatabaseRelations";
             if (function_exists($function2)) {
-               $dps = array_merge_recursive($dps,$function2());
+               $dps = array_merge_recursive($dps, $function2());
             }
          }
       }

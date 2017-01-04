@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    if ($_POST["cartridgeitems_id"]) {
       $cartype->check($_POST["cartridgeitems_id"], UPDATE);
       for ($i=0 ; $i<$_POST["nbcart"] ; $i++) {
-         if ($cart->install($_POST["printers_id"],$_POST["cartridgeitems_id"])) {
+         if ($cart->install($_POST["printers_id"], $_POST["cartridgeitems_id"])) {
             Event::log($_POST["printers_id"], "printers", 5, "inventory",
                        //TRANS: %s is the user login
                        sprintf(__('%s installs a cartridge'), $_SESSION["glpiname"]));

@@ -37,7 +37,7 @@
 */
 
 // Direct access to file
-if (strpos($_SERVER['PHP_SELF'],"getDropdownNumber.php")) {
+if (strpos($_SERVER['PHP_SELF'], "getDropdownNumber.php")) {
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
@@ -103,11 +103,11 @@ if (!empty($_POST['searchText'])) {
 
 if ($one_item < 0 && count($values)) {
    $start  = ($_POST['page']-1)*$_POST['page_limit'];
-   $tosend = array_splice($values,$start, $_POST['page_limit']);
+   $tosend = array_splice($values, $start, $_POST['page_limit']);
    foreach ($tosend as $i) {
       $txt = $i;
       if (isset($_POST['unit'])) {
-         $txt = Dropdown::getValueWithUnit($i,$_POST['unit']);
+         $txt = Dropdown::getValueWithUnit($i, $_POST['unit']);
       }
       array_push($datas, array('id'   => $i,
                                'text' => strval($txt)));
@@ -117,7 +117,7 @@ if ($one_item < 0 && count($values)) {
 } else {
    if (!isset($toadd[$one_item])) {
       if (isset($_POST['unit'])) {
-         $txt = Dropdown::getValueWithUnit($one_item,$_POST['unit']);
+         $txt = Dropdown::getValueWithUnit($one_item, $_POST['unit']);
       }
       array_push($datas, array('id'   => $one_item,
                                'text' => strval(stripslashes($txt))));

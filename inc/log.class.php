@@ -223,10 +223,10 @@ class Log extends CommonDBTM {
 
       // Security to be sure that values do not pass over the max length
       if (Toolbox::strlen($old_value) > 255) {
-         $old_value = Toolbox::substr($old_value,0,250);
+         $old_value = Toolbox::substr($old_value, 0, 250);
       }
       if (Toolbox::strlen($new_value) > 255) {
-         $new_value = Toolbox::substr($new_value,0,250);
+         $new_value = Toolbox::substr($new_value, 0, 250);
       }
 
       // Build query
@@ -291,7 +291,7 @@ class Log extends CommonDBTM {
       $header .= "<th>"._x('name', 'Update')."</th></tr>";
       echo $header;
 
-      foreach (self::getHistoryData($item,$start, $_SESSION['glpilist_limit']) as $data) {
+      foreach (self::getHistoryData($item, $start, $_SESSION['glpilist_limit']) as $data) {
          if ($data['display_history']) {
             // show line
             echo "<tr class='tab_bg_2'>";

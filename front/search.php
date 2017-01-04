@@ -38,7 +38,7 @@
 include ('../inc/includes.php');
 
 Session::checkCentralAccess();
-Html::header(__('Search'),$_SERVER['PHP_SELF']);
+Html::header(__('Search'), $_SERVER['PHP_SELF']);
 
 if (!$CFG_GLPI['allow_search_global']) {
    Html::displayRightError();
@@ -51,7 +51,7 @@ if (isset($_GET["globalsearch"])) {
           && $item->canView()) {
          $_GET["reset"]        = 'reset';
 
-         $params                 = Search::manageParams($itemtype,$_GET, false,true);
+         $params                 = Search::manageParams($itemtype, $_GET, false, true);
          $params["display_type"] = Search::GLOBAL_SEARCH;
 
          $count                  = count($params["criteria"]);

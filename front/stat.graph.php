@@ -56,16 +56,16 @@ if (empty($_POST["date1"]) && empty($_POST["date2"])) {
 
 if (!empty($_POST["date1"])
     && !empty($_POST["date2"])
-    && (strcmp($_POST["date2"],$_POST["date1"]) < 0)) {
+    && (strcmp($_POST["date2"], $_POST["date1"]) < 0)) {
 
    $tmp            = $_POST["date1"];
    $_POST["date1"] = $_POST["date2"];
    $_POST["date2"] = $tmp;
 }
 
-$cleantarget = preg_replace("/[&]date[12]=[0-9-]*/","",$_SERVER['QUERY_STRING']);
-$cleantarget = preg_replace("/[&]*id=([0-9]+[&]{0,1})/","",$cleantarget);
-$cleantarget = preg_replace("/&/","&amp;",$cleantarget);
+$cleantarget = preg_replace("/[&]date[12]=[0-9-]*/", "", $_SERVER['QUERY_STRING']);
+$cleantarget = preg_replace("/[&]*id=([0-9]+[&]{0,1})/", "", $cleantarget);
+$cleantarget = preg_replace("/&/", "&amp;", $cleantarget);
 
 $next    = 0;
 $prev    = 0;
@@ -201,7 +201,7 @@ switch($_GET["type"]) {
       $val1    = $_GET["id"];
       $val2    = "";
       $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
-      $title   = sprintf(__('%1$s: %2$s'), _x('person','Title'),
+      $title   = sprintf(__('%1$s: %2$s'), _x('person', 'Title'),
                          Dropdown::getDropdownName("glpi_usertitles", $_GET["id"]));
       break;
 
@@ -300,7 +300,7 @@ echo "</td>";
 echo "</tr>";
 echo "</table></div><br>";
 
-$target = preg_replace("/&/","&amp;",$_SERVER["REQUEST_URI"]);
+$target = preg_replace("/&/", "&amp;", $_SERVER["REQUEST_URI"]);
 
 echo "<form method='post' name='form' action='$target'><div class='center'>";
 echo "<table class='tab_cadre'>";
@@ -338,8 +338,8 @@ $values['late']   = Stat::constructEntryValues($_GET['itemtype'], "inter_solved_
                                                $_GET["date1"], $_GET["date2"], $_GET["type"],
                                                $val1, $val2);
 
-$available = array('total'  => _nx('ticket','Opened','Opened',2),
-                   'solved' => _nx('ticket','Solved', 'Solved', 2),
+$available = array('total'  => _nx('ticket', 'Opened', 'Opened', 2),
+                   'solved' => _nx('ticket', 'Solved', 'Solved', 2),
                    'late'   => __('Late'),
                    'closed' => __('Closed'),);
 echo "<div class='center'>";
@@ -445,8 +445,8 @@ if ($_GET['itemtype'] == 'Ticket') {
                                                               $_GET["type"], $val1, $val2);
 
 
-   $available = array('opensatisfaction'   => _nx('survey','Opened','Opened', 2),
-                     'answersatisfaction'  => _nx('survey','Answered','Answered',2));
+   $available = array('opensatisfaction'   => _nx('survey', 'Opened', 'Opened', 2),
+                     'answersatisfaction'  => _nx('survey', 'Answered', 'Answered', 2));
    echo "<div class='center'>";
 
    foreach ($available as $key => $name) {

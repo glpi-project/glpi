@@ -68,7 +68,7 @@ class Vlan extends CommonDropdown {
       if ($field['name'] == 'tag') {
          Dropdown::showNumber('tag', array('value' => $this->fields['tag'],
                                            'min'   => 1,
-                                           'max'   => (pow(2,12) - 2)));
+                                           'max'   => (pow(2, 12) - 2)));
       }
    }
 

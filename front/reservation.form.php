@@ -48,7 +48,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 }
 
 if (isset($_POST["update"])) {
-   list($begin_year,$begin_month,$begin_day) = explode("-",$_POST['resa']["begin"]);
+   list($begin_year,$begin_month,$begin_day) = explode("-", $_POST['resa']["begin"]);
    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
    if (Session::haveRight("reservation", UPDATE)
        || (Session::getLoginUserID() === $_POST["users_id"])) {
@@ -71,7 +71,7 @@ if (isset($_POST["update"])) {
                          $reservationitems_id));
    }
 
-   list($begin_year,$begin_month,$begin_day) = explode("-",$rr->fields["begin"]);
+   list($begin_year,$begin_month,$begin_day) = explode("-", $rr->fields["begin"]);
    Html::redirect($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                   "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
 
@@ -83,7 +83,7 @@ if (isset($_POST["update"])) {
    }
    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
    $dates_to_add = array();
-   list($begin_year,$begin_month,$begin_day) = explode("-",$_POST['resa']["begin"]);
+   list($begin_year,$begin_month,$begin_day) = explode("-", $_POST['resa']["begin"]);
    if (isset($_POST['resa']["end"])) {
       // Compute dates to add.
       $dates_to_add[$_POST['resa']["begin"]] = $_POST['resa']["end"];

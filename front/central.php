@@ -54,7 +54,7 @@ if (isset($_POST['newprofile'])) {
       $_SESSION['_redirected_from_profile_selector'] = true;
       Html::redirect($_SERVER['HTTP_REFERER']);
    }
-   Html::redirect(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
+   Html::redirect(preg_replace("/entities_id.*/", "", $_SERVER['HTTP_REFERER']));
 }
 
 // Manage entity change
@@ -62,10 +62,10 @@ if (isset($_GET["active_entity"])) {
    if (!isset($_GET["is_recursive"])) {
       $_GET["is_recursive"] = 0;
    }
-   if (Session::changeActiveEntities($_GET["active_entity"],$_GET["is_recursive"])) {
+   if (Session::changeActiveEntities($_GET["active_entity"], $_GET["is_recursive"])) {
       if (($_GET["active_entity"] == $_SESSION["glpiactive_entity"])
           && isset($_SERVER['HTTP_REFERER'])) {
-         Html::redirect(preg_replace("/entities_id.*/","",$_SERVER['HTTP_REFERER']));
+         Html::redirect(preg_replace("/entities_id.*/", "", $_SERVER['HTTP_REFERER']));
       }
    }
 }

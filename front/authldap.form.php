@@ -89,7 +89,7 @@ if (isset($_POST["update"])) {
    $replicate = new AuthLdapReplicate();
    $replicate->getFromDB($_POST["ldap_replicate_id"]);
 
-   if (AuthLdap::testLDAPConnection($_POST["id"],$_POST["ldap_replicate_id"])) {
+   if (AuthLdap::testLDAPConnection($_POST["id"], $_POST["ldap_replicate_id"])) {
                                        //TRANS: %s is the description of the test
       $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test successful: %s'),
                                                //TRANS: %s is the name of the LDAP replica server

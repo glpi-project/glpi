@@ -117,7 +117,7 @@ class NotificationEvent extends CommonDBTM {
          //Get template's information
          $template           = new NotificationTemplate();
 
-         $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
+         $notificationtarget = NotificationTarget::getInstance($item, $event, $options);
          if (!$notificationtarget) {
             return false;
          }
@@ -151,7 +151,7 @@ class NotificationEvent extends CommonDBTM {
             //Foreach notification targets
             foreach ($targets as $target) {
                //Get all users affected by this notification
-               $notificationtarget->getAddressesByTarget($target,$options);
+               $notificationtarget->getAddressesByTarget($target, $options);
 
                foreach ($notificationtarget->getTargets() as $user_email => $users_infos) {
                   if ($label

@@ -395,7 +395,7 @@ class CronTask extends CommonDBTM{
             }
          }
          if (count($locks)) {
-            $lock = "AND `name` NOT IN ('".implode("','",$locks)."')";
+            $lock = "AND `name` NOT IN ('".implode("','", $locks)."')";
          } else {
             $lock = '';
          }
@@ -552,7 +552,7 @@ class CronTask extends CommonDBTM{
          _e('As soon as possible');
       } else {
          $next = strtotime($this->fields['lastrun'])+$this->fields['frequency'];
-         $h    = date('H',$next);
+         $h    = date('H', $next);
          $deb  = ($this->fields['hourmin'] < 10 ? "0".$this->fields['hourmin']
                                                 : $this->fields['hourmin']);
          $fin  = ($this->fields['hourmax'] < 10 ? "0".$this->fields['hourmax']
@@ -843,7 +843,7 @@ class CronTask extends CommonDBTM{
 
                } else {
                   if (is_array($fonction)) {
-                     $fonction = implode('::',$fonction);
+                     $fonction = implode('::', $fonction);
                   }
                   Toolbox::logInFile('php-errors',
                                      sprintf(__('Undefined function %s (for cron)')."\n",
@@ -1013,12 +1013,12 @@ class CronTask extends CommonDBTM{
 
             echo "<tr class='tab_bg_2'><td>".__('Average time')."</td>";
             echo "<td class='right b'>".sprintf(_n('%s second', '%s seconds', $data['elapsedavg']),
-                                                number_format($data['elapsedavg'],2));
+                                                number_format($data['elapsedavg'], 2));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".__('Total duration')."</td>";
             echo "<td class='right'>".sprintf(_n('%s second', '%s seconds', $data['elapsedtot']),
-                                              number_format($data['elapsedtot'],2));
+                                              number_format($data['elapsedtot'], 2));
             echo "</td></tr>";
          }
 
@@ -1034,16 +1034,16 @@ class CronTask extends CommonDBTM{
 
             echo "<tr class='tab_bg_2'><td>".__('Average count')."</td>";
             echo "<td class='right b'>".sprintf(_n('%s item', '%s items', $data['volavg']),
-                                                number_format($data['volavg'],2)).
+                                                number_format($data['volavg'], 2)).
                  "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".__('Total count')."</td>";
-            echo "<td class='right'>". sprintf(_n('%s item', '%s items',$data['voltot']),
+            echo "<td class='right'>". sprintf(_n('%s item', '%s items', $data['voltot']),
                                                $data['voltot'])."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".__('Average speed')."</td>";
             echo "<td class='left'>".sprintf(__('%s items/sec'),
-                                             number_format($data['voltot']/$data['elapsedtot'],2));
+                                             number_format($data['voltot']/$data['elapsedtot'], 2));
             echo "</td></tr>";
          }
       }
@@ -1109,7 +1109,7 @@ class CronTask extends CommonDBTM{
                echo "<td><a href='javascript:reloadTab(\"crontasklogs_id=".
                           $data['crontasklogs_id']."\");'>".Html::convDateTime($data['date']).
                     "</a></td>";
-               echo "<td class='right'>".sprintf(_n('%s second','%s seconds',
+               echo "<td class='right'>".sprintf(_n('%s second', '%s seconds',
                                                     intval($data['elapsed'])),
                                                  number_format($data['elapsed'], 3)).
                     "&nbsp;&nbsp;&nbsp;</td>";
@@ -1172,7 +1172,7 @@ class CronTask extends CommonDBTM{
                      echo "<td>".__('Start')."</td>";
                      // Pass content to gettext
                      // implode (Run mode: XXX)
-                     $list = explode(':',$data['content']);
+                     $list = explode(':', $data['content']);
                      if (count($list)==2) {
                         $content = sprintf('%1$s: %2$s', __($list[0]), $list[1]);
                      }
@@ -1511,7 +1511,7 @@ class CronTask extends CommonDBTM{
       $dir       = GLPI_LOG_DIR."/*.bak" ;
       $findfiles = glob( $dir ) ;
       foreach ($findfiles as $file) {
-         $shortfile = str_replace(GLPI_LOG_DIR.'/','',$file);
+         $shortfile = str_replace(GLPI_LOG_DIR.'/', '', $file);
          // now depending on the format of the name we delete the file (for aging archives) or rename it (will add Ymd.log to the end of the file)
          $match = null;
          if (preg_match('/.+[.]log[.](\\d{8})[.]bak$/', $file, $match) > 0) {
@@ -1532,10 +1532,10 @@ class CronTask extends CommonDBTM{
       $dir       = GLPI_LOG_DIR."/*.log" ;
       $findfiles = glob( $dir ) ;
       foreach ($findfiles as $file) {
-         $shortfile    = str_replace(GLPI_LOG_DIR.'/','',$file);
+         $shortfile    = str_replace(GLPI_LOG_DIR.'/', '', $file);
          // rename the file
          $newfilename  = $file.".".date("Ymd", time()).".bak"; // will add to filename a string with format YYYYMMDD (= current date)
-         $shortnewfile = str_replace(GLPI_LOG_DIR.'/','',$newfilename);
+         $shortnewfile = str_replace(GLPI_LOG_DIR.'/', '', $newfilename);
 
          $task->addVolume(1);
          if (!file_exists($newfilename) && rename($file, $newfilename)) {
@@ -1700,7 +1700,7 @@ class CronTask extends CommonDBTM{
       if (count($crontasks)) {
          $task = new self();
          $task->getFromDBByQuery("WHERE `itemtype` = 'Crontask' AND `name` = 'watcher'");
-         if (NotificationEvent::raiseEvent("alert", $task,  array('items' => $crontasks))) {
+         if (NotificationEvent::raiseEvent("alert", $task, array('items' => $crontasks))) {
             $cron_status = 1;
             $task->addVolume(1);
          }
@@ -1761,22 +1761,22 @@ class CronTask extends CommonDBTM{
 
       $tab = array();
 
-      $tab[MINUTE_TIMESTAMP] = sprintf(_n('%d minute','%d minutes',1),1);
+      $tab[MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', 1), 1);
 
       // Minutes
       for ($i=5 ; $i<60 ; $i+=5) {
-         $tab[$i*MINUTE_TIMESTAMP] = sprintf(_n('%d minute','%d minutes',$i), $i);
+         $tab[$i*MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', $i), $i);
       }
 
       // Heures
       for ($i=1 ; $i<24 ; $i++) {
-         $tab[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour','%d hours',$i), $i);
+         $tab[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $i), $i);
       }
 
       // Jours
       $tab[DAY_TIMESTAMP] = __('Each day');
       for ($i=2 ; $i<7 ; $i++) {
-         $tab[$i*DAY_TIMESTAMP] = sprintf(_n('%d day','%d days',$i),$i);
+         $tab[$i*DAY_TIMESTAMP] = sprintf(_n('%d day', '%d days', $i), $i);
       }
 
       $tab[WEEK_TIMESTAMP]  = __('Each week');

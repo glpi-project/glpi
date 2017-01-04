@@ -120,7 +120,7 @@ class ConsumableItem extends CommonDBTM {
       $this->addDefaultFormTab($ong);
       $this->addStandardTab('Consumable', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
-      $this->addStandardTab('Document_Item',$ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
 
@@ -227,9 +227,8 @@ class ConsumableItem extends CommonDBTM {
       return $actions;
    }
 
-
    function getSearchOptionsNew() {
-       $tab = [];
+      $tab = [];
 
       $tab[] = [
          'id'                 => 'common',
@@ -283,7 +282,7 @@ class ConsumableItem extends CommonDBTM {
          'table'              => $this->getTable(),
          'field'              => '_virtual',
          'linkfield'          => '_virtual',
-         'name'               => _n('Consumable','Consumables', Session::getPluralNumber()),
+         'name'               => _n('Consumable', 'Consumables', Session::getPluralNumber()),
          'datatype'           => 'specific',
          'massiveaction'      => false,
          'nosearch'           => true,

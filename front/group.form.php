@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
    if ($group->isUsed()
          && empty($_POST["forcepurge"])) {
       Html::header($group->getTypeName(1), $_SERVER['PHP_SELF'], "admin", "group",
-      str_replace('glpi_','',$group->getTable()));
+      str_replace('glpi_', '', $group->getTable()));
 
       $group->showDeleteConfirmForm($_SERVER['PHP_SELF']);
       Html::footer();
@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_GET['_in_modal'])) {
-   Html::popHeader(Group::getTypeName(Session::getPluralNumber()),$_SERVER['PHP_SELF']);
+   Html::popHeader(Group::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF']);
    $group->showForm($_GET["id"]);
    Html::popFooter();
 

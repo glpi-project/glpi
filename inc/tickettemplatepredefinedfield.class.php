@@ -122,7 +122,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)) {
                $a = new self();
-               $a->delete(array('id'=>$DB->result($result,0,0)));
+               $a->delete(array('id'=>$DB->result($result, 0, 0)));
             }
          }
       }

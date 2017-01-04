@@ -19,6 +19,9 @@
   <!-- Remove closingTag -->
   <rule ref="Zend.Files.ClosingTag" />
 
+  <!-- White space after comma in function call -->
+  <rule ref="Generic.Functions.FunctionCallArgumentSpacing" />
+
   <!--  Disallows the use of any deprecated functions -->
   <rule ref="Generic.PHP.DeprecatedFunctions"/>
 

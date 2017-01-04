@@ -47,8 +47,8 @@ if (isset($_GET["lID"])) {
    $result = $DB->query($query);
 
    if ($DB->numrows($result) == 1) {
-      $file = $DB->result($result,0,"data");
-      $link = $DB->result($result,0,"link");
+      $file = $DB->result($result, 0, "data");
+      $link = $DB->result($result, 0, "link");
 
       if ($item = getItemForItemtype($_GET["itemtype"])) {
          if ($item->getFromDB($_GET["id"])) {

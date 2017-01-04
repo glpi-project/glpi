@@ -57,7 +57,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
       global $DB;
 
       // Model check : need to check using manufacturer extra data so specific function
-      if (strpos($this->item_table,'models')) {
+      if (strpos($this->item_table, 'models')) {
          return $this->replayRulesOnExistingDBForModel($offset, $maxtime);
       }
 
@@ -141,7 +141,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
       }
 
       // Model check : need to check using manufacturer extra data
-      if (strpos($this->item_table,'models') === false) {
+      if (strpos($this->item_table, 'models') === false) {
          _e('Error replaying rules');
          return false;
       }
@@ -212,7 +212,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
 
             $i++;
             if ($maxtime) {
-               $crt = explode(" ",microtime());
+               $crt = explode(" ", microtime());
                if (($crt[0]+$crt[1]) > $maxtime) {
                   break;
                }
@@ -228,7 +228,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection {
 
             // No item left : delete old item
             if ($result
-                && ($DB->result($result,0,0) == 0)) {
+                && ($DB->result($result, 0, 0) == 0)) {
                $Sql              = "DELETE
                                     FROM `".$this->item_table."`
                                     WHERE `id` = '$ID'";

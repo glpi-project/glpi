@@ -44,6 +44,6 @@ class UserCategory extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      return _n('User category', 'User categories',$nb);
+      return _n('User category', 'User categories', $nb);
    }
 }

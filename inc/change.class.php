@@ -72,7 +72,7 @@ class Change extends CommonITILObject {
     * @param $nb : number of item in the type (default 0)
    **/
    static function getTypeName($nb=0) {
-      return _n('Change','Changes',$nb);
+      return _n('Change', 'Changes', $nb);
    }
 
 
@@ -318,14 +318,14 @@ class Change extends CommonITILObject {
       if ($donotif && $CFG_GLPI["use_mailing"]) {
          $mailtype = "update";
          if (isset($this->input["status"]) && $this->input["status"]
-             && in_array("status",$this->updates)
+             && in_array("status", $this->updates)
              && in_array($this->input["status"], $this->getSolvedStatusArray())) {
 
             $mailtype = "solved";
          }
 
          if (isset($this->input["status"]) && $this->input["status"]
-             && in_array("status",$this->updates)
+             && in_array("status", $this->updates)
              && in_array($this->input["status"], $this->getClosedStatusArray())) {
 
             $mailtype = "closed";
@@ -492,7 +492,7 @@ class Change extends CommonITILObject {
                    self::APPROVAL      => __('Approval'),
                    self::ACCEPTED      => _x('status', 'Accepted'),
                    self::WAITING       => __('Pending'),
-                   self::TEST          => _x('change','Test'),
+                   self::TEST          => _x('change', 'Test'),
                    self::QUALIFICATION => __('Qualification'),
                    self::SOLVED        => __('Applied'),
                    self::OBSERVED      => __('Review'),
@@ -769,7 +769,7 @@ class Change extends CommonITILObject {
       echo "</tr>";
       echo "</table>";
 
-      $this->showActorsPartForm($ID,$options);
+      $this->showActorsPartForm($ID, $options);
 
       echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       echo "<tr class='tab_bg_1'>";
@@ -1052,7 +1052,7 @@ class Change extends CommonITILObject {
                   ON (`glpi_changes`.`id` = `glpi_changes_items`.`changes_id`) ".
                 self::getCommonLeftJoin()."
                 WHERE $restrict ".
-                      getEntitiesRestrictRequest("AND","glpi_changes")."
+                      getEntitiesRestrictRequest("AND", "glpi_changes")."
                 ORDER BY $order
                 LIMIT ".intval($_SESSION['glpilist_limit']);
       $result = $DB->query($query);
@@ -1076,7 +1076,7 @@ class Change extends CommonITILObject {
          echo "<tr><th colspan='$colspan'>";
 
          //TRANS : %d is the number of problems
-         echo sprintf(_n('Last %d change','Last %d changes',$number), $number);
+         echo sprintf(_n('Last %d change', 'Last %d changes', $number), $number);
          // echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
          //            Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
 

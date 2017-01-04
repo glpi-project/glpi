@@ -218,7 +218,7 @@ class Central extends CommonGLPI {
       echo "<tr class='noHover'><td class='top' width='50%'><table class='central'>";
       echo "<tr class='noHover'><td>";
       if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
-         Ticket::showCentralList(0,"tovalidate",false);
+         Ticket::showCentralList(0, "tovalidate", false);
       }
       if ($showticket) {
 

@@ -61,7 +61,7 @@ class CalendarSegment extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      return _n('Time range','Time ranges',$nb);
+      return _n('Time range', 'Time ranges', $nb);
    }
 
 
@@ -247,7 +247,7 @@ class CalendarSegment extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            return $DB->result($result,0,0);
+            return $DB->result($result, 0, 0);
          }
       }
       return false;
@@ -274,7 +274,7 @@ class CalendarSegment extends CommonDBChild {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            return $DB->result($result,0,0);
+            return $DB->result($result, 0, 0);
          }
       }
       return false;
@@ -347,7 +347,7 @@ class CalendarSegment extends CommonDBChild {
          echo "</td><td class='center'>".__('Start').'</td><td>';
          Dropdown::showHours("begin", array('value' => date('H').":00"));
          echo "</td><td class='center'>".__('End').'</td><td>';
-         Dropdown::showHours("end",array('value' => (date('H')+1).":00"));
+         Dropdown::showHours("end", array('value' => (date('H')+1).":00"));
          echo "</td><td class='center'>";
             echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -416,7 +416,7 @@ class CalendarSegment extends CommonDBChild {
                   $nb = countElementsInTable($this->getTable(),
                                              ['calendars_id' => $item->getID()]);
                }
-               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()),$nb);
+               return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
          }
       }
       return '';

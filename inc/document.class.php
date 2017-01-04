@@ -217,7 +217,7 @@ class Document extends CommonDBTM {
          //TRANS: %1$s is Document, %2$s is item type, %3$s is item name
          $input["name"] = addslashes(Html::resume_text(sprintf(__('%1$s: %2$s'),
                                                                __('Document'),
-                                                       sprintf(__('%1$s - %2$s'),$typename, $name)),
+                                                       sprintf(__('%1$s - %2$s'), $typename, $name)),
                                                        200));
          $create_from_item = true;
       }
@@ -372,7 +372,7 @@ class Document extends CommonDBTM {
       echo "</td>";
       if ($ID > 0) {
          echo "<td>".__('Current file')."</td>";
-         echo "<td>".$this->getDownloadLink('',45);
+         echo "<td>".$this->getDownloadLink('', 45);
          echo "<input type='hidden' name='current_filepath' value='".$this->fields["filepath"]."'>";
          echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
          echo "</td>";
@@ -467,7 +467,7 @@ class Document extends CommonDBTM {
    function getDownloadLink($params='', $len=20) {
       global $DB,$CFG_GLPI;
 
-      $splitter = explode("/",$this->fields['filename']);
+      $splitter = explode("/", $this->fields['filename']);
 
       if (count($splitter) == 2) {
          // Old documents in EXT/filename
@@ -480,7 +480,7 @@ class Document extends CommonDBTM {
       $initfileout = $fileout;
 
       if (Toolbox::strlen($fileout) > $len) {
-         $fileout = Toolbox::substr($fileout,0,$len)."&hellip;";
+         $fileout = Toolbox::substr($fileout, 0, $len)."&hellip;";
       }
 
       $out   = '';
@@ -493,7 +493,7 @@ class Document extends CommonDBTM {
                     title=\"".$initfileout."\"target='_blank'>";
          $close = "</a>";
       }
-      $splitter = explode("/",$this->fields['filepath']);
+      $splitter = explode("/", $this->fields['filepath']);
 
       if (count($splitter)) {
          $query = "SELECT *
@@ -503,7 +503,7 @@ class Document extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
-               $icon = $DB->result($result,0,'icon');
+               $icon = $DB->result($result, 0, 'icon');
                if (!file_exists(GLPI_ROOT."/pics/icones/$icon")) {
                   $icon = "defaut-dist.png" ;
                }
@@ -915,7 +915,7 @@ class Document extends CommonDBTM {
          return true;
       }
       // Move
-      return rename($srce,$dest);
+      return rename($srce, $dest);
    }
 
 
@@ -1113,7 +1113,7 @@ class Document extends CommonDBTM {
 
       $sha1sum = sha1_file($FILEDESC['tmp_name']);
       $dir     = self::isValidDoc($FILEDESC['name']);
-      $path    = self::getUploadFileValidLocationName($dir,$sha1sum);
+      $path    = self::getUploadFileValidLocationName($dir, $sha1sum);
 
       if (!$sha1sum || !$dir || !$path) {
          return false;
@@ -1189,10 +1189,10 @@ class Document extends CommonDBTM {
                                           false, ERROR);
          return '';
       }
-      $subdir = $dir.'/'.substr($sha1sum,0,2);
+      $subdir = $dir.'/'.substr($sha1sum, 0, 2);
 
       if (!is_dir(GLPI_DOC_DIR."/".$subdir)
-          && @mkdir(GLPI_DOC_DIR."/".$subdir,0777,true)) {
+          && @mkdir(GLPI_DOC_DIR."/".$subdir, 0777, true)) {
          Session::addMessageAfterRedirect(sprintf(__('Create the directory %s'),
                                                   GLPI_DOC_DIR."/".$subdir));
       }
@@ -1203,7 +1203,7 @@ class Document extends CommonDBTM {
                                           false, ERROR);
          return '';
       }
-      return $subdir.'/'.substr($sha1sum,2).'.'.$dir;
+      return $subdir.'/'.substr($sha1sum, 2).'.'.$dir;
    }
 
 
@@ -1250,7 +1250,7 @@ class Document extends CommonDBTM {
    static function isValidDoc($filename) {
       global $DB;
 
-      $splitter = explode(".",$filename);
+      $splitter = explode(".", $filename);
       $ext      = end($splitter);
 
       $query="SELECT *
@@ -1310,7 +1310,7 @@ class Document extends CommonDBTM {
                        getEntitiesRestrictRequest("AND", "glpi_documents", '', $p['entity'], true);
 
       if (count($p['used'])) {
-         $where .= " AND `id` NOT IN (0, ".implode(",",$p['used']).")";
+         $where .= " AND `id` NOT IN (0, ".implode(",", $p['used']).")";
       }
 
       $query = "SELECT *
@@ -1338,7 +1338,7 @@ class Document extends CommonDBTM {
                         'myname' => $p['name'],
                         'used'   => $p['used']);
 
-      $out .= Ajax::updateItemOnSelectEvent($field_id,"show_".$p['name'].$rand,
+      $out .= Ajax::updateItemOnSelectEvent($field_id, "show_".$p['name'].$rand,
                                             $CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php",
                                             $params, false);
       $out .= "<span id='show_".$p['name']."$rand'>";

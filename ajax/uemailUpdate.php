@@ -36,7 +36,7 @@
 */
 
 $AJAX_INCLUDE = 1;
-if (strpos($_SERVER['PHP_SELF'],"uemailUpdate.php")) {
+if (strpos($_SERVER['PHP_SELF'], "uemailUpdate.php")) {
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
@@ -120,7 +120,7 @@ if ((isset($_POST['field']) && ($_POST["value"] > 0))
    }
 
    echo '<br>';
-   printf(__('%1$s: %2$s'),__('Email'), $email_string);
+   printf(__('%1$s: %2$s'), __('Email'), $email_string);
 
 }
 

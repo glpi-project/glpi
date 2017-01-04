@@ -150,7 +150,7 @@ class RuleCollection extends CommonDBTM {
                                                $p['inherited']);
          } else {
             $sons = getSonsOf('glpi_entities', $this->entity);
-            $sql .= " AND `glpi_rules`.`entities_id` IN (".implode(',',$sons).")";
+            $sql .= " AND `glpi_rules`.`entities_id` IN (".implode(',', $sons).")";
          }
          $sql .= " ORDER BY `glpi_entities`.`level` ASC,
                             `".$this->orderby."` ASC";
@@ -993,7 +993,7 @@ class RuleCollection extends CommonDBTM {
       echo "<h2>".__("Import rules from a XML file")."</h2>";
       echo "<input type='file' name='xml_file'>&nbsp;";
       echo "<input type='hidden' name='action' value='preview_import'>";
-      echo "<input type='submit' name='import' value=\""._sx('button','Import').
+      echo "<input type='submit' name='import' value=\""._sx('button', 'Import').
              "\" class='submit'>";
 
       // Close for Form
@@ -1441,7 +1441,7 @@ class RuleCollection extends CommonDBTM {
       }
 
       // Get Collection datas
-      $this->getCollectionDatas(1,1, $p['condition']);
+      $this->getCollectionDatas(1, 1, $p['condition']);
       $input                      = $this->prepareInputDataForProcessWithPlugins($input, $params);
       $output["_no_rule_matches"] = true;
       //Store rule type being processed (for plugins)
@@ -1513,7 +1513,7 @@ class RuleCollection extends CommonDBTM {
          $rule->showSpecificCriteriasForPreview($_POST);
 
          echo "<tr><td class='tab_bg_2 center' colspan='2'>";
-         echo "<input type='submit' name='test_all_rules' value='". _sx('button','Test')."'
+         echo "<input type='submit' name='test_all_rules' value='". _sx('button', 'Test')."'
                 class='submit'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getRuleClassName() . "'>";
          echo "<input type='hidden' name='condition' value='$condition'>";

@@ -77,7 +77,7 @@ class TaskCategory extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
-      return _n('Task category','Task categories', $nb);
+      return _n('Task category', 'Task categories', $nb);
    }
 
 }

@@ -130,7 +130,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                   }
                }
                if (count($tmp)) {
-                  $_SESSION['glpi_faqcategories'] = "('".implode("','",$tmp)."')";
+                  $_SESSION['glpi_faqcategories'] = "('".implode("','", $tmp)."')";
                }
             }
          }
@@ -201,7 +201,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                echo "<span class='b'>".
                     "<a href='".$params['target']."?knowbaseitemcategories_id=".$row["id"]."$parameters'>".
                       $row["name"]."</a></span>";
-               echo "<div class='kb_resume'>".Html::resume_text($row['comment'],60)."</div>";
+               echo "<div class='kb_resume'>".Html::resume_text($row['comment'], 60)."</div>";
 
                if (($i%3) == 2) {
                   echo "</tr>";

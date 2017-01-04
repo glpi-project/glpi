@@ -58,7 +58,7 @@ if ((isset($_POST["item_type"][0]) && ($_POST["item_type"][0] == '0'))
 if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
    $query = array();
    foreach ($_POST["item_type"] as $key => $val) {
-      if (in_array($val,$items)) {
+      if (in_array($val, $items)) {
          $itemtable = getTableForItemType($val);
 
          $order = "itemdeleted DESC,";
@@ -95,7 +95,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                                ON (`glpi_contracts`.`contracttypes_id` = `glpi_contracttypes`.`id`)
                             LEFT JOIN `glpi_entities`
                                ON (`$itemtable`.`entities_id` = `glpi_entities`.`id`) ".
-                            getEntitiesRestrictRequest("WHERE",$itemtable);
+                            getEntitiesRestrictRequest("WHERE", $itemtable);
 
 
             if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
@@ -145,7 +145,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                             LEFT JOIN `glpi_entities`
                               ON (`$itemtable`.`entities_id` = `glpi_entities`.`id`)
                             WHERE `$itemtable`.`is_template` ='0' ".
-                                  getEntitiesRestrictRequest("AND",$itemtable);
+                                  getEntitiesRestrictRequest("AND", $itemtable);
 
             if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
                $query[$val] .= " AND ( ";

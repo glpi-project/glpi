@@ -415,7 +415,7 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf(__('%1$s%2$s'),__('Name'),
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'),
                           (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
            "</td>";
       echo "<td>";
@@ -473,17 +473,17 @@ class Computer extends CommonDBTM {
       //TRANS: Number of the alternate username
       echo "<td>".__('Alternate username number')."</td>";
       echo "<td >";
-      Html::autocompletionTextField($this,'contact_num');
+      Html::autocompletionTextField($this, 'contact_num');
       echo "</td>";
       echo "<td>".__('Serial number')."</td>";
       echo "<td >";
-      Html::autocompletionTextField($this,'serial');
+      Html::autocompletionTextField($this, 'serial');
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Alternate username')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,'contact');
+      Html::autocompletionTextField($this, 'contact');
       echo "</td>";
       echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'),
                           (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).

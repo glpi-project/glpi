@@ -556,7 +556,7 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "yesonly" :
-                     Dropdown::showYesNo("value",$param['value'],0);
+                     Dropdown::showYesNo("value", $param['value'], 0);
                      $display = true;
                      break;
 

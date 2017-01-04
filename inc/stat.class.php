@@ -253,7 +253,7 @@ class Stat extends CommonGLPI {
                $where = '';
                $order = " ORDER BY `$field`";
                if ($item->isEntityAssign()) {
-                  $where = getEntitiesRestrictRequest(" WHERE",$table);
+                  $where = getEntitiesRestrictRequest(" WHERE", $table);
                   $order = " ORDER BY `entities_id`, `$field`";
                }
 
@@ -433,8 +433,8 @@ class Stat extends CommonGLPI {
             echo Search::showHeaderItem($output_type, __('Number of late tickets'), $header_num);
             echo Search::showHeaderItem($output_type, __('Number of closed tickets'), $header_num);
          } else {
-            echo Search::showHeaderItem($output_type, _nx('ticket','Opened','Opened', Session::getPluralNumber()), $header_num);
-            echo Search::showHeaderItem($output_type, _nx('ticket','Solved', 'Solved', Session::getPluralNumber()),
+            echo Search::showHeaderItem($output_type, _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()), $header_num);
+            echo Search::showHeaderItem($output_type, _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
                                         $header_num);
             echo Search::showHeaderItem($output_type, __('Late'), $header_num);
             echo Search::showHeaderItem($output_type, __('Closed'), $header_num);
@@ -451,9 +451,9 @@ class Stat extends CommonGLPI {
                                            $header_num);
 
             } else {
-               echo Search::showHeaderItem($output_type, _nx('survey','Opened','Opened', Session::getPluralNumber()),
+               echo Search::showHeaderItem($output_type, _nx('survey', 'Opened', 'Opened', Session::getPluralNumber()),
                                            $header_num);
-               echo Search::showHeaderItem($output_type, _nx('survey','Answered','Answered', Session::getPluralNumber()),
+               echo Search::showHeaderItem($output_type, _nx('survey', 'Answered', 'Answered', Session::getPluralNumber()),
                                            $header_num);
                echo Search::showHeaderItem($output_type, __('Average'), $header_num);
             }
@@ -566,7 +566,7 @@ class Stat extends CommonGLPI {
                   $satisfaction[$key2] *= $answersatisfaction[$key2];
                }
                if ($nb_answersatisfaction > 0) {
-                  $avgsatisfaction = round(array_sum($satisfaction)/$nb_answersatisfaction,1);
+                  $avgsatisfaction = round(array_sum($satisfaction)/$nb_answersatisfaction, 1);
                   if ($output_type == Search::HTML_OUTPUT) {
                      $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction);
                   }
@@ -719,7 +719,7 @@ class Stat extends CommonGLPI {
       $tasktable      = getTableForItemType($item->getType().'Task');
 
       $closed_status  = $item->getClosedStatusArray();
-      $solved_status  = array_merge($closed_status,$item->getSolvedStatusArray());
+      $solved_status  = array_merge($closed_status, $item->getSolvedStatusArray());
 
       $query             = "";
       $WHERE             = "WHERE NOT `$table`.`is_deleted` ".
@@ -773,7 +773,7 @@ class Stat extends CommonGLPI {
             } else {
                $categories = getSonsOf("glpi_itilcategories", $value);
             }
-            $condition  = implode("','",$categories);
+            $condition  = implode("','", $categories);
             $WHERE     .= " AND `$table`.`itilcategories_id` IN ('$condition')";
             break;
 
@@ -783,7 +783,7 @@ class Stat extends CommonGLPI {
             } else {
                $categories = getSonsOf('glpi_locations', $value);
             }
-            $condition  = implode("','",$categories);
+            $condition  = implode("','", $categories);
             $WHERE     .= " AND `$table`.`locations_id` IN ('$condition')";
             break;
 
@@ -796,7 +796,7 @@ class Stat extends CommonGLPI {
             } else {
                $groups = getSonsOf("glpi_groups", $value);
             }
-            $condition = implode("','",$groups);
+            $condition = implode("','", $groups);
 
             $LEFTJOIN  = $LEFTJOINGROUP;
             $WHERE    .= " AND (`$grouplinktable`.`groups_id` IN ('$condition')
@@ -886,7 +886,7 @@ class Stat extends CommonGLPI {
             break;
 
          case "inter_solved" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$solved_status)."')
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $solved_status)."')
                         AND `$table`.`solvedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
 
@@ -901,7 +901,7 @@ class Stat extends CommonGLPI {
             break;
 
          case "inter_solved_late" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$solved_status)."')
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $solved_status)."')
                         AND `$table`.`solvedate` IS NOT NULL
                         AND `$table`.`due_date` IS NOT NULL
                         AND ".getDateRequest("`$table`.`solvedate`", $begin, $end)."
@@ -918,7 +918,7 @@ class Stat extends CommonGLPI {
             break;
 
          case "inter_closed" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$closed_status)."')
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $closed_status)."')
                         AND `$table`.`closedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
@@ -933,7 +933,7 @@ class Stat extends CommonGLPI {
             break;
 
          case "inter_avgsolvedtime" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$solved_status)."')
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $solved_status)."')
                         AND `$table`.`solvedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
 
@@ -948,7 +948,7 @@ class Stat extends CommonGLPI {
             break;
 
          case "inter_avgclosedtime" :
-            $WHERE .= " AND  `$table`.`status` IN ('".implode("','",$closed_status)."')
+            $WHERE .= " AND  `$table`.`status` IN ('".implode("','", $closed_status)."')
                         AND `$table`.`closedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
@@ -982,7 +982,7 @@ class Stat extends CommonGLPI {
             break;
 
          case "inter_avgtakeaccount" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$solved_status)."')
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $solved_status)."')
                         AND `$table`.`solvedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`solvedate`", $begin, $end);
 
@@ -998,7 +998,7 @@ class Stat extends CommonGLPI {
             break;
 
          case "inter_opensatisfaction" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$closed_status)."')
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $closed_status)."')
                         AND `$table`.`closedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
@@ -1015,7 +1015,7 @@ class Stat extends CommonGLPI {
             break;
 
          case "inter_answersatisfaction" :
-            $WHERE .= " AND `$table`.`status` IN ('".implode("','",$closed_status)."')
+            $WHERE .= " AND `$table`.`status` IN ('".implode("','", $closed_status)."')
                         AND `$table`.`closedate` IS NOT NULL
                         AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
                         AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
@@ -1034,7 +1034,7 @@ class Stat extends CommonGLPI {
 
          case "inter_avgsatisfaction" :
             $WHERE .= " AND `glpi_ticketsatisfactions`.`date_answered` IS NOT NULL
-                        AND `$table`.`status` IN ('".implode("','",$closed_status)."')
+                        AND `$table`.`status` IN ('".implode("','", $closed_status)."')
                         AND `$table`.`closedate` IS NOT NULL
                         AND ".getDateRequest("`$table`.`closedate`", $begin, $end);
 
@@ -1067,19 +1067,19 @@ class Stat extends CommonGLPI {
          }
       }
 
-      $end_time   = strtotime(date("Y-m",strtotime($end))."-01");
-      $begin_time = strtotime(date("Y-m",strtotime($begin))."-01");
+      $end_time   = strtotime(date("Y-m", strtotime($end))."-01");
+      $begin_time = strtotime(date("Y-m", strtotime($begin))."-01");
 
       $current = $begin_time;
 
       while ($current <= $end_time) {
-         $curentry = date("Y-m",$current);
+         $curentry = date("Y-m", $current);
          if (!isset($entrees["$curentry"])) {
             $entrees["$curentry"] = 0;
          }
-         $month   = date("m",$current);
-         $year    = date("Y",$current);
-         $current = mktime(0,0,0,intval($month)+1,1,intval($year));
+         $month   = date("m", $current);
+         $year    = date("Y", $current);
+         $current = mktime(0, 0, 0, intval($month)+1, 1, intval($year));
       }
       ksort($entrees);
 
@@ -1310,7 +1310,7 @@ class Stat extends CommonGLPI {
                            $values[$key] = array();
                         }
                         if ($param['datatype'] == 'average') {
-                           $val = round($val,2);
+                           $val = round($val, 2);
                         }
                         $values[$key][$row_num] = $val;
                      }
@@ -1329,7 +1329,7 @@ class Stat extends CommonGLPI {
                   foreach ($data as $value) {
                      fwrite($fp, $value.$_SESSION["glpicsv_delimiter"]);
                   }
-                  fwrite($fp,"\n");
+                  fwrite($fp, "\n");
                }
 
                fclose($fp);
@@ -1384,7 +1384,7 @@ class Stat extends CommonGLPI {
 
       // 1 an par defaut
       if (empty($date1)) {
-         $date1 = date("Y-m-d",mktime(0,0,0,date("m"),date("d"),date("Y")-1));
+         $date1 = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d"), date("Y")-1));
       }
       $date1 .= " 00:00:00";
 
@@ -1396,7 +1396,7 @@ class Stat extends CommonGLPI {
                    ON (`glpi_tickets`.`id` = `glpi_items_tickets`.`tickets_id`)
                 WHERE `date` <= '$date2'
                       AND `glpi_tickets`.`date` >= '$date1' ".
-                      getEntitiesRestrictRequest("AND","glpi_tickets")."
+                      getEntitiesRestrictRequest("AND", "glpi_tickets")."
                       AND `glpi_items_tickets`.`itemtype` <> ''
                       AND `glpi_items_tickets`.`items_id` > 0
                 GROUP BY `glpi_items_tickets`.`itemtype`, `glpi_items_tickets`.`items_id`
@@ -1525,7 +1525,7 @@ class Stat extends CommonGLPI {
             }
             $key                  = $CFG_GLPI["root_doc"]."/front/".$file;
             $values[$group][$key] = $name;
-            if (stripos($_SERVER['REQUEST_URI'],$key) !== false) {
+            if (stripos($_SERVER['REQUEST_URI'], $key) !== false) {
                $selected = $key;
             }
          }
@@ -1553,7 +1553,7 @@ class Stat extends CommonGLPI {
             if ($opt == $val["plug"]) {
                $file                  = $CFG_GLPI["root_doc"]."/plugins/".$key;
                $values[$group][$file] = $val["name"];
-               if (stripos($_SERVER['REQUEST_URI'],$file) !== false) {
+               if (stripos($_SERVER['REQUEST_URI'], $file) !== false) {
                   $selected = $file;
                }
             }

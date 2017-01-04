@@ -220,8 +220,8 @@ class Group extends CommonTreeDropdown {
       }
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Change_Item', $ong, $options);
-      $this->addStandardTab('Notepad',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
       return $ong;
    }
 

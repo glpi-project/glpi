@@ -35,7 +35,7 @@
 * @brief
 */
 
-if (strpos($_SERVER['PHP_SELF'],"dropdownInstallVersion.php")) {
+if (strpos($_SERVER['PHP_SELF'], "dropdownInstallVersion.php")) {
    $AJAX_INCLUDE = 1;
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
@@ -55,7 +55,7 @@ if ($_POST['softwares_id'] > 0) {
       $used = $_POST['used'];
 
       if (count($used)) {
-         $where = " AND `glpi_softwareversions`.`id` NOT IN ('".implode("','",$used)."')";
+         $where = " AND `glpi_softwareversions`.`id` NOT IN ('".implode("','", $used)."')";
       }
    }
    // Make a select box

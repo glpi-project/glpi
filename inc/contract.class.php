@@ -419,7 +419,7 @@ class Contract extends CommonDBTM {
          'id'                 => '130',
          'table'              => 'glpi_contracts',
          'field'              => 'duration',
-         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'),__('Duration')),
+         'name'               => sprintf(__('%1$s - %2$s'), __('Contract'), __('Duration')),
          'datatype'           => 'number',
          'max'                => '120',
          'unit'               => 'month',
@@ -1007,19 +1007,19 @@ class Contract extends CommonDBTM {
       $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0' ".
-                      getEntitiesRestrictRequest("AND","glpi_contracts")."
+                      getEntitiesRestrictRequest("AND", "glpi_contracts")."
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )>-30
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )<'0'";
       $result    = $DB->query($query);
-      $contract0 = $DB->result($result,0,0);
+      $contract0 = $DB->result($result, 0, 0);
 
       // contrats  echeance j-7
       $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0' ".
-                      getEntitiesRestrictRequest("AND","glpi_contracts")."
+                      getEntitiesRestrictRequest("AND", "glpi_contracts")."
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )>'0'
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
@@ -1031,19 +1031,19 @@ class Contract extends CommonDBTM {
       $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0' ".
-                      getEntitiesRestrictRequest("AND","glpi_contracts")."
+                      getEntitiesRestrictRequest("AND", "glpi_contracts")."
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )>'7'
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )<'30'";
       $result     = $DB->query($query);
-      $contract30 = $DB->result($result,0,0);
+      $contract30 = $DB->result($result, 0, 0);
 
       // contrats avec préavis echeance j-7
       $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0' ".
-                      getEntitiesRestrictRequest("AND","glpi_contracts")."
+                      getEntitiesRestrictRequest("AND", "glpi_contracts")."
                       AND `glpi_contracts`.`notice`<>'0'
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
@@ -1052,13 +1052,13 @@ class Contract extends CommonDBTM {
                                            (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
                                            MONTH),CURDATE() )<='7'";
       $result       = $DB->query($query);
-      $contractpre7 = $DB->result($result,0,0);
+      $contractpre7 = $DB->result($result, 0, 0);
 
       // contrats avec préavis echeance j -30
       $query = "SELECT COUNT(*)
                 FROM `glpi_contracts`
                 WHERE `glpi_contracts`.`is_deleted`='0'".
-                      getEntitiesRestrictRequest("AND","glpi_contracts")."
+                      getEntitiesRestrictRequest("AND", "glpi_contracts")."
                       AND `glpi_contracts`.`notice`<>'0'
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
@@ -1067,7 +1067,7 @@ class Contract extends CommonDBTM {
                                            (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
                                            MONTH),CURDATE() )<'30'";
       $result        = $DB->query($query);
-      $contractpre30 = $DB->result($result,0,0);
+      $contractpre30 = $DB->result($result, 0, 0);
 
       echo "<table class='tab_cadrehov'>";
       echo "<tr class='noHover'><th colspan='2'>";
@@ -1089,7 +1089,7 @@ class Contract extends CommonDBTM {
                                       'searchtype' => 'contains');
 
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options,'&amp;')."\">".
+                 Toolbox::append_params($options, '&amp;')."\">".
                  __('Contracts expired in the last 30 days')."</a> </td>";
       echo "<td class='numeric'>".$contract0."</td></tr>";
 
@@ -1097,7 +1097,7 @@ class Contract extends CommonDBTM {
       $options['criteria'][0]['value'] = 0;
       $options['criteria'][1]['value'] = '<7';
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options,'&amp;')."\">".
+                 Toolbox::append_params($options, '&amp;')."\">".
                  __('Contracts expiring in less than 7 days')."</a></td>";
       echo "<td class='numeric'>".$contract7."</td></tr>";
 
@@ -1105,7 +1105,7 @@ class Contract extends CommonDBTM {
       $options['criteria'][0]['value'] = '>6';
       $options['criteria'][1]['value'] = '<30';
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options,'&amp;')."\">".
+                 Toolbox::append_params($options, '&amp;')."\">".
                  __('Contracts expiring in less than 30 days')."</a></td>";
       echo "<td class='numeric'>".$contract30."</td></tr>";
 
@@ -1116,7 +1116,7 @@ class Contract extends CommonDBTM {
       $options['criteria'][1]['value'] = '<7';
 
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options,'&amp;')."\">".
+                 Toolbox::append_params($options, '&amp;')."\">".
                  __('Contracts where notice begins in less than 7 days')."</a></td>";
       echo "<td class='numeric'>".$contractpre7."</td></tr>";
 
@@ -1124,7 +1124,7 @@ class Contract extends CommonDBTM {
       $options['criteria'][0]['value'] = '>6';
       $options['criteria'][1]['value'] = '<30';
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?".
-                 Toolbox::append_params($options,'&amp;')."\">".
+                 Toolbox::append_params($options, '&amp;')."\">".
                  __('Contracts where notice begins in less than 30 days')."</a></td>";
       echo "<td class='numeric'>".$contractpre30."</td></tr>";
       echo "</table>";
@@ -1187,7 +1187,7 @@ class Contract extends CommonDBTM {
                               ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
                                   AND `glpi_alerts`.`itemtype` = 'Contract'
                                   AND `glpi_alerts`.`type`='".Alert::NOTICE."')
-                          WHERE (`glpi_contracts`.`alert` & ".pow(2,Alert::NOTICE).") >'0'
+                          WHERE (`glpi_contracts`.`alert` & ".pow(2, Alert::NOTICE).") >'0'
                                 AND `glpi_contracts`.`is_deleted` = '0'
                                 AND `glpi_contracts`.`begin_date` IS NOT NULL
                                 AND `glpi_contracts`.`duration` <> '0'
@@ -1208,7 +1208,7 @@ class Contract extends CommonDBTM {
                            ON (`glpi_contracts`.`id` = `glpi_alerts`.`items_id`
                                AND `glpi_alerts`.`itemtype` = 'Contract'
                                AND `glpi_alerts`.`type`='".Alert::END."')
-                       WHERE (`glpi_contracts`.`alert` & ".pow(2,Alert::END).") > '0'
+                       WHERE (`glpi_contracts`.`alert` & ".pow(2, Alert::END).") > '0'
                              AND `glpi_contracts`.`is_deleted` = '0'
                              AND `glpi_contracts`.`begin_date` IS NOT NULL
                              AND `glpi_contracts`.`duration` <> '0'
@@ -1250,7 +1250,7 @@ class Contract extends CommonDBTM {
          // Get contrats with periodicity alerts
          $query_periodicity = "SELECT `glpi_contracts`.*
                                FROM `glpi_contracts`
-                               WHERE `glpi_contracts`.`alert` & ".pow(2,Alert::PERIODICITY)." > '0'
+                               WHERE `glpi_contracts`.`alert` & ".pow(2, Alert::PERIODICITY)." > '0'
                                      AND `glpi_contracts`.`entities_id` = '".$entity."' ";
 
          // Foreach ones :
@@ -1263,7 +1263,7 @@ class Contract extends CommonDBTM {
                 && $data['periodicity']
                 && ($end_alert > date('Y-m-d'))) {
                $todo = array('periodicity' => Alert::PERIODICITY);
-               if ($data['alert']&pow(2,Alert::NOTICE)) {
+               if ($data['alert']&pow(2, Alert::NOTICE)) {
                   $todo['periodicitynotice'] = Alert::NOTICE;
                }
 
@@ -1417,7 +1417,7 @@ class Contract extends CommonDBTM {
             // no translation needed (only for dev)
             echo "entity_sons options is not available with array of entity";
          } else {
-            $p['entity'] = getSonsOf('glpi_entities',$p['entity']);
+            $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
          }
       }
 
@@ -1429,7 +1429,7 @@ class Contract extends CommonDBTM {
                                                $p['entity'], true);
       }
       if (count($p['used'])) {
-          $idrest = " AND `glpi_contracts`.`id` NOT IN (".implode(",",$p['used']).") ";
+          $idrest = " AND `glpi_contracts`.`id` NOT IN (".implode(",", $p['used']).") ";
       }
       if (!$p['expired']) {
          $expired = " AND (DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL

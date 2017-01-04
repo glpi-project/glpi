@@ -66,7 +66,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
 
 
    static function getTypeName($nb=0) {
-      return _n('Link Ticket/Project task','Links Ticket/Project task',$nb);
+      return _n('Link Ticket/Project task', 'Links Ticket/Project task', $nb);
    }
 
 
@@ -213,7 +213,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
       echo "<tr><th colspan='12'>".Ticket::getTypeName($numrows)."</th>";
       echo "</tr>";
       if ($numrows) {
-         Ticket::commonListHeader(Search::HTML_OUTPUT,'mass'.__CLASS__.$rand);
+         Ticket::commonListHeader(Search::HTML_OUTPUT, 'mass'.__CLASS__.$rand);
          Session::initNavigateListItems('Ticket',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
@@ -354,7 +354,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
                echo $header;
 
                while ($data=$DB->fetch_assoc($result)) {
-                  Session::addToNavigateListItems('ProjectTask',$data['id']);
+                  Session::addToNavigateListItems('ProjectTask', $data['id']);
                   $rand = mt_rand();
                   echo "<tr class='tab_bg_2'>";
                   echo "<td>";
@@ -380,7 +380,7 @@ class ProjectTask_Ticket extends CommonDBRelation{
                   echo " style=\"background-color:".$data['color']."\"";
                   echo ">".$data['sname']."</td>";
                   echo "<td>";
-                  echo Dropdown::getValueWithUnit($data["percent_done"],"%");
+                  echo Dropdown::getValueWithUnit($data["percent_done"], "%");
                   echo "</td>";
                   echo "<td>".Html::convDateTime($data['plan_start_date'])."</td>";
                   echo "<td>".Html::convDateTime($data['plan_end_date'])."</td>";

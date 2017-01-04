@@ -237,7 +237,7 @@ class Entity extends CommonTreeDropdown {
       $query = "SELECT MAX(`id`)+1 AS newID
                 FROM `glpi_entities`";
       if ($result = $DB->query($query)) {
-          $input['id'] = $DB->result($result,0,0);
+          $input['id'] = $DB->result($result, 0, 0);
       } else {
          return false;
       }
@@ -291,11 +291,11 @@ class Entity extends CommonTreeDropdown {
       $ong = array();
       $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
-      $this->addStandardTab('Profile_User',$ong, $options);
+      $this->addStandardTab('Profile_User', $ong, $options);
       $this->addStandardTab('Rule', $ong, $options);
-      $this->addStandardTab('Document_Item',$ong, $options);
-      $this->addStandardTab('Notepad',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -442,7 +442,6 @@ class Entity extends CommonTreeDropdown {
       $gr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
-
    function getSearchOptionsNew() {
       $tab = [];
 
@@ -544,7 +543,7 @@ class Entity extends CommonTreeDropdown {
          'id'                 => '12',
          'table'              => $this->getTable(),
          'field'              => 'state',
-         'name'               => _x('location','State'),
+         'name'               => _x('location', 'State'),
          'massiveaction'      => false,
          'datatype'           => 'string'
       ];
@@ -1056,7 +1055,7 @@ class Entity extends CommonTreeDropdown {
             "/pics/entity_all.png' alt=''> ".__s('to see the entity and its sub-entities').")</span>".
             "<br>";
       echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".
-             __s('Show all')."\">".str_replace(" ","&nbsp;",__('Show all'))."</a></div>";
+             __s('Show all')."\">".str_replace(" ", "&nbsp;", __('Show all'))."</a></div>";
 
       echo "<div class='left' style='width:100%'>";
       echo "<form id='entsearchform'>";
@@ -1300,13 +1299,13 @@ class Entity extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Postal code')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($entity,"postcode", array('size' => 7));
+      Html::autocompletionTextField($entity, "postcode", array('size' => 7));
       echo "&nbsp;&nbsp;". __('City'). "&nbsp;";
       Html::autocompletionTextField($entity, "town", array('size' => 27));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('location','State')."</td>";
+      echo "<td>"._x('location', 'State')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entity, "state");
       echo "</td></tr>";
@@ -1321,7 +1320,7 @@ class Entity extends CommonTreeDropdown {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
 
          echo "</td></tr>";
          echo "</table>";
@@ -1409,7 +1408,7 @@ class Entity extends CommonTreeDropdown {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='2'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
 
          echo "</td></tr>";
          echo "</table>";
@@ -1539,7 +1538,7 @@ class Entity extends CommonTreeDropdown {
          $toadd[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
       $entities = array($entity->fields['entities_id']);
-      foreach (getAncestorsOf('glpi_entities',  $entity->fields['entities_id']) as $ent) {
+      foreach (getAncestorsOf('glpi_entities', $entity->fields['entities_id']) as $ent) {
          if (Session::haveAccessToEntity($ent)) {
             $entities[] = $ent;
          }
@@ -1563,7 +1562,7 @@ class Entity extends CommonTreeDropdown {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
 
          echo "</td></tr>";
          echo "</table>";
@@ -1920,7 +1919,7 @@ class Entity extends CommonTreeDropdown {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table>";
          Html::closeForm();
@@ -2157,7 +2156,7 @@ class Entity extends CommonTreeDropdown {
 
          echo "<br><font class='green'>&nbsp;&nbsp;";
          if ($autoclose_mode >= 0) {
-            printf(_n('%d day','%d days',$autoclose_mode), $autoclose_mode);
+            printf(_n('%d day', '%d days', $autoclose_mode), $autoclose_mode);
          } else {
             echo $autoclose[$autoclose_mode];
          }
@@ -2202,7 +2201,7 @@ class Entity extends CommonTreeDropdown {
             $inqconf = self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
                                            'inquest_delay');
 
-            printf(_n('%d day','%d days',$inqconf), $inqconf);
+            printf(_n('%d day', '%d days', $inqconf), $inqconf);
             echo "<br>";
             //TRANS: %d is the percentage. %% to display %
             printf(__('%d%%'), $inquestrate);
@@ -2232,7 +2231,7 @@ class Entity extends CommonTreeDropdown {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center' colspan='4'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\"
                   class='submit'>";
 
          echo "</td></tr>";
@@ -2320,90 +2319,90 @@ class Entity extends CommonTreeDropdown {
 
       $url = self::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_URL');
 
-      if (strstr($url,"[TICKET_ID]")) {
+      if (strstr($url, "[TICKET_ID]")) {
          $url = str_replace("[TICKET_ID]", $ticket->fields['id'], $url);
       }
 
-      if (strstr($url,"[TICKET_NAME]")) {
+      if (strstr($url, "[TICKET_NAME]")) {
          $url = str_replace("[TICKET_NAME]", urlencode($ticket->fields['name']), $url);
       }
 
-      if (strstr($url,"[TICKET_CREATEDATE]")) {
+      if (strstr($url, "[TICKET_CREATEDATE]")) {
          $url = str_replace("[TICKET_CREATEDATE]", $ticket->fields['date'], $url);
       }
 
-      if (strstr($url,"[TICKET_SOLVEDATE]")) {
+      if (strstr($url, "[TICKET_SOLVEDATE]")) {
          $url = str_replace("[TICKET_SOLVEDATE]", $ticket->fields['solvedate'], $url);
       }
 
-      if (strstr($url,"[REQUESTTYPE_ID]")) {
+      if (strstr($url, "[REQUESTTYPE_ID]")) {
          $url = str_replace("[REQUESTTYPE_ID]", $ticket->fields['requesttypes_id'], $url);
       }
 
-      if (strstr($url,"[REQUESTTYPE_NAME]")) {
+      if (strstr($url, "[REQUESTTYPE_NAME]")) {
          $url = str_replace("[REQUESTTYPE_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_requesttypes',
                                                                 $ticket->fields['requesttypes_id'])),
                             $url);
       }
 
-      if (strstr($url,"[TICKET_PRIORITY]")) {
+      if (strstr($url, "[TICKET_PRIORITY]")) {
          $url = str_replace("[TICKET_PRIORITY]", $ticket->fields['priority'], $url);
       }
 
-      if (strstr($url,"[TICKET_PRIORITYNAME]")) {
+      if (strstr($url, "[TICKET_PRIORITYNAME]")) {
          $url = str_replace("[TICKET_PRIORITYNAME]",
                urlencode(CommonITILObject::getPriorityName($ticket->fields['priority'])),
                $url);
       }
 
-      if (strstr($url,"[TICKETCATEGORY_ID]")) {
+      if (strstr($url, "[TICKETCATEGORY_ID]")) {
          $url = str_replace("[TICKETCATEGORY_ID]", $ticket->fields['itilcategories_id'], $url);
       }
 
-      if (strstr($url,"[TICKETCATEGORY_NAME]")) {
+      if (strstr($url, "[TICKETCATEGORY_NAME]")) {
          $url = str_replace("[TICKETCATEGORY_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_itilcategories',
                                                                 $ticket->fields['itilcategories_id'])),
                             $url);
       }
 
-      if (strstr($url,"[TICKETTYPE_ID]")) {
+      if (strstr($url, "[TICKETTYPE_ID]")) {
          $url = str_replace("[TICKETTYPE_ID]", $ticket->fields['type'], $url);
       }
 
-      if (strstr($url,"[TICKET_TYPENAME]")) {
+      if (strstr($url, "[TICKET_TYPENAME]")) {
          $url = str_replace("[TICKET_TYPENAME]",
                             Ticket::getTicketTypeName($ticket->fields['type']), $url);
       }
 
-      if (strstr($url,"[SOLUTIONTYPE_ID]")) {
+      if (strstr($url, "[SOLUTIONTYPE_ID]")) {
          $url = str_replace("[SOLUTIONTYPE_ID]", $ticket->fields['solutiontypes_id'], $url);
       }
 
-      if (strstr($url,"[SOLUTIONTYPE_NAME]")) {
+      if (strstr($url, "[SOLUTIONTYPE_NAME]")) {
          $url = str_replace("[SOLUTIONTYPE_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_solutiontypes',
                                                                 $ticket->fields['solutiontypes_id'])),
                             $url);
       }
 
-      if (strstr($url,"[SLA_ID]")) {
+      if (strstr($url, "[SLA_ID]")) {
          $url = str_replace("[SLA_ID]", $ticket->fields['slas_id'], $url);
       }
 
-      if (strstr($url,"[SLA_NAME]")) {
+      if (strstr($url, "[SLA_NAME]")) {
          $url = str_replace("[SLA_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_slas',
                                                                 $ticket->fields['slas_id'])),
                             $url);
       }
 
-      if (strstr($url,"[SLALEVEL_ID]")) {
+      if (strstr($url, "[SLALEVEL_ID]")) {
          $url = str_replace("[SLALEVEL_ID]", $ticket->fields['ttr_slalevels_id'], $url);
       }
 
-      if (strstr($url,"[SLALEVEL_NAME]")) {
+      if (strstr($url, "[SLALEVEL_NAME]")) {
          $url = str_replace("[SLALEVEL_NAME]",
                             urlencode(Dropdown::getDropdownName('glpi_slalevels',
                                                                 $ticket->fields['ttr_slalevels_id'])),

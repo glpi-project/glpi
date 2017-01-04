@@ -43,13 +43,13 @@ Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF
 
 if (empty($_POST["date1"]) && empty($_POST["date2"])) {
    $year           = date("Y")-1;
-   $_POST["date1"] = date("Y-m-d", mktime(1,0,0,date("m"),date("d"),$year));
+   $_POST["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
    $_POST["date2"] = date("Y-m-d");
 }
 
 if (!empty($_POST["date1"])
     && !empty($_POST["date2"])
-    && (strcmp($_POST["date2"],$_POST["date1"]) < 0)) {
+    && (strcmp($_POST["date2"], $_POST["date1"]) < 0)) {
 
    $tmp            = $_POST["date1"];
    $_POST["date1"] = $_POST["date2"];
@@ -97,19 +97,19 @@ function display_infocoms_report($itemtype, $begin, $end) {
       case 'Consumable' :
          $query .= " INNER JOIN `glpi_consumableitems`
                         ON (`glpi_consumables`.`consumableitems_id` = `glpi_consumableitems`.`id`) ".
-                     getEntitiesRestrictRequest("WHERE","glpi_consumableitems");
+                     getEntitiesRestrictRequest("WHERE", "glpi_consumableitems");
          break;
 
       case 'Cartridge' :
          $query .= " INNER JOIN `glpi_cartridgeitems`
                         ON (`glpi_cartridges`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`) ".
-                     getEntitiesRestrictRequest("WHERE","glpi_cartridgeitems");
+                     getEntitiesRestrictRequest("WHERE", "glpi_cartridgeitems");
          break;
 
       case 'SoftwareLicense' :
          $query .= " INNER JOIN `glpi_softwares`
                         ON (`glpi_softwarelicenses`.`softwares_id` = `glpi_softwares`.`id`) ".
-                     getEntitiesRestrictRequest("WHERE","glpi_softwarelicenses");
+                     getEntitiesRestrictRequest("WHERE", "glpi_softwarelicenses");
          break;
    }
 
@@ -171,7 +171,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
             }
 
             if (!empty($line["buy_date"])) {
-               $year = substr($line["buy_date"],0,4);
+               $year = substr($line["buy_date"], 0, 4);
 
                if ($line["value"] >0) {
                   if (!isset($valeurgraph[$year])) {
@@ -181,7 +181,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
                }
 
             }
-            $valeurnettesoustot += str_replace(" ","",$valeurnette);
+            $valeurnettesoustot += str_replace(" ", "", $valeurnette);
          }
 
          $valeurtot      += $valeursoustot;
@@ -239,7 +239,7 @@ echo "<table width='90%'><tr><td class='center top'>";
 while (count($types) > 0) {
    $type = array_shift($types);
 
-   if (display_infocoms_report($type,  $_POST["date1"],$_POST["date2"])) {
+   if (display_infocoms_report($type, $_POST["date1"], $_POST["date2"])) {
       echo "</td>";
       $i++;
 

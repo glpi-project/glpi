@@ -69,7 +69,7 @@ class ReservationItem extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      return _n('Reservable item', 'Reservable items',$nb);
+      return _n('Reservable item', 'Reservable items', $nb);
    }
 
 
@@ -301,7 +301,7 @@ class ReservationItem extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__('Reserve an item')."</th></tr>";
       echo "<tr class='tab_bg_1'>";
-      if ($ri->getFromDBbyItem($item->getType(),$item->getID())) {
+      if ($ri->getFromDBbyItem($item->getType(), $item->getID())) {
          echo "<td class='center'>";
          //Switch reservation state
 
@@ -317,7 +317,7 @@ class ReservationItem extends CommonDBChild {
 
          echo '</td><td>';
          Html::showSimpleForm(static::getFormURL(), 'purge', __('Prohibit reservations'),
-                              array('id' => $ri->fields['id']),'','',
+                              array('id' => $ri->fields['id']), '', '',
                               array(__('Are you sure you want to return this non-reservable item?'),
                                     __('That will remove all the reservations in progress.')));
 
@@ -368,7 +368,7 @@ class ReservationItem extends CommonDBChild {
          echo "</textarea></td></tr>\n";
 
          echo "<tr class='tab_bg_2'><td colspan='2' class='top center'>";
-         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
          echo "</td></tr>\n";
 
          echo "</table>";
@@ -413,8 +413,8 @@ class ReservationItem extends CommonDBChild {
          echo "<div id='viewresasearch' style=\"display:none;\" class='center'>";
          $begin_time                 = time();
          $begin_time                -= ($begin_time%HOUR_TIMESTAMP);
-         $_POST['reserve']["begin"]  = date("Y-m-d H:i:s",$begin_time);
-         $_POST['reserve']["end"]    = date("Y-m-d H:i:s",$begin_time+HOUR_TIMESTAMP);
+         $_POST['reserve']["begin"]  = date("Y-m-d H:i:s", $begin_time);
+         $_POST['reserve']["end"]    = date("Y-m-d H:i:s", $begin_time+HOUR_TIMESTAMP);
          $_POST['reservation_types'] = '';
       }
       echo "<form method='post' name='form' action='".Toolbox::getItemTypeSearchURL(__CLASS__)."'>";
@@ -582,7 +582,7 @@ class ReservationItem extends CommonDBChild {
             echo Html::hidden('begin', array('value' => $_POST['reserve']["begin"]));
             echo Html::hidden('end', array('value'   => $_POST['reserve']["end"]));
          }
-         echo "<input type='submit' value=\""._sx('button','Add')."\" class='submit'></td></tr>\n";
+         echo "<input type='submit' value=\""._sx('button', 'Add')."\" class='submit'></td></tr>\n";
 
       }
       echo "</table>\n";

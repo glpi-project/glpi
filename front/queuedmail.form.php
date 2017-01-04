@@ -39,7 +39,7 @@
 
 include ('../inc/includes.php');
 
-Session::checkRight('queuedmail',READ);
+Session::checkRight('queuedmail', READ);
 
 if (!isset($_GET["id"])) {
    $_GET["id"] = "";
