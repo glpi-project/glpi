@@ -2216,4 +2216,14 @@ abstract class API extends CommonGLPI {
       }
       return array($statuscode, $message);
    }
+
+
+   /**
+    * get the raw HTTP request body
+    *
+    * @return string
+    */
+   protected function getHttpBodyStream() {
+      return file_get_contents('php://input');
+   }
 }

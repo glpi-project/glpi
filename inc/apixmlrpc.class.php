@@ -233,7 +233,7 @@ class APIXmlrpc extends API {
       $parameters = array();
       $resource = "";
 
-      $parameters = xmlrpc_decode_request(trim(file_get_contents("php://input")),
+      $parameters = xmlrpc_decode_request(trim($this->getHttpBodyStream()),
                                           $resource,
                                           'UTF-8');
 
