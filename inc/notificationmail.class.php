@@ -88,17 +88,17 @@ class NotificationMail implements NotificationInterface {
             // domain part has two consecutive dots
             $isValid = false;
          } else if (!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/',
-                                str_replace("\\\\","",$local))) {
+                                str_replace("\\\\", "", $local))) {
             // character not valid in local part unless
             // local part is quoted
-            if (!preg_match('/^"(\\\\"|[^"])+"$/', str_replace("\\\\","",$local))) {
+            if (!preg_match('/^"(\\\\"|[^"])+"$/', str_replace("\\\\", "", $local))) {
                $isValid = false;
             }
          }
 
          if ($checkdns) {
             if ($isValid
-                && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A"))) {
+                && !(checkdnsrr($domain, "MX") || checkdnsrr($domain, "A"))) {
                // domain not found in DNS
                $isValid = false;
             }

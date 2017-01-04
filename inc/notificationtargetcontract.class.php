@@ -112,13 +112,13 @@ class NotificationTargetContract extends NotificationTarget {
                if ($type = getItemForItemtype($itemtype)) {
                   $typename = $type->getTypeName();
                   foreach ($item as $item_data) {
-                     $toadd[] = sprintf(__('%1$s - %2$s'),$typename, $item_data['name']);
+                     $toadd[] = sprintf(__('%1$s - %2$s'), $typename, $item_data['name']);
                      $tmp['##contract.items.number##']++;
                   }
                }
             }
             if (count($toadd)) {
-               $tmp["##contract.items##"] = implode(', ',$toadd);
+               $tmp["##contract.items##"] = implode(', ', $toadd);
             }
          }
 

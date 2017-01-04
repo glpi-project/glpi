@@ -56,7 +56,7 @@ class CartridgeItem extends CommonDBTM {
    static $rightname                   = 'cartridge';
 
    static function getTypeName($nb=0) {
-      return _n('Cartridge model','Cartridge models',$nb);
+      return _n('Cartridge model', 'Cartridge models', $nb);
    }
 
 
@@ -113,9 +113,9 @@ class CartridgeItem extends CommonDBTM {
       $this->addStandardTab('Cartridge', $ong, $options);
       $this->addStandardTab('CartridgeItem_PrinterModel', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
-      $this->addStandardTab('Document_Item',$ong, $options);
-      $this->addStandardTab('Link',$ong, $options);
-      $this->addStandardTab('Notepad',$ong, $options);
+      $this->addStandardTab('Document_Item', $ong, $options);
+      $this->addStandardTab('Link', $ong, $options);
+      $this->addStandardTab('Notepad', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
@@ -266,129 +266,187 @@ class CartridgeItem extends CommonDBTM {
       return $actions;
    }
 
+   function getSearchOptionsNew() {
+      $tab = [];
 
-   function getSearchOptions() {
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab                          = array();
-      $tab['common']                = __('Characteristics');
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[1]['table']              = $this->getTable();
-      $tab[1]['field']              = 'name';
-      $tab[1]['name']               = __('Name');
-      $tab[1]['datatype']           = 'itemlink';
-      $tab[1]['massiveaction']      = false;
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[2]['table']              = $this->getTable();
-      $tab[2]['field']              = 'id';
-      $tab[2]['name']               = __('ID');
-      $tab[2]['massiveaction']      = false;
-      $tab[2]['datatype']           = 'number';
+      $tab[] = [
+         'id'                 => '34',
+         'table'              => $this->getTable(),
+         'field'              => 'ref',
+         'name'               => __('Reference'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[34]['table']             = $this->getTable();
-      $tab[34]['field']             = 'ref';
-      $tab[34]['name']              = __('Reference');
-      $tab[34]['datatype']          = 'string';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => 'glpi_cartridgeitemtypes',
+         'field'              => 'name',
+         'name'               => __('Type'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[4]['table']              = 'glpi_cartridgeitemtypes';
-      $tab[4]['field']              = 'name';
-      $tab[4]['name']               = __('Type');
-      $tab[4]['datatype']           = 'dropdown';
+      $tab[] = [
+         'id'                 => '23',
+         'table'              => 'glpi_manufacturers',
+         'field'              => 'name',
+         'name'               => __('Manufacturer'),
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[23]['table']             = 'glpi_manufacturers';
-      $tab[23]['field']             = 'name';
-      $tab[23]['name']              = __('Manufacturer');
-      $tab[23]['datatype']          = 'dropdown';
+      $tab[] = [
+         'id'                 => '9',
+         'table'              => $this->getTable(),
+         'field'              => '_virtual',
+         'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
+         'datatype'           => 'specific',
+         'massiveaction'      => false,
+         'nosearch'           => true,
+         'nosort'             => true,
+         'additionalfields'   => ['alarm_threshold']
+      ];
 
-      $tab[9]['table']              = 'glpi_cartridgeitems';
-      $tab[9]['field']              = '_virtual';
-      $tab[9]['name']               = _n('Cartridge','Cartridges', Session::getPluralNumber());
-      $tab[9]['datatype']           = 'specific';
-      $tab[9]['massiveaction']      = false;
-      $tab[9]['nosearch']           = true;
-      $tab[9]['nosort']             = true;
-      $tab[9]['additionalfields']   = array('alarm_threshold');
+      $tab[] = [
+         'id'                 => '17',
+         'table'              => 'glpi_cartridges',
+         'field'              => 'id',
+         'name'               => __('Number of used cartridges'),
+         'datatype'           => 'count',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => 'AND NEWTABLE.`date_use` IS NOT NULL
+                                     AND NEWTABLE.`date_out` IS NULL'
+         ]
+      ];
 
-      $tab[17]['table']             = 'glpi_cartridges';
-      $tab[17]['field']             = 'id';
-      $tab[17]['name']              = __('Number of used cartridges');
-      $tab[17]['datatype']          = 'count';
-      $tab[17]['forcegroupby']      = true;
-      $tab[17]['usehaving']         = true;
-      $tab[17]['massiveaction']     = false;
-      $tab[17]['joinparams']        = array('jointype' => 'child',
-                                            'condition' => "AND NEWTABLE.`date_use` IS NOT NULL
-                                                            AND NEWTABLE.`date_out` IS NULL");
+      $tab[] = [
+         'id'                 => '18',
+         'table'              => 'glpi_cartridges',
+         'field'              => 'id',
+         'name'               => __('Number of worn cartridges'),
+         'datatype'           => 'count',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => 'AND NEWTABLE.`date_out` IS NOT NULL'
+         ]
+      ];
 
-      $tab[18]['table']             = 'glpi_cartridges';
-      $tab[18]['field']             = 'id';
-      $tab[18]['name']              = __('Number of worn cartridges');
-      $tab[18]['datatype']          = 'count';
-      $tab[18]['forcegroupby']      = true;
-      $tab[18]['usehaving']         = true;
-      $tab[18]['massiveaction']     = false;
-      $tab[18]['joinparams']        = array('jointype' => 'child',
-                                            'condition' => "AND NEWTABLE.`date_out` IS NOT NULL");
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => 'glpi_cartridges',
+         'field'              => 'id',
+         'name'               => __('Number of new cartridges'),
+         'datatype'           => 'count',
+         'forcegroupby'       => true,
+         'usehaving'          => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'child',
+            'condition'          => 'AND NEWTABLE.`date_use` IS NULL
+                                     AND NEWTABLE.`date_out` IS NULL'
+         ]
+      ];
 
-      $tab[19]['table']             = 'glpi_cartridges';
-      $tab[19]['field']             = 'id';
-      $tab[19]['name']              = __('Number of new cartridges');
-      $tab[19]['datatype']          = 'count';
-      $tab[19]['forcegroupby']      = true;
-      $tab[19]['usehaving']         = true;
-      $tab[19]['massiveaction']     = false;
-      $tab[19]['joinparams']        = array('jointype' => 'child',
-                                            'condition' => "AND NEWTABLE.`date_use` IS NULL
-                                                            AND NEWTABLE.`date_out` IS NULL");
+      $tab = array_merge($tab, Location::getSearchOptionsToAddNew());
 
-      $tab += Location::getSearchOptionsToAdd();
+      $tab[] = [
+         'id'                 => '24',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'linkfield'          => 'users_id_tech',
+         'name'               => __('Technician in charge of the hardware'),
+         'datatype'           => 'dropdown',
+         'right'              => 'own_ticket'
+      ];
 
-      $tab[24]['table']             = 'glpi_users';
-      $tab[24]['field']             = 'name';
-      $tab[24]['linkfield']         = 'users_id_tech';
-      $tab[24]['name']              = __('Technician in charge of the hardware');
-      $tab[24]['datatype']          = 'dropdown';
-      $tab[24]['right']             = 'own_ticket';
+      $tab[] = [
+         'id'                 => '49',
+         'table'              => 'glpi_groups',
+         'field'              => 'completename',
+         'linkfield'          => 'groups_id_tech',
+         'name'               => __('Group in charge of the hardware'),
+         'condition'          => '`is_assign`',
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[49]['table']             = 'glpi_groups';
-      $tab[49]['field']             = 'completename';
-      $tab[49]['linkfield']         = 'groups_id_tech';
-      $tab[49]['name']              = __('Group in charge of the hardware');
-      $tab[49]['condition']         = '`is_assign`';
-      $tab[49]['datatype']          = 'dropdown';
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'alarm_threshold',
+         'name'               => __('Alert threshold'),
+         'datatype'           => 'number',
+         'toadd'              => [
+            '-1'                 => 'Never'
+         ]
+      ];
 
-      $tab[8]['table']              = $this->getTable();
-      $tab[8]['field']              = 'alarm_threshold';
-      $tab[8]['name']               = __('Alert threshold');
-      $tab[8]['datatype']           = 'number';
-      $tab[8]['toadd']              = array('-1' => __('Never'));
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[16]['table']             = $this->getTable();
-      $tab[16]['field']             = 'comment';
-      $tab[16]['name']              = __('Comments');
-      $tab[16]['datatype']          = 'text';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[80]['table']             = 'glpi_entities';
-      $tab[80]['field']             = 'completename';
-      $tab[80]['name']              = __('Entity');
-      $tab[80]['massiveaction']     = false;
-      $tab[80]['datatype']          = 'dropdown';
-
-      $tab[40]['table']             = 'glpi_printermodels';
-      $tab[40]['field']             = 'name';
-      $tab[40]['datatype']          = 'dropdown';
-      $tab[40]['name']              = _n('Printer model', 'Printer models', Session::getPluralNumber());
-      $tab[40]['forcegroupby']      = true;
-      $tab[40]['massiveaction']     = false;
-      $tab[40]['joinparams']        = array('beforejoin'
-                                             => array('table'
-                                                         => 'glpi_cartridgeitems_printermodels',
-                                                      'joinparams'
-                                                         => array('jointype' => 'child')));
+      $tab[] = [
+         'id'                 => '40',
+         'table'              => 'glpi_printermodels',
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'name'               => _n('Printer model', 'Printer models', Session::getPluralNumber()),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_cartridgeitems_printermodels',
+               'joinparams'         => [
+                  'jointype'           => 'child'
+               ]
+            ]
+         ]
+      ];
 
       // add objectlock search options
-      $tab += ObjectLock::getSearchOptionsToAdd( get_class($this) ) ;
+      $tab = array_merge($tab, ObjectLock::getSearchOptionsToAddNew(get_class($this)));
 
-      $tab += Notepad::getSearchOptionsToAdd();
+      $tab = array_merge($tab, Notepad::getSearchOptionsToAddNew());
 
       return $tab;
    }

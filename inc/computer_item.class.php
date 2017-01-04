@@ -146,7 +146,7 @@ class Computer_Item extends CommonDBRelation{
          return false;
       }
 
-      if (!$item->getField('is_global') ) {
+      if (!$item->getField('is_global')) {
          // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
          $updates = array();
 
@@ -335,7 +335,7 @@ class Computer_Item extends CommonDBRelation{
          if ($DB->numrows($result) > 0) {
             $ok = true;
             while ($data = $DB->fetch_assoc($result)) {
-               if ($this->can($data["id"],UPDATE)) {
+               if ($this->can($data["id"], UPDATE)) {
                   $ok &= $this->delete($data);
                }
             }
@@ -774,7 +774,7 @@ class Computer_Item extends CommonDBRelation{
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = self::countForItem($item);
                   }
-                  return self::createTabEntry(_n('Connection','Connections', Session::getPluralNumber()),
+                  return self::createTabEntry(_n('Connection', 'Connections', Session::getPluralNumber()),
                                               $nb);
                }
                break;
@@ -787,7 +787,7 @@ class Computer_Item extends CommonDBRelation{
                   if ($_SESSION['glpishow_count_on_tabs']) {
                      $nb = self::countForComputer($item);
                   }
-                  return self::createTabEntry(_n('Connection','Connections', Session::getPluralNumber()),
+                  return self::createTabEntry(_n('Connection', 'Connections', Session::getPluralNumber()),
                                               $nb);
                }
                break;

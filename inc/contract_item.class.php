@@ -93,7 +93,7 @@ class Contract_Item extends CommonDBRelation{
 
 
    static function getTypeName($nb=0) {
-      return _n('Link Contract/Item','Links Contract/Item',$nb);
+      return _n('Link Contract/Item', 'Links Contract/Item', $nb);
    }
 
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
@@ -147,29 +147,37 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                        = array();
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
-      $tab[2]['table']            = $this->getTable();
-      $tab[2]['field']            = 'id';
-      $tab[2]['name']             = __('ID');
-      $tab[2]['massiveaction']    = false;
-      $tab[2]['datatype']         = 'number';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'items_id',
+         'name'               => __('Associated item ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'additionalfields'   => ['itemtype']
+      ];
 
-      $tab[3]['table']            = $this->getTable();
-      $tab[3]['field']            = 'items_id';
-      $tab[3]['name']             = __('Associated item ID');
-      $tab[3]['massiveaction']    = false;
-      $tab[3]['datatype']         = 'specific';
-      $tab[3]['additionalfields'] = array('itemtype');
-
-      $tab[4]['table']            = $this->getTable();
-      $tab[4]['field']            = 'itemtype';
-      $tab[4]['name']             = __('Type');
-      $tab[4]['massiveaction']    = false;
-      $tab[4]['datatype']         = 'itemtypename';
-      $tab[4]['itemtype_list']    = 'contract_types';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Type'),
+         'massiveaction'      => false,
+         'datatype'           => 'itemtypename',
+         'itemtype_list'      => 'contract_types'
+      ];
 
       return $tab;
    }
@@ -263,7 +271,7 @@ class Contract_Item extends CommonDBRelation{
          if ($item->maybeTemplate()) {
             $query .= " AND `$itemtable`.`is_template` = '0'";
          }
-         $query .= getEntitiesRestrictRequest(" AND",$itemtable, '', $entities_id,
+         $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', $entities_id,
                                                 $item->maybeRecursive())."
                      ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
 
@@ -387,7 +395,7 @@ class Contract_Item extends CommonDBRelation{
                 WHERE `glpi_contracts`.`id`=`glpi_contracts_items`.`contracts_id`
                       AND `glpi_contracts_items`.`items_id` = '$ID'
                       AND `glpi_contracts_items`.`itemtype` = '$itemtype'".
-                      getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)."
+                      getEntitiesRestrictRequest(" AND", "glpi_contracts", '', '', true)."
                 ORDER BY `glpi_contracts`.`name`";
 
       $result = $DB->query($query);
@@ -464,7 +472,7 @@ class Contract_Item extends CommonDBRelation{
                                                 $item->getTypeName(1), $item->getName()));
          foreach ($contracts as $data) {
             $cID         = $data["contracts_id"];
-            Session::addToNavigateListItems(__CLASS__,$cID);
+            Session::addToNavigateListItems(__CLASS__, $cID);
             $contracts[] = $cID;
             $assocID     = $data["id"];
             $con         = new Contract();
@@ -573,7 +581,7 @@ class Contract_Item extends CommonDBRelation{
             if ($item->maybeTemplate()) {
                $query .= " AND `$itemtable`.`is_template` = '0'";
             }
-            $query .= getEntitiesRestrictRequest(" AND",$itemtable, '', '',
+            $query .= getEntitiesRestrictRequest(" AND", $itemtable, '', '',
                                                  $item->maybeRecursive())."
                       ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
 
@@ -592,7 +600,7 @@ class Contract_Item extends CommonDBRelation{
                                                              'field'      => 29)));
 
                $url  = $item::getSearchURL();
-               $url .= (strpos($url,'?') ? '&':'?');
+               $url .= (strpos($url, '?') ? '&':'?');
                $url .= Toolbox::append_params($opt);
                $link = "<a href='$url'>" . __('Device list')."</a>";
 
@@ -707,7 +715,7 @@ class Contract_Item extends CommonDBRelation{
                   $prem = false;
                }
                echo "<td class='center'>";
-               echo Dropdown::getDropdownName("glpi_entities",$objdata['entity'])."</td>";
+               echo Dropdown::getDropdownName("glpi_entities", $objdata['entity'])."</td>";
                echo "<td class='center".
                       (isset($objdata['is_deleted']) && $objdata['is_deleted'] ? " tab_bg_2_2'" : "'");
                echo ">".$name."</td>";

@@ -37,7 +37,7 @@
 */
 
 // Direct access to file
-if (strpos($_SERVER['PHP_SELF'],"getDropdownValue.php")) {
+if (strpos($_SERVER['PHP_SELF'], "getDropdownValue.php")) {
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
@@ -111,7 +111,7 @@ if (isset($_POST['used'])) {
    $used = $_POST['used'];
 
    if (count($used)) {
-      $where .=" AND `$table`.`id` NOT IN ('".implode("','",$used)."' ) ";
+      $where .=" AND `$table`.`id` NOT IN ('".implode("','", $used)."' ) ";
    }
 }
 
@@ -589,7 +589,7 @@ if ($item instanceof CommonTreeDropdown) {
             } else if ($field == 'itemtype' && class_exists($data['itemtype'])) {
                $tmpitem = new $data[$field]();
                if ($tmpitem->getFromDB($data['items_id'])) {
-                  $outputval = sprintf(__('%1$s - %2$s'), $tmpitem->getTypeName(),$tmpitem->getName());
+                  $outputval = sprintf(__('%1$s - %2$s'), $tmpitem->getTypeName(), $tmpitem->getName());
                } else {
                   $outputval = $tmpitem->getTypeName();
                }

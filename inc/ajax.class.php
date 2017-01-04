@@ -96,7 +96,7 @@ class Ajax {
          open: function (){
             var fields = ";
       if (is_array($param['extraparams']) && count($param['extraparams'])) {
-         $out .= json_encode($param['extraparams'],JSON_FORCE_OBJECT);
+         $out .= json_encode($param['extraparams'], JSON_FORCE_OBJECT);
       } else {
          $out .= '{}';
       }
@@ -206,13 +206,12 @@ class Ajax {
             }
          }
       }
-      $url .= (strstr($url,'?') ?'&' :  '?').'_in_modal=1';
+      $url .= (strstr($url, '?') ?'&' :  '?').'_in_modal=1';
 
       $out  = "<div id=\"$domid\">";
-      $out .= "<iframe id='Iframe$domid' width='100%' height='100%' marginWidth='0' marginHeight='0'
-                frameBorder='0' scrolling='auto'></iframe></div>";
+      $out .= "<iframe id='Iframe$domid' class='iframe'></iframe></div>";
 
-      $out .= "<script type='text/javascript'>
+        $out .= "<script type='text/javascript'>
             $('#$domid').dialog({
                modal: true,
                autoOpen: false,
@@ -307,7 +306,7 @@ class Ajax {
                $selected_tab = $current;
             }
             echo "<li><a title=\"".
-                 str_replace(array("<sup class='tab_nb'>", '</sup>'),'',$val['title'])."\" ";
+                 str_replace(array("<sup class='tab_nb'>", '</sup>'), '', $val['title'])."\" ";
             echo " href='".$val['url'].(isset($val['params'])?'?'.$val['params']:'')."'>";
             // extract sup information
             // $title = '';
@@ -446,7 +445,7 @@ class Ajax {
          $buffertime = 0;
       }
       return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters,
-                                     array("dblclick", "keyup"),  $minsize, $buffertime,
+                                     array("dblclick", "keyup"), $minsize, $buffertime,
                                      $forceloadfor, $display);
    }
 
@@ -613,7 +612,7 @@ class Ajax {
             }
 
             $out .= $key.":";
-            if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/',$val,$regs)) {
+            if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
                $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])).".val()";
 
             } else if (!is_array($val) && $val==="__VALUE__") {
@@ -648,7 +647,7 @@ class Ajax {
    static function updateItem($toupdate, $url, $parameters=array(), $toobserve="", $display=true) {
 
       $output = "<script type='text/javascript'>";
-      $output .= self::updateItemJsCode($toupdate,$url,$parameters,$toobserve, false);
+      $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
       $output .= "</script>";
       if ($display) {
          echo $output;

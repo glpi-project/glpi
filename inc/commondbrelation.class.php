@@ -107,7 +107,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       } else {
          $fields[] = "'".static::$itemtype_1."' AS itemtype_1";
          if (($itemtype ==  static::$itemtype_1)
-             || is_subclass_of($itemtype,  static::$itemtype_1)) {
+             || is_subclass_of($itemtype, static::$itemtype_1)) {
             $condition_1 = $condition_id_1;
          }
       }
@@ -127,7 +127,7 @@ abstract class CommonDBRelation extends CommonDBConnexity {
       } else {
          $fields[] = "'".static::$itemtype_2."' AS itemtype_2";
          if (($itemtype ==  static::$itemtype_2)
-             || is_subclass_of($itemtype,  static::$itemtype_2)) {
+             || is_subclass_of($itemtype, static::$itemtype_2)) {
             $condition_2 = $condition_id_2;
          }
       }
@@ -272,31 +272,43 @@ abstract class CommonDBRelation extends CommonDBConnexity {
     *
     * @return array of search option
    **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab = array();
-      $tab['common']           = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
-      $tab[2]['datatype']      = 'number';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'id',
+         'name'               => __('ID'),
+         'massiveaction'      => false,
+         'datatype'           => 'number'
+      ];
 
       if (!preg_match('/^itemtype/', static::$itemtype_1)) {
-         $tab[3]['table']         = getTableForItemType(static::$itemtype_1);
-         $tab[3]['field']         = static::$items_id_1;
-         $tab[3]['name']          = call_user_func(array(static::$itemtype_1, 'getTypeName'));
-         $tab[3]['datatype']      = 'text';
-         $tab[3]['massiveaction'] = false;
+         $tab[] = [
+            'id'                 => '3',
+            'table'              => getTableForItemType(static::$itemtype_1),
+            'field'              => static::$items_id_1,
+            'name'               => call_user_func(array(static::$itemtype_1, 'getTypeName')),
+            'datatype'           => 'text',
+            'massiveaction'      => false
+         ];
       }
 
       if (!preg_match('/^itemtype/', static::$itemtype_2)) {
-         $tab[4]['table']         = getTableForItemType(static::$itemtype_2);
-         $tab[4]['field']         = static::$items_id_2;
-         $tab[4]['name']          = call_user_func(array(static::$itemtype_2, 'getTypeName'));
-         $tab[4]['datatype']      = 'text';
-         $tab[4]['massiveaction'] = false;
+         $tab[] = [
+            'id'                 => '4',
+            'table'              => getTableForItemType(static::$itemtype_2),
+            'field'              => static::$items_id_2,
+            'name'               => call_user_func(array(static::$itemtype_2, 'getTypeName')),
+            'datatype'           => 'text',
+            'massiveaction'      => false
+         ];
       }
 
       return $tab;

@@ -49,7 +49,7 @@ if (!isset($_GET["withtemplate"])) {
 $monitor = new Monitor();
 
 if (isset($_POST["add"])) {
-   $monitor->check(-1, CREATE,$_POST);
+   $monitor->check(-1, CREATE, $_POST);
 
    if ($newID = $monitor->add($_POST)) {
       Event::log($newID, "monitors", 4, "inventory",
@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $monitor->check($_POST["id"], PURGE);
 
-   $monitor->delete($_POST,1);
+   $monitor->delete($_POST, 1);
    Event::log($_POST["id"], "monitors", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

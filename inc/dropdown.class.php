@@ -146,7 +146,7 @@ class Dropdown {
             // translation not needed - only for debug
             $output .= "entity_sons options is not available with entity option as array";
          } else {
-            $params['entity'] = getSonsOf('glpi_entities',$params['entity']);
+            $params['entity'] = getSonsOf('glpi_entities', $params['entity']);
          }
       }
 
@@ -199,7 +199,7 @@ class Dropdown {
             $options_tooltip['linktarget'] = '_blank';
          }
 
-         $output .= "&nbsp;".Html::showToolTip($comment,$options_tooltip);
+         $output .= "&nbsp;".Html::showToolTip($comment, $options_tooltip);
 
          if (($item instanceof CommonDropdown)
              && $item->canCreate()
@@ -272,7 +272,7 @@ class Dropdown {
       $item = getItemForItemtype(getItemTypeForTable($table));
 
       if ($item instanceof CommonTreeDropdown) {
-         return getTreeValueCompleteName($table,$id,$withcomment, $translate, $tooltip);
+         return getTreeValueCompleteName($table, $id, $withcomment, $translate, $tooltip);
       }
 
       $name    = "";
@@ -367,7 +367,7 @@ class Dropdown {
                      break;
 
                   case "glpi_suppliers" :
-                     if( $tooltip ) {
+                     if($tooltip) {
                         if (!empty($data["phonenumber"])) {
                            $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
                                                       "</span>".$data['phonenumber']);
@@ -390,7 +390,7 @@ class Dropdown {
                      break;
 
                   case "glpi_budgets" :
-                     if( $tooltip ) {
+                     if($tooltip) {
                         if (!empty($data['locations_id'])) {
                            $comment .= "<br>".sprintf(__('%1$s: %2$s'),
                                                       "<span class='b'>".__('Location')."</span>",
@@ -463,7 +463,7 @@ class Dropdown {
 
             $query = "SELECT `id`, `$field`
                       FROM `$table`
-                      WHERE `id` IN (".implode(',',$ids).")";
+                      WHERE `id` IN (".implode(',', $ids).")";
 
             if ($result = $DB->query($query)) {
                while ($data = $DB->fetch_assoc($result)) {
@@ -583,7 +583,7 @@ class Dropdown {
             sort($files);
 
             foreach ($files as $file) {
-               if (preg_match("/\.png$/i",$file)) {
+               if (preg_match("/\.png$/i", $file)) {
                   $values[$file] = $file;
                }
             }
@@ -758,7 +758,7 @@ class Dropdown {
                                                 Session::getPluralNumber()),
                  'Manufacturer'           => _n('Manufacturer', 'Manufacturers',
                                                 Session::getPluralNumber()),
-                 'Blacklist'              => _n('Blacklist','Blacklists',
+                 'Blacklist'              => _n('Blacklist', 'Blacklists',
                                                 Session::getPluralNumber()),
                  'BlacklistedMailContent' => __('Blacklisted mail content')
              ),
@@ -767,9 +767,9 @@ class Dropdown {
                  'ITILCategory'     => _n('Ticket category',
                                           'Ticket categories',
                                           Session::getPluralNumber()),
-                 'TaskCategory'     => _n('Task category','Task categories',
+                 'TaskCategory'     => _n('Task category', 'Task categories',
                                           Session::getPluralNumber()),
-                 'TaskTemplate'     => _n('Task template','Task templates',
+                 'TaskTemplate'     => _n('Task template', 'Task templates',
                                           Session::getPluralNumber()),
                  'SolutionType'     => _n('Solution type', 'Solution types',
                                           Session::getPluralNumber()),
@@ -1424,7 +1424,7 @@ class Dropdown {
 
       $field_id = Html::cleanId("dropdown_".$myname.$p['rand']);
       if (!isset($p['toadd'][$p['value']])) {
-         $valuename = self::getValueWithUnit($p['value'],$p['unit']);
+         $valuename = self::getValueWithUnit($p['value'], $p['unit']);
       } else {
          $valuename = $p['toadd'][$p['value']];
       }
@@ -1530,7 +1530,7 @@ class Dropdown {
             $opt[$key] = $val;
          }
       }
-      return self::showNumber($myname,$opt);
+      return self::showNumber($myname, $opt);
 
    }
 
@@ -1639,10 +1639,10 @@ class Dropdown {
 
                   //TRANS: %1$d is the number of days, %2$d the number of hours,
                   //       %3$s the number of minutes : display 1 day 3h15
-                  $values[$i] = sprintf(_n('%1$d day %2$dh%3$s','%1$d days %2$dh%3$s', $day),
+                  $values[$i] = sprintf(_n('%1$d day %2$dh%3$s', '%1$d days %2$dh%3$s', $day),
                                        $day, $hour, $minute);
                } else {
-                  $values[$i] = sprintf(_n('%d day','%d days',$day), $day);
+                  $values[$i] = sprintf(_n('%d day', '%d days', $day), $day);
                }
 
             } else if ($hour > 0 || $minute > 0) {
@@ -1834,7 +1834,7 @@ class Dropdown {
                $to_display[] = $elements[$value];
             }
          }
-         $output .= implode('<br>',$to_display);
+         $output .= implode('<br>', $to_display);
       } else {
 
          $output  .= "<select name='$field_name' id='$field_id'";
@@ -1884,7 +1884,7 @@ class Dropdown {
                      $output .= "<option value='".$key2."'";
                      // Do not use in_array : trouble with 0 and empty value
                      foreach ($param['values'] as $value) {
-                        if (strcmp($key2,$value) === 0) {
+                        if (strcmp($key2, $value) === 0) {
                            $output .= " selected";
                            break;
                         }
@@ -1904,7 +1904,7 @@ class Dropdown {
                   $output .= "<option value='".$key."'";
                   // Do not use in_array : trouble with 0 and empty value
                   foreach ($param['values'] as $value) {
-                     if (strcmp($key,$value)===0) {
+                     if (strcmp($key, $value)===0) {
                         $output .= " selected";
                         break;
                      }
@@ -2121,8 +2121,8 @@ class Dropdown {
 
       Dropdown::showFromArray('display_type', $values);
       echo "<input type='image' name='export' class='pointer' src='".
-             $CFG_GLPI["root_doc"]."/pics/export.png' title=\""._sx('button', 'Export')."\" value=\"".
-             _sx('button', 'Export')."\">";
+             $CFG_GLPI["root_doc"] . "/pics/export.png' title=\"" . _sx('button', 'Export') . "\" alt=\"" .
+        _sx('button', 'Export')."\">";
    }
 
 

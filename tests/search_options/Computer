@@ -1,0 +1,903 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'completename',
+    'name' => 'Location',
+    'datatype' => 'dropdown',
+  ),
+  91 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'building',
+    'name' => 'Building number',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  92 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'room',
+    'name' => 'Room number',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  93 => 
+  array (
+    'table' => 'glpi_locations',
+    'field' => 'comment',
+    'name' => 'Location comments',
+    'massiveaction' => false,
+    'datatype' => 'text',
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_computertypes',
+    'field' => 'name',
+    'name' => 'Type',
+    'datatype' => 'dropdown',
+  ),
+  40 => 
+  array (
+    'table' => 'glpi_computermodels',
+    'field' => 'name',
+    'name' => 'Model',
+    'datatype' => 'dropdown',
+  ),
+  31 => 
+  array (
+    'table' => 'glpi_states',
+    'field' => 'completename',
+    'name' => 'Status',
+    'datatype' => 'dropdown',
+    'condition' => '`is_visible_computer`',
+  ),
+  45 => 
+  array (
+    'table' => 'glpi_operatingsystems',
+    'field' => 'name',
+    'name' => 'Operating system',
+    'datatype' => 'dropdown',
+  ),
+  46 => 
+  array (
+    'table' => 'glpi_operatingsystemversions',
+    'field' => 'name',
+    'name' => 'Version of the operating system',
+    'datatype' => 'dropdown',
+  ),
+  41 => 
+  array (
+    'table' => 'glpi_operatingsystemservicepacks',
+    'field' => 'name',
+    'name' => 'Service pack',
+    'datatype' => 'dropdown',
+  ),
+  42 => 
+  array (
+    'table' => 'glpi_autoupdatesystems',
+    'field' => 'name',
+    'name' => 'Update Source',
+    'datatype' => 'dropdown',
+  ),
+  43 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'os_license_number',
+    'name' => 'Serial of the operating system',
+    'datatype' => 'string',
+  ),
+  44 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'os_licenseid',
+    'name' => 'Product ID of the operating system',
+    'datatype' => 'string',
+  ),
+  61 => 
+  array (
+    'table' => 'glpi_operatingsystemarchitectures',
+    'field' => 'name',
+    'name' => 'Operating system architecture',
+    'datatype' => 'dropdown',
+  ),
+  47 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'uuid',
+    'name' => 'UUID',
+    'datatype' => 'string',
+  ),
+  48 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'os_kernel_version',
+    'name' => 'Kernel version of the operating system',
+    'datatype' => 'string',
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'serial',
+    'name' => 'Serial number',
+    'datatype' => 'string',
+  ),
+  6 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'otherserial',
+    'name' => 'Inventory number',
+    'datatype' => 'string',
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  7 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'contact',
+    'name' => 'Alternate username',
+    'datatype' => 'string',
+  ),
+  8 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'contact_num',
+    'name' => 'Alternate username number',
+    'datatype' => 'string',
+  ),
+  70 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'User',
+    'datatype' => 'dropdown',
+    'right' => 'all',
+  ),
+  71 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'completename',
+    'name' => 'Group',
+    'condition' => '`is_itemgroup`',
+    'datatype' => 'dropdown',
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_computers',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  32 => 
+  array (
+    'table' => 'glpi_networks',
+    'field' => 'name',
+    'name' => 'Network Device',
+    'datatype' => 'dropdown',
+  ),
+  33 => 
+  array (
+    'table' => 'glpi_domains',
+    'field' => 'name',
+    'name' => 'Domain',
+    'datatype' => 'dropdown',
+  ),
+  23 => 
+  array (
+    'table' => 'glpi_manufacturers',
+    'field' => 'name',
+    'name' => 'Manufacturer',
+    'datatype' => 'dropdown',
+  ),
+  24 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id_tech',
+    'name' => 'Technician in charge of the hardware',
+    'datatype' => 'dropdown',
+    'right' => 'own_ticket',
+  ),
+  49 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'completename',
+    'linkfield' => 'groups_id_tech',
+    'name' => 'Group in charge of the hardware',
+    'condition' => '`is_assign`',
+    'datatype' => 'dropdown',
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'datatype' => 'dropdown',
+  ),
+  'notepad' => 'Notes',
+  200 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'content',
+    'name' => 'Notes',
+    'datatype' => 'text',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'splititems' => true,
+    'massiveaction' => false,
+  ),
+  201 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  202 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'Writer',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+  203 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  204 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id_lastupdater',
+    'name' => 'Last updater',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+  'periph' => 'Components',
+  17 => 
+  array (
+    'table' => 'glpi_deviceprocessors',
+    'field' => 'designation',
+    'name' => 'Processor',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_items_deviceprocessors',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+          'specific_itemtype' => 'Computer',
+        ),
+      ),
+    ),
+  ),
+  36 => 
+  array (
+    'table' => 'glpi_items_deviceprocessors',
+    'field' => 'frequency',
+    'name' => 'Processor frequency',
+    'unit' => 'MHz',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'datatype' => 'number',
+    'width' => 100,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+      'specific_itemtype' => 'Computer',
+    ),
+    'computation' => 'SUM(TABLE.`frequency`) / COUNT(TABLE.`id`)',
+  ),
+  10 => 
+  array (
+    'table' => 'glpi_devicememories',
+    'field' => 'designation',
+    'name' => 'Memory type',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_items_devicememories',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+          'specific_itemtype' => 'Computer',
+        ),
+      ),
+    ),
+  ),
+  35 => 
+  array (
+    'table' => 'glpi_items_devicememories',
+    'field' => 'size',
+    'unit' => 'Mio',
+    'name' => 'Memory (Mio)',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'datatype' => 'number',
+    'width' => 100,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+      'specific_itemtype' => 'Computer',
+    ),
+    'computation' => '(SUM(TABLE.`size`) / COUNT(TABLE.`id`))
+                                    * COUNT(DISTINCT TABLE.`id`)',
+  ),
+  11 => 
+  array (
+    'table' => 'glpi_devicenetworkcards',
+    'field' => 'designation',
+    'name' => 'Network interface',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_items_devicenetworkcards',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+          'specific_itemtype' => 'Computer',
+        ),
+      ),
+    ),
+  ),
+  20 => 
+  array (
+    'table' => 'glpi_items_devicenetworkcards',
+    'field' => 'mac',
+    'name' => 'MAC address',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+      'specific_itemtype' => 'Computer',
+    ),
+  ),
+  12 => 
+  array (
+    'table' => 'glpi_devicesoundcards',
+    'field' => 'designation',
+    'name' => 'Soundcard',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_items_devicesoundcards',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+          'specific_itemtype' => 'Computer',
+        ),
+      ),
+    ),
+  ),
+  13 => 
+  array (
+    'table' => 'glpi_devicegraphiccards',
+    'field' => 'designation',
+    'name' => 'Graphics card',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_items_devicegraphiccards',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+          'specific_itemtype' => 'Computer',
+        ),
+      ),
+    ),
+  ),
+  14 => 
+  array (
+    'table' => 'glpi_devicemotherboards',
+    'field' => 'designation',
+    'name' => 'System board',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_items_devicemotherboards',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+          'specific_itemtype' => 'Computer',
+        ),
+      ),
+    ),
+  ),
+  15 => 
+  array (
+    'table' => 'glpi_deviceharddrives',
+    'field' => 'designation',
+    'name' => 'Hard drive type',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_items_deviceharddrives',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+          'specific_itemtype' => 'Computer',
+        ),
+      ),
+    ),
+  ),
+  34 => 
+  array (
+    'table' => 'glpi_items_deviceharddrives',
+    'field' => 'capacity',
+    'name' => 'Hard drive size',
+    'unit' => 'Mio',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'datatype' => 'number',
+    'width' => 1000,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+      'specific_itemtype' => 'Computer',
+    ),
+    'computation' => '(SUM(TABLE.`capacity`) / COUNT(TABLE.`id`))
+                                       * COUNT(DISTINCT TABLE.`id`)',
+  ),
+  39 => 
+  array (
+    'table' => 'glpi_devicepowersupplies',
+    'field' => 'designation',
+    'name' => 'Power supply',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_items_devicepowersupplies',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+          'specific_itemtype' => 'Computer',
+        ),
+      ),
+    ),
+  ),
+  95 => 
+  array (
+    'table' => 'glpi_devicepcis',
+    'field' => 'designation',
+    'name' => 'Other component',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_items_devicepcis',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+          'specific_itemtype' => 'Computer',
+        ),
+      ),
+    ),
+  ),
+  'disk' => 'Volumes',
+  156 => 
+  array (
+    'table' => 'glpi_computerdisks',
+    'field' => 'name',
+    'name' => 'Volume',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  150 => 
+  array (
+    'table' => 'glpi_computerdisks',
+    'field' => 'totalsize',
+    'name' => 'Global size (Mio)',
+    'forcegroupby' => true,
+    'usehaving' => true,
+    'datatype' => 'number',
+    'width' => 1000,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  151 => 
+  array (
+    'table' => 'glpi_computerdisks',
+    'field' => 'freesize',
+    'name' => 'Free size',
+    'forcegroupby' => true,
+    'datatype' => 'number',
+    'width' => 1000,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  152 => 
+  array (
+    'table' => 'glpi_computerdisks',
+    'field' => 'freepercent',
+    'name' => 'Free percentage',
+    'forcegroupby' => true,
+    'datatype' => 'decimal',
+    'width' => 2,
+    'computation' => 'ROUND(100*TABLE.freesize/TABLE.totalsize)',
+    'computationgroupby' => true,
+    'unit' => '%',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  153 => 
+  array (
+    'table' => 'glpi_computerdisks',
+    'field' => 'mountpoint',
+    'name' => 'Mount point',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  154 => 
+  array (
+    'table' => 'glpi_computerdisks',
+    'field' => 'device',
+    'name' => 'Partition',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'string',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  155 => 
+  array (
+    'table' => 'glpi_filesystems',
+    'field' => 'name',
+    'name' => 'File system',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_computerdisks',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+        ),
+      ),
+    ),
+  ),
+  'virtualmachine' => 'Virtual machines',
+  160 => 
+  array (
+    'table' => 'glpi_computervirtualmachines',
+    'field' => 'name',
+    'name' => 'Virtual machine',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  161 => 
+  array (
+    'table' => 'glpi_virtualmachinestates',
+    'field' => 'name',
+    'name' => 'State of the virtual machine',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_computervirtualmachines',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+        ),
+      ),
+    ),
+  ),
+  162 => 
+  array (
+    'table' => 'glpi_virtualmachinesystems',
+    'field' => 'name',
+    'name' => 'Virtualization model',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_computervirtualmachines',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+        ),
+      ),
+    ),
+  ),
+  163 => 
+  array (
+    'table' => 'glpi_virtualmachinetypes',
+    'field' => 'name',
+    'name' => 'Virtualization system',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_computervirtualmachines',
+        'joinparams' => 
+        array (
+          'jointype' => 'child',
+        ),
+      ),
+    ),
+  ),
+  164 => 
+  array (
+    'table' => 'glpi_computervirtualmachines',
+    'field' => 'vcpu',
+    'name' => 'Virtual machine processor number',
+    'datatype' => 'number',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  165 => 
+  array (
+    'table' => 'glpi_computervirtualmachines',
+    'field' => 'ram',
+    'name' => 'Memory of virtual machines',
+    'datatype' => 'string',
+    'unit' => 'Mio',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  166 => 
+  array (
+    'table' => 'glpi_computervirtualmachines',
+    'field' => 'uuid',
+    'name' => 'Virtual machine UUID',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  'antivirus' => 'Antiviruses',
+  167 => 
+  array (
+    'table' => 'glpi_computerantiviruses',
+    'field' => 'name',
+    'name' => 'Antivirus',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'dropdown',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  168 => 
+  array (
+    'table' => 'glpi_computerantiviruses',
+    'field' => 'antivirus_version',
+    'name' => 'Antivirus version',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'text',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  169 => 
+  array (
+    'table' => 'glpi_computerantiviruses',
+    'field' => 'is_active',
+    'linkfield' => '',
+    'name' => 'Active',
+    'datatype' => 'bool',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+    'massiveaction' => false,
+    'forcegroupby' => true,
+    'searchtype' => 
+    array (
+      0 => 'equals',
+    ),
+  ),
+  170 => 
+  array (
+    'table' => 'glpi_computerantiviruses',
+    'field' => 'is_uptodate',
+    'linkfield' => '',
+    'name' => 'Is up to date',
+    'datatype' => 'bool',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+    'massiveaction' => false,
+    'forcegroupby' => true,
+    'searchtype' => 
+    array (
+      0 => 'equals',
+    ),
+  ),
+  171 => 
+  array (
+    'table' => 'glpi_computerantiviruses',
+    'field' => 'signature_version',
+    'name' => 'Signature database version',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'text',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+  172 => 
+  array (
+    'table' => 'glpi_computerantiviruses',
+    'field' => 'date_expiration',
+    'name' => 'Expiration date',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'datatype' => 'date',
+    'joinparams' => 
+    array (
+      'jointype' => 'child',
+    ),
+  ),
+)

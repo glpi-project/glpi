@@ -73,7 +73,7 @@ class Change_Item extends CommonDBRelation{
       }
 
       // Avoid duplicate entry
-      if (countElementsInTable($this->getTable(),['changes_id' => $input['changes_id'],
+      if (countElementsInTable($this->getTable(), ['changes_id' => $input['changes_id'],
                                                   'itemtype' => $input['itemtype'],
                                                   'items_id' => $input['items_id']])>0) {
          return false;
@@ -272,21 +272,21 @@ class Change_Item extends CommonDBRelation{
 
             case 'User' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countDistinctElementsInTable('glpi_changes_users','changes_id',
+                  $nb = countDistinctElementsInTable('glpi_changes_users', 'changes_id',
                                              "`users_id` = '".$item->getID()."'");
                }
                return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Group' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countDistinctElementsInTable('glpi_changes_groups','changes_id',
+                  $nb = countDistinctElementsInTable('glpi_changes_groups', 'changes_id',
                                              "`groups_id` = '".$item->getID()."'");
                }
                return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
 
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countDistinctElementsInTable('glpi_changes_suppliers','changes_id',
+                  $nb = countDistinctElementsInTable('glpi_changes_suppliers', 'changes_id',
                                              "`suppliers_id` = '".$item->getID()."'");
                }
                return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);

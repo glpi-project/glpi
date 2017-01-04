@@ -180,27 +180,39 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
 
    // TODO why this? you don't have search engine for this object
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                      = array();
-      $tab['common']            = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[10]['table']         = $this->getTable();
-      $tab[10]['field']         = 'mac';
-      $tab[10]['datatype']      = 'mac';
-      $tab[10]['name']          = __('MAC');
-      $tab[10]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '10',
+         'table'              => $this->getTable(),
+         'field'              => 'mac',
+         'datatype'           => 'mac',
+         'name'               => __('MAC'),
+         'massiveaction'      => false
+      ];
 
-      $tab[11]['table']         = $this->getTable();
-      $tab[11]['field']         = 'wwn';
-      $tab[11]['name']          = __('World Wide Name');
-      $tab[11]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'wwn',
+         'name'               => __('World Wide Name'),
+         'massiveaction'      => false
+      ];
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'speed';
-      $tab[12]['name']          = __('Fiber channel port speed');
-      $tab[12]['massiveaction'] = false;
-      $tab[12]['datatype']      = 'specific';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'speed',
+         'name'               => __('Fiber channel port speed'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific'
+      ];
 
       return $tab;
    }
@@ -262,11 +274,11 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
 
       $tmp = array(0     => '',
                    //TRANS: %d is the speed
-                   10    => sprintf(__('%d Mbit/s'),10),
-                   100   => sprintf(__('%d Mbit/s'),100),
+                   10    => sprintf(__('%d Mbit/s'), 10),
+                   100   => sprintf(__('%d Mbit/s'), 100),
                    //TRANS: %d is the speed
-                   1000  => sprintf(__('%d Gbit/s'),1),
-                   10000 => sprintf(__('%d Gbit/s'),10));
+                   1000  => sprintf(__('%d Gbit/s'), 1),
+                   10000 => sprintf(__('%d Gbit/s'), 10));
 
       if (is_null($val)) {
          return $tmp;
@@ -322,21 +334,23 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation {
    /**
     * @param $tab         array
     * @param $joinparams  array
-    * @param $itemtype
    **/
-   static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams,
-                                                         $itemtype) {
-
-      $tab[22]['table']         = 'glpi_netpoints';
-      $tab[22]['field']         = 'name';
-      $tab[22]['datatype']      = 'dropdown';
-      $tab[22]['name']          = __('Network outlet');
-      $tab[22]['forcegroupby']  = true;
-      $tab[22]['massiveaction'] = false;
-      $tab[22]['joinparams']    = array('jointype'   => 'standard',
-                                        'beforejoin' => array('table' => 'glpi_networkportfiberchannels',
-                                                              'joinparams'
-                                                                      => $joinparams));
+   static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams) {
+      $tab[] = [
+         'id'                 => '22',
+         'table'              => 'glpi_netpoints',
+         'field'              => 'name',
+         'datatype'           => 'dropdown',
+         'name'               => __('Network outlet'),
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'jointype'           => 'standard',
+            'beforejoin'         => [
+               'table'              => 'glpi_networkportfiberchannels',
+               'joinparams'         => $joinparams
+            ]
+         ]
+      ];
    }
-
 }

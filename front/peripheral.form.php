@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $peripheral->check($_POST["id"], PURGE);
 
-   $peripheral->delete($_POST,1);
+   $peripheral->delete($_POST, 1);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

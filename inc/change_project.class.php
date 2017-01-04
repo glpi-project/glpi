@@ -66,17 +66,7 @@ class Change_Project extends CommonDBRelation{
 
 
    static function getTypeName($nb=0) {
-      return _n('Link Project/Change','Links Project/Change',$nb);
-   }
-
-
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
-      return parent::getSearchOptions();
+      return _n('Link Project/Change', 'Links Project/Change', $nb);
    }
 
 

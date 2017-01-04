@@ -162,63 +162,99 @@ class Notepad extends CommonDBChild {
 
 
    /**
-    * @since version 0.85
+    * Get the Search options to add to an item for the given Type
+    *
+    * @return a *not indexed* array of search options
+    * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
+    * @since 9.2
    **/
-   static function getSearchOptionsToAdd() {
+   static public function getSearchOptionsToAddNew() {
+      $tab = [];
 
-      $tab                      = array();
+      $tab[] = [
+         'id'                 => 'notepad',
+         'name'               => _n('Note', 'Notes', Session::getPluralNumber())
+      ];
 
-      $tab['notepad']             = _n('Note', 'Notes', Session::getPluralNumber());
+      $tab[] = [
+         'id'                 => '200',
+         'table'              => 'glpi_notepads',
+         'field'              => 'content',
+         'name'               => _n('Note', 'Notes', Session::getPluralNumber()),
+         'datatype'           => 'text',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ],
+         'forcegroupby'       => true,
+         'splititems'         => true,
+         'massiveaction'      => false
+      ];
 
-      $tab[200]['table']          = 'glpi_notepads';
-      $tab[200]['field']          = 'content';
-      $tab[200]['name']           = _n('Note', 'Notes', Session::getPluralNumber());
-      $tab[200]['datatype']       = 'text';
-      $tab[200]['joinparams']     = array('jointype' => 'itemtype_item');
-      $tab[200]['forcegroupby']   = true;
-      $tab[200]['splititems']     = true;
-      $tab[200]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '201',
+         'table'              => 'glpi_notepads',
+         'field'              => 'date',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ],
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
 
-      $tab[201]['table']          = 'glpi_notepads';
-      $tab[201]['field']          = 'date';
-      $tab[201]['name']           = __('Creation date');
-      $tab[201]['datatype']       = 'datetime';
-      $tab[201]['joinparams']     = array('jointype' => 'itemtype_item');
-      $tab[201]['forcegroupby']   = true;
-      $tab[201]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '202',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'name'               => __('Writer'),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_notepads',
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item'
+               ]
+            ]
+         ]
+      ];
 
-      $tab[202]['table']          = 'glpi_users';
-      $tab[202]['field']          = 'name';
-      $tab[202]['name']           = __('Writer');
-      $tab[202]['datatype']       = 'dropdown';
-      $tab[202]['forcegroupby']   = true;
-      $tab[202]['massiveaction']  = false;
-      $tab[202]['joinparams']     = array('beforejoin'
-                                       => array('table'      => 'glpi_notepads',
-                                                'joinparams' => array('jointype'  => 'itemtype_item')));
+      $tab[] = [
+         'id'                 => '203',
+         'table'              => 'glpi_notepads',
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'joinparams'         => [
+            'jointype'           => 'itemtype_item'
+         ],
+         'forcegroupby'       => true,
+         'massiveaction'      => false
+      ];
 
-      $tab[203]['table']          = 'glpi_notepads';
-      $tab[203]['field']          = 'date_mod';
-      $tab[203]['name']           = __('Last update');
-      $tab[203]['datatype']       = 'datetime';
-      $tab[203]['joinparams']     = array('jointype' => 'itemtype_item');
-      $tab[203]['forcegroupby']   = true;
-      $tab[203]['massiveaction']  = false;
-
-      $tab[204]['table']          = 'glpi_users';
-      $tab[204]['field']          = 'name';
-      $tab[204]['linkfield']      = 'users_id_lastupdater';
-      $tab[204]['name']           = __('Last updater');
-      $tab[204]['datatype']       = 'dropdown';
-      $tab[204]['forcegroupby']   = true;
-      $tab[204]['massiveaction']  = false;
-      $tab[204]['joinparams']     = array('beforejoin'
-                                       => array('table'      => 'glpi_notepads',
-                                                'joinparams' => array('jointype'  => 'itemtype_item')));
+      $tab[] = [
+         'id'                 => '204',
+         'table'              => 'glpi_users',
+         'field'              => 'name',
+         'linkfield'          => 'users_id_lastupdater',
+         'name'               => __('Last updater'),
+         'datatype'           => 'dropdown',
+         'forcegroupby'       => true,
+         'massiveaction'      => false,
+         'joinparams'         => [
+            'beforejoin'         => [
+               'table'              => 'glpi_notepads',
+               'joinparams'         => [
+                  'jointype'           => 'itemtype_item'
+               ]
+            ]
+         ]
+      ];
 
       return $tab;
    }
-
 
    /**
     * Show notepads for an item
@@ -257,7 +293,7 @@ class Notepad extends CommonDBChild {
          echo "</div>"; // box notecontent
 
          echo "<div class='boxnoteright'><br>";
-         echo Html::submit(_x('button','Add'), array('name' => 'add'));
+         echo Html::submit(_x('button', 'Add'), array('name' => 'add'));
          echo "</div>";
 
          Html::closeForm();
@@ -332,7 +368,7 @@ class Notepad extends CommonDBChild {
                 echo "</div>"; // boxnotecontent
 
                 echo "<div class='boxnoteright'><br>";
-                echo Html::submit(_x('button','Update'), array('name' => 'update'));
+                echo Html::submit(_x('button', 'Update'), array('name' => 'update'));
                 echo "</div>"; // boxnoteright
 
                 Html::closeForm();

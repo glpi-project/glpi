@@ -85,30 +85,43 @@ class Fieldblacklist extends CommonDropdown {
     *
     * @return array of search option
    **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                        = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'itemtype',
+         'name'               => __('Type'),
+         'massiveaction'      => false,
+         'datatype'           => 'itemtypename',
+         'forcegroupby'       => true
+      ];
 
-      $tab[4]['table']            = $this->getTable();
-      $tab[4]['field']            = 'itemtype';
-      $tab[4]['name']             = __('Type');
-      $tab[4]['massiveaction']    = false;
-      $tab[4]['datatype']         = 'itemtypename';
-      $tab[4]['forcegroupby']     = true;
+      $tab[] = [
+         'id'                 => '6',
+         'table'              => $this->getTable(),
+         'field'              => 'field',
+         'name'               => __('Field'),
+         'massiveaction'      => false,
+         'datatype'           => 'specific',
+         'additionalfields'   => [
+            '0'                  => 'itemtype'
+         ]
+      ];
 
-      $tab[6]['table']            = $this->getTable();
-      $tab[6]['field']            = 'field';
-      $tab[6]['name']             = _n('Field', 'Fields', 1);
-      $tab[6]['massiveaction']    = false;
-      $tab[6]['datatype']         = 'specific';
-      $tab[6]['additionalfields'] = array('itemtype');
-
-      $tab[7]['table']            = $this->getTable();
-      $tab[7]['field']            = 'value';
-      $tab[7]['name']             = __('Value'); // Is also specific
-      $tab[7]['datatype']         = 'specific';
-      $tab[7]['additionalfields'] = array('itemtype', 'field');
-      $tab[7]['massiveaction']    = false;
+      $tab[] = [
+         'id'                 => '7',
+         'table'              => $this->getTable(),
+         'field'              => 'value',
+         'name'               => __('Value'),
+         'datatype'           => 'specific',
+         'additionalfields'   => [
+            '0'                  => 'itemtype',
+            '1'                  => 'field'
+         ],
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }

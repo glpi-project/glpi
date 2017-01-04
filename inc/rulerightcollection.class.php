@@ -120,7 +120,7 @@ class RuleRightCollection extends RuleCollection {
                $this->displayActionByName("profile", $val[1]);
             }
             if (isset($val[2])) {
-               $this->displayActionByName("is_recursive",$val[2]);
+               $this->displayActionByName("is_recursive", $val[2]);
             }
          }
       }

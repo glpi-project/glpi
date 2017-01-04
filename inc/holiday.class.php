@@ -49,7 +49,7 @@ class Holiday extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      return _n('Close time','Close times',$nb);
+      return _n('Close time', 'Close times', $nb);
    }
 
 
@@ -67,29 +67,32 @@ class Holiday extends CommonDropdown {
    }
 
 
-   /**
-    * Get search function for the class
-    *
-    * @return array of search option
-   **/
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                 = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '11',
+         'table'              => $this->getTable(),
+         'field'              => 'begin_date',
+         'name'               => __('Start'),
+         'datatype'           => 'date'
+      ];
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'begin_date';
-      $tab[11]['name']     = __('Start');
-      $tab[11]['datatype'] = 'date';
+      $tab[] = [
+         'id'                 => '12',
+         'table'              => $this->getTable(),
+         'field'              => 'end_date',
+         'name'               => __('End'),
+         'datatype'           => 'date'
+      ];
 
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'end_date';
-      $tab[12]['name']     = __('End');
-      $tab[12]['datatype'] = 'date';
-
-      $tab[13]['table']    = $this->getTable();
-      $tab[13]['field']    = 'is_perpetual';
-      $tab[13]['name']     = __('Recurrent');
-      $tab[13]['datatype'] = 'bool';
+      $tab[] = [
+         'id'                 => '13',
+         'table'              => $this->getTable(),
+         'field'              => 'is_perpetual',
+         'name'               => __('Recurrent'),
+         'datatype'           => 'bool'
+      ];
 
       return $tab;
    }

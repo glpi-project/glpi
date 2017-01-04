@@ -39,7 +39,7 @@ include ('../inc/includes.php');
 
 Session::checkCentralAccess();
 
-Html::header(Reminder::getTypeName(Session::getPluralNumber()),$_SERVER['PHP_SELF'],"tools","reminder");
+Html::header(Reminder::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "tools", "reminder");
 
 Search::show('Reminder');
 

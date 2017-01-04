@@ -456,7 +456,7 @@ class Migration {
          }
       }
 
-      if (!isIndex($table,$indexname)) {
+      if (!isIndex($table, $indexname)) {
          if (is_array($fields)) {
             if ($len) {
                $fields = "`".implode($fields, "`($len), `")."`($len)";
@@ -482,7 +482,7 @@ class Migration {
    **/
    function dropKey($table, $indexname) {
 
-      if (isIndex($table,$indexname)) {
+      if (isIndex($table, $indexname)) {
          $this->change[$table][] = "DROP INDEX `$indexname`";
       }
    }
@@ -702,7 +702,7 @@ class Migration {
                                WHERE `users_id` = '".$data['users_id']."'
                                      AND `itemtype` = '$type'";
                      $result = $DB->query($query);
-                     $rank   = $DB->result($result,0,0);
+                     $rank   = $DB->result($result, 0, 0);
                      $rank++;
 
                      foreach ($tab as $newval) {

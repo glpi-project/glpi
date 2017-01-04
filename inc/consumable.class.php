@@ -233,7 +233,7 @@ class Consumable extends CommonDBChild {
                 && !empty($input['give_itemtype'])) {
                foreach ($ids as $key) {
                   if ($item->can($key, UPDATE)) {
-                     if ($item->out($key, $input['give_itemtype'],$input["give_items_id"])) {
+                     if ($item->out($key, $input['give_itemtype'], $input["give_items_id"])) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                      } else {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
@@ -401,10 +401,10 @@ class Consumable extends CommonDBChild {
    static function getStatus($cID) {
 
       if (self::isNew($cID)) {
-         return _nx('consumable', 'New', 'New',1);
+         return _nx('consumable', 'New', 'New', 1);
 
       } else if (self::isOld($cID)) {
-         return _nx('consumable', 'Used', 'Used',1);
+         return _nx('consumable', 'Used', 'Used', 1);
       }
    }
 
@@ -434,7 +434,7 @@ class Consumable extends CommonDBChild {
          Dropdown::showNumber('to_add', array('value' => 1,
                                               'min'   => 1,
                                               'max'   => 100));
-         echo " <input type='submit' name='add_several' value=\""._sx('button','Add consumables')."\"
+         echo " <input type='submit' name='add_several' value=\""._sx('button', 'Add consumables')."\"
                 class='submit'>";
          echo "</td></tr>";
          echo "</table>";
@@ -638,7 +638,7 @@ class Consumable extends CommonDBChild {
       $types = array();
       $query = "SELECT *
                 FROM `glpi_consumableitems` ".
-                getEntitiesRestrictRequest("WHERE","glpi_consumableitems");
+                getEntitiesRestrictRequest("WHERE", "glpi_consumableitems");
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
@@ -679,7 +679,7 @@ class Consumable extends CommonDBChild {
 
          foreach ($used as $itemtype_items_id => $val) {
             echo "<tr class='tab_bg_2'><td>";
-            list($itemtype,$items_id) = explode('####',$itemtype_items_id);
+            list($itemtype,$items_id) = explode('####', $itemtype_items_id);
             $item = new $itemtype();
             if ($item->getFromDB($items_id)) {
                //TRANS: %1$s is a type name - %2$s is a name

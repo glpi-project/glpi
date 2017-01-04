@@ -964,7 +964,7 @@ INSERT INTO `glpi_configs` VALUES ('35','core','text_login','');
 INSERT INTO `glpi_configs` VALUES ('36','core','founded_new_version','');
 INSERT INTO `glpi_configs` VALUES ('37','core','dropdown_max','100');
 INSERT INTO `glpi_configs` VALUES ('38','core','ajax_wildcard','*');
-INSERT INTO `glpi_configs` VALUES ('42','core','ajax_limit_count','50');
+INSERT INTO `glpi_configs` VALUES ('42','core','ajax_limit_count','10');
 INSERT INTO `glpi_configs` VALUES ('43','core','use_ajax_autocompletion','1');
 INSERT INTO `glpi_configs` VALUES ('44','core','is_users_auto_add','1');
 INSERT INTO `glpi_configs` VALUES ('45','core','date_format','0');

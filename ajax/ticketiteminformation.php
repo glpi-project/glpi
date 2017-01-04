@@ -36,7 +36,7 @@
 */
 
 // Direct access to file
-if (strpos($_SERVER['PHP_SELF'],"ticketiteminformation.php")) {
+if (strpos($_SERVER['PHP_SELF'], "ticketiteminformation.php")) {
    $AJAX_INCLUDE = 1;
    include ('../inc/includes.php');
    header("Content-Type: text/html; charset=UTF-8");
@@ -46,7 +46,7 @@ if (strpos($_SERVER['PHP_SELF'],"ticketiteminformation.php")) {
 Session::checkLoginUser();
 
 if (isset($_POST["my_items"]) && !empty($_POST["my_items"])) {
-   $splitter = explode("_",$_POST["my_items"]);
+   $splitter = explode("_", $_POST["my_items"]);
    if (count($splitter) == 2) {
       $_POST["itemtype"] = $splitter[0];
       $_POST["items_id"] = $splitter[1];
@@ -56,7 +56,7 @@ if (isset($_POST["my_items"]) && !empty($_POST["my_items"])) {
 if (isset($_POST['itemtype'])
     && isset($_POST['items_id']) && ($_POST['items_id'] > 0)) {
    // Security
-   if (!class_exists($_POST['itemtype']) ) {
+   if (!class_exists($_POST['itemtype'])) {
       exit();
    }
 

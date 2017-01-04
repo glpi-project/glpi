@@ -43,7 +43,7 @@ if (!isset($_GET["id"])) {
 $client = new APIClient();
 
 if (isset($_POST["add"])) {
-   $client->check(-1, CREATE,$_POST);
+   $client->check(-1, CREATE, $_POST);
    $client->add($_POST);
    Html::back();
 

@@ -686,66 +686,95 @@ class Rule extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                       = array();
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'ranking',
+         'name'               => __('Position'),
+         'datatype'           => 'number',
+         'massiveaction'      => false
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'ranking';
-      $tab[3]['name']            = __('Position');
-      $tab[3]['datatype']        = 'number';
-      $tab[3]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'description',
+         'name'               => __('Description'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'description';
-      $tab[4]['name']            = __('Description');
-      $tab[4]['datatype']        = 'text';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'match',
+         'name'               => __('Logical operator'),
+         'datatype'           => 'specific',
+         'massiveaction'      => false
+      ];
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'match';
-      $tab[5]['name']            = __('Logical operator');
-      $tab[5]['datatype']        = 'specific';
-      $tab[5]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[8]['table']           = $this->getTable();
-      $tab[8]['field']           = 'is_active';
-      $tab[8]['name']            = __('Active');
-      $tab[8]['datatype']        = 'bool';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[] = [
+         'id'                 => '80',
+         'table'              => 'glpi_entities',
+         'field'              => 'completename',
+         'name'               => __('Entity'),
+         'massiveaction'      => false,
+         'datatype'           => 'dropdown'
+      ];
 
-      $tab[80]['table']          = 'glpi_entities';
-      $tab[80]['field']          = 'completename';
-      $tab[80]['name']           = __('Entity');
-      $tab[80]['massiveaction']  = false;
-      $tab[80]['datatype']       = 'dropdown';
+      $tab[] = [
+         'id'                 => '86',
+         'table'              => $this->getTable(),
+         'field'              => 'is_recursive',
+         'name'               => __('Child entities'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[86]['table']          = $this->getTable();
-      $tab[86]['field']          = 'is_recursive';
-      $tab[86]['name']           = __('Child entities');
-      $tab[86]['datatype']       = 'bool';
-      $tab[86]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
-
-      $tab[121]['table']          = $this->getTable();
-      $tab[121]['field']          = 'date_creation';
-      $tab[121]['name']           = __('Creation date');
-      $tab[121]['datatype']       = 'datetime';
-      $tab[121]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '121',
+         'table'              => $this->getTable(),
+         'field'              => 'date_creation',
+         'name'               => __('Creation date'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
       return $tab;
    }
@@ -1062,7 +1091,7 @@ class Rule extends CommonDBTM {
 
       echo "<table $style>";
       echo "<tr class='noHover'>";
-      echo "<th colspan='".($canedit && $nb?'4':'3')."'>" . _n('Action','Actions', Session::getPluralNumber()) . "</th></tr>";
+      echo "<th colspan='".($canedit && $nb?'4':'3')."'>" . _n('Action', 'Actions', Session::getPluralNumber()) . "</th></tr>";
 
       $header_begin  = "<tr>";
       $header_top    = '';
@@ -1526,7 +1555,7 @@ class Rule extends CommonDBTM {
 
             if (!isset($definition_criteria['is_global'])
                 || !$definition_criteria['is_global']) {
-               $doactions |= $this->checkCriteria($criteria,$input);
+               $doactions |= $this->checkCriteria($criteria, $input);
                if ($doactions) {
                   break;
                }
@@ -1555,7 +1584,7 @@ class Rule extends CommonDBTM {
       reset($this->criterias);
 
       foreach ($this->criterias as $criteria) {
-         $result = $this->checkCriteria($criteria,$input);
+         $result = $this->checkCriteria($criteria, $input);
          $check_results[$criteria->fields["id"]]["name"]   = $criteria->fields["criteria"];
          $check_results[$criteria->fields["id"]]["value"]  = $criteria->fields["pattern"];
          $check_results[$criteria->fields["id"]]["result"] = ((!$result)?0:1);
@@ -1630,7 +1659,7 @@ class Rule extends CommonDBTM {
             foreach ($partial_regex_result as $new) {
 
                foreach ($this->regex_results as $old) {
-                  $temp_result[] = array_merge($old,$new);
+                  $temp_result[] = array_merge($old, $new);
                }
             }
             $this->regex_results = $temp_result;
@@ -2347,7 +2376,7 @@ class Rule extends CommonDBTM {
                return Dropdown::getDropdownName('glpi_groups', $value);
 
             case "dropdown_validation_percent" :
-               return Dropdown::getValueWithUnit($value,'%');
+               return Dropdown::getValueWithUnit($value, '%');
 
             case "yesonly" :
             case "yesno" :
@@ -2470,7 +2499,7 @@ class Rule extends CommonDBTM {
 
             //Look for the criteria in the field of already displayed criteria :
             //if present, don't display it again
-            if (!in_array($criteria->fields["criteria"],$already_displayed)) {
+            if (!in_array($criteria->fields["criteria"], $already_displayed)) {
                $already_displayed[] = $criteria->fields["criteria"];
                echo "<tr class='tab_bg_1'>";
                echo "<td>";
@@ -2500,7 +2529,7 @@ class Rule extends CommonDBTM {
          $this->showSpecificCriteriasForPreview($_POST);
 
          echo "<tr><td class='tab_bg_2 center' colspan='3'>";
-         echo "<input type='submit' name='test_rule' value=\""._sx('button','Test')."\"
+         echo "<input type='submit' name='test_rule' value=\""._sx('button', 'Test')."\"
                 class='submit'>";
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getType() . "'>";
@@ -2568,7 +2597,7 @@ class Rule extends CommonDBTM {
       }
 
       $p['condition'] = "`sub_type` = '".$p['sub_type']."' $add_condition";
-      return Dropdown::show($p['sub_type'],$p);
+      return Dropdown::show($p['sub_type'], $p);
    }
 
 
@@ -2706,7 +2735,7 @@ class Rule extends CommonDBTM {
       echo "<input type=hidden name='entities_id' value='-1'>";
       echo "<input type=hidden name='affectentity' value='$ID'>";
       echo "<input type=hidden name='_method' value='AddRule'>";
-      echo "<input type='submit' name='execute' value=\""._sx('button','Add')."\" class='submit'>";
+      echo "<input type='submit' name='execute' value=\""._sx('button', 'Add')."\" class='submit'>";
       echo "</td></tr>\n";
       echo "</table>";
       Html::closeForm();
@@ -2966,7 +2995,7 @@ class Rule extends CommonDBTM {
                      $nb = countElementsInTable(array('glpi_rules', 'glpi_ruleactions'),
                                                 "`glpi_ruleactions`.`rules_id` = `glpi_rules`.`id`
                                                   AND `glpi_rules`.`sub_type`
-                                                         IN ('".implode("','",$types)."')
+                                                         IN ('".implode("','", $types)."')
                                                   AND `glpi_ruleactions`.`field` = 'entities_id'
                                                   AND `glpi_ruleactions`.`value`
                                                             = '".$item->getID()."'");

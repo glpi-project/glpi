@@ -76,7 +76,7 @@ class TicketValidation  extends CommonITILValidation {
          $ticket = new Ticket();
          if ($ticket->getFromDB($this->fields['tickets_id'])) {
             // No validation for closed tickets
-            if (in_array($ticket->fields['status'],$ticket->getClosedStatusArray())) {
+            if (in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
                return false;
             }
 

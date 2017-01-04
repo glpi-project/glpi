@@ -46,7 +46,7 @@ if (!TableExists('glpi_networkportmigrations')) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 }
 
-Html::header(__('Migration cleaner'), $_SERVER['PHP_SELF'], "tools","migration");
+Html::header(__('Migration cleaner'), $_SERVER['PHP_SELF'], "tools", "migration");
 
 echo "<div class='spaced' id='tabsbody'>";
 echo "<table class='tab_cadre_fixe'>";

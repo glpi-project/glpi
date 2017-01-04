@@ -62,7 +62,7 @@ if (isset($_POST["update"])) {
               //TRANS: %s is the user login
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
 
-   if ($item->can($link->fields["changes_id"],READ)) {
+   if ($item->can($link->fields["changes_id"], READ)) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$link->fields['changes_id']);
    }
    Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this item'),

@@ -75,48 +75,68 @@ class RequestType extends CommonDropdown {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = parent::getSearchOptionsNew();
 
-      $tab                      = parent::getSearchOptions();
+      $tab[] = [
+         'id'                 => '14',
+         'table'              => $this->getTable(),
+         'field'              => 'is_helpdesk_default',
+         'name'               => __('Default for tickets'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[14]['table']         = $this->getTable();
-      $tab[14]['field']         = 'is_helpdesk_default';
-      $tab[14]['name']          = __('Default for tickets');
-      $tab[14]['datatype']      = 'bool';
-      $tab[14]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '182',
+         'table'              => $this->getTable(),
+         'field'              => 'is_followup_default',
+         'name'               => __('Default for followups'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[182]['table']         = $this->getTable();
-      $tab[182]['field']         = 'is_followup_default';
-      $tab[182]['name']          = __('Default for followups');
-      $tab[182]['datatype']      = 'bool';
-      $tab[182]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '15',
+         'table'              => $this->getTable(),
+         'field'              => 'is_mail_default',
+         'name'               => __('Default for mail recipients'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[15]['table']         = $this->getTable();
-      $tab[15]['field']         = 'is_mail_default';
-      $tab[15]['name']          = __('Default for mail recipients');
-      $tab[15]['datatype']      = 'bool';
-      $tab[15]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '183',
+         'table'              => $this->getTable(),
+         'field'              => 'is_mailfollowup_default',
+         'name'               => __('Default for followup mail recipients'),
+         'datatype'           => 'bool',
+         'massiveaction'      => false
+      ];
 
-      $tab[183]['table']         = $this->getTable();
-      $tab[183]['field']         = 'is_mailfollowup_default';
-      $tab[183]['name']          = __('Default for followup mail recipients');
-      $tab[183]['datatype']      = 'bool';
-      $tab[183]['massiveaction'] = false;
+      $tab[] = [
+         'id'                 => '8',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[8]['table']          = $this->getTable();
-      $tab[8]['field']          = 'is_active';
-      $tab[8]['name']           = __('Active');
-      $tab[8]['datatype']       = 'bool';
+      $tab[] = [
+         'id'                 => '180',
+         'table'              => $this->getTable(),
+         'field'              => 'is_ticketheader',
+         'name'               => __('Request source visible for tickets'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[180]['table']         = $this->getTable();
-      $tab[180]['field']         = 'is_ticketheader';
-      $tab[180]['name']          = __('Request source visible for tickets');
-      $tab[180]['datatype']      = 'bool';
-
-      $tab[181]['table']         = $this->getTable();
-      $tab[181]['field']         = 'is_ticketfollowup';
-      $tab[181]['name']          = __('Request source visible for followups');
-      $tab[181]['datatype']      = 'bool';
+      $tab[] = [
+         'id'                 => '181',
+         'table'              => $this->getTable(),
+         'field'              => 'is_ticketfollowup',
+         'name'               => __('Request source visible for followups'),
+         'datatype'           => 'bool'
+      ];
 
       return $tab;
    }
@@ -161,7 +181,7 @@ class RequestType extends CommonDropdown {
    function post_updateItem($history=1) {
       global $DB;
 
-      if (in_array('is_helpdesk_default',$this->updates)) {
+      if (in_array('is_helpdesk_default', $this->updates)) {
 
          if ($this->input["is_helpdesk_default"]) {
             $query = "UPDATE `".$this->getTable()."`
@@ -174,7 +194,7 @@ class RequestType extends CommonDropdown {
          }
       }
 
-      if (in_array('is_followup_default',$this->updates)) {
+      if (in_array('is_followup_default', $this->updates)) {
 
          if ($this->input["is_followup_default"]) {
             $query = "UPDATE `".$this->getTable()."`
@@ -187,7 +207,7 @@ class RequestType extends CommonDropdown {
          }
       }
 
-      if (in_array('is_mail_default',$this->updates)) {
+      if (in_array('is_mail_default', $this->updates)) {
 
          if ($this->input["is_mail_default"]) {
             $query = "UPDATE `".$this->getTable()."`
@@ -200,7 +220,7 @@ class RequestType extends CommonDropdown {
          }
       }
 
-      if (in_array('is_mailfollowup_default',$this->updates)) {
+      if (in_array('is_mailfollowup_default', $this->updates)) {
 
          if ($this->input["is_mailfollowup_default"]) {
             $query = "UPDATE `".$this->getTable()."`

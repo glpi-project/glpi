@@ -58,7 +58,7 @@ class RuleDictionnaryOperatingSystemVersion extends RuleDictionnaryDropdown {
       }
 
       $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = _n('Version', 'Versions',1);
+      $criterias['name']['name']  = _n('Version', 'Versions', 1);
       $criterias['name']['table'] = 'glpi_operatingsystemversions';
 
       return $criterias;
@@ -71,7 +71,7 @@ class RuleDictionnaryOperatingSystemVersion extends RuleDictionnaryDropdown {
    function getActions() {
 
       $actions                          = array();
-      $actions['name']['name']          = _n('Version', 'Versions',1);
+      $actions['name']['name']          = _n('Version', 'Versions', 1);
       $actions['name']['force_actions'] = array('append_regex_result', 'assign', 'regex_result');
 
       return $actions;

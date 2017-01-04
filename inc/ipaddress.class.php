@@ -1004,7 +1004,7 @@ class IPAddress extends CommonDBChild {
 
       if ($itemtype == 'IPNetwork') {
 
-         $base->addHeader('Item'       , _n('Item', 'Items', 1)     , $super, $father);
+         $base->addHeader('Item', _n('Item', 'Items', 1), $super, $father);
          $base->addHeader('NetworkPort', NetworkPort::getTypeName(0), $super, $father);
          $base->addHeader('NetworkName', NetworkName::getTypeName(1), $super, $father);
          $base->addHeader('Entity', Entity::getTypeName(1), $super, $father);

@@ -127,7 +127,7 @@ class XML {
    function DoXML() {
       global $DB;
 
-      $fp = fopen($this->FilePath,'wb');
+      $fp = fopen($this->FilePath, 'wb');
       fputs($fp, "<?xml version=\"1.0\"?>\n");
       fputs($fp, "<dataxml>\n");
 
@@ -149,7 +149,7 @@ class XML {
          $i = 0;
          $FieldsVector = array();
          while ($i < $DB->num_fields ($result)) {
-            $name = $DB->field_name($result,$i);
+            $name = $DB->field_name($result, $i);
             fputs($fp, "      <field>".$name."</field>\n");
             $FieldsVector[] = $name;
             $i++;

@@ -897,16 +897,12 @@ Session::loadLanguage();
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 
-echo "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'
-       'http://www.w3.org/TR/html4/loose.dtd'>";
-echo "<html>";
+echo "<!DOCTYPE html>";
+echo "<html lang='fr'>";
 echo "<head>";
-echo "<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
+echo "<meta charset='utf-8'>";
 echo "<meta http-equiv='Content-Script-Type' content='text/javascript'>";
 echo "<meta http-equiv='Content-Style-Type' content='text/css'>";
-echo "<meta http-equiv='Content-Language' content='fr'>";
-echo "<meta name='generator' content=''>";
-echo "<meta name='DC.Language' content='fr' scheme='RFC1766'>";
 echo "<title>Setup GLPI</title>";
 // CSS
 echo "<link rel='stylesheet' href='../css/style_install.css' type='text/css' media='screen' >";

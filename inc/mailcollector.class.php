@@ -319,7 +319,7 @@ class MailCollector  extends CommonDBTM {
       echo "<form name='form' method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_2'><td class='center'>";
-      echo "<input type='submit' name='get_mails' value=\""._sx('button','Get email tickets now').
+      echo "<input type='submit' name='get_mails' value=\""._sx('button', 'Get email tickets now').
              "\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
@@ -329,64 +329,97 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-   function getSearchOptions() {
+   function getSearchOptionsNew() {
+      $tab = [];
 
-      $tab                       = array();
-      $tab['common']             = __('Characteristics');
+      $tab[] = [
+         'id'                 => 'common',
+         'name'               => __('Characteristics')
+      ];
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false;
+      $tab[] = [
+         'id'                 => '1',
+         'table'              => $this->getTable(),
+         'field'              => 'name',
+         'name'               => __('Name'),
+         'datatype'           => 'itemlink',
+         'massiveaction'      => false
+      ];
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'is_active';
-      $tab[2]['name']            = __('Active');
-      $tab[2]['datatype']        = 'bool';
+      $tab[] = [
+         'id'                 => '2',
+         'table'              => $this->getTable(),
+         'field'              => 'is_active',
+         'name'               => __('Active'),
+         'datatype'           => 'bool'
+      ];
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'host';
-      $tab[3]['name']            = __('Connection string');
-      $tab[3]['massiveaction']   = false;
-      $tab[3]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '3',
+         'table'              => $this->getTable(),
+         'field'              => 'host',
+         'name'               => __('Connection string'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'login';
-      $tab[4]['name']            = __('Login');
-      $tab[4]['massiveaction']   = false;
-      $tab[4]['datatype']        = 'string';
+      $tab[] = [
+         'id'                 => '4',
+         'table'              => $this->getTable(),
+         'field'              => 'login',
+         'name'               => __('Login'),
+         'massiveaction'      => false,
+         'datatype'           => 'string'
+      ];
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'filesize_max';
-      $tab[5]['name']            = __('Maximum size of each file imported by the mails receiver');
-      $tab[5]['datatype']        = 'integer';
+      $tab[] = [
+         'id'                 => '5',
+         'table'              => $this->getTable(),
+         'field'              => 'filesize_max',
+         'name'               => __('Maximum size of each file imported by the mails receiver'),
+         'datatype'           => 'integer'
+      ];
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[] = [
+         'id'                 => '16',
+         'table'              => $this->getTable(),
+         'field'              => 'comment',
+         'name'               => __('Comments'),
+         'datatype'           => 'text'
+      ];
 
-      $tab[19]['table']          = $this->getTable();
-      $tab[19]['field']          = 'date_mod';
-      $tab[19]['name']           = __('Last update');
-      $tab[19]['datatype']       = 'datetime';
-      $tab[19]['massiveaction']  = false;
+      $tab[] = [
+         'id'                 => '19',
+         'table'              => $this->getTable(),
+         'field'              => 'date_mod',
+         'name'               => __('Last update'),
+         'datatype'           => 'datetime',
+         'massiveaction'      => false
+      ];
 
-      $tab[20]['table']          = $this->getTable();
-      $tab[20]['field']          = 'accepted';
-      $tab[20]['name']           = __('Accepted mail archive folder (optional)');
-      $tab[20]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '20',
+         'table'              => $this->getTable(),
+         'field'              => 'accepted',
+         'name'               => __('Accepted mail archive folder (optional)'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[21]['table']          = $this->getTable();
-      $tab[21]['field']          = 'refused';
-      $tab[21]['name']           = __('Refused mail archive folder (optional)');
-      $tab[21]['datatype']       = 'string';
+      $tab[] = [
+         'id'                 => '21',
+         'table'              => $this->getTable(),
+         'field'              => 'refused',
+         'name'               => __('Refused mail archive folder (optional)'),
+         'datatype'           => 'string'
+      ];
 
-      $tab[22]['table']           = $this->getTable();
-      $tab[22]['field']           = 'errors';
-      $tab[22]['name']            = __('Connection errors');
-      $tab[22]['datatype']        = 'integer';
+      $tab[] = [
+         'id'                 => '22',
+         'table'              => $this->getTable(),
+         'field'              => 'errors',
+         'name'               => __('Connection errors'),
+         'datatype'           => 'integer'
+      ];
 
       return $tab;
    }
@@ -403,7 +436,7 @@ class MailCollector  extends CommonDBTM {
       $mailbox_id = 0;
       $query      = "SELECT *
                      FROM `glpi_notimportedemails`
-                     WHERE `id` IN (".implode(',',$emails_ids).")
+                     WHERE `id` IN (".implode(',', $emails_ids).")
                      ORDER BY `mailcollectors_id`";
 
       $todelete = array();
@@ -540,7 +573,7 @@ class MailCollector  extends CommonDBTM {
                              || isset($tkt['tickets_id'])) {
 
                      // Is a mail responding of an already existing ticket ?
-                     if (isset($tkt['tickets_id']) ) {
+                     if (isset($tkt['tickets_id'])) {
                         $fup = new TicketFollowup();
                         if ($fup->add($tkt)) {
                            $delete_mail = self::ACCEPTED_FOLDER;
@@ -711,7 +744,7 @@ class MailCollector  extends CommonDBTM {
       if (!empty($this->charset)
           && !$this->body_converted
           && mb_detect_encoding($body) != 'UTF-8') {
-         $body                 = Toolbox::encodeInUtf8($body,$this->charset);
+         $body                 = Toolbox::encodeInUtf8($body, $this->charset);
          $this->body_converted = true;
       }
 
@@ -738,7 +771,7 @@ class MailCollector  extends CommonDBTM {
 
       // See in title
       if (!isset($tkt['tickets_id'])
-          && preg_match('/\[.+#(\d+)\]/',$head['subject'],$match)) {
+          && preg_match('/\[.+#(\d+)\]/', $head['subject'], $match)) {
          $tkt['tickets_id'] = intval($match[1]);
       }
 
@@ -806,13 +839,13 @@ class MailCollector  extends CommonDBTM {
             foreach ($content as $ID => $val) {
                // Get first tag for begin
                if ($begin_strip < 0) {
-                  if (preg_match($begin_match,$val)) {
+                  if (preg_match($begin_match, $val)) {
                      $begin_strip = $ID;
                   }
                }
                // Get last tag for end
                if ($begin_strip >= 0) {
-                  if (preg_match($end_match,$val)) {
+                  if (preg_match($end_match, $val)) {
                      $end_strip = $ID;
                      continue;
                   }
@@ -821,11 +854,11 @@ class MailCollector  extends CommonDBTM {
 
             if ($begin_strip >= 0) {
                // Clean first and last lines
-               $content[$begin_strip] = preg_replace($begin_match,'',$content[$begin_strip]);
+               $content[$begin_strip] = preg_replace($begin_match, '', $content[$begin_strip]);
             }
             if ($end_strip >= 0) {
                // Clean first and last lines
-               $content[$end_strip] = preg_replace($end_match,'',$content[$end_strip]);
+               $content[$end_strip] = preg_replace($end_match, '', $content[$end_strip]);
             }
 
             if ($begin_strip >= 0) {
@@ -849,7 +882,7 @@ class MailCollector  extends CommonDBTM {
             }
 
             $tkt['content'] = "";
-            foreach ($to_keep as $ID ) {
+            foreach ($to_keep as $ID) {
                $tkt['content'] .= $content[$ID]."\n";
             }
 
@@ -941,16 +974,16 @@ class MailCollector  extends CommonDBTM {
 
       $rand   = mt_rand();
       // Move line breaks to special CHARS
-      $string = str_replace(array("<br>"),"==$rand==", $string);
+      $string = str_replace(array("<br>"), "==$rand==", $string);
 
-      $string = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $string);
+      $string = str_replace(array("\r\n", "\n", "\r"), "==$rand==", $string);
 
       // Wrap content for blacklisted items
       $itemstoclean = array();
       foreach ($DB->request('glpi_blacklistedmailcontents') as $data) {
          $toclean = trim($data['content']);
          if (!empty($toclean)) {
-            $toclean        = str_replace(array("\r\n", "\n", "\r"),"==$rand==", $toclean);
+            $toclean        = str_replace(array("\r\n", "\n", "\r"), "==$rand==", $toclean);
             $itemstoclean[] = $toclean;
          }
       }
@@ -1094,7 +1127,7 @@ class MailCollector  extends CommonDBTM {
 
       if (($mid != $this->mid)
           || !$this->structure) {
-         $this->structure = imap_fetchstructure($this->marubox,$mid);
+         $this->structure = imap_fetchstructure($this->marubox, $mid);
 
          if ($this->structure) {
             $this->mid = $mid;
@@ -1270,7 +1303,7 @@ class MailCollector  extends CommonDBTM {
                       && function_exists('mb_convert_encoding')
                       && (strtoupper($param->value) != 'UTF-8')) {
 
-                     $text                 = mb_convert_encoding($text, 'utf-8',$param->value);
+                     $text                 = mb_convert_encoding($text, 'utf-8', $param->value);
                      $this->body_converted = true;
                   }
                }
@@ -1415,7 +1448,7 @@ class MailCollector  extends CommonDBTM {
             // Embeded email comes without filename - try to get "Subject:" or generate trivial one
             $filename = "msg_$part.EML"; // default trivial one :)!
             if (($message = $this->getDecodedFetchbody($structure, $mid, $part))
-                    && (preg_match( "/Subject: *([^\r\n]*)/i",  $message,  $matches))) {
+                    && (preg_match( "/Subject: *([^\r\n]*)/i", $message, $matches))) {
                $filename = "msg_".$part."_".$this->decodeMimeString($matches[1]).".EML";
                $filename = preg_replace( "#[<>:\"\\\\/|?*]#u", "_", $filename) ;
             }
@@ -1535,7 +1568,7 @@ class MailCollector  extends CommonDBTM {
    **/
    function deleteMails($mid, $folder='') {
       if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
-         $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP","UTF-8");
+         $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
          if (imap_mail_move($this->marubox, $mid, $name)) {
             return true;
          }

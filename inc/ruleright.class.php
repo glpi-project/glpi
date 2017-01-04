@@ -90,14 +90,14 @@ class RuleRight extends Rule {
       echo "<input type=hidden name='entities_id' value='-1'>";
       echo "<input type=hidden name='affectentity' value='$ID'>";
       echo "<input type=hidden name='_method' value='AddRule'>";
-      echo "<input type='submit' name='execute' value=\""._sx('button','Add')."\" class='submit'>";
+      echo "<input type='submit' name='execute' value=\""._sx('button', 'Add')."\" class='submit'>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'>"._n('Profile', 'Profiles', 1) . "</td><td>";
       Profile::dropdown();
       echo "</td><td><span class='small_space'>".__('Recursive') . "</span></td><td colspan='3'>";
-      Dropdown::showYesNo("is_recursive",0);
+      Dropdown::showYesNo("is_recursive", 0);
       echo "</td></tr>\n";
 
       echo "</table>";
@@ -348,7 +348,7 @@ class RuleRight extends Rule {
    function addSpecificCriteriasToArray(&$criterias) {
 
       $criterias['ldap'] = __('LDAP criteria');
-      foreach (getAllDatasFromTable('glpi_rulerightparameters', '', true) as $datas ) {
+      foreach (getAllDatasFromTable('glpi_rulerightparameters', '', true) as $datas) {
          $criterias[$datas["value"]]['name']      = $datas["name"];
          $criterias[$datas["value"]]['field']     = $datas["value"];
          $criterias[$datas["value"]]['linkfield'] = '';

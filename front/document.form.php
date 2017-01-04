@@ -96,7 +96,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $doc->check($_POST["id"], PURGE);
 
-   if ($doc->delete($_POST,1)) {
+   if ($doc->delete($_POST, 1)) {
       Event::log($_POST["id"], "documents", 4, "document",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
@@ -114,7 +114,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Document::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management","document");
+   Html::header(Document::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "management", "document");
    $doc->display(array('id' =>$_GET["id"]));
    Html::footer();
 }

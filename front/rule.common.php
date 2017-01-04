@@ -49,14 +49,14 @@ $rulecollection->checkGlobal(READ);
 
 if (isset($_POST["action"])) {
    $rulecollection->checkGlobal(UPDATE);
-   $rulecollection->changeRuleOrder($_POST["id"],$_POST["action"], $_POST['condition']);
+   $rulecollection->changeRuleOrder($_POST["id"], $_POST["action"], $_POST['condition']);
    Html::back();
    // POST and GET needed to manage reload
 } else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
    $rulecollection->checkGlobal(UPDATE);
 
    // Current time
-   $start = explode(" ",microtime());
+   $start = explode(" ", microtime());
    $start = $start[0]+$start[1];
 
    // Limit computed from current time
@@ -98,7 +98,7 @@ if (isset($_POST["action"])) {
 
    if ($offset < 0) {
       // Work ended
-      $end   = explode(" ",microtime());
+      $end   = explode(" ", microtime());
       $duree = round($end[0]+$end[1]-$start);
       Html::changeProgressBarMessage(sprintf(__('Task completed in %s'),
                                              Html::timestampToString($duree)));

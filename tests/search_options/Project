@@ -1,0 +1,281 @@
+array (
+  'common' => 'Characteristics',
+  1 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'name',
+    'name' => 'Name',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+    'forcegroupby' => true,
+  ),
+  2 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'id',
+    'name' => 'ID',
+    'massiveaction' => false,
+    'datatype' => 'number',
+  ),
+  4 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'code',
+    'name' => 'Code',
+    'massiveaction' => false,
+    'datatype' => 'string',
+  ),
+  13 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'name',
+    'name' => 'Father',
+    'datatype' => 'itemlink',
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'condition' => 'AND 1=1',
+    ),
+  ),
+  21 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'content',
+    'name' => 'Description',
+    'massiveaction' => false,
+    'datatype' => 'text',
+  ),
+  3 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'priority',
+    'name' => 'Priority',
+    'searchtype' => 'equals',
+    'datatype' => 'specific',
+  ),
+  14 => 
+  array (
+    'table' => 'glpi_projecttypes',
+    'field' => 'name',
+    'name' => 'Type',
+    'datatype' => 'dropdown',
+  ),
+  12 => 
+  array (
+    'table' => 'glpi_projectstates',
+    'field' => 'name',
+    'name' => 'State',
+    'datatype' => 'dropdown',
+  ),
+  15 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'date',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  5 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'percent_done',
+    'name' => 'Percent done',
+    'datatype' => 'number',
+    'unit' => '%',
+    'min' => 0,
+    'max' => 100,
+    'step' => 5,
+  ),
+  6 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'show_on_global_gantt',
+    'name' => 'Show on global GANTT',
+    'datatype' => 'bool',
+  ),
+  24 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id',
+    'name' => 'Manager',
+    'datatype' => 'dropdown',
+    'right' => 'see_project',
+  ),
+  49 => 
+  array (
+    'table' => 'glpi_groups',
+    'field' => 'completename',
+    'linkfield' => 'groups_id',
+    'name' => 'Manager group',
+    'condition' => '`is_manager`',
+    'datatype' => 'dropdown',
+  ),
+  7 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'plan_start_date',
+    'name' => 'Planned start date',
+    'datatype' => 'datetime',
+  ),
+  8 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'plan_end_date',
+    'name' => 'Planned end date',
+    'datatype' => 'datetime',
+  ),
+  17 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => '_virtual_planned_duration',
+    'name' => 'Planned duration',
+    'datatype' => 'specific',
+    'nosearch' => true,
+    'massiveaction' => false,
+    'nosort' => true,
+  ),
+  9 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'real_start_date',
+    'name' => 'Real start date',
+    'datatype' => 'datetime',
+  ),
+  10 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'real_end_date',
+    'name' => 'Real end date',
+    'datatype' => 'datetime',
+  ),
+  18 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => '_virtual_effective_duration',
+    'name' => 'Effective duration',
+    'datatype' => 'specific',
+    'nosearch' => true,
+    'massiveaction' => false,
+    'nosort' => true,
+  ),
+  16 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'comment',
+    'name' => 'Comments',
+    'datatype' => 'text',
+  ),
+  19 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  121 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'date_creation',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'massiveaction' => false,
+  ),
+  80 => 
+  array (
+    'table' => 'glpi_entities',
+    'field' => 'completename',
+    'name' => 'Entity',
+    'datatype' => 'dropdown',
+  ),
+  86 => 
+  array (
+    'table' => 'glpi_projects',
+    'field' => 'is_recursive',
+    'name' => 'Child entities',
+    'datatype' => 'bool',
+  ),
+  'notepad' => 'Notes',
+  200 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'content',
+    'name' => 'Notes',
+    'datatype' => 'text',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'splititems' => true,
+    'massiveaction' => false,
+  ),
+  201 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date',
+    'name' => 'Creation date',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  202 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'name' => 'Writer',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+  203 => 
+  array (
+    'table' => 'glpi_notepads',
+    'field' => 'date_mod',
+    'name' => 'Last update',
+    'datatype' => 'datetime',
+    'joinparams' => 
+    array (
+      'jointype' => 'itemtype_item',
+    ),
+    'forcegroupby' => true,
+    'massiveaction' => false,
+  ),
+  204 => 
+  array (
+    'table' => 'glpi_users',
+    'field' => 'name',
+    'linkfield' => 'users_id_lastupdater',
+    'name' => 'Last updater',
+    'datatype' => 'dropdown',
+    'forcegroupby' => true,
+    'massiveaction' => false,
+    'joinparams' => 
+    array (
+      'beforejoin' => 
+      array (
+        'table' => 'glpi_notepads',
+        'joinparams' => 
+        array (
+          'jointype' => 'itemtype_item',
+        ),
+      ),
+    ),
+  ),
+)

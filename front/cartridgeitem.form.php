@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["purge"])) {
    $cartype->check($_POST["id"], PURGE);
 
-   if ($cartype->delete($_POST,1)) {
+   if ($cartype->delete($_POST, 1)) {
       Event::log($_POST["id"], "cartridgeitems", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s purges an item'), $_SESSION["glpiname"]));

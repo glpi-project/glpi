@@ -45,11 +45,11 @@ Report::title();
 
 $items = $CFG_GLPI["contract_types"];
 
-# Titre
+// Titre
 echo "<div class='center'>";
 echo "<span class='big b'>".__('List of the hardware under contract')."</span><br><br>";
 echo "</div>";
-# Request All
+// Request All
 if ((isset($_POST["item_type"][0]) && ($_POST["item_type"][0] == '0'))
     || !isset($_POST["item_type"])) {
    $_POST["item_type"] = $items;
@@ -58,7 +58,7 @@ if ((isset($_POST["item_type"][0]) && ($_POST["item_type"][0] == '0'))
 if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
    $query = array();
    foreach ($_POST["item_type"] as $key => $val) {
-      if (in_array($val,$items)) {
+      if (in_array($val, $items)) {
          $itemtable = getTableForItemType($val);
 
          $order = "itemdeleted DESC,";
@@ -95,7 +95,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                                ON (`glpi_contracts`.`contracttypes_id` = `glpi_contracttypes`.`id`)
                             LEFT JOIN `glpi_entities`
                                ON (`$itemtable`.`entities_id` = `glpi_entities`.`id`) ".
-                            getEntitiesRestrictRequest("WHERE",$itemtable);
+                            getEntitiesRestrictRequest("WHERE", $itemtable);
 
 
             if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
@@ -145,7 +145,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                             LEFT JOIN `glpi_entities`
                               ON (`$itemtable`.`entities_id` = `glpi_entities`.`id`)
                             WHERE `$itemtable`.`is_template` ='0' ".
-                                  getEntitiesRestrictRequest("AND",$itemtable);
+                                  getEntitiesRestrictRequest("AND", $itemtable);
 
             if (isset($_POST["year"][0]) && ($_POST["year"][0] != 0)) {
                $query[$val] .= " AND ( ";
@@ -188,7 +188,7 @@ if (isset($query) && count($query)) {
          echo "<th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "</tr>";
-         while ( $data = $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'>";
             if ($data['itemname']) {
                echo "<td> ".$data['itemname']." </td>";
@@ -198,7 +198,7 @@ if (isset($query) && count($query)) {
             if (!isset($data['itemdeleted'])) {
                $data['itemdeleted'] = 0;
             }
-            if (!isset($data['buy_date']) ){
+            if (!isset($data['buy_date'])){
                $data['buy_date'] = '';
             }
             if (!isset($data['warranty_duration'])) {
