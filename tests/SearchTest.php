@@ -242,13 +242,6 @@ class SearchTest extends DbTestCase {
             }
          }
 
-         $origin_options = file_get_contents(__DIR__ . '/search_options/' . $itemtype);
-         //do not use any assert() so we can store current values for comparison
-         if ($origin_options != var_export($compare_options, true)) {
-            //a simple way to compare ;)
-            //file_put_contents(__DIR__ . '/search_options/' . $itemtype .'.broken', var_export($compare_options, true));
-            throw new \Exception("$itemtype search options are broken!");
-         }
          foreach ($options as $key=>$data) {
             if (is_int($key)) {
                $input = array(
