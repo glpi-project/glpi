@@ -377,7 +377,7 @@ class CommonDBTM extends CommonGLPI {
 
       }
 
-      if (count($oldvalues) && isset($_SESSION['glpiactiveentities_string'])) {
+      if (count($oldvalues)) {
          Log::constructHistory($this, $oldvalues, $this->fields);
       }
 
