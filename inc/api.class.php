@@ -68,7 +68,7 @@ abstract class API extends CommonGLPI {
       ini_set('display_errors', 'Off');
 
       // Avoid keeping messages between api calls
-      $_SESSION["MESSAGE_AFTER_REDIRECT"] = '';
+      $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
 
       // check if api is enabled
       if (!$CFG_GLPI['enable_api']) {
