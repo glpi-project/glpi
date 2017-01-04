@@ -156,7 +156,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" ;
+      echo "<td>";
       _e('Email HTML body');
       echo "</td><td colspan='3'>";
       echo "<textarea cols='100' rows='15' name='content_html'>".$this->fields["content_html"];

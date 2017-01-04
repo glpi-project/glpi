@@ -1354,7 +1354,7 @@ class ProjectTask extends CommonDBChild {
       $task   = new self();
 
       if ($DB->numrows($result) > 0) {
-         for ($i=0 ; $data=$DB->fetch_assoc($result) ; $i++) {
+         for ($i=0; $data=$DB->fetch_assoc($result); $i++) {
             if ($task->getFromDB($data["id"])) {
                $key = $data["plan_start_date"]."$$$"."ProjectTask"."$$$".$data["id"];
                $interv[$key]['color']            = $options['color'];
@@ -1434,7 +1434,7 @@ class ProjectTask extends CommonDBChild {
             //TRANS: %1$s is the start time of a planned item, %2$s is the end
             $beginend = sprintf(__('From %1$s to %2$s'), date("H:i", strtotime($val["begin"])),
                                 date("H:i", strtotime($val["end"])));
-            $html.= sprintf(__('%1$s: %2$s'), $beginend, Html::resume_text($val["name"], 80)) ;
+            $html.= sprintf(__('%1$s: %2$s'), $beginend, Html::resume_text($val["name"], 80));
             break;
 
          case "through" :
@@ -1443,12 +1443,12 @@ class ProjectTask extends CommonDBChild {
 
          case "begin" :
             $start = sprintf(__('Start at %s'), date("H:i", strtotime($val["begin"])));
-            $html.= sprintf(__('%1$s: %2$s'), $start, Html::resume_text($val["name"], 80)) ;
+            $html.= sprintf(__('%1$s: %2$s'), $start, Html::resume_text($val["name"], 80));
             break;
 
          case "end" :
             $end = sprintf(__('End at %s'), date("H:i", strtotime($val["end"])));
-            $html.= sprintf(__('%1$s: %2$s'), $end, Html::resume_text($val["name"], 80)) ;
+            $html.= sprintf(__('%1$s: %2$s'), $end, Html::resume_text($val["name"], 80));
             break;
       }
 
@@ -1456,7 +1456,7 @@ class ProjectTask extends CommonDBChild {
       $html.= "</a>";
 
       $html.= "<div class='b'>";
-      $html.= sprintf(__('%1$s: %2$s'), __('Percent done'), $val["status"]."%") ;
+      $html.= sprintf(__('%1$s: %2$s'), __('Percent done'), $val["status"]."%");
       $html.= "</div>";
       $html.= "<div class='event-description'>".html_entity_decode($val["content"])."</div>";
       return $html;

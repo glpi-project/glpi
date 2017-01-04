@@ -494,7 +494,7 @@ class Reservation extends CommonDBChild {
       echo "<div class='calendrier_mois'>";
       echo "<div class='center b'>$annee_avant</div>";
 
-      for ($i=$mois_courant ; $i<13 ; $i++) {
+      for ($i=$mois_courant; $i<13; $i++) {
          echo "<div class='calendrier_case2'>";
          echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
                "annee_courante=$annee_avant'>".$monthsarray[$i]."</a></div>";
@@ -502,7 +502,7 @@ class Reservation extends CommonDBChild {
 
       echo "<div class='center b'>$annee_courante</div>";
 
-      for ($i=1 ; $i<13 ; $i++) {
+      for ($i=1; $i<13; $i++) {
          if ($i == $mois_courant) {
             echo "<div class='calendrier_case1 b'>".$monthsarray[$i]."</div>\n";
          } else {
@@ -513,7 +513,7 @@ class Reservation extends CommonDBChild {
       }
       echo "<div class='center b'>$annee_apres</div>\n";
 
-      for ($i=1 ; $i<$mois_courant+1 ; $i++) {
+      for ($i=1; $i<$mois_courant+1; $i++) {
          echo "<div class='calendrier_case2'>";
          echo "<a href='reservation.php?reservationitems_id=$ID&amp;mois_courant=$i&amp;".
                "annee_courante=$annee_apres'>".$monthsarray[$i]."</a></div>\n";
@@ -535,7 +535,7 @@ class Reservation extends CommonDBChild {
       echo "<tr class='tab_bg_3' >";
 
       // Insert blank cell before the first day of the month
-      for ($i=1 ; $i<$jour_debut_mois ; $i++) {
+      for ($i=1; $i<$jour_debut_mois; $i++) {
          echo "<td class='calendrier_case_white'>&nbsp;</td>";
       }
 
@@ -544,7 +544,7 @@ class Reservation extends CommonDBChild {
          $mois_courant = "0".$mois_courant;
       }
 
-      for ($i=1 ; $i<$nb_jour[$mois_courant-1]+1 ; $i++) {
+      for ($i=1; $i<$nb_jour[$mois_courant-1]+1; $i++) {
          if ($i < 10) {
             $ii = "0".$i;
          } else {
@@ -579,7 +579,7 @@ class Reservation extends CommonDBChild {
 
       // on recommence pour finir le tableau proprement pour les m�es raisons
       if ($jour_fin_mois != 0) {
-         for ($i=0 ; $i<7-$jour_fin_mois ; $i++) {
+         for ($i=0; $i<7-$jour_fin_mois; $i++) {
             echo "<td class='calendrier_case_white'>&nbsp;</td>";
          }
       }

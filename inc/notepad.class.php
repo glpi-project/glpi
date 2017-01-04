@@ -339,7 +339,9 @@ class Notepad extends CommonDBChild {
             }
             echo ">";
             $content = nl2br($note['content']);
-            if (empty($content)) $content = NOT_AVAILABLE;
+            if (empty($content)) {
+               $content = NOT_AVAILABLE;
+            }
             echo $content.'</div>'; // boxnotetext
 
             echo "</div>"; // boxnotecontent

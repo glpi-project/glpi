@@ -310,7 +310,7 @@ class Calendar extends CommonDropdown {
       } else {
          $cache_duration = $this->getDurationsCache();
 
-         for ($actualtime=$timestart ; $actualtime<=$timerealend ; $actualtime+=DAY_TIMESTAMP) {
+         for ($actualtime=$timestart; $actualtime<=$timerealend; $actualtime+=DAY_TIMESTAMP) {
             $actualdate = date('Y-m-d', $actualtime);
 
             if (!$this->isHoliday($actualdate)) {
@@ -339,9 +339,6 @@ class Calendar extends CommonDropdown {
                // echo "time of the day = $timeoftheday ".Html::timestampToString($timeoftheday).'<br>';
                $activetime += $timeoftheday;
                // echo "cumulate time = $activetime ".Html::timestampToString($activetime).'<br>';
-
-            } else {
-               // echo "$actualdate is an holiday<br>";
             }
          }
       }
@@ -594,7 +591,7 @@ class Calendar extends CommonDropdown {
       }
 
       $results = array();
-      for ($i=0 ; $i<7 ; $i++) {
+      for ($i=0; $i<7; $i++) {
          /// Before PHP 5.3 need to be 23:59:59 and not 24:00:00
          $results[$i] = CalendarSegment::getActiveTimeBetween($this->fields['id'], $i, '00:00:00',
                                                               '23:59:59');

@@ -99,7 +99,7 @@ class Manufacturer extends CommonDropdown {
             } else {
                $input['device_type'] = '';
             }
-            //$input['device_type'] = ;
+            //$input['device_type'] = '';
             if ($id < 0) {
                if (!empty($registered_id)) {
                   $id_object->add($input);

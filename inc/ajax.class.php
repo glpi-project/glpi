@@ -285,7 +285,7 @@ class Ajax {
     * @return nothing
    **/
    static function createTabs($tabdiv_id='tabspanel', $tabdivcontent_id='tabcontent', $tabs=array(),
-                              $type, $ID=0, $orientation='vertical') {
+                              $type='', $ID=0, $orientation='vertical') {
       global $CFG_GLPI;
 
       /// TODO need to clean params !!
@@ -481,14 +481,14 @@ class Ajax {
             $output .= Html::jsGetElementbyID(Html::cleanId($zone)).".on(
                '$event',
                function(event) {";
-                  // TODO manage buffer time !! ?
-            if ($buffertime > 0) {
-               // $output.= "var elapsed = new Date().getTime() - last$zone$event;
-               //       last$zone$event = new Date().getTime();
-               //       if (elapsed < $buffertime) {
-               //          return;
-               //       }";
-            }
+            // TODO manage buffer time !! ?
+            // if ($buffertime > 0) {
+            //    $output.= "var elapsed = new Date().getTime() - last$zone$event;
+            //          last$zone$event = new Date().getTime();
+            //          if (elapsed < $buffertime) {
+            //             return;
+            //          }";
+            // }
 
             $condition = '';
             if ($minsize >= 0) {

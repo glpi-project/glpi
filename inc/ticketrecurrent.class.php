@@ -181,18 +181,18 @@ class TicketRecurrent extends CommonDropdown {
       switch ($field['name']) {
          case 'periodicity' :
             $possible_values = array();
-            for ($i=1 ; $i<24 ; $i++) {
+            for ($i=1; $i<24; $i++) {
                $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $i), $i);
             }
-            for ($i=1 ; $i<=30 ; $i++) {
+            for ($i=1; $i<=30; $i++) {
                $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('%d day', '%d days', $i), $i);
             }
 
-            for ($i=1 ; $i<12 ; $i++) {
+            for ($i=1; $i<12; $i++) {
                $possible_values[$i.'MONTH'] = sprintf(_n('%d month', '%d months', $i), $i);
             }
 
-            for ($i=1 ; $i<5 ; $i++) {
+            for ($i=1; $i<5; $i++) {
                $possible_values[$i.'YEAR'] = sprintf(_n('%d year', '%d years', $i), $i);
             }
 

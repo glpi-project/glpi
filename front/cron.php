@@ -69,7 +69,7 @@ if (!isCommandLine()) {
    // Parse command line options
 
    $mode = CronTask::MODE_EXTERNAL; // when taskname given, will allow --force
-   for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
+   for ($i=1; $i<$_SERVER['argc']; $i++) {
       if ($_SERVER['argv'][$i] == '--force') {
          $mode = -CronTask::MODE_EXTERNAL;
       } else if (is_numeric($_SERVER['argv'][$i])) {

@@ -79,7 +79,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    }
 
 
-   function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
+   function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems) {
 
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'>";

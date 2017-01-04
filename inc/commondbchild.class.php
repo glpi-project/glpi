@@ -672,7 +672,7 @@ abstract class CommonDBChild extends CommonDBConnexity {
       if ($canedit) {
          echo "<input type='text' size='40' name='$field_name' value='$value'>";
       } else {
-         echo "<input type='hidden' name='$field_name' value='$value'>$value" ;
+         echo "<input type='hidden' name='$field_name' value='$value'>$value";
       }
    }
 

@@ -147,8 +147,8 @@ class AuthLDAP extends CommonDBTM {
             $this->fields['title_field']               = 'title';
             $this->fields['entity_field']              = 'ou';
             $this->fields['entity_condition']          = '(objectclass=organizationalUnit)';
-            $this->fields['use_dn']                    = 1 ;
-            $this->fields['can_support_pagesize']      = 1 ;
+            $this->fields['use_dn']                    = 1;
+            $this->fields['can_support_pagesize']      = 1;
             $this->fields['pagesize']                  = '1000';
             $this->fields['picture_field']             = '';
             break;
@@ -1485,7 +1485,7 @@ class AuthLDAP extends CommonDBTM {
                $limitexceeded = true;
                break;
             }
-            for ($ligne = 0 ; $ligne < $info["count"] ; $ligne++) {
+            for ($ligne = 0; $ligne < $info["count"]; $ligne++) {
                //If ldap add
                if ($values['mode'] == self::ACTION_IMPORT) {
                   if (in_array($config_ldap->fields['login_field'], $info[$ligne])) {
@@ -1542,7 +1542,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return  array of the user
    **/
-   static function getAllUsers($options=array(), &$results, &$limitexceeded) {
+   static function getAllUsers(array $options, &$results, &$limitexceeded) {
       global $DB, $CFG_GLPI;
 
       $config_ldap = new self();
@@ -1723,7 +1723,7 @@ class AuthLDAP extends CommonDBTM {
     * @return  nothing
    **/
    static function showLdapGroups($target, $start, $sync=0, $filter='', $filter2='',
-                                  $entity, $order='DESC') {
+                                  $entity=0, $order='DESC') {
 
       echo "<br>";
       $limitexceeded = false;
@@ -1859,20 +1859,20 @@ class AuthLDAP extends CommonDBTM {
       if ($ds) {
          switch ($config_ldap->fields["group_search_type"]) {
             case 0 :
-               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter, false, $infos,
-                                                $limitexceeded);
+               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter,
+                                                $limitexceeded, false, $infos);
                break;
 
             case 1 :
-               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter, true, $infos,
-                                                $limitexceeded);
+               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter,
+                                                $limitexceeded, true, $infos);
                break;
 
             case 2 :
-               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter, true, $infos,
-                                                $limitexceeded);
-               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter2, false, $infos,
-                                                $limitexceeded);
+               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter,
+                                                $limitexceeded, true, $infos);
+               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter2,
+                                                $limitexceeded, false, $infos);
                break;
          }
          if (!empty($infos)) {
@@ -1941,13 +1941,13 @@ class AuthLDAP extends CommonDBTM {
     * @param $ldap_connection
     * @param $config_ldap
     * @param $filter
+    * @param $limitexceeded
     * @param $search_in_groups         (true by default)
     * @param $groups             array
-    * @param $limitexceeded
    **/
    static function getGroupsFromLDAP($ldap_connection, $config_ldap, $filter,
-                                     $search_in_groups=true, $groups=array(),
-                                     &$limitexceeded) {
+                                     &$limitexceeded, $search_in_groups=true,
+                                     $groups=array()) {
       global $DB;
 
       //First look for groups in group objects
@@ -1995,7 +1995,7 @@ class AuthLDAP extends CommonDBTM {
                break;
             }
 
-            for ($ligne=0 ; $ligne < $infos["count"] ; $ligne++) {
+            for ($ligne=0; $ligne < $infos["count"]; $ligne++) {
                if ($search_in_groups) {
                   // No cn : not a real object
                   if (isset($infos[$ligne]["cn"][0])) {
@@ -2010,7 +2010,7 @@ class AuthLDAP extends CommonDBTM {
                          || in_array('ou', $groups)) {
                         $dn = $infos[$ligne][$extra_attribute];
                         $ou = array();
-                        for ($tmp=$dn ; count($tmptab = explode(',', $tmp, 2))==2 ; $tmp=$tmptab[1]) {
+                        for ($tmp=$dn; count($tmptab = explode(',', $tmp, 2))==2; $tmp=$tmptab[1]) {
                            $ou[] = $tmptab[1];
                         }
 
@@ -2031,7 +2031,7 @@ class AuthLDAP extends CommonDBTM {
                         }
 
                      } else {
-                        for ($ligne_extra=0 ; $ligne_extra<$infos[$ligne][$extra_attribute]["count"] ;
+                        for ($ligne_extra=0; $ligne_extra<$infos[$ligne][$extra_attribute]["count"];
                              $ligne_extra++) {
                            $groups[$infos[$ligne][$extra_attribute][$ligne_extra]]
                               = array("cn"   => self::getGroupCNByDn($ldap_connection,
@@ -2115,7 +2115,7 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return  array with state, else false
    **/
-   static function ldapImportUserByServerId($params=array(), $action, $ldap_server,
+   static function ldapImportUserByServerId(array $params, $action, $ldap_server,
                                             $display=false) {
       global $DB;
       static $conn_cache = array();
@@ -2289,8 +2289,8 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return link to the LDAP server : false if connection failed
    **/
-   static function connectToServer($host, $port, $login="", $password="", $use_tls=false,
-                                   $deref_options) {
+   static function connectToServer($host, $port, $login="", $password="",
+                                   $use_tls=false, $deref_options=0) {
 
       $ds = @ldap_connect($host, intval($port));
       if ($ds) {
@@ -2593,8 +2593,9 @@ class AuthLDAP extends CommonDBTM {
       if ($result = @ ldap_read($ds, $dn, $condition, $attrs)) {
          if ($clean) {
             $info = self::get_entries_clean($ds, $result);
-         } else $info = ldap_get_entries($ds, $result);
-
+         } else {
+            $info = ldap_get_entries($ds, $result);
+         }
          if (is_array($info) && ($info['count'] == 1)) {
             return $info[0];
          }
@@ -3090,7 +3091,7 @@ class AuthLDAP extends CommonDBTM {
       $options[1] = __('Put in dustbin');
       $options[2] = __('Withdraw dynamic authorizations and groups');
       $options[3] = __('Disable');
-      $options[4] = __('Disable').' + '.__('Withdraw dynamic authorizations and groups') ;
+      $options[4] = __('Disable').' + '.__('Withdraw dynamic authorizations and groups');
       asort($options);
       return Dropdown::showFromArray('user_deleted_ldap', $options, array('value' => $value));
    }

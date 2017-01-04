@@ -890,7 +890,7 @@ class Reminder extends CommonDBVisible {
          $result2 = $DB->query($query2);
 
          if ($DB->numrows($result2) > 0) {
-            for ($i=0 ; $data=$DB->fetch_assoc($result2) ; $i++) {
+            for ($i=0; $data=$DB->fetch_assoc($result2); $i++) {
                if ($reminder->getFromDB($data["id"])
                    && $reminder->canViewItem()) {
                   $key                               = $data["begin"]."$$"."Reminder"."$$".$data["id"];

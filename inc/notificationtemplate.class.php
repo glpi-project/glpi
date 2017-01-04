@@ -220,8 +220,8 @@ class NotificationTemplate extends CommonDBTM {
     *
     * @return id of the template in templates_by_languages / false if computation failed
    **/
-   function getTemplateByLanguage(NotificationTarget $target, $user_infos=array(), $event,
-                                  $options=array()) {
+   function getTemplateByLanguage(NotificationTarget $target, $user_infos=[],
+                                  $event='', $options=[]) {
 
       $lang     = array();
       $language = $user_infos['language'];
@@ -239,11 +239,11 @@ class NotificationTemplate extends CommonDBTM {
 
       if (!isset($this->templates_by_languages[$tid])) {
          //Switch to the desired language
-         $bak_dropdowntranslations = $_SESSION['glpi_dropdowntranslations'] ;
+         $bak_dropdowntranslations = $_SESSION['glpi_dropdowntranslations'];
          $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($language);
          Session::loadLanguage($language);
-         $bak_language = $_SESSION["glpilanguage"] ;
-         $_SESSION["glpilanguage"] = $language ;
+         $bak_language = $_SESSION["glpilanguage"];
+         $_SESSION["glpilanguage"] = $language;
 
          //If event is raised by a plugin, load it in order to get the language file available
          if ($plug = isPluginItemType(get_class($target->obj))) {
@@ -260,9 +260,9 @@ class NotificationTemplate extends CommonDBTM {
          $add_footer                = Html::entity_decode_deep($target->getContentFooter());
 
          //Restore default language
-         $_SESSION["glpilanguage"] = $bak_language ;
+         $_SESSION["glpilanguage"] = $bak_language;
          Session::loadLanguage();
-         $_SESSION['glpi_dropdowntranslations'] = $bak_dropdowntranslations ;
+         $_SESSION['glpi_dropdowntranslations'] = $bak_dropdowntranslations;
          if ($plug = isPluginItemType(get_class($target->obj))) {
             Plugin::loadLang(strtolower($plug['plugin']));
          }

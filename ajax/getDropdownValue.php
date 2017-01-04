@@ -145,7 +145,7 @@ if ($item instanceof CommonTreeDropdown) {
          $search = Search::makeTextSearch($_POST['searchText']);
          if (Session::haveTranslations($_POST['itemtype'], 'completename')) {
             $where .= " AND (`$table`.`completename` $search ".
-                             "OR `namet`.`value` $search " ;
+                             "OR `namet`.`value` $search ";
          } else {
             $where .= " AND (`$table`.`completename` $search ";
          }

@@ -236,4 +236,3 @@ if ($ok) {
 } else {
    echo "GLPI_PROBLEM\n";
 }
-?>

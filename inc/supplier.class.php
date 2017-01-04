@@ -494,7 +494,7 @@ class Supplier extends CommonDBTM {
       echo "</tr>";
 
       $num = 0;
-      for ($i=0 ; $i < $number ; $i++) {
+      for ($i=0; $i < $number; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
 
          if (!($item = getItemForItemtype($itemtype))) {
@@ -571,7 +571,7 @@ class Supplier extends CommonDBTM {
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 
             } else if ($nb) {
-               for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
+               for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
                   $name = $data["name"];
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);

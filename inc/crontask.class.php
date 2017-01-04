@@ -807,7 +807,7 @@ class CronTask extends CommonDBTM{
       }
 
       if (self::get_lock()) {
-         for ($i=1 ; $i<=$max ; $i++) {
+         for ($i=1; $i<=$max; $i++) {
             $prefix = (abs($mode) == self::MODE_EXTERNAL ? __('External')
                                                          : __('Internal'));
             if ($crontask->getNeedToRun($mode, $name)) {
@@ -1498,15 +1498,15 @@ class CronTask extends CommonDBTM{
    static function cronCircularlogs($task) {
 
       $actionCode = 0; // by default
-      $error      = false ;
+      $error      = false;
       $task->setVolume(0); // start with zero
 
       // compute date in the past for the archived log to be deleted
       $firstdate = date("Ymd", time() - ($task->fields['param'] * DAY_TIMESTAMP)); // compute current date - param as days and format it like YYYYMMDD
 
       // first look for bak to delete
-      $dir       = GLPI_LOG_DIR."/*.bak" ;
-      $findfiles = glob( $dir ) ;
+      $dir       = GLPI_LOG_DIR."/*.bak";
+      $findfiles = glob($dir);
       foreach ($findfiles as $file) {
          $shortfile = str_replace(GLPI_LOG_DIR.'/', '', $file);
          // now depending on the format of the name we delete the file (for aging archives) or rename it (will add Ymd.log to the end of the file)
@@ -1516,18 +1516,18 @@ class CronTask extends CommonDBTM{
                $task->addVolume(1);
                if (unlink($file)) {
                   $task->log(sprintf(__('Deletion of archived log file: %s'), $shortfile));
-                  $actionCode = 1 ;
+                  $actionCode = 1;
                } else {
                   $task->log(sprintf(__('Unable to delete archived log file: %s'), $shortfile));
-                  $error = true ;
+                  $error = true;
                }
             }
          }
       }
 
       // second look for log to archive
-      $dir       = GLPI_LOG_DIR."/*.log" ;
-      $findfiles = glob( $dir ) ;
+      $dir       = GLPI_LOG_DIR."/*.log";
+      $findfiles = glob($dir);
       foreach ($findfiles as $file) {
          $shortfile    = str_replace(GLPI_LOG_DIR.'/', '', $file);
          // rename the file
@@ -1537,16 +1537,16 @@ class CronTask extends CommonDBTM{
          $task->addVolume(1);
          if (!file_exists($newfilename) && rename($file, $newfilename)) {
             $task->log(sprintf(__('Archiving log file: %1$s to %2$s'), $shortfile, $shortnewfile));
-            $actionCode = 1 ;
+            $actionCode = 1;
          } else {
             $task->log(sprintf(__('Unable to archive log file: %1$s. %2$s already exists. Wait till next day.'),
-                                 $shortfile, $shortnewfile)) ;
-            $error = true ;
+                                 $shortfile, $shortnewfile));
+            $error = true;
          }
       }
 
       if ($error) {
-         return -1 ;
+         return -1;
       }
       return $actionCode;
    }
@@ -1761,18 +1761,18 @@ class CronTask extends CommonDBTM{
       $tab[MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', 1), 1);
 
       // Minutes
-      for ($i=5 ; $i<60 ; $i+=5) {
+      for ($i=5; $i<60; $i+=5) {
          $tab[$i*MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', $i), $i);
       }
 
       // Heures
-      for ($i=1 ; $i<24 ; $i++) {
+      for ($i=1; $i<24; $i++) {
          $tab[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $i), $i);
       }
 
       // Jours
       $tab[DAY_TIMESTAMP] = __('Each day');
-      for ($i=2 ; $i<7 ; $i++) {
+      for ($i=2; $i<7; $i++) {
          $tab[$i*DAY_TIMESTAMP] = sprintf(_n('%d day', '%d days', $i), $i);
       }
 

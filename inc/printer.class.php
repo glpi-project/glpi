@@ -127,8 +127,8 @@ class Printer  extends CommonDBTM {
 
       // Evaluate connection in the 2 ways
       for ($tabend = array("networkports_id_1" => "networkports_id_2",
-                           "networkports_id_2" => "networkports_id_1") ;
-           list($enda, $endb) = each($tabend) ; ) {
+                           "networkports_id_2" => "networkports_id_1");
+           list($enda, $endb) = each($tabend); ) {
 
          $sql = "SELECT `itemtype`,
                         GROUP_CONCAT(DISTINCT `items_id`) AS ids

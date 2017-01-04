@@ -58,7 +58,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    /**
     * @see NetworkPortInstantiation::showInstantiationForm()
    **/
-   function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
+   function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems) {
 
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'>\n";

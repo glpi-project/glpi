@@ -110,7 +110,7 @@ class Dropdown {
       $params['permit_select_parent'] = false;
       $params['addicon']              = true;
       $params['specific_tags']        = array();
-      $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php" ;
+      $params['url']                  = $CFG_GLPI['root_doc']."/ajax/getDropdownValue.php";
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1169,14 +1169,14 @@ class Dropdown {
       $values   = array();
       $selected = '';
 
-      for ($i=$begin ; $i<$end ; $i++) {
+      for ($i=$begin; $i<$end; $i++) {
          if ($i < 10) {
             $tmp = "0".$i;
          } else {
             $tmp = $i;
          }
 
-         for ($j=0 ; $j<60 ; $j+=$p['step']) {
+         for ($j=0; $j<60; $j+=$p['step']) {
             if ($j < 10) {
                $val = $tmp.":0$j";
             } else {
@@ -1609,7 +1609,7 @@ class Dropdown {
          }
       }
 
-      for ($i = $params['min'] ; $i <= $params['max']; $i+=$params['step']) {
+      for ($i = $params['min']; $i <= $params['max']; $i+=$params['step']) {
          $values[$i] = '';
       }
 
@@ -1817,7 +1817,7 @@ class Dropdown {
       $param['option_tooltips'] = Html::entities_deep($param['option_tooltips']);
 
       if ($param["display_emptychoice"]) {
-         $elements = array( 0 => $param['emptylabel'] ) + $elements ;
+         $elements = array( 0 => $param['emptylabel'] ) + $elements;
       }
 
       if ($param["multiple"]) {
@@ -2147,22 +2147,22 @@ class Dropdown {
 
       $values = array();
 
-      for ($i=5 ; $i<20 ; $i+=5) {
+      for ($i=5; $i<20; $i+=5) {
          $values[$i] = $i;
       }
-      for ($i=20 ; $i<50 ; $i+=10) {
+      for ($i=20; $i<50; $i+=10) {
          $values[$i] = $i;
       }
-      for ($i=50 ; $i<250 ; $i+=50) {
+      for ($i=50; $i<250; $i+=50) {
          $values[$i] = $i;
       }
-      for ($i=250 ; $i<1000 ; $i+=250) {
+      for ($i=250; $i<1000; $i+=250) {
          $values[$i] = $i;
       }
-      for ($i=1000 ; $i<5000 ; $i+=1000) {
+      for ($i=1000; $i<5000; $i+=1000) {
          $values[$i] = $i;
       }
-      for ($i=5000 ; $i<=10000 ; $i+=5000) {
+      for ($i=5000; $i<=10000; $i+=5000) {
          $values[$i] = $i;
       }
       $values[9999999] = 9999999;

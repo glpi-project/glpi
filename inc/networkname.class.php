@@ -390,8 +390,9 @@ class NetworkName extends FQDNLabel {
       $networkName = new self();
 
       if ($networkName->can($ID, READ)) {
-         return FQDNLabel::getInternetNameFromLabelAndDomainID($this->fields["name"],
-                                                               $this->fields["fqdns_id"]);
+         return FQDNLabel::getInternetNameFromLabelAndDomainID(
+                 $networkName->fields["name"],
+                 $networkName->fields["fqdns_id"]);
       }
       return "";
    }

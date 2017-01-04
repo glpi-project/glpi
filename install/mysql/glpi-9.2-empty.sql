@@ -3470,7 +3470,7 @@ CREATE TABLE `glpi_monitors` (
   `comment` text COLLATE utf8_unicode_ci,
   `serial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `otherserial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `size` int(11) NOT NULL DEFAULT '0',
+  `size` decimal(5,2) NOT NULL DEFAULT '0',
   `have_micro` tinyint(1) NOT NULL DEFAULT '0',
   `have_speaker` tinyint(1) NOT NULL DEFAULT '0',
   `have_subd` tinyint(1) NOT NULL DEFAULT '0',

@@ -803,7 +803,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $header_end .= "</tr>\n";
          echo $header_begin.$header_top.$header_end;
 
-         for ($row=0 ; $data=$DB->fetch_assoc($result) ; $row++) {
+         for ($row=0; $data=$DB->fetch_assoc($result); $row++) {
 
             if (($row >= $start) && ($row < ($start + $_SESSION['glpilist_limit']))) {
                $licids = self::softsByCategory($data, $computers_id, $withtemplate,

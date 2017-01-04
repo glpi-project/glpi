@@ -255,7 +255,7 @@ class DropdownTranslation extends CommonDBChild {
       if ($item instanceof CommonTreeDropdown
           && isset($input['language'])) {
          $item->getFromDB($input['items_id']);
-         $foreignKey = $item->getForeignKeyField() ;
+         $foreignKey = $item->getForeignKeyField();
 
          //Regenerate completename : look for item's ancestors
          $completename = "";
@@ -534,8 +534,12 @@ class DropdownTranslation extends CommonDBChild {
     *
     * @return the translated value of the value in the default language
    **/
-   static function getTranslatedValue($ID, $itemtype, $field='name', $language, $value='') {
+   static function getTranslatedValue($ID, $itemtype, $field='name', $language='', $value='') {
       global $DB;
+
+      if ($language == '') {
+         $language = $_SESSION['glpilanguage'];
+      }
 
       //If dropdown translation is globally off, or if this itemtype cannot be translated,
       //then original value should be returned

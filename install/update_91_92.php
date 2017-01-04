@@ -73,6 +73,7 @@ function update91to92() {
 
    //put you migration script here
 
+   // add business criticity
    $migration->addField("glpi_infocoms", "businesscriticities_id", "integer");
    $migration->addKey("glpi_infocoms", "businesscriticities_id");
    if (!TableExists("glpi_businesscriticities")) {
@@ -98,6 +99,9 @@ function update91to92() {
       $DB->queryOrDie($query, "Add business criticity table");
    }
 
+   // Issue #1250 - Add decimal to monitor size
+   $migration->changeField('glpi_monitors', 'size', 'size', 'DECIMAL(5,2)');
+      
    // ************ Keep it at the end **************
    $migration->executeMigration();
 

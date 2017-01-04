@@ -127,7 +127,7 @@ class TicketSatisfaction extends CommonDBTM {
 
          echo "<select id='satisfaction_data' name='satisfaction'>";
 
-         for ($i=0 ; $i<=5 ; $i++) {
+         for ($i=0; $i<=5; $i++) {
             echo "<option value='$i' ".(($i == $this->fields["satisfaction"])?'selected':'').
                   ">$i</option>";
          }

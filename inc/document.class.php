@@ -505,7 +505,7 @@ class Document extends CommonDBTM {
             if ($DB->numrows($result) > 0) {
                $icon = $DB->result($result, 0, 'icon');
                if (!file_exists(GLPI_ROOT."/pics/icones/$icon")) {
-                  $icon = "defaut-dist.png" ;
+                  $icon = "defaut-dist.png";
                }
                $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
                                $initfileout."\" title=\"".$initfileout."\" src='".
@@ -1388,7 +1388,7 @@ class Document extends CommonDBTM {
     *
     * @return string
    **/
-   static function getImageTag($string){
+   static function getImageTag($string) {
       return self::$tag_prefix.$string.self::$tag_prefix;
    }
 

@@ -377,7 +377,7 @@ class CommonDBTM extends CommonGLPI {
 
       }
 
-      if (count($oldvalues) && isset($_SESSION['glpiactiveentities_string'])) {
+      if (count($oldvalues)) {
          Log::constructHistory($this, $oldvalues, $this->fields);
       }
 
@@ -407,7 +407,7 @@ class CommonDBTM extends CommonGLPI {
             $i++;
          }
 
-         for ($i=0 ; $i<$nb_fields; $i++) {
+         for ($i=0; $i<$nb_fields; $i++) {
             $query .= "`".$fields[$i]."`";
             if ($i != ($nb_fields-1)) {
                $query .= ",";
@@ -415,7 +415,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          $query .= ") VALUES (";
-         for ($i=0 ; $i<$nb_fields ; $i++) {
+         for ($i=0; $i<$nb_fields; $i++) {
 
             if ($values[$i] == 'NULL') {
                $query .= $values[$i];
@@ -2331,10 +2331,7 @@ class CommonDBTM extends CommonGLPI {
          }
 
          echo "</th><th colspan='".$params['colspan']."'>";
-         if (get_class($this) == 'Entity') {
-            // is recursive but cannot be change
-
-         } else {
+         if (get_class($this) != 'Entity') {
             if ($this->maybeRecursive()) {
                if (Session::isMultiEntitiesMode()) {
                   echo "<table class='tab_format'><tr class='headerRow responsive_hidden'><th>".$entityname."</th>";
@@ -3395,7 +3392,7 @@ class CommonDBTM extends CommonGLPI {
              || (isset($searchOption[$field]) && ($searchOption[$field] == $value))) {
             if (($table == '')
                 || (($table != '') && ($searchOption['table'] == $table))) {
-               // Set ID ;
+               // Set ID;
                $searchOption['id'] = $id;
                return $searchOption;
             }
@@ -3503,10 +3500,11 @@ class CommonDBTM extends CommonGLPI {
 
                   case 'ip' :
                      $address = new IPAddress();
-                     if (!$address->setAddressFromString($value))
+                     if (!$address->setAddressFromString($value)) {
                         $unset = true;
-                     else if (!$address->is_ipv4())
+                     } else if (!$address->is_ipv4()) {
                         $unset = true;
+                     }
                      break;
 
                   case 'mac' :
@@ -4499,7 +4497,7 @@ class CommonDBTM extends CommonGLPI {
                       PURGE   => array('short' => __('Purge'),
                                        'long'  => _x('button', 'Delete permanently')));
 
-      $values += ObjectLock::getRightsToAdd( get_class($this), $interface ) ;
+      $values += ObjectLock::getRightsToAdd( get_class($this), $interface );
 
       if ($this->maybeDeleted()) {
          $values[DELETE] = array('short' => __('Delete'),

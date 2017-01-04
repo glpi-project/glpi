@@ -199,7 +199,7 @@ class Item_Ticket extends CommonDBRelation{
 
       $nb = countElementsInTable(array('glpi_items_tickets', 'glpi_tickets'), $restrict);
 
-      return $nb ;
+      return $nb;
    }
 
    /**
@@ -213,7 +213,7 @@ class Item_Ticket extends CommonDBRelation{
     *
     * @return Nothing (display)
    **/
-   static function itemAddForm(Ticket $ticket, $options=array()){
+   static function itemAddForm(Ticket $ticket, $options=array()) {
       global $CFG_GLPI;
 
       $params = array('id'                  => (isset($ticket->fields['id'])
@@ -487,7 +487,7 @@ class Item_Ticket extends CommonDBRelation{
       echo $header_begin.$header_top.$header_end;
 
       $totalnb = 0;
-      for ($i=0 ; $i<$number ; $i++) {
+      for ($i=0; $i<$number; $i++) {
          $itemtype = $DB->result($result, $i, "itemtype");
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
@@ -521,7 +521,7 @@ class Item_Ticket extends CommonDBRelation{
             $result_linked = $DB->query($query);
             $nb            = $DB->numrows($result_linked);
 
-            for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
+            for ($prem=true; $data=$DB->fetch_assoc($result_linked); $prem=false) {
                $name = $data["name"];
                if ($_SESSION["glpiis_ids_visible"]
                    || empty($data["name"])) {
