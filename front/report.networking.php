@@ -43,7 +43,7 @@ Html::header(Report::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF
 
 Report::title();
 
-# Titre
+// Titre
 
 echo "<table class='tab_cadre' >";
 echo "<tr><th colspan='3'>&nbsp;".__('Network report')."</th></tr>";

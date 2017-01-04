@@ -22,6 +22,9 @@
   <!--  Makes sure that shorthand PHP open tags are not used. -->
   <rule ref="Generic.PHP.DisallowShortOpenTag"/>
 
+  <!--  Checks that no perl-style comments (#) are used. -->
+  <rule ref="PEAR.Commenting.InlineComment"/>
+
   <!-- No white spaces after opening bracket and before closing bracket in IF -->
   <rule ref="PSR2.ControlStructures.ControlStructureSpacing" />
 
