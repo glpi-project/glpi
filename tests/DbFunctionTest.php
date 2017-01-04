@@ -272,7 +272,7 @@ class DbFunctionTest extends DbTestCase {
       $data = getAllDatasFromTable('glpi_configs');
       $this->assertTrue(is_array($data));
       $this->assertGreaterThan(100, count($data));
-      foreach($data as $key => $array) {
+      foreach ($data as $key => $array) {
          $this->assertTrue(is_array($array));
          $this->assertTrue($key == $array['id']);
       }
@@ -282,7 +282,7 @@ class DbFunctionTest extends DbTestCase {
 
       $data = getAllDatasFromTable('glpi_configs', "", false, 'name');
       $previousArrayName = "";
-      foreach($data as $key => $array) {
+      foreach ($data as $key => $array) {
          $this->assertTrue($previousArrayName <= $previousArrayName = $array['name']);
       }
    }

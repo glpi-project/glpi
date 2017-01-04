@@ -366,7 +366,7 @@ if ($item instanceof CommonTreeDropdown) {
                               && (!isset($last_level_displayed[$work_level])
                                   || ($last_level_displayed[$work_level] != $work_parentID)));
                      // Add parents
-                     foreach($parent_datas as $val){
+                     foreach ($parent_datas as $val) {
                         array_push($datastoadd, $val);
                      }
                   }

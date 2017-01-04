@@ -58,6 +58,6 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
 
    Html::footer();
 
-} else  {
+} else {
    Html::redirect($CFG_GLPI['root_doc']."/front/report.networking.php");
 }

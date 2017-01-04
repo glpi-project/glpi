@@ -120,8 +120,7 @@ class RuleMailCollectorCollection extends RuleCollection {
          if (preg_match("/@(.*)/", $input['from'], $results)) {
             if (Entity::getEntityIDByDomain($results[1]) != -1) {
                $input['KNOWN_DOMAIN'] = 1;
-            }
-            else {
+            } else {
                $input['KNOWN_DOMAIN'] = 0;
             }
          }

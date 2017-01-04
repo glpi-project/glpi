@@ -121,7 +121,7 @@ class AuthLDAP extends CommonDBTM {
    **/
    function preconfig($type) {
 
-      switch($type) {
+      switch ($type) {
          case 'AD' :
             $this->fields['port']                      = "389";
             $this->fields['condition']
@@ -267,7 +267,7 @@ class AuthLDAP extends CommonDBTM {
                                         'type'         => $input['ldap_import_type'][$id]);
                   if (AuthLdap::ldapImportGroup($group_dn, $options)) {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                  }  else {
+                  } else {
                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                      $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, $group_dn));
                   }
@@ -291,7 +291,7 @@ class AuthLDAP extends CommonDBTM {
                                                       $_SESSION['ldap_import']['authldaps_id'],
                                                       true)) {
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-               }  else {
+               } else {
                   $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                   $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, $id));
                }
@@ -2493,7 +2493,7 @@ class AuthLDAP extends CommonDBTM {
 
       //If no specific source is given, test all ldap directories
       if ($auths_id <= 0) {
-         foreach  ($auth->authtypes["ldap"] as $ldap_method) {
+         foreach ($auth->authtypes["ldap"] as $ldap_method) {
             if (!$auth->auth_succeded
                 && $ldap_method['is_active']) {
                $auth = self::ldapAuth($auth, $login, $password, $ldap_method, $user_dn);
@@ -2536,7 +2536,7 @@ class AuthLDAP extends CommonDBTM {
       $values['condition']         = '';
       $values['user_dn']           = false;
 
-      foreach  ($options as $key => $value) {
+      foreach ($options as $key => $value) {
          $values[$key] = $value;
       }
 

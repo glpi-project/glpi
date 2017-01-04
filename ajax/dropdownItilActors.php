@@ -121,7 +121,7 @@ if (isset($_POST["type"])
 
          case "group" :
             $cond = '`is_requester`';
-            if ($_POST["actortype"] == 'assign')  {
+            if ($_POST["actortype"] == 'assign') {
                $cond = '`is_assign`';
             }
 

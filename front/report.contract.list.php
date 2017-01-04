@@ -198,7 +198,7 @@ if (isset($query) && count($query)) {
             if (!isset($data['itemdeleted'])) {
                $data['itemdeleted'] = 0;
             }
-            if (!isset($data['buy_date'])){
+            if (!isset($data['buy_date'])) {
                $data['buy_date'] = '';
             }
             if (!isset($data['warranty_duration'])) {

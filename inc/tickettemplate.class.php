@@ -600,7 +600,7 @@ class TicketTemplate extends CommonDropdown {
                      $input2['is_recursive'] = 1;
                      $input2 = Toolbox::addslashes_deep($input2);
 
-                     if (!$item->import($input2)){
+                     if (!$item->import($input2)) {
                         $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                      } else {
@@ -713,7 +713,7 @@ class TicketTemplate extends CommonDropdown {
    function formatFieldsToMerge($data) {
 
       $output = array();
-      foreach($data as $val){
+      foreach ($data as $val) {
          $output[$val['num']] = $val;
       }
 

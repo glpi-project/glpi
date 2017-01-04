@@ -33,23 +33,12 @@
 
 /** @file
 * @brief
-* @since version 0.85
 */
-
-$AJAX_INCLUDE = 1;
 
 include ('../inc/includes.php');
 
-header('Content-type: application/json');
+header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
-
-Session::checkLoginUser();
-
-if (isset($_POST['data'])) {
-   foreach ($_POST['data'] as $key =>  $values) {
-      $unique_name = Rule::getUuid();
-      $response[$key] = array('tag' => Document::getImageTag($unique_name), 'name' => $unique_name);
-   }
-
-   echo json_encode($response);
-}
+$user = new User();
+echo $user->showSwitchLangForm(false, ['showbutton' => false, 'on_change' => 'this.form.submit()']);
+Html::ajaxFooter();

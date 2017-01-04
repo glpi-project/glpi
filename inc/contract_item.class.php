@@ -218,7 +218,7 @@ class Contract_Item extends CommonDBRelation{
             $query .= " AND NOT `".$itemt->getTable()."`.`is_template`";
          }
 
-         foreach($DB->request($query) as $row) {
+         foreach ($DB->request($query) as $row) {
             $nb += $row['cpt'];
          }
       }

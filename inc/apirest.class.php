@@ -209,10 +209,10 @@ class APIRest extends API {
                   if (isset($this->parameters['range'])) {
                      $range = explode("-", $this->parameters['range']);
                      // fix end range
-                     if($range[1] > $totalcount - 1){
+                     if ($range[1] > $totalcount - 1) {
                         $range[1] = $totalcount - 1;
                      }
-                     if($range[1] - $range[0] + 1 < $totalcount){
+                     if ($range[1] - $range[0] + 1 < $totalcount) {
                          $code = 206; // partial content
                      }
                   }
@@ -230,7 +230,7 @@ class APIRest extends API {
                } else {
                   // add a link header targetting created elements
                   $additionalheaders['link'] = "";
-                  foreach($response as $created_item) {
+                  foreach ($response as $created_item) {
                      if ($created_item['id']) {
                         $additionalheaders['link'] .= self::$api_url.$itemtype.
                                                      "/".$created_item['id'].",";
@@ -281,7 +281,7 @@ class APIRest extends API {
    **/
    private function getItemtype($index=0, $recursive=true, $all_assets= false) {
 
-      if (isset($this->url_elements[$index]))  {
+      if (isset($this->url_elements[$index])) {
          if ((class_exists($this->url_elements[$index])
               && is_subclass_of($this->url_elements[$index], 'CommonDBTM'))
              || ($all_assets
@@ -358,9 +358,9 @@ class APIRest extends API {
       }
 
       $content_type = "";
-      if(isset($_SERVER['CONTENT_TYPE'])) {
+      if (isset($_SERVER['CONTENT_TYPE'])) {
          $content_type = $_SERVER['CONTENT_TYPE'];
-      } else if(isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+      } else if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
          $content_type = $_SERVER['HTTP_CONTENT_TYPE'];
       } else {
          if (!$is_inline_doc) {
@@ -369,8 +369,8 @@ class APIRest extends API {
       }
 
       if (strpos($content_type, "application/json") !== false) {
-         if($body_params = json_decode($body)) {
-            foreach($body_params as $param_name => $param_value) {
+         if ($body_params = json_decode($body)) {
+            foreach ($body_params as $param_name => $param_value) {
                $parameters[$param_name] = $param_value;
             }
          } else if (strlen($body) > 0) {
@@ -392,14 +392,14 @@ class APIRest extends API {
             $this->returnError("JSON payload seems not valid", 400, "ERROR_JSON_PAYLOAD_INVALID",
                                false);
          }
-         foreach($uploadManifest as $field => $value) {
+         foreach ($uploadManifest as $field => $value) {
             $parameters[$field] = $value;
          }
          $this->format = "json";
 
       } else if (strpos($content_type, "application/x-www-form-urlencoded") !== false) {
          parse_str($body, $postvars);
-         foreach($postvars as $field => $value) {
+         foreach ($postvars as $field => $value) {
             $parameters[$field] = $value;
          }
          $this->format = "html";
@@ -468,7 +468,7 @@ class APIRest extends API {
          $httpcode = 200;
       }
 
-      foreach($aditionnalheaders as $key => $value) {
+      foreach ($aditionnalheaders as $key => $value) {
          header("$key: $value");
       }
 

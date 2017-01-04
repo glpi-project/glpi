@@ -34,4 +34,7 @@
   <!-- No white spaces after opening bracket and before closing bracket in IF -->
   <rule ref="PSR2.ControlStructures.ControlStructureSpacing" />
 
+    <!-- White space after IF, ELSE, FOREACH, SWITCH keyword -->
+  <rule ref="Squiz.ControlStructures.ControlSignature" />
+
 </ruleset>

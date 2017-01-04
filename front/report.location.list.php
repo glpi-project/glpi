@@ -64,6 +64,6 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
 
    Html::footer();
 
-} else  {
+} else {
    Html::redirect($CFG_GLPI['root_doc']."/front/report.networking.php");
 }

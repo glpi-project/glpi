@@ -4396,5 +4396,41 @@ class User extends CommonDBTM {
       return addslashes($ret == $map ? (isset($res[0][$map][0]) ? $res[0][$map][0] : '') : $ret);
    }
 
+   /**
+    * Print the switch language form
+    *
+    * @param boolean $display Whether to display or return output; defaults to true
+    * @param array   $options Options
+    *
+    * @return void|string
+   **/
+   function showSwitchLangForm($display = true, $options = []) {
+      global $CFG_GLPI;
 
+      $params = [
+         'value'        => $_SESSION["glpilanguage"],
+         'display'      => false,
+         'showbutton'   => true
+      ];
+
+      foreach ($options as $key => $value) {
+         $params[$key] = $value;
+      }
+
+      $out = '';
+      $out .= "<form method='post' name='switchlang' action='{$CFG_GLPI['root_doc']}/front/user.form.php' autocomplete='off'>";
+      $out .= "<p class='center'>";
+      $out .= Dropdown::showLanguages("language", $params);
+      if ($params['showbutton'] === true) {
+         $out .= "&nbsp;<input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
+      }
+      $out .= "</p>";
+      $out .= Html::closeForm(false);
+
+      if ($display === true) {
+         echo $out;
+      } else {
+         return $out;
+      }
+   }
 }

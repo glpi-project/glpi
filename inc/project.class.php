@@ -1280,7 +1280,7 @@ class Project extends CommonDBTM {
             $todisplay += ProjectTask::getDataToDisplayOnGanttForProject($ID);
 
             // Add ordered subprojects
-            foreach($projects as $key => $val) {
+            foreach ($projects as $key => $val) {
                $todisplay[$key] = $val;
             }
          }

@@ -282,7 +282,7 @@ class Dropdown {
          $SELECTNAME    = "'' AS transname";
          $SELECTCOMMENT = "'' AS transcomment";
          $JOIN          = '';
-         if  ($translate) {
+         if ($translate) {
             if (Session::haveTranslations(getItemTypeForTable($table), 'name')) {
                $SELECTNAME = "`namet`.`value` AS transname";
                $JOIN       .= " LEFT JOIN `glpi_dropdowntranslations` AS namet
@@ -367,7 +367,7 @@ class Dropdown {
                      break;
 
                   case "glpi_suppliers" :
-                     if($tooltip) {
+                     if ($tooltip) {
                         if (!empty($data["phonenumber"])) {
                            $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
                                                       "</span>".$data['phonenumber']);
@@ -390,7 +390,7 @@ class Dropdown {
                      break;
 
                   case "glpi_budgets" :
-                     if($tooltip) {
+                     if ($tooltip) {
                         if (!empty($data['locations_id'])) {
                            $comment .= "<br>".sprintf(__('%1$s: %2$s'),
                                                       "<span class='b'>".__('Location')."</span>",
@@ -1842,7 +1842,7 @@ class Dropdown {
 
          $output  .= "<select name='$field_name' id='$field_id'";
 
-         if($param['tooltip']) {
+         if ($param['tooltip']) {
             $output .= ' title="'.Html::entities_deep($param['tooltip']).'"';
          }
 
@@ -1870,9 +1870,9 @@ class Dropdown {
 
                $output .= "<optgroup label=\"$opt_goup\"";
                $optgroup_tooltips = false;
-               if(isset($param['option_tooltips'][$key])) {
-                  if(is_array($param['option_tooltips'][$key])) {
-                     if(isset($param['option_tooltips'][$key]['__optgroup_label'])){
+               if (isset($param['option_tooltips'][$key])) {
+                  if (is_array($param['option_tooltips'][$key])) {
+                     if (isset($param['option_tooltips'][$key]['__optgroup_label'])) {
                         $output .= ' title="'.$param['option_tooltips'][$key]['__optgroup_label'].'"';
                      }
                      $optgroup_tooltips = $param['option_tooltips'][$key];
@@ -1892,7 +1892,7 @@ class Dropdown {
                            break;
                         }
                      }
-                     if($optgroup_tooltips && isset($optgroup_tooltips[$key2])) {
+                     if ($optgroup_tooltips && isset($optgroup_tooltips[$key2])) {
                         $output .= ' title="'.$optgroup_tooltips[$key2].'"';
                      }
                      $output .= ">" .  $val2 . "</option>";
@@ -1912,7 +1912,7 @@ class Dropdown {
                         break;
                      }
                   }
-                  if(isset($param['option_tooltips'][$key])) {
+                  if (isset($param['option_tooltips'][$key])) {
                      $output .= ' title="'.$param['option_tooltips'][$key].'"';
                   }
                   $output .= ">" .$val . "</option>";

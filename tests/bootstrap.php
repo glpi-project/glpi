@@ -288,13 +288,13 @@ function loadDataset() {
          if ($type[0] == '_') {
             continue;
          }
-         foreach($inputs as $input) {
+         foreach ($inputs as $input) {
             // Resolve FK
             foreach ($input as $k => $v) {
                // $foreigntype = $type; // by default same type than current type (is the case of the dropdowns)
                $foreigntype = false ;
                $match = array() ;
-               if(isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))){
+               if (isForeignKeyField($k) && (preg_match("/(.*s)_id$/", $k, $match) || preg_match("/(.*s)_id_/", $k, $match))) {
                   $foreigntype = array_pop( $match ) ;
                   $foreigntype = getItemTypeForTable( "glpi_$foreigntype" ) ;
                }
@@ -304,7 +304,7 @@ function loadDataset() {
                   $input[$k] = $ids[$input['itemtype']][$v];
                } else if ($foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v)) {
                   // not found in ids array, then must get it from DB
-                  if($obj = getItemByTypeName($foreigntype, $v)) {
+                  if ($obj = getItemByTypeName($foreigntype, $v)) {
                      $input[$k] = $obj->getID() ;
                   }
                }

@@ -611,7 +611,7 @@ class Ticket extends CommonITILObject {
             }
             // enquete si statut clos
             if (($item->fields['status'] == self::CLOSED)
-                && Session::haveRight('ticket', Ticket::SURVEY)){
+                && Session::haveRight('ticket', Ticket::SURVEY)) {
                $satisfaction = new TicketSatisfaction();
                if ($satisfaction->getFromDB($item->getID())) {
                   $ong[3] = __('Satisfaction');
@@ -1468,8 +1468,8 @@ class Ticket extends CommonITILObject {
             && is_array($input["items_id"])
             && (count($input["items_id"]) > 0)) {
          $infocom = new Infocom();
-         foreach($input["items_id"] as $itemtype => $items){
-            foreach($items as $items_id){
+         foreach ($input["items_id"] as $itemtype => $items) {
+            foreach ($items as $items_id) {
                if ($item = getItemForItemtype($itemtype)) {
                   $item->getFromDB($items_id);
                   $input['items_locations'] = $item->fields['locations_id'];
@@ -1806,7 +1806,7 @@ class Ticket extends CommonITILObject {
       if (isset($input["_add_validation"])) {
          if (isset($input['entities_id'])) {
             $entid = $input['entities_id'];
-         } else if (isset($this->fields['entities_id'])){
+         } else if (isset($this->fields['entities_id'])) {
             $entid = $this->fields['entities_id'];
          } else {
             return false;
@@ -1883,7 +1883,7 @@ class Ticket extends CommonITILObject {
          // Validation user added on ticket form
          if (isset($input['users_id_validate'])) {
             if (array_key_exists('groups_id', $input['users_id_validate'])) {
-               foreach ($input['users_id_validate'] as $key => $validation_to_add){
+               foreach ($input['users_id_validate'] as $key => $validation_to_add) {
                   if (is_numeric($key)) {
                      $validations_to_send[] = $validation_to_add;
                   }
@@ -3330,7 +3330,7 @@ class Ticket extends CommonITILObject {
          if (!$tt->isHiddenField('_users_id_observer')) {
             // Observer
 
-            if($tt->isPredefinedField('_users_id_observer')
+            if ($tt->isPredefinedField('_users_id_observer')
                && !is_array($values['_users_id_observer'])) {
 
                //convert predefined value to array
@@ -3346,7 +3346,7 @@ class Ticket extends CommonITILObject {
             echo "<div class='actor_single first-actor'>";
             if (isset($values['_users_id_observer'])) {
                $observers = $values['_users_id_observer'];
-               foreach($observers as $index_observer => $observer) {
+               foreach ($observers as $index_observer => $observer) {
                   $options = array_merge($values, array('_user_index' => $index_observer));
                   self::showFormHelpdeskObserver($options);
                }
@@ -5890,12 +5890,12 @@ class Ticket extends CommonITILObject {
          // Filename
          if (isset($this->input['_filename'])) {
             $count_files = count($this->input['_stock_image']);
-            foreach($this->input['_filename'] as $key => $filename){
+            foreach ($this->input['_filename'] as $key => $filename) {
                $this->input['_filename'][$count_files] = $filename;
                $count_files++;
             }
             $count_files = count($this->input['_stock_image']);
-            foreach($this->input['_tag_filename'] as $key => $tag){
+            foreach ($this->input['_tag_filename'] as $key => $tag) {
                $this->input['_tag'][$count_files] = $tag;
                $count_files++;
             }
@@ -5907,7 +5907,7 @@ class Ticket extends CommonITILObject {
             $this->input['_filename'][$key] = $filename;
          }
          unset($this->input['_stock_image']);
-         foreach($this->input['_tag_stock_image'] as $key => $tag){
+         foreach ($this->input['_tag_stock_image'] as $key => $tag) {
             $this->input['_tag'][$key] = $tag;
             $count_files++;
          }
@@ -6432,14 +6432,14 @@ class Ticket extends CommonITILObject {
          $options = array( 'parent' => $this,
                            'rand' => $rand
                            ) ;
-         if($obj = getItemForItemtype($item['type'])){
+         if ($obj = getItemForItemtype($item['type'])) {
             $obj->fields = $item['item'] ;
          } else {
             $obj = $item ;
          }
          Plugin::doHook('pre_show_item', array('item' => &$obj, 'options' => &$options));
 
-         if(is_array($obj)){
+         if (is_array($obj)) {
             $item_i = $obj['item'];
          } else {
             $item_i = $obj->fields;
@@ -6530,7 +6530,7 @@ class Ticket extends CommonITILObject {
             echo "<p>";
             if (isset($item_i['state'])) {
                $onClick = "onclick='change_task_state(".$item_i['id'].", this)'";
-               if(!$item_i['can_edit']) {
+               if (!$item_i['can_edit']) {
                   $onClick = "style='cursor: not-allowed;'" ;
                }
                echo "<span class='state state_".$item_i['state']."'
@@ -6665,8 +6665,7 @@ class Ticket extends CommonITILObject {
                || ($item_i['users_id_recipient'] == 0))
                && ($dem == 0)) {
             _e("Requester");
-         }
-         else {
+         } else {
             if (isset($item_i['users_id_recipient'])
                   && ($item_i['users_id_recipient'] != 0)) {
                $user->getFromDB($this->fields['users_id_recipient']);
@@ -7009,16 +7008,16 @@ class Ticket extends CommonITILObject {
     */
    function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = array()){
       if (isset($field_id_or_search_options['linkfield'])) {
-         switch($field_id_or_search_options['linkfield']) {
+         switch ($field_id_or_search_options['linkfield']) {
             case 'requesttypes_id':
                $opt = 'is_ticketheader = 1';
                if (isset($field_id_or_search_options['joinparams']) && Toolbox::in_array_recursive('glpi_ticketfollowups', $field_id_or_search_options['joinparams'])) {
                   $opt = 'is_ticketfollowup = 1';
                }
-               if($field_id_or_search_options['linkfield']  == $name) {
+               if ($field_id_or_search_options['linkfield']  == $name) {
                   $opt .= ' AND is_active = 1' ;
                }
-               if(isset( $options['condition'] )) {
+               if (isset( $options['condition'] )) {
                   $opt .=  ' AND '.$options['condition'];
                }
                $options['condition'] = $opt;

@@ -2254,6 +2254,14 @@ a.icon_nav_move:hover img {
    text-decoration: underline;
 }
 
+#c_preference .select2-choice {
+   color: #3a5693;
+}
+
+#c_preference p {
+   margin: 0;
+}
+
 #c_recherche {
    position: relative;
 }
@@ -2585,7 +2593,7 @@ ul#menu ul.ssmenu {
    background: transparent;
 }
 
-#iframe {
+.iframe {
     width: 100%;
     height: 100%;
     margin: 0;

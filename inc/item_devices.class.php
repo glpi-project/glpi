@@ -149,7 +149,7 @@ class Item_Devices extends CommonDBRelation {
    **/
    static function getSpecificities($specif='') {
 
-      switch($specif) {
+      switch ($specif) {
          case 'serial' :
             return array('long name'  => __('Serial number'),
                          'short name' => __('Serial number'),

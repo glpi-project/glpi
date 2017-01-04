@@ -275,7 +275,7 @@ class RuleImportComputer extends Rule {
                if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
                   if (!isset($input[$criterion]) || ($input[$criterion] == '')) {
                      $continue = false;
-                  } else  {
+                  } else {
                      $complex_criterias[] = $crit;
                   }
                }

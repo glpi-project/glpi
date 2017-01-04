@@ -84,27 +84,6 @@ function completecleandisplay(id) {
    if (e) {
       setdisplay(e,'block');
 
-/* if(document.getElementById('show_entities')){
-      var oneTime=0;
-      var divHeight = document.getElementById('show_entities').offsetHeight;
-      var divWidth = document.getElementById('show_entities').offsetWidth;
-
-      if (divHeight>300){
-
-
-         document.getElementById('show_entities').style.overflow = 'auto';
-         document.getElementById('show_entities').style.height = '400px';
-         // document.getElementById('show_entities').style.width =  divWidth + 'px';
-         document.getElementById('show_entities').style.width =  '300px';
-
-      }
-
-
-
-   }
-*/
-
-
       if (isIe()) {
          e.onmouseleave = function(){ completecleanhide(id) };
          hideSelect(0,0,document.documentElement.clientWidth,document.documentElement.clientHeight);
@@ -763,32 +742,6 @@ function massiveUpdateCheckbox(criterion, reference) {
 }
 
 
-$(function(){
-
-        $("body").delegate('td','mouseover mouseleave', function(e) {
-            var col = $(this).closest('tr').children().index($(this));
-            var tr = $(this).closest('tr');
-            if (!$(this).closest('tr').hasClass('noHover')) {
-            if (e.type == 'mouseover') {
-               tr.addClass("rowHover");
-               // If rowspan
-               if (tr.has('td[rowspan]').length == 0) {
-
-                     tr.prevAll('tr:has(td[rowspan]):first').find('td[rowspan]').addClass("rowHover");
-               }
-
-               $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').addClass("headHover");
-            } else {
-               tr.removeClass("rowHover");
-               // remove rowspan
-               tr.removeClass("rowHover").prevAll('tr:has(td[rowspan]):first').find('td[rowspan]').removeClass("rowHover");
-               $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').removeClass("headHover");
-            }
-            }
-        });
-
-});
-
 //Hack for Jquery Ui Date picker
 var _gotoToday = jQuery.datepicker._gotoToday;
 jQuery.datepicker._gotoToday = function(a){
@@ -933,8 +886,48 @@ if ($(window).width() <= 700) {
    }
 }
 
+langSwitch = function(elt) {
+   var _url = elt.attr('href').replace(/front\/preference.+/, 'ajax/switchlang.php');
+   $.ajax({
+      url: _url,
+      type: 'GET',
+      success: function(html) {
+         $('#language_link')
+            .html(html);
+         $('#debugajax').remove();
+      }
+   });
+}
 
-// prevent jquery ui dialog to keep focus
 $(function(){
+   $("body").delegate('td','mouseover mouseleave', function(e) {
+      var col = $(this).closest('tr').children().index($(this));
+      var tr = $(this).closest('tr');
+      if (!$(this).closest('tr').hasClass('noHover')) {
+      if (e.type == 'mouseover') {
+         tr.addClass("rowHover");
+         // If rowspan
+         if (tr.has('td[rowspan]').length == 0) {
+
+               tr.prevAll('tr:has(td[rowspan]):first').find('td[rowspan]').addClass("rowHover");
+         }
+
+         $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').addClass("headHover");
+      } else {
+         tr.removeClass("rowHover");
+         // remove rowspan
+         tr.removeClass("rowHover").prevAll('tr:has(td[rowspan]):first').find('td[rowspan]').removeClass("rowHover");
+         $(this).closest('table').find('tr:not(.noHover) th:nth-child('+(col+1)+')').removeClass("headHover");
+      }
+      }
+   });
+
+   // prevent jquery ui dialog to keep focus
    $.ui.dialog.prototype._focusTabbable = function(){};
+
+   //quick lang switch
+   $('#language_link > a').on('click', function(event) {
+      event.preventDefault();
+      langSwitch($(this));
+   });
 });

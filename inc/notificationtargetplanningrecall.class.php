@@ -84,7 +84,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
    **/
    function getTaskAssignUser() {
       $item = new $this->obj->fields['itemtype'];
-      if($item->getFromDB($this->obj->fields['items_id'])) {
+      if ($item->getFromDB($this->obj->fields['items_id'])) {
          $user = new User();
          if ($item->isField('users_id_tech')
              && $user->getFromDB($item->getField('users_id_tech'))) {

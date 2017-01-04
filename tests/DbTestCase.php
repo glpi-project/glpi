@@ -49,7 +49,7 @@ class DbTestCase extends PHPUnit_Framework_TestCase {
       global $DB;
 
       // Cleanup log directory
-      foreach(glob(GLPI_LOG_DIR . '/*.log') as $file) {
+      foreach (glob(GLPI_LOG_DIR . '/*.log') as $file) {
          unlink($file);
       }
 

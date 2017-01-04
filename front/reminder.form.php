@@ -76,7 +76,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-}  else if (isset($_POST["addvisibility"])) {
+} else if (isset($_POST["addvisibility"])) {
    if (isset($_POST["_type"]) && !empty($_POST["_type"])
        && isset($_POST["reminders_id"]) && $_POST["reminders_id"]) {
       $item = NULL;
@@ -112,7 +112,7 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-}  else {
+} else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       Html::helpHeader(Reminder::getTypeName(Session::getPluralNumber()), '', $_SESSION["glpiname"]);
    } else {

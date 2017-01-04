@@ -78,7 +78,7 @@ if (Session::haveRight('user', READ)) {
    $showuserlink = 1;
 }
 
-switch($_GET["type"]) {
+switch ($_GET["type"]) {
    case "technicien" :
       $val1    = $_GET["id"];
       $val2    = "";

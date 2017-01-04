@@ -274,7 +274,7 @@ class Toolbox {
    static function encrypt($string, $key) {
 
       $result = '';
-      for($i=0 ; $i<strlen($string) ; $i++) {
+      for ($i=0 ; $i<strlen($string) ; $i++) {
          $char    = substr($string, $i, 1);
          $keychar = substr($key, ($i % strlen($key))-1, 1);
          $char    = chr(ord($char)+ord($keychar));
@@ -297,7 +297,7 @@ class Toolbox {
       $result = '';
       $string = base64_decode($string);
 
-      for($i=0 ; $i<strlen($string) ; $i++) {
+      for ($i=0 ; $i<strlen($string) ; $i++) {
          $char    = substr($string, $i, 1);
          $keychar = substr($key, ($i % strlen($key))-1, 1);
          $char    = chr(ord($char)-ord($keychar));
@@ -683,7 +683,7 @@ class Toolbox {
       }
 
       // if $mime is defined, ignore mime type by extension
-      if($mime === null && preg_match('/\.(...)$/', $file, $regs)){
+      if ($mime === null && preg_match('/\.(...)$/', $file, $regs)) {
          $mimeTypeMap = [
             'sql' => 'text/x-sql',
             'xml' => 'text/xml',
@@ -694,9 +694,9 @@ class Toolbox {
 
          $ext = strtolower($regs[1]);
 
-         if(isset($mimeTypeMap[$ext])){
+         if (isset($mimeTypeMap[$ext])) {
             $mime = $mimeTypeMap[$ext];
-         }else{
+         } else {
             $mime = 'application/octetstream';
          }
       }
@@ -704,7 +704,7 @@ class Toolbox {
       // don't download picture files, see them inline
       $attachment = "";
       // if not begin 'image/'
-      if(strncmp($mime, 'image/', 6) !== 0){
+      if (strncmp($mime, 'image/', 6) !== 0) {
          $attachment = ' attachment;';
       }
 
@@ -721,11 +721,11 @@ class Toolbox {
 
       // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
       // http://tools.ietf.org/html/rfc7232#section-3.3
-      if(isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag){
+      if (isset($_SERVER['HTTP_IF_NONE_MATCH']) && trim($_SERVER['HTTP_IF_NONE_MATCH']) === $etag) {
          http_response_code(304); //304 - Not Modified
          exit;
       }
-      if(isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified){
+      if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified) {
          http_response_code(304); //304 - Not Modified
          exit;
       }
@@ -1813,9 +1813,9 @@ class Toolbox {
             $decoded_where = rawurldecode($where);
             // redirect to URL : URL must be rawurlencoded
             if ($link = preg_match('/(https?:\/\/[^\/]+)\/.+/', $decoded_where, $matches)) {
-               if($matches[1] !== $CFG_GLPI['url_base']) {
+               if ($matches[1] !== $CFG_GLPI['url_base']) {
                   Session::addMessageAfterRedirect('Redirection failed');
-                  if($_SESSION["glpiactiveprofile"]["interface"] === "helpdesk") {
+                  if ($_SESSION["glpiactiveprofile"]["interface"] === "helpdesk") {
                      Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
                   } else {
                      Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
@@ -1942,7 +1942,7 @@ class Toolbox {
       $last = self::strtolower($val[strlen($val)-1]);
       $val  = (int)$val;
 
-      switch($last) {
+      switch ($last) {
          // Le modifieur 'G' est disponible depuis PHP 5.1.0
          case 'g' :
             $val *= 1024;
@@ -2424,14 +2424,13 @@ class Toolbox {
 
       $isvalidReferer = true;
 
-      if (!isset($_SERVER['HTTP_REFERER'])){
+      if (!isset($_SERVER['HTTP_REFERER'])) {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             Html::displayErrorAndDie(__("No HTTP_REFERER found in request. Reload previous page before doing action again."),
                                   true);
             $isvalidReferer = false;
          }
-      }
-      else if (!is_array($url = parse_url($_SERVER['HTTP_REFERER']))){
+      } else if (!is_array($url = parse_url($_SERVER['HTTP_REFERER']))) {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             Html::displayErrorAndDie(__("Error when parsing HTTP_REFERER. Reload previous page before doing action again."),
                                   true);
@@ -2439,10 +2438,10 @@ class Toolbox {
          }
       }
 
-      if(!isset($url['host'])
+      if (!isset($url['host'])
           || (($url['host'] != $_SERVER['SERVER_NAME'])
             && (!isset($_SERVER['HTTP_X_FORWARDED_SERVER'])
-               || ($url['host'] != $_SERVER['HTTP_X_FORWARDED_SERVER'])))){
+               || ($url['host'] != $_SERVER['HTTP_X_FORWARDED_SERVER'])))) {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             Html::displayErrorAndDie(__("None or Invalid host in HTTP_REFERER. Reload previous page before doing action again."),
                                   true);
@@ -2450,7 +2449,7 @@ class Toolbox {
          }
       }
 
-      if(!isset($url['path'])
+      if (!isset($url['path'])
           || (!empty($CFG_GLPI['root_doc'])
             && (strpos($url['path'], $CFG_GLPI['root_doc']) !== 0))) {
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
@@ -2460,7 +2459,7 @@ class Toolbox {
          }
       }
 
-      if(!$isvalidReferer && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE){
+      if (!$isvalidReferer && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE) {
             Html::displayErrorAndDie(__("The action you have requested is not allowed. Reload previous page before doing action again."),
                                   true);
       }
@@ -2538,13 +2537,13 @@ class Toolbox {
 
       $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($haystack));
 
-      foreach($it AS $element) {
-         if($strict) {
-            if($element === $needle) {
+      foreach ($it AS $element) {
+         if ($strict) {
+            if ($element === $needle) {
                return true;
             }
          } else {
-            if($element == $needle) {
+            if ($element == $needle) {
                return true;
             }
          }
