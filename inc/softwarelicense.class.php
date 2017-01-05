@@ -78,7 +78,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       $input = parent::prepareInputForAdd($input);
 
-      if (!isset($this->fields['softwares_id']) || !$this->fields['softwares_id']) {
+      if (!isset($this->input['softwares_id']) || !$this->input['softwares_id']) {
             Session::addMessageAfterRedirect(__("Please select a software for this license"), true,
                                              ERROR, true);
             return false;
@@ -1256,7 +1256,7 @@ class SoftwareLicense extends CommonTreeDropdown {
 
       if ($item->getType()=='Software' && self::canView()) {
          self::showForSoftware($item);
-      }else{
+      } else {
          if ($item->getType()=='SoftwareLicense' && self::canView()) {
             self::getSonsOf($item);
             return true;
@@ -1266,7 +1266,7 @@ class SoftwareLicense extends CommonTreeDropdown {
    }
 
 
-   static function getSonsOf($item){
+   static function getSonsOf($item) {
       global $DB;
       $entity_assign = $item->isEntityAssign();
       $nb            = 0;
@@ -1297,7 +1297,7 @@ class SoftwareLicense extends CommonTreeDropdown {
             $crit['id'] += $_SESSION['glpiparententities'];
          } else {
             foreach ($_SESSION['glpiactiveentities'] as $key => $value) {
-               $crit['entities_id'][$key] = (string)$value ;
+               $crit['entities_id'][$key] = (string)$value;
             }
          }
       }
