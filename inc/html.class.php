@@ -1431,7 +1431,7 @@ class Html {
 
       echo "' title=\"".__s('Logout')."\">";
       echo "<span id='logout_icon' title=\"".__s('Logout').
-             "\"  class='button-icon'></span>";
+             "\" class='button-icon'></span>";
       echo "</a>";
       echo "</li>\n";
 
@@ -1938,8 +1938,8 @@ class Html {
 
       echo "' title=\"".__s('Logout')."\">";
       // check user id : header used for display messages when session logout
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/logout.png' title=\"".__s('Logout').
-             "\"  alt=\"".__s('Logout')."\" class='button-icon'>";
+      echo "<span id='logout_icon' title=\"".__s('Logout').
+             "\" class='button-icon'></span>";
       echo "</a>";
       echo "</li>\n";
 
