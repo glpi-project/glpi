@@ -1092,6 +1092,49 @@ class Auth extends CommonGLPI {
    }
 
 
+   /**
+    * Redirect user to page if authenticated
+    *
+    * @param $redirect redirect string if exists, if null, check in $_POST or $_GET
+    *
+    * @return nothing if redirect is true, else false
+   **/
+   static function redirectIfAuthenticated($redirect=null) {
+      global $CFG_GLPI;
+
+      if (!Session::getLoginUserID()) {
+         return false;
+      }
+
+      if (!$redirect) {
+         if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
+            $redirect = $_POST['redirect'];
+         } else if (isset($_GET['redirect']) && strlen($_GET['redirect']) > 0) {
+            $redirect = $_GET['redirect'];
+         }
+      }
+
+      //Direct redirect
+      if ($redirect) {
+         Toolbox::manageRedirect($redirect);
+      }
+
+      // Redirect to Command Central if not post-only
+      if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+         if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
+            Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php?create_ticket=1");
+         }
+         Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php");
+
+      } else {
+         if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']) {
+            Html::redirect($CFG_GLPI['root_doc'] . "/front/ticket.form.php");
+         }
+         Html::redirect($CFG_GLPI['root_doc'] . "/front/central.php");
+      }
+   }
+
+
    /** Display refresh button in the user page
     *
     * @param $user User object
