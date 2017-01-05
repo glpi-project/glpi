@@ -650,8 +650,8 @@ class Ajax {
    **/
    static function updateItem($toupdate, $url, $parameters=array(), $toobserve="", $display=true) {
 
-      $output = "<script type='text/javascript'>";
-      $output  = "$(function() {";
+      $output  = "<script type='text/javascript'>";
+      $output .= "$(function() {";
       $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
       $output .= "});</script>";
       if ($display) {
