@@ -399,54 +399,56 @@ var insertImageInTinyMCE = function(editor, image) {
  * to check if a file upload can be proceeded
  * @param  {[Object]} editor TinyMCE editor
  */
-tinymce.PluginManager.add('paste_upload_doc', function(editor) {
-   editor.on('drop', function(event) {
-      if (event.dataTransfer
-          && event.dataTransfer.files.length > 0) {
-         stopEvent(event);
+if (typeof tinymce != 'undefined') {
+   tinymce.PluginManager.add('paste_upload_doc', function(editor) {
+      editor.on('drop', function(event) {
+         if (event.dataTransfer
+             && event.dataTransfer.files.length > 0) {
+            stopEvent(event);
 
-         // for earch dropped files
-         $.each(event.dataTransfer.files, function(index, element) {
-            insertImageInTinyMCE(editor, element);
-         });
-      }
+            // for earch dropped files
+            $.each(event.dataTransfer.files, function(index, element) {
+               insertImageInTinyMCE(editor, element);
+            });
+         }
+      });
+
+      editor.on('PastePreProcess', function(event) {
+         //Check if data is an image
+         if (isImageFromPaste(event.content)) {
+            stopEvent(event);
+
+            //extract base64 data
+            var base64 = extractSrcFromImgTag(event.content);
+
+            //trasnform to blob
+            var file = dataURItoBlob(base64);
+
+            insertImageInTinyMCE(editor, file);
+
+         } else if (isImageBlobFromPaste(event.content)) {
+            stopEvent(event);
+
+            var src = extractSrcFromBlobImgTag(event.content);
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', src, true);
+            xhr.responseType = 'blob';
+            xhr.onload = function(event) {
+               if (this.status == 200) {
+                  // fill missing file properties
+                  var file  = new Blob([this.response], {type: 'image/png'});
+                  file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
+
+                  insertImageInTinyMCE(editor, file);
+               } else{
+                  console.log("paste error");
+               }
+            };
+            xhr.send();
+         }
+      });
    });
-
-   editor.on('PastePreProcess', function(event) {
-      //Check if data is an image
-      if (isImageFromPaste(event.content)) {
-         stopEvent(event);
-
-         //extract base64 data
-         var base64 = extractSrcFromImgTag(event.content);
-
-         //trasnform to blob
-         var file = dataURItoBlob(base64);
-
-         insertImageInTinyMCE(editor, file);
-
-      } else if (isImageBlobFromPaste(event.content)) {
-         stopEvent(event);
-
-         var src = extractSrcFromBlobImgTag(event.content);
-         var xhr = new XMLHttpRequest();
-         xhr.open('GET', src, true);
-         xhr.responseType = 'blob';
-         xhr.onload = function(event) {
-            if (this.status == 200) {
-               // fill missing file properties
-               var file  = new Blob([this.response], {type: 'image/png'});
-               file.name = 'image_paste'+ Math.floor((Math.random() * 10000000) + 1)+".png";
-
-               insertImageInTinyMCE(editor, file);
-            } else{
-               console.log("paste error");
-            }
-         };
-         xhr.send();
-      }
-   });
-});
+}
 
 
 $(function() {
