@@ -188,7 +188,7 @@ class Document_Item extends CommonDBRelation{
          $doc->getFromDB($this->fields['documents_id']);
          if (!empty($doc->fields['tag'])) {
             $ticket->getFromDB($this->fields['items_id']);
-            $input['content'] = $ticket->cleanTagOrImage($ticket->fields['content'],
+            $input['content'] = Toolbox::cleanTagOrImage($ticket->fields['content'],
                                                          array($doc->fields['tag']));
          }
 
@@ -611,7 +611,7 @@ class Document_Item extends CommonDBRelation{
       if ($item->getType() == 'Ticket') {
          echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
       }
-      echo Html::file(array('multiple' => true));
+      Html::file();
       echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
       echo "<td></td></tr>";
    }
@@ -707,7 +707,7 @@ class Document_Item extends CommonDBRelation{
          if ($item->getType() == 'Ticket') {
             echo "<input type='hidden' name='tickets_id' value='".$item->getID()."'>";
          }
-         echo Html::file(array('multiple' => true));
+         Html::file();
          echo "</td><td class='left'>(".Document::getMaxUploadSize().")&nbsp;</td>";
          echo "<td class='center' width='20%'>";
          echo "<input type='submit' name='add' value=\""._sx('button', 'Add a new file')."\"

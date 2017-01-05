@@ -162,15 +162,29 @@ class DocumentType  extends CommonDropdown {
    /**
     * @since version 0.85
    **/
-   static function showAvailableTypesLink() {
+   static function showAvailableTypesLink($options = []) {
       global $CFG_GLPI;
 
-      echo " <a href='#' onClick=\"".Html::jsGetElementbyID('documenttypelist').".dialog('open');\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/info-small.png' title=\"".__s('Help')."\"
-             alt=\"".__s('Help')."\" class='calendrier pointer'>";
-      echo "</a>";
-      Ajax::createIframeModalWindow('documenttypelist',
-                                    $CFG_GLPI["root_doc"]."/front/documenttype.list.php",
-                                    array('title' => static::getTypeName(Session::getPluralNumber())));
+      $p['display'] = true;
+
+      //merge default options with options parameter
+      $p = array_merge($p, $options);
+
+      $display = "&nbsp;";
+      $display .= "<a href='#' onClick=\"".Html::jsGetElementbyID('documenttypelist').
+                  ".dialog('open');\">";
+      $display .= "<img src='".$CFG_GLPI["root_doc"]."/pics/info-small.png' title=\"".__s('Help')."\"
+                        alt=\"".__s('Help')."\" class='calendrier pointer'>";
+      $display .= "</a>";
+      $display .= Ajax::createIframeModalWindow('documenttypelist',
+                                                $CFG_GLPI["root_doc"]."/front/documenttype.list.php",
+                                                ['title'   => static::getTypeName(Session::getPluralNumber()),
+                                                 'display' => false]);
+
+      if ($p['display']) {
+         echo $display;
+      } else {
+         return $display;
+      }
    }
 }

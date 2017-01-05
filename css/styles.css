@@ -1590,6 +1590,19 @@ a.icon_nav_move:hover img {
    background-color: #fff;
    border-radius: 5px;
    max-width: 950px;
+   margin-top: 5px;
+}
+
+.fileupload_info {
+   margin-bottom: 10px;
+}
+
+.upload_rich_text {
+   display : none;
+}
+
+.draghover {
+   background: #FBF8DF;
 }
 
 
