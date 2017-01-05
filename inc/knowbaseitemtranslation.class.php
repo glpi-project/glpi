@@ -50,6 +50,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
    static public $itemtype = 'KnowbaseItem';
    static public $items_id = 'knowbaseitems_id';
    public $dohistory       = true;
+   static public $logs_for_parent = false;
 
    static $rightname       = 'knowbase';
 
@@ -59,6 +60,17 @@ class KnowbaseItemTranslation extends CommonDBChild {
       return _n('Translation', 'Translations', $nb);
    }
 
+
+   function defineTabs($options=array()) {
+
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Comment', $ong, $options);
+
+      return $ong;
+   }
 
    function getForbiddenStandardMassiveAction() {
 
@@ -73,6 +85,18 @@ class KnowbaseItemTranslation extends CommonDBChild {
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
+      if (!$withtemplate) {
+         $nb = 0;
+         switch ($item->getType()) {
+            case __CLASS__ :
+               $ong[1] = $this->getTypeName(1);
+               if ($item->canUpdateItem()) {
+                  $ong[3] = __('Edit');
+               }
+               return $ong;
+         }
+      }
+
       if (self::canBeTranslated($item)) {
          $nb = 0;
          if ($_SESSION['glpishow_count_on_tabs']) {
@@ -80,6 +104,7 @@ class KnowbaseItemTranslation extends CommonDBChild {
          }
          return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
       }
+
       return '';
    }
 
@@ -91,12 +116,65 @@ class KnowbaseItemTranslation extends CommonDBChild {
    **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if (self::canBeTranslated($item)) {
+      if ($item->getType() == __CLASS__) {
+         switch ($tabnum) {
+            case 1 :
+               $item->showFull();
+               break;
+
+            case 2 :
+               $item->showVisibility();
+               break;
+
+            case 3 :
+               $item->showForm($item->getID());
+               break;
+         }
+      } else if (self::canBeTranslated($item)) {
          self::showTranslations($item);
       }
       return true;
    }
 
+   /**
+    * Print out (html) show item : question and answer
+    *
+    * @param $options      array of options
+    *
+    * @return nothing (display item : question and answer)
+   **/
+   function showFull($options=array()) {
+      global $DB, $CFG_GLPI;
+
+      if (!$this->can($this->fields['id'], READ)) {
+         return false;
+      }
+
+      $linkusers_id = true;
+      // show item : question and answer
+      if (((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
+          || ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk")
+          || !User::canView()) {
+         $linkusers_id = false;
+      }
+
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
+      echo $this->fields["name"];
+
+      echo "</td></tr>";
+      echo "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
+
+      echo "<div id='kbanswer'>";
+      $answer = $this->fields["answer"];
+      echo Toolbox::unclean_html_cross_side_scripting_deep($answer);
+      echo "</div>";
+      echo "</td></tr>";
+      echo "</table>";
+
+      return true;
+   }
 
    /**
     * Display all translated field for an KnowbaseItem
@@ -138,6 +216,9 @@ class KnowbaseItemTranslation extends CommonDBChild {
             $massiveactionparams = array('container' => 'mass'.__CLASS__.$rand);
             Html::showMassiveActions($massiveactionparams);
          }
+
+         Session::initNavigateListItems('KnowbaseItemTranslation', __('Entry translations list'));
+
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixehov'><tr class='tab_bg_2'>";
          echo "<th colspan='4'>".__("List of translations")."</th></tr>";
@@ -149,31 +230,20 @@ class KnowbaseItemTranslation extends CommonDBChild {
          echo "<th>".__("Language")."</th>";
          echo "<th>".__("Subject")."</th>";
          foreach ($found as $data) {
-            echo "<tr class='tab_bg_1' ".($canedit ? "style='cursor:pointer'
-                     onClick=\"viewEditTranslation".$data['id']."$rand();\"" : '') .
-                 ">";
+            echo "<tr class='tab_bg_1'>";
             if ($canedit) {
                echo "<td class='center'>";
                Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
                echo "</td>";
             }
             echo "<td>";
-            if ($canedit) {
-               echo "\n<script type='text/javascript' >\n";
-               echo "function viewEditTranslation". $data["id"]."$rand() {\n";
-               $params = array('type'            => __CLASS__,
-                              'parenttype'       => get_class($item),
-                              'knowbaseitems_id' => $item->getID(),
-                              'id'               => $data["id"]);
-               Ajax::updateItemJsCode("viewtranslation" . $item->getID() . "$rand",
-                                      $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php",
-                                      $params);
-               echo "};";
-               echo "</script>\n";
-            }
             echo Dropdown::getLanguageName($data['language']);
             echo "</td><td>";
-            echo  $data["name"];
+            if ($canedit) {
+               echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/knowbaseitemtranslation.form.php?id=".$data["id"] . "\">{$data['name']}</a>";
+            } else {
+               echo  $data["name"];
+            }
             if (isset($data['answer']) && !empty($data['answer'])) {
                echo "&nbsp;";
                Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($data['answer']));
@@ -221,7 +291,8 @@ class KnowbaseItemTranslation extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Language')."&nbsp;:</td>";
       echo "<td>";
-      echo "<input type='hidden' name='knowbaseitems_id' value='".$item->getID()."'>";
+      echo "<input type='hidden' name='users_id' value=\"".Session::getLoginUserID()."\">";
+      echo "<input type='hidden' name='knowbaseitems_id' value='".$this->fields['knowbaseitems_id']."'>";
       if ($ID > 0) {
          echo Dropdown::getLanguageName($this->fields['language']);
       } else {
@@ -332,5 +403,39 @@ class KnowbaseItemTranslation extends CommonDBChild {
          $tab[$data['language']] = $data['language'];
       }
       return $tab;
+   }
+
+   function pre_updateInDB() {
+      $revision = new KnowbaseItem_Revision();
+      $translation = new KnowbaseItemTranslation();
+      $translation->getFromDB($this->getID());
+      $revision->createNewTranslated($translation);
+   }
+
+   /**
+    * Reverts item translation contents to specified revision
+    *
+    * @param integer $revid Revision ID
+    *
+    * @return boolean
+    */
+   public function revertTo($revid) {
+      $revision = new KnowbaseItem_Revision();
+      $revision->getFromDB($revid);
+
+      $values = [
+         'id'     => $this->getID(),
+         'name'   => $revision->fields['name'],
+         'answer' => $revision->fields['answer']
+      ];
+
+      if ($this->update($values)) {
+         Event::log($this->getID(), "knowbaseitemtranslation", 5, "tools",
+                    //TRANS: %s is the user login, %d the revision number
+                    sprintf(__('%s reverts item translation to revision %id'), $_SESSION["glpiname"], $revision));
+         return true;
+      } else {
+         return false;
+      }
    }
 }

@@ -273,12 +273,13 @@ class TicketTask  extends CommonITILTask {
          echo "<input type='hidden' name='id' value='$ID'>";
       }
 
+      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$params]);
+
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='".($params['colspan']*2)."'>";
 
       if ($this->isNewID($ID)) {
          echo Ticket::getSplittedSubmitButtonHtml($this->fields['tickets_id'], 'add');
-         // echo "<input type='hidden' name='id' value='$ID'>";
       } else {
          if ($params['candel']
                // no dustbin in tickettask

@@ -53,10 +53,12 @@ class KnowbaseItem extends CommonDBVisible {
    protected $groups    = array();
    protected $profiles  = array();
    protected $entities  = array();
+   protected $items     = array();
 
    const KNOWBASEADMIN = 1024;
    const READFAQ       = 2048;
    const PUBLISHFAQ    = 4096;
+   const COMMENTS      = 8192;
 
    static $rightname   = 'knowbase';
 
@@ -142,6 +144,14 @@ class KnowbaseItem extends CommonDBVisible {
                   && $this->haveVisibilityAccess()));
    }
 
+   /**
+    * Check if current user can comment on KB entries
+    *
+    * @return boolean
+    */
+   public function canComment() {
+      return $this->canViewItem() && Session::haveRight(self::$rightname, self::COMMENTS);
+   }
 
    /**
     * Get the search page URL for the current classe
@@ -167,10 +177,13 @@ class KnowbaseItem extends CommonDBVisible {
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Document_Item', $ong, $options);
 
       $this->addStandardTab('KnowbaseItemTranslation', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Comment', $ong, $options);
 
       return $ong;
    }
@@ -302,6 +315,9 @@ class KnowbaseItem extends CommonDBVisible {
 
       // Profile / entities
       $this->profiles = KnowbaseItem_Profile::getProfiles($this->fields['id']);
+
+      //Linked kb items
+      $this->knowbase_items = KnowbaseItem_Item::getItems($this);
    }
 
 
@@ -319,6 +335,10 @@ class KnowbaseItem extends CommonDBVisible {
       $class = new Group_KnowbaseItem();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
       $class = new KnowbaseItem_Profile();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new KnowbaseItem_Item();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new KnowbaseItem_Revision();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
@@ -406,7 +426,6 @@ class KnowbaseItem extends CommonDBVisible {
       return $join;
    }
 
-
    /**
     * Return visibility SQL restriction to add
     *
@@ -456,6 +475,113 @@ class KnowbaseItem extends CommonDBVisible {
       return $restrict;
    }
 
+   /**
+    * Return visibility joins to add to DBIterator parameters
+    *
+    * @since version 9.2
+    *
+    * @param boolean $forceall force all joins (false by default)
+    *
+    * @return array
+    */
+   static public function getVisibilityCriteria($forceall=false) {
+
+      $join = [];
+      $where = [];
+
+      // Users
+      $join['glpi_knowbaseitems_users'] = [
+         'FKEY' => [
+            'glpi_knowbaseitems_users' => 'knowbaseitems_id',
+            'glpi_knowbaseitems'       => 'id'
+         ]
+      ];
+
+      if (Session::getLoginUserID()) {
+         $where['`glpi_knowbaseitems_users`.`users_id`'] = Session::getLoginUserID();
+      }
+
+      // Groups
+      if ($forceall
+          || (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"]))) {
+         $join['glpi_groups_knowbaseitems'] = [
+            'FKEY' => [
+               'glpi_groups_knowbaseitems' => 'knowbaseitems_id',
+               'glpi_knowbaseitems'        => 'id'
+            ]
+         ];
+
+         if (Session::getLoginUserID()) {
+            $where['`glpi_groups_knowbaseitems`.`groups_id`'] = $_SESSION["glpigroups"];
+            $where['`glpi_groups_knowbaseitems`.`entities_id`'] = ['<', '0'];
+            $restrict = getEntitiesRestrictCriteria('glpi_groups_knowbaseitems', '', '', true, true);
+            if (count($restrict)) {
+               if (isset($restrict['OR']) && count($restrict['OR'])) {
+                  $where = $where + $restrict['OR'];
+               } else if (!isset($restrict['OR'])) {
+                  $where = $where + $restrict;
+               }
+            }
+         }
+      }
+
+      // Profiles
+      if ($forceall
+          || (isset($_SESSION["glpiactiveprofile"])
+              && isset($_SESSION["glpiactiveprofile"]['id']))) {
+         $join['glpi_knowbaseitems_profiles'] = [
+            'FKEY' => [
+               'glpi_knowbaseitems_profiles' => 'knowbaseitems_id',
+               'glpi_knowbaseitems'          => 'id'
+            ]
+         ];
+
+         if (Session::getLoginUserID()) {
+            $where['`glpi_knowbaseitems_profiles`.`profiles_id`'] = $_SESSION["glpiactiveprofile"]['id'];
+            $where['`glpi_knowbaseitems_profiles`.`entities_id`'] = ['<', '0'];
+            $restrict = getEntitiesRestrictCriteria('glpi_knowbaseitems_profiles', '', '', true, true);
+            if (count($restrict)) {
+               if (isset($restrict['OR']) && count($restrict['OR'])) {
+                  $where = $where + $restrict['OR'];
+               } else if (!isset($restrict['OR'])) {
+                  $where = $where + $restrict;
+               }
+            }
+         }
+      }
+
+      // Entities
+      if ($forceall
+          || !Session::getLoginUserID()
+          || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))) {
+         $join['glpi_entities_knowbaseitems'] = [
+            'FKEY' => [
+               'glpi_entities_knowbaseitems' => 'knowbaseitems_id',
+               'glpi_knowbaseitems'          => 'id'
+            ]
+         ];
+
+         if (Session::getLoginUserID()) {
+            $restrict = getEntitiesRestrictCriteria('glpi_entities_knowbaseitems', '', '', true, true);
+            if (count($restrict)) {
+               if (isset($restrict['OR']) && count($restrict['OR'])) {
+                  $where = $where + $restrict['OR'];
+               } else if (!isset($restrict['OR'])) {
+                  $where = $where + $restrict;
+               }
+            } else {
+               $where['`glpi_entities_knowbaseitems`.`entities_id`'] = null;
+            }
+         }
+      }
+
+      $criteria = ['JOIN' => $join];
+      if (count($where)) {
+         $criteria['WHERE'] = ['OR' => $where];
+      }
+
+      return $criteria;
+   }
 
    /**
     * @see CommonDBTM::prepareInputForAdd()
@@ -709,6 +835,13 @@ class KnowbaseItem extends CommonDBVisible {
          return false;
       }
 
+      $default_options = [
+         'display' => true,
+      ];
+      $options = array_merge($default_options, $options);
+
+      $out = "";
+
       $linkusers_id = true;
       // show item : question and answer
       if (((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
@@ -725,26 +858,26 @@ class KnowbaseItem extends CommonDBVisible {
 
       $tmp = "<a href='".$this->getSearchURL().
              "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Category'), $tmp);
-      echo "</th></tr>";
+      $out.= "<table class='tab_cadre_fixe'>";
+      $out.= "<tr><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Category'), $tmp);
+      $out.= "</th></tr>";
 
-      echo "<tr><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
+      $out.= "<tr><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
       if (KnowbaseItemTranslation::canBeTranslated($this)) {
-         echo KnowbaseItemTranslation::getTranslatedValue($this, 'name');
+         $out.= KnowbaseItemTranslation::getTranslatedValue($this, 'name');
       } else {
-         echo $this->fields["name"];
+         $out.= $this->fields["name"];
       }
 
-      echo "</td></tr>";
-      echo "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
+      $out.= "</td></tr>";
+      $out.= "<tr><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
-      echo "<div id='kbanswer'>";
-      echo $this->getAnswer();
-      echo "</div>";
-      echo "</td></tr>";
+      $out.= "<div id='kbanswer'>";
+      $out.= $this->getAnswer();
+      $out.= "</div>";
+      $out.= "</td></tr>";
 
-      echo "<tr><th class='tdkb'  colspan='2'>";
+      $out.= "<tr><th class='tdkb'  colspan='2'>";
       if ($this->fields["users_id"]) {
          // Integer because true may be 2 and getUserName return array
          if ($linkusers_id) {
@@ -753,36 +886,42 @@ class KnowbaseItem extends CommonDBVisible {
             $linkusers_id = 0;
          }
 
-         printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],
+         $out.= sprintf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],
                 $linkusers_id));
-         echo "<br>";
+         $out.= "<br>";
       }
 
       if ($this->fields["date"]) {
          //TRANS: %s is the datetime of update
-         printf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
-         echo "<br>";
+         $out.= sprintf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
+         $out.= "<br>";
       }
       if ($this->fields["date_mod"]) {
          //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
+         $out.= sprintf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
 
-      echo "</th>";
-      echo "<th class='tdkb' colspan='2'>";
+      $out.= "</th>";
+      $out.= "<th class='tdkb' colspan='2'>";
       if ($this->countVisibilities() == 0) {
-         echo "<span class='red'>".__('Unpublished')."</span><br>";
+         $out.= "<span class='red'>".__('Unpublished')."</span><br>";
       }
 
-      printf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]);
-      echo "<br>";
+      $out.= sprintf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]);
+      $out.= "<br>";
       if ($this->fields["is_faq"]) {
-         _e('This item is part of the FAQ');
+         $out.= __('This item is part of the FAQ');
       } else {
-         _e('This item is not part of the FAQ');
+         $out.= __('This item is not part of the FAQ');
       }
-      echo "</th></tr>";
-      echo "</table>";
+      $out.= "</th></tr>";
+      $out.= "</table>";
+
+      if ($options['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }
 
       return true;
    }
@@ -1586,9 +1725,17 @@ class KnowbaseItem extends CommonDBVisible {
          $values = parent::getRights();
          $values[self::KNOWBASEADMIN] = __('Knowledge base administration');
          $values[self::PUBLISHFAQ]    = __('Publish in the FAQ');
+         $values[self::COMMENTS]      = __('Comment KB entries');
       }
       $values[self::READFAQ]       = __('Read the FAQ');
       return $values;
+   }
+
+   function pre_updateInDB() {
+      $revision = new KnowbaseItem_Revision();
+      $kb = new KnowbaseItem();
+      $kb->getFromDB($this->getID());
+      $revision->createNew($kb);
    }
 
    /**
@@ -1638,5 +1785,32 @@ class KnowbaseItem extends CommonDBVisible {
       $params = parent::getShowVisibilityDropdownParams();
       $params['right'] = ($this->getField('is_faq') ? 'faq' : 'knowbase');
       return $params;
+   }
+
+   /**
+    * Reverts item contents to specified revision
+    *
+    * @param integer $revid Revision ID
+    *
+    * @return boolean
+    */
+   public function revertTo($revid) {
+      $revision = new KnowbaseItem_Revision();
+      $revision->getFromDB($revid);
+
+      $values = [
+         'id'     => $this->getID(),
+         'name'   => $revision->fields['name'],
+         'answer' => $revision->fields['answer']
+      ];
+
+      if ($this->update($values)) {
+         Event::log($this->getID(), "knowbaseitem", 5, "tools",
+                    //TRANS: %s is the user login, %d the revision number
+                    sprintf(__('%s reverts item to revision %id'), $_SESSION["glpiname"], $revision));
+         return true;
+      } else {
+         return false;
+      }
    }
 }

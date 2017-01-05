@@ -1,10 +1,15 @@
 <?php
 /*
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2015-2016 Teclib'.
+
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
 
- http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
  LICENSE
@@ -27,22 +32,30 @@
  */
 
 /** @file
- * @since version 9.1
-* @brief
+* @brief   Retrieve the knowledgebase links associated to a category
+* @since   9.2
+* @author  Alexandre Delaunay
 */
 
-$AJAX_INCLUDE = 1;
-
 include ('../inc/includes.php');
-header("Content-Type: application/json; charset=UTF-8");
+
+// Send UTF8 Headers
+header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['tasktemplates_id']) && ($_POST['tasktemplates_id'] > 0)) {
-   $template = new TaskTemplate();
-   $template->getFromDB($_POST['tasktemplates_id']);
+if (isset($_POST["table"])
+    && isset($_POST["value"])) {
+   // Security
+   if (!TableExists($_POST['table'])) {
+      exit();
+   }
 
-   $template->fields = array_map('html_entity_decode', $template->fields);
-   echo json_encode($template->fields);
+   if (isset($_POST['withlink'])) {
+      $itemtype = getItemTypeForTable($_POST["table"]);
+      $item = new $itemtype;
+      $item->getFromDB(intval($_POST["value"]));
+      echo '&nbsp;'.$item->getLinks();
+   }
 }

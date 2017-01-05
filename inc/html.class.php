@@ -5756,7 +5756,7 @@ class Html {
       $message = "<a href=\"http://glpi-project.org/\" title=\"Powered By Teclib\" class=\"copyright\">";
       $message .= "GLPI " .
          (isset($CFG_GLPI["version"]) ? $CFG_GLPI['version'] : GLPI_VERSION) .
-         " Copyright (C) 2015-" . GLPI_YEAR . " Teclib'".
+         " Copyright (C) 2015-" . GLPI_YEAR . " Teclib' and contributors".
          " - Copyright (C) 2003-2015 INDEPNET Development Team".
          "</a>";
       return $message;

@@ -120,8 +120,27 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
+} else if (isset($_GET["id"]) and isset($_GET['to_rev'])) {
+   $kb->check($_GET["id"], UPDATE);
+   if ($kb->revertTo($_GET['to_rev'])) {
+      Session::addMessageAfterRedirect(
+         sprintf(
+            __('Knowledge base item has been reverted to revision %s'),
+            $_GET['to_rev']
+         )
+      );
+   } else {
+      Session::addMessageAfterRedirect(
+         sprintf(
+            __('Knowledge base item has not been reverted to revision %s'),
+            $_GET['to_rev']
+         ),
+         false,
+         ERROR
+      );
+   }
+   Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET['id']);
 } else if (isset($_GET["id"])) {
-
    if (isset($_GET["_in_modal"])) {
       Html::popHeader(__('Knowledge base'), $_SERVER['PHP_SELF']);
       $kb = new KnowbaseItem();

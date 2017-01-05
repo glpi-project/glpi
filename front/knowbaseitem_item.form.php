@@ -2,9 +2,13 @@
 /*
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2015-2016 Teclib'.
+
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
 
- http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
  LICENSE
@@ -27,22 +31,29 @@
  */
 
 /** @file
- * @since version 9.1
 * @brief
 */
 
-$AJAX_INCLUDE = 1;
-
 include ('../inc/includes.php');
-header("Content-Type: application/json; charset=UTF-8");
-Html::header_nocache();
 
-Session::checkLoginUser();
+Session ::checkLoginUser();
 
-if (isset($_POST['tasktemplates_id']) && ($_POST['tasktemplates_id'] > 0)) {
-   $template = new TaskTemplate();
-   $template->getFromDB($_POST['tasktemplates_id']);
+$item = new KnowbaseItem_Item();
 
-   $template->fields = array_map('html_entity_decode', $template->fields);
-   echo json_encode($template->fields);
+if (isset($_POST["add"])) {
+   if (!isset($_POST['knowbaseitems_id']) || !isset($_POST['items_id']) || !isset($_POST['itemtype'])) {
+      $message = __('Mandatory fields are not filled!');
+      Session::addMessageAfterRedirect($message, false, ERROR);
+      Html::back();
+   }
+
+   $item->check(-1, CREATE, $_POST);
+
+   if ($item->add($_POST)) {
+      Event::log($_POST["knowbaseitems_id"], "knowbaseitem", 4, "tracking",
+                  sprintf(__('%s adds a link with an knowledge base'), $_SESSION["glpiname"]));
+   }
+   Html::back();
 }
+
+Html::displayErrorAndDie("lost");

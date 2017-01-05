@@ -2067,6 +2067,8 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
+      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$params]);
+
       if ($params['formfooter'] === null) {
           $this->showDates($params);
       }
@@ -2075,11 +2077,10 @@ class CommonDBTM extends CommonGLPI {
           || !$this->canEdit($ID)) {
          echo "</table></div>";
          // Form Header always open form
-         if (!$params['canedit']) {
-            Html::closeForm();
-         }
+         Html::closeForm();
          return false;
       }
+
       echo "<tr class='tab_bg_2'>";
 
       if ($params['withtemplate']
@@ -2373,6 +2374,8 @@ class CommonDBTM extends CommonGLPI {
          }
          echo "</th></tr>\n";
       }
+
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$params]);
 
       // If in modal : do not display link on message after redirect
       if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {

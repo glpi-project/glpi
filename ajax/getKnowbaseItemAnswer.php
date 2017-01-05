@@ -1,10 +1,15 @@
 <?php
 /*
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2015-2016 Teclib'.
+
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
 
- http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
  LICENSE
@@ -27,22 +32,20 @@
  */
 
 /** @file
- * @since version 9.1
 * @brief
+* @author Alexandre Delaunay
+* @since version 9.2
 */
 
-$AJAX_INCLUDE = 1;
-
 include ('../inc/includes.php');
-header("Content-Type: application/json; charset=UTF-8");
+
+header('Content-type: application/json');
 Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['tasktemplates_id']) && ($_POST['tasktemplates_id'] > 0)) {
-   $template = new TaskTemplate();
-   $template->getFromDB($_POST['tasktemplates_id']);
-
-   $template->fields = array_map('html_entity_decode', $template->fields);
-   echo json_encode($template->fields);
+if (isset($_POST['knowbaseitems_id'])) {
+   $kbitem = new KnowbaseItem;
+   $kbitem->getFromDB(intval($_POST['knowbaseitems_id']));
+   $kbitem->showFull();
 }

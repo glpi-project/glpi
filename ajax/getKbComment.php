@@ -1,10 +1,15 @@
 <?php
 /*
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
+ Copyright (C) 2015-2016 Teclib'.
+
+ http://glpi-project.org
+
+ based on GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2014 by the INDEPNET Development Team.
 
- http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
  LICENSE
@@ -27,22 +32,33 @@
  */
 
 /** @file
- * @since version 9.1
 * @brief
 */
 
-$AJAX_INCLUDE = 1;
-
 include ('../inc/includes.php');
-header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST['tasktemplates_id']) && ($_POST['tasktemplates_id'] > 0)) {
-   $template = new TaskTemplate();
-   $template->getFromDB($_POST['tasktemplates_id']);
-
-   $template->fields = array_map('html_entity_decode', $template->fields);
-   echo json_encode($template->fields);
+if (!isset($_POST['kbitem_id'])) {
+   throw new \RuntimeException('Required argument missing!');
 }
+
+$kbitem_id = $_POST['kbitem_id'];
+$lang = null;
+if (isset($_POST['language'])) {
+   $lang = $_POST['language'];
+}
+
+$edit = false;
+if (isset($_POST['edit'])) {
+   $edit = $_POST['edit'];
+}
+
+$answer = false;
+if (isset($_POST['answer'])) {
+   $answer = $_POST['answer'];
+}
+
+echo KnowbaseItem_Comment::getCommentForm($kbitem_id, $lang, $edit, $answer);

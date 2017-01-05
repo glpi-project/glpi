@@ -702,6 +702,7 @@ class Ticket extends CommonITILObject {
       }
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('TicketValidation', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Item_Ticket', $ong, $options);
       $this->addStandardTab('TicketCost', $ong, $options);
       $this->addStandardTab('Projecttask_Ticket', $ong, $options);
@@ -2233,6 +2234,12 @@ class Ticket extends CommonITILObject {
 
          if (Session::haveRight(self::$rightname, UPDATE)) {
             MassiveAction::getAddTransferList($actions);
+
+            $kb_item = new KnowbaseItem();
+            $kb_item->getEmpty();
+            if ($kb_item->canViewItem()) {
+               $actions['KnowbaseItem_Item'.MassiveAction::CLASS_ACTION_SEPARATOR.'add'] = _x('button', 'Link knowledgebase article');
+            }
          }
       }
       return $actions;
@@ -3897,6 +3904,7 @@ class Ticket extends CommonITILObject {
          }
       }
       echo "<div class='spaced' id='tabsbody'>";
+
       echo "<table class='tab_cadre_fixe' id='mainformtable'>";
 
       // Optional line
@@ -3922,6 +3930,8 @@ class Ticket extends CommonITILObject {
          }
       }
       echo "</th></tr>";
+
+      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => &$options]);
 
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>";
@@ -4507,19 +4517,22 @@ class Ticket extends CommonITILObject {
       echo "</td>";
       echo "</tr>";
 
+      Plugin::doHook("post_item_form", ['item' => $this, 'options' => &$options]);
+
+      echo "</table>";
+
       if ((!$ID
            || $canupdate
            || $canupdate_descr
            || Session::haveRightsOr(self::$rightname, array(self::ASSIGN, self::STEAL, DELETE, PURGE)))
           && !$options['template_preview']) {
 
-         echo "<tr class='tab_bg_1'>";
-
+         echo "<div>";
          if ($ID) {
             if (Session::haveRightsOr(self::$rightname, array(UPDATE, DELETE, PURGE))
                 || $this->canDeleteItem()
                 || $this->canUpdateItem()) {
-               echo "<td class='tab_bg_2 center' colspan='4'>";
+               echo "<div class='center'>";
                if ($this->fields["is_deleted"] == 1) {
                   if (self::canPurge()) {
                      echo "<input type='submit' class='submit' name='restore' value='".
@@ -4544,21 +4557,22 @@ class Ticket extends CommonITILObject {
                   }
                }
                echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
-               echo "</td>";
+               echo "</div>";
             }
 
          } else {
-            echo "<td class='tab_bg_2 center' colspan='4'>";
+            echo "<div class='tab_bg_2 center'>";
             echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
             if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
                echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
                echo "<input type='hidden' name='_predefined_fields'
                       value=\"".Toolbox::prepareArrayForInput($predefined_fields)."\">";
             }
+            echo '</div>';
          }
       }
 
-      echo "</table>";
+      echo "</table>"
       echo "<input type='hidden' name='id' value='$ID'>";
 
       echo "</div>";
