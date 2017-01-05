@@ -107,7 +107,12 @@ function loadDataset() {
             'name'         => '_test_soft',
             'entities_id'  => '_test_root_entity',
             'is_recursive' => 1,
+         ], [
+            'name'         => '_test_soft2',
+            'entities_id'  => '_test_child_2',
+            'is_recursive' => 0,
          ]
+
       ], 'SoftwareVersion' => [
          [
             'name'        => '_test_softver_1',
@@ -341,6 +346,76 @@ function loadDataset() {
             'name'          => 'markdown',
             'is_uploadable' => '1',
             'ext'           => 'md'
+         ]
+      ], 'SoftwareLicense' => [
+         [
+            'name'         => '_test_softlic_1',
+            'completename' => '_test_softlic_1',
+            'level'        => 0,
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
+            'number'       => 2,
+            'softwares_id' => '_test_soft',
+         ],
+         [
+            'name'         => '_test_softlic_2',
+            'completename' => '_test_softlic_2',
+            'level'        => 0,
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
+            'number'       => 3,
+            'softwares_id' => '_test_soft',
+         ],
+         [
+            'name'         => '_test_softlic_3',
+            'completename' => '_test_softlic_3',
+            'level'        => 0,
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
+            'number'       => 5,
+            'softwares_id' => '_test_soft',
+         ],
+         [
+            'name'         => '_test_softlic_4',
+            'completename' => '_test_softlic_4',
+            'level'        => 0,
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
+            'number'       => 5,
+            'softwares_id' => '_test_soft',
+         ],
+         [
+            'name'         => '_test_softlic_child',
+            'completename' => '_test_softlic_child',
+            'level'        => 0,
+            'entities_id'  => '_test_root_entity',
+            'is_recursive' => 1,
+            'number'       => 1,
+            'softwares_id' => '_test_soft',
+            'softwarelicenses_id' => '_test_softlic_1',
+         ],
+      ], 'Computer_SoftwareLicense' => [
+         [
+            'softwarelicenses_id' => '_test_softlic_1',
+            'computers_id'        => '_test_pc21',
+         ], [
+            'softwarelicenses_id' => '_test_softlic_1',
+            'computers_id'        => '_test_pc01',
+         ], [
+            'softwarelicenses_id' => '_test_softlic_1',
+            'computers_id'        => '_test_pc02',
+         ], [
+            'softwarelicenses_id' => '_test_softlic_2',
+            'computers_id'        => '_test_pc02',
+         ], [
+            'softwarelicenses_id' => '_test_softlic_3',
+            'computers_id'        => '_test_pc02',
+         ], [
+            'softwarelicenses_id' => '_test_softlic_3',
+            'computers_id'        => '_test_pc21',
+         ], [
+            'softwarelicenses_id' => '_test_softlic_2',
+            'computers_id'        => '_test_pc21',
          ]
       ]
    ];
