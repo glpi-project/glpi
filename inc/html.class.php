@@ -3847,7 +3847,7 @@ class Html {
    /**
     * Convert rich text content to simple text content
     *
-    * @since version 0.85
+    * @since version 9.2
     *
     * @param $content : content to convert in html
     *

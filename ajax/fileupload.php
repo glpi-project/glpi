@@ -3,7 +3,7 @@
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2015 Teclib'.
+ Copyright (C) 2017 Teclib'.
 
  http://glpi-project.org
 
@@ -33,7 +33,7 @@
 
 /** @file
 * @brief
-* @since version 0.85
+* @since version 9.2
 */
 
 include ('../inc/includes.php');
