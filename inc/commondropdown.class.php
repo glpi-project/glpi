@@ -832,4 +832,76 @@ abstract class CommonDropdown extends CommonDBTM {
       parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
    }
 
+   /**
+    * Get links to Faq
+    *
+    * @param $withname  boolean  also display name ? (false by default)
+   **/
+   function getLinks($withname=false) {
+      global $CFG_GLPI;
+
+      $ret = '';
+
+      if ($withname) {
+         $ret .= $this->fields["name"];
+         $ret .= "&nbsp;&nbsp;";
+      }
+
+      if ($this->isField('knowbaseitemcategories_id')
+          && $this->fields['knowbaseitemcategories_id']) {
+         $title = __('FAQ');
+
+         if (isset($_SESSION['glpiactiveprofile'])
+             && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
+            $title = __('Knowledge base');
+         }
+
+         $rand = mt_rand();
+         $kbitem = new KnowbaseItem;
+         $found_kbitem = $kbitem->find("`knowbaseitemcategories_id` = ".
+                                       $this->fields['knowbaseitemcategories_id']);
+
+         $kbitem->getFromDB(reset($found_kbitem)['id']);
+         if (count($found_kbitem)) {
+            $ret.= "<div class='faqadd_block'>";
+            $ret.= "<label for='display_faq_chkbox$rand'>";
+            $ret.= "<img src='".$CFG_GLPI["root_doc"]."/pics/faqadd.png' class='middle pointer'
+                      alt=\"$title\" title=\"$title\">";
+            $ret.= "</label>";
+            $ret.= "<input type='checkbox'  class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
+            $ret.= "<div class='faqadd_entries'>";
+            if (count($found_kbitem) == 1) {
+               $ret.= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
+               $ret.= $kbitem->showFull(['display' => false]);
+               $ret.= "</div>"; // .faqadd_block_content
+            } else {
+               $ret.= Html::scriptBlock("
+                  var getKnowbaseItemAnswer$rand = function() {
+                     var knowbaseitems_id = $('#dropdown_knowbaseitems_id$rand').val();
+                     $('#faqadd_block_content$rand').load(
+                        '".$CFG_GLPI['root_doc']."/ajax/getKnowbaseItemAnswer.php',
+                        {
+                           'knowbaseitems_id': knowbaseitems_id
+                        }
+                     );
+                  };
+               ");
+               $ret.= "<label for='dropdown_knowbaseitems_id$rand'>".
+                      KnowbaseItem::getTypeName()."</label>&nbsp;";
+               $ret.= KnowbaseItem::dropdown(['value'     => reset($found_kbitem)['id'],
+                                              'display'   => false,
+                                              'rand'      => $rand,
+                                              'condition' => "`knowbaseitemcategories_id` = ".
+                                                             $this->fields['knowbaseitemcategories_id'],
+                                              'on_change' => "getKnowbaseItemAnswer$rand()"]);
+               $ret.= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
+               $ret.= $kbitem->showFull(['display' => false]);
+               $ret.= "</div>"; // .faqadd_block_content
+            }
+            $ret.= "</div>"; // .faqadd_entries
+            $ret.= "</div>"; // .faqadd_block
+         }
+      }
+      return $ret;
+   }
 }

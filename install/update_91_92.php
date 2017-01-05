@@ -54,7 +54,10 @@ function update91to92() {
    $backup_tables = false;
    // table already exist but deleted during the migration
    // not table created during the migration
-   $newtables     = array();
+   $newtables     = array(
+      'glpi_businesscriticities',
+      'glpi_knowbaseitems_items'
+   );
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -72,6 +75,33 @@ function update91to92() {
    }
 
    //put you migration script here
+
+   // add business criticity
+   $migration->addField("glpi_infocoms", "businesscriticities_id", "integer");
+   $migration->addKey("glpi_infocoms", "businesscriticities_id");
+   if (!TableExists("glpi_businesscriticities")) {
+      $query = "CREATE TABLE `glpi_businesscriticities` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+        `entities_id` int(11) NOT NULL DEFAULT '0',
+        `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+        `comment` text COLLATE utf8_unicode_ci,
+        `date_mod` datetime DEFAULT NULL,
+        `date_creation` datetime DEFAULT NULL,
+        `businesscriticities_id` int(11) NOT NULL DEFAULT '0',
+        `completename` text COLLATE utf8_unicode_ci,
+        `level` int(11) NOT NULL DEFAULT '0',
+        `ancestors_cache` longtext COLLATE utf8_unicode_ci,
+        `sons_cache` longtext COLLATE utf8_unicode_ci,
+        PRIMARY KEY (`id`),
+        KEY `name` (`name`),
+        KEY `unicity` (`businesscriticities_id`,`name`),
+        KEY `date_mod` (`date_mod`),
+        KEY `date_creation` (`date_creation`)
+      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "Add business criticity table");
+   }
+
    // Issue #1250 - Add decimal to monitor size
    $migration->changeField('glpi_monitors', 'size', 'size', 'DECIMAL(5,2)');
 
@@ -100,6 +130,88 @@ function update91to92() {
                    AND `name` = 'device'";
    $DB->queryOrDie($query, "grant READ right on components to profiles having UPDATE right");
 
+   $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item link to tickets'));
+   if (!TableExists('glpi_knowbaseitems_items')) {
+      $query = "CREATE TABLE `glpi_knowbaseitems_items` (
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `knowbaseitems_id` int(11) NOT NULL,
+                 `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+                 `items_id` int(11) NOT NULL DEFAULT '0',
+                 `date_creation` datetime DEFAULT NULL,
+                 `date_mod` datetime DEFAULT NULL,
+                 PRIMARY KEY (`id`),
+                 UNIQUE KEY `unicity` (`itemtype`,`items_id`,`knowbaseitems_id`),
+                 KEY `itemtype` (`itemtype`),
+                 KEY `item_id` (`items_id`),
+                 KEY `item` (`itemtype`,`items_id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.2 add table glpi_knowbaseitems_items");
+   }
+
+   $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item revisions'));
+   if (!TableExists('glpi_knowbaseitems_revisions')) {
+      $query = "CREATE TABLE `glpi_knowbaseitems_revisions` (
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `knowbaseitems_id` int(11) NOT NULL,
+                 `revision` int(11) NOT NULL,
+                 `name` text COLLATE utf8_unicode_ci,
+                 `answer` longtext COLLATE utf8_unicode_ci,
+                 `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 `users_id` int(11) NOT NULL,
+                 `date_creation` datetime DEFAULT NULL,
+                 PRIMARY KEY (`id`),
+                 UNIQUE KEY `unicity` (`knowbaseitems_id`, `revision`, `language`),
+                 KEY `revision` (`revision`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "9.2 add table glpi_knowbaseitems_revisions");
+   }
+
+   $migration->addField("glpi_knowbaseitemtranslations", "users_id", "integer");
+   $migration->addKey("glpi_knowbaseitemtranslations", "users_id");
+
+   //set kb translations users...
+   $query = "SELECT `id`, `users_id`
+             FROM `glpi_knowbaseitem`
+             INNER JOIN `glpi_knowbaseitemtranslations`
+                ON `glpi_knowbaseitemtranslations`.`knowbaseitems_id` = `glpi_knowbaseitem`.`id`";
+
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result)>0) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $query = "UPDATE `glpi_knowbaseitemtranslations`
+                          SET `users_id` = '{$data['users_id']}'
+                          WHERE `knowbaseitems_id` = '{$data['id']}'";
+            $DB->queryOrDie($query, 'Set knowledge base translations users');
+         }
+      }
+   }
+
+   $migration->addField("glpi_knowbaseitemtranslations", "date_creation", "DATE");
+   $migration->addField("glpi_knowbaseitemtranslations", "date_mod", "DATE");
+
+   $migration->displayMessage(sprintf(__('Add of - %s to database'), 'Knowbase item comments'));
+   if (!TableExists('glpi_knowbaseitems_comments')) {
+      $query = "CREATE TABLE `glpi_knowbaseitems_comments` (
+                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `knowbaseitems_id` int(11) NOT NULL,
+                 `users_id` int(11) NOT NULL DEFAULT '0',
+                 `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+                 `comment` text COLLATE utf8_unicode_ci NOT NULL,
+                 `parent_comment_id` int(11) DEFAULT NULL,
+                 `date_creation` datetime DEFAULT NULL,
+                 `date_mod` datetime DEFAULT NULL,
+                 PRIMARY KEY (`id`)
+               ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "9.2 add table glpi_knowbaseitems_comments");
+   }
+
+   $query = "UPDATE `glpi_profilerights`
+             SET `rights` = `rights` | " . KnowbaseItem::COMMENTS ."
+             WHERE `name` = 'knowbase'";
+   $DB->queryOrDie($query, "9.2 update knowledge base with comment right");
+
+   // add kb category to task categories
+   $migration->addField("glpi_taskcategories", "knowbaseitemcategories_id", "integer");
 
    // ************ Keep it at the end **************
    $migration->executeMigration();

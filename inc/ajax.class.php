@@ -336,14 +336,11 @@ class Ajax {
                   ui.panel.html($('#loadingtabs$rand').html());
                   forceReload$rand = false;
                 }
-            },
-            ajaxOptions: {type: 'POST'},
-            activate : function( event, ui ) {
-               // Get future value
-               var newIndex = ui.newTab.parent().children().index(ui.newTab);
+               var newIndex = ui.tab.parent().children().index(ui.tab);
                $.get('".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php',
                   { itemtype: '$type', id: '$ID', tab: newIndex });
-            }
+            },
+            ajaxOptions: {type: 'POST'}
          });";
 
          if ($orientation=='vertical') {
@@ -650,8 +647,8 @@ class Ajax {
    **/
    static function updateItem($toupdate, $url, $parameters=array(), $toobserve="", $display=true) {
 
-      $output = "<script type='text/javascript'>";
-      $output  = "$(function() {";
+      $output  = "<script type='text/javascript'>";
+      $output .= "$(function() {";
       $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
       $output .= "});</script>";
       if ($display) {

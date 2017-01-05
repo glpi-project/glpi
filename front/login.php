@@ -76,23 +76,7 @@ $auth = new Auth();
 
 // now we can continue with the process...
 if ($auth->Login($login, $password, (isset($_REQUEST["noAUTO"])?$_REQUEST["noAUTO"]:false))) {
-
-   // Redirect to Command Central if not post-only
-   if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']
-          && empty($REDIRECT)) {
-         Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php?create_ticket=1");
-      }
-      Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
-
-   } else {
-      if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']
-          && empty($REDIRECT)) {
-         Html::redirect($CFG_GLPI['root_doc'] . "/front/ticket.form.php");
-      }
-      Html::redirect($CFG_GLPI['root_doc'] . "/front/central.php$REDIRECT");
-   }
-
+   Auth::redirectIfAuthenticated();
 } else {
    // we have done at least a good login? No, we exit.
    Html::nullHeader("Login", $CFG_GLPI["root_doc"] . '/index.php');

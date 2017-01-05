@@ -184,6 +184,7 @@ class Dropdown {
       if ($params['comments']) {
          $comment_id      = Html::cleanId("comment_".$params['name'].$params['rand']);
          $link_id         = Html::cleanId("comment_link_".$params['name'].$params['rand']);
+         $kblink_id       = Html::cleanId("kb_link_".$params['name'].$params['rand']);
          $options_tooltip = array('contentid' => $comment_id,
                                   'linkid'    => $link_id,
                                   'display'   => false);
@@ -220,15 +221,22 @@ class Dropdown {
             }
          }
 
-         if (($itemtype == 'ITILCategory')
-             && Session::haveRight('knowbase', READ)) {
-
-            if ($params['value'] && $item->getFromDB($params['value'])) {
-               $output .= '&nbsp;'.$item->getLinks();
-            }
-         }
          $paramscomment = array('value' => '__VALUE__',
                                 'table' => $table);
+         if ($item->isField('knowbaseitemcategories_id')
+             && Session::haveRight('knowbase', READ)) {
+
+            if (method_exists($item, 'getLinks')) {
+               $output .= "<span id='$kblink_id'>";
+               $output .= '&nbsp;'.$item->getLinks();
+               $output .= "</span>";
+               $paramscomment['withlink'] = $kblink_id;
+               $output .= Ajax::updateItemOnSelectEvent($field_id, $kblink_id,
+                                                        $CFG_GLPI["root_doc"]."/ajax/kblink.php",
+                                                        $paramscomment, false);
+            }
+         }
+
          if ($item->canView()) {
             $paramscomment['withlink'] = $link_id;
          }
@@ -870,7 +878,10 @@ class Dropdown {
                                           'Document headings',
                                           Session::getPluralNumber()),
                  'DocumentType'     => _n('Document type', 'Document types',
+                                          Session::getPluralNumber()),
+                 'BusinessCriticity' => _n('Business criticity', 'Business criticities',
                                           Session::getPluralNumber())
+
              ),
 
              __('Tools') => array(

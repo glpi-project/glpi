@@ -347,7 +347,7 @@ class Config extends CommonDBTM {
             __('Page size for dropdown (paging using scroll)').
             "</td><td>";
       Dropdown::showNumber('dropdown_max', array('value' => $CFG_GLPI["dropdown_max"],
-                                                 'min'   => 0,
+                                                 'min'   => 1,
                                                  'max'   => 200));
       echo "</td>";
       echo "<td>" . __('Autocompletion of text fields') . "</td><td>";
