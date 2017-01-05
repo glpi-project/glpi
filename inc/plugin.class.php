@@ -1054,7 +1054,7 @@ class Plugin extends CommonDBTM {
                      'networkport_instantiations', 'networkport_types',
                      'notificationtemplates_types', 'planning_types', 'reservation_types',
                      'rulecollections_types', 'systeminformations_types', 'ticket_types',
-                     'unicity_types', 'link_types') as $att) {
+                     'unicity_types', 'link_types', 'kb_types') as $att) {
 
          if (isset($attrib[$att]) && $attrib[$att]) {
             array_push($CFG_GLPI[$att], $itemtype);

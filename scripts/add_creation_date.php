@@ -59,7 +59,7 @@ $types = array('Computer', 'Monitor', 'Printer', 'Phone', 'Software', 'SoftwareV
                'ContractType', 'ContactType', 'DeviceMemoryType', 'SupplierType', 'InterfaceType',
                'DeviceCaseType', 'PhonePowerSupply', 'Filesystem', 'VirtualMachineType',
                'VirtualMachineSystem', 'VirtualMachineState', 'DocumentCategory', 'DocumentType',
-               'KnowbaseItemCategory', 'Calendar', 'Holiday', 'NetworkEquipmentFirmware',
+               'KnowbaseItemCategory', 'KnowbaseItemTranslation', 'Calendar', 'Holiday', 'NetworkEquipmentFirmware',
                'Network', 'Domain', 'Vlan', 'IPNetwork', 'FQDN', 'WifiNetwork', 'NetworkName',
                'UserTitle', 'UserCategory', 'RuleRightParameter', 'Fieldblacklist', 'SsoVariable',
                'NotificationTemplate', 'Notification', 'SLA', 'FieldUnicity', 'Crontask', 'Link',

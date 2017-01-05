@@ -110,6 +110,7 @@ class Supplier extends CommonDBTM {
       $this->addStandardTab('Change_Item', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Notepad', $ong, $options);
+      $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
       return $ong;

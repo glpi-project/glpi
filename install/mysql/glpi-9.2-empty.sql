@@ -262,6 +262,29 @@ CREATE TABLE `glpi_budgettypes` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+### Dump table glpi_businesscriticities
+
+DROP TABLE IF EXISTS `glpi_businesscriticities`;
+CREATE TABLE `glpi_businesscriticities` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text COLLATE utf8_unicode_ci,
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  `businesscriticities_id` int(11) NOT NULL DEFAULT '0',
+  `completename` text COLLATE utf8_unicode_ci,
+  `level` int(11) NOT NULL DEFAULT '0',
+  `ancestors_cache` longtext COLLATE utf8_unicode_ci,
+  `sons_cache` longtext COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `unicity` (`businesscriticities_id`,`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 ### Dump table glpi_calendars
 
@@ -3283,8 +3306,12 @@ CREATE TABLE `glpi_knowbaseitemtranslations` (
   `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
   `name` text COLLATE utf8_unicode_ci,
   `answer` longtext COLLATE utf8_unicode_ci,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `date_mod` datetime DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `item` (`knowbaseitems_id`,`language`),
+  KEY `users_id` (`users_id`),
   FULLTEXT KEY `fulltext` (`name`,`answer`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -5388,7 +5415,7 @@ INSERT INTO `glpi_profilerights` VALUES ('12','1','contact_enterprise','0');
 INSERT INTO `glpi_profilerights` VALUES ('13','1','document','0');
 INSERT INTO `glpi_profilerights` VALUES ('14','1','contract','0');
 INSERT INTO `glpi_profilerights` VALUES ('15','1','infocom','0');
-INSERT INTO `glpi_profilerights` VALUES ('16','1','knowbase','2048');
+INSERT INTO `glpi_profilerights` VALUES ('16','1','knowbase','10240');
 INSERT INTO `glpi_profilerights` VALUES ('20','1','reservation','1024');
 INSERT INTO `glpi_profilerights` VALUES ('21','1','reports','0');
 INSERT INTO `glpi_profilerights` VALUES ('22','1','dropdown','0');
@@ -5455,7 +5482,7 @@ INSERT INTO `glpi_profilerights` VALUES ('106','2','contact_enterprise','33');
 INSERT INTO `glpi_profilerights` VALUES ('107','2','document','33');
 INSERT INTO `glpi_profilerights` VALUES ('108','2','contract','33');
 INSERT INTO `glpi_profilerights` VALUES ('109','2','infocom','1');
-INSERT INTO `glpi_profilerights` VALUES ('110','2','knowbase','2049');
+INSERT INTO `glpi_profilerights` VALUES ('110','2','knowbase','10241');
 INSERT INTO `glpi_profilerights` VALUES ('114','2','reservation','1025');
 INSERT INTO `glpi_profilerights` VALUES ('115','2','reports','1');
 INSERT INTO `glpi_profilerights` VALUES ('116','2','dropdown','0');
@@ -5526,7 +5553,7 @@ INSERT INTO `glpi_profilerights` VALUES ('200','3','contact_enterprise','127');
 INSERT INTO `glpi_profilerights` VALUES ('201','3','document','127');
 INSERT INTO `glpi_profilerights` VALUES ('202','3','contract','127');
 INSERT INTO `glpi_profilerights` VALUES ('203','3','infocom','31');
-INSERT INTO `glpi_profilerights` VALUES ('204','3','knowbase','6175');
+INSERT INTO `glpi_profilerights` VALUES ('204','3','knowbase','14367');
 INSERT INTO `glpi_profilerights` VALUES ('208','3','reservation','1055');
 INSERT INTO `glpi_profilerights` VALUES ('209','3','reports','1');
 INSERT INTO `glpi_profilerights` VALUES ('210','3','dropdown','31');
@@ -5596,7 +5623,7 @@ INSERT INTO `glpi_profilerights` VALUES ('294','4','contact_enterprise','255');
 INSERT INTO `glpi_profilerights` VALUES ('295','4','document','255');
 INSERT INTO `glpi_profilerights` VALUES ('296','4','contract','255');
 INSERT INTO `glpi_profilerights` VALUES ('297','4','infocom','31');
-INSERT INTO `glpi_profilerights` VALUES ('298','4','knowbase','7327');
+INSERT INTO `glpi_profilerights` VALUES ('298','4','knowbase','15519');
 INSERT INTO `glpi_profilerights` VALUES ('302','4','reservation','1055');
 INSERT INTO `glpi_profilerights` VALUES ('303','4','reports','1');
 INSERT INTO `glpi_profilerights` VALUES ('304','4','dropdown','31');
@@ -5667,7 +5694,7 @@ INSERT INTO `glpi_profilerights` VALUES ('388','5','contact_enterprise','0');
 INSERT INTO `glpi_profilerights` VALUES ('389','5','document','0');
 INSERT INTO `glpi_profilerights` VALUES ('390','5','contract','0');
 INSERT INTO `glpi_profilerights` VALUES ('391','5','infocom','0');
-INSERT INTO `glpi_profilerights` VALUES ('392','5','knowbase','0');
+INSERT INTO `glpi_profilerights` VALUES ('392','5','knowbase','8192');
 INSERT INTO `glpi_profilerights` VALUES ('396','5','reservation','0');
 INSERT INTO `glpi_profilerights` VALUES ('397','5','reports','0');
 INSERT INTO `glpi_profilerights` VALUES ('398','5','dropdown','0');
@@ -5738,7 +5765,7 @@ INSERT INTO `glpi_profilerights` VALUES ('482','6','contact_enterprise','96');
 INSERT INTO `glpi_profilerights` VALUES ('483','6','document','127');
 INSERT INTO `glpi_profilerights` VALUES ('484','6','contract','96');
 INSERT INTO `glpi_profilerights` VALUES ('485','6','infocom','0');
-INSERT INTO `glpi_profilerights` VALUES ('486','6','knowbase','6175');
+INSERT INTO `glpi_profilerights` VALUES ('486','6','knowbase','14367');
 INSERT INTO `glpi_profilerights` VALUES ('490','6','reservation','1055');
 INSERT INTO `glpi_profilerights` VALUES ('491','6','reports','1');
 INSERT INTO `glpi_profilerights` VALUES ('492','6','dropdown','0');
@@ -5809,7 +5836,7 @@ INSERT INTO `glpi_profilerights` VALUES ('576','7','contact_enterprise','96');
 INSERT INTO `glpi_profilerights` VALUES ('577','7','document','127');
 INSERT INTO `glpi_profilerights` VALUES ('578','7','contract','96');
 INSERT INTO `glpi_profilerights` VALUES ('579','7','infocom','0');
-INSERT INTO `glpi_profilerights` VALUES ('580','7','knowbase','6175');
+INSERT INTO `glpi_profilerights` VALUES ('580','7','knowbase','14367');
 INSERT INTO `glpi_profilerights` VALUES ('584','7','reservation','1055');
 INSERT INTO `glpi_profilerights` VALUES ('585','7','reports','1');
 INSERT INTO `glpi_profilerights` VALUES ('586','7','dropdown','0');
@@ -5886,7 +5913,7 @@ INSERT INTO `glpi_profilerights` VALUES ('769','8','group','129');
 INSERT INTO `glpi_profilerights` VALUES ('770','8','infocom','1');
 INSERT INTO `glpi_profilerights` VALUES ('771','8','internet','129');
 INSERT INTO `glpi_profilerights` VALUES ('772','8','itilcategory','1');
-INSERT INTO `glpi_profilerights` VALUES ('773','8','knowbase','2177');
+INSERT INTO `glpi_profilerights` VALUES ('773','8','knowbase','10369');
 INSERT INTO `glpi_profilerights` VALUES ('774','8','knowbasecategory','1');
 INSERT INTO `glpi_profilerights` VALUES ('775','8','link','129');
 INSERT INTO `glpi_profilerights` VALUES ('776','8','location','1');
@@ -7036,6 +7063,7 @@ CREATE TABLE `glpi_taskcategories` (
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `taskcategories_id` int(11) NOT NULL DEFAULT '0',
+  `knowbaseitemcategories_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `completename` text COLLATE utf8_unicode_ci,
   `comment` text COLLATE utf8_unicode_ci,
@@ -7049,6 +7077,7 @@ CREATE TABLE `glpi_taskcategories` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `taskcategories_id` (`taskcategories_id`),
+  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_active` (`is_active`),
@@ -7663,4 +7692,53 @@ CREATE TABLE `glpi_wifinetworks` (
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_knowbaseitems_items
+
+DROP TABLE IF EXISTS `glpi_knowbaseitems_items`;
+CREATE TABLE `glpi_knowbaseitems_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int(11) NOT NULL,
+  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `date_creation` datetime DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`knowbaseitems_id`),
+  KEY `itemtype` (`itemtype`),
+  KEY `item_id` (`items_id`),
+  KEY `item` (`itemtype`,`items_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_knowbaseitems_revisions
+
+DROP TABLE IF EXISTS `glpi_knowbaseitems_revisions`;
+CREATE TABLE `glpi_knowbaseitems_revisions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int(11) NOT NULL,
+  `revision` int(11) NOT NULL,
+  `name` text COLLATE utf8_unicode_ci,
+  `answer` longtext COLLATE utf8_unicode_ci,
+  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `date_creation` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`knowbaseitems_id`, `revision`, `language`),
+  KEY `revision` (`revision`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+### Dump table glpi_knowbaseitems_comments
+
+DROP TABLE IF EXISTS `glpi_knowbaseitems_comments`;
+CREATE TABLE `glpi_knowbaseitems_comments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `knowbaseitems_id` int(11) NOT NULL,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `language` varchar(5) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `comment` text COLLATE utf8_unicode_ci NOT NULL,
+  `parent_comment_id` int(11) DEFAULT NULL,
+  `date_creation` datetime DEFAULT NULL,
+  `date_mod` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
