@@ -146,8 +146,9 @@ class KnowbaseItem_Item extends CommonDBRelation {
             $rand = self::dropdownAllTypes($item, 'items_id');
          } else {
             $rand = KnowbaseItem::dropdown([
-               'entity' => $item->getEntityID(),
-               'used'   => self::getItems($item, 0, 0, true)
+               'entity'    => $item->getEntityID(),
+               'used'      => self::getItems($item, 0, 0, true),
+               'condition' => KnowbaseItem::addVisibilityRestrict()
             ]);
          }
          echo "</td><td>";

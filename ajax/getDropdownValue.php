@@ -525,6 +525,10 @@ if ($item instanceof CommonTreeDropdown) {
                    $where";
          break;
 
+      case KnowbaseItem::getType():
+         $addjoin   .= KnowbaseItem::addVisibilityJoins();
+         //no break to reach default case.
+
       default :
          $query = "SELECT `$table`.* $addselect
                    FROM `$table`
