@@ -3823,7 +3823,7 @@ class Html {
          relative_urls: false,
          remove_script_host: false,
          entity_encoding: 'raw',
-         paste_data_images: true,
+         paste_data_images: $('.fileupload').length,
          menubar: false,
          statusbar: false,
          skin: 'light',
