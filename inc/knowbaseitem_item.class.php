@@ -330,6 +330,7 @@ class KnowbaseItem_Item extends CommonDBRelation {
       } else {
          $id_field = 'glpi_knowbaseitems_items.items_id';
          $where = getEntitiesRestrictCriteria($item->getTable(), '', '', $item->maybeRecursive());
+         $where[] = ['glpi_knowbaseitems_items.itemtype' => $item::getType()];
          if (count($where)) {
             $options['FROM'][] = $item->getTable();
             $where[] = ['glpi_knowbaseitems_items.items_id' => '`' . $item->getTable() . '`.`id`'];
