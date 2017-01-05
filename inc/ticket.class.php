@@ -1467,13 +1467,21 @@ class Ticket extends CommonITILObject {
       if (isset($input["items_id"])
             && is_array($input["items_id"])
             && (count($input["items_id"]) > 0)) {
+         $infocom = new Infocom();
          foreach ($input["items_id"] as $itemtype => $items) {
             foreach ($items as $items_id) {
                if ($item = getItemForItemtype($itemtype)) {
                   $item->getFromDB($items_id);
                   $input['items_locations'] = $item->fields['locations_id'];
+                  $input['items_groups'] = $item->fields['groups_id'];
+                  if ($infocom->getFromDBforDevice($itemtype, $items_id)) {
+                     $input['items_businesscriticities']
+                        = Dropdown::getDropdownName('glpi_businesscriticities',
+                                                    $infocom->fields['businesscriticities_id']);
+                  }
                   if (isset($item->fields['groups_id'])) {
                      $input['items_groups'] = $item->fields['groups_id'];
+
                   }
                   break(2);
                }

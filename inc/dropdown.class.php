@@ -870,7 +870,10 @@ class Dropdown {
                                           'Document headings',
                                           Session::getPluralNumber()),
                  'DocumentType'     => _n('Document type', 'Document types',
+                                          Session::getPluralNumber()),
+                 'BusinessCriticity' => _n('Business criticity', 'Business criticities',
                                           Session::getPluralNumber())
+
              ),
 
              __('Tools') => array(
