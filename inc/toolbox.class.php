@@ -2666,10 +2666,10 @@ class Toolbox {
                                               '&gt;&lt;', $content_text);
 
                   // If the tag is from another ticket : link document to ticket
-                  if($item instanceof Ticket
+                  if ($item instanceof Ticket
                      && $item->getID()
                      && isset($image['tickets_id'])
-                     && $image['tickets_id'] != $item->getID()){
+                     && $image['tickets_id'] != $item->getID()) {
                      $docitem = new Document_Item();
                      $docitem->add(array('documents_id'  => $image['id'],
                                          '_do_notif'     => false,

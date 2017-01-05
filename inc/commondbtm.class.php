@@ -4635,12 +4635,12 @@ class CommonDBTM extends CommonGLPI {
             }
 
             // add doc - item ling
-            if (!$skip_docitem
-               && $docitem->add(array('documents_id'  => $docID,
-                                    '_do_notif'     => $donotif,
-                                    '_disablenotif' => $disablenotif,
-                                    'itemtype'      => $item_fordocitem->getType(),
-                                    'items_id'      => $item_fordocitem->getID()))) {
+            if (!$skip_docitem) {
+               $docitem->add(array('documents_id'  => $docID,
+                                   '_do_notif'     => $donotif,
+                                   '_disablenotif' => $disablenotif,
+                                   'itemtype'      => $item_fordocitem->getType(),
+                                   'items_id'      => $item_fordocitem->getID()));
             }
          }
          // Only notification for the first New doc

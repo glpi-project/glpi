@@ -4988,7 +4988,7 @@ class Html {
     *                          - editor_id the dom id of the tinymce editor
     * @return string The Html
     */
-   static function fileForRichText($options=array()){
+   static function fileForRichText($options=array()) {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_rich_text"]) {
@@ -5724,14 +5724,14 @@ class Html {
                if ($ok || empty($mime)) {
                   // Replace tags by image in textarea
 
-                  if($addLink){
+                  if ($addLink) {
                      $out .= '<a href="'.$CFG_GLPI['root_doc'].
                              '/front/document.send.php?docid='.$id.
                              '" target="_blank"><img alt="'.$image['tag'].
                              '" height="'.$height.'" width="'.$width.
                              '" src="'.$CFG_GLPI['root_doc'].
                         '/front/document.send.php?docid='.$id.'" /></a>';
-                  } else{
+                  } else {
                      $out .= '<img alt="'.$image['tag'].
                              '" height="'.$height.'" width="'.$width.
                              '" src="'.$CFG_GLPI['root_doc'].
