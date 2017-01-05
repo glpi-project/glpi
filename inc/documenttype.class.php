@@ -165,7 +165,7 @@ class DocumentType  extends CommonDropdown {
     * @param array $options list of options with theses possible keys:
     *                        - bool 'display', echo the generated html or return it
    **/
-   static function showAvailableTypesLink(array $options) {
+   static function showAvailableTypesLink($options = array()) {
       global $CFG_GLPI;
 
       $p['display'] = true;
