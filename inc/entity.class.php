@@ -1272,7 +1272,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='4'>".__('Address')."</th></tr>";
 
@@ -1361,7 +1361,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='2'>".__('Values for the generic rules for assignment to entities').
            "</th></tr>";
@@ -1446,7 +1446,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='4'>".__('Autofill dates for financial and administrative information').
            "</th></tr>";
@@ -1606,7 +1606,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
 
       echo "<tr><th colspan='4'>".__('Notification options')."</th></tr>";
 
@@ -2046,7 +2046,7 @@ class Entity extends CommonTreeDropdown {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      Plugin::doHook("pre_item_form", ['item' => $this, 'options' => []]);
+      Plugin::doHook("pre_item_form", ['item' => $entity, 'options' => []]);
 
       echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Ticket template', 'Ticket templates', 1).
            "</td>";
