@@ -68,7 +68,7 @@ abstract class API extends CommonGLPI {
       ini_set('display_errors', 'Off');
 
       // Avoid keeping messages between api calls
-      $_SESSION["MESSAGE_AFTER_REDIRECT"] = '';
+      $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];
 
       // check if api is enabled
       if (!$CFG_GLPI['enable_api']) {
@@ -2197,5 +2197,15 @@ abstract class API extends CommonGLPI {
          return $this->returnResponse(array($statuscode, $message), $httpcode);
       }
       return array($statuscode, $message);
+   }
+
+
+   /**
+    * get the raw HTTP request body
+    *
+    * @return string
+    */
+   protected function getHttpBodyStream() {
+      return file_get_contents('php://input');
    }
 }

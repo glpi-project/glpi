@@ -1552,6 +1552,8 @@ a.icon_nav_move:hover img {
    background-color: #fff;
    border-radius: 5px;
    max-width: 950px;
+   margin: .5em auto;
+   padding: .5em;
 }
 
 
