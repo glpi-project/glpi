@@ -4572,7 +4572,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      echo "</table>"
+      echo "</table>";
       echo "<input type='hidden' name='id' value='$ID'>";
 
       echo "</div>";
