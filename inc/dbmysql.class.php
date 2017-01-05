@@ -30,14 +30,9 @@
  --------------------------------------------------------------------------
  */
 
-/** @file
-* @brief
-*/
-
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access this file directly");
 }
-
 
 /**
  *  Database class for Mysql
@@ -57,42 +52,37 @@ class DBmysql {
    //! Database Error
    public $error              = 0;
 
-   /// Slave management
+   // Slave management
    public $slave              = false;
    /** Is it a first connection ?
     * Indicates if the first connection attempt is successful or not
     * if first attempt fail -> display a warning which indicates that glpi is in readonly
    **/
    public $first_connection   = true;
-   /// Is connected to the DB ?
+   // Is connected to the DB ?
    public $connected          = false;
 
 
    /**
     * Constructor / Connect to the MySQL Database
     *
-    * try to connect
+    * @param integer $choice host number (default NULL)
     *
-    * @param $choice integer, host number (default NULL)
-    *
-    * @return nothing
-   **/
+    * @return void
+    */
    function __construct($choice=NULL) {
       $this->connect($choice);
    }
 
-
    /**
     * Connect using current database settings
-    *
     * Use dbhost, dbuser, dbpassword and dbdefault
     *
-    * @param $choice integer, host number (default NULL)
+    * @param integer $choice host number (default NULL)
     *
-    * @return nothing
-   **/
+    * @return void
+    */
    function connect($choice=NULL) {
-
       $this->connected = false;
 
       if (is_array($this->dbhost)) {
@@ -133,29 +123,33 @@ class DBmysql {
       }
    }
 
-
    /**
     * Escapes special characters in a string for use in an SQL statement,
     * taking into account the current charset of the connection
     *
-    * @since version 0.84
+    * @since 0.84
     *
-    * @param $string     String to escape
+    * @param string $string String to escape
     *
-    * @return String escaped
-   **/
+    * @return string escaped string
+    */
    function escape($string) {
       return $this->dbh->real_escape_string($string);
    }
 
-
    /**
     * Execute a MySQL query
     *
-    * @param $query Query to execute
+    * @param string $query Query to execute
     *
-    * @return Query result handler
-   **/
+    * @var array   $CFG_GLPI
+    * @var array   $DEBUG_SQL
+    * @var integer $SQL_TOTAL_REQUEST
+    *
+    * @return mysqli_result|boolean Query result handler
+    *
+    * @throws GlpitestSQLError
+    */
    function query($query) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
@@ -193,19 +187,17 @@ class DBmysql {
       return $res;
    }
 
-
    /**
     * Execute a MySQL query
     *
-    * @since version 0.84
+    * @since 0.84
     *
-    * @param $query     Query to execute
-    * @param $message    explaination of query (default '')
+    * @param string $query   Query to execute
+    * @param string $message Explaination of query (default '')
     *
-    * @return Query result handler
-   **/
+    * @return mysqli_result Query result handler
+    */
    function queryOrDie($query, $message='') {
-
       //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
       $res = $this->query($query)
              or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
@@ -216,12 +208,13 @@ class DBmysql {
    /**
     * Prepare a MySQL query
     *
-    * @param $query Query to prepare
+    * @param string $query Query to prepare
     *
-    * @return a statement object or FALSE if an error occurred.
-   **/
+    * @return mysqli_stmt|boolean statement object or FALSE if an error occurred.
+    *
+    * @throws GlpitestSQLError
+    */
    function prepare($query) {
-
       $res = @$this->dbh->prepare($query);
       if (!$res) {
          // no translation for error logs
@@ -243,16 +236,15 @@ class DBmysql {
    }
 
    /**
-    * Give result from a mysql result
+    * Give result from a sql result
     *
-    * @param $result    MySQL result handler
-    * @param $i         Row to give
-    * @param $field     Field to give
+    * @param mysqli_result $result MySQL result handler
+    * @param int           $i      Row offset to give
+    * @param type          $field  Field to give
     *
-    * @return Value of the Row $i and the Field $field of the Mysql $result
-   **/
+    * @return mixed Value of the Row $i and the Field $field of the Mysql $result
+    */
    function result($result, $i, $field) {
-
       if ($result && ($result->data_seek($i))
           && ($data = $result->fetch_array())
           && isset($data[$field])) {
@@ -261,130 +253,129 @@ class DBmysql {
       return NULL;
    }
 
-
    /**
-    * Give number of rows of a Mysql result
+    * Number of rows
     *
-    * @param $result MySQL result handler
+    * @param mysqli_result $result MySQL result handler
     *
-    * @return number of rows
-   **/
+    * @return integer number of rows
+    */
    function numrows($result) {
       return $result->num_rows;
    }
-
 
    /**
     * Fetch array of the next row of a Mysql query
     * Please prefer fetch_row or fetch_assoc
     *
-    * @param $result MySQL result handler
+    * @param mysqli_result $result MySQL result handler
     *
-    * @return result array
-   **/
+    * @return string[]|null array results
+    */
    function fetch_array($result) {
-
       return $result->fetch_array();
    }
-
 
    /**
     * Fetch row of the next row of a Mysql query
     *
-    * @param $result MySQL result handler
+    * @param mysqli_result $result MySQL result handler
     *
-    * @return result row
-   **/
+    * @return mixed|null result row
+    */
    function fetch_row($result) {
-
       return $result->fetch_row();
    }
-
 
    /**
     * Fetch assoc of the next row of a Mysql query
     *
-    * @param $result MySQL result handler
+    * @param mysqli_result $result MySQL result handler
     *
-    * @return result associative array
-   **/
+    * @return string[]|null result associative array
+    */
    function fetch_assoc($result) {
-
       return $result->fetch_assoc();
    }
 
+   /**
+    * Fetch object of the next row of an SQL query
+    *
+    * @param mysqli_result $result MySQL result handler
+    *
+    * @return object|null
+    */
+   function fetch_object($result) {
+      return $result->fetch_object();
+   }
 
    /**
     * Move current pointer of a Mysql result to the specific row
     *
-    * @param $result    MySQL result handler
-    * @param $num       row to move current pointer
+    * @param mysqli_result $result MySQL result handler
+    * @param integer       $num    Row to move current pointer
     *
     * @return boolean
-   **/
+    */
    function data_seek($result, $num) {
       return $result->data_seek($num);
    }
 
-
    /**
-    * Give ID of the last insert item by Mysql
+    * Give ID of the last inserted item by Mysql
     *
-    * @return item ID
-   **/
+    * @return mixed
+    */
    function insert_id() {
       return $this->dbh->insert_id;
    }
 
-
    /**
     * Give number of fields of a Mysql result
     *
-    * @param $result MySQL result handler
+    * @param mysqli_result $result MySQL result handler
     *
-    * @return number of fields
-   **/
+    * @return int number of fields
+    */
    function num_fields($result) {
       return $result->field_count;
    }
 
-
    /**
     * Give name of a field of a Mysql result
     *
-    * @param $result  MySQL result handler
-    * @param $nb     number of columns of the field
+    * @param mysqli_result $result MySQL result handler
+    * @param integer       $nb     ID of the field
     *
-    * @return name of the field
-   **/
+    * @return string name of the field
+    */
    function field_name($result, $nb) {
-
       $finfo = $result->fetch_fields();
       return $finfo[$nb]->name;
    }
 
-
    /**
     * Get flags of a field of a mysql result
     *
-    * @param $result    MySQL result handler
-    * @param $field     field name
+    * @deprecated BUGGY FUNCTION : param $field isn't used. Consider with precaution results... !
     *
-    * @return flags of the field
-   **/
+    * @param mysqli_result $result MySQL result handler
+    * @param string        $field  Field name
+    *
+    * @return mixed flags of the field
+    */
    function field_flags($result, $field) {
       $finfo = $result->fetch_fields();
       return $finfo[$nb]->flags;
    }
 
-
    /**
     * List tables in database
     *
-    * @param $table table name condition (glpi_% as default to retrieve only glpi tables)
+    * @param string $table table name condition (glpi_% as default to retrieve only glpi tables)
     *
-    * @return list of tables
-   **/
+    * @return mysqli_result list of tables
+    */
    function list_tables($table="glpi_%") {
       return $this->query(
          "SELECT TABLE_NAME FROM information_schema.`TABLES`
@@ -394,15 +385,14 @@ class DBmysql {
       );
    }
 
-
    /**
     * List fields of a table
     *
-    * @param $table     String   table name condition
-    * @param $usecache  Boolean  if use field list cache (default true)
+    * @param string  $table    Table name condition
+    * @param boolean $usecache If use field list cache (default true)
     *
-    * @return list of fields
-   **/
+    * @return mixed list of fields
+    */
    function list_fields($table, $usecache=true) {
       static $cache = array();
 
@@ -423,82 +413,73 @@ class DBmysql {
       return false;
    }
 
-
    /**
     * Get number of affected rows in previous MySQL operation
     *
-    * @return number of affected rows on success, and -1 if the last query failed.
-   **/
+    * @return int number of affected rows on success, and -1 if the last query failed.
+    */
    function affected_rows() {
       return $this->dbh->affected_rows;
    }
 
-
    /**
     * Free result memory
     *
-    * @param $result MySQL result handler
+    * @param mysqli_result $result MySQL result handler
     *
-    * @return Returns TRUE on success or FALSE on failure.
-   **/
+    * @return boolean TRUE on success or FALSE on failure.
+    */
    function free_result($result) {
       return $result->free();
    }
 
-
    /**
     * Returns the numerical value of the error message from previous MySQL operation
     *
-    * @return error number from the last MySQL function, or 0 (zero) if no error occurred.
-   **/
+    * @return int error number from the last MySQL function, or 0 (zero) if no error occurred.
+    */
    function errno() {
       return $this->dbh->errno;
    }
 
-
    /**
     * Returns the text of the error message from previous MySQL operation
     *
-    * @return error text from the last MySQL function, or '' (empty string) if no error occurred.
-   **/
+    * @return string error text from the last MySQL function, or '' (empty string) if no error occurred.
+    */
    function error() {
       return $this->dbh->error;
    }
 
-
    /**
     * Close MySQL connection
     *
-    * @return TRUE on success or FALSE on failure.
-   **/
+    * @return boolean TRUE on success or FALSE on failure.
+    */
    function close() {
-
       if ($this->dbh) {
-         return @$this->dbh->close();
+         return $this->dbh->close();
       }
       return false;
    }
-
 
    /**
     * is a slave database ?
     *
     * @return boolean
-   **/
+    */
    function isSlave() {
       return $this->slave;
    }
 
-
    /**
     * Execute all the request in a file
     *
-    * @param $path string with file full path
+    * @param string $path with file full path
     *
     * @return boolean true if all query are successfull
-   **/
+    */
    function runFile($path) {
-
       $DBf_handle = fopen($path, "rt");
       if (!$DBf_handle) {
          return false;
@@ -531,7 +512,6 @@ class DBmysql {
       return $lastresult;
    }
 
-
    /**
     * Instanciate a Simple DBIterator
     *
@@ -541,11 +521,6 @@ class DBmysql {
     *  foreach ($DB->request("glpi_states", "ID=1") as $ID => $data) { ... }
     *  foreach ($DB->request("glpi_states", "", "name") as $ID => $data) { ... }
     *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","entities_id"=>1),array("serial","otherserial")) { ... }
-    *
-    * @param $tableorsql                     table name, array of names or SQL query
-    * @param $crit         string or array   of filed/values, ex array("id"=>1), if empty => all rows
-    *                                        (default '')
-    * @param $debug                          for log the request (default false)
     *
     * Examples =
     *   array("id"=>NULL)
@@ -557,21 +532,27 @@ class DBmysql {
     * LIMIT max of row to retrieve
     * START first row to retrieve
     *
-    * @return DBIterator
-   **/
+    * @param string|string[] $tableorsql Table name, array of names or SQL query
+    * @param string|string[] $crit       String or array of filed/values, ex array("id"=>1), if empty => all rows
+    *                                    (default '')
+    * @param boolean         $debug      To log the request (default false)
+    *
+    * @return DBmysqlIterator
+    */
    public function request ($tableorsql, $crit="", $debug=false) {
       return new DBmysqlIterator($this, $tableorsql, $crit, $debug);
    }
 
-
     /**
      *  Optimize sql table
      *
-     * @param $migration   migration class (default NULL)
-     * @param $cron        to know if optimize must be done (false by default)
+     * @var DB $DB
      *
-     * @return number of tables
-    **/
+     * @param mixed   $migration Migration class (default NULL)
+     * @param boolean $cron      To know if optimize must be done (false by default)
+     *
+     * @return int number of tables
+     */
    static function optimize_tables($migration=NULL, $cron=false) {
       global $DB;
 
@@ -615,16 +596,14 @@ class DBmysql {
       return $nb;
    }
 
-
    /**
-    * Get  information about DB connection for showSystemInformations
+    * Get information about DB connection for showSystemInformations
     *
-    * @since version 0.84
+    * @since 0.84
     *
-    * @return Array of label / value
+    * @return string[] Array of label / value
     */
    public function getInfo() {
-
       // No translation, used in sysinfo
       $ret = array();
       $req = $this->request("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
@@ -650,11 +629,16 @@ class DBmysql {
       return $ret;
    }
 
-
    /**
-    * @since version 0.90
+    * Is MySQL strict mode ?
+    * @since 0.90
     *
-   **/
+    * @var DB $DB
+    *
+    * @param string $msg Mode
+    *
+    * @return boolean
+    */
    static function isMySQLStrictMode(&$msg) {
       global $DB;
 
@@ -668,18 +652,16 @@ class DBmysql {
       return false;
    }
 
-
    /**
     * Get a global DB lock
     *
-    * @param $name  String : name of the lock
+    * @since 0.84
     *
-    * @since version 0.84
+    * @param string $name lock's name
     *
-    * @return Boolean
-   **/
+    * @return boolean
+    */
    public function getLock($name) {
-
       $name          = addslashes($this->dbdefault.'.'.$name);
       $query         = "SELECT GET_LOCK('$name', 0)";
       $result        = $this->query($query);
@@ -688,18 +670,16 @@ class DBmysql {
       return $lock_ok;
    }
 
-
    /**
     * Release a global DB lock
     *
-    * @param $name  String : name of the lock
+    * @since 0.84
     *
-    * @since version 0.84
+    * @param string $name lock's name
     *
-    * @return Boolean
-   **/
+    * @return boolean
+    */
    public function releaseLock($name) {
-
       $name          = addslashes($this->dbdefault.'.'.$name);
       $query         = "SELECT RELEASE_LOCK('$name')";
       $result        = $this->query($query);
@@ -711,9 +691,11 @@ class DBmysql {
    /**
    * Check for crashed MySQL Tables
    *
-   * @since version 0.90.2
+   * @since 0.90.2
    *
-   * @return an array with supposed crashed table and check message
+   * @var DB $DB
+    *
+   * @return string[] array with supposed crashed table and check message
    */
    static public function checkForCrashedTables() {
       global $DB;
@@ -738,33 +720,34 @@ class DBmysql {
 }
 
 
-
-
 /**
- * Helper for simple query => see $DBmysql->requete
-**/
-class DBmysqlIterator  implements Iterator {
-   /// DBmysql object
-   private $con;
-   /// Current SQL query
+ * Helper for simple query
+ * @todo Create a separate file for this class
+ */
+class DBmysqlIterator implements Iterator {
+   /**
+    * DBmysql object
+    * @var DBmysql
+    */
+   private $conn;
+   // Current SQL query
    private $sql;
-   /// Current result
+   // Current result
    private $res = false;
-   /// Current row
+   // Current row
    private $row;
-
 
    /**
     * Constructor
     *
-    * @param $dbconnexion                    Database Connnexion (must be a CommonDBTM object)
-    * @param $table        string or array   table name (optional when $crit have FROM entry)
-    * @param $crit         string or array   of filed/values, ex array("id"=>1), if empty => all rows
-    *                                        (default '')
-    * @param $debug                          for log the request (default false)
-   **/
+    * @param DBmysql      $dbconnexion Database Connnexion (must be a CommonDBTM object)
+    * @param string|array $table       Table name (optional when $crit have FROM entry)
+    * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
+    * @param boolean      $debug       To log the request (default false)
+    *
+    * @return void
+    */
    function __construct ($dbconnexion, $table, $crit="", $debug=false) {
-
       $this->conn = $dbconnexion;
       if (is_string($table) && strpos($table, " ")) {
          //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
@@ -943,10 +926,10 @@ class DBmysqlIterator  implements Iterator {
     * @since 9.1
     *
     * @param string $name of field to quote (or table.field)
+    *
     * @return string
-   **/
+    */
    private static function quoteName($name) {
-
       if (strpos($name, '.')) {
          $n = explode('.', $name, 2);
          return self::quoteName($n[0]) . '.' . self::quoteName($n[1]);
@@ -959,30 +942,33 @@ class DBmysqlIterator  implements Iterator {
     * Retrieve the SQL statement
     *
     * @since 9.1
-   **/
+    *
+    * @return string
+    */
    public function getSql() {
       return preg_replace('/ +/', ' ', $this->sql);
    }
 
-
+   /**
+    * Destructor
+    *
+    * @return void
+    */
    function __destruct () {
-
       if ($this->res) {
          $this->conn->free_result($this->res);
       }
    }
 
-
    /**
     * Generate the SQL statement for a array of criteria
     *
-    * @param array  $crit
-    * @param string $bool (default AND)
+    * @param string[] $crit Criteria
+    * @param string   $bool Boolean operator (default AND)
     *
     * @return string
-   **/
+    */
    private function analyseCrit ($crit, $bool="AND") {
-
       static $operators = ['=', '<', '<=', '>', '>=', 'LIKE', 'REGEXP', 'NOT LIKE', 'NOT REGEX'];
 
       if (!is_array($crit)) {
@@ -1052,28 +1038,42 @@ class DBmysqlIterator  implements Iterator {
       return $ret;
    }
 
-
+   /**
+    * Reset rows parsing (go to first offset) & provide first row
+    *
+    * @return string[]|null fetch_assoc() of first results row
+    */
    public function rewind() {
-
       if ($this->res && $this->conn->numrows($this->res)) {
          $this->conn->data_seek($this->res, 0);
       }
       return $this->next();
    }
 
-
+   /**
+    * Provide actual row
+    *
+    * @return mixed
+    */
    public function current() {
       return $this->row;
    }
 
-
+   /**
+    * Get current key value
+    *
+    * @return mixed
+    */
    public function key() {
       return (isset($this->row["id"]) ? $this->row["id"] : 0);
    }
 
-
-   public function next() {
-
+   /**
+    * Return next row of query results [FETCH_ASSOC]
+    *
+    * @return string[]|null fetch_assoc() of first results row
+    */
+   public function nextAssoc() {
       if (!$this->res) {
          return false;
       }
@@ -1081,12 +1081,46 @@ class DBmysqlIterator  implements Iterator {
       return $this->row;
    }
 
+   /**
+    * Get next result
+    *
+    * @deprecated
+    *
+    * @see nextAssoc()
+    *
+    * @return mixed
+    */
+   public function next() {
+      return $this->nextAssoc();
+   }
 
+   /**
+    * OOP - Next row of query result
+    *
+    * @return object
+   */
+   public function nextObject() {
+      if (!$this->res) {
+         return false;
+      }
+      $this->row = $this->conn->fetch_object($this->res);
+      return $this->row;
+   }
+
+   /**
+    * @todo phpdoc...
+    *
+    * @return boolean
+    */
    public function valid() {
       return $this->res && $this->row;
    }
 
-
+   /**
+    * Number of rows on a result
+    *
+    * @return int
+    */
    public function numrows() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
    }
