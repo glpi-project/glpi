@@ -37,8 +37,6 @@
 * @since version 9.2
 */
 
-$AJAX_INCLUDE = 1;
-
 include ('../inc/includes.php');
 
 header('Content-type: application/json');
