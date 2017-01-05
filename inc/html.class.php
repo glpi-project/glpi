@@ -3869,11 +3869,11 @@ class Html {
    /**
     * Convert simple text content to rich text content and init html editor
     *
-    * @since version 0.85
+    * @since version 9.2
     *
     * @param $name       name of textarea
     * @param $content    content to convert in html
-    * @param $rand
+    * @param $rand       string used for randomize tinymce dom id
     *
     * @return $content
    **/
@@ -4981,6 +4981,9 @@ class Html {
 
    /**
     * Display a div who reveive a list of uploaded file
+    *
+    * @since  version 9.2
+    *
     * @param  array  $options theses following keys:
     *                          - editor_id the dom id of the tinymce editor
     * @return string The Html
@@ -5037,7 +5040,7 @@ class Html {
     * Creates an input file field. Send file names in _$name field as array.
     * Files are uploaded in files/_tmp/ directory
     *
-    * @since version 0.85
+    * @since version 9.2
     *
     * @param $options       array of options
     *    - name                string   field name (default filename)
@@ -5193,7 +5196,7 @@ class Html {
     *  - cols (int):                 textarea cols attribute (witdh)
     *  - rows (int):                 textarea rows attribute (height)
     *
-    * @return mixed          the html is display paremeter is false or true
+    * @return mixed          the html if display paremeter is false or true
     */
    static function textarea($options=array()) {
       //default options
@@ -5693,10 +5696,10 @@ class Html {
     *
     * @since version 9.2
     *
-    * @param $content_text   text content of input
-    * @param $force_update   force update of content in item (false by default
-    * @param $doc_data       array of filenames and tags
-    * @param $addLink        boolean, do we need to add an anchor link
+    * @param string $tag      the tag identifier of the document
+    * @param int $width       witdh of the final image
+    * @param int $height      height of the final image
+    * @param bool $addLink    boolean, do we need to add an anchor link
     *
     * @return nothing
    **/

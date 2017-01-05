@@ -2600,11 +2600,11 @@ class Toolbox {
     *
     * @since version 9.2
     *
-    * @param $content_text         text content of input
-    * @param $force_update         force update of content in item (false by default
-    * @param $doc_data       array of filenames and tags
+    * @param string $content_text   text content of input
+    * @param CommonDBTM $item       Glpi item where to convert image tag to image document
+    * @param array $doc_data        list of filenames and tags
     *
-    * @return nothing
+    * @return string                the $content_text param after parsing
    **/
    static function convertTagToImage($content_text, CommonDBTM $item, $doc_data=array()) {
       global $CFG_GLPI;
@@ -2695,9 +2695,9 @@ class Toolbox {
     * @since version 9.2
     *
     * @param $content_html   html content of input
-    * @param $force_update   force update of content in item (false by default
+    * @param $force_update   force update of content in item (false by default)
     *
-    * @return htlm content
+    * @return html content
    **/
    static function convertImageToTag($content_html, $force_update=false) {
 
@@ -2720,12 +2720,12 @@ class Toolbox {
     *
     * @since version 9.2
     *
-    * @param $content   html content of input
-    * @param $tags
+    * @param string $content   html content of input
+    * @param array $tags       list of tags to clen
     *
-    * @return htlm content
+    * @return html content
    **/
-   static function cleanTagOrImage($content, $tags) {
+   static function cleanTagOrImage($content, array $tags) {
       global $CFG_GLPI;
 
       // RICH TEXT : delete img tag

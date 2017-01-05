@@ -4543,7 +4543,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return array the input param transformed
    **/
-   function addFiles($input = [], $options = []) {
+   function addFiles(array $input, array $options) {
       global $CFG_GLPI;
 
       $default_options = [
@@ -4596,10 +4596,9 @@ class CommonDBTM extends CommonGLPI {
             }
 
          } else {
-            //TRANS: Default document to files attached to tickets : %d is the ticket id
-            $input2["name"] = addslashes(sprintf(__('Document Ticket %d'), $this->getID()));
-
             if ($this->getType() == 'Ticket') {
+               //TRANS: Default document to files attached to tickets : %d is the ticket id
+               $input2["name"] = addslashes(sprintf(__('Document Ticket %d'), $this->getID()));
                $input2["tickets_id"] = $this->getID();
             }
             // Insert image tag
