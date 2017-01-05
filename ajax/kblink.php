@@ -37,7 +37,6 @@
 * @author  Alexandre Delaunay
 */
 
-$AJAX_INCLUDE = 1;
 include ('../inc/includes.php');
 
 // Send UTF8 Headers
